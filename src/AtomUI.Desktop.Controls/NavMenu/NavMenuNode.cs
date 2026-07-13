@@ -1,22 +1,24 @@
 using System.Collections.Specialized;
-using System.Reactive.Disposables;
+using System.Windows.Input;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
-using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
 
 public interface INavMenuNode : ITreeNode<INavMenuNode>
 {
     IDataTemplate? HeaderTemplate { get; }
+    ICommand? Command => null;
+    object? CommandParameter => null;
     void UpdateParentNode(INavMenuNode? parentNode) => throw new NotImplementedException();
 }
 
-public class NavMenuNode : AvaloniaObject, INavMenuNode, IResourceHost, IThemeVariantHost
+[GenerateScopedResourceHost]
+public partial class NavMenuNode : AvaloniaObject, INavMenuNode
 {
     public static readonly DirectProperty<NavMenuNode, object?> HeaderProperty =
         AvaloniaProperty.RegisterDirect<NavMenuNode, object?>(
@@ -29,6 +31,18 @@ public class NavMenuNode : AvaloniaObject, INavMenuNode, IResourceHost, IThemeVa
             nameof(HeaderTemplate),
             o => o.HeaderTemplate,
             (o, v) => o.HeaderTemplate = v);
+
+    public static readonly DirectProperty<NavMenuNode, ICommand?> CommandProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuNode, ICommand?>(
+            nameof(Command),
+            o => o.Command,
+            (o, v) => o.Command = v);
+
+    public static readonly DirectProperty<NavMenuNode, object?> CommandParameterProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuNode, object?>(
+            nameof(CommandParameter),
+            o => o.CommandParameter,
+            (o, v) => o.CommandParameter = v);
     
     public static readonly DirectProperty<NavMenuNode, EntityKey?> ItemKeyProperty =
         AvaloniaProperty.RegisterDirect<NavMenuNode, EntityKey?>(
@@ -63,6 +77,22 @@ public class NavMenuNode : AvaloniaObject, INavMenuNode, IResourceHost, IThemeVa
         get => _headerTemplate;
         set => SetAndRaise(HeaderTemplateProperty, ref _headerTemplate, value);
     }
+
+    private ICommand? _command;
+
+    public ICommand? Command
+    {
+        get => _command;
+        set => SetAndRaise(CommandProperty, ref _command, value);
+    }
+
+    private object? _commandParameter;
+
+    public object? CommandParameter
+    {
+        get => _commandParameter;
+        set => SetAndRaise(CommandParameterProperty, ref _commandParameter, value);
+    }
     
     private EntityKey? _itemKey;
 
@@ -91,8 +121,6 @@ public class NavMenuNode : AvaloniaObject, INavMenuNode, IResourceHost, IThemeVa
     public ITreeNode<INavMenuNode>? ParentNode { get; private set; }
     
     private readonly AvaloniaList<INavMenuNode> _children = [];
-    private IResourceHost? _resourceHost;
-    private int _resourceHostAttachmentCount;
     
     [Content]
     public IList<INavMenuNode> Children
@@ -107,126 +135,6 @@ public class NavMenuNode : AvaloniaObject, INavMenuNode, IResourceHost, IThemeVa
     {
         _children.CollectionChanged += HandleCollectionChanged;
     }
-
-    #region 资源宿主定义
-
-    public event EventHandler<ResourcesChangedEventArgs>? ResourcesChanged;
-    public event EventHandler? ActualThemeVariantChanged;
-
-    public bool HasResources => true;
-
-    public ThemeVariant ActualThemeVariant =>
-        (_resourceHost as IThemeVariantHost)?.ActualThemeVariant ??
-        Application.Current?.ActualThemeVariant ??
-        ThemeVariant.Default;
-
-    public bool TryGetResource(object key, ThemeVariant? theme, out object? value)
-    {
-        if (_resourceHost?.TryFindResource(key, theme, out value) == true)
-        {
-            return true;
-        }
-
-        if (Application.Current?.TryGetResource(key, theme, out value) == true)
-        {
-            return true;
-        }
-
-        value = null;
-        return false;
-    }
-
-    void IResourceHost.NotifyHostedResourcesChanged(ResourcesChangedEventArgs e)
-    {
-        ResourcesChanged?.Invoke(this, e);
-    }
-
-    internal IDisposable AttachResourceHost(IResourceHost resourceHost)
-    {
-        if (ReferenceEquals(_resourceHost, resourceHost))
-        {
-            _resourceHostAttachmentCount++;
-        }
-        else
-        {
-            DetachCurrentResourceHost();
-            _resourceHost                = resourceHost;
-            _resourceHostAttachmentCount = 1;
-            RegisterResourceHost(resourceHost);
-        }
-
-        return Disposable.Create((Node: this, ResourceHost: resourceHost), state =>
-        {
-            state.Node.DetachResourceHost(state.ResourceHost);
-        });
-    }
-
-    private void DetachResourceHost(IResourceHost resourceHost)
-    {
-        if (!ReferenceEquals(_resourceHost, resourceHost))
-        {
-            return;
-        }
-
-        _resourceHostAttachmentCount--;
-        if (_resourceHostAttachmentCount > 0)
-        {
-            return;
-        }
-
-        DetachCurrentResourceHost();
-        RaiseResourcesChanged();
-        ActualThemeVariantChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void DetachCurrentResourceHost()
-    {
-        if (_resourceHost is null)
-        {
-            _resourceHostAttachmentCount = 0;
-            return;
-        }
-
-        _resourceHost.ResourcesChanged -= HandleResourceHostResourcesChanged;
-
-        if (_resourceHost is IThemeVariantHost themeVariantHost)
-        {
-            themeVariantHost.ActualThemeVariantChanged -= HandleResourceHostActualThemeVariantChanged;
-        }
-
-        _resourceHost                = null;
-        _resourceHostAttachmentCount = 0;
-    }
-
-    private void RegisterResourceHost(IResourceHost resourceHost)
-    {
-        resourceHost.ResourcesChanged += HandleResourceHostResourcesChanged;
-
-        if (resourceHost is IThemeVariantHost themeVariantHost)
-        {
-            themeVariantHost.ActualThemeVariantChanged += HandleResourceHostActualThemeVariantChanged;
-        }
-
-        RaiseResourcesChanged();
-        ActualThemeVariantChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void HandleResourceHostResourcesChanged(object? sender, ResourcesChangedEventArgs e)
-    {
-        ResourcesChanged?.Invoke(this, e);
-    }
-
-    private void HandleResourceHostActualThemeVariantChanged(object? sender, EventArgs e)
-    {
-        ActualThemeVariantChanged?.Invoke(this, e);
-    }
-
-    private void RaiseResourcesChanged()
-    {
-        ResourcesChanged?.Invoke(this, ResourcesChangedEventArgs.Create());
-    }
-
-    #endregion
     
     public void UpdateParentNode(INavMenuNode? parentNode)
     {

@@ -1,4 +1,5 @@
 using System.IO;
+using Avalonia.Input;
 using Shouldly;
 using Xunit;
 
@@ -6,6 +7,20 @@ namespace AtomUI.Desktop.Controls.Tests.NavMenu;
 
 public class NavMenuImplementationContractTests
 {
+    [Fact]
+    public void NavMenuNode_Exposes_Command_Configuration_Without_Becoming_Command_Source()
+    {
+        var node = new NavMenuNode();
+
+        typeof(INavMenuNode).GetProperty(nameof(INavMenuNode.Command)).ShouldNotBeNull();
+        typeof(INavMenuNode).GetProperty(nameof(INavMenuNode.CommandParameter)).ShouldNotBeNull();
+        NavMenuNode.CommandProperty.ShouldNotBeNull();
+        NavMenuNode.CommandParameterProperty.ShouldNotBeNull();
+        node.Command.ShouldBeNull();
+        node.CommandParameter.ShouldBeNull();
+        node.ShouldNotBeAssignableTo<ICommandSource>();
+    }
+
     [Fact]
     public void Default_Path_Replay_Does_Not_Wait_On_Fixed_Timer_Delays()
     {

@@ -4,7 +4,7 @@
 
 ## 1. 实现定位
 
-NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航状态，并按 mode 选择不同交互策略。实现文档聚焦 `NavMenu`、`NavMenuItem`、节点模型、handler、selection coordinator、keyboard navigation coordinator、inline collapsed coordinator 和 theme part 的协作关系。
+NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航状态，并按 mode 选择不同交互策略。实现文档聚焦 `NavMenu`、`NavMenuItem`、节点模型、命令投影、handler、selection coordinator、keyboard navigation coordinator、inline collapsed coordinator 和 theme part 的协作关系。
 
 路由切换、权限过滤、业务命令编排和页面生命周期不属于 NavMenu 实现范围。
 
@@ -14,7 +14,7 @@ NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航�
 
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenu.cs`：公开控件、属性、ItemsControl 容器入口、默认路径 replay 和 mode 状态同步。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuItem.cs`：内部容器、header 转发、子菜单、popup、选中和打开状态。
-- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuNode.cs`：`INavMenuNode` 节点契约、节点数据模型和资源宿主挂接。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuNode.cs`：`INavMenuNode` 节点契约和节点数据模型；`NavMenuNode` 使用 `[GenerateScopedResourceHost]` 获得 scoped `IResourceHost` / `IThemeVariantHost` 生命周期。
 - `src/AtomUI.Desktop.Controls/NavMenu/INavMenu.cs`、`INavMenuItem.cs`、`INavMenuElement.cs`：菜单和容器的内部/公共契约。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuSelectionCoordinator.cs`：选择状态和祖先路径状态同步。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuItemContainerBinder.cs`：节点数据与容器状态绑定。
@@ -29,7 +29,9 @@ NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航�
 
 `NavMenu` 是树形导航根，负责 mode、theme、items source、默认路径、受控选择、事件和子容器状态下发。
 
-`NavMenuItem` 是内部容器，负责承载单个节点的 header、icon、子节点、popup 或 inline child items，并维护 `IsSelected`、`IsInSelectedPath`、`IsSubMenuOpen`、`Level`、`IsTopLevel` 等状态。
+`NavMenuItem` 是内部容器，负责承载单个节点的 header、icon、子节点、popup 或 inline child items，并维护 `IsSelected`、`IsInSelectedPath`、`IsSubMenuOpen`、`Level`、`IsTopLevel` 等状态。它实现 `ICommandSource`，是节点命令的唯一执行者和 `CanExecuteChanged` 订阅 owner。
+
+`NavMenuNode` 是 owner-managed 非 Visual `AvaloniaObject`。它保存节点数据、`Command` 和 `CommandParameter`，但不持有 generated container，不执行命令，也不直接订阅 `ICommand.CanExecuteChanged`。scoped resource-host 样板由 generator 生成，owner 侧 attach token 与节点属性 relay binding 使用同一个容器 disposable 生命周期。
 
 inline collapsed coordinator 由 `NavMenu` 拥有，负责根据 `Mode` 和 `IsInlineCollapsed` 计算 effective mode，缓存 inline 打开路径，关闭折叠期间的临时 popup，并把折叠视觉状态下发到 `NavMenuItem` 和 header。它不拥有选择状态，也不直接修改 `Mode`。
 
@@ -51,6 +53,7 @@ NavMenu public API / NavMenuNode
   IsDarkStyle / IsItemBackgroundEnabled
   SelectedItem / DefaultSelectedPath / DefaultOpenPaths
   Header / Icon / ItemKey / Children / IsEnabled
+  Command / CommandParameter
       ↓
 Effective mode + inline collapsed open path cache
       ↓
@@ -61,6 +64,7 @@ NavMenuItemContainerBinder
       ↓
 NavMenuItem
   Level / IsTopLevel / HasSubMenu / IsSubMenuOpen
+  ICommandSource / effective command enabled state
       ↓
 Interaction handler + KeyboardNavigationCoordinator + SelectionCoordinator
       ↓
@@ -103,6 +107,25 @@ expand:
 
 默认路径 replay 依赖容器生成和模板应用。实现必须使用有界 replay，不使用固定 sleep 或 timer 作为容器可用性的长期机制。
 
+节点进入容器时必须建立一条完整的 scoped 生命周期：
+
+```text
+PrepareContainerForItemOverride
+  -> reset current container CompositeDisposable
+  -> NavMenuNode.AttachResourceHost(owner)
+  -> bind node visual properties
+  -> bind Command / CommandParameter to NavMenuItem
+
+ClearContainerForItemOverride / rebind / recycle
+  -> dispose the same CompositeDisposable
+  -> release node-to-container bindings
+  -> release resource-host attachment token
+  -> clear command value from the old NavMenuItem
+  -> NavMenuItem unsubscribes old Command.CanExecuteChanged
+```
+
+资源宿主 attachment、节点属性 binding 和命令 binding 不能分散到不同的无 owner subscription 中。re-template、Items reset、container recycle 或节点替换必须复用同一个 clear 路径；不允许依赖 GC、DataContext 清空或页面导航释放旧关系。
+
 ## 6. 交互与事件处理
 
 Inline handler：
@@ -134,15 +157,33 @@ Keyboard navigation：
 - 键盘打开 popup 后必须确保子容器可生成，并把 active/focus 移动到第一个可交互子项；不能依赖固定 timer 等待 popup content。
 - Esc 只关闭当前 popup 分支，active/focus 回到父项；不能调用 `NavMenu.Close()`，避免清空 `SelectedItem`。
 
-`NavMenuItemClick` 表达 item 点击，`NavMenuNodeSelected` 表达叶子节点选择。禁用项不得触发有效点击或选择。
+`NavMenuItemClick` 表达 item 点击，`NavMenuNodeSelected` 表达叶子节点选择。禁用项不得触发有效点击、命令或选择。节点命令由同一次 `NavMenuItem` 有效点击或键盘提交执行，不能从 `NavMenuNodeSelected` 再次执行；pointer 与 keyboard 必须复用同一命令入口。
 
 ## 7. 内部算法与关键流程
 
 ### 7.1 容器绑定
 
-节点数据到容器的绑定必须包括 Header、HeaderTemplate、Icon、ItemKey、IsEnabled、Children、owner menu、mode、dark style、background mode 和 motion 状态。容器解绑时必须释放资源宿主关系和事件订阅。
+节点数据到容器的绑定必须包括 Header、HeaderTemplate、Icon、ItemKey、IsEnabled、Command、CommandParameter、Children、owner menu、mode、dark style、background mode 和 motion 状态。容器解绑时必须释放资源宿主关系、relay binding 和命令事件订阅。
 
-### 7.2 选择流程
+`NavMenuNode` 作为非 Visual Avalonia binding target 时使用 `[GenerateScopedResourceHost]`。container binder 先把 generated `AttachResourceHost(owner)` token 加入当前 `NavMenuItem` 的 `CompositeDisposable`，再通过 AvaloniaProperty overload 建立节点属性投影。自定义 `INavMenuNode` 使用强类型 getter overload；实现了 `INotifyPropertyChanged` 的节点保持运行期更新，普通节点取得初始值，未声明命令的既有实现使用接口的 `null` 默认值。所有 `BindUtils.RelayBind` 返回值必须加入同一个 disposable；禁止丢弃返回值或把最后一次容器永久挂回节点。
+
+### 7.2 命令投影流程
+
+```text
+NavMenuNode.Command / CommandParameter changed
+      ↓ container-scoped relay binding
+NavMenuItem.Command / CommandParameter
+      ↓ ICommandSource
+CanExecute determines effective enabled state
+      ↓ effective click / keyboard commit
+Execute once
+```
+
+`NavMenuItem` 在 command property 变化时先解除旧命令的 `CanExecuteChanged`，再订阅新命令；logical-tree detach 时解除当前命令订阅。container disposable 释放 command relay binding 后，旧命令不能继续持有已回收容器。`CanExecute=false` 只影响容器 effective enabled state，不写回 `NavMenuNode.IsEnabled`。
+
+`CommandParameter` 不做 `ItemKey` fallback。自动 fallback 会让显式 `null` 失去语义，并在 `ItemKey`、参数 binding 和容器复用之间引入第二套同步状态。业务需要 key 时由调用方显式绑定或赋值。
+
+### 7.3 选择流程
 
 ```text
 Select leaf item
@@ -161,13 +202,13 @@ NavMenu.SelectedItem + NavMenuNodeSelected
 
 键盘提交必须复用同一流程。active 项不是选择项，方向键移动不进入 selection coordinator。Enter 提交叶子节点时先触发 item click 语义，再由 selection coordinator 更新选中路径，确保键盘与 pointer click 的事件顺序一致。
 
-### 7.3 默认路径 replay
+### 7.4 默认路径 replay
 
 `TreeNodePath` 通过 `ItemKey` 定位节点路径。路径 replay 先打开中间节点，再选中叶子节点。由于容器生成依赖 layout 和 ItemsPresenter，replay 可以在 loaded priority 下有界重试。
 
 replay 必须具备 revision 控制：新的默认路径或 `SelectedItem` 设置产生新 revision，旧 revision 的异步结果必须丢弃。
 
-### 7.4 背景块模型
+### 7.5 背景块模型
 
 `NavMenuItem` 背景和 `NavMenuItemHeader` 背景是两层不同职责：
 
@@ -176,13 +217,13 @@ replay 必须具备 revision 控制：新的默认路径或 `SelectedItem` 设�
 
 `IsItemBackgroundEnabled=false` 只关闭 item / child frame 背景块和背景块专用外距。header 前景、hover、selected、selected path 和 disabled 仍由 header theme 处理。
 
-### 7.5 Popup 模型
+### 7.6 Popup 模型
 
 Popup shell 位于 `NavMenuItem` 模板内，popup content 由 `ItemsPresenter` 承载。打开 popup 前后必须确保子容器可生成，默认路径 replay 不能依赖固定等待时间。
 
 Popup 背景使用 `MenuPopupBg` / `DarkMenuPopupBg`，不能回退成普通 elevated background。
 
-### 7.6 键盘漫游模型
+### 7.7 键盘漫游模型
 
 键盘漫游按“层级容器 + 当前 active 项”计算：
 
@@ -206,7 +247,7 @@ sync focus + keyboard active visual
 
 keyboard active 视觉通过 header 的内部状态表达，使用 `ItemActiveBg` 语义。该状态优先级低于 selected，高于默认态；它不能复用 `IsSelected` 或 `IsInSelectedPath`，否则会把“浏览候选”和“已提交选择”混为同一个状态。`IsInSelectedPath` 只表达选中路径文字语义，不能屏蔽 keyboard active 背景。
 
-### 7.7 Inline collapsed 模型
+### 7.8 Inline collapsed 模型
 
 Inline collapsed 模型按“public state + effective mode + open path cache”组织：
 
@@ -237,6 +278,18 @@ open path cache 应记录路径语义而不是持有容器引用。容器可能�
 
 NavMenu 不应通过反射访问 template part 或内部状态。Header、popup、inline child frame 和 active indicator 均通过稳定 template part 和 Avalonia 属性接入。
 
+`NavMenuNode` 必须通过 `[GenerateScopedResourceHost]` 生成 `IResourceHost` / `IThemeVariantHost`、attachment count、host generation 和 `IDisposable` attach token。generation 用于使跨 host 切换后遗留的 stale token 失效，尤其不能让 `A -> B -> A` 中第一轮 A token 释放当前 A attachment。scoped resource host 只解决动态资源宿主及其事件订阅，不替代节点到容器 binding 的释放，也不替代 `ICommand.CanExecuteChanged` 的解绑。
+
+命令能力的完整释放边界由三层共同组成：
+
+1. generated scoped resource host 释放 `ResourcesChanged` / `ActualThemeVariantChanged` owner 订阅；
+2. container `CompositeDisposable` 释放节点到 `NavMenuItem` 的 `Command`、`CommandParameter` 和其他属性 binding；
+3. `NavMenuItem` 在 command replacement 与 logical-tree detach 时解除 `CanExecuteChanged`。
+
+缺少任意一层都不能宣称节点命令生命周期完整。不得通过弱化动态资源、改为静态值、永久 owner 引用、全局 command cache 或延迟清理规避释放问题。
+
+`CanExecuteChanged` 可能在一次同步命令执行中快速发出 `false -> true`，共享同一命令的多个叶子容器如果逐次立即更新 effective enabled，会同时启动 disabled 前景色过渡并产生闪动。`NavMenuItem` 将通知统一 marshal 到 UI Dispatcher，并以 `Input` 优先级合并同一 UI 周期内的重复通知；回调只重新读取一次当前 `Command.CanExecute(CommandParameter)`，因此持续 `false` 仍会在下一轮交互前生效，而瞬时变化不会暴露中间视觉状态。待处理 operation 由当前 container 持有，并在 command replacement、parameter replacement 和 logical-tree detach 时 abort，不能让已回收容器被 dispatcher callback 延迟持有或被旧 command 状态回写。
+
 handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时释放。延迟打开 / 关闭任务必须支持取消，避免旧 pointer 状态影响新 mode 或新 popup。
 
 inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template part 引用。状态失效边界包括 ItemsSource reset、container clear、detach、mode change 和 default path replay revision 变化。
@@ -266,6 +319,11 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 - `IsItemBackgroundEnabled=false` 不关闭 header 颜色和交互状态。
 - popup、root、inline child frame、header 四类背景职责保持分离。
 - handler 取消逻辑不能泄漏事件订阅或延迟任务。
+- `NavMenuNode` 不实现 `ICommandSource`，不直接执行命令或订阅 `CanExecuteChanged`。
+- scoped resource-host attachment、node relay binding 和 command subscription 必须各自具有确定释放点。
+- `CanExecuteChanged` 的合并 operation 必须由当前 container 持有，并在 command / parameter 替换和 logical-tree detach 时取消。
+- container rebind、clear、recycle、Items reset 和 re-template 后，旧节点、旧命令和旧 owner 不得继续持有当前容器。
+- `CommandParameter` 不隐式使用 `ItemKey`，避免显式 `null` 和容器同步语义分叉。
 
 ## 10. 测试与验证
 
@@ -283,4 +341,9 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 - Dark root、popup、submenu、header、selected 和 hover 颜色与 Token 语义一致。
 - Popup 打开、关闭、失焦、pointer leave 和 mode 切换后无旧状态残留。
 - Motion 不因点击、打开或关闭流程被临时禁用。
+- 节点 `Command` / `CommandParameter` 在 pointer 和 keyboard 提交时只执行一次，参数保持显式值。
+- `CanExecute=false` 正确影响 effective disabled，命令变化后旧 `CanExecuteChanged` 订阅被解除。
+- 同步 `ReactiveCommand` 的瞬时 `false -> true` 不得让当前叶子、共享命令叶子或 selected path 祖先暴露中间 disabled 视觉。
+- container rebind、clear、recycle、Items reset、re-template 和页面卸载后，旧节点、旧命令和 ViewModel 可被回收。
+- scoped resource host 覆盖 DynamicResource WeakReference、owner resource 优先、resource update、repeated attach 和 attach token release。
 - 文档改动运行 `git diff --check`。

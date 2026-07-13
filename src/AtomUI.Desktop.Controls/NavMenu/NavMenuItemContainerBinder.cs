@@ -20,6 +20,31 @@ internal static class NavMenuItemContainerBinder
         if (menuNode is NavMenuNode navMenuNode)
         {
             disposables.Add(navMenuNode.AttachResourceHost(resourceHost));
+            disposables.Add(BindUtils.RelayBind(
+                navMenuNode,
+                NavMenuNode.CommandProperty,
+                menuItem,
+                NavMenuItem.CommandProperty));
+            disposables.Add(BindUtils.RelayBind(
+                navMenuNode,
+                NavMenuNode.CommandParameterProperty,
+                menuItem,
+                NavMenuItem.CommandParameterProperty));
+        }
+        else
+        {
+            disposables.Add(BindUtils.RelayBind(
+                menuNode,
+                nameof(INavMenuNode.Command),
+                node => node.Command,
+                menuItem,
+                NavMenuItem.CommandProperty));
+            disposables.Add(BindUtils.RelayBind(
+                menuNode,
+                nameof(INavMenuNode.CommandParameter),
+                node => node.CommandParameter,
+                menuItem,
+                NavMenuItem.CommandParameterProperty));
         }
 
         menuItem.SetCurrentValue(NavMenuItem.HeaderProperty, menuNode);

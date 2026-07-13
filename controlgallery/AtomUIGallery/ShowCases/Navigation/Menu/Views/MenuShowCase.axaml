@@ -393,6 +393,61 @@
     </gallery:ShowCaseItem>
 
     <gallery:ShowCaseItem
+        Title="{gallery:MenuShowCaseLangResource NavMenuNodeCommandTitle}"
+        Description="{gallery:MenuShowCaseLangResource NavMenuNodeCommandDescription}"
+        BadgeText="v6.1.0"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:MenuViewModel">
+        <StackPanel Spacing="12">
+            <atom:NavMenu Mode="Inline" Width="300">
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationOne}"
+                                  Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}"
+                                  ItemKey="command-navigation-one"
+                                  Command="{Binding NavigateCommand}"
+                                  CommandParameter="navigation-one" />
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationTwo}"
+                                  Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
+                                  IsEnabled="False" />
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationThreeSubmenu}"
+                                  Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}"
+                                          ItemKey="command-option-1"
+                                          Command="{Binding NavigateCommand}"
+                                          CommandParameter="option-1" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}"
+                                          ItemKey="command-option-2"
+                                          Command="{Binding NavigateCommand}"
+                                          CommandParameter="option-2" />
+                    </atom:NavMenuNode>
+
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN2}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}"
+                                          ItemKey="command-option-3"
+                                          Command="{Binding NavigateCommand}"
+                                          CommandParameter="option-3" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN4}"
+                                          ItemKey="command-option-4"
+                                          Command="{Binding NavigateCommand}"
+                                          CommandParameter="option-4" />
+                    </atom:NavMenuNode>
+                </atom:NavMenuNode>
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationFour}"
+                                  ItemKey="command-navigation-four"
+                                  Command="{Binding NavigateCommand}"
+                                  CommandParameter="navigation-four" />
+            </atom:NavMenu>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <atom:TextBlock Text="{gallery:MenuShowCaseLangResource P2TextLastCommandKey}" />
+                <atom:TextBlock Text="{Binding LastCommandKey}" FontWeight="SemiBold" />
+            </StackPanel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
         Title="{gallery:MenuShowCaseLangResource InlineCollapsedMenuTitle}"
         Description="{gallery:MenuShowCaseLangResource InlineCollapsedMenuDescription}"
         BadgeText="v6.0.6"

@@ -7,6 +7,7 @@ namespace AtomUI.Desktop.Controls
     {
         private global::Avalonia.Controls.IResourceHost? __atomuiResourceHost;
         private int __atomuiResourceHostAttachmentCount;
+        private long __atomuiResourceHostAttachmentGeneration;
 
         public event global::System.EventHandler<global::Avalonia.Controls.ResourcesChangedEventArgs>? ResourcesChanged;
         public event global::System.EventHandler? ActualThemeVariantChanged;
@@ -42,24 +43,28 @@ namespace AtomUI.Desktop.Controls
 
         internal global::System.IDisposable AttachResourceHost(global::Avalonia.Controls.IResourceHost resourceHost)
         {
+            long attachmentGeneration;
             if (global::System.Object.ReferenceEquals(__atomuiResourceHost, resourceHost))
             {
                 __atomuiResourceHostAttachmentCount++;
+                attachmentGeneration = __atomuiResourceHostAttachmentGeneration;
             }
             else
             {
                 AtomUIDetachCurrentResourceHost();
                 __atomuiResourceHost = resourceHost;
                 __atomuiResourceHostAttachmentCount = 1;
+                attachmentGeneration = unchecked(++__atomuiResourceHostAttachmentGeneration);
                 AtomUIRegisterResourceHost(resourceHost);
             }
 
-            return new AtomUIScopedResourceHostAttachment(this, resourceHost);
+            return new AtomUIScopedResourceHostAttachment(this, resourceHost, attachmentGeneration);
         }
 
-        private void AtomUIDetachResourceHost(global::Avalonia.Controls.IResourceHost resourceHost)
+        private void AtomUIDetachResourceHost(global::Avalonia.Controls.IResourceHost resourceHost, long attachmentGeneration)
         {
-            if (!global::System.Object.ReferenceEquals(__atomuiResourceHost, resourceHost))
+            if (!global::System.Object.ReferenceEquals(__atomuiResourceHost, resourceHost) ||
+                attachmentGeneration != __atomuiResourceHostAttachmentGeneration)
             {
                 return;
             }
@@ -126,11 +131,13 @@ namespace AtomUI.Desktop.Controls
         {
             private DescriptionItem? _item;
             private global::Avalonia.Controls.IResourceHost? _resourceHost;
+            private readonly long _attachmentGeneration;
 
-            public AtomUIScopedResourceHostAttachment(DescriptionItem item, global::Avalonia.Controls.IResourceHost resourceHost)
+            public AtomUIScopedResourceHostAttachment(DescriptionItem item, global::Avalonia.Controls.IResourceHost resourceHost, long attachmentGeneration)
             {
                 _item = item;
                 _resourceHost = resourceHost;
+                _attachmentGeneration = attachmentGeneration;
             }
 
             public void Dispose()
@@ -142,9 +149,10 @@ namespace AtomUI.Desktop.Controls
 
                 var item = _item;
                 var resourceHost = _resourceHost;
+                var attachmentGeneration = _attachmentGeneration;
                 _item = null;
                 _resourceHost = null;
-                item.AtomUIDetachResourceHost(resourceHost);
+                item.AtomUIDetachResourceHost(resourceHost, attachmentGeneration);
             }
         }
     }

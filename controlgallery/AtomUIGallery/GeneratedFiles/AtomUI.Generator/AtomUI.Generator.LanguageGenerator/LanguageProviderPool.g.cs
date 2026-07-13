@@ -12185,6 +12185,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsDarkStyle] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuIsDarkStyle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsInlineCollapsed] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuIsInlineCollapsed;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuMode;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuNodeCommand] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuNodeCommand;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuNodeCommandParameter] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuNodeCommandParameter;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuSelectedItem] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuSelectedItem;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuShouldUseOverlayPopup] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuShouldUseOverlayPopup;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Menu.en_US.BasicDescription;
@@ -12211,7 +12213,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.MenuItemItemsSourceTitle] = global::AtomUIGallery.ShowCases.Menu.en_US.MenuItemItemsSourceTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuItemItemsSourceDescription] = global::AtomUIGallery.ShowCases.Menu.en_US.NavMenuItemItemsSourceDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuItemItemsSourceTitle] = global::AtomUIGallery.ShowCases.Menu.en_US.NavMenuItemItemsSourceTitle;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuNodeCommandDescription] = global::AtomUIGallery.ShowCases.Menu.en_US.NavMenuNodeCommandDescription;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuNodeCommandTitle] = global::AtomUIGallery.ShowCases.Menu.en_US.NavMenuNodeCommandTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderCopy] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderCopy;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderCustomerOverview] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderCustomerOverview;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderCut] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderCut;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderDelete] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderDelete;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderDisabled] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderDisabled;
@@ -12219,6 +12224,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderEdit] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderEdit;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderExit] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderExit;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderFile] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderFile;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderInvoiceList] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderInvoiceList;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderItemN1] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderItemN1;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderItemN2] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderItemN2;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderMenu] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderMenu;
@@ -12247,6 +12253,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderUndo] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderUndo;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextChangeMode] = global::AtomUIGallery.ShowCases.Menu.en_US.P2TextChangeMode;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextChangeStyle] = global::AtomUIGallery.ShowCases.Menu.en_US.P2TextChangeStyle;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextLastCommandKey] = global::AtomUIGallery.ShowCases.Menu.en_US.P2TextLastCommandKey;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextRightClickToShowContextFlyout] = global::AtomUIGallery.ShowCases.Menu.en_US.P2TextRightClickToShowContextFlyout;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextRightClickToShowContextMenu] = global::AtomUIGallery.ShowCases.Menu.en_US.P2TextRightClickToShowContextMenu;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TitleGeneratedByTemplate] = global::AtomUIGallery.ShowCases.Menu.en_US.P2TitleGeneratedByTemplate;
@@ -12338,6 +12345,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsDarkStyle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuIsDarkStyle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsInlineCollapsed] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuIsInlineCollapsed;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuMode;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuNodeCommand] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuNodeCommand;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuNodeCommandParameter] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuNodeCommandParameter;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuSelectedItem] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuSelectedItem;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuShouldUseOverlayPopup] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuShouldUseOverlayPopup;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Menu.zh_CN.BasicDescription;
@@ -12364,7 +12373,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.MenuItemItemsSourceTitle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.MenuItemItemsSourceTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuItemItemsSourceDescription] = global::AtomUIGallery.ShowCases.Menu.zh_CN.NavMenuItemItemsSourceDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuItemItemsSourceTitle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.NavMenuItemItemsSourceTitle;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuNodeCommandDescription] = global::AtomUIGallery.ShowCases.Menu.zh_CN.NavMenuNodeCommandDescription;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuNodeCommandTitle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.NavMenuNodeCommandTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderCopy] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderCopy;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderCustomerOverview] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderCustomerOverview;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderCut] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderCut;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderDelete] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderDelete;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderDisabled] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderDisabled;
@@ -12372,6 +12384,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderEdit] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderEdit;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderExit] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderExit;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderFile] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderFile;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderInvoiceList] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderInvoiceList;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderItemN1] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderItemN1;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderItemN2] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderItemN2;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderMenu] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderMenu;
@@ -12400,6 +12413,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderUndo] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderUndo;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextChangeMode] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2TextChangeMode;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextChangeStyle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2TextChangeStyle;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextLastCommandKey] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2TextLastCommandKey;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextRightClickToShowContextFlyout] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2TextRightClickToShowContextFlyout;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextRightClickToShowContextMenu] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2TextRightClickToShowContextMenu;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TitleGeneratedByTemplate] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2TitleGeneratedByTemplate;
@@ -12491,6 +12505,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsDarkStyle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuIsDarkStyle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsInlineCollapsed] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuIsInlineCollapsed;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuMode;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuNodeCommand] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuNodeCommand;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuNodeCommandParameter] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuNodeCommandParameter;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuSelectedItem] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuSelectedItem;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuShouldUseOverlayPopup] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuShouldUseOverlayPopup;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Menu.zh_TW.BasicDescription;
@@ -12517,7 +12533,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.MenuItemItemsSourceTitle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.MenuItemItemsSourceTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuItemItemsSourceDescription] = global::AtomUIGallery.ShowCases.Menu.zh_TW.NavMenuItemItemsSourceDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuItemItemsSourceTitle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.NavMenuItemItemsSourceTitle;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuNodeCommandDescription] = global::AtomUIGallery.ShowCases.Menu.zh_TW.NavMenuNodeCommandDescription;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.NavMenuNodeCommandTitle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.NavMenuNodeCommandTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderCopy] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderCopy;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderCustomerOverview] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderCustomerOverview;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderCut] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderCut;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderDelete] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderDelete;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderDisabled] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderDisabled;
@@ -12525,6 +12544,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderEdit] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderEdit;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderExit] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderExit;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderFile] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderFile;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderInvoiceList] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderInvoiceList;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderItemN1] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderItemN1;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderItemN2] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderItemN2;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderMenu] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderMenu;
@@ -12553,6 +12573,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderUndo] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderUndo;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextChangeMode] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2TextChangeMode;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextChangeStyle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2TextChangeStyle;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextLastCommandKey] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2TextLastCommandKey;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextRightClickToShowContextFlyout] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2TextRightClickToShowContextFlyout;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TextRightClickToShowContextMenu] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2TextRightClickToShowContextMenu;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2TitleGeneratedByTemplate] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2TitleGeneratedByTemplate;

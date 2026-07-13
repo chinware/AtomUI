@@ -40,6 +40,8 @@ internal partial class en_US
     public const string VerticalNavMenuDescription = "Submenus open as pop-ups.";
     public const string InlineMenuTitle = "Inline menu";
     public const string InlineMenuDescription = "Vertical menu with inline submenus.";
+    public const string NavMenuNodeCommandTitle = "NavMenuNode command";
+    public const string NavMenuNodeCommandDescription = "Each navigation node invokes the ViewModel command with its explicit business key.";
     public const string InlineCollapsedMenuTitle = "Inline collapsed menu";
     public const string InlineCollapsedMenuDescription = "Inline menus can be collapsed and expanded.";
     public const string TopNavigationTitle = "Top Navigation";
@@ -88,6 +90,9 @@ internal partial class en_US
     public const string P2HeaderOptionN7 = "Option 7";
     public const string P2HeaderOptionN8 = "Option 8";
     public const string P2HeaderNavigationFour = "Navigation Four";
+    public const string P2HeaderCustomerOverview = "Customer Overview";
+    public const string P2HeaderInvoiceList = "Invoice List";
+    public const string P2TextLastCommandKey = "Last executed key:";
     public const string P2TextChangeMode = "Change Mode";
     public const string P2TextChangeStyle = "Change Style";
     public const string ApiColumnProperty = "Property";
@@ -104,6 +109,8 @@ internal partial class en_US
     public const string ApiPropertyContextMenuItemsSource = "Data source used to generate context menu items.";
     public const string ApiPropertyMenuFlyoutItemsSource = "Data source used to generate menu flyout items.";
     public const string ApiPropertyNavMenuMode = "Controls whether NavMenu is inline, vertical, or horizontal.";
+    public const string ApiPropertyNavMenuNodeCommand = "Command invoked when the navigation node is activated by pointer or keyboard.";
+    public const string ApiPropertyNavMenuNodeCommandParameter = "Explicit business value passed to Command; defaults to null and does not fall back to ItemKey.";
     public const string ApiPropertyNavMenuIsInlineCollapsed = "Collapses inline NavMenu into a compact popup navigation rail.";
     public const string ApiPropertyNavMenuInlineCollapsedWidth = "Width used when inline NavMenu is collapsed.";
     public const string ApiPropertyNavMenuIsDarkStyle = "Applies the dark navigation menu style.";

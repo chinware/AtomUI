@@ -119,6 +119,7 @@ Attribute 默认由 `AtomUI.Generator` 通过 post-initialization 注入为 `int
 
 - `AttachResourceHost(IResourceHost resourceHost)` 返回 `IDisposable`。
 - 同一个对象重复 attach 到同一个 host 时使用 attachment count。
+- attachment token 必须携带当前 host generation；host 切换时 generation 递增，使 `A -> B -> A` 场景中的旧 A token 永远不能释放新一轮 A attachment。
 - attach 到新 host 前先释放旧 host。
 - subscribe owner `ResourcesChanged`。
 - 当 owner 实现 `IThemeVariantHost` 时 subscribe `ActualThemeVariantChanged`。
@@ -191,6 +192,7 @@ src/AtomUI.Generator/ResourceHost/
 - resource update：owner 或 application resource 更新后目标属性能重新发布。
 - detach release：remove/reset/container clear/template reapply/detach 后旧 owner 不再被订阅。
 - repeated attach：同一 item 被同一 owner 重复 attach 时，attachment count 能正确释放。
+- host reentry：`A -> B -> A` 后释放第一轮 A token 不影响当前 A attachment。
 
 Generator 本身至少覆盖以下测试：
 

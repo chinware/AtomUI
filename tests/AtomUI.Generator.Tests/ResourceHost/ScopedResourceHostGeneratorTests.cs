@@ -39,6 +39,8 @@ public class ScopedResourceHostGeneratorTests
 
         generatedSource.ShouldContain("public partial class DemoItem : global::Avalonia.Controls.IResourceHost, global::Avalonia.Styling.IThemeVariantHost");
         generatedSource.ShouldContain("internal global::System.IDisposable AttachResourceHost(global::Avalonia.Controls.IResourceHost resourceHost)");
+        generatedSource.ShouldContain("private long __atomuiResourceHostAttachmentGeneration;");
+        generatedSource.ShouldContain("AtomUIDetachResourceHost(resourceHost, attachmentGeneration)");
         generatedSource.ShouldContain("global::Avalonia.Controls.ResourceNodeExtensions.TryFindResource(__atomuiResourceHost, key, theme, out value)");
         generatedSource.ShouldContain("global::Avalonia.Application.Current?.TryGetResource(key, theme, out value) == true");
     }
