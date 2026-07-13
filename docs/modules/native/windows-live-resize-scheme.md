@@ -1,114 +1,191 @@
-# Windows live resize 与窗口装饰方案
+# Windows live resize 与窗口装饰架构
 
 ## 结论
 
-AtomUI 在 Windows 上采用单一窗口几何所有者：
+AtomUI 在 Windows 上坚持两个单一所有者：
 
-| 系统 | 合成模式 | 窗口装饰 | resize 几何 |
+- Avalonia Win32 独占窗口非客户区、resize hit-test、CSD 和窗口几何。
+- Avalonia 启动选项独占渲染与合成后端选择，Window 控件不感知后端细节。
+
+当前平台策略如下：
+
+| 系统 | 渲染模式 | 合成模式 | 窗口装饰 |
 | --- | --- | --- | --- |
-| Windows 10 | `RedirectionSurface` | Avalonia CSD | Avalonia Win32 + DWM redirection bitmap |
-| Windows 11+ | `WinUIComposition`，失败时依次回退 | Avalonia CSD | Avalonia Win32 + Windows compositor |
+| Windows 10 | `AngleEgl`，失败时 `Software` | `RedirectionSurface` | Avalonia CSD |
+| Windows 11+ | `AngleEgl`，失败时 `Software` | `WinUIComposition`、`DirectComposition`、`RedirectionSurface` | Avalonia CSD |
 
-AtomUI 不再拦截 `WM_NCCALCSIZE`，不再手动扩展 DWM frame，也不再通过
+Windows 10 使用 `RedirectionSurface` 是经过实机快速拖边验证的平台策略，不是 Window 控件内的
+消息补丁。AtomUI 不处理 `WM_NCCALCSIZE`，不返回 resize hit-test，不扩展 DWM frame，也不通过
 `SWP_FRAMECHANGED` 强制重算非客户区。
 
-## 用户可见问题
+## Avalonia 12.0.5 到 12.1.0 的事实
 
-升级 Avalonia 12.1.0 后，Windows 10 上快速拖动主窗口左边缘或上边缘时，会出现：
+以下结论来自 Avalonia 仓库 `12.0.5` 与 `12.1.0` 标签的源码差异。
 
-- 对向的右边缘或下边缘剧烈抖动；
-- 黑色边框短暂出现；
-- 系统最小化、最大化和关闭按钮在 AtomUI 标题栏上闪现。
+### WinUI surface 的尺寸来源发生变化
 
-问题在慢速拖动时不一定明显，必须使用连续快速的 live resize 才能稳定观察。
+`WinUiCompositedWindowSurface` 在 12.0.5 中从原生窗口信息读取尺寸和缩放：
 
-## 根因
+```csharp
+var size = _window.WindowInfo.Size;
+var scale = _window.WindowInfo.Scaling;
+```
 
-这是两个独立时序问题叠加后的结果。
+12.1.0 改为从当前 render scene 读取：
 
-### 1. Windows 10 的 WinUIComposition 提交落后于 HWND
+```csharp
+var size = sceneInfo.Size;
+var scale = sceneInfo.Scaling;
+```
 
-Avalonia 12.1 调整了 `WinUiCompositorConnection` 的消息循环。Windows 10 上
-`RequestCommitAsync` 的完成回调发生在 `DispatchMessage` 内部，render tick 与 live-resize
-模态消息循环可能错开。此时原生窗口几何已经更新，但合成树仍提交上一帧的 scene size，
-因此对向边缘显示旧表面并来回跳动。
+12.1.0 还会根据 scene transparency 创建不同 alpha mode 的 composition drawing surface。
+这使 WinUI surface 的尺寸提交更直接地依赖 composition scene 与 render tick 的时序。
 
-实机采样中，`GetWindowRect`、client rect 和 DWM extended frame bounds 的对向边界始终固定，
-而 WinUIComposition 的右侧像素仍交替变化，证明抖动发生在合成提交层，而不是 Win32 几何层。
+### Windows 10 和 Windows 11 的回调行为本来就不同
 
-Windows 10 使用 `RedirectionSurface` 后，DWM redirection bitmap 与 HWND resize 由同一路径管理，
-对向边缘不再错帧。
+`WinUiCompositorConnection` 明确记录：`RequestCommitAsync` 的完成回调在 Windows 10 的
+`DispatchMessage()` 中触发，在 Windows 11 的 `GetMessage()` 中触发。该文件在 12.0.5 与
+12.1.0 之间没有变化，因此不能把问题描述为“12.1 修改了消息循环”。更准确的结论是：
 
-### 2. AtomUI 旧 chrome 与 Avalonia 12.1 重复管理非客户区
+1. 操作系统原有的回调差异一直存在；
+2. 12.1.0 改变了 WinUI drawing surface 对 scene size 的依赖；
+3. 在测试机的 Windows 10 live resize 中，两者组合后出现了可见错帧；
+4. `RedirectionSurface` 实机验证可以消除外边缘错帧。
 
-旧实现通过自定义 WndProc hook 拦截 `WM_NCCALCSIZE`，手动返回 resize hit-test，并调用
-`DwmExtendFrameIntoClientArea` 与 `SetWindowPos(SWP_FRAMECHANGED)`。Avalonia 12.1 又恢复了
-Windows 10 extended-client 模式下的 `WS_CAPTION` 和边框处理，两套实现会在快速 resize 时争夺
-非客户区所有权，表现为黑边和系统标题栏按钮闪现。
+### Avalonia 的非客户区所有权没有迁移给 AtomUI
 
-最终实现删除 AtomUI 的几何 hook，让 Avalonia CSD 独占窗口装饰与 resize hit-test。
+`WindowImpl.AppWndProc.cs` 中 `WM_NCCALCSIZE` 的核心处理在两个标签间没有本质变化。
+12.1.0 在 managed decorations 方向新增了请求变化通知和 shadow extents 同步，但没有要求
+控件库重新实现 Win32 chrome。
+
+开发过程中曾尝试增加 AtomUI WndProc、DWM frame 和 non-client refresh。这是中间实验，
+不是 Avalonia 12.1 迁移要求。它与 Avalonia CSD 形成重复所有权，会引入黑边、原生标题栏按钮
+闪现和新的 resize 回归，最终实现必须删除这条路径。
+
+## 两类抖动必须分开诊断
+
+### 窗口外边缘错帧
+
+现象是拖动左边缘或上边缘时，对向的右边缘或下边缘来回跳动。实机验证表明，Windows 10
+选择 `RedirectionSurface` 后外边缘稳定，因此该问题由平台合成模式策略解决。
+
+### 窗口内容区域抖动
+
+测试机 Intel HD Graphics 630 使用旧驱动 `31.0.101.2111` 时，在 `AngleEgl +
+RedirectionSurface` 下仍有内容区抖动。升级 Intel 官方驱动到 `31.0.101.2141` 后，用户实测
+内容区域不再抖动。
+
+这是运行环境结论，不应转化为 AtomUI 的 GPU 厂商判断、驱动版本分支、UI 线程渲染或软件渲染
+默认值。遇到“外框稳定但内容抖动”时，应先记录 GPU、驱动、Windows build 和 Avalonia 日志，
+再用最新 OEM/芯片厂商驱动复测。
 
 ## 实现边界
 
-### 合成模式
+### 启动配置
 
-`AppBuilderExtensions.WithWin32CompositionOptions()` 根据系统版本设置 Avalonia Win32 options：
-
-```csharp
-return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)
-    ? ["WinUIComposition", "DirectComposition", "RedirectionSurface"]
-    : ["RedirectionSurface"];
-```
-
-`AtomUI.Core` 不直接引用 `Avalonia.Win32`，继续通过现有的可选平台反射边界配置 options。
-
-### 窗口装饰
-
-Windows 固定使用 AtomUI 的 CSD 模板状态：
+`WindowsAppBuilderDefaults` 强类型创建 `Win32PlatformOptions`：
 
 ```csharp
-else if (OperatingSystem.IsWindows())
-{
-    IsCsdEnabled = true;
-}
+CompositionMode = isWindows11OrLater
+    ?
+    [
+        Win32CompositionMode.WinUIComposition,
+        Win32CompositionMode.DirectComposition,
+        Win32CompositionMode.RedirectionSurface
+    ]
+    : [Win32CompositionMode.RedirectionSurface];
 ```
 
-`WindowTheme.axaml` 的默认值保持：
+这里直接引用 Avalonia 的公开类型，不使用 `Type.GetType`、`Enum.Parse`、反射调用泛型
+`AppBuilder.With<T>()` 或字符串形式的枚举名。这样 API 变化会在编译期暴露，并且 NativeAOT
+不依赖动态保留规则。
+
+### Window 与 CSD
+
+Windows 固定 `IsCsdEnabled=true`，主题保持：
 
 ```xml
 <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
+<Setter Property="WindowDecorations" Value="Full" />
 ```
 
-Windows 只覆盖 `TransparencyLevelHint=None`，不再关闭 extend-client-area。
+`WindowDrawnDecorations`、resize grips、非客户区和窗口状态切换全部由 Avalonia 管理。
 
-### 保留的 Windows 消息 hook
+### 标题栏按钮
 
-`CaptionButtonGroup` 仍处理 `WM_NCHITTEST` 并对最大化按钮返回 `HTMAXBUTTON`，用于 Windows 11
-Snap Layout。该 hook 只描述最大化按钮区域，不修改客户区、窗口尺寸或 resize 边缘。
+Avalonia 12.1 提供 `WindowDecorationProperties.ElementRole`。AtomUI 的 Windows 标题栏按钮分别
+声明 `MinimizeButton`、`MaximizeButton`、`CloseButton`、`FullScreenButton` 和
+`DecorationsElement`，由 Avalonia Win32 把角色转换为正确的非客户区命中结果。
+
+AtomUI 不再注册自定义 WndProc 来返回 `HTMAXBUTTON`，也不通过反射修改 `IsPointerOver`。
+
+### AtomUI.Native
+
+`AtomUI.Native` 继续承载 Avalonia 公共 API 无法表达的平台能力，例如 Windows 整窗鼠标穿透、
+macOS standard window buttons 和 Linux input region。Windows live resize、CSD 所有权和合成
+后端选择不下沉为 Native hack。
 
 ## 禁止重新引入
 
-- 不要在 AtomUI 中重新处理 `WM_NCCALCSIZE`。
-- 不要手动返回 `HTLEFT/HTTOP/...`；resize hit-test 归 Avalonia。
-- 不要调用 `DwmExtendFrameIntoClientArea(-1)` 修补 CSD 阴影。
-- 不要通过 `SWP_FRAMECHANGED` 循环触发非客户区重算。
-- 不要在 Windows 10 恢复 `WinUIComposition`，除非上游修复后完成相同的快速拖边实机验证。
+- 不要在 AtomUI 中处理 `WM_NCCALCSIZE`。
+- 不要手动返回 `HTLEFT/HTTOP/HTRIGHT/HTBOTTOM` 等 resize hit-test。
+- 不要调用 `DwmExtendFrameIntoClientArea` 修补 CSD 阴影。
+- 不要用 `SWP_FRAMECHANGED`、延时、重试或强制刷新掩盖时序问题。
+- 不要默认开启 `ShouldRenderOnUIThread`、`Software` 或 `Wgl` 来规避单机驱动问题。
+- 不要用 WndProc hook 实现 Avalonia 12.1 已公开的 caption element roles。
+- 不要在 Windows 10 恢复 `WinUIComposition`，除非上游变化后完成同等实机矩阵。
 
-## 验证
+## 验证矩阵
 
-回归验证至少包含：
+### 自动验证
 
-1. Windows 10 快速来回拖动左边缘，右边缘保持固定。
-2. Windows 10 快速来回拖动上边缘，下边缘保持固定。
-3. resize 期间没有黑色外框和系统标题栏按钮闪现。
-4. Windows 11 最大化按钮仍可触发 Snap Layout。
-5. 最大化、还原、全屏和退出全屏后窗口装饰正常。
+1. Windows 10 选项只包含 `RedirectionSurface`。
+2. Windows 11+ 保持 WinUI、DirectComposition、RedirectionSurface 回退顺序。
+3. 渲染模式保持 `AngleEgl`、`Software`，且 `ShouldRenderOnUIThread=false`。
+4. Windows caption buttons 使用公开 `ElementRole`，不存在自定义 WndProc 注册。
+5. Window 主题保持 Avalonia CSD，源码不存在旧 Windows chrome manager。
+6. Desktop 测试、Browser 构建和 NativeAOT publish 不依赖运行时反射发现 Win32 options。
 
-相关源码：
+### Windows 10 实机验证
+
+1. 快速来回拖动左边缘，右边缘保持固定，内容区域不回跳。
+2. 快速来回拖动上边缘，下边缘保持固定，内容区域不回跳。
+3. resize 期间没有黑框、透明条或原生标题栏按钮闪现。
+4. 失去和恢复焦点时不出现额外黑边。
+5. 最大化、还原、全屏和退出全屏后装饰正常。
+6. 最小化、最大化和关闭按钮点击、hover 与按下状态正常。
+
+### Windows 11 实机验证
+
+1. 最大化按钮 Snap Layout 正常。
+2. 透明 Popup、backdrop 和高刷新率路径没有回归。
+3. WinUIComposition 不可用时能按顺序回退。
+
+## 上游回访条件
+
+只有同时满足以下条件，才评估恢复 Windows 10 的 WinUIComposition：
+
+1. 上游改动明确覆盖 Windows 10 live resize 的 scene/surface 同步；
+2. 左边缘和上边缘快速拖动通过实机验证；
+3. Intel、AMD 至少各一套驱动环境通过；
+4. 透明 Popup 和窗口装饰回归通过；
+5. 删除平台分支后代码和测试确实更简单。
+
+## 参考源码
+
+AtomUI：
 
 - `src/AtomUI.Core/AppBuilderExtensions.cs`
+- `src/AtomUI.Core/WindowsAppBuilderDefaults.cs`
 - `src/AtomUI.Desktop.Controls/Window/Window.cs`
-- `src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs`
-- `tests/AtomUI.Desktop.Controls.Tests/Window/WindowResizeArtifactTests.cs`
+- `src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml`
+- `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml`
+
+Avalonia `12.0.5` / `12.1.0`：
+
+- `src/Windows/Avalonia.Win32/WinRT/Composition/WinUiCompositedWindowSurface.cs`
+- `src/Windows/Avalonia.Win32/WinRT/Composition/WinUiCompositorConnection.cs`
+- `src/Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs`
+- `src/Windows/Avalonia.Win32/WindowImpl.CustomCaptionProc.cs`
+- `src/Avalonia.Controls/Chrome/WindowDecorationProperties.cs`

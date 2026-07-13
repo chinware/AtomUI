@@ -92,8 +92,9 @@ ExtendClientAreaToDecorationsHint = true
 Avalonia Win32 独占 `WM_NCCALCSIZE`、resize hit-test 和 DWM non-client frame。AtomUI 不修改
 客户区或窗口几何。
 
-AtomUI 唯一保留的窗口消息接入位于 `CaptionButtonGroup`：对最大化按钮命中区域返回
-`HTMAXBUTTON`，用于 Windows 11 Snap Layout。该 hook 不处理 resize 边缘。
+AtomUI 不注册窗口消息 hook。标题栏按钮通过 Avalonia 12.1 的
+`WindowDecorationProperties.ElementRole` 声明角色，由 Avalonia Win32 完成非客户区命中测试
+和 Windows 11 Snap Layout 集成。
 
 ---
 
@@ -223,22 +224,23 @@ Wayland input region 在 12.1 没有公开 API；AtomUI 当前越过 proxy 的�
 | WindowDrawnDecorations | 创建 | 创建 |
 | 合成模式 | WinUIComposition，带回退 | RedirectionSurface |
 | 非客户区与 resize | Avalonia Win32 | Avalonia Win32 |
-| AtomUI WndProc | 仅 `HTMAXBUTTON` | 仅 `HTMAXBUTTON` |
+| AtomUI WndProc | 无 | 无 |
 
 ### 为什么 Windows 10 使用 RedirectionSurface
 
-Avalonia 12.1 的 WinUIComposition 在 Windows 10 上可能让合成表面提交落后于 live-resize
-消息。拖动左边缘或上边缘时，原生窗口的对向边界已经稳定，但上一帧 scene size 仍被提交，
-表现为右边缘或下边缘剧烈抖动。
+Avalonia 12.1 将 WinUI drawing surface 的尺寸来源从原生 `WindowInfo.Size` 改为
+`RenderTargetSceneInfo.Size`。Windows 10 与 Windows 11 的 `RequestCommitAsync` 完成回调位置
+原本就不同；两者组合后，在测试机的 Windows 10 live resize 中会出现 scene 与窗口尺寸错帧，
+表现为拖动左边缘或上边缘时，右边缘或下边缘剧烈抖动。
 
 `RedirectionSurface` 让 DWM redirection bitmap 与 HWND resize 走同一条系统路径，避免该错帧。
 Windows 11 保持 WinUIComposition 优先，以保留高刷新率、透明和 backdrop 能力。
 
 ### 为什么必须使用 Avalonia CSD
 
-旧 AtomUI Windows chrome 同时处理 `WM_NCCALCSIZE`、resize hit-test、DWM frame 和
-`SWP_FRAMECHANGED`。Avalonia 12.1 也会管理 extended-client 模式下的 `WS_CAPTION` 与边框，
-两套实现争夺非客户区所有权时，会出现黑边和系统标题栏按钮闪现。
+问题排查期间曾尝试让 AtomUI Windows chrome 同时处理 `WM_NCCALCSIZE`、resize hit-test、
+DWM frame 和 `SWP_FRAMECHANGED`。这与 Avalonia CSD 形成重复所有权，会出现黑边和系统
+标题栏按钮闪现；该实验路径不是 Avalonia 12.1 的迁移要求，已完整删除。
 
 Windows 现在固定 `IsCsdEnabled=true`，并保持
 `ExtendClientAreaToDecorationsHint=true`。AtomUI 不再挂载 Windows chrome manager，
@@ -246,19 +248,19 @@ Windows 现在固定 `IsCsdEnabled=true`，并保持
 
 ### 合成模式配置
 
-`AtomUI.Core` 不直接引用可选的 `Avalonia.Win32` 程序集。现有平台反射边界只负责创建
-`Win32PlatformOptions`，策略集中在 `GetWin32CompositionModeNames()`：
+`AtomUI.Core` 直接使用 Avalonia 公开的 `Win32PlatformOptions`。策略集中在内部
+`WindowsAppBuilderDefaults`，不使用反射、字符串枚举名或动态泛型调用：
 
 ```csharp
-return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)
-    ? ["WinUIComposition", "DirectComposition", "RedirectionSurface"]
-    : ["RedirectionSurface"];
+CompositionMode = isWindows11OrLater
+    ? [WinUIComposition, DirectComposition, RedirectionSurface]
+    : [RedirectionSurface];
 ```
 
 ### Snap Layout
 
-`CaptionButtonGroup` 继续对最大化按钮返回 `HTMAXBUTTON`。这只描述按钮命中区域，
-不处理 `WM_NCCALCSIZE` 或 resize 边缘，因此不破坏单一几何所有权。
+Windows 标题栏按钮在 AXAML 中声明 `WindowDecorationProperties.ElementRole`。最大化按钮的
+`MaximizeButton` 角色由 Avalonia Win32 转换为 `HTMAXBUTTON`，AtomUI 不接触 WndProc。
 
 ### 维护约束
 
@@ -348,7 +350,7 @@ return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)
 | --- | --- | --- | --- | --- |
 | 1 | Win10 使用 WinUIComposition | Win10 | 对向边缘在 live resize 时抖动 | 使用 RedirectionSurface |
 | 2 | AtomUI 再处理 WM_NCCALCSIZE | Windows | 黑边、原生标题栏按钮闪现 | 非客户区完全交给 Avalonia CSD |
-| 3 | 删除 HTMAXBUTTON hook | Win11 | Snap Layout 不再出现 | 只保留最大化按钮命中测试 |
+| 3 | 自定义 HTMAXBUTTON hook | Win11 | 输入状态重复、维护两套命中测试 | 使用 Avalonia ElementRole |
 | 4 | macOS 写 WindowDrawnDecorations 主题 | macOS | 不生效 | 使用非 CSD 模板和 NSWindow 原生按钮 |
 | 5 | X11 不启用 drawn decorations | X11 | 原生标题栏仍存在 | 配置 EnableDrawnDecorations |
 | 6 | X11 阴影不做 SHAPE 裁剪 | X11 | 阴影区域拦截鼠标 | 更新 input region |
@@ -367,7 +369,9 @@ return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)
 |------|------|
 | `src/AtomUI.Desktop.Controls/Window/Window.cs` | 核心窗口类：CSD 状态与跨平台 chrome manager 生命周期 |
 | `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml` | 双模板 ControlTheme：CSD / 非 CSD 模板切换 |
-| `src/AtomUI.Core/AppBuilderExtensions.cs` | Windows 10/11 合成模式策略 |
+| `src/AtomUI.Core/AppBuilderExtensions.cs` | AtomUI 平台默认配置公开入口 |
+| `src/AtomUI.Core/WindowsAppBuilderDefaults.cs` | 强类型 Windows 10/11 合成模式策略 |
+| `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml` | 公开 caption element roles |
 
 ### Avalonia 12 参考源码
 
@@ -377,7 +381,7 @@ return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)
 | `Avalonia.Win32/WindowImpl.AppWndProc.cs` | WM_NCCALCSIZE / WM_SIZE 处理 |
 | `Avalonia.Win32/WindowImpl.CustomCaptionProc.cs` | WM_NCHITTEST、HitTestNCA |
 | `Avalonia.Win32/WindowImpl.WndProc.cs` | WndProc 分发链 |
-| `Avalonia.Controls/Platform/Win32Properties.cs` | `AddWndProcHookCallback()` API |
+| `Avalonia.Controls/Chrome/WindowDecorationProperties.cs` | 跨平台 caption element roles |
 | `Avalonia.Controls/TopLevelHost.Decorations.cs` | WindowDrawnDecorations 创建、ResizeGripLayer |
 | `Avalonia.Controls/Window.cs` | `ComputeDecorationParts()`、`WindowDecorationMargin` |
 | `Avalonia.X11/X11Window.cs` | `EnableDrawnDecorations` gating、`RequestedDrawnDecorations` 四件套 |

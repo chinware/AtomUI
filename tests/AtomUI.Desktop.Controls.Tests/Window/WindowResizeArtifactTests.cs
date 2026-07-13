@@ -533,9 +533,21 @@ public class WindowResizeArtifactTests
         var windowSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
         var nativeSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
         var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Windows/WindowUtils.Interop.cs"));
+        var captionSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
         var document = XDocument.Load(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
+        var captionDocument = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"));
         XNamespace av = "https://github.com/avaloniaui";
+        XNamespace atom = "https://atomui.net";
+
+        string? GetCaptionButtonRole(string name)
+        {
+            return (string?)captionDocument.Descendants(atom + "WindowsCaptionButton")
+                                           .Single(element => (string?)element.Attribute("Name") == name)
+                                           .Attribute("WindowDecorationProperties.ElementRole");
+        }
 
         managerSource.ShouldNotContain("WindowsWindowChromeManager.Attach(window)");
         File.Exists(Path.Combine(
@@ -547,8 +559,15 @@ public class WindowResizeArtifactTests
         nativeSource.ShouldNotContain("WinWndProcHook");
         nativeSource.ShouldNotContain("ForceWinNonClientFrameChanged");
         interopSource.ShouldNotContain("WM_NCCALCSIZE");
-        interopSource.ShouldContain("WM_NCHITTEST");
-        interopSource.ShouldContain("HTMAXBUTTON");
+        interopSource.ShouldNotContain("WM_NCHITTEST");
+        interopSource.ShouldNotContain("HTMAXBUTTON");
+        captionSource.ShouldNotContain("Win32Properties.AddWndProcHookCallback");
+        captionSource.ShouldNotContain("EnableWindowsSnapLayout");
+        GetCaptionButtonRole("PART_FullScreenButton").ShouldBe("FullScreenButton");
+        GetCaptionButtonRole("PART_PinButton").ShouldBe("DecorationsElement");
+        GetCaptionButtonRole("PART_MinimizeButton").ShouldBe("MinimizeButton");
+        GetCaptionButtonRole("PART_MaximizeButton").ShouldBe("MaximizeButton");
+        GetCaptionButtonRole("PART_CloseButton").ShouldBe("CloseButton");
         document.Descendants(av + "Setter").ShouldContain(setter =>
             (string?)setter.Attribute("Property") == "ExtendClientAreaToDecorationsHint" &&
             (string?)setter.Attribute("Value") == "True");
@@ -560,31 +579,31 @@ public class WindowResizeArtifactTests
     [Fact]
     public void AtomUI_Defaults_Use_Redirection_Surface_For_Windows_10_Live_Resize()
     {
-        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Core/AppBuilderExtensions.cs"));
+        var options = global::AtomUI.WindowsAppBuilderDefaults.CreateOptions(isWindows11OrLater: false);
 
-        source.ShouldContain("WithWin32CompositionOptions");
-        source.ShouldContain("if (OperatingSystem.IsWindows())");
-        source.ShouldContain("[SupportedOSPlatform(\"windows\")]");
-        source.ShouldContain("Avalonia.Win32PlatformOptions, Avalonia.Win32");
-        source.ShouldContain("Avalonia.Win32RenderingMode, Avalonia.Win32");
-        source.ShouldContain("Avalonia.Win32CompositionMode, Avalonia.Win32");
-        source.ShouldContain("AngleEgl");
-        source.ShouldContain("Software");
-        source.ShouldContain("WinUIComposition");
-        source.ShouldContain("DirectComposition");
-        source.ShouldContain("RedirectionSurface");
-        source.ShouldNotContain("LowLatencyDxgiSwapChain");
-        source.ShouldContain("OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)");
-        source.ShouldContain("? [\"WinUIComposition\", \"DirectComposition\", \"RedirectionSurface\"]");
-        source.ShouldContain(": [\"RedirectionSurface\"]");
+        options.RenderingMode.ShouldBe(
+        [
+            Win32RenderingMode.AngleEgl,
+            Win32RenderingMode.Software
+        ]);
+        options.CompositionMode.ShouldBe([Win32CompositionMode.RedirectionSurface]);
+        options.CompositionMode.ShouldNotContain(Win32CompositionMode.LowLatencyDxgiSwapChain);
+        options.ShouldRenderOnUIThread.ShouldBeFalse();
     }
 
     [Fact]
-    public void AtomUI_Core_Does_Not_Directly_Reference_Avalonia_Win32()
+    public void AtomUI_Defaults_Preserve_Compositor_Fallbacks_On_Windows_11()
     {
-        var projectFile = File.ReadAllText(GetRepoFile("src/AtomUI.Core/AtomUI.Core.csproj"));
+        var options = global::AtomUI.WindowsAppBuilderDefaults.CreateOptions(isWindows11OrLater: true);
 
-        projectFile.ShouldNotContain("Avalonia.Win32");
+        options.CompositionMode.ShouldBe(
+        [
+            Win32CompositionMode.WinUIComposition,
+            Win32CompositionMode.DirectComposition,
+            Win32CompositionMode.RedirectionSurface
+        ]);
+        options.CompositionMode.ShouldNotContain(Win32CompositionMode.LowLatencyDxgiSwapChain);
+        options.ShouldRenderOnUIThread.ShouldBeFalse();
     }
 
     private static string GetRepoFile(string relativePath)
