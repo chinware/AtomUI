@@ -80,12 +80,17 @@ Public API / inherited command / item source / user input
   -> Gallery 可观察行为
 ```
 
+`Collapse` 继续使用 Avalonia `SelectingItemsControl` 的 selection model 作为唯一展开状态 owner，`CollapseItem.IsSelected` 是该状态投影到容器后的公开绑定入口。控件不得维护 active-key 集合、当前展开项缓存或另一套展开状态。
+
 状态维护规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- selection/checked/active、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- 普通模式使用 `Multiple | Toggle`：每个 item 可独立展开和收起。
+- 手风琴模式使用 `Single | Toggle`：打开目标项时关闭旧项，点击当前项时允许全部收起。
+- 普通模式切换到手风琴模式时，按视觉索引保留第一个已展开项，与 Ant Design `activeKey[0]` 语义一致。
+- Header、Icon、keyboard 和 pointer 输入最终进入同一个 selection 操作，不在输入处理器中直接维护展开状态。
+- Disabled 或不可交互状态优先屏蔽 pointer、keyboard 和 motion，不改变 selection。
+- 内容可见性、箭头方向和动效目标只从 `IsSelected` 派生；模板节点之间不得双向同步展开状态。
+- 模板重套用、items reset/replace/clear 和模式切换后必须保持 selection model、容器与内容视觉一致。
 
 ## 5. 视觉与主题模型
 
@@ -98,6 +103,15 @@ Collapse 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `CollapseThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 Collapse 使用 `CollapseToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
+
+Collapse 的分隔线采用结构化所有权：
+
+- `PART_Frame` 绘制外框、圆角并裁剪整体内容。
+- 非末 `CollapseItem` 的 item shell 固定绘制底部分隔线。
+- 默认 bordered 模式下，`PART_ContentFrame` 固定绘制内容顶部边线。
+- Borderless 模式保留 item 间分隔线，但不绘制外框和内容顶部边线。
+- Ghost 模式不绘制外框、item 分隔线和内容顶部边线。
+- 分隔线厚度不得依赖 `IsSelected`、动效进行状态或动效完成时机。
 
 主题维护规则：
 
@@ -138,13 +152,17 @@ Collapse 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 
 ### 8.1 选择与当前项模型
 
-Collapse 的当前项状态必须由单一 owner 推导。public 选择属性、集合项容器和伪类之间只能做单向同步，集合替换、清空和模板重套用时必须回放当前状态。
+Collapse 的展开状态由 Avalonia selection model 单独拥有。普通模式采用可切换多选，手风琴模式采用可切换单选；`CollapseItem.IsSelected`、内容可见性和箭头方向都是 selection 的下游投影。模式切换、集合替换、清空和模板重套用不能创建第二个状态 owner。
 
 ### 8.2 动效模型
 
-Collapse 的动效只表达状态变化反馈，不应改变 public API 语义。初始加载、禁用态和卸载路径应能抑制或取消动效，避免保留旧控件实例。
+Collapse 的动效只处理 content 的布局展开、裁剪、透明度和最终可见性，不改变 selection 或边框语义。初始加载、禁用态、快速反向切换、template reapply 和卸载路径必须取消旧动效并收敛到最新 `IsSelected`。
 
-### 8.3 视觉选项模型
+### 8.3 分隔线模型
+
+外框、item 底部分隔线和内容顶部边线分别由固定视觉节点拥有。最后一项只去除 item 底线；内容收起时顶部边线随 content 一起被裁剪和隐藏。父控件不得订阅动效状态后重算 header/content 边框，也不得为边框厚度添加 transition。
+
+### 8.4 视觉选项模型
 
 Collapse 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
 

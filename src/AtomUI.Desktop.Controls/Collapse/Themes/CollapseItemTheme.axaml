@@ -8,12 +8,14 @@
         <Setter Property="Template">
             
             <ControlTemplate>
-                <DockPanel Name="PART_MainLayout"
-                           LastChildFill="True">
-                    <atom:PixelAlignedBorder Name="PART_HeaderDecorator"
-                                             DockPanel.Dock="Top"
-                                             BorderThickness="{TemplateBinding HeaderBorderThickness}"
-                                             Padding="{TemplateBinding EffectiveHeaderPadding}">
+                <atom:PixelAlignedBorder
+                    BorderThickness="{TemplateBinding ItemBorderThickness}"
+                    BorderBrush="{atom:SharedTokenResource ColorBorder}">
+                    <DockPanel Name="PART_MainLayout"
+                               LastChildFill="True">
+                        <atom:PixelAlignedBorder Name="PART_HeaderDecorator"
+                                                 DockPanel.Dock="Top"
+                                                 Padding="{TemplateBinding EffectiveHeaderPadding}">
                         <Grid ColumnDefinitions="Auto, *, Auto, Auto">
                             <atom:IconButton
                                 Name="PART_ExpandButton"
@@ -43,19 +45,20 @@
                                 ContentTemplate="{TemplateBinding AddOnContentTemplate}"
                                 Grid.Column="2" />
                         </Grid>
-                    </atom:PixelAlignedBorder>
-                    <atom:LayoutAwareMotionActor
-                        Name="PART_ContentMotionActor"
-                        ClipToBounds="True">
-                        <atom:PixelAlignedBorder Name="PART_ContentFrame"
-                                                 BorderThickness="{TemplateBinding ContentBorderThickness}"
-                                                 Padding="{TemplateBinding EffectiveContentPadding}">
-                            <ContentPresenter Name="PART_ContentPresenter"
-                                              Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}"/>
                         </atom:PixelAlignedBorder>
-                    </atom:LayoutAwareMotionActor>
-                </DockPanel>
+                        <atom:LayoutAwareMotionActor
+                            Name="PART_ContentMotionActor"
+                            ClipToBounds="True">
+                            <atom:PixelAlignedBorder Name="PART_ContentFrame"
+                                                     BorderThickness="{TemplateBinding ContentBorderThickness}"
+                                                     Padding="{TemplateBinding EffectiveContentPadding}">
+                                <ContentPresenter Name="PART_ContentPresenter"
+                                                  Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                            </atom:PixelAlignedBorder>
+                        </atom:LayoutAwareMotionActor>
+                    </DockPanel>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 
@@ -208,15 +211,6 @@
                 <Setter Property="Foreground"
                         Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
-        </Style>
-
-        <Style Selector="^[IsMotionEnabled=True]">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <ThicknessTransition Property="HeaderBorderThickness" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                    <ThicknessTransition Property="ContentBorderThickness" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                </Transitions>
-            </Setter>
         </Style>
 
     </ControlTheme>

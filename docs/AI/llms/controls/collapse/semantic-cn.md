@@ -17,9 +17,9 @@
 来源：`src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
 
 ```xml
-<Border Name="PART_Frame">
+<PixelAlignedBorder Name="PART_Frame">
     <ItemsPresenter Name="PART_ItemsPresenter" />
-</Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -31,16 +31,18 @@
 ```text
 Collapse
   -> CollapseItem (item container control theme, CollapseItemTheme.axaml)
-     -> DockPanel#PART_MainLayout (template-stable)
-        -> Border#PART_HeaderDecorator (template-stable)
-           -> Grid (template-stable)
-              -> IconButton#PART_ExpandButton (template-stable)
-              -> ContentPresenter#PART_HeaderPresenter (template-stable)
-              -> ContentPresenter#PART_AddOnContentPresenter (template-stable)
-        -> LayoutAwareMotionActor#PART_ContentMotionActor (template-stable)
-           -> ContentPresenter#PART_ContentPresenter (template-stable)
+     -> PixelAlignedBorder (template-stable)
+        -> DockPanel#PART_MainLayout (template-stable)
+           -> PixelAlignedBorder#PART_HeaderDecorator (template-stable)
+              -> Grid (template-stable)
+                 -> IconButton#PART_ExpandButton (template-stable)
+                 -> ContentPresenter#PART_HeaderPresenter (template-stable)
+                 -> ContentPresenter#PART_AddOnContentPresenter (template-stable)
+           -> LayoutAwareMotionActor#PART_ContentMotionActor (template-stable)
+              -> PixelAlignedBorder#PART_ContentFrame (template-stable)
+                 -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> Collapse (control theme, CollapseTheme.axaml)
-     -> Border#PART_Frame (template-stable)
+     -> PixelAlignedBorder#PART_Frame (template-stable)
         -> ItemsPresenter#PART_ItemsPresenter (template-stable)
 ```
 
@@ -51,14 +53,15 @@ Collapse
 | `Collapse` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `CollapseItem` | item container control theme | `CollapseItemTheme.axaml` | 用户代码 / 控件宿主 | `AddOnContent`, `AddOnContentTemplate`, `Content`, `ContentBorderThickness`, `ContentTemplate`, `EffectiveContentPadding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_MainLayout` | template node (DockPanel) | `CollapseItemTheme.axaml` | CollapseItem | `AddOnContent`, `AddOnContentTemplate`, `Content`, `ContentBorderThickness`, `ContentTemplate`, `EffectiveContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_HeaderDecorator` | template node (Border) | `CollapseItemTheme.axaml` | CollapseItem | `AddOnContent`, `AddOnContentTemplate`, `EffectiveHeaderPadding`, `ExpandIcon`, `Header`, `HeaderBorderThickness` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_HeaderDecorator` | template node (PixelAlignedBorder) | `CollapseItemTheme.axaml` | CollapseItem | `AddOnContent`, `AddOnContentTemplate`, `EffectiveHeaderPadding`, `ExpandIcon`, `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ExpandButton` | template node (IconButton) | `CollapseItemTheme.axaml` | CollapseItem | `ExpandIcon`, `IsEnabled`, `IsMotionEnabled`, `IsShowExpandIcon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_HeaderPresenter` | template node (ContentPresenter) | `CollapseItemTheme.axaml` | CollapseItem | `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_AddOnContentPresenter` | template node (ContentPresenter) | `CollapseItemTheme.axaml` | CollapseItem | `AddOnContent`, `AddOnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentMotionActor` | template node (LayoutAwareMotionActor) | `CollapseItemTheme.axaml` | CollapseItem | `Content`, `ContentBorderThickness`, `ContentTemplate`, `EffectiveContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ContentPresenter` | template node (ContentPresenter) | `CollapseItemTheme.axaml` | CollapseItem | `Content`, `ContentBorderThickness`, `ContentTemplate`, `EffectiveContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentFrame` | template node (PixelAlignedBorder) | `CollapseItemTheme.axaml` | CollapseItem | `Content`, `ContentBorderThickness`, `ContentTemplate`, `EffectiveContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentPresenter` | template node (ContentPresenter) | `CollapseItemTheme.axaml` | CollapseItem | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Collapse` | control theme | `CollapseTheme.axaml` | 用户代码 / 控件宿主 | `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `ItemsPanel` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_Frame` | template node (Border) | `CollapseTheme.axaml` | Collapse | `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Frame` | template node (PixelAlignedBorder) | `CollapseTheme.axaml` | Collapse | `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `CollapseTheme.axaml` | Collapse | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
@@ -88,12 +91,17 @@ Public API / inherited command / item source / user input
   -> Gallery 可观察行为
 ```
 
+`Collapse` 继续使用 Avalonia `SelectingItemsControl` 的 selection model 作为唯一展开状态 owner，`CollapseItem.IsSelected` 是该状态投影到容器后的公开绑定入口。控件不得维护 active-key 集合、当前展开项缓存或另一套展开状态。
+
 状态维护规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- selection/checked/active、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- 普通模式使用 `Multiple | Toggle`：每个 item 可独立展开和收起。
+- 手风琴模式使用 `Single | Toggle`：打开目标项时关闭旧项，点击当前项时允许全部收起。
+- 普通模式切换到手风琴模式时，按视觉索引保留第一个已展开项，与 Ant Design `activeKey[0]` 语义一致。
+- Header、Icon、keyboard 和 pointer 输入最终进入同一个 selection 操作，不在输入处理器中直接维护展开状态。
+- Disabled 或不可交互状态优先屏蔽 pointer、keyboard 和 motion，不改变 selection。
+- 内容可见性、箭头方向和动效目标只从 `IsSelected` 派生；模板节点之间不得双向同步展开状态。
+- 模板重套用、items reset/replace/clear 和模式切换后必须保持 selection model、容器与内容视觉一致。
 
 ## Theme and Token Boundaries
 
@@ -106,6 +114,15 @@ Collapse 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `CollapseThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 Collapse 使用 `CollapseToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
+
+Collapse 的分隔线采用结构化所有权：
+
+- `PART_Frame` 绘制外框、圆角并裁剪整体内容。
+- 非末 `CollapseItem` 的 item shell 固定绘制底部分隔线。
+- 默认 bordered 模式下，`PART_ContentFrame` 固定绘制内容顶部边线。
+- Borderless 模式保留 item 间分隔线，但不绘制外框和内容顶部边线。
+- Ghost 模式不绘制外框、item 分隔线和内容顶部边线。
+- 分隔线厚度不得依赖 `IsSelected`、动效进行状态或动效完成时机。
 
 主题维护规则：
 
@@ -140,6 +157,9 @@ Collapse Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
+- Selection model 是唯一展开状态 owner，不能增加 active-key 镜像或 `SelectionChanged` 回写循环。
+- 手风琴模式最多展开一项，并允许点击当前项后全部收起。
+- 分隔线只由 item 位置、视觉模式和固定模板结构决定，不能依赖 selection 或 motion 时序。
+- 旧 template part、事件订阅和 content motion cancellation 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。
