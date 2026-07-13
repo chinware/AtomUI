@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Input;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -11,12 +12,47 @@ internal class WindowsCaptionButton : CaptionButton
             o => o.IsCloseButton,
             (o, v) => o.IsCloseButton = v);
 
+    internal static readonly DirectProperty<WindowsCaptionButton, bool> IsPointerOverSuppressedProperty =
+        AvaloniaProperty.RegisterDirect<WindowsCaptionButton, bool>(nameof(IsPointerOverSuppressed),
+            o => o.IsPointerOverSuppressed,
+            (o, v) => o.IsPointerOverSuppressed = v);
+
     private bool _isCloseButton;
+    private bool _isPointerOverSuppressed;
 
     internal bool IsCloseButton
     {
         get => _isCloseButton;
         set => SetAndRaise(IsCloseButtonProperty, ref _isCloseButton, value);
+    }
+
+    internal bool IsPointerOverSuppressed
+    {
+        get => _isPointerOverSuppressed;
+        private set => SetAndRaise(IsPointerOverSuppressedProperty, ref _isPointerOverSuppressed, value);
+    }
+
+    internal void InvalidatePointerOverVisualState()
+    {
+        IsPointerOverSuppressed = IsPointerOver;
+    }
+
+    protected override void OnPointerEntered(PointerEventArgs e)
+    {
+        IsPointerOverSuppressed = false;
+        base.OnPointerEntered(e);
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        IsPointerOverSuppressed = false;
+        base.OnPointerMoved(e);
+    }
+
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        IsPointerOverSuppressed = false;
+        base.OnPointerExited(e);
     }
     
     protected override void UpdateEffectiveCornerRadius(Size size)

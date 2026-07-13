@@ -1294,6 +1294,7 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TitleBarPadding,
         TitleFontSize,
         TitleFontWeight,
+        WindowsCaptionIconSize,
         WindowsCloseButtonHoverBgColor,
         WindowsCloseButtonHoverColor,
         WindowsCloseButtonPressedBgColor

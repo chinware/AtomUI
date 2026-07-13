@@ -4,6 +4,7 @@
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="CaptionButtonTheme.axaml"/>
+        <ResourceInclude Source="WindowsCaptionIconGeometries.axaml"/>
         <ResourceInclude Source="CaptionButtonGroupTheme.axaml"/>
         <ResourceInclude Source="WindowsCaptionButtonTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>

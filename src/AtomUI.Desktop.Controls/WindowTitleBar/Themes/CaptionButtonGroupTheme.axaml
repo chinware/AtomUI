@@ -100,27 +100,44 @@
                         <atom:WindowsCaptionButton
                             Name="PART_MinimizeButton"
                             WindowDecorationProperties.ElementRole="MinimizeButton"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsVisible="{TemplateBinding IsMinimizeButtonEffectivelyVisible}" />
+                            IsVisible="{TemplateBinding IsMinimizeButtonEffectivelyVisible}">
+                            <atom:WindowsCaptionButton.NormalIcon>
+                                <PathIcon Data="{StaticResource WindowCaptionMinimizeIconGeometry}" />
+                            </atom:WindowsCaptionButton.NormalIcon>
+                        </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
                             Name="PART_MaximizeButton"
                             WindowDecorationProperties.ElementRole="MaximizeButton"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
-                            CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowRestoreOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowMaximized}"
-                            IsVisible="{TemplateBinding IsMaximizeButtonEffectivelyVisible}" />
+                            IsVisible="{TemplateBinding IsMaximizeButtonEffectivelyVisible}">
+                            <atom:WindowsCaptionButton.NormalIcon>
+                                <PathIcon Data="{StaticResource WindowCaptionMaximizeIconGeometry}" />
+                            </atom:WindowsCaptionButton.NormalIcon>
+                            <atom:WindowsCaptionButton.CheckedIcon>
+                                <PathIcon
+                                    Data="{StaticResource WindowCaptionRestoreIconGeometry}"
+                                    RenderTransformOrigin="50%,50%">
+                                    <PathIcon.RenderTransform>
+                                        <RotateTransform Angle="-90" />
+                                    </PathIcon.RenderTransform>
+                                </PathIcon>
+                            </atom:WindowsCaptionButton.CheckedIcon>
+                        </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
                             Name="PART_CloseButton"
                             WindowDecorationProperties.ElementRole="CloseButton"
                             IsCloseButton="True"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsVisible="{TemplateBinding IsCloseCaptionButtonVisible}" />
+                            IsVisible="{TemplateBinding IsCloseCaptionButtonVisible}">
+                            <atom:WindowsCaptionButton.NormalIcon>
+                                <PathIcon Data="{StaticResource WindowCaptionCloseIconGeometry}" />
+                            </atom:WindowsCaptionButton.NormalIcon>
+                        </atom:WindowsCaptionButton>
                     </StackPanel>
                 </ControlTemplate>
             </Setter>
@@ -142,8 +159,8 @@
         </Style>
         
         <Style Selector="^ /template/ atom|WindowsCaptionButton">
-            <Setter Property="IconWidth" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
-            <Setter Property="IconHeight" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
+            <Setter Property="IconWidth" Value="{atom:WindowTitleBarTokenResource WindowsCaptionIconSize}" />
+            <Setter Property="IconHeight" Value="{atom:WindowTitleBarTokenResource WindowsCaptionIconSize}" />
         </Style>
         
     </ControlTheme>

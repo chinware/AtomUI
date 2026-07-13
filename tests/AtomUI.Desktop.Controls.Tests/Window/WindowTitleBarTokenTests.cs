@@ -26,6 +26,15 @@ public class WindowTitleBarTokenTests
     }
 
     [Fact]
+    public void Windows_Caption_Button_Icons_Use_Native_Size()
+    {
+        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs"));
+
+        source.ShouldContain("CaptionButtonIconSize       = SharedToken.IconSizeSM;");
+        source.ShouldContain("WindowsCaptionIconSize      = 11;");
+    }
+
+    [Fact]
     public void Title_Bar_Content_Padding_Has_No_Vertical_Inset()
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs"));
@@ -107,6 +116,84 @@ public class WindowTitleBarTokenTests
         {
             host.Close();
         }
+    }
+
+    [Fact]
+    public void Windows_Caption_Buttons_Use_Dedicated_Token_Colored_Geometries()
+    {
+        var iconResources = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowsCaptionIconGeometries.axaml"));
+        var groupTheme = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"));
+        var buttonTheme = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonTheme.axaml"));
+        var themeResources = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarThemes.axaml"));
+
+        var expectedResources = new[]
+        {
+            "WindowCaptionMinimizeIconGeometry",
+            "WindowCaptionMaximizeIconGeometry",
+            "WindowCaptionRestoreIconGeometry",
+            "WindowCaptionCloseIconGeometry"
+        };
+        var geometryKeys = iconResources.Root!
+                                            .Elements()
+                                            .Where(element => element.Name.LocalName == "StreamGeometry")
+                                            .Select(element => element.Attributes()
+                                                                      .Single(attribute =>
+                                                                          attribute.Name.LocalName == "Key")
+                                                                      .Value)
+                                            .ToList();
+
+        geometryKeys.ShouldBe(expectedResources, ignoreOrder: true);
+        iconResources.ToString().ShouldNotContain("#020202");
+
+        var windowsStyle = groupTheme.Descendants()
+                                     .Single(element =>
+                                         element.Name.LocalName == "Style" &&
+                                         (string?)element.Attribute("Selector") == "^[OsType=Windows]" &&
+                                         element.Descendants().Any(descendant =>
+                                             descendant.Name.LocalName == "PathIcon"));
+        foreach (var resourceKey in expectedResources)
+        {
+            windowsStyle.Descendants()
+                        .ShouldContain(element =>
+                            element.Name.LocalName == "PathIcon" &&
+                            (string?)element.Attribute("Data") == $"{{StaticResource {resourceKey}}}");
+        }
+
+        windowsStyle.ToString().ShouldNotContain("MinusOutlined");
+        windowsStyle.ToString().ShouldNotContain("WindowMaximizedOutlined");
+        windowsStyle.ToString().ShouldNotContain("WindowRestoreOutlined");
+        windowsStyle.ToString().ShouldNotContain("WindowCloseOutlined");
+        groupTheme.ToString().ShouldContain("WindowTitleBarTokenResource WindowsCaptionIconSize");
+        buttonTheme.ToString().ShouldContain("WindowTitleBarTokenResource ActiveColor");
+        buttonTheme.ToString().ShouldContain("WindowTitleBarTokenResource InactiveColor");
+
+        var includes = themeResources.Root!
+                                     .Element(themeResources.Root.Name.Namespace + "ResourceDictionary.MergedDictionaries")!
+                                     .Elements()
+                                     .Select(element => (string?)element.Attribute("Source"))
+                                     .ToList();
+        includes.IndexOf("WindowsCaptionIconGeometries.axaml")
+                .ShouldBeLessThan(includes.IndexOf("CaptionButtonGroupTheme.axaml"));
+    }
+
+    [Fact]
+    public void Window_State_Changes_Invalidate_Stale_Maximize_Hover()
+    {
+        var groupSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
+        var buttonSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/WindowsCaptionButton.cs"));
+        var themeSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowsCaptionButtonTheme.axaml"));
+
+        groupSource.ShouldContain("windowsMaximizeButton.InvalidatePointerOverVisualState();");
+        buttonSource.ShouldContain("IsPointerOverSuppressed = IsPointerOver;");
+        buttonSource.ShouldContain("protected override void OnPointerMoved(PointerEventArgs e)");
+        themeSource.ShouldContain("^[IsPointerOverSuppressed=False]:pointerover");
     }
 
     private static string GetRepoFile(string relativePath)
