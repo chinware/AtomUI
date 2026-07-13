@@ -20,9 +20,15 @@ AppBuilder.Configure<App>()
 
 `WithAtomUIDefaultOptions()` 当前设置：
 
+- Windows 10：`AngleEgl/Software` 渲染回退与 `RedirectionSurface` 合成。
+- Windows 11+：`AngleEgl/Software` 渲染回退与
+  `WinUIComposition/DirectComposition/RedirectionSurface` 合成回退。
 - macOS Avalonia Native 渲染优先级：OpenGL、Metal、Software。
 - X11 平台选项：`EnableDrawnDecorations = true`。
 - 字体 fallback：`Microsoft YaHei`。
+
+Windows 选项通过公开 `Win32PlatformOptions` 强类型配置，不使用运行时反射。详细边界见
+[Windows live resize 与窗口装饰架构](../modules/native/windows-live-resize-scheme.md)。
 
 这一步只配置 Avalonia 平台选项，不注册 AtomUI 控件主题。
 

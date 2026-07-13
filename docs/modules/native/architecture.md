@@ -54,9 +54,10 @@ src/AtomUI.Native/
 ### Windows
 
 - `SetWindowIgnoreMouseEventsWindows()` 修改 `WS_EX_TRANSPARENT/WS_EX_LAYERED`。
-- Windows 10 live resize 使用 `RedirectionSurface`，窗口装饰与 resize hit-test 由 Avalonia CSD 管理。
-- AtomUI 不处理 `WM_NCCALCSIZE`，也不手动修改 DWM non-client frame。
-- 标题栏最大化按钮仅通过 `WM_NCHITTEST/HTMAXBUTTON` 接入 Windows 11 Snap Layout。
+- 该目录不承担 live resize、合成后端、CSD 或 non-client frame 策略。
+- 窗口装饰与 resize hit-test 由 Avalonia CSD 管理；AtomUI 不处理 `WM_NCCALCSIZE`。
+- 标题栏按钮通过 Avalonia 公共 `WindowDecorationProperties.ElementRole` 接入原生行为，
+  不需要 AtomUI WndProc hook。
 
 ### macOS
 
@@ -106,9 +107,9 @@ input-region 方法，并通过 `WaylandWorkerClient.PostWithCommit` 下发。
 
 ### API 命名和校验
 
-`WindowExtensions` 同时承担公共路由、Win32 hook、X11 geometry 和单位转换，职责过宽。后续应按能力拆成
-`Win32WindowNative`、`X11WindowNative`、`MacWindowNative` 和 Wayland protocol adapter，并让每个入口
-统一校验 handle descriptor、零句柄、尺寸范围和平台。
+`WindowExtensions` 只承担内部跨平台路由，具体实现保留在 `Windows`、`MacOS` 和 `Linux` 目录。
+只有 Avalonia 公共 API 无法表达的能力才进入 Native；平台实现应统一校验 handle descriptor、零句柄、
+尺寸范围和平台。是否继续拆分文件取决于资源所有权和生命周期复杂度，不为了形式上的分层搬移代码。
 
 ### 测试层级
 
@@ -122,7 +123,7 @@ input-region 方法，并通过 `WaylandWorkerClient.PostWithCommit` 下发。
 
 ## 事实源
 
-Avalonia 行为以 `/workspace/projects/ReferenceProjects/Avalonia` 的 `12.1.0` tag
+Avalonia 行为以仓库同级 `../ReferenceProjects/Avalonia` 的 `12.1.0` tag
 （commit `a21b9f573172f705a944dcc8aad7f036b9986f39`）为准，重点文件：
 
 - `src/Avalonia.Wayland/WindowImpl.cs`

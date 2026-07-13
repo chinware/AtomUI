@@ -1,4 +1,3 @@
-using System.Runtime.Versioning;
 using Avalonia;
 using Avalonia.Media;
 
@@ -52,7 +51,7 @@ public static class AppBuilderExtensions
     {
         if (OperatingSystem.IsWindows())
         {
-            appBuilder = appBuilder.WithWin32CompositionOptions();
+            appBuilder = WindowsAppBuilderDefaults.Apply(appBuilder);
         }
 
         return appBuilder
@@ -76,64 +75,5 @@ public static class AppBuilderExtensions
                     FontFamily = new FontFamily("Microsoft YaHei")
                 }]
             });
-    }
-
-    [SupportedOSPlatform("windows")]
-    private static AppBuilder WithWin32CompositionOptions(this AppBuilder appBuilder)
-    {
-        var win32OptionsType = Type.GetType("Avalonia.Win32PlatformOptions, Avalonia.Win32");
-        var renderingModeType = Type.GetType("Avalonia.Win32RenderingMode, Avalonia.Win32");
-        var compositionModeType = Type.GetType("Avalonia.Win32CompositionMode, Avalonia.Win32");
-        if (win32OptionsType is null || renderingModeType is null || compositionModeType is null)
-        {
-            return appBuilder;
-        }
-
-        var options = Activator.CreateInstance(win32OptionsType);
-        if (options is null)
-        {
-            return appBuilder;
-        }
-
-        win32OptionsType.GetProperty("RenderingMode")?.SetValue(options,
-            CreateEnumArray(renderingModeType, "AngleEgl", "Software"));
-
-        win32OptionsType.GetProperty("CompositionMode")?.SetValue(options,
-            CreateEnumArray(compositionModeType, GetWin32CompositionModeNames()));
-
-        var withMethod = typeof(AppBuilder).GetMethods()
-                                           .Single(method =>
-                                           {
-                                               if (method.Name != nameof(AppBuilder.With) ||
-                                                   !method.IsGenericMethodDefinition)
-                                               {
-                                                   return false;
-                                               }
-
-                                               var parameters = method.GetParameters();
-                                               return parameters.Length == 1 &&
-                                                      parameters[0].ParameterType.IsGenericParameter;
-                                           });
-        withMethod.MakeGenericMethod(win32OptionsType).Invoke(appBuilder, [options]);
-        return appBuilder;
-    }
-
-    [SupportedOSPlatform("windows")]
-    private static string[] GetWin32CompositionModeNames()
-    {
-        // Avalonia 12.1 WinUI commit callbacks can trail HWND live-resize messages on Windows 10.
-        return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)
-            ? ["WinUIComposition", "DirectComposition", "RedirectionSurface"]
-            : ["RedirectionSurface"];
-    }
-
-    private static Array CreateEnumArray(Type enumType, params string[] names)
-    {
-        var values = Array.CreateInstance(enumType, names.Length);
-        for (var i = 0; i < names.Length; i++)
-        {
-            values.SetValue(Enum.Parse(enumType, names[i]), i);
-        }
-        return values;
     }
 }
