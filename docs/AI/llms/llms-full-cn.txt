@@ -12138,12 +12138,17 @@ Public API / inherited command / item source / user input
   -> Gallery 可观察行为
 ```
 
+`Collapse` 继续使用 Avalonia `SelectingItemsControl` 的 selection model 作为唯一展开状态 owner，`CollapseItem.IsSelected` 是该状态投影到容器后的公开绑定入口。控件不得维护 active-key 集合、当前展开项缓存或另一套展开状态。
+
 状态维护规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- selection/checked/active、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- 普通模式使用 `Multiple | Toggle`：每个 item 可独立展开和收起。
+- 手风琴模式使用 `Single | Toggle`：打开目标项时关闭旧项，点击当前项时允许全部收起。
+- 普通模式切换到手风琴模式时，按视觉索引保留第一个已展开项，与 Ant Design `activeKey[0]` 语义一致。
+- Header、Icon、keyboard 和 pointer 输入最终进入同一个 selection 操作，不在输入处理器中直接维护展开状态。
+- Disabled 或不可交互状态优先屏蔽 pointer、keyboard 和 motion，不改变 selection。
+- 内容可见性、箭头方向和动效目标只从 `IsSelected` 派生；模板节点之间不得双向同步展开状态。
+- 模板重套用、items reset/replace/clear 和模式切换后必须保持 selection model、容器与内容视觉一致。
 
 ## 主题与 Design Token
 
@@ -12156,6 +12161,15 @@ Collapse 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `CollapseThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 Collapse 使用 `CollapseToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
+
+Collapse 的分隔线采用结构化所有权：
+
+- `PART_Frame` 绘制外框、圆角并裁剪整体内容。
+- 非末 `CollapseItem` 的 item shell 固定绘制底部分隔线。
+- 默认 bordered 模式下，`PART_ContentFrame` 固定绘制内容顶部边线。
+- Borderless 模式保留 item 间分隔线，但不绘制外框和内容顶部边线。
+- Ghost 模式不绘制外框、item 分隔线和内容顶部边线。
+- 分隔线厚度不得依赖 `IsSelected`、动效进行状态或动效完成时机。
 
 主题维护规则：
 
@@ -12184,9 +12198,11 @@ Collapse Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 
 性能边界：
 
-- 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
-- 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- 单项展开不得遍历全部容器重算边框。
+- 模式切换只处理当前 selection indexes；item 位置只在集合结构或容器索引变化时更新。
+- 边框、背景、padding 和 icon placement 使用 AXAML、selector 和 template binding 表达。
+- 不新增运行时反射、字符串 binding、全局事件、timer、active-key 缓存或长期状态对象。
+- template reapply 必须解绑旧展开按钮；detach 和新动效开始前必须取消旧 content motion。
 
 ## 源码索引
 

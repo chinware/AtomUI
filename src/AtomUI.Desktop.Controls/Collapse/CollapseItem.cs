@@ -12,6 +12,7 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
@@ -137,8 +138,8 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             o => o.ExpandIconPosition,
             (o, v) => o.ExpandIconPosition = v);
     
-    internal static readonly StyledProperty<Thickness> HeaderBorderThicknessProperty =
-        AvaloniaProperty.Register<CollapseItem, Thickness>(nameof(HeaderBorderThickness));
+    internal static readonly StyledProperty<Thickness> ItemBorderThicknessProperty =
+        AvaloniaProperty.Register<CollapseItem, Thickness>(nameof(ItemBorderThickness));
 
     internal static readonly StyledProperty<Thickness> ContentBorderThicknessProperty =
         AvaloniaProperty.Register<CollapseItem, Thickness>(nameof(ContentBorderThickness));
@@ -231,10 +232,10 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         set => SetAndRaise(ExpandIconPositionProperty, ref _expandIconPosition, value);
     }
     
-    internal Thickness HeaderBorderThickness
+    internal Thickness ItemBorderThickness
     {
-        get => GetValue(HeaderBorderThicknessProperty);
-        set => SetValue(HeaderBorderThicknessProperty, value);
+        get => GetValue(ItemBorderThicknessProperty);
+        set => SetValue(ItemBorderThicknessProperty, value);
     }
 
     internal Thickness ContentBorderThickness
@@ -265,17 +266,12 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     private IconButton? _expandButton;
     private CancellationTokenSource? _contentMotionCancellation;
 
-    internal event EventHandler? MotionStateChanged;
-
-    internal bool InAnimating { get; private set; }
-
     static CollapseItem()
     {
         SelectableMixin.Attach<CollapseItem>(IsSelectedProperty);
         PressedMixin.Attach<CollapseItem>();
         FocusableProperty.OverrideDefaultValue(typeof(CollapseItem), true);
         DataContextProperty.Changed.AddClassHandler<CollapseItem>((x, e) => x.UpdateHeader(e));
-        AffectsRender<CollapseItem>(HeaderBorderThicknessProperty, ContentBorderThicknessProperty);
     }
 
     protected override AutomationPeer OnCreateAutomationPeer()
@@ -321,6 +317,16 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (TriggerType == CollapseTriggerType.Header &&
+            SelectingItemsControl.ItemsControlFromItemContainer(this) is Collapse collapse)
+        {
+            e.Handled = collapse.UpdateSelectionFromEvent(this, e);
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -468,7 +474,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             return;
         }
 
-        if (!isVisible && !motionActor.IsVisible && !InAnimating)
+        if (!isVisible && !motionActor.IsVisible && _contentMotionCancellation is null)
         {
             ApplyContentStableState(motionActor, false);
             return;
@@ -513,7 +519,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         CancelContentMotion();
         var cancellation = new CancellationTokenSource();
         _contentMotionCancellation = cancellation;
-        SetInAnimating(true);
         return cancellation;
     }
 
@@ -528,7 +533,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         }
 
         _contentMotionCancellation = null;
-        SetInAnimating(false);
 
         if (!ReferenceEquals(_motionActor, motionActor) || cancellation.IsCancellationRequested)
         {
@@ -554,7 +558,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         {
             _contentMotionCancellation = null;
             cancellation.Cancel();
-            SetInAnimating(false);
         }
     }
 
@@ -588,14 +591,4 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         motionActor.ClearValue(HeightProperty);
     }
 
-    private void SetInAnimating(bool value)
-    {
-        if (InAnimating == value)
-        {
-            return;
-        }
-
-        InAnimating = value;
-        MotionStateChanged?.Invoke(this, EventArgs.Empty);
-    }
 }

@@ -2,6 +2,14 @@
 
 本文档记录 Collapse 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-13
+
+- Design
+  - Define Avalonia selection model as the sole expansion-state owner for normal and accordion modes.
+  - Define structural separator ownership so item and content borders no longer depend on selection or motion timing.
+- Compatibility
+  - Preserve the existing public API, stable template parts, resource keys, Token names and theme values.
+
 ## 2026-06-26
 
 - Docs

@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls;
+﻿using System.Collections.Specialized;
+using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,7 +10,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -136,8 +136,6 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
             Orientation = Orientation.Vertical
         });
 
-    private CollapseItem? _accordionInitialActiveItem;
-
     static Collapse()
     {
         SelectionModeProperty.OverrideDefaultValue<Collapse>(SelectionMode.Multiple | SelectionMode.Toggle);
@@ -148,7 +146,8 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
 
     public Collapse()
     {
-        SelectionChanged += HandleSelectionChanged;
+        SetupSelectionMode();
+        Items.CollectionChanged += HandleItemsCollectionChanged;
         this.RegisterTokenResourceScope(CollapseToken.ScopeProvider);
     }
     
@@ -166,7 +165,6 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
     {
         if (container is CollapseItem collapseItem)
         {
-            TrackAccordionInitialActiveItem(collapseItem);
             if (item != null && item is not Visual)
             {
                 if (!collapseItem.IsSet(CollapseItem.ContentProperty))
@@ -183,7 +181,6 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
                     if (!collapseItem.IsSet(CollapseItem.IsSelectedProperty))
                     {
                         collapseItem.SetCurrentValue(CollapseItem.IsSelectedProperty, itemData.IsSelected);
-                        TrackAccordionInitialActiveItem(collapseItem);
                     }
                     if (!collapseItem.IsSet(CollapseItem.IsShowExpandIconProperty))
                     {
@@ -204,12 +201,9 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
             collapseItem[!CollapseItem.TriggerTypeProperty]        = this[!TriggerTypeProperty];
             collapseItem[!CollapseItem.ExpandIconPositionProperty] = this[!ExpandIconPositionProperty];
             collapseItem[!CollapseItem.IsMotionEnabledProperty]    = this[!IsMotionEnabledProperty];
-            collapseItem.MotionStateChanged -= HandleItemMotionStateChanged;
-            collapseItem.MotionStateChanged += HandleItemMotionStateChanged;
             PrepareCollapseItem(collapseItem, item, index);
             ConfigureItemPaddings(collapseItem);
-            NormalizeAccordionSelection();
-            SetupCollapseBorderThickness(collapseItem, index);
+            ConfigureItemBorders(collapseItem, index);
         }
         else
         {
@@ -217,25 +211,34 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         }
     }
 
-    protected virtual void PrepareCollapseItem(CollapseItem collapseItem, object? item, int index)
+    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
     {
-    }
+        var containerWasSelected = container.GetValue(CollapseItem.IsSelectedProperty);
+        var previousSelectedIndex = IsAccordion ? Selection.SelectedIndex : -1;
 
-    protected override void ClearContainerForItemOverride(Control container)
-    {
-        if (container is CollapseItem collapseItem)
+        base.ContainerForItemPreparedOverride(container, item, index);
+
+        if (IsAccordion &&
+            containerWasSelected &&
+            previousSelectedIndex >= 0 &&
+            previousSelectedIndex < index &&
+            Selection.SelectedIndex == index)
         {
-            collapseItem.MotionStateChanged -= HandleItemMotionStateChanged;
+            Selection.SelectedIndex = previousSelectedIndex;
         }
 
-        base.ClearContainerForItemOverride(container);
+        NormalizeAccordionSelection();
+    }
+
+    protected virtual void PrepareCollapseItem(CollapseItem collapseItem, object? item, int index)
+    {
     }
 
     protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
     {
         if (container is CollapseItem collapseItem)
         {
-            SetupCollapseBorderThickness(collapseItem, newIndex);
+            ConfigureItemBorders(collapseItem, newIndex);
         }
     }
 
@@ -296,7 +299,6 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         if (change.Property == IsAccordionProperty)
         {
             SetupSelectionMode();
-            NormalizeAccordionSelection();
         }
 
         if (change.Property == BorderThicknessProperty ||
@@ -304,7 +306,7 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
             change.Property == IsGhostStyleProperty)
         {
             SetupEffectiveBorderThickness();
-            SetupItemsBorderThickness();
+            ConfigureItemsBorders();
         }
 
         if (change.Property == ItemHeaderPaddingProperty ||
@@ -319,90 +321,63 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         base.OnAttachedToVisualTree(e);
         SetupEffectiveBorderThickness();
         NormalizeAccordionSelection();
-        _accordionInitialActiveItem = null;
     }
 
     public override bool UpdateSelectionFromEvent(Control container, RoutedEventArgs eventArgs)
     {
-        if (IsAccordion && container is CollapseItem collapseItem)
+        if (base.UpdateSelectionFromEvent(container, eventArgs))
         {
-            var index = IndexFromContainer(collapseItem);
-            if (index < 0)
-            {
-                return false;
-            }
-
-            ApplyAccordionSelection(collapseItem.IsSelected ? null : collapseItem);
             return true;
         }
 
-        return base.UpdateSelectionFromEvent(container, eventArgs);
-    }
-
-    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
-    {
-        NormalizeAccordionSelection(args);
-        SetupItemsBorderThickness();
-    }
-
-    private void HandleItemMotionStateChanged(object? sender, EventArgs args)
-    {
-        if (sender is CollapseItem collapseItem)
+        if (eventArgs.Handled ||
+            eventArgs is PointerEventArgs ||
+            eventArgs is KeyEventArgs ||
+            eventArgs is FocusChangedEventArgs)
         {
-            var index = IndexFromContainer(collapseItem);
-            if (index >= 0)
+            return false;
+        }
+
+        var index = IndexFromContainer(container);
+        if (index < 0)
+        {
+            return false;
+        }
+
+        UpdateSelection(index, select: true);
+        eventArgs.Handled = true;
+        return true;
+    }
+
+    private void ConfigureItemsBorders()
+    {
+        for (var i = 0; i < ItemCount; ++i)
+        {
+            if (GetCollapseItemAt(i) is { } collapseItem)
             {
-                SetupCollapseBorderThickness(collapseItem, index);
+                ConfigureItemBorders(collapseItem, i);
             }
         }
     }
 
-    private void SetupItemsBorderThickness()
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (this.IsAttachedToVisualTree())
-        {
-            for (var i = 0; i < ItemCount; ++i)
-            {
-                if (GetCollapseItemAt(i) is { } collapseItem)
-                {
-                    SetupCollapseBorderThickness(collapseItem, i);
-                }
-            }
-        }
+        ConfigureItemsBorders();
     }
 
-    private void SetupCollapseBorderThickness(CollapseItem collapseItem, int index)
+    private void ConfigureItemBorders(CollapseItem collapseItem, int index)
     {
-        var headerBorderBottom  = 0d;
-        var contentBorderTop    = 0d;
-        var contentBorderBottom = 0d;
+        var line                = BorderThickness.Bottom;
+        var isLast              = index == ItemCount - 1;
+        var hasItemSeparator    = !IsGhostStyle && !isLast;
+        var hasContentSeparator = !IsGhostStyle && !IsBorderless;
 
-        if (!IsGhostStyle)
-        {
-            var borderLine       = BorderThickness.Bottom;
-            var isLastItem       = index == ItemCount - 1;
-            var isContentVisible = collapseItem.IsSelected || collapseItem.InAnimating;
-
-            if (isContentVisible)
-            {
-                if (!IsBorderless)
-                {
-                    contentBorderTop = borderLine;
-                }
-
-                if (!isLastItem)
-                {
-                    contentBorderBottom = borderLine;
-                }
-            }
-            else if (!isLastItem)
-            {
-                headerBorderBottom = borderLine;
-            }
-        }
-
-        collapseItem.HeaderBorderThickness  = new Thickness(0, 0, 0, headerBorderBottom);
-        collapseItem.ContentBorderThickness = new Thickness(0, contentBorderTop, 0, contentBorderBottom);
+        collapseItem.ItemBorderThickness = hasItemSeparator
+            ? new Thickness(0, 0, 0, line)
+            : default;
+        collapseItem.ContentBorderThickness = hasContentSeparator
+            ? new Thickness(0, line, 0, 0)
+            : default;
     }
 
     private CollapseItem? GetCollapseItemAt(int index)
@@ -410,99 +385,14 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         return ContainerFromIndex(index) as CollapseItem;
     }
 
-    private void NormalizeAccordionSelection(SelectionChangedEventArgs? args = null)
+    private void NormalizeAccordionSelection()
     {
-        if (!IsAccordion || !this.IsAttachedToVisualTree())
+        if (!IsAccordion || Selection.SelectedIndexes.Count <= 1)
         {
             return;
         }
 
-        var activeItem = FindAccordionActiveItemFromInitialState(args) ??
-                         FindAccordionActiveItemFromSelectionChange(args) ??
-                         FindFirstSelectedCollapseItem();
-        ApplyAccordionSelection(activeItem);
-    }
-
-    private void TrackAccordionInitialActiveItem(CollapseItem collapseItem)
-    {
-        if (IsAccordion &&
-            _accordionInitialActiveItem is null &&
-            collapseItem.IsSelected)
-        {
-            _accordionInitialActiveItem = collapseItem;
-        }
-    }
-
-    private CollapseItem? FindAccordionActiveItemFromInitialState(SelectionChangedEventArgs? args)
-    {
-        if (args is not null ||
-            _accordionInitialActiveItem is not { } initialActiveItem)
-        {
-            return null;
-        }
-
-        if (IndexFromContainer(initialActiveItem) < 0)
-        {
-            return null;
-        }
-
-        return initialActiveItem;
-    }
-
-    private CollapseItem? FindAccordionActiveItemFromSelectionChange(SelectionChangedEventArgs? args)
-    {
-        if (args is null)
-        {
-            return null;
-        }
-
-        foreach (var item in args.AddedItems)
-        {
-            if (FindCollapseItemFromSelectionItem(item) is { } collapseItem && collapseItem.IsSelected)
-            {
-                return collapseItem;
-            }
-        }
-
-        return null;
-    }
-
-    private CollapseItem? FindCollapseItemFromSelectionItem(object? item)
-    {
-        if (item is CollapseItem collapseItem && IndexFromContainer(collapseItem) >= 0)
-        {
-            return collapseItem;
-        }
-
-        return item is not null ? ContainerFromItem(item) as CollapseItem : null;
-    }
-
-    private CollapseItem? FindFirstSelectedCollapseItem()
-    {
-        for (var i = 0; i < ItemCount; i++)
-        {
-            if (GetCollapseItemAt(i) is { IsSelected: true } collapseItem)
-            {
-                return collapseItem;
-            }
-        }
-
-        return null;
-    }
-
-    private void ApplyAccordionSelection(CollapseItem? activeItem)
-    {
-        for (var i = 0; i < ItemCount; i++)
-        {
-            if (GetCollapseItemAt(i) is { } collapseItem)
-            {
-                var shouldSelect = ReferenceEquals(collapseItem, activeItem);
-                if (collapseItem.IsSelected != shouldSelect)
-                {
-                    collapseItem.SetCurrentValue(CollapseItem.IsSelectedProperty, shouldSelect);
-                }
-            }
-        }
+        Selection.SelectedIndex = Selection.SelectedIndexes.Min();
     }
 
     private void ConfigureItemsPaddings()
@@ -543,6 +433,9 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
 
     private void SetupSelectionMode()
     {
-        SelectionMode = SelectionMode.Multiple | SelectionMode.Toggle;
+        SelectionMode = IsAccordion
+            ? SelectionMode.Single | SelectionMode.Toggle
+            : SelectionMode.Multiple | SelectionMode.Toggle;
+        NormalizeAccordionSelection();
     }
 }
