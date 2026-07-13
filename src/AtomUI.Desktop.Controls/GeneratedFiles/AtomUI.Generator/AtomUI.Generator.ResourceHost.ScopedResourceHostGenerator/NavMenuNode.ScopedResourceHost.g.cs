@@ -3,7 +3,7 @@
 
 namespace AtomUI.Desktop.Controls
 {
-    public partial class BindableTreeItemNode : global::Avalonia.Controls.IResourceHost, global::Avalonia.Styling.IThemeVariantHost
+    public partial class NavMenuNode : global::Avalonia.Controls.IResourceHost, global::Avalonia.Styling.IThemeVariantHost
     {
         private global::Avalonia.Controls.IResourceHost? __atomuiResourceHost;
         private int __atomuiResourceHostAttachmentCount;
@@ -129,11 +129,11 @@ namespace AtomUI.Desktop.Controls
 
         private sealed class AtomUIScopedResourceHostAttachment : global::System.IDisposable
         {
-            private BindableTreeItemNode? _item;
+            private NavMenuNode? _item;
             private global::Avalonia.Controls.IResourceHost? _resourceHost;
             private readonly long _attachmentGeneration;
 
-            public AtomUIScopedResourceHostAttachment(BindableTreeItemNode item, global::Avalonia.Controls.IResourceHost resourceHost, long attachmentGeneration)
+            public AtomUIScopedResourceHostAttachment(NavMenuNode item, global::Avalonia.Controls.IResourceHost resourceHost, long attachmentGeneration)
             {
                 _item = item;
                 _resourceHost = resourceHost;

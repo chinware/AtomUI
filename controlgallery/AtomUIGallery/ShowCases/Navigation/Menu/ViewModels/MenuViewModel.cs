@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.Reactive;
-using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
@@ -141,13 +140,21 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
 
+    private string _lastCommandKey = "-";
+
+    public string LastCommandKey
+    {
+        get => _lastCommandKey;
+        private set => this.RaiseAndSetIfChanged(ref _lastCommandKey, value);
+    }
+
     public ReactiveCommand<string, Unit> NavigateCommand { get; }
 
     public MenuViewModel(IScreen screen)
     {
         HostScreen      = screen;
         Activator       = new ViewModelActivator();
-        NavigateCommand = ReactiveCommand.CreateFromTask<string>(OnNavigate, Observable.Return(true));
+        NavigateCommand = ReactiveCommand.Create<string>(OnNavigate);
     }
 
     public void EnsureApiRows()
@@ -169,6 +176,8 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
             new MenuApiRow("ContextMenu.ItemsSource", Lang(MenuShowCaseLangResourceKind.ApiPropertyContextMenuItemsSource), "IEnumerable?", "cyan", "null"),
             new MenuApiRow("MenuFlyout.ItemsSource", Lang(MenuShowCaseLangResourceKind.ApiPropertyMenuFlyoutItemsSource), "IEnumerable?", "cyan", "null"),
             new MenuApiRow("NavMenu.Mode", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode), "NavMenuMode", "blue", "Inline"),
+            new MenuApiRow("NavMenuNode.Command", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuNodeCommand), "ICommand?", "cyan", "null"),
+            new MenuApiRow("NavMenuNode.CommandParameter", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuNodeCommandParameter), "object?", "cyan", "null"),
             new MenuApiRow("NavMenu.IsInlineCollapsed", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsInlineCollapsed), "bool", "purple", "false"),
             new MenuApiRow("NavMenu.InlineCollapsedWidth", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuInlineCollapsedWidth), "double", "cyan", "token"),
             new MenuApiRow("NavMenu.IsDarkStyle", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsDarkStyle), "bool", "purple", "false"),
@@ -207,9 +216,9 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
         ];
     }
 
-    private async Task OnNavigate(string? itemKey)
+    private void OnNavigate(string itemKey)
     {
-        await Task.Delay(100);
+        LastCommandKey = itemKey;
     }
 
     public void HandleChangeModeCheckChanged(object? sender, RoutedEventArgs? args)
@@ -264,6 +273,8 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
             MenuShowCaseLangResourceKind.ApiPropertyContextMenuItemsSource          => en_US.ApiPropertyContextMenuItemsSource,
             MenuShowCaseLangResourceKind.ApiPropertyMenuFlyoutItemsSource           => en_US.ApiPropertyMenuFlyoutItemsSource,
             MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode                     => en_US.ApiPropertyNavMenuMode,
+            MenuShowCaseLangResourceKind.ApiPropertyNavMenuNodeCommand              => en_US.ApiPropertyNavMenuNodeCommand,
+            MenuShowCaseLangResourceKind.ApiPropertyNavMenuNodeCommandParameter     => en_US.ApiPropertyNavMenuNodeCommandParameter,
             MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsInlineCollapsed        => en_US.ApiPropertyNavMenuIsInlineCollapsed,
             MenuShowCaseLangResourceKind.ApiPropertyNavMenuInlineCollapsedWidth     => en_US.ApiPropertyNavMenuInlineCollapsedWidth,
             MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsDarkStyle              => en_US.ApiPropertyNavMenuIsDarkStyle,

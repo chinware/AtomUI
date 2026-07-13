@@ -4,6 +4,9 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
+using AtomUIGallery.ShowCases.Menu;
+using ReactiveUI;
 using Shouldly;
 using Xunit;
 
@@ -45,15 +48,16 @@ public class MenuShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:MenuShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(16);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(16);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(16);
-        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:MenuViewModel\"").ShouldBe(16);
+        CountShowCaseItemElements(source).ShouldBe(17);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(17);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(17);
+        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:MenuViewModel\"").ShouldBe(17);
         source.ShouldContain("MenuShowCaseLangResource BasicTitle");
         source.ShouldContain("MenuShowCaseLangResource IconAndSubmenuTitle");
         source.ShouldContain("MenuShowCaseLangResource MenuItemItemsSourceTitle");
         source.ShouldContain("MenuShowCaseLangResource ContextMenuTitle");
         source.ShouldContain("MenuShowCaseLangResource VerticalNavMenuTitle");
+        source.ShouldContain("MenuShowCaseLangResource NavMenuNodeCommandTitle");
         source.ShouldContain("MenuShowCaseLangResource InlineCollapsedMenuTitle");
         source.ShouldContain("BadgeText=\"v6.0.6\"");
         source.ShouldContain("IsInlineCollapsed=\"{Binding IsInlineCollapsed}\"");
@@ -164,13 +168,74 @@ public class MenuShowCasePageTests
             source.ShouldContain("ApiPropertyMenuDisplayPageSize");
             source.ShouldContain("ApiPropertyNavMenuMode");
             source.ShouldContain("ApiPropertyNavMenuDefaultOpenPaths");
+            source.ShouldContain("ApiPropertyNavMenuNodeCommand");
+            source.ShouldContain("ApiPropertyNavMenuNodeCommandParameter");
             source.ShouldContain("TokenNameMenuItemHeight");
             source.ShouldContain("TokenNameNavMenuItemHeight");
+            source.ShouldContain("NavMenuNodeCommandTitle");
+            source.ShouldContain("NavMenuNodeCommandDescription");
+            source.ShouldContain("P2TextLastCommandKey");
             source.ShouldContain("InlineCollapsedMenuTitle");
             source.ShouldContain("InlineCollapsedMenuDescription");
             source.ShouldContain("P2HeaderOptionN5");
             source.ShouldContain("P2HeaderOptionN8");
         }
+    }
+
+    [Fact]
+    public void Menu_ShowCase_NavMenuNode_Command_Uses_Explicit_Business_Keys_And_Displays_The_Last_Executed_Key()
+    {
+        var pageSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
+        var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/ViewModels/MenuViewModel.cs");
+        var commandShowCaseSource = ExtractNavMenuNodeCommandShowCaseItem(pageSource);
+        const string commandBadgePattern =
+            "Title=\"\\{gallery:MenuShowCaseLangResource NavMenuNodeCommandTitle\\}\"\\s+" +
+            "Description=\"\\{gallery:MenuShowCaseLangResource NavMenuNodeCommandDescription\\}\"\\s+" +
+            "BadgeText=\"v6\\.1\\.0\"";
+
+        commandShowCaseSource.ShouldContain("MenuShowCaseLangResource NavMenuNodeCommandTitle");
+        commandShowCaseSource.ShouldContain("MenuShowCaseLangResource NavMenuNodeCommandDescription");
+        Regex.IsMatch(commandShowCaseSource, commandBadgePattern, RegexOptions.CultureInvariant)
+            .ShouldBeTrue();
+        commandShowCaseSource.ShouldContain("MenuShowCaseLangResource P2HeaderNavigationOne");
+        commandShowCaseSource.ShouldContain("AntDesignIconProvider Kind=MailOutlined");
+        commandShowCaseSource.ShouldContain("MenuShowCaseLangResource P2HeaderNavigationTwo");
+        commandShowCaseSource.ShouldContain("AntDesignIconProvider Kind=AppstoreOutlined");
+        commandShowCaseSource.ShouldContain("IsEnabled=\"False\"");
+        commandShowCaseSource.ShouldContain("MenuShowCaseLangResource P2HeaderNavigationThreeSubmenu");
+        commandShowCaseSource.ShouldContain("AntDesignIconProvider Kind=SettingOutlined");
+        commandShowCaseSource.ShouldContain("MenuShowCaseLangResource P2HeaderItemN1");
+        commandShowCaseSource.ShouldContain("MenuShowCaseLangResource P2HeaderItemN2");
+        commandShowCaseSource.ShouldContain("MenuShowCaseLangResource P2HeaderOptionN1");
+        commandShowCaseSource.ShouldContain("MenuShowCaseLangResource P2HeaderOptionN4");
+        commandShowCaseSource.ShouldContain("MenuShowCaseLangResource P2HeaderNavigationFour");
+        CountOccurrences(commandShowCaseSource, "Command=\"{Binding NavigateCommand}\"").ShouldBe(6);
+        commandShowCaseSource.ShouldContain("ItemKey=\"command-navigation-one\"");
+        commandShowCaseSource.ShouldContain("CommandParameter=\"navigation-one\"");
+        commandShowCaseSource.ShouldContain("ItemKey=\"command-option-1\"");
+        commandShowCaseSource.ShouldContain("CommandParameter=\"option-1\"");
+        commandShowCaseSource.ShouldContain("ItemKey=\"command-option-4\"");
+        commandShowCaseSource.ShouldContain("CommandParameter=\"option-4\"");
+        commandShowCaseSource.ShouldContain("ItemKey=\"command-navigation-four\"");
+        commandShowCaseSource.ShouldContain("CommandParameter=\"navigation-four\"");
+        commandShowCaseSource.ShouldNotContain("CommandParameter=\"{Binding ItemKey}\"");
+        commandShowCaseSource.ShouldContain("Text=\"{Binding LastCommandKey}\"");
+
+        viewModelSource.ShouldContain("public ReactiveCommand<string, Unit> NavigateCommand { get; }");
+        viewModelSource.ShouldContain("public string LastCommandKey");
+        viewModelSource.ShouldContain("LastCommandKey = itemKey;");
+        viewModelSource.ShouldContain("new MenuApiRow(\"NavMenuNode.Command\"");
+        viewModelSource.ShouldContain("new MenuApiRow(\"NavMenuNode.CommandParameter\"");
+    }
+
+    [Fact]
+    public void Menu_ViewModel_Command_Records_The_Explicit_Business_Key()
+    {
+        var viewModel = new MenuViewModel(new TestScreen());
+
+        ((ICommand)viewModel.NavigateCommand).Execute("customer-overview");
+
+        viewModel.LastCommandKey.ShouldBe("customer-overview");
     }
 
     [Fact]
@@ -200,7 +265,27 @@ public class MenuShowCasePageTests
 
     private static string NormalizeMarkup(string source)
     {
-        return ShowCaseSnapshotMarkup.Normalize(StripMenuRuntimeBindingMarkup(source));
+        return ShowCaseSnapshotMarkup.Normalize(StripNavMenuNodeCommandShowCaseItem(StripMenuRuntimeBindingMarkup(source)));
+    }
+
+    private static string StripNavMenuNodeCommandShowCaseItem(string source)
+    {
+        return Regex.Replace(
+            source,
+            @"\s*<gallery:ShowCaseItem\s+Title=""\{gallery:MenuShowCaseLangResource NavMenuNodeCommandTitle\}"".*?</gallery:ShowCaseItem>",
+            string.Empty,
+            RegexOptions.CultureInvariant | RegexOptions.Singleline);
+    }
+
+    private static string ExtractNavMenuNodeCommandShowCaseItem(string source)
+    {
+        var match = Regex.Match(
+            source,
+            @"<gallery:ShowCaseItem\s+Title=""\{gallery:MenuShowCaseLangResource NavMenuNodeCommandTitle\}"".*?</gallery:ShowCaseItem>",
+            RegexOptions.CultureInvariant | RegexOptions.Singleline);
+
+        match.Success.ShouldBeTrue();
+        return match.Value;
     }
 
     private static string StripMenuRuntimeBindingMarkup(string source)
@@ -275,5 +360,10 @@ public class MenuShowCasePageTests
     {
         var repoRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../"));
         return Path.Combine(repoRoot, relativePath);
+    }
+
+    private sealed class TestScreen : IScreen
+    {
+        public RoutingState Router { get; } = new();
     }
 }

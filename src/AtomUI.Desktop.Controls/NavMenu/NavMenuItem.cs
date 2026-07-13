@@ -17,6 +17,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -384,6 +385,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     private KeyGesture? _hotkey;
     private bool _isEmbeddedInMenu;
     private BaseMotionActor? _childItemsLayoutTransform;
+    private DispatcherOperation? _pendingCanExecuteUpdate;
 
     private Control? _itemHeader;
     private bool _isInlineMotionRunning;
@@ -520,7 +522,36 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
     
-    public void CanExecuteChanged(object? sender, EventArgs e) => TryUpdateCanExecute();
+    public void CanExecuteChanged(object? sender, EventArgs e)
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Post(QueueCanExecuteUpdate, DispatcherPriority.Input);
+            return;
+        }
+
+        QueueCanExecuteUpdate();
+    }
+
+    private void QueueCanExecuteUpdate()
+    {
+        if (!((ILogical)this).IsAttachedToLogicalTree || _pendingCanExecuteUpdate is not null)
+        {
+            return;
+        }
+
+        _pendingCanExecuteUpdate = Dispatcher.InvokeAsync(() =>
+        {
+            _pendingCanExecuteUpdate = null;
+            TryUpdateCanExecute();
+        }, DispatcherPriority.Input);
+    }
+
+    private void CancelPendingCanExecuteUpdate()
+    {
+        _pendingCanExecuteUpdate?.Abort();
+        _pendingCanExecuteUpdate = null;
+    }
     
     private void TryUpdateCanExecute()
     {
@@ -608,6 +639,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         var newCommand = change.NewValue as ICommand;
         if (change.Sender is NavMenuItem menuItem)
         {
+            menuItem.CancelPendingCanExecuteUpdate();
             if (((ILogical)menuItem).IsAttachedToLogicalTree)
             {
                 if (change.OldValue is ICommand oldCommand)
@@ -629,6 +661,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         if (change.Sender is NavMenuItem menuItem)
         {
+            menuItem.CancelPendingCanExecuteUpdate();
             (var command, var parameter) = (menuItem.Command, change.NewValue);
             menuItem.TryUpdateCanExecute(command, parameter);
         }
@@ -1005,6 +1038,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         base.OnDetachedFromLogicalTree(e);
+        CancelPendingCanExecuteUpdate();
 
         if (Command != null)
         {

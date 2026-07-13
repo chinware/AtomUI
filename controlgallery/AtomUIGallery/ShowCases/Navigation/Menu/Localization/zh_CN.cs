@@ -40,6 +40,8 @@ internal partial class zh_CN
     public const string VerticalNavMenuDescription = "子菜单以弹出层方式打开。";
     public const string InlineMenuTitle = "内联菜单";
     public const string InlineMenuDescription = "带内联子菜单的垂直菜单。";
+    public const string NavMenuNodeCommandTitle = "NavMenuNode 命令";
+    public const string NavMenuNodeCommandDescription = "每个导航节点通过显式业务 key 调用 ViewModel 命令。";
     public const string InlineCollapsedMenuTitle = "缩起内联菜单";
     public const string InlineCollapsedMenuDescription = "内联菜单可以被缩起或展开。";
     public const string TopNavigationTitle = "顶部导航";
@@ -88,6 +90,9 @@ internal partial class zh_CN
     public const string P2HeaderOptionN7 = "选项 7";
     public const string P2HeaderOptionN8 = "选项 8";
     public const string P2HeaderNavigationFour = "导航四";
+    public const string P2HeaderCustomerOverview = "客户概览";
+    public const string P2HeaderInvoiceList = "发票列表";
+    public const string P2TextLastCommandKey = "最后执行的 key：";
     public const string P2TextChangeMode = "切换模式";
     public const string P2TextChangeStyle = "切换样式";
     public const string ApiColumnProperty = "属性";
@@ -104,6 +109,8 @@ internal partial class zh_CN
     public const string ApiPropertyContextMenuItemsSource = "用于生成上下文菜单项的数据源。";
     public const string ApiPropertyMenuFlyoutItemsSource = "用于生成菜单浮出层条目的数据源。";
     public const string ApiPropertyNavMenuMode = "控制 NavMenu 使用内联、垂直或水平模式。";
+    public const string ApiPropertyNavMenuNodeCommand = "导航节点通过鼠标或键盘有效触发时执行的命令。";
+    public const string ApiPropertyNavMenuNodeCommandParameter = "传递给 Command 的显式业务值；默认值为 null，且不会回退到 ItemKey。";
     public const string ApiPropertyNavMenuIsInlineCollapsed = "将内联 NavMenu 折叠为紧凑的弹出式导航栏。";
     public const string ApiPropertyNavMenuInlineCollapsedWidth = "内联 NavMenu 折叠时使用的宽度。";
     public const string ApiPropertyNavMenuIsDarkStyle = "应用暗色导航菜单样式。";
