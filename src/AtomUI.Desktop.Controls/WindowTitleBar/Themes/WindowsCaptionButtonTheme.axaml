@@ -32,7 +32,7 @@
         
         <Setter Property="Background" Value="Transparent" />
         
-        <Style Selector="^:pointerover">
+        <Style Selector="^[IsPointerOverSuppressed=False]:pointerover">
             <Setter Property="Background" Value="{atom:WindowTitleBarTokenResource ActiveHoverBgColor}" />
         </Style>
 
@@ -41,7 +41,7 @@
         </Style>
         
         <Style Selector="^[IsCloseButton=True]">
-            <Style Selector="^:pointerover">
+            <Style Selector="^[IsPointerOverSuppressed=False]:pointerover">
                 <Setter Property="Background" Value="{atom:WindowTitleBarTokenResource WindowsCloseButtonHoverBgColor}" />
                 
                 <Style Selector="^ /template/ atom|IconPresenter">
@@ -63,12 +63,12 @@
                 <Setter Property="IconBrush"
                         Value="{atom:WindowTitleBarTokenResource InactiveColor}" />
             </Style>
-            <Style Selector="^:pointerover">
+            <Style Selector="^[IsPointerOverSuppressed=False]:pointerover">
                 <Setter Property="Background" Value="{atom:WindowTitleBarTokenResource InactiveHoverBgColor}" />
             </Style>
             
             <Style Selector="^[IsCloseButton=True]">
-                <Style Selector="^:pointerover">
+                <Style Selector="^[IsPointerOverSuppressed=False]:pointerover">
                     <Setter Property="Background" Value="{atom:WindowTitleBarTokenResource WindowsCloseButtonHoverBgColor}" />
                     <Style Selector="^ /template/ atom|IconPresenter">
                         <Setter Property="IconBrush" Value="{atom:WindowTitleBarTokenResource WindowsCloseButtonHoverColor}" />

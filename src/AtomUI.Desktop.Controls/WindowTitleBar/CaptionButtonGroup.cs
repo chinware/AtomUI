@@ -180,6 +180,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
     #endregion
     
     private WindowState? _originWindowState;
+    private WindowState? _lastWindowState;
     private CaptionButton? _fullScreenButton;
     private CaptionButton? _pinButton;
     private CaptionButton? _minimizeButton;
@@ -224,15 +225,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         _disposables.Add(BindUtils.RelayBind(hostWindow, Window.CanMinimizeProperty, this, IsMinimizeCaptionButtonVisibleProperty));
         _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsCloseCaptionButtonVisibleProperty, this, IsCloseCaptionButtonVisibleProperty));
         _disposables.Add(HostWindow.GetObservable(Window.WindowStateProperty)
-                                   .Subscribe(x =>
-                                   {
-                                       PseudoClasses.Set(StdPseudoClass.Minimized, x == WindowState.Minimized);
-                                       PseudoClasses.Set(StdPseudoClass.Normal, x == WindowState.Normal);
-                                       PseudoClasses.Set(StdPseudoClass.Maximized, x == WindowState.Maximized);
-                                       PseudoClasses.Set(StdPseudoClass.Fullscreen, x == WindowState.FullScreen);
-                                       IsWindowMaximized  = x == WindowState.Maximized;
-                                       IsWindowFullScreen = x == WindowState.FullScreen;
-                                   }));
+                                   .Subscribe(HandleWindowStateChanged));
         _disposables.Add(HostWindow.GetObservable(Window.TopmostProperty)
                                    .Subscribe(x =>
                                    {
@@ -248,8 +241,9 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         }
         _disposables.Dispose();
         DisposeTemplateHandlers();
-        _disposables = null;
-        HostWindow   = null;
+        _disposables    = null;
+        HostWindow      = null;
+        _lastWindowState = null;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -300,6 +294,24 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         UpdateFullScreenButtonVisibility();
         UpdateMinimizeButtonVisibility();
         UpdateMaximizeButtonVisibility();
+    }
+
+    private void HandleWindowStateChanged(WindowState windowState)
+    {
+        var stateChanged = _lastWindowState.HasValue && _lastWindowState.Value != windowState;
+        _lastWindowState = windowState;
+
+        PseudoClasses.Set(StdPseudoClass.Minimized, windowState == WindowState.Minimized);
+        PseudoClasses.Set(StdPseudoClass.Normal, windowState == WindowState.Normal);
+        PseudoClasses.Set(StdPseudoClass.Maximized, windowState == WindowState.Maximized);
+        PseudoClasses.Set(StdPseudoClass.Fullscreen, windowState == WindowState.FullScreen);
+        IsWindowMaximized  = windowState == WindowState.Maximized;
+        IsWindowFullScreen = windowState == WindowState.FullScreen;
+
+        if (stateChanged && _maximizeButton is WindowsCaptionButton windowsMaximizeButton)
+        {
+            windowsMaximizeButton.InvalidatePointerOverVisualState();
+        }
     }
 
     private void UpdateFullScreenButtonVisibility()

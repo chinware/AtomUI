@@ -1,0 +1,19 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
+    <StreamGeometry x:Key="WindowCaptionMinimizeIconGeometry">
+        M2048 1229 V1024 H0 V1229 H2048 Z
+    </StreamGeometry>
+    <StreamGeometry x:Key="WindowCaptionMaximizeIconGeometry">
+        M2048 2048 V0 H0 V2048 H2048 Z M1843 1843 H205 V205 H1843 V1843 Z
+    </StreamGeometry>
+    <StreamGeometry x:Key="WindowCaptionRestoreIconGeometry">
+        M2048 410 H1638 V0 H0 V1638 H410 V2048 H2048 V410 Z
+        M1434 1434 H205 V205 H1434 V1434 Z
+        M1843 1843 H614 V1638 H1638 V614 H1843 V1843 Z
+    </StreamGeometry>
+    <StreamGeometry x:Key="WindowCaptionCloseIconGeometry">
+        M1169 1024 L2048 145 L1903 0 L1024 879 L145 0 L0 145 L879 1024 L0 1903 L145 2048
+        L1024 1169 L1903 2048 L2048 1903 Z
+    </StreamGeometry>
+</ResourceDictionary>
