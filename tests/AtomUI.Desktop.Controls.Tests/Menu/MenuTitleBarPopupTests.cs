@@ -8,26 +8,26 @@ namespace AtomUI.Desktop.Controls.Tests.Menu;
 public class MenuTitleBarPopupTests
 {
     [Fact]
-    public void Linux_Csd_TitleBar_MenuItem_Uses_HostWindow_As_Popup_PlacementTarget()
+    public void Detached_TitleBar_MenuItem_Uses_HostWindow_As_Popup_PlacementTarget()
     {
         var menuItemSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Menu/MenuItem.cs"));
-        var supportSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Popup/LinuxCsdPopupSupport.cs"));
+        var supportSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Popup/DetachedTitleBarPopupSupport.cs"));
         var titleBarSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBar.cs"));
 
         titleBarSource.ShouldContain("internal Window? HostWindow => _window;");
 
         menuItemSource.ShouldContain("private Popup? _popup;");
-        menuItemSource.ShouldContain("private IDisposable? _linuxCsdPopupPlacementTracker;");
-        menuItemSource.ShouldContain("LinuxCsdPopupSupport.ConfigurePopupPlacement");
-        menuItemSource.ShouldContain("LinuxCsdPopupSupport.ClearPopupPlacement");
-        menuItemSource.ShouldContain("LinuxCsdPopupSupport.UpdatePopupPlacementTracker");
-        menuItemSource.ShouldContain("LinuxCsdPopupSupport.ClearPopupPlacementTracker");
+        menuItemSource.ShouldContain("private IDisposable? _detachedTitleBarPopupPlacementTracker;");
+        menuItemSource.ShouldContain("DetachedTitleBarPopupSupport.ConfigurePopupPlacement");
+        menuItemSource.ShouldContain("DetachedTitleBarPopupSupport.ClearPopupPlacement");
+        menuItemSource.ShouldContain("DetachedTitleBarPopupSupport.UpdatePopupPlacementTracker");
+        menuItemSource.ShouldContain("DetachedTitleBarPopupSupport.ClearPopupPlacementTracker");
         menuItemSource.ShouldContain("IsTopLevel && IsSubMenuOpen");
         menuItemSource.ShouldNotContain("OperatingSystem.IsLinux()");
         menuItemSource.ShouldNotContain("FindLogicalAncestorOfType<WindowTitleBar>()");
         menuItemSource.ShouldNotContain("PlacementTarget =");
         menuItemSource.ShouldNotContain("PlacementRect =");
-        menuItemSource.IndexOf("ConfigureLinuxCsdPopupPlacement();", StringComparison.Ordinal)
+        menuItemSource.IndexOf("ConfigureDetachedTitleBarPopupPlacement();", StringComparison.Ordinal)
                       .ShouldBeLessThan(menuItemSource.IndexOf("base.OnPropertyChanged(change);",
                           StringComparison.Ordinal));
 
@@ -43,21 +43,22 @@ public class MenuTitleBarPopupTests
         supportSource.ShouldContain("popup.PlacementTarget = hostWindow;");
         supportSource.ShouldContain("popup.PlacementRect = placementRect;");
         supportSource.ShouldContain("new Rect(position.Value, anchor.Bounds.Size)");
+        supportSource.ShouldNotContain("OperatingSystem.");
     }
 
     [Fact]
-    public void Linux_Csd_TitleBar_Menu_Uses_HostWindow_As_DismissRoot()
+    public void Detached_TitleBar_Menu_Uses_HostWindow_As_DismissRoot()
     {
         var menuSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Menu/Menu.cs"));
-        var supportSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Popup/LinuxCsdPopupSupport.cs"));
+        var supportSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Popup/DetachedTitleBarPopupSupport.cs"));
         var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
 
-        menuSource.ShouldContain("private IDisposable? _linuxCsdPopupDismissRoot;");
-        menuSource.ShouldContain("ConfigureLinuxCsdPopupDismissRoot();");
-        menuSource.ShouldContain("LinuxCsdPopupSupport.UpdateDismissRoot");
-        menuSource.ShouldContain("LinuxCsdPopupSupport.ClearDismissRoot");
-        menuSource.ShouldContain("RelayLinuxCsdPopupClickToHostWindow");
-        menuSource.ShouldContain("SyncLinuxCsdRadioGroup");
+        menuSource.ShouldContain("private IDisposable? _detachedTitleBarPopupDismissRoot;");
+        menuSource.ShouldContain("ConfigureDetachedTitleBarPopupDismissRoot();");
+        menuSource.ShouldContain("DetachedTitleBarPopupSupport.UpdateDismissRoot");
+        menuSource.ShouldContain("DetachedTitleBarPopupSupport.ClearDismissRoot");
+        menuSource.ShouldContain("RelayDetachedTitleBarPopupClickToHostWindow");
+        menuSource.ShouldContain("SyncDetachedTitleBarRadioGroup");
         menuSource.ShouldContain("MenuItem.ClickEvent");
         menuSource.ShouldContain("MenuItem.IsCheckStateChangedEvent");
         menuSource.ShouldContain("hostWindow.RaiseRoutedEventFromOverlay((MenuItem)e.Source, relayedArgs);");
@@ -71,12 +72,12 @@ public class MenuTitleBarPopupTests
         menuSource.ShouldNotContain("RoutingStrategies.Tunnel");
         menuSource.ShouldNotContain("FindLogicalAncestorOfType<WindowTitleBar>()");
 
-        supportSource.ShouldContain("OperatingSystem.IsLinux()");
+        supportSource.ShouldNotContain("OperatingSystem.");
         supportSource.ShouldContain("TopLevel.GetTopLevel(control) is not null");
         supportSource.ShouldContain("FindLogicalAncestorOfType<WindowTitleBar>()");
         supportSource.ShouldContain("FindAncestorOfType<WindowTitleBar>()");
         supportSource.ShouldContain("window is not { IsCsdEnabled: true }");
-        supportSource.ShouldContain("TryResolveLinuxCsdHostWindow(Control control, out Window hostWindow)");
+        supportSource.ShouldContain("TryResolveHostWindow(Control control, out Window hostWindow)");
         supportSource.ShouldContain("Func<bool> isOpen");
         supportSource.ShouldContain("Action dismiss");
         supportSource.ShouldContain("Func<ILogical, bool> isInside");
