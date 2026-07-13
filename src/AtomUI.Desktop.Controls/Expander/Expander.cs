@@ -152,10 +152,8 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<Expander, Thickness> HeaderBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<Expander, Thickness>(nameof(HeaderBorderThickness),
-            o => o.HeaderBorderThickness,
-            (o, v) => o.HeaderBorderThickness = v);
+    internal static readonly StyledProperty<Thickness> ContentBorderThicknessProperty =
+        AvaloniaProperty.Register<Expander, Thickness>(nameof(ContentBorderThickness));
     
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<Expander>();
@@ -170,12 +168,10 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
             o => o.EffectiveExpandButtonMargin,
             (o, v) => o.EffectiveExpandButtonMargin = v);
 
-    private Thickness _headerBorderThickness;
-
-    internal Thickness HeaderBorderThickness
+    internal Thickness ContentBorderThickness
     {
-        get => _headerBorderThickness;
-        set => SetAndRaise(HeaderBorderThicknessProperty, ref _headerBorderThickness, value);
+        get => GetValue(ContentBorderThicknessProperty);
+        set => SetValue(ContentBorderThicknessProperty, value);
     }
 
     internal TimeSpan MotionDuration
@@ -240,7 +236,7 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         }
 
         SetupEffectiveBorderThickness();
-        SetupExpanderBorderThickness();
+        ConfigureContentBorderThickness();
         UpdateEffectiveExpandButtonMargin();
         SetupDefaultIcon();
         UpdatePseudoClasses();
@@ -249,7 +245,10 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        CancelContentMotionAndClearValues();
+        if (_motionActor is { } motionActor)
+        {
+            ApplyContentStableState(motionActor, IsExpanded);
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -274,7 +273,7 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
             change.Property == ExpandDirectionProperty)
         {
             SetupEffectiveBorderThickness();
-            SetupExpanderBorderThickness();
+            ConfigureContentBorderThickness();
         }
 
         if (change.Property == HeaderPaddingProperty ||
@@ -340,22 +339,24 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         Debug.Assert(ExpandIcon is not null);
     }
 
-    private void SetupExpanderBorderThickness()
+    private void ConfigureContentBorderThickness()
     {
-        var headerBorderThickness = BorderThickness.Bottom;
-        if (IsGhostStyle || IsBorderless)
+        if (IsBorderless || IsGhostStyle)
         {
-            headerBorderThickness = 0d;
+            ContentBorderThickness = default;
+            return;
         }
 
-        if (ExpandDirection == ExpandDirection.Down || ExpandDirection == ExpandDirection.Left)
+        var line = BorderThickness.Bottom;
+        ContentBorderThickness = ExpandDirection switch
         {
-            HeaderBorderThickness = new Thickness(0, 0, 0, headerBorderThickness);
-        }
-        else if (ExpandDirection == ExpandDirection.Up || ExpandDirection == ExpandDirection.Right)
-        {
-            HeaderBorderThickness = new Thickness(0, headerBorderThickness, 0, 0);
-        }
+            ExpandDirection.Down => new Thickness(0, line, 0, 0),
+            ExpandDirection.Up => new Thickness(0, 0, 0, line),
+            ExpandDirection.Left => new Thickness(0, 0, line, 0),
+            ExpandDirection.Right => new Thickness(line, 0, 0, 0),
+            _ => throw new ArgumentOutOfRangeException(nameof(ExpandDirection), ExpandDirection,
+                "Invalid value for ExpandDirection")
+        };
     }
 
     private void UpdateContentVisibility(bool isVisible)
