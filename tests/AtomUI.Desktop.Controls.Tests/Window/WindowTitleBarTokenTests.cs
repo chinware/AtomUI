@@ -30,7 +30,7 @@ public class WindowTitleBarTokenTests
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs"));
 
-        source.ShouldContain("CaptionButtonIconSize       = SharedToken.IconSizeSM;");
+        source.ShouldContain("CaptionButtonIconSize       = SharedToken.IconSize;");
         source.ShouldContain("WindowsCaptionIconSize      = 11;");
     }
 
@@ -168,6 +168,23 @@ public class WindowTitleBarTokenTests
         windowsStyle.ToString().ShouldNotContain("WindowRestoreOutlined");
         windowsStyle.ToString().ShouldNotContain("WindowCloseOutlined");
         groupTheme.ToString().ShouldContain("WindowTitleBarTokenResource WindowsCaptionIconSize");
+        var extendedActionButtons = windowsStyle.Descendants()
+                                                .Where(element =>
+                                                    element.Name.LocalName == "WindowsCaptionButton" &&
+                                                    (string?)element.Attribute("Classes") == "extended-action")
+                                                .Select(element => (string?)element.Attribute("Name"))
+                                                .ToList();
+        extendedActionButtons.ShouldBe(
+            ["PART_FullScreenButton", "PART_PinButton"],
+            ignoreOrder: true);
+
+        groupTheme.Descendants()
+                  .Single(element =>
+                      element.Name.LocalName == "Style" &&
+                      (string?)element.Attribute("Selector") ==
+                      "^[OsType=Windows] /template/ atom|WindowsCaptionButton.extended-action")
+                  .ToString()
+                  .ShouldContain("WindowTitleBarTokenResource CaptionButtonIconSize");
         buttonTheme.ToString().ShouldContain("WindowTitleBarTokenResource ActiveColor");
         buttonTheme.ToString().ShouldContain("WindowTitleBarTokenResource InactiveColor");
 

@@ -79,6 +79,7 @@
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
                         <atom:WindowsCaptionButton
                             Name="PART_FullScreenButton"
+                            Classes="extended-action"
                             WindowDecorationProperties.ElementRole="FullScreenButton"
                             IsEnabled="{TemplateBinding IsFullScreenCaptionButtonVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
@@ -89,6 +90,7 @@
                             IsVisible="{TemplateBinding IsFullScreenButtonEffectivelyVisible}" />
                         <atom:WindowsCaptionButton
                             Name="PART_PinButton"
+                            Classes="extended-action"
                             WindowDecorationProperties.ElementRole="DecorationsElement"
                             IsVisible="{TemplateBinding IsPinCaptionButtonVisible}"
                             IsEnabled="{TemplateBinding IsPinCaptionButtonVisible}"
@@ -161,6 +163,11 @@
         <Style Selector="^ /template/ atom|WindowsCaptionButton">
             <Setter Property="IconWidth" Value="{atom:WindowTitleBarTokenResource WindowsCaptionIconSize}" />
             <Setter Property="IconHeight" Value="{atom:WindowTitleBarTokenResource WindowsCaptionIconSize}" />
+        </Style>
+
+        <Style Selector="^[OsType=Windows] /template/ atom|WindowsCaptionButton.extended-action">
+            <Setter Property="IconWidth" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
+            <Setter Property="IconHeight" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
         </Style>
         
     </ControlTheme>
