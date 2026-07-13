@@ -7,7 +7,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-internal static class LinuxCsdPopupSupport
+internal static class DetachedTitleBarPopupSupport
 {
     internal static void ConfigurePopupPlacement(Control anchor, Popup? popup, ref bool isConfigured, bool isEnabled = true)
     {
@@ -41,7 +41,7 @@ internal static class LinuxCsdPopupSupport
     {
         if (!isEnabled ||
             popup is null ||
-            !TryResolveLinuxCsdHostWindow(anchor, out _))
+            !TryResolveHostWindow(anchor, out _))
         {
             current?.Dispose();
             return null;
@@ -85,7 +85,7 @@ internal static class LinuxCsdPopupSupport
         Action dismiss,
         Func<ILogical, bool> isInside)
     {
-        if (!TryResolveLinuxCsdHostWindow(owner, out var hostWindow))
+        if (!TryResolveHostWindow(owner, out var hostWindow))
         {
             current?.Dispose();
             return null;
@@ -114,7 +114,7 @@ internal static class LinuxCsdPopupSupport
             return false;
         }
 
-        if (!TryResolveLinuxCsdHostWindow(anchor, out var hostWindow))
+        if (!TryResolveHostWindow(anchor, out var hostWindow))
         {
             return false;
         }
@@ -137,10 +137,10 @@ internal static class LinuxCsdPopupSupport
         return true;
     }
 
-    internal static bool TryResolveLinuxCsdHostWindow(Control control, out Window hostWindow)
+    internal static bool TryResolveHostWindow(Control control, out Window hostWindow)
     {
         hostWindow = null!;
-        if (!OperatingSystem.IsLinux() || TopLevel.GetTopLevel(control) is not null)
+        if (TopLevel.GetTopLevel(control) is not null)
         {
             return false;
         }

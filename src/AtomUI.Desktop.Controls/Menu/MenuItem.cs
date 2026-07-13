@@ -52,8 +52,8 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     public EntityKey? ItemKey { get; set; }
 
     private Popup? _popup;
-    private bool _isUsingLinuxCsdPopupPlacement;
-    private IDisposable? _linuxCsdPopupPlacementTracker;
+    private bool _isUsingDetachedTitleBarPopupPlacement;
+    private IDisposable? _detachedTitleBarPopupPlacementTracker;
 
     private IEnumerable<IMenuItemData> EnumerateChildren()
     {
@@ -145,11 +145,12 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
         {
             if (change.GetNewValue<bool>())
             {
-                ConfigureLinuxCsdPopupPlacement();
+                ConfigureDetachedTitleBarPopupPlacement();
             }
             else
             {
-                LinuxCsdPopupSupport.ClearPopupPlacementTracker(ref _linuxCsdPopupPlacementTracker);
+                DetachedTitleBarPopupSupport.ClearPopupPlacementTracker(
+                    ref _detachedTitleBarPopupPlacementTracker);
             }
         }
 
@@ -273,10 +274,10 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        ClearLinuxCsdPopupPlacement();
+        ClearDetachedTitleBarPopupPlacement();
         base.OnApplyTemplate(e);
         _popup = e.NameScope.Find<Popup>("PART_Popup");
-        ConfigureLinuxCsdPopupPlacement();
+        ConfigureDetachedTitleBarPopupPlacement();
         UpdatePseudoClasses();
         ConfigureMaxPopupHeight();
     }
@@ -284,12 +285,12 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        ConfigureLinuxCsdPopupPlacement();
+        ConfigureDetachedTitleBarPopupPlacement();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        ClearLinuxCsdPopupPlacement();
+        ClearDetachedTitleBarPopupPlacement();
         base.OnDetachedFromLogicalTree(e);
     }
 
@@ -349,28 +350,29 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
             ItemHeight * DisplayPageSize + PopupPadding.Top + PopupPadding.Bottom);
     }
 
-    private void ConfigureLinuxCsdPopupPlacement()
+    private void ConfigureDetachedTitleBarPopupPlacement()
     {
-        LinuxCsdPopupSupport.ConfigurePopupPlacement(
+        DetachedTitleBarPopupSupport.ConfigurePopupPlacement(
             this,
             _popup,
-            ref _isUsingLinuxCsdPopupPlacement,
+            ref _isUsingDetachedTitleBarPopupPlacement,
             IsTopLevel);
-        _linuxCsdPopupPlacementTracker =
-            LinuxCsdPopupSupport.UpdatePopupPlacementTracker(
+        _detachedTitleBarPopupPlacementTracker =
+            DetachedTitleBarPopupSupport.UpdatePopupPlacementTracker(
                 this,
                 _popup,
-                _linuxCsdPopupPlacementTracker,
+                _detachedTitleBarPopupPlacementTracker,
                 () => IsSubMenuOpen,
                 IsTopLevel && IsSubMenuOpen);
     }
 
-    private void ClearLinuxCsdPopupPlacement()
+    private void ClearDetachedTitleBarPopupPlacement()
     {
-        LinuxCsdPopupSupport.ClearPopupPlacementTracker(ref _linuxCsdPopupPlacementTracker);
-        LinuxCsdPopupSupport.ClearPopupPlacement(
+        DetachedTitleBarPopupSupport.ClearPopupPlacementTracker(
+            ref _detachedTitleBarPopupPlacementTracker);
+        DetachedTitleBarPopupSupport.ClearPopupPlacement(
             _popup,
-            ref _isUsingLinuxCsdPopupPlacement);
+            ref _isUsingDetachedTitleBarPopupPlacement);
     }
 
     protected override void OnInitialized()

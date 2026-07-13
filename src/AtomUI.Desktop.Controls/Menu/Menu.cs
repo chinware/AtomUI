@@ -54,8 +54,8 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
     #endregion
 
     private bool _isClosing;
-    private bool _isSyncingLinuxCsdRadioGroup;
-    private IDisposable? _linuxCsdPopupDismissRoot;
+    private bool _isSyncingDetachedTitleBarRadioGroup;
+    private IDisposable? _detachedTitleBarPopupDismissRoot;
 
     static Menu()
     {
@@ -66,8 +66,8 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
         : base(new DefaultMenuInteractionHandler(false))
     {
         this.RegisterTokenResourceScope(MenuToken.ScopeProvider);
-        AddHandler(MenuItem.ClickEvent, RelayLinuxCsdPopupClickToHostWindow);
-        AddHandler(MenuItem.IsCheckStateChangedEvent, SyncLinuxCsdRadioGroup);
+        AddHandler(MenuItem.ClickEvent, RelayDetachedTitleBarPopupClickToHostWindow);
+        AddHandler(MenuItem.IsCheckStateChangedEvent, SyncDetachedTitleBarRadioGroup);
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -160,19 +160,19 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
     {
         base.OnAttachedToLogicalTree(e);
         ConfigureItemContainerTheme(false);
-        ConfigureLinuxCsdPopupDismissRoot();
+        ConfigureDetachedTitleBarPopupDismissRoot();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        LinuxCsdPopupSupport.ClearDismissRoot(ref _linuxCsdPopupDismissRoot);
+        DetachedTitleBarPopupSupport.ClearDismissRoot(ref _detachedTitleBarPopupDismissRoot);
         base.OnDetachedFromLogicalTree(e);
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        ConfigureLinuxCsdPopupDismissRoot();
+        ConfigureDetachedTitleBarPopupDismissRoot();
     }
 
     private void ConfigureItemContainerTheme(bool force)
@@ -264,12 +264,12 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
         });
     }
 
-    private void ConfigureLinuxCsdPopupDismissRoot()
+    private void ConfigureDetachedTitleBarPopupDismissRoot()
     {
-        _linuxCsdPopupDismissRoot =
-            LinuxCsdPopupSupport.UpdateDismissRoot(
+        _detachedTitleBarPopupDismissRoot =
+            DetachedTitleBarPopupSupport.UpdateDismissRoot(
                 this,
-                _linuxCsdPopupDismissRoot,
+                _detachedTitleBarPopupDismissRoot,
                 () => IsOpen,
                 Close,
                 IsInteractionInsideMenu);
@@ -277,10 +277,10 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
 
     // Title-bar overlay menus are outside the host Window's visual tree, so the
     // default menu root cannot relay clicks or manage radio groups for this case.
-    private void RelayLinuxCsdPopupClickToHostWindow(object? sender, RoutedEventArgs e)
+    private void RelayDetachedTitleBarPopupClickToHostWindow(object? sender, RoutedEventArgs e)
     {
         if (e.Source is not MenuItem ||
-            !LinuxCsdPopupSupport.TryResolveLinuxCsdHostWindow(this, out var hostWindow))
+            !DetachedTitleBarPopupSupport.TryResolveHostWindow(this, out var hostWindow))
         {
             return;
         }
@@ -293,18 +293,18 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
         e.Handled = relayedArgs.Handled;
     }
 
-    private void SyncLinuxCsdRadioGroup(object? sender, RoutedEventArgs e)
+    private void SyncDetachedTitleBarRadioGroup(object? sender, RoutedEventArgs e)
     {
-        if (_isSyncingLinuxCsdRadioGroup ||
+        if (_isSyncingDetachedTitleBarRadioGroup ||
             e.Source is not MenuItem checkedItem ||
             !checkedItem.IsChecked ||
             checkedItem.ToggleType != MenuItemToggleType.Radio ||
-            !LinuxCsdPopupSupport.TryResolveLinuxCsdHostWindow(this, out _))
+            !DetachedTitleBarPopupSupport.TryResolveHostWindow(this, out _))
         {
             return;
         }
 
-        _isSyncingLinuxCsdRadioGroup = true;
+        _isSyncingDetachedTitleBarRadioGroup = true;
         try
         {
             if (string.IsNullOrEmpty(checkedItem.GroupName))
@@ -318,7 +318,7 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
         }
         finally
         {
-            _isSyncingLinuxCsdRadioGroup = false;
+            _isSyncingDetachedTitleBarRadioGroup = false;
         }
     }
 
