@@ -312,9 +312,11 @@ public partial class CascaderView : TemplatedControl,
     private bool _defaultExpandPathApplied;
     private bool _isSynchronizingSelectedOptionToView;
     private CascaderViewLevelList? _rootLevelList;
+    private CascaderViewItem? _keyboardCandidateItem;
     
     static CascaderView()
     {
+        FocusableProperty.OverrideDefaultValue<CascaderView>(true);
         SetupExpandAndCollapse();
         SetupChecked();
         CascaderViewItem.DoubleTappedEvent.AddClassHandler<CascaderView>((view, args) => view.HandleCascaderItemDoubleClicked(args));
@@ -372,6 +374,7 @@ public partial class CascaderView : TemplatedControl,
         
         if (_filterList != null)
         {
+            _filterList.ClearCandidate();
             _filterList.SelectionChanged += HandleFilterListSelectionChanged;
         }
     }
@@ -710,26 +713,213 @@ public partial class CascaderView : TemplatedControl,
         }
     }
     
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (!e.Handled)
+        {
+            HandleKeyDown(e);
+        }
+    }
+
     public void HandleKeyDown(KeyEventArgs e)
     {
-        // TODO
         switch (e.Key)
         {
             case Key.Enter:
-                e.Handled = false;
+                e.Handled = IsFiltering ? TryCommitFilterCandidate() : TryCommitKeyboardCandidate();
                 break;
 
             case Key.Up:
-                e.Handled = false;
+                e.Handled = IsFiltering ? TryMoveFilterCandidate(-1) : TryMoveKeyboardCandidate(-1);
                 break;
 
             case Key.Down:
-                e.Handled = false;
+                e.Handled = IsFiltering ? TryMoveFilterCandidate(1) : TryMoveKeyboardCandidate(1);
+                break;
+
+            case Key.Left:
+                e.Handled = !IsFiltering && TryMoveKeyboardCandidateToParent();
+                break;
+
+            case Key.Right:
+                e.Handled = !IsFiltering && TryExpandKeyboardCandidateOrMoveToChild();
                 break;
 
             default:
                 break;
         }
+    }
+
+    private bool TryMoveKeyboardCandidate(int delta)
+    {
+        var candidates = GetVisibleKeyboardCandidates();
+        if (candidates.Count == 0 || delta == 0)
+        {
+            return false;
+        }
+
+        var index = _keyboardCandidateItem != null ? candidates.IndexOf(_keyboardCandidateItem) : -1;
+        if (index == -1)
+        {
+            index = delta > 0 ? 0 : candidates.Count - 1;
+        }
+        else
+        {
+            index += delta;
+            if (index < 0)
+            {
+                index = candidates.Count - 1;
+            }
+            else if (index >= candidates.Count)
+            {
+                index = 0;
+            }
+        }
+
+        SetKeyboardCandidate(candidates[index]);
+        return true;
+    }
+
+    private bool TryExpandKeyboardCandidateOrMoveToChild()
+    {
+        var candidate = GetKeyboardCandidateOrFirstVisibleItem();
+        if (candidate?.AttachedOption == null || candidate.IsLeaf || candidate.IsLoading || !candidate.IsEnabled)
+        {
+            return false;
+        }
+
+        Dispatcher.InvokeAsync(async () =>
+        {
+            await ExpandItemAsync(candidate);
+            ExecuteLayoutPass();
+            var child = GetFirstEnabledChildCandidate(candidate);
+            if (child != null)
+            {
+                SetKeyboardCandidate(child);
+            }
+        });
+        return true;
+    }
+
+    private bool TryMoveKeyboardCandidateToParent()
+    {
+        var candidate = GetKeyboardCandidateOrFirstVisibleItem();
+        if (candidate == null)
+        {
+            return false;
+        }
+
+        if (candidate.AttachedOption?.ParentNode is ICascaderOption parentOption)
+        {
+            var parentList = GetLevelListForOption(parentOption);
+            var parentItem = parentList?.ContainerFromItem(parentOption) as CascaderViewItem;
+            if (parentItem != null)
+            {
+                SetKeyboardCandidate(parentItem);
+                return true;
+            }
+        }
+
+        if (!candidate.IsLeaf && candidate.IsExpanded)
+        {
+            CollapseItem(candidate);
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool TryCommitKeyboardCandidate()
+    {
+        var candidate = GetKeyboardCandidateOrFirstVisibleItem();
+        if (candidate?.AttachedOption == null || candidate.IsLoading || !candidate.IsEnabled)
+        {
+            return false;
+        }
+
+        if (candidate.IsLeaf || IsAllowSelectParent)
+        {
+            SelectOptionFromInteraction(candidate.AttachedOption);
+            return true;
+        }
+
+        return TryExpandKeyboardCandidateOrMoveToChild();
+    }
+
+    private CascaderViewItem? GetKeyboardCandidateOrFirstVisibleItem()
+    {
+        var candidates = GetVisibleKeyboardCandidates();
+        if (_keyboardCandidateItem?.AttachedOption != null && candidates.Contains(_keyboardCandidateItem))
+        {
+            return _keyboardCandidateItem;
+        }
+
+        SetKeyboardCandidate(candidates.Count > 0 ? candidates[0] : null);
+        return _keyboardCandidateItem;
+    }
+
+    private CascaderViewItem? GetFirstEnabledChildCandidate(CascaderViewItem parentItem)
+    {
+        if (parentItem.AttachedOption == null)
+        {
+            return null;
+        }
+
+        var childList = GetLevelList(GetViewOptionLevel(parentItem.AttachedOption));
+        if (childList == null)
+        {
+            return null;
+        }
+
+        for (var i = 0; i < childList.ItemCount; i++)
+        {
+            if (childList.ContainerFromIndex(i) is CascaderViewItem child && child.IsEnabled)
+            {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
+    private void SetKeyboardCandidate(CascaderViewItem? item)
+    {
+        if (ReferenceEquals(_keyboardCandidateItem, item))
+        {
+            return;
+        }
+
+        _keyboardCandidateItem?.SetCurrentValue(CascaderViewItem.IsCandidateSelectedProperty, false);
+        _keyboardCandidateItem = item;
+        _keyboardCandidateItem?.SetCurrentValue(CascaderViewItem.IsCandidateSelectedProperty, true);
+    }
+
+    private List<CascaderViewItem> GetVisibleKeyboardCandidates()
+    {
+        var candidates = new List<CascaderViewItem>();
+        if (_itemsPanel == null)
+        {
+            return candidates;
+        }
+
+        foreach (var child in _itemsPanel.Children)
+        {
+            if (child is not CascaderViewLevelList levelList)
+            {
+                continue;
+            }
+
+            for (var i = 0; i < levelList.ItemCount; i++)
+            {
+                if (levelList.ContainerFromIndex(i) is CascaderViewItem item && item.IsEnabled)
+                {
+                    candidates.Add(item);
+                }
+            }
+        }
+
+        return candidates;
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

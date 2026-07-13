@@ -127,6 +127,8 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
+        OwnerView?.Focus(NavigationMethod.Pointer);
+
         if (e.Source is Visual source)
         {
             var point = e.GetCurrentPoint(source);
@@ -304,6 +306,7 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
         item.ClearValue(CascaderViewItem.IsCheckedProperty);
         item.ClearValue(CascaderViewItem.IsExpandedProperty);
         item.ClearValue(CascaderViewItem.IsCheckBoxEnabledProperty);
+        item.ClearValue(CascaderViewItem.IsCandidateSelectedProperty);
         item.AsyncLoaded = false;
     }
 

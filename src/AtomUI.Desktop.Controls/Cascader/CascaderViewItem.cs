@@ -207,7 +207,10 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
         AvaloniaProperty.RegisterDirect<CascaderViewItem, bool>(nameof(IsMaxSelectReached),
             o => o.IsMaxSelectReached,
             (o, v) => o.IsMaxSelectReached = v);
-    
+
+    internal static readonly StyledProperty<bool> IsCandidateSelectedProperty =
+        AvaloniaProperty.Register<CascaderViewItem, bool>(nameof(IsCandidateSelected));
+
     internal IconTemplate? ExpandIcon
     {
         get => GetValue(ExpandIconProperty);
@@ -246,6 +249,12 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
     {
         get => _isMaxSelectReached;
         set => SetAndRaise(IsMaxSelectReachedProperty, ref _isMaxSelectReached, value);
+    }
+
+    internal bool IsCandidateSelected
+    {
+        get => GetValue(IsCandidateSelectedProperty);
+        set => SetValue(IsCandidateSelectedProperty, value);
     }
 
     public int Level => GetLevel();
