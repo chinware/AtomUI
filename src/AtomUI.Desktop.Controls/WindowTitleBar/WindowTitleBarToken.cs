@@ -163,7 +163,7 @@ internal class WindowTitleBarToken : AbstractControlDesignToken
         PressedBackgroundColor      = SharedToken.ColorBgTextActive;
         LogoAndTitleSpacing         = SharedToken.SizeUnit * 2;
         TitleBarPadding             = new Thickness(LogoAndTitleSpacing * 1.8, 0);
-        CaptionButtonIconSize       = SharedToken.IconSizeSM;
+        CaptionButtonIconSize       = SharedToken.IconSize;
         WindowsCaptionIconSize      = 11;
         LogoSize                    = SharedToken.SizeUnit * 4;
         
