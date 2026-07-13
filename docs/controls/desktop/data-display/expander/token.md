@@ -11,7 +11,7 @@ ExpanderToken 不承载以下状态：
 - `Header`、`Content`、`AddOnContent` 等实例内容。
 - `IsExpanded`、`ExpandDirection`、`TriggerType`、`ExpandIconPosition` 等实例行为状态。
 - `HeaderPadding` / `ContentPadding` 的显式用户覆盖值。
-- `EffectiveBorderThickness`、`HeaderBorderThickness`、`EffectiveExpandButtonMargin` 等运行时派生状态。
+- `EffectiveBorderThickness`、`ContentBorderThickness`、`EffectiveExpandButtonMargin` 等运行时派生状态。
 - motion 运行状态、cancellation 或临时 transform。
 
 ## 2. Token 分类

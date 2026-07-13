@@ -66,16 +66,18 @@ AtomUI 扩展契约：
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_Frame` | `Border` | 根边框、裁剪和整体布局承载。 |
+| `PART_Frame` | `PixelAlignedBorder` | 根边框、裁剪和整体布局承载。 |
 | `PART_MainLayout` | `DockPanel` | Header 与 Content 的 dock 布局。 |
 | `PART_HeaderLayoutTransform` | `LayoutTransformControl` | 横向展开方向下旋转 Header。 |
-| `PART_HeaderDecorator` | `Border` | Header 背景、边框和 padding 承载，也是 Header 点击范围。 |
+| `PART_HeaderDecorator` | `PixelAlignedBorder` | Header 背景和 padding 承载，也是 Header 点击范围；不绘制 Header/Content 分隔线。 |
 | `PART_HeaderLayout` | `Grid` | 展开图标、Header、AddOnContent 的列布局。 |
 | `PART_ExpandButton` | `IconButton` | 展开图标显示和图标触发入口。 |
 | `PART_HeaderPresenter` | `ContentPresenter` | Header 内容和模板承载。 |
 | `PART_AddOnContentPresenter` | `ContentPresenter` | AddOnContent 内容和模板承载。 |
-| `PART_ContentMotionActor` | `LayoutAwareMotionActor` | Content 展开/收起动效承载。 |
+| `PART_ContentMotionActor` | `LayoutAwareMotionActor` | Content 分隔线和 Content 的共同展开/收起动效承载。 |
 | `PART_ContentPresenter` | `ContentPresenter` | Content 内容、模板和 padding 承载。 |
+
+`PART_ContentMotionActor` 内包含一个未命名 `PixelAlignedBorder`。该视觉固定拥有 Content 靠近 Header 一侧的分隔线，但不作为新的 template part 或 selector 契约暴露。
 
 稳定伪类和主题状态：
 
@@ -149,8 +151,8 @@ Expander 的默认视觉由 `ExpanderTheme.axaml` 和 `ExpanderToken` 共同定�
 - 提供 Header、Content、MotionActor 和 Frame 的稳定模板结构。
 - 根据 `SizeType` 选择 Header/Content padding 和字体大小。
 - 根据 `ExpandDirection` 设置 Header dock、旋转和图标旋转。
-- 根据 `IsExpanded` 设置 Header 边框状态。
-- 根据 `IsBorderless` / `IsGhostStyle` 调整根边框和背景。
+- Content 靠近 Header 的一侧固定承担分隔线，分隔线不依赖 `IsExpanded` 或 motion 时序。
+- 根据 `IsBorderless` / `IsGhostStyle` 同时移除根边框和 Content 分隔线，并保持既有背景规则。
 - 根据 `TriggerType` 设置可点击区域 cursor。
 - 根据自定义 padding 伪类覆盖 Header/Content padding 和展开图标间距。
 
@@ -163,7 +165,7 @@ ExpanderToken
    ↓
 ExpanderTheme
    ↓
-Frame + Header + ExpandButton + Content
+Frame + Header + ExpandButton + Content Border + Content
 ```
 
 SharedToken 提供全局边框、字体、动效时长、图标大小和基础颜色。ExpanderToken 提供 Header/Content padding、Header/Content 背景、圆角和展开图标默认外边距。
@@ -191,11 +193,13 @@ Expander 与 Collapse 的边界：
 
 - 公共 API 名称、类型、默认值和继承语义不能在未授权情况下改变。
 - `Header`、`Content`、`IsExpanded`、`ExpandDirection` 继续遵守 Avalonia `Expander` 语义。
-- `PART_Frame`、`PART_HeaderDecorator`、`PART_ExpandButton`、`PART_HeaderPresenter`、`PART_AddOnContentPresenter`、`PART_ContentMotionActor`、`PART_ContentPresenter` 的名称和职责不变。
+- `PART_Frame`、`PART_HeaderDecorator`、`PART_ExpandButton`、`PART_HeaderPresenter`、`PART_AddOnContentPresenter`、`PART_ContentMotionActor`、`PART_ContentPresenter` 的名称和外部协作语义保持稳定。
+- `PART_HeaderDecorator` 只负责 Header 背景和 padding，不承担 Header/Content 分隔线。
+- Header/Content 分隔线必须位于 `PART_ContentMotionActor` 内部，并随 Content 自然显示、裁剪和隐藏。
 - `TriggerType=Icon` 时 Header 点击不能切换 `IsExpanded`。
 - `TriggerType=Header` 时 Header 区域点击应切换 `IsExpanded`。
 - 默认 `ExpandIcon` 为空时必须补齐 `RightOutlined`。
-- `IsBorderless` 和 `IsGhostStyle` 必须让有效根边框厚度为 `0`。
+- `IsBorderless` 和 `IsGhostStyle` 必须让有效根边框和 Content 分隔线厚度都为 `0`。
 - `IsMotionEnabled=false` 必须直接进入稳定显示/隐藏状态，不留下 motion 临时值。
 - 动画取消、模板重套用和 detach 时不能保留旧 motion actor 的运动属性或未释放 cancellation。
 - `SizeType=Custom` 默认沿用 Middle 尺寸分支，显式 padding 覆盖默认 token。
@@ -220,6 +224,12 @@ Expander 与 Collapse 的边界：
 ### 8.4 Motion 归一模型
 
 动效的最终状态以最新 `IsExpanded` 为准。取消旧 motion 后必须清理 `Height`、`MotionTransform`、`MotionTransformOperations` 和 `Transitions` 等临时值，再进入下一次 motion 或稳定状态。
+
+### 8.5 结构化分隔线模型
+
+Header/Content 分隔线由未命名的 Content `PixelAlignedBorder` 拥有，不由 Header 或 `IsExpanded` selector 控制。默认 bordered 模式下，分隔线位于 Content 靠近 Header 的一侧：`Down` 为顶边、`Up` 为底边、`Left` 为右边、`Right` 为左边。Borderless 和 Ghost 模式下，根边框和分隔线均为零，既有背景规则保持不变。
+
+分隔线与 Content 一起位于 `PART_ContentMotionActor` 内，因此收起时随 Content 自然隐藏。实现不得通过透明 Brush、边框 transition、延迟刷新或 motion completion 回调维护分隔线。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 

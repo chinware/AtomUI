@@ -13,7 +13,6 @@
                                LastChildFill="True">
                         <LayoutTransformControl Name="PART_HeaderLayoutTransform">
                             <atom:PixelAlignedBorder Name="PART_HeaderDecorator"
-                                                     BorderThickness="{TemplateBinding HeaderBorderThickness}"
                                                      Padding="{TemplateBinding HeaderPadding}">
                                 <Grid Name="PART_HeaderLayout"
                                       ColumnDefinitions="Auto, *, Auto, Auto">
@@ -51,10 +50,14 @@
                             Name="PART_ContentMotionActor"
                             ClipToBounds="True"
                             IsVisible="False">
-                            <ContentPresenter Name="PART_ContentPresenter"
-                                              Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              Padding="{TemplateBinding ContentPadding}"/>
+                            <atom:PixelAlignedBorder
+                                BorderBrush="{atom:SharedTokenResource ColorBorder}"
+                                BorderThickness="{TemplateBinding ContentBorderThickness}">
+                                <ContentPresenter Name="PART_ContentPresenter"
+                                                  Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Padding="{TemplateBinding ContentPadding}" />
+                            </atom:PixelAlignedBorder>
                         </atom:LayoutAwareMotionActor>
                     </DockPanel>
                 </atom:PixelAlignedBorder>
@@ -73,7 +76,6 @@
 
         <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
             <Setter Property="Background" Value="{atom:ExpanderTokenResource HeaderBg}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
@@ -81,19 +83,9 @@
             <Setter Property="Margin" Value="0, 1, 0, 0" />
         </Style>
 
-        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
-        </Style>
-
         <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
             <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
-        </Style>
-
-        <Style Selector="^[IsExpanded=True]">
-            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
-                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
-            </Style>
         </Style>
 
         <Style Selector="^[ExpandIconPosition=Start]">

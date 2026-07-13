@@ -20,7 +20,7 @@ Expander 的实现重点是在 Avalonia `Expander` 基础上稳定扩展 AtomUI 
 
 ## 3. 核心类职责
 
-`Expander` 继承 `Avalonia.Controls.Expander`。它负责把 AtomUI 扩展属性转换为模板可消费的 internal state，并协调 Header 点击、图标点击、边框状态和 Content motion。
+`Expander` 继承 `Avalonia.Controls.Expander`。它负责把 AtomUI 扩展属性转换为模板可消费的 internal state，并协调 Header 点击、图标点击、结构化 Content 分隔线和 Content motion。
 
 `ExpanderPseudoClass` 是主题状态常量集合。它定义方向伪类和自定义 padding 伪类，供主题 selector 使用。
 
@@ -44,11 +44,13 @@ OnPointerPressed / PART_ExpandButton.Click
 边框状态流：
 
 ```text
-BorderThickness / IsGhostStyle / IsBorderless / ExpandDirection
+BorderThickness / IsGhostStyle / IsBorderless
   → SetupEffectiveBorderThickness()
-  → SetupExpanderBorderThickness()
   → PART_Frame.BorderThickness
-  → PART_HeaderDecorator.BorderThickness
+
+BorderThickness / IsGhostStyle / IsBorderless / ExpandDirection
+  → ConfigureContentBorderThickness()
+  → PART_ContentMotionActor / unnamed PixelAlignedBorder.BorderThickness
 ```
 
 自定义 padding 状态流：
@@ -85,12 +87,12 @@ ExpandIcon == null
 3. 从 NameScope 获取 `PART_ContentMotionActor`、`PART_HeaderDecorator` 和 `PART_ExpandButton`。
 4. 把新 motion actor 归一到当前 `IsExpanded` 的稳定状态。
 5. 订阅新 `_expandButton.Click`。
-6. 同步有效边框、Header 边框、图标 margin、默认图标和自定义 padding 伪类。
+6. 同步有效外框、Content 分隔线、图标 margin、默认图标和自定义 padding 伪类。
 
 脱离视觉树：
 
-- 取消正在运行的 content motion。
-- 清理 motion actor 的临时布局和 transform 值。
+- 通过 `ApplyContentStableState` 按当前 `IsExpanded` 归一 motion actor。
+- 归一过程取消正在运行的 content motion，清理临时布局和 transform 值，并同步最终 `Opacity` / `IsVisible`。
 
 模板重套用和 detach 不能让旧 part 继续被事件、动画任务或 cancellation 持有。
 
@@ -161,14 +163,18 @@ CompleteContentMotion
 
 这些属性由 motion 过程写入。模板重套用、detach、取消 motion 和进入稳定状态时都必须清理，避免旧动画影响下一次布局。
 
-### 7.4 Header 边框计算
+### 7.4 Content 结构化分隔线
 
-`SetupExpanderBorderThickness` 先取 `BorderThickness.Bottom` 作为 Header 与 Content 分割线厚度。`IsGhostStyle` 或 `IsBorderless` 下分割线厚度归零。
+`ConfigureContentBorderThickness` 取 `BorderThickness.Bottom` 作为 Header 与 Content 分隔线厚度。`IsGhostStyle` 或 `IsBorderless` 下，`SetupEffectiveBorderThickness` 和该方法分别把根边框与分隔线厚度归零，既有背景 selector 保持不变。
 
-方向映射：
+分隔线位于 `PART_ContentMotionActor` 内部的 unnamed `PixelAlignedBorder`，Header 不承担边框。方向映射：
 
-- `Down` / `Left`：分割线在 Header 下边。
-- `Up` / `Right`：分割线在 Header 上边。
+- `Down`：Content 顶边。
+- `Up`：Content 底边。
+- `Left`：Content 右边。
+- `Right`：Content 左边。
+
+边框计算不读取 `IsExpanded`。收起时 motion actor 隐藏，分隔线随 Content 自然消失；展开、收起或快速反向 motion 不修改分隔线 Thickness 或 Brush。
 
 ### 7.5 自定义 HeaderPadding 下的图标间距
 
@@ -203,8 +209,9 @@ AOT 边界：
 
 性能边界：
 
-- Header/Content 默认视觉由静态 AXAML 提供，不在运行时动态构造模板视觉。
+- Header/Content 默认视觉和未命名 Content 分隔线由静态 AXAML 提供，不在运行时动态构造模板视觉。
 - 展开/收起只操作单个 `LayoutAwareMotionActor`，不遍历复杂子树。
+- 展开、收起和 motion completion 不重新计算分隔线，也不创建边框 transition 或透明占位。
 - 自定义 padding 的 margin 计算是常量时间，不进入渲染热路径。
 
 ## 9. 维护不变量
@@ -217,6 +224,7 @@ AOT 边界：
 - 默认 `ExpandIcon` 为空时必须使用 `RightOutlined`，且不覆盖用户显式图标。
 - `IsMotionEnabled=false` 不能留下 Height 或 transform 临时值。
 - `CompleteContentMotion` 必须校验当前 cancellation 和当前 motion actor。
+- Header/Content 分隔线只能由方向、边框厚度和视觉模式决定，不能依赖 `IsExpanded` 或 motion 时序。
 - `ExpandDirection` 的 motion 方向、Header dock、Header transform 和图标旋转必须同步维护。
 - 自定义 HeaderPadding 下的图标间距必须跟随 HeaderPadding 对应方向，不回退到默认 SizeType token。
 - `:custom-header-padding` 和 `:custom-content-padding` 的伪类语义不能混用。
@@ -227,9 +235,12 @@ AOT 边界：
 验证范围：
 
 - `ExpanderBehaviorTests.Custom_Header_Padding_Uses_Compact_Expand_Icon_Layout`：自定义 HeaderPadding 下展开图标间距和垂直居中。
-- `ExpanderBehaviorTests.Ghost_And_Borderless_Mode_Update_Frame_Border_At_Runtime`：运行时边框模式切换。
+- `ExpanderBehaviorTests.Content_Separator_Is_Owned_By_Content_And_Follows_Direction`：Header 分隔线归零、未命名 Content border owner 和四方向 thickness 映射。
+- `ExpanderBehaviorTests.Content_Separator_Remains_Adjacent_To_Header_In_Every_Direction`：四方向下 Header 与 Content 的物理相邻关系。
+- `ExpanderBehaviorTests.Ghost_And_Borderless_Mode_Update_Frame_And_Content_Separator_At_Runtime`：运行时切换默认、Borderless 和 Ghost 模式时根边框与 Content 分隔线同步归零或恢复。
 - `ExpanderBehaviorTests.Icon_Trigger_Does_Not_Toggle_From_Header_Click`：Icon 触发模式下 Header 点击不切换。
-- `ExpanderBehaviorTests.Content_Motion_Reconciles_Final_Visibility_When_Expanded_Changes_During_Animation`：动画中状态变化后的最终可见性。
+- `ExpanderBehaviorTests.Content_Motion_Reversal_Does_Not_Change_Separator_And_Uses_Latest_Expanded_State`：快速反向 motion 使用最新展开状态，且分隔线保持不变。
+- `ExpanderBehaviorTests.Template_Reapply_Clears_Old_Content_Motion_Actor_Values` / `Detach_Clears_Active_Content_Motion_Actor_Values`：模板重套用和 detach 的 cancellation 与临时值清理。
 - Gallery Expander 示例：Basic、Size、Borderless、Ghost、Custom Padding、Direction、Nested、No Arrow、Icon Position、Trigger。
 - 修改主题或动效时运行 Expander 相关测试；影响 shared motion 或 theme 时扩大到完整 `AtomUI.Desktop.Controls.Tests`。
 - 文档改动运行 `git diff --check`，并检查相对链接存在。

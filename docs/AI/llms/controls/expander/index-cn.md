@@ -68,16 +68,18 @@ AtomUI 扩展契约：
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_Frame` | `Border` | 根边框、裁剪和整体布局承载。 |
+| `PART_Frame` | `PixelAlignedBorder` | 根边框、裁剪和整体布局承载。 |
 | `PART_MainLayout` | `DockPanel` | Header 与 Content 的 dock 布局。 |
 | `PART_HeaderLayoutTransform` | `LayoutTransformControl` | 横向展开方向下旋转 Header。 |
-| `PART_HeaderDecorator` | `Border` | Header 背景、边框和 padding 承载，也是 Header 点击范围。 |
+| `PART_HeaderDecorator` | `PixelAlignedBorder` | Header 背景和 padding 承载，也是 Header 点击范围；不绘制 Header/Content 分隔线。 |
 | `PART_HeaderLayout` | `Grid` | 展开图标、Header、AddOnContent 的列布局。 |
 | `PART_ExpandButton` | `IconButton` | 展开图标显示和图标触发入口。 |
 | `PART_HeaderPresenter` | `ContentPresenter` | Header 内容和模板承载。 |
 | `PART_AddOnContentPresenter` | `ContentPresenter` | AddOnContent 内容和模板承载。 |
-| `PART_ContentMotionActor` | `LayoutAwareMotionActor` | Content 展开/收起动效承载。 |
+| `PART_ContentMotionActor` | `LayoutAwareMotionActor` | Content 分隔线和 Content 的共同展开/收起动效承载。 |
 | `PART_ContentPresenter` | `ContentPresenter` | Content 内容、模板和 padding 承载。 |
+
+`PART_ContentMotionActor` 内包含一个未命名 `PixelAlignedBorder`。该视觉固定拥有 Content 靠近 Header 一侧的分隔线，但不作为新的 template part 或 selector 契约暴露。
 
 稳定伪类和主题状态：
 
@@ -215,8 +217,8 @@ Expander 的默认视觉由 `ExpanderTheme.axaml` 和 `ExpanderToken` 共同定�
 - 提供 Header、Content、MotionActor 和 Frame 的稳定模板结构。
 - 根据 `SizeType` 选择 Header/Content padding 和字体大小。
 - 根据 `ExpandDirection` 设置 Header dock、旋转和图标旋转。
-- 根据 `IsExpanded` 设置 Header 边框状态。
-- 根据 `IsBorderless` / `IsGhostStyle` 调整根边框和背景。
+- Content 靠近 Header 的一侧固定承担分隔线，分隔线不依赖 `IsExpanded` 或 motion 时序。
+- 根据 `IsBorderless` / `IsGhostStyle` 同时移除根边框和 Content 分隔线，并保持既有背景规则。
 - 根据 `TriggerType` 设置可点击区域 cursor。
 - 根据自定义 padding 伪类覆盖 Header/Content padding 和展开图标间距。
 
@@ -229,7 +231,7 @@ ExpanderToken
    ↓
 ExpanderTheme
    ↓
-Frame + Header + ExpandButton + Content
+Frame + Header + ExpandButton + Content Border + Content
 ```
 
 SharedToken 提供全局边框、字体、动效时长、图标大小和基础颜色。ExpanderToken 提供 Header/Content padding、Header/Content 背景、圆角和展开图标默认外边距。
@@ -243,7 +245,7 @@ ExpanderToken 不承载以下状态：
 - `Header`、`Content`、`AddOnContent` 等实例内容。
 - `IsExpanded`、`ExpandDirection`、`TriggerType`、`ExpandIconPosition` 等实例行为状态。
 - `HeaderPadding` / `ContentPadding` 的显式用户覆盖值。
-- `EffectiveBorderThickness`、`HeaderBorderThickness`、`EffectiveExpandButtonMargin` 等运行时派生状态。
+- `EffectiveBorderThickness`、`ContentBorderThickness`、`EffectiveExpandButtonMargin` 等运行时派生状态。
 - motion 运行状态、cancellation 或临时 transform。
 
 ## AOT 与裁剪注意事项
@@ -268,8 +270,9 @@ AOT 边界：
 
 性能边界：
 
-- Header/Content 默认视觉由静态 AXAML 提供，不在运行时动态构造模板视觉。
+- Header/Content 默认视觉和未命名 Content 分隔线由静态 AXAML 提供，不在运行时动态构造模板视觉。
 - 展开/收起只操作单个 `LayoutAwareMotionActor`，不遍历复杂子树。
+- 展开、收起和 motion completion 不重新计算分隔线，也不创建边框 transition 或透明占位。
 - 自定义 padding 的 margin 计算是常量时间，不进入渲染热路径。
 
 ## 源码索引

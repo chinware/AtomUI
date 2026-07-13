@@ -3,6 +3,11 @@
 本文档记录 Expander 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-07-13
+
+- Theme
+  - Move the internal Header/Content separator from `PART_HeaderDecorator` to an unnamed Content border inside `PART_ContentMotionActor`, preserving public API, stable template parts, Token contracts, and Borderless/Ghost behavior across all four expand directions.
+
 ## 2026-06-26
 
 - Docs
