@@ -8,4 +8,16 @@
             <atom:ListBoxTheme TargetType="atom:CascaderViewFilterList" />
         </ControlTheme.BasedOn>
     </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type atom:CascaderViewFilterListItem}" TargetType="atom:CascaderViewFilterListItem">
+        <ControlTheme.BasedOn>
+            <atom:ListBoxItemTheme TargetType="atom:CascaderViewFilterListItem" />
+        </ControlTheme.BasedOn>
+
+        <Style Selector="^:is(atom|CascaderViewFilterListItem)">
+            <Style Selector="^[IsSelected=False][IsCandidateSelected=True]">
+                <Setter Property="Background" Value="{atom:ListViewTokenResource ItemHoverBgColor}" />
+            </Style>
+        </Style>
+    </ControlTheme>
 </ResourceDictionary>

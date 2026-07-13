@@ -2,6 +2,8 @@ using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Headless;
+using Avalonia.Input;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -108,6 +110,174 @@ public class CascaderSearchSelectionTests
     }
 
     [Fact]
+    public void Search_Result_Down_Key_Moves_Candidate_Without_Selecting()
+    {
+        var (options, _, _, _) = CreateLakeOptions();
+        var cascader = new Desktop.Controls.Cascader
+        {
+            Width           = 240,
+            IsFilterEnabled = true,
+            IsMotionEnabled = false,
+            OptionsSource   = options
+        };
+        var window = CreateWindow(cascader);
+
+        try
+        {
+            cascader.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var cascaderView = GetCascaderView(cascader);
+            cascader.FilterValue = "lake";
+            Dispatcher.UIThread.RunJobs();
+
+            var filterList = WaitFor(
+                () => cascaderView.GetVisualDescendants()
+                                  .OfType<CascaderViewFilterList>()
+                                  .FirstOrDefault(list => list.IsVisible),
+                "the popup filter result list should be visible after setting a filter value.");
+            filterList.ItemCount.ShouldBe(2);
+
+            RaiseKeyDown(cascader, Key.Down);
+            Dispatcher.UIThread.RunJobs();
+
+            cascader.SelectedOption.ShouldBeNull();
+            cascaderView.SelectedOption.ShouldBeNull();
+            cascaderView.IsFiltering.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Search_Result_Enter_Key_Commits_Current_Candidate()
+    {
+        var (options, _, westLake, xuanwuLake) = CreateLakeOptions();
+        var cascader = new Desktop.Controls.Cascader
+        {
+            Width           = 240,
+            IsFilterEnabled = true,
+            IsMotionEnabled = false,
+            OptionsSource   = options
+        };
+        var window = CreateWindow(cascader);
+
+        try
+        {
+            cascader.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var cascaderView = GetCascaderView(cascader);
+            cascader.FilterValue = "lake";
+            Dispatcher.UIThread.RunJobs();
+
+            var filterList = WaitFor(
+                () => cascaderView.GetVisualDescendants()
+                                  .OfType<CascaderViewFilterList>()
+                                  .FirstOrDefault(list => list.IsVisible),
+                "the popup filter result list should be visible after setting a filter value.");
+            filterList.ItemCount.ShouldBe(2);
+
+            RaiseKeyDown(cascader, Key.Down);
+            Dispatcher.UIThread.RunJobs();
+            RaiseKeyDown(cascader, Key.Enter);
+            Dispatcher.UIThread.RunJobs();
+
+            cascader.SelectedOption.ShouldBeSameAs(xuanwuLake);
+            cascader.SelectedOption.ShouldNotBeSameAs(westLake);
+            cascaderView.IsFiltering.ShouldBeFalse();
+            cascaderView.FilterValue.ShouldBeNull();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Tree_Mode_Right_And_Enter_Navigate_To_Leaf_And_Select()
+    {
+        var (options, _, westLake, _) = CreateLakeOptions();
+        var cascader = new Desktop.Controls.Cascader
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = options
+        };
+        var window = CreateWindow(cascader);
+
+        try
+        {
+            cascader.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var cascaderView = GetCascaderView(cascader);
+            FindCascaderViewItem(cascaderView, "Zhejiang").ShouldNotBeNull();
+
+            RaiseKeyDown(cascader, Key.Right);
+            Dispatcher.UIThread.RunJobs();
+            WaitFor(() => FindCascaderViewItem(cascaderView, "Hangzhou"),
+                "Right should expand the root candidate and reveal its first child.");
+
+            RaiseKeyDown(cascader, Key.Right);
+            Dispatcher.UIThread.RunJobs();
+            WaitFor(() => FindCascaderViewItem(cascaderView, "West Lake"),
+                "Right should expand the child candidate and reveal its first leaf.");
+
+            RaiseKeyDown(cascader, Key.Enter);
+            Dispatcher.UIThread.RunJobs();
+
+            cascader.SelectedOption.ShouldBeSameAs(westLake);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Tree_Mode_Left_Key_Returns_Candidate_To_Parent()
+    {
+        var (options, _, westLake, _) = CreateLakeOptions();
+        var cascader = new Desktop.Controls.Cascader
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = options
+        };
+        var window = CreateWindow(cascader);
+
+        try
+        {
+            cascader.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var cascaderView = GetCascaderView(cascader);
+            RaiseKeyDown(cascader, Key.Right);
+            Dispatcher.UIThread.RunJobs();
+            RaiseKeyDown(cascader, Key.Right);
+            Dispatcher.UIThread.RunJobs();
+            WaitFor(() => FindCascaderViewItem(cascaderView, "West Lake"),
+                "Right should reveal the first leaf candidate before Left navigation.");
+
+            RaiseKeyDown(cascader, Key.Left);
+            Dispatcher.UIThread.RunJobs();
+            RaiseKeyDown(cascader, Key.Enter);
+            Dispatcher.UIThread.RunJobs();
+
+            cascader.SelectedOption.ShouldNotBeSameAs(westLake);
+            cascader.SelectedOption.ShouldBeNull();
+            FindCascaderViewItem(cascaderView, "West Lake").ShouldNotBeNull();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Selecting_Filter_Result_From_Popup_Hosted_CascaderView_Clears_Filter_Before_Selecting()
     {
         var (options, lingyin) = CreateProvinceOptions();
@@ -145,6 +315,60 @@ public class CascaderSearchSelectionTests
             cascaderView.SelectedOption.ShouldBeSameAs(lingyin);
             cascaderView.IsFiltering.ShouldBeFalse();
             cascaderView.FilterValue.ShouldBeNull();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Pointer_Press_In_Standalone_View_Moves_Focus_From_External_Control_To_CascaderView()
+    {
+        var (options, _, _, _) = CreateLakeOptions();
+        var externalFocusTarget = new Button
+        {
+            Content = "External"
+        };
+        var cascaderView = new CascaderView
+        {
+            IsMotionEnabled      = false,
+            IsShowEmptyIndicator = false,
+            OptionsSource        = options
+        };
+        var root = new StackPanel
+        {
+            Children =
+            {
+                externalFocusTarget,
+                cascaderView
+            }
+        };
+        var window = CreateWindow(root);
+
+        try
+        {
+            externalFocusTarget.Focus(NavigationMethod.Tab).ShouldBeTrue();
+            Dispatcher.UIThread.RunJobs();
+            TopLevel.GetTopLevel(cascaderView)?.FocusManager?.GetFocusedElement()
+                    .ShouldBe(externalFocusTarget);
+
+            var zhejiangItem = WaitFor(
+                () => FindCascaderViewItem(cascaderView, "Zhejiang"),
+                "the root option should be realized before pointer focus transfer is tested.");
+
+            RaisePointerPressed(zhejiangItem);
+            Dispatcher.UIThread.RunJobs();
+
+            TopLevel.GetTopLevel(cascaderView)?.FocusManager?.GetFocusedElement()
+                    .ShouldBe(cascaderView,
+                        "standalone CascaderView owns arrow-key navigation after pointer interaction, so focus must leave the previously focused control such as the Gallery NavMenu.");
+
+            window.KeyPress(Key.Right, RawInputModifiers.None, PhysicalKey.ArrowRight, null);
+            Dispatcher.UIThread.RunJobs();
+
+            WaitFor(() => FindCascaderViewItem(cascaderView, "Hangzhou"),
+                "Right should be routed to the focused CascaderView and expand the current tree candidate.");
         }
         finally
         {
@@ -257,6 +481,99 @@ public class CascaderSearchSelectionTests
         };
 
         return ([zhejiang, jiangsu], lingyin);
+    }
+
+    private static (
+        IReadOnlyList<ICascaderOption> Options,
+        ICascaderOption Lingyin,
+        ICascaderOption WestLake,
+        ICascaderOption XuanwuLake) CreateLakeOptions()
+    {
+        var westLake = new CascaderOption
+        {
+            Header = "West Lake",
+            Value  = "west-lake"
+        };
+        var lingyin = new CascaderOption
+        {
+            Header = "Lingyin shi",
+            Value  = "lingyin"
+        };
+        var zhejiang = new CascaderOption
+        {
+            Header = "Zhejiang",
+            Value  = "zhejiang",
+            Children =
+            [
+                new CascaderOption
+                {
+                    Header = "Hangzhou",
+                    Value  = "hangzhou",
+                    Children =
+                    [
+                        westLake,
+                        lingyin
+                    ]
+                }
+            ]
+        };
+        var xuanwuLake = new CascaderOption
+        {
+            Header = "Xuanwu Lake",
+            Value  = "xuanwu-lake"
+        };
+        var jiangsu = new CascaderOption
+        {
+            Header = "Jiangsu",
+            Value  = "jiangsu",
+            Children =
+            [
+                new CascaderOption
+                {
+                    Header = "Nanjing",
+                    Value  = "nanjing",
+                    Children =
+                    [
+                        xuanwuLake
+                    ]
+                }
+            ]
+        };
+
+        return ([zhejiang, jiangsu], lingyin, westLake, xuanwuLake);
+    }
+
+    private static void RaisePointerPressed(Control source)
+    {
+        source.RaiseEvent(new PointerPressedEventArgs(
+            source,
+            new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true),
+            source,
+            default,
+            0,
+            new PointerPointProperties(RawInputModifiers.None, PointerUpdateKind.LeftButtonPressed),
+            KeyModifiers.None));
+    }
+
+    private static void RaiseKeyDown(InputElement target, Key key)
+    {
+        target.RaiseEvent(new KeyEventArgs
+        {
+            RoutedEvent  = InputElement.KeyDownEvent,
+            Source       = target,
+            Key          = key,
+            PhysicalKey  = key switch
+            {
+                Key.Enter  => PhysicalKey.Enter,
+                Key.Escape => PhysicalKey.Escape,
+                Key.Up     => PhysicalKey.ArrowUp,
+                Key.Down   => PhysicalKey.ArrowDown,
+                Key.Left   => PhysicalKey.ArrowLeft,
+                Key.Right  => PhysicalKey.ArrowRight,
+                _          => PhysicalKey.None
+            },
+            KeyModifiers = KeyModifiers.None
+        });
     }
 
     private static CascaderView GetCascaderView(Desktop.Controls.Cascader cascader)

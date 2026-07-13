@@ -92,6 +92,10 @@
             <Setter Property="Background" Value="{atom:CascaderTokenResource OptionHoverBg}" />
         </Style>
 
+        <Style Selector="^[IsExpanded=False][IsCandidateSelected=True]">
+            <Setter Property="Background" Value="{atom:CascaderTokenResource OptionHoverBg}" />
+        </Style>
+
         <Style Selector="^[IsExpanded=True]">
             <Setter Property="Background"
                     Value="{atom:CascaderTokenResource OptionSelectedBg}" />
