@@ -530,15 +530,17 @@ public class WindowResizeArtifactTests
     public void Windows_Window_Uses_Avalonia_Csd_Without_The_Legacy_Chrome_Hook()
     {
         var managerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"));
+        var windowsManagerSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/WindowsWindowChromeManager.cs"));
         var windowSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
-        var inactiveFrameSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WindowsInactiveFramePolicy.cs"));
         var nativeSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
         var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Windows/WindowUtils.Interop.cs"));
         var captionSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
         var document = XDocument.Load(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
+        var decorationsDocument = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"));
         var captionDocument = XDocument.Load(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"));
         XNamespace av = "https://github.com/avaloniaui";
@@ -551,20 +553,25 @@ public class WindowResizeArtifactTests
                                            .Attribute("WindowDecorationProperties.ElementRole");
         }
 
-        managerSource.ShouldNotContain("WindowsWindowChromeManager.Attach(window)");
+        managerSource.ShouldContain("Windows11InitialBuild = 22000");
+        managerSource.ShouldContain("WindowsWindowChromeManager.Attach(window)");
+        managerSource.ShouldContain("!OperatingSystem.IsWindowsVersionAtLeast(10, 0, Windows11InitialBuild)");
+        windowsManagerSource.ShouldContain("Win32Properties.AddWindowStylesCallback");
+        windowsManagerSource.ShouldContain("Win32Properties.RemoveWindowStylesCallback");
+        windowsManagerSource.ShouldContain("ApplyDrawnDecorationsWindowStyles");
+        windowsManagerSource.ShouldContain("TryUpdateDrawnDecorations(parts)");
+        windowsManagerSource.ShouldContain("ComputeDecorationParts");
+        windowsManagerSource.ShouldNotContain("AddWndProcHookCallback");
+        windowsManagerSource.ShouldNotContain("WindowMessageNonClientActivate");
         File.Exists(Path.Combine(
             Path.GetDirectoryName(GetRepoFile(
                 "src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"))!,
-            "WindowsWindowChromeManager.cs")).ShouldBeFalse();
+            "WindowsInactiveFramePolicy.cs")).ShouldBeFalse();
         windowSource.ShouldContain("else if (OperatingSystem.IsWindows())");
         windowSource.ShouldContain("IsCsdEnabled = true;");
-        windowSource.ShouldContain("WindowsInactiveFramePolicy.Apply(this)");
-        inactiveFrameSource.ShouldContain("Win32Properties.AddWndProcHookCallback");
-        inactiveFrameSource.ShouldContain("WindowMessageNonClientActivate");
-        inactiveFrameSource.ShouldNotContain("WM_NCCALCSIZE");
-        inactiveFrameSource.ShouldNotContain("WM_NCHITTEST");
-        inactiveFrameSource.ShouldNotContain("DwmExtendFrameIntoClientArea");
-        inactiveFrameSource.ShouldNotContain("AddWindowStylesCallback");
+        windowSource.ShouldContain("IsWindowsDrawnDecorationsEnabledProperty");
+        windowSource.ShouldNotContain("WindowsInactiveFramePolicy.Apply(this)");
+        windowSource.ShouldNotContain("AddWndProcHookCallback");
         nativeSource.ShouldNotContain("WinWndProcHook");
         nativeSource.ShouldNotContain("ForceWinNonClientFrameChanged");
         interopSource.ShouldNotContain("WM_NCCALCSIZE");
@@ -583,43 +590,124 @@ public class WindowResizeArtifactTests
         document.Descendants(av + "Setter").ShouldNotContain(setter =>
             (string?)setter.Attribute("Property") == "ExtendClientAreaToDecorationsHint" &&
             (string?)setter.Attribute("Value") == "False");
+        document.Descendants(av + "Style").ShouldContain(style =>
+            (string?)style.Attribute("Selector") == "^[OsType=Windows][IsWindowsDrawnDecorationsEnabled=True]" &&
+            style.Elements(av + "Setter").Any(setter =>
+                (string?)setter.Attribute("Property") == "TransparencyLevelHint" &&
+                (string?)setter.Attribute("Value") == "Transparent") &&
+            style.Elements(av + "Setter").Any(setter =>
+                (string?)setter.Attribute("Property") == "FrameShadow" &&
+                (string?)setter.Attribute("Value") == "{atom:WindowTokenResource FrameShadows}") &&
+            style.Elements(av + "Setter").Any(setter =>
+                (string?)setter.Attribute("Property") == "CornerRadius" &&
+                (string?)setter.Attribute("Value") == "{atom:WindowTokenResource CornerRadius}"));
+        decorationsDocument.Descendants(av + "Setter").ShouldContain(setter =>
+            (string?)setter.Attribute("Property") == "DefaultFrameThickness" &&
+            (string?)setter.Attribute("Value") == "1");
     }
 
     [Fact]
     [SupportedOSPlatform("windows10.0")]
-    public void Windows_10_Inactive_Frame_Policy_Only_Handles_Non_Client_Deactivation()
+    public void Windows_10_Drawn_Decoration_Parts_Follow_Avalonia_12_1_0_State_Rules()
     {
-        var handled = false;
-        var result = WindowsInactiveFramePolicy.HandleWindowMessage(
-            IntPtr.Zero,
-            0x0086,
-            IntPtr.Zero,
-            IntPtr.Zero,
-            ref handled);
+        WindowsWindowChromeManager.ComputeDecorationParts(
+                Avalonia.Controls.WindowDecorations.Full,
+                Avalonia.Controls.WindowState.Normal,
+                canResize: true)
+            .ShouldBe(WindowsDrawnDecorationParts.All);
 
-        handled.ShouldBeTrue();
-        result.ShouldBe(new IntPtr(1));
+        WindowsWindowChromeManager.ComputeDecorationParts(
+                Avalonia.Controls.WindowDecorations.Full,
+                Avalonia.Controls.WindowState.Normal,
+                canResize: false)
+            .ShouldBe(WindowsDrawnDecorationParts.Shadow |
+                      WindowsDrawnDecorationParts.Border |
+                      WindowsDrawnDecorationParts.TitleBar);
 
-        handled = false;
-        result = WindowsInactiveFramePolicy.HandleWindowMessage(
-            IntPtr.Zero,
-            0x0086,
-            new IntPtr(1),
-            IntPtr.Zero,
-            ref handled);
+        WindowsWindowChromeManager.ComputeDecorationParts(
+                Avalonia.Controls.WindowDecorations.Full,
+                Avalonia.Controls.WindowState.Maximized,
+                canResize: true)
+            .ShouldBe(WindowsDrawnDecorationParts.TitleBar);
 
-        handled.ShouldBeFalse();
-        result.ShouldBe(IntPtr.Zero);
+        WindowsWindowChromeManager.ComputeDecorationParts(
+                Avalonia.Controls.WindowDecorations.Full,
+                Avalonia.Controls.WindowState.FullScreen,
+                canResize: true)
+            .ShouldBe(WindowsDrawnDecorationParts.None);
 
-        result = WindowsInactiveFramePolicy.HandleWindowMessage(
-            IntPtr.Zero,
-            0x0006,
-            IntPtr.Zero,
-            IntPtr.Zero,
-            ref handled);
+        WindowsWindowChromeManager.ComputeDecorationParts(
+                Avalonia.Controls.WindowDecorations.BorderOnly,
+                Avalonia.Controls.WindowState.Normal,
+                canResize: true)
+            .ShouldBe(WindowsDrawnDecorationParts.Shadow |
+                      WindowsDrawnDecorationParts.Border |
+                      WindowsDrawnDecorationParts.ResizeGrips);
 
-        handled.ShouldBeFalse();
-        result.ShouldBe(IntPtr.Zero);
+        WindowsWindowChromeManager.ComputeDecorationParts(
+                Avalonia.Controls.WindowDecorations.None,
+                Avalonia.Controls.WindowState.Normal,
+                canResize: true)
+            .ShouldBe(WindowsDrawnDecorationParts.None);
+    }
+
+    [Fact]
+    [SupportedOSPlatform("windows10.0")]
+    public void Windows_10_Drawn_Decoration_Styles_Remove_Native_Frame_But_Preserve_Window_Actions()
+    {
+        const uint caption      = 0x00C00000;
+        const uint border       = 0x00800000;
+        const uint dialogFrame  = 0x00400000;
+        const uint thickFrame   = 0x00040000;
+        const uint systemMenu   = 0x00080000;
+        const uint minimizeBox  = 0x00020000;
+        const uint maximizeBox  = 0x00010000;
+        const uint visible      = 0x10000000;
+        const uint clipChildren = 0x02000000;
+        const uint clipSiblings = 0x04000000;
+
+        const uint exDialogModalFrame = 0x00000001;
+        const uint exWindowEdge       = 0x00000100;
+        const uint exClientEdge       = 0x00000200;
+        const uint exStaticEdge       = 0x00020000;
+        const uint exAppWindow        = 0x00040000;
+        const uint exNoRedirection    = 0x00200000;
+
+        var (style, exStyle) = WindowsWindowChromeManager.ApplyDrawnDecorationsWindowStyles(
+            caption |
+            border |
+            dialogFrame |
+            thickFrame |
+            systemMenu |
+            minimizeBox |
+            maximizeBox |
+            visible |
+            clipChildren |
+            clipSiblings,
+            exDialogModalFrame |
+            exWindowEdge |
+            exClientEdge |
+            exStaticEdge |
+            exAppWindow |
+            exNoRedirection);
+
+        (style & caption).ShouldBe(0u);
+        (style & border).ShouldBe(0u);
+        (style & dialogFrame).ShouldBe(0u);
+        (style & thickFrame).ShouldBe(0u);
+        (style & systemMenu).ShouldBe(systemMenu);
+        (style & minimizeBox).ShouldBe(minimizeBox);
+        (style & maximizeBox).ShouldBe(maximizeBox);
+        (style & visible).ShouldBe(visible);
+        (style & clipChildren).ShouldBe(clipChildren);
+        (style & clipSiblings).ShouldBe(clipSiblings);
+
+        (exStyle & exDialogModalFrame).ShouldBe(0u);
+        (exStyle & exWindowEdge).ShouldBe(0u);
+        (exStyle & exClientEdge).ShouldBe(0u);
+        (exStyle & exStaticEdge).ShouldBe(0u);
+        (exStyle & exAppWindow).ShouldBe(exAppWindow);
+        (exStyle & exNoRedirection).ShouldBe(exNoRedirection);
     }
 
     [Fact]

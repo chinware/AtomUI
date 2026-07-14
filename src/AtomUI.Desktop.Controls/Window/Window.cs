@@ -249,6 +249,12 @@ public partial class Window : AvaloniaWindow,
             o => o.IsCustomResizerVisible,
             (o, v) => o.IsCustomResizerVisible = v);
 
+    internal static readonly DirectProperty<Window, bool> IsWindowsDrawnDecorationsEnabledProperty =
+        AvaloniaProperty.RegisterDirect<Window, bool>(
+            nameof(IsWindowsDrawnDecorationsEnabled),
+            o => o.IsWindowsDrawnDecorationsEnabled,
+            (o, v) => o.IsWindowsDrawnDecorationsEnabled = v);
+
     internal static readonly DirectProperty<Window, bool> IsDrawnTitleBarOverlayVisibleProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsDrawnTitleBarOverlayVisible),
@@ -311,6 +317,17 @@ public partial class Window : AvaloniaWindow,
     {
         get => _isCustomResizerVisible;
         set => SetAndRaise(IsCustomResizerVisibleProperty, ref _isCustomResizerVisible, value);
+    }
+
+    private bool _isWindowsDrawnDecorationsEnabled;
+
+    internal bool IsWindowsDrawnDecorationsEnabled
+    {
+        get => _isWindowsDrawnDecorationsEnabled;
+        set => SetAndRaise(
+            IsWindowsDrawnDecorationsEnabledProperty,
+            ref _isWindowsDrawnDecorationsEnabled,
+            value);
     }
 
     private bool _isDrawnTitleBarOverlayVisible = true;
@@ -380,10 +397,6 @@ public partial class Window : AvaloniaWindow,
 
     public Window()
     {
-        if (OperatingSystem.IsWindowsVersionAtLeast(10))
-        {
-            WindowsInactiveFramePolicy.Apply(this);
-        }
         ConfigureCsdStatus();
         _platformChromeManager = WindowChromeManager.Attach(this);
     }
