@@ -96,7 +96,6 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
 
         ContentProperty.Changed
                        .AddClassHandler<BaseMotionActor>((x, _) => x.HandleContentChanged());
-        AffectsRender<BaseMotionActor>(MotionTransformProperty);
     }
 
     protected virtual void ApplyMotionTransform()
@@ -125,8 +124,10 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
 
         Transformation         = matrix.Value;
         MatrixTransform.Matrix = matrix.Value;
-        RenderTransform        = MatrixTransform;
-        InvalidateVisual();
+        if (!ReferenceEquals(RenderTransform, MatrixTransform))
+        {
+            RenderTransform = MatrixTransform;
+        }
     }
 
     private void HandleLayoutTransformChanged(AvaloniaPropertyChangedEventArgs change)
