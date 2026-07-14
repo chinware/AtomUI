@@ -531,6 +531,8 @@ public class WindowResizeArtifactTests
     {
         var managerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"));
         var windowSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var inactiveFrameSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/WindowsInactiveFramePolicy.cs"));
         var nativeSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
         var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Windows/WindowUtils.Interop.cs"));
         var captionSource = File.ReadAllText(GetRepoFile(
@@ -556,6 +558,13 @@ public class WindowResizeArtifactTests
             "WindowsWindowChromeManager.cs")).ShouldBeFalse();
         windowSource.ShouldContain("else if (OperatingSystem.IsWindows())");
         windowSource.ShouldContain("IsCsdEnabled = true;");
+        windowSource.ShouldContain("WindowsInactiveFramePolicy.Apply(this)");
+        inactiveFrameSource.ShouldContain("Win32Properties.AddWndProcHookCallback");
+        inactiveFrameSource.ShouldContain("WindowMessageNonClientActivate");
+        inactiveFrameSource.ShouldNotContain("WM_NCCALCSIZE");
+        inactiveFrameSource.ShouldNotContain("WM_NCHITTEST");
+        inactiveFrameSource.ShouldNotContain("DwmExtendFrameIntoClientArea");
+        inactiveFrameSource.ShouldNotContain("AddWindowStylesCallback");
         nativeSource.ShouldNotContain("WinWndProcHook");
         nativeSource.ShouldNotContain("ForceWinNonClientFrameChanged");
         interopSource.ShouldNotContain("WM_NCCALCSIZE");
@@ -574,6 +583,43 @@ public class WindowResizeArtifactTests
         document.Descendants(av + "Setter").ShouldNotContain(setter =>
             (string?)setter.Attribute("Property") == "ExtendClientAreaToDecorationsHint" &&
             (string?)setter.Attribute("Value") == "False");
+    }
+
+    [Fact]
+    [SupportedOSPlatform("windows10.0")]
+    public void Windows_10_Inactive_Frame_Policy_Only_Handles_Non_Client_Deactivation()
+    {
+        var handled = false;
+        var result = WindowsInactiveFramePolicy.HandleWindowMessage(
+            IntPtr.Zero,
+            0x0086,
+            IntPtr.Zero,
+            IntPtr.Zero,
+            ref handled);
+
+        handled.ShouldBeTrue();
+        result.ShouldBe(new IntPtr(1));
+
+        handled = false;
+        result = WindowsInactiveFramePolicy.HandleWindowMessage(
+            IntPtr.Zero,
+            0x0086,
+            new IntPtr(1),
+            IntPtr.Zero,
+            ref handled);
+
+        handled.ShouldBeFalse();
+        result.ShouldBe(IntPtr.Zero);
+
+        result = WindowsInactiveFramePolicy.HandleWindowMessage(
+            IntPtr.Zero,
+            0x0006,
+            IntPtr.Zero,
+            IntPtr.Zero,
+            ref handled);
+
+        handled.ShouldBeFalse();
+        result.ShouldBe(IntPtr.Zero);
     }
 
     [Fact]

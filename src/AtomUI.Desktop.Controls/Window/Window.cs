@@ -380,6 +380,10 @@ public partial class Window : AvaloniaWindow,
 
     public Window()
     {
+        if (OperatingSystem.IsWindowsVersionAtLeast(10))
+        {
+            WindowsInactiveFramePolicy.Apply(this);
+        }
         ConfigureCsdStatus();
         _platformChromeManager = WindowChromeManager.Attach(this);
     }
