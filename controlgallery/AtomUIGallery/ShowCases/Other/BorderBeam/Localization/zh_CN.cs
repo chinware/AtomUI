@@ -11,7 +11,7 @@ internal partial class zh_CN
     public const string ComponentCategory = "其他";
     public const string ComponentIntroducedVersion = "v6.0.5";
     public const string PageSubtitle = "沿容器边界绘制动态高光。";
-    public const string PageDescription = "BorderBeam 包裹一个内容控件，并在其边界上渲染不参与交互的流光层。它只承担装饰性强调，遵守主题动效设置，并支持单色或渐变停靠点。";
+    public const string PageDescription = "BorderBeam 包裹一个内容控件，并在其边界上渲染不参与交互的流光层。它只承担装饰性强调，默认不受全局动效设置影响，并支持单色或渐变停靠点。";
     public const string BasicTitle = "基础";
     public const string BasicDescription = "包裹卡片以强调重要的工作台概览，同时不改变卡片自身交互模型。";
     public const string CustomizedColorTitle = "自定义颜色";
@@ -29,7 +29,7 @@ internal partial class zh_CN
     public const string ApiPropertyOutset = "流光相对有效边界的外扩距离。为 null 时使用有效边框厚度。";
     public const string ApiPropertyBorderThickness = "内容未暴露 BorderBeam 几何时使用的兜底边框厚度。";
     public const string ApiPropertyCornerRadius = "内容未暴露 BorderBeam 几何时使用的兜底圆角。";
-    public const string ApiPropertyIsMotionEnabled = "控制流光动画是否启用。";
+    public const string ApiPropertyIsMotionEnabled = "控制当前实例的流光动画是否启用。默认值不绑定全局动效设置。";
     public const string ApiPropertyDuration = "流光完成一周运动的时长。";
     public const string ApiPropertyBeamSize = "移动高光段的基准尺寸。";
     public const string TokenColumnToken = "变量";

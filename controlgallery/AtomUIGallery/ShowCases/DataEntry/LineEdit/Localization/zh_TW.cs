@@ -12,6 +12,8 @@ internal partial class zh_TW
 
     public const string BasicUsageTitle = "基礎用法";
     public const string BasicUsageDescription = "基礎用法示例。";
+    public const string TextBoxTitle = "TextBox";
+    public const string TextBoxDescription = "AtomUI TextBox 保留原生 TextBox API，同時使用 LineEdit 的邊框、懸停和聚焦視覺。";
     public const string InputSizesTitle = "輸入框三種尺寸";
     public const string InputSizesDescription = "輸入框有三種尺寸：大號（40px）、默認（32px）和小號（24px）。";
     public const string VariantsTitle = "變體";
@@ -57,6 +59,7 @@ internal partial class zh_TW
     public const string TextAreaStatusTitle = "狀態";
     public const string TextAreaStatusDescription = "通過 status 為 TextArea 添加狀態，可設置為錯誤或警告。";
     public const string P2PlaceholderTextBasicUsage = "基礎用法";
+    public const string P2PlaceholderTextTextBox = "AtomUI TextBox";
     public const string P2PlaceholderTextLarge = "大號";
     public const string P2PlaceholderTextMiddle = "中號";
     public const string P2PlaceholderTextSmall = "小號";

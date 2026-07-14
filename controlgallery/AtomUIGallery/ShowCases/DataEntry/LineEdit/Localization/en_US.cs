@@ -12,6 +12,8 @@ internal partial class en_US
 
     public const string BasicUsageTitle = "Basic usage";
     public const string BasicUsageDescription = "Basic usage example.";
+    public const string TextBoxTitle = "TextBox";
+    public const string TextBoxDescription = "AtomUI TextBox keeps the native TextBox API while using the LineEdit border, hover, and focus visuals.";
     public const string InputSizesTitle = "Three sizes of Input";
     public const string InputSizesDescription = "There are three sizes of an Input box: large (40px), default (32px) and small (24px).";
     public const string VariantsTitle = "Variants";
@@ -57,6 +59,7 @@ internal partial class en_US
     public const string TextAreaStatusTitle = "Status";
     public const string TextAreaStatusDescription = "Add status to TextArea with status, which could be error or warning.";
     public const string P2PlaceholderTextBasicUsage = "Basic usage";
+    public const string P2PlaceholderTextTextBox = "AtomUI TextBox";
     public const string P2PlaceholderTextLarge = "Large";
     public const string P2PlaceholderTextMiddle = "Middle";
     public const string P2PlaceholderTextSmall = "Small";

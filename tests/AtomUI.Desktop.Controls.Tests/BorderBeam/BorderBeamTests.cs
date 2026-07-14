@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -126,6 +128,49 @@ public class BorderBeamTests
             borderBeam.DefaultStartColor.ShouldBeAssignableTo<ISolidColorBrush>();
             borderBeam.DefaultEndColor.ShouldBeAssignableTo<ISolidColorBrush>();
         });
+    }
+
+    [Fact]
+    public void Default_Theme_Keeps_Beam_Enabled_When_Global_Motion_Is_Disabled()
+    {
+        var application = Application.Current;
+        application.ShouldNotBeNull();
+        var themeManager = application!.GetThemeManager();
+        themeManager.ShouldNotBeNull();
+        var originalMotionState = themeManager!.IsMotionEnabled;
+
+        try
+        {
+            themeManager.IsMotionEnabled = false;
+            Dispatcher.UIThread.RunJobs();
+
+            var borderBeam = new AtomUI.Desktop.Controls.BorderBeam
+            {
+                Width  = 120,
+                Height = 60,
+                Content = new Border
+                {
+                    Width  = 120,
+                    Height = 60
+                }
+            };
+
+            ShowInWindow(borderBeam, () =>
+            {
+                var presenter = borderBeam.GetVisualDescendants()
+                                          .OfType<BorderBeamPresenter>()
+                                          .Single(item => item.Name == "PART_BeamPresenter");
+
+                borderBeam.IsMotionEnabled.ShouldBeTrue();
+                presenter.IsMotionEnabled.ShouldBeTrue();
+                presenter.IsVisible.ShouldBeTrue();
+            });
+        }
+        finally
+        {
+            themeManager.IsMotionEnabled = originalMotionState;
+            Dispatcher.UIThread.RunJobs();
+        }
     }
 
     private sealed class TestBorderBeamAwareControl : Control, IBorderBeamAwareControl
