@@ -82,6 +82,15 @@ Public API / inherited command / item source / user input
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
+子菜单的 pointer 交互采用独立的 hover intent 模型：
+
+- `SelectedItem` 表达菜单导航和当前项状态，`IsSubMenuOpen` 表达已提交的弹层状态；二者都不能作为延迟任务是否仍然有效的唯一依据。
+- pointer 进入带子菜单的非顶层项时，只为当前目标建立延迟打开意图。pointer 在延迟完成前离开该项时，打开意图立即失效，子菜单不得在离开后继续弹出。
+- 已打开子菜单的关闭延迟只用于允许 pointer 从父项移动到其弹层。pointer 重新进入父项、子菜单弹层或其后代项时，待执行的关闭意图必须失效。
+- 同一目标不能同时持有互相矛盾的打开和关闭意图。不同兄弟项切换时可以同时存在“关闭旧项”和“打开新项”，但每类意图最多只有一个当前目标。
+- keyboard、access key 和 pointer press 触发的显式打开不经过 hover 延迟，不得被旧 hover callback 覆盖或回滚。
+- 菜单关闭、窗口失活、宿主解除连接或交互处理器 detach 时，所有未完成 hover intent 必须统一失效。
+
 ## 5. 视觉与主题模型
 
 Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
@@ -127,6 +136,9 @@ Menu 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证�
 - 与 ThemeManager、SharedToken、ControlTheme 和 Gallery ShowCase 的示例/API/Token 表保持一致。
 - 涉及 ItemsSource、Popup、Flyout、Window、Form 或 CompactSpace 的路径必须保持生命周期释放和数据状态同步。
 - 源码目录中的共享基类和内部协作类型形成维护边界，不能只修改桌面包装类而忽略共享状态 owner。
+- `Menu`、`ContextMenu` 和默认 `MenuFlyoutPresenter` 必须共享 AtomUI 的子菜单 hover intent 语义，不能分别依赖行为不同的默认处理器。
+- `NavMenu` 使用独立的导航菜单交互处理器，不与 Menu 家族共享选择状态，但延迟任务同样遵守可取消和 owner 释放原则。
+- 用户显式注入 `IMenuInteractionHandler` 时，由该处理器负责自身的 pointer intent、定时任务和 attach/detach 生命周期；AtomUI 不在控件外再叠加第二套延迟状态。
 
 ## 7. 兼容性不变量
 
@@ -137,6 +149,8 @@ Menu 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证�
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
+- 不把 `SelectedItem`、`IsSubMenuOpen` 或一次 callback 内的 pointer 判断当作 hover intent 的替代状态；延迟任务必须有明确 owner、目标身份和失效边界。
+- 修复 hover 行为不得新增 public/protected API，也不得改变 `DefaultMenuInteractionHandler` 已公开类型和构造函数契约。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
@@ -145,6 +159,23 @@ Menu 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证�
 ### 8.1 弹层与宿主模型
 
 Menu 涉及弹层、窗口或 overlay 宿主时，打开状态、取消事件、定位和宿主释放必须保持一致。重复打开、关闭、窗口失活和 template reapply 都必须释放旧宿主引用。
+
+子菜单 hover intent 的稳定状态转换如下：
+
+```text
+Idle
+  -> PendingOpen(target)       pointer 进入带子菜单项
+PendingOpen(target)
+  -> Idle                      pointer 在打开前离开、菜单关闭或 handler detach
+  -> Open(target)              延迟完成且 target/owner 仍有效
+Open(target)
+  -> PendingClose(target)      pointer 离开父项且未进入子菜单弹层
+PendingClose(target)
+  -> Open(target)              pointer 重新进入父项、弹层或后代项
+  -> Idle                      延迟完成且 target/owner 仍有效，关闭子菜单
+```
+
+兄弟项切换时，旧项的 `PendingClose` 与新项的 `PendingOpen` 可以并存；目标身份变化、菜单关闭和生命周期结束必须使旧 callback 无法提交状态。Popup 动效只能表现已经提交的 open/close 状态，不能承担 hover intent 的取消或排序职责。
 
 ### 8.2 集合与数据同步模型
 

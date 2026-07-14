@@ -126,6 +126,8 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
         set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
+    internal bool IsPointerOverSubMenu => _popup?.IsPointerOverPopup ?? false;
+
     #endregion
 
     static MenuItem()

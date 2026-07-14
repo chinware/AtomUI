@@ -194,6 +194,11 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
 
     public override void Close()
     {
+        if (InteractionHandler is DefaultMenuInteractionHandler interactionHandler)
+        {
+            interactionHandler.CancelPendingHoverOperations();
+        }
+
         if (!IsOpen || _isClosing)
         {
             return;
@@ -235,6 +240,11 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
 
     internal void CloseImmediately()
     {
+        if (InteractionHandler is DefaultMenuInteractionHandler interactionHandler)
+        {
+            interactionHandler.CancelPendingHoverOperations();
+        }
+
         if (!IsOpen && !_isClosing)
         {
             return;
