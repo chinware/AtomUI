@@ -28,7 +28,7 @@ BorderBeam 的设计语言是“非业务状态的动态强调”。它通过沿
 | 容器边界 | 流光贴合容器有效边框和圆角。 | `IBorderBeamAwareControl` 或显式 `BorderThickness` / `CornerRadius`。 |
 | 品牌强调 | 默认颜色来自主题主色。 | `ColorPrimary`、`ColorPrimaryHover`。 |
 | 渐变尾迹 | 用户停靠点映射到可见段，尾部保留透明衰减。 | `ColorStops.Percent` 映射到可见段。 |
-| 动效可控 | 装饰效果遵守全局动效开关。 | `IsMotionEnabled`、`EnableMotion`。 |
+| 持续流动 | 默认流光不跟随全局动效开关关闭，保持装饰强调一致可见。 | `IsMotionEnabled` 实例开关。 |
 
 BorderBeam 不应绘制成一个新的实体边框，也不应让被装饰控件看起来拥有新的可交互状态。流光层应贴合容器边界，透明尾迹应保持连续，圆角转弯处不应出现断裂。
 
@@ -46,7 +46,7 @@ BorderBeam 控件 API：
 | `Outset` | `Thickness?` | 流光层相对有效边界的外扩距离；`null` 时按有效边框厚度计算。 |
 | `BorderThickness` | `Thickness` | 未命中感知接口时使用的边框厚度。 |
 | `CornerRadius` | `CornerRadius` | 未命中感知接口时使用的圆角。 |
-| `IsMotionEnabled` | `bool` | 控制流光动画是否启用。 |
+| `IsMotionEnabled` | `bool` | 控制当前实例的流光动画是否启用；默认值不绑定全局 motion 设置。 |
 | `Duration` | `TimeSpan` | 流光运行一周的时长。 |
 | `BeamSize` | `double` | 流光高光段基准尺寸。 |
 
@@ -93,7 +93,7 @@ effective state 由几何状态、颜色状态和动效状态组成：
 
 - 几何状态：优先读取 `IBorderBeamAwareControl`，未命中时使用 BorderBeam 自身 `BorderThickness` 与 `CornerRadius`。
 - 颜色状态：`ColorStops` 优先，其次 `Color`，最后使用主题默认渐变。
-- 动效状态：`IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行。
+- 动效状态：实例级 `IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行；默认主题不从全局 `EnableMotion` 覆盖该属性。
 
 `Progress` 是 internal animation state。它不形成公共 API，不参与样式选择器，不允许外部绑定。
 
@@ -155,9 +155,9 @@ BorderBeam 的核心专项模型是边界感知。控件实现 `IBorderBeamAware
 
 BorderBeam 渐变停靠点以用户友好的 `0~100` percent 表达。内部渲染时将这些停靠点映射到可见高光段，并保留尾部透明渐隐。
 
-### 8.3 动效与 reduced motion 模型
+### 8.3 动效模型
 
-BorderBeam 是装饰性动效。`IsMotionEnabled=false` 时，流光效果隐藏，内容保持完全可用。全局主题关闭 motion 时，默认 `IsMotionEnabled` 也应随 `SharedToken.EnableMotion` 关闭。
+BorderBeam 是持续装饰性动效。默认主题不把全局 `SharedToken.EnableMotion` 或 `ThemeManager.IsMotionEnabled` 绑定到 `BorderBeam.IsMotionEnabled`，因此全局关闭普通交互动效时，BorderBeam 流光仍保持运行。只有当前实例显式设置 `IsMotionEnabled=false` 时，流光效果隐藏，内容保持完全可用。
 
 ### 8.4 渲染连续性模型
 
@@ -197,6 +197,6 @@ LLMS 导出来源：
 | --- | --- |
 | 文档 | `overview.md`、`implementation.md`、`token.md`、`changelog.md` 链接有效。 |
 | C# 状态 | StyledProperty / DirectProperty、边界感知接口、动画生命周期和事件释放。 |
-| 渲染 | 默认渐变、单色、多 stop、统一圆角、非统一圆角、Outset、禁用 motion 和命中测试。 |
+| 渲染 | 默认渐变、单色、多 stop、统一圆角、非统一圆角、Outset、实例禁用 motion 和命中测试。 |
 | Token | Light / dark 主题下默认颜色、线宽、圆角和 motion 默认值正确。 |
 | Public API | 普通内容、感知内容、无内容、零尺寸、不可见状态不抛异常。 |

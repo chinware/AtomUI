@@ -1,5 +1,8 @@
+using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
+using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -205,7 +208,7 @@ public class TextBox : AvaloniaTextBox,
 
     public TextBox()
     {
-        // this.RegisterTokenResourceScope(LineEditToken.ScopeProvider);
+        this.RegisterTokenResourceScope(TextBoxToken.ScopeProvider);
     }
 
     protected override void OnInitialized()
@@ -297,6 +300,13 @@ public class TextBox : AvaloniaTextBox,
             _clearButton.Click -= HandleClearButtonClicked;
         }
         
+        var innerBoxDecorator = e.NameScope.Find<PixelAlignedBorder>("InnerBoxDecorator");
+        if (innerBoxDecorator is not null)
+        {
+            innerBoxDecorator.DisableTransitions();
+            innerBoxDecorator.Dispatcher.Post(innerBoxDecorator.EnableTransitions);
+        }
+
         _clearButton = e.NameScope.Find<IconButton>("PART_ClearButton");
         if (_clearButton != null)
         {

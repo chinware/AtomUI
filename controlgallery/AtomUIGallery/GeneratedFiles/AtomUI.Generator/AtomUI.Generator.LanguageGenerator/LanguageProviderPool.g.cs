@@ -10834,6 +10834,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextOutlined] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextOutlined;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextSmall] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextSmall;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextTextareaWithClearIcon] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextTextareaWithClearIcon;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextTextBox] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextTextBox;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextUnderlined] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextUnderlined;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextWarning] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextWarning;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextWarningWithPrefix] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextWarningWithPrefix;
@@ -10871,6 +10872,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusDescription] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TextAreaStatusDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusTitle] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TextAreaStatusTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaTitle] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TextAreaTitle;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextBoxDescription] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TextBoxDescription;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextBoxTitle] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TextBoxTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TokenColumnDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TokenColumnScope;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TokenColumnStatus;
@@ -10991,6 +10994,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextOutlined] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextOutlined;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextSmall] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextSmall;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextTextareaWithClearIcon] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextTextareaWithClearIcon;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextTextBox] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextTextBox;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextUnderlined] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextUnderlined;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextWarning] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextWarning;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextWarningWithPrefix] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextWarningWithPrefix;
@@ -11028,6 +11032,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TextAreaStatusDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TextAreaStatusTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TextAreaTitle;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextBoxDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TextBoxDescription;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextBoxTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TextBoxTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TokenColumnDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TokenColumnScope;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TokenColumnStatus;
@@ -11148,6 +11154,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextOutlined] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextOutlined;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextSmall] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextSmall;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextTextareaWithClearIcon] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextTextareaWithClearIcon;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextTextBox] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextTextBox;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextUnderlined] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextUnderlined;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextWarning] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextWarning;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextWarningWithPrefix] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextWarningWithPrefix;
@@ -11185,6 +11192,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TextAreaStatusDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TextAreaStatusTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TextAreaTitle;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextBoxDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TextBoxDescription;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextBoxTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TextBoxTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TokenColumnDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TokenColumnScope;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TokenColumnStatus;

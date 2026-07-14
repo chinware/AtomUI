@@ -4,7 +4,7 @@
 
 ## 1. 定位
 
-BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽、圆角和 motion 开关优先复用 SharedToken，不在 BorderBeamToken 中重复定义全局语义。
+BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽和圆角优先复用 SharedToken；motion 开关保留为实例行为，不由 BorderBeamToken 或 `SharedToken.EnableMotion` 决定。
 
 BorderBeamToken 服务以下主题和控件：
 
@@ -29,7 +29,7 @@ BorderBeamToken 按流光语义分为三类。
 
 - `MotionDuration`
 
-`MotionDuration` 控制流光完成一周运动的默认时长，默认 `6s`。动效是否启用不由 BorderBeamToken 决定，而由 `SharedToken.EnableMotion` 和实例 `IsMotionEnabled` 共同决定。
+`MotionDuration` 控制流光完成一周运动的默认时长，默认 `6s`。动效是否启用不由 BorderBeamToken 决定；默认主题保持动画启用，只有实例 `IsMotionEnabled=false` 才关闭流光。
 
 ### 2.3 渐变映射 Token
 
@@ -47,7 +47,6 @@ SharedToken
   ColorPrimaryHover
   BorderThickness
   BorderRadiusLG
-  EnableMotion
 
 BorderBeamToken
   BeamSize
@@ -78,7 +77,7 @@ BorderBeamToken 变更要求：
 - 不擅自删除既有 Token。
 - 不改变既有 Token 的语义含义。
 - 不把实例状态迁移到 Token。
-- 不把 SharedToken 已经表达的颜色、线宽、圆角或 motion 开关复制进 BorderBeamToken。
+- 不把 SharedToken 已经表达的颜色、线宽或圆角复制进 BorderBeamToken。
 - 不把 Gallery 示例色板写入 Token。
 - 需要破坏性变更时，必须先说明影响范围并获得授权。
 

@@ -45,9 +45,10 @@ public class LineEditShowCasePageTests
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:LineEditShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(20);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(20);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(21);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(21);
         source.ShouldContain("LineEditShowCaseLangResource BasicUsageTitle");
+        source.ShouldContain("LineEditShowCaseLangResource TextBoxTitle");
         source.ShouldContain("LineEditShowCaseLangResource InputSizesTitle");
         source.ShouldContain("LineEditShowCaseLangResource P2PlaceholderTextCustom");
         source.ShouldContain("SizeType=\"Custom\"");
@@ -148,6 +149,9 @@ public class LineEditShowCasePageTests
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
+            source.ShouldContain("TextBoxTitle");
+            source.ShouldContain("TextBoxDescription");
+            source.ShouldContain("P2PlaceholderTextTextBox");
             source.ShouldContain("ApiPropertyIsAllowClear");
             source.ShouldContain("ApiPropertySearchButtonStyle");
             source.ShouldContain("ApiPropertyIsAutoSize");
@@ -163,6 +167,26 @@ public class LineEditShowCasePageTests
             source.ShouldContain("TokenNameInputFontSize");
             source.ShouldContain("TokenNameRightAddOnPadding");
         }
+    }
+
+    [Fact]
+    public void LineEdit_ShowCase_Includes_TextBox_Demo()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
+        var demo   = ExtractShowCaseItem(source, "LineEditShowCaseLangResource TextBoxTitle");
+
+        demo.ShouldContain("LineEditShowCaseLangResource TextBoxDescription");
+        demo.ShouldContain("<atom:TextBox");
+        demo.ShouldContain("PlaceholderText=\"{gallery:LineEditShowCaseLangResource P2PlaceholderTextTextBox}\"");
+        demo.ShouldContain("PlaceholderText=\"{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputWithClearIcon}\"");
+        demo.ShouldContain("PlaceholderText=\"{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputPassword}\"");
+        demo.ShouldContain("Width=\"360\"");
+        demo.ShouldContain("HorizontalAlignment=\"Left\"");
+        demo.ShouldContain("IsAllowClear=\"True\"");
+        demo.ShouldContain("PasswordChar=\"•\"");
+        demo.ShouldContain("IsEnableRevealButton=\"True\"");
+        CountOccurrences(demo, "<atom:TextBox").ShouldBe(3);
+        demo.ShouldNotContain("<atom:LineEdit");
     }
 
     [Fact]

@@ -3,6 +3,14 @@
 本文档记录 BorderBeam 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-07-14
+
+- Theme
+  - 取消默认主题对 `SharedToken.EnableMotion` 的绑定，使 BorderBeam 流光默认不受全局 motion 开关影响。
+  - 保留实例级 `IsMotionEnabled=false` 关闭流光的行为。
+- Docs
+  - 更新 Gallery 和控件文档中关于 motion 默认语义的说明。
+
 ## 2026-06-26
 
 - Docs

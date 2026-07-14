@@ -18,6 +18,7 @@ LineEdit 家族的实现以 Avalonia `TextBox` 为文本编辑内核，AtomUI �
 - `src/AtomUI.Desktop.Controls/Input/SearchEditDecoratedBox.cs`：SearchEdit 输入壳体与搜索按钮协作。
 - `src/AtomUI.Desktop.Controls/Input/TextAreaDecoratedBox.cs`：TextArea 输入壳体、scroll viewer 和 resize 相关协作。
 - `src/AtomUI.Desktop.Controls/Input/ResizeHandle.cs`：TextArea resize 拖拽入口。
+- `src/AtomUI.Desktop.Controls/Input/TextBoxToken.cs`：基础 TextBox 边框、padding、hover/focus 和 shadow Token。
 - `src/AtomUI.Desktop.Controls/Input/LineEditToken.cs`：单行输入字号 Token。
 - `src/AtomUI.Desktop.Controls/Input/TextAreaToken.cs`：TextArea 字号、右侧 padding 和 resize Token。
 - `src/AtomUI.Desktop.Controls/Input/Themes/*.axaml`：TextBox、LineEdit、SearchEdit、TextArea 和内部按钮主题。
@@ -80,11 +81,12 @@ Form feedback control  → FormFeedback + IsFormFeedbackVisible
 
 ## 5. 生命周期与模板接入
 
-`TextBox.OnInitialized` 在未设置 `ClearIcon` 时写入默认 `CloseCircleFilled`。`LineEdit` 构造时注册 `LineEditToken` resource scope，`TextArea` 当前也注册 `LineEditToken` scope，同时主题中的 TextArea 字号和 resize 资源使用 `TextAreaTokenResource`。
+`TextBox.OnInitialized` 在未设置 `ClearIcon` 时写入默认 `CloseCircleFilled`。`TextBox` 构造时注册 `TextBoxToken` resource scope，`LineEdit` 构造时注册 `LineEditToken` resource scope；`TextArea` 当前也注册 `LineEditToken` scope，同时主题中的 TextArea 字号和 resize 资源使用 `TextAreaTokenResource`。
 
 `OnApplyTemplate` 规则：
 
 - 旧清除按钮 click 订阅必须解除，再绑定新 `PART_ClearButton`。
+- `TextBox` 每次套用模板都重新获取 `InnerBoxDecorator`，先禁用初始 transitions，再在 dispatcher 队列中恢复，避免模板初始资源注入触发边框动画。
 - `LineEdit` 每次套用模板都重新获取 `PART_AddOnDecoratedBox`，用于 CompactSpace 边框厚度计算。
 - `LineEdit` / `TextArea` 的 `_contentRightAddOnBindings` 在重新套用模板时先 dispose，再绑定 clear/reveal/form/inner-right/count presenter。
 - `SearchEdit` 获取 `SearchEditDecoratedBox` 后设置 `OwningSearchEdit`，由 decorated box 回调搜索事件。

@@ -73,6 +73,7 @@ namespace AtomUI.Theme
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.TabControlToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.TagToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.TextAreaToken))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.TextBoxToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.TimelineToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.TimePickerToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.ToggleSwitchToken))]
@@ -87,7 +88,7 @@ namespace AtomUI.Theme
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.WindowToken))]
         internal static IList<ControlTokenRegistration> GetTokenTypes()
         {
-            List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>(79);
+            List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>(80);
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AddOnDecoratedBoxToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AdornerLayerToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AlertToken)));
@@ -155,6 +156,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.TabControlToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.TagToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.TextAreaToken)));
+            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.TextBoxToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.TimelineToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.TimePickerToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.ToggleSwitchToken)));

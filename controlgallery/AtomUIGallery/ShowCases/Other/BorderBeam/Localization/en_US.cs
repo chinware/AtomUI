@@ -11,7 +11,7 @@ internal partial class en_US
     public const string ComponentCategory = "Other";
     public const string ComponentIntroducedVersion = "v6.0.5";
     public const string PageSubtitle = "Draw an animated highlight along a container boundary.";
-    public const string PageDescription = "BorderBeam wraps a content control and renders a non-interactive beam on its border. It is decorative, follows theme motion settings, and can use a solid color or gradient stops.";
+    public const string PageDescription = "BorderBeam wraps a content control and renders a non-interactive beam on its border. It is decorative, stays active independently of the global motion setting by default, and can use a solid color or gradient stops.";
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Wrap a card to emphasize an important workspace summary without changing the card interaction model.";
     public const string CustomizedColorTitle = "Customized color";
@@ -29,7 +29,7 @@ internal partial class en_US
     public const string ApiPropertyOutset = "Distance by which the beam expands beyond the effective border. Null uses the effective border thickness.";
     public const string ApiPropertyBorderThickness = "Fallback border thickness when the content does not expose BorderBeam geometry.";
     public const string ApiPropertyCornerRadius = "Fallback corner radius when the content does not expose BorderBeam geometry.";
-    public const string ApiPropertyIsMotionEnabled = "Controls whether the beam animation is active.";
+    public const string ApiPropertyIsMotionEnabled = "Controls whether this instance's beam animation is active. The default is not bound to the global motion setting.";
     public const string ApiPropertyDuration = "Duration for one full beam cycle.";
     public const string ApiPropertyBeamSize = "Base size of the moving highlight segment.";
     public const string TokenColumnToken = "Token";

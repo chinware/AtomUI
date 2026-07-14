@@ -1135,6 +1135,21 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         RightAddOnPaddingSM
     }
 
+    public enum TextBoxTokenKind
+    {
+        ActiveBorderColor,
+        ActiveShadow,
+        BorderColor,
+        BorderRadius,
+        BorderRadiusLG,
+        BorderRadiusSM,
+        BorderThickness,
+        HoverBorderColor,
+        Padding,
+        PaddingLG,
+        PaddingSM
+    }
+
     public enum TimelineTokenKind
     {
         IndicatorDotBorderWidth,
@@ -2023,6 +2038,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TextAreaTokenResourceExtension(TextAreaTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class TextBoxTokenResourceExtension : TokenResourceExtension<TextBoxTokenKind>
+    {
+        public TextBoxTokenResourceExtension()
+        {
+        }
+
+        public TextBoxTokenResourceExtension(TextBoxTokenKind kind) : base(kind)
         {
         }
     }

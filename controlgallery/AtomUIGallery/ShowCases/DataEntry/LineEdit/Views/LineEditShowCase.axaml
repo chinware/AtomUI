@@ -43,6 +43,33 @@
     </gallery:ShowCaseItem>
 
     <gallery:ShowCaseItem
+        Title="{gallery:LineEditShowCaseLangResource TextBoxTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:LineEditShowCaseLangResource TextBoxDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:LineEditViewModel">
+                <StackPanel Orientation="Vertical" Spacing="10">
+                    <atom:TextBox PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextTextBox}"
+                                  Width="360"
+                                  HorizontalAlignment="Left" />
+                    <atom:TextBox PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputWithClearIcon}"
+                                  Width="360"
+                                  Text="{gallery:LineEditShowCaseLangResource P2TextMysite}"
+                                  IsAllowClear="True"
+                                  HorizontalAlignment="Left" />
+                    <atom:TextBox PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputPassword}"
+                                  Width="360"
+                                  RevealPassword="False"
+                                  PasswordChar="•"
+                                  IsEnableRevealButton="True"
+                                  IsAllowClear="True"
+                                  HorizontalAlignment="Left" />
+                </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
         Title="{gallery:LineEditShowCaseLangResource InputSizesTitle}"
         IsDeferredContentEnabled="True"
         Description="{gallery:LineEditShowCaseLangResource InputSizesDescription}">

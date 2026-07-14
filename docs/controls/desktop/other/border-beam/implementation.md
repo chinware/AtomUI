@@ -23,7 +23,7 @@ BorderBeam 不表达业务状态，不承担 focus、validation、selected 或 e
 
 ## 3. 核心类职责
 
-`BorderBeam` 继承 `ContentControl`，负责公共属性、感知内容订阅、effective geometry、effective gradient、motion 开关和 presenter 状态同步。
+`BorderBeam` 继承 `ContentControl`，负责公共属性、感知内容订阅、effective geometry、effective gradient、实例级 motion 开关和 presenter 状态同步。
 
 `BorderBeamPresenter` 是纯渲染层，负责根据 bounds、border thickness、corner radius、outset、beam size、gradient stops 和 progress 绘制流光。它不参与命中测试，也不读取内容控件状态。
 
@@ -78,7 +78,7 @@ else
 
 `Content` 变化时，BorderBeam 需要解除旧内容的 `BorderBeamGeometryChanged` 订阅，并在新内容实现 `IBorderBeamAwareControl` 时订阅新事件。几何变化事件只刷新 BorderBeam 自身状态，不要求内容控件重新模板化。
 
-`AttachedToVisualTree`、`DetachedFromVisualTree`、`IsVisible`、`IsMotionEnabled` 和 bounds 变化共同决定动画启动与停止。detached 或 motion 关闭时必须取消动画并释放内部取消资源。
+`AttachedToVisualTree`、`DetachedFromVisualTree`、`IsVisible`、实例级 `IsMotionEnabled` 和 bounds 变化共同决定动画启动与停止。detached 或实例 motion 关闭时必须取消动画并释放内部取消资源。默认主题不把全局 `EnableMotion` 绑定到 `BorderBeam.IsMotionEnabled`，避免全局普通交互动效开关停止 BorderBeam 的持续流光。
 
 ## 6. 交互与事件处理
 
@@ -109,7 +109,7 @@ BorderBeam 不处理 pointer、keyboard、focus、command 或 drag/drop 事件�
 
 动画使用 internal `Progress` 从 `0` 到 `1` 循环，周期由 `Duration` 控制。`Progress` 变化只触发 `BorderBeamPresenter` 重绘。
 
-`IsMotionEnabled=false`、不可见、detached 或 bounds 无有效尺寸时，动画必须停止。停止后不应继续产生 UI 线程 invalidation。
+实例级 `IsMotionEnabled=false`、不可见、detached 或 bounds 无有效尺寸时，动画必须停止。停止后不应继续产生 UI 线程 invalidation。
 
 ### 7.4 渲染连续性
 
@@ -121,7 +121,7 @@ BorderBeamPresenter 应以一个连续圆角矩形运动路径驱动流光。边
 
 BorderBeam 不使用反射，不访问内容控件 internal 属性或 template part。集成通过 `IBorderBeamAwareControl` 完成。
 
-未启用 motion 时不应启动循环动画。动画取消资源必须在 detached、模板替换、content 替换和 motion 关闭时释放。
+实例级 motion 未启用时不应启动循环动画。动画取消资源必须在 detached、模板替换、content 替换和实例 motion 关闭时释放。
 
 ColorStops 使用实例级集合，避免共享默认集合。集合变更应触发渐变重建和 presenter 重绘，不应重建整个模板。
 
@@ -133,7 +133,7 @@ ColorStops 使用实例级集合，避免共享默认集合。集合变更应触
 - beam presenter 不参与命中测试。
 - 感知接口只暴露边框厚度和圆角。
 - content 替换时旧事件订阅必须释放。
-- motion 关闭或 detached 后不持续 invalidation。
+- 实例 motion 关闭或 detached 后不持续 invalidation。
 - 渐变尾迹连续，圆角转弯处不分段卡顿。
 - 非统一圆角只影响边框环裁剪，不直接拆分运动路径。
 - public `ColorStops.Percent` 仍按 `0~100` 解释。
@@ -147,6 +147,6 @@ ColorStops 使用实例级集合，避免共享默认集合。集合变更应触
 - `ColorStops` 优先级高于 `Color`。
 - 单色、多 stop、默认渐变和非法 percent clamp。
 - 统一圆角和非统一圆角下流光转角连续。
-- `IsMotionEnabled=false`、不可见、detached 和零尺寸不产生持续动画。
+- 实例级 `IsMotionEnabled=false`、不可见、detached 和零尺寸不产生持续动画。
 - presenter 不拦截内容点击、焦点和键盘事件。
 - 文档改动运行 `git diff --check`。
