@@ -1,12 +1,14 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using AtomUI.Desktop.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Headless;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -315,6 +317,96 @@ public class GalleryStickyTabsHostTests
         }
     }
 
+    [Fact]
+    public void Sticky_NavMenu_Popup_Stays_Open_When_Pinned_Header_Scrolls()
+    {
+        var submenu = new NavMenuNode
+        {
+            Header = "Navigation Three - Submenu"
+        };
+        submenu.Children.Add(new NavMenuNode
+        {
+            Header = "Item 1"
+        });
+        submenu.Children.Add(new NavMenuNode
+        {
+            Header = "Item 2"
+        });
+
+        var navMenu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Horizontal,
+            IsDarkStyle     = true,
+            IsMotionEnabled = false
+        };
+        navMenu.Items.Add(new NavMenuNode
+        {
+            Header = "Navigation One"
+        });
+        navMenu.Items.Add(submenu);
+        navMenu.Items.Add(new NavMenuNode
+        {
+            Header = "Navigation Four"
+        });
+
+        var host = new GalleryStickyTabsHost
+        {
+            Header        = new FixedSizeControl(640, 140),
+            StickyContent = navMenu,
+            Content       = new FixedSizeControl(640, 900)
+        };
+        var visualLayerManager = new VisualLayerManager
+        {
+            Child = host
+        };
+        EnablePopupOverlayLayer(visualLayerManager);
+
+        var window = new AvaloniaWindow
+        {
+            Width   = 720,
+            Height  = 360,
+            Content = visualLayerManager
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var scrollViewer = host.GetVisualDescendants()
+                                   .OfType<AvaloniaScrollViewer>()
+                                   .Single();
+            scrollViewer.Offset = new Vector(0, 180);
+            Dispatcher.UIThread.RunJobs();
+
+            var itemControl = navMenu.ContainerFromItem(submenu);
+            itemControl.ShouldNotBeNull();
+            var item = itemControl!.ShouldBeAssignableTo<INavMenuItem>();
+            item.IsSubMenuOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            window.CaptureRenderedFrame();
+            Dispatcher.UIThread.RunJobs();
+
+            item.IsSubMenuOpen.ShouldBeTrue();
+            var popupHost = window.GetVisualDescendants().OfType<OverlayPopupHost>().Single();
+            var initialPopupTop = popupHost.TransformToVisual(window)!.Value.Transform(default(Point)).Y;
+
+            scrollViewer.Offset = new Vector(0, 220);
+            Dispatcher.UIThread.RunJobs();
+            window.CaptureRenderedFrame();
+            Dispatcher.UIThread.RunJobs();
+
+            item.IsSubMenuOpen.ShouldBeTrue();
+            var scrolledPopupTop = popupHost.TransformToVisual(window)!.Value.Transform(default(Point)).Y;
+            scrolledPopupTop.ShouldBe(initialPopupTop, 0.5);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
     private static GalleryStickyTabsHost CreateStickyHost(Control content)
     {
         return new GalleryStickyTabsHost
@@ -337,6 +429,16 @@ public class GalleryStickyTabsHostTests
         Dispatcher.UIThread.RunJobs();
 
         panel.IsStickyPinned.ShouldBeTrue();
+    }
+
+    private static void EnablePopupOverlayLayer(VisualLayerManager visualLayerManager)
+    {
+        var property = typeof(VisualLayerManager).GetProperty(
+            "EnablePopupOverlayLayer",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        property.ShouldNotBeNull();
+        property.SetValue(visualLayerManager, true);
     }
 
     private static ScopeAwareAdornerLayer GetStickyMirrorLayer(VisualLayerManager visualLayerManager)

@@ -38,6 +38,11 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
 
     protected virtual void NotifyPointerEntered(object? sender, RoutedEventArgs e)
     {
+        if (IsLayoutGeneratedPointerTransition(e))
+        {
+            return;
+        }
+
         var menuItem = GetMenuItemCore(e.Source as Control) as INavMenuItem;
         if (menuItem?.Parent == null)
         {
@@ -65,6 +70,11 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
 
     protected virtual void NotifyPointerExited(object? sender, RoutedEventArgs e)
     {
+        if (IsLayoutGeneratedPointerTransition(e))
+        {
+            return;
+        }
+
         var menuItem = GetMenuItemCore(e.Source as Control) as INavMenuItem;
 
         if (menuItem?.Parent == null)
@@ -86,6 +96,14 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
                 _currentCloseDelayRunDisposable = null;
             }, MenuShowDelay);
         }
+    }
+
+    private static bool IsLayoutGeneratedPointerTransition(RoutedEventArgs e)
+    {
+        // Avalonia revalidates pointer-over on scene invalidation with timestamp 0.
+        // Those transitions are caused by layout/scroll moving visuals under a stationary pointer,
+        // so they must not drive hover-open or hover-close behavior.
+        return e is NavMenuItemPointerEventArgs { PointerTimestamp: 0 };
     }
 
     public override void Select(NavMenuItem menuItem)

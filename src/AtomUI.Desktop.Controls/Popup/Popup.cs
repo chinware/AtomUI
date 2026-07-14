@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
+using Avalonia.Input.TextInput;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -175,6 +176,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     // 订阅对象要记录下来,保证 open/close 成对摘挂。
     private InputElement? _wheelGuardSubscribedOn;
     private int _ignoreRequestedPlacementChange;
+    private Control? _placementTransformTrackingTarget;
+    private IDisposable? _placementTransformTracker;
 
     public Popup()
     {
@@ -188,6 +191,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     private void HandlePopupOpened(object? sender, EventArgs e)
     {
         AttachWheelGuard();
+        UpdatePlacementTransformTracker();
         if (!IsMotionEnabled || OpenMotion is null || _motionActor is null)
         {
             return;
@@ -204,6 +208,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     private void HandlePopupClosed(object? sender, EventArgs e)
     {
+        ClearPlacementTransformTracker();
         DetachWheelGuard();
     }
 
@@ -348,6 +353,13 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                  change.Property == IsUsingOverlayLayerProperty)
         {
             ConfigureFrameShadow();
+        }
+
+        if (change.Property == PlacementTargetProperty ||
+            change.Property == PlacementProperty ||
+            change.Property == RequestedPlacementProperty)
+        {
+            UpdatePlacementTransformTracker();
         }
     }
 
@@ -545,6 +557,79 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         // AddHandler 未指定 handledEventsToo,内部 ScrollViewer/列表若已把事件标 Handled,到此不会被调用。
         // 走到这里意味着 popup 内没有消费者,在 popup 边界处吞掉,防止泄漏到外层 ScrollViewer 引发意外滚动。
         e.Handled = true;
+    }
+
+    private void UpdatePlacementTransformTracker()
+    {
+        var target = ShouldTrackPlacementTransform()
+            ? PlacementTarget ?? this.FindLogicalAncestorOfType<Control>()
+            : null;
+        if (ReferenceEquals(_placementTransformTrackingTarget, target))
+        {
+            return;
+        }
+
+        ClearPlacementTransformTracker();
+        if (target is null)
+        {
+            return;
+        }
+
+        _placementTransformTrackingTarget = target;
+        _placementTransformTracker = TransformTrackingHelper.Track(
+            target,
+            true,
+            HandlePlacementTransformChanged);
+    }
+
+    private bool ShouldTrackPlacementTransform()
+    {
+        if (!IsOpen)
+        {
+            return false;
+        }
+
+        var placement = RequestedPlacement ?? Placement;
+        return placement is not PlacementMode.Pointer and not PlacementMode.Center;
+    }
+
+    private void ClearPlacementTransformTracker()
+    {
+        _placementTransformTracker?.Dispose();
+        _placementTransformTracker       = null;
+        _placementTransformTrackingTarget = null;
+    }
+
+    private void HandlePlacementTransformChanged(Visual target, Matrix? matrix)
+    {
+        if (IsOpen && ReferenceEquals(_placementTransformTrackingTarget, target))
+        {
+            if (!IsPlacementTargetVisibleInTopLevel(target, matrix))
+            {
+                Close();
+                return;
+            }
+
+            this.HandlePositionChange();
+        }
+    }
+
+    private static bool IsPlacementTargetVisibleInTopLevel(Visual target, Matrix? matrix)
+    {
+        if (matrix is null ||
+            TopLevel.GetTopLevel(target) is not { } topLevel)
+        {
+            return false;
+        }
+
+        var targetBounds  = new Rect(default, target.Bounds.Size).TransformToAABB(matrix.Value);
+        var visibleBounds = new Rect(default, topLevel.ClientSize);
+        if (targetBounds.Width <= 0 || targetBounds.Height <= 0)
+        {
+            return visibleBounds.Contains(targetBounds.Position);
+        }
+
+        return visibleBounds.Intersects(targetBounds);
     }
 }
 
