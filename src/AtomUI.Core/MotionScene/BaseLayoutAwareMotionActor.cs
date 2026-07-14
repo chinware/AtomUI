@@ -71,9 +71,15 @@ public abstract class BaseLayoutAwareMotionActor : BaseMotionActor
 
         Transformation         = matrix.Value;
         MatrixTransform.Matrix = UseRenderTransform ? matrix.Value : FilterScaleTransform(matrix.Value);
-        RenderTransform        = MatrixTransform;
-        // New transform means re-layout is necessary
-        InvalidateMeasure();
+        if (!ReferenceEquals(RenderTransform, MatrixTransform))
+        {
+            RenderTransform = MatrixTransform;
+        }
+        if (!UseRenderTransform)
+        {
+            // New layout transform means re-layout is necessary.
+            InvalidateMeasure();
+        }
     }
     
     protected override Size ArrangeOverride(Size finalSize)
