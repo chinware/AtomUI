@@ -132,6 +132,7 @@ public class ContextMenu : AvaloniaContextMenu,
     }
 
     public ContextMenu()
+        : base(new DefaultMenuInteractionHandler(true))
     {
         this.RegisterTokenResourceScope(MenuToken.ScopeProvider);
         CreatePopup();
@@ -171,6 +172,11 @@ public class ContextMenu : AvaloniaContextMenu,
 
     private void HandlePopupClosing(object? sender, CancelEventArgs e)
     {
+        if (InteractionHandler is DefaultMenuInteractionHandler interactionHandler)
+        {
+            interactionHandler.CancelPendingHoverOperations();
+        }
+
         if (!e.Cancel)
         {
             this.OnPopupClosing(sender, e);
@@ -281,6 +287,11 @@ public class ContextMenu : AvaloniaContextMenu,
 
     public override void Close()
     {
+        if (InteractionHandler is DefaultMenuInteractionHandler interactionHandler)
+        {
+            interactionHandler.CancelPendingHoverOperations();
+        }
+
         if (!IsOpen)
         {
             return;

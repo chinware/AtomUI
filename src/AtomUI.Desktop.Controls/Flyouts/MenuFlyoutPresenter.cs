@@ -132,6 +132,11 @@ public class MenuFlyoutPresenter : MenuBase,
 
     public override void Close()
     {
+        if (InteractionHandler is DefaultMenuInteractionHandler interactionHandler)
+        {
+            interactionHandler.CancelPendingHoverOperations();
+        }
+
         // DefaultMenuInteractionHandler calls this
         var host = this.FindLogicalAncestorOfType<Popup>();
         if (host != null)
