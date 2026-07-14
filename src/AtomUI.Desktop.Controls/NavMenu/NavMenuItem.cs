@@ -21,6 +21,17 @@ using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
+internal sealed class NavMenuItemPointerEventArgs : RoutedEventArgs
+{
+    public NavMenuItemPointerEventArgs(RoutedEvent? routedEvent, PointerEventArgs pointerEventArgs)
+        : base(routedEvent)
+    {
+        PointerTimestamp = pointerEventArgs.Timestamp;
+    }
+
+    public ulong PointerTimestamp { get; }
+}
+
 [PseudoClasses(
     NavMenuItemPseudoClass.Separator, 
     NavMenuItemPseudoClass.Icon, 
@@ -1146,12 +1157,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     protected override void OnPointerEntered(PointerEventArgs e)
     {
         base.OnPointerEntered(e);
-        RaiseEvent(new RoutedEventArgs(PointerEnteredItemEvent));
+        RaiseEvent(new NavMenuItemPointerEventArgs(PointerEnteredItemEvent, e));
     }
 
     protected override void OnPointerExited(PointerEventArgs e)
     {
         base.OnPointerExited(e);
-        RaiseEvent(new RoutedEventArgs(PointerExitedItemEvent));
+        RaiseEvent(new NavMenuItemPointerEventArgs(PointerExitedItemEvent, e));
     }
 }
