@@ -502,6 +502,30 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    public void Wayland_Csd_Drawn_TitleBar_Layers_Clip_To_Top_Window_CornerRadius()
+    {
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"));
+        XNamespace av = "https://github.com/avaloniaui";
+
+        var titleBarFrame = document.Descendants(av + "ContentPresenter")
+                                    .Single(element =>
+                                        (string?)element.Attribute("Name") == "PART_TitleBar");
+        var titleBarContent = document.Descendants(av + "ContentPresenter")
+                                      .Single(element =>
+                                          (string?)element.Attribute("Name") == "PART_TitleBarPresenter");
+        var titleBarClip = titleBarContent.Parent.ShouldNotBeNull();
+
+        titleBarFrame.Attribute("ClipToBounds").ShouldNotBeNull().Value.ShouldBe("True");
+        titleBarClip.Name.ShouldBe(av + "Border");
+        titleBarClip.Attribute("ClipToBounds").ShouldNotBeNull().Value.ShouldBe("True");
+        titleBarClip.Attribute("CornerRadius").ShouldNotBeNull().Value.ShouldBe(
+            "{Binding $parent[atom:Window].CornerRadius, Converter={StaticResource TitleBarCornerRadiusFilter}}");
+        titleBarContent.Attribute("ClipToBounds").ShouldBeNull();
+        titleBarContent.Attribute("CornerRadius").ShouldBeNull();
+    }
+
+    [Fact]
     public void Windows_Window_Has_No_NonCsd_Template_And_Uses_Opaque_Csd_Background()
     {
         var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
