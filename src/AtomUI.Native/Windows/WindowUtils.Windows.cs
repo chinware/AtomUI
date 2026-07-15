@@ -7,6 +7,9 @@ namespace AtomUI.Native;
 [SupportedOSPlatform("windows")]
 internal static class WindowUtilsWindows
 {
+    private const int Windows10DarkFrameMinimumBuild = 17763;
+    private const int Windows10DarkFrame20H1AttributeBuild = 18985;
+
     public static void SetWindowIgnoreMouseEventsWindows(IntPtr handle, bool flag)
     {
         if (handle == IntPtr.Zero)
@@ -55,4 +58,62 @@ internal static class WindowUtilsWindows
         return margin.Top > 0 ? margin.Top : null;
     }
 
+    public static void SetWindowFrameDarkModeWindows(IntPtr handle, bool isDarkMode)
+    {
+        if (handle == IntPtr.Zero ||
+            !OperatingSystem.IsWindowsVersionAtLeast(10, 0, Windows10DarkFrameMinimumBuild) ||
+            OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000))
+        {
+            return;
+        }
+
+        var value = isDarkMode ? 1 : 0;
+        if (!TrySetWindowFrameDarkMode(handle, SelectDarkModeAttribute(), value) &&
+            !TrySetWindowFrameDarkMode(handle, SelectFallbackDarkModeAttribute(), value))
+        {
+            return;
+        }
+
+        ReapplyActiveNonClientFrame(handle);
+    }
+
+    private static int SelectDarkModeAttribute()
+    {
+        return Environment.OSVersion.Version.Build >= Windows10DarkFrame20H1AttributeBuild
+            ? WindowUtilsInterop.DWMWA_USE_IMMERSIVE_DARK_MODE
+            : WindowUtilsInterop.DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
+    }
+
+    private static int SelectFallbackDarkModeAttribute()
+    {
+        return Environment.OSVersion.Version.Build >= Windows10DarkFrame20H1AttributeBuild
+            ? WindowUtilsInterop.DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1
+            : WindowUtilsInterop.DWMWA_USE_IMMERSIVE_DARK_MODE;
+    }
+
+    private static bool TrySetWindowFrameDarkMode(IntPtr handle, int attribute, int value)
+    {
+        return WindowUtilsInterop.DwmSetWindowAttribute(
+            handle,
+            attribute,
+            ref value,
+            sizeof(int)) == WindowUtilsInterop.S_OK;
+    }
+
+    private static void ReapplyActiveNonClientFrame(IntPtr handle)
+    {
+        // Avalonia suppresses default non-client activation handling for CSD windows.
+        // Let Windows repaint the active non-client frame once so the Win10 DWM
+        // dark-frame attribute is reflected immediately instead of after focus changes.
+        WindowUtilsInterop.DefWindowProc(
+            handle,
+            WindowUtilsInterop.WM_NCACTIVATE,
+            IntPtr.Zero,
+            IntPtr.Zero);
+        WindowUtilsInterop.DefWindowProc(
+            handle,
+            WindowUtilsInterop.WM_NCACTIVATE,
+            new IntPtr(1),
+            IntPtr.Zero);
+    }
 }
