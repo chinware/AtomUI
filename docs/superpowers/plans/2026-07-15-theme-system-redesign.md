@@ -1062,12 +1062,17 @@ Actual verification:
 - PASS: rg -n "\{atom:SharedTokenResource " src/AtomUI.Desktop.Controls src/AtomUI.Toolkits.GalleryBase -g '*.axaml' returns only intentional global-style resources in TextBlock themes, SizeTypeAwareIconPresenter, WaveSpiritDecoratorTheme and GallerySelectableTextBlockTheme.
 - PASS: git diff --check.
 
-- [ ] **Step 7: Commit final removal**
+- [x] **Step 7: Commit final removal**
 
 ~~~bash
 git add src tests/AtomUI.Desktop.Controls.Tests/Theme
 git commit -m "refactor(Theme)!: remove per-control token resource scopes"
 ~~~
+
+Actual commit checkpoint:
+- 5d844fc45 refactor(Theme): remove legacy token scope host
+- 708cb2154 test(Theme): cover component shared token isolation
+- 2517ecaae test(Theme): stabilize final control verification
 
 ### Task 12: Add Snapshot Caching and Remove Mutable Compile Paths
 
