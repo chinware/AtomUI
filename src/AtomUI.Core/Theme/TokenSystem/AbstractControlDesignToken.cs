@@ -140,6 +140,23 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken,
     {
     }
 
+    public override AbstractDesignToken Clone()
+    {
+        var type            = GetType();
+        var tokenProperties = GetTokenProperties(type);
+        var cloned          = (AbstractControlDesignToken)Activator.CreateInstance(type)!;
+
+        foreach (var property in tokenProperties)
+        {
+            if (property.SetMethod is not null)
+            {
+                property.SetValue(cloned, property.GetValue(this));
+            }
+        }
+
+        return cloned;
+    }
+
     public bool HasCustomTokenConfig()
     {
         return _isCustomTokenConfig;
