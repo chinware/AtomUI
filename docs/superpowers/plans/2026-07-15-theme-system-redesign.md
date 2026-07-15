@@ -582,7 +582,7 @@ git commit -m "feat(Theme): add snapshot token resource provider"
 - Consumes: ControlDesignToken class with public const string ID.
 - Produces: registration identity and ControlNameSharedTokenResourceExtension.
 
-- [ ] **Step 1: Add generator output tests**
+- [x] **Step 1: Add generator output tests**
 
 Input:
 
@@ -611,21 +611,21 @@ public sealed class ButtonTokenSharedTokenResourceExtension
 
 Also assert a generator diagnostic when ID is missing or non-constant.
 
-- [ ] **Step 2: Verify generator failure**
+- [x] **Step 2: Verify generator failure**
 
 Run: dotnet test tests/AtomUI.Generator.Tests/AtomUI.Generator.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~TokenResourceKeyGeneratorTests
 
 Expected: FAIL.
 
-- [ ] **Step 3: Extend generator metadata**
+- [x] **Step 3: Extend generator metadata**
 
 Add ControlId, ResourceCatalog and generated TokenKind type to ControlTokenInfo. Emit ControlTokenRegistration with identity metadata rather than creating a Token instance to discover its id.
 
-- [ ] **Step 4: Emit component-shared markup extensions**
+- [x] **Step 4: Emit component-shared markup extensions**
 
 Keep existing component own Token extensions. Emit one additional SharedTokenKind extension per registered ControlToken.
 
-- [ ] **Step 5: Verify generator and consumers**
+- [x] **Step 5: Verify generator and consumers**
 
 Run:
 - dotnet test tests/AtomUI.Generator.Tests/AtomUI.Generator.Tests.csproj --framework net10.0 --no-restore
@@ -633,7 +633,7 @@ Run:
 
 Expected: PASS and successful build.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ~~~bash
 git add src/AtomUI.Generator src/AtomUI.Core/Theme/ControlTokenRegistration.cs tests/AtomUI.Generator.Tests
