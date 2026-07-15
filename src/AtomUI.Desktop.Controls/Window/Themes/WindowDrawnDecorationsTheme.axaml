@@ -120,7 +120,7 @@
             <Setter Property="Margin" Value="1,1,1,0" />
         </Style>
 
-        <Style Selector="^:has-border /template/ Border#PART_TitleBar">
+        <Style Selector="^:has-border /template/ ContentPresenter#PART_TitleBar">
             <Setter Property="Margin" Value="1,1,1,0" />
         </Style>
 
@@ -131,7 +131,7 @@
         <Style Selector="^:fullscreen /template/ Panel#PART_TitleBarPresenter">
             <Setter Property="IsVisible" Value="False" />
         </Style>
-        <Style Selector="^:fullscreen /template/ Border#PART_TitleBar">
+        <Style Selector="^:fullscreen /template/ ContentPresenter#PART_TitleBar">
             <Setter Property="IsVisible" Value="False" />
         </Style>
         <Style Selector="^:fullscreen /template/ Border#FullscreenHeaderFrame">
