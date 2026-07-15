@@ -83,7 +83,22 @@ internal sealed class ThemeCompiler
         registrations = new Dictionary<ComponentTokenIdentity, AbstractControlDesignToken>();
         foreach (var registration in request.Registrations)
         {
-            if (registration.Activate() is not { } token)
+            AbstractControlDesignToken? token;
+            try
+            {
+                token = registration.Activate();
+            }
+            catch (Exception exception)
+            {
+                AddError(
+                    diagnostics,
+                    "THEME001",
+                    $"Registration '{registration.TokenType.FullName}' activation failed: {exception.GetBaseException().Message}");
+                isValid = false;
+                continue;
+            }
+
+            if (token is null)
             {
                 AddError(diagnostics, "THEME001", $"Registration '{registration.TokenType.FullName}' does not create an {nameof(AbstractControlDesignToken)}.");
                 isValid = false;
