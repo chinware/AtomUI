@@ -45,14 +45,19 @@ public class CustomizeThemeShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:CustomizeThemeShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(4);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(4);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(4);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:CustomizeThemeViewModel\"").ShouldBe(4);
+        CountShowCaseItemElements(source).ShouldBe(5);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(5);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(5);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:CustomizeThemeViewModel\"").ShouldBe(5);
         source.ShouldContain("CustomizeThemeShowCaseLangResource CustomizeDesignTokenTitle");
         source.ShouldContain("CustomizeThemeShowCaseLangResource PresetAlgorithmsTitle");
         source.ShouldContain("CustomizeThemeShowCaseLangResource CustomizeComponentTokenTitle");
         source.ShouldContain("CustomizeThemeShowCaseLangResource NestedThemeTitle");
+        source.ShouldContain("CustomizeThemeShowCaseLangResource RuntimeTokenUpdatesTitle");
+        source.ShouldContain("Inherit=\"False\"");
+        source.ShouldContain("SharedTokenSetters=\"{Binding RuntimeSharedTokenSetters}\"");
+        source.ShouldContain("Command=\"{Binding UseRuntimePrimaryGreen}\"");
+        source.ShouldContain("Name=\"ComponentTokenContentIsolationProbe\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
@@ -139,6 +144,11 @@ public class CustomizeThemeShowCasePageTests
             source.ShouldContain("TokenNameColorPrimary");
             source.ShouldContain("TokenNameBorderRadius");
             source.ShouldContain("TokenNameColorBgContainer");
+            source.ShouldContain("RuntimeTokenUpdatesTitle");
+            source.ShouldContain("RuntimeTokenUpdatesDescription");
+            source.ShouldContain("P2ContentUseGreen");
+            source.ShouldContain("P2ContentThemeN3");
+            source.ShouldContain("P2ContentIsolationText");
         }
     }
 

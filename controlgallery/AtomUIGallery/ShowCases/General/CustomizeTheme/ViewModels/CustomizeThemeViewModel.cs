@@ -1,8 +1,11 @@
 using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Theme;
+using AtomUI.Theme.TokenSystem;
 using AtomUIGallery.Localization;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Threading;
 using ReactiveUI;
 
@@ -19,6 +22,7 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
 
     private ObservableCollection<CustomizeThemeApiRow>? _apiRows;
     private ObservableCollection<CustomizeThemeDesignTokenRow>? _designTokenRows;
+    private readonly TokenSetter _runtimePrimaryTokenSetter;
 
     public ObservableCollection<CustomizeThemeApiRow>? ApiRows
     {
@@ -32,10 +36,25 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
 
+    public AvaloniaList<TokenSetter> RuntimeSharedTokenSetters { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> UseRuntimePrimaryBlue { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> UseRuntimePrimaryGreen { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> UseRuntimePrimaryMagenta { get; }
+
     public CustomizeThemeViewModel(IScreen screen)
     {
-        Activator  = new ViewModelActivator();
-        HostScreen = screen;
+        Activator                  = new ViewModelActivator();
+        HostScreen                 = screen;
+        _runtimePrimaryTokenSetter = new TokenSetter(null, nameof(DesignToken.ColorPrimary), "#1677ff");
+        RuntimeSharedTokenSetters  = [_runtimePrimaryTokenSetter];
+        UseRuntimePrimaryBlue      = ReactiveCommand.Create(() => SetRuntimePrimaryColor("#1677ff"));
+        UseRuntimePrimaryGreen     = ReactiveCommand.Create(() => SetRuntimePrimaryColor("#00b96b"));
+        UseRuntimePrimaryMagenta   = ReactiveCommand.Create(() => SetRuntimePrimaryColor("#eb2f96"));
+    }
+
+    private void SetRuntimePrimaryColor(string color)
+    {
+        _runtimePrimaryTokenSetter.Value = color;
     }
 
     public void EnsureApiRows()

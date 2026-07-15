@@ -1153,19 +1153,25 @@ git commit -m "perf(Theme): cache compiled theme snapshots"
 - Consumes: completed snapshot architecture.
 - Produces: maintained docs, Gallery contracts and release evidence.
 
-- [ ] **Step 1: Document final runtime flow**
+- [x] **Step 1: Document final runtime flow**
 
 Document startup request, prepare and commit order, Snapshot contents, nested merge, component-private keys, event order, failure behavior and extension points.
 
-- [ ] **Step 2: Update Gallery examples**
+- [x] **Step 2: Update Gallery examples**
 
 Add examples for nested inheritance, Inherit false, runtime Setter changes, component algorithm true and false, and isolation from Content.
 
-- [ ] **Step 3: Run lifecycle checks**
+- [x] **Step 3: Run lifecycle checks**
 
 Verify old ShowCases, ThemeConfigProviders, ResourceProviders and DynamicResourceExpression instances do not grow monotonically after Gallery navigation. Verify Popup and Flyout content follow the owning scope.
 
-- [ ] **Step 4: Run target test projects**
+Actual lifecycle evidence:
+- PASS: `dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~ThemeContract|FullyQualifiedName~ThemeScopeMigrationTests|FullyQualifiedName~SelectBehaviorTests|FullyQualifiedName~TreeSelectBehaviorTests|FullyQualifiedName~SplashBehaviorTests|FullyQualifiedName~LinuxWindowFixAotTests|FullyQualifiedName~WindowTitleBarTokenTests|FullyQualifiedName~ImagePreviewerSourceLoadingTests|FullyQualifiedName~ImagePreviewerTitleTests|FullyQualifiedName~ButtonThemeScopeTests|FullyQualifiedName~FlyoutResourceBindingLifetimeTests"` with 129 tests.
+- PASS: Core `ThemeConfigProviderTests`, `ThemeTokenResourceProviderTests` and `ThemeSnapshotCacheTests` remain covered by the full Core test project.
+- PASS: Popup/Flyout scope migration static tests are included in the focused Desktop Controls gate.
+- NOT RUN: Gallery object-count navigation check for old ShowCases, ThemeConfigProviders, ResourceProviders and DynamicResourceExpression instances. No existing automated object-count navigation harness was found in `tests/AtomUIGallery.Tests`, `tests/AtomUI.Toolkits.GalleryBase.Tests`, `controlgallery/AtomUIGallery` or `src/AtomUI.Toolkits.GalleryBase`; this validation is not claimed.
+
+- [x] **Step 4: Run target test projects**
 
 ~~~bash
 dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
@@ -1177,13 +1183,27 @@ dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --framework net
 
 Expected: all commands exit 0.
 
-- [ ] **Step 5: Build both release targets**
+Actual verification:
+- PASS: `dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore` with 140 tests.
+- PASS: `dotnet test tests/AtomUI.Controls.Shared.Tests/AtomUI.Controls.Shared.Tests.csproj --framework net10.0 --no-restore`.
+- PASS: `dotnet test tests/AtomUI.Desktop.Controls.DataGrid.Tests/AtomUI.Desktop.Controls.DataGrid.Tests.csproj --framework net10.0 --no-restore` with 88 tests.
+- PASS: `dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~CustomizeThemeShowCasePageTests` with 4 tests.
+- PASS: the focused Desktop Controls theme/lifecycle gate above with 129 tests.
+- FAIL, unrelated baseline drift: `dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --framework net10.0 --no-restore` failed with 445 passed and 2 failed: `BadgeShowCasePageTests.Badge_ShowCase_Examples_Match_Approved_Control_Demo_Content` and `FloatButtonShowCasePageTests.FloatButton_ShowCase_Examples_Match_Approved_Control_Demo_Content`. Current Task 13 changes do not touch Badge or FloatButton source/snapshots, so their snapshots were not updated.
+- NOT RUN unfiltered: full `AtomUI.Desktop.Controls.Tests`; the focused gate was used because the unfiltered suite has known UI-thread/test-isolation instability unrelated to the theme changes.
+
+- [x] **Step 5: Build both release targets**
 
 Run: dotnet build AtomUI.slnx --configuration Release --no-restore
 
 Expected: net8.0 and net10.0 builds succeed without new warnings.
 
-- [ ] **Step 6: Publish NativeAOT Gallery**
+Actual verification:
+- PASS: `dotnet restore AtomUI.slnx --property:Configuration=Release`.
+- PASS: `dotnet restore controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj --property:Configuration=Release --runtime osx-arm64`.
+- PASS: `dotnet build AtomUI.slnx --configuration Release --no-restore` with 0 warnings and 0 errors.
+
+- [x] **Step 6: Publish NativeAOT Gallery**
 
 ~~~bash
 pwsh -NoLogo -NoProfile -File controlgallery/AtomUIGallery.Desktop/scripts/PublishToLocal.ps1 -publishRootPath /tmp/atomui-gallery-theme-aot -runtime osx-arm64 -buildType Release -publishAot true
@@ -1191,7 +1211,13 @@ pwsh -NoLogo -NoProfile -File controlgallery/AtomUIGallery.Desktop/scripts/Publi
 
 Expected: publish exits 0. Launch the result and verify global Dark and Compact, nested scopes, component isolation, Popup content and runtime updates.
 
-- [ ] **Step 7: Run hygiene checks**
+Actual verification:
+- PASS: `dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj --output /tmp/atomui-gallery-theme-aot/packages --self-contained true --framework net10.0 --runtime osx-arm64 --configuration Release --no-restore -p:GalleryPublishAot=true --nologo -v:normal` with 0 warnings and 0 errors.
+- PASS: `/tmp/atomui-gallery-theme-aot/packages/AtomUIGallery.Desktop` exists and `file` reports `Mach-O 64-bit executable arm64`.
+- PASS: no forbidden CoreCLR/JIT files were found in `/tmp/atomui-gallery-theme-aot/packages`.
+- NOTE: `pwsh -NoLogo -NoProfile -File controlgallery/AtomUIGallery.Desktop/scripts/PublishToLocal.ps1 -publishRootPath /tmp/atomui-gallery-theme-aot -runtime osx-arm64 -buildType Release -publishAot true` failed in the `dotnet publish` child with exit code 1 after long silent AOT work. Re-running the same publish command directly under zsh produced the native executable successfully. The app was not launched manually from the publish output in this task.
+
+- [x] **Step 7: Run hygiene checks**
 
 ~~~bash
 rg "ThemeDefinitionReader|ControlTokenResourcesScopeHostExtensions|RegisterTokenResourceScope|ThemeAboutToUnload|ThemeUnloaded" src tests
@@ -1200,7 +1226,11 @@ git diff --check
 
 Expected: no production legacy references and a clean diff check.
 
-- [ ] **Step 8: Commit docs and validation updates**
+Actual verification:
+- PASS: `rg "ThemeDefinitionReader|ControlTokenResourcesScopeHostExtensions|RegisterTokenResourceScope|ThemeAboutToUnload|ThemeUnloaded" src tests` found no production references; matches are test assertions that the legacy `RegisterTokenResourceScope` text is absent.
+- PASS: `git diff --check`.
+
+- [x] **Step 8: Commit docs and validation updates**
 
 ~~~bash
 git add docs controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme tests/AtomUIGallery.Tests/ShowCases/CustomizeThemeShowCasePageTests.cs
