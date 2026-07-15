@@ -74,7 +74,7 @@
 - Consumes: existing DesignToken and DefaultThemeVariantCalculator.
 - Produces: an AtomUI.Core.Tests assembly with access to AtomUI.Core internals.
 
-- [ ] **Step 1: Add the test project and internals access**
+- [x] **Step 1: Add the test project and internals access**
 
 ~~~xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -98,7 +98,7 @@
 
 Add InternalsVisibleTo for AtomUI.Core.Tests and add the project to AtomUI.slnx.
 
-- [ ] **Step 2: Lock current default derivation**
+- [x] **Step 2: Lock current default derivation**
 
 ~~~csharp
 [Fact]
@@ -116,13 +116,13 @@ public void DefaultCalculator_Derives_Stable_Primary_And_Control_Size_Tokens()
 }
 ~~~
 
-- [ ] **Step 3: Run the new project**
+- [x] **Step 3: Run the new project**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
 
 Expected: PASS with one test and zero failures.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ~~~bash
 git add AtomUI.slnx src/AtomUI.Core/AtomUI.Core.csproj tests/AtomUI.Core.Tests
