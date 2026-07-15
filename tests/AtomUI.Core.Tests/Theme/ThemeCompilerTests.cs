@@ -241,6 +241,40 @@ public class ThemeCompilerTests
     }
 
     [Fact]
+    public void Registration_Without_A_Public_Parameterless_Constructor_Fails_With_A_Theme001_Diagnostic()
+    {
+        var result = Compile(registrations:
+        [
+            new ControlTokenRegistration(typeof(NoDefaultConstructorCompilerButtonToken))
+        ]);
+
+        result.Success.ShouldBeFalse();
+        result.Snapshot.ShouldBeNull();
+        result.Exception.ShouldBeNull();
+        result.Diagnostics.ShouldContain(diagnostic =>
+            diagnostic.Code == "THEME001" &&
+            diagnostic.Message.Contains(nameof(NoDefaultConstructorCompilerButtonToken), StringComparison.Ordinal) &&
+            diagnostic.Message.Contains("parameterless constructor", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void Registration_With_A_Throwing_Constructor_Fails_With_A_Theme001_Diagnostic()
+    {
+        var result = Compile(registrations:
+        [
+            new ControlTokenRegistration(typeof(ThrowingConstructorCompilerButtonToken))
+        ]);
+
+        result.Success.ShouldBeFalse();
+        result.Snapshot.ShouldBeNull();
+        result.Exception.ShouldBeNull();
+        result.Diagnostics.ShouldContain(diagnostic =>
+            diagnostic.Code == "THEME001" &&
+            diagnostic.Message.Contains(nameof(ThrowingConstructorCompilerButtonToken), StringComparison.Ordinal) &&
+            diagnostic.Message.Contains(ThrowingConstructorCompilerButtonToken.ExceptionMessage, StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Snapshot_Is_Independent_From_Mutable_Compile_Inputs()
     {
         var algorithms = new List<ThemeAlgorithm> { ThemeAlgorithm.Default };
@@ -482,4 +516,33 @@ internal sealed class ActivationCountingCompilerButtonToken : AbstractControlDes
 
 internal sealed class InvalidCompilerToken
 {
+}
+
+internal sealed class NoDefaultConstructorCompilerButtonToken : AbstractControlDesignToken
+{
+    public NoDefaultConstructorCompilerButtonToken(string ignored)
+        : base("NoDefaultConstructor")
+    {
+    }
+
+    protected override Type GetTokenKindType()
+    {
+        return typeof(CompilerButtonTokenKind);
+    }
+}
+
+internal sealed class ThrowingConstructorCompilerButtonToken : AbstractControlDesignToken
+{
+    internal const string ExceptionMessage = "Token activation failed.";
+
+    public ThrowingConstructorCompilerButtonToken()
+        : base("ThrowingConstructor")
+    {
+        throw new InvalidOperationException(ExceptionMessage);
+    }
+
+    protected override Type GetTokenKindType()
+    {
+        return typeof(CompilerButtonTokenKind);
+    }
 }
