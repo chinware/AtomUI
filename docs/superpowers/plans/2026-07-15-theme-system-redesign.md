@@ -744,7 +744,7 @@ git commit -m "refactor(Theme): make config provider inherit snapshots"
 - Consumes: ButtonTokenSharedTokenResourceExtension and scoped Snapshot.
 - Produces: first component with Ant Design isolation and no instance scope host.
 
-- [ ] **Step 1: Write component isolation tests**
+- [x] **Step 1: Write component isolation tests**
 
 ~~~csharp
 [Fact]
@@ -773,27 +773,32 @@ public void Button_Component_ColorPrimary_Does_Not_Leak_To_Content()
 
 Add tests for a nested Input using Input config, runtime Button component updates without reattach, and global theme switch refresh.
 
-- [ ] **Step 2: Verify leakage or staleness**
+- [x] **Step 2: Verify leakage or staleness**
 
 Run: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ButtonThemeScopeTests
 
 Expected: current Host behavior fails at least one assertion.
 
-- [ ] **Step 3: Migrate ButtonTheme references**
+- [x] **Step 3: Migrate ButtonTheme references**
 
 Replace component-semantic SharedTokenResource usages with the generated Button component-shared extension. Inventory every SharedTokenResourceValue separately: use a component-aware DynamicResource when the target is a StyledElement; for non-Visual transition or animation objects, project the Token onto an owning control property with an explicit lifecycle instead of attaching DynamicResource to the non-Visual object. Leave genuinely application-global non-design resources unchanged.
 
-- [ ] **Step 4: Remove Button instance scope registration**
+- [x] **Step 4: Remove Button instance scope registration**
 
-Remove RegisterTokenResourceScope from Button and remove ButtonToken.ScopeProvider. Keep shared Host infrastructure for unconverted controls.
+Remove RegisterTokenResourceScope from Button. Keep ButtonToken.ScopeProvider as a migration adapter until IconButton, HyperLinkButton, SplitButton and ToggleIconButton migrate in Task 11.
 
-- [ ] **Step 5: Run all Button and scope tests**
+- [x] **Step 5: Run all Button and scope tests**
 
 Run: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~Button|FullyQualifiedName~ThemeConfigProvider"
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+Verified on 2026-07-15:
+- dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ButtonThemeScopeTests: PASS, 4 tests.
+- dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~Button|FullyQualifiedName~ThemeConfigProvider": PASS, 129 tests.
+- dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeConfigProviderTests: PASS, 17 tests.
+
+- [x] **Step 6: Commit**
 
 ~~~bash
 git add src/AtomUI.Desktop.Controls/Buttons tests/AtomUI.Desktop.Controls.Tests/Buttons/ButtonThemeScopeTests.cs

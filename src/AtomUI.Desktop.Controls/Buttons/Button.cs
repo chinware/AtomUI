@@ -6,6 +6,7 @@ using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
+using AtomUI.Theme.Scope;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
@@ -14,6 +15,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 
@@ -451,6 +453,7 @@ public class Button : AvaloniaButton,
     
     private static readonly IBrush TransparentBrush = new ImmutableSolidColorBrush(Colors.Transparent);
     private WaveSpiritDecorator? _waveSpiritDecorator;
+    private IDisposable? _themeScopeSubscription;
 
     static Button()
     {
@@ -465,11 +468,6 @@ public class Button : AvaloniaButton,
             IsGhostProperty,
             ColorProperty,
             VariantProperty);
-    }
-
-    public Button()
-    {
-        this.RegisterTokenResourceScope(ButtonToken.ScopeProvider);
     }
 
     #region 实现 CompactSpace 接口
@@ -549,6 +547,21 @@ public class Button : AvaloniaButton,
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _themeScopeSubscription?.Dispose();
+        _themeScopeSubscription = this.GetObservable(ThemeScope.SnapshotProperty)
+                                      .Subscribe(_ => ConfigureVariantThemeVariables());
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        _themeScopeSubscription?.Dispose();
+        _themeScopeSubscription = null;
+        base.OnDetachedFromLogicalTree(e);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -807,12 +820,12 @@ public class Button : AvaloniaButton,
 
     private void ConfigureVariantThemeVariables()
     {
-        var sharedToken = TokenFinderUtils.FindSharedToken(this);
         var buttonToken = TokenFinderUtils.FindControlToken(this, ButtonToken.ID) as ButtonToken;
         if (buttonToken is null)
         {
             return;
         }
+        var sharedToken = buttonToken.AssignedSharedToken ?? TokenFinderUtils.FindSharedToken(this);
 
         if (EffectiveColor == ButtonColor.Default)
         {

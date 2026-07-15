@@ -363,11 +363,21 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         {
             _tokenResourceProvider = new ThemeTokenResourceProvider(snapshot);
             Resources.MergedDictionaries.Add(_tokenResourceProvider);
+            NotifyContentResourcesChanged();
             return;
         }
 
         _tokenResourceProvider.PrepareSnapshot(snapshot);
         _tokenResourceProvider.PublishSnapshotChanged();
+        NotifyContentResourcesChanged();
+    }
+
+    private void NotifyContentResourcesChanged()
+    {
+        if (Content is IResourceHost resourceHost)
+        {
+            resourceHost.NotifyHostedResourcesChanged(ResourcesChangedEventArgs.Create());
+        }
     }
 
     private static Dictionary<string, IControlDesignToken> CreateCompatibilityControlTokenMap(
