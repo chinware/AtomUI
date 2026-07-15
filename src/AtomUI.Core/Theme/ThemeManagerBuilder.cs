@@ -20,6 +20,8 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     public LanguageVariant LanguageVariant { get; private set; }
     public string ThemeId { get; private set; }
     public FontFamily? FontFamily { get; private set; }
+    internal bool HasExplicitDefaultTheme { get; private set; }
+    internal string? ExplicitDefaultThemeBaseId { get; private set; }
 
     private readonly HashSet<string> _registeredTokenTypes;
     private readonly HashSet<string> _registeredControlThemesProviders;
@@ -89,7 +91,17 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
 
     public void WithDefaultTheme(string themeId)
     {
-        ThemeId = themeId;
+        SetExplicitDefaultTheme(themeId, themeId);
+    }
+
+    internal void SetExplicitDefaultTheme(string themeId, string baseThemeId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(themeId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(baseThemeId);
+
+        ThemeId                         = themeId;
+        ExplicitDefaultThemeBaseId       = baseThemeId;
+        HasExplicitDefaultTheme          = true;
     }
 
     public void WithDefaultFontFamily(FontFamily fontFamily)
