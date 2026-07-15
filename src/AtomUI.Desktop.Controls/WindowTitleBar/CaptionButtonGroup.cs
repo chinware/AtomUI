@@ -6,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -120,6 +119,12 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
             nameof(IsMaximizeButtonEffectivelyVisible),
             o => o.IsMaximizeButtonEffectivelyVisible,
             (o, v) => o.IsMaximizeButtonEffectivelyVisible = v);
+
+    internal static readonly DirectProperty<CaptionButtonGroup, bool> IsPinButtonEffectivelyVisibleProperty =
+        AvaloniaProperty.RegisterDirect<CaptionButtonGroup, bool>(
+            nameof(IsPinButtonEffectivelyVisible),
+            o => o.IsPinButtonEffectivelyVisible,
+            (o, v) => o.IsPinButtonEffectivelyVisible = v);
     
     internal bool IsMotionEnabled
     {
@@ -174,8 +179,25 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         get => _isMaximizeButtonEffectivelyVisible;
         set => SetAndRaise(IsMaximizeButtonEffectivelyVisibleProperty, ref _isMaximizeButtonEffectivelyVisible, value);
     }
+
+    private bool _isPinButtonEffectivelyVisible;
+
+    internal bool IsPinButtonEffectivelyVisible
+    {
+        get => _isPinButtonEffectivelyVisible;
+        set => SetAndRaise(IsPinButtonEffectivelyVisibleProperty, ref _isPinButtonEffectivelyVisible, value);
+    }
     
     protected Window? HostWindow { get; private set; }
+
+    #endregion
+
+    #region 内部协作 API
+
+    internal static bool IsPinSupportedForBackend(LinuxWindowingBackend backend)
+    {
+        return backend != LinuxWindowingBackend.Wayland;
+    }
 
     #endregion
     
@@ -196,6 +218,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         IsWindowMaximizedProperty.Changed.AddClassHandler<CaptionButtonGroup>((group, _) => group.UpdateFullScreenButtonVisibility());
         IsMinimizeCaptionButtonVisibleProperty.Changed.AddClassHandler<CaptionButtonGroup>((group, _) => group.UpdateMinimizeButtonVisibility());
         IsMaximizeCaptionButtonVisibleProperty.Changed.AddClassHandler<CaptionButtonGroup>((group, _) => group.UpdateMaximizeButtonVisibility());
+        IsPinCaptionButtonVisibleProperty.Changed.AddClassHandler<CaptionButtonGroup>((group, _) => group.UpdatePinButtonVisibility());
         IsWindowFullScreenProperty.Changed.AddClassHandler<CaptionButtonGroup>((group, _) =>
         {
             group.UpdateMinimizeButtonVisibility();
@@ -218,7 +241,9 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
 
         HostWindow = hostWindow;
         
-        _disposables = new CompositeDisposable(7);
+        _disposables = new CompositeDisposable(8);
+        hostWindow.Opened += HandleHostWindowOpened;
+        _disposables.Add(Disposable.Create(() => hostWindow.Opened -= HandleHostWindowOpened));
         _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsFullScreenCaptionButtonVisibleProperty, this, IsFullScreenCaptionButtonVisibleProperty));
         _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsPinCaptionButtonVisibleProperty, this, IsPinCaptionButtonVisibleProperty));
         _disposables.Add(BindUtils.RelayBind(hostWindow, Window.CanMaximizeProperty, this, IsMaximizeCaptionButtonVisibleProperty));
@@ -231,6 +256,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
                                    {
                                        IsWindowPinned = HostWindow.Topmost;
                                    }));
+        UpdatePinButtonVisibility();
     }
 
     public virtual void Detach()
@@ -244,6 +270,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         _disposables    = null;
         HostWindow      = null;
         _lastWindowState = null;
+        UpdatePinButtonVisibility();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -294,6 +321,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         UpdateFullScreenButtonVisibility();
         UpdateMinimizeButtonVisibility();
         UpdateMaximizeButtonVisibility();
+        UpdatePinButtonVisibility();
     }
 
     private void HandleWindowStateChanged(WindowState windowState)
@@ -331,6 +359,11 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         }
     }
 
+    private void HandleHostWindowOpened(object? sender, EventArgs args)
+    {
+        UpdatePinButtonVisibility();
+    }
+
     private void UpdateFullScreenButtonVisibility()
     {
         IsFullScreenButtonEffectivelyVisible = IsFullScreenCaptionButtonVisible && !IsWindowMaximized;
@@ -344,6 +377,27 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
     private void UpdateMaximizeButtonVisibility()
     {
         IsMaximizeButtonEffectivelyVisible = IsMaximizeCaptionButtonVisible && !IsWindowFullScreen;
+    }
+
+    private void UpdatePinButtonVisibility()
+    {
+        IsPinButtonEffectivelyVisible = IsPinCaptionButtonVisible && IsPinSupportedByCurrentBackend();
+    }
+
+    private bool IsPinSupportedByCurrentBackend()
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            return true;
+        }
+
+        var configuredPlatform = AvaloniaLocator.Current.GetService<AtomUIWindowingPlatformOptions>()?.Platform;
+        var platformImpl       = HostWindow?.PlatformImpl;
+        var backend = LinuxWindowChromeManager.ResolveBackend(
+            configuredPlatform,
+            platformImpl?.Handle?.HandleDescriptor,
+            platformImpl?.GetType().Assembly.GetName().Name);
+        return IsPinSupportedForBackend(backend);
     }
 
     private void DisposeTemplateHandlers()
@@ -407,7 +461,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
 
     private void HandlePinButtonClicked(object? sender, RoutedEventArgs args)
     {
-        if (HostWindow == null || !HostWindow.IsPinCaptionButtonVisible)
+        if (HostWindow == null || !IsPinButtonEffectivelyVisible)
         {
             return;
         }

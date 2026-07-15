@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.Versioning;
 using System.Xml.Linq;
 using AtomUI;
@@ -100,6 +101,47 @@ public class WindowingPlatformDetectionTests
                 handleDescriptor,
                 platformAssemblyName)
             .ShouldBe((LinuxWindowingBackend)expected);
+    }
+
+    [Theory]
+    [InlineData(0, true)]
+    [InlineData(1, true)]
+    [InlineData(2, false)]
+    public void Caption_Pin_Support_Follows_Linux_Backend_Capability(
+        int backend,
+        bool expected)
+    {
+        CaptionButtonGroup.IsPinSupportedForBackend((LinuxWindowingBackend)backend)
+                          .ShouldBe(expected);
+    }
+
+    [Fact]
+    public void Wayland_Disables_Caption_Pin_Through_Effective_State()
+    {
+        var captionSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
+        var captionDocument = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"));
+
+        var pinButtons = captionDocument.Descendants()
+                                        .Where(element =>
+                                            element.Name.LocalName is "CaptionButton" or "WindowsCaptionButton" &&
+                                            (string?)element.Attribute("Name") == "PART_PinButton")
+                                        .ToList();
+
+        captionSource.ShouldContain("IsPinButtonEffectivelyVisibleProperty");
+        captionSource.ShouldContain("IsPinSupportedForBackend");
+        captionSource.ShouldContain("LinuxWindowingBackend.Wayland");
+        captionSource.ShouldContain("UpdatePinButtonVisibility();");
+        captionSource.ShouldContain("hostWindow.Opened += HandleHostWindowOpened");
+        captionSource.ShouldContain("hostWindow.Opened -= HandleHostWindowOpened");
+        captionSource.ShouldContain("!IsPinButtonEffectivelyVisible");
+
+        pinButtons.Count.ShouldBe(3);
+        pinButtons.ShouldAllBe(button =>
+            (string?)button.Attribute("IsVisible") == "{TemplateBinding IsPinButtonEffectivelyVisible}");
+        pinButtons.ShouldAllBe(button =>
+            (string?)button.Attribute("IsEnabled") == "{TemplateBinding IsPinButtonEffectivelyVisible}");
     }
 
     [Fact]
