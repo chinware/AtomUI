@@ -33,11 +33,6 @@ public class SimplePagination : AbstractPagination
         AffectsMeasure<SimplePagination>(IsReadOnlyProperty);
     }
 
-    public SimplePagination()
-    {
-        this.RegisterTokenResourceScope(PaginationToken.ScopeProvider);
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);

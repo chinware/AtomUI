@@ -39,13 +39,13 @@
         </Setter>
         
         <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="EdgeShadowStartColor" Value="{atom:SharedTokenResource ColorFillSecondary}"/>
+        <Setter Property="EdgeShadowStartColor" Value="{atom:TabControlTokenSharedTokenResource ColorFillSecondary}"/>
         <Setter Property="MenuEdgeThickness" Value="{atom:TabControlTokenResource MenuEdgeThickness}"/>
         
         <Style Selector="^ /template/ atom|IconButton#PART_ScrollMenuIndicator">
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}"/>
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}"/>
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextSecondary}"/>
+            <Setter Property="IconWidth" Value="{atom:TabControlTokenSharedTokenResource IconSize}"/>
+            <Setter Property="IconHeight" Value="{atom:TabControlTokenSharedTokenResource IconSize}"/>
+            <Setter Property="IconBrush" Value="{atom:TabControlTokenSharedTokenResource ColorTextSecondary}"/>
         </Style>
         
         <Style Selector="^[TabStripPlacement=Top]">

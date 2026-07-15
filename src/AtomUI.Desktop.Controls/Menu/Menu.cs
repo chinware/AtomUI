@@ -65,7 +65,6 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
     public Menu()
         : base(new DefaultMenuInteractionHandler(false))
     {
-        this.RegisterTokenResourceScope(MenuToken.ScopeProvider);
         AddHandler(MenuItem.ClickEvent, RelayDetachedTitleBarPopupClickToHostWindow);
         AddHandler(MenuItem.IsCheckStateChangedEvent, SyncDetachedTitleBarRadioGroup);
     }

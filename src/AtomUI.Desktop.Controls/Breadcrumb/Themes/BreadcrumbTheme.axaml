@@ -18,6 +18,6 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:BreadcrumbTokenSharedTokenResource EnableMotion}" />
     </ControlTheme>
 </ResourceDictionary>

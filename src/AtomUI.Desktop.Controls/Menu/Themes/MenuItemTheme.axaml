@@ -179,8 +179,8 @@
 
         <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
             <Setter Property="IsVisible" Value="True" />
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeXS}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeXS}" />
+            <Setter Property="Width" Value="{atom:MenuTokenSharedTokenResource IconSizeXS}" />
+            <Setter Property="Height" Value="{atom:MenuTokenSharedTokenResource IconSizeXS}" />
         </Style>
 
         <Style Selector="^:empty">

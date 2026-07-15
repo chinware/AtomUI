@@ -220,7 +220,6 @@ public class Steps : SelectingItemsControl,
     
     public Steps()
     {
-        this.RegisterTokenResourceScope(StepsToken.ScopeProvider);
         SelectionMode                     =  SelectionMode.Single;
     }
     

@@ -51,7 +51,7 @@
                     <Setter Property="ProgressColor"
                             Value="{atom:StepsTokenResource ProgressColor}" />
                     <Setter Property="ProgressLineThickness"
-                            Value="{atom:SharedTokenResource LineWidthBold}" />
+                            Value="{atom:StepsTokenSharedTokenResource LineWidthBold}" />
                     <Style Selector="^ /template/ Border#ProgressFrame">
                         <Setter Property="Padding"
                                 Value="{atom:StepsTokenResource ProgressFramePadding}" />
@@ -59,7 +59,7 @@
 
                     <Style Selector="^[SizeType=Small]">
                         <Setter Property="ProgressLineThickness"
-                                Value="{atom:SharedTokenResource LineWidth}" />
+                                Value="{atom:StepsTokenSharedTokenResource LineWidth}" />
                         <Style Selector="^ /template/ Border#ProgressFrame">
                             <Setter Property="Padding"
                                     Value="{atom:StepsTokenResource ProgressFramePaddingSM}" />
@@ -104,12 +104,12 @@
                             <Setter Property="Height"
                                     Value="{atom:StepsTokenResource IconSizeSM}" />
                         </Style>
-                        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeSM}" />
+                        <Setter Property="FontSize" Value="{atom:StepsTokenSharedTokenResource FontSizeSM}" />
                         <Style Selector="^ /template/ atom|Icon">
                             <Setter Property="Width"
-                                    Value="{atom:SharedTokenResource FontSizeSM}" />
+                                    Value="{atom:StepsTokenSharedTokenResource FontSizeSM}" />
                             <Setter Property="Height"
-                                    Value="{atom:SharedTokenResource FontSizeSM}" />
+                                    Value="{atom:StepsTokenSharedTokenResource FontSizeSM}" />
                         </Style>
 
                     </Style>
@@ -276,7 +276,7 @@
 
             </Style>
             <Style Selector="^[Status=Wait]">
-                <Setter Property="Background" Value="{atom:SharedTokenResource ColorBorderBg}" />
+                <Setter Property="Background" Value="{atom:StepsTokenSharedTokenResource ColorBorderBg}" />
                 <Setter Property="BorderBrush" Value="{atom:StepsTokenResource InlineTailColor}" />
                 <Setter Property="BorderThickness" Value="1" />
             </Style>

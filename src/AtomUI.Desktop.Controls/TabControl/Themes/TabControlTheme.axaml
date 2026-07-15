@@ -52,7 +52,7 @@
         </Setter>
         
         <Setter Property="SelectedIndicatorThickness"
-                Value="{atom:SharedTokenResource LineWidthBold}" />
+                Value="{atom:TabControlTokenSharedTokenResource LineWidthBold}" />
         <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
             <Setter Property="Background" Value="{atom:TabControlTokenResource InkBarColor}" />
         </Style>
@@ -60,7 +60,7 @@
         <Style Selector="^[TabStripPlacement=Top]">
           
             <Style Selector="^ /template/ DockPanel#HeaderLayout">
-                <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
+                <Setter Property="HorizontalSpacing" Value="{atom:TabControlTokenSharedTokenResource SpacingXS}"/>
             </Style>
             
             <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
@@ -94,7 +94,7 @@
 
         <Style Selector="^[TabStripPlacement=Right]">
             <Style Selector="^ /template/ DockPanel#HeaderLayout">
-                <Setter Property="VerticalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
+                <Setter Property="VerticalSpacing" Value="{atom:TabControlTokenSharedTokenResource SpacingXS}"/>
             </Style>
             
             <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
@@ -128,7 +128,7 @@
 
         <Style Selector="^[TabStripPlacement=Bottom]">
             <Style Selector="^ /template/ DockPanel#HeaderLayout">
-                <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
+                <Setter Property="HorizontalSpacing" Value="{atom:TabControlTokenSharedTokenResource SpacingXS}"/>
             </Style>
             
             <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
@@ -162,7 +162,7 @@
 
         <Style Selector="^[TabStripPlacement=Left]">
             <Style Selector="^ /template/ DockPanel#HeaderLayout">
-                <Setter Property="VerticalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
+                <Setter Property="VerticalSpacing" Value="{atom:TabControlTokenSharedTokenResource SpacingXS}"/>
             </Style>
             
             <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">

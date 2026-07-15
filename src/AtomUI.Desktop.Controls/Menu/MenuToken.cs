@@ -11,7 +11,6 @@ namespace AtomUI.Desktop.Controls;
 internal class MenuToken : AbstractControlDesignToken
 {
     public const string ID = "Menu";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public MenuToken()
         : base(ID)

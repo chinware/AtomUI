@@ -270,7 +270,6 @@ public class NavMenu : ItemsControl,
     
     public NavMenu()
     {
-        this.RegisterTokenResourceScope(NavMenuToken.ScopeProvider);
         UpdatePseudoClasses();
         Items.CollectionChanged += HandleItemsViewCollectionChanged;
 

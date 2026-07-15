@@ -136,7 +136,7 @@ public class TabActivationTests
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/TabControl/Themes/BaseTabItemTheme.axaml");
 
         source.ShouldContain("<Style Selector=\"^:pressed\">");
-        source.ShouldContain("<Setter Property=\"Foreground\" Value=\"{atom:SharedTokenResource ColorPrimaryActive}\" />");
+        source.ShouldContain("<Setter Property=\"Foreground\" Value=\"{atom:TabControlTokenSharedTokenResource ColorPrimaryActive}\" />");
     }
 
     [Fact]
@@ -266,7 +266,7 @@ public class TabActivationTests
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/TabControl/Themes/TabStrip/BaseTabStripItemTheme.axaml");
 
         source.ShouldContain("<Style Selector=\"^:pressed\">");
-        source.ShouldContain("<Setter Property=\"Foreground\" Value=\"{atom:SharedTokenResource ColorPrimaryActive}\" />");
+        source.ShouldContain("<Setter Property=\"Foreground\" Value=\"{atom:TabControlTokenSharedTokenResource ColorPrimaryActive}\" />");
     }
 
     [Fact]

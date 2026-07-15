@@ -21,22 +21,22 @@
 
         <Setter Property="HorizontalItemSpacing" Value="0" />
         <Setter Property="VerticalItemSpacing" Value="0" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:StepsTokenSharedTokenResource EnableMotion}" />
 
         <Style Selector="^[Style=Default]">
             <Style Selector="^[Orientation=Horizontal]">
                 <Style Selector="^[LabelPlacement=Horizontal]">
                     <Style Selector="^[SizeType=Large]">
                         <Setter Property="HorizontalItemSpacing"
-                                Value="{atom:SharedTokenResource Spacing}" />
+                                Value="{atom:StepsTokenSharedTokenResource Spacing}" />
                     </Style>
                     <Style Selector="^[SizeType=Middle]">
                         <Setter Property="HorizontalItemSpacing"
-                                Value="{atom:SharedTokenResource Spacing}" />
+                                Value="{atom:StepsTokenSharedTokenResource Spacing}" />
                     </Style>
                     <Style Selector="^[SizeType=Small]">
                         <Setter Property="HorizontalItemSpacing"
-                                Value="{atom:SharedTokenResource SpacingSM}" />
+                                Value="{atom:StepsTokenSharedTokenResource SpacingSM}" />
                     </Style>
                 </Style>
             </Style>

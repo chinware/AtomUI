@@ -343,7 +343,6 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
 
     public BaseTabControl()
     {
-        this.RegisterTokenResourceScope(TabControlToken.ScopeProvider);
         AddHandler(PointerMovedEvent, HandleTabReorderPointerMoved, RoutingStrategies.Tunnel | RoutingStrategies.Bubble, handledEventsToo: true);
         AddHandler(PointerReleasedEvent, HandleTabReorderPointerReleased, RoutingStrategies.Tunnel | RoutingStrategies.Bubble, handledEventsToo: true);
         AddHandler(PointerCaptureLostEvent, HandleTabReorderPointerCaptureLost, RoutingStrategies.Tunnel | RoutingStrategies.Bubble, handledEventsToo: true);
