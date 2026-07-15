@@ -36,12 +36,15 @@
                     <WindowDrawnDecorationsContent.Overlay>
                         <Panel Name="PART_OverlayWrapper"
                                IsVisible="{Binding $parent[atom:Window].IsDrawnTitleBarOverlayVisible}">
-                            <ContentPresenter Name="PART_TitleBarPresenter"
-                                              VerticalAlignment="Top"
-                                              Height="{TemplateBinding TitleBarHeight}"
-                                              IsVisible="{TemplateBinding HasTitleBar}"
-                                              Content="{Binding $parent[atom:Window].TitleBar}"
-                                              WindowDecorationProperties.ElementRole="User" />
+                            <Border ClipToBounds="True"
+                                    CornerRadius="{Binding $parent[atom:Window].CornerRadius, Converter={StaticResource TitleBarCornerRadiusFilter}}">
+                                <ContentPresenter Name="PART_TitleBarPresenter"
+                                                  VerticalAlignment="Top"
+                                                  Height="{TemplateBinding TitleBarHeight}"
+                                                  IsVisible="{TemplateBinding HasTitleBar}"
+                                                  Content="{Binding $parent[atom:Window].TitleBar}"
+                                                  WindowDecorationProperties.ElementRole="User" />
+                            </Border>
                         </Panel>
 
                     </WindowDrawnDecorationsContent.Overlay>
