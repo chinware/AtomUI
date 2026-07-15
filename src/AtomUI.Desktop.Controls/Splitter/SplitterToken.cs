@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 internal class SplitterToken : AbstractControlDesignToken
 {
     public const string ID = "Splitter";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public SplitterToken() : base(ID)
     {

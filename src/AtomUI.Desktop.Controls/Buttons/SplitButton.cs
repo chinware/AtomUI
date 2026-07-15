@@ -317,7 +317,6 @@ public class SplitButton : ContentControl,
     public SplitButton()
     {
         _flyoutStateHelper = new FlyoutStateHelper();
-        this.RegisterTokenResourceScope(ButtonToken.ScopeProvider);
         _flyoutStateHelper[!FlyoutStateHelper.FlyoutProperty]          = this[!FlyoutProperty];
         _flyoutStateHelper[!FlyoutStateHelper.MouseEnterDelayProperty] = this[!MouseEnterDelayProperty];
         _flyoutStateHelper[!FlyoutStateHelper.MouseLeaveDelayProperty] = this[!MouseLeaveDelayProperty];

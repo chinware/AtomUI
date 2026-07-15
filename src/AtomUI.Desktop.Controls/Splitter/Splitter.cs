@@ -122,7 +122,6 @@ public class Splitter : TemplatedControl
     public Splitter()
     {
         Children.CollectionChanged += ChildrenChanged;
-        this.RegisterTokenResourceScope(SplitterToken.ScopeProvider);
     }
     
     public static Dimension? GetSize(Control control)

@@ -1,6 +1,5 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -11,11 +10,6 @@ namespace AtomUI.Desktop.Controls;
 public class HyperLinkButton : AbstractHyperLinkButton
 {
     private IDisposable? _loadingIconMarginBinding;
-
-    public HyperLinkButton()
-    {
-        this.RegisterTokenResourceScope(ButtonToken.ScopeProvider);
-    }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

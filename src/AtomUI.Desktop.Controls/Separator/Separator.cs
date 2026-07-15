@@ -1,15 +1,10 @@
 using AtomUI.Controls.Commons;
-using AtomUI.Theme;
 using Avalonia.Layout;
 
 namespace AtomUI.Desktop.Controls;
 
 public class Separator : AbstractSeparator
 {
-    public Separator()
-    {
-        this.RegisterTokenResourceScope(SeparatorToken.ScopeProvider);
-    }
 }
 
 public class VerticalSeparator : Separator

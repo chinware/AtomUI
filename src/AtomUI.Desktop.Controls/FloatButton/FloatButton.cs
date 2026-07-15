@@ -1,5 +1,4 @@
 using AtomUI.Controls.Commons;
-using AtomUI.Theme;
 using Avalonia;
 
 namespace AtomUI.Desktop.Controls;
@@ -8,11 +7,6 @@ using ToolTipControl = AtomUI.Desktop.Controls.ToolTip;
 
 public class FloatButton : AbstractFloatButton
 {
-    public FloatButton()
-    {
-        this.RegisterTokenResourceScope(FloatButtonToken.ScopeProvider);
-    }
-    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);

@@ -44,7 +44,7 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:ButtonTokenSharedTokenResource EnableMotion}" />
 
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">
@@ -56,7 +56,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+            <Setter Property="Height" Value="{atom:ButtonTokenSharedTokenResource ControlHeightLG}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeLG}" />
             <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingLG}" />
             <Style Selector="^:icononly">
@@ -65,7 +65,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            <Setter Property="Height" Value="{atom:ButtonTokenSharedTokenResource ControlHeight}" />
             <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Style Selector="^:icononly">
@@ -74,7 +74,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="Height" Value="{atom:ButtonTokenSharedTokenResource ControlHeightSM}" />
             <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingSM}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeSM}" />
             <Style Selector="^:icononly">
@@ -83,7 +83,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Custom]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            <Setter Property="Height" Value="{atom:ButtonTokenSharedTokenResource ControlHeight}" />
             <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Style Selector="^:icononly">
@@ -93,20 +93,20 @@
 
         <!--  text 和 icon 都存在的情况 -->
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeLG}" />
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="IconWidth" Value="{atom:ButtonTokenSharedTokenResource IconSizeLG}" />
+            <Setter Property="IconHeight" Value="{atom:ButtonTokenSharedTokenResource IconSizeLG}" />
         </Style>
         <Style Selector="^[SizeType=Middle]">
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconWidth" Value="{atom:ButtonTokenSharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:ButtonTokenSharedTokenResource IconSize}" />
         </Style>
         <Style Selector="^[SizeType=Custom]">
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconWidth" Value="{atom:ButtonTokenSharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:ButtonTokenSharedTokenResource IconSize}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconWidth" Value="{atom:ButtonTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:ButtonTokenSharedTokenResource IconSizeSM}" />
         </Style>
 
         <Style Selector="^:icononly">
@@ -160,34 +160,34 @@
                 <Setter Property="IsVisible" Value="True" />
                 <Setter Property="LoadingAnimation" Value="Spin" />
             </Style>
-            <Setter Property="Opacity" Value="{atom:SharedTokenResource OpacityLoading}" />
+            <Setter Property="Opacity" Value="{atom:ButtonTokenSharedTokenResource OpacityLoading}" />
         </Style>
 
         <Style Selector="^:not(:disabled)">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorLink}" />
+            <Setter Property="Foreground" Value="{atom:ButtonTokenSharedTokenResource ColorLink}" />
             <Style Selector="^/template/ Border#Frame">
                 <Setter Property="Background" Value="Transparent" />
             </Style>
 
             <Style Selector="^:pointerover">
-                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorLinkHover}" />
+                <Setter Property="Foreground" Value="{atom:ButtonTokenSharedTokenResource ColorLinkHover}" />
             </Style>
 
             <Style Selector="^:pressed">
-                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorLinkActive}" />
+                <Setter Property="Foreground" Value="{atom:ButtonTokenSharedTokenResource ColorLinkActive}" />
             </Style>
 
             <Style Selector="^:danger">
-                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorError}" />
+                <Setter Property="Foreground" Value="{atom:ButtonTokenSharedTokenResource ColorError}" />
 
                 <Style Selector="^:pointerover">
                     <Setter Property="Foreground"
-                            Value="{atom:SharedTokenResource ColorErrorHover}" />
+                            Value="{atom:ButtonTokenSharedTokenResource ColorErrorHover}" />
                 </Style>
 
                 <Style Selector="^:pressed">
                     <Setter Property="Foreground"
-                            Value="{atom:SharedTokenResource ColorErrorActive}" />
+                            Value="{atom:ButtonTokenSharedTokenResource ColorErrorActive}" />
                 </Style>
             </Style>
 
@@ -200,7 +200,7 @@
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground"
-                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                    Value="{atom:ButtonTokenSharedTokenResource ColorTextDisabled}" />
             <Setter Property="BorderBrush"
                     Value="{atom:ButtonTokenResource BorderColorDisabled}" />
 

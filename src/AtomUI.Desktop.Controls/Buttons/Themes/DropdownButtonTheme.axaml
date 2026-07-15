@@ -71,8 +71,8 @@
                 Value="{atom:PopupHostTokenResource MarginToAnchor}" />
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_DropdownIndicator">
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeSM}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="Width" Value="{atom:ButtonTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="Height" Value="{atom:ButtonTokenSharedTokenResource IconSizeSM}" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">

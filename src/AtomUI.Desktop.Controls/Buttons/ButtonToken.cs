@@ -12,7 +12,6 @@ namespace AtomUI.Desktop.Controls;
 internal class ButtonToken : AbstractControlDesignToken
 {
     public const string ID = "Button";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     /// <summary>
     /// 文字字重

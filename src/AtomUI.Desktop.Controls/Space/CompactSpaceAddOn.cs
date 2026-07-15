@@ -114,11 +114,6 @@ public class CompactSpaceAddOn : TemplatedControl,
         AffectsRender<CompactSpaceAddOn>(StyleVariantProperty, StatusProperty);
     }
 
-    public CompactSpaceAddOn()
-    {
-        this.RegisterTokenResourceScope(SpaceToken.ScopeProvider);
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);

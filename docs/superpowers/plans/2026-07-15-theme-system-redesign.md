@@ -972,6 +972,12 @@ Actual verification:
 
 Use separate reviewed commits for General and Layout, Navigation, DataEntry, DataDisplay, Feedback, and Window and Overlay. Each commit removes every Host registration and ScopeProvider for its domain and runs its ThemeContract and Token tests.
 
+Actual domain checkpoint:
+- General and Layout migrated: Buttons, FloatButton, Space, Splitter, SplitView and Separator now use component-shared resource extensions and no longer register legacy token scopes.
+- RED then PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~DesktopControlsGeneralLayoutThemeScopeMigrationTests
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~HyperLinkButtonIconSizeTests
+
 - [ ] **Step 4: Add cross-component isolation tests**
 
 Cover Button containing Icon, LineEdit containing AddOnDecoratedBox, Select popup content, DatePicker popup content, Modal content and DataGrid cell content. Parent component overrides must not alter child component Token; scope-global overrides must affect both.
