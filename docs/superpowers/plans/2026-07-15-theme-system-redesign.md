@@ -419,7 +419,7 @@ git commit -m "refactor(Theme): centralize token compilation in snapshots"
 - The parser continues to preserve unregistered optional component definitions with warnings. `ThemeCatalog.CreateCompileRequest` excludes those definitions until their package registration exists; do not relax `ThemeCompiler` unknown-registration validation.
 - `Theme` remains the public compatibility facade, but it may only hydrate itself from a catalog/compiler result. It must not open or parse definition files or own Seed, Map, Alias, or component compile loops.
 
-- [ ] **Step 1: Write precedence and parse-once tests**
+- [x] **Step 1: Write precedence and parse-once tests**
 
 ~~~csharp
 [Fact]
@@ -442,13 +442,13 @@ public void Catalog_Parses_One_File_Once_For_All_Variants()
 
 Add tests for custom precedence, duplicate id diagnostics, explicit builder default, IsDefault fallback, unavailable invalid custom theme, and fatal invalid built-in default.
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeCatalogTests
 
 Expected: FAIL.
 
-- [ ] **Step 3: Implement ThemeDescriptor and ThemeCatalog**
+- [x] **Step 3: Implement ThemeDescriptor and ThemeCatalog**
 
 ~~~csharp
 internal sealed record ThemeDescriptor(
@@ -467,7 +467,7 @@ internal sealed record ThemeDescriptor(
 
 Sort paths ordinally. Record duplicates instead of silently continuing.
 
-- [ ] **Step 4: Adapt Theme as a compatibility facade**
+- [x] **Step 4: Adapt Theme as a compatibility facade**
 
 Theme receives a descriptor, asks ThemeCompiler for a snapshot through ThemeCatalog, and keeps the current activation facade temporarily. It no longer opens a file or owns Seed, Map, Alias, or component compile loops. Delete ThemeDefinitionReader only after the following search returns no consumers:
 
@@ -475,7 +475,7 @@ Run: rg "ThemeDefinitionReader" src tests
 
 Expected before deletion: only the reader definition remains.
 
-- [ ] **Step 5: Run Core and initial-mode tests**
+- [x] **Step 5: Run Core and initial-mode tests**
 
 Run:
 - dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
@@ -483,7 +483,7 @@ Run:
 
 Expected: both PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ~~~bash
 git add src/AtomUI.Core/Theme/Catalog src/AtomUI.Core/Theme/Theme.cs src/AtomUI.Core/Theme/ThemeManager.cs src/AtomUI.Core/Theme/ThemeDefinitionReader.cs tests/AtomUI.Core.Tests/Theme/ThemeCatalogTests.cs
