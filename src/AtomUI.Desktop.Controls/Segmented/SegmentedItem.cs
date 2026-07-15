@@ -7,6 +7,5 @@ public class SegmentedItem : AbstractSegmentedItem
 {
     public SegmentedItem()
     {
-        this.RegisterTokenResourceScope(SegmentedToken.ScopeProvider);
     }
 }

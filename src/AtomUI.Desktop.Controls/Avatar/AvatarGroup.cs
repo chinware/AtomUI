@@ -127,7 +127,6 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
     public AvatarGroup()
     {
         Children.CollectionChanged += ChildrenChanged;
-        this.RegisterTokenResourceScope(AvatarToken.ScopeProvider);
         this.ConfigureMotionBindingStyle();
     }
 

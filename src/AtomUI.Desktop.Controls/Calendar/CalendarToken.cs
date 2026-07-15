@@ -11,7 +11,6 @@ namespace AtomUI.Desktop.Controls;
 internal class CalendarToken : AbstractControlDesignToken
 {
     public const string ID = "Calendar";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public CalendarToken()
         : base(ID)

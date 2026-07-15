@@ -220,7 +220,6 @@ public class Card : HeaderedContentControl,
     
     public Card()
     {
-        this.RegisterTokenResourceScope(CardToken.ScopeProvider);
         Actions.CollectionChanged += HandleActionsChanged;
     }
 

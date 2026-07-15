@@ -987,6 +987,10 @@ Actual domain checkpoint:
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~TextBoxVisualStateTests
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~UploadTriggerTests
+- DataDisplay migrated: Avatar, Badge, Calendar, Card, Carousel, Descriptions, Empty, Expander, ImagePreviewer, ListBox, ListView, QRCode, Segmented, Statistic, Tag, Timeline and TreeView now use component-shared resource extensions and no longer register legacy token scopes.
+- RED then PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~DesktopControlsDataDisplayThemeScopeMigrationTests
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~Avatar|FullyQualifiedName~Badge|FullyQualifiedName~Card|FullyQualifiedName~Carousel|FullyQualifiedName~Descriptions|FullyQualifiedName~Expander|FullyQualifiedName~ImagePreviewer|FullyQualifiedName~ListBox|FullyQualifiedName~ListView|FullyQualifiedName~Segmented|FullyQualifiedName~TreeView"
 
 - [ ] **Step 4: Add cross-component isolation tests**
 

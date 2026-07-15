@@ -7,7 +7,6 @@ public class DotBadge : AbstractDotBadge
 {
     public DotBadge()
     {
-        this.RegisterTokenResourceScope(BadgeToken.ScopeProvider);
     }
     
     private protected override AbstractDotBadgeAdorner CreateDotBadgeAdorner()

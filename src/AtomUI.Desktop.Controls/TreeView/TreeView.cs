@@ -511,7 +511,6 @@ public partial class TreeView : AvaloniaTreeView,
     {
         InteractionHandler = interactionHandler ?? throw new ArgumentNullException(nameof(interactionHandler));
         _treeDataController = new TreeDataController(this);
-        this.RegisterTokenResourceScope(TreeViewToken.ScopeProvider);
         Items.CollectionChanged           += HandleCollectionChanged;
     }
 

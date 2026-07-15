@@ -27,8 +27,8 @@
                                         ClipToBounds="True"
                                         Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
                                 <atom:IconPresenter Name="PART_IconPresenter"
-                                                    Width="{atom:SharedTokenResource IconSize}"
-                                                    Height="{atom:SharedTokenResource IconSize}"
+                                                    Width="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
+                                                    Height="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
                                                     Icon="{TemplateBinding Icon}"
                                                     IconBrush="{TemplateBinding Foreground}"
                                                     IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -78,8 +78,8 @@
                                         ClipToBounds="True"
                                         Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
                                 <atom:IconPresenter Name="PART_IconPresenter"
-                                                    Width="{atom:SharedTokenResource IconSize}"
-                                                    Height="{atom:SharedTokenResource IconSize}"
+                                                    Width="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
+                                                    Height="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
                                                     Icon="{TemplateBinding Icon}"
                                                     IconBrush="{TemplateBinding Foreground}"
                                                     IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -124,8 +124,8 @@
                                     ClipToBounds="True"
                                     Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
                             <atom:IconPresenter Name="PART_IconPresenter"
-                                                Width="{atom:SharedTokenResource IconSize}"
-                                                Height="{atom:SharedTokenResource IconSize}"
+                                                Width="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
+                                                Height="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
                                                 Icon="{TemplateBinding Icon}"
                                                 IconBrush="{TemplateBinding Foreground}"
                                                 IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />

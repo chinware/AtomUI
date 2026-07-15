@@ -325,7 +325,6 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             imageSourceLoader,
             () => MaxConcurrentLoads,
             HandleItemLoadSettled);
-        this.RegisterTokenResourceScope(ImagePreviewerToken.ScopeProvider);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

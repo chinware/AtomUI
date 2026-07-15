@@ -21,24 +21,24 @@
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|TabControl">
                 <Setter Property="ContentPadding" Value="{atom:CardTokenResource BodyPaddingLG}" />
-                <Setter Property="HeaderStartEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingLG}" />
-                <Setter Property="HeaderEndEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingLG}" />
+                <Setter Property="HeaderStartEdgePadding" Value="{atom:CardTokenSharedTokenResource UniformlyPaddingLG}" />
+                <Setter Property="HeaderEndEdgePadding" Value="{atom:CardTokenSharedTokenResource UniformlyPaddingLG}" />
             </Style>
         </Style>
         
         <Style Selector="^[SizeType=Middle]">
             <Style Selector="^ /template/ atom|TabControl">
                 <Setter Property="ContentPadding" Value="{atom:CardTokenResource BodyPadding}" />
-                <Setter Property="HeaderStartEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingSM}" />
-                <Setter Property="HeaderEndEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingSM}" />
+                <Setter Property="HeaderStartEdgePadding" Value="{atom:CardTokenSharedTokenResource UniformlyPaddingSM}" />
+                <Setter Property="HeaderEndEdgePadding" Value="{atom:CardTokenSharedTokenResource UniformlyPaddingSM}" />
             </Style>
         </Style>
         
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ atom|TabControl">
                 <Setter Property="ContentPadding" Value="{atom:CardTokenResource BodyPaddingSM}" />
-                <Setter Property="HeaderStartEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingXS}" />
-                <Setter Property="HeaderEndEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingXS}" />
+                <Setter Property="HeaderStartEdgePadding" Value="{atom:CardTokenSharedTokenResource UniformlyPaddingXS}" />
+                <Setter Property="HeaderEndEdgePadding" Value="{atom:CardTokenSharedTokenResource UniformlyPaddingXS}" />
             </Style>
         </Style>
         

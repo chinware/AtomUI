@@ -7,7 +7,6 @@ public class CountBadge : AbstractCountBadge
 {
     public CountBadge()
     {
-        this.RegisterTokenResourceScope(BadgeToken.ScopeProvider);
     }
     
     private protected override AbstractCountBadgeAdorner CreateBadgeAdorner()

@@ -81,7 +81,6 @@ public class StatisticCountUp : TemplatedControl
 
     public StatisticCountUp()
     {
-        this.RegisterTokenResourceScope(StatisticToken.ScopeProvider);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

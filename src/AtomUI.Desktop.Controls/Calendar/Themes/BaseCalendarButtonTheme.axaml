@@ -31,15 +31,15 @@
         
         <Setter Property="ClickMode" Value="Release" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Background" Value="{atom:SharedTokenResource ColorTransparent}" />
-        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLabel}" />
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorTransparent}" />
+        <Setter Property="Background" Value="{atom:CalendarTokenSharedTokenResource ColorTransparent}" />
+        <Setter Property="Foreground" Value="{atom:CalendarTokenSharedTokenResource ColorTextLabel}" />
+        <Setter Property="CornerRadius" Value="{atom:CalendarTokenSharedTokenResource BorderRadiusSM}" />
+        <Setter Property="BorderBrush" Value="{atom:CalendarTokenSharedTokenResource ColorTransparent}" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
+        <Setter Property="FontSize" Value="{atom:CalendarTokenSharedTokenResource FontSize}" />
         <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
         <Setter Property="Margin" Value="{atom:CalendarTokenResource CellMargin}" />
         
@@ -52,12 +52,12 @@
         </Style>
         
         <Style Selector="^:inactive">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:CalendarTokenSharedTokenResource ColorTextDisabled}" />
         </Style>
 
         <Style Selector="^:selected">
-            <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWhite}" />
+            <Setter Property="Background" Value="{atom:CalendarTokenSharedTokenResource ColorPrimary}" />
+            <Setter Property="Foreground" Value="{atom:CalendarTokenSharedTokenResource ColorWhite}" />
             <Setter Property="BorderThickness" Value="0" />
         </Style>
 

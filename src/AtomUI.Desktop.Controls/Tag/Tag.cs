@@ -7,6 +7,5 @@ public class Tag : AbstractTag
 {
     public Tag()
     {
-        this.RegisterTokenResourceScope(TagToken.ScopeProvider);
     }
 }

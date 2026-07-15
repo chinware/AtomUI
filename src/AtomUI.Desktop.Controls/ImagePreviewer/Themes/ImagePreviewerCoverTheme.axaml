@@ -21,7 +21,7 @@
                                 VerticalAlignment="Stretch"
                                 MinWidth="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 MinHeight="{atom:ImagePreviewerTokenResource CoverImageWidth}"
-                                Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                Background="{atom:ImagePreviewerTokenSharedTokenResource ColorFillTertiary}"
                                 IsVisible="{TemplateBinding IsLoading}">
                             <Panel HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
@@ -39,14 +39,14 @@
                                 VerticalAlignment="Stretch"
                                 MinWidth="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 MinHeight="{atom:ImagePreviewerTokenResource CoverImageWidth}"
-                                Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                Background="{atom:ImagePreviewerTokenSharedTokenResource ColorFillTertiary}"
                                 IsVisible="{TemplateBinding IsFailed}">
                             <Panel HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
                                 <StackPanel Name="DefaultErrorLayout"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Spacing="{atom:SharedTokenResource SpacingXXS}"
+                                            Spacing="{atom:ImagePreviewerTokenSharedTokenResource SpacingXXS}"
                                             IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNull}}">
                                     <antdicons:PictureOutlined Name="DefaultErrorIcon"
                                                               HorizontalAlignment="Center" />
@@ -79,19 +79,19 @@
         </Style>
       
         <Setter Property="ClipToBounds" Value="True" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:ImagePreviewerTokenSharedTokenResource EnableMotion}" />
         <Style Selector="^ /template/ Border#Mask">
             <Setter Property="Background" Value="{atom:ImagePreviewerTokenResource MaskBgColor}" />
             <Setter Property="TemplatedControl.Foreground"
-                    Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+                    Value="{atom:ImagePreviewerTokenSharedTokenResource ColorTextLightSolid}" />
         </Style>
         <Style Selector="^ /template/ TextBlock#DefaultErrorText">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextTertiary}" />
+            <Setter Property="Foreground" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorTextTertiary}" />
         </Style>
         <Style Selector="^ /template/ atom|Icon#DefaultErrorIcon">
             <Setter Property="Width" Value="48" />
             <Setter Property="Height" Value="48" />
-            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextTertiary}" />
+            <Setter Property="StrokeBrush" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorTextTertiary}" />
         </Style>
 
         <Style Selector="^[IsCoverMaskVisible=True]:pointerover">

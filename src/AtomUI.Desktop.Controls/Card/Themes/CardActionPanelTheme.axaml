@@ -18,14 +18,14 @@
             </ControlTemplate>
         </Setter>
         <Setter Property="Padding" Value="0, 1, 0, 0"/>
-        <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}"/>
-        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}"/>
+        <Setter Property="MinHeight" Value="{atom:CardTokenSharedTokenResource ControlHeightLG}"/>
+        <Setter Property="FontSize" Value="{atom:CardTokenSharedTokenResource FontSize}"/>
      
-        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}"/>
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}"/>
-        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
+        <Setter Property="Foreground" Value="{atom:CardTokenSharedTokenResource ColorTextDescription}"/>
+        <Setter Property="BorderBrush" Value="{atom:CardTokenSharedTokenResource ColorBorderSecondary}"/>
+        <Setter Property="BorderThickness" Value="{atom:CardTokenSharedTokenResource BorderThickness}"/>
         <Style Selector="^:pointerover">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimary}"/>
+            <Setter Property="Foreground" Value="{atom:CardTokenSharedTokenResource ColorPrimary}"/>
         </Style>
         
         <Style Selector="^ /template/ Border#Frame">

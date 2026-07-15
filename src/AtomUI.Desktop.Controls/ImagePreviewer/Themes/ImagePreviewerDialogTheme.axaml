@@ -20,11 +20,11 @@
     <Setter Property="ImageScaleY" Value="1.0" />
     <Setter Property="MinWidth" Value="{atom:ImagePreviewerTokenResource DialogMinWidth}" />
     <Setter Property="MinHeight" Value="{atom:ImagePreviewerTokenResource DialogMinHeight}" />
-    <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgLayout}" />
+    <Setter Property="Background" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorBgLayout}" />
     <Setter Property="TitleBarFrameBackground"
             Value="{atom:ImagePreviewerTokenResource TitleBarBackgroundColor}" />
 
     <Style Selector="^ /template/ atom|ImagePreviewNavButton">
-        <Setter Property="Margin" Value="{atom:SharedTokenResource MarginXS}" />
+        <Setter Property="Margin" Value="{atom:ImagePreviewerTokenSharedTokenResource MarginXS}" />
     </Style>
 </ControlTheme>

@@ -620,7 +620,6 @@ public class Calendar : TemplatedControl, IMotionAwareControl
     /// </summary>
     public Calendar()
     {
-        this.RegisterTokenResourceScope(CalendarToken.ScopeProvider);
         SetCurrentValue(DisplayDateProperty, DateTime.Today);
         UpdateDisplayDate(this, DisplayDate, DateTime.MinValue);
         BlackoutDates = new CalendarBlackoutDatesCollection(this);
