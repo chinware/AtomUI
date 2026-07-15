@@ -110,7 +110,7 @@
             <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadiusLG}" />
             <Setter Property="Padding" Value="{atom:TextBoxTokenResource PaddingLG}" />
         </Style>
-        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
+        <Style Selector="^[SizeType=Middle]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
             <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadius}" />
             <Setter Property="Padding" Value="{atom:TextBoxTokenResource Padding}" />
@@ -119,6 +119,10 @@
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightSM}" />
             <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadiusSM}" />
             <Setter Property="Padding" Value="{atom:TextBoxTokenResource PaddingSM}" />
+        </Style>
+        <Style Selector="^[SizeType=Custom]">
+            <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
+            <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadius}" />
         </Style>
     
         <Style Selector="^[IsCustomFontSize=False]">

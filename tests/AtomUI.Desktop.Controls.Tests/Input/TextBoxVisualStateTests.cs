@@ -126,6 +126,20 @@ public class TextBoxVisualStateTests
     }
 
     [Fact]
+    public void TextBox_Uses_Custom_SizeType_For_Template_Owned_Padding_Without_Extra_State()
+    {
+        var property = typeof(AtomUITextBox).GetProperty(
+            "IsCustomPadding",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+        property.ShouldBeNull();
+
+        var field = typeof(AtomUITextBox).GetField(
+            "IsCustomPaddingProperty",
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+        field.ShouldBeNull();
+    }
+
+    [Fact]
     public void TextBox_Theme_Uses_TextBox_Token_Resources()
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Input/Themes/TextBoxTheme.axaml");
@@ -141,6 +155,7 @@ public class TextBoxVisualStateTests
         source.ShouldContain("TextBoxTokenResource PaddingLG");
         source.ShouldContain("TextBoxTokenResource Padding");
         source.ShouldContain("TextBoxTokenResource PaddingSM");
+        source.ShouldNotContain("IsCustomPadding");
         source.ShouldContain("SharedTokenResource UniformlyPaddingXXS");
         source.ShouldContain("SharedTokenResource FontHeightLG");
         source.ShouldContain("SharedTokenResource FontHeight");
@@ -198,7 +213,6 @@ public class TextBoxVisualStateTests
     [InlineData(CustomizableSizeType.Large, "PaddingLG")]
     [InlineData(CustomizableSizeType.Middle, "Padding")]
     [InlineData(CustomizableSizeType.Small, "PaddingSM")]
-    [InlineData(CustomizableSizeType.Custom, "Padding")]
     public void TextBox_Padding_Follows_TextBox_Size_Tokens(CustomizableSizeType sizeType, string tokenKind)
     {
         var textBox = new AtomUITextBox
@@ -211,6 +225,22 @@ public class TextBoxVisualStateTests
         ShowInWindow(textBox, () =>
         {
             textBox.Padding.ShouldBe(GetTextBoxTokenResource<Thickness>(tokenKind));
+        });
+    }
+
+    [Fact]
+    public void TextBox_Custom_Size_Does_Not_Apply_TextBox_Padding_Token()
+    {
+        var textBox = new AtomUITextBox
+        {
+            Width           = 180,
+            SizeType        = CustomizableSizeType.Custom,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(textBox, () =>
+        {
+            textBox.Padding.ShouldBe(new Thickness(0));
         });
     }
 

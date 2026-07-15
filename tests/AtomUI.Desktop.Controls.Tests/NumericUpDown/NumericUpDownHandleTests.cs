@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme.Styling;
@@ -122,6 +123,42 @@ public class NumericUpDownHandleTests
             spinnerButtons.Count.ShouldBe(2);
             spinnerButtons.All(item => item.GetVisualAncestors().Contains(spinnerHandle)).ShouldBeTrue();
         });
+    }
+
+    [Fact]
+    public void Default_Input_Mode_Uses_Outer_Content_Padding_Only()
+    {
+        var numericUpDown = new AtomUINumericUpDown
+        {
+            Width           = 160,
+            Value           = 3,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(numericUpDown, () =>
+        {
+            var textBox = numericUpDown.GetVisualDescendants()
+                                       .OfType<TextBox>()
+                                       .Single(item => item.Name == "PART_TextBox");
+            var contentFrame = numericUpDown.GetVisualDescendants()
+                                            .OfType<global::AtomUI.Desktop.Controls.AddOnDecoratedBoxContentFrame>()
+                                            .Single(item => item.Name == "PART_ContentFrame");
+
+            contentFrame.Padding.Left.ShouldBeGreaterThan(0);
+            textBox.SizeType.ShouldBe(CustomizableSizeType.Custom);
+            textBox.Padding.ShouldBe(new Thickness(0));
+        });
+    }
+
+    [Fact]
+    public void Input_Mode_TextBox_Uses_Custom_SizeType_Instead_Of_LocalValue_Binding_Or_Custom_Padding_State()
+    {
+        var source = ReadRepoFile("src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml");
+
+        source.ShouldContain("SizeType=\"Custom\"");
+        source.ShouldContain("Padding=\"0\"");
+        source.ShouldNotContain("IsCustomPadding");
+        source.ShouldNotContain("Padding=\"{Binding Source=0");
     }
 
     [Fact]
@@ -584,6 +621,30 @@ public class NumericUpDownHandleTests
         brush.ShouldNotBeNull();
         brush.ShouldBeAssignableTo<ISolidColorBrush>();
         return ((ISolidColorBrush)brush!).Color;
+    }
+
+    private static string ReadRepoFile(string relativePath)
+    {
+        var path = GetRepoFile(relativePath);
+        File.Exists(path).ShouldBeTrue($"Expected repository file to exist: {relativePath}");
+        return File.ReadAllText(path);
+    }
+
+    private static string GetRepoFile(string relativePath)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, relativePath);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = directory.Parent;
+        }
+
+        return Path.Combine(AppContext.BaseDirectory, relativePath);
     }
 
     private static void ShowInWindow(Control content, Action assertion)
