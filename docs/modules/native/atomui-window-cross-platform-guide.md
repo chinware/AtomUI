@@ -35,7 +35,7 @@ Windows 10         ✅ 开启     Avalonia CSD         DWM redirection      Aval
 ```
 OperatingSystem.IsWindows()?
   ├─ Win10 → IsCsdEnabled=true + RedirectionSurface
-  └─ Win11+ → IsCsdEnabled=true + WinUIComposition（带 DirectComposition/RedirectionSurface 回退）
+  └─ Win11+ → IsCsdEnabled=true + RedirectionSurface
 OperatingSystem.IsMacOS()?
   └─ 永远 → IsCsdEnabled=false → 非 CSD 模板 + NSWindow 原生标题栏布局
 OperatingSystem.IsLinux()?
@@ -222,11 +222,11 @@ Wayland input region 在 12.1 没有公开 API；AtomUI 当前越过 proxy 的�
 | --- | --- | --- |
 | IsCsdEnabled | `true` | `true` |
 | WindowDrawnDecorations | 创建 | 创建 |
-| 合成模式 | WinUIComposition，带回退 | RedirectionSurface |
+| 合成模式 | RedirectionSurface | RedirectionSurface |
 | 非客户区与 resize | Avalonia Win32 | Avalonia Win32 |
 | AtomUI WndProc | 无 | 无 |
 
-### 为什么 Windows 10 使用 RedirectionSurface
+### 为什么 Windows 使用 RedirectionSurface
 
 Avalonia 12.1 将 WinUI drawing surface 的尺寸来源从原生 `WindowInfo.Size` 改为
 `RenderTargetSceneInfo.Size`。Windows 10 与 Windows 11 的 `RequestCommitAsync` 完成回调位置
@@ -234,7 +234,8 @@ Avalonia 12.1 将 WinUI drawing surface 的尺寸来源从原生 `WindowInfo.Siz
 表现为拖动左边缘或上边缘时，右边缘或下边缘剧烈抖动。
 
 `RedirectionSurface` 让 DWM redirection bitmap 与 HWND resize 走同一条系统路径，避免该错帧。
-Windows 11 保持 WinUIComposition 优先，以保留高刷新率、透明和 backdrop 能力。
+后续 Windows 11 实机视频也显示同类错帧，因此 Windows 11 默认同样使用 `RedirectionSurface`，
+优先保证 live resize 稳定。
 
 ### 为什么必须使用 Avalonia CSD
 
@@ -252,9 +253,7 @@ Windows 现在固定 `IsCsdEnabled=true`，并保持
 `WindowsAppBuilderDefaults`，不使用反射、字符串枚举名或动态泛型调用：
 
 ```csharp
-CompositionMode = isWindows11OrLater
-    ? [WinUIComposition, DirectComposition, RedirectionSurface]
-    : [RedirectionSurface];
+CompositionMode = [RedirectionSurface];
 ```
 
 ### Snap Layout
@@ -267,7 +266,8 @@ Windows 标题栏按钮在 AXAML 中声明 `WindowDecorationProperties.ElementRo
 - 不要重新引入 AtomUI 自定义 `WM_NCCALCSIZE`。
 - 不要手动返回 `HTLEFT/HTTOP/...`。
 - 不要用 `DwmExtendFrameIntoClientArea` 或 `SWP_FRAMECHANGED` 修补 CSD。
-- 上游修复 Win10 WinUIComposition 后，必须重新做快速拖动左/上边缘的实机验证，才能恢复。
+- 上游修复 WinUIComposition / DirectComposition 的 live resize 同步后，必须重新做
+  Windows 10 和 Windows 11 快速拖动左/上边缘的实机验证，才能恢复。
 
 完整根因和验证矩阵见
 [Windows live resize 与窗口装饰方案](windows-live-resize-scheme.md).
@@ -348,7 +348,7 @@ Windows 标题栏按钮在 AXAML 中声明 `WindowDecorationProperties.ElementRo
 
 | # | 陷阱 | 影响平台 | 现象 | 解决 |
 | --- | --- | --- | --- | --- |
-| 1 | Win10 使用 WinUIComposition | Win10 | 对向边缘在 live resize 时抖动 | 使用 RedirectionSurface |
+| 1 | Windows 使用 WinUIComposition | Windows | 对向边缘在 live resize 时抖动 | 使用 RedirectionSurface |
 | 2 | AtomUI 再处理 WM_NCCALCSIZE | Windows | 黑边、原生标题栏按钮闪现 | 非客户区完全交给 Avalonia CSD |
 | 3 | 自定义 HTMAXBUTTON hook | Win11 | 输入状态重复、维护两套命中测试 | 使用 Avalonia ElementRole |
 | 4 | macOS 写 WindowDrawnDecorations 主题 | macOS | 不生效 | 使用非 CSD 模板和 NSWindow 原生按钮 |

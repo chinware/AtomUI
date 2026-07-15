@@ -12,11 +12,13 @@ AtomUI 在 Windows 上坚持两个单一所有者：
 | 系统 | 渲染模式 | 合成模式 | 窗口装饰 |
 | --- | --- | --- | --- |
 | Windows 10 | `AngleEgl`，失败时 `Software` | `RedirectionSurface` | Avalonia CSD |
-| Windows 11+ | `AngleEgl`，失败时 `Software` | `WinUIComposition`、`DirectComposition`、`RedirectionSurface` | Avalonia CSD |
+| Windows 11+ | `AngleEgl`，失败时 `Software` | `RedirectionSurface` | Avalonia CSD |
 
-Windows 10 使用 `RedirectionSurface` 是经过实机快速拖边验证的平台策略，不是 Window 控件内的
-消息补丁。AtomUI 不处理 `WM_NCCALCSIZE`，不返回 resize hit-test，不扩展 DWM frame，也不通过
-`SWP_FRAMECHANGED` 强制重算非客户区。
+Windows 10 继续使用已经实机验证稳定的 `RedirectionSurface`。Windows 11 在 Avalonia 12.1.0
+下也能观察到左边缘和上边缘 live resize 时的帧不同步，因此默认同样收敛到
+`RedirectionSurface`。这是平台合成模式策略，不是 Window 控件内的消息补丁。AtomUI 不处理
+`WM_NCCALCSIZE`，不返回 resize hit-test，不扩展 DWM frame，也不通过 `SWP_FRAMECHANGED`
+强制重算非客户区。
 
 ## Avalonia 12.0.5 到 12.1.0 的事实
 
@@ -52,6 +54,10 @@ var scale = sceneInfo.Scaling;
 3. 在测试机的 Windows 10 live resize 中，两者组合后出现了可见错帧；
 4. `RedirectionSurface` 实机验证可以消除外边缘错帧。
 
+后续 Windows 11 实机视频显示，同类错帧也会出现在 Windows 11 上。由于该现象仍发生在
+Avalonia Win32 CSD 拥有非客户区和 resize hit-test 的路径内，AtomUI 不重新接管窗口消息，
+而是把 Windows 11 默认合成模式也切到 `RedirectionSurface`。
+
 ### Avalonia 的非客户区所有权没有迁移给 AtomUI
 
 `WindowImpl.AppWndProc.cs` 中 `WM_NCCALCSIZE` 的核心处理在两个标签间没有本质变化。
@@ -67,7 +73,8 @@ var scale = sceneInfo.Scaling;
 ### 窗口外边缘错帧
 
 现象是拖动左边缘或上边缘时，对向的右边缘或下边缘来回跳动。实机验证表明，Windows 10
-选择 `RedirectionSurface` 后外边缘稳定，因此该问题由平台合成模式策略解决。
+选择 `RedirectionSurface` 后外边缘稳定；Windows 11 也采用同一保守路径缓解该类错帧。
+因此该问题由平台合成模式策略解决，而不是由 AtomUI Window 模板或布局系统处理。
 
 ### 窗口内容区域抖动
 
@@ -86,14 +93,7 @@ RedirectionSurface` 下仍有内容区抖动。升级 Intel 官方驱动到 `31.
 `WindowsAppBuilderDefaults` 强类型创建 `Win32PlatformOptions`：
 
 ```csharp
-CompositionMode = isWindows11OrLater
-    ?
-    [
-        Win32CompositionMode.WinUIComposition,
-        Win32CompositionMode.DirectComposition,
-        Win32CompositionMode.RedirectionSurface
-    ]
-    : [Win32CompositionMode.RedirectionSurface];
+CompositionMode = [Win32CompositionMode.RedirectionSurface];
 ```
 
 这里直接引用 Avalonia 的公开类型，不使用 `Type.GetType`、`Enum.Parse`、反射调用泛型
@@ -138,14 +138,14 @@ macOS standard window buttons 和 Linux input region。Windows live resize、CSD
 - 不要用 `SWP_FRAMECHANGED`、延时、重试或强制刷新掩盖时序问题。
 - 不要默认开启 `ShouldRenderOnUIThread`、`Software` 或 `Wgl` 来规避单机驱动问题。
 - 不要用 WndProc hook 实现 Avalonia 12.1 已公开的 caption element roles。
-- 不要在 Windows 10 恢复 `WinUIComposition`，除非上游变化后完成同等实机矩阵。
+- 不要在 Windows 默认配置恢复 `WinUIComposition` / `DirectComposition` 优先级，除非上游变化后完成同等实机矩阵。
 
 ## 验证矩阵
 
 ### 自动验证
 
 1. Windows 10 选项只包含 `RedirectionSurface`。
-2. Windows 11+ 保持 WinUI、DirectComposition、RedirectionSurface 回退顺序。
+2. Windows 11+ 选项只包含 `RedirectionSurface`。
 3. 渲染模式保持 `AngleEgl`、`Software`，且 `ShouldRenderOnUIThread=false`。
 4. Windows caption buttons 使用公开 `ElementRole`，不存在自定义 WndProc 注册。
 5. Window 主题保持 Avalonia CSD，源码不存在旧 Windows chrome manager。
@@ -167,15 +167,17 @@ macOS standard window buttons 和 Linux input region。Windows live resize、CSD
 ### Windows 11 实机验证
 
 1. 最大化按钮 Snap Layout 正常。
-2. 透明 Popup、backdrop 和高刷新率路径没有回归。
-3. WinUIComposition 不可用时能按顺序回退。
+2. 快速来回拖动左边缘，右边缘保持固定，内容区域不回跳。
+3. 快速来回拖动上边缘，下边缘保持固定，内容区域不回跳。
+4. 透明 Popup 和独立窗口 popup 路径没有黑边或闪烁回归。
+5. 最大化、还原、全屏和退出全屏后装饰正常。
 
 ## 上游回访条件
 
-只有同时满足以下条件，才评估恢复 Windows 10 的 WinUIComposition：
+只有同时满足以下条件，才评估恢复 Windows 默认配置中的 WinUIComposition / DirectComposition 优先级：
 
-1. 上游改动明确覆盖 Windows 10 live resize 的 scene/surface 同步；
-2. 左边缘和上边缘快速拖动通过实机验证；
+1. 上游改动明确覆盖 Windows live resize 的 scene/surface 同步；
+2. Windows 10 和 Windows 11 的左边缘、上边缘快速拖动都通过实机验证；
 3. Intel、AMD 至少各一套驱动环境通过；
 4. 透明 Popup 和窗口装饰回归通过；
 5. 删除平台分支后代码和测试确实更简单。

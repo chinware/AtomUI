@@ -21,8 +21,7 @@ AppBuilder.Configure<App>()
 `WithAtomUIDefaultOptions()` 当前设置：
 
 - Windows 10：`AngleEgl/Software` 渲染回退与 `RedirectionSurface` 合成。
-- Windows 11+：`AngleEgl/Software` 渲染回退与
-  `WinUIComposition/DirectComposition/RedirectionSurface` 合成回退。
+- Windows 11+：`AngleEgl/Software` 渲染回退与 `RedirectionSurface` 合成。
 - macOS Avalonia Native 渲染优先级：OpenGL、Metal、Software。
 - X11 平台选项：`EnableDrawnDecorations = true`。
 - 字体 fallback：`Microsoft YaHei`。
