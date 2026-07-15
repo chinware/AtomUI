@@ -8,7 +8,6 @@ namespace AtomUI.Desktop.Controls;
 internal class BorderBeamToken : AbstractControlDesignToken
 {
     public const string ID = "BorderBeam";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public double BeamSize { get; set; }
 

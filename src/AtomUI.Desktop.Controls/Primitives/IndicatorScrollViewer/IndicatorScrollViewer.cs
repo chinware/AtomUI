@@ -8,7 +8,6 @@ internal class IndicatorScrollViewer : ScrollViewer
 {
     public IndicatorScrollViewer()
     {
-        this.RegisterTokenResourceScope(IndicatorScrollViewerToken.ScopeProvider);
     }
 
     protected override void OnInitialized()

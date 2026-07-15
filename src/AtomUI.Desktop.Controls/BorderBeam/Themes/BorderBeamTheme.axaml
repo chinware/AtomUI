@@ -30,10 +30,10 @@
         </Setter>
 
         <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
-        <Setter Property="DefaultStartColor" Value="{atom:SharedTokenResource ColorPrimary}" />
-        <Setter Property="DefaultEndColor" Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+        <Setter Property="BorderThickness" Value="{atom:BorderBeamTokenSharedTokenResource BorderThickness}" />
+        <Setter Property="CornerRadius" Value="{atom:BorderBeamTokenSharedTokenResource BorderRadiusLG}" />
+        <Setter Property="DefaultStartColor" Value="{atom:BorderBeamTokenSharedTokenResource ColorPrimary}" />
+        <Setter Property="DefaultEndColor" Value="{atom:BorderBeamTokenSharedTokenResource ColorPrimaryHover}" />
         <Setter Property="Duration" Value="{atom:BorderBeamTokenResource MotionDuration}" />
         <Setter Property="BeamSize" Value="{atom:BorderBeamTokenResource BeamSize}" />
         <Setter Property="BeamOpacity" Value="{atom:BorderBeamTokenResource BeamOpacity}" />

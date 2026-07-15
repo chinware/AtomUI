@@ -109,7 +109,6 @@ public class GroupBox : ContentControl
 
     public GroupBox()
     {
-        this.RegisterTokenResourceScope(GroupBoxToken.ScopeProvider);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

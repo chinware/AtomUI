@@ -11,7 +11,6 @@ namespace AtomUI.Desktop.Controls;
 internal class ScrollViewerToken : AbstractControlDesignToken
 {
     public const string ID = "ScrollViewer";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     /// <summary>
     /// 极简模式下，滚动条滑块的粗细

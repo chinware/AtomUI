@@ -176,7 +176,6 @@ public class BorderBeam : ContentControl,
 
     public BorderBeam()
     {
-        this.RegisterTokenResourceScope(BorderBeamToken.ScopeProvider);
         _colorStops.CollectionChanged += HandleColorStopsChanged;
         ConfigureEffectiveBorderBeamGeometry();
     }

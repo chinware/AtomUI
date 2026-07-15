@@ -23,7 +23,6 @@ public class ScrollViewer : AbstractScrollViewer
     
     public ScrollViewer()
     {
-        this.RegisterTokenResourceScope(ScrollViewerToken.ScopeProvider);
     }
     
     public static bool GetIsLiteMode(Control control)
