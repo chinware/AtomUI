@@ -250,7 +250,7 @@ Windows 现在固定 `IsCsdEnabled=true`，并保持
 ### 合成模式配置
 
 `AtomUI.Core` 直接使用 Avalonia 公开的 `Win32PlatformOptions`。策略集中在内部
-`WindowsAppBuilderDefaults`，不使用反射、字符串枚举名或动态泛型调用：
+`WithAtomUIDefaultOptions()`，不使用反射、字符串枚举名或动态泛型调用：
 
 ```csharp
 CompositionMode = [RedirectionSurface];
@@ -370,7 +370,7 @@ Windows 标题栏按钮在 AXAML 中声明 `WindowDecorationProperties.ElementRo
 | `src/AtomUI.Desktop.Controls/Window/Window.cs` | 核心窗口类：CSD 状态与跨平台 chrome manager 生命周期 |
 | `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml` | 双模板 ControlTheme：CSD / 非 CSD 模板切换 |
 | `src/AtomUI.Core/AppBuilderExtensions.cs` | AtomUI 平台默认配置公开入口 |
-| `src/AtomUI.Core/WindowsAppBuilderDefaults.cs` | 强类型 Windows 10/11 合成模式策略 |
+| `src/AtomUI.Core/AppBuilderExtensions.cs` | 强类型 Windows 10/11 合成模式策略 |
 | `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml` | 公开 caption element roles |
 
 ### Avalonia 12 参考源码

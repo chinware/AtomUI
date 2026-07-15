@@ -672,18 +672,17 @@ public class WindowResizeArtifactTests
     [Fact]
     public void AtomUI_Defaults_Use_Redirection_Surface_For_Windows_Live_Resize()
     {
-        var options = global::AtomUI.WindowsAppBuilderDefaults.CreateOptions();
+        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Core/AppBuilderExtensions.cs"));
 
-        options.RenderingMode.ShouldBe(
-        [
-            Win32RenderingMode.AngleEgl,
-            Win32RenderingMode.Software
-        ]);
-        options.CompositionMode.ShouldBe([Win32CompositionMode.RedirectionSurface]);
-        options.CompositionMode.ShouldNotContain(Win32CompositionMode.WinUIComposition);
-        options.CompositionMode.ShouldNotContain(Win32CompositionMode.DirectComposition);
-        options.CompositionMode.ShouldNotContain(Win32CompositionMode.LowLatencyDxgiSwapChain);
-        options.ShouldRenderOnUIThread.ShouldBeFalse();
+        source.ShouldContain(".With(new Win32PlatformOptions");
+        source.ShouldContain("Win32RenderingMode.AngleEgl");
+        source.ShouldContain("Win32RenderingMode.Software");
+        source.ShouldContain("CompositionMode = [Win32CompositionMode.RedirectionSurface]");
+        source.ShouldNotContain("WindowsAppBuilderDefaults");
+        source.ShouldNotContain("Win32CompositionMode.WinUIComposition");
+        source.ShouldNotContain("Win32CompositionMode.DirectComposition");
+        source.ShouldNotContain("Win32CompositionMode.LowLatencyDxgiSwapChain");
+        source.ShouldNotContain("ShouldRenderOnUIThread = true");
     }
 
     private static string GetRepoFile(string relativePath)
