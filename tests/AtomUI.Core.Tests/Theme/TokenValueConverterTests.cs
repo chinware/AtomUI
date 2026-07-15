@@ -20,6 +20,16 @@ public class TokenValueConverterTests
         new IntegerTokenValueConverter().Convert("-12").ShouldBe(-12);
     }
 
+    [Fact]
+    public void Integer_Conversion_Uses_Invariant_Negative_Sign()
+    {
+        var culture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+        culture.NumberFormat.NegativeSign = "~";
+        using var cultureScope = new CultureScope(culture);
+
+        new IntegerTokenValueConverter().Convert("-12").ShouldBe(-12);
+    }
+
     [Theory]
     [InlineData("en-US")]
     [InlineData("fr-FR")]
@@ -58,6 +68,27 @@ public class TokenValueConverterTests
     }
 
     [Fact]
+    public void LoadConfig_Does_Not_Apply_Earlier_Tokens_When_A_Later_Conversion_Fails()
+    {
+        var token = new DesignToken();
+        var originalFontSize = token.FontSize;
+        var originalLineWidth = token.LineWidth;
+        token.GetTokenValue(nameof(DesignToken.FontSize));
+        token.GetTokenValue(nameof(DesignToken.LineWidth));
+
+        Should.Throw<ThemeLoadException>(() => token.LoadConfig(new Dictionary<string, string>
+        {
+            [nameof(DesignToken.FontSize)] = "18",
+            [nameof(DesignToken.LineWidth)] = "not-a-number"
+        }));
+
+        token.FontSize.ShouldBe(originalFontSize);
+        token.LineWidth.ShouldBe(originalLineWidth);
+        token.GetTokenValue(nameof(DesignToken.FontSize)).ShouldBe(originalFontSize);
+        token.GetTokenValue(nameof(DesignToken.LineWidth)).ShouldBe(originalLineWidth);
+    }
+
+    [Fact]
     public void LoadConfig_Conversion_Error_Includes_Token_Context()
     {
         var token = new DesignToken();
@@ -84,8 +115,12 @@ public class TokenValueConverterTests
         private readonly CultureInfo _originalUICulture = CultureInfo.CurrentUICulture;
 
         public CultureScope(string cultureName)
+            : this(CultureInfo.GetCultureInfo(cultureName))
         {
-            var culture = CultureInfo.GetCultureInfo(cultureName);
+        }
+
+        public CultureScope(CultureInfo culture)
+        {
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = culture;
         }

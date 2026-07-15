@@ -36,6 +36,7 @@ public abstract class AbstractDesignToken : IDesignToken
             {
                 var type             = GetType();
                 var tokenPropertyMap = GetTokenPropertyMap(type);
+                var assignments = new List<(string TokenName, PropertyInfo Property, object Value, bool IsConverted)>();
                 foreach (var tokenInfo in tokenConfigInfo)
                 {
                     var tokenName = tokenInfo.Key;
@@ -46,7 +47,6 @@ public abstract class AbstractDesignToken : IDesignToken
                         continue;
                     }
                     var propertyType = property.PropertyType;
-                    _tokenAccessCache.Remove(tokenName);
                     if (_valueConverters.TryGetValue(propertyType, out var valueConverter))
                     {
                         object convertedValue;
@@ -61,17 +61,30 @@ public abstract class AbstractDesignToken : IDesignToken
                                 ex);
                         }
 
-                        property.SetValue(this, convertedValue);
+                        assignments.Add((tokenName, property, convertedValue, true));
+                    }
+                    else
+                    {
+                        assignments.Add((tokenName, property, tokenInfo.Value, false));
+                    }
+                }
+
+                foreach (var assignment in assignments)
+                {
+                    _tokenAccessCache.Remove(assignment.TokenName);
+                    if (assignment.IsConverted)
+                    {
+                        assignment.Property.SetValue(this, assignment.Value);
                     }
                     else
                     {
                         try
                         {
-                            property.SetValue(this, tokenInfo.Value);
+                            assignment.Property.SetValue(this, assignment.Value);
                         }
                         catch (Exception ex)
                         {
-                            throw new InvalidOperationException($"Unable to set token property: {tokenName}, maybe value type mismatch.", ex);
+                            throw new InvalidOperationException($"Unable to set token property: {assignment.TokenName}, maybe value type mismatch.", ex);
                         }
                     }
                 }
