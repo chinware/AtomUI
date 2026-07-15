@@ -7,14 +7,14 @@ namespace AtomUI.Generator;
 internal class ControlTokenTypePoolClassWriter
 {
     private readonly SourceProductionContext _context;
-    private readonly IReadOnlyList<string> _classes;
+    private readonly IReadOnlyList<ControlTokenInfo> _controlTokens;
     private readonly List<string> _usingInfos;
 
-    public ControlTokenTypePoolClassWriter(SourceProductionContext context, IEnumerable<string> classes)
+    public ControlTokenTypePoolClassWriter(SourceProductionContext context, IEnumerable<ControlTokenInfo> controlTokens)
     {
-        _context    = context;
-        _classes    = classes.OrderBy(className => className).ToList();
-        _usingInfos = new List<string>();
+        _context       = context;
+        _controlTokens = controlTokens.OrderBy(static token => token.GetFullyQualifiedTypeName()).ToList();
+        _usingInfos    = new List<string>();
         SetupUsingInfos();
     }
 
@@ -62,14 +62,19 @@ internal class ControlTokenTypePoolClassWriter
     {
         var statements = new List<StatementSyntax>
         {
-            SyntaxFactory.ParseStatement($"List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>({_classes.Count});")
+            SyntaxFactory.ParseStatement($"List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>({_controlTokens.Count});")
         };
 
         // 动态添加 themes.Add(typeof(XXX));
-        foreach (var className in _classes)
+        foreach (var controlToken in _controlTokens)
         {
+            var className = controlToken.GetFullyQualifiedTypeName();
+            var controlId = SymbolDisplay.FormatLiteral(controlToken.ControlId!, quote: true);
+            var catalog = string.IsNullOrEmpty(controlToken.ResourceCatalog)
+                ? "null"
+                : SymbolDisplay.FormatLiteral(controlToken.ResourceCatalog!, quote: true);
             var addStatement = SyntaxFactory.ParseStatement(
-                $"tokenTypes.Add(new ControlTokenRegistration(typeof({className})));");
+                $"tokenTypes.Add(new ControlTokenRegistration(typeof({className}), {controlId}, {catalog}));");
 
             statements.Add(addStatement);
         }
@@ -89,9 +94,9 @@ internal class ControlTokenTypePoolClassWriter
                                              SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
                                          .WithBody(SyntaxFactory.Block(statements));
 
-        foreach (var className in _classes)
+        foreach (var controlToken in _controlTokens)
         {
-            methodDecl = methodDecl.AddAttributeLists(GenerateDynamicDependencyAttributeList(className));
+            methodDecl = methodDecl.AddAttributeLists(GenerateDynamicDependencyAttributeList(controlToken.GetFullyQualifiedTypeName()));
         }
 
         return methodDecl;

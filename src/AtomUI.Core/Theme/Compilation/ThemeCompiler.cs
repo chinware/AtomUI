@@ -105,7 +105,7 @@ internal sealed class ThemeCompiler
                 continue;
             }
 
-            var identity = new ComponentTokenIdentity(null, token.Id);
+            var identity = registration.GetIdentity(token);
             if (!registrations.TryAdd(identity, token))
             {
                 AddError(diagnostics, "THEME002", $"Duplicate component token identity '{identity}'.");

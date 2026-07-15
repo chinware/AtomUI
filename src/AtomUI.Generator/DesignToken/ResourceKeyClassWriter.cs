@@ -22,6 +22,8 @@ internal class ResourceKeyClassWriter
     {
         _usingInfos.Add("AtomUI.Theme.TokenSystem");
         _usingInfos.Add("AtomUI.Theme");
+        _usingInfos.Add("AtomUI.Theme.Resources");
+        _usingInfos.Add("AtomUI.Theme.Styling");
     }
 
     public void Write()
@@ -113,6 +115,8 @@ internal class ResourceKeyClassWriter
                         controlTokenKindSyntaxList.Add(BuildControlResourceKeyEnumSyntax(controlTokenInfo));
                         controlTokenMarkupExtensionSyntaxList.Add(GenerateTokenResourceMarkupExtensionClass(controlTokenInfo));
                     }
+
+                    controlTokenMarkupExtensionSyntaxList.Add(GenerateComponentSharedTokenResourceMarkupExtensionClass(controlTokenInfo));
                 }
                 
                 namespaceSyntax = namespaceSyntax.AddMembers(controlTokenKindSyntaxList.ToArray());
@@ -127,8 +131,38 @@ internal class ResourceKeyClassWriter
     private static ClassDeclarationSyntax GenerateTokenResourceMarkupExtensionClass(ControlTokenInfo controlTokenInfo)
     {
         var className = $"{controlTokenInfo.ControlName}ResourceExtension";
-        var tokenKindType = $"{controlTokenInfo.ControlName}Kind";
-        return GenerateTokenResourceMarkupExtensionClass(className, tokenKindType);
+        return GenerateTokenResourceMarkupExtensionClass(className, controlTokenInfo.TokenKindType);
+    }
+
+    private static ClassDeclarationSyntax GenerateComponentSharedTokenResourceMarkupExtensionClass(ControlTokenInfo controlTokenInfo)
+    {
+        var className = $"{controlTokenInfo.ControlName}SharedTokenResourceExtension";
+        var parameter = SyntaxFactory.Parameter(SyntaxFactory.Identifier("kind"))
+                                     .WithType(SyntaxFactory.ParseTypeName("SharedTokenKind"));
+        var catalogExpression = string.IsNullOrEmpty(controlTokenInfo.ResourceCatalog)
+            ? "null"
+            : SymbolDisplay.FormatLiteral(controlTokenInfo.ResourceCatalog!, quote: true);
+        var controlIdExpression = SymbolDisplay.FormatLiteral(controlTokenInfo.ControlId!, quote: true);
+        var baseConstructorCall = SyntaxFactory.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer)
+                                               .AddArgumentListArguments(
+                                                   SyntaxFactory.Argument(SyntaxFactory.ParseExpression(catalogExpression)),
+                                                   SyntaxFactory.Argument(SyntaxFactory.ParseExpression(controlIdExpression)),
+                                                   SyntaxFactory.Argument(SyntaxFactory.IdentifierName("kind")));
+
+        var ctor = SyntaxFactory.ConstructorDeclaration(className)
+                                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                                .AddParameterListParameters(parameter)
+                                .WithInitializer(baseConstructorCall)
+                                .WithBody(SyntaxFactory.Block());
+
+        return SyntaxFactory.ClassDeclaration(className)
+                            .AddModifiers(
+                                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                                SyntaxFactory.Token(SyntaxKind.SealedKeyword))
+                            .AddBaseListTypes(SyntaxFactory.SimpleBaseType(
+                                SyntaxFactory.ParseTypeName("ComponentSharedTokenResourceExtension")))
+                            .AddMembers(ctor)
+                            .NormalizeWhitespace();
     }
     
     private static ClassDeclarationSyntax GenerateTokenResourceMarkupExtensionClass(string className, string genericArgType)

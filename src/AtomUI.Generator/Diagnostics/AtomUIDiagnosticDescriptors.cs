@@ -67,5 +67,23 @@ internal static class AtomUIDiagnosticDescriptors
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenMissingId = new(
+        AtomUIDiagnosticIds.ControlTokenMissingId,
+        "Control design token requires an ID constant",
+        "Control design token '{0}' must declare public const string ID",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenInvalidId = new(
+        AtomUIDiagnosticIds.ControlTokenInvalidId,
+        "Control design token ID must be constant",
+        "Control design token '{0}' must declare ID as public const string with a non-empty value",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
 }
 #pragma warning restore RS2008

@@ -10,7 +10,7 @@ namespace AtomUI.Theme
         internal static IList<ControlTokenRegistration> GetTokenTypes()
         {
             List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>(1);
-            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.ColorPickerToken)));
+            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.ColorPickerToken), "ColorPicker", null));
             return tokenTypes;
         }
     }

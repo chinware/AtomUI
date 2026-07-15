@@ -466,6 +466,25 @@ internal class ThemeManager : Styles, IThemeManager
         var errors = new List<string>();
         foreach (var registration in ControlTokenTypes)
         {
+            if (registration.TryGetIdentity(out var registeredIdentity))
+            {
+                if (!typeof(AbstractControlDesignToken).IsAssignableFrom(registration.TokenType))
+                {
+                    errors.Add(
+                        $"Registration '{registration.TokenType.FullName}' does not create an {nameof(AbstractControlDesignToken)}.");
+                    continue;
+                }
+
+                if (!schemas.TryAdd(
+                        registeredIdentity.TokenId,
+                        CreateComponentTokenSchema(registration.TokenType)))
+                {
+                    errors.Add($"Duplicate component token id '{registeredIdentity.TokenId}'.");
+                }
+
+                continue;
+            }
+
             AbstractControlDesignToken? token;
             try
             {
@@ -485,12 +504,7 @@ internal class ThemeManager : Styles, IThemeManager
                 continue;
             }
 
-            var names = registration.TokenType
-                                    .GetProperties(System.Reflection.BindingFlags.Instance |
-                                                   System.Reflection.BindingFlags.Public)
-                                    .Where(static property => property.SetMethod?.IsPublic == true)
-                                    .Select(static property => property.Name);
-            if (!schemas.TryAdd(token.Id, new HashSet<string>(names, StringComparer.Ordinal)))
+            if (!schemas.TryAdd(token.Id, CreateComponentTokenSchema(registration.TokenType)))
             {
                 errors.Add($"Duplicate component token id '{token.Id}'.");
             }
@@ -503,6 +517,18 @@ internal class ThemeManager : Styles, IThemeManager
         }
 
         return schemas;
+    }
+
+    private static IReadOnlySet<string> CreateComponentTokenSchema(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+        Type tokenType)
+    {
+        var names = tokenType
+                    .GetProperties(System.Reflection.BindingFlags.Instance |
+                                   System.Reflection.BindingFlags.Public)
+                    .Where(static property => property.SetMethod?.IsPublic == true)
+                    .Select(static property => property.Name);
+        return new HashSet<string>(names, StringComparer.Ordinal);
     }
 
     internal void Configure()

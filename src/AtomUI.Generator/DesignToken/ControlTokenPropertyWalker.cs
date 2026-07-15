@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using AtomUI.Generator.Diagnostics;
 
 namespace AtomUI.Generator;
 
@@ -55,6 +56,9 @@ internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
                     TokenResourceCatalog = catalog;
                 }
             }
+
+            ControlTokenInfo.ResourceCatalog = TokenResourceCatalog;
+            ReadControlId(node, classDeclaredSymbol);
         }
         
         if (classDeclaredSymbol is not null)
@@ -63,6 +67,36 @@ internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
         }
 
         base.VisitClassDeclaration(node);
+    }
+
+    private void ReadControlId(ClassDeclarationSyntax node, INamedTypeSymbol classSymbol)
+    {
+        var idMember = classSymbol.GetMembers("ID")
+                                  .OfType<IFieldSymbol>()
+                                  .FirstOrDefault();
+        if (idMember is null)
+        {
+            ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
+                AtomUIDiagnosticDescriptors.ControlTokenMissingId,
+                node.Identifier.GetLocation(),
+                classSymbol.Name));
+            return;
+        }
+
+        if (idMember.DeclaredAccessibility != Accessibility.Public ||
+            !idMember.IsConst ||
+            idMember.Type.SpecialType != SpecialType.System_String ||
+            idMember.ConstantValue is not string id ||
+            string.IsNullOrWhiteSpace(id))
+        {
+            ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
+                AtomUIDiagnosticDescriptors.ControlTokenInvalidId,
+                idMember.Locations.FirstOrDefault() ?? node.Identifier.GetLocation(),
+                classSymbol.Name));
+            return;
+        }
+
+        ControlTokenInfo.ControlId = id;
     }
     
     /// <summary>

@@ -14,11 +14,11 @@ namespace AtomUI.Theme
         internal static IList<ControlTokenRegistration> GetTokenTypes()
         {
             List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>(5);
-            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Toolkits.GalleryBase.Controls.GalleryShowCaseHeaderToken)));
-            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Toolkits.GalleryBase.Controls.GalleryStickyTabsHostToken)));
-            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Toolkits.GalleryBase.Controls.GalleryWindowTitleBarToken)));
-            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Toolkits.GalleryBase.Controls.ShowCaseItemToken)));
-            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Toolkits.GalleryBase.Controls.ShowCasePanelToken)));
+            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Toolkits.GalleryBase.Controls.GalleryShowCaseHeaderToken), "GalleryShowCaseHeader", null));
+            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Toolkits.GalleryBase.Controls.GalleryStickyTabsHostToken), "GalleryStickyTabsHost", null));
+            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Toolkits.GalleryBase.Controls.GalleryWindowTitleBarToken), "GalleryWindowTitleBar", null));
+            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Toolkits.GalleryBase.Controls.ShowCaseItemToken), "ShowCaseItem", null));
+            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Toolkits.GalleryBase.Controls.ShowCasePanelToken), "ShowCasePanel", null));
             return tokenTypes;
         }
     }
