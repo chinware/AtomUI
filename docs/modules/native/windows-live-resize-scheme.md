@@ -111,6 +111,11 @@ Windows 固定 `IsCsdEnabled=true`，主题保持：
 
 `WindowDrawnDecorations`、resize grips、非客户区和窗口状态切换全部由 Avalonia 管理。
 
+AtomUI 的 Windows CSD 窗口同时保证 `MinHeight` 不低于两个标题栏高度。一个标题栏高度用于
+装饰层，另一个标题栏高度为内容层保留稳定的非零布局/合成表面，避免窗口缩到系统默认最小
+track 高度时让内容层进入零高度。标题栏的手动移动状态会在普通点击释放、pointer capture 丢失
+以及调用原生 `BeginMoveDrag` 前清空，禁止同一次指针序列从 resize 错误切换到 move。
+
 ### 标题栏按钮
 
 Avalonia 12.1 提供 `WindowDecorationProperties.ElementRole`。AtomUI 的 Windows 标题栏按钮分别
@@ -145,6 +150,8 @@ macOS standard window buttons 和 Linux input region。Windows live resize、CSD
 4. Windows caption buttons 使用公开 `ElementRole`，不存在自定义 WndProc 注册。
 5. Window 主题保持 Avalonia CSD，源码不存在旧 Windows chrome manager。
 6. Desktop 测试、Browser 构建和 NativeAOT publish 不依赖运行时反射发现 Win32 options。
+7. Windows CSD 最小高度始终大于标题栏高度，并为内容合成表面保留非零高度。
+8. 标题栏拖动状态不会跨 pointer release/capture lost 保留，也不会在 `BeginMoveDrag` 后复用。
 
 ### Windows 10 实机验证
 
@@ -154,6 +161,8 @@ macOS standard window buttons 和 Linux input region。Windows live resize、CSD
 4. 失去和恢复焦点时不出现额外黑边。
 5. 最大化、还原、全屏和退出全屏后装饰正常。
 6. 最小化、最大化和关闭按钮点击、hover 与按下状态正常。
+7. 从上边缘向下缩到最小高度后继续移动指针，窗口底边和窗口位置保持不变；随后从左边缘
+   resize 不出现旧帧叠加。
 
 ### Windows 11 实机验证
 

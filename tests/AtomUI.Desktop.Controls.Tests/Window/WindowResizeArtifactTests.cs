@@ -210,6 +210,7 @@ public class WindowResizeArtifactTests
     [Fact]
     public void Window_Resizer_Compiled_Theme_Uses_The_Expected_Hover_Cursors()
     {
+        AvaloniaTestApp.EnsureInitialized();
         var resizer = new WindowResizer();
         Application.Current!.TryFindResource(typeof(WindowResizer), out var resource).ShouldBeTrue();
         resizer.Theme = resource.ShouldBeAssignableTo<ControlTheme>();
@@ -530,8 +531,8 @@ public class WindowResizeArtifactTests
     public void Windows_Window_Uses_Avalonia_Csd_Without_The_Legacy_Chrome_Hook()
     {
         var managerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"));
-        var windowsManagerSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WindowsWindowChromeManager.cs"));
+        var reflectionSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/WindowDrawnDecorationsReflectionExtensions.cs"));
         var windowSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
         var nativeSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
         var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Windows/WindowUtils.Interop.cs"));
@@ -553,25 +554,28 @@ public class WindowResizeArtifactTests
                                            .Attribute("WindowDecorationProperties.ElementRole");
         }
 
-        managerSource.ShouldContain("Windows11InitialBuild = 22000");
-        managerSource.ShouldContain("WindowsWindowChromeManager.Attach(window)");
-        managerSource.ShouldContain("!OperatingSystem.IsWindowsVersionAtLeast(10, 0, Windows11InitialBuild)");
-        windowsManagerSource.ShouldContain("Win32Properties.AddWindowStylesCallback");
-        windowsManagerSource.ShouldContain("Win32Properties.RemoveWindowStylesCallback");
-        windowsManagerSource.ShouldContain("ApplyDrawnDecorationsWindowStyles");
-        windowsManagerSource.ShouldContain("TryUpdateDrawnDecorations(parts)");
-        windowsManagerSource.ShouldContain("ComputeDecorationParts");
-        windowsManagerSource.ShouldNotContain("AddWndProcHookCallback");
-        windowsManagerSource.ShouldNotContain("WindowMessageNonClientActivate");
+        managerSource.ShouldNotContain("WindowsWindowChromeManager.Attach(window)");
+        File.Exists(Path.Combine(
+            Path.GetDirectoryName(GetRepoFile(
+                "src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"))!,
+            "WindowsWindowChromeManager.cs")).ShouldBeFalse();
         File.Exists(Path.Combine(
             Path.GetDirectoryName(GetRepoFile(
                 "src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"))!,
             "WindowsInactiveFramePolicy.cs")).ShouldBeFalse();
         windowSource.ShouldContain("else if (OperatingSystem.IsWindows())");
         windowSource.ShouldContain("IsCsdEnabled = true;");
-        windowSource.ShouldContain("IsWindowsDrawnDecorationsEnabledProperty");
+        windowSource.ShouldContain("CalculateWindowsCsdMinimumHeight");
+        windowSource.ShouldContain("SetCurrentValue(MinHeightProperty, minimumHeight);");
+        windowSource.ShouldContain("PointerCaptureLost");
+        windowSource.ShouldContain("ResetTitleBarMoveDragState();");
+        windowSource.ShouldNotContain("_isDragging");
+        windowSource.ShouldNotContain("IsWindowsDrawnDecorationsEnabledProperty");
         windowSource.ShouldNotContain("WindowsInactiveFramePolicy.Apply(this)");
         windowSource.ShouldNotContain("AddWndProcHookCallback");
+        reflectionSource.ShouldNotContain("TryUpdateDrawnDecorations");
+        reflectionSource.ShouldNotContain("\"UpdateDrawnDecorations\"");
+        reflectionSource.ShouldNotContain("\"UpdateDrawnDecorationMargins\"");
         nativeSource.ShouldNotContain("WinWndProcHook");
         nativeSource.ShouldNotContain("ForceWinNonClientFrameChanged");
         interopSource.ShouldNotContain("WM_NCCALCSIZE");
@@ -590,124 +594,76 @@ public class WindowResizeArtifactTests
         document.Descendants(av + "Setter").ShouldNotContain(setter =>
             (string?)setter.Attribute("Property") == "ExtendClientAreaToDecorationsHint" &&
             (string?)setter.Attribute("Value") == "False");
-        document.Descendants(av + "Style").ShouldContain(style =>
-            (string?)style.Attribute("Selector") == "^[OsType=Windows][IsWindowsDrawnDecorationsEnabled=True]" &&
+        var hasWindowsManagedFrameStyle = document.Descendants(av + "Style").Any(style =>
+            ((string?)style.Attribute("Selector"))?.Contains("IsWindowsDrawnDecorationsEnabled=True") == true &&
             style.Elements(av + "Setter").Any(setter =>
-                (string?)setter.Attribute("Property") == "TransparencyLevelHint" &&
-                (string?)setter.Attribute("Value") == "Transparent") &&
-            style.Elements(av + "Setter").Any(setter =>
-                (string?)setter.Attribute("Property") == "FrameShadow" &&
-                (string?)setter.Attribute("Value") == "{atom:WindowTokenResource FrameShadows}") &&
-            style.Elements(av + "Setter").Any(setter =>
-                (string?)setter.Attribute("Property") == "CornerRadius" &&
-                (string?)setter.Attribute("Value") == "{atom:WindowTokenResource CornerRadius}"));
+                (string?)setter.Attribute("Property") is "TransparencyLevelHint" or "FrameShadow"));
+        hasWindowsManagedFrameStyle.ShouldBeFalse();
         decorationsDocument.Descendants(av + "Setter").ShouldContain(setter =>
             (string?)setter.Attribute("Property") == "DefaultFrameThickness" &&
             (string?)setter.Attribute("Value") == "1");
+        decorationsDocument.Descendants(av + "Style").Single(style =>
+                (string?)style.Attribute("Selector") == "^/template/ Border#PART_WindowFrame")
+            .Elements(av + "Setter")
+            .ShouldNotContain(setter => (string?)setter.Attribute("Property") == "BoxShadow");
+        decorationsDocument.Descendants(av + "Style").Single(style =>
+                (string?)style.Attribute("Selector") == "^:has-shadow /template/ Border#PART_WindowFrame")
+            .Elements(av + "Setter")
+            .ShouldContain(setter =>
+                (string?)setter.Attribute("Property") == "BoxShadow" &&
+                (string?)setter.Attribute("Value") == "{atom:WindowTokenResource FrameShadows}");
+    }
+
+    [Theory]
+    [InlineData(40, 80)]
+    [InlineData(0, 0)]
+    [InlineData(-1, 0)]
+    public void Windows_Csd_Minimum_Height_Always_Leaves_A_Nonzero_Content_Surface(
+        double titleBarHeight,
+        double expectedMinimumHeight)
+    {
+        AtomUI.Desktop.Controls.Window.CalculateWindowsCsdMinimumHeight(titleBarHeight)
+              .ShouldBe(expectedMinimumHeight);
     }
 
     [Fact]
-    [SupportedOSPlatform("windows10.0")]
-    public void Windows_10_Drawn_Decoration_Parts_Follow_Avalonia_12_1_0_State_Rules()
+    [SupportedOSPlatform("windows")]
+    public void Windows_Csd_Window_Rejects_A_Minimum_Height_Below_Its_Safe_Content_Surface()
     {
-        WindowsWindowChromeManager.ComputeDecorationParts(
-                Avalonia.Controls.WindowDecorations.Full,
-                Avalonia.Controls.WindowState.Normal,
-                canResize: true)
-            .ShouldBe(WindowsDrawnDecorationParts.All);
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
 
-        WindowsWindowChromeManager.ComputeDecorationParts(
-                Avalonia.Controls.WindowDecorations.Full,
-                Avalonia.Controls.WindowState.Normal,
-                canResize: false)
-            .ShouldBe(WindowsDrawnDecorationParts.Shadow |
-                      WindowsDrawnDecorationParts.Border |
-                      WindowsDrawnDecorationParts.TitleBar);
+        AvaloniaTestApp.EnsureInitialized();
+        var window = new AtomUI.Desktop.Controls.Window
+        {
+            TitleBarHeight = 40
+        };
 
-        WindowsWindowChromeManager.ComputeDecorationParts(
-                Avalonia.Controls.WindowDecorations.Full,
-                Avalonia.Controls.WindowState.Maximized,
-                canResize: true)
-            .ShouldBe(WindowsDrawnDecorationParts.TitleBar);
+        window.MinHeight.ShouldBe(80);
 
-        WindowsWindowChromeManager.ComputeDecorationParts(
-                Avalonia.Controls.WindowDecorations.Full,
-                Avalonia.Controls.WindowState.FullScreen,
-                canResize: true)
-            .ShouldBe(WindowsDrawnDecorationParts.None);
+        window.MinHeight = 20;
+        window.MinHeight.ShouldBe(80);
 
-        WindowsWindowChromeManager.ComputeDecorationParts(
-                Avalonia.Controls.WindowDecorations.BorderOnly,
-                Avalonia.Controls.WindowState.Normal,
-                canResize: true)
-            .ShouldBe(WindowsDrawnDecorationParts.Shadow |
-                      WindowsDrawnDecorationParts.Border |
-                      WindowsDrawnDecorationParts.ResizeGrips);
-
-        WindowsWindowChromeManager.ComputeDecorationParts(
-                Avalonia.Controls.WindowDecorations.None,
-                Avalonia.Controls.WindowState.Normal,
-                canResize: true)
-            .ShouldBe(WindowsDrawnDecorationParts.None);
+        window.MinHeight = 160;
+        window.MinHeight.ShouldBe(160);
     }
 
     [Fact]
-    [SupportedOSPlatform("windows10.0")]
-    public void Windows_10_Drawn_Decoration_Styles_Remove_Native_Frame_But_Preserve_Window_Actions()
+    public void Windows_Caption_Buttons_Suppress_Stale_Hover_After_Window_State_Transitions()
     {
-        const uint caption      = 0x00C00000;
-        const uint border       = 0x00800000;
-        const uint dialogFrame  = 0x00400000;
-        const uint thickFrame   = 0x00040000;
-        const uint systemMenu   = 0x00080000;
-        const uint minimizeBox  = 0x00020000;
-        const uint maximizeBox  = 0x00010000;
-        const uint visible      = 0x10000000;
-        const uint clipChildren = 0x02000000;
-        const uint clipSiblings = 0x04000000;
+        var captionSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
+        var themeSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowsCaptionButtonTheme.axaml"));
 
-        const uint exDialogModalFrame = 0x00000001;
-        const uint exWindowEdge       = 0x00000100;
-        const uint exClientEdge       = 0x00000200;
-        const uint exStaticEdge       = 0x00020000;
-        const uint exAppWindow        = 0x00040000;
-        const uint exNoRedirection    = 0x00200000;
-
-        var (style, exStyle) = WindowsWindowChromeManager.ApplyDrawnDecorationsWindowStyles(
-            caption |
-            border |
-            dialogFrame |
-            thickFrame |
-            systemMenu |
-            minimizeBox |
-            maximizeBox |
-            visible |
-            clipChildren |
-            clipSiblings,
-            exDialogModalFrame |
-            exWindowEdge |
-            exClientEdge |
-            exStaticEdge |
-            exAppWindow |
-            exNoRedirection);
-
-        (style & caption).ShouldBe(0u);
-        (style & border).ShouldBe(0u);
-        (style & dialogFrame).ShouldBe(0u);
-        (style & thickFrame).ShouldBe(0u);
-        (style & systemMenu).ShouldBe(systemMenu);
-        (style & minimizeBox).ShouldBe(minimizeBox);
-        (style & maximizeBox).ShouldBe(maximizeBox);
-        (style & visible).ShouldBe(visible);
-        (style & clipChildren).ShouldBe(clipChildren);
-        (style & clipSiblings).ShouldBe(clipSiblings);
-
-        (exStyle & exDialogModalFrame).ShouldBe(0u);
-        (exStyle & exWindowEdge).ShouldBe(0u);
-        (exStyle & exClientEdge).ShouldBe(0u);
-        (exStyle & exStaticEdge).ShouldBe(0u);
-        (exStyle & exAppWindow).ShouldBe(exAppWindow);
-        (exStyle & exNoRedirection).ShouldBe(exNoRedirection);
+        captionSource.ShouldContain("if (stateChanged)");
+        captionSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualStates();");
+        captionSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualState(_fullScreenButton);");
+        captionSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualState(_maximizeButton);");
+        captionSource.ShouldContain("button is WindowsCaptionButton windowsCaptionButton");
+        themeSource.ShouldContain("^[IsPointerOverSuppressed=False]:pointerover");
     }
 
     [Fact]

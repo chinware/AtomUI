@@ -23,6 +23,8 @@ public partial class Window : AvaloniaWindow,
                               IOperationSystemAware,
                               IMediaBreakAwareControl
 {
+    private const double WindowsCsdMinimumHeightInTitleBars = 2;
+
     #region 公共属性定义
     public static readonly StyledProperty<object?> LogoProperty =
         WindowTitleBar.LogoProperty.AddOwner<Window>();
@@ -249,12 +251,6 @@ public partial class Window : AvaloniaWindow,
             o => o.IsCustomResizerVisible,
             (o, v) => o.IsCustomResizerVisible = v);
 
-    internal static readonly DirectProperty<Window, bool> IsWindowsDrawnDecorationsEnabledProperty =
-        AvaloniaProperty.RegisterDirect<Window, bool>(
-            nameof(IsWindowsDrawnDecorationsEnabled),
-            o => o.IsWindowsDrawnDecorationsEnabled,
-            (o, v) => o.IsWindowsDrawnDecorationsEnabled = v);
-
     internal static readonly DirectProperty<Window, bool> IsDrawnTitleBarOverlayVisibleProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsDrawnTitleBarOverlayVisible),
@@ -319,17 +315,6 @@ public partial class Window : AvaloniaWindow,
         set => SetAndRaise(IsCustomResizerVisibleProperty, ref _isCustomResizerVisible, value);
     }
 
-    private bool _isWindowsDrawnDecorationsEnabled;
-
-    internal bool IsWindowsDrawnDecorationsEnabled
-    {
-        get => _isWindowsDrawnDecorationsEnabled;
-        set => SetAndRaise(
-            IsWindowsDrawnDecorationsEnabledProperty,
-            ref _isWindowsDrawnDecorationsEnabled,
-            value);
-    }
-
     private bool _isDrawnTitleBarOverlayVisible = true;
 
     internal bool IsDrawnTitleBarOverlayVisible
@@ -372,7 +357,6 @@ public partial class Window : AvaloniaWindow,
     private protected bool CloseByClickCloseCaptionButton;
     private Point? _lastMousePressedPoint;
     private PointerPressedEventArgs? _lastMousePressedEventArgs;
-    private bool _isDragging;
     private readonly IWindowChromeManager? _platformChromeManager;
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
@@ -542,6 +526,7 @@ public partial class Window : AvaloniaWindow,
         base.OnApplyTemplate(e);
 
         HandleCreateTitleBar();
+        EnsureWindowsCsdMinimumHeight();
 
         if (_mediaBreakPointIndicator != null)
         {
@@ -580,6 +565,7 @@ public partial class Window : AvaloniaWindow,
             _titleBar.PointerPressed          -= HandleTitleBarPointerPressed;
             _titleBar.PointerReleased         -= HandleTitleBarPointerReleased;
             _titleBar.PointerMoved            -= HandleTitleBarPointerMoved;
+            _titleBar.PointerCaptureLost      -= HandleTitleBarPointerCaptureLost;
             _titleBar.SizeChanged             -= HandleTitleBarSizeChanged;
         }
         var titleBar = NotifyCreateTitleBar(_titleBar);
@@ -590,6 +576,7 @@ public partial class Window : AvaloniaWindow,
             titleBar.PointerPressed          += HandleTitleBarPointerPressed;
             titleBar.PointerReleased         += HandleTitleBarPointerReleased;
             titleBar.PointerMoved            += HandleTitleBarPointerMoved;
+            titleBar.PointerCaptureLost      += HandleTitleBarPointerCaptureLost;
             titleBar.SizeChanged             += HandleTitleBarSizeChanged;
             NotifyConfigureTitleBar(titleBar);
         }
@@ -622,8 +609,11 @@ public partial class Window : AvaloniaWindow,
 
     private void HandleTitleBarPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (!IsMoveEnabled || WindowState == WindowState.FullScreen)
+        if (!IsMoveEnabled ||
+            WindowState == WindowState.FullScreen ||
+            !e.Properties.IsLeftButtonPressed)
         {
+            ResetTitleBarMoveDragState();
             return;
         }
         _lastMousePressedPoint     = e.GetPosition(this);
@@ -643,17 +633,21 @@ public partial class Window : AvaloniaWindow,
             var   distanceFromInitial = (Vector)(mousePosition - _lastMousePressedPoint);
             if (distanceFromInitial.Length > Constants.DragThreshold)
             {
-                _isDragging = true;
-                if (_lastMousePressedEventArgs is not null)
+                if (_lastMousePressedEventArgs is not { } pointerPressedEventArgs)
                 {
-                    BeginMoveDrag(_lastMousePressedEventArgs);
+                    ResetTitleBarMoveDragState();
+                    return;
                 }
+
+                ResetTitleBarMoveDragState();
+                BeginMoveDrag(pointerPressedEventArgs);
             }
         }
     }
 
     private void HandleTitleBarSizeChanged(object? sender, SizeChangedEventArgs e)
     {
+        EnsureWindowsCsdMinimumHeight(e.NewSize.Height);
         if (_platformChromeManager is not null)
         {
             _platformChromeManager.ConfigureTitleBarHeightHint(e.NewSize.Height);
@@ -666,14 +660,43 @@ public partial class Window : AvaloniaWindow,
 
     private void HandleTitleBarPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (!IsMoveEnabled || e.InitialPressMouseButton != MouseButton.Left || !_isDragging)
+        if (e.InitialPressMouseButton == MouseButton.Left)
+        {
+            ResetTitleBarMoveDragState();
+        }
+    }
+
+    private void HandleTitleBarPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
+    {
+        ResetTitleBarMoveDragState();
+    }
+
+    private void ResetTitleBarMoveDragState()
+    {
+        _lastMousePressedPoint     = null;
+        _lastMousePressedEventArgs = null;
+    }
+
+    internal static double CalculateWindowsCsdMinimumHeight(double titleBarHeight)
+    {
+        return double.IsFinite(titleBarHeight) && titleBarHeight > 0
+            ? titleBarHeight * WindowsCsdMinimumHeightInTitleBars
+            : 0;
+    }
+
+    private void EnsureWindowsCsdMinimumHeight(double measuredTitleBarHeight = 0)
+    {
+        if (!OperatingSystem.IsWindows() || !IsCsdEnabled)
         {
             return;
         }
-   
-        _lastMousePressedPoint     = null;
-        _lastMousePressedEventArgs = null;
-        _isDragging                = false;
+
+        var titleBarHeight = Math.Max(measuredTitleBarHeight, TitleBarHeight);
+        var minimumHeight  = CalculateWindowsCsdMinimumHeight(titleBarHeight);
+        if (minimumHeight > 0 && MinHeight < minimumHeight)
+        {
+            SetCurrentValue(MinHeightProperty, minimumHeight);
+        }
     }
     
     protected virtual void NotifyConfigureTitleBar(WindowTitleBar titleBar)
@@ -896,6 +919,17 @@ public partial class Window : AvaloniaWindow,
         if (change.Property == CanResizeProperty || change.Property == WindowStateProperty)
         {
             ConfigureCustomResizerVisible();
+        }
+        if (change.Property == MinHeightProperty ||
+            change.Property == TitleBarHeightProperty ||
+            change.Property == IsCsdEnabledProperty)
+        {
+            EnsureWindowsCsdMinimumHeight();
+        }
+        if (change.Property == IsMoveEnabledProperty ||
+            change.Property == WindowStateProperty)
+        {
+            ResetTitleBarMoveDragState();
         }
         if (change.Property == LogoProperty ||
             change.Property == LogoTemplateProperty ||
