@@ -3,6 +3,7 @@ using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Media;
 using AtomUI.Native;
+using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -362,6 +363,7 @@ public partial class Window : AvaloniaWindow,
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
     private int _drawnTitleBarOverlaySuppressionCount;
+    private IDisposable? _windowsCsdFrameThemeSubscription;
 
     // macOS 下 ConfigureMacOsWindow 的输入缓存，用于在 live resize 时短路，避免重复 P/Invoke
     private double? _macOsCachedTitleBarHeight;
@@ -791,6 +793,8 @@ public partial class Window : AvaloniaWindow,
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
+        EnsureWindowsCsdFrameThemeSubscription();
+        ApplyCurrentWindowsCsdFrameTheme();
         _platformChromeManager?.UpdateFrameGeometry();
         ApplyDefaultLogoIfNeeded();
         if (OperatingSystem.IsMacOS())
@@ -803,6 +807,13 @@ public partial class Window : AvaloniaWindow,
         {
             LayoutUpdated += HandleFirstLayoutUpdatedForMediaQuery;
         }
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        _windowsCsdFrameThemeSubscription?.Dispose();
+        _windowsCsdFrameThemeSubscription = null;
+        base.OnClosed(e);
     }
 
     private void ApplyDefaultLogoIfNeeded()
@@ -911,6 +922,11 @@ public partial class Window : AvaloniaWindow,
                 }
             }
         }
+        if (change.Property == ExtendClientAreaTitleBarHeightHintProperty ||
+            change.Property == IsCsdEnabledProperty)
+        {
+            ApplyCurrentWindowsCsdFrameTheme();
+        }
         _platformChromeManager?.HandlePropertyChanged(change.Property);
         if (change.Property == IsExtendedIntoWindowDecorationsProperty)
         {
@@ -980,7 +996,47 @@ public partial class Window : AvaloniaWindow,
     internal void RefreshPlatformCsdStatus()
     {
         ConfigureCsdStatus();
+        ApplyCurrentWindowsCsdFrameTheme();
         ConfigureCustomResizerVisible();
+    }
+
+    private void EnsureWindowsCsdFrameThemeSubscription()
+    {
+        if (!OperatingSystem.IsWindows() || _windowsCsdFrameThemeSubscription is not null)
+        {
+            return;
+        }
+
+        var themeManager = Application.Current?.GetThemeManager();
+        if (themeManager is null)
+        {
+            return;
+        }
+
+        _windowsCsdFrameThemeSubscription = themeManager.BindingSource
+                                                        .GetObservable(IThemeManager.IsDarkThemeModeProperty)
+                                                        .Subscribe(ApplyWindowsCsdFrameTheme);
+    }
+
+    private void ApplyCurrentWindowsCsdFrameTheme()
+    {
+        var themeManager = Application.Current?.GetThemeManager();
+        if (themeManager is null)
+        {
+            return;
+        }
+
+        ApplyWindowsCsdFrameTheme(themeManager.IsDarkThemeMode);
+    }
+
+    private void ApplyWindowsCsdFrameTheme(bool isDarkMode)
+    {
+        if (!OperatingSystem.IsWindows() || !IsCsdEnabled)
+        {
+            return;
+        }
+
+        this.SetWindowsCsdFrameDarkMode(isDarkMode);
     }
 
     private void ConfigureCustomResizerVisible()

@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using AtomUI.Native.Windows;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -62,6 +61,23 @@ internal static class WindowExtensions
             return WindowUtilsLinux.GetSystemTitleBarHeightLinux(window);
         }
         return null;
+    }
+
+    [SupportedOSPlatform("windows")]
+    public static void SetWindowsCsdFrameDarkMode(this WindowBase window, bool isDarkMode)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
+        var handle = window.TryGetPlatformHandle();
+        if (handle is null || handle.Handle == IntPtr.Zero)
+        {
+            return;
+        }
+
+        WindowUtilsWindows.SetWindowFrameDarkModeWindows(handle.Handle, isDarkMode);
     }
     
     /// <summary>

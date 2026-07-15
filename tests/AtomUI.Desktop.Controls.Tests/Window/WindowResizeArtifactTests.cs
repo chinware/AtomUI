@@ -573,6 +573,7 @@ public class WindowResizeArtifactTests
         var windowSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
         var nativeSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
         var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Windows/WindowUtils.Interop.cs"));
+        var windowsNativeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Windows/WindowUtils.Windows.cs"));
         var captionSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
         var document = XDocument.Load(GetRepoFile(
@@ -606,10 +607,25 @@ public class WindowResizeArtifactTests
         windowSource.ShouldContain("SetCurrentValue(MinHeightProperty, minimumHeight);");
         windowSource.ShouldContain("PointerCaptureLost");
         windowSource.ShouldContain("ResetTitleBarMoveDragState();");
+        windowSource.ShouldContain("EnsureWindowsCsdFrameThemeSubscription();");
+        windowSource.ShouldContain("ApplyCurrentWindowsCsdFrameTheme();");
+        windowSource.ShouldContain("IThemeManager.IsDarkThemeModeProperty");
+        windowSource.ShouldContain("private void ApplyWindowsCsdFrameTheme(bool isDarkMode)");
+        windowSource.ShouldNotContain("change.Property == ActualThemeVariantProperty");
         windowSource.ShouldNotContain("_isDragging");
         windowSource.ShouldNotContain("IsWindowsDrawnDecorationsEnabledProperty");
         windowSource.ShouldNotContain("WindowsInactiveFramePolicy.Apply(this)");
         windowSource.ShouldNotContain("AddWndProcHookCallback");
+        nativeSource.ShouldContain("SetWindowsCsdFrameDarkMode");
+        windowsNativeSource.ShouldContain("SetWindowFrameDarkModeWindows");
+        windowsNativeSource.ShouldContain("OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)");
+        windowsNativeSource.ShouldContain("ReapplyActiveNonClientFrame");
+        windowsNativeSource.ShouldContain("WindowUtilsInterop.WM_NCACTIVATE");
+        windowsNativeSource.ShouldContain("WindowUtilsInterop.DefWindowProc");
+        windowsNativeSource.ShouldNotContain("WindowUtilsInterop.RedrawWindow");
+        interopSource.ShouldContain("DWMWA_USE_IMMERSIVE_DARK_MODE");
+        interopSource.ShouldNotContain("RDW_FRAME");
+        interopSource.ShouldNotContain("DWMWA_BORDER_COLOR");
         reflectionSource.ShouldNotContain("TryUpdateDrawnDecorations");
         reflectionSource.ShouldNotContain("\"UpdateDrawnDecorations\"");
         reflectionSource.ShouldNotContain("\"UpdateDrawnDecorationMargins\"");
