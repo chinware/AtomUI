@@ -20,8 +20,8 @@
                             IsVisible="{TemplateBinding IsFullScreenButtonEffectivelyVisible}" />
                         <atom:CaptionButton
                             Name="PART_PinButton"
-                            IsVisible="{TemplateBinding IsPinCaptionButtonVisible}"
-                            IsEnabled="{TemplateBinding IsPinCaptionButtonVisible}"
+                            IsVisible="{TemplateBinding IsPinButtonEffectivelyVisible}"
+                            IsEnabled="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowPinOutlined}"
                             CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowUnpinOutlined}"
@@ -61,8 +61,8 @@
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
                         <atom:CaptionButton
                             Name="PART_PinButton"
-                            IsVisible="{TemplateBinding IsPinCaptionButtonVisible}"
-                            IsEnabled="{TemplateBinding IsPinCaptionButtonVisible}"
+                            IsVisible="{TemplateBinding IsPinButtonEffectivelyVisible}"
+                            IsEnabled="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowPinOutlined}"
                             CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowUnpinOutlined}"
@@ -92,8 +92,8 @@
                             Name="PART_PinButton"
                             Classes="extended-action"
                             WindowDecorationProperties.ElementRole="DecorationsElement"
-                            IsVisible="{TemplateBinding IsPinCaptionButtonVisible}"
-                            IsEnabled="{TemplateBinding IsPinCaptionButtonVisible}"
+                            IsVisible="{TemplateBinding IsPinButtonEffectivelyVisible}"
+                            IsEnabled="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowPinOutlined}"
                             CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowUnpinOutlined}"
