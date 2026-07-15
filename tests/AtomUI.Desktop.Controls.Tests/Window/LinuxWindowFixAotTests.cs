@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using Avalonia.Controls;
-using Avalonia.Controls.Chrome;
 using Shouldly;
 using Xunit;
 
@@ -20,7 +19,6 @@ public class LinuxWindowFixAotTests
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/X11WindowChromeManager.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs")),
-            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowsWindowChromeManager.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/DesktopAppBuilderExtensions.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Popup/LinuxCsdPopupSupport.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Menu/Menu.cs")),
@@ -42,11 +40,6 @@ public class LinuxWindowFixAotTests
         source.ShouldContain("DynamicDependency");
         source.ShouldContain("DynamicallyAccessedMemberTypes.NonPublicFields, typeof(TopLevel)");
         source.ShouldContain("\"Avalonia.Controls.TopLevelHost\"");
-        source.ShouldContain("\"UpdateDrawnDecorations\"");
-        source.ShouldContain("\"Avalonia.Controls.Chrome.DrawnWindowDecorationParts\"");
-        source.ShouldContain("\"UpdateDrawnDecorationMargins\"");
-        source.ShouldContain("\"RenderScaling\"");
-        source.ShouldContain("\"TitleBarHeightOverride\"");
         source.ShouldContain("\"Avalonia.Controls.Chrome.ResizeGripLayer\"");
         source.ShouldContain("DynamicallyAccessedMemberTypes.NonPublicProperties");
         source.ShouldContain("\"GripThickness\"");
@@ -70,27 +63,6 @@ public class LinuxWindowFixAotTests
             BindingFlags.Instance | BindingFlags.NonPublic);
         decorationsField.ShouldNotBeNull();
         decorationsField.FieldType.FullName.ShouldBe("Avalonia.Controls.Chrome.WindowDrawnDecorations");
-
-        var updateDrawnDecorations = topLevelHostField.FieldType.GetMethod(
-            "UpdateDrawnDecorations",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        updateDrawnDecorations.ShouldNotBeNull();
-        updateDrawnDecorations.GetParameters().Length.ShouldBe(3);
-
-        typeof(Avalonia.Controls.Window).GetMethod(
-                "UpdateDrawnDecorationMargins",
-                BindingFlags.Instance | BindingFlags.NonPublic)
-            .ShouldNotBeNull();
-
-        typeof(WindowDrawnDecorations).GetProperty(
-                "RenderScaling",
-                BindingFlags.Instance | BindingFlags.NonPublic)
-            .ShouldNotBeNull();
-
-        typeof(WindowDrawnDecorations).GetProperty(
-                "TitleBarHeightOverride",
-                BindingFlags.Instance | BindingFlags.NonPublic)
-            .ShouldNotBeNull();
 
         var resizeGripsField = topLevelHostField.FieldType.GetField(
             "_resizeGrips",

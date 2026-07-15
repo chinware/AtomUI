@@ -290,11 +290,6 @@
         <Style Selector="^[OsType=Windows]">
             <Setter Property="TransparencyLevelHint" Value="None" />
         </Style>
-        <Style Selector="^[OsType=Windows][IsWindowsDrawnDecorationsEnabled=True]">
-            <Setter Property="TransparencyLevelHint" Value="Transparent" />
-            <Setter Property="FrameShadow" Value="{atom:WindowTokenResource FrameShadows}" />
-            <Setter Property="CornerRadius" Value="{atom:WindowTokenResource CornerRadius}" />
-        </Style>
 
         <Style Selector="^[WindowState=FullScreen]">
             <Setter Property="CornerRadius" Value="0" />
@@ -315,15 +310,6 @@
             <Setter Property="FrameShadow" Value="0 0 0 0 #00000000" />
             <Setter Property="CornerRadius" Value="0" />
         </Style>
-        <Style Selector="^[OsType=Windows][IsWindowsDrawnDecorationsEnabled=True][WindowState=Maximized]">
-            <Setter Property="FrameShadow" Value="0 0 0 0 #00000000" />
-            <Setter Property="CornerRadius" Value="0" />
-        </Style>
-        <Style Selector="^[OsType=Windows][IsWindowsDrawnDecorationsEnabled=True][WindowState=FullScreen]">
-            <Setter Property="FrameShadow" Value="0 0 0 0 #00000000" />
-            <Setter Property="CornerRadius" Value="0" />
-        </Style>
-
         <Style Selector="^[OsType=Linux][IsCsdEnabled=True]">
             <Setter Property="WindowDecorations" Value="Full" />
         </Style>

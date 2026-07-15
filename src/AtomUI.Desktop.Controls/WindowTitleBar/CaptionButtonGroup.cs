@@ -308,9 +308,26 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         IsWindowMaximized  = windowState == WindowState.Maximized;
         IsWindowFullScreen = windowState == WindowState.FullScreen;
 
-        if (stateChanged && _maximizeButton is WindowsCaptionButton windowsMaximizeButton)
+        if (stateChanged)
         {
-            windowsMaximizeButton.InvalidatePointerOverVisualState();
+            InvalidateWindowsCaptionButtonPointerOverVisualStates();
+        }
+    }
+
+    private void InvalidateWindowsCaptionButtonPointerOverVisualStates()
+    {
+        InvalidateWindowsCaptionButtonPointerOverVisualState(_fullScreenButton);
+        InvalidateWindowsCaptionButtonPointerOverVisualState(_pinButton);
+        InvalidateWindowsCaptionButtonPointerOverVisualState(_minimizeButton);
+        InvalidateWindowsCaptionButtonPointerOverVisualState(_maximizeButton);
+        InvalidateWindowsCaptionButtonPointerOverVisualState(_closeButton);
+    }
+
+    private static void InvalidateWindowsCaptionButtonPointerOverVisualState(CaptionButton? button)
+    {
+        if (button is WindowsCaptionButton windowsCaptionButton)
+        {
+            windowsCaptionButton.InvalidatePointerOverVisualState();
         }
     }
 
