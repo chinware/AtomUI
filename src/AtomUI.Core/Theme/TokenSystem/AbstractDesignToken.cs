@@ -46,9 +46,22 @@ public abstract class AbstractDesignToken : IDesignToken
                         continue;
                     }
                     var propertyType = property.PropertyType;
+                    _tokenAccessCache.Remove(tokenName);
                     if (_valueConverters.TryGetValue(propertyType, out var valueConverter))
                     {
-                        property.SetValue(this, valueConverter.Convert(tokenInfo.Value));
+                        object convertedValue;
+                        try
+                        {
+                            convertedValue = valueConverter.Convert(tokenInfo.Value);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                $"Unable to convert token '{tokenName}' value '{tokenInfo.Value}' to target type '{propertyType.FullName}'.",
+                                ex);
+                        }
+
+                        property.SetValue(this, convertedValue);
                     }
                     else
                     {
