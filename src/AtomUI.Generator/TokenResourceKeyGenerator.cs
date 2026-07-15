@@ -48,7 +48,15 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             tokenInfo.Tokens.UnionWith(combinedInfos.Left);
             foreach (var controlToken in combinedInfos.Right)
             {
-                tokenInfo.ControlTokenInfos.Add(controlToken);
+                foreach (var diagnostic in controlToken.Diagnostics)
+                {
+                    context.ReportDiagnostic(diagnostic);
+                }
+
+                if (controlToken.IsValid)
+                {
+                    tokenInfo.ControlTokenInfos.Add(controlToken);
+                }
             }
 
             {
@@ -57,19 +65,10 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             }
 
             {
-                var tokenClassNames = tokenInfo.ControlTokenInfos.Select(info =>
-                {
-                    if (!string.IsNullOrWhiteSpace(info.ControlNamespace))
-                    {
-                        return $"{info.ControlNamespace}.{info.ControlName}";
-                    }
-
-                    return info.ControlName;
-                }).ToList();
-                if (tokenClassNames.Any())
+                if (tokenInfo.ControlTokenInfos.Any())
                 {
                     {
-                        var classWriter = new ControlTokenTypePoolClassWriter(context, tokenClassNames);
+                        var classWriter = new ControlTokenTypePoolClassWriter(context, tokenInfo.ControlTokenInfos);
                         classWriter.Write();
                     }
                 }

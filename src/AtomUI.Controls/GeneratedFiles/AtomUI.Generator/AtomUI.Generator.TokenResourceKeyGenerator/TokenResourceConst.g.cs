@@ -1,5 +1,7 @@
 ﻿using AtomUI.Theme.TokenSystem;
 using AtomUI.Theme;
+using AtomUI.Theme.Resources;
+using AtomUI.Theme.Styling;
 
 namespace AtomUI.Controls.DesignTokens
 {
@@ -20,6 +22,13 @@ namespace AtomUI.Controls.DesignTokens
         }
 
         public IconTokenResourceExtension(IconTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public sealed class IconTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    {
+        public IconTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "Icon", kind)
         {
         }
     }

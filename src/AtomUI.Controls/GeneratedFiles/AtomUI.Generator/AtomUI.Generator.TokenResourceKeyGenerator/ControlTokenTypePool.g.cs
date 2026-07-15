@@ -10,7 +10,7 @@ namespace AtomUI.Theme
         internal static IList<ControlTokenRegistration> GetTokenTypes()
         {
             List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>(1);
-            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Controls.IconToken)));
+            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Controls.IconToken), "Icon", null));
             return tokenTypes;
         }
     }

@@ -1,5 +1,7 @@
 ﻿using AtomUI.Theme.TokenSystem;
 using AtomUI.Theme;
+using AtomUI.Theme.Resources;
+using AtomUI.Theme.Styling;
 
 namespace AtomUI.Desktop.Controls.DesignTokens
 {
@@ -38,6 +40,13 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ColorPickerTokenResourceExtension(ColorPickerTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public sealed class ColorPickerTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    {
+        public ColorPickerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "ColorPicker", kind)
         {
         }
     }
