@@ -307,6 +307,20 @@ public class ThemeCatalogTests
     }
 
     [Fact]
+    public void Catalog_Rejects_A_Missing_Required_Core_DaybreakBlue_Source()
+    {
+        var catalog = CreateCatalog(
+            new TestThemeSource(
+                "avares://AtomUI.Core/Assets/Themes/Other.xml",
+                ThemeXml("Other", isDefault: true),
+                isBuiltIn: true));
+
+        var exception = Should.Throw<ThemeLoadException>(() => catalog.EnsureRequiredBuiltInThemesAvailable());
+
+        exception.Message.ShouldContain(IThemeManager.DEFAULT_THEME_ID);
+    }
+
+    [Fact]
     public void Catalog_Records_Source_Open_Failures_As_Unavailable_Descriptors()
     {
         var source = new ThrowingThemeSource("custom/Broken.xml", "source is unavailable");
