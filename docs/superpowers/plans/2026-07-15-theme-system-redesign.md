@@ -1088,21 +1088,25 @@ Actual commit checkpoint:
 - Consumes: normalized compile request identity.
 - Produces: bounded shared Snapshot cache without sharing owner-bound ResourceProvider instances.
 
-- [ ] **Step 1: Write identity and eviction tests**
+- [x] **Step 1: Write identity and eviction tests**
 
 Assert equal definition revision, parent version, ordered algorithms, overrides and registration version return the same Snapshot reference. Algorithm order or any override difference returns a different Snapshot. Provider instances remain distinct. Active Snapshots cannot be evicted.
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeSnapshotCacheTests
 
 Expected: FAIL.
 
-- [ ] **Step 3: Implement a bounded normalized cache**
+Actual RED:
+- FAIL: `dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeSnapshotCacheTests`
+  failed because `ThemeSnapshotCache` did not exist.
+
+- [x] **Step 3: Implement a bounded normalized cache**
 
 Use a value key containing definition revision, parent Snapshot version, ordered algorithm ids, sorted override pairs and registration version. Limit inactive entries to 32 and pin active Snapshot references. Do not add lazy component compilation in this task.
 
-- [ ] **Step 4: Remove duplicate mutable loops**
+- [x] **Step 4: Remove duplicate mutable loops**
 
 Verify Theme and ThemeConfigProvider contain no Seed, Map or Alias compile loops, Activator-based metadata lookup, or direct token ResourceDictionary construction.
 
@@ -1114,15 +1118,22 @@ rg "TokenConfigBuckets|CalculateAliasTokenValues|Activator.CreateInstance" src/A
 
 Expected: no matches.
 
-- [ ] **Step 5: Add allocation and count assertions**
+Actual:
+- PASS: the grep command returned no matches.
+
+- [x] **Step 5: Add allocation and count assertions**
 
 Twenty identical ThemeConfigProviders must share one Snapshot, own twenty ResourceProviders, and retain one provider layer each. One hundred identical global requests must compile once and emit one Changed event.
 
-- [ ] **Step 6: Run and commit**
+- [x] **Step 6: Run and commit**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
 
 Expected: PASS.
+
+Actual verification:
+- PASS: `dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeSnapshotCacheTests` with 6 tests.
+- PASS: `dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore` with 140 tests.
 
 ~~~bash
 git add src/AtomUI.Core/Theme tests/AtomUI.Core.Tests/Theme/ThemeSnapshotCacheTests.cs

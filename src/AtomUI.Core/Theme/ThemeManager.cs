@@ -122,6 +122,7 @@ internal class ThemeManager : Styles, IThemeManager
     private IList<IThemeAssetPathProvider> _themeAssetPathProviders;
     private ThemeCatalog? _themeCatalog;
     private ThemeCompiler? _themeCompiler;
+    private ThemeSnapshotCache? _themeSnapshotCache;
     private readonly ThemeCoordinator _themeCoordinator;
     
     private readonly Dictionary<LanguageVariant, ResourceDictionary> _languages;
@@ -318,7 +319,8 @@ internal class ThemeManager : Styles, IThemeManager
         catalog.EnsureRequiredBuiltInThemesAvailable();
         var defaultDescriptor = catalog.ResolveDefaultDescriptor(
             HasExplicitDefaultTheme ? ExplicitDefaultThemeBaseId : null);
-        var compiler = new ThemeCompiler(ThemeVariantCalculatorFactory);
+        var compiler = GetThemeCompiler();
+        var snapshotCache = GetThemeSnapshotCache();
         var themes = new List<Theme>();
         foreach (var descriptor in catalog.Descriptors)
         {
@@ -329,7 +331,7 @@ internal class ThemeManager : Styles, IThemeManager
 
             foreach (var algorithms in s_algorithmCombinations)
             {
-                themes.Add(new Theme(descriptor, catalog, compiler, algorithms));
+                themes.Add(new Theme(descriptor, catalog, compiler, snapshotCache, algorithms));
             }
         }
 
@@ -339,7 +341,6 @@ internal class ThemeManager : Styles, IThemeManager
         }
 
         _themeCatalog = catalog;
-        _themeCompiler = compiler;
         foreach (var theme in themes)
         {
             _themePool.Add(theme.ThemeVariant, theme);
@@ -352,6 +353,26 @@ internal class ThemeManager : Styles, IThemeManager
         }
 
         Debug.Assert(_themePool.Count > 0);
+    }
+
+    internal ThemeCompileResult CompileSnapshot(ThemeCompileRequest request)
+    {
+        return GetThemeSnapshotCache().GetOrCompile(request, GetThemeCompiler());
+    }
+
+    internal IDisposable PinSnapshot(ThemeSnapshot snapshot)
+    {
+        return GetThemeSnapshotCache().Pin(snapshot);
+    }
+
+    private ThemeCompiler GetThemeCompiler()
+    {
+        return _themeCompiler ??= new ThemeCompiler(ThemeVariantCalculatorFactory);
+    }
+
+    private ThemeSnapshotCache GetThemeSnapshotCache()
+    {
+        return _themeSnapshotCache ??= new ThemeSnapshotCache();
     }
 
     private ResourceDictionary? TryGetLanguageResource(LanguageVariant languageVariant)

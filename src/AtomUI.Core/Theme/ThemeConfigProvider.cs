@@ -19,6 +19,8 @@ using AtomUITheme = Theme;
 
 public class ThemeConfigProvider : Control, IThemeConfigProvider
 {
+    private const string LocalThemeId = "ThemeConfigProvider";
+
     #region 公共属性定义
 
     public static readonly StyledProperty<Control?> ContentProperty =
@@ -79,7 +81,9 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     private DesignToken _sharedToken;
     private Dictionary<string, IControlDesignToken> _controlTokens;
     private ThemeSnapshot? _snapshot;
+    private ThemeSnapshot? _pinnedSnapshot;
     private ThemeTokenResourceProvider? _tokenResourceProvider;
+    private IDisposable? _snapshotCachePin;
     private IDisposable? _parentSnapshotSubscription;
     private readonly CompositeDisposable _configurationSubscriptions;
     private bool _isInitializing;
@@ -155,6 +159,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         _parentSnapshotSubscription?.Dispose();
         _parentSnapshotSubscription = null;
         _configurationSubscriptions.Clear();
+        ReleaseSnapshotPin();
         ClearContentSnapshot();
     }
 
@@ -255,23 +260,26 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     {
         var algorithms = GetRequestedAlgorithms();
         var definition = new ThemeDefinition(
-            ThemeVariant.Key?.ToString() ?? ThemeVariant.ToString(),
-            ThemeVariant.Key?.ToString() ?? ThemeVariant.ToString(),
+            LocalThemeId,
+            LocalThemeId,
             false,
             algorithms,
             new Dictionary<string, string>(),
             new Dictionary<string, ThemeControlTokenDefinition>());
+        var themeManager = ThemeManager.Current;
         var request = new ThemeCompileRequest(
-            ThemeVariant.Key?.ToString() ?? ThemeVariant.ToString(),
+            LocalThemeId,
             definition,
             Inherit ? GetValue(ThemeScope.SnapshotProperty) : null,
             algorithms,
             ReadSharedOverrides(),
             ReadComponentOverrides(),
-            ThemeManager.Current?.ControlTokenTypes ?? new List<ControlTokenRegistration>(),
+            themeManager?.ControlTokenTypes ?? new List<ControlTokenRegistration>(),
             new Dictionary<string, string>());
 
-        return new ThemeCompiler(ThemeManager.Current?.ThemeVariantCalculatorFactory).Compile(request);
+        return themeManager is null
+            ? new ThemeCompiler().Compile(request)
+            : themeManager.CompileSnapshot(request);
     }
 
     private IReadOnlyList<ThemeAlgorithm> GetRequestedAlgorithms()
@@ -348,6 +356,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     {
         var sharedToken = DesignTokenClone.DeepClone(snapshot.SharedTokenCore);
         var controlTokens = CreateCompatibilityControlTokenMap(snapshot, sharedToken);
+        PinSnapshot(snapshot);
 
         _snapshot      = snapshot;
         _sharedToken   = sharedToken;
@@ -370,6 +379,26 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         _tokenResourceProvider.PrepareSnapshot(snapshot);
         _tokenResourceProvider.PublishSnapshotChanged();
         NotifyContentResourcesChanged();
+    }
+
+    private void PinSnapshot(ThemeSnapshot snapshot)
+    {
+        if (ReferenceEquals(_pinnedSnapshot, snapshot))
+        {
+            return;
+        }
+
+        var pin = ThemeManager.Current?.PinSnapshot(snapshot);
+        _snapshotCachePin?.Dispose();
+        _snapshotCachePin = pin;
+        _pinnedSnapshot   = pin is null ? null : snapshot;
+    }
+
+    private void ReleaseSnapshotPin()
+    {
+        _snapshotCachePin?.Dispose();
+        _snapshotCachePin = null;
+        _pinnedSnapshot   = null;
     }
 
     private void NotifyContentResourcesChanged()

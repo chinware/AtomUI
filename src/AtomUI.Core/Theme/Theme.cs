@@ -24,6 +24,7 @@ internal class Theme : AvaloniaObject, ITheme
     private readonly ThemeDescriptor _descriptor;
     private readonly ThemeCatalog _catalog;
     private readonly ThemeCompiler _compiler;
+    private readonly ThemeSnapshotCache _snapshotCache;
     private readonly string _id;
     private readonly ThemeVariant _themeVariant;
     private readonly List<ThemeAlgorithm> _algorithms;
@@ -31,21 +32,25 @@ internal class Theme : AvaloniaObject, ITheme
     private DesignToken _sharedToken;
     private bool _isPrimary;
     private ThemeSnapshot? _snapshot;
+    private IDisposable? _activeSnapshotPin;
 
     internal Theme(
         ThemeDescriptor descriptor,
         ThemeCatalog catalog,
         ThemeCompiler compiler,
+        ThemeSnapshotCache snapshotCache,
         IReadOnlyList<ThemeAlgorithm> algorithms)
     {
         ArgumentNullException.ThrowIfNull(descriptor);
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(compiler);
+        ArgumentNullException.ThrowIfNull(snapshotCache);
         ArgumentNullException.ThrowIfNull(algorithms);
 
         _descriptor         = descriptor;
         _catalog            = catalog;
         _compiler           = compiler;
+        _snapshotCache      = snapshotCache;
         _id                 = descriptor.Id;
         _themeVariant       = BuildThemeVariant(_id, algorithms);
         _algorithms         = new List<ThemeAlgorithm>(algorithms);
@@ -54,6 +59,15 @@ internal class Theme : AvaloniaObject, ITheme
         ControlTokens       = new Dictionary<string, IControlDesignToken>();
         DefinitionFilePath  = descriptor.DefinitionFilePath;
         _isPrimary          = IsPrimaryAlgorithmSet(descriptor.Definition, algorithms);
+    }
+
+    internal Theme(
+        ThemeDescriptor descriptor,
+        ThemeCatalog catalog,
+        ThemeCompiler compiler,
+        IReadOnlyList<ThemeAlgorithm> algorithms)
+        : this(descriptor, catalog, compiler, new ThemeSnapshotCache(), algorithms)
+    {
     }
 
     public string DefinitionFilePath { get; }
@@ -148,7 +162,7 @@ internal class Theme : AvaloniaObject, ITheme
 
     protected virtual ThemeCompileResult Compile(ThemeCompileRequest request)
     {
-        return _compiler.Compile(request);
+        return _snapshotCache.GetOrCompile(request, _compiler);
     }
 
     private static ThemeLoadException CreateCompilationException(ThemeCompileResult result)
@@ -238,6 +252,10 @@ internal class Theme : AvaloniaObject, ITheme
 
     internal virtual void NotifyActivated()
     {
+        if (_snapshot is not null && _activeSnapshotPin is null)
+        {
+            _activeSnapshotPin = _snapshotCache.Pin(_snapshot);
+        }
         Activated = true;
     }
 
@@ -247,6 +265,8 @@ internal class Theme : AvaloniaObject, ITheme
 
     internal virtual void NotifyDeActivated()
     {
+        _activeSnapshotPin?.Dispose();
+        _activeSnapshotPin = null;
         Activated = false;
     }
 
