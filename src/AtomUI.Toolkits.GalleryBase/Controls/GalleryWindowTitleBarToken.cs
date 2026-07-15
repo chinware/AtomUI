@@ -10,7 +10,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 internal class GalleryWindowTitleBarToken : AbstractControlDesignToken
 {
     public const string ID = "GalleryWindowTitleBar";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public FontWeight MenuFontWeight { get; set; }
     public Thickness MenuMargin { get; set; }

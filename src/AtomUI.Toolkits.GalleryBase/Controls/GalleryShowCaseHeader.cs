@@ -259,7 +259,6 @@ public class GalleryShowCaseHeader : TemplatedControl
 
     public GalleryShowCaseHeader()
     {
-        this.RegisterTokenResourceScope(GalleryShowCaseHeaderToken.ScopeProvider);
         UpdateVisibilityProperties();
     }
 

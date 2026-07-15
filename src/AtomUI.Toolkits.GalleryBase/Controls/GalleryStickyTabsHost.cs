@@ -109,7 +109,6 @@ public class GalleryStickyTabsHost : TemplatedControl
 
     public GalleryStickyTabsHost()
     {
-        this.RegisterTokenResourceScope(GalleryStickyTabsHostToken.ScopeProvider);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

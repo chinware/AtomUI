@@ -10,7 +10,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 internal class GalleryShowCaseHeaderToken : AbstractControlDesignToken
 {
     public const string ID = "GalleryShowCaseHeader";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public Thickness HeaderMargin { get; set; }
     public double HeaderSpacing { get; set; }

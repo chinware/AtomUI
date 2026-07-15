@@ -9,7 +9,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 internal class ShowCasePanelToken : AbstractControlDesignToken
 {
     public const string ID = "ShowCasePanel";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public Thickness ContentMargin { get; set; }
     public double MinItemWidth { get; set; }

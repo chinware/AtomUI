@@ -44,12 +44,16 @@ public class ShowCasePanelStructureTests
 
         panelToken.ShouldContain("[ControlDesignToken]");
         itemToken.ShouldContain("[ControlDesignToken]");
+        panelToken.ShouldNotContain("ScopeProvider");
+        itemToken.ShouldNotContain("ScopeProvider");
         panelTheme.ShouldContain("ShowCasePanelTokenResource");
         panelTheme.ShouldContain("ContentMargin\" Value=\"{gallery:ShowCasePanelTokenResource ContentMargin}");
         panelTheme.ShouldContain("Margin=\"{TemplateBinding ContentMargin}\"");
         panelTheme.ShouldContain("VerticalScrollBarVisibility=\"Auto\"");
         panelTheme.ShouldContain("Selector=\"^[IsScrollEnabled=False]\"");
         itemTheme.ShouldContain("ShowCaseItemTokenResource");
+        itemTheme.ShouldContain("ShowCaseItemTokenSharedTokenResource");
+        itemTheme.ShouldNotContain("{atom:SharedTokenResource ");
         itemTheme.ShouldContain("ShowCaseItemTokenResource BadgePreviewMargin");
         var panelSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanel.axaml.cs");
         panelSource.ShouldContain("ContentMarginProperty");
@@ -75,7 +79,7 @@ public class ShowCasePanelStructureTests
         var languagePool      = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator/LanguageProviderPool.g.cs");
 
         headerSource.ShouldContain("public const string LanguageId = \"GalleryShowCaseHeader\"");
-        headerSource.ShouldContain("RegisterTokenResourceScope(GalleryShowCaseHeaderToken.ScopeProvider)");
+        headerSource.ShouldNotContain("RegisterTokenResourceScope");
         headerSource.ShouldContain("CategoryTagColorProperty");
         headerSource.ShouldContain("StatusTagColorProperty");
         headerSource.ShouldContain("IntroducedVersionProperty");
@@ -87,10 +91,13 @@ public class ShowCasePanelStructureTests
 
         headerToken.ShouldContain("[ControlDesignToken]");
         headerToken.ShouldContain("public const string ID = \"GalleryShowCaseHeader\"");
+        headerToken.ShouldNotContain("ScopeProvider");
         headerToken.ShouldContain("MetadataLabelWidth");
         headerToken.ShouldContain("MetadataValueWidth");
 
         headerTheme.ShouldContain("GalleryShowCaseHeaderTokenResource");
+        headerTheme.ShouldContain("GalleryShowCaseHeaderTokenSharedTokenResource");
+        headerTheme.ShouldNotContain("{atom:SharedTokenResource ");
         headerTheme.ShouldContain("GalleryShowCaseHeaderLangResource");
         headerTheme.ShouldContain("PART_IntroducedVersionTag");
         headerTheme.ShouldContain("VerticalAlignment=\"Center\"");

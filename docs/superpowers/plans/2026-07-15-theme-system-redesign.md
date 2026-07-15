@@ -968,7 +968,7 @@ Actual verification:
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.DataGrid.Tests/AtomUI.Desktop.Controls.DataGrid.Tests.csproj --framework net10.0 --no-restore
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
 
-- [ ] **Step 3: Migrate the main desktop package by domain**
+- [x] **Step 3: Migrate the main desktop package by domain**
 
 Use separate reviewed commits for General and Layout, Navigation, DataEntry, DataDisplay, Feedback, and Window and Overlay. Each commit removes every Host registration and ScopeProvider for its domain and runs its ThemeContract and Token tests.
 
@@ -1005,12 +1005,16 @@ Actual domain checkpoint:
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~BorderBeam|FullyQualifiedName~GroupBox|FullyQualifiedName~ScrollViewer"
 - Global-style shared resources intentionally preserved: TextBlock themes, SizeTypeAwareIconPresenter and WaveSpiritDecorator have no component token identity and remain global shared-token consumers.
+- GalleryBase migrated: GalleryShowCaseHeader, GalleryStickyTabsHost, ShowCaseItem, ShowCasePanel and GalleryWindowTitleBar no longer expose legacy `ScopeProvider`; Header and ShowCaseItem themes now use Gallery component-shared resource extensions.
+- RED then PASS: dotnet test tests/AtomUI.Toolkits.GalleryBase.Tests/AtomUI.Toolkits.GalleryBase.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~GalleryBaseThemeScopeMigrationTests
+- PASS: dotnet test tests/AtomUI.Toolkits.GalleryBase.Tests/AtomUI.Toolkits.GalleryBase.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~GalleryBaseThemeScopeMigrationTests|FullyQualifiedName~GalleryShowCaseHeaderTests"
+- PASS: dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~GalleryStickyTabsHostTests|FullyQualifiedName~ShowCasePanelStructureTests|FullyQualifiedName~GalleryLandingPagesTests"
 
 - [ ] **Step 4: Add cross-component isolation tests**
 
 Cover Button containing Icon, LineEdit containing AddOnDecoratedBox, Select popup content, DatePicker popup content, Modal content and DataGrid cell content. Parent component overrides must not alter child component Token; scope-global overrides must affect both.
 
-- [ ] **Step 5: Delete legacy infrastructure only after zero references**
+- [x] **Step 5: Delete legacy infrastructure only after zero references**
 
 Run:
 
@@ -1021,6 +1025,12 @@ rg "RegisterTokenResourceScope|ControlTokenResourceScopeHost|ScopeProvider" src 
 Expected: no matches outside migration documentation.
 
 Delete the Host, interface, attached properties and dead catalog parameter.
+
+Actual deletion checkpoint:
+- Deleted `ControlTokenResourcesHost.cs` and `IControlTokenResourceScopeProvider.cs`; `AbstractControlDesignToken` now implements only `IControlDesignToken`.
+- PASS: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeScopeMigrationTests
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.DataGrid.Tests/AtomUI.Desktop.Controls.DataGrid.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~DataGridThemeScopeMigrationTests
 
 - [ ] **Step 6: Run control suites**
 
