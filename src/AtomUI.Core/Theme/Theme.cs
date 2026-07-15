@@ -1,5 +1,6 @@
 using AtomUI.Theme.Catalog;
 using AtomUI.Theme.Compilation;
+using AtomUI.Theme.Resources;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
@@ -130,6 +131,8 @@ internal class Theme : AvaloniaObject, ITheme
 
             controlTokens.Add(component.ControlToken.Id, component.ControlToken);
         }
+
+        resources.MergedDictionaries.Add(new ThemeTokenResourceProvider(snapshot));
 
         ResourceDictionary = resources;
         ControlTokens      = controlTokens;

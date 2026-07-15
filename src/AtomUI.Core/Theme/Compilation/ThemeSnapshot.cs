@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.TokenSystem;
 
@@ -21,6 +22,7 @@ internal sealed class ThemeSnapshot
         SharedToken     = sharedToken;
         SharedResources = sharedResources;
         Components      = components;
+        Resources       = BuildResourceMap(sharedResources, components);
     }
 
     public string Id { get; }
@@ -30,4 +32,26 @@ internal sealed class ThemeSnapshot
     public DesignToken SharedToken { get; }
     public IReadOnlyDictionary<object, object?> SharedResources { get; }
     public IReadOnlyDictionary<ComponentTokenIdentity, ComponentThemeSnapshot> Components { get; }
+    internal IReadOnlyDictionary<object, object?> Resources { get; }
+
+    private static IReadOnlyDictionary<object, object?> BuildResourceMap(
+        IReadOnlyDictionary<object, object?> sharedResources,
+        IReadOnlyDictionary<ComponentTokenIdentity, ComponentThemeSnapshot> components)
+    {
+        var resources = new Dictionary<object, object?>(sharedResources.Count);
+        foreach (var resource in sharedResources)
+        {
+            resources.Add(resource.Key, resource.Value);
+        }
+
+        foreach (var component in components.Values)
+        {
+            foreach (var resource in component.ControlResources)
+            {
+                resources[resource.Key] = resource.Value;
+            }
+        }
+
+        return new ReadOnlyDictionary<object, object?>(resources);
+    }
 }
