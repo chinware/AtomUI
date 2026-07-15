@@ -11,4 +11,10 @@ internal sealed record ThemeCompileRequest(
     IReadOnlyDictionary<string, string> SharedOverrides,
     IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> ComponentOverrides,
     IReadOnlyList<ControlTokenRegistration> Registrations,
-    IReadOnlyDictionary<string, string> RuntimeOverrides);
+    IReadOnlyDictionary<string, string> RuntimeOverrides)
+{
+    internal ThemeSnapshotCacheKey CreateSnapshotCacheKey()
+    {
+        return ThemeSnapshotCacheKey.Create(this);
+    }
+}
