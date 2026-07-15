@@ -298,7 +298,6 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
 
     public MessageBox()
     {
-        this.RegisterTokenResourceScope(MessageBoxToken.ScopeProvider);
         CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
     }
 

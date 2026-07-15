@@ -10,7 +10,6 @@ namespace AtomUI.Desktop.Controls;
 internal class CollapseToken : AbstractControlDesignToken
 {
     public const string ID = "Collapse";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public CollapseToken()
         : base(ID)

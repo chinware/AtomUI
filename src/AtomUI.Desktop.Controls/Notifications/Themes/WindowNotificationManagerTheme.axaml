@@ -12,7 +12,7 @@
         </Setter>
         
         <Setter Property="IsMotionEnabled"
-                Value="{atom:SharedTokenResource EnableMotion}" />
+                Value="{atom:NotificationTokenSharedTokenResource EnableMotion}" />
         
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />

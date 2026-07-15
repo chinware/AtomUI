@@ -118,7 +118,6 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
 
     public WindowNotificationManager()
     {
-        this.RegisterTokenResourceScope(NotificationToken.ScopeProvider);
         _cardExpiredTimer      =  new DispatcherTimer { Interval = CardExpiredPollingIntervalProperty.GetDefaultValue(typeof(WindowNotificationManager)), Tag = this };
         _cardExpiredTimer.Tick += HandleCardExpiredTimer;
         _cleanupTimer          =  new DispatcherTimer { Interval = CleanupPollingIntervalProperty.GetDefaultValue(typeof(WindowNotificationManager)), Tag = this };

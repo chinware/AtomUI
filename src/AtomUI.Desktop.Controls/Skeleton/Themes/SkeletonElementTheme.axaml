@@ -17,21 +17,21 @@
         </Style>
             <Setter Property="VerticalAlignment" Value="Top" />
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+            <Setter Property="MinHeight" Value="{atom:SkeletonTokenSharedTokenResource ControlHeightLG}" />
+            <Setter Property="Height" Value="{atom:SkeletonTokenSharedTokenResource ControlHeightLG}" />
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
-            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            <Setter Property="MinHeight" Value="{atom:SkeletonTokenSharedTokenResource ControlHeight}" />
+            <Setter Property="Height" Value="{atom:SkeletonTokenSharedTokenResource ControlHeight}" />
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="MinHeight" Value="{atom:SkeletonTokenSharedTokenResource ControlHeightSM}" />
+            <Setter Property="Height" Value="{atom:SkeletonTokenSharedTokenResource ControlHeightSM}" />
         </Style>
         
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}"/>
+        <Setter Property="CornerRadius" Value="{atom:SkeletonTokenSharedTokenResource BorderRadiusSM}"/>
     </Style>
     
 </ControlTheme>

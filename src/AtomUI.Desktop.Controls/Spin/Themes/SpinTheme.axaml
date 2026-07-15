@@ -41,7 +41,7 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="MotionEasingCurve" Value="LinearEasing" />
         <Setter Property="MaskOpacity" Value="1.0" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SpinTokenSharedTokenResource EnableMotion}" />
         <Setter Property="MotionDuration"
                 Value="{atom:SpinTokenResource IndicatorDuration}" />
 
@@ -53,7 +53,7 @@
             </Setter>
         </Style>
         <Style Selector="^ /template/ atom|TextBlock#Tip">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="Foreground" Value="{atom:SpinTokenSharedTokenResource ColorPrimary}" />
         </Style>
         
         <Style Selector="^[IsSpinning=True]">
@@ -72,14 +72,14 @@
             
             <Style Selector="^[IsMaskBackgroundEnabled=True]">
                 <Style Selector="^ /template/ Border#Mask">
-                    <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgMask}" />
+                    <Setter Property="Background" Value="{atom:SpinTokenSharedTokenResource ColorBgMask}" />
                 </Style>
             </Style>
             
         </Style>
         
         <Style Selector="^ /template/ StackPanel#IndicatorLayout">
-            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXXS}"/>
+            <Setter Property="Spacing" Value="{atom:SpinTokenSharedTokenResource SpacingXXS}"/>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

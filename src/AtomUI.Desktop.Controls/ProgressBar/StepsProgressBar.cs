@@ -7,6 +7,5 @@ public class StepsProgressBar : AbstractGeneralStepsProgressBar
 {
     public StepsProgressBar()
     {
-        this.RegisterTokenResourceScope(ProgressBarToken.ScopeProvider);
     }
 }

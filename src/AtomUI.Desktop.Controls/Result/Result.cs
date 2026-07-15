@@ -34,7 +34,6 @@ public class Result : AbstractResult
 
     public Result()
     {
-        this.RegisterTokenResourceScope(ResultToken.ScopeProvider);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

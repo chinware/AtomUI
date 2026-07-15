@@ -8,7 +8,6 @@ public class SkeletonInput : SkeletonElement
 {
     public SkeletonInput()
     {
-        this.RegisterTokenResourceScope(SkeletonToken.ScopeProvider);
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

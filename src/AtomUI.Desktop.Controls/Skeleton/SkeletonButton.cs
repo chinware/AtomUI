@@ -27,7 +27,6 @@ public class SkeletonButton : SkeletonElement
 
     public SkeletonButton()
     {
-        this.RegisterTokenResourceScope(SkeletonToken.ScopeProvider);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

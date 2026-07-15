@@ -148,7 +148,6 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
     {
         SetupSelectionMode();
         Items.CollectionChanged += HandleItemsCollectionChanged;
-        this.RegisterTokenResourceScope(CollapseToken.ScopeProvider);
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)

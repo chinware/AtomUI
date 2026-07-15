@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 internal class PopupConfirmToken : AbstractControlDesignToken
 {
     public const string ID = "PopupConfirm";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public PopupConfirmToken()
         : base(ID)

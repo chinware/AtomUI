@@ -46,16 +46,16 @@
                 Value="{atom:ProgressBarTokenResource CircleMinimumIconSize}" />
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_ExceptionCompletedIconPresenter">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
+            <Setter Property="IconBrush" Value="{atom:ProgressBarTokenSharedTokenResource ColorError}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_SuccessCompletedIconPresenter">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorSuccess}" />
+            <Setter Property="IconBrush" Value="{atom:ProgressBarTokenSharedTokenResource ColorSuccess}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconPresenter:disabled">
             <Setter Property="IconBrush"
-                    Value="{atom:SharedTokenResource ControlItemBgActiveDisabled}" />
+                    Value="{atom:ProgressBarTokenSharedTokenResource ControlItemBgActiveDisabled}" />
         </Style>
 
     </Style>

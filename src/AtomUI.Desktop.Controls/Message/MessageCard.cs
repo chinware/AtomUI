@@ -139,7 +139,6 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
     
     public MessageCard()
     {
-        this.RegisterTokenResourceScope(MessageToken.ScopeProvider);
     }
     
     public void Close()

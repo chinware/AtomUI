@@ -128,7 +128,6 @@ public class Alert : TemplatedControl
 
     public Alert()
     {
-        this.RegisterTokenResourceScope(AlertToken.ScopeProvider);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

@@ -35,21 +35,21 @@
         </Setter>
         
         <Setter Property="Placement" Value="Bottom" />
-        <Setter Property="MaskColor" Value="{atom:SharedTokenResource ColorBgMask}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="MaskColor" Value="{atom:TourTokenSharedTokenResource ColorBgMask}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:TourTokenSharedTokenResource EnableMotion}" />
         
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
             <Setter Property="CornerRadius" Value="{atom:TourTokenResource TourBorderRadius}" />
-            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+            <Setter Property="Background" Value="{atom:TourTokenSharedTokenResource ColorBgElevated}" />
         </Style>
         
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
-            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+            <Setter Property="Background" Value="{atom:TourTokenSharedTokenResource ColorBgElevated}" />
         </Style>
         
         <Style Selector="^[StyleType=Primary]">
             <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
-                <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+                <Setter Property="Background" Value="{atom:TourTokenSharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
                 

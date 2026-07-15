@@ -132,7 +132,6 @@ public class PopupConfirm : FlyoutHost
 
     public PopupConfirm()
     {
-        this.RegisterTokenResourceScope(PopupConfirmToken.ScopeProvider);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

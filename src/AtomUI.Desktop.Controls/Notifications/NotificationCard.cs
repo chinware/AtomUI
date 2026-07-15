@@ -161,7 +161,6 @@ public class NotificationCard : ContentControl, IMotionAwareControl
     /// </summary>
     public NotificationCard(WindowNotificationManager manager)
     {
-        this.RegisterTokenResourceScope(NotificationToken.ScopeProvider);
         _notificationManager = manager;
     }
     

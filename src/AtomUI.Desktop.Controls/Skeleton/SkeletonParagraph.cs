@@ -51,7 +51,6 @@ public class SkeletonParagraph : AbstractSkeleton
 
     public SkeletonParagraph()
     {
-        this.RegisterTokenResourceScope(SkeletonToken.ScopeProvider);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

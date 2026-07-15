@@ -7,6 +7,5 @@ public class Spin : AbstractSpin
 {
     public Spin()
     {
-        this.RegisterTokenResourceScope(SpinToken.ScopeProvider);
     }
 }
