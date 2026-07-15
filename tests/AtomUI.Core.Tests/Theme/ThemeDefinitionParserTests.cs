@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using AtomUI.Theme;
 using AtomUI.Theme.Definitions;
@@ -23,7 +24,8 @@ public class ThemeDefinitionParserTests
             ["Button"] = new HashSet<string>(StringComparer.Ordinal)
             {
                 "BorderColor",
-                "ContentFontSize"
+                "ContentFontSize",
+                "ColorPrimary"
             }
         };
 
@@ -108,6 +110,39 @@ public class ThemeDefinitionParserTests
         diagnostic.Path.ShouldBe(expectedPath);
     }
 
+    [Theory]
+    [InlineData("<Theme Name='T' IsDefault='true'><SharedTokens><Token Name='ColorPrimary'/><Token Name='ColorPrimary' Value='b'/></SharedTokens></Theme>", "ATMTHM006")]
+    [InlineData("<Theme Name='T' IsDefault='true'><SharedTokens><Token Name='Unknown' Value='a'/><Token Name='Unknown' Value='b'/></SharedTokens></Theme>", "ATMTHM008")]
+    [InlineData("<Theme Name='T' IsDefault='true'><ControlTokens><ControlToken Id='Button'><Token Name='Unknown' Value='a'/><Token Name='Unknown' Value='b'/></ControlToken></ControlTokens></Theme>", "ATMTHM009")]
+    public void Parse_Reports_Duplicate_After_Invalid_Or_Unknown_First_Occurrence(
+        string xml,
+        string firstDiagnosticCode)
+    {
+        var diagnosticCodes = Parse(xml).Diagnostics.Select(static diagnostic => diagnostic.Code);
+
+        diagnosticCodes.ShouldBe([firstDiagnosticCode, "ATMTHM007"]);
+    }
+
+    [Fact]
+    public void Parse_Tracks_Component_Own_And_Shared_Names_In_Separate_Scopes()
+    {
+        var result = Parse("""
+                           <Theme Name="T" IsDefault="true">
+                             <ControlTokens>
+                               <ControlToken Id="Button">
+                                 <Token Name="ColorPrimary" IsShared="true" Value="shared" />
+                                 <Token Name="ColorPrimary" Value="own" />
+                               </ControlToken>
+                             </ControlTokens>
+                           </Theme>
+                           """);
+
+        result.Success.ShouldBeTrue();
+        var button = result.Definition!.ControlTokens["Button"];
+        button.SharedTokens["ColorPrimary"].ShouldBe("shared");
+        button.Tokens["ColorPrimary"].ShouldBe("own");
+    }
+
     [Fact]
     public void Parse_Reports_Missing_Document_Root()
     {
@@ -148,6 +183,18 @@ public class ThemeDefinitionParserTests
     }
 
     [Fact]
+    public void Parse_Rejects_Namespace_Qualified_Lookalike_Attributes()
+    {
+        var result = Parse("<Theme xmlns:fake='urn:test' Name='T' IsDefault='true' fake:IsDefault='false' />");
+        var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
+
+        result.Success.ShouldBeFalse();
+        diagnostic.Code.ShouldBe("ATMTHM002");
+        diagnostic.Path.ShouldBe("/Theme/@{urn:test}IsDefault");
+        diagnostic.Message.ShouldBe("Attribute '{urn:test}IsDefault' is not valid on element 'Theme'.");
+    }
+
+    [Fact]
     public void Parse_Reports_Missing_Required_Attributes()
     {
         var diagnostic = Parse("<Theme IsDefault='true' />").Diagnostics.ShouldHaveSingleItem();
@@ -179,6 +226,20 @@ public class ThemeDefinitionParserTests
         diagnostic.Code.ShouldBe("ATMTHM005");
         diagnostic.Path.ShouldBe("/Theme/Algorithms");
         diagnostic.Message.ShouldBe("Algorithm 'Solarized' is not supported.");
+    }
+
+    [Theory]
+    [InlineData("0")]
+    [InlineData("1")]
+    [InlineData("2")]
+    public void Parse_Rejects_Numeric_Algorithm_Values(string algorithmName)
+    {
+        var diagnostic = Parse($"<Theme Name='T' IsDefault='true'><Algorithms>{algorithmName}</Algorithms></Theme>")
+                         .Diagnostics.ShouldHaveSingleItem();
+
+        diagnostic.Code.ShouldBe("ATMTHM005");
+        diagnostic.Path.ShouldBe("/Theme/Algorithms");
+        diagnostic.Message.ShouldBe($"Algorithm '{algorithmName}' is not supported.");
     }
 
     [Theory]
@@ -316,6 +377,28 @@ public class ThemeDefinitionParserTests
                                            .SetMethod.ShouldBeNull();
         typeof(ThemeControlTokenDefinition).GetProperty(nameof(ThemeControlTokenDefinition.Tokens))!
                                            .SetMethod.ShouldBeNull();
+    }
+
+    [Fact]
+    public void ThemeDefinition_Has_No_PostConstruction_Mutation_Surface()
+    {
+        var legacyMutationMethods = typeof(ThemeDefinition)
+                                    .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                                    .Where(static method => method.Name.StartsWith("Legacy", StringComparison.Ordinal))
+                                    .Select(static method => method.Name);
+
+        legacyMutationMethods.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void LegacyReader_Constructs_And_Returns_A_Definition()
+    {
+        var loadMethod = typeof(ThemeDefinitionReader).GetMethod(
+            "Load",
+            BindingFlags.Instance | BindingFlags.Public)!;
+
+        loadMethod.ReturnType.ShouldBe(typeof(ThemeDefinition));
+        loadMethod.GetParameters().ShouldBeEmpty();
     }
 
     private static ThemeDefinitionParseResult Parse(string xml)
