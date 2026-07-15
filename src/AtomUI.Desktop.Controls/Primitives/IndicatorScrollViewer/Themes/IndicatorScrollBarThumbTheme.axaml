@@ -12,7 +12,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Border.Transitions>
                         <Transitions>
-                            <atom:SolidColorBrushTransition Property="Background" Easing="LinearEasing" Duration="{atom:SharedTokenResource MotionDurationMid}"/>
+                            <atom:SolidColorBrushTransition Property="Background" Easing="LinearEasing" Duration="{atom:IndicatorScrollViewerTokenSharedTokenResource MotionDurationMid}"/>
                         </Transitions>
                     </Border.Transitions>
                 </Border>

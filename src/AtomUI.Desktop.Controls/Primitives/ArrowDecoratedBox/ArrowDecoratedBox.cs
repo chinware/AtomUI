@@ -7,6 +7,5 @@ public class ArrowDecoratedBox : AbstractArrowDecoratedBox
 {
     public ArrowDecoratedBox()
     {
-        this.RegisterTokenResourceScope(ArrowDecoratedBoxToken.ScopeProvider);
     }
 }

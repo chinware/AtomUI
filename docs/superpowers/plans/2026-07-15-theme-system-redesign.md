@@ -1000,6 +1000,11 @@ Actual domain checkpoint:
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~Dialog|FullyQualifiedName~Drawer|FullyQualifiedName~Flyout|FullyQualifiedName~PopupPlacementTests|FullyQualifiedName~PopupShadowTests|FullyQualifiedName~WindowResizeArtifactTests|FullyQualifiedName~WindowTitleBarLogoVisibilityTests|FullyQualifiedName~ReactiveWindowAotTests|FullyQualifiedName~WindowingPlatformDetectionTests|FullyQualifiedName~WindowTitleBarTokenTests"
 - Known unrelated verification issue: a broader `FullyQualifiedName~Window|FullyQualifiedName~Popup` filter also matches `LinuxWindowFixAotTests.Linux_Window_And_TitleBar_Popup_Fixes_Do_Not_Add_Aot_Unsafe_Code`, which fails because `src/AtomUI.Desktop.Controls/Popup/LinuxCsdPopupSupport.cs` is already absent.
+- Misc and primitive controls migrated: BorderBeam, GroupBox, MarqueeLabel, ScrollViewer, ArrowDecoratedBox and IndicatorScrollViewer no longer register legacy token scopes; themed controls now use component-shared resource extensions.
+- RED then PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~DesktopControlsMiscThemeScopeMigrationTests
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~BorderBeam|FullyQualifiedName~GroupBox|FullyQualifiedName~ScrollViewer"
+- Global-style shared resources intentionally preserved: TextBlock themes, SizeTypeAwareIconPresenter and WaveSpiritDecorator have no component token identity and remain global shared-token consumers.
 
 - [ ] **Step 4: Add cross-component isolation tests**
 

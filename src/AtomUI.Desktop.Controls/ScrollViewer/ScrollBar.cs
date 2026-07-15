@@ -20,7 +20,6 @@ public class ScrollBar : AbstractScrollBar
     
     public ScrollBar()
     {
-        this.RegisterTokenResourceScope(ScrollViewerToken.ScopeProvider);
     }
     
     protected override void UpdateIsExpandedState()
