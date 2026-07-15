@@ -142,7 +142,7 @@ git commit -m "test(Theme): add core theme test project"
 - Consumes: ThemeDefinitionParseRequest containing a Stream, file path, shared Token schema and registered component schema.
 - Produces: ThemeDefinitionParseResult ThemeDefinitionParser.Parse(ThemeDefinitionParseRequest request).
 
-- [ ] **Step 1: Write whitespace-independent parser tests**
+- [x] **Step 1: Write whitespace-independent parser tests**
 
 ~~~csharp
 [Theory]
@@ -169,13 +169,13 @@ public void Parse_Is_Independent_Of_Formatting(string xml)
 
 Add focused tests for body-valued IsShared, self-closing containers, duplicate keys, missing root, invalid bool, unknown algorithm, unknown global Token, known component with an unknown property, optional unregistered component warning, and line and column diagnostics.
 
-- [ ] **Step 2: Verify the new tests fail**
+- [x] **Step 2: Verify the new tests fail**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeDefinitionParserTests
 
 Expected: FAIL because the parser contracts do not exist.
 
-- [ ] **Step 3: Add immutable diagnostic contracts**
+- [x] **Step 3: Add immutable diagnostic contracts**
 
 ~~~csharp
 internal enum ThemeDiagnosticSeverity
@@ -205,7 +205,7 @@ internal sealed record ThemeDefinitionParseResult(
 
 Make ThemeDefinition constructor-only and expose ordered algorithms plus copied read-only dictionaries.
 
-- [ ] **Step 4: Implement secured XDocument parsing**
+- [x] **Step 4: Implement secured XDocument parsing**
 
 ~~~csharp
 var settings = new XmlReaderSettings
@@ -221,13 +221,13 @@ var document = XDocument.Load(reader, LoadOptions.SetLineInfo);
 
 Read attributes before content. Require exactly one Token value source. Convert every structural failure into stable diagnostics ATMTHM001 through ATMTHM010.
 
-- [ ] **Step 5: Run all Core tests**
+- [x] **Step 5: Run all Core tests**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit without deleting the legacy reader**
+- [x] **Step 6: Commit without deleting the legacy reader**
 
 ~~~bash
 git add src/AtomUI.Core/Theme/Definitions src/AtomUI.Core/Theme/ThemeDefinition.cs tests/AtomUI.Core.Tests/Theme
