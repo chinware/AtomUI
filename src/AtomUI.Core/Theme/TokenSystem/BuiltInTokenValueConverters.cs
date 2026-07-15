@@ -129,6 +129,27 @@ internal class ColorTokenValueConverter : ITokenValueConverter
 }
 
 [TokenValueConverter]
+internal class FontFamilyTokenValueConverter : ITokenValueConverter
+{
+    public Type TargetType()
+    {
+        return typeof(FontFamily);
+    }
+
+    public object Convert(string value)
+    {
+        try
+        {
+            return FontFamily.Parse(value);
+        }
+        catch (Exception exception)
+        {
+            throw new InvalidOperationException($"Convert {value} to FontFamily failed.", exception);
+        }
+    }
+}
+
+[TokenValueConverter]
 internal class BoxShadowTokenValueConverter : ITokenValueConverter
 {
     public Type TargetType()

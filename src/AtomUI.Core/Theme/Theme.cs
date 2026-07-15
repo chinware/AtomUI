@@ -30,6 +30,7 @@ internal class Theme : AvaloniaObject, ITheme
     private string? _loadErrorMsg;
     private DesignToken _sharedToken;
     private bool _isPrimary;
+    private ThemeSnapshot? _snapshot;
 
     internal Theme(
         ThemeDescriptor descriptor,
@@ -69,6 +70,8 @@ internal class Theme : AvaloniaObject, ITheme
     public bool IsPrimary => _isPrimary;
     public DesignToken SharedToken => _sharedToken;
     public IList<ThemeAlgorithm> Algorithms => _algorithms;
+    internal ThemeSnapshot Snapshot =>
+        _snapshot ?? throw new InvalidOperationException($"Theme '{_id}' has not been loaded.");
 
     public List<string> ThemeResourceKeys
     {
@@ -84,7 +87,7 @@ internal class Theme : AvaloniaObject, ITheme
         }
     }
 
-    internal void Load()
+    internal void Load(IReadOnlyDictionary<string, string>? runtimeOverrides = null)
     {
         if (Loaded)
         {
@@ -93,7 +96,7 @@ internal class Theme : AvaloniaObject, ITheme
 
         try
         {
-            var request = _catalog.CreateCompileRequest(_id, _algorithms);
+            var request = _catalog.CreateCompileRequest(_id, _algorithms, runtimeOverrides);
             var result = Compile(request);
             if (!result.Success)
             {
@@ -140,6 +143,7 @@ internal class Theme : AvaloniaObject, ITheme
         _sharedToken       = DesignTokenClone.DeepClone(snapshot.SharedTokenCore);
         IsDarkMode         = snapshot.IsDark;
         _isPrimary         = IsPrimaryAlgorithmSet(_descriptor.Definition, snapshot.Algorithms);
+        _snapshot          = snapshot;
     }
 
     protected virtual ThemeCompileResult Compile(ThemeCompileRequest request)

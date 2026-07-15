@@ -1,9 +1,7 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Data;
-using Avalonia.Styling;
 
 namespace AtomUI;
 
@@ -16,19 +14,11 @@ public static class ApplicationExtensions
         themeConfigureAction?.Invoke(themeManagerBuilder);
         
         var themeManager = themeManagerBuilder.Build();
-        themeManager.Configure();
         var defaultFontFamily = themeManagerBuilder.FontFamily;
-        themeManager.ThemeLoaded += (sender, args) =>
-        {
-            if (defaultFontFamily != null && args.Theme != null)
-            {
-                var loadedTheme = args.Theme;
-                loadedTheme.ThemeResource[SharedTokenKind.FontFamily] = defaultFontFamily;
-            }
-        };
+        themeManager.FontFamily = defaultFontFamily;
+        themeManager.Configure();
         AvaloniaLocator.CurrentMutable.BindToSelf(themeManager);
         themeManager.NotifyInitialized();
-        application.RequestedThemeVariant = new ThemeVariant(themeManager.DefaultThemeId, null);
         themeManager.SetValue(ThemeManager.LanguageVariantProperty, themeManagerBuilder.LanguageVariant, BindingPriority.Template);
         themeManager.AttachApplication(application);
         return application;

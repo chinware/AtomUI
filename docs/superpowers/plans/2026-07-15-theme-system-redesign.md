@@ -821,7 +821,7 @@ git commit -m "refactor(Button): isolate component theme tokens"
 - Consumes: ThemeRequest, Catalog, Compiler or cache, Application and the global resource layer.
 - Produces: serialized atomic transitions and committed events.
 
-- [ ] **Step 1: Write transition tests**
+- [x] **Step 1: Write transition tests**
 
 ~~~csharp
 [Fact]
@@ -852,13 +852,13 @@ public void Dark_Compact_Startup_Commits_Exactly_Once()
 
 Add tests for identical no-op requests, queued requests from Changed subscribers, parser and compiler failure rollback, observer exception isolation, and UI-thread verification.
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeCoordinatorTests
 
 Expected: FAIL.
 
-- [ ] **Step 3: Implement one request model and state machine**
+- [x] **Step 3: Implement one request model and state machine**
 
 ~~~csharp
 internal sealed record ThemeRequest(
@@ -870,7 +870,7 @@ internal sealed record ThemeRequest(
 
 Use Idle, Preparing and Committing states with a FIFO queue. Normalize and compare requests before prepare. Build the target Snapshot before touching Application or manager properties.
 
-- [ ] **Step 4: Implement guarded commit order**
+- [x] **Step 4: Implement guarded commit order**
 
 Commit in this order:
 
@@ -883,15 +883,15 @@ Commit in this order:
 
 Observer failures are logged separately and never converted to ThemeChangeFailed.
 
-- [ ] **Step 5: Route public extensions through complete requests**
+- [x] **Step 5: Route public extensions through complete requests**
 
 SetDarkThemeMode and SetCompactThemeMode create requests using both desired flags. Move default font into compile overrides. Migrate MediaBreakPoint bootstrap to observe committed Snapshots.
 
-- [ ] **Step 6: Remove recursive and fake lifecycle paths**
+- [x] **Step 6: Remove recursive and fake lifecycle paths**
 
 Remove the second ConfigureThemeVariant call, bool-property command recursion, same-theme activation events, fake unload events, and ThemeLoaded mutation hooks after consumers migrate.
 
-- [ ] **Step 7: Verify transition behavior**
+- [x] **Step 7: Verify transition behavior**
 
 Run:
 - dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
@@ -900,7 +900,12 @@ Run:
 
 Expected: PASS and one commit per request.
 
-- [ ] **Step 8: Commit**
+Actual verification:
+- PASS: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeInitialModeTests
+- PASS: dotnet test tests/AtomUI.Toolkits.GalleryBase.Tests/AtomUI.Toolkits.GalleryBase.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~GalleryCodeViewer_Updates_TextMate_Theme_When_AtomUI_Dark_Mode_Changes
+
+- [x] **Step 8: Commit**
 
 ~~~bash
 git add src/AtomUI.Core/Theme/Transitions src/AtomUI.Core/Theme/ThemeManager.cs src/AtomUI.Core/ApplicationExtensions.cs src/AtomUI.Controls.Shared/ApplicationExtensions.cs src/AtomUI.Desktop.Controls/Window/MediaBreakPointThemeBootstrapper.cs tests/AtomUI.Core.Tests/Theme/ThemeCoordinatorTests.cs

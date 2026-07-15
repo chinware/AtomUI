@@ -226,7 +226,8 @@ internal sealed class ThemeCatalog
 
     internal ThemeCompileRequest CreateCompileRequest(
         string themeId,
-        IReadOnlyList<ThemeAlgorithm> algorithms)
+        IReadOnlyList<ThemeAlgorithm> algorithms,
+        IReadOnlyDictionary<string, string>? runtimeOverrides = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(themeId);
         ArgumentNullException.ThrowIfNull(algorithms);
@@ -250,7 +251,7 @@ internal sealed class ThemeCatalog
             s_emptySharedOverrides,
             s_emptyComponentOverrides,
             Array.AsReadOnly(_registrations.ToArray()),
-            s_emptySharedOverrides);
+            runtimeOverrides ?? s_emptySharedOverrides);
     }
 
     private static ThemeDescriptor ParseSource(

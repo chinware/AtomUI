@@ -16,6 +16,7 @@ internal static class TokenValueConverterRegistry
             new global::AtomUI.Theme.TokenSystem.CornerRadiusTokenValueConverter(),
             new global::AtomUI.Theme.TokenSystem.DoubleTokenValueConverter(),
             new global::AtomUI.Theme.TokenSystem.FloatTokenValueConverter(),
+            new global::AtomUI.Theme.TokenSystem.FontFamilyTokenValueConverter(),
             new global::AtomUI.Theme.TokenSystem.IntegerTokenValueConverter(),
             new global::AtomUI.Theme.TokenSystem.LineStyleTokenValueConverter(),
             new global::AtomUI.Theme.TokenSystem.StringTokenValueConverter(),
