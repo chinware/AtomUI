@@ -7,6 +7,5 @@ public class CheckBox : AbstractCheckBox
 {
     public CheckBox()
     {
-        this.RegisterTokenResourceScope(CheckBoxToken.ScopeProvider);
     }
 }

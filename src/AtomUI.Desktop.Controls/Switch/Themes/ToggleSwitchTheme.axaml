@@ -30,10 +30,10 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="Foreground" Value="{atom:ToggleSwitchTokenSharedTokenResource ColorTextLightSolid}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:ToggleSwitchTokenSharedTokenResource EnableMotion}" />
         <Setter Property="IsWaveSpiritEnabled"
-                Value="{atom:SharedTokenResource EnableWaveSpirit}" />
+                Value="{atom:ToggleSwitchTokenSharedTokenResource EnableWaveSpirit}" />
         
         <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
             <Setter Property="WaveType" Value="PillWave"/>
@@ -68,17 +68,17 @@
 
         <Style Selector="^[IsChecked=True]:pointerover">
             <Setter Property="GrooveBackground"
-                    Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+                    Value="{atom:ToggleSwitchTokenSharedTokenResource ColorPrimaryHover}" />
         </Style>
 
         <Style Selector="^[IsChecked=False]">
             <Setter Property="GrooveBackground"
-                    Value="{atom:SharedTokenResource ColorTextQuaternary}" />
+                    Value="{atom:ToggleSwitchTokenSharedTokenResource ColorTextQuaternary}" />
         </Style>
 
         <Style Selector="^[IsChecked=False]:pointerover">
             <Setter Property="GrooveBackground"
-                    Value="{atom:SharedTokenResource ColorTextTertiary}" />
+                    Value="{atom:ToggleSwitchTokenSharedTokenResource ColorTextTertiary}" />
         </Style>
 
         <Style Selector="^[SizeType=Small]">

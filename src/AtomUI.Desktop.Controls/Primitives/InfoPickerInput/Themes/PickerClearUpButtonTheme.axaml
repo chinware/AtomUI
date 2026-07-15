@@ -28,14 +28,14 @@
         </Setter>
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_InfoIconPresenter">
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Width" Value="{atom:InfoPickerInputTokenSharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:InfoPickerInputTokenSharedTokenResource IconSize}" />
             <Setter Property="IconBrush"
-                    Value="{atom:SharedTokenResource ColorTextQuaternary}" />
+                    Value="{atom:InfoPickerInputTokenSharedTokenResource ColorTextQuaternary}" />
         </Style>
 
         <Style Selector="^ /template/ StackPanel#IconLayout">
-            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}" />
+            <Setter Property="Spacing" Value="{atom:InfoPickerInputTokenSharedTokenResource SpacingXS}" />
         </Style>
 
     </ControlTheme>

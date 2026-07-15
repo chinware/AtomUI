@@ -263,7 +263,6 @@ public class Cascader : AbstractSelect
     
     public Cascader()
     {
-        this.RegisterTokenResourceScope(CascaderToken.ScopeProvider);
         Options.CollectionChanged += HandleCascaderOptionsChanged;
     }
     

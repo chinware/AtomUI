@@ -190,7 +190,6 @@ public class RangeDatePicker : RangeInfoPickerInput
 
     public RangeDatePicker()
     {
-        this.RegisterTokenResourceScope(DatePickerToken.ScopeProvider);
     }
 
     static RangeDatePicker()

@@ -10,26 +10,26 @@
         </ControlTheme.BasedOn>
         
         <Setter Property="IconWidth"
-                Value="{atom:SharedTokenResource IconSize}" />
+                Value="{atom:LineEditTokenSharedTokenResource IconSize}" />
         <Setter Property="IconHeight"
-                Value="{atom:SharedTokenResource IconSize}" />
+                Value="{atom:LineEditTokenSharedTokenResource IconSize}" />
 
         <Setter Property="IconBrush"
-                Value="{atom:SharedTokenResource ColorIcon}" />
+                Value="{atom:LineEditTokenSharedTokenResource ColorIcon}" />
 
         <Style Selector="^:pointerover">
             <Setter Property="IconBrush"
-                    Value="{atom:SharedTokenResource ColorIconHover}" />
+                    Value="{atom:LineEditTokenSharedTokenResource ColorIconHover}" />
         </Style>
 
         <Style Selector="^:pressed">
             <Setter Property="IconBrush"
-                    Value="{atom:SharedTokenResource ColorText}" />
+                    Value="{atom:LineEditTokenSharedTokenResource ColorText}" />
         </Style>
 
         <Style Selector="^:disabled">
             <Setter Property="IconBrush"
-                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                    Value="{atom:LineEditTokenSharedTokenResource ColorTextDisabled}" />
         </Style>
         
     </ControlTheme>

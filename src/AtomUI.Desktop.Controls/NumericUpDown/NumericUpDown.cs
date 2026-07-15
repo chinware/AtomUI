@@ -312,7 +312,6 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     
     public NumericUpDown()
     {
-        this.RegisterTokenResourceScope(NumericUpDownToken.ScopeProvider);
         _textConverter = new NumericUpDownTextConverter(this);
     }
 

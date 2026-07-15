@@ -358,7 +358,6 @@ public class TreeSelect : AbstractSelect
 
     public TreeSelect()
     {
-        this.RegisterTokenResourceScope(TreeSelectToken.ScopeProvider);
         Items.CollectionChanged += HandleItemsChanged;
     }
 

@@ -22,7 +22,7 @@
                                              BorderThickness="{TemplateBinding HeaderBorderThickness, Converter={x:Static themes:CalendarItemTheme.BorderThicknessFilterConverter}}">
                         <Grid Name="PART_HeaderLayout"
                               MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
-                              MinHeight="{atom:SharedTokenResource ControlHeight}">
+                              MinHeight="{atom:DatePickerTokenSharedTokenResource ControlHeight}">
                             <atom:HeadTextButton
                                 Name="PART_HeaderButton"
                                 HorizontalAlignment="Center"
@@ -114,29 +114,29 @@
         <Setter Property="MinHeight" Value="{atom:DatePickerTokenResource ItemPanelMinHeight}" />
         <Setter Property="MinWidth" Value="{atom:DatePickerTokenResource ItemPanelMinWidth}" />
         <Setter Property="HeaderBorderThickness"
-                Value="{atom:SharedTokenResource BorderThickness}" />
+                Value="{atom:DatePickerTokenSharedTokenResource BorderThickness}" />
 
         <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderFrame">
             <Setter Property="Margin" Value="{atom:DatePickerTokenResource HeaderMargin}" />
             <Setter Property="Padding" Value="{atom:DatePickerTokenResource HeaderPadding}" />
             <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorBorderSecondary}" />
+                    Value="{atom:DatePickerTokenSharedTokenResource ColorBorderSecondary}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconWidth" Value="{atom:DatePickerTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:DatePickerTokenSharedTokenResource IconSizeSM}" />
             <Setter Property="IconBrush"
-                    Value="{atom:SharedTokenResource ColorTextDescription}" />
+                    Value="{atom:DatePickerTokenSharedTokenResource ColorTextDescription}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconButton:pointerover">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorText}" />
+            <Setter Property="IconBrush" Value="{atom:DatePickerTokenSharedTokenResource ColorText}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconButton:pressed">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorText}" />
+            <Setter Property="IconBrush" Value="{atom:DatePickerTokenSharedTokenResource ColorText}" />
         </Style>
 
         <Style Selector="^ /template/ Grid#PART_MonthView">

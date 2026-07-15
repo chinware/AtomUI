@@ -171,7 +171,6 @@ public class RangeTimePicker : RangeInfoPickerInput
 
     public RangeTimePicker()
     {
-        this.RegisterTokenResourceScope(TimePickerToken.ScopeProvider);
     }
     
     /// <summary>

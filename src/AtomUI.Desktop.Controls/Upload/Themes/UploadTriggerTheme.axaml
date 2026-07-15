@@ -15,7 +15,7 @@
         </Setter>
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextSecondary}" />
+        <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorTextSecondary}" />
 
         <Style Selector="^[ListType=PictureCard], ^[ListType=PictureCircle]">
             <Setter Property="Template">
@@ -34,10 +34,10 @@
                     </atom:DashedBorder>
                 </ControlTemplate>
             </Setter>
-            <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillAlter}" />
-            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
-            <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+            <Setter Property="Background" Value="{atom:UploadTokenSharedTokenResource ColorFillAlter}" />
+            <Setter Property="CornerRadius" Value="{atom:UploadTokenSharedTokenResource BorderRadiusLG}" />
+            <Setter Property="BorderBrush" Value="{atom:UploadTokenSharedTokenResource ColorBorder}" />
+            <Setter Property="BorderThickness" Value="{atom:UploadTokenSharedTokenResource BorderThickness}" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
 
@@ -48,12 +48,12 @@
             </Style>
 
             <Style Selector="^:pointerover">
-                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+                <Setter Property="BorderBrush" Value="{atom:UploadTokenSharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorTextDisabled}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

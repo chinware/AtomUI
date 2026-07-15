@@ -88,7 +88,7 @@
         </Setter>
 
         <Setter Property="ItemHeight" Value="{atom:TimePickerTokenResource ItemHeight}" />
-        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+        <Setter Property="Background" Value="{atom:TimePickerTokenSharedTokenResource ColorBgElevated}" />
   
         <Setter Property="AmText" Value="{atom:TimePickerLangResource AMText}" />
         <Setter Property="PmText" Value="{atom:TimePickerLangResource PMText}" />
@@ -106,7 +106,7 @@
         </Style>
         
         <Style Selector="^ /template/ Rectangle">
-            <Setter Property="Fill" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
+            <Setter Property="Fill" Value="{atom:TimePickerTokenSharedTokenResource ColorBorderSecondary}" />
         </Style>
         
         <Style Selector="^ /template/ Panel#PART_HourHost">

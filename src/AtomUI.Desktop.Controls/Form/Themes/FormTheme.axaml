@@ -21,13 +21,13 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}"/>
+        <Setter Property="IsMotionEnabled" Value="{atom:FormTokenSharedTokenResource EnableMotion}"/>
         <Setter Property="ClipToBounds" Value="False"/>
         <Style Selector="^[FormLayout=Inline]">
             <Setter Property="FormLayoutSpacing" Value="{atom:FormTokenResource InlineItemSpacing}" />
         </Style>
-        <Setter Property="ErrorMessageForeground" Value="{atom:SharedTokenResource ColorErrorText}" />
-        <Setter Property="WarningMessageForeground" Value="{atom:SharedTokenResource ColorWarningText}" />
+        <Setter Property="ErrorMessageForeground" Value="{atom:FormTokenSharedTokenResource ColorErrorText}" />
+        <Setter Property="WarningMessageForeground" Value="{atom:FormTokenSharedTokenResource ColorWarningText}" />
         
         <Setter Property="FeedbackTemplate">
             <DataTemplate DataType="atom:Form">
@@ -45,23 +45,23 @@
         <Setter Property="SuccessFeedbackTemplate">
             <DataTemplate>
                 <antdicons:CheckCircleFilled
-                    FillBrush="{atom:SharedTokenResource ColorSuccess}"
-                    Width="{atom:SharedTokenResource IconSize}"
-                    Height="{atom:SharedTokenResource IconSize}"/>
+                    FillBrush="{atom:FormTokenSharedTokenResource ColorSuccess}"
+                    Width="{atom:FormTokenSharedTokenResource IconSize}"
+                    Height="{atom:FormTokenSharedTokenResource IconSize}"/>
             </DataTemplate>
         </Setter>
         <Setter Property="ErrorFeedbackTemplate">
             <DataTemplate>
                 <antdicons:CloseCircleFilled
-                    FillBrush="{atom:SharedTokenResource ColorError}"
-                    Width="{atom:SharedTokenResource IconSize}"
-                    Height="{atom:SharedTokenResource IconSize}"/>
+                    FillBrush="{atom:FormTokenSharedTokenResource ColorError}"
+                    Width="{atom:FormTokenSharedTokenResource IconSize}"
+                    Height="{atom:FormTokenSharedTokenResource IconSize}"/>
             </DataTemplate>
         </Setter>
         <Setter Property="WarningFeedbackTemplate">
             <DataTemplate>
                 <antdicons:ExclamationCircleFilled
-                    FillBrush="{atom:SharedTokenResource ColorWarning}"
+                    FillBrush="{atom:FormTokenSharedTokenResource ColorWarning}"
                     />
             </DataTemplate>
         </Setter>
@@ -69,7 +69,7 @@
             <DataTemplate>
                 <antdicons:LoadingOutlined
                     LoadingAnimation="Spin"
-                    StrokeBrush="{atom:SharedTokenResource ColorIcon}"/>
+                    StrokeBrush="{atom:FormTokenSharedTokenResource ColorIcon}"/>
             </DataTemplate>
         </Setter>
         

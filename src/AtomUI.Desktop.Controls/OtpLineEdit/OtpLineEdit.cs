@@ -271,7 +271,6 @@ public class OtpLineEdit : TemplatedControl,
 
     public OtpLineEdit()
     {
-        this.RegisterTokenResourceScope(OtpLineEditToken.ScopeProvider);
         AddHandler(TextInputEvent, HandleDescendantTextInput, RoutingStrategies.Bubble, true);
         AddHandler(KeyDownEvent, HandleDescendantKeyDown, RoutingStrategies.Bubble, true);
         AddHandler(RequestBringIntoViewEvent, HandleDescendantRequestBringIntoView, RoutingStrategies.Bubble, true);

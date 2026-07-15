@@ -31,42 +31,42 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+        <Setter Property="Foreground" Value="{atom:CheckBoxTokenSharedTokenResource ColorText}" />
         <Setter Property="IsWaveSpiritEnabled"
-                Value="{atom:SharedTokenResource EnableWaveSpirit}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+                Value="{atom:CheckBoxTokenSharedTokenResource EnableWaveSpirit}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:CheckBoxTokenSharedTokenResource EnableMotion}" />
 
         <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
             <Setter Property="Margin" Value="{atom:CheckBoxTokenResource TextMargin}" />
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:CheckBoxTokenSharedTokenResource ColorTextDisabled}" />
         </Style>
 
         <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
             <Setter Property="Width" Value="{atom:CheckBoxTokenResource CheckIndicatorSize}" />
             <Setter Property="Height" Value="{atom:CheckBoxTokenResource CheckIndicatorSize}" />
-            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+            <Setter Property="CornerRadius" Value="{atom:CheckBoxTokenSharedTokenResource BorderRadiusSM}" />
             <Setter Property="TristateMarkSize"
                     Value="{atom:CheckBoxTokenResource IndicatorTristateMarkSize}" />
-            <Setter Property="TristateMarkBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="TristateMarkBrush" Value="{atom:CheckBoxTokenSharedTokenResource ColorPrimary}" />
             <Setter Property="CheckedMarkBrush" Value="White" />
-            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+            <Setter Property="Background" Value="{atom:CheckBoxTokenSharedTokenResource ColorBgContainer}" />
+            <Setter Property="BorderBrush" Value="{atom:CheckBoxTokenSharedTokenResource ColorBorder}" />
         </Style>
 
         <Style Selector="^:checked">
             <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
-                <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
-                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+                <Setter Property="Background" Value="{atom:CheckBoxTokenSharedTokenResource ColorPrimary}" />
+                <Setter Property="BorderBrush" Value="{atom:CheckBoxTokenSharedTokenResource ColorPrimary}" />
             </Style>
             <Style Selector="^:pointerover">
                 <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
                     <Setter Property="Background"
-                            Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+                            Value="{atom:CheckBoxTokenSharedTokenResource ColorPrimaryHover}" />
                     <Setter Property="BorderBrush"
-                            Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+                            Value="{atom:CheckBoxTokenSharedTokenResource ColorPrimaryHover}" />
                 </Style>
             </Style>
         </Style>
@@ -74,33 +74,33 @@
         <Style Selector="^:not(:checked):pointerover">
             <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
                 <Setter Property="BorderBrush"
-                        Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+                        Value="{atom:CheckBoxTokenSharedTokenResource ColorPrimaryHover}" />
             </Style>
         </Style>
 
         <Style Selector="^:indeterminate:pointerover">
             <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
                 <Setter Property="BorderBrush"
-                        Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+                        Value="{atom:CheckBoxTokenSharedTokenResource ColorPrimaryHover}" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
                 <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
-                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+                        Value="{atom:CheckBoxTokenSharedTokenResource ColorBgContainerDisabled}" />
+                <Setter Property="BorderBrush" Value="{atom:CheckBoxTokenSharedTokenResource ColorBorder}" />
             </Style>
             <Style Selector="^:checked">
                 <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
                     <Setter Property="CheckedMarkBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                            Value="{atom:CheckBoxTokenSharedTokenResource ColorTextDisabled}" />
                 </Style>
             </Style>
             <Style Selector="^:indeterminate">
                 <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
                     <Setter Property="TristateMarkBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                            Value="{atom:CheckBoxTokenSharedTokenResource ColorTextDisabled}" />
                 </Style>
             </Style>
         </Style>

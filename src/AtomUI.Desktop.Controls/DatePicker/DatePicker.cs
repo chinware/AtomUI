@@ -141,7 +141,6 @@ public class DatePicker : InfoPickerInput
 
     public DatePicker()
     {
-        this.RegisterTokenResourceScope(DatePickerToken.ScopeProvider);
     }
 
     static DatePicker()

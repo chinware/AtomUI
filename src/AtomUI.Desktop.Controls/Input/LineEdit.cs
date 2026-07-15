@@ -99,7 +99,6 @@ public class LineEdit : TextBox,
     
     public LineEdit()
     {
-        this.RegisterTokenResourceScope(LineEditToken.ScopeProvider);
     }
     
     private void UpdatePseudoClasses()

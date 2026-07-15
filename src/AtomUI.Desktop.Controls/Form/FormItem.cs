@@ -637,7 +637,6 @@ public partial class FormItem : TemplatedControl, IFormItem
     
     public FormItem()
     {
-        this.RegisterTokenResourceScope(FormToken.ScopeProvider);
         LayoutUpdated += HandleLayoutUpdated;
     }
 

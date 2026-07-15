@@ -30,19 +30,19 @@
         </Setter>
         
         <Style Selector="^ /template/ atom|Icon">
-            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorIcon}" />
+            <Setter Property="StrokeBrush" Value="{atom:UploadTokenSharedTokenResource ColorIcon}" />
         </Style>
         <Setter Property="RelativeLineHeight"
-                Value="{atom:SharedTokenResource RelativeLineHeight}" />
+                Value="{atom:UploadTokenSharedTokenResource RelativeLineHeight}" />
         <Setter Property="Margin" Value="{atom:UploadTokenResource TextListItemMargin}" />
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+        <Setter Property="CornerRadius" Value="{atom:UploadTokenSharedTokenResource BorderRadiusSM}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Background" Value="Transparent" />
 
         <Style Selector="^ /template/ atom|IconButton">
             <Setter Property="IconBrush" Value="{atom:UploadTokenResource ActionsColor}" />
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconWidth" Value="{atom:UploadTokenSharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:UploadTokenSharedTokenResource IconSize}" />
         </Style>
         
         <Style Selector="^[Status=Uploading]">
@@ -57,12 +57,12 @@
         </Style> 
         
         <Style Selector="^[Status=Failed]">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorError}" />
+            <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorError}" />
             <Style Selector="^ /template/ atom|Icon">
-                <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorError}" />
+                <Setter Property="StrokeBrush" Value="{atom:UploadTokenSharedTokenResource ColorError}" />
             </Style>
             <Style Selector="^ /template/ atom|IconButton">
-                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
+                <Setter Property="IconBrush" Value="{atom:UploadTokenSharedTokenResource ColorError}" />
             </Style>
             <Setter Property="atom:ToolTip.Tip" Value="{Binding ErrorMessage, RelativeSource={RelativeSource Self}}" />
             <Setter Property="atom:ToolTip.Placement" Value="Top" />
@@ -74,11 +74,11 @@
 
         <Style Selector="^ /template/ atom|IconButton:pointerover">
             <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ControlItemBgHover}" />
+                    Value="{atom:UploadTokenSharedTokenResource ControlItemBgHover}" />
         </Style>
 
         <Style Selector="^:pointerover">
-            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgHover}" />
+            <Setter Property="Background" Value="{atom:UploadTokenSharedTokenResource ControlItemBgHover}" />
 
             <Style Selector="^ /template/ atom|IconButton#DeleteAction">
                 <Setter Property="IsVisible" Value="True" />

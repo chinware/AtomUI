@@ -982,6 +982,11 @@ Actual domain checkpoint:
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~TabActivationTests
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~NavMenuTokenTests
+- DataEntry migrated: AutoComplete, ButtonSpinner, Cascader, CheckBox, ComboBox, DatePicker, Form, Input, Mentions, NumericUpDown, OtpLineEdit, OptionButton, RadioButton, Rate, Select, Slider, ToggleSwitch, TimePicker, Transfer, TreeSelect, Upload, AddOnDecoratedBox and InfoPickerInput now use component-shared resource extensions and no longer register legacy token scopes.
+- RED then PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~DesktopControlsDataEntryThemeScopeMigrationTests
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~TextBoxVisualStateTests
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~UploadTriggerTests
 
 - [ ] **Step 4: Add cross-component isolation tests**
 

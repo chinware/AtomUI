@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 internal class CheckBoxToken : AbstractControlDesignToken
 {
     public const string ID = "CheckBox";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public CheckBoxToken()
         : base(ID)

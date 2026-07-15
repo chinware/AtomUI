@@ -24,7 +24,7 @@
                                          Columns="2"
                                          ColumnSpacing="{atom:DatePickerTokenResource RangeCalendarSpacing}">
                                 <Grid MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
-                                      MinHeight="{atom:SharedTokenResource ControlHeight}">
+                                      MinHeight="{atom:DatePickerTokenSharedTokenResource ControlHeight}">
                                     <atom:HeadTextButton
                                         Name="PART_HeaderButton"
                                         HorizontalAlignment="Center"
@@ -58,7 +58,7 @@
                                 </Grid>
 
                                 <Grid MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
-                                      MinHeight="{atom:SharedTokenResource ControlHeight}">
+                                      MinHeight="{atom:DatePickerTokenSharedTokenResource ControlHeight}">
                                     <atom:HeadTextButton
                                         Name="PART_SecondaryHeaderButton"
                                         HorizontalAlignment="Center"

@@ -553,7 +553,6 @@ public class Mentions : TemplatedControl,
     
     public Mentions()
     {
-        this.RegisterTokenResourceScope(MentionsToken.ScopeProvider);
     }
 
     #region 实现 FormItem 接口

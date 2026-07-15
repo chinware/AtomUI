@@ -66,7 +66,7 @@
     <Style Selector="^:is(atom|CascaderView)">
         <Setter Property="FilterHighlightForeground"
                 Value="{atom:CascaderTokenResource FilterHighlightColor}" />
-        <Setter Property="EmptyIndicatorPadding" Value="{atom:SharedTokenResource Padding}" />
+        <Setter Property="EmptyIndicatorPadding" Value="{atom:CascaderTokenSharedTokenResource Padding}" />
         <Setter Property="atom:ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="atom:ScrollViewer.IsLiteMode" Value="True" />
         <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
@@ -74,16 +74,16 @@
         <Setter Property="IsShowEmptyIndicator" Value="True" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="ClipToBounds" Value="True" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:CascaderTokenSharedTokenResource EnableMotion}" />
         <Setter Property="EmptyIndicatorTemplate">
             <DataTemplate>
                 <atom:Empty SizeType="Small" PresetImage="Simple" />
             </DataTemplate>
         </Setter>
 
-        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+        <Setter Property="BorderThickness" Value="{atom:CascaderTokenSharedTokenResource BorderThickness}" />
+        <Setter Property="BorderBrush" Value="{atom:CascaderTokenSharedTokenResource ColorSplit}" />
+        <Setter Property="CornerRadius" Value="{atom:CascaderTokenSharedTokenResource BorderRadiusLG}" />
 
         <Setter Property="ExpandIcon">
             <atom:IconTemplate>

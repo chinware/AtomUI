@@ -37,16 +37,16 @@
 
         <Style Selector="^ /template/ atom|Icon">
             <Setter Property="StrokeBrush"
-                    Value="{atom:SharedTokenResource ColorTextQuaternary}" />
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+                    Value="{atom:SelectTokenSharedTokenResource ColorTextQuaternary}" />
+            <Setter Property="Width" Value="{atom:SelectTokenSharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:SelectTokenSharedTokenResource IconSize}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter">
             <Setter Property="IconBrush"
-                    Value="{atom:SharedTokenResource ColorTextQuaternary}" />
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+                    Value="{atom:SelectTokenSharedTokenResource ColorTextQuaternary}" />
+            <Setter Property="Width" Value="{atom:SelectTokenSharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:SelectTokenSharedTokenResource IconSize}" />
         </Style>
 
         <Style Selector="^[IsAllowClear=True][IsSelectionEmpty=False]">
@@ -61,7 +61,7 @@
         </Style>
 
         <Style Selector="^ /template/ StackPanel#IconLayout">
-            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}" />
+            <Setter Property="Spacing" Value="{atom:SelectTokenSharedTokenResource SpacingXS}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

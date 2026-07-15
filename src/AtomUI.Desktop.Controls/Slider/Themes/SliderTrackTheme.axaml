@@ -7,15 +7,15 @@
         <Setter Property="SliderTrackSize" Value="{atom:SliderTokenResource SliderTrackSize}" />
         <Setter Property="SliderMarkSize" Value="{atom:SliderTokenResource MarkSize}" />
         <Setter Property="SliderRailSize" Value="{atom:SliderTokenResource RailSize}" />
-        <Setter Property="MarkBackgroundBrush" Value="{atom:SharedTokenResource ColorBgElevated}" />
+        <Setter Property="MarkBackgroundBrush" Value="{atom:SliderTokenSharedTokenResource ColorBgElevated}" />
         <Setter Property="MarkBorderThickness"
                 Value="{atom:SliderTokenResource ThumbCircleBorderThickness}" />
-        <Setter Property="MarkLabelBrush" Value="{atom:SharedTokenResource ColorText}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="MarkLabelBrush" Value="{atom:SliderTokenSharedTokenResource ColorText}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SliderTokenSharedTokenResource EnableMotion}" />
 
         <Style Selector="^:disabled">
             <Setter Property="MarkLabelBrush"
-                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                    Value="{atom:SliderTokenSharedTokenResource ColorTextDisabled}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

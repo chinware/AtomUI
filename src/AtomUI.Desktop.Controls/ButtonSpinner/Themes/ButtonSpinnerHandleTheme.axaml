@@ -29,14 +29,14 @@
         
         <Setter Property="ClipToBounds" Value="True"/>
         <Setter Property="BorderBrush" Value="{atom:ButtonSpinnerTokenResource HandleBorderColor}"/>
-        <Setter Property="SpinnerBorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
+        <Setter Property="SpinnerBorderThickness" Value="{atom:ButtonSpinnerTokenSharedTokenResource BorderThickness}"/>
         <Setter Property="Background" Value="{atom:ButtonSpinnerTokenResource HandleBg}"/>
         <Style Selector="^[StyleVariant=Filled]">
             <Setter Property="Background" Value="{atom:ButtonSpinnerTokenResource FilledHandleBg}" />
         </Style>
         <Style Selector="^:disabled">
-            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+            <Setter Property="Background" Value="{atom:ButtonSpinnerTokenSharedTokenResource ColorBgContainerDisabled}" />
+            <Setter Property="BorderBrush" Value="{atom:ButtonSpinnerTokenSharedTokenResource ColorBorder}" />
         </Style>
         <Style
             Selector="^ /template/ atom|IconButton#PART_IncreaseButton, ^ /template/ atom|IconButton#PART_DecreaseButton">
@@ -54,7 +54,7 @@
         <Style
             Selector="^ /template/ atom|IconButton#PART_IncreaseButton:pressed, ^ /template/ atom|IconButton#PART_DecreaseButton:pressed">
             <Setter Property="IconBrush"
-                    Value="{atom:SharedTokenResource ColorPrimaryActive}" />
+                    Value="{atom:ButtonSpinnerTokenSharedTokenResource ColorPrimaryActive}" />
         </Style>
         
         <Style

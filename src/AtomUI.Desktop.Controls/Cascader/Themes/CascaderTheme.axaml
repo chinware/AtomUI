@@ -32,7 +32,7 @@
                         IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
-                                        Spacing="{atom:SharedTokenResource SpacingXS}">
+                                        Spacing="{atom:CascaderTokenSharedTokenResource SpacingXS}">
                                 <atom:SelectMaxCountIndicator
                                     Name="PART_SelectMaxCountIndicator"
                                     MaxCount="{CompiledBinding $parent[atom:Cascader].MaxCount}"
@@ -154,11 +154,11 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:CascaderTokenSharedTokenResource EnableMotion}" />
         <Setter Property="MaxPopupHeight" Value="{atom:CascaderTokenResource DropdownHeight}" />
-        <Setter Property="ItemHeight" Value="{atom:SharedTokenResource ControlHeight}" />
+        <Setter Property="ItemHeight" Value="{atom:CascaderTokenSharedTokenResource ControlHeight}" />
         <Setter Property="PlaceholderForeground"
-                Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
+                Value="{atom:CascaderTokenSharedTokenResource ColorTextPlaceholder}" />
         
         <Style Selector="^[IsEffectiveEmptyVisible=True]">
             <Setter Property="IsPopupMatchSelectWidth"
@@ -170,13 +170,13 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeLG}" />
+            <Setter Property="FontSize" Value="{atom:CascaderTokenSharedTokenResource FontSizeLG}" />
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
+            <Setter Property="FontSize" Value="{atom:CascaderTokenSharedTokenResource FontSize}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
+            <Setter Property="FontSize" Value="{atom:CascaderTokenSharedTokenResource FontSize}" />
         </Style>
 
         <Style Selector="^ /template/ atom|Popup#PART_Popup">
@@ -186,7 +186,7 @@
                     Value="{atom:PopupHostTokenResource PopupRootShadow}" />
         </Style>
         <Style Selector="^ /template/ Border#PopupFrame">
-            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+            <Setter Property="Background" Value="{atom:CascaderTokenSharedTokenResource ColorBgElevated}" />
             <Setter Property="CornerRadius"
                     Value="{atom:PopupHostTokenResource BorderRadius}" />
         </Style>
@@ -200,12 +200,12 @@
                 <Style Selector="^ /template/ TextBlock#SingleSelectResultPresenter">
                     <Setter Property="IsVisible" Value="True" />
                     <Setter Property="Foreground"
-                            Value="{atom:SharedTokenResource ColorText}" />
+                            Value="{atom:CascaderTokenSharedTokenResource ColorText}" />
                 </Style>
                 <Style Selector="^[IsDropDownOpen=True]">
                     <Style Selector="^ /template/ TextBlock#SingleSelectResultPresenter">
                         <Setter Property="Foreground"
-                                Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
+                                Value="{atom:CascaderTokenSharedTokenResource ColorTextPlaceholder}" />
                     </Style>
                 </Style>
             </Style>
@@ -213,12 +213,12 @@
                 <Style Selector="^ /template/ atom|SelectFilterTextBox#PART_SingleFilterInput">
                     <Setter Property="IsVisible" Value="True" />
                     <Setter Property="PlaceholderForeground"
-                            Value="{atom:SharedTokenResource ColorText}" />
+                            Value="{atom:CascaderTokenSharedTokenResource ColorText}" />
                 </Style>
                 <Style Selector="^[IsDropDownOpen=True]">
                     <Style Selector="^ /template/ atom|SelectFilterTextBox#PART_SingleFilterInput">
                         <Setter Property="PlaceholderForeground"
-                                Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
+                                Value="{atom:CascaderTokenSharedTokenResource ColorTextPlaceholder}" />
                     </Style>
                 </Style>
             </Style>
@@ -260,10 +260,10 @@
         </Setter>
         
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:CascaderTokenSharedTokenResource ColorTextDisabled}" />
             <Style Selector="^ /template/ TextBlock#SingleSelectResultPresenter">
                 <Setter Property="Foreground"
-                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:CascaderTokenSharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
     </ControlTheme>

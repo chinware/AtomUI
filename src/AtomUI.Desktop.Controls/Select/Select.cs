@@ -291,7 +291,6 @@ public partial class Select : AbstractSelect
 
     public Select()
     {
-        this.RegisterTokenResourceScope(SelectToken.ScopeProvider);
         Options.CollectionChanged += HandleOptionsCollectionChanged;
         RebuildEffectiveOptions();
     }

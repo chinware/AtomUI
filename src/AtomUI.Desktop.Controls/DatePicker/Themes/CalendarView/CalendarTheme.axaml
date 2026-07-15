@@ -21,7 +21,7 @@
     </Setter>
 
     <Style Selector="^:is(calendarView|Calendar)">
-        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+        <Setter Property="Background" Value="{atom:DatePickerTokenSharedTokenResource ColorBgElevated}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
     </Style>

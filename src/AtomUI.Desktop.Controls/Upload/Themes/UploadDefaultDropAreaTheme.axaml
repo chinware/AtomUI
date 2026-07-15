@@ -26,13 +26,13 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillAlter}"/>
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}"/>
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}"/>
-        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
-        <Setter Property="Padding" Value="{atom:SharedTokenResource Padding}"/>
+        <Setter Property="Background" Value="{atom:UploadTokenSharedTokenResource ColorFillAlter}"/>
+        <Setter Property="CornerRadius" Value="{atom:UploadTokenSharedTokenResource BorderRadiusLG}"/>
+        <Setter Property="BorderBrush" Value="{atom:UploadTokenSharedTokenResource ColorBorder}"/>
+        <Setter Property="BorderThickness" Value="{atom:UploadTokenSharedTokenResource BorderThickness}"/>
+        <Setter Property="Padding" Value="{atom:UploadTokenSharedTokenResource Padding}"/>
         <Setter Property="Header" Value="{atom:UploadLangResource DragUploadHead}"/>
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}"/>
+        <Setter Property="IsMotionEnabled" Value="{atom:UploadTokenSharedTokenResource EnableMotion}"/>
         <Setter Property="DragDrop.AllowDrop" Value="True"/>
         
         <Style Selector="^ /template/ atom|DashedBorder#Frame">
@@ -40,42 +40,42 @@
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorPrimary}"/>
+            <Setter Property="IconBrush" Value="{atom:UploadTokenSharedTokenResource ColorPrimary}"/>
             <Setter Property="Width" Value="{atom:UploadTokenResource DragIconSize}"/>
             <Setter Property="Height" Value="{atom:UploadTokenResource DragIconSize}"/>
             <Setter Property="Margin" Value="{atom:UploadTokenResource DragIconMargin}"/>
         </Style>
         
         <Style Selector="^:pointerover">
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryHover}"/>
+            <Setter Property="BorderBrush" Value="{atom:UploadTokenSharedTokenResource ColorPrimaryHover}"/>
         </Style>
         
         <Style Selector="^ /template/ ContentPresenter#HeaderContentPresenter">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextHeading}"/>
-            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeLG}"/>
+            <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorTextHeading}"/>
+            <Setter Property="FontSize" Value="{atom:UploadTokenSharedTokenResource FontSizeLG}"/>
             <Setter Property="Margin" Value="{atom:UploadTokenResource DragHeaderMargin}"/>
             <Setter Property="TextAlignment" Value="Center"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
         
         <Style Selector="^ /template/ ContentPresenter#SubHeaderContentPresenter">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}"/>
-            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}"/>
+            <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorTextDescription}"/>
+            <Setter Property="FontSize" Value="{atom:UploadTokenSharedTokenResource FontSize}"/>
             <Setter Property="TextAlignment" Value="Center"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
         
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextDisabled}"/>
+                <Setter Property="IconBrush" Value="{atom:UploadTokenSharedTokenResource ColorTextDisabled}"/>
             </Style>
 
             <Style Selector="^ /template/ ContentPresenter#HeaderContentPresenter">
-                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}"/>
+                <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorTextDisabled}"/>
             </Style>
 
             <Style Selector="^ /template/ ContentPresenter#SubHeaderContentPresenter">
-                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}"/>
+                <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorTextDisabled}"/>
             </Style>
         </Style>
 
