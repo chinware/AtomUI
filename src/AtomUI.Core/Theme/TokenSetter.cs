@@ -1,15 +1,37 @@
+using Avalonia;
 using Avalonia.Metadata;
 
 namespace AtomUI.Theme;
 
-public class TokenSetter
+public class TokenSetter : AvaloniaObject
 {
-    public string Key { get; set; } = string.Empty;
+    public static readonly StyledProperty<string> KeyProperty =
+        AvaloniaProperty.Register<TokenSetter, string>(nameof(Key), string.Empty);
+
+    public static readonly StyledProperty<string> ValueProperty =
+        AvaloniaProperty.Register<TokenSetter, string>(nameof(Value), string.Empty);
+
+    public static readonly StyledProperty<string?> CatalogProperty =
+        AvaloniaProperty.Register<TokenSetter, string?>(nameof(Catalog));
+
+    public string Key
+    {
+        get => GetValue(KeyProperty);
+        set => SetValue(KeyProperty, value);
+    }
     
     [Content]
-    public string Value { get; set; } = string.Empty;
+    public string Value
+    {
+        get => GetValue(ValueProperty);
+        set => SetValue(ValueProperty, value);
+    }
 
-    public string? Catalog { get; set; }
+    public string? Catalog
+    {
+        get => GetValue(CatalogProperty);
+        set => SetValue(CatalogProperty, value);
+    }
 
     public TokenSetter()
     {

@@ -47,15 +47,15 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
 
         ApiRows =
         [
-            new CustomizeThemeApiRow("ThemeConfigProvider.Algorithms", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderAlgorithms), "List<string>", "blue", "[]"),
-            new CustomizeThemeApiRow("ThemeConfigProvider.SharedTokenSetters", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderSharedTokenSetters), "List<TokenSetter>", "cyan", "[]"),
-            new CustomizeThemeApiRow("ThemeConfigProvider.ControlTokenInfoSetters", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderControlTokenInfoSetters), "List<ControlTokenInfoSetter>", "cyan", "[]"),
+            new CustomizeThemeApiRow("ThemeConfigProvider.Algorithms", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderAlgorithms), "AvaloniaList<string>", "blue", "[]"),
+            new CustomizeThemeApiRow("ThemeConfigProvider.SharedTokenSetters", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderSharedTokenSetters), "AvaloniaList<TokenSetter>", "cyan", "[]"),
+            new CustomizeThemeApiRow("ThemeConfigProvider.ControlTokenInfoSetters", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderControlTokenInfoSetters), "AvaloniaList<ControlTokenInfoSetter>", "cyan", "[]"),
             new CustomizeThemeApiRow("TokenSetter.Key", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberTokenSetterKey), "string", "purple", "string.Empty"),
             new CustomizeThemeApiRow("TokenSetter.Value", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberTokenSetterValue), "string", "purple", "string.Empty"),
             new CustomizeThemeApiRow("TokenSetter.Catalog", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberTokenSetterCatalog), "string?", "purple", "null"),
             new CustomizeThemeApiRow("ControlTokenInfoSetter.TokenId", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlTokenInfoSetter), "string", "purple", "string.Empty"),
             new CustomizeThemeApiRow("ControlTokenInfoSetter.EnableAlgorithm", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlTokenInfoSetterEnableAlgorithm), "bool", "purple", "false"),
-            new CustomizeThemeApiRow("ControlTokenInfoSetter.Setters", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlTokenInfoSetterSetters), "List<TokenSetter>", "cyan", "[]")
+            new CustomizeThemeApiRow("ControlTokenInfoSetter.Setters", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlTokenInfoSetterSetters), "AvaloniaList<TokenSetter>", "cyan", "[]")
         ];
     }
 
