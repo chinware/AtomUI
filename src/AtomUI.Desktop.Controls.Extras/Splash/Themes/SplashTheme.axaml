@@ -7,11 +7,14 @@
         
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="PART_SurfaceLayout"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
+                <Border Name="PART_RootLayout"
+                        CornerRadius="{atom:SplashTokenResource SurfaceCornerRadius}"
+                        ClipToBounds="True">
+                    <Border Name="PART_SurfaceLayout"
+                            Background="{atom:SplashTokenResource SurfaceBackground}"
+                            CornerRadius="{atom:SplashTokenResource SurfaceCornerRadius}"
                             ClipToBounds="True"
-                            Padding="{TemplateBinding Padding}">
+                            Padding="{atom:SplashTokenResource ContentPadding}">
                         <StackPanel Name="PART_ContentLayout"
                                     HorizontalAlignment="Stretch"
                                     Spacing="{atom:SplashTokenResource ContentGap}">
@@ -60,6 +63,7 @@
                                               ContentTemplate="{TemplateBinding FooterTemplate}" />
                         </StackPanel>
                     </Border>
+                </Border>
             </ControlTemplate>
         </Setter>
         

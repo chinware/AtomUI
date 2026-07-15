@@ -20,7 +20,7 @@ public class LinuxWindowFixAotTests
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/X11WindowChromeManager.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/DesktopAppBuilderExtensions.cs")),
-            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Popup/LinuxCsdPopupSupport.cs")),
+            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Popup/DetachedTitleBarPopupSupport.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Menu/Menu.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Menu/MenuItem.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/ClickThroughShadowExtensions.cs")));
