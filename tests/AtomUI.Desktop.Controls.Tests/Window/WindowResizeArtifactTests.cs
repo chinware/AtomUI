@@ -531,6 +531,40 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    public void Windows_TitleBar_Paints_The_Full_Caption_Surface()
+    {
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml"));
+        XNamespace av   = "https://github.com/avaloniaui";
+        XNamespace atom = "https://atomui.net";
+
+        var baseStyle = document.Descendants(av + "Style")
+                                .Single(style =>
+                                    (string?)style.Attribute("Selector") == "^:is(atom|WindowTitleBar)");
+        baseStyle.Elements(av + "Setter").ShouldContain(setter =>
+            (string?)setter.Attribute("Property") == "Background" &&
+            (string?)setter.Attribute("Value") == "{atom:SharedTokenResource ColorBgContainer}");
+        baseStyle.Elements(av + "Setter").ShouldNotContain(setter =>
+            (string?)setter.Attribute("Property") == "Background" &&
+            (string?)setter.Attribute("Value") == "Transparent");
+
+        var windowsStyle = document.Descendants(av + "Style")
+                                   .Single(style =>
+                                       (string?)style.Attribute("Selector") == "^[OsType=Windows]");
+        var template = windowsStyle.Descendants(av + "ControlTemplate").Single();
+        var root     = template.Elements(av + "DockPanel").Single();
+
+        root.Attribute("Background").ShouldNotBeNull().Value.ShouldBe("{TemplateBinding Background}");
+        root.Elements(atom + "CaptionButtonGroup").Single()
+            .Attribute("Name")
+            .ShouldNotBeNull().Value.ShouldBe("PART_CaptionButtonGroup");
+        root.Elements(av + "Border").Single(border =>
+                (string?)border.Attribute("Name") == "Frame")
+            .Attribute("Background")
+            .ShouldNotBeNull().Value.ShouldBe("{TemplateBinding Background}");
+    }
+
+    [Fact]
     public void Windows_Window_Uses_Avalonia_Csd_Without_The_Legacy_Chrome_Hook()
     {
         var managerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"));
