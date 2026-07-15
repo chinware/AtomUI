@@ -30,6 +30,7 @@
 
 ## 相关文档
 
+- [主题系统重构设计](theme-system-redesign.md)
+- [主题系统重构实施与进度计划](../../superpowers/plans/2026-07-15-theme-system-redesign.md)
 - [../../architecture/startup-and-registration.md](../../architecture/startup-and-registration.md)
 - [../../architecture/runtime-platforms.md](../../architecture/runtime-platforms.md)
-
