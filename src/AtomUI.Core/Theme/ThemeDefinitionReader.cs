@@ -98,13 +98,13 @@ internal class ThemeDefinitionReader
         }
         else if (name == SharedTokensElementName)
         {
-            _currentDef?.SharedTokens.Clear();
+            _currentDef?.LegacyClearSharedTokens();
             _inSharedTokenCtx  = true;
             _inControlTokenCtx = false;
         }
         else if (name == ControlTokensElementName)
         {
-            _currentDef?.ControlTokens.Clear();
+            _currentDef?.LegacyClearControlTokens();
         }
         else if (name == ControlTokenElementName)
         {
@@ -132,7 +132,7 @@ internal class ThemeDefinitionReader
         if (name == ControlTokenElementName)
         {
             var tokenId = _currentControlToken!.TokenId;
-            _currentDef?.ControlTokens.Add(tokenId, _currentControlToken!);
+            _currentDef?.LegacyAddControlToken(tokenId, _currentControlToken!);
             _currentControlToken = null;
             _inControlTokenCtx   = false;
         }
@@ -154,7 +154,7 @@ internal class ThemeDefinitionReader
         }
         else
         {
-            _currentDef.DisplayName = displayName;
+            _currentDef.LegacySetDisplayName(displayName);
         }
         var isDefaultStr = reader.GetAttribute(IsDefaultAttrName);
         if (string.IsNullOrWhiteSpace(isDefaultStr))
@@ -165,11 +165,11 @@ internal class ThemeDefinitionReader
         {
             if (IsTrueValue(isDefaultStr))
             {
-                _currentDef.IsDefault = true;
+                _currentDef.LegacySetIsDefault(true);
             }
             else
             {
-                _currentDef.IsDefault = false;
+                _currentDef.LegacySetIsDefault(false);
             }
         }
     }
@@ -179,7 +179,7 @@ internal class ThemeDefinitionReader
         Debug.Assert(_currentDef != null);
         // 这样处理方便一点
         var algorithmsStr = reader.ReadElementContentAsString();
-        _currentDef.Algorithms = Theme.CheckAlgorithmNames(SplitDistinctAlgorithmNames(algorithmsStr));
+        _currentDef.LegacyReplaceAlgorithms(Theme.CheckAlgorithmNames(SplitDistinctAlgorithmNames(algorithmsStr)));
     }
 
     private void HandleStartControlTokenElement(XmlReader reader)
@@ -226,7 +226,7 @@ internal class ThemeDefinitionReader
 
         if (_inSharedTokenCtx)
         {
-            _currentDef!.SharedTokens.Add(tokenName!, tokenValue);
+            _currentDef!.LegacyAddSharedToken(tokenName!, tokenValue);
         }
         else if (_inControlTokenCtx)
         {

@@ -1,67 +1,155 @@
-﻿using AtomUI.Theme.TokenSystem;
+using System.Collections.ObjectModel;
+using AtomUI.Theme.TokenSystem;
 
 namespace AtomUI.Theme;
 
-internal class ThemeDefinition
+internal sealed class ThemeDefinition
 {
+    private readonly List<ThemeAlgorithm> _algorithms;
+    private readonly Dictionary<string, ThemeControlTokenDefinition> _controlTokens;
+    private readonly Dictionary<string, string> _sharedTokens;
+
     public string Id { get; }
-    public string DisplayName { get; set; }
-    public bool IsDefault { get; set; }
-    public ISet<ThemeAlgorithm> Algorithms { get; set; }
-    public IDictionary<string, ControlTokenConfigInfo> ControlTokens { get; set; }
-    public IDictionary<string, string> SharedTokens { get; set; }
+    public string DisplayName { get; private set; }
+    public bool IsDefault { get; private set; }
+    public IReadOnlyList<ThemeAlgorithm> Algorithms { get; }
+    public IReadOnlyDictionary<string, ThemeControlTokenDefinition> ControlTokens { get; }
+    public IReadOnlyDictionary<string, string> SharedTokens { get; }
 
-    public ThemeDefinition(string id, string? displayName = null)
-        : this(id, displayName, 0, 0, 0)
+    internal ThemeDefinition(string id, string? displayName = null)
+        : this(
+            id,
+            displayName ?? id,
+            false,
+            Array.Empty<ThemeAlgorithm>(),
+            new Dictionary<string, string>(),
+            new Dictionary<string, ThemeControlTokenDefinition>())
     {
     }
 
-    private ThemeDefinition(string id,
-                            string? displayName,
-                            int algorithmCapacity,
-                            int controlTokenCapacity,
-                            int sharedTokenCapacity)
+    internal ThemeDefinition(
+        string id,
+        string displayName,
+        bool isDefault,
+        IEnumerable<ThemeAlgorithm> algorithms,
+        IReadOnlyDictionary<string, string> sharedTokens,
+        IReadOnlyDictionary<string, ThemeControlTokenDefinition> controlTokens)
     {
-        Id            = id;
-        Algorithms    = new HashSet<ThemeAlgorithm>(algorithmCapacity);
-        ControlTokens = new Dictionary<string, ControlTokenConfigInfo>(controlTokenCapacity);
-        SharedTokens  = new Dictionary<string, string>(sharedTokenCapacity);
-        DisplayName   = displayName ?? id;
-    }
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentException.ThrowIfNullOrWhiteSpace(displayName);
+        ArgumentNullException.ThrowIfNull(algorithms);
+        ArgumentNullException.ThrowIfNull(sharedTokens);
+        ArgumentNullException.ThrowIfNull(controlTokens);
 
-    public void Reset()
-    {
-        Algorithms.Clear();
-        ControlTokens.Clear();
-        SharedTokens.Clear();
-        DisplayName = string.Empty;
+        Id             = id;
+        DisplayName    = displayName;
+        IsDefault      = isDefault;
+        _algorithms    = new List<ThemeAlgorithm>(algorithms);
+        _sharedTokens  = new Dictionary<string, string>(sharedTokens, StringComparer.Ordinal);
+        _controlTokens = CopyControlTokens(controlTokens);
+
+        Algorithms    = _algorithms.AsReadOnly();
+        SharedTokens  = new ReadOnlyDictionary<string, string>(_sharedTokens);
+        ControlTokens = new ReadOnlyDictionary<string, ThemeControlTokenDefinition>(_controlTokens);
     }
 
     internal ThemeDefinition Clone()
     {
-        var cloned = new ThemeDefinition(Id,
-                                         DisplayName,
-                                         Algorithms.Count,
-                                         ControlTokens.Count,
-                                         SharedTokens.Count)
-        {
-            IsDefault = IsDefault
-        };
+        return new ThemeDefinition(
+            Id,
+            DisplayName,
+            IsDefault,
+            Algorithms,
+            SharedTokens,
+            ControlTokens);
+    }
 
-        foreach (var algorithm in Algorithms)
+    // Temporary migration boundary for ThemeDefinitionReader; Task 5 removes these methods.
+    internal void LegacySetDisplayName(string displayName)
+    {
+        DisplayName = displayName;
+    }
+
+    internal void LegacySetIsDefault(bool isDefault)
+    {
+        IsDefault = isDefault;
+    }
+
+    internal void LegacyReplaceAlgorithms(IEnumerable<ThemeAlgorithm> algorithms)
+    {
+        _algorithms.Clear();
+        _algorithms.AddRange(algorithms);
+    }
+
+    internal void LegacyClearSharedTokens()
+    {
+        _sharedTokens.Clear();
+    }
+
+    internal void LegacyAddSharedToken(string name, string value)
+    {
+        _sharedTokens.Add(name, value);
+    }
+
+    internal void LegacyClearControlTokens()
+    {
+        _controlTokens.Clear();
+    }
+
+    internal void LegacyAddControlToken(string id, ControlTokenConfigInfo config)
+    {
+        _controlTokens.Add(
+            id,
+            new ThemeControlTokenDefinition(
+                config.TokenId,
+                config.EnableAlgorithm,
+                config.Tokens,
+                config.SharedTokens));
+    }
+
+    private static Dictionary<string, ThemeControlTokenDefinition> CopyControlTokens(
+        IReadOnlyDictionary<string, ThemeControlTokenDefinition> controlTokens)
+    {
+        var copies = new Dictionary<string, ThemeControlTokenDefinition>(
+            controlTokens.Count,
+            StringComparer.Ordinal);
+        foreach (var entry in controlTokens)
         {
-            cloned.Algorithms.Add(algorithm);
+            copies.Add(
+                entry.Key,
+                new ThemeControlTokenDefinition(
+                    entry.Value.TokenId,
+                    entry.Value.EnableAlgorithm,
+                    entry.Value.Tokens,
+                    entry.Value.SharedTokens));
         }
 
-        foreach (var controlTokenConfigInfo in ControlTokens)
-        {
-            cloned.ControlTokens.Add(controlTokenConfigInfo.Key, controlTokenConfigInfo.Value.Clone());
-        }
-        
-        foreach (var sharedToken in SharedTokens)
-        {
-            cloned.SharedTokens.Add(sharedToken.Key, sharedToken.Value);
-        }
-        return cloned;
+        return copies;
+    }
+}
+
+internal sealed class ThemeControlTokenDefinition
+{
+    public string TokenId { get; }
+    public bool EnableAlgorithm { get; }
+    public IDictionary<string, string> Tokens { get; }
+    public IDictionary<string, string> SharedTokens { get; }
+
+    internal ThemeControlTokenDefinition(
+        string tokenId,
+        bool enableAlgorithm,
+        IEnumerable<KeyValuePair<string, string>> tokens,
+        IEnumerable<KeyValuePair<string, string>> sharedTokens)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tokenId);
+        ArgumentNullException.ThrowIfNull(tokens);
+        ArgumentNullException.ThrowIfNull(sharedTokens);
+
+        TokenId         = tokenId;
+        EnableAlgorithm = enableAlgorithm;
+        Tokens = new ReadOnlyDictionary<string, string>(
+            new Dictionary<string, string>(tokens, StringComparer.Ordinal));
+        SharedTokens = new ReadOnlyDictionary<string, string>(
+            new Dictionary<string, string>(sharedTokens, StringComparer.Ordinal));
     }
 }
