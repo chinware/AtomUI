@@ -13,7 +13,6 @@ public static class ApplicationExtensions
     {
         var themeManagerBuilder = new ThemeManagerBuilder();
         themeManagerBuilder.WithDefaultLanguageVariant(LanguageVariant.en_US);
-        themeManagerBuilder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
         themeConfigureAction?.Invoke(themeManagerBuilder);
         
         var themeManager = themeManagerBuilder.Build();

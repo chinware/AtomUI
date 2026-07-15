@@ -42,6 +42,13 @@ public static class ThemeManagerBuilderExtensions
             }
         }
 
-        themeManagerBuilder.WithDefaultTheme(Theme.BuildThemeVariantName(themeId, hasDark, hasCompact));
+        var variantId = Theme.BuildThemeVariantName(themeId, hasDark, hasCompact);
+        if (themeManagerBuilder is ThemeManagerBuilder concreteBuilder)
+        {
+            concreteBuilder.SetExplicitDefaultTheme(variantId, themeId);
+            return;
+        }
+
+        themeManagerBuilder.WithDefaultTheme(variantId);
     }
 }

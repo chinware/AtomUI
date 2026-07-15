@@ -1,10 +1,17 @@
+using System.Globalization;
 using System.Text;
 using AtomUI.Theme;
 using AtomUI.Theme.Catalog;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Definitions;
+using AtomUI.Theme.Language;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.TokenSystem;
+using Avalonia.Media;
+using Avalonia.Media.Immutable;
 using Shouldly;
 using Xunit;
+using AtomUITheme = AtomUI.Theme.Theme;
 
 namespace AtomUI.Core.Tests.Theme;
 
@@ -22,9 +29,85 @@ public class ThemeCatalogTests
         {
             ["Button"] = new HashSet<string>(StringComparer.Ordinal)
             {
-                "BorderColor"
+                "BorderColor",
+                "Height"
             }
         };
+
+    [Fact]
+    public void Theme_Facade_Loads_Preparsed_Descriptor_Through_Compiler_Without_Reopening_For_Variants()
+    {
+        var source = new TestThemeSource("themes/Brand.xml", ThemeXmlWithCompilerButton("Brand"));
+        var catalog = CreateCatalog(
+            [new ControlTokenRegistration(typeof(CompilerButtonToken))],
+            source);
+        var descriptor = catalog.GetDescriptor("Brand").ShouldNotBeNull();
+
+        var defaultTheme = new AtomUITheme(
+            descriptor,
+            catalog,
+            new ThemeCompiler(),
+            [ThemeAlgorithm.Default]);
+        var darkTheme = new AtomUITheme(
+            descriptor,
+            catalog,
+            new ThemeCompiler(),
+            [ThemeAlgorithm.Default, ThemeAlgorithm.Dark]);
+
+        defaultTheme.Load();
+        darkTheme.Load();
+
+        source.OpenCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public void Theme_Facade_Exposes_Compiled_Tokens_And_Resources_Through_ITheme()
+    {
+        var source = new TestThemeSource("themes/Brand.xml", ThemeXmlWithCompilerButton("Brand"));
+        var catalog = CreateCatalog(
+            [new ControlTokenRegistration(typeof(CompilerButtonToken))],
+            source);
+        var descriptor = catalog.GetDescriptor("Brand").ShouldNotBeNull();
+        ITheme theme = new AtomUITheme(
+            descriptor,
+            catalog,
+            new ThemeCompiler(),
+            [ThemeAlgorithm.Default]);
+
+        ((AtomUITheme)theme).Load();
+
+        theme.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
+        theme.ThemeResource[SharedTokenKind.ColorPrimary]
+             .ShouldBeOfType<ImmutableSolidColorBrush>()
+             .Color
+             .ShouldBe(Color.Parse("#00b96b"));
+        theme.GetControlToken(CompilerButtonToken.ID)
+             .ShouldBeOfType<CompilerButtonToken>()
+             .Height
+             .ShouldBe(48);
+        theme.ThemeResource[CompilerButtonTokenKind.Height].ShouldBe(48d);
+    }
+
+    [Fact]
+    public void Theme_Builder_Extension_Preserves_Base_Id_For_The_Concrete_Builder()
+    {
+        var builder = new ThemeManagerBuilder();
+
+        builder.WithDefaultTheme("Brand", ThemeAlgorithm.Compact, ThemeAlgorithm.Dark);
+
+        builder.ThemeId.ShouldBe("Brand-Dark-Compact");
+        builder.ExplicitDefaultThemeBaseId.ShouldBe("Brand");
+    }
+
+    [Fact]
+    public void Theme_Builder_Extension_Keeps_The_Interface_Builder_Behavior()
+    {
+        IThemeManagerBuilder builder = new RecordingThemeManagerBuilder();
+
+        builder.WithDefaultTheme("Brand", ThemeAlgorithm.Compact, ThemeAlgorithm.Dark);
+
+        ((RecordingThemeManagerBuilder)builder).ThemeId.ShouldBe("Brand-Dark-Compact");
+    }
 
     [Fact]
     public void Catalog_Parses_One_File_Once_For_All_Variants()
@@ -241,16 +324,39 @@ public class ThemeCatalogTests
 
     private static ThemeCatalog CreateCatalog(params IThemeCatalogSource[] sources)
     {
+        return CreateCatalog(Array.Empty<ControlTokenRegistration>(), sources);
+    }
+
+    private static ThemeCatalog CreateCatalog(
+        IReadOnlyList<ControlTokenRegistration> registrations,
+        params IThemeCatalogSource[] sources)
+    {
         return new ThemeCatalog(
             sources,
             s_sharedTokenNames,
             s_componentOwnTokenNames,
-            Array.Empty<ControlTokenRegistration>());
+            registrations);
     }
 
     private static string ThemeXml(string displayName, bool isDefault = false)
     {
         return $"<Theme Name=\"{displayName}\" IsDefault=\"{isDefault.ToString().ToLowerInvariant()}\" />";
+    }
+
+    private static string ThemeXmlWithCompilerButton(string displayName)
+    {
+        return $"""
+                <Theme Name="{displayName}" IsDefault="true">
+                  <SharedTokens>
+                    <Token Name="ColorPrimary" Value="#00b96b" />
+                  </SharedTokens>
+                  <ControlTokens>
+                    <ControlToken Id="Button">
+                      <Token Name="Height" Value="48" />
+                    </ControlToken>
+                  </ControlTokens>
+                </Theme>
+                """;
     }
 
     private sealed class TestThemeSource : IThemeCatalogSource
@@ -306,6 +412,64 @@ public class ThemeCatalogTests
         public Stream OpenRead()
         {
             throw new IOException(_message);
+        }
+    }
+
+    private sealed class RecordingThemeManagerBuilder : IThemeManagerBuilder
+    {
+        public IList<Type> ControlDesignTokens { get; } = new List<Type>();
+        public IList<IThemeAssetPathProvider> ThemeAssetPathProviders { get; } = new List<IThemeAssetPathProvider>();
+        public IList<IControlThemesProvider> ControlThemesProviders { get; } = new List<IControlThemesProvider>();
+        public IList<LanguageProvider> LanguageProviders { get; } = new List<LanguageProvider>();
+        public IList<EventHandler> InitializedHandlers { get; } = new List<EventHandler>();
+        public LanguageVariant LanguageVariant { get; private set; } = LanguageVariant.en_US;
+        public string ThemeId { get; private set; } = IThemeManager.DEFAULT_THEME_ID;
+
+        public void AddControlToken(Type tokenType)
+        {
+            ControlDesignTokens.Add(tokenType);
+        }
+
+        public void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)
+        {
+            ThemeAssetPathProviders.Add(themeAssetPathProvider);
+        }
+
+        public void AddControlThemesProvider(IControlThemesProvider controlThemesProvider)
+        {
+            ControlThemesProviders.Add(controlThemesProvider);
+        }
+
+        public void AddLanguageProviders(LanguageProvider languageProvider)
+        {
+            LanguageProviders.Add(languageProvider);
+        }
+
+        public void WithDefaultTheme(string themeId)
+        {
+            ThemeId = themeId;
+        }
+
+        public void WithDefaultFontFamily(FontFamily fontFamily)
+        {
+        }
+
+        public void WithDefaultFontFamily(string fontFamily)
+        {
+        }
+
+        public void WithDefaultCultureInfo(CultureInfo cultureInfo)
+        {
+            LanguageVariant = LanguageVariant.FromCultureInfo(cultureInfo);
+        }
+
+        public void WithDefaultLanguageVariant(LanguageVariant languageVariant)
+        {
+            LanguageVariant = languageVariant;
+        }
+
+        public void WithThemeVariantCalculatorFactory(IThemeVariantCalculatorFactory factory)
+        {
         }
     }
 }
