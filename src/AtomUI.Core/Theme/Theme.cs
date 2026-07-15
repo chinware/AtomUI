@@ -17,8 +17,8 @@ internal class Theme : AvaloniaObject, ITheme
     protected bool LoadedStatus = true;
     protected bool Activated;
 
-    protected readonly ResourceDictionary ResourceDictionary;
-    protected readonly Dictionary<string, IControlDesignToken> ControlTokens;
+    protected ResourceDictionary ResourceDictionary;
+    protected Dictionary<string, IControlDesignToken> ControlTokens;
 
     private readonly ThemeDescriptor _descriptor;
     private readonly ThemeCatalog _catalog;
@@ -93,13 +93,14 @@ internal class Theme : AvaloniaObject, ITheme
         try
         {
             var request = _catalog.CreateCompileRequest(_id, _algorithms);
-            var result = _compiler.Compile(request);
+            var result = Compile(request);
             if (!result.Success)
             {
                 throw CreateCompilationException(result);
             }
 
             Hydrate(result.Snapshot!);
+            _loadErrorMsg = null;
             LoadedStatus = true;
             Loaded       = true;
         }
@@ -113,29 +114,33 @@ internal class Theme : AvaloniaObject, ITheme
 
     private void Hydrate(ThemeSnapshot snapshot)
     {
+        var resources = new ResourceDictionary();
+        var controlTokens = new Dictionary<string, IControlDesignToken>(StringComparer.Ordinal);
         foreach (var resource in snapshot.SharedResources)
         {
-            ResourceDictionary[resource.Key] = resource.Value;
+            resources[resource.Key] = resource.Value;
         }
 
         foreach (var component in snapshot.Components.Values)
         {
             foreach (var resource in component.ControlResources)
             {
-                ResourceDictionary[resource.Key] = resource.Value;
+                resources[resource.Key] = resource.Value;
             }
 
-            foreach (var resource in component.SharedResourceDelta)
-            {
-                ResourceDictionary[resource.Key] = resource.Value;
-            }
-
-            ControlTokens.Add(component.ControlToken.Id, component.ControlToken);
+            controlTokens.Add(component.ControlToken.Id, component.ControlToken);
         }
 
-        _sharedToken = snapshot.SharedToken;
-        IsDarkMode   = snapshot.IsDark;
-        _isPrimary   = IsPrimaryAlgorithmSet(_descriptor.Definition, snapshot.Algorithms);
+        ResourceDictionary = resources;
+        ControlTokens      = controlTokens;
+        _sharedToken       = snapshot.SharedToken;
+        IsDarkMode         = snapshot.IsDark;
+        _isPrimary         = IsPrimaryAlgorithmSet(_descriptor.Definition, snapshot.Algorithms);
+    }
+
+    protected virtual ThemeCompileResult Compile(ThemeCompileRequest request)
+    {
+        return _compiler.Compile(request);
     }
 
     private static ThemeLoadException CreateCompilationException(ThemeCompileResult result)

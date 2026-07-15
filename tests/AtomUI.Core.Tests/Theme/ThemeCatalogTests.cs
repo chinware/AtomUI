@@ -5,6 +5,7 @@ using AtomUI.Theme.Catalog;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Language;
+using AtomUI.Theme.Resources;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
@@ -86,6 +87,64 @@ public class ThemeCatalogTests
              .Height
              .ShouldBe(48);
         theme.ThemeResource[CompilerButtonTokenKind.Height].ShouldBe(48d);
+    }
+
+    [Fact]
+    public void Theme_Facade_Keeps_Component_Shared_Overrides_Out_Of_Global_Resources()
+    {
+        var source = new TestThemeSource(
+            "themes/Brand.xml",
+            """
+            <Theme Name="Brand" IsDefault="true">
+              <SharedTokens>
+                <Token Name="ColorPrimary" Value="#00b96b" />
+              </SharedTokens>
+              <ControlTokens>
+                <ControlToken Id="Button">
+                  <Token Name="ColorPrimary" IsShared="true" Value="#ff4d4f" />
+                </ControlToken>
+              </ControlTokens>
+            </Theme>
+            """);
+        var catalog = CreateCatalog(
+            [new ControlTokenRegistration(typeof(CompilerButtonToken))],
+            source);
+        var descriptor = catalog.GetDescriptor("Brand").ShouldNotBeNull();
+        var theme = new AtomUITheme(
+            descriptor,
+            catalog,
+            new ThemeCompiler(),
+            [ThemeAlgorithm.Default]);
+
+        theme.Load();
+
+        theme.ThemeResource[SharedTokenKind.ColorPrimary]
+             .ShouldBeOfType<ImmutableSolidColorBrush>()
+             .Color
+             .ShouldBe(Color.Parse("#00b96b"));
+        theme.GetControlToken(CompilerButtonToken.ID)!
+             .GetSharedResourceDeltaDictionary()[SharedTokenKind.ColorPrimary]
+             .ShouldBe(Color.Parse("#ff4d4f"));
+    }
+
+    [Fact]
+    public void Theme_Facade_Failed_Hydration_Does_Not_Publish_Partial_State_And_Can_Retry()
+    {
+        var source = new TestThemeSource("themes/Brand.xml", ThemeXml("Brand", isDefault: true));
+        var catalog = CreateCatalog(source);
+        var descriptor = catalog.GetDescriptor("Brand").ShouldNotBeNull();
+        var theme = new RetryAfterHydrationFailureTheme(descriptor, catalog);
+
+        Should.Throw<ArgumentException>(() => theme.Load());
+
+        theme.ThemeResource.ShouldBeEmpty();
+        theme.GetControlToken(CompilerButtonToken.ID).ShouldBeNull();
+        theme.IsLoaded.ShouldBeFalse();
+
+        theme.Load();
+
+        theme.IsLoaded.ShouldBeTrue();
+        theme.GetControlToken(CompilerButtonToken.ID).ShouldNotBeNull();
     }
 
     [Fact]
@@ -412,6 +471,66 @@ public class ThemeCatalogTests
         public Stream OpenRead()
         {
             throw new IOException(_message);
+        }
+    }
+
+    private sealed class RetryAfterHydrationFailureTheme : AtomUITheme
+    {
+        private int _compileCount;
+
+        public RetryAfterHydrationFailureTheme(ThemeDescriptor descriptor, ThemeCatalog catalog)
+            : base(descriptor, catalog, new ThemeCompiler(), [ThemeAlgorithm.Default])
+        {
+        }
+
+        protected override ThemeCompileResult Compile(ThemeCompileRequest request)
+        {
+            _compileCount++;
+            return new ThemeCompileResult(
+                _compileCount == 1 ? CreateDuplicateTokenSnapshot() : CreateValidSnapshot(),
+                Array.Empty<ThemeDefinitionDiagnostic>(),
+                null);
+        }
+
+        private static ThemeSnapshot CreateDuplicateTokenSnapshot()
+        {
+            var components = new Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot>
+            {
+                [new ComponentTokenIdentity("First", CompilerButtonToken.ID)] = CreateComponent(),
+                [new ComponentTokenIdentity("Second", CompilerButtonToken.ID)] = CreateComponent()
+            };
+            return CreateSnapshot(components);
+        }
+
+        private static ThemeSnapshot CreateValidSnapshot()
+        {
+            var components = new Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot>
+            {
+                [new ComponentTokenIdentity(null, CompilerButtonToken.ID)] = CreateComponent()
+            };
+            return CreateSnapshot(components);
+        }
+
+        private static ComponentThemeSnapshot CreateComponent()
+        {
+            return new ComponentThemeSnapshot(
+                new DesignToken(),
+                new Dictionary<object, object?>(),
+                new CompilerButtonToken(),
+                new Dictionary<object, object?>());
+        }
+
+        private static ThemeSnapshot CreateSnapshot(
+            IReadOnlyDictionary<ComponentTokenIdentity, ComponentThemeSnapshot> components)
+        {
+            return new ThemeSnapshot(
+                "Brand",
+                1,
+                [ThemeAlgorithm.Default],
+                false,
+                new DesignToken(),
+                new Dictionary<object, object?>(),
+                components);
         }
     }
 

@@ -307,7 +307,8 @@ internal class ThemeManager : Styles, IThemeManager
             return;
         }
 
-        var catalog = CreateThemeCatalog();
+        var componentTokenSchemas = CreateComponentTokenSchemas();
+        var catalog = CreateThemeCatalog(componentTokenSchemas);
         catalog.EnsureRequiredBuiltInThemesAvailable();
         var defaultDescriptor = catalog.ResolveDefaultDescriptor(
             HasExplicitDefaultTheme ? ExplicitDefaultThemeBaseId : null);
@@ -374,7 +375,8 @@ internal class ThemeManager : Styles, IThemeManager
         }
     }
 
-    private ThemeCatalog CreateThemeCatalog()
+    private ThemeCatalog CreateThemeCatalog(
+        IReadOnlyDictionary<string, IReadOnlySet<string>> componentTokenSchemas)
     {
         var sources = new List<IThemeCatalogSource>();
         var sourcePriority = 0;
@@ -397,7 +399,7 @@ internal class ThemeManager : Styles, IThemeManager
         return new ThemeCatalog(
             sources,
             CreateSharedTokenSchema(),
-            CreateComponentTokenSchemas(),
+            componentTokenSchemas,
             ControlTokenTypes);
     }
 
@@ -458,9 +460,10 @@ internal class ThemeManager : Styles, IThemeManager
         return names;
     }
 
-    private IReadOnlyDictionary<string, IReadOnlySet<string>> CreateComponentTokenSchemas()
+    internal IReadOnlyDictionary<string, IReadOnlySet<string>> CreateComponentTokenSchemas()
     {
         var schemas = new Dictionary<string, IReadOnlySet<string>>(StringComparer.Ordinal);
+        var errors = new List<string>();
         foreach (var registration in ControlTokenTypes)
         {
             AbstractControlDesignToken? token;
@@ -468,13 +471,17 @@ internal class ThemeManager : Styles, IThemeManager
             {
                 token = registration.Activate();
             }
-            catch
+            catch (Exception exception)
             {
+                errors.Add(
+                    $"Registration '{registration.TokenType.FullName}' activation failed: {exception.GetBaseException().Message}");
                 continue;
             }
 
             if (token is null)
             {
+                errors.Add(
+                    $"Registration '{registration.TokenType.FullName}' does not create an {nameof(AbstractControlDesignToken)}.");
                 continue;
             }
 
@@ -482,7 +489,16 @@ internal class ThemeManager : Styles, IThemeManager
                                     .GetProperties(System.Reflection.BindingFlags.Instance |
                                                    System.Reflection.BindingFlags.Public)
                                     .Select(static property => property.Name);
-            schemas[token.Id] = new HashSet<string>(names, StringComparer.Ordinal);
+            if (!schemas.TryAdd(token.Id, new HashSet<string>(names, StringComparer.Ordinal)))
+            {
+                errors.Add($"Duplicate component token id '{token.Id}'.");
+            }
+        }
+
+        if (errors.Count > 0)
+        {
+            throw new ThemeLoadException(
+                $"Invalid control token registrations: {string.Join(" ", errors)}");
         }
 
         return schemas;
