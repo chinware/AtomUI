@@ -45,10 +45,14 @@ public class DialogMotionAnchorTests
 
         try
         {
-            var openingTransform = CaptureOpeningRenderTransform(dialog, window);
+            var openingState = CaptureOpeningMotionState(dialog, window);
 
-            openingTransform.IsIdentity.ShouldBeTrue(
+            openingState.RenderTransform.IsIdentity.ShouldBeTrue(
                 "a dialog without an explicit PlacementTarget should not scale or translate from the fallback host.");
+            openingState.HostTransitions
+                        .OfType<TransformOperationsTransition>()
+                        .ShouldBeEmpty(
+                            "opacity-only opening should not create a no-op transform transition.");
         }
         finally
         {
@@ -74,10 +78,14 @@ public class DialogMotionAnchorTests
 
         try
         {
-            var openingTransform = CaptureOpeningRenderTransform(dialog, window);
+            var openingState = CaptureOpeningMotionState(dialog, window);
 
-            openingTransform.IsIdentity.ShouldBeTrue(
+            openingState.RenderTransform.IsIdentity.ShouldBeTrue(
                 "the static API fallback placement target is only a host resolver and should not become the motion anchor.");
+            openingState.HostTransitions
+                        .OfType<TransformOperationsTransition>()
+                        .ShouldBeEmpty(
+                            "static fallback placement should not create a no-op transform transition.");
         }
         finally
         {
@@ -107,10 +115,14 @@ public class DialogMotionAnchorTests
 
         try
         {
-            var openingTransform = CaptureOpeningRenderTransform(dialog, window);
+            var openingState = CaptureOpeningMotionState(dialog, window);
 
-            openingTransform.IsIdentity.ShouldBeFalse(
+            openingState.RenderTransform.IsIdentity.ShouldBeFalse(
                 "an explicit PlacementTarget should keep the existing scale/translate anchor motion.");
+            openingState.HostTransitions
+                        .OfType<TransformOperationsTransition>()
+                        .Single()
+                        .Property.ShouldBe(Visual.RenderTransformProperty);
         }
         finally
         {
@@ -145,6 +157,8 @@ public class DialogMotionAnchorTests
 
             closingState.HostTransform.IsIdentity.ShouldBeTrue(
                 "a modal dialog without an explicit PlacementTarget should fade out as one layer instead of collapsing toward a fallback host.");
+            closingState.HostTransformTransitionCount.ShouldBe(0,
+                "opacity-only close should not create a no-op transform transition.");
             closingState.HostOpacityTransition.Easing.ShouldBeOfType<CubicEaseIn>(
                 "close opacity should start gently so the dialog frame does not disappear before the content.");
             closingState.MaskOpacityTransition.Easing.ShouldBeOfType<CubicEaseIn>(
@@ -273,11 +287,12 @@ public class DialogMotionAnchorTests
             [new AtomUI.Desktop.Controls.TextBlock { Text = "Dialog" }, null, options, placementTarget])!;
     }
 
-    private static TransformOperations CaptureOpeningRenderTransform(
+    private static (TransformOperations RenderTransform, Transitions HostTransitions) CaptureOpeningMotionState(
         AtomUI.Desktop.Controls.Dialog dialog,
         AvaloniaWindow window)
     {
         TransformOperations? openingTransform = null;
+        Transitions? hostTransitions = null;
 
         var openTask = dialog.OpenAsync();
         openTask.IsCompleted.ShouldBeTrue("non-modal Dialog.OpenAsync should finish after scheduling the opening motion.");
@@ -289,20 +304,23 @@ public class DialogMotionAnchorTests
                                     .Single();
 
             openingTransform = overlayHost.RenderTransform.ShouldBeOfType<TransformOperations>();
+            hostTransitions  = GetTransitions(overlayHost);
 
             dialog.IsMotionEnabled = false;
             dialog.Done();
-        });
+        }, DispatcherPriority.Loaded);
 
         Dispatcher.UIThread.RunJobs();
         openTask.GetAwaiter().GetResult();
 
         openingTransform.ShouldNotBeNull();
-        return openingTransform;
+        hostTransitions.ShouldNotBeNull();
+        return (openingTransform, hostTransitions);
     }
 
     private static (
         TransformOperations HostTransform,
+        int HostTransformTransitionCount,
         DoubleTransition HostOpacityTransition,
         DoubleTransition MaskOpacityTransition) CaptureModalClosingState(
             AtomUI.Desktop.Controls.Dialog dialog,
@@ -324,12 +342,13 @@ public class DialogMotionAnchorTests
 
         var hostTransform          = overlayHost.RenderTransform.ShouldBeOfType<TransformOperations>();
         var hostOpacityTransition  = GetSingleOpacityTransition(overlayHost);
+        var hostTransformCount     = GetTransitions(overlayHost).OfType<TransformOperationsTransition>().Count();
         var maskOpacityTransition  = GetSingleOpacityTransition(mask);
 
         Dispatcher.UIThread.RunJobs();
         openTask.GetAwaiter().GetResult();
 
-        return (hostTransform, hostOpacityTransition, maskOpacityTransition);
+        return (hostTransform, hostTransformCount, hostOpacityTransition, maskOpacityTransition);
     }
 
     private static int CountDialogButtons(Visual visual)
@@ -341,6 +360,11 @@ public class DialogMotionAnchorTests
 
     private static DoubleTransition GetSingleOpacityTransition(object control)
     {
+        return GetTransitions(control).OfType<DoubleTransition>().Single();
+    }
+
+    private static Transitions GetTransitions(object control)
+    {
         var transitionsProperty = control.GetType().GetProperty(
             "Transitions",
             BindingFlags.Instance | BindingFlags.Public);
@@ -348,7 +372,7 @@ public class DialogMotionAnchorTests
         transitionsProperty.ShouldNotBeNull();
         var transitions = (Transitions?)transitionsProperty.GetValue(control);
         transitions.ShouldNotBeNull();
-        return transitions.OfType<DoubleTransition>().Single();
+        return transitions;
     }
 
     private static void SetOverlayDialogHostAnimationDuration(Visual searchRoot, TimeSpan duration)
