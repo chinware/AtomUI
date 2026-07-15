@@ -2,8 +2,10 @@ using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Definitions;
+using AtomUI.Theme.Palette;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Scope;
+using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Collections;
@@ -83,6 +85,8 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     private readonly CompositeDisposable _configurationSubscriptions;
     private bool _isInitializing;
     private bool _recompileQueued;
+    private int _recompileGeneration;
+    private int _lifecycleGeneration;
     private static int _idSeed = 1;
 
     internal event EventHandler<ThemeScopeCompileFailedEventArgs>? ThemeScopeCompileFailed;
@@ -148,6 +152,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        CancelScheduledRecompile();
         _parentSnapshotSubscription?.Dispose();
         _parentSnapshotSubscription = null;
         _configurationSubscriptions.Clear();
@@ -183,9 +188,13 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         }
 
         _recompileQueued = true;
+        var recompileGeneration = ++_recompileGeneration;
+        var lifecycleGeneration = _lifecycleGeneration;
         Dispatcher.UIThread.Post(() =>
         {
-            if (!_recompileQueued)
+            if (!_recompileQueued ||
+                recompileGeneration != _recompileGeneration ||
+                lifecycleGeneration != _lifecycleGeneration)
             {
                 return;
             }
@@ -197,8 +206,15 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     private void CompileAndPublishImmediately()
     {
-        _recompileQueued = false;
+        CancelScheduledRecompile();
         CompileAndPublish();
+    }
+
+    private void CancelScheduledRecompile()
+    {
+        _recompileQueued = false;
+        _recompileGeneration++;
+        _lifecycleGeneration++;
     }
 
     private void CompileAndPublish()
@@ -303,19 +319,12 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     private void PublishSnapshot(ThemeSnapshot snapshot)
     {
-        if (_tokenResourceProvider is null)
-        {
-            _tokenResourceProvider = new ThemeTokenResourceProvider(snapshot);
-            Resources.MergedDictionaries.Add(_tokenResourceProvider);
-        }
-        else
-        {
-            _tokenResourceProvider.PrepareSnapshot(snapshot);
-        }
+        var sharedToken = CloneDesignToken(snapshot.SharedToken);
+        var controlTokens = CreateCompatibilityControlTokenMap(snapshot, sharedToken);
 
         _snapshot      = snapshot;
-        _sharedToken   = snapshot.SharedToken;
-        _controlTokens = CreateCompatibilityControlTokenMap(snapshot);
+        _sharedToken   = sharedToken;
+        _controlTokens = controlTokens;
         IsDarkMode     = snapshot.IsDark;
 
         if (Content is not null)
@@ -323,18 +332,68 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             Content.SetValue(ThemeScope.SnapshotProperty, snapshot);
         }
 
+        if (_tokenResourceProvider is null)
+        {
+            _tokenResourceProvider = new ThemeTokenResourceProvider(snapshot);
+            Resources.MergedDictionaries.Add(_tokenResourceProvider);
+            return;
+        }
+
+        _tokenResourceProvider.PrepareSnapshot(snapshot);
         _tokenResourceProvider.PublishSnapshotChanged();
     }
 
-    private static Dictionary<string, IControlDesignToken> CreateCompatibilityControlTokenMap(ThemeSnapshot snapshot)
+    private static Dictionary<string, IControlDesignToken> CreateCompatibilityControlTokenMap(
+        ThemeSnapshot snapshot,
+        DesignToken sharedToken)
     {
         var result = new Dictionary<string, IControlDesignToken>(StringComparer.Ordinal);
         foreach (var (identity, component) in snapshot.Components)
         {
-            result.TryAdd(identity.TokenId, component.ControlToken);
+            var token = CloneCompatibilityControlToken(component.ControlToken);
+            token.AssignSharedToken(CloneDesignToken(component.EffectiveSharedToken));
+            token.SetHasCustomTokenConfig(component.ControlToken.HasCustomTokenConfig());
+            token.SetCustomTokens(component.ControlToken.GetCustomTokens().ToList());
+            ((AbstractControlDesignToken)token).BuildSharedResourceDeltaDictionary(sharedToken);
+            result.TryAdd(identity.TokenId, token);
         }
 
         return result;
+    }
+
+    private static IControlDesignToken CloneCompatibilityControlToken(IControlDesignToken source)
+    {
+        return (IControlDesignToken)source.Clone();
+    }
+
+    private static DesignToken CloneDesignToken(DesignToken source)
+    {
+        var clone = (DesignToken)source.Clone();
+        var palettes = new Dictionary<PresetPrimaryColor, ColorMap>(source.ColorPalettes.Count);
+        foreach (var palette in source.ColorPalettes)
+        {
+            palettes.Add(palette.Key, CloneColorMap(palette.Value));
+        }
+
+        clone.ColorPalettes = palettes;
+        return clone;
+    }
+
+    private static ColorMap CloneColorMap(ColorMap source)
+    {
+        return new ColorMap
+        {
+            Color1 = source.Color1,
+            Color2 = source.Color2,
+            Color3 = source.Color3,
+            Color4 = source.Color4,
+            Color5 = source.Color5,
+            Color6 = source.Color6,
+            Color7 = source.Color7,
+            Color8 = source.Color8,
+            Color9 = source.Color9,
+            Color10 = source.Color10
+        };
     }
 
     private void ResetConfigurationSubscriptions()

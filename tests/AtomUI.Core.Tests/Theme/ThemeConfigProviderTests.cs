@@ -196,6 +196,74 @@ public class ThemeConfigProviderTests
         GetSnapshot(second).ShouldBeSameAs(GetTokenResourceProvider(provider).Snapshot);
     }
 
+    [Fact]
+    public void Compatibility_Token_Mutations_Do_Not_Change_Scoped_Snapshots_Or_Inheriting_Child()
+    {
+        using var _ = UseThemeManager();
+        var childContent = new Border();
+        var parent = Provider(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
+        var child = Provider();
+        parent.Content = child;
+        child.Content = childContent;
+        FlushThemeUpdates();
+        var parentSnapshot = GetSnapshot(child).ShouldNotBeNull();
+        var childSnapshot = GetSnapshot(childContent).ShouldNotBeNull();
+
+        parent.SharedToken.ColorPrimary = Color.Parse("#00b96b");
+        GetButtonToken(parent).Height = 44;
+
+        parentSnapshot.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
+        GetSnapshot(child).ShouldBeSameAs(parentSnapshot);
+        childSnapshot.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
+        GetSnapshot(childContent).ShouldBeSameAs(childSnapshot);
+        GetSnapshot(childContent)!.Components.Values
+            .Single()
+            .ControlToken
+            .ShouldBeOfType<CompilerButtonToken>()
+            .Height
+            .ShouldBe(32);
+    }
+
+    [Fact]
+    public void Queued_Recompile_Does_Not_Restore_Content_Scope_After_Detach()
+    {
+        using var _ = UseThemeManager();
+        var content = new Border();
+        var provider = new DetachableThemeConfigProvider { Content = content };
+        FlushThemeUpdates();
+
+        provider.SharedTokenSetters.Add(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
+        provider.DetachForTest();
+        FlushThemeUpdates();
+
+        GetSnapshot(content).ShouldBeNull();
+    }
+
+    [Fact]
+    public void Initial_Compile_Notifies_Once_After_Public_State_Is_Published()
+    {
+        using var _ = UseThemeManager();
+        var content = new Border();
+        var provider = new ThemeConfigProvider
+        {
+            Content = content
+        };
+        provider.SharedTokenSetters.Add(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
+        var notifications = 0;
+        var wasCommittedAtNotification = true;
+        ((IResourceHost)provider).ResourcesChanged += (_, _) =>
+        {
+            notifications++;
+            wasCommittedAtNotification &= GetSnapshot(content)?.SharedToken.ColorPrimary == Color.Parse("#ff0000") &&
+                                         provider.SharedToken.ColorPrimary == Color.Parse("#ff0000");
+        };
+
+        FlushThemeUpdates();
+
+        notifications.ShouldBe(1);
+        wasCommittedAtNotification.ShouldBeTrue();
+    }
+
     private static ThemeConfigProvider Provider(params TokenSetter[] sharedTokenSetters)
     {
         var provider = new ThemeConfigProvider
@@ -246,5 +314,13 @@ public class ThemeConfigProviderTests
     private static void FlushThemeUpdates()
     {
         Dispatcher.UIThread.RunJobs();
+    }
+
+    private sealed class DetachableThemeConfigProvider : ThemeConfigProvider
+    {
+        public void DetachForTest()
+        {
+            OnDetachedFromVisualTree(null!);
+        }
     }
 }
