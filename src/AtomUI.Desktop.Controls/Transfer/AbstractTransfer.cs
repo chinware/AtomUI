@@ -413,7 +413,6 @@ public abstract class AbstractTransfer: TemplatedControl,
     
     public AbstractTransfer()
     {
-        this.RegisterTokenResourceScope(TransferToken.ScopeProvider);
     }
 
     protected override void OnInitialized()

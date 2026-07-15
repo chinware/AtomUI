@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 internal class AutoCompleteToken : AbstractControlDesignToken
 {
     public const string ID = "AutoComplete";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     /// <summary>
     /// 菜单内容边距

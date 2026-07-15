@@ -660,7 +660,6 @@ public abstract class AbstractAutoComplete : TemplatedControl,
 
     public AbstractAutoComplete()
     {
-        this.RegisterTokenResourceScope(AutoCompleteToken.ScopeProvider);
         Options.CollectionChanged += HandleOptionsChanged;
     }
 

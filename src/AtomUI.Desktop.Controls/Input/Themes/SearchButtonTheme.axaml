@@ -12,46 +12,46 @@
     <Style Selector="^:is(atom|SearchButton)[ButtonType=Text]">
         <Style Selector="^[StyleVariant=Filled]">
             <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ColorFillTertiary}" />
+                    Value="{atom:LineEditTokenSharedTokenResource ColorFillTertiary}" />
         </Style>
 
         <Style Selector="^:pointerover">
             <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ColorBgTextHover}" />
+                    Value="{atom:LineEditTokenSharedTokenResource ColorBgTextHover}" />
         </Style>
 
         <Style Selector="^:pressed">
             <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ColorBgTextActive}" />
+                    Value="{atom:LineEditTokenSharedTokenResource ColorBgTextActive}" />
         </Style>
 
         <Style Selector="^[Status=Error]">
             <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ColorErrorBg}" />
+                    Value="{atom:LineEditTokenSharedTokenResource ColorErrorBg}" />
             <Style Selector="^:pointerover">
                 <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorErrorBgHover}" />
+                        Value="{atom:LineEditTokenSharedTokenResource ColorErrorBgHover}" />
             </Style>
             <Style Selector="^:pressed">
                 <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorErrorBgActive}" />
+                        Value="{atom:LineEditTokenSharedTokenResource ColorErrorBgActive}" />
             </Style>
         </Style>
 
         <Style Selector="^[Status=Warning]">
             <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ColorWarningBg}" />
+                    Value="{atom:LineEditTokenSharedTokenResource ColorWarningBg}" />
             <Style Selector="^:pointerover">
                 <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorWarningHover}" />
+                        Value="{atom:LineEditTokenSharedTokenResource ColorWarningHover}" />
             </Style>
             <Style Selector="^:pressed">
                 <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorWarningActive}" />
+                        Value="{atom:LineEditTokenSharedTokenResource ColorWarningActive}" />
             </Style>
         </Style>
 
-        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}" />
+        <Setter Property="Foreground" Value="{atom:LineEditTokenSharedTokenResource ColorTextDescription}" />
 
         <Style Selector="^:pointerover">
             <Setter Property="Foreground" Value="{atom:ButtonTokenResource DefaultHoverColor}" />
@@ -62,7 +62,7 @@
         </Style>
         
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:LineEditTokenSharedTokenResource ColorTextDisabled}" />
         </Style>
     </Style>
 

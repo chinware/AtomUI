@@ -37,7 +37,7 @@
         
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                <Setter Property="Foreground" Value="{atom:TimePickerTokenSharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
 

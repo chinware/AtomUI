@@ -10,7 +10,6 @@ namespace AtomUI.Desktop.Controls;
 internal class CascaderToken : AbstractControlDesignToken
 {
     public const string ID = "Cascader";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     /// <summary>
     /// 节点标题高度

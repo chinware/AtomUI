@@ -284,7 +284,6 @@ public partial class Upload : ContentControl,
 
     public Upload()
     {
-        this.RegisterTokenResourceScope(UploadToken.ScopeProvider);
         _effectiveFiles = _ownedFiles;
         _uploadQueue = new UploadQueue(this, UploadTransport, MaxConcurrentTasks);
         SyncAppendContentItem();

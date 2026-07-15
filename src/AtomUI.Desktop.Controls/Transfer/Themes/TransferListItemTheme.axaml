@@ -41,7 +41,7 @@
 
         <Style Selector="^:is(atom|TransferListItem)">
             <Style Selector="^ /template/ DockPanel#ContentLayout">
-                <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
+                <Setter Property="HorizontalSpacing" Value="{atom:TransferTokenSharedTokenResource SpacingXS}"/>
             </Style>
         </Style>
     </ControlTheme>

@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls.Primitives;
 internal class InfoPickerInputToken : AbstractControlDesignToken
 {
     public const string ID = "InfoPickerInput";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public InfoPickerInputToken()
         : base(ID)

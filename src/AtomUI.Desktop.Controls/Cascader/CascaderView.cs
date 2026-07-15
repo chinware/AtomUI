@@ -327,7 +327,6 @@ public partial class CascaderView : TemplatedControl,
     
     public CascaderView()
     {
-        this.RegisterTokenResourceScope(CascaderToken.ScopeProvider);
         _options.CollectionChanged += HandleCollectionChanged;
     }
     

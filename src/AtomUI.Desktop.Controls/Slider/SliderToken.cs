@@ -13,7 +13,6 @@ namespace AtomUI.Desktop.Controls;
 internal class SliderToken : AbstractControlDesignToken
 {
     public const string ID = "Slider";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public SliderToken()
         : base(ID)

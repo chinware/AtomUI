@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 internal class TransferToken : AbstractControlDesignToken
 {
     public const string ID = "Transfer";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public TransferToken()
         : base(ID)

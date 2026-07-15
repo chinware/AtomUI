@@ -6,8 +6,8 @@ using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
 using AtomUI.Controls.Primitives;
-using AtomUI.Theme;
 using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Theme.Resources;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
@@ -98,7 +98,7 @@ public class TextBoxVisualStateTests
     }
 
     [Fact]
-    public void TextBox_Uses_Customizable_SizeType_Contract_And_TextBox_Token_Scope()
+    public void TextBox_Uses_Customizable_SizeType_Contract_And_Component_Shared_Token_Resources()
     {
         typeof(ICustomizableSizeTypeAware).IsAssignableFrom(typeof(AtomUITextBox)).ShouldBeTrue();
 
@@ -116,14 +116,13 @@ public class TextBoxVisualStateTests
 
         var textBoxTokenType = typeof(AtomUITextBox).Assembly.GetType("AtomUI.Desktop.Controls.TextBoxToken");
         textBoxTokenType.ShouldNotBeNull();
-        var textBoxScopeProvider = textBoxTokenType!
+        textBoxTokenType!
             .GetField("ScopeProvider", BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy)
-            .ShouldNotBeNull()
-            .GetValue(null);
+            .ShouldBeNull();
 
-        var textBox       = new AtomUITextBox();
-        var scopeProvider = ControlTokenResourceScopeHost.GetTokenResourceScopeProvider(textBox);
-        scopeProvider.ShouldBeSameAs(textBoxScopeProvider);
+        var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Input/Themes/TextBoxTheme.axaml");
+        source.ShouldContain("TextBoxTokenSharedTokenResource FontSize");
+        source.ShouldNotContain("{atom:SharedTokenResource ");
     }
 
     [Fact]
@@ -215,15 +214,15 @@ public class TextBoxVisualStateTests
         source.ShouldContain("TextBoxTokenResource Padding");
         source.ShouldContain("TextBoxTokenResource PaddingSM");
         source.ShouldNotContain("IsCustomPadding");
-        source.ShouldContain("SharedTokenResource UniformlyPaddingXXS");
-        source.ShouldContain("SharedTokenResource FontHeightLG");
-        source.ShouldContain("SharedTokenResource FontHeight");
-        source.ShouldContain("SharedTokenResource FontHeightSM");
-        source.ShouldContain("SharedTokenResource FontSizeLG");
-        source.ShouldContain("SharedTokenResource FontSize");
-        source.ShouldContain("SharedTokenResource FontSizeSM");
-        source.ShouldContain("SharedTokenResource ColorTextPlaceholder");
-        source.ShouldContain("SharedTokenResource ColorTextDisabled");
+        source.ShouldContain("TextBoxTokenSharedTokenResource UniformlyPaddingXXS");
+        source.ShouldContain("TextBoxTokenSharedTokenResource FontHeightLG");
+        source.ShouldContain("TextBoxTokenSharedTokenResource FontHeight");
+        source.ShouldContain("TextBoxTokenSharedTokenResource FontHeightSM");
+        source.ShouldContain("TextBoxTokenSharedTokenResource FontSizeLG");
+        source.ShouldContain("TextBoxTokenSharedTokenResource FontSize");
+        source.ShouldContain("TextBoxTokenSharedTokenResource FontSizeSM");
+        source.ShouldContain("TextBoxTokenSharedTokenResource ColorTextPlaceholder");
+        source.ShouldContain("TextBoxTokenSharedTokenResource ColorTextDisabled");
         source.ShouldNotContain("LineEditTokenResource");
         source.ShouldNotContain("AddOnDecoratedBoxTokenResource");
         source.ShouldNotContain("AddOn");
@@ -319,7 +318,8 @@ public class TextBoxVisualStateTests
                 textBox.IsMotionEnabled.ShouldBeFalse();
                 border.Transitions.ShouldBeNull();
             },
-            window => window.Resources[SharedTokenKind.EnableMotion] = false);
+            window => window.Resources[
+                new ComponentSharedTokenResourceKey(null, "TextBox", SharedTokenKind.EnableMotion)] = false);
     }
 
     [Fact]

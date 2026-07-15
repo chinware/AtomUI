@@ -11,7 +11,6 @@ namespace AtomUI.Desktop.Controls;
 internal class DatePickerToken : AbstractControlDesignToken
 {
     public const string ID = "DatePicker";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public DatePickerToken()
         : base(ID)

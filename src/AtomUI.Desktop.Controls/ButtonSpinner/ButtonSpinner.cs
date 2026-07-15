@@ -229,7 +229,6 @@ public class ButtonSpinner : Spinner,
     
     public ButtonSpinner()
     {
-        this.RegisterTokenResourceScope(ButtonSpinnerToken.ScopeProvider);
     }
     
     private IconButton? _decreaseButton;

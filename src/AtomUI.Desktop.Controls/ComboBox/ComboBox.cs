@@ -351,7 +351,6 @@ public class ComboBox : AvaloniaComboBox,
 
     public ComboBox()
     {
-        this.RegisterTokenResourceScope(ComboBoxToken.ScopeProvider);
         SelectionBoxItemProperty.Changed.AddClassHandler<ComboBox>((box, args) => box.NotifyFormValueChanged(args.NewValue));
         Items.CollectionChanged += HandleItemsCollectionChanged;
         ContainerPrepared += HandleContainerPrepared;

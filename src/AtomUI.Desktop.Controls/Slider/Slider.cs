@@ -225,7 +225,6 @@ public class Slider : RangeBase,
     }
     public Slider()
     {
-        this.RegisterTokenResourceScope(SliderToken.ScopeProvider);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

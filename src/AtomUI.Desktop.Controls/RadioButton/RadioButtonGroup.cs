@@ -8,7 +8,6 @@ public class RadioButtonGroup : AbstractRadioButtonGroup
 {
     public RadioButtonGroup()
     {
-        this.RegisterTokenResourceScope(RadioButtonToken.ScopeProvider);
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)

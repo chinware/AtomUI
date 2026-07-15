@@ -17,27 +17,27 @@
         </Setter>
         
         <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
-        <Setter Property="IsWaveSpiritEnabled" Value="{atom:SharedTokenResource EnableWaveSpirit}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:OptionButtonTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsWaveSpiritEnabled" Value="{atom:OptionButtonTokenSharedTokenResource EnableWaveSpirit}" />
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
-            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+            <Setter Property="Height" Value="{atom:OptionButtonTokenSharedTokenResource ControlHeightLG}" />
+            <Setter Property="CornerRadius" Value="{atom:OptionButtonTokenSharedTokenResource BorderRadiusLG}" />
         </Style>
         
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
-            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            <Setter Property="Height" Value="{atom:OptionButtonTokenSharedTokenResource ControlHeight}" />
+            <Setter Property="CornerRadius" Value="{atom:OptionButtonTokenSharedTokenResource BorderRadius}" />
         </Style>
         
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
-            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+            <Setter Property="Height" Value="{atom:OptionButtonTokenSharedTokenResource ControlHeightSM}" />
+            <Setter Property="CornerRadius" Value="{atom:OptionButtonTokenSharedTokenResource BorderRadiusSM}" />
         </Style>
         
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
-        <Setter Property="SelectedOptionBorderColor" Value="{atom:SharedTokenResource ColorPrimary}" />
-        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="BorderBrush" Value="{atom:OptionButtonTokenSharedTokenResource ColorBorder}" />
+        <Setter Property="SelectedOptionBorderColor" Value="{atom:OptionButtonTokenSharedTokenResource ColorPrimary}" />
+        <Setter Property="BorderThickness" Value="{atom:OptionButtonTokenSharedTokenResource BorderThickness}" />
         
     </ControlTheme>
 </ResourceDictionary>

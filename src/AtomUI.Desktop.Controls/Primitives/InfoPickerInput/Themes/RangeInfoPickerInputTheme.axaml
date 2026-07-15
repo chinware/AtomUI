@@ -35,7 +35,7 @@
                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
                     <atom:AddOnDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal"
-                                    Spacing="{atom:SharedTokenResource SpacingXS}">
+                                    Spacing="{atom:InfoPickerInputTokenSharedTokenResource SpacingXS}">
                             <atom:PickerClearUpButton
                                 Name="PART_ClearUpButton" />
                             <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
@@ -112,7 +112,7 @@
         <Style Selector="^ /template/ atom|EmbeddedTextBox">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Foreground"
-                    Value="{atom:SharedTokenResource ColorText}" />
+                    Value="{atom:InfoPickerInputTokenSharedTokenResource ColorText}" />
         </Style>
         <Style
             Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox /template/ TextPresenter#PART_TextPresenter, ^ /template/ atom|EmbeddedTextBox#PART_SecondaryInfoInputBox /template/ TextPresenter#PART_TextPresenter">
@@ -122,18 +122,18 @@
         <Style Selector="^:flyout-open">
             <Style Selector="^ /template/ atom|EmbeddedTextBox">
                 <Setter Property="Foreground"
-                        Value="{atom:SharedTokenResource ColorText}" />
+                        Value="{atom:InfoPickerInputTokenSharedTokenResource ColorText}" />
             </Style>
             <Style Selector="^[RangeActivatedPart=Start]">
                 <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox">
                     <Setter Property="Foreground"
-                            Value="{atom:SharedTokenResource ColorTextTertiary}" />
+                            Value="{atom:InfoPickerInputTokenSharedTokenResource ColorTextTertiary}" />
                 </Style>
             </Style>
             <Style Selector="^[RangeActivatedPart=End]">
                 <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_SecondaryInfoInputBox">
                     <Setter Property="Foreground"
-                            Value="{atom:SharedTokenResource ColorTextTertiary}" />
+                            Value="{atom:InfoPickerInputTokenSharedTokenResource ColorTextTertiary}" />
                 </Style>
             </Style>
         </Style>
@@ -141,20 +141,20 @@
         <Style Selector="^ /template/ atom|Icon#PART_RangePickerArrow">
             <Setter Property="Margin"
                     Value="{atom:InfoPickerInputTokenResource RangePickerArrowMargin}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:InfoPickerInputTokenSharedTokenResource IconSize}" />
+            <Setter Property="Width" Value="{atom:InfoPickerInputTokenSharedTokenResource IconSize}" />
             <Setter Property="FillBrush"
-                    Value="{atom:SharedTokenResource ColorIcon}" />
+                    Value="{atom:InfoPickerInputTokenSharedTokenResource ColorIcon}" />
             <Setter Property="StrokeBrush"
-                    Value="{atom:SharedTokenResource ColorIcon}" />
+                    Value="{atom:InfoPickerInputTokenSharedTokenResource ColorIcon}" />
         </Style>
 
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ atom|Icon#PART_RangePickerArrow">
                 <Setter Property="FillBrush"
-                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:InfoPickerInputTokenSharedTokenResource ColorTextDisabled}" />
                 <Setter Property="StrokeBrush"
-                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:InfoPickerInputTokenSharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
 
@@ -165,19 +165,19 @@
 
         <Style Selector="^[EffectiveStatus=Default]">
             <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">
-                <Setter Property="Fill" Value="{atom:SharedTokenResource ColorPrimary}" />
+                <Setter Property="Fill" Value="{atom:InfoPickerInputTokenSharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
 
         <Style Selector="^[EffectiveStatus=Error]">
             <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">
-                <Setter Property="Fill" Value="{atom:SharedTokenResource ColorError}" />
+                <Setter Property="Fill" Value="{atom:InfoPickerInputTokenSharedTokenResource ColorError}" />
             </Style>
         </Style>
 
         <Style Selector="^[EffectiveStatus=Warning]">
             <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">
-                <Setter Property="Fill" Value="{atom:SharedTokenResource ColorWarning}" />
+                <Setter Property="Fill" Value="{atom:InfoPickerInputTokenSharedTokenResource ColorWarning}" />
             </Style>
         </Style>
 

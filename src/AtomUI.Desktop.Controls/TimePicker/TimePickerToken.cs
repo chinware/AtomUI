@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 internal class TimePickerToken : AbstractControlDesignToken
 {
     public const string ID = "TimePicker";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public TimePickerToken()
         : base(ID)

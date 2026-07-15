@@ -14,7 +14,7 @@
         </Setter>
 
         <Setter Property="ClipToBounds" Value="False"/>
-        <Setter Property="RadioBorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
+        <Setter Property="RadioBorderThickness" Value="{atom:RadioButtonTokenSharedTokenResource BorderThickness}"/>
         <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
             <Setter Property="WaveType" Value="CircleWave"/>
         </Style>

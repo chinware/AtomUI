@@ -134,7 +134,6 @@ public class TimePicker : InfoPickerInput
 
     public TimePicker()
     {
-        this.RegisterTokenResourceScope(TimePickerToken.ScopeProvider);
     }
 
     static TimePicker()

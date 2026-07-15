@@ -226,7 +226,6 @@ public class TextArea : AvaloniaTextBox,
     
     public TextArea()
     {
-        this.RegisterTokenResourceScope(LineEditToken.ScopeProvider);
     }
 
     private void UpdatePseudoClasses()

@@ -7,6 +7,5 @@ public class OptionButton : AbstractOptionButton
 {
     public OptionButton()
     {
-        this.RegisterTokenResourceScope(OptionButtonToken.ScopeProvider);
     }
 }

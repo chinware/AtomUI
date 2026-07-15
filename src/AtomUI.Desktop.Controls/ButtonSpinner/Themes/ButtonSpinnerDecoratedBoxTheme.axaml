@@ -118,7 +118,7 @@
         <Style Selector="^:is(atom|ButtonSpinnerDecoratedBox)">
 
             <Setter Property="SpinnerBorderThickness"
-                    Value="{atom:SharedTokenResource BorderThickness}" />
+                    Value="{atom:ButtonSpinnerTokenSharedTokenResource BorderThickness}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="SpinnerHandleWidth"
                     Value="{atom:ButtonSpinnerTokenResource HandleWidth}" />
@@ -148,23 +148,23 @@
             </Style>
 
             <Style Selector="^ /template/ atom|ButtonSpinnerContentPanel#ContentLayout">
-                <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXXS}" />
+                <Setter Property="HorizontalSpacing" Value="{atom:ButtonSpinnerTokenSharedTokenResource SpacingXXS}" />
             </Style>
 
             <Style Selector="^[SizeType=Large]">
                 <Setter Property="ContentPadding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
-                <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
+                <Setter Property="MinHeight" Value="{atom:ButtonSpinnerTokenSharedTokenResource ControlHeightLG}" />
             </Style>
             <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Setter Property="ContentPadding"
                         Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
-                <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
+                <Setter Property="MinHeight" Value="{atom:ButtonSpinnerTokenSharedTokenResource ControlHeight}" />
             </Style>
             <Style Selector="^[SizeType=Small]">
                 <Setter Property="ContentPadding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
-                <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
+                <Setter Property="MinHeight" Value="{atom:ButtonSpinnerTokenSharedTokenResource ControlHeightSM}" />
             </Style>
             <Style Selector="^[SizeType=Large], ^[SizeType=Middle], ^[SizeType=Custom], ^[SizeType=Small]">
                 <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">

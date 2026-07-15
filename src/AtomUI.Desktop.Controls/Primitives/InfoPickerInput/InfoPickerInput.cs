@@ -385,7 +385,6 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     public InfoPickerInput()
     {
-        this.RegisterTokenResourceScope(InfoPickerInputToken.ScopeProvider);
     }
 
     public virtual void Clear()

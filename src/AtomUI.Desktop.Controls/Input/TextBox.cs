@@ -208,7 +208,6 @@ public class TextBox : AvaloniaTextBox,
 
     public TextBox()
     {
-        this.RegisterTokenResourceScope(TextBoxToken.ScopeProvider);
     }
 
     protected override void OnInitialized()

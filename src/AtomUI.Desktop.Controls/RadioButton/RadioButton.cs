@@ -7,6 +7,5 @@ public class RadioButton : AbstractRadioButton
 {
     public RadioButton()
     {
-        this.RegisterTokenResourceScope(RadioButtonToken.ScopeProvider);
     }
 }

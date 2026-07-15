@@ -6,11 +6,11 @@
               x:ClassModifier="internal">
 
     <Style Selector="^:is(atom|AbstractAutoComplete)">
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:AutoCompleteTokenSharedTokenResource EnableMotion}" />
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="PlaceholderForeground" Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
+        <Setter Property="PlaceholderForeground" Value="{atom:AutoCompleteTokenSharedTokenResource ColorTextPlaceholder}" />
         <Setter Property="ItemHeight" Value="{atom:AutoCompleteTokenResource OptionHeight}" />
         <Setter Property="PopupContentPadding"
                 Value="{atom:AutoCompleteTokenResource PopupContentPadding}" />
@@ -21,7 +21,7 @@
             <Setter Property="OverlayHostShadow" Value="{atom:PopupHostTokenResource OverlayHostShadow}" />
         </Style>
         <Style Selector="^ /template/ Border#PopupFrame">
-            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+            <Setter Property="Background" Value="{atom:AutoCompleteTokenSharedTokenResource ColorBgElevated}" />
             <Setter Property="CornerRadius"
                     Value="{atom:PopupHostTokenResource BorderRadius}" />
         </Style>

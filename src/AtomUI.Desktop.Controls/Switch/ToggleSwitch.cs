@@ -7,6 +7,5 @@ public class ToggleSwitch : AbstractToggleSwitch
 {
     public ToggleSwitch()
     {
-        this.RegisterTokenResourceScope(ToggleSwitchToken.ScopeProvider);
     }
 }

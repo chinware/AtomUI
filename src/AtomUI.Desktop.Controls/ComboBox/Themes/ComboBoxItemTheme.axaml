@@ -23,7 +23,7 @@
         <Setter Property="Foreground" Value="{atom:ComboBoxTokenResource ItemColor}" />
         <Setter Property="Background" Value="{atom:ComboBoxTokenResource ItemBgColor}" />
         <Setter Property="Padding" Value="{atom:ComboBoxTokenResource ItemPadding}" />
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+        <Setter Property="CornerRadius" Value="{atom:ComboBoxTokenSharedTokenResource BorderRadiusSM}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
 
         <Style Selector="^:pointerover">
@@ -48,7 +48,7 @@
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground"
-                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                    Value="{atom:ComboBoxTokenSharedTokenResource ColorTextDisabled}" />
         </Style>
 
 

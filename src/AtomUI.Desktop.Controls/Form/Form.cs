@@ -451,7 +451,6 @@ public class Form : ItemsControl,
     
     public Form()
     {
-        this.RegisterTokenResourceScope(FormToken.ScopeProvider);
         LogicalChildren.CollectionChanged += HandleCollectionChanged;
         Items.CollectionChanged           += HandleItemsCollectionChanged;
     }
