@@ -1,5 +1,4 @@
 using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Theme;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
@@ -10,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 public class ColorPickerToken : AbstractControlDesignToken
 {
     public const string ID = "ColorPicker";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     /// <summary>
     /// ColorPicker 宽度

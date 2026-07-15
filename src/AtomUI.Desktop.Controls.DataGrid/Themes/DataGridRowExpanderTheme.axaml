@@ -33,22 +33,22 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Cursor" Value="Hand"/>
         
-        <Setter Property="Width" Value="{atom:SharedTokenResource SizeMS}"/>
-        <Setter Property="Height" Value="{atom:SharedTokenResource SizeMS}"/>
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}"/>
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}"/>
-        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
+        <Setter Property="Width" Value="{atom:DataGridTokenSharedTokenResource SizeMS}"/>
+        <Setter Property="Height" Value="{atom:DataGridTokenSharedTokenResource SizeMS}"/>
+        <Setter Property="CornerRadius" Value="{atom:DataGridTokenSharedTokenResource BorderRadiusSM}"/>
+        <Setter Property="BorderBrush" Value="{atom:DataGridTokenSharedTokenResource ColorBorder}"/>
+        <Setter Property="BorderThickness" Value="{atom:DataGridTokenSharedTokenResource BorderThickness}"/>
         
-        <Setter Property="IndicatorFill" Value="{atom:SharedTokenResource ColorTextSecondary}"/>
+        <Setter Property="IndicatorFill" Value="{atom:DataGridTokenSharedTokenResource ColorTextSecondary}"/>
         
         <Style Selector="^:focus">
-            <Setter Property="IndicatorFill" Value="{atom:SharedTokenResource ColorPrimaryHover}"/>
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryHover}"/>
+            <Setter Property="IndicatorFill" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryHover}"/>
+            <Setter Property="BorderBrush" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryHover}"/>
         </Style>
         
         <Style Selector="^:pointerover">
-            <Setter Property="IndicatorFill" Value="{atom:SharedTokenResource ColorPrimaryHover}"/>
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryHover}"/>
+            <Setter Property="IndicatorFill" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryHover}"/>
+            <Setter Property="BorderBrush" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryHover}"/>
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">
@@ -61,8 +61,8 @@
         </Style>
         
         <Style Selector="^:pressed">
-            <Setter Property="IndicatorFill" Value="{atom:SharedTokenResource ColorPrimaryActive}"/>
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryActive}"/>
+            <Setter Property="IndicatorFill" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryActive}"/>
+            <Setter Property="BorderBrush" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryActive}"/>
         </Style>
         
         <Style Selector="^ /template/ Rectangle#PART_VerticalIndicator">

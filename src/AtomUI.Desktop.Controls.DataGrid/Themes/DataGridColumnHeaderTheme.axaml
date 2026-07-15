@@ -60,7 +60,7 @@
 
     <Style Selector="^:is(atom|DataGridColumnHeader)">
         <Setter Property="Foreground" Value="{atom:DataGridTokenResource TableHeaderTextColor}" />
-        <Setter Property="FontWeight" Value="{atom:SharedTokenResource FontWeightStrong}" />
+        <Setter Property="FontWeight" Value="{atom:DataGridTokenSharedTokenResource FontWeightStrong}" />
         <Setter Property="atom:ToolTip.Placement" Value="Top" />
         <Setter Property="atom:ToolTip.ShowDelay" Value="1000" />
         <Setter Property="atom:ToolTip.ServiceEnabled" Value="False" />
@@ -105,7 +105,7 @@
         <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_VerticalSeparator">
             <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource HeaderSplitColor}" />
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource FontHeight}" />
+            <Setter Property="Height" Value="{atom:DataGridTokenSharedTokenResource FontHeight}" />
         </Style>
 
         <Style Selector="^[IsSeparatorFullHeight=True] /template/ atom|PixelAlignedBorder#PART_VerticalSeparator">
@@ -114,11 +114,11 @@
         </Style>
 
         <Style Selector="^ /template/ StackPanel#IndicatorsLayout">
-            <Setter Property="Spacing" Value="{atom:SharedTokenResource UniformlyMarginXXS}" />
+            <Setter Property="Spacing" Value="{atom:DataGridTokenSharedTokenResource UniformlyMarginXXS}" />
         </Style>
 
         <Style Selector="^ /template/ DockPanel#ContentLayout">
-            <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource UniformlyMarginXS}" />
+            <Setter Property="HorizontalSpacing" Value="{atom:DataGridTokenSharedTokenResource UniformlyMarginXS}" />
         </Style>
         <Style Selector="^:sort-ascending">
             <Style Selector="^ /template/ atom|DataGridSortIndicator#PART_SortIndicator">

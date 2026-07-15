@@ -443,7 +443,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     public AbstractColorPicker()
     {
-        this.RegisterTokenResourceScope(ColorPickerToken.ScopeProvider);
     }
 
     #region TriggerType 实现

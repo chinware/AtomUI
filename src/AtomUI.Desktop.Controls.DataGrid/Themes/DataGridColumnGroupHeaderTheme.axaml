@@ -21,7 +21,7 @@
             </ControlTemplate>
         </Setter>
         <Setter Property="Foreground" Value="{atom:DataGridTokenResource TableHeaderTextColor}"/>
-        <Setter Property="FontWeight" Value="{atom:SharedTokenResource FontWeightStrong}"/>
+        <Setter Property="FontWeight" Value="{atom:DataGridTokenSharedTokenResource FontWeightStrong}"/>
         <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>

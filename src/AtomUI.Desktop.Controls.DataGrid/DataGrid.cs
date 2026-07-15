@@ -1007,8 +1007,6 @@ public partial class DataGrid : TemplatedControl,
 
     public DataGrid()
     {
-        this.RegisterTokenResourceScope(DataGridToken.ScopeProvider);
-
         CurrentCellCoordinates   = new DataGridCellCoordinates(-1, -1);
         _loadedRows              = new List<DataGridRow>();
         _lostFocusActions        = new Queue<Action>();

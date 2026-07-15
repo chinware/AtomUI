@@ -929,7 +929,7 @@ git commit -m "refactor(Theme): serialize atomic theme transitions"
 - Consumes: generated component-shared extensions and ThemeScope.
 - Produces: repository-wide component isolation with zero instance Token dictionaries.
 
-- [ ] **Step 1: Capture and classify a checked inventory**
+- [x] **Step 1: Capture and classify a checked inventory**
 
 Run:
 
@@ -942,7 +942,14 @@ rg -l "ScopeProvider" src --glob "*Token.cs" | sort
 
 Classify every result as component-style consumption, global-style consumption, static non-Visual consumption, or obsolete registration. Any non-Visual DynamicResource replacement must have a scoped owner and verified release path; do not use a blind repository-wide replacement.
 
-- [ ] **Step 2: Migrate small packages first**
+Actual classification checkpoint:
+- Component-style small packages: `src/AtomUI.Controls/Icon`, `src/AtomUI.Desktop.Controls.DataGrid`, `src/AtomUI.Desktop.Controls.ColorPicker`, `src/AtomUI.Desktop.Controls.Extras/Splash`.
+- Global-style small package resources preserved: `src/AtomUI.Controls/Embedding/Themes/EmbeddableControlRootTheme.axaml`.
+- Static non-Visual transition resources preserved for this step: `SharedTokenResourceValue` usages in DataGrid, ColorPicker and Splash transition definitions.
+- Obsolete small package registrations removed: DataGrid, ColorPicker, ColorPickerView and Splash constructor scope registrations plus their `ScopeProvider` fields.
+- Main desktop package inventory remains for Step 3 domain commits.
+
+- [x] **Step 2: Migrate small packages first**
 
 Migrate src/AtomUI.Controls, DataGrid, ColorPicker and Extras. For each identity, replace component-style shared references, remove constructor registration and remove ScopeProvider.
 
@@ -954,6 +961,12 @@ dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.cs
 ~~~
 
 Expected: PASS.
+
+Actual verification:
+- RED then PASS: dotnet test tests/AtomUI.Desktop.Controls.DataGrid.Tests/AtomUI.Desktop.Controls.DataGrid.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~DataGridThemeScopeMigrationTests
+- RED then PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~SmallPackageThemeScopeMigrationTests
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.DataGrid.Tests/AtomUI.Desktop.Controls.DataGrid.Tests.csproj --framework net10.0 --no-restore
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
 
 - [ ] **Step 3: Migrate the main desktop package by domain**
 

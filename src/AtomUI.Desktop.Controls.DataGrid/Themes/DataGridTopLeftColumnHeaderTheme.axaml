@@ -55,7 +55,7 @@
         <Style Selector="^ /template/ atom|PixelAlignedBorder#VerticalSeparator">
             <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource HeaderSplitColor}" />
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource FontHeight}" />
+            <Setter Property="Height" Value="{atom:DataGridTokenSharedTokenResource FontHeight}" />
         </Style>
 
         <Style Selector="^[IsSeparatorFullHeight=True] /template/ atom|PixelAlignedBorder#VerticalSeparator">

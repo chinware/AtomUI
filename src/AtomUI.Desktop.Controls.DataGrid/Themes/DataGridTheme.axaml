@@ -165,10 +165,10 @@
         <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="SelectionMode" Value="None" />
-        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="BorderThickness" Value="{atom:DataGridTokenSharedTokenResource BorderThickness}" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="CornerRadius" Value="{atom:DataGridTokenResource TableRadius}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:DataGridTokenSharedTokenResource EnableMotion}" />
         <Setter Property="OperatingMsg"
                 Value="{atom:DataGridLangResource Operating}" />
 
@@ -200,7 +200,7 @@
 
         <Style Selector="^ /template/ ContentPresenter#EmptyIndicator">
             <Setter Property="Padding"
-                    Value="{atom:SharedTokenResource PaddingXL}" />
+                    Value="{atom:DataGridTokenSharedTokenResource PaddingXL}" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">
