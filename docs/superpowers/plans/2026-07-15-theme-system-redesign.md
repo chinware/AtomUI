@@ -2,6 +2,8 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox syntax for tracking.
 
+**Design:** [AtomUI 主题系统重构设计](../../modules/core/theme-system-redesign.md)
+
 **Goal:** Rebuild AtomUI theme parsing, compilation, activation, local inheritance, component-token isolation, and event delivery around immutable theme snapshots while preserving existing Token values and Avalonia ControlTheme contracts.
 
 **Architecture:** A pure ThemeDefinitionParser feeds a cached ThemeCatalog; one ThemeCompiler produces logically immutable ThemeSnapshot objects for both global and local themes. ThemeTokenResourceProvider exposes snapshots through Avalonia DynamicResource, component-shared resource keys implement Ant Design component isolation, and ThemeCoordinator serializes atomic global transitions.

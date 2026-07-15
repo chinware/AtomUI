@@ -443,3 +443,7 @@ ThemeChangeFailed(oldSnapshot, request, transitionId, exception, diagnostics)
 - `ControlTokenResourcesScopeHostExtensions` 和对应 attached resources 被删除。
 - 主题资源更新、事件顺序、scope lifecycle 和组件隔离测试通过。
 - 目标测试、Release 双目标构建、Gallery 测试、NativeAOT publish 和 `git diff --check` 通过。
+
+## 12. 相关文档
+
+- [主题系统重构实施与进度计划](../../superpowers/plans/2026-07-15-theme-system-redesign.md)
