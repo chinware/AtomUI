@@ -11,6 +11,7 @@ using Xunit;
 
 namespace AtomUI.Core.Tests.Theme;
 
+[Collection(ThemeConfigProviderTestCollection.Name)]
 public class ThemeTokenResourceProviderTests
 {
     private static readonly ComponentTokenIdentity s_buttonIdentity = new(null, CompilerButtonToken.ID);

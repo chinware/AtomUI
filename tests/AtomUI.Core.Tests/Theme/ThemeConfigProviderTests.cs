@@ -5,6 +5,7 @@ using AtomUI.Theme.Scope;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Shouldly;
@@ -12,6 +13,7 @@ using Xunit;
 
 namespace AtomUI.Core.Tests.Theme;
 
+[Collection(ThemeConfigProviderTestCollection.Name)]
 public class ThemeConfigProviderTests
 {
     [Fact]
@@ -26,6 +28,7 @@ public class ThemeConfigProviderTests
 
         parent.Content = child;
         child.Content = childContent;
+        Attach(parent);
         FlushThemeUpdates();
 
         child.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
@@ -44,6 +47,7 @@ public class ThemeConfigProviderTests
 
         parent.Content = child;
         child.Content = new Border();
+        Attach(parent);
         FlushThemeUpdates();
 
         child.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
@@ -61,6 +65,7 @@ public class ThemeConfigProviderTests
 
         parent.Content = child;
         child.Content = new Border();
+        Attach(parent);
         FlushThemeUpdates();
 
         child.SharedToken.BorderRadius.ShouldBe(new CornerRadius(6));
@@ -76,6 +81,7 @@ public class ThemeConfigProviderTests
 
         parent.Content = child;
         child.Content = new Border();
+        Attach(parent);
         FlushThemeUpdates();
         child.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
 
@@ -91,6 +97,7 @@ public class ThemeConfigProviderTests
         using var _ = UseThemeManager();
         var provider = Provider();
         var primary = Token(nameof(DesignToken.ColorPrimary), "#ff0000");
+        Attach(provider);
 
         provider.SharedTokenSetters.Add(primary);
         FlushThemeUpdates();
@@ -110,6 +117,7 @@ public class ThemeConfigProviderTests
     {
         using var _ = UseThemeManager();
         var provider = Provider();
+        Attach(provider);
 
         provider.Algorithms.Add(nameof(ThemeAlgorithm.Dark));
         FlushThemeUpdates();
@@ -135,6 +143,7 @@ public class ThemeConfigProviderTests
         parent.Algorithms.Add(nameof(ThemeAlgorithm.Compact));
         parent.Content = child;
         child.Content = new Border();
+        Attach(parent);
         FlushThemeUpdates();
 
         child.IsDarkMode.ShouldBeTrue();
@@ -158,6 +167,7 @@ public class ThemeConfigProviderTests
             Value = "44"
         };
         var infoSetter = new ControlTokenInfoSetter(CompilerButtonToken.ID);
+        Attach(provider);
 
         infoSetter.Setters.Add(height);
         provider.ControlTokenInfoSetters.Add(infoSetter);
@@ -183,6 +193,7 @@ public class ThemeConfigProviderTests
         parent.ControlTokenInfoSetters.Add(ComponentOverride(44));
         parent.Content = child;
         child.Content = new Border();
+        Attach(parent);
         FlushThemeUpdates();
 
         GetButtonToken(child).Height.ShouldBe(44);
@@ -199,6 +210,7 @@ public class ThemeConfigProviderTests
         child.ControlTokenInfoSetters.Add(ComponentOverride(48));
         parent.Content = child;
         child.Content = new Border();
+        Attach(parent);
         FlushThemeUpdates();
 
         GetButtonToken(child).Height.ShouldBe(48);
@@ -211,6 +223,7 @@ public class ThemeConfigProviderTests
         var content = new Border();
         var provider = Provider(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
         provider.Content = content;
+        Attach(provider);
         FlushThemeUpdates();
         var previousSharedToken = provider.SharedToken;
         var previousResourceProvider = GetTokenResourceProvider(provider);
@@ -230,18 +243,56 @@ public class ThemeConfigProviderTests
     }
 
     [Fact]
+    public void Invalid_Algorithm_Failure_Raises_Event_And_Retains_Previous_Published_State()
+    {
+        using var _ = UseThemeManager();
+        var content = new Border();
+        var provider = Provider(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
+        provider.Content = content;
+        Attach(provider);
+        FlushThemeUpdates();
+        var previousSharedToken = provider.SharedToken;
+        var previousControlTokens = provider.ControlTokens;
+        var previousButtonToken = GetButtonToken(provider);
+        var previousResourceProvider = GetTokenResourceProvider(provider);
+        var previousSnapshot = previousResourceProvider.Snapshot;
+        var previousContentSnapshot = GetSnapshot(content);
+        var previousDarkMode = provider.IsDarkMode;
+        var resourcesChanged = 0;
+        ThemeScopeCompileFailedEventArgs? failed = null;
+        ((IResourceHost)provider).ResourcesChanged += (_, _) => resourcesChanged++;
+        provider.ThemeScopeCompileFailed += (_, args) => failed = args;
+
+        provider.Algorithms.Add("DefinitelyNotAnAlgorithm");
+        Should.NotThrow(FlushThemeUpdates);
+
+        failed.ShouldNotBeNull();
+        failed!.Exception.ShouldBeOfType<ThemeLoadException>();
+        provider.SharedToken.ShouldBeSameAs(previousSharedToken);
+        provider.ControlTokens.ShouldBeSameAs(previousControlTokens);
+        GetButtonToken(provider).ShouldBeSameAs(previousButtonToken);
+        GetTokenResourceProvider(provider).ShouldBeSameAs(previousResourceProvider);
+        previousResourceProvider.Snapshot.ShouldBeSameAs(previousSnapshot);
+        provider.IsDarkMode.ShouldBe(previousDarkMode);
+        GetSnapshot(content).ShouldBeSameAs(previousContentSnapshot);
+        resourcesChanged.ShouldBe(0);
+    }
+
+    [Fact]
     public void Provider_Maintains_One_Token_Resource_Provider_After_Repeated_Updates()
     {
         using var _ = UseThemeManager();
         var primary = Token(nameof(DesignToken.ColorPrimary), "#ff0000");
         var provider = Provider(primary);
+        Attach(provider);
+        var resourceProvider = GetTokenResourceProvider(provider);
 
         for (var i = 0; i < 20; i++)
         {
             primary.Value = $"#{i + 1:00}{i + 2:00}{i + 3:00}";
+            FlushThemeUpdates();
+            GetTokenResourceProvider(provider).ShouldBeSameAs(resourceProvider);
         }
-
-        FlushThemeUpdates();
 
         provider.Resources.MergedDictionaries
                 .OfType<ThemeTokenResourceProvider>()
@@ -258,6 +309,7 @@ public class ThemeConfigProviderTests
         var provider = Provider(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
 
         provider.Content = first;
+        Attach(provider);
         FlushThemeUpdates();
         GetSnapshot(first).ShouldNotBeNull();
 
@@ -277,6 +329,7 @@ public class ThemeConfigProviderTests
         var child = Provider();
         parent.Content = child;
         child.Content = childContent;
+        Attach(parent);
         FlushThemeUpdates();
         var parentSnapshot = GetSnapshot(child).ShouldNotBeNull();
         var childSnapshot = GetSnapshot(childContent).ShouldNotBeNull();
@@ -297,18 +350,46 @@ public class ThemeConfigProviderTests
     }
 
     [Fact]
-    public void Queued_Recompile_Does_Not_Restore_Content_Scope_After_Detach()
+    public void Logical_Attach_Compiles_Synchronously_And_Logical_Remove_Cleans_And_Suspends_Updates()
     {
         using var _ = UseThemeManager();
-        var content = new Border();
-        var provider = new DetachableThemeConfigProvider { Content = content };
-        FlushThemeUpdates();
-
+        var root = new LogicalTestRoot();
+        var firstContent = new Border();
+        var provider = new ThemeConfigProvider
+        {
+            Content = firstContent
+        };
         provider.SharedTokenSetters.Add(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
-        provider.DetachForTest();
+
+        root.Child = provider;
+        var publishedSnapshot = GetSnapshot(firstContent);
+
+        publishedSnapshot.ShouldNotBeNull();
+        provider.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
+        var publishedSharedToken = provider.SharedToken;
+        var publishedResourceProvider = GetTokenResourceProvider(provider);
+        var publishedProviderSnapshot = publishedResourceProvider.Snapshot;
+
+        root.Child = null;
+        GetSnapshot(firstContent).ShouldBeNull();
+
+        var secondContent = new Border();
+        provider.Content = secondContent;
+        provider.Inherit = false;
+        provider.SharedTokenSetters.Add(Token(nameof(DesignToken.ColorPrimary), "#00b96b"));
+        provider.ControlTokenInfoSetters.Add(ComponentOverride(48));
         FlushThemeUpdates();
 
-        GetSnapshot(content).ShouldBeNull();
+        GetSnapshot(secondContent).ShouldBeNull();
+        provider.SharedToken.ShouldBeSameAs(publishedSharedToken);
+        GetTokenResourceProvider(provider).ShouldBeSameAs(publishedResourceProvider);
+        publishedResourceProvider.Snapshot.ShouldBeSameAs(publishedProviderSnapshot);
+
+        root.Child = provider;
+
+        provider.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
+        GetButtonToken(provider).Height.ShouldBe(48);
+        GetSnapshot(secondContent).ShouldBeSameAs(GetTokenResourceProvider(provider).Snapshot);
     }
 
     [Fact]
@@ -321,15 +402,28 @@ public class ThemeConfigProviderTests
             Content = content
         };
         provider.SharedTokenSetters.Add(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
+        var root = new LogicalTestRoot();
         var notifications = 0;
+        ThemeSnapshot? notifiedSnapshot = null;
         var wasCommittedAtNotification = true;
         ((IResourceHost)provider).ResourcesChanged += (_, _) =>
         {
+            var providerSnapshot = provider.Resources.MergedDictionaries
+                                           .OfType<ThemeTokenResourceProvider>()
+                                           .SingleOrDefault()
+                                           ?.Snapshot;
+            if (providerSnapshot is null || ReferenceEquals(providerSnapshot, notifiedSnapshot))
+            {
+                return;
+            }
+
+            notifiedSnapshot = providerSnapshot;
             notifications++;
             wasCommittedAtNotification &= GetSnapshot(content)?.SharedToken.ColorPrimary == Color.Parse("#ff0000") &&
                                          provider.SharedToken.ColorPrimary == Color.Parse("#ff0000");
         };
 
+        root.Child = provider;
         FlushThemeUpdates();
 
         notifications.ShouldBe(1);
@@ -396,14 +490,26 @@ public class ThemeConfigProviderTests
 
     private static void FlushThemeUpdates()
     {
-        Dispatcher.UIThread.RunJobs();
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.RunJobs();
+            return;
+        }
+
+        Dispatcher.UIThread.Invoke(static () => Dispatcher.UIThread.RunJobs());
     }
 
-    private sealed class DetachableThemeConfigProvider : ThemeConfigProvider
+    private static LogicalTestRoot Attach(Control control)
     {
-        public void DetachForTest()
+        var root = new LogicalTestRoot
         {
-            OnDetachedFromVisualTree(null!);
-        }
+            Child = control
+        };
+        FlushThemeUpdates();
+        return root;
+    }
+
+    private sealed class LogicalTestRoot : Decorator, ILogicalRoot
+    {
     }
 }

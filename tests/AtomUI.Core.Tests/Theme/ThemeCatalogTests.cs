@@ -16,6 +16,7 @@ using AtomUITheme = AtomUI.Theme.Theme;
 
 namespace AtomUI.Core.Tests.Theme;
 
+[Collection(ThemeConfigProviderTestCollection.Name)]
 public class ThemeCatalogTests
 {
     private static readonly IReadOnlySet<string> s_sharedTokenNames =
