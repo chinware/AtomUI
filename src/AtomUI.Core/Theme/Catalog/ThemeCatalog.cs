@@ -166,6 +166,16 @@ internal sealed class ThemeCatalog
 
     internal void EnsureRequiredBuiltInThemesAvailable()
     {
+        if (_requiredBuiltInDescriptors.Count != 1 ||
+            !string.Equals(
+                _requiredBuiltInDescriptors[0].Id,
+                IThemeManager.DEFAULT_THEME_ID,
+                StringComparison.Ordinal))
+        {
+            throw new ThemeLoadException(
+                $"Exactly one required Core '{IThemeManager.DEFAULT_THEME_ID}' theme source must be registered.");
+        }
+
         foreach (var descriptor in _requiredBuiltInDescriptors)
         {
             if (!descriptor.IsAvailable)

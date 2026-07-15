@@ -488,6 +488,7 @@ internal class ThemeManager : Styles, IThemeManager
             var names = registration.TokenType
                                     .GetProperties(System.Reflection.BindingFlags.Instance |
                                                    System.Reflection.BindingFlags.Public)
+                                    .Where(static property => property.SetMethod?.IsPublic == true)
                                     .Select(static property => property.Name);
             if (!schemas.TryAdd(token.Id, new HashSet<string>(names, StringComparer.Ordinal)))
             {
