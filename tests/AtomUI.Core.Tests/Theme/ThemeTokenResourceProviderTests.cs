@@ -78,6 +78,40 @@ public class ThemeTokenResourceProviderTests
     }
 
     [Fact]
+    public void ComponentShared_Keys_Isolate_Parent_Child_Component_Pairs_While_Global_Fallbacks_Remain_Shared()
+    {
+        var snapshot = CompileCrossComponentSnapshot();
+        var provider = new ThemeTokenResourceProvider(snapshot);
+        provider.TryGetResource(SharedTokenKind.ColorInfo, null, out var globalInfo).ShouldBeTrue();
+
+        foreach (var (parentComponent, childComponent) in CrossComponentPairs)
+        {
+            provider.TryGetResource(
+                new ComponentSharedTokenResourceKey(null, parentComponent, SharedTokenKind.ColorPrimary),
+                null,
+                out var parentPrimary).ShouldBeTrue();
+            provider.TryGetResource(
+                new ComponentSharedTokenResourceKey(null, childComponent, SharedTokenKind.ColorPrimary),
+                null,
+                out var childPrimary).ShouldBeTrue();
+
+            parentPrimary.ShouldNotBe(childPrimary);
+
+            provider.TryGetResource(
+                new ComponentSharedTokenResourceKey(null, parentComponent, SharedTokenKind.ColorInfo),
+                null,
+                out var parentInfo).ShouldBeTrue();
+            provider.TryGetResource(
+                new ComponentSharedTokenResourceKey(null, childComponent, SharedTokenKind.ColorInfo),
+                null,
+                out var childInfo).ShouldBeTrue();
+
+            parentInfo.ShouldBeSameAs(globalInfo);
+            childInfo.ShouldBeSameAs(globalInfo);
+        }
+    }
+
+    [Fact]
     public void ComponentShared_Key_Normalizes_Empty_Catalog_To_Null()
     {
         var emptyCatalog = new ComponentSharedTokenResourceKey(
@@ -231,8 +265,159 @@ public class ThemeTokenResourceProviderTests
         return result.Snapshot!;
     }
 
+    private static ThemeSnapshot CompileCrossComponentSnapshot()
+    {
+        var componentSharedOverrides = new Dictionary<string, string>
+        {
+            [CompilerButtonToken.ID] = "#ff4d4f",
+            [CompilerIconToken.ID] = "#1677ff",
+            [CompilerLineEditToken.ID] = "#00b96b",
+            [CompilerAddOnDecoratedBoxToken.ID] = "#faad14",
+            [CompilerSelectToken.ID] = "#722ed1",
+            [CompilerDatePickerToken.ID] = "#13c2c2",
+            [CompilerDialogToken.ID] = "#eb2f96",
+            [CompilerDataGridToken.ID] = "#52c41a"
+        };
+        var controlTokens = componentSharedOverrides.ToDictionary(
+            entry => entry.Key,
+            entry => new ThemeControlTokenDefinition(
+                entry.Key,
+                false,
+                new Dictionary<string, string>(),
+                Tokens((nameof(DesignToken.ColorPrimary), entry.Value))),
+            StringComparer.Ordinal);
+        var definition = new ThemeDefinition(
+            "TestTheme",
+            "Test Theme",
+            false,
+            [ThemeAlgorithm.Default],
+            new Dictionary<string, string>(),
+            controlTokens);
+        var result = new ThemeCompiler().Compile(new ThemeCompileRequest(
+            "TestTheme",
+            definition,
+            null,
+            [ThemeAlgorithm.Default],
+            Tokens((nameof(DesignToken.ColorInfo), "#722ed1")),
+            new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>(),
+            [
+                new ControlTokenRegistration(typeof(CompilerButtonToken)),
+                new ControlTokenRegistration(typeof(CompilerIconToken)),
+                new ControlTokenRegistration(typeof(CompilerLineEditToken)),
+                new ControlTokenRegistration(typeof(CompilerAddOnDecoratedBoxToken)),
+                new ControlTokenRegistration(typeof(CompilerSelectToken)),
+                new ControlTokenRegistration(typeof(CompilerDatePickerToken)),
+                new ControlTokenRegistration(typeof(CompilerDialogToken)),
+                new ControlTokenRegistration(typeof(CompilerDataGridToken))
+            ],
+            new Dictionary<string, string>()));
+
+        result.Success.ShouldBeTrue();
+        return result.Snapshot!;
+    }
+
+    private static readonly (string ParentComponent, string ChildComponent)[] CrossComponentPairs =
+    [
+        (CompilerButtonToken.ID, CompilerIconToken.ID),
+        (CompilerLineEditToken.ID, CompilerAddOnDecoratedBoxToken.ID),
+        (CompilerSelectToken.ID, CompilerButtonToken.ID),
+        (CompilerDatePickerToken.ID, CompilerButtonToken.ID),
+        (CompilerDialogToken.ID, CompilerButtonToken.ID),
+        (CompilerDataGridToken.ID, CompilerButtonToken.ID)
+    ];
+
     private static Dictionary<string, string> Tokens(params (string Name, string Value)[] values)
     {
         return values.ToDictionary(value => value.Name, value => value.Value, StringComparer.Ordinal);
+    }
+}
+
+internal abstract class CrossComponentCompilerToken : AbstractControlDesignToken
+{
+    public double Height { get; set; }
+
+    protected CrossComponentCompilerToken(string id)
+        : base(id)
+    {
+    }
+
+    public override void CalculateTokenValues(bool isDarkMode)
+    {
+        Height = SharedToken.ControlHeight;
+    }
+
+    protected override Type GetTokenKindType()
+    {
+        return typeof(CompilerButtonTokenKind);
+    }
+}
+
+internal sealed class CompilerIconToken : CrossComponentCompilerToken
+{
+    internal const string ID = "Icon";
+
+    public CompilerIconToken()
+        : base(ID)
+    {
+    }
+}
+
+internal sealed class CompilerLineEditToken : CrossComponentCompilerToken
+{
+    internal const string ID = "LineEdit";
+
+    public CompilerLineEditToken()
+        : base(ID)
+    {
+    }
+}
+
+internal sealed class CompilerAddOnDecoratedBoxToken : CrossComponentCompilerToken
+{
+    internal const string ID = "AddOnDecoratedBox";
+
+    public CompilerAddOnDecoratedBoxToken()
+        : base(ID)
+    {
+    }
+}
+
+internal sealed class CompilerSelectToken : CrossComponentCompilerToken
+{
+    internal const string ID = "Select";
+
+    public CompilerSelectToken()
+        : base(ID)
+    {
+    }
+}
+
+internal sealed class CompilerDatePickerToken : CrossComponentCompilerToken
+{
+    internal const string ID = "DatePicker";
+
+    public CompilerDatePickerToken()
+        : base(ID)
+    {
+    }
+}
+
+internal sealed class CompilerDialogToken : CrossComponentCompilerToken
+{
+    internal const string ID = "Dialog";
+
+    public CompilerDialogToken()
+        : base(ID)
+    {
+    }
+}
+
+internal sealed class CompilerDataGridToken : CrossComponentCompilerToken
+{
+    internal const string ID = "DataGrid";
+
+    public CompilerDataGridToken()
+        : base(ID)
+    {
     }
 }

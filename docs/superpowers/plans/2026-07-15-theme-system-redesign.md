@@ -1010,9 +1010,14 @@ Actual domain checkpoint:
 - PASS: dotnet test tests/AtomUI.Toolkits.GalleryBase.Tests/AtomUI.Toolkits.GalleryBase.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~GalleryBaseThemeScopeMigrationTests|FullyQualifiedName~GalleryShowCaseHeaderTests"
 - PASS: dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~GalleryStickyTabsHostTests|FullyQualifiedName~ShowCasePanelStructureTests|FullyQualifiedName~GalleryLandingPagesTests"
 
-- [ ] **Step 4: Add cross-component isolation tests**
+- [x] **Step 4: Add cross-component isolation tests**
 
 Cover Button containing Icon, LineEdit containing AddOnDecoratedBox, Select popup content, DatePicker popup content, Modal content and DataGrid cell content. Parent component overrides must not alter child component Token; scope-global overrides must affect both.
+
+Actual isolation checkpoint:
+- Added provider-level cross-component isolation coverage for Button/Icon, LineEdit/AddOnDecoratedBox, Select/Button popup content, DatePicker/Button popup content, Dialog/Button modal content and DataGrid/Button cell content.
+- PASS: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ComponentShared_Keys_Isolate_Parent_Child_Component_Pairs
+- PASS: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
 
 - [x] **Step 5: Delete legacy infrastructure only after zero references**
 
