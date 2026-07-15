@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 internal class AdornerLayerToken : AbstractControlDesignToken
 {
     public const string ID = "AdornerLayer";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public AdornerLayerToken()
         : base(ID)

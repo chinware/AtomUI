@@ -11,7 +11,6 @@ namespace AtomUI.Desktop.Controls;
 internal class WindowTitleBarToken : AbstractControlDesignToken
 {
     public const string ID = "WindowTitleBar";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     /// <summary>
     /// Hover 的背景色

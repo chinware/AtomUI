@@ -12,7 +12,6 @@ public class FlyoutPresenter : ArrowDecoratedBox
 
     public FlyoutPresenter()
     {
-        this.RegisterTokenResourceScope(FlyoutHostToken.ScopeProvider);
         SetValue(CursorProperty, new Cursor(StandardCursorType.Arrow), BindingPriority.Template);
     }
     

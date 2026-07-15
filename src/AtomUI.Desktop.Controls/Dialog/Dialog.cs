@@ -426,7 +426,6 @@ public partial class Dialog : TemplatedControl,
 
     public Dialog()
     {
-        this.RegisterTokenResourceScope(DialogToken.ScopeProvider);
         CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
         SetCurrentValue(EffectiveMinimizableProperty, IsMinimizable);
     }

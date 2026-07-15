@@ -995,6 +995,11 @@ Actual domain checkpoint:
 - RED then PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~DesktopControlsFeedbackThemeScopeMigrationTests
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~Collapse|FullyQualifiedName~MessageBox|FullyQualifiedName~ProgressBar|FullyQualifiedName~Skeleton|FullyQualifiedName~Spin|FullyQualifiedName~Tooltip|FullyQualifiedName~ToolTip"
+- Window and Overlay migrated: AdornerLayer, Dialog, Drawer, Flyouts, Popup, Window and WindowTitleBar now use component-shared resource extensions and no longer register legacy token scopes.
+- RED then PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~DesktopControlsWindowOverlayThemeScopeMigrationTests
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeContract
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~Dialog|FullyQualifiedName~Drawer|FullyQualifiedName~Flyout|FullyQualifiedName~PopupPlacementTests|FullyQualifiedName~PopupShadowTests|FullyQualifiedName~WindowResizeArtifactTests|FullyQualifiedName~WindowTitleBarLogoVisibilityTests|FullyQualifiedName~ReactiveWindowAotTests|FullyQualifiedName~WindowingPlatformDetectionTests|FullyQualifiedName~WindowTitleBarTokenTests"
+- Known unrelated verification issue: a broader `FullyQualifiedName~Window|FullyQualifiedName~Popup` filter also matches `LinuxWindowFixAotTests.Linux_Window_And_TitleBar_Popup_Fixes_Do_Not_Add_Aot_Unsafe_Code`, which fails because `src/AtomUI.Desktop.Controls/Popup/LinuxCsdPopupSupport.cs` is already absent.
 
 - [ ] **Step 4: Add cross-component isolation tests**
 

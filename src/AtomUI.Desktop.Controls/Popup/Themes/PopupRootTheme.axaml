@@ -22,10 +22,10 @@
         </Setter>
 
         <Setter Property="Background" Value="{x:Null}" />
-        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+        <Setter Property="Foreground" Value="{atom:PopupHostTokenSharedTokenResource ColorText}" />
         <Setter Property="TransparencyLevelHint" Value="Transparent" />
-        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
-        <Setter Property="FontFamily" Value="{atom:SharedTokenResource FontFamily}" />
+        <Setter Property="FontSize" Value="{atom:PopupHostTokenSharedTokenResource FontSize}" />
+        <Setter Property="FontFamily" Value="{atom:PopupHostTokenSharedTokenResource FontFamily}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontStyle" Value="Normal" />
 

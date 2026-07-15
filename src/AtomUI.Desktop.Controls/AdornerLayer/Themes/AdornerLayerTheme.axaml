@@ -6,8 +6,8 @@
     <ControlTheme x:Key="{x:Type AdornerLayer}" TargetType="AdornerLayer">
         <Setter Property="DefaultFocusAdorner">
             <FocusAdornerTemplate>
-                <Border BorderThickness="{atom:SharedTokenResource FocusVisualBorderThickness}"
-                        BorderBrush="{atom:SharedTokenResource ColorFocusBorder}"
+                <Border BorderThickness="{atom:AdornerLayerTokenSharedTokenResource FocusVisualBorderThickness}"
+                        BorderBrush="{atom:AdornerLayerTokenSharedTokenResource ColorFocusBorder}"
                         Margin="{atom:AdornerLayerTokenResource FocusVisualMargin}" />
             </FocusAdornerTemplate>
         </Setter>

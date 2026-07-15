@@ -208,8 +208,8 @@
         <Setter Property="TopLevel.SystemBarColor"
                 Value="{atom:WindowTokenResource SystemBarColor}" />
         <Setter Property="Foreground" Value="{atom:WindowTokenResource DefaultForeground}" />
-        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
-        <Setter Property="FontFamily" Value="{atom:SharedTokenResource FontFamily}" />
+        <Setter Property="FontSize" Value="{atom:WindowTokenSharedTokenResource FontSize}" />
+        <Setter Property="FontFamily" Value="{atom:WindowTokenSharedTokenResource FontFamily}" />
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
         <Setter Property="WindowDecorations" Value="Full" />

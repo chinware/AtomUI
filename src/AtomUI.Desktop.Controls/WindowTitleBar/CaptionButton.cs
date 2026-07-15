@@ -130,7 +130,6 @@ internal class CaptionButton : AvaloniaButton
     
     public CaptionButton()
     {
-        this.RegisterTokenResourceScope(WindowTitleBarToken.ScopeProvider);
     }
 
     protected override void OnSizeChanged(SizeChangedEventArgs e)

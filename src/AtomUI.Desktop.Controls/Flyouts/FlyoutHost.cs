@@ -193,7 +193,6 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
     
     public FlyoutHost()
     {
-        this.RegisterTokenResourceScope(FlyoutHostToken.ScopeProvider);
         _flyoutStateHelper                                             = new FlyoutStateHelper();
         _flyoutStateHelper[!FlyoutStateHelper.AnchorTargetProperty]    = this[!ContentProperty];
         _flyoutStateHelper[!FlyoutStateHelper.FlyoutProperty]          = this[!FlyoutProperty];

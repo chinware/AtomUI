@@ -115,7 +115,6 @@ internal class DialogWindowContent : TemplatedControl, IMotionAwareControl
 
     public DialogWindowContent()
     {
-        this.RegisterTokenResourceScope(DialogToken.ScopeProvider);
         CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
     }
 
