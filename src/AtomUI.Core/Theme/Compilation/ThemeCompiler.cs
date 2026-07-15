@@ -32,7 +32,9 @@ internal sealed class ThemeCompiler
                 return Failed(diagnostics);
             }
 
-            var calculator = CreateCalculator(request.Algorithms);
+            var algorithms = ResolveEffectiveAlgorithms(request);
+            var componentConfigs = MergeComponentConfigs(request);
+            var calculator = CreateCalculator(algorithms);
             var sharedToken = CreateSharedToken(request.Parent);
             var sharedConfig = MergeSharedConfigs(request);
             ApplySharedConfig(sharedToken, sharedConfig, calculator);
@@ -42,6 +44,8 @@ internal sealed class ThemeCompiler
             var components = BuildComponents(
                 request,
                 registrations,
+                componentConfigs,
+                algorithms,
                 calculator,
                 sharedToken,
                 sharedResources,
@@ -55,11 +59,12 @@ internal sealed class ThemeCompiler
                 new ThemeSnapshot(
                     request.ThemeId,
                     Interlocked.Increment(ref s_nextVersion),
-                    CopyAlgorithms(request.Algorithms),
-                    request.Algorithms.Contains(ThemeAlgorithm.Dark),
+                    CopyAlgorithms(algorithms),
+                    algorithms.Contains(ThemeAlgorithm.Dark),
                     sharedToken,
                     sharedResources,
-                    ReadOnly(components)),
+                    ReadOnly(components),
+                    componentConfigs),
                 CopyDiagnostics(diagnostics),
                 null);
         }
@@ -149,6 +154,8 @@ internal sealed class ThemeCompiler
     private Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot> BuildComponents(
         ThemeCompileRequest request,
         IReadOnlyDictionary<ComponentTokenIdentity, AbstractControlDesignToken> registrations,
+        IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> componentConfigs,
+        IReadOnlyList<ThemeAlgorithm> algorithms,
         IThemeVariantCalculator calculator,
         DesignToken globalToken,
         IReadOnlyDictionary<object, object?> globalResources,
@@ -157,7 +164,7 @@ internal sealed class ThemeCompiler
         var components = new Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot>(registrations.Count);
         foreach (var (identity, controlToken) in registrations)
         {
-            var config = GetComponentConfig(request, identity);
+            componentConfigs.TryGetValue(identity, out var config);
             var effectiveToken = CloneDesignToken(globalToken);
             if (config is not null)
             {
@@ -168,7 +175,7 @@ internal sealed class ThemeCompiler
             controlToken.AssignSharedToken(effectiveToken);
             controlToken.SetHasCustomTokenConfig(config is not null);
             controlToken.SetCustomTokens(config is null ? Array.Empty<string>() : config.Tokens.Keys.ToArray());
-            controlToken.CalculateTokenValues(request.Algorithms.Contains(ThemeAlgorithm.Dark));
+            controlToken.CalculateTokenValues(algorithms.Contains(ThemeAlgorithm.Dark));
             if (config is not null)
             {
                 controlToken.LoadConfig(config.Tokens);
@@ -188,33 +195,76 @@ internal sealed class ThemeCompiler
         return components;
     }
 
-    private static ControlTokenConfigInfo? GetComponentConfig(ThemeCompileRequest request, ComponentTokenIdentity identity)
+    private static IReadOnlyList<ThemeAlgorithm> ResolveEffectiveAlgorithms(ThemeCompileRequest request)
     {
-        request.Definition.ControlTokens.TryGetValue(identity.TokenId, out var definition);
-        request.ComponentOverrides.TryGetValue(identity, out var requestOverride);
-        if (definition is null && requestOverride is null)
+        if (request.Algorithms.Count != 0)
         {
-            return null;
+            return request.Algorithms;
         }
 
-        var config = new ControlTokenConfigInfo
+        if (request.Parent is not null)
         {
-            TokenId = identity.TokenId,
-            EnableAlgorithm = requestOverride?.EnableAlgorithm ?? definition!.EnableAlgorithm
-        };
-        if (definition is not null)
-        {
-            MergeInto(config.Tokens, definition.Tokens);
-            MergeInto(config.SharedTokens, definition.SharedTokens);
+            return request.Parent.Algorithms;
         }
 
-        if (requestOverride is not null)
+        return [ThemeAlgorithm.Default];
+    }
+
+    private static IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> MergeComponentConfigs(
+        ThemeCompileRequest request)
+    {
+        var configs = new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>();
+        if (request.Parent is not null)
         {
-            MergeInto(config.Tokens, requestOverride.Tokens);
-            MergeInto(config.SharedTokens, requestOverride.SharedTokens);
+            foreach (var (identity, parentConfig) in request.Parent.ComponentConfigs)
+            {
+                configs.Add(identity, parentConfig.Clone());
+            }
         }
 
-        return config;
+        foreach (var definition in request.Definition.ControlTokens.Values)
+        {
+            var identity = new ComponentTokenIdentity(null, definition.TokenId);
+            MergeComponentConfig(
+                configs,
+                identity,
+                definition.EnableAlgorithm,
+                definition.Tokens,
+                definition.SharedTokens);
+        }
+
+        foreach (var (identity, overrideConfig) in request.ComponentOverrides)
+        {
+            MergeComponentConfig(
+                configs,
+                identity,
+                overrideConfig.EnableAlgorithm,
+                overrideConfig.Tokens,
+                overrideConfig.SharedTokens);
+        }
+
+        return ReadOnly(configs);
+    }
+
+    private static void MergeComponentConfig(
+        IDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> configs,
+        ComponentTokenIdentity identity,
+        bool enableAlgorithm,
+        IEnumerable<KeyValuePair<string, string>> tokens,
+        IEnumerable<KeyValuePair<string, string>> sharedTokens)
+    {
+        if (!configs.TryGetValue(identity, out var config))
+        {
+            config = new ControlTokenConfigInfo
+            {
+                TokenId = identity.TokenId
+            };
+            configs.Add(identity, config);
+        }
+
+        config.EnableAlgorithm = enableAlgorithm;
+        MergeInto(config.Tokens, tokens);
+        MergeInto(config.SharedTokens, sharedTokens);
     }
 
     private static void ApplyComponentSharedConfig(

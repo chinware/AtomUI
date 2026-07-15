@@ -107,6 +107,29 @@ public class ThemeConfigProviderTests
     }
 
     [Fact]
+    public void Child_Provider_Inherits_Parent_Dark_Compact_Algorithms_When_Local_Algorithms_Are_Empty()
+    {
+        using var _ = UseThemeManager();
+        var parent = Provider();
+        var child = Provider();
+
+        parent.Algorithms.Add(nameof(ThemeAlgorithm.Dark));
+        parent.Algorithms.Add(nameof(ThemeAlgorithm.Compact));
+        parent.Content = child;
+        child.Content = new Border();
+        FlushThemeUpdates();
+
+        child.IsDarkMode.ShouldBeTrue();
+        child.SharedToken.ColorBgBase.ShouldBe(Color.FromRgb(0, 0, 0));
+        GetSnapshot(child)!.Algorithms.ShouldBe(
+        [
+            ThemeAlgorithm.Default,
+            ThemeAlgorithm.Dark,
+            ThemeAlgorithm.Compact
+        ]);
+    }
+
+    [Fact]
     public void Provider_Recompiles_For_Control_Token_Setter_Add_Remove_And_Value_Changes()
     {
         using var _ = UseThemeManager();
@@ -130,6 +153,37 @@ public class ThemeConfigProviderTests
         provider.ControlTokenInfoSetters.Remove(infoSetter);
         FlushThemeUpdates();
         GetButtonToken(provider).Height.ShouldBe(32);
+    }
+
+    [Fact]
+    public void Child_Provider_Inherits_Parent_Component_Override_When_It_Has_No_Local_Override()
+    {
+        using var _ = UseThemeManager();
+        var parent = Provider();
+        var child = Provider();
+
+        parent.ControlTokenInfoSetters.Add(ComponentOverride(44));
+        parent.Content = child;
+        child.Content = new Border();
+        FlushThemeUpdates();
+
+        GetButtonToken(child).Height.ShouldBe(44);
+    }
+
+    [Fact]
+    public void Child_Provider_Component_Override_Wins_Over_Parent_Component_Override()
+    {
+        using var _ = UseThemeManager();
+        var parent = Provider();
+        var child = Provider();
+
+        parent.ControlTokenInfoSetters.Add(ComponentOverride(44));
+        child.ControlTokenInfoSetters.Add(ComponentOverride(48));
+        parent.Content = child;
+        child.Content = new Border();
+        FlushThemeUpdates();
+
+        GetButtonToken(child).Height.ShouldBe(48);
     }
 
     [Fact]
@@ -282,6 +336,17 @@ public class ThemeConfigProviderTests
     private static TokenSetter Token(string key, string value)
     {
         return new TokenSetter(null, key, value);
+    }
+
+    private static ControlTokenInfoSetter ComponentOverride(double height)
+    {
+        var setter = new ControlTokenInfoSetter(CompilerButtonToken.ID);
+        setter.Setters.Add(new ControlTokenSetter
+        {
+            Key = nameof(CompilerButtonToken.Height),
+            Value = height.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        });
+        return setter;
     }
 
     private static ThemeSnapshot? GetSnapshot(StyledElement element)
