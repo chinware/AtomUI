@@ -19,6 +19,7 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken,
 {
     public string Id => _id;
     protected DesignToken SharedToken;
+    internal DesignToken? AssignedSharedToken => SharedToken;
 
     private string _id;
     private bool _isCustomTokenConfig;
