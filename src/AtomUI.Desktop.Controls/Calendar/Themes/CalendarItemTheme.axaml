@@ -15,7 +15,7 @@
                         LastChildFill="True">
                         <Grid Name="PART_HeaderLayout"
                               ColumnDefinitions="Auto, Auto, *, Auto, Auto"
-                              MinHeight="{atom:SharedTokenResource ControlHeight}"
+                              MinHeight="{atom:CalendarTokenSharedTokenResource ControlHeight}"
                               DockPanel.Dock="Top">
                             <atom:IconButton
                                 Name="PART_PreviousButton"
@@ -97,18 +97,18 @@
 
         <Style Selector="^ /template/ atom|IconButton">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconWidth" Value="{atom:CalendarTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:CalendarTokenSharedTokenResource IconSizeSM}" />
             <Setter Property="IconBrush"
-                    Value="{atom:SharedTokenResource ColorTextDescription}" />
+                    Value="{atom:CalendarTokenSharedTokenResource ColorTextDescription}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconButton:pointerover">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorText}" />
+            <Setter Property="IconBrush" Value="{atom:CalendarTokenSharedTokenResource ColorText}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconButton:pressed">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorText}" />
+            <Setter Property="IconBrush" Value="{atom:CalendarTokenSharedTokenResource ColorText}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

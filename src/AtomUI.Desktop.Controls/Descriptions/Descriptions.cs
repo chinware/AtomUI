@@ -172,7 +172,6 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
 
     public Descriptions()
     {
-        this.RegisterTokenResourceScope(DescriptionsToken.ScopeProvider);
         _items.CollectionChanged += HandleCollectionChanged;
     }
 

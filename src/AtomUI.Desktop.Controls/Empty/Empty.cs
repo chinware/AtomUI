@@ -7,6 +7,5 @@ public class Empty : AbstractEmpty
 {
     public Empty()
     {
-        this.RegisterTokenResourceScope(EmptyToken.ScopeProvider);
     }
 }

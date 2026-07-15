@@ -31,7 +31,7 @@
                                      Icon="{antdicons:AntDesignIconProvider CloseOutlined}"
                                      HorizontalAlignment="Right"
                                      VerticalAlignment="Top"
-                                     Margin="{atom:SharedTokenResource MarginLG}" />
+                                     Margin="{atom:ImagePreviewerTokenSharedTokenResource MarginLG}" />
                 </Panel>
             </ControlTemplate>
         </Setter>
@@ -41,7 +41,7 @@
             <Setter Property="IconBrush" Value="{atom:ImagePreviewerTokenResource PreviewOperationColor}" />
             <Setter Property="Background" Value="{atom:ImagePreviewerTokenResource NavButtonBgHoverColor}" />
             <Setter Property="CornerRadius" Value="100" />
-            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingSM}" />
+            <Setter Property="Padding" Value="{atom:ImagePreviewerTokenSharedTokenResource PaddingSM}" />
         </Style>
         <Style Selector="^ /template/ atom|IconButton#PART_CloseButton:pointerover">
             <Setter Property="IconBrush" Value="{atom:ImagePreviewerTokenResource PreviewOperationHoverColor}" />

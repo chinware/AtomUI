@@ -7,6 +7,5 @@ public class Avatar : AbstractAvatar
 {
     public Avatar()
     {
-        this.RegisterTokenResourceScope(AvatarToken.ScopeProvider);
     }
 }

@@ -7,6 +7,5 @@ public class QRCode : AbstractQRCode
 {
     public QRCode()
     {
-        this.RegisterTokenResourceScope(QRCodeToken.ScopeProvider);
     }
 }

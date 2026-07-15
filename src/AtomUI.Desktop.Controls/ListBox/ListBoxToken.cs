@@ -10,7 +10,6 @@ namespace AtomUI.Desktop.Controls;
 internal class ListBoxToken : AbstractControlDesignToken
 {
     public const string ID = "ListBox";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public ListBoxToken()
         : base(ID)

@@ -252,7 +252,6 @@ public class ListBox : AvaloniaListBox,
     
     public ListBox()
     {
-        this.RegisterTokenResourceScope(ListBoxToken.ScopeProvider);
         Items.CollectionChanged += HandleItemCollectionChanged;
     }
 

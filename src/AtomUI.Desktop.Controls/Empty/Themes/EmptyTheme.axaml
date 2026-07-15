@@ -40,11 +40,11 @@
         
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="BorderColor" Value="{atom:SharedTokenResource ColorFill}"/>
-        <Setter Property="BorderColorSecondary" Value="{atom:SharedTokenResource ColorBorderSecondary}"/>
-        <Setter Property="ShadowColor" Value="{atom:SharedTokenResource ColorFillTertiary}"/>
-        <Setter Property="ContentColor" Value="{atom:SharedTokenResource ColorFillQuaternary}"/>
-        <Setter Property="BgColor" Value="{atom:SharedTokenResource ColorBgElevated}"/>
+        <Setter Property="BorderColor" Value="{atom:EmptyTokenSharedTokenResource ColorFill}"/>
+        <Setter Property="BorderColorSecondary" Value="{atom:EmptyTokenSharedTokenResource ColorBorderSecondary}"/>
+        <Setter Property="ShadowColor" Value="{atom:EmptyTokenSharedTokenResource ColorFillTertiary}"/>
+        <Setter Property="ContentColor" Value="{atom:EmptyTokenSharedTokenResource ColorFillQuaternary}"/>
+        <Setter Property="BgColor" Value="{atom:EmptyTokenSharedTokenResource ColorBgElevated}"/>
         
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|TextBlock#Description">
@@ -65,7 +65,7 @@
         </Style>
         
         <Style Selector="^ /template/ atom|TextBlock#Description">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}"/>
+            <Setter Property="Foreground" Value="{atom:EmptyTokenSharedTokenResource ColorTextDescription}"/>
         </Style>
         
     </ControlTheme>

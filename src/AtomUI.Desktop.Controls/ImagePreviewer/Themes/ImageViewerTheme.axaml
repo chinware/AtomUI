@@ -42,7 +42,7 @@
                             <StackPanel Name="DefaultErrorLayout"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Spacing="{atom:SharedTokenResource SpacingXXS}"
+                                        Spacing="{atom:ImagePreviewerTokenSharedTokenResource SpacingXXS}"
                                         IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNull}}">
                                 <antdicons:PictureOutlined Name="DefaultErrorIcon"
                                                           HorizontalAlignment="Center" />
@@ -85,18 +85,18 @@
         </Setter>
 
         <Style Selector="^ /template/ atom|ImagePreviewNavButton">
-            <Setter Property="Margin" Value="{atom:SharedTokenResource Margin}" />
+            <Setter Property="Margin" Value="{atom:ImagePreviewerTokenSharedTokenResource Margin}" />
         </Style>
         <Style Selector="^ /template/ atom|ImagePreviewRenderer#PART_ImageRenderer">
             <Setter Property="Cursor" Value="DragMove" />
         </Style>
         <Style Selector="^ /template/ TextBlock#DefaultErrorText">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextTertiary}" />
+            <Setter Property="Foreground" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorTextTertiary}" />
         </Style>
         <Style Selector="^ /template/ atom|Icon#DefaultErrorIcon">
             <Setter Property="Width" Value="48" />
             <Setter Property="Height" Value="48" />
-            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextTertiary}" />
+            <Setter Property="StrokeBrush" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorTextTertiary}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

@@ -208,7 +208,6 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
 
     public Expander()
     {
-        this.RegisterTokenResourceScope(ExpanderToken.ScopeProvider);
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

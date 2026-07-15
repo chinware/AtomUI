@@ -13,10 +13,10 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="RelativeLineHeight" Value="{atom:SharedTokenResource RelativeLineHeight}"/>
+        <Setter Property="RelativeLineHeight" Value="{atom:TimelineTokenSharedTokenResource RelativeLineHeight}"/>
         <Setter Property="IndicatorDotBorderWidth" Value="{atom:TimelineTokenResource IndicatorDotBorderWidth}"/>
         <Setter Property="IndicatorDotSize" Value="{atom:TimelineTokenResource IndicatorDotSize}"/>
-        <Setter Property="DefaultIndicatorColor" Value="{atom:SharedTokenResource ColorPrimary}"/>
+        <Setter Property="DefaultIndicatorColor" Value="{atom:TimelineTokenSharedTokenResource ColorPrimary}"/>
         <Setter Property="IndicatorTailWidth" Value="{atom:TimelineTokenResource IndicatorTailWidth}"/>
         <Setter Property="IndicatorTailColor" Value="{atom:TimelineTokenResource IndicatorTailColor}"/>
         

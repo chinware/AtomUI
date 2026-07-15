@@ -397,7 +397,6 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
     
     public ListView()
     {
-        this.RegisterTokenResourceScope(ListViewToken.ScopeProvider);
         // Selecting 相关设置，只能通过反射设置目前
         ((ItemCollection)ItemsView).AddSourceChangedEvent(OnItemsViewSourceChanged);
         var items = this.GetItems();

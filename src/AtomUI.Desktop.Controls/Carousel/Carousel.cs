@@ -279,7 +279,6 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
 
     public Carousel()
     {
-        this.RegisterTokenResourceScope(CarouselToken.ScopeProvider);
     }
     
     private void HandleItemCountChanged(int count)

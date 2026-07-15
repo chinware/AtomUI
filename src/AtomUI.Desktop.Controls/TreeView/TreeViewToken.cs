@@ -10,7 +10,6 @@ namespace AtomUI.Desktop.Controls;
 internal class TreeViewToken : AbstractControlDesignToken
 {
     public const string ID = "TreeView";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public TreeViewToken()
         : base(ID)

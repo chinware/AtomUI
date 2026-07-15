@@ -10,7 +10,6 @@ public class Timeline : AbstractTimeline
 {
     public Timeline()
     {
-        this.RegisterTokenResourceScope(TimelineToken.ScopeProvider);
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)

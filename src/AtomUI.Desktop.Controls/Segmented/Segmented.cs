@@ -8,7 +8,6 @@ public class Segmented : AbstractSegmented
 {
     public Segmented()
     {
-        this.RegisterTokenResourceScope(SegmentedToken.ScopeProvider);
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)

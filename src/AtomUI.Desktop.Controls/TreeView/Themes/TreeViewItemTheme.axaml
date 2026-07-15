@@ -55,7 +55,7 @@
 
     <Style Selector="^:is(atom|TreeViewItem)">
         <Setter Property="Focusable" Value="False" /> 
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
-        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="BorderBrush" Value="{atom:TreeViewTokenSharedTokenResource ColorBorder}" />
+        <Setter Property="BorderThickness" Value="{atom:TreeViewTokenSharedTokenResource BorderThickness}" />
     </Style>
 </ControlTheme>

@@ -7,7 +7,6 @@ public class RibbonBadge : AbstractRibbonBadge
 {
     public RibbonBadge()
     {
-        this.RegisterTokenResourceScope(BadgeToken.ScopeProvider);
     }
     
     private protected override AbstractRibbonBadgeAdorner CreateBadgeAdorner()

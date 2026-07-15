@@ -24,11 +24,11 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}"/>
+        <Setter Property="FontSize" Value="{atom:CalendarTokenSharedTokenResource FontSize}"/>
         <Setter Property="Cursor" Value="Hand"/>
         
         <Style Selector="^:pointerover">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimary}"/>
+            <Setter Property="Foreground" Value="{atom:CalendarTokenSharedTokenResource ColorPrimary}"/>
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

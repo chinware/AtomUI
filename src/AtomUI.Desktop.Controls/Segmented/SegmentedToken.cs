@@ -10,7 +10,6 @@ namespace AtomUI.Desktop.Controls;
 internal class SegmentedToken : AbstractControlDesignToken
 {
     public const string ID = "Segmented";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public SegmentedToken()
         : base(ID)

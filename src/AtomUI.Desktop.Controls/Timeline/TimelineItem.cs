@@ -7,6 +7,5 @@ public class TimelineItem : AbstractTimelineItem
 {
     public TimelineItem()
     {
-        this.RegisterTokenResourceScope(TimelineToken.ScopeProvider);
     }
 }

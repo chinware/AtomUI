@@ -10,7 +10,6 @@ namespace AtomUI.Desktop.Controls;
 internal class ExpanderToken : AbstractControlDesignToken
 {
     public const string ID = "Expander";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public ExpanderToken()
         : base(ID)

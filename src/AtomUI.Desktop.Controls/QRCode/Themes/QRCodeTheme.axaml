@@ -86,17 +86,17 @@
         <Setter Property="Foreground" Value="{atom:QRCodeTokenResource QRCodeTextColor}" />
         <Setter Property="Background" Value="Transparent" />
         
-        <Setter Property="IconBgColor" Value="{atom:SharedTokenResource ColorBgContainer}" />
+        <Setter Property="IconBgColor" Value="{atom:QRCodeTokenSharedTokenResource ColorBgContainer}" />
         <Setter Property="BorderThickness"
-                Value="{atom:SharedTokenResource BorderThickness}" />
+                Value="{atom:QRCodeTokenSharedTokenResource BorderThickness}" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+        <Setter Property="CornerRadius" Value="{atom:QRCodeTokenSharedTokenResource BorderRadiusLG}" />
 
         <Style Selector="^[IsBordered=True]">
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
+            <Setter Property="BorderBrush" Value="{atom:QRCodeTokenSharedTokenResource ColorSplit}" />
             <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
                 <Setter Property="Padding"
-                        Value="{atom:SharedTokenResource PaddingSM}" />
+                        Value="{atom:QRCodeTokenSharedTokenResource PaddingSM}" />
             </Style>
         </Style>
 
@@ -107,7 +107,7 @@
 
         <Style Selector="^ /template/ Border#ImageFrame">
             <Setter Property="Padding"
-                    Value="{atom:SharedTokenResource PaddingXXS}" />
+                    Value="{atom:QRCodeTokenSharedTokenResource PaddingXXS}" />
         </Style>
 
         <Style Selector="^[Status=Active]">

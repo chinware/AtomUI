@@ -27,11 +27,11 @@
         
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}"/>
+        <Setter Property="CornerRadius" Value="{atom:TreeViewTokenSharedTokenResource BorderRadius}"/>
 
         <Style Selector="^ /template/ atom|IconPresenter atom|Icon">
-            <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorTextSecondary}"/>
-            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextSecondary}"/>
+            <Setter Property="FillBrush" Value="{atom:TreeViewTokenSharedTokenResource ColorTextSecondary}"/>
+            <Setter Property="StrokeBrush" Value="{atom:TreeViewTokenSharedTokenResource ColorTextSecondary}"/>
         </Style>
         
         <Style Selector="^:pointerover">
@@ -39,17 +39,17 @@
         </Style>
         
         <Style Selector="^ /template/ atom|IconPresenter">
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}"/>
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}"/>
+            <Setter Property="Width" Value="{atom:TreeViewTokenSharedTokenResource IconSize}"/>
+            <Setter Property="Height" Value="{atom:TreeViewTokenSharedTokenResource IconSize}"/>
         </Style>
         
         <Style Selector="^[IconMode=Rotation] /template/ atom|IconPresenter#CurrentIconPresenter">
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeXS}"/>
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeXS}"/>
+            <Setter Property="Width" Value="{atom:TreeViewTokenSharedTokenResource IconSizeXS}"/>
+            <Setter Property="Height" Value="{atom:TreeViewTokenSharedTokenResource IconSizeXS}"/>
         </Style>
         
         <Style Selector="^[IconMode=Loading] /template/ atom|IconPresenter#CurrentIconPresenter">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorPrimary}"/>
+            <Setter Property="IconBrush" Value="{atom:TreeViewTokenSharedTokenResource ColorPrimary}"/>
         </Style>
         
         <Style Selector="^:checked[IconMode=Rotation]">

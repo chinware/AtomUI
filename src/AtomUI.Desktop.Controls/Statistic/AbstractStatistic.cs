@@ -118,7 +118,6 @@ public abstract class AbstractStatistic : HeaderedContentControl
     
     public AbstractStatistic()
     {
-        this.RegisterTokenResourceScope(StatisticToken.ScopeProvider);
     }
     
     private void HandleChildChanged(AvaloniaPropertyChangedEventArgs e)
