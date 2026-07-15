@@ -212,6 +212,88 @@ public class ThemeCompilerTests
     }
 
     [Fact]
+    public void Registration_Is_Activated_Exactly_Once_Per_Compile()
+    {
+        ActivationCountingCompilerButtonToken.ResetActivationCount();
+
+        var result = Compile(registrations:
+        [
+            new ControlTokenRegistration(typeof(ActivationCountingCompilerButtonToken))
+        ]);
+
+        result.Success.ShouldBeTrue();
+        ActivationCountingCompilerButtonToken.ActivationCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public void Invalid_Non_Control_Token_Registration_Fails_With_A_Diagnostic_And_No_Snapshot()
+    {
+        var result = Compile(registrations:
+        [
+            new ControlTokenRegistration(typeof(InvalidCompilerToken))
+        ]);
+
+        result.Success.ShouldBeFalse();
+        result.Snapshot.ShouldBeNull();
+        result.Diagnostics.ShouldContain(diagnostic =>
+            diagnostic.Severity == ThemeDiagnosticSeverity.Error &&
+            diagnostic.Message.Contains(nameof(InvalidCompilerToken), StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Snapshot_Is_Independent_From_Mutable_Compile_Inputs()
+    {
+        var algorithms = new List<ThemeAlgorithm> { ThemeAlgorithm.Default };
+        var sharedOverrides = Tokens((nameof(DesignToken.ColorPrimary), "#00b96b"));
+        var componentOverride = new ControlTokenConfigInfo
+        {
+            TokenId = CompilerButtonToken.ID,
+            EnableAlgorithm = false,
+            Tokens = Tokens((nameof(CompilerButtonToken.Height), "48")),
+            SharedTokens = Tokens((nameof(DesignToken.ColorPrimary), "#ff0000"))
+        };
+        var componentOverrides = new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>
+        {
+            [s_buttonIdentity] = componentOverride
+        };
+        var registrations = new List<ControlTokenRegistration>
+        {
+            new(typeof(CompilerButtonToken))
+        };
+
+        var result = Compile(
+            algorithms: algorithms,
+            sharedOverrides: sharedOverrides,
+            componentOverrides: componentOverrides,
+            registrations: registrations);
+
+        result.Success.ShouldBeTrue();
+        algorithms.Add(ThemeAlgorithm.Dark);
+        sharedOverrides[nameof(DesignToken.ColorPrimary)] = "#123456";
+        componentOverride.Tokens[nameof(CompilerButtonToken.Height)] = "64";
+        componentOverride.SharedTokens[nameof(DesignToken.ColorPrimary)] = "#654321";
+        registrations.Clear();
+
+        algorithms.ShouldBe([ThemeAlgorithm.Default, ThemeAlgorithm.Dark]);
+        sharedOverrides[nameof(DesignToken.ColorPrimary)].ShouldBe("#123456");
+        componentOverride.Tokens[nameof(CompilerButtonToken.Height)].ShouldBe("64");
+        componentOverride.SharedTokens[nameof(DesignToken.ColorPrimary)].ShouldBe("#654321");
+        registrations.ShouldBeEmpty();
+
+        var snapshot = result.Snapshot!;
+        snapshot.Algorithms.ShouldBe([ThemeAlgorithm.Default]);
+        snapshot.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
+        snapshot.SharedResources[SharedTokenKind.ColorPrimary]
+                .ShouldBeOfType<ImmutableSolidColorBrush>()
+                .Color
+                .ShouldBe(Color.Parse("#00b96b"));
+        var button = snapshot.Components[s_buttonIdentity];
+        button.EffectiveSharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
+        ((CompilerButtonToken)button.ControlToken).Height.ShouldBe(48);
+        button.ControlResources[CompilerButtonTokenKind.Height].ShouldBe(48d);
+    }
+
+    [Fact]
     public void Invalid_Shared_Override_Returns_An_Exception_Without_A_Partial_Snapshot()
     {
         var result = Compile(
@@ -371,4 +453,33 @@ internal sealed class DuplicateCompilerButtonToken : AbstractControlDesignToken
     {
         return typeof(CompilerButtonTokenKind);
     }
+}
+
+internal sealed class ActivationCountingCompilerButtonToken : AbstractControlDesignToken
+{
+    internal const string ID = "ActivationCountingButton";
+
+    internal static int ActivationCount { get; private set; }
+
+    public double Height { get; set; }
+
+    public ActivationCountingCompilerButtonToken()
+        : base(ID)
+    {
+        ActivationCount++;
+    }
+
+    internal static void ResetActivationCount()
+    {
+        ActivationCount = 0;
+    }
+
+    protected override Type GetTokenKindType()
+    {
+        return typeof(CompilerButtonTokenKind);
+    }
+}
+
+internal sealed class InvalidCompilerToken
+{
 }
