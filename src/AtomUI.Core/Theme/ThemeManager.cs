@@ -1,8 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using AtomUI.Controls;
+using AtomUI.Theme.Catalog;
+using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -20,12 +23,12 @@ internal class ThemeManager : Styles, IThemeManager
     public const string DEFAULT_APP_NAME = "AtomUIApplication";
     public const string THEME_DIR = "Themes";
 
-    private static readonly ISet<ThemeAlgorithm>[] s_algorithmCombinations =
+    private static readonly IReadOnlyList<ThemeAlgorithm>[] s_algorithmCombinations =
     {
-        new HashSet<ThemeAlgorithm> { ThemeAlgorithm.Default },
-        new HashSet<ThemeAlgorithm> { ThemeAlgorithm.Default, ThemeAlgorithm.Dark },
-        new HashSet<ThemeAlgorithm> { ThemeAlgorithm.Default, ThemeAlgorithm.Dark, ThemeAlgorithm.Compact },
-        new HashSet<ThemeAlgorithm> { ThemeAlgorithm.Default, ThemeAlgorithm.Compact }
+        [ThemeAlgorithm.Default],
+        [ThemeAlgorithm.Default, ThemeAlgorithm.Dark],
+        [ThemeAlgorithm.Default, ThemeAlgorithm.Dark, ThemeAlgorithm.Compact],
+        [ThemeAlgorithm.Default, ThemeAlgorithm.Compact]
     };
 
     #region 公共属性定义
@@ -96,6 +99,8 @@ internal class ThemeManager : Styles, IThemeManager
     public FontFamily? FontFamily { get; internal set; }
     internal List<ControlTokenRegistration> ControlTokenTypes { get; set; }
     internal IThemeVariantCalculatorFactory? ThemeVariantCalculatorFactory { get; set; }
+    internal bool HasExplicitDefaultTheme { get; set; }
+    internal string? ExplicitDefaultThemeBaseId { get; set; }
     
     public event EventHandler<ThemeOperateEventArgs>? ThemeCreated;
     public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoad;
@@ -115,6 +120,8 @@ internal class ThemeManager : Styles, IThemeManager
     private readonly List<string> _builtInThemeDirs;
     private IList<IControlThemesProvider> _controlThemesProviders;
     private IList<IThemeAssetPathProvider> _themeAssetPathProviders;
+    private ThemeCatalog? _themeCatalog;
+    private ThemeCompiler? _themeCompiler;
     
     private readonly Dictionary<LanguageVariant, ResourceDictionary> _languages;
     private List<ILanguageProvider>? _languageProviders;
@@ -295,26 +302,48 @@ internal class ThemeManager : Styles, IThemeManager
 
     internal void ScanThemes()
     {
-        // 最开始的是用户指定的目录
-        foreach (var path in _customThemeDirs)
+        if (_themeCatalog is not null)
         {
-            AddThemesFromPath(path, _themePool, false);
+            return;
         }
 
-        // 优先级从高到低
-        foreach (var path in _builtInThemeDirs)
+        var catalog = CreateThemeCatalog();
+        catalog.EnsureRequiredBuiltInThemesAvailable();
+        var defaultDescriptor = catalog.ResolveDefaultDescriptor(
+            HasExplicitDefaultTheme ? ExplicitDefaultThemeBaseId : null);
+        var compiler = new ThemeCompiler(ThemeVariantCalculatorFactory);
+        var themes = new List<Theme>();
+        foreach (var descriptor in catalog.Descriptors)
         {
-            AddThemesFromPath(path, _themePool, false);
+            if (!descriptor.IsAvailable)
+            {
+                continue;
+            }
+
+            foreach (var algorithms in s_algorithmCombinations)
+            {
+                themes.Add(new Theme(descriptor, catalog, compiler, algorithms));
+            }
         }
 
-        foreach (var themeAssetPathProvider in _themeAssetPathProviders)
+        if (!HasExplicitDefaultTheme)
         {
-            var filePaths = themeAssetPathProvider.GetThemeFilePaths();
-            AddThemesFromFilePaths(filePaths, _themePool, true);
+            DefaultThemeId = defaultDescriptor.Id;
         }
 
-        // Assets 中的默认主题
-        AddThemesFromAssets(_themePool);
+        _themeCatalog = catalog;
+        _themeCompiler = compiler;
+        foreach (var theme in themes)
+        {
+            _themePool.Add(theme.ThemeVariant, theme);
+        }
+
+        foreach (var theme in themes)
+        {
+            ThemeCreated?.Invoke(this, new ThemeOperateEventArgs(theme));
+            theme.NotifyRegistered();
+        }
+
         Debug.Assert(_themePool.Count > 0);
     }
 
@@ -345,50 +374,118 @@ internal class ThemeManager : Styles, IThemeManager
         }
     }
 
-    private void AddThemesFromPath(string path, Dictionary<ThemeVariant, Theme> themes, bool isBuiltIn)
+    private ThemeCatalog CreateThemeCatalog()
     {
-        var searchPattern = "*.xml";
-        if (Directory.Exists(path))
+        var sources = new List<IThemeCatalogSource>();
+        var sourcePriority = 0;
+        AddDirectorySources(_customThemeDirs, false, sources, ref sourcePriority);
+        AddDirectorySources(_builtInThemeDirs, false, sources, ref sourcePriority);
+
+        foreach (var provider in _themeAssetPathProviders)
         {
-            var files = Directory.GetFiles(path, searchPattern);
-            if (files.Length > 0)
-            {
-                AddThemesFromFilePaths(files, themes, isBuiltIn);
-            }
+            AddSources(provider.GetThemeFilePaths(), true, false, sources, ref sourcePriority);
         }
+
+        AddSources(
+            AssetLoader.GetAssets(new Uri(DEFAULT_THEME_RES_PATH), null)
+                       .Select(static path => path.ToString()),
+            true,
+            true,
+            sources,
+            ref sourcePriority);
+
+        return new ThemeCatalog(
+            sources,
+            CreateSharedTokenSchema(),
+            CreateComponentTokenSchemas(),
+            ControlTokenTypes);
     }
 
-    private void AddThemesFromAssets(Dictionary<ThemeVariant, Theme> themes)
+    private static void AddDirectorySources(
+        IEnumerable<string> directories,
+        bool isBuiltIn,
+        List<IThemeCatalogSource> sources,
+        ref int sourcePriority)
     {
-        var filePaths = AssetLoader.GetAssets(new Uri(DEFAULT_THEME_RES_PATH), null);
-        foreach (var filePath in filePaths)
+        foreach (var directory in directories)
         {
-            AddThemeFromFilePath(filePath.ToString(), themes, true);
-        }
-    }
-
-    private void AddThemesFromFilePaths(IEnumerable<string> filePaths, Dictionary<ThemeVariant, Theme> themes, bool isBuiltIn)
-    {
-        foreach (var filePath in filePaths)
-        {
-            AddThemeFromFilePath(filePath, themes, isBuiltIn);
-        }
-    }
-
-    private void AddThemeFromFilePath(string filePath, Dictionary<ThemeVariant, Theme> themes, bool isBuiltIn)
-    {
-        var themeId = Path.GetFileNameWithoutExtension(filePath);
-        foreach (var algorithms in s_algorithmCombinations)
-        {
-            var theme        = new Theme(this, themeId, filePath, algorithms, isBuiltIn);
-            var themeVariant = theme.ThemeVariant;
-            if (!themes.TryAdd(themeVariant, theme))
+            if (!Directory.Exists(directory))
             {
                 continue;
             }
-            ThemeCreated?.Invoke(this, new ThemeOperateEventArgs(theme));
-            theme.NotifyRegistered();
+
+            AddSources(
+                Directory.GetFiles(directory, "*.xml"),
+                isBuiltIn,
+                false,
+                sources,
+                ref sourcePriority);
         }
+    }
+
+    private static void AddSources(
+        IEnumerable<string> filePaths,
+        bool isBuiltIn,
+        bool isCoreAssets,
+        List<IThemeCatalogSource> sources,
+        ref int sourcePriority)
+    {
+        foreach (var filePath in filePaths.OrderBy(static path => path, StringComparer.Ordinal))
+        {
+            var id = Path.GetFileNameWithoutExtension(filePath);
+            var isRequiredBuiltInDefault = isCoreAssets &&
+                                           string.Equals(id, IThemeManager.DEFAULT_THEME_ID, StringComparison.Ordinal);
+            IThemeDefinitionStreamOpener opener = filePath.StartsWith("avares://", StringComparison.OrdinalIgnoreCase)
+                ? AssetThemeDefinitionStreamOpener.Instance
+                : FileThemeDefinitionStreamOpener.Instance;
+            sources.Add(new ThemeCatalogSource(
+                id,
+                filePath,
+                isBuiltIn,
+                isRequiredBuiltInDefault,
+                sourcePriority++,
+                opener));
+        }
+    }
+
+    private static IReadOnlySet<string> CreateSharedTokenSchema()
+    {
+        var names = new HashSet<string>(
+            DesignToken.GetTokenPropertyNames(DesignTokenKind.Seed),
+            StringComparer.Ordinal);
+        names.UnionWith(DesignToken.GetTokenPropertyNames(DesignTokenKind.Map));
+        names.UnionWith(DesignToken.GetTokenPropertyNames(DesignTokenKind.Alias));
+        return names;
+    }
+
+    private IReadOnlyDictionary<string, IReadOnlySet<string>> CreateComponentTokenSchemas()
+    {
+        var schemas = new Dictionary<string, IReadOnlySet<string>>(StringComparer.Ordinal);
+        foreach (var registration in ControlTokenTypes)
+        {
+            AbstractControlDesignToken? token;
+            try
+            {
+                token = registration.Activate();
+            }
+            catch
+            {
+                continue;
+            }
+
+            if (token is null)
+            {
+                continue;
+            }
+
+            var names = registration.TokenType
+                                    .GetProperties(System.Reflection.BindingFlags.Instance |
+                                                   System.Reflection.BindingFlags.Public)
+                                    .Select(static property => property.Name);
+            schemas[token.Id] = new HashSet<string>(names, StringComparer.Ordinal);
+        }
+
+        return schemas;
     }
 
     internal void Configure()

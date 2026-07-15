@@ -130,6 +130,8 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     {
         var themeManager = new ThemeManager();
         themeManager.DefaultThemeId                = ThemeId;
+        themeManager.HasExplicitDefaultTheme       = HasExplicitDefaultTheme;
+        themeManager.ExplicitDefaultThemeBaseId    = ExplicitDefaultThemeBaseId;
         themeManager.ThemeVariantCalculatorFactory = ThemeVariantCalculatorFactory;
         themeManager.EnsureRegistrationCapacity(ControlDesignTokens.Count,
                                                 ControlThemesProviders.Count,

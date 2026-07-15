@@ -4,6 +4,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Definitions;
 using Shouldly;
 using Xunit;
+using AtomUITheme = AtomUI.Theme.Theme;
 
 namespace AtomUI.Core.Tests.Theme;
 
@@ -391,14 +392,11 @@ public class ThemeDefinitionParserTests
     }
 
     [Fact]
-    public void LegacyReader_Constructs_And_Returns_A_Definition()
+    public void Legacy_Theme_Definition_Loading_Type_Is_Absent_After_Catalog_Migration()
     {
-        var loadMethod = typeof(ThemeDefinitionReader).GetMethod(
-            "Load",
-            BindingFlags.Instance | BindingFlags.Public)!;
+        var legacyTypeName = string.Concat("AtomUI.Theme.ThemeDefinition", "Reader");
 
-        loadMethod.ReturnType.ShouldBe(typeof(ThemeDefinition));
-        loadMethod.GetParameters().ShouldBeEmpty();
+        typeof(AtomUITheme).Assembly.GetType(legacyTypeName).ShouldBeNull();
     }
 
     private static ThemeDefinitionParseResult Parse(string xml)
