@@ -257,7 +257,7 @@ internal class OverlayDialogHost : ContentControl,
         if (!IsMotionEnabled)
         {
             // 非动画路径：仍需把 mask 挂到 OverlayLayer，否则 modal 遮罩出不来。
-            Dispatcher.Post(AttachMaskToOverlayLayer);
+            Dispatcher.Post(AttachMaskToOverlayLayer, DispatcherPriority.Loaded);
             return;
         }
 
@@ -292,11 +292,12 @@ internal class OverlayDialogHost : ContentControl,
             // 被 transitions 抓到这一次"起始→目标"变化去插值。若不清空，起始态本身也会触发
             // 一次被 Post2 立刻打断的动画，实际看起来像没动画。
             var (origin, transform)           = BuildCollapsedMotionState(overlayHost);
+            var shouldAnimateTransform        = !transform.IsIdentity;
             overlayHost.Transitions           = null;
             overlayHost.Opacity               = 0.0;
             overlayHost.RenderTransformOrigin = origin;
             overlayHost.RenderTransform       = transform;
-            EnsureOpenTransitionsOn(overlayHost);
+            EnsureOpenTransitionsOn(overlayHost, shouldAnimateTransform);
 
             if (IsModal)
             {
@@ -309,8 +310,11 @@ internal class OverlayDialogHost : ContentControl,
                 {
                     return;
                 }
-                overlayHost.Opacity         = 1.0;
-                overlayHost.RenderTransform = BuildIdentityTransform();
+                overlayHost.Opacity = 1.0;
+                if (shouldAnimateTransform)
+                {
+                    overlayHost.RenderTransform = BuildIdentityTransform();
+                }
 
                 if (IsModal)
                 {
@@ -319,8 +323,8 @@ internal class OverlayDialogHost : ContentControl,
                         _dialogMask.Opacity = 1.0;
                     }
                 }
-            });
-        });
+            }, DispatcherPriority.Loaded);
+        }, DispatcherPriority.Loaded);
     }
 
     public void Close(Action? callback = null)
@@ -376,37 +380,43 @@ internal class OverlayDialogHost : ContentControl,
         }
     }
 
-    private static void EnsureOpenTransitionsOn(OverlayPopupHost host)
+    private static void EnsureOpenTransitionsOn(OverlayPopupHost host, bool includeTransform)
     {
         if (host.Transitions is { Count: > 0 })
         {
             return;
         }
-        host.Transitions = CreateOverlayHostTransitions(new CircularEaseOut());
+        host.Transitions = CreateOverlayHostTransitions(new CircularEaseOut(), includeTransform);
     }
 
     private void ConfigureUnanchoredCloseTransitions(OverlayPopupHost host)
     {
-        host.Transitions = CreateOverlayHostTransitions(new CubicEaseIn());
+        host.Transitions = CreateOverlayHostTransitions(new CubicEaseIn(), false);
         if (_dialogMask is not null)
         {
             _dialogMask.Transitions = CreateMaskTransitions(new CubicEaseIn());
         }
     }
 
-    private static Transitions CreateOverlayHostTransitions(Easing easing)
+    private static Transitions CreateOverlayHostTransitions(Easing easing, bool includeTransform)
     {
-        return
-        [
+        var transitions = new Transitions
+        {
             TransitionUtils.CreateTransition<DoubleTransition>(
                 OpacityProperty,
                 SharedTokenKind.MotionDurationMid,
-                easing),
-            TransitionUtils.CreateTransition<TransformOperationsTransition>(
+                easing)
+        };
+
+        if (includeTransform)
+        {
+            transitions.Add(TransitionUtils.CreateTransition<TransformOperationsTransition>(
                 RenderTransformProperty,
                 SharedTokenKind.MotionDurationMid,
-                easing)
-        ];
+                easing));
+        }
+
+        return transitions;
     }
 
     private static Transitions CreateMaskTransitions(Easing easing)
