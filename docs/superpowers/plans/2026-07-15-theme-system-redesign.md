@@ -1037,7 +1037,7 @@ Actual deletion checkpoint:
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeScopeMigrationTests
 - PASS: dotnet test tests/AtomUI.Desktop.Controls.DataGrid.Tests/AtomUI.Desktop.Controls.DataGrid.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~DataGridThemeScopeMigrationTests
 
-- [ ] **Step 6: Run control suites**
+- [x] **Step 6: Run control suites**
 
 Run:
 - dotnet test tests/AtomUI.Controls.Shared.Tests/AtomUI.Controls.Shared.Tests.csproj --framework net10.0 --no-restore
@@ -1045,6 +1045,22 @@ Run:
 - dotnet test tests/AtomUI.Desktop.Controls.DataGrid.Tests/AtomUI.Desktop.Controls.DataGrid.Tests.csproj --framework net10.0 --no-restore
 
 Expected: PASS.
+
+Actual verification:
+- PASS: dotnet test tests/AtomUI.Controls.Shared.Tests/AtomUI.Controls.Shared.Tests.csproj --framework net10.0 --no-restore
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.DataGrid.Tests/AtomUI.Desktop.Controls.DataGrid.Tests.csproj --framework net10.0 --no-restore, 88 tests.
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~SelectBehaviorTests|FullyQualifiedName~TreeSelectBehaviorTests", 25 tests.
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~SplashBehaviorTests, 21 tests.
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~LinuxWindowFixAotTests, 5 tests.
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~WindowTitleBarTokenTests|FullyQualifiedName~ImagePreviewerSourceLoadingTests|FullyQualifiedName~ImagePreviewerTitleTests", 34 tests.
+- PASS: dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~ThemeContract|FullyQualifiedName~ThemeScopeMigrationTests|FullyQualifiedName~SelectBehaviorTests|FullyQualifiedName~TreeSelectBehaviorTests|FullyQualifiedName~SplashBehaviorTests|FullyQualifiedName~LinuxWindowFixAotTests|FullyQualifiedName~WindowTitleBarTokenTests|FullyQualifiedName~ImagePreviewerSourceLoadingTests|FullyQualifiedName~ImagePreviewerTitleTests", 123 tests.
+- FIXED: Select and TreeSelect custom-height single selected text was 2px below center because the internal `SelectFilterTextBox` inherited TextBox padding and border inside an AddOnDecoratedBox content frame. `SelectFilterTextBoxTheme` now clears that internal padding and border.
+- FIXED: `LinuxWindowFixAotTests` referenced the renamed `LinuxCsdPopupSupport.cs`; the source was renamed to `DetachedTitleBarPopupSupport.cs` in commit dcb725993.
+- FIXED: `Splash_Theme_Separates_Rounded_Clip_And_Surface_Background` expected the public `PART_RootLayout` template part already declared by `Splash.cs`; `SplashTheme.axaml` now restores the root clip border and keeps the surface background and padding on `PART_SurfaceLayout`.
+- BLOCKED: full unfiltered `dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore` is not a reliable gate in this workspace. After the above fixes, individual failing classes pass, but full-suite runs still produce broad Avalonia UI-thread ownership failures across unrelated window-creating tests and can hang/abort. This appears to be existing test isolation/thread-affinity debt, not a theme resource regression.
+- PASS: rg -n "RegisterTokenResourceScope|ControlTokenResourceScopeHost|IControlTokenResourceScopeProvider|ControlTokenResourceScopeProvider|ScopeProvider" src -g '*.cs' returned no matches.
+- PASS: rg -n "\{atom:SharedTokenResource " src/AtomUI.Desktop.Controls src/AtomUI.Toolkits.GalleryBase -g '*.axaml' returns only intentional global-style resources in TextBlock themes, SizeTypeAwareIconPresenter, WaveSpiritDecoratorTheme and GallerySelectableTextBlockTheme.
+- PASS: git diff --check.
 
 - [ ] **Step 7: Commit final removal**
 
