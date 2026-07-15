@@ -83,11 +83,6 @@ public class SplitView : AvaloniaSplitView, IMotionAwareControl
 
     #endregion
 
-    public SplitView()
-    {
-        this.RegisterTokenResourceScope(SplitViewToken.ScopeProvider);
-    }
-
     protected override void OnInitialized()
     {
         base.OnInitialized();

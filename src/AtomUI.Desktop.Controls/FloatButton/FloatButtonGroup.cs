@@ -5,7 +5,6 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
@@ -221,7 +220,6 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
 
     public FloatButtonGroup()
     {
-        this.RegisterTokenResourceScope(FloatButtonToken.ScopeProvider);
         Children.CollectionChanged += NotifyChildrenChanged;
     }
 

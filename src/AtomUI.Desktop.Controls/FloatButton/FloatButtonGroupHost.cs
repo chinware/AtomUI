@@ -3,7 +3,6 @@ using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -141,7 +140,6 @@ public class FloatButtonGroupHost : TemplatedControl, IMotionAwareControl
     
     public FloatButtonGroupHost()
     {
-        this.RegisterTokenResourceScope(FloatButtonToken.ScopeProvider);
         Children.CollectionChanged += NotifyChildrenChanged;
     }
     

@@ -137,7 +137,6 @@ public class CompactSpace : TemplatedControl,
     
     public CompactSpace()
     {
-        this.RegisterTokenResourceScope(SpaceToken.ScopeProvider);
         Children.CollectionChanged += HandleChildrenChanged;
     }
     

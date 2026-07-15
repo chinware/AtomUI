@@ -139,7 +139,6 @@ public class Space : Control,
     
     public Space()
     {
-        this.RegisterTokenResourceScope(SpaceToken.ScopeProvider);
         ApplySpacingTokenBinding();
         Children.CollectionChanged += HandleChildrenChanged;
     }

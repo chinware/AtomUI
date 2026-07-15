@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 internal class SeparatorToken : AbstractControlDesignToken
 {
     public const string ID = "Separator";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public SeparatorToken()
         : base(ID)
