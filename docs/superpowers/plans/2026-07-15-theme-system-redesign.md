@@ -654,7 +654,7 @@ git commit -m "feat(Generator): emit component shared token resources"
 - Consumes: inherited parent Snapshot, observable local config and ThemeCompiler.
 - Produces: one child Snapshot, one ResourceProvider, and inherited context on Content.
 
-- [ ] **Step 1: Write nested inheritance and update tests**
+- [x] **Step 1: Write nested inheritance and update tests**
 
 ~~~csharp
 [Fact]
@@ -679,13 +679,13 @@ public void Child_Provider_Inherits_Unchanged_Parent_Tokens()
 
 Add tests for Inherit false, parent updates, list add and remove, TokenSetter Value changes, algorithm changes, failed compile rollback, one merged provider after 20 updates, and Content replacement cleanup.
 
-- [ ] **Step 2: Verify current failures**
+- [x] **Step 2: Verify current failures**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeConfigProviderTests
 
 Expected: failures for inheritance, change tracking, resource count and rollback.
 
-- [ ] **Step 3: Define ThemeScope and observable config**
+- [x] **Step 3: Define ThemeScope and observable config**
 
 ~~~csharp
 internal static class ThemeScope
@@ -702,7 +702,7 @@ internal static class ThemeScope
 
 Convert TokenSetter and ControlTokenInfoSetter to AvaloniaObject properties. Use AvaloniaList collections and add InheritProperty with default true while preserving AXAML content syntax.
 
-- [ ] **Step 4: Replace CalculateTokenResources with compile and commit**
+- [x] **Step 4: Replace CalculateTokenResources with compile and commit**
 
 The provider inherits the parent Snapshot on itself and compiles a child Snapshot off-side. On success:
 
@@ -713,11 +713,11 @@ The provider inherits the parent Snapshot on itself and compiles a child Snapsho
 
 On failure, retain every previously published object and resource and raise ThemeScopeCompileFailed with diagnostics.
 
-- [ ] **Step 5: Coalesce runtime changes**
+- [x] **Step 5: Coalesce runtime changes**
 
 Queue at most one Dispatcher.UIThread recompile per event-loop turn. Detach collection, item and parent handlers symmetrically on Content replacement and logical detach.
 
-- [ ] **Step 6: Verify compatibility**
+- [x] **Step 6: Verify compatibility**
 
 Run:
 - dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
@@ -725,7 +725,7 @@ Run:
 
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ~~~bash
 git add src/AtomUI.Core/Theme/Scope src/AtomUI.Core/Theme/ThemeConfigProvider.cs src/AtomUI.Core/Theme/IThemeConfigProvider.cs src/AtomUI.Core/Theme/TokenSetter.cs src/AtomUI.Core/Theme/ControlTokenInfoSetter.cs tests/AtomUI.Core.Tests/Theme/ThemeConfigProviderTests.cs
