@@ -21,7 +21,7 @@ internal sealed class ComponentThemeSnapshot
         ControlResources     = controlResources;
     }
 
-    public DesignToken EffectiveSharedToken => ThemeSnapshot.CloneDesignToken(_effectiveSharedToken);
+    public DesignToken EffectiveSharedToken => DesignTokenClone.DeepClone(_effectiveSharedToken);
     public IReadOnlyDictionary<object, object?> SharedResourceDelta { get; }
     public IControlDesignToken ControlToken => CloneControlToken(_controlToken, _effectiveSharedToken);
     public IReadOnlyDictionary<object, object?> ControlResources { get; }
@@ -33,7 +33,7 @@ internal sealed class ComponentThemeSnapshot
         DesignToken effectiveSharedToken)
     {
         var clone = (IControlDesignToken)source.Clone();
-        clone.AssignSharedToken(ThemeSnapshot.CloneDesignToken(effectiveSharedToken));
+        clone.AssignSharedToken(DesignTokenClone.DeepClone(effectiveSharedToken));
         clone.SetHasCustomTokenConfig(source.HasCustomTokenConfig());
         clone.SetCustomTokens(source.GetCustomTokens().ToList());
         CopyResourceDictionary(source.GetSharedResourceDeltaDictionary(), clone.GetSharedResourceDeltaDictionary());

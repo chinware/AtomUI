@@ -137,7 +137,7 @@ internal class Theme : AvaloniaObject, ITheme
 
         ResourceDictionary = resources;
         ControlTokens      = controlTokens;
-        _sharedToken       = ThemeSnapshot.CloneDesignToken(snapshot.SharedTokenCore);
+        _sharedToken       = DesignTokenClone.DeepClone(snapshot.SharedTokenCore);
         IsDarkMode         = snapshot.IsDark;
         _isPrimary         = IsPrimaryAlgorithmSet(_descriptor.Definition, snapshot.Algorithms);
     }

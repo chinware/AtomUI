@@ -166,7 +166,7 @@ internal sealed class ThemeCompiler
         foreach (var (identity, controlToken) in registrations)
         {
             componentConfigs.TryGetValue(identity, out var config);
-            var effectiveToken = CloneDesignToken(globalToken);
+            var effectiveToken = DesignTokenClone.DeepClone(globalToken);
             if (config is not null)
             {
                 ApplyComponentSharedConfig(effectiveToken, config.SharedTokens, config.EnableAlgorithm, calculator);
@@ -362,36 +362,6 @@ internal sealed class ThemeCompiler
     private static DesignToken CreateSharedToken()
     {
         return new DesignToken();
-    }
-
-    private static DesignToken CloneDesignToken(DesignToken source)
-    {
-        var clone = (DesignToken)source.Clone();
-        var palettes = new Dictionary<Palette.PresetPrimaryColor, ColorMap>(source.ColorPalettes.Count);
-        foreach (var palette in source.ColorPalettes)
-        {
-            palettes.Add(palette.Key, CloneColorMap(palette.Value));
-        }
-
-        clone.ColorPalettes = palettes;
-        return clone;
-    }
-
-    private static ColorMap CloneColorMap(ColorMap source)
-    {
-        return new ColorMap
-        {
-            Color1 = source.Color1,
-            Color2 = source.Color2,
-            Color3 = source.Color3,
-            Color4 = source.Color4,
-            Color5 = source.Color5,
-            Color6 = source.Color6,
-            Color7 = source.Color7,
-            Color8 = source.Color8,
-            Color9 = source.Color9,
-            Color10 = source.Color10
-        };
     }
 
     private static void FreezeColorPalettes(DesignToken token)

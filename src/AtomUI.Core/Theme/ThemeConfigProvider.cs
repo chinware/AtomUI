@@ -8,6 +8,7 @@ using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -82,6 +83,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     private IDisposable? _parentSnapshotSubscription;
     private readonly CompositeDisposable _configurationSubscriptions;
     private bool _isInitializing;
+    private bool _isLogicalAttached;
     private bool _recompileQueued;
     private int _recompileGeneration;
     private int _lifecycleGeneration;
@@ -106,9 +108,6 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         ControlTokenInfoSetters       = new AvaloniaList<ControlTokenInfoSetter>();
         ThemeVariant                  = new ThemeVariant($"ThemeConfigProvider-{_idSeed++}", null);
         _isInitializing               = false;
-        _parentSnapshotSubscription   = this.GetObservable(ThemeScope.SnapshotProperty).Subscribe(_ => ScheduleRecompile());
-        ResetConfigurationSubscriptions();
-        ScheduleRecompile();
     }
 
     private void ContentChanged(AvaloniaPropertyChangedEventArgs change)
@@ -129,7 +128,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             ((ISetLogicalParent)newChild).SetParent(this);
             VisualChildren.Add(newChild);
             LogicalChildren.Add(newChild);
-            if (_snapshot is not null)
+            if (_isLogicalAttached && _snapshot is not null)
             {
                 newChild.SetValue(ThemeScope.SnapshotProperty, _snapshot);
             }
@@ -138,18 +137,20 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         ScheduleRecompile();
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnAttachedToLogicalTree(e);
+        _isLogicalAttached = true;
         ResetConfigurationSubscriptions();
         _parentSnapshotSubscription ??=
             this.GetObservable(ThemeScope.SnapshotProperty).Subscribe(_ => ScheduleRecompile());
         CompileAndPublishImmediately();
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
+        _isLogicalAttached = false;
         CancelScheduledRecompile();
         _parentSnapshotSubscription?.Dispose();
         _parentSnapshotSubscription = null;
@@ -169,7 +170,10 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             change.Property == SharedTokenSettersProperty ||
             change.Property == ControlTokenInfoSettersProperty)
         {
-            ResetConfigurationSubscriptions();
+            if (_isLogicalAttached)
+            {
+                ResetConfigurationSubscriptions();
+            }
             ScheduleRecompile();
         }
         else if (change.Property == InheritProperty)
@@ -180,6 +184,11 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     private void ScheduleRecompile()
     {
+        if (!_isLogicalAttached)
+        {
+            return;
+        }
+
         if (_recompileQueued)
         {
             return;
@@ -217,7 +226,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     private void CompileAndPublish()
     {
-        var result = CompileSnapshot();
+        var result = CreateCompileResult();
         if (!result.Success)
         {
             ThemeScopeCompileFailed?.Invoke(this, new ThemeScopeCompileFailedEventArgs(result));
@@ -225,6 +234,21 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         }
 
         PublishSnapshot(result.Snapshot!);
+    }
+
+    private ThemeCompileResult CreateCompileResult()
+    {
+        try
+        {
+            return CompileSnapshot();
+        }
+        catch (Exception exception)
+        {
+            return new ThemeCompileResult(
+                null,
+                Array.Empty<ThemeDefinitionDiagnostic>(),
+                exception);
+        }
     }
 
     private ThemeCompileResult CompileSnapshot()
@@ -322,7 +346,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     private void PublishSnapshot(ThemeSnapshot snapshot)
     {
-        var sharedToken = ThemeSnapshot.CloneDesignToken(snapshot.SharedTokenCore);
+        var sharedToken = DesignTokenClone.DeepClone(snapshot.SharedTokenCore);
         var controlTokens = CreateCompatibilityControlTokenMap(snapshot, sharedToken);
 
         _snapshot      = snapshot;
@@ -355,7 +379,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         {
             var source = component.ControlTokenCore;
             var token = CloneCompatibilityControlToken(source);
-            token.AssignSharedToken(ThemeSnapshot.CloneDesignToken(component.EffectiveSharedTokenCore));
+            token.AssignSharedToken(DesignTokenClone.DeepClone(component.EffectiveSharedTokenCore));
             token.SetHasCustomTokenConfig(source.HasCustomTokenConfig());
             token.SetCustomTokens(source.GetCustomTokens().ToList());
             ((AbstractControlDesignToken)token).BuildSharedResourceDeltaDictionary(sharedToken);

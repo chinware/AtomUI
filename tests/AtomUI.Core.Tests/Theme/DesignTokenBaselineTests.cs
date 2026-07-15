@@ -7,6 +7,7 @@ using Xunit;
 
 namespace AtomUI.Core.Tests.Theme;
 
+[Collection(ThemeConfigProviderTestCollection.Name)]
 public class DesignTokenBaselineTests
 {
     [Fact]
