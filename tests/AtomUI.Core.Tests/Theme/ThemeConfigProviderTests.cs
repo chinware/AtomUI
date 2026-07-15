@@ -34,6 +34,24 @@ public class ThemeConfigProviderTests
     }
 
     [Fact]
+    public void Child_Provider_Inherits_Parent_Map_And_Alias_Overrides()
+    {
+        using var _ = UseThemeManager();
+        var parent = Provider(
+            Token(nameof(DesignToken.ColorPrimaryBg), "#010203"),
+            Token(nameof(DesignToken.ColorBgTextHover), "#040506"));
+        var child = Provider(Token(nameof(DesignToken.ColorPrimary), "#00b96b"));
+
+        parent.Content = child;
+        child.Content = new Border();
+        FlushThemeUpdates();
+
+        child.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
+        child.SharedToken.ColorPrimaryBg.ShouldBe(Color.Parse("#010203"));
+        child.SharedToken.ColorBgTextHover.ShouldBe(Color.Parse("#040506"));
+    }
+
+    [Fact]
     public void Child_Provider_Can_Disable_Inheritance()
     {
         using var _ = UseThemeManager();

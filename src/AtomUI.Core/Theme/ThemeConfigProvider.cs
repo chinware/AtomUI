@@ -2,10 +2,8 @@ using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Definitions;
-using AtomUI.Theme.Palette;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Scope;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Collections;
@@ -324,7 +322,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     private void PublishSnapshot(ThemeSnapshot snapshot)
     {
-        var sharedToken = CloneDesignToken(snapshot.SharedToken);
+        var sharedToken = ThemeSnapshot.CloneDesignToken(snapshot.SharedTokenCore);
         var controlTokens = CreateCompatibilityControlTokenMap(snapshot, sharedToken);
 
         _snapshot      = snapshot;
@@ -355,10 +353,11 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         var result = new Dictionary<string, IControlDesignToken>(StringComparer.Ordinal);
         foreach (var (identity, component) in snapshot.Components)
         {
-            var token = CloneCompatibilityControlToken(component.ControlToken);
-            token.AssignSharedToken(CloneDesignToken(component.EffectiveSharedToken));
-            token.SetHasCustomTokenConfig(component.ControlToken.HasCustomTokenConfig());
-            token.SetCustomTokens(component.ControlToken.GetCustomTokens().ToList());
+            var source = component.ControlTokenCore;
+            var token = CloneCompatibilityControlToken(source);
+            token.AssignSharedToken(ThemeSnapshot.CloneDesignToken(component.EffectiveSharedTokenCore));
+            token.SetHasCustomTokenConfig(source.HasCustomTokenConfig());
+            token.SetCustomTokens(source.GetCustomTokens().ToList());
             ((AbstractControlDesignToken)token).BuildSharedResourceDeltaDictionary(sharedToken);
             result.TryAdd(identity.TokenId, token);
         }
@@ -369,36 +368,6 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     private static IControlDesignToken CloneCompatibilityControlToken(IControlDesignToken source)
     {
         return (IControlDesignToken)source.Clone();
-    }
-
-    private static DesignToken CloneDesignToken(DesignToken source)
-    {
-        var clone = (DesignToken)source.Clone();
-        var palettes = new Dictionary<PresetPrimaryColor, ColorMap>(source.ColorPalettes.Count);
-        foreach (var palette in source.ColorPalettes)
-        {
-            palettes.Add(palette.Key, CloneColorMap(palette.Value));
-        }
-
-        clone.ColorPalettes = palettes;
-        return clone;
-    }
-
-    private static ColorMap CloneColorMap(ColorMap source)
-    {
-        return new ColorMap
-        {
-            Color1 = source.Color1,
-            Color2 = source.Color2,
-            Color3 = source.Color3,
-            Color4 = source.Color4,
-            Color5 = source.Color5,
-            Color6 = source.Color6,
-            Color7 = source.Color7,
-            Color8 = source.Color8,
-            Color9 = source.Color9,
-            Color10 = source.Color10
-        };
     }
 
     private void ResetConfigurationSubscriptions()

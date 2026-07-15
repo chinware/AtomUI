@@ -115,9 +115,28 @@ public class ThemeCompilerTests
         child.SharedToken.ColorPalettes.ShouldNotBeSameAs(parent.SharedToken.ColorPalettes);
         foreach (var entry in parentPaletteEntries)
         {
-            parent.SharedToken.ColorPalettes[entry.Key].ShouldBeSameAs(entry.Value);
+            parent.SharedToken.ColorPalettes[entry.Key].ShouldBe(entry.Value);
             child.SharedToken.ColorPalettes[entry.Key].ShouldNotBeSameAs(entry.Value);
         }
+    }
+
+    [Fact]
+    public void Child_Compile_Inherits_Parent_Map_And_Alias_Shared_Config()
+    {
+        var parent = Compile(sharedOverrides: Tokens(
+            (nameof(DesignToken.ColorPrimaryBg), "#010203"),
+            (nameof(DesignToken.ColorBgTextHover), "#040506")))
+            .Snapshot!;
+
+        var child = Compile(
+            parent: parent,
+            algorithms: Array.Empty<ThemeAlgorithm>(),
+            sharedOverrides: Tokens((nameof(DesignToken.ColorPrimary), "#00b96b")))
+            .Snapshot!;
+
+        child.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
+        child.SharedToken.ColorPrimaryBg.ShouldBe(Color.Parse("#010203"));
+        child.SharedToken.ColorBgTextHover.ShouldBe(Color.Parse("#040506"));
     }
 
     [Fact]
@@ -351,6 +370,57 @@ public class ThemeCompilerTests
         Should.Throw<NotSupportedException>(() =>
             ((IDictionary<ComponentTokenIdentity, ControlTokenConfigInfo>)snapshot.ComponentConfigs)
             .Add(new ComponentTokenIdentity(null, "New"), config));
+    }
+
+    [Fact]
+    public void Snapshot_Public_SharedToken_Mutations_Do_Not_Affect_Internal_State_Resources_Or_Child_Compiles()
+    {
+        var parent = Compile(
+            sharedOverrides: Tokens((nameof(DesignToken.ColorPrimary), "#ff0000")))
+            .Snapshot!;
+        var provider = new ThemeTokenResourceProvider(parent);
+        var exposed = parent.SharedToken;
+
+        exposed.ColorPrimary = Color.Parse("#00b96b");
+
+        parent.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
+        provider.TryGetResource(SharedTokenKind.ColorPrimary, null, out var primaryResource).ShouldBeTrue();
+        primaryResource.ShouldBeOfType<ImmutableSolidColorBrush>()
+                       .Color
+                       .ShouldBe(Color.Parse("#ff0000"));
+
+        var child = Compile(
+            parent: parent,
+            algorithms: Array.Empty<ThemeAlgorithm>())
+            .Snapshot!;
+        child.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
+    }
+
+    [Fact]
+    public void Component_Public_Token_Mutations_Do_Not_Affect_Internal_State_Or_Resources()
+    {
+        var snapshot = Compile(components: Components(Component(
+            CompilerButtonToken.ID,
+            ownTokens: Tokens((nameof(CompilerButtonToken.Height), "48")),
+            sharedTokens: Tokens((nameof(DesignToken.ColorPrimary), "#ff0000")))))
+            .Snapshot!;
+        var component = snapshot.Components[s_buttonIdentity];
+        var exposedSharedToken = component.EffectiveSharedToken;
+        var exposedControlToken = component.ControlToken.ShouldBeOfType<CompilerButtonToken>();
+
+        exposedSharedToken.ColorPrimary = Color.Parse("#00b96b");
+        exposedControlToken.Height = 64;
+
+        component.EffectiveSharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
+        component.TryGetSharedResource(SharedTokenKind.ColorPrimary, snapshot.SharedResources, out var sharedResource)
+                 .ShouldBeTrue();
+        sharedResource.ShouldBeOfType<ImmutableSolidColorBrush>()
+                      .Color
+                      .ShouldBe(Color.Parse("#ff0000"));
+        component.ControlToken.ShouldBeOfType<CompilerButtonToken>()
+                 .Height
+                 .ShouldBe(48);
+        component.ControlResources[CompilerButtonTokenKind.Height].ShouldBe(48d);
     }
 
     [Fact]

@@ -35,8 +35,8 @@ internal sealed class ThemeCompiler
             var algorithms = ResolveEffectiveAlgorithms(request);
             var componentConfigs = MergeComponentConfigs(request);
             var calculator = CreateCalculator(algorithms);
-            var sharedToken = CreateSharedToken(request.Parent);
             var sharedConfig = MergeSharedConfigs(request);
+            var sharedToken = CreateSharedToken();
             ApplySharedConfig(sharedToken, sharedConfig, calculator);
             FreezeColorPalettes(sharedToken);
 
@@ -64,7 +64,8 @@ internal sealed class ThemeCompiler
                     sharedToken,
                     sharedResources,
                     ReadOnly(components),
-                    componentConfigs),
+                    componentConfigs,
+                    sharedConfig),
                 CopyDiagnostics(diagnostics),
                 null);
         }
@@ -323,6 +324,11 @@ internal sealed class ThemeCompiler
     private static IReadOnlyDictionary<string, string> MergeSharedConfigs(ThemeCompileRequest request)
     {
         var result = new Dictionary<string, string>(StringComparer.Ordinal);
+        if (request.Parent is not null)
+        {
+            MergeInto(result, request.Parent.SharedConfig);
+        }
+
         MergeInto(result, request.Definition.SharedTokens);
         MergeInto(result, request.SharedOverrides);
         MergeInto(result, request.RuntimeOverrides);
@@ -353,9 +359,9 @@ internal sealed class ThemeCompiler
         };
     }
 
-    private static DesignToken CreateSharedToken(ThemeSnapshot? parent)
+    private static DesignToken CreateSharedToken()
     {
-        return parent is null ? new DesignToken() : CloneDesignToken(parent.SharedToken);
+        return new DesignToken();
     }
 
     private static DesignToken CloneDesignToken(DesignToken source)

@@ -129,14 +129,15 @@ internal class Theme : AvaloniaObject, ITheme
                 resources[resource.Key] = resource.Value;
             }
 
-            controlTokens.Add(component.ControlToken.Id, component.ControlToken);
+            var controlToken = component.ControlToken;
+            controlTokens.Add(controlToken.Id, controlToken);
         }
 
         resources.MergedDictionaries.Add(new ThemeTokenResourceProvider(snapshot));
 
         ResourceDictionary = resources;
         ControlTokens      = controlTokens;
-        _sharedToken       = snapshot.SharedToken;
+        _sharedToken       = ThemeSnapshot.CloneDesignToken(snapshot.SharedTokenCore);
         IsDarkMode         = snapshot.IsDark;
         _isPrimary         = IsPrimaryAlgorithmSet(_descriptor.Definition, snapshot.Algorithms);
     }
