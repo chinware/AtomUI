@@ -51,19 +51,19 @@
                         <atom:TextBlock Name="PART_SubtitleText"
                                         Text="{TemplateBinding Subtitle}"
                                         FontSize="{gallery:GalleryShowCaseHeaderTokenResource SubtitleFontSize}"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                        Foreground="{gallery:GalleryShowCaseHeaderTokenSharedTokenResource ColorTextSecondary}"
                                         IsVisible="{TemplateBinding IsSubtitleVisible}" />
                         <atom:TextBlock Name="PART_DescriptionText"
                                         Text="{TemplateBinding Description}"
                                         HorizontalAlignment="Left"
                                         TextWrapping="Wrap"
-                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}"
+                                        Foreground="{gallery:GalleryShowCaseHeaderTokenSharedTokenResource ColorTextTertiary}"
                                         IsVisible="{TemplateBinding IsDescriptionVisible}" />
                     </StackPanel>
 
                     <atom:PixelAlignedBorder Name="PART_MetadataCard"
-                                             Background="{atom:SharedTokenResource ColorBgContainer}"
-                                             BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                                             Background="{gallery:GalleryShowCaseHeaderTokenSharedTokenResource ColorBgContainer}"
+                                             BorderBrush="{gallery:GalleryShowCaseHeaderTokenSharedTokenResource ColorBorderSecondary}"
                                              BorderThickness="1"
                                              CornerRadius="{gallery:GalleryShowCaseHeaderTokenResource MetadataCornerRadius}"
                                              MinHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataMinHeight}"
@@ -83,7 +83,7 @@
                                                 Text="{gallery:GalleryShowCaseHeaderLangResource NamespaceLabel}"
                                                 FontWeight="Bold"
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                Foreground="{gallery:GalleryShowCaseHeaderTokenSharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
                                 <atom:TextBlock Width="{TemplateBinding MetadataValueWidth}"
                                                 Text="{TemplateBinding Namespace}"
@@ -91,7 +91,7 @@
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
                                                 TextWrapping="NoWrap"
                                                 TextTrimming="CharacterEllipsis"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                Foreground="{gallery:GalleryShowCaseHeaderTokenSharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
                             </StackPanel>
 
@@ -104,7 +104,7 @@
                                                 Text="{gallery:GalleryShowCaseHeaderLangResource PackageLabel}"
                                                 FontWeight="Bold"
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                Foreground="{gallery:GalleryShowCaseHeaderTokenSharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
                                 <atom:TextBlock Width="{TemplateBinding MetadataValueWidth}"
                                                 Text="{TemplateBinding Package}"
@@ -112,7 +112,7 @@
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
                                                 TextWrapping="NoWrap"
                                                 TextTrimming="CharacterEllipsis"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                Foreground="{gallery:GalleryShowCaseHeaderTokenSharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
                             </StackPanel>
 
@@ -125,7 +125,7 @@
                                                 Text="{gallery:GalleryShowCaseHeaderLangResource BaseClassLabel}"
                                                 FontWeight="Bold"
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                Foreground="{gallery:GalleryShowCaseHeaderTokenSharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
                                 <atom:TextBlock Width="{TemplateBinding MetadataValueWidth}"
                                                 Text="{TemplateBinding BaseClass}"
@@ -133,7 +133,7 @@
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
                                                 TextWrapping="NoWrap"
                                                 TextTrimming="CharacterEllipsis"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                Foreground="{gallery:GalleryShowCaseHeaderTokenSharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
                             </StackPanel>
                         </WrapPanel>

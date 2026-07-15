@@ -10,7 +10,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 internal class GalleryStickyTabsHostToken : AbstractControlDesignToken
 {
     public const string ID = "GalleryStickyTabsHost";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public Thickness StickyContentPadding { get; set; }
     public IBrush? StickyBackground { get; set; }

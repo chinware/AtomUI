@@ -1,5 +1,4 @@
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -30,14 +29,16 @@ public class GalleryShowCaseHeaderTests
     }
 
     [Fact]
-    public void Registers_Token_Resource_Scope()
+    public void Uses_Component_Shared_Token_Resources_Without_Legacy_Scope_Registration()
     {
-        var header = new GalleryShowCaseHeader();
+        var source = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeader.cs");
+        var token  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeaderToken.cs");
+        var theme  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeaderTheme.axaml");
 
-        var scopeProvider = ControlTokenResourceScopeHost.GetTokenResourceScopeProvider(header);
-
-        scopeProvider.ShouldNotBeNull();
-        scopeProvider.Id.ShouldBe(GalleryShowCaseHeader.LanguageId);
+        source.ShouldNotContain("RegisterTokenResourceScope");
+        token.ShouldNotContain("ScopeProvider");
+        theme.ShouldContain("GalleryShowCaseHeaderTokenSharedTokenResource");
+        theme.ShouldNotContain("{atom:SharedTokenResource ");
     }
 
     [Fact]
@@ -145,5 +146,27 @@ public class GalleryShowCaseHeaderTests
             window.Close();
             Dispatcher.UIThread.RunJobs();
         }
+    }
+
+    private static string ReadRepoFile(string relativePath)
+    {
+        return File.ReadAllText(GetRepoFile(relativePath));
+    }
+
+    private static string GetRepoFile(string relativePath)
+    {
+        var directory = AppContext.BaseDirectory;
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory, relativePath);
+            if (File.Exists(candidate) || Directory.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = Directory.GetParent(directory)?.FullName;
+        }
+
+        throw new FileNotFoundException(relativePath);
     }
 }

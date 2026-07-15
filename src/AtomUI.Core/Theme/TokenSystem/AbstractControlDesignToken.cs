@@ -14,8 +14,7 @@ namespace AtomUI.Theme.TokenSystem;
                             DynamicallyAccessedMemberTypes.PublicProperties |
                             DynamicallyAccessedMemberTypes.NonPublicProperties)]
 public abstract class AbstractControlDesignToken : AbstractDesignToken,
-                                                   IControlDesignToken,
-                                                   IControlTokenResourceScopeProvider
+                                                   IControlDesignToken
 {
     public string Id => _id;
     protected DesignToken SharedToken;

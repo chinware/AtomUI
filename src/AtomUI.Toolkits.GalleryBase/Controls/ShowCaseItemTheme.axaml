@@ -12,7 +12,7 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="{x:Type gallery:ShowCaseItem}">
                 <Border x:Name="PART_RootBorder"
-                        Background="{atom:SharedTokenResource ColorBgContainer}"
+                        Background="{gallery:ShowCaseItemTokenSharedTokenResource ColorBgContainer}"
                         BoxShadow="{gallery:ShowCaseItemTokenResource CardShadow}"
                         Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
                         CornerRadius="{gallery:ShowCaseItemTokenResource CardCornerRadius}">
@@ -21,7 +21,7 @@
                             <Border Name="PART_DeferredPlaceholder"
                                     IsVisible="False"
                                     MinHeight="{TemplateBinding DeferredPlaceholderHeight}"
-                                    Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                    Background="{gallery:ShowCaseItemTokenSharedTokenResource ColorFillTertiary}"
                                     CornerRadius="{gallery:ShowCaseItemTokenResource DeferredPlaceholderCornerRadius}" />
                             <ContentPresenter Name="PART_ContentPresenter"
                                               Content="{TemplateBinding Content}"
@@ -62,7 +62,7 @@
                                       RibbonColor="{TemplateBinding BadgeColor}"
                                       BadgeIsVisible="True">
                         <Border x:Name="PART_RootBorder"
-                                Background="{atom:SharedTokenResource ColorBgContainer}"
+                                Background="{gallery:ShowCaseItemTokenSharedTokenResource ColorBgContainer}"
                                 BoxShadow="{gallery:ShowCaseItemTokenResource CardShadow}"
                                 Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
                                 CornerRadius="{gallery:ShowCaseItemTokenResource CardCornerRadius}">
@@ -71,7 +71,7 @@
                                     <Border Name="PART_DeferredPlaceholder"
                                             IsVisible="{Binding IsDeferredPlaceholderVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
                                             MinHeight="{Binding DeferredPlaceholderHeight, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
-                                            Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                            Background="{gallery:ShowCaseItemTokenSharedTokenResource ColorFillTertiary}"
                                             CornerRadius="{gallery:ShowCaseItemTokenResource DeferredPlaceholderCornerRadius}" />
                                     <ContentPresenter Name="PART_ContentPresenter"
                                                       IsVisible="{Binding IsDeferredPlaceholderVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}, Converter={x:Static BoolConverters.Not}}"

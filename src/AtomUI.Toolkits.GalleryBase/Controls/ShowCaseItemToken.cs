@@ -10,7 +10,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 internal class ShowCaseItemToken : AbstractControlDesignToken
 {
     public const string ID = "ShowCaseItem";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public Thickness CardPadding { get; set; }
     public CornerRadius CardCornerRadius { get; set; }
