@@ -175,6 +175,7 @@ internal sealed class ThemeCompiler
             }
 
             var effectiveResources = BuildResourceMap(effectiveToken);
+            controlToken.BuildSharedResourceDeltaDictionary(globalToken);
             components.Add(
                 identity,
                 new ComponentThemeSnapshot(
