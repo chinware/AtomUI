@@ -350,7 +350,8 @@ internal class Theme : AvaloniaObject, ITheme
     internal virtual void NotifyLoadThemeDef()
     {
         var reader = new ThemeDefinitionReader(this);
-        reader.Load(ThemeDefinition);
+        var definition = reader.Load();
+        ThemeDefinition = definition;
     }
 
     internal virtual void NotifyRegistered()

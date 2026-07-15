@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Xml;
-using AtomUI.Theme.TokenSystem;
 using Avalonia.Platform;
 
 namespace AtomUI.Theme;
@@ -8,12 +7,12 @@ namespace AtomUI.Theme;
 internal class ThemeDefinitionReader
 {
     private readonly Theme _theme;
-    private ThemeDefinition? _currentDef;
+    private ThemeDefinitionBuilder? _currentDefinitionBuilder;
     private bool _parseFinished;
 
     // 上下文信息
     private readonly Stack<string> _currentElementNames;
-    private ControlTokenConfigInfo? _currentControlToken;
+    private ControlTokenDefinitionBuilder? _currentControlTokenBuilder;
     private bool _inSharedTokenCtx;
     private bool _inControlTokenCtx;
 
@@ -38,11 +37,11 @@ internal class ThemeDefinitionReader
         _currentElementNames = new Stack<string>();
     }
 
-    public void Load(ThemeDefinition themeDefinition)
+    public ThemeDefinition Load()
     {
         try
         {
-            _currentDef = themeDefinition;
+            _currentDefinitionBuilder = new ThemeDefinitionBuilder(_theme.Id);
             var settings = new XmlReaderSettings
             {
                 CloseInput = true
@@ -73,14 +72,16 @@ internal class ThemeDefinitionReader
                     }
                 }
             }
+
+            return _currentDefinitionBuilder.Build();
         }
         finally
         {
-            _currentControlToken = null;
+            _currentControlTokenBuilder = null;
             _currentElementNames.Clear();
-            _inControlTokenCtx = false;
-            _inSharedTokenCtx  = false;
-            _currentDef        = null;
+            _inControlTokenCtx         = false;
+            _inSharedTokenCtx          = false;
+            _currentDefinitionBuilder  = null;
         }
     }
 
@@ -98,13 +99,13 @@ internal class ThemeDefinitionReader
         }
         else if (name == SharedTokensElementName)
         {
-            _currentDef?.LegacyClearSharedTokens();
+            _currentDefinitionBuilder?.SharedTokens.Clear();
             _inSharedTokenCtx  = true;
             _inControlTokenCtx = false;
         }
         else if (name == ControlTokensElementName)
         {
-            _currentDef?.LegacyClearControlTokens();
+            _currentDefinitionBuilder?.ControlTokens.Clear();
         }
         else if (name == ControlTokenElementName)
         {
@@ -131,10 +132,10 @@ internal class ThemeDefinitionReader
         _currentElementNames.Pop();
         if (name == ControlTokenElementName)
         {
-            var tokenId = _currentControlToken!.TokenId;
-            _currentDef?.LegacyAddControlToken(tokenId, _currentControlToken!);
-            _currentControlToken = null;
-            _inControlTokenCtx   = false;
+            var tokenId = _currentControlTokenBuilder!.TokenId;
+            _currentDefinitionBuilder?.ControlTokens.Add(tokenId, _currentControlTokenBuilder.Build());
+            _currentControlTokenBuilder = null;
+            _inControlTokenCtx          = false;
         }
         else if (name == SharedTokensElementName)
         {
@@ -146,7 +147,7 @@ internal class ThemeDefinitionReader
 
     private void HandleStartThemeElement(XmlReader reader)
     {
-        Debug.Assert(_currentDef != null);
+        Debug.Assert(_currentDefinitionBuilder != null);
         var displayName = reader.GetAttribute(NameAttrName);
         if (string.IsNullOrWhiteSpace(displayName))
         {
@@ -154,7 +155,7 @@ internal class ThemeDefinitionReader
         }
         else
         {
-            _currentDef.LegacySetDisplayName(displayName);
+            _currentDefinitionBuilder.DisplayName = displayName;
         }
         var isDefaultStr = reader.GetAttribute(IsDefaultAttrName);
         if (string.IsNullOrWhiteSpace(isDefaultStr))
@@ -165,33 +166,35 @@ internal class ThemeDefinitionReader
         {
             if (IsTrueValue(isDefaultStr))
             {
-                _currentDef.LegacySetIsDefault(true);
+                _currentDefinitionBuilder.IsDefault = true;
             }
             else
             {
-                _currentDef.LegacySetIsDefault(false);
+                _currentDefinitionBuilder.IsDefault = false;
             }
         }
     }
 
     private void HandleStartAlgorithmsElement(XmlReader reader)
     {
-        Debug.Assert(_currentDef != null);
+        Debug.Assert(_currentDefinitionBuilder != null);
         // 这样处理方便一点
         var algorithmsStr = reader.ReadElementContentAsString();
-        _currentDef.LegacyReplaceAlgorithms(Theme.CheckAlgorithmNames(SplitDistinctAlgorithmNames(algorithmsStr)));
+        _currentDefinitionBuilder.Algorithms.Clear();
+        _currentDefinitionBuilder.Algorithms.AddRange(
+            Theme.CheckAlgorithmNames(SplitDistinctAlgorithmNames(algorithmsStr)));
     }
 
     private void HandleStartControlTokenElement(XmlReader reader)
     {
-        _currentControlToken = new ControlTokenConfigInfo();
+        _currentControlTokenBuilder = new ControlTokenDefinitionBuilder();
         var tokenId = reader.GetAttribute(IdAttrName);
         if (string.IsNullOrWhiteSpace(tokenId))
         {
             EmitRequiredAttrError(reader, IdAttrName);
         }
 
-        _currentControlToken.TokenId = tokenId!;
+        _currentControlTokenBuilder.TokenId = tokenId!;
         var useAlgorithm = false;
         var algorithm    = reader.GetAttribute(AlgorithmAttrName);
         if (algorithm is not null)
@@ -202,7 +205,7 @@ internal class ThemeDefinitionReader
             }
         }
         
-        _currentControlToken.EnableAlgorithm = useAlgorithm;
+        _currentControlTokenBuilder.EnableAlgorithm = useAlgorithm;
     }
 
     private void HandleStartTokenElement(XmlReader reader)
@@ -226,7 +229,7 @@ internal class ThemeDefinitionReader
 
         if (_inSharedTokenCtx)
         {
-            _currentDef!.LegacyAddSharedToken(tokenName!, tokenValue);
+            _currentDefinitionBuilder!.SharedTokens.Add(tokenName!, tokenValue);
         }
         else if (_inControlTokenCtx)
         {
@@ -241,11 +244,11 @@ internal class ThemeDefinitionReader
             }
             if (isShared)
             {
-                _currentControlToken!.SharedTokens.Add(tokenName!, tokenValue);
+                _currentControlTokenBuilder!.SharedTokens.Add(tokenName!, tokenValue);
             }
             else
             {
-                _currentControlToken!.Tokens.Add(tokenName!, tokenValue);
+                _currentControlTokenBuilder!.Tokens.Add(tokenName!, tokenValue);
             }
         }
         else
@@ -339,5 +342,52 @@ internal class ThemeDefinitionReader
         }
 
         return count;
+    }
+
+    private sealed class ThemeDefinitionBuilder
+    {
+        public string Id { get; }
+        public string DisplayName { get; set; }
+        public bool IsDefault { get; set; }
+        public List<ThemeAlgorithm> Algorithms { get; }
+        public Dictionary<string, ThemeControlTokenDefinition> ControlTokens { get; }
+        public Dictionary<string, string> SharedTokens { get; }
+
+        public ThemeDefinitionBuilder(string id)
+        {
+            Id            = id;
+            DisplayName   = id;
+            Algorithms    = new List<ThemeAlgorithm>();
+            ControlTokens = new Dictionary<string, ThemeControlTokenDefinition>(StringComparer.Ordinal);
+            SharedTokens  = new Dictionary<string, string>(StringComparer.Ordinal);
+        }
+
+        public ThemeDefinition Build()
+        {
+            return new ThemeDefinition(
+                Id,
+                DisplayName,
+                IsDefault,
+                Algorithms,
+                SharedTokens,
+                ControlTokens);
+        }
+    }
+
+    private sealed class ControlTokenDefinitionBuilder
+    {
+        public string TokenId { get; set; } = string.Empty;
+        public bool EnableAlgorithm { get; set; }
+        public Dictionary<string, string> Tokens { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> SharedTokens { get; } = new(StringComparer.Ordinal);
+
+        public ThemeControlTokenDefinition Build()
+        {
+            return new ThemeControlTokenDefinition(
+                TokenId,
+                EnableAlgorithm,
+                Tokens,
+                SharedTokens);
+        }
     }
 }

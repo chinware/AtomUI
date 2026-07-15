@@ -229,8 +229,7 @@ internal static class ThemeDefinitionParser
         var names = element.Value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         foreach (var name in names)
         {
-            if (!Enum.TryParse<ThemeAlgorithm>(name, out var algorithm) ||
-                !Enum.IsDefined(algorithm))
+            if (!TryParseAlgorithmName(name, out var algorithm))
             {
                 AddDiagnostic(
                     diagnostics,
@@ -258,6 +257,7 @@ internal static class ThemeDefinitionParser
         var containerPath = $"{RootPath}/{SharedTokensElementName}";
         ValidateAttributes(container, containerPath, request.FilePath, diagnostics);
         ValidateContainerText(container, containerPath, request.FilePath, diagnostics);
+        var seenTokenNames = new HashSet<string>(StringComparer.Ordinal);
 
         foreach (var element in container.Elements())
         {
@@ -291,6 +291,12 @@ internal static class ThemeDefinitionParser
                 continue;
             }
 
+            if (!seenTokenNames.Add(name))
+            {
+                AddDuplicateTokenDiagnostic(element, name, tokenPath, request.FilePath, diagnostics);
+                continue;
+            }
+
             var value = ReadTokenValue(element, name, tokenPath, request.FilePath, diagnostics);
             if (!request.SharedTokenNames.Contains(name))
             {
@@ -301,12 +307,6 @@ internal static class ThemeDefinitionParser
                     element,
                     tokenPath,
                     $"Shared token '{name}' is not registered.");
-                continue;
-            }
-
-            if (sharedTokens.ContainsKey(name))
-            {
-                AddDuplicateTokenDiagnostic(element, name, tokenPath, request.FilePath, diagnostics);
                 continue;
             }
 
@@ -429,6 +429,8 @@ internal static class ThemeDefinitionParser
         Dictionary<string, string> sharedTokens,
         List<ThemeDefinitionDiagnostic> diagnostics)
     {
+        var seenOwnTokenNames = new HashSet<string>(StringComparer.Ordinal);
+        var seenSharedTokenNames = new HashSet<string>(StringComparer.Ordinal);
         foreach (var element in controlElement.Elements())
         {
             if (element.Name != TokenElementName)
@@ -475,13 +477,15 @@ internal static class ThemeDefinitionParser
                 continue;
             }
 
-            var value = ReadTokenValue(element, name, tokenPath, request.FilePath, diagnostics);
-            var targetTokens = isShared ? sharedTokens : tokens;
-            if (targetTokens.ContainsKey(name))
+            var seenTokenNames = isShared ? seenSharedTokenNames : seenOwnTokenNames;
+            if (!seenTokenNames.Add(name))
             {
                 AddDuplicateTokenDiagnostic(element, name, tokenPath, request.FilePath, diagnostics);
                 continue;
             }
+
+            var targetTokens = isShared ? sharedTokens : tokens;
+            var value = ReadTokenValue(element, name, tokenPath, request.FilePath, diagnostics);
 
             if (isShared)
             {
@@ -598,20 +602,51 @@ internal static class ThemeDefinitionParser
     {
         foreach (var attribute in element.Attributes())
         {
-            if (attribute.IsNamespaceDeclaration ||
+            if (attribute.IsNamespaceDeclaration)
+            {
+                continue;
+            }
+
+            if (attribute.Name.Namespace == XNamespace.None &&
                 allowedNames.Contains(attribute.Name.LocalName, StringComparer.Ordinal))
             {
                 continue;
             }
+
+            var attributeName = FormatXmlName(attribute.Name);
 
             AddDiagnostic(
                 diagnostics,
                 InvalidStructureCode,
                 filePath,
                 attribute,
-                $"{elementPath}/@{attribute.Name.LocalName}",
-                $"Attribute '{attribute.Name.LocalName}' is not valid on element '{element.Name.LocalName}'.");
+                $"{elementPath}/@{attributeName}",
+                $"Attribute '{attributeName}' is not valid on element '{element.Name.LocalName}'.");
         }
+    }
+
+    private static bool TryParseAlgorithmName(string name, out ThemeAlgorithm algorithm)
+    {
+        switch (name)
+        {
+            case nameof(ThemeAlgorithm.Default):
+                algorithm = ThemeAlgorithm.Default;
+                return true;
+            case nameof(ThemeAlgorithm.Dark):
+                algorithm = ThemeAlgorithm.Dark;
+                return true;
+            case nameof(ThemeAlgorithm.Compact):
+                algorithm = ThemeAlgorithm.Compact;
+                return true;
+            default:
+                algorithm = default;
+                return false;
+        }
+    }
+
+    private static string FormatXmlName(XName name)
+    {
+        return name.Namespace == XNamespace.None ? name.LocalName : name.ToString();
     }
 
     private static void ValidateContainerText(
