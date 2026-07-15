@@ -311,7 +311,7 @@ git commit -m "fix(Theme): make token conversion deterministic"
 - Consumes: ThemeCompileRequest with definition, parent, algorithms, overrides, runtime overrides and registrations.
 - Produces: ThemeCompileResult with one complete ThemeSnapshot or diagnostics and exception.
 
-- [ ] **Step 1: Write global and component compiler tests**
+- [x] **Step 1: Write global and component compiler tests**
 
 ~~~csharp
 [Fact]
@@ -349,13 +349,13 @@ public void Component_Algorithm_True_Derives_Private_Map_Tokens()
 
 Also test ordered Dark and Compact composition, parent immutability, Map and Alias override order, component own Token override, unknown registration diagnostics, and failure without a partial snapshot.
 
-- [ ] **Step 2: Verify missing-type failures**
+- [x] **Step 2: Verify missing-type failures**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeCompilerTests
 
 Expected: FAIL.
 
-- [ ] **Step 3: Add compiler contracts**
+- [x] **Step 3: Add compiler contracts**
 
 ~~~csharp
 internal sealed record ThemeCompileRequest(
@@ -377,17 +377,17 @@ internal sealed record ThemeCompileResult(
 }
 ~~~
 
-- [ ] **Step 4: Extract one deterministic compile pipeline**
+- [x] **Step 4: Extract one deterministic compile pipeline**
 
 Create a fresh DesignToken and fresh ControlToken graph for every uncached compile. Apply Seed, algorithms, Map, Alias and component calculations in the order fixed by the design. Build resource maps off-side. Publish only when every component succeeds.
 
 Do not change Theme or ThemeConfigProvider yet.
 
-- [ ] **Step 5: Run compiler tests twice**
+- [x] **Step 5: Run compiler tests twice**
 
 Run the compiler-filtered test command twice. Expected: both runs PASS with identical results.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ~~~bash
 git add src/AtomUI.Core/Theme/Compilation src/AtomUI.Core/Theme/ControlTokenRegistration.cs tests/AtomUI.Core.Tests/Theme/ThemeCompilerTests.cs
