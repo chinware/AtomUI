@@ -208,4 +208,5 @@ src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/Avalonia.Generators/
 .referenceprojects/
 .claude/settings.local.json
 .superpowers/
+.worktrees/
 docs/superpowers/plans
