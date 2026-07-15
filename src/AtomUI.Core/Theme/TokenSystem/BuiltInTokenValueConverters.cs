@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Globalization;
+using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Theme.TokenSystem;
@@ -29,7 +30,7 @@ internal class IntegerTokenValueConverter : ITokenValueConverter
     {
         try
         {
-            return int.Parse(value);
+            return int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture);
         }
         catch (Exception exception)
         {
@@ -50,7 +51,7 @@ internal class DoubleTokenValueConverter : ITokenValueConverter
     {
         try
         {
-            return double.Parse(value);
+            return double.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
         }
         catch (Exception exception)
         {
@@ -71,7 +72,7 @@ internal class FloatTokenValueConverter : ITokenValueConverter
     {
         try
         {
-            return float.Parse(value);
+            return float.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
         }
         catch (Exception exception)
         {
