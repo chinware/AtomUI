@@ -34,7 +34,7 @@ public class WindowResizeArtifactTests
                                     .Where(element =>
                                         (string?)element.Attribute("Name") == "PART_VisualLayerManager")
                                     .ToList();
-        layerManagers.Count.ShouldBe(4);
+        layerManagers.Count.ShouldBe(3);
         layerManagers.Count(manager =>
             manager.Parent?.Name == atom + "WindowVisualLayerClip").ShouldBe(2);
     }
@@ -502,21 +502,16 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
-    public void Windows_Window_Template_Paints_Root_Background_And_Uses_Opaque_Transparency()
+    public void Windows_Window_Has_No_NonCsd_Template_And_Uses_Opaque_Csd_Background()
     {
         var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
+        var decorationsDocument = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"));
         XNamespace av = "https://github.com/avaloniaui";
 
-        var windowsTemplateStyle = document.Descendants(av + "Style")
-                                           .Single(element =>
-                                               (string?)element.Attribute("Selector") ==
-                                               "^[OsType=Windows][IsCsdEnabled=False]");
-        var templateRoot = windowsTemplateStyle.Descendants(av + "ControlTemplate")
-                                               .Single()
-                                               .Elements(av + "Panel")
-                                               .Single();
-
-        templateRoot.Attribute("Background").ShouldNotBeNull().Value.ShouldBe("{TemplateBinding Background}");
+        document.Descendants(av + "Style")
+                .ShouldNotContain(element =>
+                    (string?)element.Attribute("Selector") == "^[OsType=Windows][IsCsdEnabled=False]");
 
         var windowsStyle = document.Descendants(av + "Style")
                                    .Single(element =>
@@ -525,6 +520,14 @@ public class WindowResizeArtifactTests
         windowsStyle.Elements(av + "Setter").ShouldContain(setter =>
             (string?)setter.Attribute("Property") == "TransparencyLevelHint" &&
             (string?)setter.Attribute("Value") == "None");
+
+        decorationsDocument.Descendants(av + "Style")
+                           .Single(style =>
+                               (string?)style.Attribute("Selector") == "^/template/ Border#PART_WindowFrame")
+                           .Elements(av + "Setter")
+                           .ShouldContain(setter =>
+                               (string?)setter.Attribute("Property") == "Background" &&
+                               (string?)setter.Attribute("Value") == "{atom:WindowTokenResource DefaultBackground}");
     }
 
     [Fact]
@@ -667,9 +670,9 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
-    public void AtomUI_Defaults_Use_Redirection_Surface_For_Windows_10_Live_Resize()
+    public void AtomUI_Defaults_Use_Redirection_Surface_For_Windows_Live_Resize()
     {
-        var options = global::AtomUI.WindowsAppBuilderDefaults.CreateOptions(isWindows11OrLater: false);
+        var options = global::AtomUI.WindowsAppBuilderDefaults.CreateOptions();
 
         options.RenderingMode.ShouldBe(
         [
@@ -677,21 +680,8 @@ public class WindowResizeArtifactTests
             Win32RenderingMode.Software
         ]);
         options.CompositionMode.ShouldBe([Win32CompositionMode.RedirectionSurface]);
-        options.CompositionMode.ShouldNotContain(Win32CompositionMode.LowLatencyDxgiSwapChain);
-        options.ShouldRenderOnUIThread.ShouldBeFalse();
-    }
-
-    [Fact]
-    public void AtomUI_Defaults_Preserve_Compositor_Fallbacks_On_Windows_11()
-    {
-        var options = global::AtomUI.WindowsAppBuilderDefaults.CreateOptions(isWindows11OrLater: true);
-
-        options.CompositionMode.ShouldBe(
-        [
-            Win32CompositionMode.WinUIComposition,
-            Win32CompositionMode.DirectComposition,
-            Win32CompositionMode.RedirectionSurface
-        ]);
+        options.CompositionMode.ShouldNotContain(Win32CompositionMode.WinUIComposition);
+        options.CompositionMode.ShouldNotContain(Win32CompositionMode.DirectComposition);
         options.CompositionMode.ShouldNotContain(Win32CompositionMode.LowLatencyDxgiSwapChain);
         options.ShouldRenderOnUIThread.ShouldBeFalse();
     }

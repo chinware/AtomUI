@@ -17,9 +17,8 @@ public static class AppBuilderExtensions
     /// <list type="bullet">
     ///   <item>
     ///     <description>
-    ///     <b>Windows</b>：Windows 10 使用 RedirectionSurface，避免 WinUIComposition 在
-    ///     live resize 期间提交与 HWND 尺寸不同步的表面；Windows 11 保持 WinUIComposition /
-    ///     DirectComposition 优先，确保透明 PopupRoot 可以使用独立 Window 模式。
+    ///     <b>Windows</b>：Windows 10 和 Windows 11 都使用 RedirectionSurface，避免
+    ///     WinUIComposition / DirectComposition 在 live resize 期间提交与 HWND 尺寸不同步的表面。
     ///     </description>
     ///   </item>
     ///   <item>
