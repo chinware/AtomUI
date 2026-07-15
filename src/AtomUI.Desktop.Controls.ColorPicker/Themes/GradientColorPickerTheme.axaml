@@ -52,17 +52,17 @@
         </Setter>
 
         <Setter Property="InactiveStopTextColor"
-                Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                Value="{atom:ColorPickerTokenSharedTokenResource ColorTextDisabled}" />
         <Style Selector="^ /template/ WrapPanel#PART_ColorTextPanel">
             <Setter Property="TextElement.Foreground"
-                    Value="{atom:SharedTokenResource ColorText}" />
+                    Value="{atom:ColorPickerTokenSharedTokenResource ColorText}" />
             <Setter Property="Margin" Value="{atom:ColorPickerTokenResource TriggerTextMargin}" />
         </Style>
 
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ TextBlock#PART_ColorTextPanel">
                 <Setter Property="Foreground"
-                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:ColorPickerTokenSharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
     </ControlTheme>

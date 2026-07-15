@@ -1,5 +1,4 @@
 using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Theme;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
@@ -10,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 internal class SplashToken : AbstractControlDesignToken
 {
     public const string ID = "Splash";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public double WindowWidth { get; set; }
     public double WindowMinHeight { get; set; }

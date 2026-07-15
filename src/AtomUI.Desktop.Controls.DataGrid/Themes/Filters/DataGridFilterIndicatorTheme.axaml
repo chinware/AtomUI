@@ -11,34 +11,34 @@
 
         <Style Selector="^:is(atom|DataGridFilterIndicator)">
             <Setter Property="SelectedAllText" Value="{atom:DataGridLangResource SelectAllFilterItems}" />
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconWidth" Value="{atom:DataGridTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:DataGridTokenSharedTokenResource IconSizeSM}" />
             <Setter Property="Padding"
                     Value="{atom:DataGridTokenResource FilterIndicatorPadding}" />
-            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            <Setter Property="CornerRadius" Value="{atom:DataGridTokenSharedTokenResource BorderRadius}" />
             
             <Style Selector="^:pointerover">
                 <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorBgTextHover}" />
+                        Value="{atom:DataGridTokenSharedTokenResource ColorBgTextHover}" />
             </Style>
 
             <Style Selector="^:pressed">
                 <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorBgTextActive}" />
+                        Value="{atom:DataGridTokenSharedTokenResource ColorBgTextActive}" />
             </Style>
 
             <Style Selector="^[IsFilterActivated=True]">
                 <Setter Property="IconBrush"
-                        Value="{atom:SharedTokenResource ColorPrimary}" />
+                        Value="{atom:DataGridTokenSharedTokenResource ColorPrimary}" />
 
                 <Style Selector="^:pointerover">
                     <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorPrimary}" />
+                            Value="{atom:DataGridTokenSharedTokenResource ColorPrimary}" />
                 </Style>
 
                 <Style Selector="^:pressed">
                     <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorPrimary}" />
+                            Value="{atom:DataGridTokenSharedTokenResource ColorPrimary}" />
                 </Style>
 
             </Style>

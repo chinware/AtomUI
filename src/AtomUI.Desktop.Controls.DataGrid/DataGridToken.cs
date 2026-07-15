@@ -1,6 +1,5 @@
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Media;
-using AtomUI.Theme;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
@@ -11,7 +10,6 @@ namespace AtomUI.Desktop.Controls;
 internal class DataGridToken : AbstractControlDesignToken
 {
     public const string ID = "DataGrid";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     public DataGridToken()
         : base(ID)

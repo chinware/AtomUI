@@ -34,13 +34,13 @@
                     Value="{atom:ColorPickerTokenResource ColorPickerPresetColorSize}" />
         </Style>
 
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+        <Setter Property="CornerRadius" Value="{atom:ColorPickerTokenSharedTokenResource BorderRadiusSM}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="BorderThickness" Value="{atom:ColorPickerTokenSharedTokenResource BorderThickness}" />
 
         <Style Selector="^:pointerover">
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFill}" />
+            <Setter Property="BorderBrush" Value="{atom:ColorPickerTokenSharedTokenResource ColorFill}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">
@@ -74,7 +74,7 @@
         
         <Style Selector="^[IsLightColor=False]">
             <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
-                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWhite}" />
+                <Setter Property="Foreground" Value="{atom:ColorPickerTokenSharedTokenResource ColorWhite}" />
             </Style>
         </Style>
 

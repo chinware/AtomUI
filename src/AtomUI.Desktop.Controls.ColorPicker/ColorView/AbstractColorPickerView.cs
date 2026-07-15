@@ -234,7 +234,6 @@ public abstract class AbstractColorPickerView : TemplatedControl, IMotionAwareCo
 
     public AbstractColorPickerView()
     {
-        this.RegisterTokenResourceScope(ColorPickerToken.ScopeProvider);
         ConfigureHsvColorBrushes();
     }
 

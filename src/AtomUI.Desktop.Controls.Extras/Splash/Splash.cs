@@ -193,7 +193,6 @@ public partial class Splash : ContentControl
 
     public Splash()
     {
-        this.RegisterTokenResourceScope(SplashToken.ScopeProvider);
         UpdateVisualState();
     }
 
