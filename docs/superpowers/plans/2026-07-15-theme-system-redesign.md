@@ -399,14 +399,25 @@ git commit -m "refactor(Theme): centralize token compilation in snapshots"
 **Files:**
 - Create: src/AtomUI.Core/Theme/Catalog/ThemeDescriptor.cs
 - Create: src/AtomUI.Core/Theme/Catalog/ThemeCatalog.cs
+- Modify: src/AtomUI.Core/ApplicationExtensions.cs
 - Modify: src/AtomUI.Core/Theme/ThemeManager.cs
+- Modify: src/AtomUI.Core/Theme/ThemeManagerBuilder.cs
 - Modify: src/AtomUI.Core/Theme/Theme.cs
 - Remove: src/AtomUI.Core/Theme/ThemeDefinitionReader.cs
+- Modify: tests/AtomUI.Core.Tests/Theme/ThemeDefinitionParserTests.cs
 - Test: tests/AtomUI.Core.Tests/Theme/ThemeCatalogTests.cs
 
 **Interfaces:**
 - Consumes: ordered theme sources, parser and registered Token schema.
 - Produces: one ThemeDescriptor per theme id and compile requests for variants.
+
+**Execution clarifications:**
+
+- Preserve first-wins source groups: custom directories, app-data directories, registered asset providers, then Core assets. Sort paths with `StringComparer.Ordinal` inside each directory or provider result before assigning source priority. Duplicate ids keep the highest-priority descriptor and add a diagnostic naming both sources.
+- `ThemeManagerBuilder` tracks whether `WithDefaultTheme` was explicitly called. Remove the unconditional bootstrap call that currently makes the built-in default look explicit. An explicit available builder selection wins; otherwise exactly one available winning descriptor with `IsDefault=true` is required. Zero or multiple fallback defaults fail deterministically.
+- Mark the Core `DaybreakBlue` source as the required built-in default source. Its parse failure and any explicitly selected unavailable theme are fatal; an unselected invalid custom descriptor remains in the catalog as unavailable.
+- The parser continues to preserve unregistered optional component definitions with warnings. `ThemeCatalog.CreateCompileRequest` excludes those definitions until their package registration exists; do not relax `ThemeCompiler` unknown-registration validation.
+- `Theme` remains the public compatibility facade, but it may only hydrate itself from a catalog/compiler result. It must not open or parse definition files or own Seed, Map, Alias, or component compile loops.
 
 - [ ] **Step 1: Write precedence and parse-once tests**
 
