@@ -16,6 +16,11 @@
 | 目录 | 说明 |
 |---|---|
 | `Theme/` | 主题管理、主题资源、Token、主题算法 |
+| `Theme/Compilation/` | ThemeCompileRequest、ThemeCompiler、ThemeSnapshot 和 Snapshot 缓存 |
+| `Theme/Catalog/` | 主题定义发现、解析结果缓存、默认主题选择和诊断 |
+| `Theme/Resources/` | Snapshot-backed ResourceProvider、组件共享 Token 资源键 |
+| `Theme/Transitions/` | 全局 ThemeRequest 和 ThemeCoordinator 提交状态机 |
+| `Theme/Scope/` | ThemeConfigProvider 局部 Snapshot 继承上下文 |
 | `Theme/TokenSystem/` | DesignToken 与 ControlToken 基础类型和 Attribute |
 | `Theme/Styling/` | 默认、暗色、紧凑主题算法和样式扩展 |
 | `Language/` | 本地化变体、Provider、资源扩展 |
@@ -30,6 +35,7 @@
 
 ## 相关文档
 
+- [主题系统运行架构](theme-system.md)
 - [主题系统重构设计](theme-system-redesign.md)
 - [主题系统重构实施与进度计划](../../superpowers/plans/2026-07-15-theme-system-redesign.md)
 - [../../architecture/startup-and-registration.md](../../architecture/startup-and-registration.md)

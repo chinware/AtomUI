@@ -139,6 +139,44 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    Title="{gallery:CustomizeThemeShowCaseLangResource RuntimeTokenUpdatesTitle}"
+                    Description="{gallery:CustomizeThemeShowCaseLangResource RuntimeTokenUpdatesDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CustomizeThemeViewModel">
+        <atom:ThemeConfigProvider SharedTokenSetters="{Binding RuntimeSharedTokenSetters}">
+            <Border Padding="20">
+                <StackPanel Spacing="10">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                        <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}"
+                                       Width="200"
+                                       VerticalAlignment="Center" />
+                        <atom:Button ButtonType="Primary"
+                                     Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}"
+                                     VerticalAlignment="Center" />
+                    </StackPanel>
+                    <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding UseRuntimePrimaryBlue}"
+                                     Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentUseBlue}" />
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding UseRuntimePrimaryGreen}"
+                                     Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentUseGreen}" />
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding UseRuntimePrimaryMagenta}"
+                                     Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentUseMagenta}" />
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+        </atom:ThemeConfigProvider>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
                     Title="{gallery:CustomizeThemeShowCaseLangResource CustomizeComponentTokenTitle}"
                     Description="{gallery:CustomizeThemeShowCaseLangResource CustomizeComponentTokenDescription}"
                     IsDeferredContentEnabled="True">
@@ -159,7 +197,10 @@
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <atom:TextBlock VerticalAlignment="Center" Width="120" Text="{gallery:CustomizeThemeShowCaseLangResource P2TextEnableAlgorithm}" />
                         <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}" Width="200" VerticalAlignment="Center" />
-                        <atom:Button ButtonType="Primary" VerticalAlignment="Center" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}" />
+                        <atom:Button ButtonType="Primary" VerticalAlignment="Center">
+                            <atom:TextBlock Name="ComponentTokenContentIsolationProbe"
+                                            Text="{gallery:CustomizeThemeShowCaseLangResource P2ContentIsolationText}" />
+                        </atom:Button>
                     </StackPanel>
                 </atom:ThemeConfigProvider>
                 <atom:Separator />
@@ -202,6 +243,12 @@
                             <atom:TokenSetter Key="ColorPrimary" Value="#00b96b" />
                         </atom:ThemeConfigProvider.SharedTokenSetters>
                         <atom:Button ButtonType="Primary" VerticalAlignment="Center" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentThemeN2}" />
+                    </atom:ThemeConfigProvider>
+                    <atom:ThemeConfigProvider Inherit="False">
+                        <atom:ThemeConfigProvider.SharedTokenSetters>
+                            <atom:TokenSetter Key="ColorPrimary" Value="#faad14" />
+                        </atom:ThemeConfigProvider.SharedTokenSetters>
+                        <atom:Button ButtonType="Primary" VerticalAlignment="Center" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentThemeN3}" />
                     </atom:ThemeConfigProvider>
                 </StackPanel>
             </Border>

@@ -41,6 +41,8 @@ internal partial class zh_TW
     public const string CustomizeDesignTokenDescription = "通過修改主題的 token 屬性，可以全局修改 Design Token。部分 token 會影響其他 token，這類 token 稱為 Seed Token。";
     public const string PresetAlgorithmsTitle = "使用預設算法";
     public const string PresetAlgorithmsDescription = "通過修改 algorithm 可以快速生成不同風格的主題。Ant Design 5.0 默認提供三套預設算法：DefaultAlgorithm、DarkAlgorithm、CompactAlgorithm。";
+    public const string RuntimeTokenUpdatesTitle = "運行期令牌更新";
+    public const string RuntimeTokenUpdatesDescription = "ThemeConfigProvider 會監聽 TokenSetter 變化並重新發布一個局部 Snapshot，不會追加額外資源 Provider 層。";
     public const string CustomizeComponentTokenTitle = "自定義組件令牌";
     public const string CustomizeComponentTokenDescription = "除 Design Token 外，每個組件也有自己的 Component Token，用於實現組件級樣式定制，不同組件之間互不影響。組件的其他 Design Token 也可以用這種方式覆蓋。";
     public const string NestedThemeTitle = "嵌套主題";
@@ -54,9 +56,14 @@ internal partial class zh_TW
     public const string P2ContentPear = "梨";
     public const string P2ContentOrange = "橙子";
     public const string P2ContentSubmit = "提交";
+    public const string P2ContentUseBlue = "藍色";
+    public const string P2ContentUseGreen = "綠色";
+    public const string P2ContentUseMagenta = "洋紅";
+    public const string P2ContentIsolationText = "組件內容";
     public const string P2TextEnableAlgorithm = "啓用算法：";
     public const string P2TextDisableAlgorithm = "禁用算法：";
     public const string P2ContentThemeN1 = "主題 1";
     public const string P2ContentThemeN2 = "主題 2";
+    public const string P2ContentThemeN3 = "不繼承";
 
 }

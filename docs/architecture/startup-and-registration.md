@@ -54,6 +54,15 @@ public override void Initialize()
 
 `UseAtomUI()` 会创建 `ThemeManagerBuilder`，设置默认语言和主题，执行用户传入的注册动作，然后构建 `ThemeManager`。
 
+构建后的主题运行流见 [AtomUI.Core 主题系统](../modules/core/theme-system.md)。简化顺序是：
+
+1. `ThemeManager.Configure()` 扫描主题来源并通过 `ThemeCatalog` 解析主题定义。
+2. `ThemeCoordinator` 把启动主题表达为一个 `ThemeRequest`。
+3. `ThemeSnapshotCache` 复用等价编译请求的 `ThemeSnapshot`，否则调用 `ThemeCompiler`。
+4. 提交阶段一次性挂载 snapshot-backed `ThemeTokenResourceProvider`，同步 `ActivatedTheme`、
+   `ThemeVariant`、Dark/Compact flags 和 `Application.RequestedThemeVariant`。
+5. 状态提交完成后才派发 `ThemeChanged`。
+
 如果应用需要首帧就是暗色或紧凑主题，应在 builder 阶段配置初始主题算法，而不是在 `UseAtomUI()` 之后调用运行期切换 API：
 
 ```csharp
