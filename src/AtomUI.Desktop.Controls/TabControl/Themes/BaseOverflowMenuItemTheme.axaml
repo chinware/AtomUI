@@ -53,8 +53,8 @@
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseButton">
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconWidth" Value="{atom:TabControlTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:TabControlTokenSharedTokenResource IconSizeSM}" />
         </Style>
         
         <Style Selector="^:disabled">

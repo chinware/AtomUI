@@ -22,7 +22,7 @@
         </Setter>
         
         <Style Selector="^[SizeType=Large], ^[SizeType=Middle], ^[SizeType=Custom]">
-            <Setter Property="ItemSpacing" Value="{atom:SharedTokenResource UniformlyMarginXS}"/>
+            <Setter Property="ItemSpacing" Value="{atom:PaginationTokenSharedTokenResource UniformlyMarginXS}"/>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

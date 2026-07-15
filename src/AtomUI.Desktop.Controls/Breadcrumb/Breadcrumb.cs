@@ -62,11 +62,6 @@ public class Breadcrumb : ItemsControl, IMotionAwareControl
 
     #endregion
 
-    public Breadcrumb()
-    {
-        this.RegisterTokenResourceScope(BreadcrumbToken.ScopeProvider);
-    }
-    
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         return new BreadcrumbItem();

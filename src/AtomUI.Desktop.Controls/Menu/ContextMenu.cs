@@ -134,7 +134,6 @@ public class ContextMenu : AvaloniaContextMenu,
     public ContextMenu()
         : base(new DefaultMenuInteractionHandler(true))
     {
-        this.RegisterTokenResourceScope(MenuToken.ScopeProvider);
         CreatePopup();
     }
 

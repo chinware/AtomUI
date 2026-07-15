@@ -39,11 +39,6 @@ public class MenuSeparator : AvaloniaSeparator
         AffectsRender<MenuSeparator>(LineWidthProperty, BorderBrushProperty, UseLayoutRoundingProperty);
     }
 
-    public MenuSeparator()
-    {
-        this.RegisterTokenResourceScope(MenuToken.ScopeProvider);
-    }
-
     public override void Render(DrawingContext context)
     {
         var lineWidth = BorderUtils.BuildRenderScaleAwareThickness(this, LineWidth);

@@ -63,7 +63,7 @@
         </Setter>
 
         <Style Selector="^:is(atom|HorizontalNavMenuItemHeader)">
-            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
+            <Setter Property="FontSize" Value="{atom:NavMenuTokenSharedTokenResource FontSize}" />
 
             <Style Selector="^[IsTopLevel=False]">
                 <Setter Property="Height" Value="{atom:NavMenuTokenResource ItemHeight}" />
@@ -116,7 +116,7 @@
 
                 <Style Selector="^:pointerover, ^[IsSubMenuOpen=True], ^[IsSelected=True], ^[IsInSelectedPath=True]">
                     <Setter Property="ActiveBarColor"
-                            Value="{atom:SharedTokenResource ColorPrimary}" />
+                            Value="{atom:NavMenuTokenSharedTokenResource ColorPrimary}" />
                 </Style>
 
                 <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">

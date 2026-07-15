@@ -121,13 +121,11 @@ public class MenuFlyoutPresenter : MenuBase,
     public MenuFlyoutPresenter()
         : base(new DefaultMenuInteractionHandler(true))
     {
-        this.RegisterTokenResourceScope(MenuToken.ScopeProvider);
     }
 
     public MenuFlyoutPresenter(IMenuInteractionHandler menuInteractionHandler)
         : base(menuInteractionHandler)
     {
-        this.RegisterTokenResourceScope(MenuToken.ScopeProvider);
     }
 
     public override void Close()

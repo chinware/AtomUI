@@ -10,8 +10,7 @@ namespace AtomUI.Desktop.Controls;
 internal class BreadcrumbToken : AbstractControlDesignToken
 {
     public const string ID = "Breadcrumb";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
-    
+
     /// <summary>
     /// 图标大小
     /// </summary>

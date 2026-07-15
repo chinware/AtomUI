@@ -169,23 +169,23 @@
         <Style Selector="^[Mode=Horizontal],^[Mode=Vertical]">
             <Style Selector="^ /template/ atom|Popup#PART_Popup">
                 <Setter Property="RequestedPlacement" Value="RightEdgeAlignedTop" />
-                <Setter Property="HorizontalOffset" Value="{atom:SharedTokenResource SpacingXS}" />
-                <Setter Property="VerticalOffset" Value="{atom:SharedTokenResource SpacingXXS}" />
+                <Setter Property="HorizontalOffset" Value="{atom:NavMenuTokenSharedTokenResource SpacingXS}" />
+                <Setter Property="VerticalOffset" Value="{atom:NavMenuTokenSharedTokenResource SpacingXXS}" />
             </Style>
         </Style>
 
         <Style Selector="^[Mode=Horizontal]:toplevel">
-            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
+            <Setter Property="FontSize" Value="{atom:NavMenuTokenSharedTokenResource FontSize}" />
             <Style Selector="^ /template/ atom|Popup#PART_Popup">
                 <Setter Property="RequestedPlacement" Value="Bottom" />
-                <Setter Property="VerticalOffset" Value="{atom:SharedTokenResource SpacingXXS}" />
+                <Setter Property="VerticalOffset" Value="{atom:NavMenuTokenSharedTokenResource SpacingXXS}" />
                 <Setter Property="HorizontalOffset" Value="0" />
             </Style>
         </Style>
 
         <Style Selector="^[Mode=Inline]">
             <Setter Property="OpenCloseMotionDuration"
-                    Value="{atom:SharedTokenResource MotionDurationSlow}" />
+                    Value="{atom:NavMenuTokenSharedTokenResource MotionDurationSlow}" />
 
             <Setter Property="Focusable" Value="False" />
             <Style Selector="^ /template/ ItemsPresenter#ChildItemsPresenter StackPanel">

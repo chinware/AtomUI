@@ -142,11 +142,6 @@ public class Pagination : AbstractPagination
     private IDisposable? _sizeChangerDisposable;
     private IDisposable? _quickJumperDisposable;
 
-    public Pagination()
-    {
-        this.RegisterTokenResourceScope(PaginationToken.ScopeProvider);
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);

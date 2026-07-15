@@ -10,8 +10,7 @@ namespace AtomUI.Desktop.Controls;
 internal class StepsToken : AbstractControlDesignToken
 {
     public const string ID = "Steps";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
-    
+
     public StepsToken()
         : base(ID)
     {

@@ -41,7 +41,7 @@
                         <atom:PixelAlignedBorder Name="PART_HorizontalLine"
                                                  DockPanel.Dock="Bottom"
                                                  BorderThickness="0,0,0,1"
-                                                 Height="{atom:SharedTokenResource LineWidth}" />
+                                                 Height="{atom:NavMenuTokenSharedTokenResource LineWidth}" />
                         <atom:PixelAlignedBorder HorizontalAlignment="Stretch"
                                                  Padding="{TemplateBinding Padding}"
                                                  Background="{TemplateBinding Background}"
@@ -65,8 +65,8 @@
         
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
         <Setter Property="InlineCollapsedWidth" Value="{atom:NavMenuTokenResource InlineCollapsedWidth}" />
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="BorderBrush" Value="{atom:NavMenuTokenSharedTokenResource ColorBorderSecondary}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:NavMenuTokenSharedTokenResource EnableMotion}" />
         <Setter Property="atom:ScrollViewer.IsLiteMode" Value="True" />
         <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
 
@@ -129,7 +129,7 @@
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="Height" Value="{atom:NavMenuTokenResource MenuHorizontalHeight}" />
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HorizontalLine">
-                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
+                <Setter Property="BorderBrush" Value="{atom:NavMenuTokenSharedTokenResource ColorBorderSecondary}" />
             </Style>
             
             <Style Selector="^[IsDarkStyle=True]">
