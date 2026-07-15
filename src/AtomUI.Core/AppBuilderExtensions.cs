@@ -48,11 +48,6 @@ public static class AppBuilderExtensions
     /// </example>
     public static AppBuilder WithAtomUIDefaultOptions(this AppBuilder appBuilder)
     {
-        if (OperatingSystem.IsWindows())
-        {
-            appBuilder = WindowsAppBuilderDefaults.Apply(appBuilder);
-        }
-
         return appBuilder
             .With(new AvaloniaNativePlatformOptions
             {
@@ -62,6 +57,15 @@ public static class AppBuilderExtensions
                     AvaloniaNativeRenderingMode.Metal,
                     AvaloniaNativeRenderingMode.Software
                 ]
+            })
+            .With(new Win32PlatformOptions
+            {
+                RenderingMode =
+                [
+                    Win32RenderingMode.AngleEgl,
+                    Win32RenderingMode.Software
+                ],
+                CompositionMode = [Win32CompositionMode.RedirectionSurface]
             })
             .With(new X11PlatformOptions
             {

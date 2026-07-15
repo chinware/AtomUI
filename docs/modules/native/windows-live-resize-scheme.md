@@ -90,7 +90,7 @@ RedirectionSurface` 下仍有内容区抖动。升级 Intel 官方驱动到 `31.
 
 ### 启动配置
 
-`WindowsAppBuilderDefaults` 强类型创建 `Win32PlatformOptions`：
+`WithAtomUIDefaultOptions()` 强类型创建 `Win32PlatformOptions`：
 
 ```csharp
 CompositionMode = [Win32CompositionMode.RedirectionSurface];
@@ -187,7 +187,7 @@ macOS standard window buttons 和 Linux input region。Windows live resize、CSD
 AtomUI：
 
 - `src/AtomUI.Core/AppBuilderExtensions.cs`
-- `src/AtomUI.Core/WindowsAppBuilderDefaults.cs`
+- `src/AtomUI.Core/AppBuilderExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Window/Window.cs`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml`
