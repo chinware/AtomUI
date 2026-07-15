@@ -77,7 +77,6 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     /// <param name="host">The TopLevel that will host the control.</param>
     public WindowMessageManager(TopLevel? host)
     {
-        this.RegisterTokenResourceScope(MessageToken.ScopeProvider);
 
         if (host is not null)
         {

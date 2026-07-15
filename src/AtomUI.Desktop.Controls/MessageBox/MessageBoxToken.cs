@@ -9,8 +9,6 @@ internal class MessageBoxToken : AbstractControlDesignToken
 {
     public const string ID = "MessageBox";
 
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
-
     /// <summary>
     /// Style Icon 的大小
     /// </summary>

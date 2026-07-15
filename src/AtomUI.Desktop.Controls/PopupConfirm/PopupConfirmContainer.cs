@@ -111,7 +111,6 @@ internal class PopupConfirmContainer : TemplatedControl
 
     public PopupConfirmContainer(PopupConfirm popupConfirm)
     {
-        this.RegisterTokenResourceScope(PopupConfirmToken.ScopeProvider);
         PopupConfirmRef = new WeakReference<PopupConfirm>(popupConfirm);
     }
 

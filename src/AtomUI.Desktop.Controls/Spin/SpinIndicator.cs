@@ -7,6 +7,5 @@ public class SpinIndicator : AbstractSpinIndicator
 {
     public SpinIndicator()
     {
-        this.RegisterTokenResourceScope(SpinToken.ScopeProvider);
     }
 }

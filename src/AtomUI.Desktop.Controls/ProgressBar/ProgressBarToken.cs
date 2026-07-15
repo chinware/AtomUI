@@ -10,7 +10,6 @@ namespace AtomUI.Desktop.Controls;
 internal class ProgressBarToken : AbstractControlDesignToken
 {
     public const string ID = "ProgressBar";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     /// <summary>
     /// 进度条默认颜色

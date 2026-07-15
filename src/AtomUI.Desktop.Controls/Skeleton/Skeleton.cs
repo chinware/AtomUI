@@ -185,7 +185,6 @@ public class Skeleton : AbstractSkeleton
 
     public Skeleton()
     {
-        this.RegisterTokenResourceScope(SkeletonToken.ScopeProvider);
         UpdateContentVisibility();
     }
 

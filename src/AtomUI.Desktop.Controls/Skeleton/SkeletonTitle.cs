@@ -13,6 +13,5 @@ public class SkeletonTitle : SkeletonLine
     
     public SkeletonTitle()
     {
-        this.RegisterTokenResourceScope(SkeletonToken.ScopeProvider);
     }
 }

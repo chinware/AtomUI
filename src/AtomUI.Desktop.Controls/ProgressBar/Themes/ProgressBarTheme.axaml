@@ -10,9 +10,9 @@
         </ControlTheme.BasedOn>
 
         <Setter Property="ColorTextLabel"
-                Value="{atom:SharedTokenResource ColorTextLabel}" />
+                Value="{atom:ProgressBarTokenSharedTokenResource ColorTextLabel}" />
         <Setter Property="ColorTextLightSolid"
-                Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+                Value="{atom:ProgressBarTokenSharedTokenResource ColorTextLightSolid}" />
         
         <Style Selector="^[IsProgressInfoVisible=True]">
             <Style Selector="^[Orientation=Horizontal]">

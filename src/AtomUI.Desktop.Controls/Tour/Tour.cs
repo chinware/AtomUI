@@ -321,7 +321,6 @@ public class Tour : TemplatedControl, IMotionAwareControl
 
     public Tour()
     {
-        this.RegisterTokenResourceScope(TourToken.ScopeProvider);
         Steps.CollectionChanged         += HandleItemsViewCollectionChanged;
         CustomActions.CollectionChanged += HandleCustomActionsChanged;
     }

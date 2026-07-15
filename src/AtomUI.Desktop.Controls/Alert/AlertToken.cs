@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 internal class AlertToken : AbstractControlDesignToken
 {
     public const string ID = "Alert";
-    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
 
     public AlertToken()
         : base(ID)

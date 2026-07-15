@@ -7,6 +7,5 @@ public class DashboardProgress : AbstractGeneralDashboardProgress
 {
     public DashboardProgress()
     {
-        this.RegisterTokenResourceScope(ProgressBarToken.ScopeProvider);
     }
 }

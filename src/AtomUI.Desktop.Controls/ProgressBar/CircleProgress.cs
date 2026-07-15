@@ -7,6 +7,5 @@ public class CircleProgress : AbstractGeneralCircleProgress
 {
     public CircleProgress()
     {
-        this.RegisterTokenResourceScope(ProgressBarToken.ScopeProvider);
     }
 }

@@ -34,7 +34,7 @@
     <Style Selector="^:is(atom|SkeletonImage)">
         <Setter Property="Height" Value="{atom:SkeletonTokenResource ImageContainerSize}" />
         <Setter Property="Width" Value="{atom:SkeletonTokenResource ImageContainerSize}" />
-        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+        <Setter Property="CornerRadius" Value="{atom:SkeletonTokenSharedTokenResource BorderRadiusSM}" />
         <Setter Property="MaxWidth" Value="{atom:SkeletonTokenResource ImageContainerMaxSize}" />
         <Setter Property="MaxHeight" Value="{atom:SkeletonTokenResource ImageContainerMaxSize}" />
     
