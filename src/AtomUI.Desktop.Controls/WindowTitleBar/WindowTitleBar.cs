@@ -177,7 +177,6 @@ public class WindowTitleBar : TemplatedControl,
     public WindowTitleBar()
     {
         this.ConfigureOsType();
-        this.RegisterTokenResourceScope(WindowTitleBarToken.ScopeProvider);
         UpdateEffectiveLogoVisible();
     }
 

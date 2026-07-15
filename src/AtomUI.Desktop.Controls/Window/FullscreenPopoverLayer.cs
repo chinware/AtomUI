@@ -24,7 +24,6 @@ internal class FullscreenPopoverLayer : TemplatedControl
     public FullscreenPopoverLayer()
     {
         IsVisible = false;
-        this.RegisterTokenResourceScope(WindowTitleBarToken.ScopeProvider);
     }
 
     public void Attach(Window hostWindow)

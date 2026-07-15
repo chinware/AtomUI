@@ -62,13 +62,11 @@ public class TreeViewFlyoutPresenter : FloatableTreeView, IShadowMaskInfoProvide
     public TreeViewFlyoutPresenter()
         : base(new DefaultTreeViewInteractionHandler(true))
     {
-        this.RegisterTokenResourceScope(TreeFlyoutToken.ScopeProvider);
     }
 
     public TreeViewFlyoutPresenter(ITreeViewInteractionHandler menuInteractionHandler)
         : base(menuInteractionHandler)
     {
-        this.RegisterTokenResourceScope(TreeFlyoutToken.ScopeProvider);
     }
     
     protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)

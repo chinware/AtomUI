@@ -257,7 +257,6 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
     
     public DialogButtonBox()
     {
-        this.RegisterTokenResourceScope(DialogToken.ScopeProvider);
         CustomButtons.CollectionChanged += new (HandleCustomButtonsChanged);
         _standardButtonGroup            = new Dictionary<DialogButtonRole, List<DialogButton>>(DialogButtonRoleCapacity);
         _buttonGroup                    = new Dictionary<DialogButtonRole, List<DialogButton>>(DialogButtonRoleCapacity);

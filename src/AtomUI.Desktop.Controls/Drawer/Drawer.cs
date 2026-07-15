@@ -226,7 +226,6 @@ public class Drawer : Control,
 
     public Drawer()
     {
-        this.RegisterTokenResourceScope(DrawerToken.ScopeProvider);
         this.ConfigureMotionBindingStyle();
         TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty, DrawerTokenKind.PushOffsetPercent);
         ApplyDialogSizeTokenBinding();

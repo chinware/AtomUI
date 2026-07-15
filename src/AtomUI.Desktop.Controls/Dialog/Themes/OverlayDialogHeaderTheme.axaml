@@ -10,7 +10,7 @@
                 <Border Name="HeaderFrame" Padding="{TemplateBinding Padding}"
                         Background="{TemplateBinding Background}">
                     <DockPanel LastChildFill="True"
-                               HorizontalSpacing="{atom:SharedTokenResource SpacingSM}">
+                               HorizontalSpacing="{atom:DialogTokenSharedTokenResource SpacingSM}">
                         <atom:IconPresenter Name="IconPresenter" DockPanel.Dock="Left"
                                             Icon="{TemplateBinding Logo}"
                                             IsVisible="{TemplateBinding Logo, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -47,8 +47,8 @@
         <Style Selector="^ /template/ atom|DialogCaptionButton">
             <Setter Property="Width" Value="{atom:DialogTokenResource CloseBtnSize}" />
             <Setter Property="Height" Value="{atom:DialogTokenResource CloseBtnSize}" />
-            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconWidth" Value="{atom:DialogTokenSharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:DialogTokenSharedTokenResource IconSize}" />
         </Style>
 
         <Style Selector="^ /template/ TextBlock#Title">

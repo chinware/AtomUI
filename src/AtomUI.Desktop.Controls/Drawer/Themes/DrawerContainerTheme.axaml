@@ -37,9 +37,9 @@
         </Setter>
         
         <Setter Property="MotionDuration"
-                Value="{atom:SharedTokenResource MotionDurationSlow}" />
+                Value="{atom:DrawerTokenSharedTokenResource MotionDurationSlow}" />
         <Setter Property="Background"
-                Value="{atom:SharedTokenResource ColorBgMask}" />
+                Value="{atom:DrawerTokenSharedTokenResource ColorBgMask}" />
 
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">
