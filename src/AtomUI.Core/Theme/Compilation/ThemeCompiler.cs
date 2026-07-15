@@ -27,7 +27,7 @@ internal sealed class ThemeCompiler
         var diagnostics = new List<ThemeDefinitionDiagnostic>();
         try
         {
-            if (!ValidateRequest(request, diagnostics))
+            if (!ValidateRequest(request, diagnostics, out var registrations))
             {
                 return Failed(diagnostics);
             }
@@ -39,7 +39,13 @@ internal sealed class ThemeCompiler
             FreezeColorPalettes(sharedToken);
 
             var sharedResources = BuildResourceMap(sharedToken);
-            var components = BuildComponents(request, calculator, sharedToken, sharedResources, diagnostics);
+            var components = BuildComponents(
+                request,
+                registrations,
+                calculator,
+                sharedToken,
+                sharedResources,
+                diagnostics);
             if (diagnostics.Any(static diagnostic => diagnostic.Severity == ThemeDiagnosticSeverity.Error))
             {
                 return Failed(diagnostics);
@@ -63,7 +69,10 @@ internal sealed class ThemeCompiler
         }
     }
 
-    private bool ValidateRequest(ThemeCompileRequest request, List<ThemeDefinitionDiagnostic> diagnostics)
+    private bool ValidateRequest(
+        ThemeCompileRequest request,
+        List<ThemeDefinitionDiagnostic> diagnostics,
+        out Dictionary<ComponentTokenIdentity, AbstractControlDesignToken> registrations)
     {
         var isValid = true;
         var sharedTokenNames = GetSharedTokenNames();
@@ -71,10 +80,10 @@ internal sealed class ThemeCompiler
         isValid &= ValidateSharedNames(request.SharedOverrides, sharedTokenNames, diagnostics);
         isValid &= ValidateSharedNames(request.RuntimeOverrides, sharedTokenNames, diagnostics);
 
-        var registrations = new Dictionary<ComponentTokenIdentity, AbstractControlDesignToken>();
+        registrations = new Dictionary<ComponentTokenIdentity, AbstractControlDesignToken>();
         foreach (var registration in request.Registrations)
         {
-            if (Activator.CreateInstance(registration.TokenType) is not AbstractControlDesignToken token)
+            if (registration.Activate() is not { } token)
             {
                 AddError(diagnostics, "THEME001", $"Registration '{registration.TokenType.FullName}' does not create an {nameof(AbstractControlDesignToken)}.");
                 isValid = false;
@@ -124,21 +133,15 @@ internal sealed class ThemeCompiler
 
     private Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot> BuildComponents(
         ThemeCompileRequest request,
+        IReadOnlyDictionary<ComponentTokenIdentity, AbstractControlDesignToken> registrations,
         IThemeVariantCalculator calculator,
         DesignToken globalToken,
         IReadOnlyDictionary<object, object?> globalResources,
         List<ThemeDefinitionDiagnostic> diagnostics)
     {
-        var components = new Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot>(request.Registrations.Count);
-        foreach (var registration in request.Registrations)
+        var components = new Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot>(registrations.Count);
+        foreach (var (identity, controlToken) in registrations)
         {
-            var controlToken = (AbstractControlDesignToken)Activator.CreateInstance(registration.TokenType)!;
-            var identity = new ComponentTokenIdentity(null, controlToken.Id);
-            if (components.ContainsKey(identity))
-            {
-                continue;
-            }
-
             var config = GetComponentConfig(request, identity);
             var effectiveToken = CloneDesignToken(globalToken);
             if (config is not null)
