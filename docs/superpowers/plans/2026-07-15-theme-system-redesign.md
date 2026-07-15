@@ -506,7 +506,7 @@ git commit -m "refactor(Theme): parse and catalog definitions once"
 - Consumes: ThemeSnapshot.
 - Produces: ResourceProvider resolving global, component-private shared, and component own Token keys.
 
-- [ ] **Step 1: Write lookup and notification tests**
+- [x] **Step 1: Write lookup and notification tests**
 
 ~~~csharp
 [Fact]
@@ -534,13 +534,13 @@ public void ComponentShared_Key_Resolves_Private_Value_Without_Changing_Global()
 
 Also test unknown ids, registered unconfigured fallback to scope-global values, catalog identity, owner attachment, silent prepare followed by one publish notification, and normal ReplaceSnapshot notification.
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~ThemeTokenResourceProviderTests
 
 Expected: FAIL.
 
-- [ ] **Step 3: Implement stable identities and cached keys**
+- [x] **Step 3: Implement stable identities and cached keys**
 
 ~~~csharp
 public readonly record struct ComponentSharedTokenResourceKey(
@@ -551,17 +551,17 @@ public readonly record struct ComponentSharedTokenResourceKey(
 
 Normalize empty Catalog to null. Cache keys by ComponentTokenIdentity and SharedTokenKind. ComponentTokenIdentity is an internal compiler value; generated public extensions pass catalog and id strings to their public base constructor.
 
-- [ ] **Step 4: Implement ThemeTokenResourceProvider**
+- [x] **Step 4: Implement ThemeTokenResourceProvider**
 
 Subclass Avalonia ResourceProvider. Resolve prebuilt maps without reflection. Provide PrepareSnapshot for a transaction owner to swap the reference silently and PublishSnapshotChanged to raise exactly one notification after the surrounding scope state is consistent. ReplaceSnapshot combines those two operations for simple callers. Mount one provider in every compatibility Theme resource layer so old ThemeManager activation can resolve component keys before ThemeCoordinator lands.
 
-- [ ] **Step 5: Run provider and compiler tests**
+- [x] **Step 5: Run provider and compiler tests**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter "FullyQualifiedName~ThemeTokenResourceProviderTests|FullyQualifiedName~ThemeCompilerTests"
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ~~~bash
 git add src/AtomUI.Core/Theme/Resources src/AtomUI.Core/Theme/Compilation tests/AtomUI.Core.Tests/Theme/ThemeTokenResourceProviderTests.cs
