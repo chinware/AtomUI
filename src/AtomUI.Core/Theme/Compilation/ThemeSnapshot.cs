@@ -13,7 +13,8 @@ internal sealed class ThemeSnapshot
         bool isDark,
         DesignToken sharedToken,
         IReadOnlyDictionary<object, object?> sharedResources,
-        IReadOnlyDictionary<ComponentTokenIdentity, ComponentThemeSnapshot> components)
+        IReadOnlyDictionary<ComponentTokenIdentity, ComponentThemeSnapshot> components,
+        IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo>? componentConfigs = null)
     {
         Id              = id;
         Version         = version;
@@ -22,6 +23,8 @@ internal sealed class ThemeSnapshot
         SharedToken     = sharedToken;
         SharedResources = sharedResources;
         Components      = components;
+        ComponentConfigs = CopyComponentConfigs(componentConfigs ??
+                                                 new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>());
         Resources       = BuildResourceMap(sharedResources, components);
     }
 
@@ -32,6 +35,7 @@ internal sealed class ThemeSnapshot
     public DesignToken SharedToken { get; }
     public IReadOnlyDictionary<object, object?> SharedResources { get; }
     public IReadOnlyDictionary<ComponentTokenIdentity, ComponentThemeSnapshot> Components { get; }
+    public IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> ComponentConfigs { get; }
     internal IReadOnlyDictionary<object, object?> Resources { get; }
 
     private static IReadOnlyDictionary<object, object?> BuildResourceMap(
@@ -53,5 +57,17 @@ internal sealed class ThemeSnapshot
         }
 
         return new ReadOnlyDictionary<object, object?>(resources);
+    }
+
+    private static IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> CopyComponentConfigs(
+        IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> componentConfigs)
+    {
+        var copy = new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>(componentConfigs.Count);
+        foreach (var (identity, config) in componentConfigs)
+        {
+            copy.Add(identity, config.CloneImmutable());
+        }
+
+        return new ReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo>(copy);
     }
 }

@@ -328,6 +328,32 @@ public class ThemeCompilerTests
     }
 
     [Fact]
+    public void Snapshot_Component_Configs_Are_Read_Only_Copies()
+    {
+        var componentOverride = new ControlTokenConfigInfo
+        {
+            TokenId = CompilerButtonToken.ID,
+            Tokens = Tokens((nameof(CompilerButtonToken.Height), "48"))
+        };
+        var snapshot = Compile(componentOverrides:
+        new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>
+        {
+            [s_buttonIdentity] = componentOverride
+        }).Snapshot!;
+
+        componentOverride.Tokens[nameof(CompilerButtonToken.Height)] = "64";
+        var config = snapshot.ComponentConfigs[s_buttonIdentity];
+
+        config.Tokens[nameof(CompilerButtonToken.Height)].ShouldBe("48");
+        Should.Throw<NotSupportedException>(() =>
+            config.Tokens[nameof(CompilerButtonToken.Height)] = "64");
+        Should.Throw<NotSupportedException>(() => config.EnableAlgorithm = true);
+        Should.Throw<NotSupportedException>(() =>
+            ((IDictionary<ComponentTokenIdentity, ControlTokenConfigInfo>)snapshot.ComponentConfigs)
+            .Add(new ComponentTokenIdentity(null, "New"), config));
+    }
+
+    [Fact]
     public void Invalid_Shared_Override_Returns_An_Exception_Without_A_Partial_Snapshot()
     {
         var result = Compile(

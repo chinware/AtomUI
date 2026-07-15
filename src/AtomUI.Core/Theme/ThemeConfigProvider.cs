@@ -254,6 +254,11 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     private IReadOnlyList<ThemeAlgorithm> GetRequestedAlgorithms()
     {
+        if (Algorithms.Count == 0)
+        {
+            return Array.Empty<ThemeAlgorithm>();
+        }
+
         var requested = AtomUITheme.CheckAlgorithmNames(Algorithms);
         var algorithms = new List<ThemeAlgorithm>
         {
