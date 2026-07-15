@@ -245,7 +245,7 @@ git commit -m "refactor(Theme): add deterministic theme definition parser"
 - Consumes: string Token values.
 - Produces: invariant typed values and cache-consistent LoadConfig behavior.
 
-- [ ] **Step 1: Write culture and cache tests**
+- [x] **Step 1: Write culture and cache tests**
 
 ~~~csharp
 [Theory]
@@ -274,17 +274,17 @@ public void LoadConfig_Invalidates_Previously_Read_Token_Value()
 }
 ~~~
 
-- [ ] **Step 2: Verify failures under fr-FR and cached access**
+- [x] **Step 2: Verify failures under fr-FR and cached access**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~TokenValueConverterTests
 
 Expected: the decimal and cache tests fail.
 
-- [ ] **Step 3: Implement invariant conversion and invalidation**
+- [x] **Step 3: Implement invariant conversion and invalidation**
 
 Use NumberStyles.Integer or NumberStyles.Float with CultureInfo.InvariantCulture. Remove each assigned Token name from the access cache before setting the property. Include Token name, target type and raw value in conversion errors.
 
-- [ ] **Step 4: Run and commit**
+- [x] **Step 4: Run and commit**
 
 Run: dotnet test tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj --framework net10.0 --no-restore
 
