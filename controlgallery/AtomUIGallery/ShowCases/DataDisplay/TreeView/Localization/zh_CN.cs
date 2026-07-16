@@ -78,6 +78,8 @@ internal partial class zh_CN
     public const string SearchableDescription = "可搜索的树。";
     public const string ContextMenuTitle = "上下文菜单";
     public const string ContextMenuDescription = "右键任意节点可打开上下文菜单。切换 IsSelectOnRightClick 可在跟随右键节点（默认）和保持现有选择不变之间切换。";
+    public const string EmptyIndicatorTitle = "自定义空状态";
+    public const string EmptyIndicatorDescription = "使用 EmptyIndicator 替换 TreeView 的默认空状态内容。";
     public const string P2HeaderParentN1 = "父节点 1";
     public const string P2HeaderParentN1N0 = "父节点 1-0";
     public const string P2HeaderLeaf = "叶子节点";
@@ -124,6 +126,7 @@ internal partial class zh_CN
     public const string P2TextShowleaficon = "显示叶子节点图标：";
     public const string P2TextNodeHoverMode = "节点悬停模式：";
     public const string P2TextSelectedItemBinding = "SelectedItem";
+    public const string P2TextCustomEmptyIndicator = "暂无可显示的树节点";
     public const string P2TextSelectedItemsBinding = "SelectedItems";
     public const string P2ContentDefault = "默认";
     public const string P2ContentBlock = "块";

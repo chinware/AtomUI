@@ -68,6 +68,10 @@ internal partial class en_US
     public const string ItemDisabledDescription = "Disabled item.";
     public const string EmptyTitle = "Empty";
     public const string EmptyDescription = "show empty indicator when no data.";
+    public const string ListViewEmptyIndicatorTitle = "ListView custom empty indicator";
+    public const string ListViewEmptyIndicatorDescription = "Use EmptyIndicator to replace the default ListView empty content.";
+    public const string ListBoxEmptyIndicatorTitle = "ListBox custom empty indicator";
+    public const string ListBoxEmptyIndicatorDescription = "Use EmptyIndicator to replace the default ListBox empty content.";
     public const string FilterTitle = "Filter";
     public const string FilterDescription = "You can filter the data based on criteria; here we've filtered for items containing 'a'.";
     public const string OrderedTitle = "Ordered";
@@ -81,6 +85,7 @@ internal partial class en_US
     public const string PaginationListTitle = "Pagination list";
     public const string PaginationListDescription = "Pagination list.";
     public const string P2PlaceholderTextSearch = "Search";
+    public const string P2TextCustomEmptyIndicator = "No items to display";
     public const string P2FilterValue = "a";
     public const string P2TextSelectionMode = "Selection Mode:";
     public const string P2ContentSingle = "Single";

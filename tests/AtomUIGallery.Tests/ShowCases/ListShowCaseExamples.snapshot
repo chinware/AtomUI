@@ -76,6 +76,44 @@ IsGroupEnabled="False" />
 </StackPanel>
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
+Title="{gallery:ListShowCaseLangResource ListViewEmptyIndicatorTitle}"
+Description="{gallery:ListShowCaseLangResource ListViewEmptyIndicatorDescription}">
+<atom:ListView MaxWidth="360"
+Height="200"
+HorizontalAlignment="Stretch">
+<atom:ListView.EmptyIndicator>
+<StackPanel Spacing="8" HorizontalAlignment="Center">
+<antdicons:SmileOutlined Width="28"
+Height="28"
+HorizontalAlignment="Center"
+Foreground="{atom:SharedTokenResource ColorPrimary}" />
+<atom:TextBlock
+Text="{gallery:ListShowCaseLangResource P2TextCustomEmptyIndicator}"
+Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+</StackPanel>
+</atom:ListView.EmptyIndicator>
+</atom:ListView>
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
+Title="{gallery:ListShowCaseLangResource ListBoxEmptyIndicatorTitle}"
+Description="{gallery:ListShowCaseLangResource ListBoxEmptyIndicatorDescription}">
+<atom:ListBox MaxWidth="360"
+Height="200"
+HorizontalAlignment="Stretch">
+<atom:ListBox.EmptyIndicator>
+<StackPanel Spacing="8" HorizontalAlignment="Center">
+<antdicons:SmileOutlined Width="28"
+Height="28"
+HorizontalAlignment="Center"
+Foreground="{atom:SharedTokenResource ColorPrimary}" />
+<atom:TextBlock
+Text="{gallery:ListShowCaseLangResource P2TextCustomEmptyIndicator}"
+Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+</StackPanel>
+</atom:ListBox.EmptyIndicator>
+</atom:ListBox>
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
 Title="{gallery:ListShowCaseLangResource FilterTitle}"
 Description="{gallery:ListShowCaseLangResource FilterDescription}">
 <atom:ListView Name="FilteredList"

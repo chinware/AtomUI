@@ -44,6 +44,14 @@
                             IsVisible="{TemplateBinding IsEffectiveEmptyVisible}"
                             Content="{TemplateBinding EmptyIndicator}"
                             ContentTemplate="{TemplateBinding EmptyIndicatorTemplate}" />
+                        <atom:Empty
+                            Name="DefaultEmptyIndicator"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Margin="{TemplateBinding EmptyIndicatorPadding}"
+                            IsVisible="{TemplateBinding IsDefaultEmptyIndicatorVisible}"
+                            SizeType="Small"
+                            PresetImage="Simple" />
                     </Panel>
                     <atom:CascaderViewFilterList Name="PART_FilterList"
                                                  ItemsSource="{TemplateBinding FilteredPathInfos}"
@@ -75,12 +83,6 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="ClipToBounds" Value="True" />
         <Setter Property="IsMotionEnabled" Value="{atom:CascaderTokenSharedTokenResource EnableMotion}" />
-        <Setter Property="EmptyIndicatorTemplate">
-            <DataTemplate>
-                <atom:Empty SizeType="Small" PresetImage="Simple" />
-            </DataTemplate>
-        </Setter>
-
         <Setter Property="BorderThickness" Value="{atom:CascaderTokenSharedTokenResource BorderThickness}" />
         <Setter Property="BorderBrush" Value="{atom:CascaderTokenSharedTokenResource ColorSplit}" />
         <Setter Property="CornerRadius" Value="{atom:CascaderTokenSharedTokenResource BorderRadiusLG}" />

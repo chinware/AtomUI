@@ -35,6 +35,14 @@
                         IsVisible="{TemplateBinding IsEffectiveEmptyVisible}"
                         Content="{TemplateBinding EmptyIndicator}"
                         ContentTemplate="{TemplateBinding EmptyIndicatorTemplate}" />
+                    <atom:Empty
+                        Name="DefaultEmptyIndicator"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="{TemplateBinding EmptyIndicatorPadding}"
+                        IsVisible="{TemplateBinding IsDefaultEmptyIndicatorVisible}"
+                        SizeType="Small"
+                        PresetImage="Simple" />
                 </Panel>
             </atom:PixelAlignedBorder>
         </ControlTemplate>
@@ -74,12 +82,6 @@
             <Setter Property="CornerRadius" Value="{atom:ListBoxTokenSharedTokenResource BorderRadiusSM}" />
             <Setter Property="EmptyIndicatorPadding" Value="{atom:ListBoxTokenSharedTokenResource Padding}" />
         </Style>
-        
-        <Setter Property="EmptyIndicatorTemplate">
-            <DataTemplate>
-                <atom:Empty SizeType="Small" PresetImage="Simple"/>
-            </DataTemplate>
-        </Setter>
         
         <Setter Property="ItemTemplate">
             <DataTemplate x:DataType="atom:IListItemData">

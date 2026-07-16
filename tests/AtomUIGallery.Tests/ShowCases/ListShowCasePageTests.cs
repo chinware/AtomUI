@@ -47,6 +47,10 @@ public class ListShowCasePageTests
         source.ShouldContain("ListShowCaseLangResource FilterTitle");
         source.ShouldContain("ListShowCaseLangResource SearchableTitle");
         source.ShouldContain("ListShowCaseLangResource PaginationListTitle");
+        source.ShouldContain("ListShowCaseLangResource ListViewEmptyIndicatorTitle");
+        source.ShouldContain("ListShowCaseLangResource ListBoxEmptyIndicatorTitle");
+        CountOccurrences(source, "<atom:ListView.EmptyIndicator>").ShouldBe(1);
+        CountOccurrences(source, "<atom:ListBox.EmptyIndicator>").ShouldBe(1);
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
@@ -137,6 +141,9 @@ public class ListShowCasePageTests
             source.ShouldContain("ApiPropertyPaginationVisibility");
             source.ShouldContain("SelectedItemsBindingTitle");
             source.ShouldContain("P2ContentSelectColors");
+            source.ShouldContain("ListViewEmptyIndicatorTitle");
+            source.ShouldContain("ListBoxEmptyIndicatorTitle");
+            source.ShouldContain("P2TextCustomEmptyIndicator");
             source.ShouldContain("TokenNameContentPadding");
             source.ShouldContain("TokenNameItemHoverBgColor");
         }

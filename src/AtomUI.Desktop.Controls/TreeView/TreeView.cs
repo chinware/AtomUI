@@ -459,6 +459,12 @@ public partial class TreeView : AvaloniaTreeView,
             nameof(IsEffectiveEmptyVisible),
             o => o.IsEffectiveEmptyVisible,
             (o, v) => o.IsEffectiveEmptyVisible = v);
+
+    internal static readonly DirectProperty<TreeView, bool> IsDefaultEmptyIndicatorVisibleProperty =
+        AvaloniaProperty.RegisterDirect<TreeView, bool>(
+            nameof(IsDefaultEmptyIndicatorVisible),
+            o => o.IsDefaultEmptyIndicatorVisible,
+            (o, v) => o.IsDefaultEmptyIndicatorVisible = v);
     
     internal TimeSpan MotionDuration
     {
@@ -471,6 +477,13 @@ public partial class TreeView : AvaloniaTreeView,
     {
         get => _isEffectiveEmptyVisible;
         set => SetAndRaise(IsEffectiveEmptyVisibleProperty, ref _isEffectiveEmptyVisible, value);
+    }
+
+    private bool _isDefaultEmptyIndicatorVisible;
+    internal bool IsDefaultEmptyIndicatorVisible
+    {
+        get => _isDefaultEmptyIndicatorVisible;
+        set => SetAndRaise(IsDefaultEmptyIndicatorVisibleProperty, ref _isDefaultEmptyIndicatorVisible, value);
     }
     
     protected internal ITreeViewInteractionHandler InteractionHandler { get; }
@@ -830,7 +843,9 @@ public partial class TreeView : AvaloniaTreeView,
         if (change.Property == IsShowEmptyIndicatorProperty ||
             change.Property == ItemsSourceProperty ||
             change.Property == FilterResultCountProperty ||
-            change.Property == IsFilterModeProperty)
+            change.Property == IsFilterModeProperty ||
+            change.Property == EmptyIndicatorProperty ||
+            change.Property == EmptyIndicatorTemplateProperty)
         {
             ConfigureEmptyIndicator();
         }
@@ -986,7 +1001,8 @@ public partial class TreeView : AvaloniaTreeView,
                 isEmpty = Items.Count == 0;
             }
         }
-        IsEffectiveEmptyVisible = IsShowEmptyIndicator && isEmpty;
+        IsEffectiveEmptyVisible        = IsShowEmptyIndicator && isEmpty;
+        IsDefaultEmptyIndicatorVisible = IsEffectiveEmptyVisible && EmptyIndicator is null && EmptyIndicatorTemplate is null;
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)

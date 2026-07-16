@@ -45,10 +45,10 @@ public class TreeViewShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:TreeViewShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(12);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(12);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(12);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TreeViewViewModel\"").ShouldBe(12);
+        CountShowCaseItemElements(source).ShouldBe(13);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(13);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(13);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TreeViewViewModel\"").ShouldBe(13);
         source.ShouldContain("TreeViewShowCaseLangResource BasicTitle");
         source.ShouldContain("TreeViewShowCaseLangResource GenerateByTemplateTitle");
         source.ShouldContain("TreeViewShowCaseLangResource SelectionBindingTitle");
@@ -70,6 +70,8 @@ public class TreeViewShowCasePageTests
         source.ShouldContain("TreeViewShowCaseLangResource AsyncLoadDataTitle");
         source.ShouldContain("TreeViewShowCaseLangResource SearchableTitle");
         source.ShouldContain("TreeViewShowCaseLangResource ContextMenuTitle");
+        source.ShouldContain("TreeViewShowCaseLangResource EmptyIndicatorTitle");
+        CountOccurrences(source, "<atom:TreeView.EmptyIndicator>").ShouldBe(1);
         source.ShouldContain("IsCheckedChanged=\"HandleHoverModeChanged\"");
         source.ShouldContain("SearchButtonClick=\"HandleFilterItemsSourceTreeClicked\"");
         source.ShouldContain("SearchButtonClick=\"HandleFilterTreeClicked\"");
@@ -170,6 +172,9 @@ public class TreeViewShowCasePageTests
             source.ShouldContain("SelectionBindingSelectSecond");
             source.ShouldContain("SelectionBindingSelectBoth");
             source.ShouldContain("SelectionBindingClear");
+            source.ShouldContain("EmptyIndicatorTitle");
+            source.ShouldContain("EmptyIndicatorDescription");
+            source.ShouldContain("P2TextCustomEmptyIndicator");
             source.ShouldContain("P2TextSelectedItemBinding");
             source.ShouldContain("P2TextSelectedItemsBinding");
             source.ShouldContain("ApiPropertyItemsSource");

@@ -45,10 +45,10 @@ public class CascaderShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:CascaderShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(21);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(21);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(21);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:CascaderViewModel\"").ShouldBe(21);
+        CountShowCaseItemElements(source).ShouldBe(22);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(22);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(22);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:CascaderViewModel\"").ShouldBe(22);
         source.ShouldContain("CascaderShowCaseLangResource BasicTitle");
         source.ShouldContain("CascaderShowCaseLangResource MultipleTitle");
         source.ShouldContain("CascaderShowCaseLangResource PrefixAndSuffixTitle");
@@ -63,6 +63,8 @@ public class CascaderShowCasePageTests
         source.ShouldContain("SizeType=\"Custom\"");
         source.ShouldContain("Height=\"36\"");
         source.ShouldContain("CascaderShowCaseLangResource BasicCascaderViewTitle");
+        source.ShouldContain("CascaderShowCaseLangResource EmptyIndicatorTitle");
+        CountOccurrences(source, "<atom:CascaderView.EmptyIndicator>").ShouldBe(1);
         source.ShouldContain("OptionCheckedChanged=\"HandlePlacementOptionCheckedChanged\"");
         source.ShouldContain("SearchButtonClick=\"HandleFilterCascaderViewClicked\"");
         source.ShouldContain("SearchButtonClick=\"HandleFilterCascaderViewItemsSourceClicked\"");
@@ -157,6 +159,9 @@ public class CascaderShowCasePageTests
             source.ShouldContain("P2PlaceholderSizeTypeMiddle");
             source.ShouldContain("P2PlaceholderSizeTypeSmall");
             source.ShouldContain("P2PlaceholderSizeTypeCustom");
+            source.ShouldContain("EmptyIndicatorTitle");
+            source.ShouldContain("EmptyIndicatorDescription");
+            source.ShouldContain("P2TextCustomEmptyIndicator");
             source.ShouldContain("ApiPropertyOptionsSource");
             source.ShouldContain("ApiPropertyOptionTemplate");
             source.ShouldContain("ApiPropertyShowCheckedStrategy");

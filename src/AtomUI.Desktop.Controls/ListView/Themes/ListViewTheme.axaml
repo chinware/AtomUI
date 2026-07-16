@@ -49,6 +49,14 @@
                                 IsVisible="{TemplateBinding IsEffectiveEmptyVisible}"
                                 Content="{TemplateBinding EmptyIndicator}"
                                 ContentTemplate="{TemplateBinding EmptyIndicatorTemplate}" />
+                            <atom:Empty
+                                Name="DefaultEmptyIndicator"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Margin="{TemplateBinding EmptyIndicatorPadding}"
+                                IsVisible="{TemplateBinding IsDefaultEmptyIndicatorVisible}"
+                                SizeType="Small"
+                                PresetImage="Simple" />
                         </Panel>
                     </atom:Spin>
                 </DockPanel>
@@ -89,12 +97,6 @@
             <Setter Property="CornerRadius" Value="{atom:ListViewTokenSharedTokenResource BorderRadiusSM}" />
             <Setter Property="EmptyIndicatorPadding" Value="{atom:ListViewTokenSharedTokenResource Padding}" />
         </Style>
-
-        <Setter Property="EmptyIndicatorTemplate">
-            <DataTemplate>
-                <atom:Empty SizeType="Small" PresetImage="Simple" />
-            </DataTemplate>
-        </Setter>
 
         <Setter Property="ItemTemplate">
             <DataTemplate x:DataType="atom:IListItemData">

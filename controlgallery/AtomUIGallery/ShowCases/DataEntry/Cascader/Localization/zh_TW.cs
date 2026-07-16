@@ -96,6 +96,8 @@ internal partial class zh_TW
     public const string SizeDescription = "Cascader 支持大號、中號、小號，也支持通過 Custom 配合本地高度自定義。";
     public const string BasicCascaderViewTitle = "基礎 CascaderView";
     public const string BasicCascaderViewDescription = "最基礎的用法。";
+    public const string EmptyIndicatorTitle = "自定義空狀態";
+    public const string EmptyIndicatorDescription = "使用 EmptyIndicator 取代 CascaderView 的預設空狀態內容。";
     public const string GenerateByTemplateTitle = "使用模板生成";
     public const string GenerateByTemplateDescription = "可以使用 Template 機制生成樹節點。";
     public const string SearchableTitle = "可搜索";
@@ -105,6 +107,7 @@ internal partial class zh_TW
     public const string DefaultExpandedTitle = "默認展開";
     public const string DefaultExpandedDescription = "可以設置默認展開路徑。";
     public const string P2PlaceholderTextPleaseSelect = "請選擇";
+    public const string P2TextCustomEmptyIndicator = "暫無可顯示的選項";
     public const string P2PlaceholderSizeTypeLarge = "SizeType：Large";
     public const string P2PlaceholderSizeTypeMiddle = "SizeType：Middle";
     public const string P2PlaceholderSizeTypeSmall = "SizeType：Small";

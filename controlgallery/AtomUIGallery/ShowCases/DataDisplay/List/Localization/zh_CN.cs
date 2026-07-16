@@ -68,6 +68,10 @@ internal partial class zh_CN
     public const string ItemDisabledDescription = "禁用列表项。";
     public const string EmptyTitle = "空状态";
     public const string EmptyDescription = "无数据时显示空状态指示。";
+    public const string ListViewEmptyIndicatorTitle = "ListView 自定义空状态";
+    public const string ListViewEmptyIndicatorDescription = "使用 EmptyIndicator 替换 ListView 的默认空状态内容。";
+    public const string ListBoxEmptyIndicatorTitle = "ListBox 自定义空状态";
+    public const string ListBoxEmptyIndicatorDescription = "使用 EmptyIndicator 替换 ListBox 的默认空状态内容。";
     public const string FilterTitle = "筛选";
     public const string FilterDescription = "可以按条件筛选数据；这里筛选包含“色”的项。";
     public const string OrderedTitle = "排序";
@@ -81,6 +85,7 @@ internal partial class zh_CN
     public const string PaginationListTitle = "分页列表";
     public const string PaginationListDescription = "分页列表。";
     public const string P2PlaceholderTextSearch = "搜索";
+    public const string P2TextCustomEmptyIndicator = "暂无可显示的项目";
     public const string P2FilterValue = "色";
     public const string P2TextSelectionMode = "选择模式：";
     public const string P2ContentSingle = "单选";

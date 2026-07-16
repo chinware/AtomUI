@@ -78,6 +78,8 @@ internal partial class en_US
     public const string SearchableDescription = "Searchable Tree.";
     public const string ContextMenuTitle = "Context menu";
     public const string ContextMenuDescription = "Right-click any node to open a context menu. Toggle IsSelectOnRightClick to switch between following the right-clicked node (default) and keeping the existing selection untouched.";
+    public const string EmptyIndicatorTitle = "Custom empty indicator";
+    public const string EmptyIndicatorDescription = "Use EmptyIndicator to replace the default TreeView empty content.";
     public const string P2HeaderParentN1 = "parent 1";
     public const string P2HeaderParentN1N0 = "parent 1-0";
     public const string P2HeaderLeaf = "leaf";
@@ -124,6 +126,7 @@ internal partial class en_US
     public const string P2TextShowleaficon = "ShowLeafIcon:";
     public const string P2TextNodeHoverMode = "Node hover mode:";
     public const string P2TextSelectedItemBinding = "SelectedItem";
+    public const string P2TextCustomEmptyIndicator = "No tree nodes to display";
     public const string P2TextSelectedItemsBinding = "SelectedItems";
     public const string P2ContentDefault = "Default";
     public const string P2ContentBlock = "Block";
