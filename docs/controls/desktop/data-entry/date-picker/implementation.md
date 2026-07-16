@@ -144,9 +144,11 @@ DatePicker 的交互事件应从输入源收敛到控件级语义事件：
 
 输入宽度维护规则：
 
-- `DatePicker` 和 `RangeDatePicker` 的输入预留宽度以当前有效 `Format` 的最宽格式化日期时间为基线，必要时再取 placeholder 文本宽度兜底。
+- `DatePicker` 和 `RangeDatePicker` 的输入预留宽度以当前有效格式对应的最宽格式化日期时间为基线；未显式设置 `Format` 时，还需要与 Ant Design 默认原生 input 风格的输入基线取最大值。Ant Design 本地参考源码位于 `../ReferenceProjects/ant-design/components/date-picker/style/index.ts` 和 `../ReferenceProjects/ant-design/components/date-picker/demo/basic.tsx`：basic demo 不设置 `width`，样式只让内部 input `width: 100%`，默认宽度来自 input intrinsic width，而不是日期格式最小宽度。
+- `PlaceholderText` 和 `SecondaryPlaceholderText` 不参与 `PreferredInputWidth` / `PreferredWidth` 计算；placeholder 只能在已预留的输入内容区域内显示，超出时由文本呈现层使用 ellipsis 省略，不能反向撑大控件默认宽度。
 - `Text` 和 `SecondaryText` 只表达当前显示值或 hover preview，不作为 `PreferredInputWidth` / `PreferredWidth` 的计算来源。
 - `IsShowTime`、`Format`、`ClockIdentifier`、AM/PM 文本和字体变化会重新计算格式预留宽度；选中值、hover 值和范围端点切换不得改变预留宽度。
+- `Width` 显式设置或 `HorizontalAlignment=Stretch` 时，控件应交给外部布局系统决定实际宽度，不再强制内部预留宽度。
 - 范围选择的两端输入使用同一个格式预留宽度，`RangePickerIndicator` 和 popup placement 只跟随稳定输入框 bounds，不反向驱动输入框测量。
 - 范围输入模板的内部 `AddOnDecoratedBox` 和 content presenter 必须在控件内部 stretch；范围整体测量以 `base.MeasureOverride` 的完整宽度为基础，只替换两端输入框宽度为 `PreferredWidth`，不得重新手算 padding、spacing、icon 或 add-on 宽度。
 
@@ -193,7 +195,7 @@ PickerMode 颗粒度维护规则：
 - `CalendarItem.SetupHeaderForDisplayModeChanged()` 是 `CalendarMode` 可见布局的唯一源头：运行时切换 `PickerMode` 或 `DisplayMode` 时，必须同步维护 `PART_MonthViewLayout`、`PART_MonthView` 与 `PART_YearView` 的互斥可见性；`DualMonthCalendarItem` 只在此基础上补齐 `PART_SecondaryMonthView`、`PART_YearViewLayout`、`PART_SecondaryYearView` 和左右导航按钮，不能只依赖 `OnApplyTemplate` 初始化分支。
 - `CalendarItem.OnAttachedToVisualTree` 只能走 `RefreshLocalizedContent()` 的 mode 分发刷新，不能无条件调用 day cell 渲染；否则 `RangeDatePicker` 在 `Month` / `Quarter` / `Year` 颗粒度下会让未初始化或不参与当前 DisplayMode 的 secondary month state 进入月视图构建。
 - 提交值统一由 `DatePickerFormattingHelper.NormalizeDateTime` 归一化：周为 ISO 周起始日，月份为当月 1 日，季度为季度首月 1 日，年份为当年 1 月 1 日。
-- `DatePickerFormattingHelper` 同时负责默认格式、显示文本和预留宽度。输入框宽度按目标颗粒度的最宽文本预留，不能因为 hover 或选中值变化而改变宽度。
+- `DatePickerFormattingHelper` 同时负责默认格式、显示文本和预留宽度。显示文本按目标颗粒度格式化；默认宽度预留在非 Date 颗粒度下仍使用稳定输入基线，显式 `Format` 才按用户格式重新计算，不能因为用户传入的 placeholder、hover 或选中值变化而改变宽度。
 - `IsShowTime` 只在 `PickerMode=Date` 时形成有效时间选择；presenter 使用 `IsTimeSelectionVisible` 控制 TimeView 显示和时间拼接，其他颗粒度忽略时间面板。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。

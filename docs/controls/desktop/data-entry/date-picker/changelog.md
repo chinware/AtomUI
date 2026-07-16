@@ -2,6 +2,17 @@
 
 本文档记录 DatePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-16
+
+- Changed
+  - Make DatePicker and RangeDatePicker preferred input width ignore placeholder text and reserve from a stable formatted value baseline.
+  - Keep default DatePicker and RangeDatePicker width at an Ant Design style input baseline for Date, Week, Month, Quarter and Year modes when `Format` is not set.
+  - Render long TextBox placeholder text with character ellipsis inside the reserved input area.
+- Docs
+  - Clarify that DatePicker and RangeDatePicker default input width is reserved from a formatted value baseline, not from placeholder text.
+  - Document that non-Date picker modes keep a stable Ant Design style input baseline unless an explicit `Format` is provided.
+  - Document that long placeholder text is ellipsized inside the reserved input area and must not resize the control.
+
 ## 2026-07-05
 
 - API
