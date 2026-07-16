@@ -59,7 +59,7 @@
                                       IsAllowClear="False"
                                       IsEnableRevealButton="False"
                                       DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                      SizeType="{TemplateBinding SizeType}"
+                                      SizeType="Custom"
                                       IsReadOnly="{TemplateBinding IsReadOnly}"
                                       Text="{TemplateBinding Text}"
                                       PlaceholderText="{TemplateBinding PlaceholderText}" />
@@ -84,7 +84,7 @@
                             IsAllowClear="False"
                             IsEnableRevealButton="False"
                             DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                            SizeType="{TemplateBinding SizeType}"
+                            SizeType="Custom"
                             IsReadOnly="{TemplateBinding IsReadOnly}"
                             Text="{TemplateBinding SecondaryText}"
                             PlaceholderText="{TemplateBinding SecondaryPlaceholderText}" />
@@ -120,6 +120,7 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Once" />
         <Style Selector="^ /template/ atom|TextBox">
+            <Setter Property="Padding" Value="0" />
             <Setter Property="Foreground"
                     Value="{atom:SharedTokenResource ColorText}" />
         </Style>

@@ -53,10 +53,15 @@
                                           BorderThickness="0"
                                           TextWrapping="NoWrap"
                                           AcceptsReturn="False"
+                                          FontSize="{TemplateBinding FontSize}"
+                                          FontFamily="{TemplateBinding FontFamily}"
+                                          FontStyle="{TemplateBinding FontStyle}"
+                                          FontWeight="{TemplateBinding FontWeight}"
+                                          IsCustomFontSize="True"
                                           IsAllowClear="False"
                                           IsEnableRevealButton="False"
                                           DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                          SizeType="{TemplateBinding SizeType}"
+                                          SizeType="Custom"
                                           IsReadOnly="{TemplateBinding IsReadOnly}"
                                           Text="{TemplateBinding Text}"
                                           PlaceholderText="{TemplateBinding PlaceholderText}" />
@@ -73,10 +78,15 @@
                                 BorderThickness="0"
                                 TextWrapping="NoWrap"
                                 AcceptsReturn="False"
+                                FontSize="{TemplateBinding FontSize}"
+                                FontFamily="{TemplateBinding FontFamily}"
+                                FontStyle="{TemplateBinding FontStyle}"
+                                FontWeight="{TemplateBinding FontWeight}"
+                                IsCustomFontSize="True"
                                 IsAllowClear="False"
                                 IsEnableRevealButton="False"
                                 DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                SizeType="{TemplateBinding SizeType}"
+                                SizeType="Custom"
                                 IsReadOnly="{TemplateBinding IsReadOnly}"
                                 Text="{TemplateBinding SecondaryText}"
                                 PlaceholderText="{TemplateBinding SecondaryPlaceholderText}" />
@@ -110,5 +120,8 @@
                 </Panel>
             </ControlTemplate>
         </Setter>
+        <Style Selector="^ /template/ atom|TextBox">
+            <Setter Property="Padding" Value="0" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

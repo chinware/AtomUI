@@ -320,7 +320,6 @@ public class DatePicker : InfoPickerInput
             FontFamilyProperty,
             FontStyleProperty,
             FontWeightProperty,
-            PlaceholderTextProperty,
             SizeTypeProperty,
             MinWidthProperty,
             WidthProperty,
@@ -338,7 +337,6 @@ public class DatePicker : InfoPickerInput
         {
             var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
             PreferredInputWidth = DatePickerFormattingHelper.CalculateBoundedPreferredInputWidth(
-                PlaceholderText,
                 Format,
                 PickerMode,
                 IsShowTime,

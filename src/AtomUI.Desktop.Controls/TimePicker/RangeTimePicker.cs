@@ -1,7 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Media;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -157,6 +156,9 @@ public class RangeTimePicker : RangeInfoPickerInput
     }
 
     #endregion
+
+    private const string AntDesignDefaultRangeStartInputWidthReferenceText = "Start time";
+    private const string AntDesignDefaultRangeEndInputWidthReferenceText   = "End time";
 
     private TimePickerPresenter? _pickerPresenter;
     
@@ -388,8 +390,6 @@ public class RangeTimePicker : RangeInfoPickerInput
                property == FontFamilyProperty ||
                property == FontStyleProperty ||
                property == FontWeightProperty ||
-               property == PlaceholderTextProperty ||
-               property == SecondaryPlaceholderTextProperty ||
                property == SizeTypeProperty ||
                property == MinWidthProperty ||
                property == WidthProperty ||
@@ -429,9 +429,7 @@ public class RangeTimePicker : RangeInfoPickerInput
         }
         else
         {
-            var preferredInputWidth = Math.Max(
-                CalculateContentPreferredWidth(PlaceholderText),
-                CalculateContentPreferredWidth(SecondaryPlaceholderText));
+            var preferredInputWidth = CalculateContentPreferredWidth();
 
             if (!double.IsNaN(MinWidth))
             {
@@ -447,20 +445,21 @@ public class RangeTimePicker : RangeInfoPickerInput
         }
     }
 
-    private double CalculateContentPreferredWidth(string? placeholderText)
+    private double CalculateContentPreferredWidth()
     {
-        var preferredWidth = DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
+        var formatWidth = DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
             ClockIdentifier == ClockIdentifierType.HourClock12,
             AmText, PmText,
             FontSize, FontFamily, FontStyle, FontWeight).Width;
+        var defaultInputBaselineWidth = DatePickerFormattingHelper.CalculateAntDesignInputBaselineWidth(
+            FontSize,
+            FontFamily,
+            FontStyle,
+            FontWeight,
+            AntDesignDefaultRangeStartInputWidthReferenceText,
+            AntDesignDefaultRangeEndInputWidthReferenceText);
 
-        if (!string.IsNullOrEmpty(placeholderText))
-        {
-            var placeholderWidth = TextUtils.CalculateTextSize(placeholderText, FontSize, FontFamily, FontStyle, FontWeight).Width;
-            preferredWidth = Math.Max(preferredWidth, placeholderWidth);
-        }
-
-        return preferredWidth;
+        return Math.Max(formatWidth, defaultInputBaselineWidth);
     }
     
     protected void ResetRangeStartTimeValue()

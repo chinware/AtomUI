@@ -10,6 +10,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal static class DatePickerFormattingHelper
 {
+    private const string AntDesignDefaultDatePickerInputWidthReferenceText = "Select quarter";
+
     internal static string GetEffectiveFormat(string? format, bool isShowTime, ClockIdentifierType clockIdentifier)
     {
         return GetEffectiveFormat(format, DatePickerMode.Date, isShowTime, clockIdentifier);
@@ -126,20 +128,16 @@ internal static class DatePickerFormattingHelper
         AvaloniaProperty fontFamilyProperty,
         AvaloniaProperty fontStyleProperty,
         AvaloniaProperty fontWeightProperty,
-        AvaloniaProperty placeholderTextProperty,
         AvaloniaProperty sizeTypeProperty,
         AvaloniaProperty minWidthProperty,
         AvaloniaProperty widthProperty,
         AvaloniaProperty maxWidthProperty,
-        AvaloniaProperty horizontalAlignmentProperty,
-        AvaloniaProperty? secondaryPlaceholderTextProperty = null)
+        AvaloniaProperty horizontalAlignmentProperty)
     {
         return property == fontSizeProperty ||
                property == fontFamilyProperty ||
                property == fontStyleProperty ||
                property == fontWeightProperty ||
-               property == placeholderTextProperty ||
-               property == secondaryPlaceholderTextProperty ||
                property == sizeTypeProperty ||
                property == minWidthProperty ||
                property == widthProperty ||
@@ -148,7 +146,6 @@ internal static class DatePickerFormattingHelper
     }
 
     internal static double CalculatePreferredInputWidth(
-        string? placeholderText,
         string format,
         double fontSize,
         FontFamily fontFamily,
@@ -156,20 +153,11 @@ internal static class DatePickerFormattingHelper
         FontWeight fontWeight,
         DateTimeFormatInfo? formatInfo)
     {
-        var preferredWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(
+        return DateTimeUtils.CalculateWidestFormattedDateTimeSize(
             format, fontSize, fontFamily, fontStyle, fontWeight, formatInfo).Width;
-
-        if (!string.IsNullOrEmpty(placeholderText))
-        {
-            var placeholderWidth = TextUtils.CalculateTextSize(placeholderText, fontSize, fontFamily, fontStyle, fontWeight).Width;
-            preferredWidth = Math.Max(preferredWidth, placeholderWidth);
-        }
-
-        return preferredWidth;
     }
 
     internal static double CalculatePreferredInputWidth(
-        string? placeholderText,
         string? format,
         DatePickerMode pickerMode,
         bool isShowTime,
@@ -180,41 +168,63 @@ internal static class DatePickerFormattingHelper
         FontWeight fontWeight,
         DateTimeFormatInfo? formatInfo)
     {
-        double preferredWidth;
-        if (format is null && pickerMode != DatePickerMode.Date)
+        var widthReserveFormat = format is null && pickerMode != DatePickerMode.Date
+            ? GetEffectiveFormat(null, DatePickerMode.Date, false, clockIdentifier)
+            : GetEffectiveFormat(format, pickerMode, isShowTime, clockIdentifier);
+        var preferredWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(
+            widthReserveFormat,
+            fontSize,
+            fontFamily,
+            fontStyle,
+            fontWeight,
+            formatInfo).Width;
+        if (format is null)
         {
-            var widestText = pickerMode switch
-            {
-                DatePickerMode.Week    => "9999-99周",
-                DatePickerMode.Month   => "9999-99",
-                DatePickerMode.Quarter => "9999-Q4",
-                DatePickerMode.Year    => "9999",
-                _                      => "9999-99-99"
-            };
-            preferredWidth = TextUtils.CalculateTextSize(widestText, fontSize, fontFamily, fontStyle, fontWeight).Width;
-        }
-        else
-        {
-            preferredWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(
-                GetEffectiveFormat(format, pickerMode, isShowTime, clockIdentifier),
-                fontSize,
-                fontFamily,
-                fontStyle,
-                fontWeight,
-                formatInfo).Width;
+            preferredWidth = Math.Max(
+                preferredWidth,
+                CalculateAntDesignDefaultDatePickerInputBaselineWidth(fontSize, fontFamily, fontStyle, fontWeight));
         }
 
-        if (!string.IsNullOrEmpty(placeholderText))
+        return preferredWidth;
+    }
+
+    private static double CalculateAntDesignDefaultDatePickerInputBaselineWidth(
+        double fontSize,
+        FontFamily fontFamily,
+        FontStyle fontStyle,
+        FontWeight fontWeight)
+    {
+        return CalculateAntDesignInputBaselineWidth(
+            fontSize,
+            fontFamily,
+            fontStyle,
+            fontWeight,
+            AntDesignDefaultDatePickerInputWidthReferenceText);
+    }
+
+    internal static double CalculateAntDesignInputBaselineWidth(
+        double fontSize,
+        FontFamily fontFamily,
+        FontStyle fontStyle,
+        FontWeight fontWeight,
+        params string[] referenceTexts)
+    {
+        var preferredWidth = 0d;
+        foreach (var referenceText in referenceTexts)
         {
-            var placeholderWidth = TextUtils.CalculateTextSize(placeholderText, fontSize, fontFamily, fontStyle, fontWeight).Width;
-            preferredWidth = Math.Max(preferredWidth, placeholderWidth);
+            preferredWidth = Math.Max(preferredWidth,
+                TextUtils.CalculateTextSize(
+                    referenceText,
+                    fontSize,
+                    fontFamily,
+                    fontStyle,
+                    fontWeight).Width);
         }
 
         return preferredWidth;
     }
 
     internal static double CalculateBoundedPreferredInputWidth(
-        string? placeholderText,
         string? format,
         DatePickerMode pickerMode,
         bool isShowTime,
@@ -228,7 +238,6 @@ internal static class DatePickerFormattingHelper
         DateTimeFormatInfo? formatInfo)
     {
         var preferredWidth = CalculatePreferredInputWidth(
-            placeholderText,
             format,
             pickerMode,
             isShowTime,
@@ -243,8 +252,6 @@ internal static class DatePickerFormattingHelper
     }
 
     internal static double CalculateBoundedRangePreferredInputWidth(
-        string? placeholderText,
-        string? secondaryPlaceholderText,
         string? format,
         DatePickerMode pickerMode,
         bool isShowTime,
@@ -257,29 +264,16 @@ internal static class DatePickerFormattingHelper
         double maxWidth,
         DateTimeFormatInfo? formatInfo)
     {
-        var preferredWidth = Math.Max(
-            CalculatePreferredInputWidth(
-                placeholderText,
-                format,
-                pickerMode,
-                isShowTime,
-                clockIdentifier,
-                fontSize,
-                fontFamily,
-                fontStyle,
-                fontWeight,
-                formatInfo),
-            CalculatePreferredInputWidth(
-                secondaryPlaceholderText,
-                format,
-                pickerMode,
-                isShowTime,
-                clockIdentifier,
-                fontSize,
-                fontFamily,
-                fontStyle,
-                fontWeight,
-                formatInfo));
+        var preferredWidth = CalculatePreferredInputWidth(
+            format,
+            pickerMode,
+            isShowTime,
+            clockIdentifier,
+            fontSize,
+            fontFamily,
+            fontStyle,
+            fontWeight,
+            formatInfo);
 
         return ApplyWidthBounds(preferredWidth, minWidth, maxWidth);
     }

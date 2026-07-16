@@ -93,6 +93,7 @@ API 和主题契约包括但不限于：
 - 不要为了减少层级破坏 `PART_`、`/template/` selector、伪类、Design Token、资源绑定、ControlTheme key、template part 名称或样式入口。
 - 不要合并承担不同职责的容器，例如裁剪层、动画层、命中测试层、边框背景层、popup shell 或 template contract 边界。
 - 简化布局时优先替换无必要的 wrapper 和过度复杂的布局面板；删除或合并前必须确认圆角、裁剪、背景、命中测试、动画、焦点和 selector 命中行为不变。
+- 在 `AddOnDecoratedBox`、`ButtonSpinner`、InfoPicker 输入壳体等外壳控件中嵌入 `atom:TextBox` 时，外壳负责内容 padding；内部 `TextBox` 应使用 `SizeType=Custom` 并显式保持 `Padding=0`，需要响应外层尺寸时绑定 `FontSize` / `FontFamily` / `FontStyle` / `FontWeight` 并设置 `IsCustomFontSize=True`。不要让外壳 content padding 与 `TextBoxToken` padding 叠加。
 - AXAML 层级优化后应通过对应控件测试或 Gallery 走查验证外观、交互和主题切换不变。如果声明性能收益，需要提供前后 VisualTree 节点数、层级深度或测量数据。
 
 ## 输入控件验证集成

@@ -2,6 +2,15 @@
 
 本文档记录 TimePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-16
+
+- Changed
+  - Make TimePicker and RangeTimePicker preferred input width ignore user placeholder text and reserve the larger value between the widest formatted value text and the Ant Design TimePicker locale baseline (`Select time`, or `Start time` / `End time` for ranges).
+  - Render long TextBox placeholder text with character ellipsis inside the reserved input area.
+- Docs
+  - Clarify that TimePicker and RangeTimePicker default input width follows Ant Design's `picker === 'time'` locale placeholder branch, not DatePicker's `Select quarter` baseline.
+  - Document that long placeholder text is ellipsized inside the reserved input area and must not resize the control.
+
 ## 2026-07-05
 
 - API

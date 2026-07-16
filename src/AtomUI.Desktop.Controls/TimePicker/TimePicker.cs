@@ -1,7 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Media;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -128,6 +127,8 @@ public class TimePicker : InfoPickerInput
     }
     
     #endregion
+
+    private const string AntDesignDefaultInputWidthReferenceText = "Select time";
 
     private TimePickerPresenter? _pickerPresenter;
 
@@ -286,7 +287,6 @@ public class TimePicker : InfoPickerInput
                property == FontFamilyProperty ||
                property == FontStyleProperty ||
                property == FontWeightProperty ||
-               property == PlaceholderTextProperty ||
                property == SizeTypeProperty ||
                property == MinWidthProperty ||
                property == WidthProperty ||
@@ -322,7 +322,7 @@ public class TimePicker : InfoPickerInput
         }
         else
         {
-            var preferredInputWidth = CalculateContentPreferredWidth(PlaceholderText);
+            var preferredInputWidth = CalculateContentPreferredWidth();
 
             if (!double.IsNaN(MinWidth))
             {
@@ -337,20 +337,16 @@ public class TimePicker : InfoPickerInput
         }
     }
 
-    private double CalculateContentPreferredWidth(string? placeholderText)
+    private double CalculateContentPreferredWidth()
     {
-        var preferredWidth = DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
+        var formatWidth = DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
             ClockIdentifier == ClockIdentifierType.HourClock12,
             AmText, PmText,
             FontSize, FontFamily, FontStyle, FontWeight).Width;
+        var defaultInputBaselineWidth = DatePickerFormattingHelper.CalculateAntDesignInputBaselineWidth(
+            FontSize, FontFamily, FontStyle, FontWeight, AntDesignDefaultInputWidthReferenceText);
 
-        if (!string.IsNullOrEmpty(placeholderText))
-        {
-            var placeholderWidth = TextUtils.CalculateTextSize(placeholderText, FontSize, FontFamily, FontStyle, FontWeight).Width;
-            preferredWidth = Math.Max(preferredWidth, placeholderWidth);
-        }
-
-        return preferredWidth;
+        return Math.Max(formatWidth, defaultInputBaselineWidth);
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

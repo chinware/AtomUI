@@ -462,13 +462,11 @@ public class RangeDatePicker : RangeInfoPickerInput
             FontFamilyProperty,
             FontStyleProperty,
             FontWeightProperty,
-            PlaceholderTextProperty,
             SizeTypeProperty,
             MinWidthProperty,
             WidthProperty,
             MaxWidthProperty,
-            HorizontalAlignmentProperty,
-            SecondaryPlaceholderTextProperty);
+            HorizontalAlignmentProperty);
     }
     
     private void CalculatePreferredWidth()
@@ -482,8 +480,6 @@ public class RangeDatePicker : RangeInfoPickerInput
         {
             var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
             var preferredInputWidth = DatePickerFormattingHelper.CalculateBoundedRangePreferredInputWidth(
-                PlaceholderText,
-                SecondaryPlaceholderText,
                 Format,
                 PickerMode,
                 IsShowTime,

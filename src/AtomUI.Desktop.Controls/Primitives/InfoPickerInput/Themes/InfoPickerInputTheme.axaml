@@ -52,7 +52,7 @@
                                   Text="{TemplateBinding Text}"
                                   PlaceholderText="{TemplateBinding PlaceholderText}"
                                   DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                  SizeType="{TemplateBinding SizeType}"
+                                  SizeType="Custom"
                                   IsReadOnly="{TemplateBinding IsReadOnly}" />
                 </atom:AddOnDecoratedBox>
 
@@ -86,6 +86,7 @@
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
         
         <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox">
+            <Setter Property="Padding" Value="0" />
             <Setter Property="Foreground"
                     Value="{atom:SharedTokenResource ColorText}" />
         </Style>
