@@ -131,6 +131,54 @@ public class TreeSelectBehaviorTests
         });
     }
 
+    [Fact]
+    public void Single_Filter_Input_Uses_Outer_Content_Padding_Only()
+    {
+        var selectedNode = new TreeItemNode
+        {
+            Header = "My leaf",
+            Value  = "my-leaf"
+        };
+        var treeSelect = new Desktop.Controls.TreeSelect
+        {
+            Width           = 240,
+            IsFilterEnabled = true,
+            ItemsSource     = [selectedNode]
+        };
+
+        ShowInWindow(treeSelect, () =>
+        {
+            var searchTextBox = GetVisualDescendant<SelectFilterTextBox>(treeSelect, "PART_SingleFilterInput");
+
+            AssertEmbeddedSelectFilterTextBox(searchTextBox);
+        });
+    }
+
+    [Fact]
+    public void Multiple_Search_Input_Uses_Outer_Content_Padding_Only()
+    {
+        var selectedNode = new TreeItemNode
+        {
+            Header = "My leaf",
+            Value  = "my-leaf"
+        };
+        var treeSelect = new Desktop.Controls.TreeSelect
+        {
+            Width           = 240,
+            IsMultiple      = true,
+            IsFilterEnabled = true,
+            SelectedItems   = [selectedNode],
+            ItemsSource     = [selectedNode]
+        };
+
+        ShowInWindow(treeSelect, () =>
+        {
+            var searchTextBox = GetTagsSearchTextBox(treeSelect);
+
+            AssertEmbeddedSelectFilterTextBox(searchTextBox);
+        });
+    }
+
     private static T GetVisualDescendant<T>(Control control, string name)
         where T : Control
     {
@@ -139,6 +187,23 @@ public class TreeSelectBehaviorTests
                                 .SingleOrDefault(x => x.Name == name);
         descendant.ShouldNotBeNull();
         return descendant;
+    }
+
+    private static SelectFilterTextBox GetTagsSearchTextBox(Control control)
+    {
+        var textBox = control.GetVisualDescendants()
+                             .OfType<SelectFilterTextBox>()
+                             .SingleOrDefault(item => item.Name != "PART_SingleFilterInput");
+        textBox.ShouldNotBeNull();
+        return textBox;
+    }
+
+    private static void AssertEmbeddedSelectFilterTextBox(SelectFilterTextBox searchTextBox)
+    {
+        searchTextBox.SizeType.ShouldBe(CustomizableSizeType.Custom);
+        searchTextBox.Padding.ShouldBe(new Thickness(0));
+        searchTextBox.BorderThickness.ShouldBe(new Thickness(0));
+        searchTextBox.IsCustomFontSize.ShouldBeTrue();
     }
 
     private static void ShowInWindow(Control content, Action assertion)

@@ -151,6 +151,32 @@ public class NumericUpDownHandleTests
     }
 
     [Fact]
+    public void Spinner_Mode_Uses_Outer_Content_Padding_Only()
+    {
+        var numericUpDown = new AtomUINumericUpDown
+        {
+            Width           = 160,
+            Value           = 3,
+            Mode            = NumericUpDownMode.Spinner,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(numericUpDown, () =>
+        {
+            var textBox = numericUpDown.GetVisualDescendants()
+                                       .OfType<TextBox>()
+                                       .Single(item => item.Name == "PART_TextBox");
+            var contentFrame = numericUpDown.GetVisualDescendants()
+                                            .OfType<global::AtomUI.Desktop.Controls.AddOnDecoratedBoxContentFrame>()
+                                            .Single(item => item.Name == "PART_ContentFrame");
+
+            contentFrame.Padding.ShouldBe(new Thickness(0));
+            textBox.SizeType.ShouldBe(CustomizableSizeType.Custom);
+            textBox.Padding.ShouldBe(new Thickness(0));
+        });
+    }
+
+    [Fact]
     public void Input_Mode_TextBox_Uses_Custom_SizeType_Instead_Of_LocalValue_Binding_Or_Custom_Padding_State()
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml");

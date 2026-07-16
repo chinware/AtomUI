@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
@@ -177,6 +178,54 @@ public class CascaderSelectionBindingTests
         });
     }
 
+    [Fact]
+    public void Single_Filter_Input_Uses_Outer_Content_Padding_Only()
+    {
+        var westLake = new CascaderOption
+        {
+            Header = "West Lake",
+            Value  = "west-lake"
+        };
+        var cascader = new Desktop.Controls.Cascader
+        {
+            Width           = 240,
+            IsFilterEnabled = true,
+            OptionsSource   = new[] { westLake }
+        };
+
+        ShowInWindow(cascader, () =>
+        {
+            var searchTextBox = GetVisualDescendant<SelectFilterTextBox>(cascader, "PART_SingleFilterInput");
+
+            AssertEmbeddedSelectFilterTextBox(searchTextBox);
+        });
+    }
+
+    [Fact]
+    public void Multiple_Search_Input_Uses_Outer_Content_Padding_Only()
+    {
+        var westLake = new CascaderOption
+        {
+            Header = "West Lake",
+            Value  = "west-lake"
+        };
+        var cascader = new Desktop.Controls.Cascader
+        {
+            Width           = 240,
+            IsMultiple      = true,
+            IsFilterEnabled = true,
+            SelectedOptions = [westLake],
+            OptionsSource   = new[] { westLake }
+        };
+
+        ShowInWindow(cascader, () =>
+        {
+            var searchTextBox = GetTagsSearchTextBox(cascader);
+
+            AssertEmbeddedSelectFilterTextBox(searchTextBox);
+        });
+    }
+
     private static void ShowInWindow(Control content, Action assertion)
     {
         var window = CreateWindow(content);
@@ -226,6 +275,33 @@ public class CascaderSelectionBindingTests
         var cascaderView = field.GetValue(cascader) as CascaderView;
         cascaderView.ShouldNotBeNull();
         return cascaderView!;
+    }
+
+    private static T GetVisualDescendant<T>(Control control, string name)
+        where T : Control
+    {
+        var descendant = control.GetVisualDescendants()
+                                .OfType<T>()
+                                .SingleOrDefault(x => x.Name == name);
+        descendant.ShouldNotBeNull();
+        return descendant;
+    }
+
+    private static SelectFilterTextBox GetTagsSearchTextBox(Control control)
+    {
+        var textBox = control.GetVisualDescendants()
+                             .OfType<SelectFilterTextBox>()
+                             .SingleOrDefault(item => item.Name != "PART_SingleFilterInput");
+        textBox.ShouldNotBeNull();
+        return textBox;
+    }
+
+    private static void AssertEmbeddedSelectFilterTextBox(SelectFilterTextBox searchTextBox)
+    {
+        searchTextBox.SizeType.ShouldBe(CustomizableSizeType.Custom);
+        searchTextBox.Padding.ShouldBe(new Thickness(0));
+        searchTextBox.BorderThickness.ShouldBe(new Thickness(0));
+        searchTextBox.IsCustomFontSize.ShouldBeTrue();
     }
 
     private static SelectTag? FindSelectTag(Visual root, string text)

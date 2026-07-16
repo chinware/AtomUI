@@ -30,6 +30,7 @@
     <gallery:ShowCaseItem
         Title="{gallery:BreadcrumbShowCaseLangResource BasicUsageTitle}"
         Description="{gallery:BreadcrumbShowCaseLangResource BasicUsageDescription}"
+        Span="Full"
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:BreadcrumbViewModel">
@@ -48,6 +49,7 @@
     <gallery:ShowCaseItem
         Title="{gallery:BreadcrumbShowCaseLangResource WithIconTitle}"
         Description="{gallery:BreadcrumbShowCaseLangResource WithIconDescription}"
+        Span="Full"
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:BreadcrumbViewModel">
@@ -65,6 +67,7 @@
     <gallery:ShowCaseItem
         Title="{gallery:BreadcrumbShowCaseLangResource WithParamsTitle}"
         Description="{gallery:BreadcrumbShowCaseLangResource WithParamsDescription}"
+        Span="Full"
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:BreadcrumbViewModel">
@@ -81,6 +84,7 @@
     <gallery:ShowCaseItem
         Title="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorTitle}"
         Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorDescription}"
+        Span="Full"
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:BreadcrumbViewModel">
@@ -99,6 +103,7 @@
     <gallery:ShowCaseItem
         Title="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyTitle}"
         Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyDescription}"
+        Span="Full"
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:BreadcrumbViewModel">
@@ -117,6 +122,7 @@
     <gallery:ShowCaseItem
         Title="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateTitle}"
         Description="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateDescription}"
+        Span="Full"
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:BreadcrumbViewModel">

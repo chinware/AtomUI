@@ -46,6 +46,8 @@ public class BreadcrumbShowCasePageTests
         source.ShouldContain("BreadcrumbShowCaseLangResource ConfiguringSeparatorTitle");
         source.ShouldContain("BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyTitle");
         source.ShouldContain("BreadcrumbShowCaseLangResource GenerateByTemplateTitle");
+        CountOccurrences(source, "<gallery:ShowCaseItem\n").ShouldBe(6);
+        CountOccurrences(source, "Span=\"Full\"").ShouldBe(6);
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");

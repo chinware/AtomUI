@@ -217,14 +217,21 @@ internal class SelectTagAwareTextBox : TemplatedControl
         _maxCountAwarePanel = e.NameScope.Find<SelectMaxTagAwarePanel>("PART_MaxCountAwarePanel");
         _searchTextBox = new SelectFilterTextBox
         {
-            HorizontalAlignment = HorizontalAlignment.Stretch
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            SizeType            = CustomizableSizeType.Custom,
+            Padding             = new Thickness(0),
+            BorderThickness     = new Thickness(0),
+            IsCustomFontSize    = true
         };
         _collapsedInfoTag = new SelectRemainInfoTag()
         {
             IsClosable = false
         };
         BindTagMetrics(_collapsedInfoTag);
-        _searchTextBox[!SizeTypeProperty] = this[!SizeTypeProperty];
+        _searchTextBox[!FontSizeProperty]   = this[!FontSizeProperty];
+        _searchTextBox[!FontFamilyProperty] = this[!FontFamilyProperty];
+        _searchTextBox[!FontStyleProperty]  = this[!FontStyleProperty];
+        _searchTextBox[!FontWeightProperty] = this[!FontWeightProperty];
         if (IsFilterEnabled)
         {
             if (!IsResponsiveTagMode)
