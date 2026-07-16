@@ -141,7 +141,7 @@ public class RangePickerPreferredWidthTests
 
         ShowInWindow(picker, () =>
         {
-            var input         = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var input         = FindEmbeddedTextBoxPart(picker, "PART_InfoInputBox");
             var expectedWidth = MeasureDatePickerPreferredInputBaselineWidth(picker);
 
             input.FontSize.ShouldBe(picker.FontSize);
@@ -160,7 +160,7 @@ public class RangePickerPreferredWidthTests
 
         ShowInWindow(picker, () =>
         {
-            var input     = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var input     = FindEmbeddedTextBoxPart(picker, "PART_InfoInputBox");
             var presenter = input.GetVisualDescendants()
                                  .OfType<TextPresenter>()
                                  .Single(part => part.Name == "PART_TextPresenter");
@@ -189,7 +189,7 @@ public class RangePickerPreferredWidthTests
 
         ShowInWindow(picker, () =>
         {
-            var input = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var input = FindEmbeddedTextBoxPart(picker, "PART_InfoInputBox");
             var placeholder = input.GetVisualDescendants()
                                    .OfType<TextBlock>()
                                    .Single(part => part.Name == "Placeholder");
@@ -235,7 +235,7 @@ public class RangePickerPreferredWidthTests
 
         ShowInWindow(picker, () =>
         {
-            var input = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var input = FindEmbeddedTextBoxPart(picker, "PART_InfoInputBox");
 
             input.Text.ShouldBe(expectedText);
         });
@@ -524,8 +524,8 @@ public class RangePickerPreferredWidthTests
 
         ShowInWindow(picker, () =>
         {
-            var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
-            var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
+            var startInput = FindEmbeddedTextBoxPart(picker, "PART_InfoInputBox");
+            var endInput   = FindEmbeddedTextBoxPart(picker, "PART_SecondaryInfoInputBox");
 
             startInput.Text.ShouldBe("2026-Q1");
             endInput.Text.ShouldBe("2026-Q4");
@@ -680,8 +680,8 @@ public class RangePickerPreferredWidthTests
 
         ShowInWindow(picker, () =>
         {
-            var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
-            var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
+            var startInput = FindEmbeddedTextBoxPart(picker, "PART_InfoInputBox");
+            var endInput   = FindEmbeddedTextBoxPart(picker, "PART_SecondaryInfoInputBox");
 
             picker.RangeStartSelectedTime = new TimeSpan(9, 0, 0);
             picker.RangeEndSelectedTime   = new TimeSpan(18, 0, 0);
@@ -724,8 +724,8 @@ public class RangePickerPreferredWidthTests
 
         ShowInWindow(picker, () =>
         {
-            var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
-            var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
+            var startInput = FindEmbeddedTextBoxPart(picker, "PART_InfoInputBox");
+            var endInput   = FindEmbeddedTextBoxPart(picker, "PART_SecondaryInfoInputBox");
 
             startInput.Text.ShouldBe("09:00:00 AM");
             endInput.Text.ShouldBe("06:00:00 PM");
@@ -765,8 +765,8 @@ public class RangePickerPreferredWidthTests
 
         ShowInWindow(picker, () =>
         {
-            var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
-            var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
+            var startInput = FindEmbeddedTextBoxPart(picker, "PART_InfoInputBox");
+            var endInput   = FindEmbeddedTextBoxPart(picker, "PART_SecondaryInfoInputBox");
 
             startInput.Text.ShouldBe("09:00:00 AM");
             endInput.Text.ShouldBe("06:00:00 PM");
@@ -800,8 +800,8 @@ public class RangePickerPreferredWidthTests
 
         ShowInWindow(picker, () =>
         {
-            var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
-            var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
+            var startInput = FindEmbeddedTextBoxPart(picker, "PART_InfoInputBox");
+            var endInput   = FindEmbeddedTextBoxPart(picker, "PART_SecondaryInfoInputBox");
 
             startInput.Text.ShouldBe("09:00:00 AM");
             endInput.Text.ShouldBeNullOrEmpty();
@@ -859,9 +859,17 @@ public class RangePickerPreferredWidthTests
 
         foreach (var partName in textBoxPartNames)
         {
-            var input = FindPart(control, partName).ShouldBeOfType<TextBox>();
+            var input = FindEmbeddedTextBoxPart(control, partName);
             input.Padding.ShouldBe(new Thickness(0));
         }
+    }
+
+    private static TextBox FindEmbeddedTextBoxPart(Control control, string partName)
+    {
+        var input = FindPart(control, partName);
+        input.ShouldBeAssignableTo<TextBox>();
+        input.ShouldBeAssignableTo<EmbeddedTextBox>();
+        return (TextBox)input;
     }
 
     private static double MeasureTextWidth(Control control, string text)

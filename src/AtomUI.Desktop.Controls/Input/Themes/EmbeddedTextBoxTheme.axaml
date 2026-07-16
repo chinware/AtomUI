@@ -1,0 +1,35 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+              x:Class="AtomUI.Desktop.Controls.Themes.EmbeddedTextBoxTheme"
+              x:ClassModifier="internal"
+              TargetType="atom:EmbeddedTextBox">
+    <ControlTheme.BasedOn>
+        <themes:TextBoxTheme TargetType="{x:Type atom:EmbeddedTextBox}" />
+    </ControlTheme.BasedOn>
+
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="SizeType" Value="Custom" />
+    <Setter Property="IsCustomFontSize" Value="True" />
+    <Setter Property="IsAllowClear" Value="False" />
+    <Setter Property="IsEnableRevealButton" Value="False" />
+
+    <Style Selector="^:pointerover /template/ atom|PixelAlignedBorder#InnerBoxDecorator">
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+
+    <Style Selector="^:focus /template/ atom|PixelAlignedBorder#InnerBoxDecorator">
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
+    </Style>
+
+    <Style Selector="^:disabled /template/ atom|PixelAlignedBorder#InnerBoxDecorator">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
+    </Style>
+</ControlTheme>

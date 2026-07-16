@@ -42,49 +42,39 @@
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
                     <Grid ColumnDefinitions="*, Auto, *">
-                        <atom:TextBox Name="PART_InfoInputBox"
-                                      Grid.Column="0"
-                                      HorizontalContentAlignment="Stretch"
-                                      VerticalContentAlignment="Center"
-                                      VerticalAlignment="Stretch"
-                                      HorizontalAlignment="Stretch"
-                                      BorderThickness="0"
-                                      TextWrapping="NoWrap"
-                                      AcceptsReturn="False"
-                                      FontSize="{TemplateBinding FontSize}"
-                                      FontFamily="{TemplateBinding FontFamily}"
-                                      FontStyle="{TemplateBinding FontStyle}"
-                                      FontWeight="{TemplateBinding FontWeight}"
-                                      IsCustomFontSize="True"
-                                      IsAllowClear="False"
-                                      IsEnableRevealButton="False"
-                                      DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                      SizeType="Custom"
-                                      IsReadOnly="{TemplateBinding IsReadOnly}"
-                                      Text="{TemplateBinding Text}"
-                                      PlaceholderText="{TemplateBinding PlaceholderText}" />
+                        <atom:EmbeddedTextBox Name="PART_InfoInputBox"
+                                              Grid.Column="0"
+                                              HorizontalContentAlignment="Stretch"
+                                              VerticalContentAlignment="Center"
+                                              VerticalAlignment="Stretch"
+                                              HorizontalAlignment="Stretch"
+                                              TextWrapping="NoWrap"
+                                              AcceptsReturn="False"
+                                              FontSize="{TemplateBinding FontSize}"
+                                              FontFamily="{TemplateBinding FontFamily}"
+                                              FontStyle="{TemplateBinding FontStyle}"
+                                              FontWeight="{TemplateBinding FontWeight}"
+                                              DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                                              IsReadOnly="{TemplateBinding IsReadOnly}"
+                                              Text="{TemplateBinding Text}"
+                                              PlaceholderText="{TemplateBinding PlaceholderText}" />
                         <antdicons:SwapRightOutlined
                             Name="PART_RangePickerArrow"
                             Grid.Column="1" />
-                        <atom:TextBox
+                        <atom:EmbeddedTextBox
                             Name="PART_SecondaryInfoInputBox"
                             Grid.Column="2"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
-                            BorderThickness="0"
                             TextWrapping="NoWrap"
                             AcceptsReturn="False"
                             FontSize="{TemplateBinding FontSize}"
                             FontFamily="{TemplateBinding FontFamily}"
                             FontStyle="{TemplateBinding FontStyle}"
                             FontWeight="{TemplateBinding FontWeight}"
-                            IsCustomFontSize="True"
-                            IsAllowClear="False"
-                            IsEnableRevealButton="False"
                             DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                            SizeType="Custom"
                             IsReadOnly="{TemplateBinding IsReadOnly}"
                             Text="{TemplateBinding SecondaryText}"
                             PlaceholderText="{TemplateBinding SecondaryPlaceholderText}" />
@@ -119,29 +109,29 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Once" />
-        <Style Selector="^ /template/ atom|TextBox">
+        <Style Selector="^ /template/ atom|EmbeddedTextBox">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Foreground"
                     Value="{atom:SharedTokenResource ColorText}" />
         </Style>
         <Style
-            Selector="^ /template/ atom|TextBox#PART_InfoInputBox /template/ TextPresenter#PART_TextPresenter, ^ /template/ atom|TextBox#PART_SecondaryInfoInputBox /template/ TextPresenter#PART_TextPresenter">
+            Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox /template/ TextPresenter#PART_TextPresenter, ^ /template/ atom|EmbeddedTextBox#PART_SecondaryInfoInputBox /template/ TextPresenter#PART_TextPresenter">
             <Setter Property="Margin" Value="0" />
         </Style>
 
         <Style Selector="^:flyout-open">
-            <Style Selector="^ /template/ atom|TextBox">
+            <Style Selector="^ /template/ atom|EmbeddedTextBox">
                 <Setter Property="Foreground"
                         Value="{atom:SharedTokenResource ColorText}" />
             </Style>
             <Style Selector="^[RangeActivatedPart=Start]">
-                <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox">
+                <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox">
                     <Setter Property="Foreground"
                             Value="{atom:SharedTokenResource ColorTextTertiary}" />
                 </Style>
             </Style>
             <Style Selector="^[RangeActivatedPart=End]">
-                <Style Selector="^ /template/ atom|TextBox#PART_SecondaryInfoInputBox">
+                <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_SecondaryInfoInputBox">
                     <Setter Property="Foreground"
                             Value="{atom:SharedTokenResource ColorTextTertiary}" />
                 </Style>

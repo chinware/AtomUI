@@ -20,6 +20,7 @@ using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AtomUILineEdit = AtomUI.Desktop.Controls.LineEdit;
+using AtomUIEmbeddedTextBox = AtomUI.Desktop.Controls.EmbeddedTextBox;
 using AtomUISearchEdit = AtomUI.Desktop.Controls.SearchEdit;
 using AtomUITextArea = AtomUI.Desktop.Controls.TextArea;
 using AtomUITextBox = AtomUI.Desktop.Controls.TextBox;
@@ -137,6 +138,64 @@ public class TextBoxVisualStateTests
             "IsCustomPaddingProperty",
             BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
         field.ShouldBeNull();
+    }
+
+    [Fact]
+    public void EmbeddedTextBox_Is_Internal_TextBox_For_Template_Owned_Input_Chrome()
+    {
+        typeof(AtomUITextBox).IsAssignableFrom(typeof(AtomUIEmbeddedTextBox)).ShouldBeTrue();
+        typeof(ICustomizableSizeTypeAware).IsAssignableFrom(typeof(AtomUIEmbeddedTextBox)).ShouldBeTrue();
+
+        var embeddedTextBox = new AtomUIEmbeddedTextBox
+        {
+            Width     = 160,
+            Text      = "embedded",
+            IsEnabled = false
+        };
+
+        ShowInWindow(embeddedTextBox, () =>
+        {
+            embeddedTextBox.SizeType.ShouldBe(CustomizableSizeType.Custom);
+            embeddedTextBox.Padding.ShouldBe(new Thickness(0));
+            embeddedTextBox.BorderThickness.ShouldBe(new Thickness(0));
+            embeddedTextBox.IsCustomFontSize.ShouldBeTrue();
+            embeddedTextBox.IsAllowClear.ShouldBeFalse();
+            embeddedTextBox.IsEnableRevealButton.ShouldBeFalse();
+
+            var border = FindTemplatePart<PixelAlignedBorder>(embeddedTextBox, "InnerBoxDecorator");
+            border.BorderThickness.ShouldBe(new Thickness(0));
+            BrushShouldHaveSameColor(border.Background, Brushes.Transparent);
+            BrushShouldHaveSameColor(border.BorderBrush, Brushes.Transparent);
+        });
+    }
+
+    [Fact]
+    public void EmbeddedTextBox_Theme_Suppresses_Own_Disabled_Chrome()
+    {
+        var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Input/Themes/EmbeddedTextBoxTheme.axaml");
+
+        source.ShouldContain("TargetType=\"atom:EmbeddedTextBox\"");
+        source.ShouldContain("<Setter Property=\"Background\" Value=\"Transparent\" />");
+        source.ShouldContain("<Setter Property=\"BorderBrush\" Value=\"Transparent\" />");
+        source.ShouldContain("<Setter Property=\"BorderThickness\" Value=\"0\" />");
+        source.ShouldContain("<Setter Property=\"Padding\" Value=\"0\" />");
+        source.ShouldContain("<Style Selector=\"^:disabled /template/ atom|PixelAlignedBorder#InnerBoxDecorator\">");
+        source.ShouldContain("<Setter Property=\"Background\" Value=\"Transparent\" />");
+        source.ShouldContain("<Setter Property=\"BorderBrush\" Value=\"Transparent\" />");
+        source.ShouldNotContain("ColorBgContainerDisabled");
+    }
+
+    [Theory]
+    [InlineData("src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml")]
+    [InlineData("src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/Themes/InfoPickerInputTheme.axaml")]
+    [InlineData("src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/Themes/RangeInfoPickerInputTheme.axaml")]
+    [InlineData("src/AtomUI.Desktop.Controls/DatePicker/Themes/RangeDatePickerTheme.axaml")]
+    public void TemplateOwned_Input_Chrome_Uses_EmbeddedTextBox(string relativePath)
+    {
+        var source = ReadRepoFile(relativePath);
+
+        source.ShouldContain("<atom:EmbeddedTextBox");
+        source.ShouldNotContain("<atom:TextBox");
     }
 
     [Fact]
