@@ -269,6 +269,12 @@ public partial class CascaderView : TemplatedControl,
             nameof(IsEffectiveEmptyVisible),
             o => o.IsEffectiveEmptyVisible,
             (o, v) => o.IsEffectiveEmptyVisible = v);
+
+    internal static readonly DirectProperty<CascaderView, bool> IsDefaultEmptyIndicatorVisibleProperty =
+        AvaloniaProperty.RegisterDirect<CascaderView, bool>(
+            nameof(IsDefaultEmptyIndicatorVisible),
+            o => o.IsDefaultEmptyIndicatorVisible,
+            (o, v) => o.IsDefaultEmptyIndicatorVisible = v);
     
     internal static readonly DirectProperty<CascaderView, ItemToggleType> EffectiveToggleTypeProperty =
         AvaloniaProperty.RegisterDirect<CascaderView, ItemToggleType>(
@@ -286,6 +292,13 @@ public partial class CascaderView : TemplatedControl,
     {
         get => _isEffectiveEmptyVisible;
         set => SetAndRaise(IsEffectiveEmptyVisibleProperty, ref _isEffectiveEmptyVisible, value);
+    }
+
+    private bool _isDefaultEmptyIndicatorVisible;
+    internal bool IsDefaultEmptyIndicatorVisible
+    {
+        get => _isDefaultEmptyIndicatorVisible;
+        set => SetAndRaise(IsDefaultEmptyIndicatorVisibleProperty, ref _isDefaultEmptyIndicatorVisible, value);
     }
     
     private ItemToggleType _effectiveToggleType = ItemToggleType.None;
@@ -523,7 +536,9 @@ public partial class CascaderView : TemplatedControl,
     
         if (change.Property == IsShowEmptyIndicatorProperty ||
             change.Property == OptionsSourceProperty ||
-            change.Property == FilterResultCountProperty)
+            change.Property == FilterResultCountProperty ||
+            change.Property == EmptyIndicatorProperty ||
+            change.Property == EmptyIndicatorTemplateProperty)
         {
             ConfigureEmptyIndicator();
         }
@@ -647,7 +662,8 @@ public partial class CascaderView : TemplatedControl,
                 isEmpty = _options.Count == 0;
             }
         }
-        IsEffectiveEmptyVisible = IsShowEmptyIndicator && isEmpty;
+        IsEffectiveEmptyVisible        = IsShowEmptyIndicator && isEmpty;
+        IsDefaultEmptyIndicatorVisible = IsEffectiveEmptyVisible && EmptyIndicator is null && EmptyIndicatorTemplate is null;
     }
     
     private void HandleCascaderItemDoubleClicked(RoutedEventArgs args)

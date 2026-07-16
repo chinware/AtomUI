@@ -27,6 +27,14 @@
                         IsVisible="{TemplateBinding IsEffectiveEmptyVisible}"
                         Content="{TemplateBinding EmptyIndicator}"
                         ContentTemplate="{TemplateBinding EmptyIndicatorTemplate}" />
+                    <atom:Empty
+                        Name="DefaultEmptyIndicator"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="{TemplateBinding EmptyIndicatorPadding}"
+                        IsVisible="{TemplateBinding IsDefaultEmptyIndicatorVisible}"
+                        SizeType="Small"
+                        PresetImage="Simple" />
                 </Panel>
             </Border>
         </ControlTemplate>
@@ -44,12 +52,6 @@
         <Setter Property="DragIndicatorLineWidth"
                 Value="{atom:TreeViewTokenResource DragIndicatorLineWidth}" />
         <Setter Property="DragIndicatorBrush" Value="{atom:TreeViewTokenSharedTokenResource ColorPrimary}" />
-        
-        <Setter Property="EmptyIndicatorTemplate">
-            <DataTemplate>
-                <atom:Empty SizeType="Small" PresetImage="Simple"/>
-            </DataTemplate>
-        </Setter>
         
         <Setter Property="ItemTemplate">
             <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">

@@ -96,6 +96,8 @@ internal partial class en_US
     public const string SizeDescription = "Cascader supports large, middle, small, and Custom sizes with local height overrides.";
     public const string BasicCascaderViewTitle = "Basic CascaderView";
     public const string BasicCascaderViewDescription = "The most basic usage.";
+    public const string EmptyIndicatorTitle = "Custom empty indicator";
+    public const string EmptyIndicatorDescription = "Use EmptyIndicator to replace the default CascaderView empty content.";
     public const string GenerateByTemplateTitle = "Generate by template";
     public const string GenerateByTemplateDescription = "You can use the Template mechanism to generate tree nodes";
     public const string SearchableTitle = "Searchable";
@@ -105,6 +107,7 @@ internal partial class en_US
     public const string DefaultExpandedTitle = "Default expanded";
     public const string DefaultExpandedDescription = "You can set the default expansion path..";
     public const string P2PlaceholderTextPleaseSelect = "Please select";
+    public const string P2TextCustomEmptyIndicator = "No options to display";
     public const string P2PlaceholderSizeTypeLarge = "SizeType: Large";
     public const string P2PlaceholderSizeTypeMiddle = "SizeType: Middle";
     public const string P2PlaceholderSizeTypeSmall = "SizeType: Small";

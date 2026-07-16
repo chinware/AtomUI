@@ -221,6 +221,12 @@ public class ListBox : AvaloniaListBox,
             nameof(IsEffectiveEmptyVisible),
             o => o.IsEffectiveEmptyVisible,
             (o, v) => o.IsEffectiveEmptyVisible = v);
+
+    internal static readonly DirectProperty<ListBox, bool> IsDefaultEmptyIndicatorVisibleProperty =
+        AvaloniaProperty.RegisterDirect<ListBox, bool>(
+            nameof(IsDefaultEmptyIndicatorVisible),
+            o => o.IsDefaultEmptyIndicatorVisible,
+            (o, v) => o.IsDefaultEmptyIndicatorVisible = v);
     
     private Thickness _effectiveBorderThickness;
 
@@ -235,6 +241,13 @@ public class ListBox : AvaloniaListBox,
     {
         get => _isEffectiveEmptyVisible;
         set => SetAndRaise(IsEffectiveEmptyVisibleProperty, ref _isEffectiveEmptyVisible, value);
+    }
+
+    private bool _isDefaultEmptyIndicatorVisible;
+    internal bool IsDefaultEmptyIndicatorVisible
+    {
+        get => _isDefaultEmptyIndicatorVisible;
+        set => SetAndRaise(IsDefaultEmptyIndicatorVisibleProperty, ref _isDefaultEmptyIndicatorVisible, value);
     }
 
     #endregion
@@ -288,7 +301,10 @@ public class ListBox : AvaloniaListBox,
         base.OnPropertyChanged(change);
         if (change.Property == ItemsSourceProperty ||
             change.Property == IsFilteringProperty ||
-            change.Property == FilterResultCountProperty)
+            change.Property == FilterResultCountProperty ||
+            change.Property == IsShowEmptyIndicatorProperty ||
+            change.Property == EmptyIndicatorProperty ||
+            change.Property == EmptyIndicatorTemplateProperty)
         {
             ConfigureEmptyIndicator();
         }
@@ -409,7 +425,8 @@ public class ListBox : AvaloniaListBox,
     
     protected virtual void ConfigureEmptyIndicator()
     {
-        SetCurrentValue(IsEffectiveEmptyVisibleProperty, IsShowEmptyIndicator && (ItemCount == 0 || (IsFiltering && FilterResultCount == 0)));
+        IsEffectiveEmptyVisible        = IsShowEmptyIndicator && (ItemCount == 0 || (IsFiltering && FilterResultCount == 0));
+        IsDefaultEmptyIndicatorVisible = IsEffectiveEmptyVisible && EmptyIndicator is null && EmptyIndicatorTemplate is null;
     }
     
     private void ConfigureEffectiveBorderThickness()

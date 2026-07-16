@@ -350,6 +350,12 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
             nameof(IsEffectiveEmptyVisible),
             o => o.IsEffectiveEmptyVisible,
             (o, v) => o.IsEffectiveEmptyVisible = v);
+
+    internal static readonly DirectProperty<ListView, bool> IsDefaultEmptyIndicatorVisibleProperty =
+        AvaloniaProperty.RegisterDirect<ListView, bool>(
+            nameof(IsDefaultEmptyIndicatorVisible),
+            o => o.IsDefaultEmptyIndicatorVisible,
+            (o, v) => o.IsDefaultEmptyIndicatorVisible = v);
     
     private bool _isEmptyDataSource = true;
     internal bool IsEmptyDataSource
@@ -371,6 +377,13 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
     {
         get => _isEffectiveEmptyVisible;
         set => SetAndRaise(IsEffectiveEmptyVisibleProperty, ref _isEffectiveEmptyVisible, value);
+    }
+
+    private bool _isDefaultEmptyIndicatorVisible;
+    internal bool IsDefaultEmptyIndicatorVisible
+    {
+        get => _isDefaultEmptyIndicatorVisible;
+        set => SetAndRaise(IsDefaultEmptyIndicatorVisibleProperty, ref _isDefaultEmptyIndicatorVisible, value);
     }
 
     #endregion
@@ -552,7 +565,9 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
         if (change.Property == ItemsSourceProperty ||
             change.Property == IsFilteringProperty ||
             change.Property == IsShowEmptyIndicatorProperty ||
-            change.Property == IsEmptyDataSourceProperty)
+            change.Property == IsEmptyDataSourceProperty ||
+            change.Property == EmptyIndicatorProperty ||
+            change.Property == EmptyIndicatorTemplateProperty)
         {
             ConfigureEmptyIndicator();
         }
@@ -718,7 +733,8 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
     
     protected virtual void ConfigureEmptyIndicator()
     {
-        SetCurrentValue(IsEffectiveEmptyVisibleProperty, IsShowEmptyIndicator && TotalItemCount == 0);
+        IsEffectiveEmptyVisible        = IsShowEmptyIndicator && TotalItemCount == 0;
+        IsDefaultEmptyIndicatorVisible = IsEffectiveEmptyVisible && EmptyIndicator is null && EmptyIndicatorTemplate is null;
     }
     
     private void ConfigureEffectiveBorderThickness()
@@ -837,16 +853,6 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
     {
         base.OnApplyTemplate(e);
         NotifyApplyTemplateForSelecting();
-        
-        if (EmptyIndicator == null)
-        {
-            SetValue(EmptyIndicatorProperty, new Empty()
-            {
-                SizeType    = AtomUI.SizeType.Small,
-                PresetImage = PresetEmptyImage.Simple
-            }, BindingPriority.Template);
-        }
-        
         UpdatePseudoClasses();
         ConfigureEmptyIndicator();
         HandlePaginationVisibility();

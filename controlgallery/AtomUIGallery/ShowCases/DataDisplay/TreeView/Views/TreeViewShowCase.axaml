@@ -489,6 +489,31 @@
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:TreeViewShowCaseLangResource EmptyIndicatorTitle}"
+                    Description="{gallery:TreeViewShowCaseLangResource EmptyIndicatorDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:TreeViewViewModel">
+                            <atom:TreeView MaxWidth="360"
+                                           Height="200"
+                                           HorizontalAlignment="Stretch">
+                                <atom:TreeView.EmptyIndicator>
+                                    <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                        <antdicons:SmileOutlined Width="28"
+                                                                Height="28"
+                                                                HorizontalAlignment="Center"
+                                                                Foreground="{atom:SharedTokenResource ColorPrimary}" />
+                                        <atom:TextBlock
+                                            Text="{gallery:TreeViewShowCaseLangResource P2TextCustomEmptyIndicator}"
+                                            Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                    </StackPanel>
+                                </atom:TreeView.EmptyIndicator>
+                            </atom:TreeView>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
             </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
