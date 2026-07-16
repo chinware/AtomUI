@@ -258,11 +258,7 @@ internal class SelectResultOptionsBox : TemplatedControl
         _maxCountAwarePanel = e.NameScope.Find<SelectMaxTagAwarePanel>("PART_MaxCountAwarePanel");
         _searchTextBox = new SelectFilterTextBox
         {
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            SizeType            = CustomizableSizeType.Custom,
-            Padding             = new Thickness(0),
-            BorderThickness     = new Thickness(0),
-            IsCustomFontSize    = true
+            HorizontalAlignment = HorizontalAlignment.Stretch
         };
         _searchInputEmptySubscription =
             _searchTextBox.GetObservable(TextBox.IsPlaceholderTextVisibleProperty)

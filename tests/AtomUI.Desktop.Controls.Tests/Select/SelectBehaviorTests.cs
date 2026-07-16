@@ -934,6 +934,7 @@ public class SelectBehaviorTests
 
     private static void AssertEmbeddedSelectFilterTextBox(SelectFilterTextBox searchTextBox)
     {
+        searchTextBox.ShouldBeAssignableTo<EmbeddedTextBox>();
         searchTextBox.SizeType.ShouldBe(CustomizableSizeType.Custom);
         searchTextBox.Padding.ShouldBe(new Thickness(0));
         searchTextBox.BorderThickness.ShouldBe(new Thickness(0));

@@ -145,6 +145,7 @@ public class NumericUpDownHandleTests
                                             .Single(item => item.Name == "PART_ContentFrame");
 
             contentFrame.Padding.Left.ShouldBeGreaterThan(0);
+            textBox.ShouldBeAssignableTo<EmbeddedTextBox>();
             textBox.SizeType.ShouldBe(CustomizableSizeType.Custom);
             textBox.Padding.ShouldBe(new Thickness(0));
         });
@@ -171,6 +172,7 @@ public class NumericUpDownHandleTests
                                             .Single(item => item.Name == "PART_ContentFrame");
 
             contentFrame.Padding.ShouldBe(new Thickness(0));
+            textBox.ShouldBeAssignableTo<EmbeddedTextBox>();
             textBox.SizeType.ShouldBe(CustomizableSizeType.Custom);
             textBox.Padding.ShouldBe(new Thickness(0));
         });

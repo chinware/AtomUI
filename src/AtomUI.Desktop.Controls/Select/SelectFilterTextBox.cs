@@ -3,7 +3,7 @@ using Avalonia.Input;
 
 namespace AtomUI.Desktop.Controls;
 
-internal class SelectFilterTextBox : TextBox
+internal class SelectFilterTextBox : EmbeddedTextBox
 {
     private bool _isCaretLockedToStart;
     private bool _isResettingCaret;

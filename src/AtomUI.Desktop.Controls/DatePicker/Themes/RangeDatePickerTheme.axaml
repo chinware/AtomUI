@@ -44,49 +44,39 @@
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Grid ColumnDefinitions="*, Auto, *">
-                            <atom:TextBox Name="PART_InfoInputBox"
-                                          Grid.Column="0"
-                                          HorizontalContentAlignment="Stretch"
-                                          VerticalContentAlignment="Center"
-                                          VerticalAlignment="Stretch"
-                                          HorizontalAlignment="Stretch"
-                                          BorderThickness="0"
-                                          TextWrapping="NoWrap"
-                                          AcceptsReturn="False"
-                                          FontSize="{TemplateBinding FontSize}"
-                                          FontFamily="{TemplateBinding FontFamily}"
-                                          FontStyle="{TemplateBinding FontStyle}"
-                                          FontWeight="{TemplateBinding FontWeight}"
-                                          IsCustomFontSize="True"
-                                          IsAllowClear="False"
-                                          IsEnableRevealButton="False"
-                                          DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                          SizeType="Custom"
-                                          IsReadOnly="{TemplateBinding IsReadOnly}"
-                                          Text="{TemplateBinding Text}"
-                                          PlaceholderText="{TemplateBinding PlaceholderText}" />
+                            <atom:EmbeddedTextBox Name="PART_InfoInputBox"
+                                                  Grid.Column="0"
+                                                  HorizontalContentAlignment="Stretch"
+                                                  VerticalContentAlignment="Center"
+                                                  VerticalAlignment="Stretch"
+                                                  HorizontalAlignment="Stretch"
+                                                  TextWrapping="NoWrap"
+                                                  AcceptsReturn="False"
+                                                  FontSize="{TemplateBinding FontSize}"
+                                                  FontFamily="{TemplateBinding FontFamily}"
+                                                  FontStyle="{TemplateBinding FontStyle}"
+                                                  FontWeight="{TemplateBinding FontWeight}"
+                                                  DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                                                  IsReadOnly="{TemplateBinding IsReadOnly}"
+                                                  Text="{TemplateBinding Text}"
+                                                  PlaceholderText="{TemplateBinding PlaceholderText}" />
                             <antdicons:SwapRightOutlined
                                 Name="PART_RangePickerArrow"
                                 Grid.Column="1" />
-                            <atom:TextBox
+                            <atom:EmbeddedTextBox
                                 Name="PART_SecondaryInfoInputBox"
                                 Grid.Column="2"
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Center"
                                 VerticalAlignment="Stretch"
                                 HorizontalAlignment="Stretch"
-                                BorderThickness="0"
                                 TextWrapping="NoWrap"
                                 AcceptsReturn="False"
                                 FontSize="{TemplateBinding FontSize}"
                                 FontFamily="{TemplateBinding FontFamily}"
                                 FontStyle="{TemplateBinding FontStyle}"
                                 FontWeight="{TemplateBinding FontWeight}"
-                                IsCustomFontSize="True"
-                                IsAllowClear="False"
-                                IsEnableRevealButton="False"
                                 DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                SizeType="Custom"
                                 IsReadOnly="{TemplateBinding IsReadOnly}"
                                 Text="{TemplateBinding SecondaryText}"
                                 PlaceholderText="{TemplateBinding SecondaryPlaceholderText}" />
@@ -120,7 +110,7 @@
                 </Panel>
             </ControlTemplate>
         </Setter>
-        <Style Selector="^ /template/ atom|TextBox">
+        <Style Selector="^ /template/ atom|EmbeddedTextBox">
             <Setter Property="Padding" Value="0" />
         </Style>
     </ControlTheme>

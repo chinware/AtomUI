@@ -33,27 +33,22 @@
                             <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
-                    <atom:TextBox Name="PART_InfoInputBox"
-                                  HorizontalContentAlignment="Stretch"
-                                  VerticalContentAlignment="Center"
-                                  VerticalAlignment="Stretch"
-                                  HorizontalAlignment="Stretch"
-                                  BorderThickness="0"
-                                  TextWrapping="NoWrap"
-                                  AcceptsReturn="False"
-                                  Width="{TemplateBinding PreferredInputWidth}"
-                                  FontSize="{TemplateBinding FontSize}"
-                                  FontFamily="{TemplateBinding FontFamily}"
-                                  FontStyle="{TemplateBinding FontStyle}"
-                                  FontWeight="{TemplateBinding FontWeight}"
-                                  IsCustomFontSize="True"
-                                  IsAllowClear="False"
-                                  IsEnableRevealButton="False"
-                                  Text="{TemplateBinding Text}"
-                                  PlaceholderText="{TemplateBinding PlaceholderText}"
-                                  DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                  SizeType="Custom"
-                                  IsReadOnly="{TemplateBinding IsReadOnly}" />
+                    <atom:EmbeddedTextBox Name="PART_InfoInputBox"
+                                          HorizontalContentAlignment="Stretch"
+                                          VerticalContentAlignment="Center"
+                                          VerticalAlignment="Stretch"
+                                          HorizontalAlignment="Stretch"
+                                          TextWrapping="NoWrap"
+                                          AcceptsReturn="False"
+                                          Width="{TemplateBinding PreferredInputWidth}"
+                                          FontSize="{TemplateBinding FontSize}"
+                                          FontFamily="{TemplateBinding FontFamily}"
+                                          FontStyle="{TemplateBinding FontStyle}"
+                                          FontWeight="{TemplateBinding FontWeight}"
+                                          Text="{TemplateBinding Text}"
+                                          PlaceholderText="{TemplateBinding PlaceholderText}"
+                                          DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                                          IsReadOnly="{TemplateBinding IsReadOnly}" />
                 </atom:AddOnDecoratedBox>
 
                 <atom:Popup Name="PART_Popup"
@@ -85,24 +80,24 @@
         <Setter Property="MarginToAnchor" Value="{atom:PopupHostTokenResource MarginToAnchor}" />
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
         
-        <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox">
+        <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Foreground"
                     Value="{atom:SharedTokenResource ColorText}" />
         </Style>
-        <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox /template/ TextPresenter#PART_TextPresenter">
+        <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox /template/ TextPresenter#PART_TextPresenter">
             <Setter Property="Margin" Value="0" />
         </Style>
 
         <Style Selector="^:flyout-open">
-            <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox">
+            <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox">
                 <Setter Property="Foreground"
                         Value="{atom:SharedTokenResource ColorTextTertiary}" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|TextBox">
+            <Style Selector="^ /template/ atom|EmbeddedTextBox">
                 <Setter Property="Foreground"
                         Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>

@@ -45,7 +45,7 @@
                                 Focusable="False" />
                         </StackPanel>
                     </atom:ButtonSpinner.InnerRightContent>
-                    <atom:TextBox
+                    <atom:EmbeddedTextBox
                         Name="PART_TextBox"
                         VerticalContentAlignment="Center"
                         VerticalAlignment="Stretch"
@@ -203,7 +203,7 @@
                                     Focusable="False" />
                             </StackPanel>
                         </atom:ButtonSpinner.InnerRightContent>
-                        <atom:TextBox
+                        <atom:EmbeddedTextBox
                             Name="PART_TextBox"
                             VerticalContentAlignment="Center"
                             VerticalAlignment="Stretch"
