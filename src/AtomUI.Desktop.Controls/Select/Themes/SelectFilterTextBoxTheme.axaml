@@ -9,6 +9,11 @@
             <themes:TextBoxTheme TargetType="{x:Type atom:SelectFilterTextBox}" />
         </ControlTheme.BasedOn>
 
+        <Setter Property="SizeType" Value="Custom" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="IsCustomFontSize" Value="True" />
+
         <Style Selector="^[IsCustomFontSize=False]">
             <Style Selector="^[SizeType=Large]">
                 <Setter Property="FontSize" Value="{atom:LineEditTokenResource InputFontSizeLG}" />

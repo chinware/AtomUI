@@ -146,6 +146,24 @@ public class DatePickerShowCasePageTests
     }
 
     [Fact]
+    public void DatePicker_Placement_Example_Stacks_Label_And_Options_To_Avoid_Default_Card_Overflow()
+    {
+        var source = ExtractShowCaseItemByTitle(
+            ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml"),
+            "DatePickerShowCaseLangResource PlacementTitle");
+
+        source.ShouldContain("<StackPanel Spacing=\"20\">");
+        source.ShouldContain("<StackPanel Spacing=\"8\">");
+        source.ShouldContain("<atom:TextBlock Text=\"{gallery:DatePickerShowCaseLangResource P2TextPlacement}\" />");
+        source.ShouldNotContain("<StackPanel Orientation=\"Horizontal\" Spacing=\"5\" DockPanel.Dock=\"Top\">");
+        AssertResourceOrder(
+            source,
+            "DatePickerShowCaseLangResource P2TextPlacement",
+            "Name=\"PickerPlacementOptionGroup\"",
+            "<atom:DatePicker");
+    }
+
+    [Fact]
     public void DatePicker_ShowCase_Basic_Example_Exposes_All_AntDesign_Picker_Modes()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml");

@@ -361,6 +361,55 @@ public class SelectBehaviorTests
         });
     }
 
+    [Fact]
+    public void Single_Filter_Input_Uses_Outer_Content_Padding_Only()
+    {
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsFilterEnabled = true,
+            PlaceholderText = "Please select"
+        };
+
+        ShowInWindow(select, () =>
+        {
+            var addOnBox = GetVisualDescendant<AddOnDecoratedBox>(
+                select,
+                AddOnDecoratedBox.AddOnDecoratedBoxPart);
+            var searchTextBox = GetVisualDescendant<SelectFilterTextBox>(select, "PART_SingleFilterInput");
+
+            addOnBox.ContentFrame.ShouldNotBeNull();
+            addOnBox.ContentFrame!.Padding.Left.ShouldBeGreaterThan(0);
+            AssertEmbeddedSelectFilterTextBox(searchTextBox);
+        });
+    }
+
+    [Theory]
+    [InlineData(SelectMode.Multiple)]
+    [InlineData(SelectMode.Tags)]
+    public void Multiple_And_Tags_Search_Input_Uses_Outer_Content_Padding_Only(SelectMode mode)
+    {
+        var jack = new SelectOption
+        {
+            Header  = "Jack",
+            Content = "jack"
+        };
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            Mode            = mode,
+            IsFilterEnabled = true,
+            SelectedOptions = [jack]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            var searchTextBox = GetTagsSearchTextBox(select);
+
+            AssertEmbeddedSelectFilterTextBox(searchTextBox);
+        });
+    }
+
     [Theory]
     [InlineData(SelectMode.Multiple)]
     [InlineData(SelectMode.Tags)]
@@ -881,6 +930,14 @@ public class SelectBehaviorTests
         Dispatcher.UIThread.RunJobs();
 
         return dynamicOption;
+    }
+
+    private static void AssertEmbeddedSelectFilterTextBox(SelectFilterTextBox searchTextBox)
+    {
+        searchTextBox.SizeType.ShouldBe(CustomizableSizeType.Custom);
+        searchTextBox.Padding.ShouldBe(new Thickness(0));
+        searchTextBox.BorderThickness.ShouldBe(new Thickness(0));
+        searchTextBox.IsCustomFontSize.ShouldBeTrue();
     }
 
     private static SelectFilterTextBox GetTagsSearchTextBox(Desktop.Controls.Select select)

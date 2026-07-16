@@ -1,6 +1,7 @@
 <gallery:ShowCaseItem
 Title="{gallery:BreadcrumbShowCaseLangResource BasicUsageTitle}"
-Description="{gallery:BreadcrumbShowCaseLangResource BasicUsageDescription}">
+Description="{gallery:BreadcrumbShowCaseLangResource BasicUsageDescription}"
+Span="Full">
 <StackPanel>
 <atom:Breadcrumb>
 <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentHome}" />
@@ -12,7 +13,8 @@ Description="{gallery:BreadcrumbShowCaseLangResource BasicUsageDescription}">
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
 Title="{gallery:BreadcrumbShowCaseLangResource WithIconTitle}"
-Description="{gallery:BreadcrumbShowCaseLangResource WithIconDescription}">
+Description="{gallery:BreadcrumbShowCaseLangResource WithIconDescription}"
+Span="Full">
 <StackPanel>
 <atom:Breadcrumb>
 <atom:BreadcrumbItem Icon="{antdicons:AntDesignIconProvider Kind=HomeOutlined}"></atom:BreadcrumbItem>
@@ -23,7 +25,8 @@ Description="{gallery:BreadcrumbShowCaseLangResource WithIconDescription}">
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
 Title="{gallery:BreadcrumbShowCaseLangResource WithParamsTitle}"
-Description="{gallery:BreadcrumbShowCaseLangResource WithParamsDescription}">
+Description="{gallery:BreadcrumbShowCaseLangResource WithParamsDescription}"
+Span="Full">
 <StackPanel>
 <atom:Breadcrumb NavigateRequest="HandleNavigateRequest">
 <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentUsers}" />
@@ -33,7 +36,8 @@ Description="{gallery:BreadcrumbShowCaseLangResource WithParamsDescription}">
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
 Title="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorTitle}"
-Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorDescription}">
+Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorDescription}"
+Span="Full">
 <StackPanel>
 <atom:Breadcrumb Separator=">">
 <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentHome}" />
@@ -45,7 +49,8 @@ Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorDescrip
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
 Title="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyTitle}"
-Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyDescription}">
+Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyDescription}"
+Span="Full">
 <StackPanel>
 <atom:Breadcrumb>
 <atom:BreadcrumbItem Separator=":" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentLocation}" />
@@ -57,7 +62,8 @@ Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndepen
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
 Title="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateTitle}"
-Description="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateDescription}">
+Description="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateDescription}"
+Span="Full">
 <StackPanel>
 <atom:Breadcrumb Name="TplBreadcrumb"
 ItemsSource="{Binding BreadcrumbItems}">
