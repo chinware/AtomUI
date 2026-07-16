@@ -1,5 +1,6 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
+using AtomUI.Generated.AtomUI_Desktop_Controls_Extras;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -7,10 +8,9 @@ public static class ExtrasThemeManagerBuilderExtensions
 {
     public static IThemeManagerBuilder UseDesktopExtras(this IThemeManagerBuilder themeManagerBuilder)
     {
-        var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
-        foreach (var controlTokenRegistration in controlTokenTypes)
+        foreach (var descriptor in GeneratedThemeSchema.GetControls())
         {
-            themeManagerBuilder.AddControlToken(controlTokenRegistration.TokenType);
+            themeManagerBuilder.AddControlToken(descriptor);
         }
         themeManagerBuilder.AddControlThemesProvider(new AtomUIExtrasThemesProvider());
 

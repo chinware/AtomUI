@@ -52,39 +52,49 @@ public override void Initialize()
 }
 ```
 
-`UseAtomUI()` 会创建 `ThemeManagerBuilder`，设置默认语言和主题，执行用户传入的注册动作，然后构建 `ThemeManager`。
+`UseAtomUI()` 会创建 `ThemeManagerBuilder`，设置默认语言和初始主题请求，执行用户传入的注册动作，然后
+构建主题 schema、首个 snapshot、ThemeEngine 和 ThemeManager。
 
 构建后的主题运行流见 [AtomUI.Core 主题系统](../modules/core/theme-system.md)。简化顺序是：
 
-1. `ThemeManager.Configure()` 扫描主题来源并通过 `ThemeCatalog` 解析主题定义。
-2. `ThemeCoordinator` 把启动主题表达为一个 `ThemeRequest`。
-3. `ThemeSnapshotCache` 复用等价编译请求的 `ThemeSnapshot`，否则调用 `ThemeCompiler`。
-4. 提交阶段一次性挂载 snapshot-backed `ThemeTokenResourceProvider`，同步 `ActivatedTheme`、
-   `ThemeVariant`、Dark/Compact flags 和 `Application.RequestedThemeVariant`。
-5. 状态提交完成后才派发 `ThemeChanged`。
+1. Builder 收集生成式 Control descriptor、主题 Provider、算法 descriptor、语言和初始 `ThemeConfig`。
+2. `ThemeSchemaRegistry` 在读取主题文件前完成构建并拒绝无效注册。
+3. `ThemeCatalog` 通过 Reader 和 Binder 生成 typed theme definition。
+4. `ThemeCompiler` 在 ThemeManager 挂载前同步生成首个不可变 `ThemeSnapshot`。
+5. Root ThemeContext 和唯一的 `ThemeTokenResourceProvider` 使用该 snapshot 初始化。
+6. ThemeManager 挂载到 Application 后设置 Avalonia Light/Dark variant，并且只发布一次资源通知。
+7. 后续全局和局部更新统一由 ThemeEngine 准备和事务提交。
 
-如果应用需要首帧就是暗色或紧凑主题，应在 builder 阶段配置初始主题算法，而不是在 `UseAtomUI()` 之后调用运行期切换 API：
+如果应用需要首帧就是暗色或紧凑主题，应在 builder 阶段通过 `ThemeConfig` 配置初始主题算法，而不是在
+`UseAtomUI()` 之后调用运行期切换 API：
 
 ```csharp
 this.UseAtomUI(builder =>
 {
-    builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID, ThemeAlgorithm.Dark);
+    builder.WithInitialTheme(
+        IThemeManager.DEFAULT_THEME_ID,
+        new ThemeConfig
+        {
+            Algorithms = { ThemeAlgorithms.Default, ThemeAlgorithms.Dark }
+        });
     builder.UseDesktopControls();
 });
 ```
 
-`SetDarkThemeMode(true)` 和 `SetCompactThemeMode(true)` 用于应用启动后的运行期切换。它们会在 `ThemeManager` 已经绑定到 `Application.ActualThemeVariant` 后修改 `Application.RequestedThemeVariant`，不适合作为首帧默认主题入口。
+应用启动后的主题变化使用 `IThemeManager.ApplyThemeAsync(ThemeRequest)`。AtomUI 的主题 id 和 Compact
+算法不编码进 Avalonia `ThemeVariant`；运行时只根据已提交 snapshot 设置 Avalonia Light 或 Dark。
 
 ## ThemeManagerBuilder 收集内容
 
 `ThemeManagerBuilder` 在构建前收集以下内容：
 
-- `ControlDesignTokens`：控件 Token 类型。
+- `ControlTokenDescriptors`：生成式 Control identity、Token schema、强类型构造和资源投影。
 - `ControlThemesProviders`：AXAML 主题 Provider。
 - `ThemeAssetPathProviders`：自定义主题资源路径 Provider。
 - `LanguageProviders`：本地化资源 Provider。
-- `InitializedHandlers`：`ThemeManager.NotifyInitialized()` 后执行的初始化回调。
-- `ThemeVariantCalculatorFactory`：可选主题算法工厂。
+- `ThemeAlgorithmDescriptors`：默认、暗色、紧凑和自定义算法。
+- `InitialThemeRequest`：首帧使用的主题 id 和 `ThemeConfig`。
+- `ModuleInitializers`：与 ThemeLoaded 等主题生命周期无关的模块初始化回调。
 
 构建时会把这些内容注册到 `ThemeManager`。
 
@@ -104,8 +114,9 @@ DataGrid 和 ColorPicker 独立包通过 `UseDesktopDataGrid()`、`UseDesktopCol
 
 控件包不手工维护完整 Token/Language 列表，而是依赖 `AtomUI.Generator` 生成：
 
-- `ControlTokenTypePool.GetTokenTypes()`：返回当前项目内的控件 Token 类型。
+- `ControlTokenDescriptorPool.GetDescriptors()`：返回当前项目内完整的 Control Token descriptor。
 - `LanguageProviderPool.GetLanguageProviders()`：返回当前项目内的语言 Provider。
 - Token 资源键常量：供 AXAML 和 C# 使用。
 
-因此新增控件 Token 或语言 Provider 时，需要确认对应 Attribute 正确，生成文件才会进入注册链路。
+Builder 必须原样注册 descriptor，不能退化成只传递 `Type`。因此新增控件 Token 或语言 Provider 时，
+需要确认对应 Attribute 正确，并检查生成 descriptor、资源键和注册池是否一致。

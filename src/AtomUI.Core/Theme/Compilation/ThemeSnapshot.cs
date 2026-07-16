@@ -14,8 +14,8 @@ internal sealed class ThemeSnapshot
         bool isDark,
         DesignToken sharedToken,
         IReadOnlyDictionary<object, object?> sharedResources,
-        IReadOnlyDictionary<ComponentTokenIdentity, ComponentThemeSnapshot> components,
-        IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo>? componentConfigs = null,
+        IReadOnlyDictionary<ControlTokenIdentity, ControlThemeSnapshot> controls,
+        IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo>? controlConfigs = null,
         IReadOnlyDictionary<string, string>? sharedConfig = null)
     {
         Id              = id;
@@ -24,11 +24,11 @@ internal sealed class ThemeSnapshot
         IsDark          = isDark;
         SharedTokenCore = sharedToken;
         SharedResources = sharedResources;
-        Components      = components;
-        ComponentConfigs = CopyComponentConfigs(componentConfigs ??
-                                                 new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>());
-        SharedConfig = CopySharedConfig(sharedConfig ?? new Dictionary<string, string>());
-        Resources       = BuildResourceMap(sharedResources, components);
+        Controls       = controls;
+        ControlConfigs = CopyControlConfigs(controlConfigs ??
+                                             new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>());
+        SharedConfig   = CopySharedConfig(sharedConfig ?? new Dictionary<string, string>());
+        Resources       = BuildResourceMap(sharedResources, controls);
     }
 
     public string Id { get; }
@@ -37,15 +37,15 @@ internal sealed class ThemeSnapshot
     public bool IsDark { get; }
     public DesignToken SharedToken => DesignTokenClone.DeepClone(SharedTokenCore);
     public IReadOnlyDictionary<object, object?> SharedResources { get; }
-    public IReadOnlyDictionary<ComponentTokenIdentity, ComponentThemeSnapshot> Components { get; }
-    public IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> ComponentConfigs { get; }
+    public IReadOnlyDictionary<ControlTokenIdentity, ControlThemeSnapshot> Controls { get; }
+    public IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo> ControlConfigs { get; }
     internal DesignToken SharedTokenCore { get; }
     internal IReadOnlyDictionary<string, string> SharedConfig { get; }
     internal IReadOnlyDictionary<object, object?> Resources { get; }
 
     private static IReadOnlyDictionary<object, object?> BuildResourceMap(
         IReadOnlyDictionary<object, object?> sharedResources,
-        IReadOnlyDictionary<ComponentTokenIdentity, ComponentThemeSnapshot> components)
+        IReadOnlyDictionary<ControlTokenIdentity, ControlThemeSnapshot> controls)
     {
         var resources = new Dictionary<object, object?>(sharedResources.Count);
         foreach (var resource in sharedResources)
@@ -53,9 +53,9 @@ internal sealed class ThemeSnapshot
             resources.Add(resource.Key, resource.Value);
         }
 
-        foreach (var component in components.Values)
+        foreach (var control in controls.Values)
         {
-            foreach (var resource in component.ControlResources)
+            foreach (var resource in control.ControlResources)
             {
                 resources[resource.Key] = resource.Value;
             }
@@ -64,16 +64,16 @@ internal sealed class ThemeSnapshot
         return new ReadOnlyDictionary<object, object?>(resources);
     }
 
-    private static IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> CopyComponentConfigs(
-        IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> componentConfigs)
+    private static IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo> CopyControlConfigs(
+        IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo> controlConfigs)
     {
-        var copy = new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>(componentConfigs.Count);
-        foreach (var (identity, config) in componentConfigs)
+        var copy = new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>(controlConfigs.Count);
+        foreach (var (identity, config) in controlConfigs)
         {
             copy.Add(identity, config.CloneImmutable());
         }
 
-        return new ReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo>(copy);
+        return new ReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo>(copy);
     }
 
     private static IReadOnlyDictionary<string, string> CopySharedConfig(
@@ -82,5 +82,4 @@ internal sealed class ThemeSnapshot
         return new ReadOnlyDictionary<string, string>(
             new Dictionary<string, string>(sharedConfig, StringComparer.Ordinal));
     }
-
 }

@@ -52,7 +52,10 @@ AtomUI 应用通常分两步接入：
 1. 在 `AppBuilder` 上调用 `WithAtomUIDefaultOptions()`，应用平台默认配置。
 2. 在 `Application.Initialize()` 内调用 `UseAtomUI(builder => ...)`，注册主题、字体、控件包和可选包。
 
-主题注册链路由 `IThemeManagerBuilder` 收集 Token 类型、主题 Provider、语言 Provider 和初始化回调。`ThemeManagerBuilder.Build()` 创建 `ThemeManager` 后，`ThemeManager.Configure()` 负责扫描主题、创建主题资源、加载语言资源，并把 `ThemeManager` 绑定到 Avalonia 服务定位器。
+主题注册链路由 `IThemeManagerBuilder` 收集生成式 Control descriptor、主题 Provider、算法 descriptor、
+语言 Provider 和初始 ThemeConfig。构建过程先创建 ThemeSchemaRegistry 和 ThemeCatalog，再同步编译首个
+ThemeSnapshot；已经持有有效 snapshot 的 ThemeEngine 和 ThemeManager 随后一次性挂载到 Application。
+完整约束见 [AtomUI 主题系统架构](../modules/core/theme-system.md)。
 
 ## 源码包边界
 

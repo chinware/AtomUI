@@ -3,7 +3,6 @@ using System.Reactive.Disposables;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Resources;
-using AtomUI.Theme.Scope;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Collections;
@@ -273,7 +272,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             Inherit ? GetValue(ThemeScope.SnapshotProperty) : null,
             algorithms,
             ReadSharedOverrides(),
-            ReadComponentOverrides(),
+            ReadControlOverrides(),
             themeManager?.ControlTokenTypes ?? new List<ControlTokenRegistration>(),
             new Dictionary<string, string>());
 
@@ -319,9 +318,9 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         return overrides;
     }
 
-    private IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> ReadComponentOverrides()
+    private IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo> ReadControlOverrides()
     {
-        var overrides = new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>();
+        var overrides = new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>();
         foreach (var infoSetter in ControlTokenInfoSetters)
         {
             if (string.IsNullOrWhiteSpace(infoSetter.TokenId))
@@ -346,7 +345,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
                 }
             }
 
-            overrides[new ComponentTokenIdentity(null, infoSetter.TokenId)] = config;
+            overrides[new ControlTokenIdentity(ControlDesignTokenAttribute.DefaultCatalog, infoSetter.TokenId)] = config;
         }
 
         return overrides;
@@ -414,11 +413,11 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         DesignToken sharedToken)
     {
         var result = new Dictionary<string, IControlDesignToken>(StringComparer.Ordinal);
-        foreach (var (identity, component) in snapshot.Components)
+        foreach (var (identity, control) in snapshot.Controls)
         {
-            var source = component.ControlTokenCore;
+            var source = control.ControlTokenCore;
             var token = CloneCompatibilityControlToken(source);
-            token.AssignSharedToken(DesignTokenClone.DeepClone(component.EffectiveSharedTokenCore));
+            token.AssignSharedToken(DesignTokenClone.DeepClone(control.EffectiveSharedTokenCore));
             token.SetHasCustomTokenConfig(source.HasCustomTokenConfig());
             token.SetCustomTokens(source.GetCustomTokens().ToList());
             ((AbstractControlDesignToken)token).BuildSharedResourceDeltaDictionary(sharedToken);

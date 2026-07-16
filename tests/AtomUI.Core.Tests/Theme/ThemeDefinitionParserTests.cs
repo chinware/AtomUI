@@ -19,7 +19,7 @@ public class ThemeDefinitionParserTests
             "BorderRadius"
         };
 
-    private static readonly IReadOnlyDictionary<string, IReadOnlySet<string>> s_componentTokenNames =
+    private static readonly IReadOnlyDictionary<string, IReadOnlySet<string>> s_controlTokenNames =
         new Dictionary<string, IReadOnlySet<string>>(StringComparer.Ordinal)
         {
             ["Button"] = new HashSet<string>(StringComparer.Ordinal)
@@ -125,7 +125,7 @@ public class ThemeDefinitionParserTests
     }
 
     [Fact]
-    public void Parse_Tracks_Component_Own_And_Shared_Names_In_Separate_Scopes()
+    public void Parse_Tracks_Control_Own_And_Shared_Names_In_Separate_Scopes()
     {
         var result = Parse("""
                            <Theme Name="T" IsDefault="true">
@@ -269,18 +269,18 @@ public class ThemeDefinitionParserTests
     }
 
     [Fact]
-    public void Parse_Reports_Unknown_Own_Tokens_For_Known_Components()
+    public void Parse_Reports_Unknown_Own_Tokens_For_Known_Controls()
     {
         var diagnostic = Parse("<Theme Name='T' IsDefault='true'><ControlTokens><ControlToken Id='Button'><Token Name='Unknown' Value='x'/></ControlToken></ControlTokens></Theme>")
                          .Diagnostics.ShouldHaveSingleItem();
 
         diagnostic.Code.ShouldBe("ATMTHM009");
         diagnostic.Path.ShouldBe("/Theme/ControlTokens/ControlToken[@Id='Button']/Token[@Name='Unknown']");
-        diagnostic.Message.ShouldBe("Token 'Unknown' is not registered for component 'Button'.");
+        diagnostic.Message.ShouldBe("Token 'Unknown' is not registered for control 'Button'.");
     }
 
     [Fact]
-    public void Parse_Warns_And_Preserves_Optional_Unregistered_Components()
+    public void Parse_Warns_And_Preserves_Optional_Unregistered_Controls()
     {
         var result = Parse("<Theme Name='T' IsDefault='true'><ControlTokens><ControlToken Id='OptionalWidget' EnableAlgorithm='true'><Token Name='Accent' Value='x'/></ControlToken></ControlTokens></Theme>");
         var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
@@ -290,7 +290,7 @@ public class ThemeDefinitionParserTests
         diagnostic.Severity.ShouldBe(ThemeDiagnosticSeverity.Warning);
         diagnostic.Path.ShouldBe("/Theme/ControlTokens/ControlToken[@Id='OptionalWidget']");
         diagnostic.Message.ShouldBe(
-            "Component 'OptionalWidget' is not registered; its own tokens were preserved without schema validation.");
+            "Control 'OptionalWidget' is not registered; its own tokens were preserved without schema validation.");
         result.Definition!.ControlTokens["OptionalWidget"].Tokens["Accent"].ShouldBe("x");
     }
 
@@ -411,7 +411,7 @@ public class ThemeDefinitionParserTests
                                                stream,
                                                FilePath,
                                                s_sharedTokenNames,
-                                               s_componentTokenNames));
+                                               s_controlTokenNames));
     }
 
     private static MemoryStream CreateStream(string xml)

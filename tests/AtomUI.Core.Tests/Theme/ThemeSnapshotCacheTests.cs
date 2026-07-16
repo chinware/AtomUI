@@ -4,7 +4,6 @@ using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.TokenSystem;
-using AtomUI.Theme.Transitions;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
@@ -18,7 +17,7 @@ namespace AtomUI.Core.Tests.Theme;
 [Collection(ThemeConfigProviderTestCollection.Name)]
 public class ThemeSnapshotCacheTests
 {
-    private static readonly ComponentTokenIdentity s_buttonIdentity = new(null, CompilerButtonToken.ID);
+    private static readonly ControlTokenIdentity s_buttonIdentity = new(null, CompilerButtonToken.ID);
 
     [Fact]
     public void Equal_Compile_Request_Returns_The_Same_Snapshot_And_Compiles_Once()
@@ -67,15 +66,15 @@ public class ThemeSnapshotCacheTests
             sharedOverrides: Tokens((nameof(DesignToken.ColorPrimary), "#00b96b"))), compiler).Snapshot!;
         var runtimeRed = cache.GetOrCompile(CreateRequest(
             runtimeOverrides: Tokens((nameof(DesignToken.ColorPrimary), "#ff0000"))), compiler).Snapshot!;
-        var component44 = cache.GetOrCompile(CreateRequest(
-            componentOverrides: ComponentOverride(44)), compiler).Snapshot!;
-        var component48 = cache.GetOrCompile(CreateRequest(
-            componentOverrides: ComponentOverride(48)), compiler).Snapshot!;
+        var control44 = cache.GetOrCompile(CreateRequest(
+            controlOverrides: ControlOverride(44)), compiler).Snapshot!;
+        var control48 = cache.GetOrCompile(CreateRequest(
+            controlOverrides: ControlOverride(48)), compiler).Snapshot!;
 
         compactDark.ShouldNotBeSameAs(darkCompact);
         green.ShouldNotBeSameAs(red);
         runtimeRed.ShouldNotBeSameAs(red);
-        component48.ShouldNotBeSameAs(component44);
+        control48.ShouldNotBeSameAs(control44);
     }
 
     [Fact]
@@ -180,7 +179,7 @@ public class ThemeSnapshotCacheTests
         ThemeSnapshot? parent = null,
         IReadOnlyList<ThemeAlgorithm>? algorithms = null,
         IReadOnlyDictionary<string, string>? sharedOverrides = null,
-        IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo>? componentOverrides = null,
+        IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo>? controlOverrides = null,
         IReadOnlyList<ControlTokenRegistration>? registrations = null,
         IReadOnlyDictionary<string, string>? runtimeOverrides = null)
     {
@@ -198,14 +197,14 @@ public class ThemeSnapshotCacheTests
             parent,
             effectiveAlgorithms,
             sharedOverrides ?? new Dictionary<string, string>(),
-            componentOverrides ?? new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>(),
+            controlOverrides ?? new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>(),
             registrations ?? [new ControlTokenRegistration(typeof(CompilerButtonToken))],
             runtimeOverrides ?? new Dictionary<string, string>());
     }
 
-    private static Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo> ComponentOverride(double height)
+    private static Dictionary<ControlTokenIdentity, ControlTokenConfigInfo> ControlOverride(double height)
     {
-        return new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>
+        return new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>
         {
             [s_buttonIdentity] = new ControlTokenConfigInfo
             {

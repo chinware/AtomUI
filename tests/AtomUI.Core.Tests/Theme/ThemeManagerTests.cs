@@ -48,16 +48,16 @@ public class ThemeManagerTests
         ActivationCountingCompilerButtonToken.ResetActivationCount();
         var manager = CreateManager(typeof(ActivationCountingCompilerButtonToken));
 
-        manager.CreateComponentTokenSchemas();
+        manager.CreateControlTokenSchemas();
 
         ActivationCountingCompilerButtonToken.ActivationCount.ShouldBe(1);
     }
 
     [Fact]
-    public void CreateComponentTokenSchemas_Rejects_Inherited_Id_Before_Compile_Request_Creation()
+    public void CreateControlTokenSchemas_Rejects_Inherited_Id_Before_Compile_Request_Creation()
     {
         var manager = CreateManager(typeof(CompilerButtonToken));
-        var schemas = manager.CreateComponentTokenSchemas();
+        var schemas = manager.CreateControlTokenSchemas();
         var catalog = new ThemeCatalog(
             [new TestThemeSource(
                 "themes/Brand.xml",

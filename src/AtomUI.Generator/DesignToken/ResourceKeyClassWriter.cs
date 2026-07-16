@@ -116,7 +116,7 @@ internal class ResourceKeyClassWriter
                         controlTokenMarkupExtensionSyntaxList.Add(GenerateTokenResourceMarkupExtensionClass(controlTokenInfo));
                     }
 
-                    controlTokenMarkupExtensionSyntaxList.Add(GenerateComponentSharedTokenResourceMarkupExtensionClass(controlTokenInfo));
+                    controlTokenMarkupExtensionSyntaxList.Add(GenerateControlSharedTokenResourceMarkupExtensionClass(controlTokenInfo));
                 }
                 
                 namespaceSyntax = namespaceSyntax.AddMembers(controlTokenKindSyntaxList.ToArray());
@@ -134,7 +134,7 @@ internal class ResourceKeyClassWriter
         return GenerateTokenResourceMarkupExtensionClass(className, controlTokenInfo.TokenKindType);
     }
 
-    private static ClassDeclarationSyntax GenerateComponentSharedTokenResourceMarkupExtensionClass(ControlTokenInfo controlTokenInfo)
+    private static ClassDeclarationSyntax GenerateControlSharedTokenResourceMarkupExtensionClass(ControlTokenInfo controlTokenInfo)
     {
         var className = $"{controlTokenInfo.ControlName}SharedTokenResourceExtension";
         var parameter = SyntaxFactory.Parameter(SyntaxFactory.Identifier("kind"))
@@ -160,7 +160,7 @@ internal class ResourceKeyClassWriter
                                 SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                                 SyntaxFactory.Token(SyntaxKind.SealedKeyword))
                             .AddBaseListTypes(SyntaxFactory.SimpleBaseType(
-                                SyntaxFactory.ParseTypeName("ComponentSharedTokenResourceExtension")))
+                                SyntaxFactory.ParseTypeName("ControlSharedTokenResourceExtension")))
                             .AddMembers(ctor)
                             .NormalizeWhitespace();
     }

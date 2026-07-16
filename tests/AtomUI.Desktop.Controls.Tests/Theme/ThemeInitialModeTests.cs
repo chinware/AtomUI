@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
+using AtomUI.Theme.Schema;
 using AtomUI.Theme.Styling;
 using Avalonia.Media;
 using Shouldly;
@@ -62,6 +63,10 @@ public class ThemeInitialModeTests
             Type tokenType)
         {
             ControlDesignTokens.Add(tokenType);
+        }
+
+        public void AddControlToken(ControlTokenDescriptor descriptor)
+        {
         }
 
         public void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)

@@ -96,9 +96,9 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class DataGridTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    public sealed class DataGridTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
     {
-        public DataGridTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "DataGrid", kind)
+        public DataGridTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "DataGrid", kind)
         {
         }
     }

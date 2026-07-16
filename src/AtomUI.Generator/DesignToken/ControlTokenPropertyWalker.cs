@@ -21,17 +21,8 @@ internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
 
     public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
     {
-        // 检查是否有 getter 和 setter
-        bool hasGetter = node.AccessorList?.Accessors.Any(a => a.Kind() == SyntaxKind.GetAccessorDeclaration) ?? false;
-        bool hasSetter = node.AccessorList?.Accessors.Any(a => a.Kind() == SyntaxKind.SetAccessorDeclaration) ?? false;
-        var isSkip = !hasGetter || !hasSetter ||
-                     node.AttributeLists
-                         .SelectMany(attrList => attrList.Attributes)
-                         .Any(attr => attr.Name.ToString() == NotTokenDefinitionAttribute);
-        if (!isSkip)
-        {
-            ControlTokenInfo.Tokens.Add(new TokenName(node.Identifier.Text, TokenResourceCatalog!));
-        }
+        // Properties are collected from symbols in VisitClassDeclaration so inherited
+        // Token definitions and their concrete types use one deterministic path.
     }
 
     public override void VisitClassDeclaration(ClassDeclarationSyntax node)
@@ -63,10 +54,8 @@ internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
         
         if (classDeclaredSymbol is not null)
         {
-            AddBaseClassProperties(classDeclaredSymbol);
+            AddTokenProperties(classDeclaredSymbol, includeCurrentType: true);
         }
-
-        base.VisitClassDeclaration(node);
     }
 
     private void ReadControlId(ClassDeclarationSyntax node, INamedTypeSymbol classSymbol)
@@ -99,62 +88,62 @@ internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
         ControlTokenInfo.ControlId = id;
     }
     
-    /// <summary>
-    /// 遍历基类（包括多层继承）中所有可继承的属性（public/protected/internal），
-    /// 排除标记了 NotTokenDefinition 的属性，并添加到 Token 列表中。
-    /// </summary>
-    private void AddBaseClassProperties(ITypeSymbol classSymbol)
+    private void AddTokenProperties(ITypeSymbol classSymbol, bool includeCurrentType)
     {
-        var baseType = classSymbol.BaseType;
-        while (baseType != null && baseType.SpecialType != SpecialType.System_Object)
+        var current = includeCurrentType ? classSymbol : classSymbol.BaseType;
+        while (current != null && current.SpecialType != SpecialType.System_Object)
         {
-            var baseTypeFullName = baseType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            if (baseTypeFullName == BaseControlTokenClass)
+            var typeName = current.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            if (typeName == BaseControlTokenClass)
             {
                 break;
             }
-            // 获取该基类上的 TokenResourceCatalog（如果存在）
-            string? baseCatalog = null;
-            foreach (var attr in baseType.GetAttributes())
+
+            string? propertyCatalog = null;
+            foreach (var attr in current.GetAttributes())
             {
-                if (attr.ConstructorArguments.Any() && attr.ConstructorArguments[0].Value is string catalog)
+                if (attr.ConstructorArguments.Any() && attr.ConstructorArguments[0].Value is string declaredCatalog)
                 {
-                    baseCatalog = catalog;
+                    propertyCatalog = declaredCatalog;
                     break;
                 }
             }
 
-            // 遍历基类中所有属性成员
-            foreach (var member in baseType.GetMembers())
+            foreach (var property in current.GetMembers().OfType<IPropertySymbol>())
             {
-                if (member is IPropertySymbol property &&
-                    !property.IsStatic &&
-                    property.GetMethod != null &&   // 必须有 getter
-                    property.SetMethod != null &&
-                    property.DeclaredAccessibility != Accessibility.Private) // 排除私有属性
+                if (property.IsStatic ||
+                    property.GetMethod is null ||
+                    property.SetMethod is null ||
+                    property.DeclaredAccessibility == Accessibility.Private ||
+                    HasNotTokenDefinition(property))
                 {
-                    // 检查是否标记了 NotTokenDefinition
-                    bool hasNotTokenDef = false;
-                    foreach (var attr in property.GetAttributes())
-                    {
-                        // 比较特性名称（可以是简单名称或完整名称）
-                        var attrName = attr.AttributeClass?.Name;
-                        if (attrName == NotTokenDefinitionAttribute ||
-                            attr.AttributeClass?.ToDisplayString() == NotTokenDefinitionAttribute)
-                        {
-                            hasNotTokenDef = true;
-                            break;
-                        }
-                    }
-                    if (!hasNotTokenDef)
-                    {
-                        // 添加到 Token 列表（基类的属性使用基类的 catalog）
-                        ControlTokenInfo.Tokens.Add(new TokenName(property.Name, baseCatalog!));
-                    }
+                    continue;
                 }
+
+                ControlTokenInfo.Tokens.Add(new TokenName(property.Name, propertyCatalog!));
+                ControlTokenInfo.SchemaTokens.Add(new SchemaTokenInfo(
+                    property.Name,
+                    property.Type.ToDisplayString(GeneratorSymbolDisplay.FullyQualifiedType),
+                    ControlTokenInfo.GetFullyQualifiedTypeName().StartsWith("global::", StringComparison.Ordinal)
+                        ? ControlTokenInfo.GetFullyQualifiedTypeName()
+                        : $"global::{ControlTokenInfo.GetFullyQualifiedTypeName()}",
+                    SchemaTokenStage.Control));
             }
 
-            baseType = baseType.BaseType;
+            current = current.BaseType;
         }
+    }
+
+    private static bool HasNotTokenDefinition(IPropertySymbol property)
+    {
+        foreach (var attribute in property.GetAttributes())
+        {
+            if (attribute.AttributeClass?.ToDisplayString() == TargetMarkConstants.NotTokenDefinitionAttribute)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

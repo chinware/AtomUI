@@ -9,7 +9,7 @@ internal sealed record ThemeCompileRequest(
     ThemeSnapshot? Parent,
     IReadOnlyList<ThemeAlgorithm> Algorithms,
     IReadOnlyDictionary<string, string> SharedOverrides,
-    IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> ComponentOverrides,
+    IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo> ControlOverrides,
     IReadOnlyList<ControlTokenRegistration> Registrations,
     IReadOnlyDictionary<string, string> RuntimeOverrides)
 {

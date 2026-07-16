@@ -74,9 +74,9 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         }
     }
 
-    public sealed class GalleryShowCaseHeaderTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    public sealed class GalleryShowCaseHeaderTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
     {
-        public GalleryShowCaseHeaderTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "GalleryShowCaseHeader", kind)
+        public GalleryShowCaseHeaderTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "GalleryShowCaseHeader", kind)
         {
         }
     }
@@ -92,9 +92,9 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         }
     }
 
-    public sealed class GalleryStickyTabsHostTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    public sealed class GalleryStickyTabsHostTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
     {
-        public GalleryStickyTabsHostTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "GalleryStickyTabsHost", kind)
+        public GalleryStickyTabsHostTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "GalleryStickyTabsHost", kind)
         {
         }
     }
@@ -110,9 +110,9 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         }
     }
 
-    public sealed class GalleryWindowTitleBarTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    public sealed class GalleryWindowTitleBarTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
     {
-        public GalleryWindowTitleBarTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "GalleryWindowTitleBar", kind)
+        public GalleryWindowTitleBarTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "GalleryWindowTitleBar", kind)
         {
         }
     }
@@ -128,9 +128,9 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         }
     }
 
-    public sealed class ShowCaseItemTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    public sealed class ShowCaseItemTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
     {
-        public ShowCaseItemTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "ShowCaseItem", kind)
+        public ShowCaseItemTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ShowCaseItem", kind)
         {
         }
     }
@@ -146,9 +146,9 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         }
     }
 
-    public sealed class ShowCasePanelTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    public sealed class ShowCasePanelTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
     {
-        public ShowCasePanelTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "ShowCasePanel", kind)
+        public ShowCasePanelTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ShowCasePanel", kind)
         {
         }
     }

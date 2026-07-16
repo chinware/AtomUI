@@ -41,9 +41,9 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class SplashTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    public sealed class SplashTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
     {
-        public SplashTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "Splash", kind)
+        public SplashTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Splash", kind)
         {
         }
     }

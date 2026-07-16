@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using AtomUI.Controls.Primitives;
+using AtomUI.Generated.AtomUI_Desktop_Controls;
 using AtomUI.Theme;
+using AtomUI.Theme.Schema;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
@@ -200,9 +202,9 @@ public class ButtonThemeScopeTests
     {
         var scope = AvaloniaLocator.EnterScope();
         var manager = new ThemeManager();
-        foreach (var registration in ControlTokenTypePool.GetTokenTypes())
+        foreach (var descriptor in GeneratedThemeSchema.GetControls())
         {
-            manager.RegisterControlTokenType(registration.TokenType);
+            manager.RegisterControlTokenDescriptor(descriptor);
         }
         AvaloniaLocator.CurrentMutable.BindToSelf(manager);
         return scope;

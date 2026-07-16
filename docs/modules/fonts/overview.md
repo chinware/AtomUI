@@ -18,9 +18,9 @@ builder.UseAlibabaSansFont();
 builder.UseAlibabaPuHuiTiFont();
 ```
 
-字体注册只把字体集合加入 Avalonia FontManager。默认字体族可以通过 `WithDefaultFontFamily()` 或 `UseAtomUI()` 内部 ThemeLoaded 回调写入共享 Token。
+字体注册只把字体集合加入 Avalonia FontManager。默认字体族由 Builder 转换为初始 `ThemeConfig.Tokens`
+覆盖，在首个 ThemeSnapshot 编译前写入配置；不得通过 ThemeLoaded 回调修改已发布主题。
 
 ## 使用关系
 
 `AtomUI.Controls` 直接依赖 `AtomUI.Fonts.AlibabaSans`。Browser Gallery 额外引用 `AtomUI.Fonts.AlibabaPuHuiTi`，用于展示环境的中文字体覆盖。
-

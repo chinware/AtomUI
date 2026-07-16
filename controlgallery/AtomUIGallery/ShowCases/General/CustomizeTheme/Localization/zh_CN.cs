@@ -59,7 +59,6 @@ internal partial class zh_CN
     public const string P2ContentUseBlue = "蓝色";
     public const string P2ContentUseGreen = "绿色";
     public const string P2ContentUseMagenta = "洋红";
-    public const string P2ContentIsolationText = "组件内容";
     public const string P2TextEnableAlgorithm = "启用算法：";
     public const string P2TextDisableAlgorithm = "禁用算法：";
     public const string P2ContentThemeN1 = "主题 1";
