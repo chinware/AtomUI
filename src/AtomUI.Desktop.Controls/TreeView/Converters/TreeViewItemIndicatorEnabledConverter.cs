@@ -3,7 +3,11 @@ using Avalonia.Data.Converters;
 
 namespace AtomUI.Desktop.Controls.Converters;
 
+<<<<<<<< HEAD:src/AtomUI.Desktop.Controls/Cascader/Converters/CascaderViewItemIndicatorEnabledConverter.cs
+internal class CascaderViewItemIndicatorEnabledConverter : IMultiValueConverter
+========
 internal class TreeViewItemIndicatorEnabledConverter : IMultiValueConverter
+>>>>>>>> release/6.0:src/AtomUI.Desktop.Controls/TreeView/Converters/TreeViewItemIndicatorEnabledConverter.cs
 {
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
