@@ -59,7 +59,6 @@ internal partial class en_US
     public const string P2ContentUseBlue = "Blue";
     public const string P2ContentUseGreen = "Green";
     public const string P2ContentUseMagenta = "Magenta";
-    public const string P2ContentIsolationText = "Component content";
     public const string P2TextEnableAlgorithm = "Enable algorithm:";
     public const string P2TextDisableAlgorithm = "Disable algorithm:";
     public const string P2ContentThemeN1 = "Theme 1";

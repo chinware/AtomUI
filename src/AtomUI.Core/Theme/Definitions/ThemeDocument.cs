@@ -1,0 +1,102 @@
+using AtomUI.Theme.Configuration;
+
+namespace AtomUI.Theme.Definitions;
+
+internal enum ThemeAppearance : byte
+{
+    Light,
+    Dark
+}
+
+internal readonly record struct ThemeSourceLocation(
+    string Source,
+    int Line,
+    int Column,
+    string Path);
+
+internal readonly record struct ThemeControlDocumentIdentity(string Catalog, string Id)
+{
+    public override string ToString() => $"{Catalog}:{Id}";
+}
+
+internal sealed record ThemeAlgorithmDocument(
+    string Id,
+    ThemeSourceLocation Location);
+
+internal sealed record ThemeTokenDocument(
+    string Name,
+    string Value,
+    ThemeSourceLocation Location);
+
+internal sealed class ControlThemeDocument
+{
+    internal ControlThemeDocument(
+        ThemeControlDocumentIdentity identity,
+        ControlAlgorithmMode algorithmMode,
+        IEnumerable<ThemeAlgorithmDocument> algorithms,
+        IEnumerable<ThemeTokenDocument> tokens,
+        ThemeSourceLocation location)
+    {
+        Identity      = identity;
+        AlgorithmMode = algorithmMode;
+        Algorithms    = Array.AsReadOnly(algorithms.ToArray());
+        Tokens        = Array.AsReadOnly(tokens.ToArray());
+        Location      = location;
+    }
+
+    public ThemeControlDocumentIdentity Identity { get; }
+    public ControlAlgorithmMode AlgorithmMode { get; }
+    public IReadOnlyList<ThemeAlgorithmDocument> Algorithms { get; }
+    public IReadOnlyList<ThemeTokenDocument> Tokens { get; }
+    public ThemeSourceLocation Location { get; }
+}
+
+internal sealed class ThemeDocument
+{
+    internal ThemeDocument(
+        string id,
+        string name,
+        ThemeAppearance appearance,
+        bool isDefault,
+        IEnumerable<ThemeAlgorithmDocument> algorithms,
+        IEnumerable<ThemeTokenDocument> tokens,
+        IEnumerable<ControlThemeDocument> controls,
+        ThemeSourceLocation location)
+    {
+        Id         = id;
+        Name       = name;
+        Appearance = appearance;
+        IsDefault  = isDefault;
+        Algorithms = Array.AsReadOnly(algorithms.ToArray());
+        Tokens     = Array.AsReadOnly(tokens.ToArray());
+        Controls   = Array.AsReadOnly(controls.ToArray());
+        Location   = location;
+    }
+
+    public string Id { get; }
+    public string Name { get; }
+    public ThemeAppearance Appearance { get; }
+    public bool IsDefault { get; }
+    public IReadOnlyList<ThemeAlgorithmDocument> Algorithms { get; }
+    public IReadOnlyList<ThemeTokenDocument> Tokens { get; }
+    public IReadOnlyList<ControlThemeDocument> Controls { get; }
+    public ThemeSourceLocation Location { get; }
+}
+
+internal sealed class ThemeDocumentReadResult
+{
+    internal ThemeDocumentReadResult(
+        ThemeDocument? document,
+        IEnumerable<ThemeDefinitionDiagnostic> diagnostics)
+    {
+        Document    = document;
+        Diagnostics = Array.AsReadOnly(diagnostics.ToArray());
+    }
+
+    public ThemeDocument? Document { get; }
+    public IReadOnlyList<ThemeDefinitionDiagnostic> Diagnostics { get; }
+
+    public bool Success =>
+        Document is not null &&
+        Diagnostics.All(static diagnostic => diagnostic.Severity != ThemeDiagnosticSeverity.Error);
+}

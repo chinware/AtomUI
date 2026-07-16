@@ -200,25 +200,26 @@ TreatAsLocalProperty="IsAotCompatible;EnableAotAnalyzer;EnableTrimAnalyzer;Enabl
 
 ### Control token 注册
 
-运行时不要扫描 assembly 查找 control token。应由 generator 生成 `ControlTokenTypePool`，返回带 metadata 契约的注册项：
+运行时不要扫描 assembly 查找 Control Token。应由 generator 生成 `ControlTokenDescriptorPool`，返回完整的
+生成式 descriptor：
 
 ```csharp
-tokenTypes.Add(new ControlTokenRegistration(typeof(MyControlToken)));
+descriptors.Add(MyControlTokenDescriptor.Instance);
 ```
 
-`ControlTokenRegistration.TokenType` 要携带 `DynamicallyAccessedMembers`：
+descriptor 必须直接提供以下静态已知信息：
 
-```csharp
-[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor |
-                            DynamicallyAccessedMemberTypes.PublicProperties |
-                            DynamicallyAccessedMemberTypes.NonPublicProperties)]
-public Type TokenType { get; }
-```
+- `ControlTokenIdentity` 和 registry slot。
+- 直接构造 Token builder 的委托。
+- Token name、value type、stage 和 slot。
+- 强类型 parse、set、get 和 resource projection 委托。
+- Control 自身和继承 Token schema。
 
-这里有两个关键点：
+这里有三个关键点：
 
-- DAM 不是“全局保留开关”。只有 `Type` 值从带 DAM 契约的位置继续传到 `Activator.CreateInstance` 或 property scan，trimmer 才知道要保留哪些 metadata。
-- `IList<Type>` 不能表达集合元素的 metadata 要求，所以需要 `ControlTokenRegistration` 这样的包装类型。
+- Builder 必须原样传递 descriptor，不能丢弃 identity 后退化为 `Type` 注册。
+- 内置正常路径不调用 `Activator.CreateInstance`、`Type.GetProperties` 或 `PropertyInfo.GetValue/SetValue`。
+- 第三方 Control Token 必须使用 AtomUI generator，或者显式提供同等完整的 descriptor；不提供反射 fallback。
 
 ### Token value converter 注册
 
@@ -715,6 +716,5 @@ git diff --check
 - `TypeHelper` 动态 path fallback。
 - `ObjectExtension` / `TypeMemberExtension` 反射 helper。
 - DataGrid 对用户 `Binding` / `ReflectionBinding` 的兼容读取。
-- Theme token 创建中基于 `ControlTokenRegistration.TokenType` 的 `Activator.CreateInstance`。
 
 共同要求是：AtomUI 内置正常路径不用这些 fallback；用户动态场景使用时风险要显式暴露；AOT 用户要有 descriptor、generator 或显式注册这样的稳定替代路径。

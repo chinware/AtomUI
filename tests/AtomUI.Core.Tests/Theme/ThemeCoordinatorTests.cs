@@ -1,5 +1,4 @@
 using AtomUI.Theme;
-using AtomUI.Theme.Transitions;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Platform;
@@ -149,6 +148,20 @@ public class ThemeCoordinatorTests
         }, TestContext.Current.CancellationToken);
     }
 
+    [Fact]
+    public void Theme_Event_Raisers_Do_Not_Cast_InvocationList_Items_In_Foreach()
+    {
+        var coordinatorSource = File.ReadAllText(GetRepoFile("src/AtomUI.Core/Theme/ThemeCoordinator.cs"));
+        var managerSource     = File.ReadAllText(GetRepoFile("src/AtomUI.Core/Theme/ThemeManager.cs"));
+
+        coordinatorSource.ShouldNotContain(
+            "foreach (EventHandler<ThemeTransitionEventArgs> handler in handlers.GetInvocationList())");
+        managerSource.ShouldNotContain(
+            "foreach (EventHandler<ThemeChangedEventArgs> handler in handlers.GetInvocationList())");
+        managerSource.ShouldNotContain(
+            "foreach (EventHandler<ThemeOperateEventArgs> handler in handlers.GetInvocationList())");
+    }
+
     private static ThemeCoordinator CreateCoordinator(ThemeManager? manager = null)
     {
         return (manager ?? CreateManager()).ThemeCoordinator;
@@ -219,5 +232,22 @@ public class ThemeCoordinatorTests
         public void InvalidateAssemblyCache()
         {
         }
+    }
+
+    private static string GetRepoFile(string relativePath)
+    {
+        var directory = AppContext.BaseDirectory;
+        while (!string.IsNullOrEmpty(directory))
+        {
+            var candidate = Path.Combine(directory, relativePath);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = Directory.GetParent(directory)?.FullName;
+        }
+
+        throw new FileNotFoundException(relativePath);
     }
 }

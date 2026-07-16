@@ -1655,7 +1655,6 @@ namespace AtomUIGallery.Localization
         NestedThemeTitle,
         P2ContentApple,
         P2ContentDefaultButton,
-        P2ContentIsolationText,
         P2ContentLinkButton,
         P2ContentOrange,
         P2ContentPear,

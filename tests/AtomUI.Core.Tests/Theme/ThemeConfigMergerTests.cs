@@ -1,0 +1,145 @@
+using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Schema;
+using Shouldly;
+using Xunit;
+
+namespace AtomUI.Core.Tests.Theme;
+
+public class ThemeConfigMergerTests
+{
+    [Fact]
+    public void Merge_Inherits_Parent_And_Applies_Local_Precedence()
+    {
+        var schema = ThemeConfigTestSchema.Create();
+        var defaults = Normalize(schema, false, ["Default"], ("Alpha", "1"));
+        var parent = Normalize(schema, true, ["Compact"], ("Alpha", "2"), ("Beta", "3"));
+        var local = Normalize(schema, true, null, ("Beta", "4"));
+
+        var result = ThemeConfigMerger.Merge(defaults, parent, local);
+
+        result.EffectiveConfig.Algorithms.Select(static item => item.Id).ShouldBe(["Compact"]);
+        Value(result.EffectiveConfig, "Alpha").ShouldBe(2d);
+        Value(result.EffectiveConfig, "Beta").ShouldBe(4d);
+        result.ChangeSet.AlgorithmsChanged.ShouldBeFalse();
+        result.ChangeSet.GlobalTokensChanged.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Merge_Inherit_False_Restarts_From_Defaults_But_Changes_Are_Relative_To_Parent()
+    {
+        var schema = ThemeConfigTestSchema.Create();
+        var defaults = Normalize(schema, false, ["Default"], ("Alpha", "1"));
+        var parent = Normalize(schema, true, ["Compact"], ("Alpha", "2"), ("Beta", "3"));
+        var local = Normalize(schema, false, null, ("Beta", "4"));
+
+        var result = ThemeConfigMerger.Merge(defaults, parent, local);
+
+        result.EffectiveConfig.Algorithms.Select(static item => item.Id).ShouldBe(["Default"]);
+        Value(result.EffectiveConfig, "Alpha").ShouldBe(1d);
+        Value(result.EffectiveConfig, "Beta").ShouldBe(4d);
+        result.ChangeSet.AlgorithmsChanged.ShouldBeTrue();
+        result.ChangeSet.GlobalTokensChanged.ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData((int)ControlAlgorithmMode.Unspecified, (int)ControlAlgorithmMode.Custom)]
+    [InlineData((int)ControlAlgorithmMode.Disabled, (int)ControlAlgorithmMode.Disabled)]
+    [InlineData((int)ControlAlgorithmMode.Global, (int)ControlAlgorithmMode.Global)]
+    [InlineData((int)ControlAlgorithmMode.Custom, (int)ControlAlgorithmMode.Custom)]
+    public void Merge_Resolves_All_Control_Algorithm_States(
+        int localModeValue,
+        int expectedModeValue)
+    {
+        var localMode = (ControlAlgorithmMode)localModeValue;
+        var expectedMode = (ControlAlgorithmMode)expectedModeValue;
+        var schema = ThemeConfigTestSchema.Create();
+        var defaults = Normalize(schema, false, ["Default"]);
+        var parent = NormalizeControl(schema, true, ControlAlgorithmMode.Custom, ["Compact"], "20");
+        var localAlgorithms = localMode == ControlAlgorithmMode.Custom ? new[] { "Default" } : null;
+        var local = NormalizeControl(schema, true, localMode, localAlgorithms, "32");
+
+        var result = ThemeConfigMerger.Merge(defaults, parent, local);
+
+        var button = result.EffectiveConfig.Controls.Single();
+        button.AlgorithmMode.ShouldBe(expectedMode);
+        button.OwnTokens.Single(item => item.Descriptor.Name == "Height").Value.ShouldBe(32d);
+        button.Algorithms.Select(static item => item.Id).ShouldBe(
+            expectedMode == ControlAlgorithmMode.Custom
+                ? localMode == ControlAlgorithmMode.Custom ? ["Default"] : ["Compact"]
+                : []);
+    }
+
+    [Fact]
+    public void Merge_Produces_Deterministic_Changed_Control_Order_And_NoOp_Result()
+    {
+        var schema = ThemeConfigTestSchema.Create();
+        var defaults = Normalize(schema, false, ["Default"]);
+        var parent = NormalizeControl(schema, true, ControlAlgorithmMode.Disabled, null, "20");
+        var local = NormalizeControl(schema, true, ControlAlgorithmMode.Unspecified, null, "32");
+
+        var changed = ThemeConfigMerger.Merge(defaults, parent, local);
+        var noOpConfig = Normalize(new ThemeConfig
+        {
+            Inherit = true
+        }, schema);
+        var noOp = ThemeConfigMerger.Merge(defaults, changed.EffectiveConfig, noOpConfig);
+
+        changed.ChangeSet.ChangedControls.ShouldBe([ThemeConfigTestSchema.ButtonIdentity]);
+        changed.ChangeSet.IsEmpty.ShouldBeFalse();
+        noOp.ChangeSet.IsEmpty.ShouldBeTrue();
+        noOp.EffectiveConfig.ShouldBe(changed.EffectiveConfig);
+        noOp.EffectiveConfig.Fingerprint.ShouldBe(changed.EffectiveConfig.Fingerprint);
+    }
+
+    private static NormalizedThemeConfig Normalize(
+        ThemeSchemaRegistry schema,
+        bool inherit,
+        string[]? algorithms,
+        params (string Name, string Value)[] tokens)
+    {
+        var config = new ThemeConfig
+        {
+            Inherit = inherit,
+            Algorithms = algorithms
+        };
+        foreach (var token in tokens)
+        {
+            config.Tokens[token.Name] = token.Value;
+        }
+
+        return Normalize(config, schema);
+    }
+
+    private static NormalizedThemeConfig NormalizeControl(
+        ThemeSchemaRegistry schema,
+        bool inherit,
+        ControlAlgorithmMode mode,
+        string[]? algorithms,
+        string height)
+    {
+        var config = new ThemeConfig
+        {
+            Inherit = inherit
+        };
+        config.Controls[ThemeConfigTestSchema.ButtonIdentity] = new ControlThemeConfig
+        {
+            Algorithm = mode,
+            Algorithms = algorithms,
+            Tokens =
+            {
+                ["Height"] = height
+            }
+        };
+        return Normalize(config, schema);
+    }
+
+    private static NormalizedThemeConfig Normalize(ThemeConfig config, ThemeSchemaRegistry schema)
+    {
+        return ThemeConfigNormalizer.Normalize(config, schema).Config.ShouldNotBeNull();
+    }
+
+    private static double Value(NormalizedThemeConfig config, string name)
+    {
+        return (double)config.GlobalTokens.Single(item => item.Descriptor.Name == name).Value!;
+    }
+}

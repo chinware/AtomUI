@@ -7,7 +7,7 @@ internal sealed record ThemeDefinitionParseRequest(
     Stream Stream,
     string FilePath,
     IReadOnlySet<string> SharedTokenNames,
-    IReadOnlyDictionary<string, IReadOnlySet<string>> ComponentOwnTokenNames);
+    IReadOnlyDictionary<string, IReadOnlySet<string>> ControlOwnTokenNames);
 
 internal static class ThemeDefinitionParser
 {
@@ -19,8 +19,8 @@ internal static class ThemeDefinitionParser
     private const string InvalidTokenValueCode = "ATMTHM006";
     private const string DuplicateKeyCode = "ATMTHM007";
     private const string UnknownSharedTokenCode = "ATMTHM008";
-    private const string UnknownComponentTokenCode = "ATMTHM009";
-    private const string UnregisteredComponentCode = "ATMTHM010";
+    private const string UnknownControlTokenCode = "ATMTHM009";
+    private const string UnregisteredControlCode = "ATMTHM010";
 
     private const string ThemeElementName = "Theme";
     private const string AlgorithmsElementName = "Algorithms";
@@ -44,7 +44,7 @@ internal static class ThemeDefinitionParser
         ArgumentNullException.ThrowIfNull(request.Stream);
         ArgumentNullException.ThrowIfNull(request.FilePath);
         ArgumentNullException.ThrowIfNull(request.SharedTokenNames);
-        ArgumentNullException.ThrowIfNull(request.ComponentOwnTokenNames);
+        ArgumentNullException.ThrowIfNull(request.ControlOwnTokenNames);
 
         var diagnostics = new List<ThemeDefinitionDiagnostic>();
         XDocument document;
@@ -368,7 +368,7 @@ internal static class ThemeDefinitionParser
                     request.FilePath,
                     element,
                     controlPath,
-                    $"Component '{id}' is defined more than once.");
+                    $"Control '{id}' is defined more than once.");
                 continue;
             }
 
@@ -385,22 +385,22 @@ internal static class ThemeDefinitionParser
                 enableAlgorithm = false;
             }
 
-            var isRegistered = request.ComponentOwnTokenNames.TryGetValue(id, out var ownTokenNames);
+            var isRegistered = request.ControlOwnTokenNames.TryGetValue(id, out var ownTokenNames);
             if (!isRegistered)
             {
                 AddDiagnostic(
                     diagnostics,
-                    UnregisteredComponentCode,
+                    UnregisteredControlCode,
                     request.FilePath,
                     element,
                     controlPath,
-                    $"Component '{id}' is not registered; its own tokens were preserved without schema validation.",
+                    $"Control '{id}' is not registered; its own tokens were preserved without schema validation.",
                     ThemeDiagnosticSeverity.Warning);
             }
 
             var tokens = new Dictionary<string, string>(StringComparer.Ordinal);
             var sharedTokens = new Dictionary<string, string>(StringComparer.Ordinal);
-            ParseComponentTokens(
+            ParseControlTokenEntries(
                 element,
                 id,
                 controlPath,
@@ -419,9 +419,9 @@ internal static class ThemeDefinitionParser
         }
     }
 
-    private static void ParseComponentTokens(
+    private static void ParseControlTokenEntries(
         XElement controlElement,
-        string componentId,
+        string controlId,
         string controlPath,
         IReadOnlySet<string>? ownTokenNames,
         ThemeDefinitionParseRequest request,
@@ -505,11 +505,11 @@ internal static class ThemeDefinitionParser
             {
                 AddDiagnostic(
                     diagnostics,
-                    UnknownComponentTokenCode,
+                    UnknownControlTokenCode,
                     request.FilePath,
                     element,
                     tokenPath,
-                    $"Token '{name}' is not registered for component '{componentId}'.");
+                    $"Token '{name}' is not registered for control '{controlId}'.");
                 continue;
             }
 

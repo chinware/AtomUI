@@ -1,5 +1,6 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
+using AtomUI.Generated.AtomUI_Controls;
 
 namespace AtomUI.Controls;
 
@@ -7,10 +8,9 @@ internal static class ThemeManagerBuilderExtensions
 {
     public static IThemeManagerBuilder UseCommonControls(this IThemeManagerBuilder themeManagerBuilder)
     {
-        var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
-        foreach (var controlTokenRegistration in controlTokenTypes)
+        foreach (var descriptor in GeneratedThemeSchema.GetControls())
         {
-            themeManagerBuilder.AddControlToken(controlTokenRegistration.TokenType);
+            themeManagerBuilder.AddControlToken(descriptor);
         }
         themeManagerBuilder.AddControlThemesProvider(RuntimePlatform.Features.SupportsNativeWindow
             ? new CommonControlThemesProvider()

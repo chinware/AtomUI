@@ -26,9 +26,9 @@ namespace AtomUI.Controls.DesignTokens
         }
     }
 
-    public sealed class IconTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    public sealed class IconTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
     {
-        public IconTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "Icon", kind)
+        public IconTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Icon", kind)
         {
         }
     }

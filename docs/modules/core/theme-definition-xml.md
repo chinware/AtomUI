@@ -1,0 +1,401 @@
+# AtomUI 主题定义 XML v1 规范
+
+本文定义 AtomUI 主题定义文件的 v1 标准格式。它是 `ThemeDocumentReader`、
+`ThemeDefinitionBinder`、主题编辑器、CI 校验器和第三方主题包共同遵守的协议。
+
+规范配套文件：
+
+- XML namespace：`https://atomui.net/schemas/theme/v1`
+- XML Schema：[schemas/atomui-theme-v1.xsd](schemas/atomui-theme-v1.xsd)
+- 完整示例：[examples/daybreak-blue.theme.xml](examples/daybreak-blue.theme.xml)
+
+本文中的“必须”“不得”“应当”和“可以”是规范性要求。
+
+## 1. 设计结论
+
+- 一个 XML 文件只定义一个主题。
+- XML namespace 是格式版本，不使用额外的 `Version` 属性。
+- v1 文档严格使用 `Theme -> Algorithms -> Tokens -> Controls` 的固定顺序。
+- 算法使用有序 `<Algorithm Id="..." />` 元素，不使用逗号分隔字符串。
+- Control 使用 `(Catalog, Id)` 组成稳定身份，不根据 CLR 类型名或程序集扫描推断身份。
+- Token 只使用 `Value` 属性，不允许正文值、类型属性或 `IsShared` 分类标记。
+- Token 类型、阶段和赋值器由 `ThemeSchemaRegistry` 决定，XML 不重复声明 schema 信息。
+- XSD 负责结构、基础词法、容量和局部唯一性；Binder 负责 registry 相关的语义验证。
+- 文档不支持 include、import、继承文件、表达式、脚本或环境变量替换。
+- 主题定义文件只产生不可变 `ThemeDefinition`，不能直接修改在线主题资源。
+
+主题定义文件应使用 `<theme-id>.theme.xml` 扩展名约定。文件名只用于来源定位和诊断，不参与主题身份。
+
+## 2. 完整示例
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Theme xmlns="https://atomui.net/schemas/theme/v1"
+       Id="DaybreakBlue"
+       Name="Daybreak Blue"
+       Appearance="Light"
+       IsDefault="true">
+  <Algorithms>
+    <Algorithm Id="Default" />
+  </Algorithms>
+
+  <Tokens>
+    <Token Name="ColorPrimary" Value="#1677FF" />
+    <Token Name="BorderRadius" Value="6" />
+  </Tokens>
+
+  <Controls>
+    <Control Catalog="AtomUI" Id="Button" Algorithm="Global">
+      <Tokens>
+        <Token Name="ColorPrimary" Value="#0958D9" />
+        <Token Name="ContentFontSize" Value="14" />
+      </Tokens>
+    </Control>
+
+    <Control Catalog="AtomUI" Id="Input" Algorithm="Disabled">
+      <Tokens>
+        <Token Name="ActiveBorderColor" Value="#1677FF" />
+      </Tokens>
+    </Control>
+
+    <Control Catalog="AtomUI" Id="DataGrid">
+      <Algorithms>
+        <Algorithm Id="Default" />
+        <Algorithm Id="Compact" />
+      </Algorithms>
+      <Tokens>
+        <Token Name="HeaderBg" Value="#FAFAFA" />
+      </Tokens>
+    </Control>
+  </Controls>
+</Theme>
+```
+
+## 3. 文档结构
+
+```text
+Theme                                  exactly 1
++-- Algorithms                        exactly 1
+|   \-- Algorithm                     1..64
++-- Tokens                            0..1
+|   \-- Token                         1..4096
+\-- Controls                          0..1
+    \-- Control                       1..1024
+        +-- Algorithms                0..1
+        |   \-- Algorithm             1..64
+        \-- Tokens                    0..1
+            \-- Token                 1..4096
+```
+
+元素顺序是协议的一部分。容器一旦出现就不能为空。空 `Tokens`、空 `Controls` 或空 `Algorithms`
+均为结构错误。
+
+## 4. Theme
+
+根元素必须是 v1 namespace 中的 `Theme`。
+
+| 属性 | 必须 | 类型 | 语义 |
+|---|---|---|---|
+| `Id` | 是 | `Identifier` | ThemeCatalog 内稳定且唯一的主题身份，不从文件名推断 |
+| `Name` | 是 | 1..128 字符 | 面向用户显示的名称 |
+| `Appearance` | 是 | `Light` 或 `Dark` | 提交后设置 Avalonia Light/Dark variant 的依据 |
+| `IsDefault` | 否 | `true` 或 `false` | 是否参与默认主题选择，默认 `false` |
+
+`Id`、Algorithm `Id`、Control `Catalog`、Control `Id` 和 Token `Name` 使用相同 Identifier 词法：
+
+```text
+[A-Za-z_][A-Za-z0-9_.-]{0,127}
+```
+
+Identifier 区分大小写，使用 ordinal 比较。`DaybreakBlue` 和 `daybreakblue` 是两个不同身份。
+
+一个可用 ThemeCatalog 最多只能有一个 `IsDefault="true"` 的主题。该约束跨文件生效，由 `ThemeCatalog`
+验证，不属于单文件 XSD 约束。
+
+`Appearance` 是主题元数据，不从算法名称猜测。Binder 必须验证算法链与声明外观不存在已知冲突，
+算法 descriptor 必须通过 `Preserve`、`Light` 或 `Dark` 声明外观影响。
+
+## 5. Algorithms 与 Algorithm
+
+顶层 `Algorithms` 必须存在，并至少包含一个算法。算法按照文档顺序执行：
+
+```text
+Seed values
+    |
+    v
+Algorithm[0] -> Algorithm[1] -> ... -> Algorithm[n]
+    |
+    v
+Map and Alias overrides
+```
+
+`Algorithm` 是空元素，只允许一个必填 `Id` 属性。`Id` 必须解析到
+`ThemeSchemaRegistry` 中唯一的 `ThemeAlgorithmDescriptor`。算法 ID 区分大小写，同一算法链内不得重复。
+
+AtomUI 内置算法使用 `Default`、`Dark` 和 `Compact`。第三方算法必须使用包含自身命名域的稳定 ID，例如
+`Acme.HighContrast`，避免与其他 descriptor 冲突。
+
+主题文件只声明算法身份和顺序。算法实例、依赖关系、AOT 构造委托以及外观影响由 descriptor 提供。
+
+## 6. Tokens 与 Token
+
+顶层 `Tokens` 覆盖当前主题的全局 Token。每个 `Token` 都是空元素：
+
+```xml
+<Token Name="ColorPrimary" Value="#1677FF" />
+```
+
+| 属性 | 必须 | 语义 |
+|---|---|---|
+| `Name` | 是 | Token schema 中的稳定名称 |
+| `Value` | 是 | 1..4096 字符的词法值 |
+
+同一个 `Tokens` 容器内不得出现重复 `Name`。Token 顺序不影响语义，规范化器按照 Token slot 生成稳定
+fingerprint。
+
+Binder 根据生成式 schema 决定 Token 的阶段：
+
+- Seed Token override 在算法链之前应用。
+- Map 和 Alias Token override 在算法链之后应用。
+- 未知 Token、不可写 Token 或类型转换失败都是错误。
+- XML 不允许通过 `Type`、`Stage` 或 `IsShared` 改写 schema 结论。
+
+## 7. Controls 与 Control
+
+`Controls` 包含 Control 级配置。Control 身份由必填的 `Catalog` 和 `Id` 共同组成：
+
+```xml
+<Control Catalog="AtomUI" Id="Button" Algorithm="Disabled">
+  <Tokens>
+    <Token Name="ContentFontSize" Value="14" />
+  </Tokens>
+</Control>
+```
+
+`Catalog` 标识注册 descriptor 的命名域，`Id` 标识该命名域中的 Control。两者都区分大小写。
+同一个 `Controls` 容器中不得出现重复的 `(Catalog, Id)`。
+
+AtomUI 内置 Control 使用 `Catalog="AtomUI"`。第三方包必须使用自身稳定的 Catalog，例如
+`Catalog="Acme.Controls"`，不得借用 `AtomUI` Catalog。
+
+Control 内部的 `Tokens` 使用一个集合表达两类覆盖：
+
+- Control 自身 Token。
+- 该 Control 消费的全局 Token。
+
+Binder 使用 Control descriptor 分类。同名 Token 同时存在于两类 schema 时，同一个值同时应用于两类输入。
+Control Token 不形成 Content 子树资源作用域。
+
+Control 配置必须至少声明 `Algorithm`、自定义 `Algorithms` 或 `Tokens` 中的一项。空 Control 是语义错误。
+
+### 7.1 Control 算法四态
+
+| XML 形态 | 规范化状态 | 语义 |
+|---|---|---|
+| 不声明 `Algorithm` 和 `Algorithms` | Unspecified | 继承父配置中同一 Control 的策略 |
+| `Algorithm="Disabled"` | Disabled | Control Seed override 不重新派生 Map 和 Alias |
+| `Algorithm="Global"` | Global | 使用当前作用域的全局算法链重新派生 |
+| 子元素 `<Algorithms>` | Custom | 使用 Control 声明的有序算法链 |
+
+`Algorithm` 属性和 `<Algorithms>` 子元素互斥，同时出现是语义错误。继承链没有提供 Control 策略时，
+Unspecified 最终解析为 AtomUI 默认策略 `Disabled`。
+
+### 7.2 为什么 Algorithm 不是布尔类型
+
+Control 算法配置不是“开启或关闭算法”的二元开关，而是一个四态策略：
+
+```text
+ControlAlgorithmMode
++-- Unspecified
++-- Disabled
++-- Global
+\-- Custom -> ordered algorithm identities
+```
+
+`Global` 的含义也不是简单的“启用”，而是“使用当前作用域的全局算法链重新派生该 Control 的有效
+Token”。如果写成 `Algorithm="true"`，XML 本身无法表达启用的是哪一条算法链。
+
+从编码能力看，可以使用“可空布尔属性 + 子算法列表”拼出四种状态：
+
+| 可空布尔值 | 子算法列表 | 结果 |
+|---|---|---|
+| 未提供 | 空 | Unspecified |
+| `false` | 空 | Disabled |
+| `true` | 空 | Global |
+| 未提供 | 非空 | Custom |
+
+但这种表示把一个领域值拆成两个耦合字段，并产生 `true + 自定义列表`、`false + 自定义列表` 等无效组合。
+它还容易在序列化、绑定或默认值处理中把“未提供”错误地折叠为 `false`，从而把“继承父策略”悄悄改成
+“禁用”。
+
+因此 XML 使用有意义的枚举词 `Disabled` 和 `Global`，自定义策略使用结构化 `<Algorithms>`，省略两者表示
+Unspecified。后端统一使用以下枚举接收规范化结果：
+
+```csharp
+internal enum ControlAlgorithmMode : byte
+{
+    Unspecified,
+    Disabled,
+    Global,
+    Custom
+}
+```
+
+`Custom` 对应的有序算法 identity 作为规范化 Control 配置中的不可变 payload 保存，并且只允许在 Mode 为
+`Custom` 时非空。Reader 和 Binder 不得先降级为 `bool` 或 `bool?` 再推断。这样 Schema、diagnostic、C#
+配置模型和运行时合并器共享同一套领域语义。
+
+自定义算法示例：
+
+```xml
+<Control Catalog="AtomUI" Id="DataGrid">
+  <Algorithms>
+    <Algorithm Id="Default" />
+    <Algorithm Id="Compact" />
+  </Algorithms>
+  <Tokens>
+    <Token Name="HeaderBg" Value="#FAFAFA" />
+  </Tokens>
+</Control>
+```
+
+## 8. Token Value 词法
+
+`Value` 先经过 XML 1.0 属性解码，再交给 Token descriptor 的强类型 parser。解析必须使用
+`CultureInfo.InvariantCulture`，不得依赖当前系统语言。
+
+内置基础类型使用以下规范词法：
+
+| 目标类型 | 规范词法 | 示例 |
+|---|---|---|
+| `string` | XML 解码后的原值，不自动 trim | `Alibaba Sans` |
+| `bool` | 小写 `true` 或 `false` | `true` |
+| `int` | 十进制整数，不使用分组符 | `14` |
+| `double` / `float` | 有限十进制或科学计数法，`.` 为小数点 | `1.5` |
+| `Color` | `#RRGGBB` 或 `#AARRGGBB` | `#1677FF` |
+| `TimeSpan` | invariant constant format | `00:00:00.1000000` |
+| `Thickness` | 1、2 或 4 个逗号分隔的有限数字 | `8,4,8,4` |
+| `CornerRadius` | 1、2 或 4 个逗号分隔的有限数字 | `6` |
+| `Point` / `Size` | 两个逗号分隔的有限数字 | `12,8` |
+| enum | descriptor 生成的区分大小写名称 | `Round` |
+
+Brush、FontFamily、BoxShadows、Easing 和其他复合值必须由对应 descriptor 明确声明 parser 和规范 formatter。
+第三方 Token descriptor 不得退回 `TypeConverter` 反射发现或 `Convert.ChangeType`。
+
+规范 writer 必须输出 formatter 的 canonical value。Reader 可以接受 descriptor 明确声明的等价词法，
+但 fingerprint 必须基于转换后的 typed value，而不是原始字符串。
+
+## 9. 校验管线
+
+```text
+UTF-8 bytes
+    |
+    v
+secure XmlReader + compiled XSD
+    |
+    v
+ThemeDocument
+    |
+    v
+ThemeDefinitionBinder + ThemeSchemaRegistry
+    |
+    v
+typed immutable ThemeDefinition + diagnostics
+```
+
+校验分为五层，任一层失败都不得产生可发布的部分定义：
+
+1. XML well-formedness：编码、标签、属性引用和 namespace 正确。
+2. XSD validation：元素顺序、数量、属性、基础词法和单文件唯一性正确。
+3. Registry binding：算法、Control 和 Token identity 均存在。
+4. Value conversion：每个 Token 值转换为 schema 指定的强类型值。
+5. Semantic validation：算法互斥、外观一致性、空 Control、跨文件默认主题冲突等规则成立。
+
+XSD validation 不能替代 Binder。XSD 不包含当前进程安装的 Control、Token 或算法集合，也不负责解析 Token
+值的目标类型。
+
+每条 diagnostic 必须包含：
+
+- 稳定 code 和 severity。
+- 文件或资源身份。
+- 1-based line 和 column。
+- 元素路径，例如 `/Theme/Controls/Control[@Catalog='AtomUI'][@Id='Button']/Tokens/Token[@Name='ColorPrimary']`。
+- 不依赖异常文本的稳定 message。
+- 底层异常仅作为内部 exception context 保存。
+
+diagnostic code 按责任分段：
+
+| 范围 | 责任 |
+|---|---|
+| `ATMTHM1xxx` | XML、namespace 和 XSD 结构 |
+| `ATMTHM2xxx` | Registry identity 和 schema binding |
+| `ATMTHM3xxx` | Token value 转换和配置语义 |
+| `ATMTHM4xxx` | Catalog、来源优先级和跨文件冲突 |
+
+## 10. 安全与资源边界
+
+Reader 必须满足：
+
+- `DtdProcessing = Prohibit`。
+- `XmlResolver = null`。
+- `ValidationType = Schema`，并启用 `XmlSchemaValidationFlags.ProcessIdentityConstraints`。
+- 不启用 `ProcessInlineSchema` 或 `ProcessSchemaLocation`，只使用应用内置并预编译的 v1 XSD。
+- 不读取 namespace URI 或 `xsi:schemaLocation` 指向的网络资源。
+- 不展开外部实体，不执行 XInclude，不解释处理指令。
+- XSD 在进程初始化时编译一次，后续读取复用同一不可变 schema set。
+- 使用 validating `XmlReader` 单次流式生成 `ThemeDocument`，不为正常路径构建 `XDocument`。
+- 文件读取和绑定以 definition revision 为缓存边界，同一 revision 最多成功处理一次。
+
+v1 portable profile 的默认上限：
+
+| 项目 | 上限 |
+|---|---|
+| 单文件 UTF-8 字节数 | 4 MiB |
+| XML 元素总数 | 65536 |
+| 单算法链 | 64 |
+| 顶层 Token | 4096 |
+| Control 数量 | 1024 |
+| 单 Control Token | 4096 |
+| Identifier 长度 | 128 字符 |
+| Token Value 长度 | 4096 字符 |
+
+实现可以通过 `ThemeDefinitionReaderOptions` 调低运行时上限，但不得高于实现可安全处理的硬上限。触发限制
+必须返回结构化 diagnostic，不能静默截断。
+
+## 11. 规范化与内容身份
+
+Reader 保留源码位置和声明顺序；Binder 输出 typed、不可变定义。内容 fingerprint 使用规范化结果：
+
+- namespace 版本。
+- Theme metadata。
+- 有序算法 identity。
+- 按 Token slot 排序的 typed Token value。
+- 按 `(Catalog, Id)` 排序的 Control 配置。
+- Schema registry revision。
+
+空白、属性顺序、注释、Token 声明顺序和 Control 声明顺序不影响 fingerprint。算法顺序影响 fingerprint。
+
+规范 writer 应使用 UTF-8、两个空格缩进、双引号属性和本文定义的元素顺序。Writer 应按 Token name 以及
+Control `(Catalog, Id)` 进行 ordinal 排序，使代码评审 diff 稳定。
+
+## 12. 版本演进
+
+v1 namespace 和 XSD 发布后保持不可变。只允许不改变验证结果的文档澄清。
+
+破坏性格式变更必须使用新 namespace，例如 `https://atomui.net/schemas/theme/v2`，并提供独立 XSD、Reader
+和迁移工具。Reader 只接受显式注册的 namespace，不猜测版本，不把无 namespace 文档当作 v1，也不建立旧格式
+adapter。
+
+## 13. 一致性验收
+
+主题定义实现必须具备以下测试：
+
+- XSD 自身可以被 .NET `XmlSchemaSet` 编译。
+- 标准示例通过 XSD 和 Binder。
+- 未声明 namespace、错误元素顺序、未知属性、空容器和重复 identity 被拒绝。
+- Control 算法四态全部产生确定的规范化结果。
+- `Algorithm` 属性与 `<Algorithms>` 同时出现时被拒绝。
+- 未知算法、Control、Token 和非法 Value 产生带行列及路径的 diagnostic。
+- DTD、外部实体、超限文件和超限元素数量在发布定义前失败。
+- 相同 typed 内容的不同 XML 排版得到相同 fingerprint。
+- Schema 校验、Reader 和 Binder 的正常路径通过 NativeAOT 验证，不执行反射扫描或动态代码生成。

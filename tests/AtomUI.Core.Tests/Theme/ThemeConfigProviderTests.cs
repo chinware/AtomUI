@@ -1,7 +1,6 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Resources;
-using AtomUI.Theme.Scope;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
@@ -184,13 +183,13 @@ public class ThemeConfigProviderTests
     }
 
     [Fact]
-    public void Child_Provider_Inherits_Parent_Component_Override_When_It_Has_No_Local_Override()
+    public void Child_Provider_Inherits_Parent_Control_Override_When_It_Has_No_Local_Override()
     {
         using var _ = UseThemeManager();
         var parent = Provider();
         var child = Provider();
 
-        parent.ControlTokenInfoSetters.Add(ComponentOverride(44));
+        parent.ControlTokenInfoSetters.Add(ControlOverride(44));
         parent.Content = child;
         child.Content = new Border();
         Attach(parent);
@@ -200,14 +199,14 @@ public class ThemeConfigProviderTests
     }
 
     [Fact]
-    public void Child_Provider_Component_Override_Wins_Over_Parent_Component_Override()
+    public void Child_Provider_Control_Override_Wins_Over_Parent_Control_Override()
     {
         using var _ = UseThemeManager();
         var parent = Provider();
         var child = Provider();
 
-        parent.ControlTokenInfoSetters.Add(ComponentOverride(44));
-        child.ControlTokenInfoSetters.Add(ComponentOverride(48));
+        parent.ControlTokenInfoSetters.Add(ControlOverride(44));
+        child.ControlTokenInfoSetters.Add(ControlOverride(48));
         parent.Content = child;
         child.Content = new Border();
         Attach(parent);
@@ -341,7 +340,7 @@ public class ThemeConfigProviderTests
         GetSnapshot(child).ShouldBeSameAs(parentSnapshot);
         childSnapshot.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
         GetSnapshot(childContent).ShouldBeSameAs(childSnapshot);
-        GetSnapshot(childContent)!.Components.Values
+        GetSnapshot(childContent)!.Controls.Values
             .Single()
             .ControlToken
             .ShouldBeOfType<CompilerButtonToken>()
@@ -377,7 +376,7 @@ public class ThemeConfigProviderTests
         provider.Content = secondContent;
         provider.Inherit = false;
         provider.SharedTokenSetters.Add(Token(nameof(DesignToken.ColorPrimary), "#00b96b"));
-        provider.ControlTokenInfoSetters.Add(ComponentOverride(48));
+        provider.ControlTokenInfoSetters.Add(ControlOverride(48));
         FlushThemeUpdates();
 
         GetSnapshot(secondContent).ShouldBeNull();
@@ -450,7 +449,7 @@ public class ThemeConfigProviderTests
         return new TokenSetter(null, key, value);
     }
 
-    private static ControlTokenInfoSetter ComponentOverride(double height)
+    private static ControlTokenInfoSetter ControlOverride(double height)
     {
         var setter = new ControlTokenInfoSetter(CompilerButtonToken.ID);
         setter.Setters.Add(new ControlTokenSetter

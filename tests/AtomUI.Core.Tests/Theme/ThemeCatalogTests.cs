@@ -26,7 +26,7 @@ public class ThemeCatalogTests
             "BorderRadius"
         };
 
-    private static readonly IReadOnlyDictionary<string, IReadOnlySet<string>> s_componentOwnTokenNames =
+    private static readonly IReadOnlyDictionary<string, IReadOnlySet<string>> s_controlOwnTokenNames =
         new Dictionary<string, IReadOnlySet<string>>(StringComparer.Ordinal)
         {
             ["Button"] = new HashSet<string>(StringComparer.Ordinal)
@@ -91,7 +91,7 @@ public class ThemeCatalogTests
     }
 
     [Fact]
-    public void Theme_Facade_Keeps_Component_Shared_Overrides_Out_Of_Global_Resources()
+    public void Theme_Facade_Keeps_Control_Shared_Overrides_Out_Of_Global_Resources()
     {
         var source = new TestThemeSource(
             "themes/Brand.xml",
@@ -338,7 +338,7 @@ public class ThemeCatalogTests
     }
 
     [Fact]
-    public void CreateCompileRequest_Filters_Unregistered_Optional_Component_Definitions()
+    public void CreateCompileRequest_Filters_Unregistered_Optional_Control_Definitions()
     {
         var source = new TestThemeSource(
             "themes/Brand.xml",
@@ -408,7 +408,7 @@ public class ThemeCatalogTests
         return new ThemeCatalog(
             sources,
             s_sharedTokenNames,
-            s_componentOwnTokenNames,
+            s_controlOwnTokenNames,
             registrations);
     }
 
@@ -509,26 +509,26 @@ public class ThemeCatalogTests
 
         private static ThemeSnapshot CreateDuplicateTokenSnapshot()
         {
-            var components = new Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot>
+            var controls = new Dictionary<ControlTokenIdentity, ControlThemeSnapshot>
             {
-                [new ComponentTokenIdentity("First", CompilerButtonToken.ID)] = CreateComponent(),
-                [new ComponentTokenIdentity("Second", CompilerButtonToken.ID)] = CreateComponent()
+                [new ControlTokenIdentity("First", CompilerButtonToken.ID)] = CreateControl(),
+                [new ControlTokenIdentity("Second", CompilerButtonToken.ID)] = CreateControl()
             };
-            return CreateSnapshot(components);
+            return CreateSnapshot(controls);
         }
 
         private static ThemeSnapshot CreateValidSnapshot()
         {
-            var components = new Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot>
+            var controls = new Dictionary<ControlTokenIdentity, ControlThemeSnapshot>
             {
-                [new ComponentTokenIdentity(null, CompilerButtonToken.ID)] = CreateComponent()
+                [new ControlTokenIdentity(null, CompilerButtonToken.ID)] = CreateControl()
             };
-            return CreateSnapshot(components);
+            return CreateSnapshot(controls);
         }
 
-        private static ComponentThemeSnapshot CreateComponent()
+        private static ControlThemeSnapshot CreateControl()
         {
-            return new ComponentThemeSnapshot(
+            return new ControlThemeSnapshot(
                 new DesignToken(),
                 new Dictionary<object, object?>(),
                 new CompilerButtonToken(),
@@ -536,7 +536,7 @@ public class ThemeCatalogTests
         }
 
         private static ThemeSnapshot CreateSnapshot(
-            IReadOnlyDictionary<ComponentTokenIdentity, ComponentThemeSnapshot> components)
+            IReadOnlyDictionary<ControlTokenIdentity, ControlThemeSnapshot> controls)
         {
             return new ThemeSnapshot(
                 "Brand",
@@ -545,7 +545,7 @@ public class ThemeCatalogTests
                 false,
                 new DesignToken(),
                 new Dictionary<object, object?>(),
-                components);
+                controls);
         }
     }
 
@@ -562,6 +562,10 @@ public class ThemeCatalogTests
         public void AddControlToken(Type tokenType)
         {
             ControlDesignTokens.Add(tokenType);
+        }
+
+        public void AddControlToken(AtomUI.Theme.Schema.ControlTokenDescriptor descriptor)
+        {
         }
 
         public void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)

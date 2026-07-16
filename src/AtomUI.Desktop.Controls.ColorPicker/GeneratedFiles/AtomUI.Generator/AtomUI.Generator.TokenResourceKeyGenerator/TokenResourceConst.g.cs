@@ -44,9 +44,9 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class ColorPickerTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension
+    public sealed class ColorPickerTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
     {
-        public ColorPickerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base(null, "ColorPicker", kind)
+        public ColorPickerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ColorPicker", kind)
         {
         }
     }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Theme xmlns="https://atomui.net/schemas/theme/v1"
+       Id="DaybreakBlue"
+       Name="Daybreak Blue"
+       Appearance="Light"
+       IsDefault="true">
+  <Algorithms>
+    <Algorithm Id="Default" />
+  </Algorithms>
+  <Tokens>
+    <Token Name="ColorPrimary" Value="#1677FF" />
+    <Token Name="BorderRadius" Value="6" />
+  </Tokens>
+  <Controls>
+    <Control Catalog="AtomUI" Id="Button" Algorithm="Global">
+      <Tokens>
+        <Token Name="ColorPrimary" Value="#0958D9" />
+        <Token Name="ContentFontSize" Value="14" />
+      </Tokens>
+    </Control>
+    <Control Catalog="AtomUI" Id="Input" Algorithm="Disabled">
+      <Tokens>
+        <Token Name="ActiveBorderColor" Value="#1677FF" />
+      </Tokens>
+    </Control>
+    <Control Catalog="AtomUI" Id="DataGrid">
+      <Algorithms>
+        <Algorithm Id="Default" />
+        <Algorithm Id="Compact" />
+      </Algorithms>
+      <Tokens>
+        <Token Name="HeaderBg" Value="#FAFAFA" />
+      </Tokens>
+    </Control>
+  </Controls>
+</Theme>

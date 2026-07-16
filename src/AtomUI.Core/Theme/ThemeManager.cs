@@ -4,9 +4,9 @@ using AtomUI.Controls;
 using AtomUI.Theme.Catalog;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Language;
+using AtomUI.Theme.Schema;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
-using AtomUI.Theme.Transitions;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -307,6 +307,11 @@ internal class ThemeManager : Styles, IThemeManager
         ControlTokenTypes.Add(new ControlTokenRegistration(tokenType));
     }
 
+    public void RegisterControlTokenDescriptor(ControlTokenDescriptor descriptor)
+    {
+        ControlTokenTypes.Add(new ControlTokenRegistration(descriptor));
+    }
+
     internal void ScanThemes()
     {
         if (_themeCatalog is not null)
@@ -314,8 +319,8 @@ internal class ThemeManager : Styles, IThemeManager
             return;
         }
 
-        var componentTokenSchemas = CreateComponentTokenSchemas();
-        var catalog = CreateThemeCatalog(componentTokenSchemas);
+        var controlTokenSchemas = CreateControlTokenSchemas();
+        var catalog = CreateThemeCatalog(controlTokenSchemas);
         catalog.EnsureRequiredBuiltInThemesAvailable();
         var defaultDescriptor = catalog.ResolveDefaultDescriptor(
             HasExplicitDefaultTheme ? ExplicitDefaultThemeBaseId : null);
@@ -403,7 +408,7 @@ internal class ThemeManager : Styles, IThemeManager
     }
 
     private ThemeCatalog CreateThemeCatalog(
-        IReadOnlyDictionary<string, IReadOnlySet<string>> componentTokenSchemas)
+        IReadOnlyDictionary<string, IReadOnlySet<string>> controlTokenSchemas)
     {
         var sources = new List<IThemeCatalogSource>();
         var sourcePriority = 0;
@@ -426,7 +431,7 @@ internal class ThemeManager : Styles, IThemeManager
         return new ThemeCatalog(
             sources,
             CreateSharedTokenSchema(),
-            componentTokenSchemas,
+            controlTokenSchemas,
             ControlTokenTypes);
     }
 
@@ -487,7 +492,7 @@ internal class ThemeManager : Styles, IThemeManager
         return names;
     }
 
-    internal IReadOnlyDictionary<string, IReadOnlySet<string>> CreateComponentTokenSchemas()
+    internal IReadOnlyDictionary<string, IReadOnlySet<string>> CreateControlTokenSchemas()
     {
         var schemas = new Dictionary<string, IReadOnlySet<string>>(StringComparer.Ordinal);
         var errors = new List<string>();
@@ -495,6 +500,19 @@ internal class ThemeManager : Styles, IThemeManager
         {
             if (registration.TryGetIdentity(out var registeredIdentity))
             {
+                if (registration.Descriptor is not null)
+                {
+                    var tokenNames = registration.Descriptor.OwnTokens.Select(static token => token.Name);
+                    if (!schemas.TryAdd(
+                            registeredIdentity.Id,
+                            new HashSet<string>(tokenNames, StringComparer.Ordinal)))
+                    {
+                        errors.Add($"Duplicate control token id '{registeredIdentity.Id}'.");
+                    }
+
+                    continue;
+                }
+
                 if (!typeof(AbstractControlDesignToken).IsAssignableFrom(registration.TokenType))
                 {
                     errors.Add(
@@ -503,10 +521,10 @@ internal class ThemeManager : Styles, IThemeManager
                 }
 
                 if (!schemas.TryAdd(
-                        registeredIdentity.TokenId,
-                        CreateComponentTokenSchema(registration.TokenType)))
+                        registeredIdentity.Id,
+                        CreateControlTokenSchema(registration.TokenType)))
                 {
-                    errors.Add($"Duplicate component token id '{registeredIdentity.TokenId}'.");
+                    errors.Add($"Duplicate control token id '{registeredIdentity.Id}'.");
                 }
 
                 continue;
@@ -531,9 +549,9 @@ internal class ThemeManager : Styles, IThemeManager
                 continue;
             }
 
-            if (!schemas.TryAdd(token.Id, CreateComponentTokenSchema(registration.TokenType)))
+            if (!schemas.TryAdd(token.Id, CreateControlTokenSchema(registration.TokenType)))
             {
-                errors.Add($"Duplicate component token id '{token.Id}'.");
+                errors.Add($"Duplicate control token id '{token.Id}'.");
             }
         }
 
@@ -546,7 +564,7 @@ internal class ThemeManager : Styles, IThemeManager
         return schemas;
     }
 
-    private static IReadOnlySet<string> CreateComponentTokenSchema(
+    private static IReadOnlySet<string> CreateControlTokenSchema(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
         Type tokenType)
     {
@@ -811,8 +829,13 @@ internal class ThemeManager : Styles, IThemeManager
             return;
         }
 
-        foreach (EventHandler<ThemeChangedEventArgs> handler in handlers.GetInvocationList())
+        foreach (var invocation in handlers.GetInvocationList())
         {
+            if (invocation is not EventHandler<ThemeChangedEventArgs> handler)
+            {
+                continue;
+            }
+
             try
             {
                 handler(this, args);
@@ -833,8 +856,13 @@ internal class ThemeManager : Styles, IThemeManager
             return;
         }
 
-        foreach (EventHandler<ThemeOperateEventArgs> handler in handlers.GetInvocationList())
+        foreach (var invocation in handlers.GetInvocationList())
         {
+            if (invocation is not EventHandler<ThemeOperateEventArgs> handler)
+            {
+                continue;
+            }
+
             try
             {
                 handler(this, args);

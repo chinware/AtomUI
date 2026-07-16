@@ -199,7 +199,7 @@
                         <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}" Width="200" VerticalAlignment="Center" />
                         <atom:Button ButtonType="Primary" VerticalAlignment="Center">
                             <atom:TextBlock Name="ComponentTokenContentIsolationProbe"
-                                            Text="{gallery:CustomizeThemeShowCaseLangResource P2ContentIsolationText}" />
+                                            Text="{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}" />
                         </atom:Button>
                     </StackPanel>
                 </atom:ThemeConfigProvider>

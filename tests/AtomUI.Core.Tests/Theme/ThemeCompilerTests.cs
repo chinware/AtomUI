@@ -14,37 +14,37 @@ namespace AtomUI.Core.Tests.Theme;
 [Collection(ThemeConfigProviderTestCollection.Name)]
 public class ThemeCompilerTests
 {
-    private static readonly ComponentTokenIdentity s_buttonIdentity = new(null, CompilerButtonToken.ID);
+    private static readonly ControlTokenIdentity s_buttonIdentity = new(null, CompilerButtonToken.ID);
 
     [Fact]
-    public void Component_Algorithm_False_Does_Not_Derive_Map_Tokens()
+    public void Control_Algorithm_False_Does_Not_Derive_Map_Tokens()
     {
         var result = Compile(
-            components: Components(Component(
+            controls: Controls(Control(
                 CompilerButtonToken.ID,
                 enableAlgorithm: false,
                 sharedTokens: Tokens((nameof(DesignToken.ColorPrimary), "#00b96b")))));
 
         result.Success.ShouldBeTrue();
         var snapshot = result.Snapshot!;
-        var button = snapshot.Components[s_buttonIdentity];
+        var button = snapshot.Controls[s_buttonIdentity];
 
         button.EffectiveSharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
         button.EffectiveSharedToken.ColorPrimaryHover.ShouldBe(snapshot.SharedToken.ColorPrimaryHover);
     }
 
     [Fact]
-    public void Component_Algorithm_True_Derives_Private_Map_Tokens()
+    public void Control_Algorithm_True_Derives_Private_Map_Tokens()
     {
         var result = Compile(
-            components: Components(Component(
+            controls: Controls(Control(
                 CompilerButtonToken.ID,
                 enableAlgorithm: true,
                 sharedTokens: Tokens((nameof(DesignToken.ColorPrimary), "#00b96b")))));
 
         result.Success.ShouldBeTrue();
         var snapshot = result.Snapshot!;
-        var button = snapshot.Components[s_buttonIdentity];
+        var button = snapshot.Controls[s_buttonIdentity];
 
         button.EffectiveSharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
         button.EffectiveSharedToken.ColorPrimaryHover.ShouldNotBe(snapshot.SharedToken.ColorPrimaryHover);
@@ -141,69 +141,69 @@ public class ThemeCompilerTests
     }
 
     [Fact]
-    public void Component_Request_Overrides_Merge_Over_Definition_Own_Tokens()
+    public void Control_Request_Overrides_Merge_Over_Definition_Own_Tokens()
     {
-        var componentOverride = new ControlTokenConfigInfo
+        var controlOverride = new ControlTokenConfigInfo
         {
             TokenId = CompilerButtonToken.ID,
             EnableAlgorithm = false,
             Tokens = Tokens((nameof(CompilerButtonToken.Height), "48"))
         };
         var result = Compile(
-            components: Components(Component(
+            controls: Controls(Control(
                 CompilerButtonToken.ID,
                 ownTokens: Tokens((nameof(CompilerButtonToken.Height), "40")))),
-            componentOverrides: new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>
+            controlOverrides: new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>
             {
-                [s_buttonIdentity] = componentOverride
+                [s_buttonIdentity] = controlOverride
             });
 
         result.Success.ShouldBeTrue();
-        var button = result.Snapshot!.Components[s_buttonIdentity];
+        var button = result.Snapshot!.Controls[s_buttonIdentity];
         ((CompilerButtonToken)button.ControlToken).Height.ShouldBe(48);
         button.ControlResources[CompilerButtonTokenKind.Height].ShouldBe(48d);
     }
 
     [Fact]
-    public void Registered_Unconfigured_Component_Uses_A_Fresh_Global_Effective_Token()
+    public void Registered_Unconfigured_Control_Uses_A_Fresh_Global_Effective_Token()
     {
         var result = Compile(
             sharedOverrides: Tokens((nameof(DesignToken.ColorPrimary), "#00b96b")));
 
         result.Success.ShouldBeTrue();
         var snapshot = result.Snapshot!;
-        var button = snapshot.Components[s_buttonIdentity];
+        var button = snapshot.Controls[s_buttonIdentity];
         button.EffectiveSharedToken.ShouldNotBeSameAs(snapshot.SharedToken);
         button.EffectiveSharedToken.ColorPrimary.ShouldBe(snapshot.SharedToken.ColorPrimary);
         button.SharedResourceDelta.ShouldBeEmpty();
     }
 
     [Fact]
-    public void Unknown_Component_Config_Fails_Without_A_Partial_Snapshot()
+    public void Unknown_Control_Config_Fails_Without_A_Partial_Snapshot()
     {
         var result = Compile(
-            components: Components(Component("UnknownComponent")));
+            controls: Controls(Control("UnknownControl")));
 
         result.Success.ShouldBeFalse();
         result.Snapshot.ShouldBeNull();
         result.Diagnostics.ShouldContain(diagnostic =>
             diagnostic.Severity == ThemeDiagnosticSeverity.Error &&
-            diagnostic.Message.Contains("UnknownComponent", StringComparison.Ordinal));
+            diagnostic.Message.Contains("UnknownControl", StringComparison.Ordinal));
     }
 
     [Fact]
-    public void Unknown_Component_Own_Token_Fails_Without_A_Partial_Snapshot()
+    public void Unknown_Control_Own_Token_Fails_Without_A_Partial_Snapshot()
     {
-        var componentOverride = new ControlTokenConfigInfo
+        var controlOverride = new ControlTokenConfigInfo
         {
             TokenId = CompilerButtonToken.ID,
             Tokens = Tokens(("MissingToken", "12"))
         };
 
-        var result = Compile(componentOverrides:
-            new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>
+        var result = Compile(controlOverrides:
+            new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>
             {
-                [s_buttonIdentity] = componentOverride
+                [s_buttonIdentity] = controlOverride
             });
 
         result.Success.ShouldBeFalse();
@@ -299,16 +299,16 @@ public class ThemeCompilerTests
     {
         var algorithms = new List<ThemeAlgorithm> { ThemeAlgorithm.Default };
         var sharedOverrides = Tokens((nameof(DesignToken.ColorPrimary), "#00b96b"));
-        var componentOverride = new ControlTokenConfigInfo
+        var controlOverride = new ControlTokenConfigInfo
         {
             TokenId = CompilerButtonToken.ID,
             EnableAlgorithm = false,
             Tokens = Tokens((nameof(CompilerButtonToken.Height), "48")),
             SharedTokens = Tokens((nameof(DesignToken.ColorPrimary), "#ff0000"))
         };
-        var componentOverrides = new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>
+        var controlOverrides = new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>
         {
-            [s_buttonIdentity] = componentOverride
+            [s_buttonIdentity] = controlOverride
         };
         var registrations = new List<ControlTokenRegistration>
         {
@@ -318,20 +318,20 @@ public class ThemeCompilerTests
         var result = Compile(
             algorithms: algorithms,
             sharedOverrides: sharedOverrides,
-            componentOverrides: componentOverrides,
+            controlOverrides: controlOverrides,
             registrations: registrations);
 
         result.Success.ShouldBeTrue();
         algorithms.Add(ThemeAlgorithm.Dark);
         sharedOverrides[nameof(DesignToken.ColorPrimary)] = "#123456";
-        componentOverride.Tokens[nameof(CompilerButtonToken.Height)] = "64";
-        componentOverride.SharedTokens[nameof(DesignToken.ColorPrimary)] = "#654321";
+        controlOverride.Tokens[nameof(CompilerButtonToken.Height)] = "64";
+        controlOverride.SharedTokens[nameof(DesignToken.ColorPrimary)] = "#654321";
         registrations.Clear();
 
         algorithms.ShouldBe([ThemeAlgorithm.Default, ThemeAlgorithm.Dark]);
         sharedOverrides[nameof(DesignToken.ColorPrimary)].ShouldBe("#123456");
-        componentOverride.Tokens[nameof(CompilerButtonToken.Height)].ShouldBe("64");
-        componentOverride.SharedTokens[nameof(DesignToken.ColorPrimary)].ShouldBe("#654321");
+        controlOverride.Tokens[nameof(CompilerButtonToken.Height)].ShouldBe("64");
+        controlOverride.SharedTokens[nameof(DesignToken.ColorPrimary)].ShouldBe("#654321");
         registrations.ShouldBeEmpty();
 
         var snapshot = result.Snapshot!;
@@ -341,36 +341,36 @@ public class ThemeCompilerTests
                 .ShouldBeOfType<ImmutableSolidColorBrush>()
                 .Color
                 .ShouldBe(Color.Parse("#00b96b"));
-        var button = snapshot.Components[s_buttonIdentity];
+        var button = snapshot.Controls[s_buttonIdentity];
         button.EffectiveSharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
         ((CompilerButtonToken)button.ControlToken).Height.ShouldBe(48);
         button.ControlResources[CompilerButtonTokenKind.Height].ShouldBe(48d);
     }
 
     [Fact]
-    public void Snapshot_Component_Configs_Are_Read_Only_Copies()
+    public void Snapshot_Control_Configs_Are_Read_Only_Copies()
     {
-        var componentOverride = new ControlTokenConfigInfo
+        var controlOverride = new ControlTokenConfigInfo
         {
             TokenId = CompilerButtonToken.ID,
             Tokens = Tokens((nameof(CompilerButtonToken.Height), "48"))
         };
-        var snapshot = Compile(componentOverrides:
-        new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>
+        var snapshot = Compile(controlOverrides:
+        new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>
         {
-            [s_buttonIdentity] = componentOverride
+            [s_buttonIdentity] = controlOverride
         }).Snapshot!;
 
-        componentOverride.Tokens[nameof(CompilerButtonToken.Height)] = "64";
-        var config = snapshot.ComponentConfigs[s_buttonIdentity];
+        controlOverride.Tokens[nameof(CompilerButtonToken.Height)] = "64";
+        var config = snapshot.ControlConfigs[s_buttonIdentity];
 
         config.Tokens[nameof(CompilerButtonToken.Height)].ShouldBe("48");
         Should.Throw<NotSupportedException>(() =>
             config.Tokens[nameof(CompilerButtonToken.Height)] = "64");
         Should.Throw<NotSupportedException>(() => config.EnableAlgorithm = true);
         Should.Throw<NotSupportedException>(() =>
-            ((IDictionary<ComponentTokenIdentity, ControlTokenConfigInfo>)snapshot.ComponentConfigs)
-            .Add(new ComponentTokenIdentity(null, "New"), config));
+            ((IDictionary<ControlTokenIdentity, ControlTokenConfigInfo>)snapshot.ControlConfigs)
+            .Add(new ControlTokenIdentity(null, "New"), config));
     }
 
     [Fact]
@@ -398,30 +398,30 @@ public class ThemeCompilerTests
     }
 
     [Fact]
-    public void Component_Public_Token_Mutations_Do_Not_Affect_Internal_State_Or_Resources()
+    public void Control_Public_Token_Mutations_Do_Not_Affect_Internal_State_Or_Resources()
     {
-        var snapshot = Compile(components: Components(Component(
+        var snapshot = Compile(controls: Controls(Control(
             CompilerButtonToken.ID,
             ownTokens: Tokens((nameof(CompilerButtonToken.Height), "48")),
             sharedTokens: Tokens((nameof(DesignToken.ColorPrimary), "#ff0000")))))
             .Snapshot!;
-        var component = snapshot.Components[s_buttonIdentity];
-        var exposedSharedToken = component.EffectiveSharedToken;
-        var exposedControlToken = component.ControlToken.ShouldBeOfType<CompilerButtonToken>();
+        var control = snapshot.Controls[s_buttonIdentity];
+        var exposedSharedToken = control.EffectiveSharedToken;
+        var exposedControlToken = control.ControlToken.ShouldBeOfType<CompilerButtonToken>();
 
         exposedSharedToken.ColorPrimary = Color.Parse("#00b96b");
         exposedControlToken.Height = 64;
 
-        component.EffectiveSharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
-        component.TryGetSharedResource(SharedTokenKind.ColorPrimary, snapshot.SharedResources, out var sharedResource)
+        control.EffectiveSharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
+        control.TryGetSharedResource(SharedTokenKind.ColorPrimary, snapshot.SharedResources, out var sharedResource)
                  .ShouldBeTrue();
         sharedResource.ShouldBeOfType<ImmutableSolidColorBrush>()
                       .Color
                       .ShouldBe(Color.Parse("#ff0000"));
-        component.ControlToken.ShouldBeOfType<CompilerButtonToken>()
+        control.ControlToken.ShouldBeOfType<CompilerButtonToken>()
                  .Height
                  .ShouldBe(48);
-        component.ControlResources[CompilerButtonTokenKind.Height].ShouldBe(48d);
+        control.ControlResources[CompilerButtonTokenKind.Height].ShouldBe(48d);
     }
 
     [Fact]
@@ -439,17 +439,17 @@ public class ThemeCompilerTests
     public void Snapshot_Resource_Maps_Are_Read_Only_And_Colors_Use_Immutable_Brushes()
     {
         var snapshot = Compile().Snapshot!;
-        var component = snapshot.Components[s_buttonIdentity];
+        var control = snapshot.Controls[s_buttonIdentity];
 
         snapshot.SharedResources[SharedTokenKind.ColorPrimary]
                 .ShouldBeOfType<ImmutableSolidColorBrush>();
         Should.Throw<NotSupportedException>(() =>
             ((IDictionary<object, object?>)snapshot.SharedResources).Add("new", 1));
         Should.Throw<NotSupportedException>(() =>
-            ((IDictionary<ComponentTokenIdentity, ComponentThemeSnapshot>)snapshot.Components)
-            .Add(new ComponentTokenIdentity(null, "New"), component));
+            ((IDictionary<ControlTokenIdentity, ControlThemeSnapshot>)snapshot.Controls)
+            .Add(new ControlTokenIdentity(null, "New"), control));
         Should.Throw<NotSupportedException>(() =>
-            ((IDictionary<object, object?>)component.ControlResources).Add("new", 1));
+            ((IDictionary<object, object?>)control.ControlResources).Add("new", 1));
     }
 
     [Fact]
@@ -473,32 +473,32 @@ public class ThemeCompilerTests
 
     private static ThemeCompileResult Compile(
         IReadOnlyDictionary<string, string>? definitionTokens = null,
-        IReadOnlyDictionary<string, ThemeControlTokenDefinition>? components = null,
+        IReadOnlyDictionary<string, ThemeControlTokenDefinition>? controls = null,
         ThemeSnapshot? parent = null,
         IReadOnlyList<ThemeAlgorithm>? algorithms = null,
         IReadOnlyDictionary<string, string>? sharedOverrides = null,
-        IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo>? componentOverrides = null,
+        IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo>? controlOverrides = null,
         IReadOnlyList<ControlTokenRegistration>? registrations = null,
         IReadOnlyDictionary<string, string>? runtimeOverrides = null)
     {
         return new ThemeCompiler().Compile(CreateRequest(
             definitionTokens,
-            components,
+            controls,
             parent,
             algorithms,
             sharedOverrides,
-            componentOverrides,
+            controlOverrides,
             registrations,
             runtimeOverrides));
     }
 
     private static ThemeCompileRequest CreateRequest(
         IReadOnlyDictionary<string, string>? definitionTokens = null,
-        IReadOnlyDictionary<string, ThemeControlTokenDefinition>? components = null,
+        IReadOnlyDictionary<string, ThemeControlTokenDefinition>? controls = null,
         ThemeSnapshot? parent = null,
         IReadOnlyList<ThemeAlgorithm>? algorithms = null,
         IReadOnlyDictionary<string, string>? sharedOverrides = null,
-        IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo>? componentOverrides = null,
+        IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo>? controlOverrides = null,
         IReadOnlyList<ControlTokenRegistration>? registrations = null,
         IReadOnlyDictionary<string, string>? runtimeOverrides = null)
     {
@@ -509,25 +509,25 @@ public class ThemeCompilerTests
             false,
             effectiveAlgorithms,
             definitionTokens ?? new Dictionary<string, string>(),
-            components ?? new Dictionary<string, ThemeControlTokenDefinition>());
+            controls ?? new Dictionary<string, ThemeControlTokenDefinition>());
         return new ThemeCompileRequest(
             "TestTheme",
             definition,
             parent,
             effectiveAlgorithms,
             sharedOverrides ?? new Dictionary<string, string>(),
-            componentOverrides ?? new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>(),
+            controlOverrides ?? new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>(),
             registrations ?? [new ControlTokenRegistration(typeof(CompilerButtonToken))],
             runtimeOverrides ?? new Dictionary<string, string>());
     }
 
-    private static IReadOnlyDictionary<string, ThemeControlTokenDefinition> Components(
-        params ThemeControlTokenDefinition[] components)
+    private static IReadOnlyDictionary<string, ThemeControlTokenDefinition> Controls(
+        params ThemeControlTokenDefinition[] controls)
     {
-        return components.ToDictionary(component => component.TokenId, StringComparer.Ordinal);
+        return controls.ToDictionary(control => control.TokenId, StringComparer.Ordinal);
     }
 
-    private static ThemeControlTokenDefinition Component(
+    private static ThemeControlTokenDefinition Control(
         string id,
         bool enableAlgorithm = false,
         IReadOnlyDictionary<string, string>? ownTokens = null,

@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 using AtomUI.Theme.Language;
+using AtomUI.Theme.Schema;
 using AtomUI.Theme.Styling;
 using Avalonia.Media;
 
@@ -24,6 +25,8 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     internal string? ExplicitDefaultThemeBaseId { get; private set; }
 
     private readonly HashSet<string> _registeredTokenTypes;
+    private readonly List<ControlTokenDescriptor> _controlTokenDescriptors;
+    private readonly HashSet<ControlTokenIdentity> _registeredControlTokenIdentities;
     private readonly HashSet<string> _registeredControlThemesProviders;
     private readonly HashSet<string> _registeredLanguageProviders;
 
@@ -38,6 +41,8 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         LanguageVariant                   = LanguageVariant.en_US;
         ThemeId                           = IThemeManager.DEFAULT_THEME_ID;
         _registeredTokenTypes             = new HashSet<string>();
+        _controlTokenDescriptors          = new List<ControlTokenDescriptor>();
+        _registeredControlTokenIdentities = new HashSet<ControlTokenIdentity>();
         _registeredLanguageProviders      = new HashSet<string>();
         _registeredControlThemesProviders = new HashSet<string>();
     }
@@ -55,6 +60,18 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         }
 
         ControlDesignTokens.Add(tokenType);
+    }
+
+    public void AddControlToken(ControlTokenDescriptor descriptor)
+    {
+        ArgumentNullException.ThrowIfNull(descriptor);
+        if (!_registeredControlTokenIdentities.Add(descriptor.Identity))
+        {
+            throw new ThemeResourceRegisterException(
+                $"Control Token descriptor '{descriptor.Identity}' is already registered.");
+        }
+
+        _controlTokenDescriptors.Add(descriptor);
     }
 
     public void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)
@@ -133,7 +150,7 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         themeManager.HasExplicitDefaultTheme       = HasExplicitDefaultTheme;
         themeManager.ExplicitDefaultThemeBaseId    = ExplicitDefaultThemeBaseId;
         themeManager.ThemeVariantCalculatorFactory = ThemeVariantCalculatorFactory;
-        themeManager.EnsureRegistrationCapacity(ControlDesignTokens.Count,
+        themeManager.EnsureRegistrationCapacity(ControlDesignTokens.Count + _controlTokenDescriptors.Count,
                                                 ControlThemesProviders.Count,
                                                 ThemeAssetPathProviders.Count,
                                                 LanguageProviders.Count);
@@ -145,6 +162,11 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         foreach (var tokenType in ControlDesignTokens)
         {
             themeManager.RegisterControlTokenType(tokenType);
+        }
+
+        foreach (var descriptor in _controlTokenDescriptors)
+        {
+            themeManager.RegisterControlTokenDescriptor(descriptor);
         }
         
         foreach (var themeAssetPathProvider in ThemeAssetPathProviders)

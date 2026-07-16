@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 using AtomUI.Theme.Language;
+using AtomUI.Theme.Schema;
 using AtomUI.Theme.Styling;
 using Avalonia.Media;
 
@@ -20,6 +21,7 @@ public interface IThemeManagerBuilder
                                     DynamicallyAccessedMemberTypes.PublicProperties |
                                     DynamicallyAccessedMemberTypes.NonPublicProperties)]
         Type tokenType);
+    void AddControlToken(ControlTokenDescriptor descriptor);
     void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider);
     void AddControlThemesProvider(IControlThemesProvider controlThemesProvider);
     void AddLanguageProviders(LanguageProvider languageProvider);

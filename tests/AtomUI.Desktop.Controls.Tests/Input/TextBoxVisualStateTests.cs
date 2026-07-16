@@ -98,7 +98,7 @@ public class TextBoxVisualStateTests
     }
 
     [Fact]
-    public void TextBox_Uses_Customizable_SizeType_Contract_And_Component_Shared_Token_Resources()
+    public void TextBox_Uses_Customizable_SizeType_Contract_And_Control_Shared_Token_Resources()
     {
         typeof(ICustomizableSizeTypeAware).IsAssignableFrom(typeof(AtomUITextBox)).ShouldBeTrue();
 
@@ -319,7 +319,7 @@ public class TextBoxVisualStateTests
                 border.Transitions.ShouldBeNull();
             },
             window => window.Resources[
-                new ComponentSharedTokenResourceKey(null, "TextBox", SharedTokenKind.EnableMotion)] = false);
+                new ControlSharedTokenResourceKey(null, "TextBox", SharedTokenKind.EnableMotion)] = false);
     }
 
     [Fact]

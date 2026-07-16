@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.Threading;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Styling;
@@ -33,7 +32,7 @@ internal sealed class ThemeCompiler
             }
 
             var algorithms = ResolveEffectiveAlgorithms(request);
-            var componentConfigs = MergeComponentConfigs(request);
+            var controlConfigs = MergeControlConfigs(request);
             var calculator = CreateCalculator(algorithms);
             var sharedConfig = MergeSharedConfigs(request);
             var sharedToken = CreateSharedToken();
@@ -41,10 +40,10 @@ internal sealed class ThemeCompiler
             FreezeColorPalettes(sharedToken);
 
             var sharedResources = BuildResourceMap(sharedToken);
-            var components = BuildComponents(
+            var controls = BuildControls(
                 request,
                 registrations,
-                componentConfigs,
+                controlConfigs,
                 algorithms,
                 calculator,
                 sharedToken,
@@ -63,8 +62,8 @@ internal sealed class ThemeCompiler
                     algorithms.Contains(ThemeAlgorithm.Dark),
                     sharedToken,
                     sharedResources,
-                    ReadOnly(components),
-                    componentConfigs,
+                    ReadOnly(controls),
+                    controlConfigs,
                     sharedConfig),
                 CopyDiagnostics(diagnostics),
                 null);
@@ -78,7 +77,7 @@ internal sealed class ThemeCompiler
     private bool ValidateRequest(
         ThemeCompileRequest request,
         List<ThemeDefinitionDiagnostic> diagnostics,
-        out Dictionary<ComponentTokenIdentity, AbstractControlDesignToken> registrations)
+        out Dictionary<ControlTokenIdentity, AbstractControlDesignToken> registrations)
     {
         var isValid = true;
         var sharedTokenNames = GetSharedTokenNames();
@@ -86,7 +85,7 @@ internal sealed class ThemeCompiler
         isValid &= ValidateSharedNames(request.SharedOverrides, sharedTokenNames, diagnostics);
         isValid &= ValidateSharedNames(request.RuntimeOverrides, sharedTokenNames, diagnostics);
 
-        registrations = new Dictionary<ComponentTokenIdentity, AbstractControlDesignToken>();
+        registrations = new Dictionary<ControlTokenIdentity, AbstractControlDesignToken>();
         foreach (var registration in request.Registrations)
         {
             AbstractControlDesignToken? token;
@@ -111,37 +110,37 @@ internal sealed class ThemeCompiler
                 continue;
             }
 
-            var identity = registration.GetIdentity(token);
+            var identity = registration.GetResourceIdentity(token);
             if (!registrations.TryAdd(identity, token))
             {
-                AddError(diagnostics, "THEME002", $"Duplicate component token identity '{identity}'.");
+                AddError(diagnostics, "THEME002", $"Duplicate control token identity '{identity}'.");
                 isValid = false;
             }
         }
 
         foreach (var definition in request.Definition.ControlTokens.Values)
         {
-            var identity = new ComponentTokenIdentity(null, definition.TokenId);
+            var identity = new ControlTokenIdentity(ControlDesignTokenAttribute.DefaultCatalog, definition.TokenId);
             if (!registrations.TryGetValue(identity, out var token))
             {
-                AddError(diagnostics, "THEME003", $"Unknown component token identity '{identity}'.");
+                AddError(diagnostics, "THEME003", $"Unknown control token identity '{identity}'.");
                 isValid = false;
                 continue;
             }
 
-            isValid &= ValidateComponentConfig(definition.Tokens, definition.SharedTokens, token, sharedTokenNames, diagnostics);
+            isValid &= ValidateControlConfig(definition.Tokens, definition.SharedTokens, token, sharedTokenNames, diagnostics);
         }
 
-        foreach (var overrideEntry in request.ComponentOverrides)
+        foreach (var overrideEntry in request.ControlOverrides)
         {
             if (!registrations.TryGetValue(overrideEntry.Key, out var token))
             {
-                AddError(diagnostics, "THEME003", $"Unknown component token identity '{overrideEntry.Key}'.");
+                AddError(diagnostics, "THEME003", $"Unknown control token identity '{overrideEntry.Key}'.");
                 isValid = false;
                 continue;
             }
 
-            isValid &= ValidateComponentConfig(
+            isValid &= ValidateControlConfig(
                 overrideEntry.Value.Tokens,
                 overrideEntry.Value.SharedTokens,
                 token,
@@ -152,24 +151,24 @@ internal sealed class ThemeCompiler
         return isValid;
     }
 
-    private Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot> BuildComponents(
+    private Dictionary<ControlTokenIdentity, ControlThemeSnapshot> BuildControls(
         ThemeCompileRequest request,
-        IReadOnlyDictionary<ComponentTokenIdentity, AbstractControlDesignToken> registrations,
-        IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> componentConfigs,
+        IReadOnlyDictionary<ControlTokenIdentity, AbstractControlDesignToken> registrations,
+        IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo> controlConfigs,
         IReadOnlyList<ThemeAlgorithm> algorithms,
         IThemeVariantCalculator calculator,
         DesignToken globalToken,
         IReadOnlyDictionary<object, object?> globalResources,
         List<ThemeDefinitionDiagnostic> diagnostics)
     {
-        var components = new Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot>(registrations.Count);
+        var controls = new Dictionary<ControlTokenIdentity, ControlThemeSnapshot>(registrations.Count);
         foreach (var (identity, controlToken) in registrations)
         {
-            componentConfigs.TryGetValue(identity, out var config);
+            controlConfigs.TryGetValue(identity, out var config);
             var effectiveToken = DesignTokenClone.DeepClone(globalToken);
             if (config is not null)
             {
-                ApplyComponentSharedConfig(effectiveToken, config.SharedTokens, config.EnableAlgorithm, calculator);
+                ApplyControlSharedConfig(effectiveToken, config.SharedTokens, config.EnableAlgorithm, calculator);
             }
             FreezeColorPalettes(effectiveToken);
 
@@ -184,16 +183,16 @@ internal sealed class ThemeCompiler
 
             var effectiveResources = BuildResourceMap(effectiveToken);
             controlToken.BuildSharedResourceDeltaDictionary(globalToken);
-            components.Add(
+            controls.Add(
                 identity,
-                new ComponentThemeSnapshot(
+                new ControlThemeSnapshot(
                     effectiveToken,
                     BuildResourceDelta(globalResources, effectiveResources),
                     controlToken,
                     BuildResourceMap(controlToken)));
         }
 
-        return components;
+        return controls;
     }
 
     private static IReadOnlyList<ThemeAlgorithm> ResolveEffectiveAlgorithms(ThemeCompileRequest request)
@@ -211,13 +210,13 @@ internal sealed class ThemeCompiler
         return [ThemeAlgorithm.Default];
     }
 
-    private static IReadOnlyDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> MergeComponentConfigs(
+    private static IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo> MergeControlConfigs(
         ThemeCompileRequest request)
     {
-        var configs = new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>();
+        var configs = new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>();
         if (request.Parent is not null)
         {
-            foreach (var (identity, parentConfig) in request.Parent.ComponentConfigs)
+            foreach (var (identity, parentConfig) in request.Parent.ControlConfigs)
             {
                 configs.Add(identity, parentConfig.Clone());
             }
@@ -225,8 +224,8 @@ internal sealed class ThemeCompiler
 
         foreach (var definition in request.Definition.ControlTokens.Values)
         {
-            var identity = new ComponentTokenIdentity(null, definition.TokenId);
-            MergeComponentConfig(
+            var identity = new ControlTokenIdentity(ControlDesignTokenAttribute.DefaultCatalog, definition.TokenId);
+            MergeControlConfig(
                 configs,
                 identity,
                 definition.EnableAlgorithm,
@@ -234,9 +233,9 @@ internal sealed class ThemeCompiler
                 definition.SharedTokens);
         }
 
-        foreach (var (identity, overrideConfig) in request.ComponentOverrides)
+        foreach (var (identity, overrideConfig) in request.ControlOverrides)
         {
-            MergeComponentConfig(
+            MergeControlConfig(
                 configs,
                 identity,
                 overrideConfig.EnableAlgorithm,
@@ -247,9 +246,9 @@ internal sealed class ThemeCompiler
         return ReadOnly(configs);
     }
 
-    private static void MergeComponentConfig(
-        IDictionary<ComponentTokenIdentity, ControlTokenConfigInfo> configs,
-        ComponentTokenIdentity identity,
+    private static void MergeControlConfig(
+        IDictionary<ControlTokenIdentity, ControlTokenConfigInfo> configs,
+        ControlTokenIdentity identity,
         bool enableAlgorithm,
         IEnumerable<KeyValuePair<string, string>> tokens,
         IEnumerable<KeyValuePair<string, string>> sharedTokens)
@@ -268,7 +267,7 @@ internal sealed class ThemeCompiler
         MergeInto(config.SharedTokens, sharedTokens);
     }
 
-    private static void ApplyComponentSharedConfig(
+    private static void ApplyControlSharedConfig(
         DesignToken token,
         IDictionary<string, string> config,
         bool enableAlgorithm,
@@ -427,7 +426,7 @@ internal sealed class ThemeCompiler
         return valid;
     }
 
-    private static bool ValidateComponentConfig(
+    private static bool ValidateControlConfig(
         IEnumerable<KeyValuePair<string, string>> tokenConfig,
         IEnumerable<KeyValuePair<string, string>> sharedConfig,
         AbstractControlDesignToken token,
@@ -439,7 +438,7 @@ internal sealed class ThemeCompiler
         {
             if (!token.HasToken(entry.Key))
             {
-                AddError(diagnostics, "THEME005", $"Unknown token '{entry.Key}' for component '{token.Id}'.");
+                AddError(diagnostics, "THEME005", $"Unknown token '{entry.Key}' for control '{token.Id}'.");
                 valid = false;
             }
         }

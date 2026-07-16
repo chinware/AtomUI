@@ -173,7 +173,7 @@ internal readonly record struct ThemeSnapshotCacheKey(
     long? ParentVersion,
     string Algorithms,
     string SharedOverrides,
-    string ComponentOverrides,
+    string ControlOverrides,
     string Registrations,
     string RuntimeOverrides)
 {
@@ -185,7 +185,7 @@ internal readonly record struct ThemeSnapshotCacheKey(
             request.Parent?.Version,
             BuildAlgorithmKey(request.Algorithms),
             BuildStringMapKey(request.SharedOverrides),
-            BuildComponentOverridesKey(request.ComponentOverrides),
+            BuildControlOverridesKey(request.ControlOverrides),
             BuildRegistrationKey(request.Registrations),
             BuildStringMapKey(request.RuntimeOverrides));
     }
@@ -198,14 +198,14 @@ internal readonly record struct ThemeSnapshotCacheKey(
         AppendValue(builder, definition.IsDefault ? "1" : "0");
         AppendValue(builder, BuildAlgorithmKey(definition.Algorithms));
         AppendValue(builder, BuildStringMapKey(definition.SharedTokens));
-        foreach (var component in definition.ControlTokens
+        foreach (var control in definition.ControlTokens
                                             .OrderBy(static entry => entry.Key, StringComparer.Ordinal))
         {
-            AppendValue(builder, component.Key);
-            AppendValue(builder, component.Value.TokenId);
-            AppendValue(builder, component.Value.EnableAlgorithm ? "1" : "0");
-            AppendValue(builder, BuildStringMapKey(component.Value.Tokens));
-            AppendValue(builder, BuildStringMapKey(component.Value.SharedTokens));
+            AppendValue(builder, control.Key);
+            AppendValue(builder, control.Value.TokenId);
+            AppendValue(builder, control.Value.EnableAlgorithm ? "1" : "0");
+            AppendValue(builder, BuildStringMapKey(control.Value.Tokens));
+            AppendValue(builder, BuildStringMapKey(control.Value.SharedTokens));
         }
 
         return builder.ToString();
@@ -234,8 +234,8 @@ internal readonly record struct ThemeSnapshotCacheKey(
         return builder.ToString();
     }
 
-    private static string BuildComponentOverridesKey(
-        IEnumerable<KeyValuePair<ComponentTokenIdentity, ControlTokenConfigInfo>> values)
+    private static string BuildControlOverridesKey(
+        IEnumerable<KeyValuePair<ControlTokenIdentity, ControlTokenConfigInfo>> values)
     {
         var builder = new StringBuilder();
         foreach (var entry in values.OrderBy(static entry => entry.Key.ResourceCatalog, StringComparer.Ordinal)

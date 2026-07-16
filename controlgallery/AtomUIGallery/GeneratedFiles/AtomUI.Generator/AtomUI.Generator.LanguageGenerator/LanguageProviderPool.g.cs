@@ -5024,7 +5024,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.NestedThemeTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.NestedThemeTitle;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentApple] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.P2ContentApple;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentDefaultButton] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.P2ContentDefaultButton;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentIsolationText] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.P2ContentIsolationText;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentLinkButton] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.P2ContentLinkButton;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentOrange] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.P2ContentOrange;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentPear] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.P2ContentPear;
@@ -5110,7 +5109,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.NestedThemeTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.NestedThemeTitle;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentApple] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.P2ContentApple;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentDefaultButton] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.P2ContentDefaultButton;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentIsolationText] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.P2ContentIsolationText;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentLinkButton] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.P2ContentLinkButton;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentOrange] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.P2ContentOrange;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentPear] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.P2ContentPear;
@@ -5196,7 +5194,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.NestedThemeTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.NestedThemeTitle;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentApple] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.P2ContentApple;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentDefaultButton] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.P2ContentDefaultButton;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentIsolationText] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.P2ContentIsolationText;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentLinkButton] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.P2ContentLinkButton;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentOrange] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.P2ContentOrange;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentPear] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.P2ContentPear;

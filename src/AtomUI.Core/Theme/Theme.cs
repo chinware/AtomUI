@@ -139,14 +139,14 @@ internal class Theme : AvaloniaObject, ITheme
             resources[resource.Key] = resource.Value;
         }
 
-        foreach (var component in snapshot.Components.Values)
+        foreach (var control in snapshot.Controls.Values)
         {
-            foreach (var resource in component.ControlResources)
+            foreach (var resource in control.ControlResources)
             {
                 resources[resource.Key] = resource.Value;
             }
 
-            var controlToken = component.ControlToken;
+            var controlToken = control.ControlToken;
             controlTokens.Add(controlToken.Id, controlToken);
         }
 

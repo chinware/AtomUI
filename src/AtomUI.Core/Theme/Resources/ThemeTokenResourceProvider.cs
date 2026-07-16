@@ -22,12 +22,12 @@ internal sealed class ThemeTokenResourceProvider : ResourceProvider
     public override bool TryGetResource(object key, ThemeVariant? theme, out object? value)
     {
         var snapshot = Snapshot;
-        if (key is ComponentSharedTokenResourceKey componentKey)
+        if (key is ControlSharedTokenResourceKey controlKey)
         {
-            var identity = new ComponentTokenIdentity(componentKey.Catalog, componentKey.ComponentId);
-            if (snapshot.Components.TryGetValue(identity, out var component))
+            var identity = new ControlTokenIdentity(controlKey.Catalog, controlKey.ControlId);
+            if (snapshot.Controls.TryGetValue(identity, out var control))
             {
-                return component.TryGetSharedResource(componentKey.Kind, snapshot.SharedResources, out value);
+                return control.TryGetSharedResource(controlKey.Kind, snapshot.SharedResources, out value);
             }
 
             value = null;

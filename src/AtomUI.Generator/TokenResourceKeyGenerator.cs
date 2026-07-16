@@ -14,20 +14,25 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             {
                 var walker = new TokenPropertyWalker(context.SemanticModel);
                 walker.Visit(context.TargetNode);
-                return (walker.TokenResourceCatalog, walker.TokenNames);
+                return (walker.TokenResourceCatalog, walker.TokenNames, walker.SchemaTokens);
             }).Collect().Select((array, token) =>
         {
-            var mergedSet = new HashSet<TokenName>();
+            var merged = new GlobalTokenGenerationInfo();
             foreach (var entry in array)
             {
                 var ns = entry.TokenResourceCatalog!;
                 foreach (var tokenName in entry.TokenNames)
                 {
-                    mergedSet.Add(new TokenName(tokenName, ns));
+                    merged.Tokens.Add(new TokenName(tokenName, ns));
+                }
+
+                foreach (var schemaToken in entry.SchemaTokens)
+                {
+                    merged.SchemaTokens.Add(schemaToken);
                 }
             }
 
-            return mergedSet;
+            return merged;
         });
 
         var controlTokensProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(
@@ -40,13 +45,25 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                 return walker.ControlTokenInfo;
             }).Collect();
 
-        var tokensProvider = globalTokensProvider.Combine(controlTokensProvider);
+        var algorithmsProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(
+            TargetMarkConstants.ThemeAlgorithmAttribute,
+            static (node, token) => true,
+            static (context, token) => ThemeAlgorithmInfo.Create(context))
+            .Where(static info => info is not null)
+            .Select(static (info, token) => info!)
+            .Collect();
 
-        initContext.RegisterImplementationSourceOutput(tokensProvider, (context, combinedInfos) =>
+        var tokensProvider = globalTokensProvider.Combine(controlTokensProvider).Combine(algorithmsProvider);
+        var generationProvider = tokensProvider.Combine(
+            initContext.CompilationProvider.Select(static (compilation, token) => compilation.AssemblyName));
+
+        initContext.RegisterImplementationSourceOutput(generationProvider, (context, generationInfo) =>
         {
+            var combinedInfos = generationInfo.Left;
             var tokenInfo = new TokenInfo();
-            tokenInfo.Tokens.UnionWith(combinedInfos.Left);
-            foreach (var controlToken in combinedInfos.Right)
+            tokenInfo.Tokens.UnionWith(combinedInfos.Left.Left.Tokens);
+            tokenInfo.SchemaTokens.UnionWith(combinedInfos.Left.Left.SchemaTokens);
+            foreach (var controlToken in combinedInfos.Left.Right)
             {
                 foreach (var diagnostic in controlToken.Diagnostics)
                 {
@@ -59,20 +76,24 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                 }
             }
 
+            if (tokenInfo.SchemaTokens.Count != 0 ||
+                tokenInfo.ControlTokenInfos.Count != 0 ||
+                combinedInfos.Right.Length != 0)
+            {
+                var schemaWriter = new GeneratedThemeSchemaWriter(
+                    context,
+                    generationInfo.Right,
+                    tokenInfo.SchemaTokens,
+                    tokenInfo.ControlTokenInfos,
+                    combinedInfos.Right);
+                schemaWriter.Write();
+            }
+
             {
                 var classWriter = new ResourceKeyClassWriter(context, tokenInfo);
                 classWriter.Write();
             }
 
-            {
-                if (tokenInfo.ControlTokenInfos.Any())
-                {
-                    {
-                        var classWriter = new ControlTokenTypePoolClassWriter(context, tokenInfo.ControlTokenInfos);
-                        classWriter.Write();
-                    }
-                }
-            }
         });
     }
 }

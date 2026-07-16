@@ -14,40 +14,40 @@ namespace AtomUI.Core.Tests.Theme;
 [Collection(ThemeConfigProviderTestCollection.Name)]
 public class ThemeTokenResourceProviderTests
 {
-    private static readonly ComponentTokenIdentity s_buttonIdentity = new(null, CompilerButtonToken.ID);
+    private static readonly ControlTokenIdentity s_buttonIdentity = new(null, CompilerButtonToken.ID);
 
     [Fact]
-    public void ComponentShared_Key_Resolves_Private_Value_Without_Changing_Global()
+    public void ControlShared_Key_Resolves_Private_Value_Without_Changing_Global()
     {
         var snapshot = CompileButtonPrimary("#00b96b");
         var provider = new ThemeTokenResourceProvider(snapshot);
 
         provider.TryGetResource(SharedTokenKind.ColorPrimary, null, out var global).ShouldBeTrue();
         provider.TryGetResource(
-            new ComponentSharedTokenResourceKey(null, CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
+            new ControlSharedTokenResourceKey(null, CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
             null,
-            out var component).ShouldBeTrue();
+            out var control).ShouldBeTrue();
 
-        component.ShouldNotBe(global);
+        control.ShouldNotBe(global);
     }
 
     [Fact]
-    public void ComponentShared_Key_Falls_Back_To_Global_Value_For_Registered_Unconfigured_Component()
+    public void ControlShared_Key_Falls_Back_To_Global_Value_For_Registered_Unconfigured_Control()
     {
         var snapshot = Compile();
         var provider = new ThemeTokenResourceProvider(snapshot);
 
         provider.TryGetResource(SharedTokenKind.ColorPrimary, null, out var global).ShouldBeTrue();
         provider.TryGetResource(
-            new ComponentSharedTokenResourceKey(null, CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
+            new ControlSharedTokenResourceKey(null, CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
             null,
-            out var component).ShouldBeTrue();
+            out var control).ShouldBeTrue();
 
-        component.ShouldBeSameAs(global);
+        control.ShouldBeSameAs(global);
     }
 
     [Fact]
-    public void ComponentShared_Key_Uses_Catalog_As_Part_Of_Component_Identity()
+    public void ControlShared_Key_Uses_Catalog_As_Part_Of_Control_Identity()
     {
         var first = CompileButtonPrimary("#00b96b");
         var second = CompileButtonPrimary("#ff4d4f");
@@ -58,19 +58,19 @@ public class ThemeTokenResourceProviderTests
             first.IsDark,
             first.SharedToken,
             first.SharedResources,
-            new Dictionary<ComponentTokenIdentity, ComponentThemeSnapshot>
+            new Dictionary<ControlTokenIdentity, ControlThemeSnapshot>
             {
-                [new ComponentTokenIdentity("First", CompilerButtonToken.ID)] = first.Components[s_buttonIdentity],
-                [new ComponentTokenIdentity("Second", CompilerButtonToken.ID)] = second.Components[s_buttonIdentity]
+                [new ControlTokenIdentity("First", CompilerButtonToken.ID)] = first.Controls[s_buttonIdentity],
+                [new ControlTokenIdentity("Second", CompilerButtonToken.ID)] = second.Controls[s_buttonIdentity]
             });
         var provider = new ThemeTokenResourceProvider(snapshot);
 
         provider.TryGetResource(
-            new ComponentSharedTokenResourceKey("First", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
+            new ControlSharedTokenResourceKey("First", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
             null,
             out var firstValue).ShouldBeTrue();
         provider.TryGetResource(
-            new ComponentSharedTokenResourceKey("Second", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
+            new ControlSharedTokenResourceKey("Second", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
             null,
             out var secondValue).ShouldBeTrue();
 
@@ -78,31 +78,31 @@ public class ThemeTokenResourceProviderTests
     }
 
     [Fact]
-    public void ComponentShared_Keys_Isolate_Parent_Child_Component_Pairs_While_Global_Fallbacks_Remain_Shared()
+    public void ControlShared_Keys_Isolate_Parent_Child_Control_Pairs_While_Global_Fallbacks_Remain_Shared()
     {
-        var snapshot = CompileCrossComponentSnapshot();
+        var snapshot = CompileCrossControlSnapshot();
         var provider = new ThemeTokenResourceProvider(snapshot);
         provider.TryGetResource(SharedTokenKind.ColorInfo, null, out var globalInfo).ShouldBeTrue();
 
-        foreach (var (parentComponent, childComponent) in CrossComponentPairs)
+        foreach (var (parentControl, childControl) in CrossControlPairs)
         {
             provider.TryGetResource(
-                new ComponentSharedTokenResourceKey(null, parentComponent, SharedTokenKind.ColorPrimary),
+                new ControlSharedTokenResourceKey(null, parentControl, SharedTokenKind.ColorPrimary),
                 null,
                 out var parentPrimary).ShouldBeTrue();
             provider.TryGetResource(
-                new ComponentSharedTokenResourceKey(null, childComponent, SharedTokenKind.ColorPrimary),
+                new ControlSharedTokenResourceKey(null, childControl, SharedTokenKind.ColorPrimary),
                 null,
                 out var childPrimary).ShouldBeTrue();
 
             parentPrimary.ShouldNotBe(childPrimary);
 
             provider.TryGetResource(
-                new ComponentSharedTokenResourceKey(null, parentComponent, SharedTokenKind.ColorInfo),
+                new ControlSharedTokenResourceKey(null, parentControl, SharedTokenKind.ColorInfo),
                 null,
                 out var parentInfo).ShouldBeTrue();
             provider.TryGetResource(
-                new ComponentSharedTokenResourceKey(null, childComponent, SharedTokenKind.ColorInfo),
+                new ControlSharedTokenResourceKey(null, childControl, SharedTokenKind.ColorInfo),
                 null,
                 out var childInfo).ShouldBeTrue();
 
@@ -112,13 +112,13 @@ public class ThemeTokenResourceProviderTests
     }
 
     [Fact]
-    public void ComponentShared_Key_Normalizes_Empty_Catalog_To_Null()
+    public void ControlShared_Key_Normalizes_Empty_Catalog_To_Null()
     {
-        var emptyCatalog = new ComponentSharedTokenResourceKey(
+        var emptyCatalog = new ControlSharedTokenResourceKey(
             string.Empty,
             CompilerButtonToken.ID,
             SharedTokenKind.ColorPrimary);
-        var noCatalog = new ComponentSharedTokenResourceKey(
+        var noCatalog = new ControlSharedTokenResourceKey(
             null,
             CompilerButtonToken.ID,
             SharedTokenKind.ColorPrimary);
@@ -127,9 +127,9 @@ public class ThemeTokenResourceProviderTests
     }
 
     [Fact]
-    public void ComponentShared_Extension_Produces_Normalized_Dynamic_Resource_Key()
+    public void ControlShared_Extension_Produces_Normalized_Dynamic_Resource_Key()
     {
-        var extension = new ComponentSharedTokenResourceExtension(
+        var extension = new ControlSharedTokenResourceExtension(
             string.Empty,
             CompilerButtonToken.ID,
             SharedTokenKind.ColorPrimary);
@@ -137,28 +137,28 @@ public class ThemeTokenResourceProviderTests
         var dynamicResource = extension.ProvideValue(null!).ShouldBeOfType<DynamicResourceExtension>();
 
         dynamicResource.ResourceKey.ShouldBe(
-            new ComponentSharedTokenResourceKey(
-                null,
+            new ControlSharedTokenResourceKey(
+                ControlDesignTokenAttribute.DefaultCatalog,
                 CompilerButtonToken.ID,
                 SharedTokenKind.ColorPrimary));
     }
 
     [Fact]
-    public void Provider_Returns_False_For_Unknown_Resource_And_Component_Ids()
+    public void Provider_Returns_False_For_Unknown_Resource_And_Control_Ids()
     {
         var provider = new ThemeTokenResourceProvider(Compile());
 
         provider.TryGetResource("Missing", null, out var unknownResource).ShouldBeFalse();
         unknownResource.ShouldBeNull();
         provider.TryGetResource(
-            new ComponentSharedTokenResourceKey(null, "Missing", SharedTokenKind.ColorPrimary),
+            new ControlSharedTokenResourceKey(null, "Missing", SharedTokenKind.ColorPrimary),
             null,
-            out var unknownComponent).ShouldBeFalse();
-        unknownComponent.ShouldBeNull();
+            out var unknownControl).ShouldBeFalse();
+        unknownControl.ShouldBeNull();
     }
 
     [Fact]
-    public void Provider_Resolves_Component_Own_Token_Keys()
+    public void Provider_Resolves_Control_Own_Token_Keys()
     {
         var provider = new ThemeTokenResourceProvider(Compile());
 
@@ -227,7 +227,7 @@ public class ThemeTokenResourceProviderTests
             null,
             [ThemeAlgorithm.Default],
             sharedOverrides,
-            new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>(),
+            new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>(),
             [new ControlTokenRegistration(typeof(CompilerButtonToken))],
             new Dictionary<string, string>()));
 
@@ -257,7 +257,7 @@ public class ThemeTokenResourceProviderTests
             null,
             [ThemeAlgorithm.Default],
             new Dictionary<string, string>(),
-            new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>(),
+            new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>(),
             [new ControlTokenRegistration(typeof(CompilerButtonToken))],
             new Dictionary<string, string>()));
 
@@ -265,9 +265,9 @@ public class ThemeTokenResourceProviderTests
         return result.Snapshot!;
     }
 
-    private static ThemeSnapshot CompileCrossComponentSnapshot()
+    private static ThemeSnapshot CompileCrossControlSnapshot()
     {
-        var componentSharedOverrides = new Dictionary<string, string>
+        var controlSharedOverrides = new Dictionary<string, string>
         {
             [CompilerButtonToken.ID] = "#ff4d4f",
             [CompilerIconToken.ID] = "#1677ff",
@@ -278,7 +278,7 @@ public class ThemeTokenResourceProviderTests
             [CompilerDialogToken.ID] = "#eb2f96",
             [CompilerDataGridToken.ID] = "#52c41a"
         };
-        var controlTokens = componentSharedOverrides.ToDictionary(
+        var controlTokens = controlSharedOverrides.ToDictionary(
             entry => entry.Key,
             entry => new ThemeControlTokenDefinition(
                 entry.Key,
@@ -299,7 +299,7 @@ public class ThemeTokenResourceProviderTests
             null,
             [ThemeAlgorithm.Default],
             Tokens((nameof(DesignToken.ColorInfo), "#722ed1")),
-            new Dictionary<ComponentTokenIdentity, ControlTokenConfigInfo>(),
+            new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>(),
             [
                 new ControlTokenRegistration(typeof(CompilerButtonToken)),
                 new ControlTokenRegistration(typeof(CompilerIconToken)),
@@ -316,7 +316,7 @@ public class ThemeTokenResourceProviderTests
         return result.Snapshot!;
     }
 
-    private static readonly (string ParentComponent, string ChildComponent)[] CrossComponentPairs =
+    private static readonly (string ParentControl, string ChildControl)[] CrossControlPairs =
     [
         (CompilerButtonToken.ID, CompilerIconToken.ID),
         (CompilerLineEditToken.ID, CompilerAddOnDecoratedBoxToken.ID),
@@ -332,11 +332,11 @@ public class ThemeTokenResourceProviderTests
     }
 }
 
-internal abstract class CrossComponentCompilerToken : AbstractControlDesignToken
+internal abstract class CrossControlCompilerToken : AbstractControlDesignToken
 {
     public double Height { get; set; }
 
-    protected CrossComponentCompilerToken(string id)
+    protected CrossControlCompilerToken(string id)
         : base(id)
     {
     }
@@ -352,7 +352,7 @@ internal abstract class CrossComponentCompilerToken : AbstractControlDesignToken
     }
 }
 
-internal sealed class CompilerIconToken : CrossComponentCompilerToken
+internal sealed class CompilerIconToken : CrossControlCompilerToken
 {
     internal const string ID = "Icon";
 
@@ -362,7 +362,7 @@ internal sealed class CompilerIconToken : CrossComponentCompilerToken
     }
 }
 
-internal sealed class CompilerLineEditToken : CrossComponentCompilerToken
+internal sealed class CompilerLineEditToken : CrossControlCompilerToken
 {
     internal const string ID = "LineEdit";
 
@@ -372,7 +372,7 @@ internal sealed class CompilerLineEditToken : CrossComponentCompilerToken
     }
 }
 
-internal sealed class CompilerAddOnDecoratedBoxToken : CrossComponentCompilerToken
+internal sealed class CompilerAddOnDecoratedBoxToken : CrossControlCompilerToken
 {
     internal const string ID = "AddOnDecoratedBox";
 
@@ -382,7 +382,7 @@ internal sealed class CompilerAddOnDecoratedBoxToken : CrossComponentCompilerTok
     }
 }
 
-internal sealed class CompilerSelectToken : CrossComponentCompilerToken
+internal sealed class CompilerSelectToken : CrossControlCompilerToken
 {
     internal const string ID = "Select";
 
@@ -392,7 +392,7 @@ internal sealed class CompilerSelectToken : CrossComponentCompilerToken
     }
 }
 
-internal sealed class CompilerDatePickerToken : CrossComponentCompilerToken
+internal sealed class CompilerDatePickerToken : CrossControlCompilerToken
 {
     internal const string ID = "DatePicker";
 
@@ -402,7 +402,7 @@ internal sealed class CompilerDatePickerToken : CrossComponentCompilerToken
     }
 }
 
-internal sealed class CompilerDialogToken : CrossComponentCompilerToken
+internal sealed class CompilerDialogToken : CrossControlCompilerToken
 {
     internal const string ID = "Dialog";
 
@@ -412,7 +412,7 @@ internal sealed class CompilerDialogToken : CrossComponentCompilerToken
     }
 }
 
-internal sealed class CompilerDataGridToken : CrossComponentCompilerToken
+internal sealed class CompilerDataGridToken : CrossControlCompilerToken
 {
     internal const string ID = "DataGrid";
 

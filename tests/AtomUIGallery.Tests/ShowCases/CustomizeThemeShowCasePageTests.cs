@@ -58,6 +58,8 @@ public class CustomizeThemeShowCasePageTests
         source.ShouldContain("SharedTokenSetters=\"{Binding RuntimeSharedTokenSetters}\"");
         source.ShouldContain("Command=\"{Binding UseRuntimePrimaryGreen}\"");
         source.ShouldContain("Name=\"ComponentTokenContentIsolationProbe\"");
+        source.ShouldContain("Text=\"{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}\"");
+        source.ShouldNotContain("P2ContentIsolationText");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
@@ -148,7 +150,8 @@ public class CustomizeThemeShowCasePageTests
             source.ShouldContain("RuntimeTokenUpdatesDescription");
             source.ShouldContain("P2ContentUseGreen");
             source.ShouldContain("P2ContentThemeN3");
-            source.ShouldContain("P2ContentIsolationText");
+            source.ShouldContain("P2ContentSubmit");
+            source.ShouldNotContain("P2ContentIsolationText");
         }
     }
 

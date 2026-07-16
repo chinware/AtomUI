@@ -9,7 +9,7 @@ namespace AtomUI.Generator.Tests;
 public class TokenResourceKeyGeneratorTests
 {
     [Fact]
-    public void Generates_Component_Shared_Token_Extension_And_Metadata_Registration()
+    public void Generates_Control_Shared_Token_Extension_And_Metadata_Registration()
     {
         var outputCompilation = RunGenerator(CreateCompilation("""
             using AtomUI.Theme.TokenSystem;
@@ -42,13 +42,16 @@ public class TokenResourceKeyGeneratorTests
                          .ShouldBeEmpty();
 
         var tokenResources = GetGeneratedSource(outputCompilation, "TokenResourceConst.g.cs");
-        tokenResources.ShouldContain("public sealed class ButtonTokenSharedTokenResourceExtension : ComponentSharedTokenResourceExtension");
+        tokenResources.ShouldContain("public sealed class ButtonTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension");
         tokenResources.ShouldContain("public ButtonTokenSharedTokenResourceExtension(SharedTokenKind kind)");
-        tokenResources.ShouldContain(": base(null, \"Button\", kind)");
+        tokenResources.ShouldContain(": base(\"AtomUI\", \"Button\", kind)");
         tokenResources.ShouldContain("public class ButtonTokenResourceExtension : TokenResourceExtension<ButtonTokenKind>");
 
-        var typePool = GetGeneratedSource(outputCompilation, "ControlTokenTypePool.g.cs");
-        typePool.ShouldContain("new ControlTokenRegistration(typeof(Demo.ButtonToken), \"Button\", null)");
+        var descriptorPool = GetGeneratedSource(outputCompilation, "GeneratedThemeSchema.g.cs");
+        descriptorPool.ShouldContain("new ControlTokenIdentity(\"AtomUI\", \"Button\")");
+        descriptorPool.ShouldContain("static () => new global::Demo.ButtonToken()");
+        descriptorPool.ShouldNotContain("DynamicDependency");
+        descriptorPool.ShouldNotContain("typeof(global::Demo.ButtonToken)");
     }
 
     [Fact]
@@ -178,9 +181,9 @@ public class TokenResourceKeyGeneratorTests
 
         namespace AtomUI.Theme.Resources
         {
-            public class ComponentSharedTokenResourceExtension
+            public class ControlSharedTokenResourceExtension
             {
-                public ComponentSharedTokenResourceExtension(string? catalog, string componentId, AtomUI.Theme.Styling.SharedTokenKind kind)
+                public ControlSharedTokenResourceExtension(string? catalog, string controlId, AtomUI.Theme.Styling.SharedTokenKind kind)
                 {
                 }
             }
@@ -194,24 +197,95 @@ public class TokenResourceKeyGeneratorTests
             }
         }
 
+        namespace AtomUI.Theme.Schema
+        {
+            public enum TokenStage : byte
+            {
+                Seed,
+                Map,
+                Alias,
+                Control
+            }
+
+            public readonly record struct ControlTokenIdentity(string Catalog, string Id);
+
+            public sealed class TokenDescriptor
+            {
+                public TokenDescriptor(
+                    string name,
+                    int slot,
+                    TokenStage stage,
+                    System.Type valueType,
+                    object resourceKey,
+                    System.Func<string, object?> parser,
+                    System.Func<object?, string> formatter,
+                    System.Func<AtomUI.Theme.TokenSystem.AbstractDesignToken, object?> getter,
+                    System.Action<AtomUI.Theme.TokenSystem.AbstractDesignToken, object?> setter,
+                    System.Func<AtomUI.Theme.TokenSystem.AbstractDesignToken, object?> resourceProjector)
+                {
+                }
+            }
+
+            public sealed class ControlTokenDescriptor
+            {
+                public ControlTokenDescriptor(
+                    ControlTokenIdentity identity,
+                    System.Collections.Generic.IReadOnlyList<TokenDescriptor> ownTokens,
+                    System.Func<AtomUI.Theme.TokenSystem.AbstractControlDesignToken> factory,
+                    System.Action<AtomUI.Theme.TokenSystem.AbstractControlDesignToken, bool> evaluator)
+                {
+                }
+            }
+
+            public sealed class ThemeAlgorithmDescriptor
+            {
+            }
+
+            public static class ThemeTokenValueParser
+            {
+                public static T Parse<T>(string value) => default!;
+            }
+
+            public static class ThemeTokenValueFormatter
+            {
+                public static string Format<T>(T value) => string.Empty;
+            }
+
+            public static class ThemeResourceValue
+            {
+                public static object? Project<T>(T value) => value;
+            }
+        }
+
         namespace AtomUI.Theme.TokenSystem
         {
             [System.AttributeUsage(System.AttributeTargets.Class, Inherited = false)]
             public sealed class ControlDesignTokenAttribute : System.Attribute
             {
+                public ControlDesignTokenAttribute(string catalog = "AtomUI")
+                {
+                }
             }
 
             public sealed class NotTokenDefinitionAttribute : System.Attribute
             {
             }
 
-            public abstract class AbstractControlDesignToken
+            public abstract class AbstractDesignToken
+            {
+            }
+
+            public abstract class AbstractControlDesignToken : AbstractDesignToken
             {
                 protected AbstractControlDesignToken(string id)
                 {
                 }
 
                 protected abstract System.Type GetTokenKindType();
+
+                public virtual void CalculateTokenValues(bool isDark)
+                {
+                }
             }
         }
         """;

@@ -6,7 +6,6 @@ using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
-using AtomUI.Theme.Scope;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;

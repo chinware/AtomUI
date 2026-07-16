@@ -3,6 +3,8 @@ using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
+using AtomUI.Generated.AtomUI_Desktop_Controls;
+using AtomUI.Theme.Schema;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Input;
@@ -12,16 +14,28 @@ namespace AtomUI.Desktop.Controls;
 
 public static class ThemeManagerBuilderExtensions
 {
+    private static readonly HashSet<string> s_browserExcludedControlIds = new(StringComparer.Ordinal)
+    {
+        "AdornerLayer",
+        "IndicatorScrollViewer",
+        "OtpLineEdit",
+        "SplitView",
+        "TextBox",
+        "TreeFlyout",
+        "Window",
+        "WindowTitleBar"
+    };
+
     public static IThemeManagerBuilder UseDesktopControls(this IThemeManagerBuilder themeManagerBuilder)
     {
         themeManagerBuilder.UseCommonControls();
         DialogInputCaptureTracker.Initialize();
-        var controlTokenTypes = RuntimePlatform.Features.SupportsNativeWindow
-            ? ControlTokenTypePool.GetTokenTypes()
-            : GetBrowserControlTokenTypes();
-        foreach (var controlTokenRegistration in controlTokenTypes)
+        var controlDescriptors = RuntimePlatform.Features.SupportsNativeWindow
+            ? GeneratedThemeSchema.GetControls()
+            : GetBrowserControlDescriptors();
+        foreach (var descriptor in controlDescriptors)
         {
-            themeManagerBuilder.AddControlToken(controlTokenRegistration.TokenType);
+            themeManagerBuilder.AddControlToken(descriptor);
         }
         themeManagerBuilder.AddControlThemesProvider(RuntimePlatform.Features.SupportsNativeWindow
             ? new DesktopControlThemesProvider()
@@ -58,82 +72,19 @@ public static class ThemeManagerBuilderExtensions
         }
     }
 
-    private static IList<ControlTokenRegistration> GetBrowserControlTokenTypes()
+    private static IReadOnlyList<ControlTokenDescriptor> GetBrowserControlDescriptors()
     {
-        return new List<ControlTokenRegistration>
+        var descriptors = GeneratedThemeSchema.GetControls();
+        var browserDescriptors = new List<ControlTokenDescriptor>(
+            descriptors.Count - s_browserExcludedControlIds.Count);
+        foreach (var descriptor in descriptors)
         {
-            new ControlTokenRegistration(typeof(AddOnDecoratedBoxToken)),
-            new ControlTokenRegistration(typeof(AlertToken)),
-            new ControlTokenRegistration(typeof(ArrowDecoratedBoxToken)),
-            new ControlTokenRegistration(typeof(AutoCompleteToken)),
-            new ControlTokenRegistration(typeof(AvatarToken)),
-            new ControlTokenRegistration(typeof(BadgeToken)),
-            new ControlTokenRegistration(typeof(BorderBeamToken)),
-            new ControlTokenRegistration(typeof(BreadcrumbToken)),
-            new ControlTokenRegistration(typeof(ButtonSpinnerToken)),
-            new ControlTokenRegistration(typeof(ButtonToken)),
-            new ControlTokenRegistration(typeof(CalendarToken)),
-            new ControlTokenRegistration(typeof(CardToken)),
-            new ControlTokenRegistration(typeof(CascaderToken)),
-            new ControlTokenRegistration(typeof(CheckBoxToken)),
-            new ControlTokenRegistration(typeof(CarouselToken)),
-            new ControlTokenRegistration(typeof(CollapseToken)),
-            new ControlTokenRegistration(typeof(ComboBoxToken)),
-            new ControlTokenRegistration(typeof(DatePickerToken)),
-            new ControlTokenRegistration(typeof(DescriptionsToken)),
-            new ControlTokenRegistration(typeof(DialogToken)),
-            new ControlTokenRegistration(typeof(DrawerToken)),
-            new ControlTokenRegistration(typeof(EmptyToken)),
-            new ControlTokenRegistration(typeof(ExpanderToken)),
-            new ControlTokenRegistration(typeof(FlyoutHostToken)),
-            new ControlTokenRegistration(typeof(FloatButtonToken)),
-            new ControlTokenRegistration(typeof(FormToken)),
-            new ControlTokenRegistration(typeof(GroupBoxToken)),
-            new ControlTokenRegistration(typeof(ImagePreviewerToken)),
-            new ControlTokenRegistration(typeof(InfoPickerInputToken)),
-            new ControlTokenRegistration(typeof(LineEditToken)),
-            new ControlTokenRegistration(typeof(ListBoxToken)),
-            new ControlTokenRegistration(typeof(ListViewToken)),
-            new ControlTokenRegistration(typeof(MarqueeLabelToken)),
-            new ControlTokenRegistration(typeof(MentionsToken)),
-            new ControlTokenRegistration(typeof(MenuToken)),
-            new ControlTokenRegistration(typeof(MessageToken)),
-            new ControlTokenRegistration(typeof(MessageBoxToken)),
-            new ControlTokenRegistration(typeof(NavMenuToken)),
-            new ControlTokenRegistration(typeof(NotificationToken)),
-            new ControlTokenRegistration(typeof(NumericUpDownToken)),
-            new ControlTokenRegistration(typeof(OptionButtonToken)),
-            new ControlTokenRegistration(typeof(PaginationToken)),
-            new ControlTokenRegistration(typeof(PopupConfirmToken)),
-            new ControlTokenRegistration(typeof(PopupHostToken)),
-            new ControlTokenRegistration(typeof(ProgressBarToken)),
-            new ControlTokenRegistration(typeof(QRCodeToken)),
-            new ControlTokenRegistration(typeof(RadioButtonToken)),
-            new ControlTokenRegistration(typeof(RateToken)),
-            new ControlTokenRegistration(typeof(ResultToken)),
-            new ControlTokenRegistration(typeof(ScrollViewerToken)),
-            new ControlTokenRegistration(typeof(SegmentedToken)),
-            new ControlTokenRegistration(typeof(SelectToken)),
-            new ControlTokenRegistration(typeof(SeparatorToken)),
-            new ControlTokenRegistration(typeof(SkeletonToken)),
-            new ControlTokenRegistration(typeof(SliderToken)),
-            new ControlTokenRegistration(typeof(SpaceToken)),
-            new ControlTokenRegistration(typeof(SplitterToken)),
-            new ControlTokenRegistration(typeof(SpinToken)),
-            new ControlTokenRegistration(typeof(StepsToken)),
-            new ControlTokenRegistration(typeof(StatisticToken)),
-            new ControlTokenRegistration(typeof(TabControlToken)),
-            new ControlTokenRegistration(typeof(TagToken)),
-            new ControlTokenRegistration(typeof(TimelineToken)),
-            new ControlTokenRegistration(typeof(TextAreaToken)),
-            new ControlTokenRegistration(typeof(TimePickerToken)),
-            new ControlTokenRegistration(typeof(ToggleSwitchToken)),
-            new ControlTokenRegistration(typeof(ToolTipToken)),
-            new ControlTokenRegistration(typeof(TourToken)),
-            new ControlTokenRegistration(typeof(TransferToken)),
-            new ControlTokenRegistration(typeof(TreeSelectToken)),
-            new ControlTokenRegistration(typeof(TreeViewToken)),
-            new ControlTokenRegistration(typeof(UploadToken))
-        };
+            if (!s_browserExcludedControlIds.Contains(descriptor.Identity.Id))
+            {
+                browserDescriptors.Add(descriptor);
+            }
+        }
+
+        return browserDescriptors;
     }
 }

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:theme="https://atomui.net/schemas/theme/v1"
+           targetNamespace="https://atomui.net/schemas/theme/v1"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           version="1.0">
+
+  <xs:annotation>
+    <xs:documentation>AtomUI theme definition XML schema, version 1.</xs:documentation>
+  </xs:annotation>
+
+  <xs:simpleType name="IdentifierType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:maxLength value="128" />
+      <xs:pattern value="[A-Za-z_][A-Za-z0-9_.-]{0,127}" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="DisplayNameType">
+    <xs:restriction base="xs:token">
+      <xs:minLength value="1" />
+      <xs:maxLength value="128" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TokenValueType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:maxLength value="4096" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="StrictBooleanType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="true" />
+      <xs:enumeration value="false" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="AppearanceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Light" />
+      <xs:enumeration value="Dark" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ControlAlgorithmModeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Disabled">
+        <xs:annotation>
+          <xs:documentation>Do not rerun algorithms for Control seed overrides.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Global">
+        <xs:annotation>
+          <xs:documentation>Rerun the current scope's global algorithm chain.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="AlgorithmType">
+    <xs:attribute name="Id" type="theme:IdentifierType" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="AlgorithmsType">
+    <xs:sequence>
+      <xs:element name="Algorithm"
+                  type="theme:AlgorithmType"
+                  minOccurs="1"
+                  maxOccurs="64" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TokenType">
+    <xs:attribute name="Name" type="theme:IdentifierType" use="required" />
+    <xs:attribute name="Value" type="theme:TokenValueType" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="TokensType">
+    <xs:sequence>
+      <xs:element name="Token"
+                  type="theme:TokenType"
+                  minOccurs="1"
+                  maxOccurs="4096" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ControlType">
+    <xs:sequence>
+      <xs:element name="Algorithms"
+                  type="theme:AlgorithmsType"
+                  minOccurs="0"
+                  maxOccurs="1" />
+      <xs:element name="Tokens"
+                  type="theme:TokensType"
+                  minOccurs="0"
+                  maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="Catalog" type="theme:IdentifierType" use="required" />
+    <xs:attribute name="Id" type="theme:IdentifierType" use="required" />
+    <xs:attribute name="Algorithm" type="theme:ControlAlgorithmModeType" use="optional">
+      <xs:annotation>
+        <xs:documentation>
+          Omit this attribute and Algorithms to inherit. Use the Algorithms child for a custom chain.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="ControlsType">
+    <xs:sequence>
+      <xs:element name="Control"
+                  type="theme:ControlType"
+                  minOccurs="1"
+                  maxOccurs="1024">
+        <xs:unique name="UniqueControlTokenName">
+          <xs:selector xpath="theme:Tokens/theme:Token" />
+          <xs:field xpath="@Name" />
+        </xs:unique>
+        <xs:unique name="UniqueControlAlgorithmId">
+          <xs:selector xpath="theme:Algorithms/theme:Algorithm" />
+          <xs:field xpath="@Id" />
+        </xs:unique>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ThemeType">
+    <xs:sequence>
+      <xs:element name="Algorithms"
+                  type="theme:AlgorithmsType"
+                  minOccurs="1"
+                  maxOccurs="1" />
+      <xs:element name="Tokens"
+                  type="theme:TokensType"
+                  minOccurs="0"
+                  maxOccurs="1" />
+      <xs:element name="Controls"
+                  type="theme:ControlsType"
+                  minOccurs="0"
+                  maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="Id" type="theme:IdentifierType" use="required" />
+    <xs:attribute name="Name" type="theme:DisplayNameType" use="required" />
+    <xs:attribute name="Appearance" type="theme:AppearanceType" use="required" />
+    <xs:attribute name="IsDefault"
+                  type="theme:StrictBooleanType"
+                  use="optional"
+                  default="false" />
+  </xs:complexType>
+
+  <xs:element name="Theme" type="theme:ThemeType">
+    <xs:unique name="UniqueGlobalTokenName">
+      <xs:selector xpath="theme:Tokens/theme:Token" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="UniqueGlobalAlgorithmId">
+      <xs:selector xpath="theme:Algorithms/theme:Algorithm" />
+      <xs:field xpath="@Id" />
+    </xs:unique>
+    <xs:unique name="UniqueControlIdentity">
+      <xs:selector xpath="theme:Controls/theme:Control" />
+      <xs:field xpath="@Catalog" />
+      <xs:field xpath="@Id" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>
