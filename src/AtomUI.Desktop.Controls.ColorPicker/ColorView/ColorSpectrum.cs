@@ -365,12 +365,6 @@ internal class ColorSpectrum : TemplatedControl
             });
         }
 
-        if (_selectionEllipsePanel != null &&
-            ColorHelper.ToDisplayNameExists)
-        {
-            ToolTip.SetTip(_selectionEllipsePanel, ColorHelper.ToDisplayName(Color));
-        }
-
         // If we haven't yet created our bitmaps, do so now.
         if (_hsvValues.Count == 0)
         {
@@ -554,13 +548,6 @@ internal class ColorSpectrum : TemplatedControl
     /// <inheritdoc/>
     protected override void OnGotFocus(FocusChangedEventArgs e)
     {
-        // We only want to bother with the color name tool tip if we can provide color names.
-        if (_selectionEllipsePanel != null &&
-            ColorHelper.ToDisplayNameExists)
-        {
-            ToolTip.SetIsOpen(_selectionEllipsePanel, true);
-        }
-
         UpdatePseudoClasses();
 
         base.OnGotFocus(e);
@@ -569,13 +556,6 @@ internal class ColorSpectrum : TemplatedControl
     /// <inheritdoc/>
     protected override void OnLostFocus(FocusChangedEventArgs e)
     {
-        // We only want to bother with the color name tool tip if we can provide color names.
-        if (_selectionEllipsePanel != null &&
-            ColorHelper.ToDisplayNameExists)
-        {
-            ToolTip.SetIsOpen(_selectionEllipsePanel, false);
-        }
-
         UpdatePseudoClasses();
 
         base.OnLostFocus(e);
@@ -584,13 +564,6 @@ internal class ColorSpectrum : TemplatedControl
     /// <inheritdoc/>
     protected override void OnPointerExited(PointerEventArgs e)
     {
-        // We only want to bother with the color name tool tip if we can provide color names.
-        if (_selectionEllipsePanel != null &&
-            ColorHelper.ToDisplayNameExists)
-        {
-            ToolTip.SetIsOpen(_selectionEllipsePanel, false);
-        }
-
         UpdatePseudoClasses();
 
         base.OnPointerExited(e);
@@ -765,12 +738,6 @@ internal class ColorSpectrum : TemplatedControl
         {
             var colorChangedEventArgs = new ColorChangedEventArgs(_oldColor, newColor);
             ColorChanged?.Invoke(this, colorChangedEventArgs);
-
-            if (_selectionEllipsePanel != null &&
-                ColorHelper.ToDisplayNameExists)
-            {
-                ToolTip.SetTip(_selectionEllipsePanel, ColorHelper.ToDisplayName(Color));
-            }
         }
     }
 
@@ -1106,13 +1073,6 @@ internal class ColorSpectrum : TemplatedControl
         var scale = LayoutHelper.GetLayoutScale(this);
         Canvas.SetLeft(_selectionEllipsePanel, (xPosition / scale) - (_selectionEllipsePanel.Width / 2));
         Canvas.SetTop(_selectionEllipsePanel, (yPosition / scale) - (_selectionEllipsePanel.Height / 2));
-        // We only want to bother with the color name tool tip if we can provide color names.
-        if (IsFocused &&
-            _selectionEllipsePanel != null &&
-            ColorHelper.ToDisplayNameExists)
-        {
-            ToolTip.SetIsOpen(_selectionEllipsePanel, true);
-        }
 
         UpdatePseudoClasses();
     }
