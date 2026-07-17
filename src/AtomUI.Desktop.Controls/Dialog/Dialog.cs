@@ -541,26 +541,34 @@ public partial class Dialog : TemplatedControl,
                     SetCurrentValue(IsOpenProperty, true);
                 }
 
-                if (dialogHost is DialogHost windowDialog &&
+                try
+                {
+                    if (dialogHost is DialogHost windowDialog &&
                     IsModal &&
                     topLevel is Window ownerWindow &&
                     RuntimePlatform.Features.SupportsWindowModalDialog)
-                {
-                    // Window 宿主 + modal：必须用 ShowDialog() 拿 OS 级 modal 语义
-                    // （父窗禁用、焦点限制、macOS 下表现为 sheet）。
-                    // 仅用 Show() 再 await ClosedTask 只是应用层等待，父窗仍然可交互。
-                    Opened?.Invoke(this, EventArgs.Empty);
-                    await windowDialog.ShowDialog(ownerWindow).WaitAsync(cancellationToken);
-                }
-                else
-                {
-                    dialogHost.Show();
-                    Opened?.Invoke(this, EventArgs.Empty);
-
-                    if (IsModal)
                     {
-                        await openState.ClosedTask.WaitAsync(cancellationToken);
+                        // Window 宿主 + modal：必须用 ShowDialog() 拿 OS 级 modal 语义
+                        // （父窗禁用、焦点限制、macOS 下表现为 sheet）。
+                        // 仅用 Show() 再 await ClosedTask 只是应用层等待，父窗仍然可交互。
+                        Opened?.Invoke(this, EventArgs.Empty);
+                        await windowDialog.ShowDialog(ownerWindow).WaitAsync(cancellationToken);
                     }
+                    else
+                    {
+                        dialogHost.Show();
+                        Opened?.Invoke(this, EventArgs.Empty);
+
+                        if (IsModal)
+                        {
+                            await openState.ClosedTask.WaitAsync(cancellationToken);
+                        }
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    dialogHost.Close();
+                    throw;
                 }
             }
             catch when (!ownershipTransferred)
