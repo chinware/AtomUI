@@ -19,21 +19,29 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
 
     public string UrlPathSegment { get; } = ID.ToString();
 
-    private int _currentStep;
+    private int _current;
 
-    public int CurrentStep
+    public int Current
     {
-        get => _currentStep;
+        get => _current;
         set
         {
-            this.RaiseAndSetIfChanged(ref _currentStep, value);
-            this.RaisePropertyChanged(nameof(CurrentStepText));
-            PreviousButtonVisible = CurrentStep > 0;
-            RefreshInteractiveButtonText();
+            this.RaiseAndSetIfChanged(ref _current, value);
+            this.RaisePropertyChanged(nameof(CurrentText));
+            PreviousButtonVisible = Current > 0;
+            RefreshInteractiveText();
         }
     }
 
-    public string CurrentStepText => CurrentStep.ToString(CultureInfo.CurrentCulture);
+    public string CurrentText => Current.ToString(CultureInfo.CurrentCulture);
+
+    public string InteractivePageContent => Current switch
+    {
+        0 => Lang(StepsShowCaseLangResourceKind.P2ContentFirstContent),
+        1 => Lang(StepsShowCaseLangResourceKind.P2ContentSecondContent),
+        2 => Lang(StepsShowCaseLangResourceKind.P2ContentLastContent),
+        _ => string.Empty
+    };
 
     private bool _previousButtonVisible;
 
@@ -73,36 +81,31 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
 
     public void ResetInteractiveStep()
     {
-        CurrentStep            = 0;
-        PreviousButtonVisible = false;
-        RefreshInteractiveButtonText();
+        Current = 0;
     }
 
     public void MoveToNextInteractiveStep()
     {
-        if (CurrentStep < InteractiveLastStepIndex)
+        if (Current < InteractiveLastStepIndex)
         {
-            CurrentStep++;
+            Current++;
         }
-
-        RefreshInteractiveButtonText();
     }
 
     public void MoveToPreviousInteractiveStep()
     {
-        if (CurrentStep > 0)
+        if (Current > 0)
         {
-            CurrentStep--;
+            Current--;
         }
-
-        RefreshInteractiveButtonText();
     }
 
-    public void RefreshInteractiveButtonText()
+    public void RefreshInteractiveText()
     {
-        NextButtonText = CurrentStep == InteractiveLastStepIndex
+        NextButtonText = Current == InteractiveLastStepIndex
             ? Lang(StepsShowCaseLangResourceKind.P2ContentDone)
             : Lang(StepsShowCaseLangResourceKind.P2ContentNext);
+        this.RaisePropertyChanged(nameof(InteractivePageContent));
     }
 
     public void EnsureApiRows()
@@ -114,23 +117,29 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
 
         ApiRows =
         [
-            new StepsApiRow("Steps.CurrentStep", Lang(StepsShowCaseLangResourceKind.ApiPropertyCurrentStep), "int", "cyan", "0"),
-            new StepsApiRow("Steps.InitialStep", Lang(StepsShowCaseLangResourceKind.ApiPropertyInitialStep), "int", "cyan", "-1"),
-            new StepsApiRow("Steps.ProgressValue", Lang(StepsShowCaseLangResourceKind.ApiPropertyProgressValue), "double", "cyan", "0"),
-            new StepsApiRow("Steps.CurrentStepStatus", Lang(StepsShowCaseLangResourceKind.ApiPropertyCurrentStepStatus), "StepsItemStatus", "blue", "Process"),
+            new StepsApiRow("Steps.Current", Lang(StepsShowCaseLangResourceKind.ApiPropertyCurrent), "int", "cyan", "0"),
+            new StepsApiRow("Steps.Initial", Lang(StepsShowCaseLangResourceKind.ApiPropertyInitial), "int", "cyan", "0"),
+            new StepsApiRow("Steps.Status", Lang(StepsShowCaseLangResourceKind.ApiPropertyStatus), "StepsStatus", "blue", "Process"),
+            new StepsApiRow("Steps.Percent", Lang(StepsShowCaseLangResourceKind.ApiPropertyPercent), "double?", "cyan", "null"),
+            new StepsApiRow("Steps.Type", Lang(StepsShowCaseLangResourceKind.ApiPropertyType), "StepsType", "blue", "Default"),
             new StepsApiRow("Steps.Orientation", Lang(StepsShowCaseLangResourceKind.ApiPropertyOrientation), "Orientation", "blue", "Horizontal"),
-            new StepsApiRow("Steps.LabelPlacement", Lang(StepsShowCaseLangResourceKind.ApiPropertyLabelPlacement), "Orientation", "blue", "Horizontal"),
+            new StepsApiRow("Steps.TitlePlacement", Lang(StepsShowCaseLangResourceKind.ApiPropertyTitlePlacement), "Orientation", "blue", "Horizontal"),
             new StepsApiRow("Steps.SizeType", Lang(StepsShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
-            new StepsApiRow("Steps.ItemIndicatorType", Lang(StepsShowCaseLangResourceKind.ApiPropertyItemIndicatorType), "StepsItemIndicatorType", "blue", "Default"),
-            new StepsApiRow("Steps.Style", Lang(StepsShowCaseLangResourceKind.ApiPropertyStyle), "StepsStyle", "blue", "Default"),
             new StepsApiRow("Steps.IsItemClickable", Lang(StepsShowCaseLangResourceKind.ApiPropertyIsItemClickable), "bool", "purple", "false"),
-            new StepsApiRow("Steps.IsShowItemProgress", Lang(StepsShowCaseLangResourceKind.ApiPropertyIsShowItemProgress), "bool", "purple", "false"),
-            new StepsApiRow("Steps.ContentTemplate", Lang(StepsShowCaseLangResourceKind.ApiPropertyContentTemplate), "IDataTemplate?", "cyan", "null"),
-            new StepsApiRow("Steps.CurrentContent", Lang(StepsShowCaseLangResourceKind.ApiPropertyCurrentContent), "object?", "cyan", "read-only"),
+            new StepsApiRow("Steps.IsMotionEnabled", Lang(StepsShowCaseLangResourceKind.ApiPropertyIsMotionEnabled), "bool", "purple", "token"),
+            new StepsApiRow("Steps.Items", Lang(StepsShowCaseLangResourceKind.ApiPropertyItems), "IList", "cyan", "empty"),
+            new StepsApiRow("Steps.ItemsSource", Lang(StepsShowCaseLangResourceKind.ApiPropertyItemsSource), "IEnumerable?", "cyan", "null"),
+            new StepsApiRow("Steps.ItemTemplate", Lang(StepsShowCaseLangResourceKind.ApiPropertyItemTemplate), "IDataTemplate?", "cyan", "null"),
+            new StepsApiRow("Steps.CurrentChangeRequested", Lang(StepsShowCaseLangResourceKind.ApiEventCurrentChangeRequested), "event EventHandler<StepsCurrentChangeRequestedEventArgs>?", "orange", "null"),
+            new StepsApiRow("StepsItem.Header", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemHeader), "object?", "cyan", "null"),
+            new StepsApiRow("StepsItem.HeaderTemplate", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemHeaderTemplate), "IDataTemplate?", "cyan", "null"),
             new StepsApiRow("StepsItem.SubHeader", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemSubHeader), "object?", "cyan", "null"),
-            new StepsApiRow("StepsItem.Description", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemDescription), "object?", "cyan", "null"),
+            new StepsApiRow("StepsItem.SubHeaderTemplate", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemSubHeaderTemplate), "IDataTemplate?", "cyan", "null"),
+            new StepsApiRow("StepsItem.Content", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemContent), "object?", "cyan", "null"),
+            new StepsApiRow("StepsItem.ContentTemplate", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemContentTemplate), "IDataTemplate?", "cyan", "null"),
             new StepsApiRow("StepsItem.Icon", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemIcon), "PathIcon?", "cyan", "null"),
-            new StepsApiRow("StepsItem.Status", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemStatus), "StepsItemStatus", "blue", "Process")
+            new StepsApiRow("StepsItem.Status", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemStatus), "StepsStatus?", "blue", "null"),
+            new StepsApiRow("StepsItem.IsEnabled", Lang(StepsShowCaseLangResourceKind.ApiPropertyStepsItemIsEnabled), "bool", "purple", "true")
         ];
     }
 
@@ -154,7 +163,6 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
             new StepsDesignTokenRow("VerticalItemSpacing", Lang(StepsShowCaseLangResourceKind.TokenNameVerticalItemSpacing), Lang(StepsShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(StepsShowCaseLangResourceKind.TokenStatusStable), "success"),
             new StepsDesignTokenRow("VerticalDescriptionPadding", Lang(StepsShowCaseLangResourceKind.TokenNameVerticalDescriptionPadding), Lang(StepsShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(StepsShowCaseLangResourceKind.TokenStatusStable), "success"),
             new StepsDesignTokenRow("StepsNavActiveColor", Lang(StepsShowCaseLangResourceKind.TokenNameStepsNavActiveColor), Lang(StepsShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(StepsShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new StepsDesignTokenRow("StepsProgressSize", Lang(StepsShowCaseLangResourceKind.TokenNameStepsProgressSize), Lang(StepsShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(StepsShowCaseLangResourceKind.TokenStatusStable), "success"),
             new StepsDesignTokenRow("InlineDotSize", Lang(StepsShowCaseLangResourceKind.TokenNameInlineDotSize), Lang(StepsShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(StepsShowCaseLangResourceKind.TokenStatusStable), "success"),
             new StepsDesignTokenRow("InlineItemPadding", Lang(StepsShowCaseLangResourceKind.TokenNameInlineItemPadding), Lang(StepsShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(StepsShowCaseLangResourceKind.TokenStatusStable), "success"),
             new StepsDesignTokenRow("ProcessIconBgColor", Lang(StepsShowCaseLangResourceKind.TokenNameProcessIconBgColor), Lang(StepsShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(StepsShowCaseLangResourceKind.TokenStatusStable), "success"),
@@ -179,23 +187,32 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
         {
             StepsShowCaseLangResourceKind.P2ContentDone                         => en_US.P2ContentDone,
             StepsShowCaseLangResourceKind.P2ContentNext                         => en_US.P2ContentNext,
-            StepsShowCaseLangResourceKind.ApiPropertyCurrentStep                => en_US.ApiPropertyCurrentStep,
-            StepsShowCaseLangResourceKind.ApiPropertyInitialStep                => en_US.ApiPropertyInitialStep,
-            StepsShowCaseLangResourceKind.ApiPropertyProgressValue              => en_US.ApiPropertyProgressValue,
-            StepsShowCaseLangResourceKind.ApiPropertyCurrentStepStatus          => en_US.ApiPropertyCurrentStepStatus,
+            StepsShowCaseLangResourceKind.P2ContentFirstContent                 => en_US.P2ContentFirstContent,
+            StepsShowCaseLangResourceKind.P2ContentSecondContent                => en_US.P2ContentSecondContent,
+            StepsShowCaseLangResourceKind.P2ContentLastContent                  => en_US.P2ContentLastContent,
+            StepsShowCaseLangResourceKind.ApiPropertyCurrent                    => en_US.ApiPropertyCurrent,
+            StepsShowCaseLangResourceKind.ApiPropertyInitial                    => en_US.ApiPropertyInitial,
+            StepsShowCaseLangResourceKind.ApiPropertyStatus                     => en_US.ApiPropertyStatus,
+            StepsShowCaseLangResourceKind.ApiPropertyPercent                    => en_US.ApiPropertyPercent,
+            StepsShowCaseLangResourceKind.ApiPropertyType                       => en_US.ApiPropertyType,
             StepsShowCaseLangResourceKind.ApiPropertyOrientation                => en_US.ApiPropertyOrientation,
-            StepsShowCaseLangResourceKind.ApiPropertyLabelPlacement             => en_US.ApiPropertyLabelPlacement,
+            StepsShowCaseLangResourceKind.ApiPropertyTitlePlacement             => en_US.ApiPropertyTitlePlacement,
             StepsShowCaseLangResourceKind.ApiPropertySizeType                   => en_US.ApiPropertySizeType,
-            StepsShowCaseLangResourceKind.ApiPropertyItemIndicatorType          => en_US.ApiPropertyItemIndicatorType,
-            StepsShowCaseLangResourceKind.ApiPropertyStyle                      => en_US.ApiPropertyStyle,
             StepsShowCaseLangResourceKind.ApiPropertyIsItemClickable            => en_US.ApiPropertyIsItemClickable,
-            StepsShowCaseLangResourceKind.ApiPropertyIsShowItemProgress         => en_US.ApiPropertyIsShowItemProgress,
-            StepsShowCaseLangResourceKind.ApiPropertyContentTemplate            => en_US.ApiPropertyContentTemplate,
-            StepsShowCaseLangResourceKind.ApiPropertyCurrentContent             => en_US.ApiPropertyCurrentContent,
+            StepsShowCaseLangResourceKind.ApiPropertyIsMotionEnabled            => en_US.ApiPropertyIsMotionEnabled,
+            StepsShowCaseLangResourceKind.ApiPropertyItems                      => en_US.ApiPropertyItems,
+            StepsShowCaseLangResourceKind.ApiPropertyItemsSource                => en_US.ApiPropertyItemsSource,
+            StepsShowCaseLangResourceKind.ApiPropertyItemTemplate               => en_US.ApiPropertyItemTemplate,
+            StepsShowCaseLangResourceKind.ApiEventCurrentChangeRequested        => en_US.ApiEventCurrentChangeRequested,
+            StepsShowCaseLangResourceKind.ApiPropertyStepsItemHeader            => en_US.ApiPropertyStepsItemHeader,
+            StepsShowCaseLangResourceKind.ApiPropertyStepsItemHeaderTemplate    => en_US.ApiPropertyStepsItemHeaderTemplate,
             StepsShowCaseLangResourceKind.ApiPropertyStepsItemSubHeader         => en_US.ApiPropertyStepsItemSubHeader,
-            StepsShowCaseLangResourceKind.ApiPropertyStepsItemDescription       => en_US.ApiPropertyStepsItemDescription,
+            StepsShowCaseLangResourceKind.ApiPropertyStepsItemSubHeaderTemplate => en_US.ApiPropertyStepsItemSubHeaderTemplate,
+            StepsShowCaseLangResourceKind.ApiPropertyStepsItemContent           => en_US.ApiPropertyStepsItemContent,
+            StepsShowCaseLangResourceKind.ApiPropertyStepsItemContentTemplate   => en_US.ApiPropertyStepsItemContentTemplate,
             StepsShowCaseLangResourceKind.ApiPropertyStepsItemIcon              => en_US.ApiPropertyStepsItemIcon,
             StepsShowCaseLangResourceKind.ApiPropertyStepsItemStatus            => en_US.ApiPropertyStepsItemStatus,
+            StepsShowCaseLangResourceKind.ApiPropertyStepsItemIsEnabled         => en_US.ApiPropertyStepsItemIsEnabled,
             StepsShowCaseLangResourceKind.TokenNameDescriptionMaxWidth          => en_US.TokenNameDescriptionMaxWidth,
             StepsShowCaseLangResourceKind.TokenNameIconSize                     => en_US.TokenNameIconSize,
             StepsShowCaseLangResourceKind.TokenNameIconFontSize                 => en_US.TokenNameIconFontSize,
@@ -207,7 +224,6 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
             StepsShowCaseLangResourceKind.TokenNameVerticalItemSpacing          => en_US.TokenNameVerticalItemSpacing,
             StepsShowCaseLangResourceKind.TokenNameVerticalDescriptionPadding   => en_US.TokenNameVerticalDescriptionPadding,
             StepsShowCaseLangResourceKind.TokenNameStepsNavActiveColor          => en_US.TokenNameStepsNavActiveColor,
-            StepsShowCaseLangResourceKind.TokenNameStepsProgressSize            => en_US.TokenNameStepsProgressSize,
             StepsShowCaseLangResourceKind.TokenNameInlineDotSize                => en_US.TokenNameInlineDotSize,
             StepsShowCaseLangResourceKind.TokenNameInlineItemPadding            => en_US.TokenNameInlineItemPadding,
             StepsShowCaseLangResourceKind.TokenNameProcessIconBgColor           => en_US.TokenNameProcessIconBgColor,
@@ -215,7 +231,7 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
             StepsShowCaseLangResourceKind.TokenNameErrorIconBgColor             => en_US.TokenNameErrorIconBgColor,
             StepsShowCaseLangResourceKind.TokenScopeComponent                   => en_US.TokenScopeComponent,
             StepsShowCaseLangResourceKind.TokenStatusStable                     => en_US.TokenStatusStable,
-            StepsShowCaseLangResourceKind.P2TextCurrentStep                    => en_US.P2TextCurrentStep,
+            StepsShowCaseLangResourceKind.P2TextCurrent                         => en_US.P2TextCurrent,
             _                                                                  => kind.ToString()
         };
     }

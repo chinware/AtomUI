@@ -14,9 +14,7 @@ using AtomFloatButtonGroupHost = AtomUI.Desktop.Controls.FloatButtonGroupHost;
 using AtomImagePreviewer = AtomUI.Desktop.Controls.ImagePreviewer;
 using AtomListView = AtomUI.Desktop.Controls.ListView;
 using AtomPagination = AtomUI.Desktop.Controls.Pagination;
-using AtomSteps = AtomUI.Desktop.Controls.Steps;
 using AtomTour = AtomUI.Desktop.Controls.Tour;
-using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUI.Desktop.Controls.Tests.SelectionSemantics;
 
@@ -33,7 +31,6 @@ public class ControlledStateBindingTests
         AssertTwoWayAndDataValidation(AtomListView.SelectedItemsProperty, typeof(AtomListView));
         AssertTwoWay(AtomPagination.CurrentPageProperty, typeof(AtomPagination));
         AssertTwoWay(AtomPagination.PageSizeProperty, typeof(AtomPagination));
-        AssertTwoWay(AtomSteps.CurrentStepProperty, typeof(AtomSteps));
         AssertTwoWay(AtomImagePreviewer.IsOpenProperty, typeof(AtomImagePreviewer));
         AssertTwoWay(AtomImagePreviewer.CurrentIndexProperty, typeof(AtomImagePreviewer));
         AssertTwoWay(AtomDialog.IsOpenProperty, typeof(AtomDialog));
@@ -93,63 +90,6 @@ public class ControlledStateBindingTests
         Dispatcher.UIThread.RunJobs();
 
         viewModel.PageSize.ShouldBe(20);
-    }
-
-    [Fact]
-    public void Steps_CurrentStep_DefaultBindingMode_Updates_ViewModel()
-    {
-        var viewModel = new ControlledStateBindingViewModel
-        {
-            CurrentStep = 0
-        };
-        var steps = new AtomSteps();
-        steps.Bind(
-            AtomSteps.CurrentStepProperty,
-            new Binding(nameof(ControlledStateBindingViewModel.CurrentStep))
-            {
-                Source = viewModel
-            });
-
-        steps.CurrentStep.ShouldBe(0);
-
-        steps.SetCurrentValue(AtomSteps.CurrentStepProperty, 2);
-        Dispatcher.UIThread.RunJobs();
-
-        viewModel.CurrentStep.ShouldBe(2);
-    }
-
-    [Fact]
-    public void Steps_SelectedIndex_Updates_CurrentStep_And_ViewModel()
-    {
-        var viewModel = new ControlledStateBindingViewModel
-        {
-            CurrentStep = 0
-        };
-        var steps = new AtomSteps
-        {
-            IsItemClickable = true,
-            Items =
-            {
-                new StepsItem { Header = "First" },
-                new StepsItem { Header = "Second" },
-                new StepsItem { Header = "Third" }
-            }
-        };
-        steps.Bind(
-            AtomSteps.CurrentStepProperty,
-            new Binding(nameof(ControlledStateBindingViewModel.CurrentStep))
-            {
-                Source = viewModel
-            });
-
-        ShowInWindow(steps, () =>
-        {
-            steps.SelectedIndex = 2;
-            Dispatcher.UIThread.RunJobs();
-
-            steps.CurrentStep.ShouldBe(2);
-            viewModel.CurrentStep.ShouldBe(2);
-        });
     }
 
     [Fact]
@@ -292,27 +232,6 @@ public class ControlledStateBindingTests
         metadata.EnableDataValidation.ShouldBe(true);
     }
 
-    private static void ShowInWindow(Control content, Action assertion)
-    {
-        var window = new AvaloniaWindow
-        {
-            Width = 640,
-            Height = 240,
-            Content = content
-        };
-
-        try
-        {
-            window.Show();
-            Dispatcher.UIThread.RunJobs();
-            assertion();
-        }
-        finally
-        {
-            window.Close();
-        }
-    }
-
     private static string ReadRepoFile(string relativePath)
     {
         var current = AppContext.BaseDirectory;
@@ -334,7 +253,6 @@ public class ControlledStateBindingTests
     {
         private int _currentPage;
         private int _pageSize;
-        private int _currentStep;
         private int _currentIndex;
         private bool _isOpen;
         private System.Collections.IList? _selectedItems;
@@ -366,21 +284,6 @@ public class ControlledStateBindingTests
 
                 _pageSize = value;
                 RaisePropertyChanged(nameof(PageSize));
-            }
-        }
-
-        public int CurrentStep
-        {
-            get => _currentStep;
-            set
-            {
-                if (_currentStep == value)
-                {
-                    return;
-                }
-
-                _currentStep = value;
-                RaisePropertyChanged(nameof(CurrentStep));
             }
         }
 

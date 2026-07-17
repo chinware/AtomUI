@@ -1063,7 +1063,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         ProgressFramePaddingSM,
         ProgressGrooveColor,
         StepsNavActiveColor,
-        StepsProgressSize,
         VerticalDescriptionPadding,
         VerticalDotMargin,
         VerticalItemSpacing,

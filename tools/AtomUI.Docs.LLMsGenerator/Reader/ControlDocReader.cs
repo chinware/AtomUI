@@ -92,10 +92,22 @@ public static partial class ControlDocReader
                 overview,
                 "9. 文档导航、LLMS 导出与验证策略",
                 "9. 文档导航与验证策略").Content.Trim(),
-            ImplementationLifecycleSection = implementation.GetRequiredSection("5. 生命周期与模板接入").Content.Trim(),
-            ImplementationAotSection = implementation.GetRequiredSection("8. 资源、性能与 AOT 边界").Content.Trim(),
-            ImplementationInvariantsSection = implementation.GetRequiredSection("9. 维护不变量").Content.Trim(),
-            ImplementationTestsSection = implementation.GetRequiredSection("10. 测试与验证").Content.Trim(),
+            ImplementationLifecycleSection = GetRequiredSection(
+                implementation,
+                "6. 生命周期与模板接入",
+                "5. 生命周期与模板接入").Content.Trim(),
+            ImplementationAotSection = GetRequiredSection(
+                implementation,
+                "9. 资源、性能与 AOT 边界",
+                "8. 资源、性能与 AOT 边界").Content.Trim(),
+            ImplementationInvariantsSection = GetRequiredSection(
+                implementation,
+                "10. 维护不变量",
+                "9. 维护不变量").Content.Trim(),
+            ImplementationTestsSection = GetRequiredSection(
+                implementation,
+                "11. 测试与验证",
+                "10. 测试与验证").Content.Trim(),
             GalleryExamplesMarkdown = GalleryExampleReader.ReadMarkdown(repositoryRoot, galleryPath),
             SourceOverviewRelativePath = ToRelativePath(repositoryRoot, control.OverviewPath),
             SourceImplementationRelativePath = ToRelativePath(repositoryRoot, control.ImplementationPath),

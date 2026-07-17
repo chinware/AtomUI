@@ -1,262 +1,338 @@
 # Steps 桌面版实现原理
 
-本文档描述 Steps 桌面版的容器生成、当前步骤同步、状态派生、Grid 布局、当前内容跟踪、指示器绘制、Navigation 箭头布局和维护边界。公共设计与 API 契约见 [Steps 桌面版架构设计](overview.md)，Token 语义见 [Steps Token 设计](token.md)，变化记录见 [Steps Changelog](changelog.md)。
+本文档描述 Steps 桌面版的单一状态投影、容器生命周期、统一语义模板、布局 Panel、受控交互、Wave 和 Progress 实现边界。公共设计与 API 契约见 [Steps 桌面版架构设计](overview.md)，Token 语义见 [Steps Token 设计](token.md)，变化记录见 [Steps Changelog](changelog.md)。
 
 ## 1. 实现定位
 
-Steps 的实现重点是在 `SelectingItemsControl` 容器体系内维护线性步骤状态，并按 `Style`、`Orientation`、`LabelPlacement` 和 `ItemIndicatorType` 选择不同模板布局。实现文档覆盖 `Steps`、`StepsItem`、`StepsItemIndicator`、`StepsToken` 和 Steps 主题文件的职责边界。
+Steps 的实现目标是在 `ItemsControl` 容器体系内，把根输入和 item 显式状态确定性投影为视觉状态。实现不依赖 Selection、模板应用顺序、VisualTree attach 顺序或上一次计算结果。
 
-本文档不重复 Avalonia `SelectingItemsControl` 的选择机制，也不展开 TokenResource、Motion transition 或 IconPresenter 的通用实现。
+本文档覆盖 `Steps`、`StepsItem`、`StepsItemIndicator`、两个 internal LayoutPanel 和三个主题文件的稳定职责。通用 ItemsControl、TokenResource、Motion 和 PathIcon 实现不在本文档重复说明。
 
 ## 2. 源码文件结构
 
 主要源码：
 
-- `src/AtomUI.Desktop.Controls/Steps/Steps.cs`：公开控件、根属性、容器生成、Grid items panel 配置、当前步骤同步、当前内容跟踪和 pointer 选择。
-- `src/AtomUI.Desktop.Controls/Steps/StepsItem.cs`：公开 item 容器、item 内容契约、内部状态、指示器 template part 接入、hover 转发、进度可见性计算和 transition 启用时序。
-- `src/AtomUI.Desktop.Controls/Steps/StepsItemIndicator.cs`：内部指示器控件、数字/图标/dot 状态、progress ring 绘制和尺寸变化圆角同步。
-- `src/AtomUI.Desktop.Controls/Steps/StepsPseudoClass.cs`：StepsItem 完成态伪类常量。
+- `src/AtomUI.Desktop.Controls/Steps/Steps.cs`：public API、事件、容器生成、根输入分发和 item 状态协调。
+- `src/AtomUI.Desktop.Controls/Steps/StepsItem.cs`：public item 契约、internal 派生状态、owner 生命周期和激活入口。
+- `src/AtomUI.Desktop.Controls/Steps/StepsItemIndicator.cs`：Indicator 状态、Wave part、Progress 绘制和渲染失效。
+- `src/AtomUI.Desktop.Controls/Steps/StepsPanel.cs`：item 间水平 flex、Navigation 等宽、Inline 和垂直 stack 布局。
+- `src/AtomUI.Desktop.Controls/Steps/StepsItemLayoutPanel.cs`：Indicator、Header、SubHeader、Connector、Content、NavigationArrow 和 NavigationActiveIndicator 的 item 内布局。
 - `src/AtomUI.Desktop.Controls/Steps/StepsToken.cs`：Steps 组件 Token。
-- `src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`：根模板和根 spacing。
-- `src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemTheme.axaml`：item 模板、状态色、连接线、Default/Navigation/Inline 分支和 Navigation 箭头布局。
-- `src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemIndicatorTheme.axaml`：默认指示器、dot、inline dot、自定义 icon、完成/错误 icon 和 progress frame。
-- `src/AtomUI.Desktop.Controls/Steps/Themes/StepsThemes.axaml`：Steps 主题汇总入口。
-- `tests/AtomUI.Desktop.Controls.Tests/Steps/StepsDynamicItemsTests.cs`：动态 item 增加时 Grid 行列和位置同步回归。
-- `tests/AtomUI.Desktop.Controls.Tests/Steps/StepsNavigationLayoutTests.cs`：Navigation 箭头对齐、裁剪和主题契约回归。
+- `src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`：根模板和 StepsPanel。
+- `src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemTheme.axaml`：统一 item 语义模板和状态样式。
+- `src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemIndicatorTheme.axaml`：统一 Indicator、Dot、Icon、Progress 和 Wave 模板。
+- `src/AtomUI.Desktop.Controls/Steps/Themes/StepsThemes.axaml`：Steps 主题聚合入口。
+
+测试目录：
+
+- `tests/AtomUI.Desktop.Controls.Tests/Steps`：状态、Items、交互、Wave、Progress、布局和生命周期回归测试。
+
+Gallery 目录：
+
+- `controlgallery/AtomUIGallery/ShowCases/Navigation/Steps`：示例、API 表、Token 表和本地化资源。
 
 ## 3. 核心类职责
 
-`Steps` 是步骤根控件。它注册 `StepsToken.ScopeProvider`，固定单选模式，生成 `StepsItem` 容器，把根属性绑定到 item，并在模板接入后配置 Grid items panel。
+### 3.1 Steps
 
-`StepsItem` 是步骤容器。它承载标题、副标题、描述、内容、自定义 icon 和显式 status，并接收根控件下发的内部状态。它通过 `PART_Indicator` 把 hover 状态转发给指示器，并计算进度环是否有效显示。
+`Steps : ItemsControl` 是状态协调 owner：
 
-`StepsItemIndicator` 是内部视觉控件。它根据 `IndicatorType`、`Status`、`Icon`、`IsCurrent`、`IsClickable`、`IsItemHover` 和 `IsShowProgress` 选择数字、完成图标、错误图标、自定义 icon 或 dot 视觉。进度环由 `Render` 绘制。
+- 保存根 public 输入。
+- 创建和清理 `StepsItem` 容器。
+- 根据 index 计算 StepNumber 和 AutomaticStatus。
+- 维护相邻 item 的 ConnectorStatus。
+- 接收 item 激活并发出 `CurrentChangeRequested`。
+- 不保存第二套当前步骤状态、根级页面内容投影或视觉缓存集合。
 
-`StepsToken` 是组件级主题变量层。它不保存当前步骤、选择状态、item 数量或 progress 值，只把 SharedToken 转换为 Steps 可消费的尺寸、间距和颜色语义。
+### 3.2 StepsItem
+
+`StepsItem : HeaderedContentControl` 是单项 public 容器：
+
+- 承载 Header、SubHeader、Content、Icon 和 nullable Status。
+- 保存 StepNumber、IsCurrent、AutomaticStatus、EffectiveStatus、ConnectorStatus、IsFirst、IsLast 和 CanInvoke 的 internal 投影。
+- 处理 pointer、keyboard、focus 和 hover。
+- 把激活请求交给 owner，不写入根 Current。
+
+### 3.3 StepsItemIndicator
+
+Indicator 是 internal-observable 视觉控件：
+
+- 展示步骤编号、完成图标、错误图标、Dot 或自定义 Icon。
+- 在有效条件成立时绘制 Progress ring。
+- 持有当前模板中的 `PART_WaveSpirit`，并只响应 item 的真实 pointer click 调用。
+- 不监听 IsCurrent 变化播放 Wave。
+
+### 3.4 LayoutPanel
+
+- `StepsPanel` 只排列 StepsItem，不读取 Status、不生成视觉。
+- `StepsItemLayoutPanel` 只排列固定语义子节点，不读取 Current、不修改 item 属性。
+
+两个 Panel 都通过 `AffectsMeasure` / `AffectsArrange` 响应相关布局属性，不依赖根控件手工重建 Grid definitions。
 
 ## 4. 状态与数据流
 
-根状态下发：
+### 4.1 根输入
 
 ```text
-Steps public API
-  SizeType / Style / ItemIndicatorType / IsItemClickable
-  IsMotionEnabled / Orientation / LabelPlacement
-  IsShowItemProgress / ProgressValue
-      ↓
-PrepareContainerForItemOverride
-      ↓
-StepsItem internal properties
-      ↓
-StepsItemTheme + StepsItemIndicatorTheme
+Current
+Initial
+Status
+Percent
+Type
+Orientation
+TitlePlacement
+SizeType
+IsItemClickable
+IsMotionEnabled
 ```
 
-当前步骤状态流：
+状态输入和展示输入分开处理。只有 Current、Initial、根 Status、item Status 和 item index 参与 EffectiveStatus 计算。
+
+### 4.2 Item 投影
 
 ```text
-CurrentStep changed
-      ↓
-SyncCurrentStepToSelectedItem
-      ↓
-SelectedIndex changed
-      ↓
-SyncSelectedIndexToCurrentStep for user selection
-      ↓
-ConfigureCurrentStepsItem
-      ↓
-Position / IsFirst / IsLast / IsFinished / Status
+StepNumber = Initial + index
+
+AutomaticStatus =
+    StepNumber == Current ? root Status :
+    StepNumber < Current  ? Finish :
+                            Wait
+
+EffectiveStatus = item Status ?? AutomaticStatus
+IsCurrent       = StepNumber == Current
 ```
 
-内容状态流：
+每次协调完整写入所有派生值，不保留依赖旧状态的分支。公开 `Status` 从不被根控件覆盖；根控件只写 internal AutomaticStatus。
+
+### 4.3 Connector 投影
+
+item `i` 的 ConnectorStatus 等于 item `i + 1` 的 EffectiveStatus。最后一个 item 通过 IsLast 隐藏 Connector。
+
+根输入变化时线性刷新全部已实现容器。单个 item Status 变化时只刷新自身 EffectiveStatus 和前一个 item 的 ConnectorStatus。
+
+### 4.4 Progress 投影
 
 ```text
-SelectedIndex / SelectedItem changed
-      ↓
-UpdateCurrentContent
-      ↓
-subscribe selected container Content + ContentTemplate
-      ↓
-CurrentContent + CurrentContentTemplate
+IsProgressVisible =
+    Percent.HasValue
+    && IsCurrent
+    && EffectiveStatus == Process
+    && Icon == null
+    && Type is Default or Navigation
 ```
 
-`CurrentContentTemplate` 使用当前容器 `ContentTemplate`，为空时回退根控件 `ContentTemplate`。当模板将要变化时，先清空 `CurrentContentTemplate`，再更新内容，避免旧模板生成的控件在 DataContext 变化时被复用。
+Icon、Type、Percent、IsCurrent 或 EffectiveStatus 变化都必须重新计算 IsProgressVisible。
 
-`CurrentStep` 注册为默认 `TwoWay` 受控状态。外部设置 `CurrentStep` 时仍由 `SyncCurrentStepToSelectedItem` 推动底层选择；用户点击可选 item 或代码设置 `SelectedIndex` 时，`SelectedIndexProperty` class handler 必须把新索引回写到 `CurrentStep`，让绑定源、当前内容和 item 状态保持同一事实来源。
+### 4.5 数据项路径
 
-## 5. 生命周期与模板接入
+- `item is StepsItem`：直接使用，不创建包装容器。
+- 普通数据项：创建 StepsItem，把数据项写入 Content，把 Steps.ItemTemplate 写入 ContentTemplate。
+- 数据源 ItemTemplate 负责渲染完整文字区域；Indicator 和 Connector 仍由容器主题管理。
 
-构造阶段：
+## 5. 组合结构模型
 
-- 注册 `StepsToken.ScopeProvider`。
-- 设置 `SelectionMode=Single`。
-
-静态初始化：
-
-- `SizeType` 影响根控件测量。
-- `AutoScrollToSelectedItem` 默认关闭。
-- `Orientation` 默认值覆盖为 `Horizontal`。
-- `SelectedItem` 变化触发 `UpdateCurrentContent`。
-
-模板接入：
-
-1. 从 NameScope 获取 `PART_ItemsPresenter`。
-2. 触发 presenter 模板应用，获取其 `Grid` items panel。
-3. 调用 `ConfigureItemsPanel()` 重建 Grid 行列定义。
-4. 同步 `:horizontal` / `:vertical` 伪类。
-5. 如果 `InitialStep != -1`，写入 `CurrentStep`。
-6. 调用 `SyncCurrentStepToSelectedItem()`。
-7. 调用 `ConfigureCurrentStepsItem()`。
-
-容器准备：
-
-- 非 visual item 会被写入 `StepsItem.Content`。
-- 根 `ItemTemplate` 会绑定到 `StepsItem.ContentTemplate`。
-- 根属性通过 Avalonia 绑定下发到 item。
-- `ContainerForItemPreparedOverride`、`ContainerIndexChangedOverride` 和 `ClearContainerForItemOverride` 都会重新配置 items layout。
-
-`StepsItem` 模板接入：
-
-- 获取 `PART_Indicator`。
-- 同步 `:finished`。
-- 计算 `IsEffectiveShowProgress`。
-
-`StepsItemIndicator` 生命周期：
-
-- 尺寸变化时把圆角设置为当前宽度，保证圆形指示器。
-- `Icon` 变化时同步 `IsCustom`。
-- 初始化时禁用 transition，加载后通过 dispatcher 重新启用，避免初始布局阶段播放过渡。
-
-## 6. 交互与事件处理
-
-pointer 选择：
-
-- 鼠标左键按下时，如果 `IsItemClickable=true`，通过事件源查找 item 容器并调用 `UpdateSelectionFromEvent`。
-- 非鼠标 pointer 在释放时处理，且要求释放点仍命中原容器。
-- 禁用 `IsItemClickable` 时，pointer 不改变选择。
-
-hover 转发：
-
-- `StepsItem.OnPointerEntered` 在 item 未选中时把 `_indicator.IsItemHover` 设置为 `true`。
-- `StepsItem.OnPointerExited` 把 hover 状态清回 `false`。
-- item 变为 selected 时，立即清理 indicator hover 状态，避免选中视觉和 hover 视觉叠加。
-
-Steps 不处理 keyboard、focus、drag/drop、popup、context menu 或 command 事件。
-
-## 7. 内部算法与关键流程
-
-### 7.1 Grid items panel 配置
-
-`ConfigureItemsPanel` 使用 `ItemCount` 重建 Grid 定义：
-
-- 水平方向：每个 item 一列。非最后列使用 star；最后列在 `Default` 和 `Inline` 下使用 auto，在 `Navigation` 下使用 star。
-- 垂直方向：每个 item 一行。`Navigation` 垂直模式使用 `SharedSizeGroup=NavStepsGridSizeGroup`。
-
-`ConfigureCurrentStepsItem` 再按 item index 设置 Grid 行列。动态增加、删除或重排 item 时，这两个步骤必须一起执行，避免 Grid definitions 与实际 item 数量不一致。
-
-### 7.2 Status 派生
-
-`ConfigureCurrentStepsItem` 对每个容器执行：
+### 5.1 控件角色图
 
 ```text
-set Position = index + 1
-set IsFirst / IsLast
-if SelectedIndex != -1:
-    index < SelectedIndex  → IsFinished=true, Status=Finish at Template priority
-    index == SelectedIndex → Status=CurrentStepStatus at Template priority
-    index > SelectedIndex  → IsFinished=false, Status=Wait at Template priority
-else if CurrentStep >= ItemCount:
-    IsFinished=true, Status=Finish at Template priority
+Steps (public)
+└── ItemsPresenter#PART_ItemsPresenter (template-stable)
+    └── StepsPanel (internal-observable)
+        └── StepsItem (public container)
+            └── StepsItemLayoutPanel (internal-observable)
+                ├── StepsItemIndicator#PART_Indicator (template-stable)
+                │   └── WaveSpiritDecorator#PART_WaveSpirit (internal-observable)
+                ├── ContentPresenter#HeaderPresenter (internal-observable)
+                ├── ContentPresenter#SubHeaderPresenter (internal-observable)
+                ├── PixelAlignedBorder#Connector (internal-observable)
+                ├── ContentPresenter#ContentPresenter (internal-observable)
+                ├── PathIcon#NavigationArrow (internal-observable)
+                └── PixelAlignedBorder#NavigationActiveIndicator (internal-observable)
 ```
 
-`Status` 使用模板优先级写入，因此用户在 `StepsItem` 上设置的本地 `Status` 可以覆盖派生状态。维护这段逻辑时，不能把状态写入改成更高优先级，否则会破坏 item 显式状态契约。
+### 5.2 协作节点
 
-### 7.3 Progress ring 绘制
+| 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `Steps` | public control | `Steps.cs` / `StepsTheme.axaml` | application visual tree | 全部根 API | public | 用户可直接使用。 |
+| `StepsItem` | public container | `StepsItem.cs` / `StepsItemTheme.axaml` | Steps container lifecycle | item API | public | 用户可直接声明。 |
+| `StepsPanel` | layout panel | `StepsTheme.axaml` | ItemsPresenter | Type、Orientation | internal-observable | 只用于理解布局，不作为用户 API。 |
+| `StepsItemLayoutPanel` | layout panel | `StepsItemTheme.axaml` | StepsItem template | Type、Orientation、TitlePlacement | internal-observable | 不直接依赖或替换。 |
+| `PART_Indicator` | indicator | `StepsItemTheme.axaml` | StepsItem template | Icon、Status、Percent、Wave | template-stable | 自定义主题必须保留。 |
+| `PART_WaveSpirit` | wave decorator | `StepsItemIndicatorTheme.axaml` | Indicator template | IsMotionEnabled、pointer click | internal-observable | 不由用户直接调用。 |
+| `Connector` | border | `StepsItemTheme.axaml` | StepsItem template | ConnectorStatus、Type | internal-observable | ConnectorStatus 来自 next item EffectiveStatus。 |
+| `NavigationArrow` | path icon | `StepsItemTheme.axaml` | StepsItem template | Type、Orientation、SizeType | internal-observable | 只在 Navigation 类型可见。 |
+| `NavigationActiveIndicator` | border | `StepsItemTheme.axaml` | StepsItem template | Type、Orientation、IsCurrent | internal-observable | 只在 Navigation 当前项可见。 |
 
-`StepsItem.ConfigureEffectiveShowProgress` 控制进度环入口：
+## 6. 生命周期与模板接入
+
+### 6.1 容器准备
+
+准备容器时：
+
+1. 设置 `Owner` 和当前 index。
+2. 计算 StepNumber、IsFirst、IsLast、AutomaticStatus、EffectiveStatus 和 IsCurrent。
+3. 更新前一个 item 的 ConnectorStatus。
+4. 普通数据项接入 Content / ContentTemplate。
+
+初始实现每个容器只执行 O(1) 初始化，不在每次 ContainerPrepared 时遍历全部 Items。
+
+### 6.2 Index 和集合变化
+
+- Add/Remove/Move：重新编号受影响区间并更新边界 Connector。
+- Replace：清理旧容器后准备新容器。
+- Reset：按当前 public 输入完整重建已实现容器投影。
+- Current、Initial 或根 Status 变化：O(n) 刷新已实现容器。
+
+### 6.3 容器清理
+
+清理容器时必须：
+
+- `Owner = null`。
+- `ItemIndex = -1`。
+- 清除 owner 写入的 internal 派生值和数据项 Content 映射。
+- 让 Indicator visual detach；WaveSpiritDecorator 在 detach 中取消自身 animation owner。
+
+外部继续持有被移除 StepsItem 时，它不能保留旧 Steps owner。
+
+### 6.4 模板接入
+
+`Steps` 不重写 `OnApplyTemplate()`；根模板通过 `ItemsPresenter.ItemsPanel` 直接接入 `StepsPanel`，模板生命周期不修改 Current、Initial 或 item 状态。
+
+`StepsItem.OnApplyTemplate()` 和 `StepsItemIndicator.OnApplyTemplate()` 在获取新 part 前先清空旧引用。AXAML Ancestor Binding 的建立和释放由 Avalonia template 生命周期管理。
+
+不创建根级步骤页面内容 observable、长期 Relay Binding、全局事件订阅或 detach 后仍存活的 CompositeDisposable。
+
+## 7. 交互与事件处理
+
+### 7.1 Pointer
+
+- 整个 StepsItem 是命中区域。
+- 同一 item 内完成 press/release 才形成 click。
+- 移出释放、失去 capture 或取消不触发。
+- Clickable、root enabled 和 item enabled 共同决定 CanInvoke。
+
+pointer click 首先调用 Indicator.PlayWave，再在目标 StepNumber 不等于 Current 时发出 CurrentChangeRequested。事件处理器是否更新 Current 不影响本次 click Wave。
+
+### 7.2 Keyboard
+
+- CanInvoke item 可获得焦点。
+- Enter/Space 在目标不是当前 item 时发出 CurrentChangeRequested。
+- keyboard 路径不调用 Indicator.PlayWave。
+- Space 被标记 handled，避免宿主滚动。
+
+### 7.3 Focus、Hover 和 Disabled
+
+CanInvoke=false 时不进入 Tab 焦点序列，不显示 hand cursor 和 clickable hover 视觉。视觉使用标准 focus-visible、pointerover 和 disabled 伪类，不创建 Selection 伪类。
+
+## 8. 内部算法与关键流程
+
+### 8.1 根状态刷新
+
+根状态刷新是确定性 O(n) 投影。它不检查 IsLoaded、VisualTree attachment 或 template part 是否存在，也不使用 suppression flag、Dispatcher 延迟或强制刷新。
+
+### 8.2 布局算法
+
+`StepsPanel`：
+
+- Horizontal Default/Dot：非末 item 参与伸展，末 item 使用内容宽度。
+- Horizontal Navigation：item 等宽。
+- Inline：按紧凑 inline 规则排列。
+- Vertical：按 DesiredSize 顺序堆叠。
+
+`StepsItemLayoutPanel` 根据 Type、Orientation 和 EffectiveTitlePlacement 排列固定语义节点。Connector 的方向和伸展范围由布局 Panel 决定，状态由 item 投影决定。
+
+### 8.3 Indicator 和 Progress
+
+Indicator 使用单一模板切换 number、finish mark、error mark、dot 和 custom icon。Progress ring 在 Indicator.Render 中绘制。
+
+Progress 外径由 `IconSize` / `IconSizeSM` 与 `ProgressFramePadding` / `ProgressFramePaddingSM` 推导，不保存重复的固定 Progress size。
+
+Percent coercion：
 
 ```text
-IsShowProgress
-&& Style != Inline
-&& Icon == null
-&& IndicatorType != Dot
+null             -> null
+NaN / Infinity   -> null
+value < 0        -> 0
+value > 100      -> 100
+其他             -> value
 ```
 
-`StepsItemIndicator.Render` 在 `IsShowProgress && IsCurrent` 时绘制两个椭圆弧：
+所有 Render 输入进入 AffectsRender；只有影响尺寸的属性进入 AffectsMeasure。Progress Pen 使用可复用实例，避免 render 热路径分配。
 
-- groove 使用 `ProgressGrooveColor` 和 `ProgressLineThickness`。
-- progress 使用 `ProgressColor`，从 `-90` 度开始，角度为 `360 * ProgressValue / 100`。
-
-绘制矩形来自 `DesiredSize.Deflate(Margin).Deflate(ProgressLineThickness / 2)`。修改指示器 padding、margin 或 progress frame 时，必须验证进度环不被裁剪。
-
-### 7.4 Navigation 箭头布局
-
-水平 `Navigation` 模板中，`NavArrow` 不直接作为 `RootLayout` 的右侧 child，而是放入 `NavArrowLayout`。该 layout 有两个职责：
-
-- 提供足够的绘制空间，避免箭头 icon 被裁剪。
-- 与当前指示器首行中心对齐，避免受 description 高度影响。
-
-默认指示器分支用 `IconSize` / `IconSizeSM` 控制 `NavArrowLayout` 高度。Dot 分支用 `IconFontSize` 控制首行槽位高度，同时 `IndicatorLayout` 也使用 `IconFontSize`，让 dot 和箭头在同一个不裁剪的槽位中居中。
-
-这一路径不使用 `#PART_Indicator.Bounds.Height` 绑定，因为模板中前向 element-name 绑定会触发 AXAML/IDE 解析问题。固定模板关系应优先由 token 和 selector 表达。
-
-### 7.5 CurrentContent 订阅
-
-`UpdateCurrentContent` 在每次选择变化时释放旧 `_currentItemSubscriptions`，再订阅当前容器的 `Content` 和 `ContentTemplate` observable。这样可以让 `CurrentContent` 跟随当前 item 之后的内容变化。
-
-模板替换和选择清空不能留下旧容器订阅，否则旧 item 会继续影响根控件的 current content。
-
-## 8. 资源、性能与 AOT 边界
+## 9. 资源、性能与 AOT 边界
 
 资源边界：
 
-- `StepsToken` 通过 token generator 注册，主题通过 `StepsTokenResource` 消费。
-- 状态色、尺寸、间距和 progress 色均由 StepsToken / SharedToken 提供。
-- 自定义 icon 通过显式 `PathIcon` 或 IconProvider 入口传入，不在 Steps 内部做运行时图标扫描。
-
-生命周期边界：
-
-- `_currentItemSubscriptions` 必须在选择变化和选择清空时释放。
-- 动态 item 变化后必须重建 Grid 行列定义并同步 item Grid 位置。
-- `StepsItem` 和 `StepsItemIndicator` 初始加载时禁用 transition，加载后再启用，避免初始渲染动画。
-
-AOT 边界：
-
-- 不新增运行时反射扫描、字符串路径动态绑定或 C# 创建的 template 绑定。
-- 模板内固定关系优先使用 `TemplateBinding`、selector 和 TokenResource。
-- 需要跨 part 对齐时优先使用同源 token，而不是前向 element-name binding。
+- TokenResource 和 SharedToken 只提供视觉值，不保存实例状态。
+- 根展示属性使用 AXAML Ancestor Binding 投影到 item 和 internal panel。
+- 固定模板关系使用 TemplateBinding、Ancestor Binding 和 selector，不使用字符串路径反射。
 
 性能边界：
 
-- item 状态同步按 `ItemCount` 线性遍历，适合步骤数量有限的流程控件。
-- 根 layout 使用 Grid definitions 表达列/行，不在 render 热路径中动态创建视觉。
-- progress ring 只在当前有效 item 的 indicator render 中绘制。
+- 单容器准备 O(1)。
+- 单 item Status 变化 O(1)。
+- 根状态变化和 Reset O(n)。
+- 不维护第二份 item 列表、状态字典或延迟更新队列。
+- 两个 Panel 在 Measure/Arrange 中不创建视觉，不修改 public 状态。
 
-## 9. 维护不变量
+AOT 边界：
 
-内部重构必须保持以下不变量：
+- 不新增运行时反射扫描、动态类型注册或编译期不可分析的 binding 路径。
+- 不通过反射访问 Wave 播放状态；测试使用 internal 可观察入口或渲染结果。
+- 新 internal panel 由静态 AXAML 和显式类型引用创建。
 
-- `CurrentStep` 写入必须同步 `SelectedIndex`。
-- `SelectedIndex` 由用户选择路径改变时必须回写 `CurrentStep`，且不能形成递归状态竞争。
-- `SelectedItem` 变化必须更新 `CurrentContent`。
-- 动态 item 增删、容器准备、index 变化和容器清理必须触发布局同步。
-- `Status` 派生必须使用不覆盖本地值的优先级。
-- `IsEffectiveShowProgress` 必须排除 `Inline`、custom icon 和 dot indicator。
-- `PART_ItemsPresenter` 使用 Grid items panel，行列定义必须与 `ItemCount` 一致。
-- `PART_Indicator` 是 item 与 indicator 交互状态转发的稳定 template part。
-- Navigation 箭头宿主不得小于箭头自身尺寸。
-- Dot Navigation 的 dot 与箭头必须在同一个首行槽位内居中。
-- 不能通过关闭 motion 来规避状态同步、点击或布局问题。
+## 10. 维护不变量
 
-## 10. 测试与验证
+- Current 是唯一当前步骤输入；不得引入第二套选择状态或双向同步。
+- 每次状态协调必须完整覆盖派生状态，不依赖旧值。
+- item public Status 不被根控件写入或覆盖。
+- EffectiveStatus 是所有状态视觉的唯一输入。
+- Connector 使用 next item EffectiveStatus。
+- Initial 不在 OnApplyTemplate 或 attach 中写入 Current。
+- 根级步骤页面内容投影和内容订阅不得重新引入。
+- pointer click 是 Wave 的唯一触发源；Current 变化不能播放 Wave。
+- 每个主题只维护一套语义模板。
+- StepsPanel 和 StepsItemLayoutPanel 只负责布局。
+- 容器清理必须释放 Owner，模板重套必须释放旧 part 引用。
+- Percent、Icon、Type 和 EffectiveStatus 运行时变化必须立即更新 Progress。
 
-验证范围：
+## 11. 测试与验证
 
-- `CurrentStep`、`InitialStep`、`SelectedIndex` 和 item status 计算。
-- 动态 `Items.Clear()` / `Items.Add()` 后 Grid definitions 和 item Grid.Column / Grid.Row。
-- 水平、垂直、Default、Navigation、Inline、Dot 和 Small 分支。
-- `IsItemClickable=true/false` 下 pointer 选择。
-- `CurrentContent` 和 `CurrentContentTemplate` 跟随选择变化。
-- 进度环在 Default 指示器下显示，在 Dot、Inline 和 custom icon 下不显示。
-- Navigation 箭头与指示器中心对齐，并且箭头宿主不裁剪 icon。
-- `StepsItemTheme.axaml` 不重新引入 `#PART_Indicator.Bounds.Height` 前向绑定。
-- 文档改动运行 `git diff --check`，并检查相对链接存在。
+状态：
+
+- Current 正向、反向、重复、低于 Initial 和高于所有 item。
+- Initial 非零以及 Indicator 编号。
+- 根 Status 运行时变化。
+- item nullable Status 的 Wait、Process、Finish、Error 覆盖。
+- Add、Remove、Replace、Move、Reset。
+- 属性在加载前、加载后和模板重套后设置。
+
+交互与 Wave：
+
+- Indicator、Header、SubHeader 和 Content click。
+- 非当前 item click 产生 Wave 和 request。
+- 当前 item click 只有 Wave。
+- 程序化 Current 不产生 Wave。
+- pointer cancel、root/item disabled、不可点击和 motion disabled。
+- Enter/Space 产生 request 但不产生 Wave。
+
+Progress：
+
+- null、0、100、越界、NaN 和 Infinity。
+- 四种 EffectiveStatus、自定义 Icon、Dot 和 Inline。
+- Render 输入变化触发 InvalidateVisual。
+
+布局：
+
+- `Type x Orientation x TitlePlacement x SizeType`。
+- 语义节点唯一、Bounds 有效、无重叠、Connector 正确。
+- 运行时布局切换和动态 Items。
+
+生命周期：
+
+- 移除 item 后 Owner 释放。
+- 模板重套不改变 Current。
+- 旧 Indicator/Wave part 不被保留。
+- detach/reattach 和数据容器回收不保留旧状态。
+
+收尾运行 Steps 定向测试、相邻 Desktop Controls 测试、Gallery 测试和 `git diff --check`。

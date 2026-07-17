@@ -3,12 +3,9 @@ using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Theme.Language;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
-using Avalonia.VisualTree;
 using AtomUISteps = AtomUI.Desktop.Controls.Steps;
+using StepsCurrentChangeRequestedEventArgs = AtomUI.Desktop.Controls.StepsCurrentChangeRequestedEventArgs;
 
 namespace AtomUIGallery.ShowCases.Steps;
 
@@ -37,7 +34,7 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
             var themeManager = Application.Current?.GetThemeManager();
             if (themeManager != null)
             {
-                EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshInteractiveButtonText();
+                EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshInteractiveText();
                 themeManager.LanguageVariantChanged += handler;
                 Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
                           .DisposeWith(disposables);
@@ -68,22 +65,20 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
         }
     }
 
-    public void HandleInteractiveStepsLoaded(object? sender, RoutedEventArgs args)
+    public void HandleCurrentChangeRequested(object? sender, StepsCurrentChangeRequestedEventArgs args)
     {
-        if (sender is not Control root)
+        if (DataContext is StepsViewModel viewModel)
         {
-            return;
+            viewModel.Current = args.Current;
         }
+    }
 
-        var steps = FindDescendantByName<AtomUISteps>(root, "CurrentStepContentSteps");
-        var presenter = FindDescendantByName<ContentPresenter>(root, "CurrentStepContentPresenter");
-        if (steps is null || presenter is null)
+    public void HandleLocalCurrentChangeRequested(object? sender, StepsCurrentChangeRequestedEventArgs args)
+    {
+        if (sender is AtomUISteps steps)
         {
-            return;
+            steps.Current = args.Current;
         }
-
-        presenter[!ContentPresenter.ContentProperty] = steps[!AtomUISteps.CurrentContentProperty];
-        presenter[!ContentPresenter.ContentTemplateProperty] = steps[!AtomUISteps.CurrentContentTemplateProperty];
     }
 
     private void ResetInteractiveState()
@@ -94,23 +89,11 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
         }
     }
 
-    private void RefreshInteractiveButtonText()
+    private void RefreshInteractiveText()
     {
         if (DataContext is StepsViewModel viewModel)
         {
-            viewModel.RefreshInteractiveButtonText();
+            viewModel.RefreshInteractiveText();
         }
-    }
-
-    private static T? FindDescendantByName<T>(Control root, string name)
-        where T : Control
-    {
-        if (root is T typedRoot && typedRoot.Name == name)
-        {
-            return typedRoot;
-        }
-
-        return root.GetVisualDescendants().OfType<T>().FirstOrDefault(control => control.Name == name)
-               ?? root.GetLogicalDescendants().OfType<T>().FirstOrDefault(control => control.Name == name);
     }
 }

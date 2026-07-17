@@ -19,7 +19,7 @@
                     Description="{gallery:StepsShowCaseLangResource PageDescription}"
                     Namespace="AtomUI.Desktop.Controls"
                     Package="AtomUI.Desktop.Controls"
-                    BaseClass="SelectingItemsControl" />
+                    BaseClass="ItemsControl" />
             </gallery:GalleryStickyTabsHost.Header>
 
 
@@ -30,6 +30,7 @@
                                    DeferredLoadBatchSize="2"
                                    ContentMargin="28,10,28,28">
                 <gallery:ShowCaseItem
+                    SourceKey="steps-basic"
                     Title="{gallery:StepsShowCaseLangResource BasicTitle}"
                     Description="{gallery:StepsShowCaseLangResource BasicDescription}"
                     IsOccupyEntireRow="True"
@@ -37,16 +38,17 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
-                            <atom:Steps CurrentStep="0">
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                            <atom:Steps Current="0">
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                             </atom:Steps>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-small"
                     Title="{gallery:StepsShowCaseLangResource MiniVersionTitle}"
                     Description="{gallery:StepsShowCaseLangResource MiniVersionDescription}"
                     IsOccupyEntireRow="True"
@@ -54,16 +56,17 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
-                            <atom:Steps CurrentStep="0" SizeType="Small">
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                            <atom:Steps Current="0" SizeType="Small">
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                             </atom:Steps>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-icon"
                     Title="{gallery:StepsShowCaseLangResource WithIconTitle}"
                     Description="{gallery:StepsShowCaseLangResource WithIconDescription}"
                     IsOccupyEntireRow="True"
@@ -71,7 +74,7 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
-                            <atom:Steps CurrentStep="0">
+                            <atom:Steps Current="0">
                                 <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderLogin}" Status="Finish" Icon="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
                                 <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderVerification}" Status="Finish" Icon="{antdicons:AntDesignIconProvider Kind=SolutionOutlined}" />
                                 <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderPay}" Status="Process"
@@ -83,6 +86,7 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-controlled"
                     Title="{gallery:StepsShowCaseLangResource SwitchStepTitle}"
                     Description="{gallery:StepsShowCaseLangResource SwitchStepDescription}"
                     BadgeText="v6.0.8"
@@ -91,19 +95,19 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
-                            <StackPanel Orientation="Vertical" Spacing="20" Loaded="HandleInteractiveStepsLoaded">
-                                <atom:Steps Name="CurrentStepContentSteps"
-                                            CurrentStep="{Binding CurrentStep}"
-                                            IsItemClickable="True">
+                            <StackPanel Orientation="Vertical" Spacing="20">
+                                <atom:Steps Current="{Binding Current}"
+                                            IsItemClickable="True"
+                                            CurrentChangeRequested="HandleCurrentChangeRequested">
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFirst}" Content="{gallery:StepsShowCaseLangResource P2ContentFirstContent}" />
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderSecond}" Content="{gallery:StepsShowCaseLangResource P2ContentSecondContent}" />
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderThird}" Content="{gallery:StepsShowCaseLangResource P2ContentLastContent}" />
                                 </atom:Steps>
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <atom:TextBlock VerticalAlignment="Center"
-                                                    Text="{gallery:StepsShowCaseLangResource P2TextCurrentStep}" />
+                                                    Text="{gallery:StepsShowCaseLangResource P2TextCurrent}" />
                                     <atom:TextBlock VerticalAlignment="Center"
-                                                    Text="{Binding CurrentStepText}" />
+                                                    Text="{Binding CurrentText}" />
                                 </StackPanel>
                                 <atom:DashedBorder BorderThickness="1"
                                                    BorderBrush="{atom:SharedTokenResource ColorBorder}"
@@ -112,7 +116,7 @@
                                                    Background="{atom:SharedTokenResource ColorFillAlter}"
                                                    TextElement.Foreground="{atom:SharedTokenResource ColorTextTertiary}"
                                                    Height="260">
-                                    <ContentPresenter Name="CurrentStepContentPresenter"
+                                    <ContentPresenter Content="{Binding InteractivePageContent}"
                                                       HorizontalAlignment="Center"
                                                       VerticalAlignment="Center" />
                                 </atom:DashedBorder>
@@ -127,6 +131,7 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-vertical"
                     Title="{gallery:StepsShowCaseLangResource VerticalTitle}"
                     Description="{gallery:StepsShowCaseLangResource VerticalDescription}"
                     IsOccupyEntireRow="True"
@@ -134,16 +139,17 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
-                            <atom:Steps CurrentStep="1" Orientation="Vertical">
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                            <atom:Steps Current="1" Orientation="Vertical">
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                             </atom:Steps>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-vertical-small"
                     Title="{gallery:StepsShowCaseLangResource VerticalMiniVersionTitle}"
                     Description="{gallery:StepsShowCaseLangResource VerticalMiniVersionDescription}"
                     IsOccupyEntireRow="True"
@@ -151,16 +157,17 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
-                            <atom:Steps CurrentStep="1" Orientation="Vertical" SizeType="Small">
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                            <atom:Steps Current="1" Orientation="Vertical" SizeType="Small">
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                             </atom:Steps>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-error"
                     Title="{gallery:StepsShowCaseLangResource ErrorStatusTitle}"
                     Description="{gallery:StepsShowCaseLangResource ErrorStatusDescription}"
                     IsOccupyEntireRow="True"
@@ -168,16 +175,17 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
-                            <atom:Steps CurrentStep="1" CurrentStepStatus="Error">
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                            <atom:Steps Current="1" Status="Error">
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                             </atom:Steps>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-dot"
                     Title="{gallery:StepsShowCaseLangResource DotStyleTitle}"
                     Description="{gallery:StepsShowCaseLangResource DotStyleDescription}"
                     IsOccupyEntireRow="True"
@@ -185,16 +193,17 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
-                            <atom:Steps CurrentStep="1" ItemIndicatorType="Dot">
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                            <atom:Steps Current="1" Type="Dot">
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                             </atom:Steps>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-dot-vertical"
                     Title="{gallery:StepsShowCaseLangResource DotStyleVerticalTitle}"
                     Description="{gallery:StepsShowCaseLangResource DotStyleVerticalDescription}"
                     IsOccupyEntireRow="True"
@@ -203,16 +212,16 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
                             <StackPanel Orientation="Vertical" Spacing="20">
-                                <atom:Steps CurrentStep="1" ItemIndicatorType="Dot" Orientation="Vertical">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:Steps Current="1" Type="Dot" Orientation="Vertical">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                                 <atom:Separator/>
-                                <atom:Steps CurrentStep="1" ItemIndicatorType="Dot" Orientation="Vertical" SizeType="Small">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:Steps Current="1" Type="Dot" Orientation="Vertical" SizeType="Small">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                             </StackPanel>
                         </DataTemplate>
@@ -220,6 +229,7 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-clickable"
                     Title="{gallery:StepsShowCaseLangResource ClickableTitle}"
                     Description="{gallery:StepsShowCaseLangResource ClickableDescription}"
                     IsOccupyEntireRow="True"
@@ -228,30 +238,30 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
                             <StackPanel Orientation="Vertical" Spacing="20">
-                                <atom:Steps CurrentStep="0" IsItemClickable="True">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:Steps Current="0" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}"/>
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                                 <atom:Separator/>
-                                <atom:Steps CurrentStep="0" IsItemClickable="True" Orientation="Vertical">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:Steps Current="0" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested" Orientation="Vertical">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}"/>
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                                 <atom:Separator/>
-                                <atom:Steps CurrentStep="0" IsItemClickable="True" ItemIndicatorType="Dot">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:Steps Current="0" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested" Type="Dot">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}"/>
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                                 <atom:Separator/>
-                                <atom:Steps CurrentStep="0" IsItemClickable="True" ItemIndicatorType="Dot" Orientation="Vertical">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:Steps Current="0" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested" Type="Dot" Orientation="Vertical">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}"/>
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                             </StackPanel>
                         </DataTemplate>
@@ -259,6 +269,7 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-navigation"
                     Title="{gallery:StepsShowCaseLangResource NavigationStepsTitle}"
                     Description="{gallery:StepsShowCaseLangResource NavigationStepsDescription}"
                     IsOccupyEntireRow="True"
@@ -267,66 +278,38 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
                             <StackPanel Orientation="Vertical" Spacing="20">
-                                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" SizeType="Small">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" Status="Finish"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" Status="Process"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderWaitingForLongTime}" Status="Wait"/>
+                                <atom:Steps Current="0" Type="Navigation" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested" SizeType="Small">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" Status="Finish"/>
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" Status="Process"/>
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderWaitingForLongTime}" Status="Wait"/>
                                 </atom:Steps>
                                 <atom:Separator/>
-                                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True">
+                                <atom:Steps Current="0" Type="Navigation" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested">
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Status="Finish"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Status="Process"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Status="Wait"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Status="Wait"/>
                                 </atom:Steps>
                                 <atom:Separator/>
-                                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" SizeType="Small">
+                                <atom:Steps Current="0" Type="Navigation" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested" SizeType="Small">
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinishN1}" Status="Finish"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinishN2}" Status="Finish"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderCurrentProcess}" Status="Process"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWait}" Status="Wait" IsEnabled="False"/>
                                 </atom:Steps>
                                 <atom:Separator/>
-                                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" Orientation="Vertical">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" Status="Finish"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:00:05" Status="Process"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:30:05" Status="Wait"/>
+                                <atom:Steps Current="0" Type="Navigation" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested" Orientation="Vertical">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" Status="Finish"/>
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:00:05" Status="Process"/>
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:30:05" Status="Wait"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderWaitingForLongTime}" Status="Wait"/>
                                 </atom:Steps>
                                 <atom:Separator/>
-                                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" Orientation="Vertical" SizeType="Small">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" Status="Finish"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:00:05" Status="Process"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:30:05" Status="Wait"/>
+                                <atom:Steps Current="0" Type="Navigation" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested" Orientation="Vertical" SizeType="Small">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" Status="Finish"/>
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:00:05" Status="Process"/>
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:30:05" Status="Wait"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderWaitingForLongTime}" Status="Wait"/>
-                                </atom:Steps>
-                                <atom:Separator/>
-                                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="03:01:02"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:01:02"/>
-                                </atom:Steps>
-                                <atom:Separator/>
-                                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot" SizeType="Small">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="03:01:02"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:01:02"/>
-                                </atom:Steps>
-                                <atom:Separator/>
-                                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot" Orientation="Vertical">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="03:01:02"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:01:02"/>
-                                </atom:Steps>
-                                <atom:Separator/>
-                                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot" SizeType="Small" Orientation="Vertical">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="03:01:02"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:01:02"/>
                                 </atom:Steps>
                             </StackPanel>
                         </DataTemplate>
@@ -334,6 +317,7 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-progress"
                     Title="{gallery:StepsShowCaseLangResource StepsWithProgressTitle}"
                     Description="{gallery:StepsShowCaseLangResource StepsWithProgressDescription}"
                     IsOccupyEntireRow="True"
@@ -342,16 +326,16 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
                             <StackPanel Orientation="Vertical" Spacing="20">
-                                <atom:Steps CurrentStep="1" ProgressValue="60" IsShowItemProgress="True">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:Steps Current="1" Percent="60">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                                 <atom:Separator/>
-                                <atom:Steps CurrentStep="1" ProgressValue="30" IsShowItemProgress="True" SizeType="Small">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:Steps Current="1" Percent="30" SizeType="Small">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                             </StackPanel>
                         </DataTemplate>
@@ -359,44 +343,31 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="{gallery:StepsShowCaseLangResource LabelPlacementTitle}"
-                    Description="{gallery:StepsShowCaseLangResource LabelPlacementDescription}"
+                    SourceKey="steps-title-placement"
+                    Title="{gallery:StepsShowCaseLangResource TitlePlacementTitle}"
+                    Description="{gallery:StepsShowCaseLangResource TitlePlacementDescription}"
                     IsOccupyEntireRow="True"
                     MinHeight="200"
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
                             <StackPanel Orientation="Vertical" Spacing="20">
-                                <atom:Steps CurrentStep="1" LabelPlacement="Vertical">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:Steps Current="1" TitlePlacement="Vertical">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                                 <atom:Separator />
-                                <atom:Steps CurrentStep="1" LabelPlacement="Vertical" ProgressValue="45" IsShowItemProgress="True">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                <atom:Steps Current="1" TitlePlacement="Vertical" Percent="45">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                                 <atom:Separator />
-                                <atom:Steps CurrentStep="1" LabelPlacement="Vertical" ProgressValue="45" IsShowItemProgress="True" SizeType="Small">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
-                                </atom:Steps>
-                                <atom:Separator />
-                                <atom:Steps CurrentStep="1" Style="Navigation" IsItemClickable="True" ProgressValue="45" IsShowItemProgress="True" LabelPlacement="Vertical">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                </atom:Steps>
-                                <atom:Separator />
-                                <atom:Steps CurrentStep="1" Style="Navigation" IsItemClickable="True" ProgressValue="67" IsShowItemProgress="True" LabelPlacement="Vertical" SizeType="Small">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                <atom:Steps Current="1" TitlePlacement="Vertical" Percent="45" SizeType="Small">
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
                                 </atom:Steps>
                             </StackPanel>
                         </DataTemplate>
@@ -404,6 +375,7 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="steps-inline"
                     Title="{gallery:StepsShowCaseLangResource InlineStepsTitle}"
                     Description="{gallery:StepsShowCaseLangResource InlineStepsDescription}"
                     IsOccupyEntireRow="True"
@@ -413,10 +385,10 @@
                         <DataTemplate x:DataType="vm:StepsViewModel">
                             <ItemsControl>
                                 <DockPanel LastChildFill="True">
-                                    <atom:Steps CurrentStep="0" DockPanel.Dock="Right" Style="Inline">
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                    <atom:Steps Current="0" DockPanel.Dock="Right" Type="Inline">
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
                                     </atom:Steps>
                                     <StackPanel Orientation="Vertical" Spacing="10">
                                         <TextBlock FontWeight="Bold" Text="{gallery:StepsShowCaseLangResource P2TextAntDesignTitleN1}" />
@@ -425,10 +397,10 @@
                                     </StackPanel>
                                 </DockPanel>
                                 <DockPanel LastChildFill="True">
-                                    <atom:Steps CurrentStep="1" DockPanel.Dock="Right" Style="Inline" CurrentStepStatus="Error">
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                    <atom:Steps Current="1" DockPanel.Dock="Right" Type="Inline" Status="Error">
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
                                     </atom:Steps>
                                     <StackPanel Orientation="Vertical" Spacing="10">
                                         <TextBlock FontWeight="Bold" Text="{gallery:StepsShowCaseLangResource P2TextAntDesignTitleN2}" />
@@ -437,10 +409,10 @@
                                     </StackPanel>
                                 </DockPanel>
                                 <DockPanel LastChildFill="True">
-                                    <atom:Steps CurrentStep="2" DockPanel.Dock="Right" Style="Inline">
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                    <atom:Steps Current="2" DockPanel.Dock="Right" Type="Inline">
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
                                     </atom:Steps>
                                     <StackPanel Orientation="Vertical" Spacing="10">
                                         <TextBlock FontWeight="Bold" Text="{gallery:StepsShowCaseLangResource P2TextAntDesignTitleN3}" />
@@ -449,10 +421,10 @@
                                     </StackPanel>
                                 </DockPanel>
                                 <DockPanel LastChildFill="True">
-                                    <atom:Steps CurrentStep="1" DockPanel.Dock="Right" Style="Inline">
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
-                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                    <atom:Steps Current="1" DockPanel.Dock="Right" Type="Inline">
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Content="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}"/>
                                     </atom:Steps>
                                     <StackPanel Orientation="Vertical" Spacing="10">
                                         <TextBlock FontWeight="Bold" Text="{gallery:StepsShowCaseLangResource P2TextAntDesignTitleN4}" />

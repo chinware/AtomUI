@@ -1,175 +1,161 @@
-using AtomUI.Animations;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
-[PseudoClasses(StepsPseudoClass.Finished)]
-public class StepsItem : HeaderedContentControl, ISelectable
+public class StepsItem : HeaderedContentControl
 {
     #region 公共属性定义
-    
+
     public static readonly StyledProperty<object?> SubHeaderProperty =
         AvaloniaProperty.Register<StepsItem, object?>(nameof(SubHeader));
-    
+
     public static readonly StyledProperty<IDataTemplate?> SubHeaderTemplateProperty =
         AvaloniaProperty.Register<StepsItem, IDataTemplate?>(nameof(SubHeaderTemplate));
-    
-    public static readonly StyledProperty<object?> DescriptionProperty =
-        AvaloniaProperty.Register<StepsItem, object?>(nameof(Description));
-    
-    public static readonly StyledProperty<IDataTemplate?> DescriptionTemplateProperty =
-        AvaloniaProperty.Register<StepsItem, IDataTemplate?>(nameof(DescriptionTemplate));
 
-    public static readonly StyledProperty<bool> IsSelectedProperty =
-        SelectingItemsControl.IsSelectedProperty.AddOwner<StepsItem>();
-    
     public static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<StepsItem, PathIcon?>(nameof(Icon));
-    
-    public static readonly StyledProperty<StepsItemStatus> StatusProperty =
-        AvaloniaProperty.Register<StepsItem, StepsItemStatus>(nameof(Status), StepsItemStatus.Process);
-    
-    public static readonly StyledProperty<Orientation> LabelPlacementProperty =
-        Steps.LabelPlacementProperty.AddOwner<StepsItem>();
-    
+
+    public static readonly StyledProperty<StepsStatus?> StatusProperty =
+        AvaloniaProperty.Register<StepsItem, StepsStatus?>(nameof(Status));
+
     public object? SubHeader
     {
         get => GetValue(SubHeaderProperty);
         set => SetValue(SubHeaderProperty, value);
     }
-    
+
     public IDataTemplate? SubHeaderTemplate
     {
         get => GetValue(SubHeaderTemplateProperty);
         set => SetValue(SubHeaderTemplateProperty, value);
     }
-    
-    public object? Description
-    {
-        get => GetValue(DescriptionProperty);
-        set => SetValue(DescriptionProperty, value);
-    }
-    
-    public IDataTemplate? DescriptionTemplate
-    {
-        get => GetValue(DescriptionTemplateProperty);
-        set => SetValue(DescriptionTemplateProperty, value);
-    }
-    
-    public bool IsSelected
-    {
-        get => GetValue(IsSelectedProperty);
-        set => SetValue(IsSelectedProperty, value);
-    }
-    
+
     public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
-    
-    public StepsItemStatus Status
+
+    public StepsStatus? Status
     {
         get => GetValue(StatusProperty);
         set => SetValue(StatusProperty, value);
     }
-    
-    public Orientation LabelPlacement
-    {
-        get => GetValue(LabelPlacementProperty);
-        set => SetValue(LabelPlacementProperty, value);
-    }
-    
+
     #endregion
 
     #region 内部属性定义
 
+    internal static readonly StyledProperty<StepsType> TypeProperty =
+        Steps.TypeProperty.AddOwner<StepsItem>();
+
+    internal static readonly StyledProperty<Orientation> OrientationProperty =
+        Steps.OrientationProperty.AddOwner<StepsItem>();
+
+    internal static readonly StyledProperty<Orientation> TitlePlacementProperty =
+        Steps.TitlePlacementProperty.AddOwner<StepsItem>();
+
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<StepsItem>();
-    
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<StepsItem>();
-    
+        Steps.SizeTypeProperty.AddOwner<StepsItem>();
+
     internal static readonly StyledProperty<bool> IsClickableProperty =
-        AvaloniaProperty.Register<StepsItem, bool>(nameof(IsClickable), false);
-    
-    internal static readonly StyledProperty<StepsStyle> StyleProperty =
-        Steps.StyleProperty.AddOwner<StepsItem>();
-    
-    internal static readonly StyledProperty<StepsItemIndicatorType> IndicatorTypeProperty =
-        AvaloniaProperty.Register<StepsItem, StepsItemIndicatorType>(nameof(IndicatorType), StepsItemIndicatorType.Default);
-    
-    internal static readonly DirectProperty<StepsItem, bool> IsFinishedProperty =
-        AvaloniaProperty.RegisterDirect<StepsItem, bool>(
-            nameof(IsFinished),
-            o => o.IsFinished,
-            (o, v) => o.IsFinished = v);
-    
-    internal static readonly DirectProperty<StepsItem, int> PositionProperty =
+        AvaloniaProperty.Register<StepsItem, bool>(nameof(IsClickable));
+
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        Steps.IsMotionEnabledProperty.AddOwner<StepsItem>();
+
+    internal static readonly StyledProperty<double?> PercentProperty =
+        Steps.PercentProperty.AddOwner<StepsItem>();
+
+    internal static readonly DirectProperty<StepsItem, int> StepNumberProperty =
         AvaloniaProperty.RegisterDirect<StepsItem, int>(
-            nameof(Position),
-            o => o.Position,
-            (o, v) => o.Position = v);
-    
+            nameof(StepNumber),
+            item => item.StepNumber,
+            (item, value) => item.StepNumber = value);
+
+    internal static readonly DirectProperty<StepsItem, bool> IsCurrentProperty =
+        AvaloniaProperty.RegisterDirect<StepsItem, bool>(
+            nameof(IsCurrent),
+            item => item.IsCurrent,
+            (item, value) => item.IsCurrent = value);
+
+    internal static readonly DirectProperty<StepsItem, StepsStatus> AutomaticStatusProperty =
+        AvaloniaProperty.RegisterDirect<StepsItem, StepsStatus>(
+            nameof(AutomaticStatus),
+            item => item.AutomaticStatus,
+            (item, value) => item.AutomaticStatus = value);
+
+    internal static readonly DirectProperty<StepsItem, StepsStatus> EffectiveStatusProperty =
+        AvaloniaProperty.RegisterDirect<StepsItem, StepsStatus>(
+            nameof(EffectiveStatus),
+            item => item.EffectiveStatus,
+            (item, value) => item.EffectiveStatus = value);
+
     internal static readonly DirectProperty<StepsItem, bool> IsFirstProperty =
         AvaloniaProperty.RegisterDirect<StepsItem, bool>(
             nameof(IsFirst),
-            o => o.IsFirst,
-            (o, v) => o.IsFirst = v);
-    
+            item => item.IsFirst,
+            (item, value) => item.IsFirst = value);
+
     internal static readonly DirectProperty<StepsItem, bool> IsLastProperty =
         AvaloniaProperty.RegisterDirect<StepsItem, bool>(
             nameof(IsLast),
-            o => o.IsLast,
-            (o, v) => o.IsLast = v);
-    
-    internal static readonly DirectProperty<StepsItem, bool> IsShowProgressProperty =
+            item => item.IsLast,
+            (item, value) => item.IsLast = value);
+
+    internal static readonly DirectProperty<StepsItem, StepsStatus> ConnectorStatusProperty =
+        AvaloniaProperty.RegisterDirect<StepsItem, StepsStatus>(
+            nameof(ConnectorStatus),
+            item => item.ConnectorStatus,
+            (item, value) => item.ConnectorStatus = value);
+
+    internal static readonly DirectProperty<StepsItem, bool> CanInvokeProperty =
         AvaloniaProperty.RegisterDirect<StepsItem, bool>(
-            nameof(IsShowProgress),
-            o => o.IsShowProgress,
-            (o, v) => o.IsShowProgress = v);
-    
-    internal static readonly DirectProperty<StepsItem, bool> IsEffectiveShowProgressProperty =
+            nameof(CanInvoke),
+            item => item.CanInvoke,
+            (item, value) => item.CanInvoke = value);
+
+    internal static readonly DirectProperty<StepsItem, bool> IsProgressVisibleProperty =
         AvaloniaProperty.RegisterDirect<StepsItem, bool>(
-            nameof(IsEffectiveShowProgress),
-            o => o.IsEffectiveShowProgress,
-            (o, v) => o.IsEffectiveShowProgress = v);
-    
-    internal static readonly DirectProperty<StepsItem, double> ProgressValueProperty =
-        AvaloniaProperty.RegisterDirect<StepsItem, double>(
-            nameof(ProgressValue),
-            o => o.ProgressValue,
-            (o, v) => o.ProgressValue = v);
-    
-    internal static readonly StyledProperty<Orientation> OrientationProperty =
-        ScrollBar.OrientationProperty.AddOwner<StepsItem>();
-    
-    internal static readonly StyledProperty<IBrush?> SubTitleForegroundProperty =
-        AvaloniaProperty.Register<StepsItem, IBrush?>(nameof(SubTitleForeground));
-    
-    internal static readonly StyledProperty<IBrush?> DescriptionForegroundProperty =
-        AvaloniaProperty.Register<StepsItem, IBrush?>(nameof(DescriptionForeground));
-    
-    internal static readonly StyledProperty<IBrush?> NavIndicatorLineColorProperty =
-        AvaloniaProperty.Register<StepsItem, IBrush?>(nameof(NavIndicatorLineColor));
-    
-    internal static readonly StyledProperty<ITransform?> NavIndicatorLineRenderTransformProperty = 
-        AvaloniaProperty.Register<StepsItem, ITransform?>(nameof (NavIndicatorLineRenderTransform));
-    
+            nameof(IsProgressVisible),
+            item => item.IsProgressVisible,
+            (item, value) => item.IsProgressVisible = value);
+
+    internal StepsType Type
+    {
+        get => GetValue(TypeProperty);
+        set => SetValue(TypeProperty, value);
+    }
+
+    internal Orientation Orientation
+    {
+        get => GetValue(OrientationProperty);
+        set => SetValue(OrientationProperty, value);
+    }
+
+    internal Orientation TitlePlacement
+    {
+        get => GetValue(TitlePlacementProperty);
+        set => SetValue(TitlePlacementProperty, value);
+    }
+
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
+    }
+
+    internal bool IsClickable
+    {
+        get => GetValue(IsClickableProperty);
+        set => SetValue(IsClickableProperty, value);
     }
 
     internal bool IsMotionEnabled
@@ -177,191 +163,289 @@ public class StepsItem : HeaderedContentControl, ISelectable
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
-    internal bool IsClickable
+
+    internal double? Percent
     {
-        get => GetValue(IsClickableProperty);
-        set => SetValue(IsClickableProperty, value);
-    }
-    
-    internal StepsStyle Style
-    {
-        get => GetValue(StyleProperty);
-        set => SetValue(StyleProperty, value);
+        get => GetValue(PercentProperty);
+        set => SetValue(PercentProperty, value);
     }
 
-    internal StepsItemIndicatorType IndicatorType
+    private int _stepNumber;
+
+    internal int StepNumber
     {
-        get => GetValue(IndicatorTypeProperty);
-        set => SetValue(IndicatorTypeProperty, value);
+        get => _stepNumber;
+        private set => SetAndRaise(StepNumberProperty, ref _stepNumber, value);
     }
 
-    private bool _isFinished;
+    private bool _isCurrent;
 
-    internal bool IsFinished
+    internal bool IsCurrent
     {
-        get => _isFinished;
-        set => SetAndRaise(IsFinishedProperty, ref _isFinished, value);
+        get => _isCurrent;
+        private set => SetAndRaise(IsCurrentProperty, ref _isCurrent, value);
     }
-    
-    private int _position;
 
-    internal int Position
+    private StepsStatus _automaticStatus = StepsStatus.Wait;
+
+    internal StepsStatus AutomaticStatus
     {
-        get => _position;
-        set => SetAndRaise(PositionProperty, ref _position, value);
+        get => _automaticStatus;
+        private set => SetAndRaise(AutomaticStatusProperty, ref _automaticStatus, value);
     }
-    
+
+    private StepsStatus _effectiveStatus = StepsStatus.Wait;
+
+    internal StepsStatus EffectiveStatus
+    {
+        get => _effectiveStatus;
+        private set => SetAndRaise(EffectiveStatusProperty, ref _effectiveStatus, value);
+    }
+
     private bool _isFirst;
 
     internal bool IsFirst
     {
         get => _isFirst;
-        set => SetAndRaise(IsFirstProperty, ref _isFirst, value);
+        private set => SetAndRaise(IsFirstProperty, ref _isFirst, value);
     }
-    
+
     private bool _isLast;
 
     internal bool IsLast
     {
         get => _isLast;
-        set => SetAndRaise(IsLastProperty, ref _isLast, value);
+        private set => SetAndRaise(IsLastProperty, ref _isLast, value);
     }
-    
-    internal Orientation Orientation
-    {
-        get => GetValue(OrientationProperty);
-        set => SetValue(OrientationProperty, value);
-    }
-    
-    internal IBrush? SubTitleForeground
-    {
-        get => GetValue(SubTitleForegroundProperty);
-        set => SetValue(SubTitleForegroundProperty, value);
-    }
-    
-    internal IBrush? DescriptionForeground
-    {
-        get => GetValue(DescriptionForegroundProperty);
-        set => SetValue(DescriptionForegroundProperty, value);
-    }
-    
-    internal IBrush? NavIndicatorLineColor
-    {
-        get => GetValue(NavIndicatorLineColorProperty);
-        set => SetValue(NavIndicatorLineColorProperty, value);
-    }
-    
-    internal ITransform? NavIndicatorLineRenderTransform
-    {
-        get => GetValue(NavIndicatorLineRenderTransformProperty);
-        set => SetValue(NavIndicatorLineRenderTransformProperty, value);
-    }
-    
-    private bool _isShowProgress;
 
-    internal bool IsShowProgress
-    {
-        get => _isShowProgress;
-        set => SetAndRaise(IsShowProgressProperty, ref _isShowProgress, value);
-    }
-    
-    private bool _isEffectiveShowProgress;
+    private StepsStatus _connectorStatus = StepsStatus.Wait;
 
-    internal bool IsEffectiveShowProgress
+    internal StepsStatus ConnectorStatus
     {
-        get => _isEffectiveShowProgress;
-        set => SetAndRaise(IsEffectiveShowProgressProperty, ref _isEffectiveShowProgress, value);
+        get => _connectorStatus;
+        private set => SetAndRaise(ConnectorStatusProperty, ref _connectorStatus, value);
     }
-    
-    private double _progressValue;
 
-    internal double ProgressValue
+    private bool _canInvoke;
+
+    internal bool CanInvoke
     {
-        get => _progressValue;
-        set => SetAndRaise(ProgressValueProperty, ref _progressValue, value);
+        get => _canInvoke;
+        private set => SetAndRaise(CanInvokeProperty, ref _canInvoke, value);
     }
+
+    private bool _isProgressVisible;
+
+    internal bool IsProgressVisible
+    {
+        get => _isProgressVisible;
+        private set => SetAndRaise(IsProgressVisibleProperty, ref _isProgressVisible, value);
+    }
+
     #endregion
-    
+
+    internal Steps? Owner { get; private set; }
+
+    internal int ItemIndex { get; private set; } = -1;
+
     private StepsItemIndicator? _indicator;
-    
+
     static StepsItem()
     {
-        SelectableMixin.Attach<StepsItem>(IsSelectedProperty);
         PressedMixin.Attach<StepsItem>();
-        FocusableProperty.OverrideDefaultValue<StepsItem>(true);
-        AffectsRender<StepsItem>(SubTitleForegroundProperty, DescriptionForegroundProperty);
-        AffectsMeasure<StepsItem>(OrientationProperty, StyleProperty, SizeTypeProperty, OrientationProperty);
+        FocusableProperty.OverrideDefaultValue<StepsItem>(false);
+        AffectsMeasure<StepsItem>(TypeProperty, OrientationProperty, TitlePlacementProperty, SizeTypeProperty);
     }
-    
+
+    internal void AttachToOwner(Steps owner, int index)
+    {
+        Owner = owner;
+        ItemIndex = index;
+        UpdateCanInvoke();
+        UpdateProgressVisibility();
+    }
+
+    internal void ApplyOwnerState(
+        int stepNumber,
+        bool isCurrent,
+        StepsStatus automaticStatus,
+        bool isFirst,
+        bool isLast,
+        StepsStatus connectorStatus)
+    {
+        StepNumber = stepNumber;
+        IsCurrent = isCurrent;
+        AutomaticStatus = automaticStatus;
+        EffectiveStatus = Status ?? automaticStatus;
+        IsFirst = isFirst;
+        IsLast = isLast;
+        ConnectorStatus = connectorStatus;
+        UpdateProgressVisibility();
+    }
+
+    internal void DetachFromOwner()
+    {
+        Owner = null;
+        ItemIndex = -1;
+        StepNumber = 0;
+        IsCurrent = false;
+        AutomaticStatus = StepsStatus.Wait;
+        EffectiveStatus = StepsStatus.Wait;
+        IsFirst = false;
+        IsLast = false;
+        ConnectorStatus = StepsStatus.Wait;
+        CanInvoke = false;
+        IsProgressVisible = false;
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        _indicator = null;
         base.OnApplyTemplate(e);
         _indicator = e.NameScope.Find<StepsItemIndicator>("PART_Indicator");
-        UpdatePseudoClasses();
-        ConfigureEffectiveShowProgress();
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == IsFinishedProperty)
+        if (change.Property == StatusProperty)
         {
-            UpdatePseudoClasses();
+            Owner?.HandleItemStatusChanged(this);
         }
-        else if (change.Property == IsSelectedProperty)
+        else if (change.Property == IsClickableProperty ||
+                 change.Property == IsEffectivelyEnabledProperty)
         {
-            if (_indicator != null)
-            {
-                _indicator.IsItemHover = false;
-            }
+            UpdateCanInvoke();
         }
-        else if (change.Property == IsShowProgressProperty ||
-                 change.Property == StyleProperty ||
-                 change.Property == IndicatorTypeProperty)
-        {
-            ConfigureEffectiveShowProgress();
-        }
-    }
 
-    private void ConfigureEffectiveShowProgress()
-    {
-        SetCurrentValue(IsEffectiveShowProgressProperty, IsShowProgress && Style != StepsStyle.Inline && Icon == null &&IndicatorType != StepsItemIndicatorType.Dot);
-    }
-
-    protected override void OnPointerEntered(PointerEventArgs e)
-    {
-        base.OnPointerEntered(e);
-        if (_indicator != null && !IsSelected)
+        if (change.Property == PercentProperty ||
+            change.Property == TypeProperty ||
+            change.Property == IconProperty ||
+            change.Property == IsCurrentProperty ||
+            change.Property == EffectiveStatusProperty)
         {
-            _indicator.IsItemHover = true;
+            UpdateProgressVisibility();
         }
-    }
 
-    protected override void OnPointerExited(PointerEventArgs e)
-    {
-        base.OnPointerExited(e);
-        if (_indicator != null && !IsSelected)
+        if (change.Property == IsCurrentProperty && IsCurrent && _indicator is not null)
         {
             _indicator.IsItemHover = false;
         }
     }
 
-    private void UpdatePseudoClasses()
+    protected override void OnPointerEntered(PointerEventArgs e)
     {
-        PseudoClasses.Set(StepsPseudoClass.Finished, IsFinished);
+        base.OnPointerEntered(e);
+        if (_indicator is not null && CanInvoke && !IsCurrent)
+        {
+            _indicator.IsItemHover = true;
+        }
     }
 
-    protected override void OnInitialized()
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
-        base.OnInitialized();
-        this.DisableTransitions();
+        base.OnPointerPressed(e);
+
+        if (CanInvoke && e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            e.Pointer.Capture(this);
+            e.PreventGestureRecognition();
+            e.Handled = true;
+        }
     }
 
-    protected override void OnLoaded(RoutedEventArgs e)
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
-        base.OnLoaded(e);
-        Dispatcher.Post(this.EnableTransitions);
+        base.OnPointerReleased(e);
+
+        if (!ReferenceEquals(e.Pointer.Captured, this))
+        {
+            return;
+        }
+
+        var invoke = e.InitialPressMouseButton == MouseButton.Left &&
+                     new Rect(Bounds.Size).Contains(e.GetPosition(this));
+        e.Pointer.Capture(null);
+        e.Handled = true;
+
+        if (invoke)
+        {
+            InvokeFromPointer();
+        }
+    }
+
+    protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
+    {
+        if (_indicator is not null)
+        {
+            _indicator.IsItemHover = false;
+        }
+
+        base.OnPointerCaptureLost(e);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if (CanInvoke && e.Key is Key.Enter or Key.Space)
+        {
+            e.Handled = true;
+        }
+
+        base.OnKeyDown(e);
+    }
+
+    protected override void OnKeyUp(KeyEventArgs e)
+    {
+        if (CanInvoke && e.Key is Key.Enter or Key.Space)
+        {
+            InvokeFromKeyboard();
+            e.Handled = true;
+        }
+
+        base.OnKeyUp(e);
+    }
+
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        if (_indicator is not null)
+        {
+            _indicator.IsItemHover = false;
+        }
+    }
+
+    private void UpdateCanInvoke()
+    {
+        CanInvoke = Owner is not null && IsClickable && IsEffectivelyEnabled;
+        SetCurrentValue(FocusableProperty, CanInvoke);
+    }
+
+    private void InvokeFromPointer()
+    {
+        if (!CanInvoke)
+        {
+            return;
+        }
+
+        _indicator?.PlayWave();
+        Owner?.RequestCurrentChange(this);
+    }
+
+    private void InvokeFromKeyboard()
+    {
+        if (CanInvoke)
+        {
+            Owner?.RequestCurrentChange(this);
+        }
+    }
+
+    private void UpdateProgressVisibility()
+    {
+        IsProgressVisible = Percent.HasValue &&
+                            IsCurrent &&
+                            EffectiveStatus == StepsStatus.Process &&
+                            Icon is null &&
+                            Type is StepsType.Default or StepsType.Navigation;
     }
 }
