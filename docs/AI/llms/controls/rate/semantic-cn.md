@@ -17,9 +17,9 @@
 来源：`src/AtomUI.Desktop.Controls/Rate/Themes/RateTheme.axaml`
 
 ```xml
-<Border Name="Frame">
+<PixelAlignedBorder Name="Frame">
     <RateItemsControl Name="PART_RateItems" />
-</Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -39,7 +39,7 @@ Rate
   -> RateItemsControl (control theme, RateItemsControlTheme.axaml)
      -> ItemsPresenter#PART_ItemsPresenter (template-stable)
   -> Rate (control theme, RateTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> RateItemsControl#PART_RateItems (template-stable)
 ```
 
@@ -53,8 +53,8 @@ Rate
 | `ActiveItem` | template node (Rectangle) | `RateItemTheme.axaml` | RateItem | `StarClip` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RateItemsControl` | control theme | `RateItemsControlTheme.axaml` | Rate | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `RateItemsControlTheme.axaml` | RateItemsControl | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Rate` | control theme | `RateTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `Character`, `CornerRadius`, `FontSize`, `IsAllowClear` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `RateTheme.axaml` | Rate | `Background`, `BorderBrush`, `Character`, `CornerRadius`, `FontSize`, `IsAllowClear` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Rate` | control theme | `RateTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `Character`, `CornerRadius`, `FontSize` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Frame` | template node (PixelAlignedBorder) | `RateTheme.axaml` | Rate | `Background`, `BorderBrush`, `BorderThickness`, `Character`, `CornerRadius`, `FontSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RateItems` | template node (RateItemsControl) | `RateTheme.axaml` | Rate | `Character`, `FontSize`, `IsAllowClear`, `IsAllowHalf`, `IsMotionEnabled`, `StarBgColor` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
@@ -88,6 +88,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `Rate.Value` 是评分控件的外部值 owner，默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；用户评分、键盘调整、Form value 和 ViewModel 更新必须收敛到同一份数值状态。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

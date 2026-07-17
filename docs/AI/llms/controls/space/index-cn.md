@@ -74,7 +74,7 @@ Space 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 垂直间距
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:177`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:74`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -105,7 +105,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 间距尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:208`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:105`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -125,10 +125,11 @@ Gallery key：`ExamplesContent` / item `2`
     <atom:Slider Name="CustomSizeSlider"
                  Minimum="0" Maximum="100"
                  Value="{Binding CustomSpacingValue, Mode=TwoWay}"
+                 ValueChanged="HandleCustomSpacingValueChanged"
                  IsVisible="False"/>
-    <atom:Space Orientation="Horizontal" SizeType="{Binding SizeType}"
-                LineSpacing="{Binding #CustomSizeSlider.Value, Priority=Template}"
-                ItemSpacing="{Binding #CustomSizeSlider.Value, Priority=Template}">
+    <atom:Space Name="SizeDemoSpace"
+                Orientation="Horizontal"
+                SizeType="{Binding SizeType}">
         <atom:Button ButtonType="Primary" Content="主要" />
         <atom:Button Content="默认" />
         <atom:Button ButtonType="Dashed" Content="虚线" />
@@ -139,7 +140,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 对齐
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:242`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:140`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -179,7 +180,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 自动换行
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:282`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:180`
 
 Gallery key：`ExamplesContent` / item `4`
 

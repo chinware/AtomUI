@@ -44,9 +44,11 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 | 内容与数据 | `IsShowHeader`、`ItemFormat`、`ItemHeight` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `RangeEndSelectedTime`、`RangeStartSelectedTime`、`SelectedTime`、`SelectorRowCount` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsNeedConfirm`、`IsShowNow`、`ShouldLoop` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 其他稳定入口 | `ClockIdentifier`、`DefaultTime`、`MinuteIncrement`、`PanelType`、`RangeEndDefaultTime`、`RangeStartDefaultTime`、`SecondIncrement` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 其他稳定入口 | `ClockIdentifier`、`DefaultTime`、`MinuteIncrement`、`PanelType`、`PickerDisplayTime`、`RangeEndDefaultTime`、`RangeStartDefaultTime`、`SecondIncrement` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+
+`SelectedTime` 是 `TimePicker` 的受控 Form 值属性，默认绑定模式为 `TwoWay`，并启用 Avalonia data validation。Form、绑定验证和输入壳体错误视觉必须基于 `DataValidationErrors` 投射，不允许另建与 native validation 并行的错误状态。
 
 主要公开类型与枚举：
 
@@ -96,7 +98,7 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:35`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -104,71 +106,73 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:TimePicker PlaceholderText="选择时间" IsNeedConfirm="False" IsShowNow="True" />
 ```
 
-### 12 小时和 24 小时格式
+### SelectedTime 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:150`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:47`
 
 Gallery key：`ExamplesContent` / item `1`
 
 ```axaml
-<atom:TimePicker PlaceholderText="选择时间" IsNeedConfirm="True" IsShowNow="True"
+<StackPanel Orientation="Vertical" Spacing="16">
+    <StackPanel Orientation="Vertical" Spacing="12">
+        <atom:TimePicker SelectedTime="{Binding BoundSelectedTime}"
+                         PlaceholderText="选择时间" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="选中值：" />
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{Binding BoundSelectedTimeText}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:Button SizeType="Small"
+                         Click="SetBoundSelectedTimeToNoon"
+                         Content="设置为中午" />
+            <atom:Button SizeType="Small"
+                         Click="ClearBoundSelectedTime"
+                         Content="清空" />
+        </StackPanel>
+    </StackPanel>
+    <StackPanel Orientation="Vertical" Spacing="12">
+        <atom:RangeTimePicker RangeStartSelectedTime="{Binding BoundRangeStartSelectedTime}"
+                              RangeEndSelectedTime="{Binding BoundRangeEndSelectedTime}"
+                              PlaceholderText="开始时间"
+                              SecondaryPlaceholderText="结束时间" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="选中范围：" />
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{Binding BoundRangeSelectedTimeText}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:Button SizeType="Small"
+                         Click="SetBoundSelectedTimeRangeToWorkHours"
+                         Content="设置工作时间" />
+            <atom:Button SizeType="Small"
+                         Click="ClearBoundSelectedTimeRange"
+                         Content="清空" />
+        </StackPanel>
+    </StackPanel>
+</StackPanel>
 ```
 
-### 三种尺寸
+### 弹出面板显示时间
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:162`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:98`
 
 Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
-<DockPanel Margin="0, 0, 0, 0">
-    <DockPanel.Styles>
-        <Style Selector="atom|TimePicker.size-demo-picker[SizeType=Custom]">
-            <Setter Property="Height" Value="38" />
-            <Setter Property="FontSize" Value="15" />
-        </Style>
-        <Style Selector="atom|RangeTimePicker.size-demo-picker[SizeType=Custom]">
-            <Setter Property="Height" Value="38" />
-            <Setter Property="FontSize" Value="15" />
-        </Style>
-    </DockPanel.Styles>
-    <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
-        <atom:TextBlock VerticalAlignment="Center" Text="选择器尺寸：" />
-        <atom:OptionButtonGroup ButtonStyle="Outline"
-                                Name="PickerSizeTypeOptionGroup"
-                                OptionCheckedChanged="HandlePickerSizeTypeOptionCheckedChanged">
-            <atom:OptionButton Content="大号" />
-            <atom:OptionButton IsChecked="True" Content="默认" />
-            <atom:OptionButton Content="小号" />
-            <atom:OptionButton Content="自定义" />
-        </atom:OptionButtonGroup>
-    </StackPanel>
-
-    <StackPanel Orientation="Vertical" Margin="0, 20, 0, 0" Spacing="10">
-        <atom:TimePicker Classes="size-demo-picker"
-                         PlaceholderText="选择时间"
-                         SizeType="{Binding PickerSizeType}"
-                         DefaultTime="12:08:23" />
-        <atom:RangeTimePicker Classes="size-demo-picker"
-                              PlaceholderText="开始时间"
-                              SecondaryPlaceholderText="结束时间"
-                              RangeStartDefaultTime="10:09:20"
-                              RangeEndDefaultTime="12:12:20"
-                              SizeType="{Binding PickerSizeType}" />
-    </StackPanel>
-</DockPanel>
+<atom:TimePicker PlaceholderText="选择时间"
 ```
 
-### 禁用
+### 12 小时和 24 小时格式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:208`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:111`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<StackPanel Orientation="Horizontal" Spacing="10">
-    <atom:TimePicker PlaceholderText="选择时间" IsEnabled="False" DefaultTime="12:08:23" />
-</StackPanel>
+<atom:TimePicker PlaceholderText="选择时间" IsNeedConfirm="True" IsShowNow="True"
 ```
 
 ## 状态模型
@@ -187,6 +191,8 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `SelectedTime` 是单时间选择的唯一用户值 owner；外部绑定、Form set/get、清除和弹层提交都必须收敛到该属性。
+- `PickerDisplayTime` 只定义弹出面板打开时的显示锚点；它不得写入 `SelectedTime`，也不得改变 `DefaultTime` 的 reset 语义。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

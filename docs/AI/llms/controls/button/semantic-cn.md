@@ -24,7 +24,7 @@
 <Panel>
     <WaveSpiritDecorator Name="PART_WaveSpirit" />
     <Border Name="ShadowsFrame" />
-    <Border Name="Frame" />
+    <DashedBorder Name="Frame" />
     <Border Name="CustomBackgroundLayer" />
     <Border>
         <DockPanel Name="PART_RootLayout">
@@ -48,7 +48,7 @@ Button
      -> Panel (template-stable)
         -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
         -> Border#ShadowsFrame (template-stable)
-        -> Border#Frame (template-stable)
+        -> DashedBorder#Frame (template-stable)
         -> Border#CustomBackgroundLayer (template-stable)
         -> Border (template-stable)
            -> DockPanel#PART_RootLayout (template-stable)
@@ -77,7 +77,7 @@ Button
      -> Panel (template-stable)
         -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
         -> Border#ShadowsFrame (template-stable)
-        -> Border#Frame (template-stable)
+        -> DashedBorder#Frame (template-stable)
         -> Border#CustomBackgroundLayer (template-stable)
         -> Border (template-stable)
            -> DockPanel#PART_RootLayout (template-stable)
@@ -122,24 +122,22 @@ Button
 | `Panel` | template node (Panel) | `BrowserButtonThemes.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `BrowserButtonThemes.axaml` | Button | `EffectiveCornerRadius`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ShadowsFrame` | template node (Border) | `BrowserButtonThemes.axaml` | Button | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (Border) | `BrowserButtonThemes.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (DashedBorder) | `BrowserButtonThemes.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `BrowserButtonThemes.axaml` | Button | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLayout` | template node (DockPanel) | `BrowserButtonThemes.axaml` | Button | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LoadingIcon` | template node (LoadingOutlined) | `BrowserButtonThemes.axaml` | Button | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ButtonIcon` | template node (IconPresenter) | `BrowserButtonThemes.axaml` | Button | `Foreground`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `BrowserButtonThemes.axaml` | Button | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (DashedBorder) | `BrowserButtonThemes.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `EffectiveBorderThickness` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Button` | control theme | `ButtonTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `ButtonTheme.axaml` | Button | `EffectiveCornerRadius`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ShadowsFrame` | template node (Border) | `ButtonTheme.axaml` | Button | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (Border) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (DashedBorder) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `ButtonTheme.axaml` | Button | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLayout` | template node (DockPanel) | `ButtonTheme.axaml` | Button | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LoadingIcon` | template node (LoadingOutlined) | `ButtonTheme.axaml` | Button | `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ButtonIcon` | template node (IconPresenter) | `ButtonTheme.axaml` | Button | `Foreground`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `ButtonTheme.axaml` | Button | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (DashedBorder) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `EffectiveBorderThickness` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 

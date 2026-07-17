@@ -29,7 +29,7 @@ Window 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 维度 | 含义 | Window 中的表达 |
 | --- | --- | --- |
 | 产品语义 | 控件在界面中承担的稳定职责。 | Window 是 AtomUI 桌面控件体系中的桌面窗口控件，用于提供 AtomUI 自绘窗口、平台窗口能力和主题集成入口。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer` 等 11 项。 |
+| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer` 等 11 项。`TitleBarFrameLayer` 表示标题栏背景或装饰层，不作为按钮、菜单、搜索框等交互控件入口。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close。 |
 | 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Window Token + ControlTheme。 |
 
@@ -41,7 +41,7 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 11 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
+| 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 11 项 | 定义控件展示内容、输入数据、模板或业务对象入口；其中 `TitleBarFrameLayer` 是标题栏背景或装饰层，交互按钮、菜单、搜索框应通过自定义 `TitleBar` 承载。 |
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
@@ -106,6 +106,7 @@ Public API / inherited command / item source / user input
 - open/close 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- 标题栏交互内容应由 `TitleBar` / `WindowTitleBar` 承载；`TitleBarFrameLayer` 只表达标题栏背景、遮罩或装饰视觉，不保证内部控件获得 pointer、focus、keyboard 或 command 事件。
 
 ## 主题与 Design Token
 
@@ -127,6 +128,18 @@ Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视�
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
+
+### 5.1 标题栏背景层与自定义 TitleBar 模型
+
+Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定义标题栏层三类稳定语义。该模型同时约束普通自绘模板和 Avalonia `WindowDrawnDecorations` CSD 模板：
+
+| 语义层 | 代表入口 | 职责 | 命中语义 |
+| --- | --- | --- | --- |
+| 标题栏背景/装饰层 | `TitleBarFrameBackground` / `TitleBarFrameLayer` / `TitleBarFrameLayerTemplate` | 提供标题栏背景、遮罩、纹理、圆角、裁剪或装饰视觉。 | 不作为用户交互入口；CSD 下可处于标题栏拖拽 role 中。 |
+| 默认标题栏层 | `TitleBar` / `WindowTitleBar` | 展示标题、Logo、caption buttons，并在空白区域提供窗口拖拽语义。 | 只处理标题栏默认交互和窗口操作。 |
+| 自定义标题栏层 | `TitleBar` | 承载用户自定义标题栏布局、按钮、菜单、搜索框或其他交互控件。 | 用户控件按普通 Avalonia client input 语义命中；空白区域由自定义标题栏自行决定是否保留拖拽。 |
+
+维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要在标题栏放置按钮、菜单或搜索框时，应创建自定义 `WindowTitleBar` 或其他标题栏控件，并设置到 `Window.TitleBar`。
 
 Token 来源：
 

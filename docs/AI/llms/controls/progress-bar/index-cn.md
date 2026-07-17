@@ -131,7 +131,7 @@ ProgressBar 的事件与命令以公共 API、Avalonia 基类契约和 Gallery A
 
 ### 进度条
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:150`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:46`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -147,7 +147,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 环形进度条
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:168`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:64`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -161,7 +161,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 迷你尺寸进度条
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:184`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:80`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -177,7 +177,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 更小的环形进度条
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:202`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:98`
 
 Gallery key：`ExamplesContent` / item `3`
 

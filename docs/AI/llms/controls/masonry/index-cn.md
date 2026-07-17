@@ -99,7 +99,7 @@ public event EventHandler<MasonryLayoutChangedEventArgs>? LayoutChanged;
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:144`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:41`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -124,12 +124,13 @@ Gallery key：`ExamplesContent` / item `0`
                            IsVisible="{Binding IsSpecial}">
                     <atom:Card.Cover>
                         <Panel MinHeight="210"
+                               Loaded="HandleImageSkeletonLoaded"
                                ClipToBounds="True">
                             <Image Name="SpecialCoverImage"
                                    asyncImageLoader:ImageLoader.Source="{Binding CoverSource}"
                                    Stretch="UniformToFill" />
-                            <Border Padding="16,16"
-                                    IsVisible="{Binding #SpecialCoverImage.Source, Converter={x:Static ObjectConverters.IsNull}}">
+                            <Border Name="SpecialCoverSkeleton"
+                                    Padding="16,16">
                                 <atom:Skeleton IsLoading="True"
                                                IsActive="True"
                                                IsShowAvatar="False"
@@ -150,7 +151,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 响应式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:198`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:96`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -173,7 +174,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 图片
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:224`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:122`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -185,14 +186,15 @@ Gallery key：`ExamplesContent` / item `2`
               HorizontalAlignment="Stretch">
     <atom:Masonry.ItemTemplate>
         <DataTemplate x:DataType="vm:MasonryImageItem">
-            <Panel ClipToBounds="True">
+            <Panel ClipToBounds="True"
+                   Loaded="HandleImageSkeletonLoaded">
                 <Image Name="MasonryImage"
                        asyncImageLoader:ImageLoader.Source="{Binding ImageSource}"
                        Stretch="Uniform"
                        HorizontalAlignment="Stretch" />
-                <Border MinHeight="210"
-                        Padding="16,16"
-                        IsVisible="{Binding #MasonryImage.Source, Converter={x:Static ObjectConverters.IsNull}}">
+                <Border Name="MasonryImageSkeleton"
+                        MinHeight="210"
+                        Padding="16,16">
                     <atom:Skeleton IsLoading="True"
                                    IsActive="True"
                                    IsShowAvatar="False"

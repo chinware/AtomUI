@@ -77,7 +77,7 @@ AutoComplete 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:35`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -87,7 +87,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 自定义
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:152`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:48`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -97,7 +97,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 自定义选项渲染
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:165`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:61`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -135,7 +135,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### SizeType
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:203`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:99`
 
 Gallery key：`ExamplesContent` / item `3`
 

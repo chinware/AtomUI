@@ -31,11 +31,15 @@ public class ControlInventoryTests
 
         var controls = ControlInventory.Discover(TestRepository.RootPath, config);
 
-        controls.Count.ShouldBe(76);
+        controls.Count.ShouldBe(78);
         controls.ShouldContain(control => control.Category == "general" &&
                                           control.Name == "button" &&
                                           control.OutputIndexPath == "docs/AI/llms/controls/button/index-cn.md" &&
                                           control.OutputSemanticPath == "docs/AI/llms/controls/button/semantic-cn.md");
+        controls.ShouldContain(control => control.Category == "data-entry" &&
+                                          control.Name == "otp-line-edit" &&
+                                          control.OutputIndexPath == "docs/AI/llms/controls/otp-line-edit/index-cn.md" &&
+                                          control.OutputSemanticPath == "docs/AI/llms/controls/otp-line-edit/semantic-cn.md");
         controls.ShouldAllBe(control => File.Exists(control.OverviewPath));
         controls.ShouldAllBe(control => File.Exists(control.ImplementationPath));
         controls.ShouldAllBe(control => File.Exists(control.ChangelogPath));

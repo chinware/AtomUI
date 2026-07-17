@@ -76,7 +76,7 @@ Spin 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -86,7 +86,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:151`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:47`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -101,7 +101,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 自定义描述
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:167`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:63`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -136,7 +136,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 嵌入模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:225`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:121`
 
 Gallery key：`ExamplesContent` / item `4`
 

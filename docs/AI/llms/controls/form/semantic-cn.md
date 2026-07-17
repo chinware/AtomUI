@@ -31,7 +31,7 @@
 ```text
 Form
   -> FormItemDecorator (control theme, FormItemDecoratorTheme.axaml)
-     -> Border (template-stable)
+     -> PixelAlignedBorder (template-stable)
         -> StackPanel (template-stable)
            -> ContentPresenter#Content (internal-observable)
            -> ContentPresenter#Extra (internal-observable)
@@ -41,14 +41,14 @@ Form
            -> ItemDeleteButton#ItemDeleteButton (internal-observable)
         -> Grid#PART_BodyLayout (template-stable)
            -> Panel#PART_LabelLayout (template-stable)
-              -> StackPanel (template-stable)
+              -> DockPanel#PART_LabelContentLayout (template-stable)
+                 -> TextBlock#PART_Colon (template-stable)
+                 -> TextBlock#OptionalMark (template-stable)
+                 -> IconPresenter#TooltipIconPresenter (internal-observable)
                  -> ContentPresenter#CustomRequiredMarkPresenter (internal-observable)
                  -> ContentPresenter#CustomOptionalMarkPresenter (internal-observable)
                  -> TextBlock#PART_DefaultRequireMark (template-stable)
                  -> TextBlock#PART_Label (template-stable)
-                 -> IconPresenter#TooltipIconPresenter (internal-observable)
-                 -> TextBlock#OptionalMark (template-stable)
-                 -> TextBlock#PART_Colon (template-stable)
            -> StackPanel#PART_ContentLayout (template-stable)
               -> Border#ContentFrame (template-stable)
                  -> DockPanel (template-stable)
@@ -79,14 +79,14 @@ Form
 | `ItemDeleteButton` | template node (ItemDeleteButton) | `FormItemTheme.axaml` | FormItem | `ItemDeleteButtonIcon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_BodyLayout` | template node (Grid) | `FormItemTheme.axaml` | FormItem | `Content`, `ContentPresenterMaxWidth`, `CustomOptionalMark`, `CustomOptionalMarkTemplate`, `CustomRequireMark`, `CustomRequireMarkTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LabelLayout` | template node (Panel) | `FormItemTheme.axaml` | FormItem | `CustomOptionalMark`, `CustomOptionalMarkTemplate`, `CustomRequireMark`, `CustomRequireMarkTemplate`, `IsColonVisible`, `LabelMaxWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `StackPanel` | template node (StackPanel) | `FormItemTheme.axaml` | FormItem | `CustomOptionalMark`, `CustomOptionalMarkTemplate`, `CustomRequireMark`, `CustomRequireMarkTemplate`, `IsColonVisible`, `LabelMaxWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LabelContentLayout` | template node (DockPanel) | `FormItemTheme.axaml` | FormItem | `CustomOptionalMark`, `CustomOptionalMarkTemplate`, `CustomRequireMark`, `CustomRequireMarkTemplate`, `IsColonVisible`, `LabelMaxWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Colon` | template node (TextBlock) | `FormItemTheme.axaml` | FormItem | `IsColonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `OptionalMark` | template node (TextBlock) | `FormItemTheme.axaml` | FormItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `TooltipIconPresenter` | template node (IconPresenter) | `FormItemTheme.axaml` | FormItem | `Tooltip`, `TooltipIcon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `CustomRequiredMarkPresenter` | template node (ContentPresenter) | `FormItemTheme.axaml` | FormItem | `CustomRequireMark`, `CustomRequireMarkTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `CustomOptionalMarkPresenter` | template node (ContentPresenter) | `FormItemTheme.axaml` | FormItem | `CustomOptionalMark`, `CustomOptionalMarkTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_DefaultRequireMark` | template node (TextBlock) | `FormItemTheme.axaml` | FormItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Label` | template node (TextBlock) | `FormItemTheme.axaml` | FormItem | `LabelMaxWidth`, `LabelText`, `LabelWrapping` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `TooltipIconPresenter` | template node (IconPresenter) | `FormItemTheme.axaml` | FormItem | `Tooltip`, `TooltipIcon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `OptionalMark` | template node (TextBlock) | `FormItemTheme.axaml` | FormItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Colon` | template node (TextBlock) | `FormItemTheme.axaml` | FormItem | `IsColonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentLayout` | template node (StackPanel) | `FormItemTheme.axaml` | FormItem | `Content`, `ContentPresenterMaxWidth`, `ErrorMessageInlines`, `Extra`, `ExtraTemplate`, `Help` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentFrame` | template node (Border) | `FormItemTheme.axaml` | FormItem | `Content`, `ContentPresenterMaxWidth`, `Extra`, `ExtraTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DockPanel` | template node (DockPanel) | `FormItemTheme.axaml` | FormItem | `Content`, `ContentPresenterMaxWidth`, `Extra`, `ExtraTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -123,15 +123,16 @@ Form config
   → FormItem content via IFormItemAware
   → value changed / blur / submit validation trigger
   → FormItem validators
-  → ValidateStatus / ValidateResult / feedback / messages
+  → DataValidationErrors for error
+  → ValidateStatus / ValidateResult / feedback / messages as projection
   → Form IsFormValid aggregation
   → SubmitButton watch state and submit result
 ```
 
 验证触发模型：
 
-- `OnSubmit` 是 Form 的默认触发时机，避免表单初始化或普通输入变化时提前显示错误。
-- `OnChanged` 在内容控件触发 `IFormItemAware.ValueChanged` 后按 `ValidateDebounce` 延迟验证。
+- `OnChanged` 是 Form 的默认触发时机；内容控件触发 `IFormItemAware.ValueChanged` 后按 `ValidateDebounce` 延迟验证，使提交后或编辑中的错误能够随输入及时更新。
+- `OnSubmit` 仅在手动验证或提交时验证，适合显式要求只在提交入口展示错误的表单。
 - `OnBlur` 在 FormItem 失去焦点时按 `ValidateDebounce` 延迟验证。
 - 手动 `Validate()`、`ValidateAsync()` 和 `Submit()` 直接进入验证流程，不依赖输入变化触发。
 
@@ -146,9 +147,10 @@ Form config
 验证结果模型：
 
 - `Error` 会使 Form 聚合为无效状态，并阻止 `Submit()` 继续提交。
+- error 状态以内容控件的 `DataValidationErrors.HasErrors` 为最高优先级；Form validators 产生的 error 也写入同一 native validation 通道。
 - `Warning` 会展示警告状态和警告消息，但 Form 聚合只把 error 作为提交阻断条件。
 - `Validating` 和 `Default` 在 `IsFormValid` 聚合中不视为有效完成状态。
-- 重置会取消未完成验证、清空当前消息并把表单项状态恢复为 `Default`。
+- 重置会取消未完成验证、清空 Form-owned 消息并把表单项扩展状态恢复为 `Default`；它只能清理由 Form 写入的 validation error，不能清掉 binding 或 ViewModel 写入的 native error。
 
 提交与重置模型：
 
@@ -209,14 +211,15 @@ FormToken 不承载以下状态：
 
 维护 Form 时必须保持以下不变量：
 
-- 默认 `ValidateTrigger` 必须为 `OnChanged`，保持与 Ant Design 默认 `onChange` 验证触发语义一致。
+- 默认 `ValidateTrigger` 必须为 `OnChanged`，保持字段值变化时触发验证的默认语义。
 - `FormItem.Content` 默认必须实现 `IFormItemAware`，否则应保持当前异常语义。
 - `FormItem` 重新设置 Content 时必须释放旧内容的值变化订阅和 feedback 引用。
 - 新验证运行必须取消旧验证和 debounce，旧异步结果不能覆盖新结果或 reset 后状态。
 - `Reset()` 必须取消未完成验证，并避免 reset 引起的值变化触发新验证。
+- `Reset()`、验证成功和重新验证只能清理 Form-owned `DataValidationErrors`，不得删除外部 native validation error。
 - `Submit()` 只有在没有 error 时才收集值并触发提交事件。
 - `Warning` 状态不得按 error 处理，除非获得明确行为变更授权。
-- `FormItemDecorator` 必须继续向子控件转发 value、validation status、feedback、size、motion 和 style variant。
+- `FormItemDecorator` 必须继续向子控件转发 value、validation status、feedback、size、motion 和 style variant，并保持 native validation error 的目标控件稳定。
 - `SubmitButton.IsWatchValidateResult=false` 时不得因为未找到 Form 或 Form 无效而强制禁用。
 - Template part、token 名称、ControlTheme key 和验证枚举值不得在未授权情况下重命名或删除。
 
@@ -230,7 +233,7 @@ FormToken 不承载以下状态：
 - FormItem 的验证逻辑保持集中在验证职责域，不能重新散落到模板、布局或事件 handler 中。
 - 新验证、reset、detach 和新 submit 必须取消旧验证运行。
 - `IsResetting` 必须阻止 reset 期间的值变化触发验证，并在 dispatcher 队列中恢复。
-- `ApplyValidationOutcome()` 必须继续作为验证状态、消息、feedback 和事件的统一写入点。
+- `ApplyValidationOutcome()` 必须继续作为 Form-owned `DataValidationErrors`、扩展验证状态、消息、feedback 和事件的统一写入点。
 - `Warning` 和 `Error` 的聚合语义不能混淆。
 - FormItem 内容替换必须释放旧内容订阅和旧 feedback。
 - FormItemDecorator 的 `Child` 必须实现 `IFormItemAware`，并继续转发 feedback 和 validation status。

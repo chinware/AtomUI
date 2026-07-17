@@ -17,35 +17,35 @@
 来源：`src/AtomUI.Desktop.Controls.DataGrid/Themes/DataGridTheme.axaml`
 
 ```xml
-<Border Name="Frame">
-    <Spin>
-        <DockPanel>
-            <Pagination Name="{x:Static atom:DataGridThemeConstants.TopPaginationPart}" />
-            <Border Name="TitleFrame">
-                <ContentPresenter Name="Title" />
-            </Border>
-            <Pagination Name="{x:Static atom:DataGridThemeConstants.BottomPaginationPart}" />
-            <ContentPresenter Name="Footer" />
-            <Grid>
-                <DataGridTopLeftColumnHeader Name="{x:Static atom:DataGridThemeConstants.TopLeftCornerPart}" />
-                <Border Name="ColumnHeadersPresenterFrame">
-                    <Panel>
-                        <DataGridColumnHeadersPresenter Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersPresenterPart}" />
-                        <DataGridGroupColumnHeadersPresenter Name="{x:Static atom:DataGridThemeConstants.GroupColumnHeadersPresenterPart}" />
-                    </Panel>
-                </Border>
-                <Rectangle Name="ColumnHeadersAndRowsSeparator" />
-                <DataGridRowsPresenter Name="{x:Static atom:DataGridThemeConstants.RowsPresenterPart}" />
-                <ContentPresenter Name="EmptyIndicator" />
-                <Rectangle Name="{x:Static atom:DataGridThemeConstants.BottomRightCornerPart}" />
-                <ScrollBar Name="{x:Static atom:DataGridThemeConstants.VerticalScrollbarPart}" />
-                <ScrollBar Name="{x:Static atom:DataGridThemeConstants.HorizontalScrollbarPart}" />
-                <Border Name="DisabledVisualElement" />
-                <DataGridColumnDraggingOverIndicator Name="{x:Static atom:DataGridThemeConstants.DraggingOverIndicatorPart}" />
-            </Grid>
-        </DockPanel>
-    </Spin>
-</Border>
+<PixelAlignedBorder Name="Frame">
+    <Border Name="FrameContentClip">
+        <Spin>
+            <DockPanel>
+                <Pagination Name="{x:Static atom:DataGridThemeConstants.TopPaginationPart}" />
+                <PixelAlignedBorder Name="TitleFrame">
+                    <ContentPresenter Name="Title" />
+                </PixelAlignedBorder>
+                <Pagination Name="{x:Static atom:DataGridThemeConstants.BottomPaginationPart}" />
+                <ContentPresenter Name="Footer" />
+                <Grid>
+                    <DataGridTopLeftColumnHeader Name="{x:Static atom:DataGridThemeConstants.TopLeftCornerPart}" />
+                    <Border Name="ColumnHeadersPresenterFrame">
+                        <Panel>
+                        </Panel>
+                    </Border>
+                    <PixelAlignedBorder Name="ColumnHeadersAndRowsSeparator" />
+                    <DataGridRowsPresenter Name="{x:Static atom:DataGridThemeConstants.RowsPresenterPart}" />
+                    <ContentPresenter Name="EmptyIndicator" />
+                    <Rectangle Name="{x:Static atom:DataGridThemeConstants.BottomRightCornerPart}" />
+                    <ScrollBar Name="{x:Static atom:DataGridThemeConstants.VerticalScrollbarPart}" />
+                    <ScrollBar Name="{x:Static atom:DataGridThemeConstants.HorizontalScrollbarPart}" />
+                    <Border Name="DisabledVisualElement" />
+                    <DataGridColumnDraggingOverIndicator Name="{x:Static atom:DataGridThemeConstants.DraggingOverIndicatorPart}" />
+                </Grid>
+            </DockPanel>
+        </Spin>
+    </Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -57,7 +57,7 @@
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `AutoGenerateColumns`、`CanUserFilterColumns`、`CanUserReorderColumns`、`CanUserReorderRows`、`CanUserResizeColumns`、`CanUserSortColumns`、`CellEditingTemplate`、`CellTemplate`、`ColumnHeaderHeight`、`ContentHeight` 等 32 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `ClipboardCopyMode`、`CurrentSortDirection`、`FilterMode`、`Index`、`IsFilterActivated`、`IsHideOnSinglePage`、`IsHoverMode`、`IsMultipleFilterEnabled`、`IsSelected`、`IsSorterTooltipVisible` 等 20 项 | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `ClipboardCopyMode`、`CurrentSortDirection`、`Filters`、`SelectedFilterValues`、`FilterPresenterMode`、`FilterSelectionMode`、`FilterApplyMode`、`Index`、`IsFilterActivated`、`IsHideOnSinglePage`、`IsHoverMode`、`IsSelected`、`IsSorterTooltipVisible` 等 | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `AscendingIndicatorVisible`、`DescendingIndicatorVisible`、`IsDeleteEnabled`、`IsDetailsVisible`、`IsEditEnabled`、`IsFrameBorderVisible`、`IsFrozen`、`IsLeaf`、`IsMotionEnabled`、`IsOperating` 等 19 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `BottomPaginationAlign`、`ColumnWidth`、`HorizontalAlignment`、`HorizontalScrollBarVisibility`、`MaxColumnWidth`、`MinColumnWidth`、`RowHeight`、`SeparatorBrush`、`SizeType`、`SublevelIndent` 等 14 项 | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `CellTheme`、`CollectionView`、`CustomOperatingIndicator`、`EmptyIndicator`、`Footer`、`FormatString`、`GridLinesVisibility`、`Level`、`Maximum`、`Minimum` 等 15 项 | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
@@ -83,6 +83,9 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- 列过滤状态以 `SelectedFilterValues` 为 owner：VM 更新它时重建当前列的 collection view 过滤投影并回放到 flyout checked state；用户在 flyout 中选择过滤项时先更新它，再由同一管线投影到 `FilterDescriptions`。
+- `Filters` 替换、reset 或 clear 时，Header 和 FilterIndicator 必须重新计算过滤入口可见性并重新物化 flyout 内容；已有 `SelectedFilterValues` 只能保留仍能匹配到有效过滤项的值。
+- `ClearFilters()` 和单列清除过滤必须通过清空列级 `SelectedFilterValues` 完成，不能只清空 `FilterDescriptions`，否则 VM 绑定、过滤图标激活态和 flyout 勾选态会分裂。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -148,5 +151,7 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
+- 列过滤只能有一个选中状态 owner；`Filters`、flyout checked state、`SelectedFilterValues` 和 `FilterDescriptions` 之间不得形成互相覆盖的并行状态源。
+- 过滤项解析必须支持业务 DTO 和 `DataGridFilterItem` 两类输入，不得要求 VM 反向依赖内部 flyout、menu item 或 tree item 类型；业务 DTO 必须有生成的 data member accessor，不在 AOT 敏感路径中使用运行时反射兜底。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。

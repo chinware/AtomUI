@@ -11,7 +11,10 @@ public static partial class GalleryExampleReader
     private const int MaxSnippetLineCount = 80;
     private const int MaxSnippetLength = 6_000;
 
-    public static string ReadMarkdown(string repositoryRoot, string galleryPath)
+    public static string ReadMarkdown(
+        string repositoryRoot,
+        string galleryPath,
+        string? targetControlType = null)
     {
         if (string.IsNullOrWhiteSpace(galleryPath))
         {
@@ -19,30 +22,50 @@ public static partial class GalleryExampleReader
         }
 
         var absoluteGalleryPath = ResolvePath(repositoryRoot, galleryPath);
-        if (!Directory.Exists(absoluteGalleryPath))
+        var isShowCaseFile = File.Exists(absoluteGalleryPath);
+        if (!isShowCaseFile && !Directory.Exists(absoluteGalleryPath))
         {
             return $"Gallery 目录 `{galleryPath}` 当前不存在；请检查控件文档中的 Gallery 页面元数据。";
         }
 
-        var examples = Directory.GetFiles(absoluteGalleryPath, "*ShowCase.axaml", SearchOption.AllDirectories)
-                                .Where(path => path.Contains($"{Path.DirectorySeparatorChar}Views{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
-                                .Order(StringComparer.Ordinal)
-                                .SelectMany(path => ReadExamplesFromShowCase(path, repositoryRoot, absoluteGalleryPath))
-                                .Where(IsPublicDocumentationExample)
-                                .Take(MaxExamplesPerControl)
-                                .ToArray();
-
-        if (examples.Length > 0)
+        var galleryControlPath = isShowCaseFile
+            ? ResolveGalleryControlPath(absoluteGalleryPath)
+            : absoluteGalleryPath;
+        var showCasePaths = isShowCaseFile
+            ? [absoluteGalleryPath]
+            : Directory.GetFiles(absoluteGalleryPath, "*ShowCase.axaml", SearchOption.AllDirectories)
+                       .Where(path => path.Contains($"{Path.DirectorySeparatorChar}Views{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+                       .Order(StringComparer.Ordinal)
+                       .ToArray();
+        IEnumerable<GalleryExample> examples = showCasePaths
+            .SelectMany(path => ReadExamplesFromShowCase(path, repositoryRoot, galleryControlPath))
+            .Where(IsPublicDocumentationExample);
+        if (isShowCaseFile && !string.IsNullOrWhiteSpace(targetControlType))
         {
-            return FormatExamples(examples);
+            var matchingExamples = examples
+                .Where(example => ContainsControlElement(example.Axaml, targetControlType))
+                .ToArray();
+            if (matchingExamples.Length > 0)
+            {
+                examples = matchingExamples;
+            }
         }
 
-        var axamlFiles = Directory.GetFiles(absoluteGalleryPath, "*.axaml", SearchOption.AllDirectories)
-                                  .Where(path => path.Contains($"{Path.DirectorySeparatorChar}Views{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
-                                  .Select(path => $"- `{ToRelativePath(repositoryRoot, path)}`")
-                                  .Order(StringComparer.Ordinal)
-                                  .Take(12)
-                                  .ToArray();
+        var selectedExamples = examples.Take(MaxExamplesPerControl).ToArray();
+
+        if (selectedExamples.Length > 0)
+        {
+            return FormatExamples(selectedExamples);
+        }
+
+        var axamlFiles = isShowCaseFile
+            ? [$"- `{ToRelativePath(repositoryRoot, absoluteGalleryPath)}`"]
+            : Directory.GetFiles(absoluteGalleryPath, "*.axaml", SearchOption.AllDirectories)
+                       .Where(path => path.Contains($"{Path.DirectorySeparatorChar}Views{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+                       .Select(path => $"- `{ToRelativePath(repositoryRoot, path)}`")
+                       .Order(StringComparer.Ordinal)
+                       .Take(12)
+                       .ToArray();
 
         return axamlFiles.Length == 0
             ? $"Gallery 目录 `{galleryPath}` 未声明稳定 AXAML 示例。"
@@ -470,6 +493,25 @@ public static partial class GalleryExampleReader
         return BlockedTermRegex().IsMatch(value);
     }
 
+    private static bool ContainsControlElement(string axaml, string controlType)
+    {
+        var marker = $":{controlType}";
+        for (var index = axaml.IndexOf(marker, StringComparison.Ordinal);
+             index >= 0;
+             index = axaml.IndexOf(marker, index + marker.Length, StringComparison.Ordinal))
+        {
+            var nextIndex = index + marker.Length;
+            if (nextIndex == axaml.Length ||
+                char.IsWhiteSpace(axaml[nextIndex]) ||
+                axaml[nextIndex] is '>' or '/' or '.')
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static string EscapeXmlAttribute(string value)
     {
         return value.Replace("&", "&amp;", StringComparison.Ordinal)
@@ -506,6 +548,15 @@ public static partial class GalleryExampleReader
         return Path.IsPathFullyQualified(path)
             ? Path.GetFullPath(path)
             : Path.GetFullPath(Path.Combine(repositoryRoot, path));
+    }
+
+    private static string ResolveGalleryControlPath(string showCasePath)
+    {
+        var directory = Path.GetDirectoryName(showCasePath)
+                        ?? throw new InvalidOperationException($"Gallery ShowCase path has no parent directory: {showCasePath}");
+        return string.Equals(Path.GetFileName(directory), "Views", StringComparison.Ordinal)
+            ? Directory.GetParent(directory)?.FullName ?? directory
+            : directory;
     }
 
     private static string ToRelativePath(string repositoryRoot, string path)

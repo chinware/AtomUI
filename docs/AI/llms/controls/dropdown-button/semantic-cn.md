@@ -28,7 +28,7 @@ DropdownButton
      -> Panel (template-stable)
         -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
         -> Border#ShadowsFrame (template-stable)
-        -> Border#Frame (template-stable)
+        -> DashedBorder#Frame (template-stable)
         -> Border#CustomBackgroundLayer (template-stable)
         -> Border (template-stable)
            -> DockPanel#PART_RootLayout (template-stable)
@@ -40,7 +40,7 @@ DropdownButton
      -> Panel (template-stable)
         -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
         -> Border#ShadowsFrame (template-stable)
-        -> Border#Frame (template-stable)
+        -> DashedBorder#Frame (template-stable)
         -> Border#CustomBackgroundLayer (template-stable)
         -> Border (template-stable)
            -> DockPanel#PART_RootLayout (template-stable)
@@ -58,7 +58,7 @@ DropdownButton
 | `Panel` | template node (Panel) | `BrowserButtonThemes.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `BrowserButtonThemes.axaml` | DropdownButton | `EffectiveCornerRadius`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ShadowsFrame` | template node (Border) | `BrowserButtonThemes.axaml` | DropdownButton | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (Border) | `BrowserButtonThemes.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (DashedBorder) | `BrowserButtonThemes.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `BrowserButtonThemes.axaml` | DropdownButton | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLayout` | template node (DockPanel) | `BrowserButtonThemes.axaml` | DropdownButton | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `IsShowOpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_DropdownIndicator` | template node (IconPresenter) | `BrowserButtonThemes.axaml` | DropdownButton | `Foreground`, `IsShowOpenIndicator`, `OpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -69,7 +69,7 @@ DropdownButton
 | `Panel` | template node (Panel) | `DropdownButtonTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `DropdownButtonTheme.axaml` | DropdownButton | `EffectiveCornerRadius`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ShadowsFrame` | template node (Border) | `DropdownButtonTheme.axaml` | DropdownButton | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (Border) | `DropdownButtonTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (DashedBorder) | `DropdownButtonTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `DropdownButtonTheme.axaml` | DropdownButton | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLayout` | template node (DockPanel) | `DropdownButtonTheme.axaml` | DropdownButton | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `IsShowOpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_DropdownIndicator` | template node (IconPresenter) | `DropdownButtonTheme.axaml` | DropdownButton | `Foreground`, `IsShowOpenIndicator`, `OpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

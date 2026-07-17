@@ -74,7 +74,7 @@ Tag 的公共契约由 public/protected 类型成员、Avalonia 属性、事件�
 
 ### 多彩标签
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml:162`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml:58`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -107,7 +107,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 无边框
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml:258`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml:154`
 
 Gallery key：`ExamplesContent` / item `4`
 

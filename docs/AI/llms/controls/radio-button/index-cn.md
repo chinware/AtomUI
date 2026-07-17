@@ -77,7 +77,7 @@ RadioButton 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -89,7 +89,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 禁用
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:153`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:49`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -114,7 +114,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 垂直单选框组
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:215`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:111`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -129,7 +129,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 通过 ItemsSource 生成单选框组
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:231`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:127`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -153,6 +153,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `RadioButtonGroup.CheckedItem` 是单选组的外部值 owner，默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；用户选择和 ViewModel 更新必须收敛到同一份当前项状态。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

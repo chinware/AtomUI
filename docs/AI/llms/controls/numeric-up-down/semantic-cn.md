@@ -18,7 +18,7 @@
 
 ```xml
 <ButtonSpinner Name="PART_Spinner">
-    <TextBox Name="PART_TextBox" />
+    <EmbeddedTextBox Name="PART_TextBox" />
 </ButtonSpinner>
 ```
 
@@ -32,10 +32,12 @@
 NumericUpDown
   -> ButtonSpinnerDecoratedBox (control theme, ButtonSpinnerDecoratedBoxTheme.axaml)
      -> DockPanel#RootLayout (template-stable)
-        -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (internal-observable)
-        -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (internal-observable)
+        -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
+           -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart} (internal-observable)
+        -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (template-stable)
+           -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPresenterPart} (internal-observable)
         -> Panel (template-stable)
-           -> Border#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
+           -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
               -> ButtonSpinnerContentPanel#ContentLayout (internal-observable)
                  -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
                  -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
@@ -45,6 +47,7 @@ NumericUpDown
      -> UniformGrid (template-stable)
         -> IconButton#PART_IncreaseButton (template-stable)
         -> IconButton#PART_DecreaseButton (template-stable)
+  -> EmbeddedTextBox (control theme, EmbeddedTextBoxTheme.axaml)
   -> InputClearIconButton (control theme, InputClearIconButtonTheme.axaml)
   -> ResizeHandle (control theme, ResizeHandleTheme.axaml)
      -> Border#Frame (template-stable)
@@ -52,15 +55,16 @@ NumericUpDown
   -> SearchButton (control theme, SearchButtonTheme.axaml)
   -> SearchEditDecoratedBox (control theme, SearchEditDecoratedBoxTheme.axaml)
      -> SearchEditPanel#RootLayout (internal-observable)
-        -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (internal-observable)
+        -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
+           -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart} (internal-observable)
         -> SearchButton#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (internal-observable)
-        -> Border#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
+        -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
            -> DockPanel#ContentLayout (template-stable)
               -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
               -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> TextAreaDecoratedBox (control theme, TextAreaDecoratedBoxTheme.axaml)
-     -> Border#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
+     -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
         -> Border#TextAreaContentFrame (template-stable)
            -> DockPanel#ContentLayout (template-stable)
               -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
@@ -70,14 +74,14 @@ NumericUpDown
                  -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
   -> NumericUpDown (control theme, NumericUpDownTheme.axaml)
      -> ButtonSpinner#PART_Spinner (template-stable)
-        -> TextBox#PART_TextBox (template-stable)
+        -> EmbeddedTextBox#PART_TextBox (template-stable)
      -> ButtonSpinner#PART_Spinner (template-stable)
-        -> TextBox#PART_TextBox (template-stable)
+        -> EmbeddedTextBox#PART_TextBox (template-stable)
      -> ButtonSpinnerDecoratedBox#PART_DecoratedBox (template-stable)
         -> DockPanel (template-stable)
-           -> Border (template-stable)
+           -> PixelAlignedBorder (template-stable)
               -> IconButton#PART_DecreaseButton (template-stable)
-           -> Border (template-stable)
+           -> PixelAlignedBorder (template-stable)
               -> IconButton#PART_IncreaseButton (template-stable)
            -> DockPanel (template-stable)
               -> ContentPresenter (internal-observable)
@@ -92,10 +96,12 @@ NumericUpDown
 | `NumericUpDown` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `ButtonSpinnerDecoratedBox` | control theme | `ButtonSpinnerDecoratedBoxTheme.axaml` | NumericUpDown | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (DockPanel) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `RightAddOn`, `RightAddOnBorderThickness`, `RightAddOnCornerRadius`, `RightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (PixelAlignedBorder) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `RightAddOn`, `RightAddOnBorderThickness`, `RightAddOnCornerRadius`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPresenterPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `RightAddOn`, `RightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (Border) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (ButtonSpinnerContentPanel) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -104,6 +110,7 @@ NumericUpDown
 | `ButtonSpinnerHandle` | control theme | `ButtonSpinnerHandleTheme.axaml` | NumericUpDown | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_IncreaseButton` | template node (IconButton) | `ButtonSpinnerHandleTheme.axaml` | ButtonSpinnerHandle | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_DecreaseButton` | template node (IconButton) | `ButtonSpinnerHandleTheme.axaml` | ButtonSpinnerHandle | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `EmbeddedTextBox` | control theme | `EmbeddedTextBoxTheme.axaml` | NumericUpDown | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InputClearIconButton` | control theme | `InputClearIconButtonTheme.axaml` | NumericUpDown | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ResizeHandle` | control theme | `ResizeHandleTheme.axaml` | NumericUpDown | `Background` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (Border) | `ResizeHandleTheme.axaml` | ResizeHandle | `Background` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -111,20 +118,17 @@ NumericUpDown
 | `SearchButton` | control theme | `SearchButtonTheme.axaml` | NumericUpDown | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SearchEditDecoratedBox` | control theme | `SearchEditDecoratedBoxTheme.axaml` | NumericUpDown | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (SearchEditPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (SearchButton) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SizeType`, `Status`, `StyleVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (Border) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (SearchButton) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `EffectiveStatus`, `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SizeType`, `StyleVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TextAreaDecoratedBox` | control theme | `TextAreaDecoratedBoxTheme.axaml` | NumericUpDown | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (Border) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TextAreaContentFrame` | template node (Border) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ContentLayout` | template node (DockPanel) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (ContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Panel` | template node (Panel) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate`, `HorizontalScrollBarVisibility`, `IsScrollChainingEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ScrollViewer` | template node (ScrollViewer) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentTemplate`, `HorizontalScrollBarVisibility`, `IsScrollChainingEnabled`, `ScrollerPadding`, `VerticalScrollBarVisibility` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -180,7 +184,7 @@ IsEffectiveShowClearButton =
   && !string.IsNullOrEmpty(Text)
 ```
 
-`Mode` 只改变展示结构，不改变 `Value`、`Text`、`Minimum`、`Maximum`、`Increment`、`AllowSpin`、键盘、滚轮、Form 或 string mode 的数值语义。
+`Mode` 只改变展示结构，不改变 `Value`、`Text`、`Minimum`、`Maximum`、`Increment`、`AllowSpin`、`ShowButtonSpinner`、键盘、滚轮、Form 或 string mode 的数值语义。
 
 `SizeType=Custom` 进入自定义尺寸路径。用户未显式设置 `Height`、`FontSize`、`Padding` 等尺寸属性时，主题层应以 `Middle` 作为默认视觉基线；用户显式接管 `FontSize` 时，应通过 `IsCustomFontSize=true` 防止内部 `TextBox` 的 `SizeType` 字号样式覆盖用户设置。
 
@@ -190,8 +194,8 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 
 视觉层级要求：
 
-- `Mode=Input` 的默认模板不得预埋 spinner 模式左右按钮或无职责 wrapper。
-- `Mode=Spinner` 使用独立 `ControlTemplate`，不通过同一模板内两套视觉树加 `IsVisible` 切换实现。
+- `Mode=Input` 的默认模板不得预埋 spinner 模式左右按钮或无职责 wrapper；`ShowButtonSpinner=false` 时必须隐藏浮动 Handle。
+- `Mode=Spinner` 使用独立 `ControlTemplate`，不通过同一模板内两套视觉树加 `IsVisible` 切换实现；`ShowButtonSpinner=false` 时必须隐藏左右 action 段。
 - `ButtonSpinner` 是默认输入壳体边界，不应被普通 `Border` 或 `Grid` 包装替代。
 - `PART_TextBox` 的 `BorderThickness=0` 是为了避免内层 TextBox 与外层输入壳体重复绘制边框。
 - `PART_ClearButton` 与 `PART_InnerRightContentPresenter` 共用内部右侧 stack，必须保留顺序：清除按钮在用户内部右侧内容之前。
@@ -228,7 +232,7 @@ NumericUpDownToken 不承载以下状态：
 维护 NumericUpDown 时必须保持以下不变量：
 
 - 不修改继承自 Avalonia `NumericUpDown` 的数值、格式化、步进和事件契约。
-- 不在未授权情况下改变 AtomUI 桌面主题对 `ShowButtonSpinner` 和 `ButtonSpinnerLocation` 的当前解释。
+- `ShowButtonSpinner` 必须同时作用于 `Mode=Input` 的浮动 Handle 和 `Mode=Spinner` 的左右 action 段。
 - 不擅自新增、删除、重命名或改变 AtomUI public API。
 - `Mode=Input` 默认行为和渲染效果不变；spinner 模式不能让默认用户承担额外视觉树或额外交互订阅成本。
 - `Mode=Spinner` 只改变展示结构，不改变数值解析、格式化、步进、Form、CompactSpace 或 string mode 语义。
@@ -256,6 +260,7 @@ NumericUpDownToken 不承载以下状态：
 - `IsKeyboardEnabled=false` 只影响步进快捷键。
 - `Mode=Input` 不承担 spinner 模式成本。
 - `Mode=Spinner` 不复制数值增减算法。
+- `ShowButtonSpinner=false` 同时隐藏默认输入模式浮动 Handle 和 spinner 模式左右 action 段。
 - NumericUpDown 本体不直接订阅 spinner 模式左右按钮事件。
 - 清除按钮和 `InnerRightContent` 顺序不变。
 - 禁用态隐藏浮动 Handle，并命中 disabled 文本色。

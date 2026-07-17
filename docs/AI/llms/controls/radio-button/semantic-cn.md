@@ -17,12 +17,12 @@
 来源：`src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonTheme.axaml`
 
 ```xml
-<Border Name="Frame">
+<PixelAlignedBorder Name="Frame">
     <DockPanel>
         <RadioIndicator Name="Indicator" />
         <ContentPresenter Name="ContentPresenter" />
     </DockPanel>
-</Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -34,10 +34,10 @@
 ```text
 RadioButton
   -> RadioButtonGroup (control theme, RadioButtonGroupTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> ItemsPresenter#PART_ItemsPresenter (template-stable)
   -> RadioButton (control theme, RadioButtonTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> DockPanel (template-stable)
            -> RadioIndicator#Indicator (internal-observable)
            -> ContentPresenter#ContentPresenter (internal-observable)
@@ -52,10 +52,10 @@ RadioButton
 | --- | --- | --- | --- | --- | --- | --- |
 | `RadioButton` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `RadioButtonGroup` | control theme | `RadioButtonGroupTheme.axaml` | 用户代码 / 控件宿主 | `BorderBrush`, `BorderThickness`, `CornerRadius`, `ItemsPanel` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `RadioButtonGroupTheme.axaml` | RadioButtonGroup | `BorderBrush`, `BorderThickness`, `CornerRadius`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `RadioButtonGroupTheme.axaml` | RadioButtonGroup | `BorderBrush`, `BorderThickness`, `CornerRadius`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `RadioButtonGroupTheme.axaml` | RadioButtonGroup | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RadioButton` | control theme | `RadioButtonTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `RadioButtonTheme.axaml` | RadioButton | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `RadioButtonTheme.axaml` | RadioButton | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DockPanel` | template node (DockPanel) | `RadioButtonTheme.axaml` | RadioButton | `Content`, `ContentTemplate`, `IsChecked`, `IsEnabled`, `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Indicator` | template node (RadioIndicator) | `RadioButtonTheme.axaml` | RadioButton | `IsChecked`, `IsEnabled`, `IsMotionEnabled`, `IsWaveSpiritEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentPresenter` | template node (ContentPresenter) | `RadioButtonTheme.axaml` | RadioButton | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -93,6 +93,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `RadioButtonGroup.CheckedItem` 是单选组的外部值 owner，默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；用户选择和 ViewModel 更新必须收敛到同一份当前项状态。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

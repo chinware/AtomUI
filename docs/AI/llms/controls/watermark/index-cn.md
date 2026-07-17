@@ -72,7 +72,7 @@ Watermark 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Watermark/Views/WatermarkShowCase.axaml:138`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Watermark/Views/WatermarkShowCase.axaml:34`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -82,7 +82,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 多行水印
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Watermark/Views/WatermarkShowCase.axaml:148`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Watermark/Views/WatermarkShowCase.axaml:44`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -100,7 +100,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 图片水印
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Watermark/Views/WatermarkShowCase.axaml:165`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Watermark/Views/WatermarkShowCase.axaml:61`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -114,7 +114,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 自定义配置
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Watermark/Views/WatermarkShowCase.axaml:179`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Watermark/Views/WatermarkShowCase.axaml:75`
 
 Gallery key：`ExamplesContent` / item `3`
 

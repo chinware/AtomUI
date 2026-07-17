@@ -48,6 +48,8 @@ Header API：
 - `CornerRadius` 定义边框圆角。
 - `Padding` 定义内容区域内边距，默认由 GroupBox Token 提供。
 
+GroupBox 在未显式设置 `Height` / `MaxHeight` 等外部约束时，会根据模板根节点的测量结果自动确定高度。该高度包含 Header 通道、内容区域 `Padding` 和内容自身 `DesiredSize`。内容容器仍需遵循 Avalonia 布局语义主动汇报期望尺寸，例如使用 `StackPanel`、`Grid` 或显式尺寸；裸 `Panel` / `Canvas` 等不会自然按子元素累加高度的容器不会被 GroupBox 特殊改写。
+
 稳定 template part：
 
 | Template Part | 类型 | 职责 |
@@ -71,7 +73,7 @@ GroupBox 的事件与命令以公共 API、Avalonia 基类契约和 Gallery API 
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -83,11 +85,27 @@ Gallery key：`ExamplesContent` / item `0`
 </atom:GroupBox>
 ```
 
-### 标题位置
+### 自动高度
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:155`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:52`
 
 Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:GroupBox HeaderTitle="自动高度">
+    <StackPanel Spacing="8">
+        <atom:TextBlock Text="下面的 GroupBox 没有设置 Height，内容区域会随着文本行数自动增长。" TextWrapping="Wrap" />
+        <atom:TextBlock Text="当内容来自 StackPanel、Grid 或显式尺寸控件时，GroupBox 会使用内容的 DesiredSize 计算整体高度。" TextWrapping="Wrap" />
+        <atom:TextBlock Text="如果父容器设置了固定高度或 MaxHeight，则仍然会按 Avalonia 布局约束进行裁剪或滚动。" TextWrapping="Wrap" />
+    </StackPanel>
+</atom:GroupBox>
+```
+
+### 标题位置
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:69`
+
+Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
 <StackPanel Orientation="Vertical" Spacing="10">
@@ -111,9 +129,9 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 标题样式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:182`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:96`
 
-Gallery key：`ExamplesContent` / item `2`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <StackPanel Orientation="Vertical" Spacing="10">
@@ -159,7 +177,7 @@ Frame border bounds + Header gap bounds
 Background / BorderBrush / BorderThickness / CornerRadius render state
 ```
 
-`HeaderIcon`、Header 字体、标题位置和 Header 内容变化会影响缺口尺寸或位置。`Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 改变会影响自绘边框和背景。
+`HeaderIcon`、Header 字体、标题位置和 Header 内容变化会影响缺口尺寸或位置。内容尺寸变化会通过模板根 `PART_Frame` 参与 GroupBox 的 measure pass，使自动高度随内容 `DesiredSize` 增长，同时仍尊重父容器可用空间和显式高度约束。`Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 改变会影响自绘边框和背景。
 
 ## 主题与 Design Token
 

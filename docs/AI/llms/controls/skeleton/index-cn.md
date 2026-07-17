@@ -82,7 +82,7 @@ Skeleton 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:141`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -92,7 +92,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 复杂组合
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:153`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:49`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -102,7 +102,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 动态效果
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:165`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:61`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -112,7 +112,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 包含子组件
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:251`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:147`
 
 Gallery key：`ExamplesContent` / item `4`
 

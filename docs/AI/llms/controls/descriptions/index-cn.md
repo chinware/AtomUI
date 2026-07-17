@@ -92,7 +92,7 @@ Descriptions 没有 public routed event、命令或专用伪类。内部生成�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:137`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:33`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -109,7 +109,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 边框
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:154`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:50`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -141,7 +141,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 自定义尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:186`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:82`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -208,7 +208,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 响应式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:254`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:150`
 
 Gallery key：`ExamplesContent` / item `3`
 
