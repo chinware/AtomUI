@@ -75,7 +75,7 @@ Result 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 成功
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:141`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -94,7 +94,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 信息
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:162`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:58`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -109,7 +109,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 警告
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:179`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:75`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -124,7 +124,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 403
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:196`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:92`
 
 Gallery key：`ExamplesContent` / item `3`
 

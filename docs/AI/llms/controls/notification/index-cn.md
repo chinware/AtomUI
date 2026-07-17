@@ -77,7 +77,7 @@ Notification 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:136`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:32`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -87,7 +87,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 自动关闭时长
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:145`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:41`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -97,7 +97,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 带图标通知
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:154`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:50`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -112,7 +112,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 弹出位置
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:168`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:64`
 
 Gallery key：`ExamplesContent` / item `3`
 

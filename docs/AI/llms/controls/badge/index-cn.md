@@ -78,7 +78,7 @@ Badge 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:35`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -101,7 +101,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 封顶数字
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:162`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:58`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -136,7 +136,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 偏移量
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:197`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:93`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -153,7 +153,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:213`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:109`
 
 Gallery key：`ExamplesContent` / item `3`
 

@@ -84,7 +84,7 @@ TreeViewItem 节点 API：
 | `IsIndicatorEnabled` | 当前节点 checkbox / radio 是否可用。 |
 | `ItemKey` | 路径匹配和节点身份标识。 |
 
-`ITreeItemNode` 是数据驱动树的节点契约，提供 `Header`、`Icon`、`ItemKey`、`Children`、`IsEnabled`、`IsChecked`、`IsSelected`、`IsExpanded`、`IsIndicatorEnabled`、`GroupName`、`IsLeaf`、`Value` 和 parent node 更新能力。
+`ITreeItemNode` 是数据驱动树的节点契约，提供 `Header`、`Icon`、`ItemKey`、`Children`、`IsEnabled`、`IsChecked`、`IsSelected`、`IsExpanded`、`IsIndicatorEnabled`、`GroupName`、`IsLeaf`、`Value` 和 parent node 更新能力。数据驱动场景下 `Children` 是节点结构的权威子集合；TreeViewItem 只投射节点状态和视觉交互，不作为结构数据源。
 
 节点数据类型边界：
 
@@ -141,7 +141,7 @@ TreeView 的公共契约由 TreeView API、TreeViewItem API、节点数据 API�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -169,7 +169,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 使用模板生成
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:169`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:66`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -187,57 +187,103 @@ Gallery key：`ExamplesContent` / item `1`
 </atom:TreeView>
 ```
 
-### 块级节点
+### SelectedItem 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:190`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:89`
 
 Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
-<atom:TreeView ToggleType="CheckBox" IsDefaultExpandAll="True" NodeHoverMode="Block">
-    <atom:TreeViewItem Header="父节点">
-        <atom:TreeViewItem Header="子节点 1" IsEnabled="False" />
-        <atom:TreeViewItem Header="子节点 2" IsIndicatorEnabled="False" />
-    </atom:TreeViewItem>
-</atom:TreeView>
+<Grid ColumnDefinitions="300,*" ColumnSpacing="24">
+    <StackPanel Grid.Column="0" Spacing="8">
+        <TextBlock FontWeight="SemiBold"
+                   Text="SelectedItem" />
+        <atom:TreeView ItemsSource="{Binding BasicTreeNodes}"
+                       DefaultExpandedPaths="{Binding BasicTreeViewDefaultExpandedPaths}"
+                       SelectedItem="{Binding BoundSelectedTreeNode, Mode=TwoWay}">
+            <atom:TreeView.ItemTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:TreeView.ItemTemplate>
+        </atom:TreeView>
+    </StackPanel>
+
+    <StackPanel Grid.Column="1" MinWidth="260" Spacing="10">
+        <TextBlock FontWeight="SemiBold"
+                   Text="绑定值" />
+        <StackPanel Spacing="4">
+            <TextBlock Text="SelectedItem" />
+            <atom:TextBlock Text="{Binding BoundSelectedTreeNodeText}" />
+        </StackPanel>
+        <WrapPanel>
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleSelectFirstBindingTreeNodeClick"
+                         Content="选择 parent 1-0" />
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleSelectSecondBindingTreeNodeClick"
+                         Content="选择 parent 1-1" />
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleClearBindingTreeNodeSelectionClick"
+                         Content="清空" />
+        </WrapPanel>
+    </StackPanel>
+</Grid>
 ```
 
-### 可拖拽
+### SelectedItems 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:282`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:139`
 
-Gallery key：`ExamplesContent` / item `4`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<atom:TreeView IsDraggable="True" NodeHoverMode="Block">
-    <atom:TreeViewItem Header="0-0">
-        <atom:TreeViewItem Header="0-0-0">
-            <atom:TreeViewItem Header="0-0-0-0" />
-            <atom:TreeViewItem Header="0-0-0-1" />
-            <atom:TreeViewItem Header="0-0-0-2" />
-        </atom:TreeViewItem>
-        <atom:TreeViewItem Header="0-0-1">
-            <atom:TreeViewItem Header="0-0-1-0" />
-            <atom:TreeViewItem Header="0-0-1-1" />
-            <atom:TreeViewItem Header="0-0-1-2" />
-        </atom:TreeViewItem>
-        <atom:TreeViewItem Header="0-0-2" />
-    </atom:TreeViewItem>
-    <atom:TreeViewItem Header="0-1">
-        <atom:TreeViewItem Header="0-1-0">
-            <atom:TreeViewItem Header="0-1-0-0" />
-            <atom:TreeViewItem Header="0-1-0-1" />
-            <atom:TreeViewItem Header="0-1-0-2" />
-        </atom:TreeViewItem>
-        <atom:TreeViewItem Header="0-1-1">
-            <atom:TreeViewItem Header="0-1-1-0" />
-            <atom:TreeViewItem Header="0-1-1-1" />
-            <atom:TreeViewItem Header="0-1-1-2" />
-        </atom:TreeViewItem>
-        <atom:TreeViewItem Header="0-1-2" />
-    </atom:TreeViewItem>
-    <atom:TreeViewItem Header="0-2" />
-</atom:TreeView>
+<Grid ColumnDefinitions="300,*" ColumnSpacing="24">
+    <StackPanel Grid.Column="0" Spacing="8">
+        <TextBlock FontWeight="SemiBold"
+                   Text="SelectedItems" />
+        <atom:TreeView ItemsSource="{Binding BasicTreeNodes}"
+                       DefaultExpandedPaths="{Binding BasicTreeViewDefaultExpandedPaths}"
+                       SelectionMode="Multiple"
+                       SelectedItems="{Binding BoundSelectedTreeNodes, Mode=TwoWay}">
+            <atom:TreeView.ItemTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:TreeView.ItemTemplate>
+        </atom:TreeView>
+    </StackPanel>
+
+    <StackPanel Grid.Column="1" MinWidth="260" Spacing="10">
+        <TextBlock FontWeight="SemiBold"
+                   Text="绑定值" />
+        <StackPanel Spacing="4">
+            <TextBlock Text="SelectedItems" />
+            <atom:TextBlock Text="{Binding BoundSelectedTreeNodesText}" TextWrapping="Wrap" />
+        </StackPanel>
+        <WrapPanel>
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleSelectFirstBindingTreeNodesClick"
+                         Content="选择 parent 1-0" />
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleSelectSecondBindingTreeNodesClick"
+                         Content="选择 parent 1-1" />
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleSelectBothBindingTreeNodesClick"
+                         Content="选择两个节点" />
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleClearBindingTreeNodesSelectionClick"
+                         Content="清空" />
+        </WrapPanel>
+    </StackPanel>
+</Grid>
 ```
 
 ## 状态模型
@@ -249,7 +295,7 @@ TreeView 的状态模型由节点状态、选择状态、勾选状态、展开�
 - `IsSelectable=false` 时不允许节点被选中，并清空 TreeView 当前选择。
 - `IsSelectOnRightClick=false` 时，右键不更新选择。
 - `SelectionMode` 继承 Avalonia `TreeView` 语义，单选使用 `SelectedItem`，多选使用 `SelectedItems`。
-- Form 集成以单选 / 多选模式分别读取 `SelectedItem` 或 `SelectedItems`。
+- Form 集成以单选 / 多选模式分别读取和写入 `SelectedItem` 或 `SelectedItems`，并保持原始节点对象 / 列表实例，不把节点值转换为字符串。
 
 勾选行为：
 
@@ -280,6 +326,9 @@ TreeView 的状态模型由节点状态、选择状态、勾选状态、展开�
 - TreeView 创建拖拽预览和 drop indicator。
 - drop 目标支持插入到根、插入到兄弟前后、插入到目标节点内部。
 - 不允许把节点 drop 到自身或自身后代内。
+- 拖拽命中以已实现的 `TreeViewItem` 容器计算，结构修改以数据源为权威。
+- drop 操作通过 TreeView 内部数据控制器移动 root 集合或节点 `Children`，不直接修改生成容器的 `Items`。
+- 节点移动是结构重排，不是业务删除；选中、勾选和展开状态按节点身份保留。
 
 异步加载行为：
 
@@ -363,6 +412,14 @@ TreeView / TreeViewItem 对绑定型节点的 attach/release 是资源生命周�
 
 拖拽 preview 使用 `AdornerLayer`，完成或取消拖拽时必须从 adorner layer 移除。drag indicator Pen 和 tree line Pen 均按 brush / width 缓存，避免每帧重复创建。
 
+拖拽性能边界：
+
+- pointer move 期间只查询已实现容器和 header bounds，不访问整棵数据树。
+- drop 阶段通过 `TreeNodeIndex` 读取节点上下文，避免按节点引用全树扫描。
+- `TreeNodeIndex` 只在 root 数据源替换、节点集合增删移和异步加载结果进入时增量维护。
+- 移动的主要成本限制在源 / 目标兄弟集合的 remove / insert；不能引入与整棵树节点数线性相关的 drop 热路径。
+- 索引订阅必须随 root source 替换、节点移除、TreeView detach 和节点 collection 替换释放，避免保留旧节点树。
+
 异步加载必须支持取消、超时和 detach 清理。加载结果回到 UI 线程后才能修改节点集合和容器状态。
 
 Filter highlight runs 是 header 状态，不应写入 Token 或节点数据模型。Token 只提供默认颜色、尺寸和间距。
@@ -378,6 +435,8 @@ Filter highlight runs 是 header 状态，不应写入 Token 或节点数据模�
 - `src/AtomUI.Desktop.Controls/TreeView/TreeView.Filter.cs`：过滤、高亮、隐藏未命中、展开路径、filter context 备份和恢复。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeView.AsyncItemDataLoad.cs`：异步加载、加载合并、超时、取消和 `TreeItemLoaded` 派发。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeView.DragAndDrop.cs`：拖拽命中测试、drag preview、drop indicator、drop 操作和拖拽事件。
+- `src/AtomUI.Desktop.Controls/TreeView/TreeView.DataController.cs`：内部数据控制器、drop request / result、root / children 集合移动和 parent node 同步。
+- `src/AtomUI.Desktop.Controls/TreeView/TreeView.NodeIndex.cs`：节点索引、节点父级、所在集合、兄弟索引和 collection changed 增量维护。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeViewItem.cs`：节点容器、展开收起、line 渲染、check/radio 状态、drag bounds 和数据节点承载。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeViewItemHeader.cs`：header 视觉状态、pointer 状态、switcher mode、filter highlight runs 和 template part 订阅。
 - `src/AtomUI.Desktop.Controls/TreeView/NodeSwitcherButton.cs`：switcher 当前图标选择、默认图标、loading load request 和 rotation 动效。

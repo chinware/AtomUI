@@ -42,10 +42,12 @@ Transfer 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `Content`、`ContentTemplate`、`FilterPlaceholderText`、`FilterValueSelector`、`FooterTemplate`、`ItemTemplate`、`SelectionsIcon`、`SelectionsIconTemplate`、`SourceTitle`、`SourceTitleTemplate` 等 22 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `Filter`、`IsAllSelected`、`IsFilterEnabled`、`PageSize` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `TargetKeys`、`SelectedKeys`、`Filter`、`IsAllSelected`、`IsFilterEnabled`、`PageSize` | 维护目标集合、当前面板选择、过滤、分页和集合状态。 |
 | 交互与状态 | `IsMasked`、`IsMotionEnabled`、`IsOneWay`、`IsPaginationEnabled`、`IsShowSearch`、`IsShowSelectAll`、`IsShowSelectAllCheckbox`、`IsShowSelectDropdownMenu`、`IsStretchView`、`Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `ListHeight`、`ListWidth`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `Footer`、`TargetView`、`TargetViewFooter`、`ViewType` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+
+`TargetKeys` 表示已经移动到目标面板的条目 key，是 Transfer 的提交值；`SelectedKeys` 表示当前源面板和目标面板内被选中的条目 key。两者默认 `BindingMode.TwoWay`，并支持 `INotifyCollectionChanged` 集合的原地 `Add`、`Remove`、`Replace`、`Move` 和 `Reset`。当绑定集合可写时，Transfer 交互优先原地更新已有集合，避免替换绑定源造成外部状态不同步。
 
 稳定事件包括 `SelectActionRequest`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 
@@ -76,7 +78,7 @@ Transfer 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -86,7 +88,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 单向模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:154`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:51`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -106,7 +108,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 搜索
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:175`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:72`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -120,35 +122,38 @@ Gallery key：`ExamplesContent` / item `2`
 </StackPanel>
 ```
 
-### 高级用法
+### 受控 key
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:192`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:90`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<atom:ListTransfer ToTargetButtonText="移到右侧"
-                   ToSourceButtonText="移到左侧"
-                   ListWidth="300"
-                   Name="AdvanceTransfer"
-                   ItemsSource="{Binding AdvanceTransferItems}"
-                   TargetKeys="{Binding AdvanceTransferDefaultTargetKeys, Mode=OneWay}">
-    <atom:ListTransfer.SourceViewFooter>
-        <atom:Button SizeType="Small" Click="ReloadAdvancedTransferItems" Content="重新加载左侧" />
-    </atom:ListTransfer.SourceViewFooter>
-    <atom:ListTransfer.TargetViewFooter>
-        <atom:Button SizeType="Small" Click="ReloadAdvancedTransferItems" Content="重新加载右侧" />
-    </atom:ListTransfer.TargetViewFooter>
-    <atom:ListTransfer.ItemTemplate>
-        <DataTemplate x:DataType="viewModels:SearchCaseItemData">
-            <TextBlock TextTrimming="CharacterEllipsis">
-                <Run Text="{Binding Content}" />
-                <Run Text="-" />
-                <Run Text="{Binding Description}" />
-            </TextBlock>
-        </DataTemplate>
-    </atom:ListTransfer.ItemTemplate>
-</atom:ListTransfer>
+<StackPanel Spacing="20">
+    <atom:ListTransfer Name="ControlledTransferList"
+                       SourceTitle="源列表"
+                       TargetTitle="目标列表"
+                       ItemsSource="{Binding ControlledTransferItems}"
+                       TargetKeys="{Binding ControlledTransferTargetKeys}"
+                       SelectedKeys="{Binding ControlledTransferSelectedKeys}" />
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:Button SizeType="Small"
+                     Click="AddControlledTransferTargetKey"
+                     Content="添加 key 3 到目标" />
+        <atom:Button SizeType="Small"
+                     Click="ClearControlledTransferTargetKeys"
+                     Content="清空目标 key" />
+        <atom:Button SizeType="Small"
+                     Click="SelectControlledTransferSourceKey"
+                     Content="选中 key 4" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:TextBlock Text="目标 key：" />
+        <atom:TextBlock Text="{Binding ControlledTransferTargetKeys.Count}" />
+        <atom:TextBlock Text="选中 key：" />
+        <atom:TextBlock Text="{Binding ControlledTransferSelectedKeys.Count}" />
+    </StackPanel>
+</StackPanel>
 ```
 
 ## 状态模型
@@ -167,6 +172,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `TargetKeys` 是目标集合的 public owner，源/目标面板数据由 `ItemsSource` 与 `TargetKeys` 推导；`SelectedKeys` 是当前选择的 public owner，内部源面板选择和目标面板选择按 key 是否存在于 `TargetKeys` 自动拆分。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

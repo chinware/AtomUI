@@ -3,6 +3,29 @@
 本文档记录 Steps 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-07-17
+
+- API
+  - 将 `Steps` 的基类从 `SelectingItemsControl` 改为 `ItemsControl`，删除 Selection、`CurrentContent` 和 `IsFinished` 契约。
+  - 将根 API 统一为 `Current`、`Initial`、`Status`、nullable `Percent`、`Type` 和 `TitlePlacement`。
+  - 将 `StepsStyle` 与 `StepsItemIndicatorType` 合并为 `StepsType`，将状态枚举统一为 `StepsStatus`。
+  - 删除 `StepsItem.Description` / `DescriptionTemplate`，由 `Content` / `ContentTemplate` 表达步骤详情；`StepsItem.Status` 改为 nullable 显式覆盖。
+  - 新增受控导航请求事件 `CurrentChangeRequested`；item 激活不直接修改 `Current`。
+- Behavior
+  - 采用 Ant Design 的 `Initial + index` 编号、Current 越界、item Status 覆盖和 Connector nextStatus 语义。
+  - Wave 改为只响应真实 pointer click；程序化 Current、状态重算和 keyboard 激活不播放 Wave。
+- Theme
+  - 根、item 和 indicator 各使用一套统一语义模板，删除 Style、Orientation、Indicator 和 TitlePlacement 组合模板。
+  - 使用 internal `StepsPanel` 和 `StepsItemLayoutPanel` 分别承担 item 间和 item 内布局。
+  - Navigation 当前项使用唯一 `NavigationActiveIndicator` 节点表达水平底线或垂直右侧线。
+- Token
+  - 删除冗余 `StepsProgressSize`；Progress 外径改为由 icon size 与 `ProgressFramePadding` 推导。
+- Implementation
+  - 将 EffectiveStatus 设为状态视觉唯一输入，删除 Current/Selection 双向同步和 Content observable 生命周期。
+  - 容器状态改为无旧值依赖的确定性投影，并明确 prepare/index change/clear 的 owner 生命周期。
+- Docs
+  - 按 Ant Design 6.4.5 和 `@rc-component/steps` 1.2.2 更新架构、实现和 Token 文档。
+
 ## 2026-07-06
 
 - API

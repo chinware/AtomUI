@@ -55,8 +55,9 @@ Cascader
            -> Border#PopupFrame (template-stable)
               -> CascaderView#PART_CascaderView (template-stable)
   -> CascaderViewFilterList (control theme, CascaderViewFilterListTheme.axaml)
+  -> CascaderViewFilterListItem (item container control theme, CascaderViewFilterListTheme.axaml)
   -> CascaderViewItem (item container control theme, CascaderViewItemTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> Grid#ItemsLayout (template-stable)
            -> Panel#Indicator (template-stable)
               -> CheckBox#ToggleCheckbox (template-stable)
@@ -68,7 +69,7 @@ Cascader
      -> ScrollViewer (template-stable)
         -> ItemsPresenter (internal-observable)
   -> CascaderView (control theme, CascaderViewTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> Panel (template-stable)
            -> Panel (template-stable)
               -> ScrollViewer (template-stable)
@@ -76,6 +77,7 @@ Cascader
                     -> StackPanel#PART_ItemsPanel (template-stable)
                        -> CascaderViewLevelList#PART_RootLevelList (template-stable)
               -> ContentPresenter#EmptyIndicator (internal-observable)
+              -> Empty#DefaultEmptyIndicator (template-stable)
            -> CascaderViewFilterList#PART_FilterList (template-stable)
 ```
 
@@ -85,19 +87,20 @@ Cascader
 | --- | --- | --- | --- | --- | --- | --- |
 | `Cascader` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `CascaderAddOnDecoratedBox` | control theme | `CascaderAddOnDecoratedBoxTheme.axaml` | Cascader | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Cascader` | control theme | `CascaderTheme.axaml` | 用户代码 / 控件宿主 | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataLoader`, `DefaultSelectOptionPath` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `CascaderTheme.axaml` | Cascader | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataLoader`, `DefaultSelectOptionPath` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (CascaderAddOnDecoratedBox) | `CascaderTheme.axaml` | Cascader | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `EffectiveSelectedOptions`, `Height` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Cascader` | control theme | `CascaderTheme.axaml` | 用户代码 / 控件宿主 | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataLoader`, `DataValidationErrors` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `CascaderTheme.axaml` | Cascader | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataLoader`, `DataValidationErrors` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (CascaderAddOnDecoratedBox) | `CascaderTheme.axaml` | Cascader | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `EffectiveSelectedOptions` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PlaceholderText` | template node (TextBlock) | `CascaderTheme.axaml` | Cascader | `IsPlaceholderTextVisible`, `PlaceholderForeground`, `PlaceholderText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `SingleSelectResultPresenter` | template node (TextBlock) | `CascaderTheme.axaml` | Cascader | `SelectedOptionPath` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_SingleFilterInput` | template node (SelectFilterTextBox) | `CascaderTheme.axaml` | Cascader | `SelectedOptionPath`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `SelectedOptionsBox` | template node (SelectTagAwareTextBox) | `CascaderTheme.axaml` | Cascader | `EffectiveSelectedOptions`, `Height`, `IsDropDownOpen`, `IsFilterEnabled`, `IsResponsiveTagMode`, `MaxTagCount` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `SingleSelectResultPresenter` | template node (TextBlock) | `CascaderTheme.axaml` | Cascader | `IsShowOverflowTip`, `OverflowTipDelay`, `OverflowTipPlacement`, `SelectedOptionPath` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_SingleFilterInput` | template node (SelectFilterTextBox) | `CascaderTheme.axaml` | Cascader | `FontFamily`, `FontSize`, `FontStyle`, `FontWeight`, `IsShowOverflowTip`, `OverflowTipDelay` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `SelectedOptionsBox` | template node (SelectTagAwareTextBox) | `CascaderTheme.axaml` | Cascader | `EffectiveSelectedOptions`, `Height`, `IsDropDownOpen`, `IsFilterEnabled`, `IsResponsiveTagMode`, `IsShowOverflowTip` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Popup` | template node (Popup) | `CascaderTheme.axaml` | Cascader | `DataLoader`, `DefaultSelectOptionPath`, `EffectivePopupWidth`, `ExpandIcon`, `ExpandTrigger`, `Filter` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PopupFrame` | template node (Border) | `CascaderTheme.axaml` | Cascader | `DataLoader`, `DefaultSelectOptionPath`, `EffectivePopupWidth`, `ExpandIcon`, `ExpandTrigger`, `Filter` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CascaderView` | template node (CascaderView) | `CascaderTheme.axaml` | Cascader | `DataLoader`, `DefaultSelectOptionPath`, `ExpandIcon`, `ExpandTrigger`, `Filter`, `FilterHighlightForeground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CascaderViewFilterList` | control theme | `CascaderViewFilterListTheme.axaml` | Cascader | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `CascaderViewFilterListItem` | item container control theme | `CascaderViewFilterListTheme.axaml` | Cascader | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `CascaderViewItem` | item container control theme | `CascaderViewItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderThickness`, `CornerRadius`, `ExpandIcon`, `Header`, `HeaderTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `CascaderViewItemTheme.axaml` | CascaderViewItem | `Background`, `BorderThickness`, `CornerRadius`, `ExpandIcon`, `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `CascaderViewItemTheme.axaml` | CascaderViewItem | `Background`, `BorderThickness`, `CornerRadius`, `ExpandIcon`, `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ItemsLayout` | template node (Grid) | `CascaderViewItemTheme.axaml` | CascaderViewItem | `ExpandIcon`, `Header`, `HeaderTemplate`, `Icon`, `IsChecked`, `IsEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Indicator` | template node (Panel) | `CascaderViewItemTheme.axaml` | CascaderViewItem | `IsChecked`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ToggleCheckbox` | template node (CheckBox) | `CascaderViewItemTheme.axaml` | CascaderViewItem | `IsChecked`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -108,11 +111,12 @@ Cascader
 | `CascaderViewLevelList` | control theme | `CascaderViewLevelListTheme.axaml` | Cascader | `ItemsPanel`, `ScrollViewer`, `atom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ItemsPresenter` | template node (ItemsPresenter) | `CascaderViewLevelListTheme.axaml` | CascaderViewLevelList | `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `CascaderView` | control theme | `CascaderViewTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `ClipToBounds`, `CornerRadius`, `EmptyIndicator` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `CascaderViewTheme.axaml` | CascaderView | `Background`, `BorderBrush`, `BorderThickness`, `ClipToBounds`, `CornerRadius`, `EmptyIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `CascaderViewTheme.axaml` | CascaderView | `Background`, `BorderBrush`, `BorderThickness`, `ClipToBounds`, `CornerRadius`, `EmptyIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `CascaderViewTheme.axaml` | CascaderView | `BorderBrush`, `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `ExpandTrigger`, `FilteredPathInfos` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPanel` | template node (StackPanel) | `CascaderViewTheme.axaml` | CascaderView | `ExpandTrigger`, `IsAllowSelectParent`, `OptionTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLevelList` | template node (CascaderViewLevelList) | `CascaderViewTheme.axaml` | CascaderView | `ExpandTrigger`, `IsAllowSelectParent`, `OptionTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `EmptyIndicator` | template node (ContentPresenter) | `CascaderViewTheme.axaml` | CascaderView | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsEffectiveEmptyVisible` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `DefaultEmptyIndicator` | template node (Empty) | `CascaderViewTheme.axaml` | CascaderView | `EmptyIndicatorPadding`, `IsDefaultEmptyIndicatorVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_FilterList` | template node (CascaderViewFilterList) | `CascaderViewTheme.axaml` | CascaderView | `FilteredPathInfos`, `IsFiltering` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
@@ -136,7 +140,7 @@ Cascader
 
 稳定伪类来自 `AbstractSelect` 和 `CascaderViewItem`：
 
-- `:dropdownopen`、`:error`、`:warning`、`:pressed`。
+- `:dropdownopen`、native validation `:error`、AtomUI warning `:warning`、`:pressed`。
 - AddOnDecoratedBox variant 伪类：`:outlined`、`:filled`、`:borderless`。
 - `CascaderViewItem` 使用 `:expanded`、`:checked`、`:selected` 和 checkbox toggle type 伪类。
 
@@ -172,7 +176,7 @@ input display + Form value
 
 - `IsMultiple=true` 时使用 `SelectedOptions` 作为真实值，并让内部 `CascaderView` 进入 checkable 模式。
 - `SelectedOptions` 保留真实勾选集合，`ShowCheckedStrategy` 只计算 `EffectiveSelectedOptions`，用于 tag 展示。
-- `SelectedOptions` 默认 `TwoWay` binding，支持外部集合替换和 `INotifyCollectionChanged` 原地变化；集合变化会同步刷新 tag、计数、空状态、Form value 和内部 `CascaderView` 勾选状态。
+- `SelectedOptions` 支持外部集合替换，也支持 `INotifyCollectionChanged` 集合的原地 `Add`、`Remove`、`Replace`、`Move` 和 `Reset`；这些变化会同步刷新 tag、计数、空状态、Form value 和内部 `CascaderView` 勾选状态。
 - `MaxCount` 达到上限时，未选项通过 `IsMaxSelectReached` 进入受限状态；已选项仍可取消。
 - 关闭单个 tag 时，目标节点及其子孙会从 `SelectedOptions` 中移除。
 
@@ -193,7 +197,7 @@ Form：
 
 - 单选 Form value 为 `SelectedOption`。
 - 多选 Form value 为 `SelectedOptions`。
-- Form 校验错误写入同一份 Avalonia `DataValidationErrors`，不维护独立错误状态。
+- Form 校验错误写入同一份 Avalonia `DataValidationErrors`；`SelectedOption` 和 `SelectedOptions` 不维护独立错误状态。
 - Form clear 会按当前 `IsMultiple` 清空对应选择状态。
 
 ## Theme and Token Boundaries
@@ -209,6 +213,8 @@ Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、Casc
 | `CascaderToken` | Cascader 输入宽度、列宽、弹层高度、选项高度、padding、状态色和过滤高亮。 |
 | `PopupHostToken` | popup margin、阴影和圆角。 |
 | SharedToken | 字体、输入高度、图标尺寸、placeholder、disabled、motion 和全局 spacing。 |
+
+单选路径和多选 tag 的完整内容提示复用共享 `OverflowTip` attached behavior。主题只把 `IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` 和当前展示文本传给显示节点；tooltip 仅在视觉溢出时写入，且不覆盖用户手动声明的 `ToolTip.Tip`。
 
 主题不可破坏的视觉边界：
 

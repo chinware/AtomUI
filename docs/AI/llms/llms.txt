@@ -50,6 +50,7 @@
 - [LineEdit](./controls/line-edit/index-cn.md)
 - [Mentions](./controls/mentions/index-cn.md)
 - [NumericUpDown](./controls/numeric-up-down/index-cn.md)
+- [OtpLineEdit](./controls/otp-line-edit/index-cn.md)
 - [RadioButton](./controls/radio-button/index-cn.md)
 - [Rate](./controls/rate/index-cn.md)
 - [SearchEdit](./controls/search-edit/index-cn.md)
@@ -154,6 +155,7 @@
 - [LineEdit](./controls/line-edit/semantic-cn.md)
 - [Mentions](./controls/mentions/semantic-cn.md)
 - [NumericUpDown](./controls/numeric-up-down/semantic-cn.md)
+- [OtpLineEdit](./controls/otp-line-edit/semantic-cn.md)
 - [RadioButton](./controls/radio-button/semantic-cn.md)
 - [Rate](./controls/rate/semantic-cn.md)
 - [SearchEdit](./controls/search-edit/semantic-cn.md)
@@ -247,6 +249,7 @@
 - LineEdit: `docs/controls/desktop/data-entry/line-edit/overview.md`
 - Mentions: `docs/controls/desktop/data-entry/mentions/overview.md`
 - NumericUpDown: `docs/controls/desktop/data-entry/numeric-up-down/overview.md`
+- OtpLineEdit: `docs/controls/desktop/data-entry/otp-line-edit/overview.md`
 - RadioButton: `docs/controls/desktop/data-entry/radio-button/overview.md`
 - Rate: `docs/controls/desktop/data-entry/rate/overview.md`
 - SearchEdit: `docs/controls/desktop/data-entry/search-edit/overview.md`

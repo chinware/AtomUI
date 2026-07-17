@@ -4,14 +4,14 @@
 
 ## 概述
 
-LineEdit 是 AtomUI 桌面数据录入体系中的文本输入控件家族，用于承载单行文本、密码输入、搜索输入和多行文本输入。它以 Avalonia `TextBox` 文本编辑能力为基础，接入 AtomUI 的尺寸、输入表面、校验状态、清除按钮、密码 reveal、字数统计、Addon、CompactSpace、Form 和 Token 体系。
+LineEdit 是 AtomUI 桌面数据录入体系中的文本输入控件家族，用于承载单行文本、密码输入、搜索输入和多行文本输入。它以 Avalonia `TextBox` 文本编辑能力为基础，接入 AtomUI 的尺寸、输入表面、native validation error 投射、清除按钮、密码 reveal、字数统计、Addon、CompactSpace、Form 和 Token 体系。
 
 LineEdit 家族包含以下稳定入口：
 
 | 类型 | 定位 |
 | --- | --- |
 | `TextBox` | AtomUI 基础文本框，提供尺寸、清除、密码 reveal、字数统计、Form 和 CompactSpace 能力。 |
-| `LineEdit` | 标准单行输入框，在 `TextBox` 基础上加入输入表面、校验状态和外部 AddOn。 |
+| `LineEdit` | 标准单行输入框，在 `TextBox` 基础上加入输入表面、验证视觉投射和外部 AddOn。 |
 | `SearchEdit` | 搜索输入框，在 `LineEdit` 基础上加入搜索按钮、搜索按钮样式、加载态和搜索事件；独立契约见 [SearchEdit 桌面版架构设计](../search-edit/overview.md)。 |
 | `TextArea` | 多行输入框，独立继承 Avalonia `TextBox`，复用输入状态、尺寸、清除、字数统计、Form 和 TextArea 专属 resize 模型。 |
 
@@ -69,7 +69,7 @@ AtomUI 输入扩展 API：
 | `IsShowCount` | `TextBox`、`LineEdit`、`SearchEdit`、`TextArea` | 是否展示字数统计。 |
 | `IsMotionEnabled` | 全家族 | 是否启用内部按钮动效。 |
 | `StyleVariant` | `LineEdit`、`SearchEdit`、`TextArea` | 输入表面样式。 |
-| `Status` | `LineEdit`、`SearchEdit`、`TextArea` | 输入校验状态。 |
+| `Status` | `LineEdit`、`SearchEdit`、`TextArea` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
 | `LeftAddOn` / `LeftAddOnTemplate` | `LineEdit`、`SearchEdit` | 外部左侧附加内容和模板。 |
 | `RightAddOn` / `RightAddOnTemplate` | `LineEdit` | 外部右侧附加内容和模板；SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。 |
 | `InnerLeftContentTemplate` / `InnerRightContentTemplate` | `LineEdit`、`TextArea` | 内部前后缀模板。 |
@@ -219,7 +219,7 @@ IsEffectiveShowClearButton =
   && !string.IsNullOrEmpty(Text)
 ```
 
-Form 集成以 `Text` 作为表单值。Form 校验状态通过 `IFormItemAware.NotifyValidateStatus` 映射到 `Status=Error/Warning/Default`，feedback 内容通过 `IFormItemFeedbackAware` 进入模板中的 feedback presenter。
+Form 集成以 `Text` 作为表单值。错误校验状态以 Avalonia `DataValidationErrors` 为真源，Form validator 产生的 error 应写入同一 native validation 通道；`IFormItemAware.NotifyValidateStatus` 只负责同步 `Warning`、`Success`、`Validating` 等 Form 扩展状态和 feedback 可见性。feedback 内容通过 `IFormItemFeedbackAware` 进入模板中的 feedback presenter。
 
 CompactSpace 只影响相邻输入框之间的有效圆角和边框折叠，不改变文本编辑语义。
 
@@ -229,26 +229,27 @@ LineEdit 家族使用输入壳体和文本 presenter 分层：
 
 | 主题 | 职责 |
 | --- | --- |
-| `TextBoxTheme.axaml` | 基础文本框模板、清除按钮、reveal、字数统计、基础 SizeType 字号和 TextPresenter margin。 |
-| `LineEditTheme.axaml` | 单行输入壳体、外部 AddOn、variant/status/focus 视觉。 |
+| `TextBoxTheme.axaml` | 基础文本框模板、边框、padding、清除按钮、reveal、字数统计、基础 SizeType 字号和 TextPresenter margin。 |
+| `LineEditTheme.axaml` | 单行输入壳体、外部 AddOn、variant/status/focus 视觉，并把 native validation error 投射到外层输入壳体。 |
 | `SearchEditTheme.axaml` | 搜索输入壳体、搜索按钮状态传递和搜索按钮布局。 |
 | `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮与输入壳体的一体化边框和布局。 |
 | `TextAreaTheme.axaml` | 多行输入壳体、字数统计、resize handle、固定行数和状态视觉。 |
 | `TextAreaDecoratedBoxTheme.axaml` | TextArea 内部 padding、右侧附加内容和 resize 相关布局。 |
 | `InputClearIconButtonTheme.axaml` / `RevealButtonTheme.axaml` | 内部 action 按钮视觉。 |
 
-`LineEditToken` 提供单行输入字号 Token。`TextAreaToken` 提供多行输入字号、右侧附加 padding 和 resize handle Token。边框、背景、状态、focus shadow 和 disabled 语义主要来自 SharedToken 与 AddOnDecoratedBoxToken。
+`TextBoxToken` 提供基础 TextBox 边框、padding、hover/focus 和 shadow Token。`LineEditToken` 提供单行输入字号 Token。`TextAreaToken` 提供多行输入字号、右侧附加 padding 和 resize handle Token。LineEdit / TextArea 输入壳体的背景、状态、focus shadow 和 disabled 语义主要来自 SharedToken 与 AddOnDecoratedBoxToken。
 
 Token 来源：
 
-LineEdit 输入家族使用两个组件级 Token scope：
+LineEdit 输入家族使用三个组件级 Token scope：
 
 | Token | Scope | 职责 |
 | --- | --- | --- |
+| `TextBoxToken` | `TextBox` | 基础文本框边框、圆角、尺寸 padding、hover/focus 边框和 focus shadow。 |
 | `LineEditToken` | `LineEdit` | 单行输入框字号。 |
 | `TextAreaToken` | `TextArea` | 多行输入框字号、右侧附加 padding 和 resize handle 视觉。 |
 
-LineEdit / TextArea Token 不承载文本值、placeholder、清除状态、密码 reveal、Form 状态、SearchEdit 运行状态、focus/hover/pressed 状态或 CompactSpace 运行时状态。这些状态分别由控件实例属性、共享输入主题、AddOnDecoratedBox、Form 和 C# 状态模型处理。
+TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状态、密码 reveal、Form 状态、SearchEdit 运行状态、focus/hover/pressed 状态或 CompactSpace 运行时状态。这些状态分别由控件实例属性、共享输入主题、AddOnDecoratedBox、Form 和 C# 状态模型处理。
 
 ## AOT 与裁剪注意事项
 
@@ -273,13 +274,14 @@ AOT 边界：
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/Input/TextBox.cs`：AtomUI 基础 TextBox，提供 `SizeType`、清除按钮、密码 reveal、字数统计、Form 和 CompactSpace。
-- `src/AtomUI.Desktop.Controls/Input/LineEdit.cs`：标准单行输入框，提供 `StyleVariant`、`Status`、外部 AddOn、内部右侧内容绑定和 Form 校验状态映射。
+- `src/AtomUI.Desktop.Controls/Input/LineEdit.cs`：标准单行输入框，提供 `StyleVariant`、`Status`、外部 AddOn、内部右侧内容绑定和 Form 扩展状态映射。
 - `src/AtomUI.Desktop.Controls/Input/SearchEdit.cs`：搜索输入框，提供搜索按钮样式、搜索按钮文本、加载态和搜索点击事件。
 - `src/AtomUI.Desktop.Controls/Input/TextArea.cs`：多行输入框，提供固定行数、自动高度、resize、清除、字数统计、Form 和 feedback。
 - `src/AtomUI.Desktop.Controls/Input/InputTextPresenter.cs`：输入文本 presenter，处理 Avalonia 12 selection foreground 缓存刷新。
 - `src/AtomUI.Desktop.Controls/Input/SearchEditDecoratedBox.cs`：SearchEdit 输入壳体与搜索按钮协作。
 - `src/AtomUI.Desktop.Controls/Input/TextAreaDecoratedBox.cs`：TextArea 输入壳体、scroll viewer 和 resize 相关协作。
 - `src/AtomUI.Desktop.Controls/Input/ResizeHandle.cs`：TextArea resize 拖拽入口。
+- `src/AtomUI.Desktop.Controls/Input/TextBoxToken.cs`：基础 TextBox 边框、padding、hover/focus 和 shadow Token。
 - `src/AtomUI.Desktop.Controls/Input/LineEditToken.cs`：单行输入字号 Token。
 - `src/AtomUI.Desktop.Controls/Input/TextAreaToken.cs`：TextArea 字号、右侧 padding 和 resize Token。
 - `src/AtomUI.Desktop.Controls/Input/Themes/*.axaml`：TextBox、LineEdit、SearchEdit、TextArea 和内部按钮主题。

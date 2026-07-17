@@ -53,8 +53,8 @@ TreeSelect 继承 `AbstractSelect` 的输入壳体、弹层、清除、状态、
 
 | API | 类型 | 语义 |
 | --- | --- | --- |
-| `SelectedItem` | `ITreeItemNode?` | 单选模式当前节点。 |
-| `SelectedItems` | `IList<ITreeItemNode>?` | 多选或勾选模式当前节点集合。 |
+| `SelectedItem` | `ITreeItemNode?` | 单选模式当前节点；默认 `BindingMode.TwoWay`，启用 Avalonia `DataValidationErrors`。 |
+| `SelectedItems` | `IList<ITreeItemNode>?` | 多选或勾选模式当前节点集合；默认 `BindingMode.TwoWay`，启用 Avalonia `DataValidationErrors`，支持 `INotifyCollectionChanged` 原地变更刷新。 |
 | `IsMultiple` | `bool` | 是否使用多选结果模型。 |
 | `IsTreeCheckable` | `bool` | 是否使用 checkbox 勾选。启用后 TreeSelect 使用多选结果模型。 |
 | `IsTreeCheckStrictly` | `bool` | 勾选时父子节点是否严格独立。 |
@@ -71,6 +71,9 @@ TreeSelect 继承 `AbstractSelect` 的输入壳体、弹层、清除、状态、
 | `FilterStrategy` | `TreeFilterStrategy` | 过滤后的高亮、加粗、展开路径和隐藏不匹配策略。 |
 | `FilterHighlightForeground` | `IBrush?` | 过滤命中高亮前景色。 |
 | `AutoScrollToSelectedItem` | `bool` | 候选树打开或同步时滚动到选中节点。 |
+| `IsShowOverflowTip` | `bool` | 单选结果文本或多选 tag 视觉溢出时是否显示完整内容 tooltip，默认 `true`。 |
+| `OverflowTipDelay` | `int` | 溢出 tooltip 打开前的延迟时间，单位毫秒，默认 `1200`。 |
+| `OverflowTipPlacement` | `PlacementMode` | 溢出 tooltip 相对单选结果文本或多选 tag 的位置，默认 `TopEdgeAlignedLeft`。 |
 | `IsShowIcon` / `IsShowLeafIcon` | `bool` | 是否显示节点图标和叶子节点图标。 |
 | `IsShowLine` / `IsShowTreeLine` | `bool` | 是否显示层级连线。 |
 | `IsSwitcherRotation` | `bool` | 展开图标是否旋转。 |
@@ -101,7 +104,7 @@ TreeSelect 的事件与命令以公共 API、Avalonia 基类契约和 Gallery AP
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:138`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -109,11 +112,69 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:TreeSelect Name="BasicTreeSelect"
 ```
 
-### 多选
+### 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:154`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:54`
 
 Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="16">
+    <StackPanel Spacing="8">
+        <TextBlock Text="单选绑定"
+                   FontWeight="SemiBold" />
+        <atom:TreeSelect Name="BindingSingleTreeSelect"
+                         HorizontalAlignment="Stretch"
+                         IsDefaultExpandAll="True"
+                         IsAllowClear="True"
+                         IsFilterEnabled="True"
+                         ItemsSource="{Binding BindingSingleTreeNodes}"
+                         SelectedItem="{Binding BoundSelectedItem}"
+                         PlaceholderText="请选择" />
+        <WrapPanel ItemSpacing="8">
+            <atom:Button SizeType="Small"
+                         Command="{Binding SetBoundSelectedItemCommand}"
+                         Content="选择你的叶子" />
+            <atom:Button SizeType="Small"
+                         Command="{Binding ClearBoundSelectedItemCommand}"
+                         Content="清空" />
+        </WrapPanel>
+        <TextBlock Text="ViewModel 值：" />
+        <TextBlock Text="{Binding BoundSelectedItemText}" />
+    </StackPanel>
+
+    <StackPanel Spacing="8">
+        <TextBlock Text="多选绑定"
+                   FontWeight="SemiBold" />
+        <atom:TreeSelect Name="BindingMultipleTreeSelect"
+                         HorizontalAlignment="Stretch"
+                         IsDefaultExpandAll="True"
+                         IsAllowClear="True"
+                         IsFilterEnabled="True"
+                         IsMultiple="True"
+                         ItemsSource="{Binding BindingMultipleTreeNodes}"
+                         SelectedItems="{Binding BoundSelectedItems}"
+                         PlaceholderText="请选择" />
+        <WrapPanel ItemSpacing="8">
+            <atom:Button SizeType="Small"
+                         Command="{Binding SetBoundSelectedItemsCommand}"
+                         Content="选择两个节点" />
+            <atom:Button SizeType="Small"
+                         Command="{Binding ClearBoundSelectedItemsCommand}"
+                         Content="清空" />
+        </WrapPanel>
+        <TextBlock Text="ViewModel 值：" />
+        <TextBlock Text="{Binding BoundSelectedItemsText}"
+                   TextWrapping="Wrap" />
+    </StackPanel>
+</StackPanel>
+```
+
+### 多选
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:112`
+
+Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
 <atom:TreeSelect Name="MultiSelectionTreeSelect"
@@ -121,22 +182,12 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 由树数据生成
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:171`
-
-Gallery key：`ExamplesContent` / item `2`
-
-```axaml
-<atom:TreeSelect Name="ItemsSourceTreeSelect"
-```
-
-### 可勾选
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:187`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:129`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<atom:TreeSelect Name="CheckableTreeSelect"
+<atom:TreeSelect Name="ItemsSourceTreeSelect"
 ```
 
 ## 状态模型
@@ -161,6 +212,7 @@ Form value + MaxCount state
 - 多选模式使用 `SelectedItems` 作为表单值，候选树使用多选 selection，并通过 tag 展示结果。
 - `IsTreeCheckable=true` 使用 checkbox 作为节点切换入口，TreeView selection 不再作为主要选择入口。
 - `ShowCheckedStrategy` 只影响多选 tag 展示集合，不改变 `SelectedItems` 的真实值。
+- `SelectedItems` 是用户拥有的受控集合。集合引用替换和 `ObservableCollection` 等 `INotifyCollectionChanged` 原地 `Add`、`Remove`、`Reset` 都必须刷新 tag、`SelectedCount`、Form value changed、候选树 selection / checked items 和最大选择数状态。
 
 过滤行为：
 
@@ -183,6 +235,8 @@ TreeSelect 的默认视觉由 TreeSelect 专属主题、Select 家族输入壳�
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
 | `TreeSelectToken` | TreeSelect 候选弹层最小宽度。 |
 | `SelectToken` | TreeSelect 复用的 popup padding、多选 tag 和输入内容 padding。 |
+
+单选结果文本和多选 tag 的完整内容提示复用共享 `OverflowTip` attached behavior。主题通过 `IsShowOverflowTip`、`OverflowTipDelay` 和 `OverflowTipPlacement` 控制提示开关、延迟和位置，实际 tooltip 仅在文本视觉溢出时托管到 `ToolTip`。
 
 右侧 count、content add-on 和 handle 的稳定 template part 状态由 AXAML compiled ancestor binding 表达。C# 中只保留 AddOnDecoratedBox hover / pressed 到 SelectHandle 的 sibling 状态转发，因为该关系不是 templated parent 绑定，不能用 `TemplateBinding` 表达。
 
@@ -207,6 +261,7 @@ TreeSelect 不依赖运行时反射发现模板结构。模板协作通过固定
 - `_treeView` 的事件订阅和 `ItemsSource` 必须在 `ClearPopupContent()` 中释放。
 - 懒创建的 `PopupFrame` 和 `TreeSelectTreeView` 必须设置 `TemplatedParent`，并在清理时置空。
 - `Items.CollectionChanged` 是控件实例持有自身集合的订阅，生命周期与控件实例一致。
+- `_selectedItemsCollectionChangedSource` 只订阅当前 `SelectedItems` 中实现 `INotifyCollectionChanged` 的集合；`SelectedItems` 替换、控件 detach 时必须释放旧订阅。
 - TreeView 异步加载由 TreeView 家族处理，TreeSelect 不直接持有异步任务状态。
 
 AOT 边界：
@@ -226,6 +281,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/TreeSelect/Converters/*`：树节点显示转换辅助。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectToken.cs`：TreeSelect 组件 Token。
 - `src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml`：根模板、输入壳体、右侧内容、结果区域、popup 和 selector。
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
 
 ## 相关文档
 

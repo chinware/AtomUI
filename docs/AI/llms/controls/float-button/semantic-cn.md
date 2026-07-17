@@ -8,6 +8,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `root` | `FloatButton` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `command` | `真实 FloatButton` | 承载 `Command`、`CommandParameter`、`CanExecute`、点击和禁用语义；host 只做投影。 | `Command`、`CommandParameter`、`Href` | 见视觉与主题模型 | stable |
 | `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `theme` | `主题区域` | 连接 ControlTheme、SharedToken、组件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
@@ -75,10 +76,11 @@ FloatButton
 | --- | --- | --- |
 | 内容与数据 | `CloseIcon`、`Description`、`DescriptionTemplate`、`Icon` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `BadgeCount`、`BadgeOverflowCount`、`IsTriggerMode` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsBadgeEnabled`、`IsDotBadge`、`IsMotionEnabled`、`IsOpen` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 命令与动作 | `Command`、`CommandParameter`、`Href` | 通过 Avalonia `Button` 命令语义触发业务动作；host 只做投影转发，不自行执行命令。 |
+| 交互与状态 | `IsBadgeEnabled`、`IsDotBadge`、`IsMotionEnabled`、`IsOpen` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`FloatButtonGroup.IsOpen` 与 `FloatButtonGroupHost.IsOpen` 默认双向绑定。 |
 | 视觉与布局 | `BadgeColor`、`BadgeOffset`、`BoxShadow`、`FloatOffsetX`、`FloatOffsetY`、`MenuPlacement`、`Orientation`、`Placement`、`SeparatorBrush`、`Shape` 等 12 项 | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `MenuMotionDuration`、`MotionDuration`、`ToTopDuration` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
-| 其他稳定入口 | `ButtonType`、`Href`、`Target`、`Tooltip`、`Trigger` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 其他稳定入口 | `ButtonType`、`Target`、`Tooltip`、`Trigger` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 ## Pseudo Classes
 
@@ -100,7 +102,11 @@ Public API / inherited command / item source / user input
 状态维护规则：
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
+- `Command.CanExecute=false` 必须通过 Avalonia Button 语义反映为不可执行状态；BackTop 场景下不可执行命令也应阻止回到顶部动作。
 - open/close、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `IsOpen` 是默认 `TwoWay` 的受控状态；交互路径应使用 current value 语义更新，不得用样式优先级写入破坏用户绑定。
+- Host 创建的 overlay 按钮只能接收 host 公共属性投影；命令执行、`CanExecute`、事件顺序和禁用状态仍由真实 `FloatButton` 作为交互 owner。
+- Group host 搬移子按钮到 overlay group 时必须保留原有绑定语义，使未设置本地 `DataContext` 的子项继承 host 数据上下文。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -144,6 +150,8 @@ FloatButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
+- 不手动绕过 Avalonia Button 命令机制执行 `ICommand`；所有命令状态必须由真实 `FloatButton` 统一承载。
+- 不让 overlay 搬移破坏 group 子按钮的 `DataContext` 继承，也不覆盖子项显式设置的本地数据上下文。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
@@ -155,6 +163,9 @@ FloatButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- Avalonia Button 命令语义：`CanExecute`、禁用状态、点击事件和命令执行顺序不得被 host 手动调用路径绕开。
+- Host overlay 投影的 acquire/release 必须成对；不能留下命令绑定、数据上下文绑定或 child 逻辑父级保留。
+- Group 子按钮的命令绑定必须能继承 host `DataContext`，同时保留子项本地 `DataContext` 的优先级。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。

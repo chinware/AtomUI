@@ -43,11 +43,11 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | API | 类型 | 语义 |
 | --- | --- | --- |
 | `Mode` | `SelectMode` | 选择模式，默认 `Single`。 |
-| `OptionsSource` | `IEnumerable<ISelectOption>?` | 外部候选项集合。变化时同步到内部 `Options`。 |
-| `Options` | `ItemCollection` | XAML 内容子项入口，也是候选列表实际 ItemsSource。 |
+| `OptionsSource` | `IEnumerable<ISelectOption>?` | 外部候选项集合。Select 只读取该集合，不把 Tags 运行时动态选项写回该集合。 |
+| `Options` | `ItemCollection` | XAML 内容子项入口。它表达用户声明的静态候选项，不承载 Tags 模式运行时动态选项。 |
 | `OptionTemplate` | `IDataTemplate?` | 候选项显示模板，默认显示 `ISelectOption.Header`。 |
-| `SelectedOption` | `ISelectOption?` | 单选模式当前选项。 |
-| `SelectedOptions` | `IList<ISelectOption>?` | 多选和 Tags 模式当前选项集合。 |
+| `SelectedOption` | `ISelectOption?` | 单选模式当前选项，默认 `TwoWay` 绑定并启用 Avalonia data validation。 |
+| `SelectedOptions` | `IList<ISelectOption>?` | 多选和 Tags 模式当前选项集合，默认 `TwoWay` 绑定并启用 Avalonia data validation。 |
 | `DefaultValues` | `IList<object>?` | 加载后按值匹配默认选中项。 |
 | `DefaultValueCompareFn` | `Func<object, ISelectOption, bool>?` | 默认值匹配自定义比较函数。 |
 | `SelectionChanged` | event | `SelectedOption` 或 `SelectedOptions` 改变时触发。 |
@@ -67,6 +67,12 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | `AutoScrollToSelectedOptions` | `bool` | 候选列表打开或选择同步时滚动到已选项。 |
 | `DisplayPageSize` | `int` | 候选弹层可视行数，用于计算最大高度，默认 `10`。 |
 | `MaxCount` | `int` | 多选最大可选数量，默认 `int.MaxValue`。 |
+
+选择绑定语义：
+
+- `SelectedOption` 是 `Mode=Single` 的唯一选择状态入口；用户选择、清除、Form 写值和 ViewModel 写值都通过该属性同步。
+- `SelectedOptions` 是 `Mode=Multiple/Tags` 的唯一选择状态入口；用户选择变化会回写绑定源，绑定源替换集合或对 `INotifyCollectionChanged` 集合执行 `Add` / `Remove` / `Reset` 时，Select 会同步标签、候选列表和计数状态。
+- `OptionsSource` 始终只是候选项来源。即使 `SelectedOptions` 绑定到可变集合，Tags 模式运行时动态选项也只进入选择集合和内部有效候选集合，不写回 `OptionsSource`。
 
 弹层与异步 API：
 
@@ -91,13 +97,16 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | --- | --- | --- |
 | `SizeType` | `CustomizableSizeType` | 输入尺寸密度，支持 `Large/Middle/Small/Custom`。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式。 |
-| `Status` | `InputControlStatus` | 输入反馈状态。 |
+| `Status` | `InputControlStatus` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
 | `PlaceholderText` / `PlaceholderForeground` | `string?` / `IBrush?` | 空选择时的占位文本和颜色。 |
 | `IsAllowClear` / `ClearIcon` | `bool` / `PathIcon?` | 清除入口和图标。 |
 | `SuffixIcon` / `SuffixLoadingIcon` | `PathIcon?` | 普通展开指示和 loading 指示。 |
 | `LeftAddOn` / `RightAddOn` | `object?` | 外部左右 AddOn。 |
 | `ContentLeftAddOn` / `ContentRightAddOn` | `object?` | 内部左右内容。 |
 | `IsMotionEnabled` | `bool` | 输入壳体、handle、候选列表和 popup 动效开关。 |
+| `IsShowOverflowTip` | `bool` | 选中结果文本或多选 tag 视觉溢出时是否显示完整内容 tooltip，默认 `true`。 |
+| `OverflowTipDelay` | `int` | 溢出 tooltip 打开前的延迟时间，单位毫秒，默认 `1200`。 |
+| `OverflowTipPlacement` | `PlacementMode` | 溢出 tooltip 相对选中结果文本或多选 tag 的位置，默认 `TopEdgeAlignedLeft`。 |
 
 多选标签 API：
 
@@ -116,7 +125,7 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | `ListItemData.Content` | 候选项值和默认值匹配的主要输入。 |
 | `ListItemData.ItemKey` | 候选项稳定标识，优先用于选项替换后的选择映射。 |
 | `ListItemData.IsEnabled` | 候选项启用状态。 |
-| `ISelectOption.IsDynamicAdded` | Tags 模式下用户输入生成的临时选项标记。 |
+| `ISelectOption.IsDynamicAdded` | Tags 模式下用户输入生成的运行时动态选项标记。 |
 
 稳定 template part：
 
@@ -149,7 +158,7 @@ Select 的稳定伪类包括 `:dropdownopen`，同时通过标准 `:pressed`、`
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:141`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:38`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -180,16 +189,70 @@ Gallery key：`ExamplesContent` / item `0`
                  IsAllowClear="True"
                  Width="120"
                  OptionsSource="{Binding BasicSelectedOptions}"
-                 SelectedOptions="{Binding DefaultSelectedOptions}" />
+                 SelectedOption="{Binding DefaultSelectedOption}" />
 
+</WrapPanel>
+```
+
+### 双向绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:79`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<WrapPanel ItemSpacing="24" LineSpacing="16">
+    <StackPanel Spacing="8" MinWidth="260">
+        <TextBlock Text="SelectedOption"
+                   FontWeight="SemiBold" />
+        <atom:Select Mode="Single"
+                     PlaceholderText="请选择"
+                     IsAllowClear="True"
+                     Width="220"
+                     OptionsSource="{Binding BasicSelectedOptions}"
+                     SelectedOption="{Binding BoundSelectedOption}" />
+        <WrapPanel ItemSpacing="8">
+            <atom:Button SizeType="Small"
+                         Command="{Binding SetBoundSelectedOptionCommand}"
+                         Content="设为 Lucy" />
+            <atom:Button SizeType="Small"
+                         Command="{Binding ClearBoundSelectedOptionCommand}"
+                         Content="清空" />
+        </WrapPanel>
+        <TextBlock Text="ViewModel 值" />
+        <TextBlock Text="{Binding BoundSelectedOptionText}" />
+    </StackPanel>
+
+    <StackPanel Spacing="8" MinWidth="320">
+        <TextBlock Text="SelectedOptions"
+                   FontWeight="SemiBold" />
+        <atom:Select Mode="Multiple"
+                     PlaceholderText="请选择人员"
+                     IsAllowClear="True"
+                     IsFilterEnabled="True"
+                     Width="300"
+                     OptionsSource="{Binding BasicSelectedOptions}"
+                     SelectedOptions="{Binding BoundSelectedOptions}" />
+        <WrapPanel ItemSpacing="8">
+            <atom:Button SizeType="Small"
+                         Command="{Binding SetBoundSelectedOptionsCommand}"
+                         Content="设为 Jack + Yiminghe" />
+            <atom:Button SizeType="Small"
+                         Command="{Binding ClearBoundSelectedOptionsCommand}"
+                         Content="清空" />
+        </WrapPanel>
+        <TextBlock Text="ViewModel 值" />
+        <TextBlock Text="{Binding BoundSelectedOptionsText}"
+                   TextWrapping="Wrap" />
+    </StackPanel>
 </WrapPanel>
 ```
 
 ### 带搜索框的选择器
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:181`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:135`
 
-Gallery key：`ExamplesContent` / item `1`
+Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
 <atom:Select Mode="Single"
@@ -197,39 +260,12 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 自定义搜索
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:196`
-
-Gallery key：`ExamplesContent` / item `2`
-
-```axaml
-<atom:Select Name="CustomSearchSelect"
-```
-
-### 多选
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:214`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:150`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:Select Name="MultiSelect1"
-                 Mode="Multiple"
-                 PlaceholderText="请选择人员"
-                 IsAllowClear="True"
-                 HorizontalAlignment="Stretch"
-                 IsFilterEnabled="True"
-                 DefaultValues="a10, c12"
-                 OptionsSource="{Binding RandomOptions}" />
-    <atom:Select Name="MultiSelect2"
-                 Mode="Multiple"
-                 PlaceholderText="请选择人员"
-                 IsAllowClear="True"
-                 HorizontalAlignment="Stretch"
-                 DefaultValues="a10, c12"
-                 IsEnabled="False"
-                 OptionsSource="{Binding RandomOptions}" />
-</StackPanel>
+<atom:Select Name="CustomSearchSelect"
 ```
 
 ## 状态模型
@@ -239,7 +275,9 @@ Select 的核心状态流：
 ```text
 OptionsSource / Options / OptionsLoader
       ↓
-Options ItemCollection
+用户选项源
+      ↓
+Effective options = 用户选项源 + Tags 运行时动态选项
       ↓
 SelectCandidateList
       ↓
@@ -254,7 +292,7 @@ Form value + SelectionChanged
 
 - `Single` 使用 `SelectedOption` 作为唯一表单值，内部单行过滤输入负责展示当前 `Header`。
 - `Multiple` 使用 `SelectedOptions` 作为表单值，已选项以 `SelectTag` 展示。
-- `Tags` 以 `Multiple` 为基础，始终启用有效过滤，并在过滤结果为空且输入非空时创建 `IsDynamicAdded=true` 的临时选项。
+- `Tags` 以 `Multiple` 为基础，始终启用有效过滤，并在过滤结果为空且输入非空时创建 `IsDynamicAdded=true` 的运行时动态选项。
 
 弹层交互优先级：
 
@@ -293,6 +331,8 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
 | `SelectToken` | 多选标签、候选项、popup padding 和输入 padding。 |
 
+选中结果的完整内容提示复用 `OverflowTip` attached behavior。模板只在单选文本和多选 tag 上声明 `IsShowOverflowTip` / `OverflowTipDelay` / `OverflowTipPlacement`，实际 tooltip 只在文本视觉宽度不足时写入 `ToolTip.Tip`，且不会覆盖用户手动设置的 tooltip。
+
 候选弹层内容采用懒创建模型。`PART_Popup` 属于模板稳定 part；`PopupFrame` 和 `PART_CandidateList` 在打开前由 C# 创建并设置 `TemplatedParent`，关闭或重新套用模板时释放引用和事件订阅。
 
 Token 来源：
@@ -330,13 +370,14 @@ AOT 边界：
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/Select/AbstractSelect.cs`：输入壳体、弹层状态、公共输入属性、Form / CompactSpace / Motion 接口和 popup 生命周期。
-- `src/AtomUI.Desktop.Controls/Select/Select.cs`：public Select API、protected 扩展 hook、选项同步、选择同步、过滤输入、Tags 动态选项、键盘和指针处理。
+- `src/AtomUI.Desktop.Controls/Select/Select.cs`：public Select API、protected 扩展 hook、用户选项源同步、有效候选选项同步、选择同步、过滤输入、Tags 动态选项、键盘和指针处理。
 - `src/AtomUI.Desktop.Controls/Select/Select.AsyncOptionsLoad.cs`：异步候选加载和私有加载完成流程。
 - `src/AtomUI.Desktop.Controls/Select/SelectOption.cs`：`ISelectOption` 和默认 `SelectOption`。
 - `src/AtomUI.Desktop.Controls/Select/SelectCandidateList.cs`：候选列表、候选导航、提交取消、最大选择数和隐藏已选项。
 - `src/AtomUI.Desktop.Controls/Select/SelectCandidateListItem.cs`：候选项容器状态。
 - `src/AtomUI.Desktop.Controls/Select/SelectResultOptionsBox.cs`：多选结果标签和过滤输入承载。
 - `src/AtomUI.Desktop.Controls/Select/SelectHandle.cs`：右侧展开、loading、清除和 Form feedback 图标。
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
 - `src/AtomUI.Desktop.Controls/Select/DataLoad/*`：异步候选加载接口、结果和事件参数。
 - `src/AtomUI.Desktop.Controls/Select/SelectToken.cs`：Select 组件 Token。
 - `src/AtomUI.Desktop.Controls/Select/Themes/*.axaml`：Select 根模板、候选列表、结果标签、handle、输入壳体和 token 样式。

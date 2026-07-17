@@ -72,7 +72,7 @@ Grid 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 ### 基础栅格
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:160`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:57`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -141,7 +141,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 偏移
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:351`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:248`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -185,7 +185,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 推拉排序
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:393`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:290`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -208,7 +208,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 交叉轴对齐
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:578`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:475`
 
 Gallery key：`ExamplesContent` / item `5`
 

@@ -75,7 +75,7 @@ ListView public 分组模型是单层分组模型。`IsGroupEnabled=true` 时，
 | `IsSelectable` | 是否允许用户通过 pointer 或 keyboard 更新选择。关闭时清空当前选择。 |
 | `SelectionMode` | 选择模式，支持单选、多选、Toggle 和 AlwaysSelected 语义。 |
 | `Selection` | 可替换的 `ISelectionModel`。 |
-| `SelectedIndex` / `SelectedItem` / `SelectedItems` | 选择结果入口。 |
+| `SelectedIndex` / `SelectedItem` / `SelectedItems` | 选择结果入口；`SelectedItems` 默认 `TwoWay` 绑定并启用 Avalonia data validation。 |
 | `SelectedValue` / `SelectedValueBinding` | 按绑定值查找或派生选中值。 |
 | `AutoScrollToSelectedItem` | 首次模板和视觉树就绪后滚动到 anchor 项。 |
 | `IsTextSearchEnabled` | 是否启用文本增量搜索。 |
@@ -212,6 +212,7 @@ ListView 的状态模型由数据视图状态、选择状态、分页状态、�
 - 未分组时，选择源优先指向 collection view 的 `SourceCollection`，选择索引表达原始数据集合索引。
 - 分组开启时，选择源指向 `IListCollectionView` 当前视图，组标题项不会被 pointer 选择路径选中。
 - 分页开启时，容器索引和选择索引之间通过 `PageIndex * PageSize` 做全局索引转换。
+- `SelectedItems` 作为受控选中集合时，以绑定集合为单一对外来源；外部替换集合、用户选择写回以及集合 mutation 都必须同步到选择模型和容器 selected 状态。
 - `SelectionMode.AlwaysSelected` 在存在数据且丢失选择时恢复到首项。
 - `SelectedValueBinding` 存在时，`SelectedValue` 从选中项派生；外部设置 `SelectedValue` 时按绑定值查找选中项。
 

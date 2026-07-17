@@ -26,7 +26,7 @@
 DatePicker
   -> DatePickerPresenter (presenter control theme, DatePickerPresenterTheme.axaml)
      -> DockPanel#RootLayout (template-stable)
-        -> Border#ButtonsFrame (template-stable)
+        -> PixelAlignedBorder#ButtonsFrame (template-stable)
            -> Panel#ButtonsLayout (template-stable)
               -> Button#PART_NowButton (template-stable)
               -> Button#PART_TodayButton (template-stable)
@@ -37,7 +37,7 @@ DatePicker
   -> DatePicker (control theme, DatePickerTheme.axaml)
   -> DualMonthRangeDatePickerPresenter (presenter control theme, DualMonthRangeDatePickerPresenterTheme.axaml)
      -> DockPanel#RootLayout (template-stable)
-        -> Border#ButtonsFrame (template-stable)
+        -> PixelAlignedBorder#ButtonsFrame (template-stable)
            -> Panel#ButtonsLayout (template-stable)
               -> Button#PART_NowButton (template-stable)
               -> Button#PART_TodayButton (template-stable)
@@ -47,7 +47,7 @@ DatePicker
   -> RangeDatePickerPresenter (presenter control theme, RangeDatePickerPresenterTheme.axaml)
   -> TimedRangeDatePickerPresenter (presenter control theme, TimedRangeDatePickerPresenterTheme.axaml)
      -> DockPanel#RootLayout (template-stable)
-        -> Border#ButtonsFrame (template-stable)
+        -> PixelAlignedBorder#ButtonsFrame (template-stable)
            -> Panel#ButtonsLayout (template-stable)
               -> Button#PART_NowButton (template-stable)
               -> Button#PART_TodayButton (template-stable)
@@ -62,47 +62,48 @@ DatePicker
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `DatePicker` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `DatePickerPresenter` | presenter control theme | `DatePickerPresenterTheme.axaml` | DatePicker | `BorderThickness`, `ClockIdentifier`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `IsShowTime`, `SelectedDateTime` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `RootLayout` | template node (DockPanel) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | `BorderThickness`, `ClockIdentifier`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `IsShowTime`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ButtonsFrame` | template node (Border) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | `BorderThickness`, `IsButtonsPanelVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DatePickerPresenter` | presenter control theme | `DatePickerPresenterTheme.axaml` | DatePicker | `BorderThickness`, `ClockIdentifier`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `IsTimeSelectionVisible`, `PickerMode` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `RootLayout` | template node (DockPanel) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | `BorderThickness`, `ClockIdentifier`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `IsTimeSelectionVisible`, `PickerMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ButtonsFrame` | template node (PixelAlignedBorder) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | `BorderThickness`, `IsButtonsPanelVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ButtonsLayout` | template node (Panel) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_NowButton` | template node (Button) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_TodayButton` | template node (Button) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ConfirmButton` | template node (Button) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `StackPanel` | template node (StackPanel) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | `ClockIdentifier`, `IsMotionEnabled`, `IsShowTime`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_CalendarView` | template node (Calendar) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | `IsMotionEnabled`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_TimeView` | template node (TimeView) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | `ClockIdentifier`, `IsMotionEnabled`, `IsShowTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StackPanel` | template node (StackPanel) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | `ClockIdentifier`, `IsMotionEnabled`, `IsTimeSelectionVisible`, `PickerMode`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_CalendarView` | template node (Calendar) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | `IsMotionEnabled`, `PickerMode`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_TimeView` | template node (TimeView) | `DatePickerPresenterTheme.axaml` | DatePickerPresenter | `ClockIdentifier`, `IsMotionEnabled`, `IsTimeSelectionVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DatePicker` | control theme | `DatePickerTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `DualMonthRangeDatePickerPresenter` | presenter control theme | `DualMonthRangeDatePickerPresenterTheme.axaml` | DatePicker | `BorderThickness`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `SecondarySelectedDateTime`, `SelectedDateTime` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `RootLayout` | template node (DockPanel) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | `BorderThickness`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `SecondarySelectedDateTime`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ButtonsFrame` | template node (Border) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | `BorderThickness`, `IsButtonsPanelVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DualMonthRangeDatePickerPresenter` | presenter control theme | `DualMonthRangeDatePickerPresenterTheme.axaml` | DatePicker | `BorderThickness`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `IsRangeStartActive`, `PickerMode`, `SecondarySelectedDateTime` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `RootLayout` | template node (DockPanel) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | `BorderThickness`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `IsRangeStartActive`, `PickerMode`, `SecondarySelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ButtonsFrame` | template node (PixelAlignedBorder) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | `BorderThickness`, `IsButtonsPanelVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ButtonsLayout` | template node (Panel) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_NowButton` | template node (Button) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_TodayButton` | template node (Button) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ConfirmButton` | template node (Button) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `StackPanel` | template node (StackPanel) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | `IsMotionEnabled`, `SecondarySelectedDateTime`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_CalendarView` | template node (DualMonthRangeCalendar) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | `IsMotionEnabled`, `SecondarySelectedDateTime`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StackPanel` | template node (StackPanel) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | `IsMotionEnabled`, `IsRangeStartActive`, `PickerMode`, `SecondarySelectedDateTime`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_CalendarView` | template node (DualMonthRangeCalendar) | `DualMonthRangeDatePickerPresenterTheme.axaml` | DualMonthRangeDatePickerPresenter | `IsMotionEnabled`, `IsRangeStartActive`, `PickerMode`, `SecondarySelectedDateTime`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RangeDatePickerPresenter` | presenter control theme | `RangeDatePickerPresenterTheme.axaml` | DatePicker | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `TimedRangeDatePickerPresenter` | presenter control theme | `TimedRangeDatePickerPresenterTheme.axaml` | DatePicker | `BorderThickness`, `ClockIdentifier`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `IsShowTime`, `SecondarySelectedDateTime` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `RootLayout` | template node (DockPanel) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `BorderThickness`, `ClockIdentifier`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `IsShowTime`, `SecondarySelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ButtonsFrame` | template node (Border) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `BorderThickness`, `IsButtonsPanelVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `TimedRangeDatePickerPresenter` | presenter control theme | `TimedRangeDatePickerPresenterTheme.axaml` | DatePicker | `BorderThickness`, `ClockIdentifier`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `IsRangeStartActive`, `IsTimeSelectionVisible` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `RootLayout` | template node (DockPanel) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `BorderThickness`, `ClockIdentifier`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `IsRangeStartActive`, `IsTimeSelectionVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ButtonsFrame` | template node (PixelAlignedBorder) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `BorderThickness`, `IsButtonsPanelVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ButtonsLayout` | template node (Panel) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_NowButton` | template node (Button) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_TodayButton` | template node (Button) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ConfirmButton` | template node (Button) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `StackPanel` | template node (StackPanel) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `ClockIdentifier`, `IsMotionEnabled`, `IsShowTime`, `SecondarySelectedDateTime`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_CalendarView` | template node (RangeCalendar) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `IsMotionEnabled`, `SecondarySelectedDateTime`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_TimeView` | template node (TimeView) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `ClockIdentifier`, `IsMotionEnabled`, `IsShowTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StackPanel` | template node (StackPanel) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `ClockIdentifier`, `IsMotionEnabled`, `IsRangeStartActive`, `IsTimeSelectionVisible`, `PickerMode`, `SecondarySelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_CalendarView` | template node (RangeCalendar) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `IsMotionEnabled`, `IsRangeStartActive`, `PickerMode`, `SecondarySelectedDateTime`, `SelectedDateTime` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_TimeView` | template node (TimeView) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `ClockIdentifier`, `IsMotionEnabled`, `IsTimeSelectionVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `HeaderBackground` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `DisplayMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SecondarySelectedDate`、`SecondarySelectedDateTime`、`SelectedDate`、`SelectedDateTime`、`TempSelectedTime` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `PickerMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SelectedDateTime` | 维护提交值、范围端点和选择颗粒度；`SelectedDateTime`、`RangeStartSelectedDate`、`RangeEndSelectedDate` 默认 `TwoWay` 绑定并启用 Avalonia data validation。 |
+| 弹层显示游标 | `PickerDisplayDate`；内部 `Calendar.DisplayDate`、`DisplayDateStart`、`DisplayDateEnd` | 维护弹出面板打开时显示到哪个日期区域，不代表已选值。 |
 | 交互与状态 | `IsFloatingArrowPosition`、`IsHorizontalFlipped`、`IsNeedConfirm`、`IsShowNow`、`IsShowTime`、`IsTodayHighlighted` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `RangePickerIndicatorOffsetEnd`、`RangePickerIndicatorOffsetStart` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
-| 其他稳定入口 | `ClockIdentifier`、`DefaultDateTime`、`DisplayDate`、`DisplayDateEnd`、`DisplayDateStart`、`FirstDayOfWeek`、`Format` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 其他稳定入口 | `ClockIdentifier`、`DefaultDateTime`、`Format` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 ## Pseudo Classes
 
@@ -125,6 +126,15 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `PickerMode` 决定选择颗粒度和初始面板：`Date`、`Week` 使用月视图，`Month`、`Quarter` 使用年视图，`Year` 使用十年视图。目标颗粒度不能继续降级到更细面板。
+- `SelectedDateTime`、`DefaultDateTime` 和 `PickerDisplayDate` 必须保持语义分离：`SelectedDateTime` 是已提交值，`DefaultDateTime` 是默认选中值/reset 值，`PickerDisplayDate` 只作为弹出面板打开时的显示锚点。
+- `SelectedDateTime` 是单值 DatePicker 的受控 Form 值入口，默认 `BindingMode.TwoWay`，并通过 Avalonia `DataValidationErrors` 参与原生数据校验。
+- 设置 `PickerDisplayDate` 后不得写入 `SelectedDateTime`，不得改变输入框文本、Form value 或清除按钮状态；当已有已选值时，弹出面板仍优先围绕已选值展示。
+- DatePicker / RangeDatePicker 输入壳体必须把 `DataValidationErrors` 同步转发到外层 AddOn 和内部文本框；range indicator 等附属视觉读取 effective status，native error 优先于手动 warning/error 状态。
+- `PickerMode=Week` 的月视图是带周序号列的 8 列 week panel，不是普通日期面板的 7 个日期按钮逐个选中；选中视觉和 hover 视觉都必须按整周连续行渲染，不能退回单个日期按钮的普通 pointerover 背景。
+- 非 `Date` 颗粒度仍使用 `DateTime?` 保存提交值：`Week` 保存 ISO 周起始日，`Month` 保存当月 1 日，`Quarter` 保存季度首月 1 日，`Year` 保存当年 1 月 1 日。
+- `IsShowTime` 只在 `PickerMode=Date` 时形成有效时间选择；其他颗粒度忽略时间面板和时间拼接。
+- 范围选择的 committed 状态和 hover preview 状态必须分开：`:selected`、`:range-start`、`:range-end`、`:range-middle` 只来自真实端点；hover 只写入 `:range-preview-start`、`:range-preview-end`、`:range-preview-middle`，其中 preview start/end 在视觉上按临时端点显示，但不能污染真实提交状态。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

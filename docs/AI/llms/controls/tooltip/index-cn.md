@@ -73,7 +73,7 @@ Tooltip 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -87,7 +87,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 弹出位置
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:155`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:51`
 
 Gallery key：`ExamplesContent` / item `1`
 

@@ -17,9 +17,9 @@
 来源：`src/AtomUI.Desktop.Controls/Menu/Themes/MenuTheme.axaml`
 
 ```xml
-<Border>
+<PixelAlignedBorder>
     <ItemsPresenter Name="PART_ItemsPresenter" />
-</Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -47,7 +47,7 @@ Menu
                  -> ItemsPresenter#PART_ItemsPresenter (template-stable)
   -> MenuSeparator (control theme, MenuSeparatorTheme.axaml)
   -> Menu (control theme, MenuTheme.axaml)
-     -> Border (template-stable)
+     -> PixelAlignedBorder (template-stable)
         -> ItemsPresenter#PART_ItemsPresenter (template-stable)
   -> MenuItem (item container control theme, TopLevelMenuItemTheme.axaml)
      -> Panel (template-stable)
@@ -122,6 +122,15 @@ Public API / inherited command / item source / user input
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
+子菜单的 pointer 交互采用独立的 hover intent 模型：
+
+- `SelectedItem` 表达菜单导航和当前项状态，`IsSubMenuOpen` 表达已提交的弹层状态；二者都不能作为延迟任务是否仍然有效的唯一依据。
+- pointer 进入带子菜单的非顶层项时，只为当前目标建立延迟打开意图。pointer 在延迟完成前离开该项时，打开意图立即失效，子菜单不得在离开后继续弹出。
+- 已打开子菜单的关闭延迟只用于允许 pointer 从父项移动到其弹层。pointer 重新进入父项、子菜单弹层或其后代项时，待执行的关闭意图必须失效。
+- 同一目标不能同时持有互相矛盾的打开和关闭意图。不同兄弟项切换时可以同时存在“关闭旧项”和“打开新项”，但每类意图最多只有一个当前目标。
+- keyboard、access key 和 pointer press 触发的显式打开不经过 hover 延迟，不得被旧 hover callback 覆盖或回滚。
+- 菜单关闭、窗口失活、宿主解除连接或交互处理器 detach 时，所有未完成 hover intent 必须统一失效。
+
 ## Theme and Token Boundaries
 
 Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
@@ -162,6 +171,8 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
+- 不把 `SelectedItem`、`IsSubMenuOpen` 或一次 callback 内的 pointer 判断当作 hover intent 的替代状态；延迟任务必须有明确 owner、目标身份和失效边界。
+- 修复 hover 行为不得新增 public/protected API，也不得改变 `DefaultMenuInteractionHandler` 已公开类型和构造函数契约。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
@@ -172,5 +183,7 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
+- `DefaultMenuInteractionHandler` 的公开类型、构造函数和外部注入能力。
+- 选择状态、Popup 状态与 hover intent 的职责分离。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。

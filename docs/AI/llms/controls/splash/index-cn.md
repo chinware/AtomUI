@@ -91,7 +91,7 @@ Splash 的事件与命令以公共 API、Avalonia 基类契约和 Gallery API �
 
 ### 基础
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:150`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:49`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -124,7 +124,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 确定进度
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:184`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:83`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -158,7 +158,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 状态
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:220`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:119`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -186,7 +186,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### Logo、内容与页脚
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:250`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:149`
 
 Gallery key：`ExamplesContent` / item `3`
 

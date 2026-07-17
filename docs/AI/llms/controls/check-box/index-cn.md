@@ -78,7 +78,7 @@ CheckBox 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:144`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:40`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -90,28 +90,31 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 禁用
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:157`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:53`
 
 Gallery key：`ExamplesContent` / item `1`
 
 ```axaml
 <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
-    <atom:CheckBox IsChecked="False" IsEnabled="False" Content="未选中" />
-    <atom:CheckBox IsChecked="{x:Null}" IsEnabled="False" Content="半选" />
-    <atom:CheckBox IsChecked="True" IsEnabled="False" Content="选中" />
+    <atom:CheckBox IsChecked="False" IsEnabled="False"
+                   Content="未选中" />
+    <atom:CheckBox IsChecked="{x:Null}" IsEnabled="False"
+                   Content="半选" />
+    <atom:CheckBox IsChecked="True" IsEnabled="False"
+                   Content="选中" />
 </StackPanel>
 ```
 
 ### 受控复选框
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:172`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:71`
 
 Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
 <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
     <atom:CheckBox Name="ControlledCheckbox"
-        IsChecked="{Binding ControlledCheckBoxCheckedStatus}"
+                   IsChecked="{Binding ControlledCheckBoxCheckedStatus}"
                    IsEnabled="{Binding ControlledCheckBoxEnabledStatus}"
                    Command="{Binding CheckBoxCommand}"
                    Content="{Binding ControlledCheckBoxText}" />
@@ -130,26 +133,33 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 复选框组
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:199`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:98`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
     <atom:CheckBoxGroup>
-        <atom:CheckBox IsChecked="True" Content="苹果" />
-        <atom:CheckBox IsChecked="True" Content="梨" />
-        <atom:CheckBox IsChecked="True" Content="橙子" />
+        <atom:CheckBox IsChecked="True"
+                       Content="苹果" />
+        <atom:CheckBox IsChecked="True"
+                       Content="梨" />
+        <atom:CheckBox IsChecked="True"
+                       Content="橙子" />
     </atom:CheckBoxGroup>
     <atom:CheckBoxGroup>
         <atom:CheckBox Content="苹果" />
-        <atom:CheckBox IsChecked="True" Content="梨" />
+        <atom:CheckBox IsChecked="True"
+                       Content="梨" />
         <atom:CheckBox Content="橙子" />
     </atom:CheckBoxGroup>
     <atom:CheckBoxGroup>
-        <atom:CheckBox IsChecked="True" IsEnabled="False" Content="苹果" />
-        <atom:CheckBox IsEnabled="False" Content="梨" />
-        <atom:CheckBox IsEnabled="False" Content="橙子" />
+        <atom:CheckBox IsChecked="True" IsEnabled="False"
+                       Content="苹果" />
+        <atom:CheckBox IsEnabled="False"
+                       Content="梨" />
+        <atom:CheckBox IsEnabled="False"
+                       Content="橙子" />
     </atom:CheckBoxGroup>
     <atom:CheckBoxGroup Name="BasicCheckBoxGroup"
                         ItemsSource="{Binding CheckBoxOptions}"
@@ -173,6 +183,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `CheckBoxGroup.CheckedItems` 是集合选择的外部值 owner，默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；绑定集合的 `Add`、`Remove`、`Clear` 或 `Reset` 必须回放到内部勾选状态和 Form value。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

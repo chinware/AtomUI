@@ -42,17 +42,23 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `AutoGenerateColumns`、`CanUserFilterColumns`、`CanUserReorderColumns`、`CanUserReorderRows`、`CanUserResizeColumns`、`CanUserSortColumns`、`CellEditingTemplate`、`CellTemplate`、`ColumnHeaderHeight`、`ContentHeight` 等 32 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `ClipboardCopyMode`、`CurrentSortDirection`、`FilterMode`、`Index`、`IsFilterActivated`、`IsHideOnSinglePage`、`IsHoverMode`、`IsMultipleFilterEnabled`、`IsSelected`、`IsSorterTooltipVisible` 等 20 项 | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `ClipboardCopyMode`、`CurrentSortDirection`、`Filters`、`SelectedFilterValues`、`FilterPresenterMode`、`FilterSelectionMode`、`FilterApplyMode`、`Index`、`IsFilterActivated`、`IsHideOnSinglePage`、`IsHoverMode`、`IsSelected`、`IsSorterTooltipVisible` 等 | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `AscendingIndicatorVisible`、`DescendingIndicatorVisible`、`IsDeleteEnabled`、`IsDetailsVisible`、`IsEditEnabled`、`IsFrameBorderVisible`、`IsFrozen`、`IsLeaf`、`IsMotionEnabled`、`IsOperating` 等 19 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `BottomPaginationAlign`、`ColumnWidth`、`HorizontalAlignment`、`HorizontalScrollBarVisibility`、`MaxColumnWidth`、`MinColumnWidth`、`RowHeight`、`SeparatorBrush`、`SizeType`、`SublevelIndent` 等 14 项 | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `CellTheme`、`CollectionView`、`CustomOperatingIndicator`、`EmptyIndicator`、`Footer`、`FormatString`、`GridLinesVisibility`、`Level`、`Maximum`、`Minimum` 等 15 项 | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 稳定事件包括 `SelectionChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 
+列过滤契约采用数据源与选中值分离的模型。`Filters` 是列过滤项数据源入口，应作为可绑定 Avalonia 属性维护，允许直接绑定 ViewModel 或数据库查询结果。`SelectedFilterValues` 是当前列过滤选中值的唯一 public 状态 owner，默认按双向绑定语义工作。`DataGridColumn` 实现 `IDataContextProvider`，列加入或离开 `DataGrid` 时由 `DataGrid` 同步/释放列级 `DataContext`，保证 `Filters="{Binding ...}"` 和 `SelectedFilterValues="{Binding ...}"` 能绑定到 Gallery 或业务 ViewModel。若同一个 `DataGrid` 通过 `x:DataType` 声明行模型类型，列级 ViewModel 绑定必须避免被行模型上下文捕获：可在 XAML 绑定上显式指定 VM 类型；若具体工具链无法稳定解析这种嵌套上下文，可在页面加载或 View 初始化时直接把 VM 集合赋给列属性，但仍必须复用 `SelectedFilterValues` 作为唯一状态 owner，不能另建并行选中状态。`DataGrid` 内部的 `FilterDescriptions` 只承载 collection view 过滤投影，不应成为列过滤菜单、VM 状态或 checked state 的并行 owner。
+
+列过滤项不应强制用户构造 UI 专属对象。`Filters` 中的元素可以是 `DataGridFilterItem`，也可以是业务 DTO；当使用业务 DTO 时，通过 `FilterTextMemberPath`、`FilterValueMemberPath` 和 `FilterChildrenMemberPath` 声明展示文本、过滤值和树形子项路径。DTO 成员路径只走生成的 data member accessor，DTO 类型需要使用 `[GenerateDataMemberAccessors]` 或等价生成描述；内置过滤项解析不做运行时反射兜底。过滤值以 `object?` 作为语义类型，字符串只是默认文本匹配路径的一种输入，不应成为过滤值契约的硬限制。
+
+过滤交互模式使用显式枚举表达：`FilterPresenterMode` 表达菜单或树形弹层，`FilterSelectionMode` 表达单选或多选，`FilterApplyMode` 表达确认、关闭或选择变化时应用过滤。枚举状态比布尔开关更适合作为长期 public API，因为它能把展示方式、选择方式和提交时机拆成三个正交状态，避免布尔组合在状态流中产生歧义。
+
 主要公开类型与枚举：
 
 - 类型：`AtomUIDataGridThemesProvider`、`CollectionViewGroupComparer`、`CollectionViewGroupRoot`、`ControlTokenTypePool`、`DataGrid`、`DataGridAbstractTextColumn`、`DataGridAutoGeneratingColumnEventArgs`、`DataGridBeginningEditEventArgs`、`DataGridBoundColumn`、`DataGridCell`、`DataGridCellCollection`、`DataGridCellCoordinates`、`DataGridCellEditEndedEventArgs`、`DataGridCellEditEndingEventArgs` 等 95 项。
-- 枚举：`DataGridClipboardCopyMode`、`DataGridEditAction`、`DataGridEditingUnit`、`DataGridFilterMode`、`DataGridGridLinesVisibility`、`DataGridHeadersVisibility`、`DataGridLangResourceKind`、`DataGridLengthUnitType`、`DataGridPaginationVisibility`、`DataGridRowDetailsVisibilityMode` 等 15 项。
+- 枚举：`DataGridClipboardCopyMode`、`DataGridEditAction`、`DataGridEditingUnit`、`DataGridFilterPresenterMode`、`DataGridFilterSelectionMode`、`DataGridFilterApplyMode`、`DataGridGridLinesVisibility`、`DataGridHeadersVisibility`、`DataGridLangResourceKind`、`DataGridLengthUnitType`、`DataGridPaginationVisibility`、`DataGridRowDetailsVisibilityMode` 等。
 
 稳定 template part：
 
@@ -91,13 +97,14 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础表格
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
 ```axaml
 <atom:DataGrid x:Name="BasicCaseGrid"
                IsHideOnSinglePage="True"
+               IsFrameBorderVisible="True"
                x:DataType="vm:DataGridBaseInfo"
                    AttachedToVisualTree="HandleExampleDataGridAttached">
     <atom:DataGrid.Columns>
@@ -145,7 +152,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 选择
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:196`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:94`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -205,7 +212,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 拖拽调整列宽
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:258`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:156`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -259,7 +266,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:314`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:212`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -319,6 +326,9 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- 列过滤状态以 `SelectedFilterValues` 为 owner：VM 更新它时重建当前列的 collection view 过滤投影并回放到 flyout checked state；用户在 flyout 中选择过滤项时先更新它，再由同一管线投影到 `FilterDescriptions`。
+- `Filters` 替换、reset 或 clear 时，Header 和 FilterIndicator 必须重新计算过滤入口可见性并重新物化 flyout 内容；已有 `SelectedFilterValues` 只能保留仍能匹配到有效过滤项的值。
+- `ClearFilters()` 和单列清除过滤必须通过清空列级 `SelectedFilterValues` 完成，不能只清空 `FilterDescriptions`，否则 VM 绑定、过滤图标激活态和 flyout 勾选态会分裂。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

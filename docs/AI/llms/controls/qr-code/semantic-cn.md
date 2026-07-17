@@ -17,7 +17,7 @@
 来源：`src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`
 
 ```xml
-<Border Name="Frame">
+<PixelAlignedBorder Name="Frame">
     <Panel>
         <Panel>
             <Image />
@@ -42,7 +42,7 @@
             <ContentPresenter />
         </Panel>
     </Panel>
-</Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -54,7 +54,7 @@
 ```text
 QRCode
   -> QRCode (control theme, QRCodeTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> Panel (template-stable)
            -> Panel (template-stable)
               -> Image (template-stable)
@@ -80,7 +80,7 @@ QRCode
 | --- | --- | --- | --- | --- | --- | --- |
 | `QRCode` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `QRCode` | control theme | `QRCodeTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Bitmap`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `ExpiredContent` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `QRCodeTheme.axaml` | QRCode | `Background`, `Bitmap`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `ExpiredContent` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `QRCodeTheme.axaml` | QRCode | `Background`, `Bitmap`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `ExpiredContent` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `QRCodeTheme.axaml` | QRCode | `Bitmap`, `ExpiredContent`, `ExpiredContentTemplate`, `Icon`, `IconBgColor`, `IconSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ImageFrame` | template node (Border) | `QRCodeTheme.axaml` | QRCode | `Icon`, `IconBgColor`, `IconSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Mask` | template node (Border) | `QRCodeTheme.axaml` | QRCode | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

@@ -153,7 +153,6 @@ internal class StepsToken : AbstractControlDesignToken
     public Color ErrorIconBorderColor { get; set; }
     public Color ErrorDotColor { get; set; }
     public Color StepsNavActiveColor { get; set; }
-    public double StepsProgressSize { get; set; }
     // Steps inline variable
     public double InlineDotSize { get; set; }
     public Thickness InlineHeaderMargin { get; set; }
@@ -218,7 +217,6 @@ internal class StepsToken : AbstractControlDesignToken
         ErrorIconBorderColor    = SharedToken.ColorError;
         ErrorDotColor           = SharedToken.ColorError;
         StepsNavActiveColor     = SharedToken.ColorPrimary;
-        StepsProgressSize       = SharedToken.ControlHeightLG;
         // Steps inline variable
         InlineDotSize       = 6;
         InlineHeaderMargin  = new Thickness(0, SharedToken.UniformlyMarginXS - SharedToken.LineWidth, 0, 0);
@@ -227,8 +225,7 @@ internal class StepsToken : AbstractControlDesignToken
         InlineTailColor     = SharedToken.ColorBorderSecondary;
         InlineItemPadding   = new Thickness(0, SharedToken.UniformlyMarginXS);
         
-        HorizontalHeaderMargin     = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
-        HorizontalHeaderMargin     = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
+        HorizontalHeaderMargin     = new Thickness(SharedToken.UniformlyMargin, 0, 0, 0);
         VerticalItemSpacing        = SharedToken.SpacingXXS * 1.5;
         VerticalDescriptionPadding = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingXS);
         DotLineThickness           = SharedToken.LineWidth * 3;

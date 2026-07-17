@@ -80,7 +80,7 @@ InfoFlyout 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/InfoFlyout/Views/InfoFlyoutShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/InfoFlyout/Views/InfoFlyoutShowCase.axaml:35`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -99,7 +99,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 三种触发方式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/InfoFlyout/Views/InfoFlyoutShowCase.axaml:159`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/InfoFlyout/Views/InfoFlyoutShowCase.axaml:55`
 
 Gallery key：`ExamplesContent` / item `1`
 

@@ -80,7 +80,7 @@ Carousel 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:149`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:45`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -95,7 +95,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 卡片形态位置
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:166`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:62`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -125,7 +125,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 自动滚动
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:196`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:92`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -140,7 +140,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 淡入切换
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:211`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:107`
 
 Gallery key：`ExamplesContent` / item `3`
 

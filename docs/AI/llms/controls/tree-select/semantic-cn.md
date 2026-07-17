@@ -59,12 +59,12 @@ TreeSelect
 | --- | --- | --- | --- | --- | --- | --- |
 | `TreeSelect` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `TreeSelectAddOnDecoratedBox` | control theme | `TreeSelectAddOnDecoratedBoxTheme.axaml` | TreeSelect | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `TreeSelect` | control theme | `TreeSelectTheme.axaml` | 用户代码 / 控件宿主 | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `EffectiveSelectedItems`, `Height` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `TreeSelectTheme.axaml` | TreeSelect | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `EffectiveSelectedItems`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (TreeSelectAddOnDecoratedBox) | `TreeSelectTheme.axaml` | TreeSelect | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `EffectiveSelectedItems`, `Height` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `TreeSelect` | control theme | `TreeSelectTheme.axaml` | 用户代码 / 控件宿主 | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `EffectiveSelectedItems` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `TreeSelectTheme.axaml` | TreeSelect | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `EffectiveSelectedItems` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (TreeSelectAddOnDecoratedBox) | `TreeSelectTheme.axaml` | TreeSelect | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `EffectiveSelectedItems` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PlaceholderText` | template node (TextBlock) | `TreeSelectTheme.axaml` | TreeSelect | `IsPlaceholderTextVisible`, `PlaceholderForeground`, `PlaceholderText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_SingleFilterInput` | template node (SelectFilterTextBox) | `TreeSelectTheme.axaml` | TreeSelect | `PlaceholderForeground`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `SelectedItemsBox` | template node (SelectTagAwareTextBox) | `TreeSelectTheme.axaml` | TreeSelect | `EffectiveSelectedItems`, `Height`, `IsDropDownOpen`, `IsFilterEnabled`, `IsResponsiveTagMode`, `MaxTagCount` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_SingleFilterInput` | template node (SelectFilterTextBox) | `TreeSelectTheme.axaml` | TreeSelect | `FontFamily`, `FontSize`, `FontStyle`, `FontWeight`, `IsShowOverflowTip`, `OverflowTipDelay` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `SelectedItemsBox` | template node (SelectTagAwareTextBox) | `TreeSelectTheme.axaml` | TreeSelect | `EffectiveSelectedItems`, `Height`, `IsDropDownOpen`, `IsFilterEnabled`, `IsResponsiveTagMode`, `IsShowOverflowTip` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Popup` | template node (Popup) | `TreeSelectTheme.axaml` | TreeSelect | `IsDropDownOpen`, `PopupPlacement`, `ShouldUseOverlayPopup` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TreeViewSelectTreeViewItem` | item container control theme | `TreeSelectTreeViewItemTheme.axaml` | TreeSelect | `BorderThickness`, `FilterHighlightForeground`, `FilterHighlightWords`, `FilterStrategy`, `Focusable`, `GroupName` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `StackPanel` | template node (StackPanel) | `TreeSelectTreeViewItemTheme.axaml` | TreeViewSelectTreeViewItem | `BorderThickness`, `FilterHighlightForeground`, `FilterHighlightWords`, `FilterStrategy`, `Focusable`, `GroupName` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -112,6 +112,7 @@ Form value + MaxCount state
 - 多选模式使用 `SelectedItems` 作为表单值，候选树使用多选 selection，并通过 tag 展示结果。
 - `IsTreeCheckable=true` 使用 checkbox 作为节点切换入口，TreeView selection 不再作为主要选择入口。
 - `ShowCheckedStrategy` 只影响多选 tag 展示集合，不改变 `SelectedItems` 的真实值。
+- `SelectedItems` 是用户拥有的受控集合。集合引用替换和 `ObservableCollection` 等 `INotifyCollectionChanged` 原地 `Add`、`Remove`、`Reset` 都必须刷新 tag、`SelectedCount`、Form value changed、候选树 selection / checked items 和最大选择数状态。
 
 过滤行为：
 
@@ -135,6 +136,8 @@ TreeSelect 的默认视觉由 TreeSelect 专属主题、Select 家族输入壳�
 | `TreeSelectToken` | TreeSelect 候选弹层最小宽度。 |
 | `SelectToken` | TreeSelect 复用的 popup padding、多选 tag 和输入内容 padding。 |
 
+单选结果文本和多选 tag 的完整内容提示复用共享 `OverflowTip` attached behavior。主题通过 `IsShowOverflowTip`、`OverflowTipDelay` 和 `OverflowTipPlacement` 控制提示开关、延迟和位置，实际 tooltip 仅在文本视觉溢出时托管到 `ToolTip`。
+
 右侧 count、content add-on 和 handle 的稳定 template part 状态由 AXAML compiled ancestor binding 表达。C# 中只保留 AddOnDecoratedBox hover / pressed 到 SelectHandle 的 sibling 状态转发，因为该关系不是 templated parent 绑定，不能用 `TemplateBinding` 表达。
 
 Token 边界：
@@ -153,6 +156,8 @@ TreeSelectToken 不承载以下状态：
 维护 TreeSelect 时必须保持以下不变量：
 
 - 单选模式使用 `SelectedItem`，多选和勾选模式使用 `SelectedItems`。
+- `SelectedItem` 和 `SelectedItems` 必须保持默认双向绑定，并通过 Avalonia `DataValidationErrors` 承接 binding / Form error。
+- `SelectedItems` 原地变更必须与集合替换走同一套展示、Form 和候选树同步路径，不能依赖用户重新赋值。
 - `IsTreeCheckable=true` 必须继续把 TreeSelect 归入多选结果模型。
 - `ShowCheckedStrategy` 只能影响 `EffectiveSelectedItems`，不能改写真实 `SelectedItems`。
 - `ItemsSource` 变化必须尽量按节点路径 identity 保留已有选择。
@@ -172,6 +177,7 @@ TreeSelectToken 不承载以下状态：
 - 可用 AXAML 表达的模板绑定不能回退为 `BindUtils.RelayBind`。
 - C# relay binding 必须有与获取路径匹配的释放路径。
 - `SelectedItem` / `SelectedItems` 与 TreeView selection / checked items 的同步不能形成递归事件。
+- `SelectedItems` 集合引用替换和原地变更必须刷新同一组 value-state，避免 tag、`SelectedCount`、Form 值和 popup TreeView 状态不同步。
 - `ShowCheckedStrategy` 只能派生展示集合，不能改写真实选择集合。
 - `ItemsSource` 替换时的选择保留必须继续使用节点路径 identity。
 - popup 内容清理必须断开事件、ItemsSource、TemplatedParent 和 popup child 引用。

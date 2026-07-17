@@ -22,9 +22,9 @@
         <ContentPresenter Name="ExtraPresenter" />
         <ContentPresenter Name="HeaderPresenter" />
     </DockPanel>
-    <Border Name="ContentFrame">
+    <PixelAlignedBorder Name="ContentFrame">
         <Grid Name="PART_GridLayout" />
-    </Border>
+    </PixelAlignedBorder>
 </StackPanel>
 ```
 
@@ -37,9 +37,11 @@
 ```text
 Descriptions
   -> DescriptionBorderedItemContent (control theme, DescriptionBorderedItemContentTheme.axaml)
-     -> ContentPresenter#ContentPresenter (internal-observable)
+     -> PixelAlignedBorder (template-stable)
+        -> ContentPresenter#ContentPresenter (internal-observable)
   -> DescriptionBorderedItemLabel (control theme, DescriptionBorderedItemLabelTheme.axaml)
-     -> ContentPresenter#ContentPresenter (internal-observable)
+     -> PixelAlignedBorder (template-stable)
+        -> ContentPresenter#ContentPresenter (internal-observable)
   -> DescriptionDefaultItem (item container control theme, DescriptionDefaultItemTheme.axaml)
      -> DockPanel (template-stable)
         -> ContentPresenter#Label (internal-observable)
@@ -50,17 +52,17 @@ Descriptions
            -> ContentPresenter#Label (internal-observable)
            -> TextBlock#Colon (template-stable)
         -> ContentPresenter#Content (internal-observable)
-     -> Border (template-stable)
+     -> PixelAlignedBorder (template-stable)
         -> DockPanel (template-stable)
            -> ContentPresenter#Label (internal-observable)
-           -> Rectangle#Separator (template-stable)
+           -> PixelAlignedBorder#Separator (template-stable)
            -> ContentPresenter#Content (internal-observable)
   -> Descriptions (control theme, DescriptionsTheme.axaml)
      -> StackPanel (template-stable)
         -> DockPanel#HeaderLayout (template-stable)
            -> ContentPresenter#ExtraPresenter (internal-observable)
            -> ContentPresenter#HeaderPresenter (internal-observable)
-        -> Border#ContentFrame (template-stable)
+        -> PixelAlignedBorder#ContentFrame (template-stable)
            -> Grid#PART_GridLayout (template-stable)
 ```
 
@@ -70,22 +72,22 @@ Descriptions
 | --- | --- | --- | --- | --- | --- | --- |
 | `Descriptions` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `DescriptionBorderedItemContent` | control theme | `DescriptionBorderedItemContentTheme.axaml` | Descriptions | `BorderBrush`, `Content`, `EffectiveBorderThickness`, `LineHeight`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `ContentPresenter` | template node (ContentPresenter) | `DescriptionBorderedItemContentTheme.axaml` | DescriptionBorderedItemContent | `BorderBrush`, `Content`, `EffectiveBorderThickness`, `LineHeight`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `ContentPresenter` | template node (ContentPresenter) | `DescriptionBorderedItemContentTheme.axaml` | DescriptionBorderedItemContent | `Content`, `LineHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `DescriptionBorderedItemLabel` | control theme | `DescriptionBorderedItemLabelTheme.axaml` | Descriptions | `Background`, `BorderBrush`, `Content`, `EffectiveBorderThickness`, `LineHeight`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `ContentPresenter` | template node (ContentPresenter) | `DescriptionBorderedItemLabelTheme.axaml` | DescriptionBorderedItemLabel | `Background`, `BorderBrush`, `Content`, `EffectiveBorderThickness`, `LineHeight`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `ContentPresenter` | template node (ContentPresenter) | `DescriptionBorderedItemLabelTheme.axaml` | DescriptionBorderedItemLabel | `Content`, `LineHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `DescriptionDefaultItem` | item container control theme | `DescriptionDefaultItemTheme.axaml` | Descriptions | `BorderBrush`, `Content`, `EffectiveBorderThickness`, `Header`, `IsColonVisible`, `LineHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `DockPanel` | template node (DockPanel) | `DescriptionDefaultItemTheme.axaml` | DescriptionDefaultItem | `Content`, `Header`, `IsColonVisible`, `LineHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Label` | template node (ContentPresenter) | `DescriptionDefaultItemTheme.axaml` | DescriptionDefaultItem | `Header`, `LineHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Colon` | template node (TextBlock) | `DescriptionDefaultItemTheme.axaml` | DescriptionDefaultItem | `IsColonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Content` | template node (ContentPresenter) | `DescriptionDefaultItemTheme.axaml` | DescriptionDefaultItem | `Content`, `LineHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `StackPanel` | template node (StackPanel) | `DescriptionDefaultItemTheme.axaml` | DescriptionDefaultItem | `Header`, `IsColonVisible`, `LineHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Separator` | template node (Rectangle) | `DescriptionDefaultItemTheme.axaml` | DescriptionDefaultItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Separator` | template node (PixelAlignedBorder) | `DescriptionDefaultItemTheme.axaml` | DescriptionDefaultItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Descriptions` | control theme | `DescriptionsTheme.axaml` | 用户代码 / 控件宿主 | `Extra`, `ExtraTemplate`, `Header`, `HeaderTemplate`, `IsHeaderLayoutVisible` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `StackPanel` | template node (StackPanel) | `DescriptionsTheme.axaml` | Descriptions | `Extra`, `ExtraTemplate`, `Header`, `HeaderTemplate`, `IsHeaderLayoutVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderLayout` | template node (DockPanel) | `DescriptionsTheme.axaml` | Descriptions | `Extra`, `ExtraTemplate`, `Header`, `HeaderTemplate`, `IsHeaderLayoutVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ExtraPresenter` | template node (ContentPresenter) | `DescriptionsTheme.axaml` | Descriptions | `Extra`, `ExtraTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `HeaderPresenter` | template node (ContentPresenter) | `DescriptionsTheme.axaml` | Descriptions | `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `ContentFrame` | template node (Border) | `DescriptionsTheme.axaml` | Descriptions | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ContentFrame` | template node (PixelAlignedBorder) | `DescriptionsTheme.axaml` | Descriptions | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_GridLayout` | template node (Grid) | `DescriptionsTheme.axaml` | Descriptions | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts

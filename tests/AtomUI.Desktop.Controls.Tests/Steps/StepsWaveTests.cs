@@ -1,12 +1,9 @@
 using System;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Input;
-using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -23,134 +20,69 @@ public class StepsWaveTests
     }
 
     [Theory]
-    [InlineData(StepsStyle.Default, StepsItemIndicatorType.Default)]
-    [InlineData(StepsStyle.Default, StepsItemIndicatorType.Dot)]
-    [InlineData(StepsStyle.Navigation, StepsItemIndicatorType.Default)]
-    [InlineData(StepsStyle.Inline, StepsItemIndicatorType.Default)]
-    public void Clickable_Item_Selection_Plays_Indicator_Wave(
-        StepsStyle style,
-        StepsItemIndicatorType indicatorType)
+    [InlineData(Desktop.Controls.StepsType.Default)]
+    [InlineData(Desktop.Controls.StepsType.Dot)]
+    [InlineData(Desktop.Controls.StepsType.Navigation)]
+    [InlineData(Desktop.Controls.StepsType.Inline)]
+    public void Pointer_Click_Plays_Indicator_Wave_For_Every_Type(Desktop.Controls.StepsType type)
     {
-        var steps = CreateSteps(
-            isItemClickable: true,
-            isMotionEnabled: true,
-            style: style,
-            indicatorType: indicatorType);
+        var steps = CreateSteps(type);
 
         ShowInWindow(steps, window =>
         {
-            var items = steps.GetVisualDescendants()
-                             .OfType<StepsItem>()
-                             .ToList();
+            var item = GetItem(steps, 1);
+            Click(item, window);
 
-            ClickIndicator(items[1], window);
-            Dispatcher.UIThread.RunJobs();
-
-            steps.SelectedIndex.ShouldBe(1);
-            IsIndicatorWavePlaying(items[1]).ShouldBeTrue();
+            GetIndicator(item).IsWavePlaying.ShouldBeTrue();
         });
     }
 
     [Fact]
-    public void Clicking_Current_Clickable_Item_Does_Not_Play_Indicator_Wave()
+    public void Programmatic_Current_Change_Does_Not_Play_Wave()
     {
-        var steps = CreateSteps(isItemClickable: true, isMotionEnabled: true);
-
-        ShowInWindow(steps, window =>
-        {
-            var currentItem = steps.GetVisualDescendants()
-                                   .OfType<StepsItem>()
-                                   .First();
-
-            ClickIndicator(currentItem, window);
-            Dispatcher.UIThread.RunJobs();
-
-            steps.SelectedIndex.ShouldBe(0);
-            IsIndicatorWavePlaying(currentItem).ShouldBeFalse();
-        });
-    }
-
-    [Fact]
-    public void Clicking_Item_Content_Plays_Indicator_Wave()
-    {
-        var steps = CreateSteps(isItemClickable: true, isMotionEnabled: true);
-
-        ShowInWindow(steps, window =>
-        {
-            var items = steps.GetVisualDescendants()
-                             .OfType<StepsItem>()
-                             .ToList();
-
-            ClickItemContent(items[1], window);
-            Dispatcher.UIThread.RunJobs();
-
-            steps.SelectedIndex.ShouldBe(1);
-            IsIndicatorWavePlaying(items[1]).ShouldBeTrue();
-        });
-    }
-
-    [Fact]
-    public void CurrentStep_Change_Plays_Indicator_Wave_When_Items_Are_Clickable()
-    {
-        var steps = CreateSteps(isItemClickable: true, isMotionEnabled: true);
+        var steps = CreateSteps();
 
         ShowInWindow(steps, _ =>
         {
-            var items = steps.GetVisualDescendants()
-                             .OfType<StepsItem>()
-                             .ToList();
-
-            steps.CurrentStep = 1;
+            var item = GetItem(steps, 1);
+            steps.Current = 1;
             Dispatcher.UIThread.RunJobs();
 
-            steps.SelectedIndex.ShouldBe(1);
-            IsIndicatorWavePlaying(items[1]).ShouldBeTrue();
+            GetIndicator(item).IsWavePlaying.ShouldBeFalse();
         });
     }
 
     [Fact]
-    public void Clickable_Item_Selection_Wave_Replays_After_Selecting_Another_Item()
+    public void Motion_Disabled_Still_Requests_Change_But_Does_Not_Play_Wave()
     {
-        var steps = CreateSteps(isItemClickable: true, isMotionEnabled: true);
+        var steps = CreateSteps();
+        steps.IsMotionEnabled = false;
+        int? requested = null;
+        steps.CurrentChangeRequested += (_, args) => requested = args.Current;
 
         ShowInWindow(steps, window =>
         {
-            var items = steps.GetVisualDescendants()
-                             .OfType<StepsItem>()
-                             .ToList();
+            var item = GetItem(steps, 1);
+            Click(item, window);
 
-            ClickIndicator(items[1], window);
-            Dispatcher.UIThread.RunJobs();
-            IsIndicatorWavePlaying(items[1]).ShouldBeTrue();
-
-            WaitForIndicatorWaveToFinish(items[1]);
-            ClickIndicator(items[2], window);
-            Dispatcher.UIThread.RunJobs();
-            ClickIndicator(items[1], window);
-            Dispatcher.UIThread.RunJobs();
-
-            steps.SelectedIndex.ShouldBe(1);
-            IsIndicatorWavePlaying(items[1]).ShouldBeTrue();
+            requested.ShouldBe(1);
+            GetIndicator(item).IsWavePlaying.ShouldBeFalse();
         });
     }
 
     [Fact]
-    public void Clickable_Item_Wave_Has_NonClipping_Visual_Path()
+    public void Indicator_Wave_Has_A_NonClipping_Visual_Path()
     {
-        var steps = CreateSteps(isItemClickable: true, isMotionEnabled: true);
+        var steps = CreateSteps();
 
         ShowInWindow(steps, _ =>
         {
-            var item = steps.GetVisualDescendants()
-                            .OfType<StepsItem>()
-                            .Skip(1)
-                            .First();
-            var indicator = GetIndicator(item);
-            var wave = GetWave(indicator);
+            var indicator = GetIndicator(GetItem(steps, 1));
+            var wave = indicator.GetVisualDescendants()
+                                .Single(visual => visual.GetType().Name == "WaveSpiritDecorator");
             var clippingAncestors = wave.GetVisualAncestors()
                                         .TakeWhile(visual => visual is not AvaloniaWindow)
                                         .Where(visual => visual.ClipToBounds)
-                                        .Select(visual => $"{visual.GetType().Name}#{visual.Name}")
                                         .ToArray();
 
             wave.Bounds.Size.ShouldBe(indicator.Bounds.Size);
@@ -159,144 +91,47 @@ public class StepsWaveTests
         });
     }
 
-    [Fact]
-    public void Clickable_Item_Wave_Keeps_Stable_Opaque_Brush_During_Indicator_Background_Transition()
-    {
-        var steps = CreateSteps(isItemClickable: true, isMotionEnabled: true);
-
-        ShowInWindow(steps, window =>
-        {
-            var item = steps.GetVisualDescendants()
-                            .OfType<StepsItem>()
-                            .Skip(1)
-                            .First();
-            var indicator = GetIndicator(item);
-            var wave = GetWave(indicator);
-            var initialWaveColor = GetWaveBrushColor(wave);
-
-            ClickIndicator(item, window);
-            Dispatcher.UIThread.RunJobs();
-
-            initialWaveColor.A.ShouldBe(byte.MaxValue);
-            GetWaveBrushColor(wave).ShouldBe(initialWaveColor);
-        });
-    }
-
-    [Theory]
-    [InlineData(false, true, 0)]
-    [InlineData(true, false, 1)]
-    public void Indicator_Wave_Requires_Clickable_And_Motion(
-        bool isItemClickable,
-        bool isMotionEnabled,
-        int expectedSelectedIndex)
-    {
-        var steps = CreateSteps(isItemClickable, isMotionEnabled);
-
-        ShowInWindow(steps, window =>
-        {
-            var items = steps.GetVisualDescendants()
-                             .OfType<StepsItem>()
-                             .ToList();
-
-            ClickIndicator(items[1], window);
-            Dispatcher.UIThread.RunJobs();
-
-            steps.SelectedIndex.ShouldBe(expectedSelectedIndex);
-            IsIndicatorWavePlaying(items[1]).ShouldBeFalse();
-        });
-    }
-
     private static Desktop.Controls.Steps CreateSteps(
-        bool isItemClickable,
-        bool isMotionEnabled,
-        StepsStyle style = StepsStyle.Default,
-        StepsItemIndicatorType indicatorType = StepsItemIndicatorType.Default)
+        Desktop.Controls.StepsType type = Desktop.Controls.StepsType.Default)
     {
         var steps = new Desktop.Controls.Steps
         {
-            Width             = 760,
-            CurrentStep       = 0,
-            IsItemClickable   = isItemClickable,
-            IsMotionEnabled   = isMotionEnabled,
-            Style             = style,
-            ItemIndicatorType = indicatorType
+            Width           = 760,
+            Current         = 0,
+            Type            = type,
+            IsItemClickable = true,
+            IsMotionEnabled = true
         };
-        steps.Items.Add(new StepsItem { Header = "Step 1" });
-        steps.Items.Add(new StepsItem { Header = "Step 2" });
-        steps.Items.Add(new StepsItem { Header = "Step 3" });
+        steps.Items.Add(new Desktop.Controls.StepsItem { Header = "Step 1" });
+        steps.Items.Add(new Desktop.Controls.StepsItem { Header = "Step 2" });
+        steps.Items.Add(new Desktop.Controls.StepsItem { Header = "Step 3" });
         return steps;
     }
 
-    private static bool IsIndicatorWavePlaying(StepsItem item)
+    private static Desktop.Controls.StepsItem GetItem(Desktop.Controls.Steps steps, int index)
     {
-        var indicator = GetIndicator(item);
-        var wave = GetWave(indicator);
-        var field = wave.GetType().GetField("_isPlaying", BindingFlags.Instance | BindingFlags.NonPublic);
-
-        field.ShouldNotBeNull();
-        return (bool)field.GetValue(wave)!;
+        return steps.Items[index].ShouldBeOfType<Desktop.Controls.StepsItem>();
     }
 
-    private static void WaitForIndicatorWaveToFinish(StepsItem item)
+    private static Desktop.Controls.StepsItemIndicator GetIndicator(Desktop.Controls.StepsItem item)
     {
-        for (var i = 0; i < 64 && IsIndicatorWavePlaying(item); i++)
-        {
-            Thread.Sleep(10);
-            AvaloniaHeadlessPlatform.ForceRenderTimerTick(1);
-            Dispatcher.UIThread.RunJobs();
-        }
-
-        IsIndicatorWavePlaying(item).ShouldBeFalse();
+        return item.GetVisualDescendants().OfType<Desktop.Controls.StepsItemIndicator>().Single();
     }
 
-    private static Visual GetIndicator(StepsItem item)
+    private static void Click(Desktop.Controls.StepsItem item, AvaloniaWindow window)
     {
-        return item.GetVisualDescendants()
-                   .Single(control => control.GetType().Name == "StepsItemIndicator");
-    }
-
-    private static Visual GetWave(Visual indicator)
-    {
-        return indicator.GetVisualDescendants()
-                        .Single(control => control.GetType().Name == "WaveSpiritDecorator");
-    }
-
-    private static Color GetWaveBrushColor(Visual wave)
-    {
-        var waveBrushProperty = wave.GetType().GetProperty("WaveBrush");
-
-        waveBrushProperty.ShouldNotBeNull();
-        var waveBrush = waveBrushProperty.GetValue(wave) as ISolidColorBrush;
-        waveBrush.ShouldNotBeNull();
-        return waveBrush.Color;
-    }
-
-    private static void ClickIndicator(StepsItem item, AvaloniaWindow window)
-    {
-        var indicator = item.GetVisualDescendants()
-                            .OfType<Control>()
-                            .Single(control => control.GetType().Name == "StepsItemIndicator");
-        var point = indicator.TranslatePoint(
-            new Point(indicator.Bounds.Width / 2, indicator.Bounds.Height / 2),
-            window);
-
-        point.ShouldNotBeNull();
-        window.MouseDown(point.Value, MouseButton.Left);
-        window.MouseUp(point.Value, MouseButton.Left);
-    }
-
-    private static void ClickItemContent(StepsItem item, AvaloniaWindow window)
-    {
-        var header = item.GetVisualDescendants()
+        var target = item.GetVisualDescendants()
                          .OfType<Control>()
                          .Single(control => control.Name == "HeaderPresenter");
-        var point = header.TranslatePoint(
-            new Point(header.Bounds.Width / 2, header.Bounds.Height / 2),
+        var point = target.TranslatePoint(
+            new Point(target.Bounds.Width / 2, target.Bounds.Height / 2),
             window);
-
         point.ShouldNotBeNull();
+
+        window.MouseMove(point.Value);
         window.MouseDown(point.Value, MouseButton.Left);
         window.MouseUp(point.Value, MouseButton.Left);
+        Dispatcher.UIThread.RunJobs();
     }
 
     private static void ShowInWindow(Control content, Action<AvaloniaWindow> assertion)
@@ -304,13 +139,15 @@ public class StepsWaveTests
         var window = new AvaloniaWindow
         {
             Width   = 900,
-            Height  = 220,
+            Height  = 240,
             Content = content
         };
 
         try
         {
             window.Show();
+            Dispatcher.UIThread.RunJobs();
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick(1);
             Dispatcher.UIThread.RunJobs();
             assertion(window);
         }

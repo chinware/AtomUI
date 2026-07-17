@@ -42,8 +42,8 @@ ComboBox 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`FilterValue`、`FilterValueSelector`、`LeftAddOnTemplate`、`OptionFontSize`、`RightAddOnTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `DropDownDisplayPageSize`、`Filter`、`IsFilterEnabled` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 选择与集合 | `SelectedItem`、`SelectedIndex`、`DropDownDisplayPageSize`、`Filter`、`IsFilterEnabled` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 交互与状态 | `IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`、`IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` | 表达用户可观察状态、可用性、清除、加载、反馈和非编辑态选中内容溢出提示语义。 |
 | 视觉与布局 | `SizeType`、`StyleVariant` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `LeftAddOn`、`RightAddOn` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -83,7 +83,7 @@ ComboBox 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:141`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -134,7 +134,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 通过 ItemsSource 生成 ComboBoxItem
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:193`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:89`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -150,11 +150,45 @@ Gallery key：`ExamplesContent` / item `1`
 </atom:ComboBox>
 ```
 
-### 可编辑过滤
+### SelectedItem 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:212`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:109`
 
 Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Spacing="8" MinWidth="320">
+    <TextBlock Text="SelectedItem"
+               FontWeight="SemiBold" />
+    <atom:ComboBox PlaceholderText="请选择"
+                   Width="300"
+                   IsAllowClear="True"
+                   ItemsSource="{Binding ComboBoxItems}"
+                   SelectedItem="{Binding BoundSelectedItem}">
+        <atom:ComboBox.ItemTemplate>
+            <DataTemplate>
+                <atom:TextBlock Text="{Binding Text}" VerticalAlignment="Center" />
+            </DataTemplate>
+        </atom:ComboBox.ItemTemplate>
+    </atom:ComboBox>
+    <WrapPanel ItemSpacing="8">
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetBoundSelectedItemCommand}"
+                     Content="设为第三句" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearBoundSelectedItemCommand}"
+                     Content="清空" />
+    </WrapPanel>
+    <TextBlock Text="ViewModel 值" />
+    <TextBlock Text="{Binding BoundSelectedItemText}" />
+</StackPanel>
+```
+
+### 可编辑过滤
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:144`
+
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <atom:ComboBox PlaceholderText="输入内容过滤"
@@ -166,21 +200,6 @@ Gallery key：`ExamplesContent` / item `2`
     <atom:ComboBoxItem Content="Beta" />
     <atom:ComboBoxItem Content="Gamma" />
     <atom:ComboBoxItem Content="Delta" />
-</atom:ComboBox>
-```
-
-### 禁用状态
-
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:232`
-
-Gallery key：`ExamplesContent` / item `3`
-
-```axaml
-<atom:ComboBox PlaceholderText="请选择" Width="300" IsEnabled="False">
-    <atom:ComboBoxItem Content="床前明月光" />
-    <atom:ComboBoxItem Content="疑是地上霜" />
-    <atom:ComboBoxItem Content="举头望明月" />
-    <atom:ComboBoxItem Content="低头思故乡" />
 </atom:ComboBox>
 ```
 
@@ -200,6 +219,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- 单选结果以继承的 `SelectedItem` / `SelectedIndex` 为准；AtomUI Form 集成使用 `SelectedItem` 作为 ComboBox 的默认表单值，`SetFormValue`、`GetFormValue` 和 `ClearFormValue` 不应转换为字符串或读取展示文本。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -213,6 +233,8 @@ ComboBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `ComboBoxItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `ComboBoxTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `ComboBoxThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
+
+非编辑态选中内容的完整文本提示复用共享 `OverflowTip` attached behavior。模板只在 `SelectedContentPresenter` 上接入 `IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` 和 `SelectionBoxItem`；`IsEditable=true` 时编辑输入框不默认启用该提示。
 
 ComboBox 使用 `ComboBoxToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
 
@@ -256,6 +278,7 @@ ComboBox Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls/ComboBox/ComboBoxItem.cs`
 - `src/AtomUI.Desktop.Controls/ComboBox/ComboBoxReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/ComboBox/ComboBoxToken.cs`
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxHandleTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml`

@@ -89,9 +89,12 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 | --- | --- |
 | `SizeType` | 输入尺寸密度，支持 `Large / Middle / Small / Custom`。 |
 | `StyleVariant` | 输入表面样式。 |
-| `Status` | 校验状态映射，驱动 `:error` / `:warning`。 |
+| `Status` | 手动输入反馈状态；warning 仅在无 native validation error 时驱动 `:warning`，error 视觉优先由 `DataValidationErrors` 驱动。 |
 | `PlaceholderText` / `PlaceholderForeground` | 空选择时的占位文本和颜色。 |
 | `IsFilterEnabled` | 是否显示过滤输入并将输入同步为 `FilterValue`。 |
+| `IsShowOverflowTip` | 单选路径或多选 tag 视觉溢出时是否显示完整内容 tooltip，默认 `true`。 |
+| `OverflowTipDelay` | 溢出 tooltip 打开前的延迟时间，单位毫秒，默认 `1200`。 |
+| `OverflowTipPlacement` | 溢出 tooltip 相对单选路径或多选 tag 的位置，默认 `TopEdgeAlignedLeft`。 |
 | `IsAllowClear` / `SuffixIcon` / `SuffixLoadingIcon` | 清除、展开指示和 loading 指示入口。 |
 | `LeftAddOn` / `RightAddOn` / `ContentLeftAddOn` / `ContentRightAddOn` | 外部和内部 AddOn 内容。 |
 | `IsDropDownOpen` / `PopupPlacement` / `ShouldUseOverlayPopup` / `IsPopupMatchSelectWidth` | popup 打开、定位、宿主和宽度匹配契约。 |
@@ -128,7 +131,7 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 
 稳定伪类来自 `AbstractSelect` 和 `CascaderViewItem`：
 
-- `:dropdownopen`、`:error`、`:warning`、`:pressed`。
+- `:dropdownopen`、native validation `:error`、AtomUI warning `:warning`、`:pressed`。
 - AddOnDecoratedBox variant 伪类：`:outlined`、`:filled`、`:borderless`。
 - `CascaderViewItem` 使用 `:expanded`、`:checked`、`:selected` 和 checkbox toggle type 伪类。
 
@@ -147,7 +150,7 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -168,7 +171,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 默认值
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:162`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:59`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -190,9 +193,9 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 悬停展开
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:185`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:188`
 
-Gallery key：`ExamplesContent` / item `2`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <atom:Cascader
@@ -212,9 +215,9 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 禁用选项
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:208`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:211`
 
-Gallery key：`ExamplesContent` / item `3`
+Gallery key：`ExamplesContent` / item `4`
 
 ```axaml
 <atom:Cascader
@@ -263,7 +266,7 @@ input display + Form value
 
 - `IsMultiple=true` 时使用 `SelectedOptions` 作为真实值，并让内部 `CascaderView` 进入 checkable 模式。
 - `SelectedOptions` 保留真实勾选集合，`ShowCheckedStrategy` 只计算 `EffectiveSelectedOptions`，用于 tag 展示。
-- `SelectedOptions` 支持外部集合替换，也支持 `INotifyCollectionChanged` 集合原地变化，并同步刷新 tag、计数、空状态、Form value 和内部 `CascaderView` 勾选状态。
+- `SelectedOptions` 支持外部集合替换，也支持 `INotifyCollectionChanged` 集合的原地 `Add`、`Remove`、`Replace`、`Move` 和 `Reset`；这些变化会同步刷新 tag、计数、空状态、Form value 和内部 `CascaderView` 勾选状态。
 - `MaxCount` 达到上限时，未选项通过 `IsMaxSelectReached` 进入受限状态；已选项仍可取消。
 - 关闭单个 tag 时，目标节点及其子孙会从 `SelectedOptions` 中移除。
 
@@ -284,7 +287,7 @@ Form：
 
 - 单选 Form value 为 `SelectedOption`。
 - 多选 Form value 为 `SelectedOptions`。
-- Form 校验错误写入同一份 Avalonia `DataValidationErrors`，不维护独立错误状态。
+- Form 校验错误写入同一份 Avalonia `DataValidationErrors`；`SelectedOption` 和 `SelectedOptions` 不维护独立错误状态。
 - Form clear 会按当前 `IsMultiple` 清空对应选择状态。
 
 ## 主题与 Design Token
@@ -300,6 +303,8 @@ Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、Casc
 | `CascaderToken` | Cascader 输入宽度、列宽、弹层高度、选项高度、padding、状态色和过滤高亮。 |
 | `PopupHostToken` | popup margin、阴影和圆角。 |
 | SharedToken | 字体、输入高度、图标尺寸、placeholder、disabled、motion 和全局 spacing。 |
+
+单选路径和多选 tag 的完整内容提示复用共享 `OverflowTip` attached behavior。主题只把 `IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` 和当前展示文本传给显示节点；tooltip 仅在视觉溢出时写入，且不覆盖用户手动声明的 `ToolTip.Tip`。
 
 主题不可破坏的视觉边界：
 
@@ -343,6 +348,7 @@ Token 来源：
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderAddOnDecoratedBox.cs`：Cascader 输入壳体扩展。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderViewPanel.cs`：弹层 frame 布局与边框测量。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderViewFilterList.cs`、`CascaderViewFilterListItemData.cs`：过滤结果列表和路径数据。
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选路径和多选 tag 复用。
 - `src/AtomUI.Desktop.Controls/Cascader/Themes/*.axaml`：Cascader、CascaderView、CascaderViewItem、level list 和 filter list 主题。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderToken.cs`：Cascader 专属 Token。
 

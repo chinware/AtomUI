@@ -60,7 +60,7 @@ effective state 由几何状态、颜色状态和动效状态组成：
 
 - 几何状态：优先读取 `IBorderBeamAwareControl`，未命中时使用 BorderBeam 自身 `BorderThickness` 与 `CornerRadius`。
 - 颜色状态：`ColorStops` 优先，其次 `Color`，最后使用主题默认渐变。
-- 动效状态：`IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行。
+- 动效状态：实例级 `IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行；默认主题不从全局 `EnableMotion` 覆盖该属性。
 
 `Progress` 是 internal animation state。它不形成公共 API，不参与样式选择器，不允许外部绑定。
 
@@ -82,7 +82,7 @@ effective state 由几何状态、颜色状态和动效状态组成：
 
 - 几何状态：优先读取 `IBorderBeamAwareControl`，未命中时使用 BorderBeam 自身 `BorderThickness` 与 `CornerRadius`。
 - 颜色状态：`ColorStops` 优先，其次 `Color`，最后使用主题默认渐变。
-- 动效状态：`IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行。
+- 动效状态：实例级 `IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行；默认主题不从全局 `EnableMotion` 覆盖该属性。
 
 `Progress` 是 internal animation state。它不形成公共 API，不参与样式选择器，不允许外部绑定。
 
@@ -109,7 +109,7 @@ BorderBeam Theme 只负责装配内容层和流光 presenter，并设置默认 t
 
 Token 边界：
 
-BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽、圆角和 motion 开关优先复用 SharedToken，不在 BorderBeamToken 中重复定义全局语义。
+BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽和圆角优先复用 SharedToken；motion 开关保留为实例行为，不由 BorderBeamToken 或 `SharedToken.EnableMotion` 决定。
 
 BorderBeamToken 服务以下主题和控件：
 
@@ -143,7 +143,7 @@ BorderBeam 设计和实现必须保持以下不变量：
 - beam presenter 不参与命中测试。
 - 感知接口只暴露边框厚度和圆角。
 - content 替换时旧事件订阅必须释放。
-- motion 关闭或 detached 后不持续 invalidation。
+- 实例 motion 关闭或 detached 后不持续 invalidation。
 - 渐变尾迹连续，圆角转弯处不分段卡顿。
 - 非统一圆角只影响边框环裁剪，不直接拆分运动路径。
 - public `ColorStops.Percent` 仍按 `0~100` 解释。
