@@ -159,7 +159,7 @@
             <Setter Property="Foreground" Value="{atom:WindowTitleBarTokenResource InactiveColor}" />
         </Style>
 
-        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+        <Setter Property="Background" Value="{atom:WindowTitleBarTokenSharedTokenResource ColorBgContainer}" />
 
         <Style Selector="^ /template/ ContentPresenter#PART_Logo">
             <Setter Property="Width" Value="{atom:WindowTitleBarTokenResource LogoSize}" />

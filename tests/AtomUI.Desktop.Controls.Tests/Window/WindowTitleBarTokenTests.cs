@@ -207,7 +207,9 @@ public class WindowTitleBarTokenTests
         var themeSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowsCaptionButtonTheme.axaml"));
 
-        groupSource.ShouldContain("windowsMaximizeButton.InvalidatePointerOverVisualState();");
+        groupSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualStates();");
+        groupSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualState(_maximizeButton);");
+        groupSource.ShouldContain("windowsCaptionButton.InvalidatePointerOverVisualState();");
         buttonSource.ShouldContain("IsPointerOverSuppressed = IsPointerOver;");
         buttonSource.ShouldContain("protected override void OnPointerMoved(PointerEventArgs e)");
         themeSource.ShouldContain("^[IsPointerOverSuppressed=False]:pointerover");

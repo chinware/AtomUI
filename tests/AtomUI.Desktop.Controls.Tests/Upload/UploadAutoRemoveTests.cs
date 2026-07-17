@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reflection;
 using Avalonia.Threading;
 using AtomUI.Controls;
@@ -16,7 +17,7 @@ public class UploadAutoRemoveTests
     }
 
     [Fact]
-    public async Task SuccessAutoRemoveDelay_Removes_Successful_File_After_Delay()
+    public void SuccessAutoRemoveDelay_Removes_Successful_File_After_Delay()
     {
         var upload = CreateUploadWithFiles(out var files);
         upload.SuccessAutoRemoveDelay = TimeSpan.FromMilliseconds(20);
@@ -25,11 +26,11 @@ public class UploadAutoRemoveTests
 
         item.Status = FileUploadStatus.Success;
 
-        await WaitUntilAsync(() => files.Count == 0);
+        WaitUntil(() => files.Count == 0);
     }
 
     [Fact]
-    public async Task Status_Changing_Away_From_Success_Cancels_Auto_Remove()
+    public void Status_Changing_Away_From_Success_Cancels_Auto_Remove()
     {
         var upload = CreateUploadWithFiles(out var files);
         upload.SuccessAutoRemoveDelay = TimeSpan.FromMilliseconds(20);
@@ -38,14 +39,13 @@ public class UploadAutoRemoveTests
 
         item.Status = FileUploadStatus.Success;
         item.Status = FileUploadStatus.Pending;
-        await Task.Delay(60, TestContext.Current.CancellationToken);
-        Dispatcher.UIThread.RunJobs();
+        PumpDispatcherFor(TimeSpan.FromMilliseconds(60));
 
         files.Count.ShouldBe(1);
     }
 
     [Fact]
-    public async Task Manual_Remove_Cancels_Pending_Auto_Remove()
+    public void Manual_Remove_Cancels_Pending_Auto_Remove()
     {
         var upload = CreateUploadWithFiles(out var files);
         upload.SuccessAutoRemoveDelay = TimeSpan.FromMilliseconds(50);
@@ -53,15 +53,15 @@ public class UploadAutoRemoveTests
         files.Add(item);
 
         item.Status = FileUploadStatus.Success;
-        await upload.RemoveFileAsync(item.Id, TestContext.Current.CancellationToken);
-        await Task.Delay(80, TestContext.Current.CancellationToken);
-        Dispatcher.UIThread.RunJobs();
+        upload.RemoveFileAsync(item.Id, TestContext.Current.CancellationToken)
+              .IsCompletedSuccessfully.ShouldBeTrue();
+        PumpDispatcherFor(TimeSpan.FromMilliseconds(80));
 
         files.Count.ShouldBe(0);
     }
 
     [Fact]
-    public async Task Replacing_Files_Cancels_Pending_Auto_Remove_For_Old_Items()
+    public void Replacing_Files_Cancels_Pending_Auto_Remove_For_Old_Items()
     {
         var upload = CreateUploadWithFiles(out var oldFiles);
         upload.SuccessAutoRemoveDelay = TimeSpan.FromMilliseconds(20);
@@ -70,14 +70,13 @@ public class UploadAutoRemoveTests
 
         item.Status  = FileUploadStatus.Success;
         upload.Files = new ObservableCollection<UploadFileItem>();
-        await Task.Delay(60, TestContext.Current.CancellationToken);
-        Dispatcher.UIThread.RunJobs();
+        PumpDispatcherFor(TimeSpan.FromMilliseconds(60));
 
         GetPendingAutoRemoveCount(upload).ShouldBe(0);
     }
 
     [Fact]
-    public async Task SetFormValue_Cancels_Pending_Auto_Remove_For_Replaced_Items()
+    public void SetFormValue_Cancels_Pending_Auto_Remove_For_Replaced_Items()
     {
         var upload = CreateUploadWithFiles(out var files);
         upload.SuccessAutoRemoveDelay = TimeSpan.FromMilliseconds(20);
@@ -86,8 +85,7 @@ public class UploadAutoRemoveTests
 
         item.Status = FileUploadStatus.Success;
         ((IFormItemAware)upload).SetFormValue(new[] { CreateItem() });
-        await Task.Delay(60, TestContext.Current.CancellationToken);
-        Dispatcher.UIThread.RunJobs();
+        PumpDispatcherFor(TimeSpan.FromMilliseconds(60));
 
         GetPendingAutoRemoveCount(upload).ShouldBe(0);
     }
@@ -123,7 +121,7 @@ public class UploadAutoRemoveTests
         return ((IDictionary)delays).Count;
     }
 
-    private static Task WaitUntilAsync(Func<bool> condition)
+    private static void WaitUntil(Func<bool> condition)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(3));
         while (!condition())
@@ -132,7 +130,17 @@ public class UploadAutoRemoveTests
             Dispatcher.UIThread.RunJobs();
             Thread.Sleep(10);
         }
+    }
 
-        return Task.CompletedTask;
+    private static void PumpDispatcherFor(TimeSpan duration)
+    {
+        var stopwatch = Stopwatch.StartNew();
+        while (stopwatch.Elapsed < duration)
+        {
+            Dispatcher.UIThread.RunJobs();
+            Thread.Sleep(5);
+        }
+
+        Dispatcher.UIThread.RunJobs();
     }
 }
