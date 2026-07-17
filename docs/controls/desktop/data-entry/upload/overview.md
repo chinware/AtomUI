@@ -205,7 +205,7 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Tok
 - Form 读取 `FileValueMode` 投影结果；Form 写入应更新 `Files` 内容而不是替换集合实例。
 - `DataValidationErrors` 是 error 状态来源，Upload 不独立维护另一套 error 机制。
 
-## 7. 兼容性边界
+## 7. 兼容性不变量
 
 本次重构是 L3 breaking change。维护 Upload 时必须保持以下新不变量：
 
@@ -262,6 +262,17 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Tok
 - [Upload 桌面版实现原理](implementation.md)
 - [Upload Token 设计](token.md)
 - [Upload Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Upload` | 上传状态协调器，拥有文件集合、上传队列、Form 值投影和生命周期。 | `Files`、`UploadTransport`、`FileValueMode` | `UploadToken`、SharedToken | stable |
+| `trigger` | `TriggerContent` / `UploadTrigger` | 承载文件或目录选择入口，只提交选择动作，不持有上传状态。 | `TriggerContent`、`SourceKind`、`SelectFilesAsync()`、`SelectDirectoriesAsync()` | Upload trigger 主题资源 | stable |
+| `drop-zone` | `UploadDropZone` | 接收拖拽文件并提交给最近的 `Upload`。 | `EnqueueFilesAsync()` | Upload drop-zone 主题资源 | stable |
+| `list` | `UploadList` | 渲染 `Files` 并拥有列表滚动边界，不创建第二份文件状态。 | `Files`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | Upload list 主题资源 | internal-observable |
+| `item` | `AbstractUploadListItem` 派生容器 | 投射单个 `UploadFileItem` 的状态、进度和操作入口。 | `UploadFileItem.Status`、`Progress`、`ErrorMessage`、`Result` | Upload item 主题资源 | internal-observable |
+| `validation` | `Upload` Form / validation 投影 | 按 `FileValueMode` 输出 Form 值，并把错误投射到 `DataValidationErrors`。 | `FileValueMode`、`IFormItemAware` | SharedToken、Form Token | stable |
 
 LLMS 导出来源：
 

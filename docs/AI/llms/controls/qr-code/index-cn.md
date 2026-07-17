@@ -75,7 +75,7 @@ QRCode 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:35`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -91,7 +91,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 带 Icon 的例子
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:154`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:50`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -103,7 +103,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 不同的状态
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:166`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:62`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -117,7 +117,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 自定义颜色
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:241`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:137`
 
 Gallery key：`ExamplesContent` / item `5`
 

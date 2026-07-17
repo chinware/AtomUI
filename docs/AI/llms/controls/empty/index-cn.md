@@ -73,7 +73,7 @@ Empty 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:35`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -83,7 +83,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:150`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:46`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -99,7 +99,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 无描述
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:183`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:79`
 
 Gallery key：`ExamplesContent` / item `3`
 

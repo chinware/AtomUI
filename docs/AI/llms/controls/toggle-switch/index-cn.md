@@ -80,7 +80,7 @@ ToggleSwitch 的事件与命令以公共 API、Avalonia 基类契约和 Gallery 
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:141`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -92,7 +92,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 禁用
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:154`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:50`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -108,7 +108,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:205`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:101`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -126,7 +126,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 加载中
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:224`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:120`
 
 Gallery key：`ExamplesContent` / item `4`
 

@@ -78,7 +78,7 @@ Rate 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -86,11 +86,32 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:Rate/>
 ```
 
-### 半星
+### 双向绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:151`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:48`
 
 Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:Rate Value="{Binding TwoWayValue}" />
+    <atom:TextBlock Text="{Binding TwoWayValueSummary}" />
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetFourStarsCommand}"
+                     Content="设为 4 星" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearTwoWayValueCommand}"
+                     Content="清空" />
+    </StackPanel>
+</StackPanel>
+```
+
+### 半星
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:70`
+
+Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
 <atom:Rate DefaultValue="3.5" IsAllowHalf="True"/>
@@ -98,9 +119,9 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 显示文案
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:162`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:81`
 
-Gallery key：`ExamplesContent` / item `2`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <StackPanel Orientation="Vertical" Spacing="10">
@@ -109,16 +130,6 @@ Gallery key：`ExamplesContent` / item `2`
                ValueChanged="HandleValueChanged"/>
     <TextBlock Text="{Binding ActiveTooltip}"/>
 </StackPanel>
-```
-
-### 只读
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:178`
-
-Gallery key：`ExamplesContent` / item `3`
-
-```axaml
-<atom:Rate DefaultValue="2" IsEnabled="False"/>
 ```
 
 ## 状态模型
@@ -137,6 +148,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `Rate.Value` 是评分控件的外部值 owner，默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；用户评分、键盘调整、Form value 和 ViewModel 更新必须收敛到同一份数值状态。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

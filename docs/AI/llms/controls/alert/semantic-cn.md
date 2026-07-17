@@ -17,7 +17,7 @@
 来源：`src/AtomUI.Desktop.Controls/Alert/Themes/AlertTheme.axaml`
 
 ```xml
-<Border>
+<PixelAlignedBorder>
     <DockPanel Name="RootLayout">
         <Panel>
             <CheckCircleFilled Name="SuccessIcon" />
@@ -33,7 +33,7 @@
             <Label Name="DescriptionLabel" />
         </StackPanel>
     </DockPanel>
-</Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -45,7 +45,7 @@
 ```text
 Alert
   -> Alert (control theme, AlertTheme.axaml)
-     -> Border (template-stable)
+     -> PixelAlignedBorder (template-stable)
         -> DockPanel#RootLayout (template-stable)
            -> Panel (template-stable)
               -> CheckCircleFilled#SuccessIcon (template-stable)

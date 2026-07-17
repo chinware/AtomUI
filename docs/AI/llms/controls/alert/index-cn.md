@@ -73,7 +73,7 @@ Alert 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -85,7 +85,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 更多类型
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:153`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:49`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -100,7 +100,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 含描述信息
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:187`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:83`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -123,7 +123,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 图标
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:212`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:108`
 
 Gallery key：`ExamplesContent` / item `4`
 

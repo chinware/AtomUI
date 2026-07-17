@@ -85,7 +85,7 @@ item API：
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -103,7 +103,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 块级分段控制器
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:159`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:55`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -119,7 +119,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 禁用
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:176`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:72`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -142,7 +142,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### Segmented 尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:200`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:96`
 
 Gallery key：`ExamplesContent` / item `3`
 

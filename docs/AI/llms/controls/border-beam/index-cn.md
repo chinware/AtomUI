@@ -28,7 +28,7 @@ BorderBeam 的设计语言是“非业务状态的动态强调”。它通过沿
 | 容器边界 | 流光贴合容器有效边框和圆角。 | `IBorderBeamAwareControl` 或显式 `BorderThickness` / `CornerRadius`。 |
 | 品牌强调 | 默认颜色来自主题主色。 | `ColorPrimary`、`ColorPrimaryHover`。 |
 | 渐变尾迹 | 用户停靠点映射到可见段，尾部保留透明衰减。 | `ColorStops.Percent` 映射到可见段。 |
-| 动效可控 | 装饰效果遵守全局动效开关。 | `IsMotionEnabled`、`EnableMotion`。 |
+| 持续流动 | 默认流光不跟随全局动效开关关闭，保持装饰强调一致可见。 | `IsMotionEnabled` 实例开关。 |
 
 BorderBeam 不应绘制成一个新的实体边框，也不应让被装饰控件看起来拥有新的可交互状态。流光层应贴合容器边界，透明尾迹应保持连续，圆角转弯处不应出现断裂。
 
@@ -46,7 +46,7 @@ BorderBeam 控件 API：
 | `Outset` | `Thickness?` | 流光层相对有效边界的外扩距离；`null` 时按有效边框厚度计算。 |
 | `BorderThickness` | `Thickness` | 未命中感知接口时使用的边框厚度。 |
 | `CornerRadius` | `CornerRadius` | 未命中感知接口时使用的圆角。 |
-| `IsMotionEnabled` | `bool` | 控制流光动画是否启用。 |
+| `IsMotionEnabled` | `bool` | 控制当前实例的流光动画是否启用；默认值不绑定全局 motion 设置。 |
 | `Duration` | `TimeSpan` | 流光运行一周的时长。 |
 | `BeamSize` | `double` | 流光高光段基准尺寸。 |
 
@@ -87,7 +87,7 @@ event EventHandler? BorderBeamGeometryChanged;
 
 ### 基础
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -131,7 +131,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 非统一圆角
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:184`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:81`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -141,12 +141,12 @@ Gallery key：`ExamplesContent` / item `1`
                  BorderThickness="1"
                  CornerRadius="20,20,0,0"
                  HorizontalAlignment="Left">
-    <Border ClipToBounds="True"
-            CornerRadius="20,20,0,0"
-            BorderThickness="1"
-            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-            Background="{atom:SharedTokenResource ColorBgContainer}"
-            Padding="24">
+    <atom:PixelAlignedBorder ClipToBounds="True"
+                             CornerRadius="20,20,0,0"
+                             BorderThickness="1"
+                             BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                             Background="{atom:SharedTokenResource ColorBgContainer}"
+                             Padding="24">
         <StackPanel Spacing="8">
             <atom:TextBlock Text="Non-uniform radius"
                             FontWeight="Bold" />
@@ -154,13 +154,13 @@ Gallery key：`ExamplesContent` / item `1`
                             TextWrapping="Wrap"
                             Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
         </StackPanel>
-    </Border>
+    </atom:PixelAlignedBorder>
 </atom:BorderBeam>
 ```
 
 ### 自定义颜色
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:215`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:112`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -223,7 +223,7 @@ effective state 由几何状态、颜色状态和动效状态组成：
 
 - 几何状态：优先读取 `IBorderBeamAwareControl`，未命中时使用 BorderBeam 自身 `BorderThickness` 与 `CornerRadius`。
 - 颜色状态：`ColorStops` 优先，其次 `Color`，最后使用主题默认渐变。
-- 动效状态：`IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行。
+- 动效状态：实例级 `IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行；默认主题不从全局 `EnableMotion` 覆盖该属性。
 
 `Progress` 是 internal animation state。它不形成公共 API，不参与样式选择器，不允许外部绑定。
 
@@ -250,7 +250,7 @@ BorderBeam Theme 只负责装配内容层和流光 presenter，并设置默认 t
 
 Token 来源：
 
-BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽、圆角和 motion 开关优先复用 SharedToken，不在 BorderBeamToken 中重复定义全局语义。
+BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽和圆角优先复用 SharedToken；motion 开关保留为实例行为，不由 BorderBeamToken 或 `SharedToken.EnableMotion` 决定。
 
 BorderBeamToken 服务以下主题和控件：
 
@@ -264,7 +264,7 @@ BorderBeamToken 不承载 `Content`、`Color`、`ColorStops`、`Outset`、`Progr
 
 BorderBeam 不使用反射，不访问内容控件 internal 属性或 template part。集成通过 `IBorderBeamAwareControl` 完成。
 
-未启用 motion 时不应启动循环动画。动画取消资源必须在 detached、模板替换、content 替换和 motion 关闭时释放。
+实例级 motion 未启用时不应启动循环动画。动画取消资源必须在 detached、模板替换、content 替换和实例 motion 关闭时释放。
 
 ColorStops 使用实例级集合，避免共享默认集合。集合变更应触发渐变重建和 presenter 重绘，不应重建整个模板。
 

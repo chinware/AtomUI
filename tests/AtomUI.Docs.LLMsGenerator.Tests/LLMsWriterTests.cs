@@ -145,8 +145,8 @@ public class LLMsWriterTests
         var models = ReadAllModels();
         var files = LLMsDocumentationWriter.WriteAll(models);
 
-        files.Count(file => file.Path.EndsWith("/index-cn.md", StringComparison.Ordinal)).ShouldBe(76);
-        files.Count(file => file.Path.EndsWith("/semantic-cn.md", StringComparison.Ordinal)).ShouldBe(76);
+        files.Count(file => file.Path.EndsWith("/index-cn.md", StringComparison.Ordinal)).ShouldBe(models.Count);
+        files.Count(file => file.Path.EndsWith("/semantic-cn.md", StringComparison.Ordinal)).ShouldBe(models.Count);
         files.ShouldContain(file => file.Path == "docs/AI/llms/llms.txt");
         files.ShouldContain(file => file.Path == "docs/AI/llms/llms-full-cn.txt");
         files.ShouldContain(file => file.Path == "docs/AI/llms/llms-semantic-cn.md");
@@ -157,10 +157,10 @@ public class LLMsWriterTests
         index.ShouldNotContain("components/");
 
         var full = files.Single(file => file.Path == "docs/AI/llms/llms-full-cn.txt").Content;
-        CountSourceMarkers(full, "index-cn.md").ShouldBe(76);
+        CountSourceMarkers(full, "index-cn.md").ShouldBe(models.Count);
 
         var semantic = files.Single(file => file.Path == "docs/AI/llms/llms-semantic-cn.md").Content;
-        CountSourceMarkers(semantic, "semantic-cn.md").ShouldBe(76);
+        CountSourceMarkers(semantic, "semantic-cn.md").ShouldBe(models.Count);
     }
 
     private static ControlDocModel ReadButtonModel()

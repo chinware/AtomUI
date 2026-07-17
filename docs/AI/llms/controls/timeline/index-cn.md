@@ -76,7 +76,7 @@ Timeline 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -90,7 +90,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 颜色
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:153`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:49`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -106,7 +106,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 最后节点和反转
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:168`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:64`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -131,7 +131,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 标签
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:208`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:104`
 
 Gallery key：`ExamplesContent` / item `4`
 

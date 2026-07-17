@@ -78,7 +78,7 @@ Menu 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:141`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -100,7 +100,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 可滚动菜单
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:226`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:122`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -149,7 +149,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 通过 ItemsSource 生成 MenuItem
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:276`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:172`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -167,7 +167,7 @@ Gallery key：`ExamplesContent` / item `4`
 
 ### 通过 ItemsSource 生成内联 NavMenu
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:295`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:191`
 
 Gallery key：`ExamplesContent` / item `5`
 
@@ -201,6 +201,15 @@ Public API / inherited command / item source / user input
 - open/close、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+
+子菜单的 pointer 交互采用独立的 hover intent 模型：
+
+- `SelectedItem` 表达菜单导航和当前项状态，`IsSubMenuOpen` 表达已提交的弹层状态；二者都不能作为延迟任务是否仍然有效的唯一依据。
+- pointer 进入带子菜单的非顶层项时，只为当前目标建立延迟打开意图。pointer 在延迟完成前离开该项时，打开意图立即失效，子菜单不得在离开后继续弹出。
+- 已打开子菜单的关闭延迟只用于允许 pointer 从父项移动到其弹层。pointer 重新进入父项、子菜单弹层或其后代项时，待执行的关闭意图必须失效。
+- 同一目标不能同时持有互相矛盾的打开和关闭意图。不同兄弟项切换时可以同时存在“关闭旧项”和“打开新项”，但每类意图最多只有一个当前目标。
+- keyboard、access key 和 pointer press 触发的显式打开不经过 hover 延迟，不得被旧 hover callback 覆盖或回滚。
+- 菜单关闭、窗口失活、宿主解除连接或交互处理器 detach 时，所有未完成 hover intent 必须统一失效。
 
 ## 主题与 Design Token
 
@@ -242,12 +251,15 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
 - Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
+- hover intent 调度只使用显式类型、委托和 `IDisposable` 生命周期，不依赖反射或运行时类型扫描。
 
 性能边界：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- 默认调度路径在 intent 失效时停止实际 timer；兼容的外部 delay runner 至少必须通过原子 callback clearing/release 使 callback 失效，避免过期任务修改状态并保留 owner graph。
+- 交互处理器只保留当前 pending open/close 目标，不维护随 pointer 移动增长的历史队列。
 
 ## 源码索引
 

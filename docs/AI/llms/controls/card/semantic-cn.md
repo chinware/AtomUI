@@ -18,14 +18,14 @@
 
 ```xml
 <Panel>
-    <Border Name="Frame" />
+    <PixelAlignedBorder Name="Frame" />
     <DockPanel>
-        <Border Name="HeaderFrame">
+        <PixelAlignedBorder Name="HeaderFrame">
             <DockPanel>
                 <ContentPresenter Name="HeaderExtra" />
                 <ContentPresenter Name="TitlePresenter" />
             </DockPanel>
-        </Border>
+        </PixelAlignedBorder>
         <CardActionPanel Name="PART_ActionPanel" />
         <Border Name="CoverFrame">
             <ContentPresenter Name="CoverContentPresenter" />
@@ -65,9 +65,9 @@ Card
      -> TabControl#PART_TabControl (template-stable)
   -> Card (control theme, CardTheme.axaml)
      -> Panel (template-stable)
-        -> Border#Frame (template-stable)
+        -> PixelAlignedBorder#Frame (template-stable)
         -> DockPanel (template-stable)
-           -> Border#HeaderFrame (template-stable)
+           -> PixelAlignedBorder#HeaderFrame (template-stable)
               -> DockPanel (template-stable)
                  -> ContentPresenter#HeaderExtra (internal-observable)
                  -> ContentPresenter#TitlePresenter (internal-observable)
@@ -102,9 +102,9 @@ Card
 | `PART_TabControl` | template node (TabControl) | `CardTabsContentTheme.axaml` | CardTabsContent | `IsMotionEnabled`, `SizeType`, `TabBarExtraContent`, `TabBarExtraContentTemplate`, `TabItemTemplate`, `TabItemsSource` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Card` | control theme | `CardTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentTemplate`, `CornerRadius` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `CardTheme.axaml` | Card | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (Border) | `CardTheme.axaml` | Card | `Background`, `BorderBrush`, `BoxShadow`, `EffectiveBorderThickness`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `CardTheme.axaml` | Card | `Background`, `BorderBrush`, `BoxShadow`, `EffectiveBorderThickness`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DockPanel` | template node (DockPanel) | `CardTheme.axaml` | Card | `Content`, `ContentTemplate`, `CornerRadius`, `Cover`, `CoverTemplate`, `Extra` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `HeaderFrame` | template node (Border) | `CardTheme.axaml` | Card | `Extra`, `ExtraTemplate`, `Header`, `HeaderBorderThickness`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `HeaderFrame` | template node (PixelAlignedBorder) | `CardTheme.axaml` | Card | `Extra`, `ExtraTemplate`, `Header`, `HeaderBorderThickness`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderExtra` | template node (ContentPresenter) | `CardTheme.axaml` | Card | `Extra`, `ExtraTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `TitlePresenter` | template node (ContentPresenter) | `CardTheme.axaml` | Card | `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ActionPanel` | template node (CardActionPanel) | `CardTheme.axaml` | Card | `CornerRadius`, `IsActionsPanelVisible`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

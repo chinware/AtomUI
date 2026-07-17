@@ -78,7 +78,7 @@ ButtonSpinner 的公共契约由 public/protected 类型成员、Avalonia 属性
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -93,7 +93,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 按钮微调器尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:156`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:52`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -155,7 +155,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 不同形态
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:219`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:115`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -184,7 +184,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 禁用状态
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:249`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:145`
 
 Gallery key：`ExamplesContent` / item `3`
 

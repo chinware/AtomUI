@@ -62,7 +62,7 @@ Slider
 | `:vertical` | 当前为垂直布局。 |
 | `:pressed` | Slider 处于 pressed 状态，由 PressedMixin 维护。 |
 
-Form 集成以 `IsRangeMode` 决定值模型：单值模式读取和设置 `Value`，范围模式读取和设置 `RangeValue`。Slider 不把 tooltip 文本、mark 标签或格式化字符串作为表单值。
+Form 集成以 `IsRangeMode` 决定值模型：单值模式读取和设置 `Value`，范围模式读取和设置 `RangeValue`。`RangeValue` 是用户拥有的受控值，默认双向绑定；绑定错误和 Form error 都通过 Avalonia `DataValidationErrors` 投射。Slider 不把 tooltip 文本、mark 标签或格式化字符串作为表单值。
 
 ## State Flow
 
@@ -175,6 +175,7 @@ SliderToken 不承载以下状态：
 - 模板重新应用时旧 pointer handler 必须释放。
 - `SliderTrack` detach 时释放全局 input subscription。
 - `RangeValue` 必须保持非 NaN、非 Infinity，并裁剪到 `[Minimum, Maximum]`。
+- `RangeValue` 作为范围模式 Form 值必须默认 `TwoWay`，并在绑定验证失败时写入控件自身的 Avalonia `DataValidationErrors`。
 - `SliderRangeValue.Parse` 必须拒绝起始值大于结束值的表达式。
 - `Marks` 改变后必须重新测量 mark 标签。
 - `IsIncluded=false` 只影响 active track / active mark 绘制，不影响值计算和 mark 命中。

@@ -94,12 +94,12 @@ Select
 | `PART_DefaultPanel` | template node (SelectWrapPanel) | `SelectTagAwareTextBoxTheme.axaml` | SelectTagAwareTextBox | `IsResponsiveTagMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_MaxCountAwarePanel` | template node (SelectMaxTagAwarePanel) | `SelectTagAwareTextBoxTheme.axaml` | SelectTagAwareTextBox | `IsResponsiveTagMode`, `MaxTagCount` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SelectTag` | control theme | `SelectTagTheme.axaml` | Select | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Select` | control theme | `SelectTheme.axaml` | 用户代码 / 控件宿主 | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `Height`, `IsDropDownOpen` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `SelectTheme.axaml` | Select | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `Height`, `IsDropDownOpen` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (SelectAddOnDecoratedBox) | `SelectTheme.axaml` | Select | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `Height`, `IsDropDownOpen` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Select` | control theme | `SelectTheme.axaml` | 用户代码 / 控件宿主 | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `FontFamily` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `SelectTheme.axaml` | Select | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `FontFamily` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (SelectAddOnDecoratedBox) | `SelectTheme.axaml` | Select | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `FontFamily` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PlaceholderText` | template node (TextBlock) | `SelectTheme.axaml` | Select | `IsPlaceholderTextVisible`, `PlaceholderForeground`, `PlaceholderText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_SingleFilterInput` | template node (SelectFilterTextBox) | `SelectTheme.axaml` | Select | `PlaceholderForeground`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `SelectedOptionsBox` | template node (SelectResultOptionsBox) | `SelectTheme.axaml` | Select | `Height`, `IsDropDownOpen`, `IsEffectiveFilterEnabled`, `IsResponsiveTagMode`, `MaxTagCount`, `Mode` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_SingleFilterInput` | template node (SelectFilterTextBox) | `SelectTheme.axaml` | Select | `FontFamily`, `FontSize`, `FontStyle`, `FontWeight`, `IsShowOverflowTip`, `OverflowTipDelay` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `SelectedOptionsBox` | template node (SelectResultOptionsBox) | `SelectTheme.axaml` | Select | `Height`, `IsDropDownOpen`, `IsEffectiveFilterEnabled`, `IsResponsiveTagMode`, `IsShowOverflowTip`, `MaxTagCount` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_Popup` | template node (Popup) | `SelectTheme.axaml` | Select | `IsDropDownOpen`, `ShouldUseOverlayPopup` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
@@ -127,7 +127,9 @@ Select 的核心状态流：
 ```text
 OptionsSource / Options / OptionsLoader
       ↓
-Options ItemCollection
+用户选项源
+      ↓
+Effective options = 用户选项源 + Tags 运行时动态选项
       ↓
 SelectCandidateList
       ↓
@@ -142,7 +144,7 @@ Form value + SelectionChanged
 
 - `Single` 使用 `SelectedOption` 作为唯一表单值，内部单行过滤输入负责展示当前 `Header`。
 - `Multiple` 使用 `SelectedOptions` 作为表单值，已选项以 `SelectTag` 展示。
-- `Tags` 以 `Multiple` 为基础，始终启用有效过滤，并在过滤结果为空且输入非空时创建 `IsDynamicAdded=true` 的临时选项。
+- `Tags` 以 `Multiple` 为基础，始终启用有效过滤，并在过滤结果为空且输入非空时创建 `IsDynamicAdded=true` 的运行时动态选项。
 
 弹层交互优先级：
 
@@ -181,6 +183,8 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
 | `SelectToken` | 多选标签、候选项、popup padding 和输入 padding。 |
 
+选中结果的完整内容提示复用 `OverflowTip` attached behavior。模板只在单选文本和多选 tag 上声明 `IsShowOverflowTip` / `OverflowTipDelay` / `OverflowTipPlacement`，实际 tooltip 只在文本视觉宽度不足时写入 `ToolTip.Tip`，且不会覆盖用户手动设置的 tooltip。
+
 候选弹层内容采用懒创建模型。`PART_Popup` 属于模板稳定 part；`PopupFrame` 和 `PART_CandidateList` 在打开前由 C# 创建并设置 `TemplatedParent`，关闭或重新套用模板时释放引用和事件订阅。
 
 Token 边界：
@@ -199,8 +203,11 @@ SelectToken 不承载以下状态：
 维护 Select 时必须保持以下不变量：
 
 - `Mode=Single` 使用 `SelectedOption`，`Mode=Multiple/Tags` 使用 `SelectedOptions`。
+- `SelectedOption` 与 `SelectedOptions` 必须保持默认 `TwoWay` 绑定；`SelectedOptions` 绑定到 `INotifyCollectionChanged` 集合时，集合原地变化也必须刷新内部选择投影。
 - `SelectionChanged` 必须在选择属性变化时继续触发，并包含模式、旧值和新值。
-- `OptionsSource` 变化必须同步到内部 `Options`，并按 `ItemKey` 优先、`Content` 兜底映射已有选择。
+- `OptionsSource`、`Options` 和异步加载结果表达用户选项源；Tags 模式运行时动态选项不得写入这些用户选项源。
+- 候选列表必须使用用户选项源和 Tags 运行时动态选项合成后的有效选项源。
+- `OptionsSource` 变化必须按 `ItemKey` 优先、`Content` 兜底映射已有选择；已选 Tags 动态选项在没有正式选项可映射时必须保留。
 - `DefaultValues` 只在当前选择为空时应用。
 - `Tags` 模式必须保持有效过滤能力，并只在该模式下创建动态选项。
 - `MaxCount` 达到上限时，未选候选项不可继续选择，已选候选项仍可取消。
@@ -218,11 +225,13 @@ SelectToken 不承载以下状态：
 内部重构必须保持以下不变量：
 
 - `AbstractSelect` 继续持有输入壳体、弹层、Form、CompactSpace 和 Motion 的基础契约。
-- `Select` 继续持有选择、过滤、Tags 动态选项和异步加载状态。
+- `Select` 继续持有选择、过滤、用户选项源、Tags 运行时动态选项、有效候选选项和异步加载状态。
 - `OptionsSource` 写入不能破坏 `Options` 的内容集合语义。
+- Tags 运行时动态选项不能写入用户 `OptionsSource`，也不能写入 XAML 内容子项 `Options`。
+- 候选列表必须绑定到有效候选选项源，不能直接绑定到只读用户选项源。
 - 选择同步中的 `_ignoreSyncSelection` 只用于防止候选列表和 public selection 相互递归，必须通过成对 helper 恢复，不能吞掉外部选择变化。
 - `IgnorePropertyChange` 只用于内部恢复下拉开关状态，必须通过成对 helper 恢复，不能影响下一次外部 `IsDropDownOpen` 变化。
-- `Tags` 动态选项只在 `Tags` 模式创建和清理。
+- `Tags` 动态选项只在 `Tags` 模式创建和清理，生命周期由 Select 内部运行时动态选项集合拥有。
 - 单选过滤输入在弹层关闭时显示已选项文本，弹层打开且可过滤时清空为搜索输入。
 - 多选搜索输入关闭弹层时只读并清空。
 - 弹层取消事件必须能阻止打开或关闭。

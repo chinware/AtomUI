@@ -137,7 +137,7 @@ Button 的公共 API 是控件最重要的稳定契约。公共属性、事件�
 
 ### 按钮类型
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:147`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:43`
 
 SourceKey：`button-type`
 
@@ -153,7 +153,7 @@ SourceKey：`button-type`
 
 ### 按钮形状
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:165`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:61`
 
 SourceKey：`button-shape`
 
@@ -183,7 +183,7 @@ SourceKey：`button-shape`
 
 ### 通栏按钮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:422`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:318`
 
 SourceKey：`button-block`
 
@@ -199,7 +199,7 @@ SourceKey：`button-block`
 
 ### 危险按钮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:440`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:336`
 
 SourceKey：`button-danger`
 

@@ -17,11 +17,11 @@
 来源：`src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarTheme.axaml`
 
 ```xml
-<Border Name="PART_Frame">
+<PixelAlignedBorder Name="PART_Frame">
     <Panel Name="PART_Root">
         <CalendarItem Name="PART_CalendarItem" />
     </Panel>
-</Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -33,9 +33,11 @@
 ```text
 Calendar
   -> BaseCalendarButton (control theme, BaseCalendarButtonTheme.axaml)
-     -> ContentPresenter#PART_Content (template-stable)
+     -> PixelAlignedBorder (template-stable)
+        -> ContentPresenter#PART_Content (template-stable)
   -> BaseCalendarDayButton (control theme, BaseCalendarDayButtonTheme.axaml)
-     -> ContentPresenter#PART_Content (template-stable)
+     -> PixelAlignedBorder (template-stable)
+        -> ContentPresenter#PART_Content (template-stable)
   -> CalendarItem (item container control theme, CalendarItemTheme.axaml)
      -> Border#PART_ItemFrame (template-stable)
         -> DockPanel#PART_ItemRootLayout (template-stable)
@@ -48,7 +50,7 @@ Calendar
            -> Grid#PART_MonthView (template-stable)
            -> Grid#PART_YearView (template-stable)
   -> Calendar (control theme, CalendarTheme.axaml)
-     -> Border#PART_Frame (template-stable)
+     -> PixelAlignedBorder#PART_Frame (template-stable)
         -> Panel#PART_Root (template-stable)
            -> CalendarItem#PART_CalendarItem (template-stable)
   -> HeadTextButton (control theme, HeadTextButtonTheme.axaml)
@@ -61,9 +63,9 @@ Calendar
 | --- | --- | --- | --- | --- | --- | --- |
 | `Calendar` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `BaseCalendarButton` | control theme | `BaseCalendarButtonTheme.axaml` | Calendar | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_Content` | template node (ContentPresenter) | `BaseCalendarButtonTheme.axaml` | BaseCalendarButton | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Content` | template node (ContentPresenter) | `BaseCalendarButtonTheme.axaml` | BaseCalendarButton | `Content`, `ContentTemplate`, `FontSize`, `Foreground`, `HorizontalContentAlignment`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `BaseCalendarDayButton` | control theme | `BaseCalendarDayButtonTheme.axaml` | Calendar | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_Content` | template node (ContentPresenter) | `BaseCalendarDayButtonTheme.axaml` | BaseCalendarDayButton | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Content` | template node (ContentPresenter) | `BaseCalendarDayButtonTheme.axaml` | BaseCalendarDayButton | `Content`, `ContentTemplate`, `FontSize`, `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CalendarItem` | item container control theme | `CalendarItemTheme.axaml` | Calendar | `DayTitleHeight`, `IsMonthViewMode`, `IsMotionEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ItemFrame` | template node (Border) | `CalendarItemTheme.axaml` | CalendarItem | `DayTitleHeight`, `IsMonthViewMode`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemRootLayout` | template node (DockPanel) | `CalendarItemTheme.axaml` | CalendarItem | `DayTitleHeight`, `IsMonthViewMode`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -76,7 +78,7 @@ Calendar
 | `PART_MonthView` | template node (Grid) | `CalendarItemTheme.axaml` | CalendarItem | `DayTitleHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_YearView` | template node (Grid) | `CalendarItemTheme.axaml` | CalendarItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Calendar` | control theme | `CalendarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsMotionEnabled`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_Frame` | template node (Border) | `CalendarTheme.axaml` | Calendar | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsMotionEnabled`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Frame` | template node (PixelAlignedBorder) | `CalendarTheme.axaml` | Calendar | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsMotionEnabled`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Root` | template node (Panel) | `CalendarTheme.axaml` | Calendar | `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CalendarItem` | template node (CalendarItem) | `CalendarTheme.axaml` | Calendar | `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeadTextButton` | control theme | `HeadTextButtonTheme.axaml` | Calendar | `Background`, `Content`, `ContentTemplate`, `FontSize`, `FontWeight`, `Foreground` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |

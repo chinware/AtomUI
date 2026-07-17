@@ -48,6 +48,8 @@ ColorPicker 的公共契约由 public/protected 类型成员、Avalonia 属性�
 | 动效与异步 | `MouseEnterDelay`、`MouseLeaveDelay` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `ActivatedThumb`、`Components`、`DecreaseButton`、`Format`、`IncreaseButton`、`MaxHue`、`MaxSaturation`、`Maximum`、`MinHue`、`MinSaturation` 等 14 项 | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
+`ColorPicker.Value` 和 `GradientColorPicker.Value` 是用户拥有的当前值：纯色选择器使用 `Color?`，渐变选择器使用 `LinearGradientBrush?`。两个 `Value` CLR wrapper 均可公开设置，默认 `TwoWay` 绑定，并接入 Avalonia `DataValidationErrors`。清除按钮、Form clear 和外部绑定写入 `null` 都必须让 `Value` 变为 `null`，不能只清空触发器文字或色块视觉。
+
 稳定事件包括 `ClearRequest`、`GradientActiveStopChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 
 主要公开类型与枚举：
@@ -101,7 +103,7 @@ ColorPicker 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:35`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -109,11 +111,56 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:ColorPicker DefaultValue="#1677ff"/>
 ```
 
-### 触发器尺寸
+### Value 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:150`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:47`
 
 Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="12">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:ColorPicker Value="{Binding BoundColorValue}"
+                          IsTextVisible="True"
+                          IsClearEnabled="True" />
+        <atom:GradientColorPicker Value="{Binding BoundGradientValue}"
+                                  IsTextVisible="True"
+                                  IsClearEnabled="True" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="绑定颜色：" />
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="{Binding BoundColorValueText}" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="绑定渐变：" />
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="{Binding BoundGradientValueText}" />
+    </StackPanel>
+    <WrapPanel ItemSpacing="10" LineSpacing="8">
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetBoundColorValueCommand}"
+                     Content="设置颜色" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetBoundGradientValueCommand}"
+                     Content="设置渐变" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearBoundColorValueCommand}"
+                     Content="清空颜色" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearBoundGradientValueCommand}"
+                     Content="清空渐变" />
+    </WrapPanel>
+</StackPanel>
+```
+
+### 触发器尺寸
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:93`
+
+Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
 <StackPanel Orientation="Vertical" Spacing="10">
@@ -172,9 +219,9 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 线性渐变
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:212`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:155`
 
-Gallery key：`ExamplesContent` / item `2`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <StackPanel Orientation="Vertical" Spacing="10">
@@ -186,22 +233,6 @@ Gallery key：`ExamplesContent` / item `2`
             </LinearGradientBrush>
         </atom:GradientColorPicker.DefaultValue>
     </atom:GradientColorPicker>
-</StackPanel>
-```
-
-### 渲染触发器文本
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:232`
-
-Gallery key：`ExamplesContent` / item `3`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsClearEnabled="True"/>
-    <atom:ColorPicker Name="CustomRenderText"
-                      DefaultValue="#1677ff"
-                      IsTextVisible="True"
-                      AttachedToVisualTree="HandleCustomRenderTextAttached" />
 </StackPanel>
 ```
 
@@ -221,6 +252,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `Value`、trigger 色块、trigger 文本、picker presenter 和 Form 值必须由同一份 current value 派生；清空状态以 `Value=null` 为源头。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

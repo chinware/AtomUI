@@ -17,14 +17,15 @@
 来源：`src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`
 
 ```xml
-<Border Name="Frame">
+<PixelAlignedBorder Name="Frame">
     <Panel>
         <ScrollViewer Name="PART_ScrollViewer">
             <ItemsPresenter Name="ItemsPresenter" />
         </ScrollViewer>
         <ContentPresenter Name="EmptyIndicator" />
+        <Empty Name="DefaultEmptyIndicator" />
     </Panel>
-</Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -43,11 +44,12 @@ ListBox
               -> ContentPresenter#ContentPresenter (internal-observable)
               -> HighlightableTextBlock (template-stable)
   -> ListBox (control theme, ListBoxTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> Panel (template-stable)
            -> ScrollViewer#PART_ScrollViewer (template-stable)
               -> ItemsPresenter#ItemsPresenter (internal-observable)
            -> ContentPresenter#EmptyIndicator (internal-observable)
+           -> Empty#DefaultEmptyIndicator (template-stable)
   -> CandidateListItem (item container control theme, CandidateListItemTheme.axaml)
 ```
 
@@ -63,11 +65,12 @@ ListBox
 | `Panel` | template node (Panel) | `ListBoxItemTheme.axaml` | ListBoxItem | `Content`, `ContentTemplate`, `ContentText`, `FilterHighlightForeground`, `FilterHighlightStrategy`, `FilterHighlightWords` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentPresenter` | template node (ContentPresenter) | `ListBoxItemTheme.axaml` | ListBoxItem | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `IsFiltering`, `VerticalContentAlignment` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ListBox` | control theme | `ListBoxTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `EmptyIndicator`, `EmptyIndicatorPadding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `ListBoxTheme.axaml` | ListBox | `Background`, `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `EmptyIndicator`, `EmptyIndicatorPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Panel` | template node (Panel) | `ListBoxTheme.axaml` | ListBox | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsEffectiveEmptyVisible`, `ItemsPanel`, `ScrollViewer` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `ListBoxTheme.axaml` | ListBox | `Background`, `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `EmptyIndicator`, `EmptyIndicatorPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Panel` | template node (Panel) | `ListBoxTheme.axaml` | ListBox | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsDefaultEmptyIndicatorVisible`, `IsEffectiveEmptyVisible`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ScrollViewer` | template node (ScrollViewer) | `ListBoxTheme.axaml` | ListBox | `IsEffectiveEmptyVisible`, `ItemsPanel`, `ScrollViewer`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ItemsPresenter` | template node (ItemsPresenter) | `ListBoxTheme.axaml` | ListBox | `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `EmptyIndicator` | template node (ContentPresenter) | `ListBoxTheme.axaml` | ListBox | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsEffectiveEmptyVisible` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `DefaultEmptyIndicator` | template node (Empty) | `ListBoxTheme.axaml` | ListBox | `EmptyIndicatorPadding`, `IsDefaultEmptyIndicatorVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CandidateListItem` | item container control theme | `CandidateListItemTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 
 ## Template Parts

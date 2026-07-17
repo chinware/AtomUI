@@ -53,6 +53,7 @@ NumericUpDown 的公共 API 由继承的数值编辑 API 与 AtomUI 输入扩展
 | `ParsingNumberStyle` | `NumberStyles` | 文本解析规则。 |
 | `TextConverter` | `IValueConverter?` | 自定义 `Text` 与 `Value` 的双向转换器。 |
 | `AllowSpin` | `bool` | 是否允许按钮、键盘和鼠标滚轮触发步进。 |
+| `ShowButtonSpinner` | `bool` | 是否显示步进按钮；`Mode=Input` 控制浮动 Handle，`Mode=Spinner` 控制左右 action 段。 |
 
 String mode API：
 
@@ -69,7 +70,7 @@ AtomUI 输入扩展 API：
 | `SizeType` | `CustomizableSizeType` | 输入框尺寸密度；`Custom` 未显式覆盖时以 `Middle` 为视觉基线。 |
 | `IsCustomFontSize` | `bool` | 为 `true` 时内部 `TextBox` 不由 `SizeType` 字号样式覆盖 `FontSize`。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式。 |
-| `Status` | `InputControlStatus` | 输入反馈状态。 |
+| `Status` | `InputControlStatus` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
 | `IsAllowClear` | `bool` | 是否展示清除按钮。 |
 | `ClearIcon` | `PathIcon?` | 清除按钮图标。 |
 | `IsKeyboardEnabled` | `bool` | 是否允许方向键和 PageUp / PageDown 触发步进。 |
@@ -102,7 +103,7 @@ NumericUpDown 的事件与命令以公共 API、Avalonia 基类契约和 Gallery
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:146`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:42`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -112,7 +113,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 拨轮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:159`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:55`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -139,11 +140,38 @@ Gallery key：`ExamplesContent` / item `1`
 </StackPanel>
 ```
 
-### 字符串模式（高精度）
+### 隐藏步进按钮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:189`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:86`
 
 Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical"
+            Spacing="{atom:SharedTokenResource UniformlyMargin}">
+    <Grid ColumnDefinitions="*,*">
+        <atom:NumericUpDown Grid.Column="0"
+                            Minimum="1"
+                            Maximum="10"
+                            Value="3"
+                            ShowButtonSpinner="False" />
+    </Grid>
+    <Grid ColumnDefinitions="*,*">
+        <atom:NumericUpDown Grid.Column="0"
+                            Mode="Spinner"
+                            Minimum="1"
+                            Maximum="10"
+                            Value="3"
+                            ShowButtonSpinner="False" />
+    </Grid>
+</StackPanel>
+```
+
+### 字符串模式（高精度）
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:114`
+
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <StackPanel Orientation="Vertical" Spacing="10">
@@ -157,23 +185,6 @@ Gallery key：`ExamplesContent` / item `2`
         <Run Text="原始值：" />
         <Run Text="{Binding StringModeValue}" />
     </TextBlock>
-</StackPanel>
-```
-
-### 键盘行为
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:211`
-
-Gallery key：`ExamplesContent` / item `3`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:CheckBox Content="启用键盘"
-                   IsChecked="{Binding KeyboardEnabled}" />
-    <atom:NumericUpDown Value="1.2"
-                        Increment="0.1"
-                        IsKeyboardEnabled="{Binding KeyboardEnabled}"
-                        PlaceholderText="键盘已禁用" />
 </StackPanel>
 ```
 
@@ -216,7 +227,7 @@ IsEffectiveShowClearButton =
   && !string.IsNullOrEmpty(Text)
 ```
 
-`Mode` 只改变展示结构，不改变 `Value`、`Text`、`Minimum`、`Maximum`、`Increment`、`AllowSpin`、键盘、滚轮、Form 或 string mode 的数值语义。
+`Mode` 只改变展示结构，不改变 `Value`、`Text`、`Minimum`、`Maximum`、`Increment`、`AllowSpin`、`ShowButtonSpinner`、键盘、滚轮、Form 或 string mode 的数值语义。
 
 `SizeType=Custom` 进入自定义尺寸路径。用户未显式设置 `Height`、`FontSize`、`Padding` 等尺寸属性时，主题层应以 `Middle` 作为默认视觉基线；用户显式接管 `FontSize` 时，应通过 `IsCustomFontSize=true` 防止内部 `TextBox` 的 `SizeType` 字号样式覆盖用户设置。
 
@@ -226,8 +237,8 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 
 视觉层级要求：
 
-- `Mode=Input` 的默认模板不得预埋 spinner 模式左右按钮或无职责 wrapper。
-- `Mode=Spinner` 使用独立 `ControlTemplate`，不通过同一模板内两套视觉树加 `IsVisible` 切换实现。
+- `Mode=Input` 的默认模板不得预埋 spinner 模式左右按钮或无职责 wrapper；`ShowButtonSpinner=false` 时必须隐藏浮动 Handle。
+- `Mode=Spinner` 使用独立 `ControlTemplate`，不通过同一模板内两套视觉树加 `IsVisible` 切换实现；`ShowButtonSpinner=false` 时必须隐藏左右 action 段。
 - `ButtonSpinner` 是默认输入壳体边界，不应被普通 `Border` 或 `Grid` 包装替代。
 - `PART_TextBox` 的 `BorderThickness=0` 是为了避免内层 TextBox 与外层输入壳体重复绘制边框。
 - `PART_ClearButton` 与 `PART_InnerRightContentPresenter` 共用内部右侧 stack，必须保留顺序：清除按钮在用户内部右侧内容之前。

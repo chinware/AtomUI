@@ -97,7 +97,7 @@ Public API / inherited command / item source / user input
 
 - 普通模式使用 `Multiple | Toggle`：每个 item 可独立展开和收起。
 - 手风琴模式使用 `Single | Toggle`：打开目标项时关闭旧项，点击当前项时允许全部收起。
-- 普通模式切换到手风琴模式时，按视觉索引保留第一个已展开项，与 Ant Design `activeKey[0]` 语义一致。
+- 普通模式切换到手风琴模式时，按视觉索引保留第一个已展开项，保证切换后的单一展开状态确定且稳定。
 - Header、Icon、keyboard 和 pointer 输入最终进入同一个 selection 操作，不在输入处理器中直接维护展开状态。
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard 和 motion，不改变 selection。
 - 内容可见性、箭头方向和动效目标只从 `IsSelected` 派生；模板节点之间不得双向同步展开状态。

@@ -99,7 +99,7 @@ Frame border bounds + Header gap bounds
 Background / BorderBrush / BorderThickness / CornerRadius render state
 ```
 
-`HeaderIcon`、Header 字体、标题位置和 Header 内容变化会影响缺口尺寸或位置。`Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 改变会影响自绘边框和背景。
+`HeaderIcon`、Header 字体、标题位置和 Header 内容变化会影响缺口尺寸或位置。内容尺寸变化会通过模板根 `PART_Frame` 参与 GroupBox 的 measure pass，使自动高度随内容 `DesiredSize` 增长，同时仍尊重父容器可用空间和显式高度约束。`Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 改变会影响自绘边框和背景。
 
 ## Theme and Token Boundaries
 
@@ -130,6 +130,7 @@ GroupBox Token 不表达实例状态，也不负责 Header 缺口的运行时 bo
 - `GroupBoxTitlePosition.Left`、`Right`、`Center` 的名称和含义不变。
 - `PART_Frame`、`PART_HeaderContainer`、`PART_HeaderContent`、`PART_HeaderIconPresenter`、`PART_HeaderPresenter`、`PART_ContentPresenter` 的 template part 名称不变。
 - `Background="Transparent"` 时内容区保持透明，同时 Header 标题下方不应出现边框短线。
+- 未设置显式高度时，GroupBox 的 `DesiredSize.Height` 必须包含 Header 通道、内容内边距和内容自身期望高度，避免内容多时被 Header 或边框区域挤压。
 - Header 图标为 `null` 时图标节点不可见，不保留额外图标占位宽度。
 - Header 内容位置改变只影响 Header 水平对齐，不改变内容区域布局语义。
 - Token 名称和语义不擅自重命名或删除。
@@ -140,6 +141,7 @@ GroupBox Token 不表达实例状态，也不负责 Header 缺口的运行时 bo
 
 - Header 缺口计算基于 `PART_HeaderContent` 的实际 bounds。
 - `PART_Frame` 保持边框绘制的布局参考。
+- `PART_Frame` 必须参与 GroupBox 测量，自动高度不能退化为只测量裸 Content。
 - 不用 Header 背景遮挡边框线来模拟缺口。
 - 透明背景、半透明背景和普通背景走同一渲染模型。
 - Header 图标隐藏时不保留额外图标占位。

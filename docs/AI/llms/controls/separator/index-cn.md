@@ -74,7 +74,7 @@ Separator 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 水平分割线
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:35`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -90,7 +90,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 带标题的分割线
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:156`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:52`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -116,7 +116,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 无标题样式文本
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:183`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:79`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -134,7 +134,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 设置分割线间距
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:202`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:98`
 
 Gallery key：`ExamplesContent` / item `3`
 

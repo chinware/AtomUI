@@ -108,7 +108,7 @@ public static partial class ControlDocReader
                 implementation,
                 "11. 测试与验证",
                 "10. 测试与验证").Content.Trim(),
-            GalleryExamplesMarkdown = GalleryExampleReader.ReadMarkdown(repositoryRoot, galleryPath),
+            GalleryExamplesMarkdown = GalleryExampleReader.ReadMarkdown(repositoryRoot, galleryPath, displayName),
             SourceOverviewRelativePath = ToRelativePath(repositoryRoot, control.OverviewPath),
             SourceImplementationRelativePath = ToRelativePath(repositoryRoot, control.ImplementationPath),
             SourceTokenRelativePath = control.TokenPath is null ? null : ToRelativePath(repositoryRoot, control.TokenPath),

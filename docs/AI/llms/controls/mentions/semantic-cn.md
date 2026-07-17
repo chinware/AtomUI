@@ -53,9 +53,9 @@ Mentions
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Mentions` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Mentions` | control theme | `MentionsTheme.axaml` | 用户代码 / 控件宿主 | `ClearIcon`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `FilterValue` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `MentionsTheme.axaml` | Mentions | `ClearIcon`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `FilterValue` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_TextArea` | template node (MentionTextArea) | `MentionsTheme.axaml` | Mentions | `ClearIcon`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `FilterValue` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Mentions` | control theme | `MentionsTheme.axaml` | 用户代码 / 控件宿主 | `ClearIcon`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `DataValidationErrors` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `MentionsTheme.axaml` | Mentions | `ClearIcon`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `DataValidationErrors` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_TextArea` | template node (MentionTextArea) | `MentionsTheme.axaml` | Mentions | `ClearIcon`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `DataValidationErrors` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Popup` | template node (Popup) | `MentionsTheme.axaml` | Mentions | `IsLoading`, `IsMotionEnabled`, `MaxPopupHeight`, `MinPopupWidth`, `OptionTemplate`, `PopupContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PopupFrame` | template node (Border) | `MentionsTheme.axaml` | Mentions | `IsLoading`, `IsMotionEnabled`, `MaxPopupHeight`, `MinPopupWidth`, `OptionTemplate`, `PopupContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `LoadingIndicator` | template node (Spin) | `MentionsTheme.axaml` | Mentions | `IsLoading` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -133,7 +133,7 @@ Disabled / invisible / window deactivated
 - `F4` 切换弹层打开状态。
 - 弹层关闭时，`Down` 可打开弹层，除非该按键被 XY focus 导航占用。
 
-Form 集成以 `Value` 作为表单值。`NotifyValidateStatus` 将 Form 校验状态映射为 `Status=Error/Warning/Default`，Form feedback 控件传递给内部 `MentionTextArea`。
+Form 集成以 `Value` 作为表单值。`Value` 是用户拥有的受控文本值，默认双向绑定；错误校验状态通过 `DataValidationErrors` 投射到外层 AddOn 和内部 `MentionTextArea`；`NotifyValidateStatus` 只同步 warning、success、validating 等 Form 扩展状态。Form feedback 控件传递给内部 `MentionTextArea`。
 
 ## Theme and Token Boundaries
 
@@ -180,7 +180,7 @@ MentionsToken 不承载以下状态：
 
 内部重构必须保持以下不变量：
 
-- `Value` 和 `MentionTextArea.Text` 继续双向同步。
+- `Value` 和 `MentionTextArea.Text` 继续双向同步；`Value` 作为 Form 值必须默认 `TwoWay` 并启用 Avalonia 数据验证。
 - `TriggerPrefix` 默认值、单字符识别和空白边界不能改变。
 - `FilterValue` 必须随 caret 和文本变化更新。
 - 打开候选弹层必须先触发 `CandidateTriggered`，再走打开和填充流程。

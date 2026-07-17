@@ -18,12 +18,12 @@
 
 ```xml
 <Panel>
-    <Border Name="PART_Frame">
+    <PixelAlignedBorder Name="PART_Frame">
         <StackPanel>
             <ColorBlock Name="PART_ColorIndicator" />
             <TextBlock Name="PART_ColorText" />
         </StackPanel>
-    </Border>
+    </PixelAlignedBorder>
     <Popup Name="PART_Popup">
         <ArrowDecoratedBox />
     </Popup>
@@ -66,6 +66,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `Value`、trigger 色块、trigger 文本、picker presenter 和 Form 值必须由同一份 current value 派生；清空状态以 `Value=null` 为源头。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

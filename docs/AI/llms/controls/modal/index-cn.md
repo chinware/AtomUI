@@ -43,13 +43,15 @@ Modal 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | --- | --- | --- |
 | 内容与数据 | `AbortButtonText`、`AddOnTemplate`、`ApplyButtonText`、`CancelButtonText`、`CheckedIcon`、`CloseButtonText`、`Content`、`ContentTemplate`、`DialogContent`、`DialogContentTemplate` 等 33 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `IsChecked` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsActivated`、`IsClosable`、`IsCloseButtonEnabled`、`IsConfirmLoading`、`IsDragMovable`、`IsEffectiveFooterVisible`、`IsFooterVisible`、`IsLoading`、`IsMaximizable`、`IsMaximizeButtonEnabled` 等 17 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsActivated`、`IsClosable`、`IsCloseButtonEnabled`、`IsConfirmLoading`、`IsDragMovable`、`IsEffectiveFooterVisible`、`IsFooterVisible`、`IsLoading`、`IsOpen`、`IsMaximizable`、`IsMaximizeButtonEnabled` 等 17 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义；`Dialog.IsOpen` 默认双向绑定。 |
 | 视觉与布局 | `HorizontalOffset`、`HorizontalStartupLocation`、`HostHeight`、`HostMaxHeight`、`HostMaxWidth`、`HostMinHeight`、`HostMinWidth`、`HostWidth`、`PlacementTarget`、`VerticalOffset` 等 11 项 | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 弹层与窗口 | `DialogHostType` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
 | 动效与异步 | `AnimationDuration` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `AddOn`、`DefaultStandardButton`、`EscapeStandardButton`、`Logo`、`Result`、`StandardButtons` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+Dialog 当前公开事件包括 `Opened`、`Closing`、`Closed`、`Accepted`、`Rejected`、`Finished` 和 `ButtonClicked`。其中 `Closing` 通过 `CancelEventArgs.Cancel` 支持同步取消关闭请求，`ButtonClicked` 通过 `DialogButtonClickedEventArgs.Handled` 支持接管按钮默认关闭行为。
+
+`Dialog.IsOpen` 是用户可拥有的受控打开状态，Avalonia Binding 默认使用 `TwoWay`；按钮关闭、标题栏关闭、外部 ViewModel 设置和静态 API 打开流程都必须收敛到同一打开状态。它不是 Form value，不写入 `DataValidationErrors`。
 
 主要公开类型与枚举：
 
@@ -71,10 +73,89 @@ Modal 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
 
+### 3.1 关闭前校验入口
+
+Modal 应为静态 API 用户提供一等公民的关闭前校验入口，用于表单提交、异步保存、服务端校验等需要在用户触发关闭后、Dialog 实际关闭前决定是否放行的场景。该能力定位为 L1 兼容新增，不改变既有 `Closing`、`ButtonClicked`、`Accepted`、`Rejected`、`Finished` 和 `Closed` 的默认行为。
+
+`DialogOptions` 提供异步回调承载关闭前校验，而不是扩展 `ShowDialogModalAsync` 的方法签名：
+
+```csharp
+public Func<DialogClosingContext, ValueTask<bool>>? BeforeCloseAsync { get; init; }
+```
+
+`BeforeCloseAsync` 默认值为 `null`。未设置时，Dialog 关闭流程必须保持现有语义。设置后，返回 `true` 表示允许继续关闭，返回 `false` 表示取消本次关闭请求并保持 Dialog 打开。
+
+关闭前上下文使用独立 public 类型承载，不只传递 `DialogCode`：
+
+```csharp
+public sealed class DialogClosingContext
+{
+    public Dialog Dialog { get; }
+    public object? Result { get; }
+    public DialogCode? DialogCode { get; }
+    public DialogCloseReason Reason { get; }
+    public DialogButton? SourceButton { get; }
+    public CancellationToken CancellationToken { get; }
+}
+```
+
+关闭来源使用显式枚举表达：
+
+```csharp
+public enum DialogCloseReason
+{
+    Accepted,
+    Rejected,
+    HostCloseRequest,
+    Programmatic,
+    OwnerClosed,
+    PlacementTargetDetached
+}
+```
+
+设计约束：
+
+- `BeforeCloseAsync` 只表达关闭请求是否允许继续，不负责自动设置 loading、错误提示或表单校验视觉；调用方可通过 `DialogClosingContext.Dialog` 使用 `IsConfirmLoading`、`IsLoading` 或业务内容状态。
+- `DialogCode` 只在结果为 `DialogCode.Accepted` 或 `DialogCode.Rejected` 时有值；标题栏关闭、父窗口关闭、placement target detach、`Done()` 等路径应通过 `Reason` 区分。
+- 标准按钮、自定义按钮、Enter 和 Escape 触发标准按钮时，应在 `SourceButton` 中暴露实际按钮；非按钮来源为 `null`。
+- `ButtonClicked` 已设置 `Handled = true` 时，不进入 `BeforeCloseAsync`，由调用方自行决定后续关闭。
+- `Closing.Cancel = true` 时，不继续调用 `BeforeCloseAsync`。
+- `BeforeCloseAsync` 发生异常时不得关闭 Dialog；实现应重置关闭请求状态，并以可诊断方式暴露异常。
+- `IsOpen=false` 触发的关闭请求被取消时，`IsOpen` 会恢复为 `true`，避免控件仍打开但绑定状态已经变为关闭。
+- 该入口用于简化静态 API 场景；高级 MVVM 场景仍可继续使用 `IDialogAwareDataContext`、`ButtonClicked` 和 `Closing` 直接接管 Dialog。
+
+示例用法：
+
+```csharp
+var options = new DialogOptions
+{
+    StandardButtons = DialogStandardButtons.Parse("Cancel,Ok"),
+    BeforeCloseAsync = async context =>
+    {
+        if (context.DialogCode != DialogCode.Accepted)
+        {
+            return true;
+        }
+
+        context.Dialog.IsConfirmLoading = true;
+        try
+        {
+            return await ValidateAsync();
+        }
+        finally
+        {
+            context.Dialog.IsConfirmLoading = false;
+        }
+    }
+};
+
+await Dialog.ShowDialogModalAsync(content, viewModel, options);
+```
+
 ## 事件与命令
 
 Modal 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+Dialog 当前公开事件包括 `Opened`、`Closing`、`Closed`、`Accepted`、`Rejected`、`Finished` 和 `ButtonClicked`。其中 `Closing` 通过 `CancelEventArgs.Cancel` 支持同步取消关闭请求，`ButtonClicked` 通过 `DialogButtonClickedEventArgs.Handled` 支持接管按钮默认关闭行为。
 - 类型：`Dialog`、`DialogActionResult`、`DialogBoxButtonSyncEventArgs`、`DialogButton`、`DialogButtonBox`、`DialogButtonClickedEventArgs`、`DialogCaptionButton`、`DialogFinishedEventArgs`、`DialogHost`、`DialogWindowContent`、`OverlayDialogHeader`、`OverlayDialogHost`、`OverlayDialogMask`、`OverlayDialogResizeEventArgs` 等 19 项。
 
 ## 使用示例
@@ -85,15 +166,15 @@ Modal 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:35`
 
 Gallery key：`ExamplesContent` / item `0`
 
 ```axaml
-<StackPanel Orientation="Horizontal" Spacing="10">
+<StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
     <Panel>
         <atom:Button ButtonType="Primary" Name="BasicOpenModalButton" Content="打开浮层模态框" />
-        <atom:Dialog PlacementTarget="BasicOpenModalButton"
+        <atom:Dialog Name="BasicDialog"
                      IsOpen="{Binding IsBasicModalOpened, Mode=TwoWay}"
                      Title="基础模态框"
                      IsModal="False"
@@ -114,7 +195,7 @@ Gallery key：`ExamplesContent` / item `0`
     </Panel>
     <Panel>
         <atom:Button ButtonType="Primary" Name="BasicWindowOpenModalButton" Content="打开窗口模态框" />
-        <atom:Dialog PlacementTarget="BasicWindowOpenModalButton"
+        <atom:Dialog Name="BasicWindowDialog"
                      IsOpen="{Binding IsBasicWindowModalOpened, Mode=TwoWay}"
                      Title="基础窗口模态框"
                      IsModal="True"
@@ -140,15 +221,15 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 异步关闭
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:195`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:91`
 
 Gallery key：`ExamplesContent` / item `1`
 
 ```axaml
-<StackPanel Orientation="Horizontal" Spacing="10">
+<StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
     <Panel>
         <atom:Button ButtonType="Primary" Name="AsyncDialogOpenModalButton" Content="打开带异步逻辑的模态框" />
-        <atom:Dialog PlacementTarget="AsyncDialogOpenModalButton"
+        <atom:Dialog Name="AsyncDialog"
                      IsOpen="{Binding IsAsyncDialogOpened, Mode=TwoWay}"
                      Title="异步关闭模态框"
                      IsModal="True"
@@ -171,15 +252,15 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 加载状态
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:320`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:216`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<StackPanel Orientation="Horizontal" Spacing="10">
+<StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
     <Panel>
         <atom:Button ButtonType="Primary" Name="LoadingDialogOpenModalButton" Content="打开模态框" />
-        <atom:Dialog PlacementTarget="LoadingDialogOpenModalButton"
+        <atom:Dialog Name="LoadingDialog"
                      IsOpen="{Binding IsLoadingMsgBoxOpened, Mode=TwoWay}"
                      Title="加载中模态框"
                      IsModal="True"
@@ -206,15 +287,15 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 自定义页脚按钮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:356`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:252`
 
 Gallery key：`ExamplesContent` / item `4`
 
 ```axaml
-<StackPanel Orientation="Horizontal" Spacing="10">
+<StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
     <Panel>
         <atom:Button ButtonType="Primary" Name="CustomFooterDialogOpenButton" Content="打开模态框" />
-        <atom:Dialog PlacementTarget="CustomFooterDialogOpenButton"
+        <atom:Dialog Name="CustomFooterDialog"
                      IsOpen="{Binding IsCustomFooterDialogOpened, Mode=TwoWay}"
                      Title="标题"
                      IsModal="True"
@@ -239,7 +320,7 @@ Gallery key：`ExamplesContent` / item `4`
 
     <Panel>
         <atom:Button ButtonType="Primary" Name="CustomFooterMsgBoxOpenButton" Content="打开模态框" />
-        <atom:MessageBox PlacementTarget="CustomFooterMsgBoxOpenButton"
+        <atom:MessageBox Name="CustomFooterMsgBox"
                          IsOpen="{Binding IsCustomFooterMsgBoxOpened, Mode=TwoWay}"
                          Title="确认"
                          IsModal="True"
@@ -272,6 +353,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、open/close、loading/async、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `Dialog.IsOpen` 是默认 `TwoWay` 的受控状态；内部关闭请求必须回写该属性，不得用模板局部状态绕过绑定。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

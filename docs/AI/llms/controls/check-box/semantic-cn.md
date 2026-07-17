@@ -34,12 +34,12 @@
 ```text
 CheckBox
   -> CheckBoxGroup (control theme, CheckBoxGroupTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> CheckBoxItemsControl#PART_CheckBoxItems (template-stable)
   -> CheckBoxIndicator (control theme, CheckBoxIndicatorTheme.axaml)
      -> Panel (template-stable)
         -> WaveSpiritDecorator#{x:Static atom:WaveSpiritDecorator.WaveSpiritPart} (template-stable)
-        -> Border#Frame (template-stable)
+        -> PixelAlignedBorder#Frame (template-stable)
            -> Panel (template-stable)
               -> CheckBoldOutlined#CheckedMark (template-stable)
               -> Rectangle#TristateMark (template-stable)
@@ -58,12 +58,12 @@ CheckBox
 | --- | --- | --- | --- | --- | --- | --- |
 | `CheckBox` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `CheckBoxGroup` | control theme | `CheckBoxGroupTheme.axaml` | 用户代码 / 控件宿主 | `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsMotionEnabled`, `ItemSpacing`, `ItemTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `CheckBoxGroupTheme.axaml` | CheckBoxGroup | `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsMotionEnabled`, `ItemSpacing`, `ItemTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `CheckBoxGroupTheme.axaml` | CheckBoxGroup | `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsMotionEnabled`, `ItemSpacing`, `ItemTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CheckBoxItems` | template node (CheckBoxItemsControl) | `CheckBoxGroupTheme.axaml` | CheckBoxGroup | `IsMotionEnabled`, `ItemSpacing`, `ItemTemplate`, `LineSpacing`, `Orientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CheckBoxIndicator` | control theme | `CheckBoxIndicatorTheme.axaml` | CheckBox | `Background`, `BorderBrush`, `BorderThickness`, `CheckedMarkBrush`, `CheckedMarkRenderTransform`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `Background`, `BorderBrush`, `BorderThickness`, `CheckedMarkBrush`, `CheckedMarkRenderTransform`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (Border) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `Background`, `BorderBrush`, `BorderThickness`, `CheckedMarkBrush`, `CheckedMarkRenderTransform`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `Background`, `BorderBrush`, `BorderThickness`, `CheckedMarkBrush`, `CheckedMarkRenderTransform`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CheckedMark` | template node (CheckBoldOutlined) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `CheckedMarkBrush`, `CheckedMarkRenderTransform` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TristateMark` | template node (Rectangle) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `TristateMarkBrush`, `TristateMarkSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CheckBoxItemsControl` | control theme | `CheckBoxItemsControlTheme.axaml` | CheckBox | `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -104,6 +104,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `CheckBoxGroup.CheckedItems` 是集合选择的外部值 owner，默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；绑定集合的 `Add`、`Remove`、`Clear` 或 `Reset` 必须回放到内部勾选状态和 Form value。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

@@ -73,7 +73,7 @@ Statistic 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Statistic/Views/StatisticShowCase.axaml:138`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Statistic/Views/StatisticShowCase.axaml:34`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -90,7 +90,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 动画数字
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Statistic/Views/StatisticShowCase.axaml:198`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Statistic/Views/StatisticShowCase.axaml:94`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -111,7 +111,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 计时器
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Statistic/Views/StatisticShowCase.axaml:218`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Statistic/Views/StatisticShowCase.axaml:114`
 
 Gallery key：`ExamplesContent` / item `4`
 

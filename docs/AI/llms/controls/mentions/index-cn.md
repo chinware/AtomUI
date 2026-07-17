@@ -42,7 +42,7 @@ Mentions 的公共 API 由文本值、触发符、候选数据、过滤、弹层
 
 | API | 类型 | 语义 |
 | --- | --- | --- |
-| `Value` | `string?` | 当前文本值，双向绑定到内部 `MentionTextArea.Text`。 |
+| `Value` | `string?` | 当前文本值，默认 `TwoWay` 绑定到内部 `MentionTextArea.Text`，并接入 Avalonia `DataValidationErrors`。 |
 | `DefaultValue` | `string?` | 初始化时 `Value` 为空时写入的默认文本。 |
 | `PlaceholderText` | `string?` | 空文本状态的占位提示。 |
 | `IsReadOnly` | `bool` | 只读状态，内部文本区域不可编辑。 |
@@ -81,7 +81,7 @@ Mentions 的公共 API 由文本值、触发符、候选数据、过滤、弹层
 | --- | --- | --- |
 | `SizeType` | `CustomizableSizeType` | 输入尺寸密度。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式。 |
-| `Status` | `InputControlStatus` | 输入反馈状态。 |
+| `Status` | `InputControlStatus` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
 | `ContentLeftAddOn` / `ContentRightAddOn` | `object?` | 内部左右附加内容，传递给内部 `MentionTextArea`。 |
 | `ContentLeftAddOnTemplate` / `ContentRightAddOnTemplate` | `IDataTemplate?` | 内部左右附加内容模板。 |
 | `IsMotionEnabled` | `bool` | 内部输入壳体、候选列表和 popup 动效开关。 |
@@ -134,7 +134,7 @@ Mentions 的公共 API 由文本值、触发符、候选数据、过滤、弹层
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -142,11 +142,40 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:Mentions Name="BasicMentions"
 ```
 
+### Value 绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:51`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="12">
+    <atom:Mentions HorizontalAlignment="Stretch"
+                   OptionsSource="{Binding BasicMentionOptions}"
+                   IsAllowClear="True"
+                   Value="{Binding BoundValue}" />
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="绑定值：" />
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="{Binding BoundValueText}" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetBoundValueCommand}"
+                     Content="设置提及" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearBoundValueCommand}"
+                     Content="清空" />
+    </StackPanel>
+</StackPanel>
+```
+
 ### 变体
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:189`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:116`
 
-Gallery key：`ExamplesContent` / item `2`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <StackPanel Orientation="Vertical" Spacing="10">
@@ -159,22 +188,12 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 异步加载
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:205`
-
-Gallery key：`ExamplesContent` / item `3`
-
-```axaml
-<atom:Mentions HorizontalAlignment="Stretch" OptionsAsyncLoader="{Binding MentionOptionAsyncLoader}"/>
-```
-
-### 自定义触发标记
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:216`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:132`
 
 Gallery key：`ExamplesContent` / item `4`
 
 ```axaml
-<atom:Mentions HorizontalAlignment="Stretch"
+<atom:Mentions HorizontalAlignment="Stretch" OptionsAsyncLoader="{Binding MentionOptionAsyncLoader}"/>
 ```
 
 ## 状态模型
@@ -235,7 +254,7 @@ Disabled / invisible / window deactivated
 - `F4` 切换弹层打开状态。
 - 弹层关闭时，`Down` 可打开弹层，除非该按键被 XY focus 导航占用。
 
-Form 集成以 `Value` 作为表单值。`NotifyValidateStatus` 将 Form 校验状态映射为 `Status=Error/Warning/Default`，Form feedback 控件传递给内部 `MentionTextArea`。
+Form 集成以 `Value` 作为表单值。`Value` 是用户拥有的受控文本值，默认双向绑定；错误校验状态通过 `DataValidationErrors` 投射到外层 AddOn 和内部 `MentionTextArea`；`NotifyValidateStatus` 只同步 warning、success、validating 等 Form 扩展状态。Form feedback 控件传递给内部 `MentionTextArea`。
 
 ## 主题与 Design Token
 
