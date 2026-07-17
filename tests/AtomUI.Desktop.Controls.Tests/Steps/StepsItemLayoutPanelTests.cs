@@ -16,6 +16,7 @@ public class StepsItemLayoutPanelTests
     [Theory]
     [InlineData(Desktop.Controls.StepsType.Default, Orientation.Horizontal, Orientation.Horizontal, Orientation.Horizontal)]
     [InlineData(Desktop.Controls.StepsType.Dot, Orientation.Horizontal, Orientation.Horizontal, Orientation.Vertical)]
+    [InlineData(Desktop.Controls.StepsType.OutlineDot, Orientation.Horizontal, Orientation.Horizontal, Orientation.Vertical)]
     [InlineData(Desktop.Controls.StepsType.Navigation, Orientation.Horizontal, Orientation.Vertical, Orientation.Horizontal)]
     [InlineData(Desktop.Controls.StepsType.Inline, Orientation.Horizontal, Orientation.Horizontal, Orientation.Vertical)]
     [InlineData(Desktop.Controls.StepsType.Default, Orientation.Vertical, Orientation.Vertical, Orientation.Horizontal)]
@@ -51,9 +52,26 @@ public class StepsItemLayoutPanelTests
         indicator.Bounds.ShouldBe(new Rect(0, 0, 20, 20));
         header.Bounds.ShouldBe(new Rect(20, 0, 60, 20));
         subHeader.Bounds.ShouldBe(new Rect(80, 4, 40, 12));
-        content.Bounds.ShouldBe(new Rect(20, 20, 100, 24));
+        content.Bounds.ShouldBe(new Rect(20, 20, 80, 24));
         connector.Bounds.ShouldBe(new Rect(120, 10, 180, 1));
         arrow.Bounds.ShouldBe(default);
+    }
+
+    [Fact]
+    public void Horizontal_Connector_Start_Follows_Header_Row_Instead_Of_Wider_Content()
+    {
+        var panel     = CreatePanel(Desktop.Controls.StepsType.Default, Orientation.Horizontal, Orientation.Horizontal);
+        AddChild(panel, Desktop.Controls.StepsItemLayoutRole.Indicator, 20, 20);
+        var header    = AddChild(panel, Desktop.Controls.StepsItemLayoutRole.Header, 60, 20);
+        var subHeader = AddChild(panel, Desktop.Controls.StepsItemLayoutRole.SubHeader, 40, 12);
+        AddChild(panel, Desktop.Controls.StepsItemLayoutRole.Content, 180, 24);
+        var connector = AddChild(panel, Desktop.Controls.StepsItemLayoutRole.Connector, 10, 2);
+
+        Layout(panel, 300, 100);
+
+        connector.Bounds.X.ShouldBe(subHeader.Bounds.Right);
+        connector.Bounds.X.ShouldBe(header.Bounds.Right + subHeader.Bounds.Width);
+        connector.Bounds.Right.ShouldBe(300);
     }
 
     [Fact]
@@ -69,10 +87,30 @@ public class StepsItemLayoutPanelTests
         Layout(panel, 300, 100);
 
         indicator.Bounds.ShouldBe(new Rect(140, 0, 20, 20));
-        connector.Bounds.ShouldBe(new Rect(160, 10, 140, 1));
-        header.Bounds.ShouldBe(new Rect(0, 20, 300, 20));
-        subHeader.Bounds.ShouldBe(new Rect(0, 40, 300, 12));
-        content.Bounds.ShouldBe(new Rect(0, 52, 300, 24));
+        connector.Bounds.ShouldBe(new Rect(160, 10, 280, 1));
+        header.Bounds.ShouldBe(new Rect(120, 20, 60, 20));
+        subHeader.Bounds.ShouldBe(new Rect(130, 40, 40, 12));
+        content.Bounds.ShouldBe(new Rect(110, 52, 80, 24));
+    }
+
+    [Fact]
+    public void Inline_Item_Wrapper_Fills_The_Item_Cell_For_Hover_Background()
+    {
+        var panel = CreatePanel(Desktop.Controls.StepsType.Inline, Orientation.Horizontal, Orientation.Horizontal);
+        panel.Padding          = new Thickness(6, 9, 6, 0);
+        panel.IndicatorSpacing = 8;
+        var wrapper  = AddChild(panel, Desktop.Controls.StepsItemLayoutRole.ItemWrapper, 0, 0);
+        var indicator = AddChild(panel, Desktop.Controls.StepsItemLayoutRole.Indicator, 6, 6);
+        var header    = AddChild(panel, Desktop.Controls.StepsItemLayoutRole.Header, 48, 18);
+        var subHeader = AddChild(panel, Desktop.Controls.StepsItemLayoutRole.SubHeader, 58, 18);
+        AddChild(panel, Desktop.Controls.StepsItemLayoutRole.Connector, 10, 1);
+
+        Layout(panel, 240, 60);
+
+        wrapper.Bounds.ShouldBe(new Rect(0, 0, 240, 60));
+        wrapper.Bounds.Contains(indicator.Bounds.TopLeft).ShouldBeTrue();
+        wrapper.Bounds.Contains(header.Bounds.Center).ShouldBeTrue();
+        wrapper.Bounds.Contains(subHeader.Bounds.Center).ShouldBeTrue();
     }
 
     [Fact]
@@ -90,7 +128,7 @@ public class StepsItemLayoutPanelTests
         indicator.Bounds.ShouldBe(new Rect(0, 0, 20, 20));
         header.Bounds.ShouldBe(new Rect(20, 0, 60, 20));
         subHeader.Bounds.ShouldBe(new Rect(80, 4, 40, 12));
-        content.Bounds.ShouldBe(new Rect(20, 20, 100, 24));
+        content.Bounds.ShouldBe(new Rect(20, 20, 80, 24));
         connector.Bounds.ShouldBe(new Rect(10, 20, 1, 100));
     }
 
@@ -110,7 +148,7 @@ public class StepsItemLayoutPanelTests
         panel.Type = Desktop.Controls.StepsType.Navigation;
         Layout(panel, 200, 60);
         connector.Bounds.ShouldBe(default);
-        arrow.Bounds.ShouldBe(new Rect(184, 22, 16, 16));
+        arrow.Bounds.ShouldBe(new Rect(192, 22, 16, 16));
     }
 
     [Fact]
@@ -123,7 +161,7 @@ public class StepsItemLayoutPanelTests
 
         Layout(panel, 200, 120);
 
-        arrow.Bounds.ShouldBe(new Rect(92, 104, 16, 16));
+        arrow.Bounds.ShouldBe(new Rect(95, 115, 11, 11));
     }
 
     [Fact]

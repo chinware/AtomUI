@@ -9,6 +9,7 @@
   - 将 `Steps` 的基类从 `SelectingItemsControl` 改为 `ItemsControl`，删除 Selection、`CurrentContent` 和 `IsFinished` 契约。
   - 将根 API 统一为 `Current`、`Initial`、`Status`、nullable `Percent`、`Type` 和 `TitlePlacement`。
   - 将 `StepsStyle` 与 `StepsItemIndicatorType` 合并为 `StepsType`，将状态枚举统一为 `StepsStatus`。
+  - 新增 `StepsType.OutlineDot`，作为与 `Dot` 共享布局的空心点状视觉类型。
   - 删除 `StepsItem.Description` / `DescriptionTemplate`，由 `Content` / `ContentTemplate` 表达步骤详情；`StepsItem.Status` 改为 nullable 显式覆盖。
   - 新增受控导航请求事件 `CurrentChangeRequested`；item 激活不直接修改 `Current`。
 - Behavior
@@ -16,6 +17,7 @@
   - Wave 改为只响应真实 pointer click；程序化 Current、状态重算和 keyboard 激活不播放 Wave。
 - Theme
   - 根、item 和 indicator 各使用一套统一语义模板，删除 Style、Orientation、Indicator 和 TitlePlacement 组合模板。
+  - `OutlineDot` 使用透明背景和状态色边框，不播放 Indicator Wave。
   - 使用 internal `StepsPanel` 和 `StepsItemLayoutPanel` 分别承担 item 间和 item 内布局。
   - Navigation 当前项使用唯一 `NavigationActiveIndicator` 节点表达水平底线或垂直右侧线。
 - Token

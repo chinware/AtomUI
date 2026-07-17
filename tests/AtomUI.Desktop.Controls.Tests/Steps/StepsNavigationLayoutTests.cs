@@ -65,6 +65,7 @@ public class StepsNavigationLayoutTests
     {
         var steps = CreateNavigationSteps(orientation, AtomUISizeType.Middle);
         steps.Current = 1;
+        steps.IsMotionEnabled = false;
 
         ShowInWindow(steps, () =>
         {
@@ -74,17 +75,28 @@ public class StepsNavigationLayoutTests
                 var active = items[index].GetVisualDescendants()
                                          .OfType<PixelAlignedBorder>()
                                          .Single(control => control.Name == "NavigationActiveIndicator");
-                active.IsVisible.ShouldBe(index == 1);
+                active.IsVisible.ShouldBeTrue();
+                var matrix = active.RenderTransform?.Value ?? Matrix.Identity;
 
-                if (active.IsVisible && orientation == Orientation.Horizontal)
+                if (orientation == Orientation.Horizontal)
                 {
-                    active.Bounds.Width.ShouldBeGreaterThan(active.Bounds.Height);
-                    active.Bounds.Bottom.ShouldBe(items[index].Bounds.Height, 1);
+                    matrix.M11.ShouldBe(index == 1 ? 1 : 0, 0.01);
+                    matrix.M22.ShouldBe(1, 0.01);
+                    if (index == 1)
+                    {
+                        active.Bounds.Width.ShouldBeGreaterThan(active.Bounds.Height);
+                        active.Bounds.Bottom.ShouldBe(items[index].Bounds.Height, 1);
+                    }
                 }
-                else if (active.IsVisible)
+                else
                 {
-                    active.Bounds.Height.ShouldBeGreaterThan(active.Bounds.Width);
-                    active.Bounds.Right.ShouldBe(items[index].Bounds.Width, 1);
+                    matrix.M11.ShouldBe(1, 0.01);
+                    matrix.M22.ShouldBe(index == 1 ? 1 : 0, 0.01);
+                    if (index == 1)
+                    {
+                        active.Bounds.Height.ShouldBeGreaterThan(active.Bounds.Width);
+                        active.Bounds.Right.ShouldBe(items[index].Bounds.Width, 1);
+                    }
                 }
             }
         });

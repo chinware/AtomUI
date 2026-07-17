@@ -1,9 +1,17 @@
 using System;
 using System.Linq;
+using AtomUI.Animations;
+using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Icons.AntDesign;
+using Avalonia.Animation;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -24,7 +32,7 @@ public class StepsWaveTests
     [InlineData(Desktop.Controls.StepsType.Dot)]
     [InlineData(Desktop.Controls.StepsType.Navigation)]
     [InlineData(Desktop.Controls.StepsType.Inline)]
-    public void Pointer_Click_Plays_Indicator_Wave_For_Every_Type(Desktop.Controls.StepsType type)
+    public void Pointer_Click_Plays_Indicator_Wave_For_Wave_Enabled_Types(Desktop.Controls.StepsType type)
     {
         var steps = CreateSteps(type);
 
@@ -34,6 +42,40 @@ public class StepsWaveTests
             Click(item, window);
 
             GetIndicator(item).IsWavePlaying.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void OutlineDot_Pointer_Click_Requests_Change_Without_Indicator_Wave()
+    {
+        var steps = CreateSteps(Desktop.Controls.StepsType.OutlineDot);
+        int? requested = null;
+        steps.CurrentChangeRequested += (_, args) => requested = args.Current;
+
+        ShowInWindow(steps, window =>
+        {
+            var item = GetItem(steps, 1);
+            Click(item, window);
+
+            requested.ShouldBe(1);
+            GetIndicator(item).IsWavePlaying.ShouldBeFalse();
+        });
+    }
+
+    [Fact]
+    public void OutlineDot_Current_Click_Does_Not_Play_Indicator_Wave()
+    {
+        var steps = CreateSteps(Desktop.Controls.StepsType.OutlineDot);
+        var requestCount = 0;
+        steps.CurrentChangeRequested += (_, _) => requestCount++;
+
+        ShowInWindow(steps, window =>
+        {
+            var item = GetItem(steps, 0);
+            Click(item, window);
+
+            requestCount.ShouldBe(0);
+            GetIndicator(item).IsWavePlaying.ShouldBeFalse();
         });
     }
 
@@ -67,6 +109,156 @@ public class StepsWaveTests
 
             requested.ShouldBe(1);
             GetIndicator(item).IsWavePlaying.ShouldBeFalse();
+        });
+    }
+
+    [Fact]
+    public void Keyboard_Activation_Plays_Indicator_Wave_When_Motion_Is_Enabled()
+    {
+        var steps = CreateSteps();
+        int? requested = null;
+        steps.CurrentChangeRequested += (_, args) => requested = args.Current;
+
+        ShowInWindow(steps, window =>
+        {
+            var item = GetItem(steps, 1);
+            item.Focus().ShouldBeTrue();
+            window.KeyPress(Key.Enter, RawInputModifiers.None, PhysicalKey.Enter, null);
+            window.KeyRelease(Key.Enter, RawInputModifiers.None, PhysicalKey.Enter, null);
+            Dispatcher.UIThread.RunJobs();
+
+            requested.ShouldBe(1);
+            GetIndicator(item).IsWavePlaying.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Indicator_Motion_Enabled_Installs_Status_Color_Transitions()
+    {
+        var steps = CreateSteps();
+
+        ShowInWindow(steps, _ =>
+        {
+            var transitions = GetIndicator(GetItem(steps, 1)).Transitions;
+
+            transitions.ShouldNotBeNull();
+            transitions!.OfType<SolidColorBrushTransition>()
+                        .Select(transition => transition.Property)
+                        .ShouldBe([
+                            TemplatedControl.BackgroundProperty,
+                            TemplatedControl.ForegroundProperty,
+                            TemplatedControl.BorderBrushProperty
+                        ], ignoreOrder: true);
+        });
+    }
+
+    [Theory]
+    [InlineData(Desktop.Controls.StepsStatus.Wait, StepsTokenKind.WaitIconColor)]
+    [InlineData(Desktop.Controls.StepsStatus.Process, StepsTokenKind.ProcessIconBorderColor)]
+    [InlineData(Desktop.Controls.StepsStatus.Finish, StepsTokenKind.FinishIconColor)]
+    [InlineData(Desktop.Controls.StepsStatus.Error, StepsTokenKind.ErrorIconBorderColor)]
+    public void Custom_Loading_Icon_Is_Laid_Out_And_Uses_Status_Color(
+        Desktop.Controls.StepsStatus status,
+        StepsTokenKind expectedColorToken)
+    {
+        var processIcon = new LoadingOutlined
+        {
+            LoadingAnimation = IconAnimation.Spin
+        };
+        var steps = new Desktop.Controls.Steps
+        {
+            Width           = 760,
+            Current         = 0,
+            IsItemClickable = true,
+            IsMotionEnabled = true
+        };
+        steps.Items.Add(new Desktop.Controls.StepsItem
+        {
+            Header = "Pay",
+            Status = status,
+            Icon   = processIcon
+        });
+
+        ShowInWindow(steps, _ =>
+        {
+            var indicator = GetIndicator(GetItem(steps, 0));
+            var presenter = indicator.GetVisualDescendants()
+                                     .OfType<IconPresenter>()
+                                     .Single(control => control.Name == "CustomIconPresenter");
+            var icon = presenter.GetVisualDescendants()
+                                .OfType<LoadingOutlined>()
+                                .Single();
+
+            presenter.Bounds.Width.ShouldBeGreaterThan(0);
+            presenter.Bounds.Height.ShouldBeGreaterThan(0);
+            icon.Bounds.Width.ShouldBeGreaterThan(0);
+            icon.Bounds.Height.ShouldBeGreaterThan(0);
+            icon.LoadingAnimation.ShouldBe(IconAnimation.Spin);
+            GetColor(icon.StrokeBrush).ShouldBe(GetColor(GetThemeResource<IBrush>(expectedColorToken)));
+            GetColor(icon.FillBrush).ShouldBe(GetColor(GetThemeResource<IBrush>(expectedColorToken)));
+        });
+    }
+
+    [Theory]
+    [InlineData(Desktop.Controls.StepsStatus.Finish, typeof(CheckOutlined), StepsTokenKind.FinishIconColor)]
+    [InlineData(Desktop.Controls.StepsStatus.Error, typeof(CloseOutlined), StepsTokenKind.ErrorIconColor)]
+    public void Built_In_Status_Icon_Uses_Indicator_Status_Color(
+        Desktop.Controls.StepsStatus status,
+        Type iconType,
+        StepsTokenKind expectedColorToken)
+    {
+        var steps = new Desktop.Controls.Steps
+        {
+            Width   = 760,
+            Current = 0
+        };
+        steps.Items.Add(new Desktop.Controls.StepsItem
+        {
+            Header = "Status",
+            Status = status
+        });
+
+        ShowInWindow(steps, _ =>
+        {
+            var indicator = GetIndicator(GetItem(steps, 0));
+            var icon = indicator.GetVisualDescendants()
+                                .OfType<Icon>()
+                                .Single(control => control.GetType() == iconType);
+
+            icon.IsVisible.ShouldBeTrue();
+            GetColor(icon.StrokeBrush).ShouldBe(GetColor(GetThemeResource<IBrush>(expectedColorToken)));
+            GetColor(icon.FillBrush).ShouldBe(GetColor(GetThemeResource<IBrush>(expectedColorToken)));
+        });
+    }
+
+    [Theory]
+    [InlineData(Desktop.Controls.StepsStatus.Wait, StepsTokenKind.WaitDotColor)]
+    [InlineData(Desktop.Controls.StepsStatus.Process, StepsTokenKind.ProcessDotColor)]
+    [InlineData(Desktop.Controls.StepsStatus.Finish, StepsTokenKind.FinishDotColor)]
+    [InlineData(Desktop.Controls.StepsStatus.Error, StepsTokenKind.ErrorDotColor)]
+    public void OutlineDot_Uses_Transparent_Background_And_Status_Border(
+        Desktop.Controls.StepsStatus status,
+        StepsTokenKind expectedColorToken)
+    {
+        var steps = new Desktop.Controls.Steps
+        {
+            Width   = 760,
+            Current = 0,
+            Type    = Desktop.Controls.StepsType.OutlineDot
+        };
+        steps.Items.Add(new Desktop.Controls.StepsItem
+        {
+            Header = "Status",
+            Status = status
+        });
+
+        ShowInWindow(steps, _ =>
+        {
+            var frame = GetIndicatorFrame(GetIndicator(GetItem(steps, 0)));
+
+            GetColor(frame.Background).ShouldBe(Colors.Transparent);
+            GetColor(frame.BorderBrush).ShouldBe(GetColor(GetThemeResource<IBrush>(expectedColorToken)));
+            frame.BorderThickness.ShouldBe(new Thickness(2));
         });
     }
 
@@ -118,6 +310,11 @@ public class StepsWaveTests
         return item.GetVisualDescendants().OfType<Desktop.Controls.StepsItemIndicator>().Single();
     }
 
+    private static PixelAlignedBorder GetIndicatorFrame(Desktop.Controls.StepsItemIndicator indicator)
+    {
+        return indicator.GetVisualDescendants().OfType<PixelAlignedBorder>().Single(control => control.Name == "Frame");
+    }
+
     private static void Click(Desktop.Controls.StepsItem item, AvaloniaWindow window)
     {
         var target = item.GetVisualDescendants()
@@ -155,5 +352,19 @@ public class StepsWaveTests
         {
             window.Close();
         }
+    }
+
+    private static T GetThemeResource<T>(object key)
+    {
+        var application = Application.Current.ShouldNotBeNull();
+        application.TryGetResource(key, application.ActualThemeVariant, out var value).ShouldBeTrue();
+        value.ShouldBeAssignableTo<T>();
+        return (T)value!;
+    }
+
+    private static Color GetColor(IBrush? brush)
+    {
+        brush.ShouldNotBeNull();
+        return ((ISolidColorBrush)brush!).Color;
     }
 }

@@ -40,7 +40,7 @@ Gallery 目录：
 - 保存根 public 输入。
 - 创建和清理 `StepsItem` 容器。
 - 根据 index 计算 StepNumber 和 AutomaticStatus。
-- 维护相邻 item 的 ConnectorStatus。
+- 维护每个 item 指向下一个 item 的 ConnectorStatus。
 - 接收 item 激活并发出 `CurrentChangeRequested`。
 - 不保存第二套当前步骤状态、根级页面内容投影或视觉缓存集合。
 
@@ -57,15 +57,18 @@ Gallery 目录：
 
 Indicator 是 internal-observable 视觉控件：
 
-- 展示步骤编号、完成图标、错误图标、Dot 或自定义 Icon。
+- 展示步骤编号、完成图标、错误图标、Dot、OutlineDot 或自定义 Icon。
 - 在有效条件成立时绘制 Progress ring。
 - 持有当前模板中的 `PART_WaveSpirit`，并只响应 item 的真实 pointer click 调用。
 - 不监听 IsCurrent 变化播放 Wave。
+- `Type=OutlineDot` 直接抑制 Wave 播放，只保留可点击请求和 hover/transition 视觉。
 
 ### 3.4 LayoutPanel
 
 - `StepsPanel` 只排列 StepsItem，不读取 Status、不生成视觉。
-- `StepsItemLayoutPanel` 只排列固定语义子节点，不读取 Current、不修改 item 属性。
+- `StepsPanel.Offset` 只在 Inline 水平等宽布局中保留前置空单元，不影响状态编号。
+- `StepsPanel.HorizontalContentAlignment` 只在垂直 Navigation 布局中控制 item 列的水平对齐，默认居中。
+- `StepsItemLayoutPanel` 只排列固定语义子节点，不读取 Current、不修改 item 属性；垂直 item 间距由面板自身测量高度承担，不放进内容区域 padding。
 
 两个 Panel 都通过 `AffectsMeasure` / `AffectsArrange` 响应相关布局属性，不依赖根控件手工重建 Grid definitions。
 
@@ -83,6 +86,8 @@ Orientation
 TitlePlacement
 SizeType
 IsItemClickable
+Offset
+HorizontalContentAlignment
 IsMotionEnabled
 ```
 
@@ -106,22 +111,25 @@ IsCurrent       = StepNumber == Current
 
 ### 4.3 Connector 投影
 
-item `i` 的 ConnectorStatus 等于 item `i + 1` 的 EffectiveStatus。最后一个 item 通过 IsLast 隐藏 Connector。
+item `i` 的 ConnectorStatus 等于 item `i + 1` 的 EffectiveStatus。Connector 表达当前步骤指向下一个步骤的目标状态，最后一个 item 通过 IsLast 隐藏 Connector。
 
-根输入变化时线性刷新全部已实现容器。单个 item Status 变化时只刷新自身 EffectiveStatus 和前一个 item 的 ConnectorStatus。
+根输入变化时线性刷新全部已实现容器。单个 item Status 变化时刷新自身 EffectiveStatus，并刷新前一个 item 的 ConnectorStatus。
 
 ### 4.4 Progress 投影
 
 ```text
-IsProgressVisible =
+IsProgressFrameReserved =
     Percent.HasValue
+    && Type is Default or Navigation
+
+IsProgressVisible =
+    IsProgressFrameReserved
     && IsCurrent
     && EffectiveStatus == Process
     && Icon == null
-    && Type is Default or Navigation
 ```
 
-Icon、Type、Percent、IsCurrent 或 EffectiveStatus 变化都必须重新计算 IsProgressVisible。
+`IsProgressFrameReserved` 负责所有 item 统一预留 Progress 外圈尺寸；`IsProgressVisible` 只负责当前 process item 是否绘制 Progress ring。Icon、Type、Percent、IsCurrent 或 EffectiveStatus 变化都必须重新计算 Progress 投影状态。
 
 ### 4.5 数据项路径
 
@@ -159,7 +167,7 @@ Steps (public)
 | `StepsItemLayoutPanel` | layout panel | `StepsItemTheme.axaml` | StepsItem template | Type、Orientation、TitlePlacement | internal-observable | 不直接依赖或替换。 |
 | `PART_Indicator` | indicator | `StepsItemTheme.axaml` | StepsItem template | Icon、Status、Percent、Wave | template-stable | 自定义主题必须保留。 |
 | `PART_WaveSpirit` | wave decorator | `StepsItemIndicatorTheme.axaml` | Indicator template | IsMotionEnabled、pointer click | internal-observable | 不由用户直接调用。 |
-| `Connector` | border | `StepsItemTheme.axaml` | StepsItem template | ConnectorStatus、Type | internal-observable | ConnectorStatus 来自 next item EffectiveStatus。 |
+| `Connector` | border | `StepsItemTheme.axaml` | StepsItem template | ConnectorStatus、Type | internal-observable | ConnectorStatus 来自下一个 item EffectiveStatus。 |
 | `NavigationArrow` | path icon | `StepsItemTheme.axaml` | StepsItem template | Type、Orientation、SizeType | internal-observable | 只在 Navigation 类型可见。 |
 | `NavigationActiveIndicator` | border | `StepsItemTheme.axaml` | StepsItem template | Type、Orientation、IsCurrent | internal-observable | 只在 Navigation 当前项可见。 |
 
@@ -171,7 +179,7 @@ Steps (public)
 
 1. 设置 `Owner` 和当前 index。
 2. 计算 StepNumber、IsFirst、IsLast、AutomaticStatus、EffectiveStatus 和 IsCurrent。
-3. 更新前一个 item 的 ConnectorStatus。
+3. 按下一个 item 的 EffectiveStatus 计算当前 item 的 ConnectorStatus。
 4. 普通数据项接入 Content / ContentTemplate。
 
 初始实现每个容器只执行 O(1) 初始化，不在每次 ContainerPrepared 时遍历全部 Items。
@@ -212,6 +220,7 @@ Steps (public)
 - Clickable、root enabled 和 item enabled 共同决定 CanInvoke。
 
 pointer click 首先调用 Indicator.PlayWave，再在目标 StepNumber 不等于 Current 时发出 CurrentChangeRequested。事件处理器是否更新 Current 不影响本次 click Wave。
+`Type=OutlineDot` 仍走同一激活路径，但 Indicator 会拒绝播放 Wave，因此请求语义和动画语义保持解耦。
 
 ### 7.2 Keyboard
 
@@ -234,18 +243,20 @@ CanInvoke=false 时不进入 Tab 焦点序列，不显示 hand cursor 和 clicka
 
 `StepsPanel`：
 
-- Horizontal Default/Dot：非末 item 参与伸展，末 item 使用内容宽度。
+- Horizontal Default + horizontal title：非末 item 参与伸展，末 item 使用内容宽度。
+- Horizontal Dot / OutlineDot / vertical title / Inline：item 等宽，indicator 居中，rail 从当前 indicator 指向下一项。
 - Horizontal Navigation：item 等宽。
-- Inline：按紧凑 inline 规则排列。
+- Inline：按 Ant Design 的 inline + dot + vertical-title 组合排列，item 等宽，dot 上方 rail 连通，content 不参与显示；`Offset` 会在可见 item 前方保留同等数量的空 item 单元。
 - Vertical：按 DesiredSize 顺序堆叠。
 
 `StepsItemLayoutPanel` 根据 Type、Orientation 和 EffectiveTitlePlacement 排列固定语义节点。Connector 的方向和伸展范围由布局 Panel 决定，状态由 item 投影决定。
 
 ### 8.3 Indicator 和 Progress
 
-Indicator 使用单一模板切换 number、finish mark、error mark、dot 和 custom icon。Progress ring 在 Indicator.Render 中绘制。
+Indicator 使用单一模板切换 number、finish mark、error mark、实心 dot、空心 dot 和 custom icon。Progress ring 在 Indicator.Render 中绘制。
+`OutlineDot` 复用 Dot 的 `DotSize`、`DotCurrentSize`、`DotLineThickness` 和状态 Dot 色；主题只把状态色投射到 `BorderBrush`，并保持 `Background=Transparent`。
 
-Progress 外径由 `IconSize` / `IconSizeSM` 与 `ProgressFramePadding` / `ProgressFramePaddingSM` 推导，不保存重复的固定 Progress size。
+Progress 外径由 `IconSize` / `IconSizeSM` 与 `ProgressFramePadding` / `ProgressFramePaddingSM` 推导，不保存重复的固定 Progress size。有 `Percent` 时，支持 Progress 的 item 统一预留外圈尺寸，只在当前 process item 上绘制 groove 和 arc。
 
 Percent coercion：
 
@@ -287,10 +298,13 @@ AOT 边界：
 - 每次状态协调必须完整覆盖派生状态，不依赖旧值。
 - item public Status 不被根控件写入或覆盖。
 - EffectiveStatus 是所有状态视觉的唯一输入。
-- Connector 使用 next item EffectiveStatus。
+- Connector 使用下一个 item EffectiveStatus。
+- 垂直 Steps 的 item 间距属于 item 内部测量空间，最后一个 item 必须清零；不得用 Content padding 或 StepsPanel 外部 spacing 代替。
 - Initial 不在 OnApplyTemplate 或 attach 中写入 Current。
+- Offset 不参与状态编号、Current 归一或 item 状态计算；它只改变 Inline 布局前置占位。
 - 根级步骤页面内容投影和内容订阅不得重新引入。
 - pointer click 是 Wave 的唯一触发源；Current 变化不能播放 Wave。
+- OutlineDot click 不能播放 Wave；该例外必须在 Indicator 层兜住，避免 pointer、keyboard 或未来激活入口绕过。
 - 每个主题只维护一套语义模板。
 - StepsPanel 和 StepsItemLayoutPanel 只负责布局。
 - 容器清理必须释放 Owner，模板重套必须释放旧 part 引用。
@@ -312,6 +326,7 @@ AOT 边界：
 - Indicator、Header、SubHeader 和 Content click。
 - 非当前 item click 产生 Wave 和 request。
 - 当前 item click 只有 Wave。
+- OutlineDot click 只产生 request，不产生 Wave。
 - 程序化 Current 不产生 Wave。
 - pointer cancel、root/item disabled、不可点击和 motion disabled。
 - Enter/Space 产生 request 但不产生 Wave。
@@ -319,12 +334,13 @@ AOT 边界：
 Progress：
 
 - null、0、100、越界、NaN 和 Infinity。
-- 四种 EffectiveStatus、自定义 Icon、Dot 和 Inline。
+- 四种 EffectiveStatus、自定义 Icon、Dot、OutlineDot 和 Inline。
 - Render 输入变化触发 InvalidateVisual。
 
 布局：
 
 - `Type x Orientation x TitlePlacement x SizeType`。
+- Inline Offset 前置占位。
 - 语义节点唯一、Bounds 有效、无重叠、Connector 正确。
 - 运行时布局切换和动态 Items。
 

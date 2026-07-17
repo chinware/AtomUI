@@ -59,16 +59,6 @@ internal class StepsToken : AbstractControlDesignToken
     public double DotCurrentSize { get; set; }
     
     /// <summary>
-    /// 水平点状步骤点外间距
-    /// </summary>
-    public Thickness HorizontalDotMargin { get; set; }
-    
-    /// <summary>
-    /// 垂直点状步骤点外间距
-    /// </summary>
-    public Thickness VerticalDotMargin { get; set; }
-    
-    /// <summary>
     /// 可跳转步骤条箭头颜色
     /// Color of arrow in nav
     /// </summary>
@@ -85,6 +75,12 @@ internal class StepsToken : AbstractControlDesignToken
     /// External spacing when Label is arranged horizontally
     /// </summary>
     public Thickness HorizontalHeaderMargin { get; set; }
+
+    /// <summary>
+    /// 子标题外间距
+    /// External spacing of subtitle
+    /// </summary>
+    public Thickness SubHeaderMargin { get; set; }
     
     /// <summary>
     /// 垂直排列的时候 item 的间距
@@ -110,16 +106,16 @@ internal class StepsToken : AbstractControlDesignToken
     /// 垂直导航类型箭头的外间距，小尺寸
     /// </summary>
     public Thickness VerticalNavArrowMarginSM { get; set; }
+
+    /// <summary>
+    /// 垂直导航类型 item 内边距
+    /// </summary>
+    public Thickness VerticalNavItemPadding { get; set; }
     
     /// <summary>
     /// 垂直导航类型内容和指示线的间距
     /// </summary>
     public double NavItemGutter { get; set; }
-    
-    /// <summary>
-    /// 垂直导航类型内容和指示线的间距，小尺寸
-    /// </summary>
-    public double NavItemGutterSM { get; set; }
 
     #region 内部 Token
 
@@ -179,7 +175,7 @@ internal class StepsToken : AbstractControlDesignToken
         IconSizeSM          = SharedToken.FontSizeHeading3;
         DotSize             = SharedToken.ControlHeight / 4;
         DotCurrentSize      = SharedToken.ControlHeightLG / 4;
-        NavArrowColor       = SharedToken.ColorTextDescription;
+        NavArrowColor       = SharedToken.ColorTextDisabled;
         DescriptionMaxWidth = 140;
 
         WaitIconColor         = SharedToken.ColorTextLabel;
@@ -196,7 +192,7 @@ internal class StepsToken : AbstractControlDesignToken
         ProcessIconBgColor      = SharedToken.ColorPrimary;
         ProcessIconBorderColor  = SharedToken.ColorPrimary;
         ProcessDotColor         = SharedToken.ColorPrimary;
-        ProcessTailColor        = SharedToken.ColorTextDisabled;
+        ProcessTailColor        = SharedToken.ColorPrimary;
 
         ProgressGrooveColor = SharedToken.ColorSplit;
         ProgressColor       = SharedToken.ColorPrimary;
@@ -212,33 +208,37 @@ internal class StepsToken : AbstractControlDesignToken
         ErrorIconColor          = SharedToken.ColorTextLightSolid;
         ErrorTitleColor         = SharedToken.ColorError;
         ErrorDescriptionColor   = SharedToken.ColorError;
-        ErrorTailColor          = SharedToken.ColorTextDisabled;
+        ErrorTailColor          = SharedToken.ColorError;
         ErrorIconBgColor        = SharedToken.ColorError;
         ErrorIconBorderColor    = SharedToken.ColorError;
         ErrorDotColor           = SharedToken.ColorError;
         StepsNavActiveColor     = SharedToken.ColorPrimary;
         // Steps inline variable
         InlineDotSize       = 6;
-        InlineHeaderMargin  = new Thickness(0, SharedToken.UniformlyMarginXS - SharedToken.LineWidth, 0, 0);
-        InlineHeaderPadding = new Thickness(SharedToken.UniformlyMarginXS, 0);
-        InlineTitleColor    = SharedToken.ColorTextQuaternary;
-        InlineTailColor     = SharedToken.ColorBorderSecondary;
-        InlineItemPadding   = new Thickness(0, SharedToken.UniformlyMarginXS);
+        InlineHeaderMargin  = new Thickness();
+        InlineHeaderPadding = new Thickness();
+        InlineTitleColor    = SharedToken.ColorTextSecondary;
+        InlineTailColor     = SharedToken.ColorTextDisabled;
+        var inlineItemHorizontalPadding = SharedToken.UniformlyPaddingXXS + SharedToken.UniformlyMarginXXS / 2;
+        InlineItemPadding   = new Thickness(
+            inlineItemHorizontalPadding,
+            SharedToken.UniformlyPaddingXS + SharedToken.LineWidth,
+            inlineItemHorizontalPadding,
+            0);
         
-        HorizontalHeaderMargin     = new Thickness(SharedToken.UniformlyMargin, 0, 0, 0);
-        VerticalItemSpacing        = SharedToken.SpacingXXS * 1.5;
-        VerticalDescriptionPadding = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingXS);
+        HorizontalHeaderMargin     = new Thickness(SharedToken.UniformlyMargin, 0);
+        SubHeaderMargin            = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);
+        VerticalItemSpacing        = SharedToken.UniformlyMarginXXS;
+        VerticalDescriptionPadding = new Thickness();
         DotLineThickness           = SharedToken.LineWidth * 3;
 
-        HorizontalDotMargin        = new Thickness(SharedToken.UniformlyMarginXS, 0);
-        VerticalDotMargin          = new Thickness(0, SharedToken.UniformlyMarginXS);
         VerticalLabelContentMargin = new Thickness(0, SharedToken.UniformlyMarginSM, 0, 0);
-        VerticalNavArrowMargin     = new Thickness(0, SharedToken.UniformlyMarginSM);
-        VerticalNavArrowMarginSM   = new Thickness(0, SharedToken.UniformlyMarginXS);
+        VerticalNavArrowMargin     = new Thickness();
+        VerticalNavArrowMarginSM   = new Thickness();
+        VerticalNavItemPadding     = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPadding);
         NavItemGutter              = SharedToken.Spacing;
-        NavItemGutterSM            = SharedToken.SpacingXS;
         ProgressFramePadding       = new Thickness(SharedToken.LineWidthBold * 2);
-        ProgressFramePaddingSM     = new Thickness(SharedToken.LineWidthBold);
+        ProgressFramePaddingSM     = new Thickness(SharedToken.LineWidthBold * 2);
     }
     
     protected override Type GetTokenKindType() => typeof(StepsTokenKind);

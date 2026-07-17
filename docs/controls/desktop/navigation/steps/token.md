@@ -4,7 +4,7 @@
 
 ## 1. 定位
 
-StepsToken 描述步骤标题、详情内容、Indicator、Dot、Connector、Navigation、Inline 和 Progress ring 的组件级视觉语义。
+StepsToken 描述步骤标题、详情内容、Indicator、Dot、OutlineDot、Connector、Navigation、Inline 和 Progress ring 的组件级视觉语义。
 
 StepsToken 不承载：
 
@@ -19,10 +19,12 @@ StepsToken 不承载：
 
 - `DescriptionMaxWidth`
 - `HorizontalHeaderMargin`
+- `SubHeaderMargin`
 - `VerticalDescriptionPadding`
 - `VerticalLabelContentMargin`
 
-`DescriptionMaxWidth` 和 `VerticalDescriptionPadding` 沿用既有 Token 名称，但它们作用于 `StepsItem.Content` 详情区域，不对应已删除的 Description API。
+`DescriptionMaxWidth` 和 `VerticalDescriptionPadding` 沿用既有 Token 名称，但它们作用于 `StepsItem.Content` 详情区域，不对应已删除的 Description API。垂直 item 间距不由 `VerticalDescriptionPadding` 表达，而由 item 布局面板内部空间表达。
+`SubHeaderMargin` 只表达辅助标题相对主标题的 inline-start 间距，不能包含上下外边距，避免辅助标题改变标题行高度。
 
 ### 2.2 默认 Indicator
 
@@ -38,19 +40,17 @@ StepsToken 不承载：
 
 - `DotSize`
 - `DotCurrentSize`
-- `HorizontalDotMargin`
-- `VerticalDotMargin`
 - `DotLineThickness`
 
-Dot Token 只在 `Type=Dot` 下生效。Connector 方向和长度由 LayoutPanel 决定，Token 只提供尺寸与颜色。
+Dot Token 在 `Type=Dot` 和 `Type=OutlineDot` 下生效。`Dot` 使用状态色作为填充色，`OutlineDot` 使用同一状态色作为边框色并保持背景透明。Connector 方向和长度由 LayoutPanel 决定，Token 只提供尺寸与颜色。
 
 ### 2.4 Navigation
 
 - `NavArrowColor`
 - `VerticalNavArrowMargin`
 - `VerticalNavArrowMarginSM`
+- `VerticalNavItemPadding`
 - `NavItemGutter`
-- `NavItemGutterSM`
 - `StepsNavActiveColor`
 
 Navigation Token 控制导航间距、active 表达和可选箭头视觉，不保存 Current 或交互状态。
@@ -67,6 +67,7 @@ Navigation Token 控制导航间距、active 表达和可选箭头视觉，不�
 - `ErrorTitleColor`、`ErrorDescriptionColor`、`ErrorTailColor`、`ErrorDotColor`
 
 名称中的 `DescriptionColor` 作用于 Content 详情区域。状态选择只读取 EffectiveStatus；Token 不参与状态推导。
+TailColor 遵循 Ant Design rail 语义：Wait 使用 disabled 色，Process 和 Finish 使用 primary 色，Error 使用 error 色。
 
 ### 2.6 Progress ring
 
@@ -101,12 +102,13 @@ SharedToken
 
 | 输入或状态 | Token 选择 |
 | --- | --- |
-| `SizeType` | IconSize/IconSizeSM、NavItemGutter/NavItemGutterSM、ProgressFramePadding。 |
-| `Type=Dot` | DotSize、DotCurrentSize、DotLineThickness 和 Dot 状态色。 |
+| `SizeType` | IconSize/IconSizeSM、ProgressFramePadding。 |
+| `Type=Dot` / `Type=OutlineDot` | DotSize、DotCurrentSize、DotLineThickness 和 Dot 状态色。 |
 | `Type=Navigation` | Navigation 间距、active 色和箭头色。 |
 | `Type=Inline` | Inline dot、padding、title 和 tail。 |
 | `EffectiveStatus` | 对应 Wait/Process/Finish/Error 的 icon、title、content、tail 和 dot 色。 |
-| `IsProgressVisible` | Progress 尺寸、padding、groove 和 arc 色。 |
+| `IsProgressFrameReserved` | Progress 外圈尺寸和 padding 预留。 |
+| `IsProgressVisible` | Progress groove 和 arc 绘制色。 |
 
 状态流：
 
@@ -141,9 +143,9 @@ StepsToken 只影响：
 完成 Steps 重构后，以下 Token 边界保持稳定：
 
 - 不把实例 Current、Status、Percent、item 数量或 layout bounds 迁移为 Token。
-- 状态色必须同时覆盖 Indicator、Title、Content、Connector 和 Dot。
+- 状态色必须同时覆盖 Indicator、Title、Content、Connector、Dot 和 OutlineDot。
 - Indicator 尺寸变化必须验证 Default、Small、状态图标和 custom Icon。
-- Dot 尺寸变化必须验证水平、垂直和 current dot 对齐。
+- Dot 尺寸变化必须验证水平、垂直、current dot、outline dot 和 Connector 对齐。
 - Progress Token 必须由真实 Progress ring 消费，不能只计算而无使用点。
 - Inline Token 不能泄漏到 Default、Dot 或 Navigation。
 - Token 名称中的 Description 是既有主题术语，不恢复 Description public API。
@@ -155,8 +157,8 @@ StepsToken 只影响：
 | --- | --- |
 | 标题/内容 Token | 验证 Header、SubHeader、Content 的宽度、间距和换行。 |
 | Indicator Token | 验证 Middle/Small、四种状态、自定义 Icon 和文字居中。 |
-| Dot Token | 验证水平、垂直、current dot 和 Connector 对齐。 |
-| 状态颜色 | 验证 Wait/Process/Finish/Error 的 Indicator、Title、Content、Connector 和 Dot。 |
+| Dot Token | 验证水平、垂直、current dot、outline dot 和 Connector 对齐。 |
+| 状态颜色 | 验证 Wait/Process/Finish/Error 的 Indicator、Title、Content、Connector、Dot 和 OutlineDot。 |
 | Navigation Token | 验证水平/垂直 Navigation、active 表达、间距和箭头不裁剪。 |
 | Progress Token | 验证 Default/Navigation、0/100 Percent、尺寸、厚度、颜色和裁剪。 |
 | Inline Token | 验证 Inline dot、Connector、padding、hover 和 current 表达。 |

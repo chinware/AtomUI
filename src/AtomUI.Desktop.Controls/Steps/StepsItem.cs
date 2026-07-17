@@ -1,4 +1,3 @@
-using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
@@ -6,6 +5,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -128,6 +128,12 @@ public class StepsItem : HeaderedContentControl
             item => item.IsProgressVisible,
             (item, value) => item.IsProgressVisible = value);
 
+    internal static readonly DirectProperty<StepsItem, bool> IsProgressFrameReservedProperty =
+        AvaloniaProperty.RegisterDirect<StepsItem, bool>(
+            nameof(IsProgressFrameReserved),
+            item => item.IsProgressFrameReserved,
+            (item, value) => item.IsProgressFrameReserved = value);
+
     internal StepsType Type
     {
         get => GetValue(TypeProperty);
@@ -242,6 +248,14 @@ public class StepsItem : HeaderedContentControl
         private set => SetAndRaise(IsProgressVisibleProperty, ref _isProgressVisible, value);
     }
 
+    private bool _isProgressFrameReserved;
+
+    internal bool IsProgressFrameReserved
+    {
+        get => _isProgressFrameReserved;
+        private set => SetAndRaise(IsProgressFrameReservedProperty, ref _isProgressFrameReserved, value);
+    }
+
     #endregion
 
     internal Steps? Owner { get; private set; }
@@ -262,7 +276,7 @@ public class StepsItem : HeaderedContentControl
         Owner = owner;
         ItemIndex = index;
         UpdateCanInvoke();
-        UpdateProgressVisibility();
+        UpdateProgressState();
     }
 
     internal void ApplyOwnerState(
@@ -280,7 +294,7 @@ public class StepsItem : HeaderedContentControl
         IsFirst = isFirst;
         IsLast = isLast;
         ConnectorStatus = connectorStatus;
-        UpdateProgressVisibility();
+        UpdateProgressState();
     }
 
     internal void DetachFromOwner()
@@ -296,6 +310,7 @@ public class StepsItem : HeaderedContentControl
         ConnectorStatus = StepsStatus.Wait;
         CanInvoke = false;
         IsProgressVisible = false;
+        IsProgressFrameReserved = false;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -325,7 +340,7 @@ public class StepsItem : HeaderedContentControl
             change.Property == IsCurrentProperty ||
             change.Property == EffectiveStatusProperty)
         {
-            UpdateProgressVisibility();
+            UpdateProgressState();
         }
 
         if (change.Property == IsCurrentProperty && IsCurrent && _indicator is not null)
@@ -428,7 +443,7 @@ public class StepsItem : HeaderedContentControl
             return;
         }
 
-        _indicator?.PlayWave();
+        PlayActivationWave();
         Owner?.RequestCurrentChange(this);
     }
 
@@ -436,16 +451,29 @@ public class StepsItem : HeaderedContentControl
     {
         if (CanInvoke)
         {
+            PlayActivationWave();
             Owner?.RequestCurrentChange(this);
         }
     }
 
-    private void UpdateProgressVisibility()
+    private void PlayActivationWave()
     {
-        IsProgressVisible = Percent.HasValue &&
+        var indicator = _indicator;
+        if (indicator is null)
+        {
+            return;
+        }
+
+        Dispatcher.UIThread.Post(indicator.PlayWave);
+    }
+
+    private void UpdateProgressState()
+    {
+        IsProgressFrameReserved = Percent.HasValue &&
+                                  Type is StepsType.Default or StepsType.Navigation;
+        IsProgressVisible = IsProgressFrameReserved &&
                             IsCurrent &&
                             EffectiveStatus == StepsStatus.Process &&
-                            Icon is null &&
-                            Type is StepsType.Default or StepsType.Navigation;
+                            Icon is null;
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using AtomUIGallery.ShowCases.Steps;
 using Shouldly;
 using Xunit;
 
@@ -45,16 +46,21 @@ public class StepsShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:StepsShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(14);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(14);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(14);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:StepsViewModel\"").ShouldBe(14);
+        CountShowCaseItemElements(source).ShouldBe(15);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(15);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(15);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:StepsViewModel\"").ShouldBe(15);
         source.ShouldContain("StepsShowCaseLangResource BasicTitle");
         source.ShouldContain("StepsShowCaseLangResource SwitchStepTitle");
         source.ShouldContain("StepsShowCaseLangResource P2TextCurrent");
         source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("StepsShowCaseLangResource NavigationStepsTitle");
         source.ShouldContain("StepsShowCaseLangResource InlineStepsTitle");
+        source.ShouldContain("StepsShowCaseLangResource InlineStyleCombinationTitle");
+        source.ShouldContain("SourceKey=\"steps-inline-style-combination\"");
+        source.ShouldContain("Offset=\"2\"");
+        source.ShouldContain("StepsShowCaseLangResource P2SubHeaderSubTitle");
+        source.ShouldContain("StepsShowCaseLangResource P2HeaderStepN5");
         source.ShouldNotContain("{Binding #");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
@@ -73,13 +79,15 @@ public class StepsShowCasePageTests
         pageSource.ShouldContain("BaseClass=\"ItemsControl\"");
         pageSource.ShouldContain("Current=\"{Binding Current}\"");
         pageSource.ShouldContain("CurrentChangeRequested=\"HandleCurrentChangeRequested\"");
-        pageSource.ShouldContain("Content=\"{Binding InteractivePageContent}\"");
+        pageSource.ShouldContain("Text=\"{Binding InteractivePageContent}\"");
         pageSource.ShouldContain("Type=\"Dot\"");
+        pageSource.ShouldContain("Type=\"OutlineDot\"");
         pageSource.ShouldContain("Type=\"Navigation\"");
         pageSource.ShouldContain("Type=\"Inline\"");
         pageSource.ShouldContain("TitlePlacement=\"Vertical\"");
         pageSource.ShouldContain("Percent=\"60\"");
-        CountOccurrences(pageSource, "SourceKey=\"").ShouldBe(14);
+        pageSource.ShouldContain("Offset=\"2\"");
+        CountOccurrences(pageSource, "SourceKey=\"").ShouldBe(15);
 
         codeBehindSource.ShouldContain("HandleCurrentChangeRequested");
         codeBehindSource.ShouldContain("viewModel.Current = args.Current");
@@ -94,6 +102,7 @@ public class StepsShowCasePageTests
         viewModelSource.ShouldContain("Steps.Percent\"");
         viewModelSource.ShouldContain("Steps.Type\"");
         viewModelSource.ShouldContain("Steps.TitlePlacement\"");
+        viewModelSource.ShouldContain("Steps.Offset\"");
         viewModelSource.ShouldContain("Steps.CurrentChangeRequested\"");
         viewModelSource.ShouldContain("StepsItem.Content\"");
         viewModelSource.ShouldContain("StepsItem.ContentTemplate\"");
@@ -114,6 +123,30 @@ public class StepsShowCasePageTests
         Regex.IsMatch(pageSource, @"<atom:StepsItem\b[^>]*\bDescription=").ShouldBeFalse();
         pageSource.ShouldNotContain("Style=\"Navigation\"");
         pageSource.ShouldNotContain("Style=\"Inline\"");
+    }
+
+    [Fact]
+    public void Steps_ShowCase_Controlled_Content_Uses_TextBlock_Instead_Of_ContentPresenter()
+    {
+        var pageSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml");
+
+        pageSource.ShouldContain("<atom:TextBlock Text=\"{Binding InteractivePageContent}\"");
+        pageSource.ShouldNotContain("<ContentPresenter Content=\"{Binding InteractivePageContent}\"");
+    }
+
+    [Fact]
+    public void Steps_ShowCase_Interactive_Content_Is_Not_Empty_For_Each_Controlled_Step()
+    {
+        var viewModel = new StepsViewModel(null!);
+
+        viewModel.Current = 0;
+        viewModel.InteractivePageContent.ShouldBe("First-content");
+
+        viewModel.Current = 1;
+        viewModel.InteractivePageContent.ShouldBe("Second-content");
+
+        viewModel.Current = 2;
+        viewModel.InteractivePageContent.ShouldBe("Last-content");
     }
 
     [Fact]
@@ -213,10 +246,16 @@ public class StepsShowCasePageTests
             source.ShouldContain("ApiPropertyType");
             source.ShouldContain("ApiPropertyTitlePlacement");
             source.ShouldContain("ApiPropertyIsItemClickable");
+            source.ShouldContain("ApiPropertyOffset");
             source.ShouldContain("ApiPropertyIsMotionEnabled");
             source.ShouldContain("ApiEventCurrentChangeRequested");
             source.ShouldContain("ApiPropertyStepsItemContent");
             source.ShouldContain("ApiPropertyStepsItemContentTemplate");
+            source.ShouldContain("InlineStyleCombinationTitle");
+            source.ShouldContain("InlineStyleCombinationDescription");
+            source.ShouldContain("P2SubHeaderSubTitle");
+            source.ShouldContain("P2HeaderStepN5");
+            source.ShouldContain("P2ContentThisIsStepN5");
             source.ShouldContain("TokenNameDescriptionMaxWidth");
             source.ShouldContain("TokenNameIconSize");
             source.ShouldContain("TokenNameDotSize");
