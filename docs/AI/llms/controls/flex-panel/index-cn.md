@@ -71,7 +71,7 @@ FlexPanel 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础布局
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:136`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:33`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -82,8 +82,8 @@ Gallery key：`ExamplesContent` / item `0`
         <atom:RadioButton x:Name="DirectionVertical" Content="vertical" />
     </StackPanel>
 
-    <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12"
-            HorizontalAlignment="Stretch">
+    <atom:PixelAlignedBorder BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12"
+                             HorizontalAlignment="Stretch">
         <atom:FlexPanel x:Name="BasicFlexPanel"
                         Direction="Row"
                         AlignItems="Stretch"
@@ -93,13 +93,13 @@ Gallery key：`ExamplesContent` / item `0`
             <Border x:Name="BasicItem3" Background="#4F7CF5" Height="60" MinWidth="80" />
             <Border x:Name="BasicItem4" Background="#1F5BFF" Height="60" MinWidth="80" />
         </atom:FlexPanel>
-    </Border>
+    </atom:PixelAlignedBorder>
 </StackPanel>
 ```
 
 ### 对齐
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:162`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:59`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -123,7 +123,7 @@ Gallery key：`ExamplesContent` / item `1`
         <atom:SegmentedItem Content="stretch" />
     </atom:Segmented>
 
-    <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6"  Height="120">
+    <atom:PixelAlignedBorder BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6"  Height="120">
         <atom:FlexPanel x:Name="AlignFlexPanel"
                         Direction="Row"
                         JustifyContent="FlexStart"
@@ -133,13 +133,13 @@ Gallery key：`ExamplesContent` / item `1`
             <atom:Button ButtonType="Primary" Content="主要" />
             <atom:Button ButtonType="Primary" Content="主要" />
         </atom:FlexPanel>
-    </Border>
+    </atom:PixelAlignedBorder>
 </StackPanel>
 ```
 
 ### 间距
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:200`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:97`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -173,7 +173,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 自动换行
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:232`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:129`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -183,7 +183,7 @@ Gallery key：`ExamplesContent` / item `3`
         <atom:RadioButton x:Name="WrapEnabled" IsChecked="True" GroupName="WrapMode" Content="wrap" />
         <atom:RadioButton x:Name="WrapDisabled" GroupName="WrapMode" Content="nowrap" />
     </StackPanel>
-    <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12">
+    <atom:PixelAlignedBorder BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12">
         <atom:ScrollViewer x:Name="WrapScrollViewer"
                            HorizontalScrollBarVisibility="Disabled"
                            VerticalScrollBarVisibility="Disabled">
@@ -210,7 +210,7 @@ Gallery key：`ExamplesContent` / item `3`
                 <atom:Button ButtonType="Primary" Content="按钮" />
             </atom:FlexPanel>
         </atom:ScrollViewer>
-    </Border>
+    </atom:PixelAlignedBorder>
 </StackPanel>
 ```
 

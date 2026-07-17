@@ -18,10 +18,14 @@
 
 ```xml
 <Panel Name="RootLayout">
-    <Border Name="Frame" />
+    <PixelAlignedBorder Name="Frame" />
     <IconPresenter Name="IconPresenter" />
-    <Image Name="ImagePresenter" />
-    <Svg Name="SvgPresenter" />
+    <Border>
+        <Image Name="ImagePresenter" />
+    </Border>
+    <Border>
+        <Svg Name="SvgPresenter" />
+    </Border>
     <TextBlock Name="PART_TextPresenter" />
 </Panel>
 ```
@@ -37,10 +41,12 @@ Avatar
   -> AvatarGroup (control theme, AvatarGroupTheme.axaml)
   -> Avatar (control theme, AvatarTheme.axaml)
      -> Panel#RootLayout (template-stable)
-        -> Border#Frame (template-stable)
+        -> PixelAlignedBorder#Frame (template-stable)
         -> IconPresenter#IconPresenter (internal-observable)
-        -> Image#ImagePresenter (template-stable)
-        -> Svg#SvgPresenter (template-stable)
+        -> Border (template-stable)
+           -> Image#ImagePresenter (template-stable)
+        -> Border (template-stable)
+           -> Svg#SvgPresenter (template-stable)
         -> TextBlock#PART_TextPresenter (template-stable)
 ```
 
@@ -52,7 +58,7 @@ Avatar
 | `AvatarGroup` | control theme | `AvatarGroupTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Avatar` | control theme | `AvatarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BitmapSrc`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `EffectiveIconSize` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `RootLayout` | template node (Panel) | `AvatarTheme.axaml` | Avatar | `Background`, `BitmapSrc`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `EffectiveIconSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (Border) | `AvatarTheme.axaml` | Avatar | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `AvatarTheme.axaml` | Avatar | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `IconPresenter` | template node (IconPresenter) | `AvatarTheme.axaml` | Avatar | `EffectiveIconSize`, `Foreground`, `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ImagePresenter` | template node (Image) | `AvatarTheme.axaml` | Avatar | `BitmapSrc`, `Height`, `Width` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SvgPresenter` | template node (Svg) | `AvatarTheme.axaml` | Avatar | `Height`, `Src`, `Width` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

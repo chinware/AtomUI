@@ -49,7 +49,7 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 | `SizeType` | 表单统一尺寸密度，支持 `Large/Middle/Small/Custom`。 |
 | `StyleVariant` | 传递给支持输入外观变体的子控件。 |
 | `IsMotionEnabled` | 传递给支持动效开关的子控件。 |
-| `ValidateTrigger` | 表单默认验证触发时机，默认 `OnChanged`，与 Ant Design 的 `onChange` 默认验证语义对齐。 |
+| `ValidateTrigger` | 表单默认验证触发时机，默认 `OnChanged`，即字段值变化时触发验证。 |
 | `IsValidateFeedbackEnabled` | 是否创建并传递验证反馈控件。 |
 | `InitialValues` | 表单加载时按 `FieldName` 写入初始值。 |
 | `IsFormValid` | 基于表单项验证状态聚合的只读有效性状态。 |
@@ -77,7 +77,8 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 
 - `FieldName` 是表单值读写和验证消息聚合的字段键。
 - `Content` 必须实现 `IFormItemAware`，除非该表单项显式关闭内容类型验证。
-- `Validators` 按 `ValidateStrategy` 执行，结果写入 `ValidateStatus`、`ValidateResult`、错误消息和警告消息。
+- `Validators` 按 `ValidateStrategy` 执行；error 结果写入内容控件的 `DataValidationErrors`，并同步投射到 `ValidateStatus`、`ValidateResult`、错误消息和 feedback。
+- `Warning`、`Validating` 和 `Success` 是 Form 扩展状态，不写成 `DataValidationErrors` error。
 - `ValidateTrigger` 可以继承 Form 默认值，也可以在 FormItem 上覆盖。
 - `ValidateDebounce` 只影响延迟触发的表单项验证，不改变手动验证和提交验证的契约。
 - `Help` 与验证消息共同决定表单项辅助信息区域是否保留空间。
@@ -96,14 +97,14 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 
 | 接口 | 职责 |
 | --- | --- |
-| `IFormItemAware` | 提供值读写、清空、值变化通知和验证状态通知。 |
+| `IFormItemAware` | 提供值读写、清空、值变化通知和扩展验证状态通知；error 真源仍是内容控件的 `DataValidationErrors`。 |
 | `IFormItemFeedbackAware` | 接收 `FormValidateFeedback` 控件，用于在输入框内部展示反馈图标。 |
 | `ICustomizableSizeTypeAware` | 接收 `CustomizableSizeType`，包含 `Custom` 尺寸。 |
 | `ISizeTypeAware` | 旧尺寸接口；Form 将 `Custom` 映射为 `Middle` 后传递。 |
 | `IInputControlStyleVariantAware` | 接收 Form 的 `StyleVariant`。 |
 | `IMotionAwareControl` | 接收 Form 的 `IsMotionEnabled`。 |
 
-`FormItemDecorator` 用于把一个或多个输入控件组合成单个表单项内容。它自身实现 Form 接入接口，并把 value、validate status、feedback、size、motion 和 style variant 转发给子控件。
+`FormItemDecorator` 用于把一个或多个输入控件组合成单个表单项内容。它自身实现 Form 接入接口，并把 value、validate status、feedback、size、motion 和 style variant 转发给子控件；涉及 error 时必须保持 `DataValidationErrors` 与子控件验证目标一致。
 
 ### 3.4 按钮契约
 
@@ -123,7 +124,7 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:149`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:46`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -168,7 +169,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 表单布局
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:255`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:152`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -205,70 +206,9 @@ Gallery key：`ExamplesContent` / item `2`
 </StackPanel>
 ```
 
-### 表单布局
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:298`
-
-Gallery key：`ExamplesContent` / item `3`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="20">
-    <atom:Form FormLayout="Horizontal">
-        <atom:FormItem LabelText="水平" FieldName="horizontal"
-                       LabelColInfo="4*"
-                       WrapperColInfo="20*"
-                       IsRequired="True"
-                       Layout="Horizontal">
-            <atom:LineEdit/>
-        </atom:FormItem>
-
-        <atom:FormItem LabelText="垂直"
-                       FieldName="vertical"
-                       IsRequired="True"
-                       Layout="Vertical">
-            <atom:LineEdit/>
-        </atom:FormItem>
-
-        <atom:FormItem LabelText="垂直2"
-                       FieldName="vertical2"
-                       IsRequired="True"
-                       Layout="Vertical">
-            <atom:LineEdit/>
-        </atom:FormItem>
-    </atom:Form>
-
-    <atom:Separator/>
-
-    <atom:Form FormLayout="Vertical">
-
-        <atom:FormItem LabelText="垂直"
-                       FieldName="vertical"
-                       IsRequired="True"
-                       Layout="Vertical">
-            <atom:LineEdit/>
-        </atom:FormItem>
-
-        <atom:FormItem LabelText="垂直2"
-                       FieldName="vertical2"
-                       IsRequired="True"
-                       Layout="Vertical">
-            <atom:LineEdit/>
-        </atom:FormItem>
-
-        <atom:FormItem LabelText="水平" FieldName="horizontal"
-                       LabelColInfo="4*"
-                       WrapperColInfo="20*"
-                       IsRequired="True"
-                       Layout="Horizontal">
-            <atom:LineEdit/>
-        </atom:FormItem>
-    </atom:Form>
-</StackPanel>
-```
-
 ### 标签可换行
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:363`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:290`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -277,6 +217,8 @@ Gallery key：`ExamplesContent` / item `4`
            WrapperColInfo="*"
            MinWidth="600"
            HorizontalAlignment="Left"
+           LabelAlign="Left"
+           IsShowColon="False"
            LabelWrapping="Wrap">
     <atom:FormItem LabelText="普通标签"
                    FieldName="username"
@@ -309,6 +251,81 @@ Gallery key：`ExamplesContent` / item `4`
 </atom:Form>
 ```
 
+### 必填样式
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:634`
+
+Gallery key：`ExamplesContent` / item `8`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:TextBlock VerticalAlignment="Center" Text="必填标记：" />
+        <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleFormSizeTypeChanged">
+            <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Small}" Content="小号" />
+            <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Middle}" IsChecked="True" Content="中号" />
+            <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Large}" Content="大号" />
+        </atom:OptionButtonGroup>
+    </StackPanel>
+
+    <atom:Form LabelColInfo="8*"
+               WrapperColInfo="16*"
+               MinWidth="600"
+               HorizontalAlignment="Left"
+               SizeType="{Binding FormSizeType}">
+        <atom:FormItem LabelText="输入框"
+                       FieldName="input">
+            <atom:LineEdit />
+        </atom:FormItem>
+        <atom:FormItem LabelText="数字输入框"
+                       FieldName="inputNumber">
+            <atom:NumericUpDown Width="200" />
+        </atom:FormItem>
+        <atom:FormItem LabelText="开关"
+                       FieldName="switch">
+            <atom:ToggleSwitch />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="提及"
+                       FieldName="mentions">
+            <atom:Mentions />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="选择器"
+                       FieldName="select">
+            <atom:Select HorizontalAlignment="Stretch"
+                         Mode="Multiple"
+                         OptionsSource="{Binding RequiredStyleSelectOptions}" />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="级联选择"
+                       FieldName="cascader">
+            <atom:Cascader HorizontalAlignment="Stretch" />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="树选择"
+                       FieldName="treeSelect">
+            <atom:TreeSelect HorizontalAlignment="Stretch" />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="日期选择器"
+                       FieldName="datePicker">
+            <atom:DatePicker PlaceholderText="请选择" />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="范围选择器"
+                       FieldName="rangePicker">
+            <atom:RangeDatePicker PlaceholderText="开始日期"
+                                  SecondaryPlaceholderText="结束日期" />
+        </atom:FormItem>
+
+        <atom:FormActionsItem>
+            <atom:SubmitButton />
+        </atom:FormActionsItem>
+    </atom:Form>
+</StackPanel>
+```
+
 ## 状态模型
 
 Form 的核心状态流：
@@ -319,15 +336,16 @@ Form config
   → FormItem content via IFormItemAware
   → value changed / blur / submit validation trigger
   → FormItem validators
-  → ValidateStatus / ValidateResult / feedback / messages
+  → DataValidationErrors for error
+  → ValidateStatus / ValidateResult / feedback / messages as projection
   → Form IsFormValid aggregation
   → SubmitButton watch state and submit result
 ```
 
 验证触发模型：
 
-- `OnSubmit` 是 Form 的默认触发时机，避免表单初始化或普通输入变化时提前显示错误。
-- `OnChanged` 在内容控件触发 `IFormItemAware.ValueChanged` 后按 `ValidateDebounce` 延迟验证。
+- `OnChanged` 是 Form 的默认触发时机；内容控件触发 `IFormItemAware.ValueChanged` 后按 `ValidateDebounce` 延迟验证，使提交后或编辑中的错误能够随输入及时更新。
+- `OnSubmit` 仅在手动验证或提交时验证，适合显式要求只在提交入口展示错误的表单。
 - `OnBlur` 在 FormItem 失去焦点时按 `ValidateDebounce` 延迟验证。
 - 手动 `Validate()`、`ValidateAsync()` 和 `Submit()` 直接进入验证流程，不依赖输入变化触发。
 
@@ -342,9 +360,10 @@ Form config
 验证结果模型：
 
 - `Error` 会使 Form 聚合为无效状态，并阻止 `Submit()` 继续提交。
+- error 状态以内容控件的 `DataValidationErrors.HasErrors` 为最高优先级；Form validators 产生的 error 也写入同一 native validation 通道。
 - `Warning` 会展示警告状态和警告消息，但 Form 聚合只把 error 作为提交阻断条件。
 - `Validating` 和 `Default` 在 `IsFormValid` 聚合中不视为有效完成状态。
-- 重置会取消未完成验证、清空当前消息并把表单项状态恢复为 `Default`。
+- 重置会取消未完成验证、清空 Form-owned 消息并把表单项扩展状态恢复为 `Default`；它只能清理由 Form 写入的 validation error，不能清掉 binding 或 ViewModel 写入的 native error。
 
 提交与重置模型：
 

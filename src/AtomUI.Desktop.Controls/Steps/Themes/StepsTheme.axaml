@@ -4,53 +4,21 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Steps}" TargetType="atom:Steps">
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="IsMotionEnabled" Value="{atom:StepsTokenSharedTokenResource EnableMotion}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <ItemsPresenter
-                    Name="PART_ItemsPresenter">
+                <ItemsPresenter Name="PART_ItemsPresenter">
                     <ItemsPresenter.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <Grid
-                                RowSpacing="{Binding VerticalItemSpacing, RelativeSource={RelativeSource AncestorType=atom:Steps}}"
-                                ColumnSpacing="{Binding HorizontalItemSpacing, RelativeSource={RelativeSource AncestorType=atom:Steps}}" />
+                            <atom:StepsPanel
+                                Type="{Binding Type, RelativeSource={RelativeSource AncestorType=atom:Steps}}"
+                                Orientation="{Binding Orientation, RelativeSource={RelativeSource AncestorType=atom:Steps}}"
+                                VerticalItemSpacing="{atom:StepsTokenResource VerticalItemSpacing}" />
                         </ItemsPanelTemplate>
                     </ItemsPresenter.ItemsPanel>
                 </ItemsPresenter>
             </ControlTemplate>
         </Setter>
-
-        <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="HorizontalItemSpacing" Value="0" />
-        <Setter Property="VerticalItemSpacing" Value="0" />
-        <Setter Property="IsMotionEnabled" Value="{atom:StepsTokenSharedTokenResource EnableMotion}" />
-
-        <Style Selector="^[Style=Default]">
-            <Style Selector="^[Orientation=Horizontal]">
-                <Style Selector="^[LabelPlacement=Horizontal]">
-                    <Style Selector="^[SizeType=Large]">
-                        <Setter Property="HorizontalItemSpacing"
-                                Value="{atom:StepsTokenSharedTokenResource Spacing}" />
-                    </Style>
-                    <Style Selector="^[SizeType=Middle]">
-                        <Setter Property="HorizontalItemSpacing"
-                                Value="{atom:StepsTokenSharedTokenResource Spacing}" />
-                    </Style>
-                    <Style Selector="^[SizeType=Small]">
-                        <Setter Property="HorizontalItemSpacing"
-                                Value="{atom:StepsTokenSharedTokenResource SpacingSM}" />
-                    </Style>
-                </Style>
-            </Style>
-            
-            <Style Selector="^[Orientation=Vertical]">
-                <Setter Property="VerticalItemSpacing"
-                        Value="{atom:StepsTokenResource VerticalItemSpacing}" />
-            </Style>
-        </Style>
-        
-        <Style Selector="^[ItemIndicatorType=Dot]">
-            <Setter Property="HorizontalItemSpacing" Value="0" />
-            <Setter Property="VerticalItemSpacing" Value="0" />
-        </Style>
     </ControlTheme>
 </ResourceDictionary>

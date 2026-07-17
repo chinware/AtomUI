@@ -77,7 +77,7 @@ Drawer 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:143`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:39`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -98,7 +98,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 多层抽屉
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:163`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:59`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -144,7 +144,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 额外区域和页脚
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:208`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:104`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -191,7 +191,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 无遮罩
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:253`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:149`
 
 Gallery key：`ExamplesContent` / item `3`
 

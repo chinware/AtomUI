@@ -55,8 +55,10 @@ WindowTitleBar
         -> WindowsCaptionButton#PART_MaximizeButton (template-stable)
         -> WindowsCaptionButton#PART_CloseButton (template-stable)
   -> CaptionButton (control theme, CaptionButtonTheme.axaml)
-     -> Border#PART_Frame (template-stable)
-        -> IconPresenter#PART_IconPresenter (template-stable)
+     -> Panel (template-stable)
+        -> Border#PART_Frame (template-stable)
+        -> Border (template-stable)
+           -> IconPresenter#PART_IconPresenter (template-stable)
   -> WindowTitleBar (control theme, WindowTitleBarTheme.axaml)
      -> Border#Frame (template-stable)
         -> DockPanel (template-stable)
@@ -99,17 +101,18 @@ WindowTitleBar
 | `CaptionButtonGroup` | control theme | `CaptionButtonGroupTheme.axaml` | WindowTitleBar | `IsCloseCaptionButtonVisible`, `IsFullScreenButtonEffectivelyVisible`, `IsFullScreenCaptionButtonVisible`, `IsMaximizeButtonEffectivelyVisible`, `IsMinimizeButtonEffectivelyVisible`, `IsMotionEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (StackPanel) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsCloseCaptionButtonVisible`, `IsFullScreenButtonEffectivelyVisible`, `IsFullScreenCaptionButtonVisible`, `IsMaximizeButtonEffectivelyVisible`, `IsMinimizeButtonEffectivelyVisible`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_FullScreenButton` | template node (CaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsFullScreenButtonEffectivelyVisible`, `IsFullScreenCaptionButtonVisible`, `IsMotionEnabled`, `IsWindowActive`, `IsWindowFullScreen` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_PinButton` | template node (CaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsMotionEnabled`, `IsPinCaptionButtonVisible`, `IsWindowActive`, `IsWindowPinned` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_PinButton` | template node (CaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsMotionEnabled`, `IsPinButtonEffectivelyVisible`, `IsWindowActive`, `IsWindowPinned` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_MinimizeButton` | template node (CaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsMinimizeButtonEffectivelyVisible`, `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_MaximizeButton` | template node (CaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsMaximizeButtonEffectivelyVisible`, `IsMotionEnabled`, `IsWindowActive`, `IsWindowMaximized` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CloseButton` | template node (CaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsCloseCaptionButtonVisible`, `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_FullScreenButton` | template node (WindowsCaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsFullScreenButtonEffectivelyVisible`, `IsFullScreenCaptionButtonVisible`, `IsMotionEnabled`, `IsWindowActive`, `IsWindowFullScreen` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_PinButton` | template node (WindowsCaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsMotionEnabled`, `IsPinCaptionButtonVisible`, `IsWindowActive`, `IsWindowPinned` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_PinButton` | template node (WindowsCaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsMotionEnabled`, `IsPinButtonEffectivelyVisible`, `IsWindowActive`, `IsWindowPinned` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_MinimizeButton` | template node (WindowsCaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsMinimizeButtonEffectivelyVisible`, `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_MaximizeButton` | template node (WindowsCaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsMaximizeButtonEffectivelyVisible`, `IsMotionEnabled`, `IsWindowActive`, `IsWindowMaximized` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CloseButton` | template node (WindowsCaptionButton) | `CaptionButtonGroupTheme.axaml` | CaptionButtonGroup | `IsCloseCaptionButtonVisible`, `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `CaptionButton` | control theme | `CaptionButtonTheme.axaml` | WindowTitleBar | `Background`, `EffectiveCornerRadius`, `EffectiveIcon`, `HorizontalAlignment`, `IconHeight`, `IconWidth` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_Frame` | template node (Border) | `CaptionButtonTheme.axaml` | CaptionButton | `Background`, `EffectiveCornerRadius`, `EffectiveIcon`, `HorizontalAlignment`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `CaptionButton` | control theme | `CaptionButtonTheme.axaml` | WindowTitleBar | `Background`, `BackgroundInset`, `EffectiveCornerRadius`, `EffectiveIcon`, `HorizontalAlignment`, `IconHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Panel` | template node (Panel) | `CaptionButtonTheme.axaml` | CaptionButton | `Background`, `BackgroundInset`, `EffectiveCornerRadius`, `EffectiveIcon`, `HorizontalAlignment`, `IconHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Frame` | template node (Border) | `CaptionButtonTheme.axaml` | CaptionButton | `Background`, `BackgroundInset`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_IconPresenter` | template node (IconPresenter) | `CaptionButtonTheme.axaml` | CaptionButton | `EffectiveIcon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowTitleBar` | control theme | `WindowTitleBarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Frame` | template node (Border) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Background`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

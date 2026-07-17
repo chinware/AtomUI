@@ -4,7 +4,7 @@
 
 ## 概述
 
-SearchEdit 是 AtomUI 桌面数据录入体系中的搜索输入框，用于把单行文本输入和明确的搜索触发按钮组合成一个一体化输入控件。它继承 `LineEdit` 的文本编辑、输入表面、校验状态、清除按钮、密码 reveal、内部前后缀、Form 和 CompactSpace 能力，并在右侧加入固定搜索按钮。
+SearchEdit 是 AtomUI 桌面数据录入体系中的搜索输入框，用于把单行文本输入和明确的搜索触发按钮组合成一个一体化输入控件。它继承 `LineEdit` 的文本编辑、输入表面、native validation error 投射、清除按钮、密码 reveal、内部前后缀、Form 和 CompactSpace 能力，并在右侧加入固定搜索按钮。
 
 SearchEdit 的职责是承载搜索关键字和搜索触发事件。它不负责候选项管理、自动完成、远程请求、过滤算法、搜索结果展示或异步任务编排。需要候选项和 popup 的搜索输入时，应使用 `AutoCompleteSearchEdit`；需要普通文本输入时，应使用 `LineEdit`。
 
@@ -53,7 +53,7 @@ SearchEdit 专项 API：
 | `Text` / `PlaceholderText` | 搜索关键字和空文本提示。 |
 | `SizeType` | 输入尺寸密度，类型为 `CustomizableSizeType`。 |
 | `StyleVariant` | 输入表面样式。 |
-| `Status` | 输入反馈状态。 |
+| `Status` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
 | `IsAllowClear` / `ClearIcon` | 搜索文本清除入口。 |
 | `InnerLeftContent` / `InnerRightContent` | 输入框内部前后缀内容。 |
 | `LeftAddOn` / `LeftAddOnTemplate` | 输入框左侧外部附加内容。 |
@@ -182,7 +182,7 @@ Disabled
 > Normal
 ```
 
-`IsEnabled=false` 会传递给搜索按钮，使输入壳体和按钮一起进入 disabled 视觉。`Status=Error/Warning` 同时影响输入框边框、文本前景和搜索按钮状态色。`SearchButtonStyle` 只控制按钮强调度，不改变文本编辑、清除、Form 或搜索事件语义。
+`IsEnabled=false` 会传递给搜索按钮，使输入壳体和按钮一起进入 disabled 视觉。native validation error 通过 `DataValidationErrors` 优先影响输入框边框、文本前景和搜索按钮状态色；`Status=Warning` 继续表达 AtomUI warning 视觉，显式 `Status=Error` 只作为无 native error 时的手动错误视觉请求。`SearchButtonStyle` 只控制按钮强调度，不改变文本编辑、清除、Form 或搜索事件语义。
 
 ## 主题与 Design Token
 

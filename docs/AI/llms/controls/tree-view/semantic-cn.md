@@ -23,6 +23,7 @@
             <ItemsPresenter Name="ItemsPresenter" />
         </ScrollViewer>
         <ContentPresenter Name="EmptyIndicator" />
+        <Empty Name="DefaultEmptyIndicator" />
     </Panel>
 </Border>
 ```
@@ -39,7 +40,7 @@ TreeView
      -> Panel#RootLayout (template-stable)
         -> IconPresenter#CurrentIconPresenter (internal-observable)
   -> TreeViewItemHeader (control theme, TreeViewItemHeaderTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> Grid#ItemsLayout (template-stable)
            -> NodeSwitcherButton#PART_NodeSwitcherButton (template-stable)
            -> CheckBox#ToggleCheckbox (template-stable)
@@ -60,6 +61,7 @@ TreeView
            -> ScrollViewer (template-stable)
               -> ItemsPresenter#ItemsPresenter (internal-observable)
            -> ContentPresenter#EmptyIndicator (internal-observable)
+           -> Empty#DefaultEmptyIndicator (template-stable)
 ```
 
 ### 协作节点
@@ -71,7 +73,7 @@ TreeView
 | `RootLayout` | template node (Panel) | `NodeSwitcherButtonTheme.axaml` | NodeSwitcherButton | `CurrentIcon`, `IsCurrentIconVisible`, `RotationIconRenderTransform` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CurrentIconPresenter` | template node (IconPresenter) | `NodeSwitcherButtonTheme.axaml` | NodeSwitcherButton | `CurrentIcon`, `IsCurrentIconVisible`, `RotationIconRenderTransform` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `TreeViewItemHeader` | control theme | `TreeViewItemHeaderTheme.axaml` | TreeView | `Background`, `BorderThickness`, `Content`, `ContentFrameBackground`, `ContentTemplate`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Frame` | template node (Border) | `TreeViewItemHeaderTheme.axaml` | TreeViewItemHeader | `Background`, `BorderThickness`, `Content`, `ContentFrameBackground`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `TreeViewItemHeaderTheme.axaml` | TreeViewItemHeader | `Background`, `BorderThickness`, `Content`, `ContentFrameBackground`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ItemsLayout` | template node (Grid) | `TreeViewItemHeaderTheme.axaml` | TreeViewItemHeader | `Content`, `ContentFrameBackground`, `ContentTemplate`, `FilterHighlightRuns`, `GroupName`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_NodeSwitcherButton` | template node (NodeSwitcherButton) | `TreeViewItemHeaderTheme.axaml` | TreeViewItemHeader | `IsExpanded`, `IsLoading`, `IsMotionEnabled`, `SwitcherCollapseIcon`, `SwitcherExpandIcon`, `SwitcherLeafIcon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ToggleCheckbox` | template node (CheckBox) | `TreeViewItemHeaderTheme.axaml` | TreeViewItemHeader | `IsChecked` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -86,11 +88,12 @@ TreeView
 | `Header` | template node (TreeViewItemHeader) | `TreeViewItemTheme.axaml` | TreeViewItem | `BorderThickness`, `FilterHighlightForeground`, `FilterHighlightWords`, `FilterStrategy`, `Focusable`, `GroupName` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ItemsPresenterMotionActor` | template node (LayoutAwareMotionActor) | `TreeViewItemTheme.axaml` | TreeViewItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ItemsPresenter` | template node (ItemsPresenter) | `TreeViewItemTheme.axaml` | TreeViewItem | `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `TreeView` | control theme | `TreeViewTheme.axaml` | 用户代码 / 控件宿主 | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsEffectiveEmptyVisible`, `ItemsPanel`, `ScrollViewer` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `TreeViewTheme.axaml` | TreeView | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsEffectiveEmptyVisible`, `ItemsPanel`, `ScrollViewer` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Panel` | template node (Panel) | `TreeViewTheme.axaml` | TreeView | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsEffectiveEmptyVisible`, `ItemsPanel`, `ScrollViewer` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `TreeView` | control theme | `TreeViewTheme.axaml` | 用户代码 / 控件宿主 | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsDefaultEmptyIndicatorVisible`, `IsEffectiveEmptyVisible`, `ItemsPanel` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Frame` | template node (Border) | `TreeViewTheme.axaml` | TreeView | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsDefaultEmptyIndicatorVisible`, `IsEffectiveEmptyVisible`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Panel` | template node (Panel) | `TreeViewTheme.axaml` | TreeView | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsDefaultEmptyIndicatorVisible`, `IsEffectiveEmptyVisible`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ItemsPresenter` | template node (ItemsPresenter) | `TreeViewTheme.axaml` | TreeView | `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `EmptyIndicator` | template node (ContentPresenter) | `TreeViewTheme.axaml` | TreeView | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsEffectiveEmptyVisible` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `DefaultEmptyIndicator` | template node (Empty) | `TreeViewTheme.axaml` | TreeView | `EmptyIndicatorPadding`, `IsDefaultEmptyIndicatorVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -140,7 +143,7 @@ TreeView 的状态模型由节点状态、选择状态、勾选状态、展开�
 - `IsSelectable=false` 时不允许节点被选中，并清空 TreeView 当前选择。
 - `IsSelectOnRightClick=false` 时，右键不更新选择。
 - `SelectionMode` 继承 Avalonia `TreeView` 语义，单选使用 `SelectedItem`，多选使用 `SelectedItems`。
-- Form 集成以单选 / 多选模式分别读取 `SelectedItem` 或 `SelectedItems`。
+- Form 集成以单选 / 多选模式分别读取和写入 `SelectedItem` 或 `SelectedItems`，并保持原始节点对象 / 列表实例，不把节点值转换为字符串。
 
 勾选行为：
 
@@ -171,6 +174,9 @@ TreeView 的状态模型由节点状态、选择状态、勾选状态、展开�
 - TreeView 创建拖拽预览和 drop indicator。
 - drop 目标支持插入到根、插入到兄弟前后、插入到目标节点内部。
 - 不允许把节点 drop 到自身或自身后代内。
+- 拖拽命中以已实现的 `TreeViewItem` 容器计算，结构修改以数据源为权威。
+- drop 操作通过 TreeView 内部数据控制器移动 root 集合或节点 `Children`，不直接修改生成容器的 `Items`。
+- 节点移动是结构重排，不是业务删除；选中、勾选和展开状态按节点身份保留。
 
 异步加载行为：
 
@@ -257,10 +263,14 @@ TreeViewToken 不承载 `SelectedItem`、`SelectedItems`、`CheckedItems`、`IsE
 - `ToggleType=Radio` 只在叶子节点显示 radio，并遵守 `GroupName` 分组。
 - `TreeNodePath` 匹配优先使用 `ItemKey`，没有 `ItemKey` 时才使用 `Value` 字符串。
 - `ItemsSource` 变化后应尽量按节点身份路径恢复运行期选择和勾选状态，再回放默认状态。
+- 多选模式下 `SelectedItems` 是运行期选择恢复的权威来源，`ItemsSource` 变化或容器首次回放不能因 `SelectedItem` 非空而把多选折叠成单选。
 - filter 清除后必须恢复过滤前节点可见性、展开状态和高亮状态。
 - 异步加载只在数据节点模型下写入 `ITreeItemNode.Children`，不修改普通手写 `TreeViewItem` 子树。
 - 非 Visual `AvaloniaObject` 节点只要承载 `DynamicResource` 或 token-resource binding，就必须使用 scoped resource host，并有明确 attach/release 路径。
 - 拖拽不得允许节点 drop 到自身或自身后代。
+- 拖拽结构修改必须通过内部数据控制器执行，不能在 `ItemsSource` 场景直接写 `TreeView.Items` 或 `TreeViewItem.Items`。
+- TreeView 维护节点到父级、兄弟集合和索引的内部索引；拖拽过程中不能为每次 drop 全树扫描定位节点。
+- 跨父级移动后，节点 `ParentNode`、root / child 集合、选中集合、勾选集合和展开状态必须保持一致。
 - Template part 名称和职责不擅自修改。
 - Token 名称和语义不擅自重命名或迁移为实例状态。
 
@@ -275,12 +285,17 @@ TreeViewToken 不承载 `SelectedItem`、`SelectedItems`、`CheckedItems`、`IsE
 - `TraverseTreeViewPath` 是路径回放和路径操作的统一入口。
 - 默认状态回放顺序保持 selected、checked、filter、expanded。
 - ItemsSource 变化先尝试恢复运行期状态，再回退默认状态。
+- 多选模式的 ItemsSource 变化恢复必须以 `SelectedItems` 为权威；不能因为 `SelectedItem` 非空而丢弃其它已选节点。
 - `CheckedItemsSyncScope` 必须包裹内部批量 checked 集合更新。
 - filter 进入时备份上下文，退出时恢复。
 - `TreeViewItemHeader` 替换 `PART_HeaderContentFrame` 时必须解除旧 pointer 事件。
 - `DefaultTreeViewInteractionHandler.Detach` 必须释放 pointer、input manager、root handler 和 radio group 关系。
 - `NodeSwitcherButton.Toggle` 在节点加载中不重复触发展开。
 - drag preview、drag-over、drop target 和 indicator 状态必须在拖拽完成或取消时清理。
+- 拖拽结构修改只能通过 `TreeDataController` 执行，不能直接写生成容器 `Items`。
+- `TreeNodeIndex` 是 drop 定位的权威索引；drag pointer move 不得触发全树数据遍历。
+- 节点 move 不能被当成 remove 清理选中、勾选或展开状态。
+- root 数据源、节点 `Children`、parent node 和索引必须在移动后保持一致。
 - `TreeItemNode` 保持轻量数据节点定位，不承载 Avalonia 属性系统。
 - `BindableTreeItemNode` 的 resource host attach、属性订阅和容器同步必须与容器生命周期成对释放。
 - 绑定型节点不能永久保存当前 `TreeViewItem`、header、template part 或 visual container。

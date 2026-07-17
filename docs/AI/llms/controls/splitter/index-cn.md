@@ -4,13 +4,17 @@
 
 ## 概述
 
-Splitter 是 AtomUI 桌面控件体系中的分割面板控件，用于让用户拖拽调整相邻区域尺寸。
+Splitter 是 AtomUI 桌面控件体系中的分割面板控件，用于把一个区域拆成两个或多个可调整尺寸的面板。它负责面板尺寸计算、拖拽调整、延迟拖拽反馈、面板折叠状态和分割把手视觉。
 
-Splitter 不负责窗口停靠系统、路由容器或业务布局状态持久化。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
+Splitter 不负责窗口停靠系统、路由容器、业务布局状态持久化、面板内容装饰或复杂 IDE docking。子面板的内容、背景、内部圆角和业务状态应由用户提供的子控件负责。
 
 主要源码入口：
 
-- `src/AtomUI.Desktop.Controls/Splitter`
+- `src/AtomUI.Desktop.Controls/Splitter/Splitter.cs`
+- `src/AtomUI.Desktop.Controls/Splitter/SplitterPanel.cs`
+- `src/AtomUI.Desktop.Controls/Splitter/SplitterHandle.cs`
+- `src/AtomUI.Desktop.Controls/Splitter/SplitterDragBar.cs`
+- `src/AtomUI.Desktop.Controls/Splitter/Themes/`
 
 ## 包与命名空间
 
@@ -24,53 +28,61 @@ Splitter 不负责窗口停靠系统、路由容器或业务布局状态持久�
 
 ## 何时使用
 
-Splitter 的设计语言围绕控件职责、可观察状态和主题契约组织，而不是围绕模板节点组织。
+Splitter 的设计语言是“低干扰的可调整边界”。分割线应明确表示可拖拽边界，但不能抢夺面板内容的视觉层级。折叠图标只在可折叠边界上表达动作，不应让普通分割线看起来像常驻工具栏。
 
 | 维度 | 含义 | Splitter 中的表达 |
 | --- | --- | --- |
-| 产品语义 | 控件在界面中承担的稳定职责。 | Splitter 是 AtomUI 桌面控件体系中的分割面板控件，用于让用户拖拽调整相邻区域尺寸。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CollapseNextIcon`、`CollapsePreviousIcon`。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Splitter Token + ControlTheme。 |
+| 产品语义 | 将一个区域拆成若干可调整子区域。 | `Children` 承载面板，`Orientation` 决定分割方向。 |
+| 内容承载 | 面板内容由用户直接提供。 | 子控件通过 `Splitter.Size`、`Splitter.MinSize` 等附加属性参与布局。 |
+| 状态反馈 | 拖拽、可折叠、禁用拖拽和延迟反馈需要可见状态。 | `ResizeStarted` / `ResizeDelta` / `ResizeCompleted` 事件、handle hover/dragging 视觉和折叠按钮。 |
+| 主题语义 | 外层容器与分割把手分开定制。 | `SplitterTheme` 承载根框架，`SplitterHandleTheme` 和 `SplitterDragBarTheme` 承载分割线和拖拽命中区。 |
 
 ## 公共 API
 
-Splitter 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-
-核心 public surface 按语义分组维护：
+Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、事件和主题入口共同组成。`SplitterPanel`、`SplitterHandle` 和 `SplitterDragBar` 是 internal 协作对象，不属于用户可直接依赖的 public surface。
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `CollapseNextIcon`、`CollapsePreviousIcon` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 交互与状态 | `IsDragEnabled`、`IsLazy` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `HandleSize`、`LineBrush`、`LineThickness`、`Orientation` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 根布局 | `Orientation`、`Children` | 定义面板排列方向和面板集合。 |
+| 拖拽反馈 | `IsLazy`、`HandleSize` | 控制拖拽反馈时机和把手命中区域尺寸。 |
+| 折叠入口 | `CollapsePreviousIcon`、`CollapseNextIcon`、`Splitter.Collapsible`、`Splitter.IsCollapsed` | 定义面板是否可折叠、折叠状态以及折叠图标。 |
+| 面板尺寸 | `Splitter.Size`、`Splitter.DefaultSize`、`Splitter.MinSize`、`Splitter.MaxSize` | 定义子面板初始尺寸、默认尺寸和尺寸约束。 |
+| 面板交互 | `Splitter.IsResizable` | 控制相邻边界是否允许拖拽调整。 |
+| 事件 | `ResizeStarted`、`ResizeDelta`、`ResizeCompleted` | 把 internal drag 流转换为控件级 resize 事件。 |
+| 主题入口 | `HandleSize`、组件 Token、根模板外观入口 | 区分命中区域、可见分割线和根框架外观。 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+样式能力边界：
 
-主要公开类型与枚举：
-
-- 类型：`Splitter`、`SplitterDragBar`、`SplitterHandle`、`SplitterPanel`、`SplitterPanelCollapsible`、`SplitterPanelCollapsibleConverter`、`SplitterResizeEventArgs`。
-- 枚举：`SplitterCollapsibleIconDisplayMode`。
+- `HandleSize` 只表示分割把手的命中区域，不等同于可见分割线厚度。
+- 可见分割线的厚度、圆角和 hover/dragging 颜色属于 handle 视觉模型，应通过根控件实例属性和 Token 映射到 internal handle，而不是要求用户样式化 internal 类型。
+- Splitter 根框架可承接 `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 等基础外观属性；子面板圆角仍由用户提供的面板控件自行控制。
+- 不新增 `PanelCornerRadius`、`PanelBackground` 这类统一改写子面板的属性，避免 Splitter 篡改用户内容树。
 
 稳定 template part：
 
-| Template Part | 类型 | 职责 |
-| --- | --- | --- |
-| `PART_CollapseIconsHost` | `?` | 展示图标、状态图标或操作图标。 |
-| `PART_CollapseNextButton` | `IconButton` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_CollapsePrevButton` | `IconButton` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_DragBar` | `SplitterDragBar` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_Grip` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_HandleLine` | `Border` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_SplitterPanel` | `?` | 承载集合项、布局面板或虚拟化内容。 |
+| Template Part | 类型 | 稳定性 | 职责 |
+| --- | --- | --- | --- |
+| `PART_SplitterPanel` | `SplitterPanel` | public control template part | 承载子面板并生成 internal handle。 |
+| `PART_HandleLine` | `Border` | internal handle template part | 展示可见分割线。 |
+| `PART_DragBar` | `SplitterDragBar` | internal handle template part | 提供拖拽命中区和拖拽事件源。 |
+| `PART_Grip` | `Border` | internal drag-bar template part | 展示拖拽区域内的 grip。 |
+| `PART_CollapsePrevButton` | `IconButton` | internal handle template part | 触发前侧面板折叠或展开。 |
+| `PART_CollapseNextButton` | `IconButton` | internal handle template part | 触发后侧面板折叠或展开。 |
 
-当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
+`PART_HandleLine`、`PART_DragBar`、`PART_Grip` 和折叠按钮虽然是稳定 internal theme part，但不应作为用户自定义入口暴露。用户级定制应通过 `Splitter` public API、组件 Token、ControlTheme 和 Gallery 展示的稳定用法进入。
+
+伪类模型：
+
+- `Splitter` 根控件当前不定义专属伪类。
+- `SplitterHandle` 使用 `:pointerover` 和 `:dragging` 驱动分割线颜色。
+- `SplitterDragBar` 使用 `:dragging` 表达拖拽状态。
+- `IconButton` 折叠按钮继续使用标准 pointer/pressed/disabled 视觉。
 
 ## 事件与命令
 
-Splitter 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
-- 类型：`Splitter`、`SplitterDragBar`、`SplitterHandle`、`SplitterPanel`、`SplitterPanelCollapsible`、`SplitterPanelCollapsibleConverter`、`SplitterResizeEventArgs`。
+Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、事件和主题入口共同组成。`SplitterPanel`、`SplitterHandle` 和 `SplitterDragBar` 是 internal 协作对象，不属于用户可直接依赖的 public surface。
+| 事件 | `ResizeStarted`、`ResizeDelta`、`ResizeCompleted` | 把 internal drag 流转换为控件级 resize 事件。 |
+| `PART_DragBar` | `SplitterDragBar` | internal handle template part | 提供拖拽命中区和拖拽事件源。 |
 
 ## 使用示例
 
@@ -80,7 +92,7 @@ Splitter 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:163`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:59`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -99,7 +111,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 水平分割
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:181`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:77`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -118,7 +130,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 组合布局
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:199`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:95`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -142,7 +154,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 禁用拖拽调整
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:222`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:118`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -167,43 +179,53 @@ Gallery key：`ExamplesContent` / item `3`
 Splitter 的状态流按以下路径收敛：
 
 ```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
+Public API / attached panel properties / pointer drag / collapse button
+  -> SplitterPanel layout state
+  -> SplitterHandle drag and collapse state
+  -> SplitterDragBar pointer state
+  -> ControlTheme selector / template binding / resize events
   -> Gallery 可观察行为
 ```
 
-状态维护规则：
+行为规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- `Orientation=Vertical` 表示左右分割，handle 横向拖动；`Orientation=Horizontal` 表示上下分割，handle 纵向拖动。
+- `HandleSize` 控制 handle 在布局中占用的命中区域，不能被可见线条厚度替代。
+- `IsLazy=False` 时拖拽过程中实时调整面板尺寸；`IsLazy=True` 时拖拽过程中移动 drag bar，完成后提交尺寸。
+- `Splitter.Size` 是用户可双向绑定的实际尺寸入口；`DefaultSize` 是未提供实际尺寸时的初始化入口。
+- `MinSize`、`MaxSize`、`IsResizable` 和折叠状态共同决定某个 handle 是否可拖拽。
+- 折叠按钮只在相邻面板支持折叠或存在可恢复折叠面板时显示。
+- resize 事件以 handle index 和当前尺寸快照暴露，不让用户直接依赖 internal handle 实例。
 
 ## 主题与 Design Token
 
-Splitter 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、组件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `SplitterDragBarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `SplitterHandleTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `SplitterTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `SplitterThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
+| `SplitterTheme.axaml` | 定义 `Splitter` 根模板、外层 Frame 和 `PART_SplitterPanel`。 |
+| `SplitterHandleTheme.axaml` | 定义可见分割线、拖拽命中区和折叠按钮的组合结构。 |
+| `SplitterDragBarTheme.axaml` | 定义拖拽命中区、grip 尺寸、grip 圆角和方向 cursor。 |
+| `SplitterThemes.axaml` | 聚合 Splitter 主题资源，保证包级引入顺序稳定。 |
 
-Splitter 使用 `SplitterToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
+视觉语义拆分：
+
+- 根框架：承载 Splitter 整体背景、边框、圆角和裁剪。
+- 命中区域：由 `HandleSize` 和 `SplitBarHandleSize` 定义，保证拖拽易用性。
+- 可见分割线：由 line thickness、line corner radius 和 line color 定义，不能反向改变命中区域。
+- grip：由 drag bar 模板展示，使用较短尺寸提示可拖拽。
+- 折叠按钮：依赖 `SplitterPanelCollapsible` 和 hover/press 状态显示，不参与面板尺寸计算。
 
 主题维护规则：
 
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+- 不把 hover、dragging、collapsed 等运行时状态写入 Token。
+- 调整线条厚度时必须同时检查 `PART_HandleLine` 和 `PART_Grip`，避免可见线条与拖拽提示尺寸不一致。
 
 Token 来源：
 
-Splitter Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
+Splitter Token 只表达组件级视觉变量，包括分割线尺寸、拖拽命中区、折叠按钮定位、handle 颜色和图标尺寸。Token 不承载运行时拖拽状态、折叠状态、面板尺寸、业务布局数据或用户内容背景。
 
 当前 Token scope：
 
@@ -211,42 +233,57 @@ Splitter Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 
 ## AOT 与裁剪注意事项
 
-资源和 AOT 约束：
+资源边界：
 
 - 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
-- 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
-- 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
-- Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
+- handle、drag bar、button 的事件订阅必须在模板重套用或 handle 移除时解绑。
+- `_trackedPanels` 中的面板属性订阅必须在面板离开时解绑。
 
 性能边界：
 
-- 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
-- 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- 面板集合变化时只重建必要的 handle 结构，避免把业务子控件重新包装成不可追踪结构。
+- 拖拽过程中避免创建临时视觉对象。
+- lazy 模式下拖拽反馈应复用现有 drag bar 状态，不引入额外弹层或全局输入监听。
+- 分割线样式变化应通过 Avalonia 属性和模板绑定流动，不使用手动遍历视觉树刷新。
+
+AOT 边界：
+
+- Gallery API/Token 表不通过运行时反射生成。
+- Source generator 生成文件不手工编辑。
+- 文档、Gallery 和源码发生冲突时，应修复源文档或结构化数据，不直接改 `docs/AI/llms` 生成产物。
 
 ## 源码索引
 
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Splitter/Splitter.cs`
-- `src/AtomUI.Desktop.Controls/Splitter/SplitterDragBar.cs`
-- `src/AtomUI.Desktop.Controls/Splitter/SplitterHandle.cs`
 - `src/AtomUI.Desktop.Controls/Splitter/SplitterPanel.cs`
+- `src/AtomUI.Desktop.Controls/Splitter/SplitterHandle.cs`
+- `src/AtomUI.Desktop.Controls/Splitter/SplitterDragBar.cs`
 - `src/AtomUI.Desktop.Controls/Splitter/SplitterPanelCollapsible.cs`
 - `src/AtomUI.Desktop.Controls/Splitter/SplitterResizeEventArgs.cs`
 - `src/AtomUI.Desktop.Controls/Splitter/SplitterToken.cs`
-- `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterDragBarTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterHandleTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterTheme.axaml`
+- `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterHandleTheme.axaml`
+- `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterDragBarTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterThemes.axaml`
+
+Gallery 与文档结构：
+
+- `controlgallery/AtomUIGallery/ShowCases/Layout/Splitter`
+- `tests/AtomUIGallery.Tests/ShowCases/SplitterShowCasePageTests.cs`
+- `tests/AtomUIGallery.Tests/ShowCases/SplitterShowCaseExamples.snapshot`
+- `docs/controls/desktop/layout/splitter/`
 
 职责边界：
 
-- 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
+- `Splitter.cs` 保留 public API、附加属性、Children 同步、template part 获取和 resize 事件抛出。
+- `SplitterPanel.cs` 保留布局、拖拽、折叠、尺寸约束和 handle 状态刷新。
+- `SplitterHandle.cs` 保留单个 handle 的按钮、hover、dragging、collapse request 和 drag event 转发。
+- `SplitterDragBar.cs` 保留 Thumb 输入事件和禁用拖拽拦截。
+- Theme 文件负责静态视觉结构、template binding、selector 和 TokenResource 映射。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
 
 ## 相关文档
 

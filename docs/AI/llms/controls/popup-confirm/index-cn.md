@@ -81,7 +81,7 @@ PopupConfirm 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/PopupConfirm/Views/PopupConfirmShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/PopupConfirm/Views/PopupConfirmShowCase.axaml:36`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -100,7 +100,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 本地化文本
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/PopupConfirm/Views/PopupConfirmShowCase.axaml:160`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/PopupConfirm/Views/PopupConfirmShowCase.axaml:56`
 
 Gallery key：`ExamplesContent` / item `1`
 

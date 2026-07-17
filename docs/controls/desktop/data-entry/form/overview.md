@@ -47,7 +47,7 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 | `SizeType` | 表单统一尺寸密度，支持 `Large/Middle/Small/Custom`。 |
 | `StyleVariant` | 传递给支持输入外观变体的子控件。 |
 | `IsMotionEnabled` | 传递给支持动效开关的子控件。 |
-| `ValidateTrigger` | 表单默认验证触发时机，默认 `OnChanged`，与 Ant Design 的 `onChange` 默认验证语义对齐。 |
+| `ValidateTrigger` | 表单默认验证触发时机，默认 `OnChanged`，即字段值变化时触发验证。 |
 | `IsValidateFeedbackEnabled` | 是否创建并传递验证反馈控件。 |
 | `InitialValues` | 表单加载时按 `FieldName` 写入初始值。 |
 | `IsFormValid` | 基于表单项验证状态聚合的只读有效性状态。 |
@@ -209,7 +209,7 @@ Form 属于 Data Entry 容器控件，和 LineEdit、SearchEdit、Select、TreeS
 
 维护 Form 时必须保持以下不变量：
 
-- 默认 `ValidateTrigger` 必须为 `OnChanged`，保持与 Ant Design 默认 `onChange` 验证触发语义一致。
+- 默认 `ValidateTrigger` 必须为 `OnChanged`，保持字段值变化时触发验证的默认语义。
 - `FormItem.Content` 默认必须实现 `IFormItemAware`，否则应保持当前异常语义。
 - `FormItem` 重新设置 Content 时必须释放旧内容的值变化订阅和 feedback 引用。
 - 新验证运行必须取消旧验证和 debounce，旧异步结果不能覆盖新结果或 reset 后状态。

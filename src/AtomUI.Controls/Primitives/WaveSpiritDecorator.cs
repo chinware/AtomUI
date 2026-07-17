@@ -143,6 +143,8 @@ internal class WaveSpiritDecorator : Control
     private bool _isPlaying;
     private static readonly Easing DefaultEasingCurve = new CubicEaseOut();
 
+    internal bool IsPlaying => _isPlaying;
+
     static WaveSpiritDecorator()
     {
         AffectsRender<WaveSpiritDecorator>(LastWaveSizeProperty, LastWaveRadiusProperty, LastWaveOpacityProperty);
@@ -167,9 +169,7 @@ internal class WaveSpiritDecorator : Control
             change.Property == OpacityEasingCurveProperty ||
             change.Property == CornerRadiusProperty)
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = null;
+            CancelAnimation();
             ConfigureWavePainter();
         }
         else if (change.Property == BoundsProperty)
@@ -256,10 +256,7 @@ internal class WaveSpiritDecorator : Control
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = null;
-        _isPlaying               = false;
+        CancelAnimation();
     }
     
     public void Play()
@@ -293,17 +290,38 @@ internal class WaveSpiritDecorator : Control
         _wavePainter.NotifyBuildSizeAnimation(sizeAnimation, targetProperty);
         _wavePainter.NotifyBuildOpacityAnimation(opacityAnimation, LastWaveOpacityProperty);
 
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = new CancellationTokenSource();
+        var cancellation = new CancellationTokenSource();
+        _cancellationTokenSource = cancellation;
 
-        var sizeAnimationTask    = sizeAnimation.RunAsync(this, _cancellationTokenSource.Token);
-        var opacityAnimationTask = opacityAnimation.RunAsync(this, _cancellationTokenSource.Token);
+        var sizeAnimationTask    = sizeAnimation.RunAsync(this, cancellation.Token);
+        var opacityAnimationTask = opacityAnimation.RunAsync(this, cancellation.Token);
         _isPlaying = true;
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            await Task.WhenAll(sizeAnimationTask, opacityAnimationTask);
-            _isPlaying = false;
+            try
+            {
+                await Task.WhenAll(sizeAnimationTask, opacityAnimationTask);
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            finally
+            {
+                if (ReferenceEquals(_cancellationTokenSource, cancellation))
+                {
+                    cancellation.Dispose();
+                    _cancellationTokenSource = null;
+                    _isPlaying = false;
+                }
+            }
         });
+    }
+
+    private void CancelAnimation()
+    {
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
+        _isPlaying               = false;
     }
 }

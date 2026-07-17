@@ -51,7 +51,7 @@ public class StepsShowCasePageTests
         CountOccurrences(source, "DataTemplate x:DataType=\"vm:StepsViewModel\"").ShouldBe(14);
         source.ShouldContain("StepsShowCaseLangResource BasicTitle");
         source.ShouldContain("StepsShowCaseLangResource SwitchStepTitle");
-        source.ShouldContain("StepsShowCaseLangResource P2TextCurrentStep");
+        source.ShouldContain("StepsShowCaseLangResource P2TextCurrent");
         source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("StepsShowCaseLangResource NavigationStepsTitle");
         source.ShouldContain("StepsShowCaseLangResource InlineStepsTitle");
@@ -60,6 +60,60 @@ public class StepsShowCasePageTests
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void Steps_ShowCase_Uses_Redesigned_Control_Contract()
+    {
+        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml");
+        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml.cs");
+        var viewModelSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/ViewModels/StepsViewModel.cs");
+        var combinedSource   = string.Join('\n', pageSource, codeBehindSource, viewModelSource);
+
+        pageSource.ShouldContain("BaseClass=\"ItemsControl\"");
+        pageSource.ShouldContain("Current=\"{Binding Current}\"");
+        pageSource.ShouldContain("CurrentChangeRequested=\"HandleCurrentChangeRequested\"");
+        pageSource.ShouldContain("Content=\"{Binding InteractivePageContent}\"");
+        pageSource.ShouldContain("Type=\"Dot\"");
+        pageSource.ShouldContain("Type=\"Navigation\"");
+        pageSource.ShouldContain("Type=\"Inline\"");
+        pageSource.ShouldContain("TitlePlacement=\"Vertical\"");
+        pageSource.ShouldContain("Percent=\"60\"");
+        CountOccurrences(pageSource, "SourceKey=\"").ShouldBe(14);
+
+        codeBehindSource.ShouldContain("HandleCurrentChangeRequested");
+        codeBehindSource.ShouldContain("viewModel.Current = args.Current");
+        codeBehindSource.ShouldNotContain("CurrentContentProperty");
+        codeBehindSource.ShouldNotContain("CurrentContentTemplateProperty");
+        codeBehindSource.ShouldNotContain("FindDescendantByName");
+        codeBehindSource.ShouldNotContain("HandleInteractiveStepsLoaded");
+
+        viewModelSource.ShouldContain("Steps.Current\"");
+        viewModelSource.ShouldContain("Steps.Initial\"");
+        viewModelSource.ShouldContain("Steps.Status\"");
+        viewModelSource.ShouldContain("Steps.Percent\"");
+        viewModelSource.ShouldContain("Steps.Type\"");
+        viewModelSource.ShouldContain("Steps.TitlePlacement\"");
+        viewModelSource.ShouldContain("Steps.CurrentChangeRequested\"");
+        viewModelSource.ShouldContain("StepsItem.Content\"");
+        viewModelSource.ShouldContain("StepsItem.ContentTemplate\"");
+        viewModelSource.ShouldContain("StepsItem.Status\"");
+        viewModelSource.ShouldContain("\"StepsStatus?\"");
+        viewModelSource.ShouldContain("InteractivePageContent");
+
+        foreach (var removedApi in new[]
+                 {
+                     "CurrentStep", "InitialStep", "CurrentStepStatus", "ProgressValue",
+                     "IsShowItemProgress", "ItemIndicatorType", "StepsStyle", "LabelPlacement",
+                     "CurrentContent", "StepsItem.Description", "SelectingItemsControl"
+                 })
+        {
+            combinedSource.ShouldNotContain(removedApi);
+        }
+
+        Regex.IsMatch(pageSource, @"<atom:StepsItem\b[^>]*\bDescription=").ShouldBeFalse();
+        pageSource.ShouldNotContain("Style=\"Navigation\"");
+        pageSource.ShouldNotContain("Style=\"Inline\"");
     }
 
     [Fact]
@@ -80,6 +134,7 @@ public class StepsShowCasePageTests
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
         pageSource.ShouldContain("Click=\"HandleNextButtonClick\"");
         pageSource.ShouldContain("Click=\"HandlePreviousButtonClick\"");
+        pageSource.ShouldContain("CurrentChangeRequested=\"HandleCurrentChangeRequested\"");
 
         codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
         codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
@@ -88,7 +143,7 @@ public class StepsShowCasePageTests
         codeBehindSource.ShouldNotContain("new StepsDesignTokenDataGrid()");
         codeBehindSource.ShouldContain("HandleNextButtonClick");
         codeBehindSource.ShouldContain("HandlePreviousButtonClick");
-        codeBehindSource.ShouldContain("HandleInteractiveStepsLoaded");
+        codeBehindSource.ShouldContain("HandleCurrentChangeRequested");
         codeBehindSource.ShouldNotContain("new StepsBasicShowCase()");
         codeBehindSource.ShouldNotContain("new StepsInteractiveShowCase()");
         codeBehindSource.ShouldNotContain("new StepsVerticalShowCase()");
@@ -150,16 +205,27 @@ public class StepsShowCasePageTests
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyCurrentStep");
-            source.ShouldContain("P2TextCurrentStep");
-            source.ShouldContain("ApiPropertyProgressValue");
-            source.ShouldContain("ApiPropertyItemIndicatorType");
+            source.ShouldContain("ApiPropertyCurrent");
+            source.ShouldContain("P2TextCurrent");
+            source.ShouldContain("ApiPropertyInitial");
+            source.ShouldContain("ApiPropertyStatus");
+            source.ShouldContain("ApiPropertyPercent");
+            source.ShouldContain("ApiPropertyType");
+            source.ShouldContain("ApiPropertyTitlePlacement");
             source.ShouldContain("ApiPropertyIsItemClickable");
+            source.ShouldContain("ApiPropertyIsMotionEnabled");
+            source.ShouldContain("ApiEventCurrentChangeRequested");
+            source.ShouldContain("ApiPropertyStepsItemContent");
+            source.ShouldContain("ApiPropertyStepsItemContentTemplate");
             source.ShouldContain("TokenNameDescriptionMaxWidth");
             source.ShouldContain("TokenNameIconSize");
             source.ShouldContain("TokenNameDotSize");
             source.ShouldContain("TokenNameStepsNavActiveColor");
             source.ShouldContain("TokenNameInlineItemPadding");
+            source.ShouldNotContain("ApiPropertyCurrentStep");
+            source.ShouldNotContain("ApiPropertyProgressValue");
+            source.ShouldNotContain("ApiPropertyItemIndicatorType");
+            source.ShouldNotContain("TokenNameStepsProgressSize");
         }
     }
 

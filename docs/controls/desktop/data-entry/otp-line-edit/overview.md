@@ -9,7 +9,7 @@
 | NuGet 包 | `AtomUI.Desktop.Controls` |
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
-| Gallery 示例 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml` 中的 OtpLineEdit 示例项 |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml` |
 | 控件状态 | Design |
 
 OtpLineEdit 是 AtomUI 桌面数据录入体系中的一次性验证码输入控件，用于短信验证码、邮件验证码、二次验证代码、恢复代码短段输入等场景。它以单个文本值作为数据契约，以多个视觉 cell 表达逐位输入体验，并接入 AtomUI 的输入尺寸、输入表面、Form、native validation error、主题 Token 和 Gallery 文档体系。

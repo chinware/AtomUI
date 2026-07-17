@@ -1,241 +1,130 @@
-using System.Reactive.Disposables;
+using System.Collections.Specialized;
 using AtomUI.Controls;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Templates;
-using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-public enum StepsItemIndicatorType
-{
-    Default,
-    Dot
-}
-
-public enum StepsItemStatus
-{
-    Wait,
-    Process,
-    Finish,
-    Error
-}
-
-public enum StepsStyle
-{
-    Default,
-    Navigation,
-    Inline
-}
-
 [PseudoClasses(StdPseudoClass.Vertical, StdPseudoClass.Horizontal)]
-public class Steps : SelectingItemsControl,
+public class Steps : ItemsControl,
                      ISizeTypeAware,
                      IMotionAwareControl
 {
     #region 公共属性定义
-    
-    public static readonly StyledProperty<int> CurrentStepProperty =
-        AvaloniaProperty.Register<Steps, int>(
-            nameof(CurrentStep),
-            0,
-            defaultBindingMode: BindingMode.TwoWay);
-    
-    public static readonly StyledProperty<int> InitialStepProperty =
-        AvaloniaProperty.Register<Steps, int>(nameof(InitialStep), -1);
-    
-    public static readonly StyledProperty<double> ProgressValueProperty =
-        AvaloniaProperty.Register<Steps, double>(nameof(ProgressValue), 0, coerce:CoerceProgressValue);
-    
-    public static readonly StyledProperty<StepsItemStatus> CurrentStepStatusProperty =
-        AvaloniaProperty.Register<Steps, StepsItemStatus>(nameof(CurrentStepStatus), StepsItemStatus.Process);
-    
+
+    public static readonly StyledProperty<int> CurrentProperty =
+        AvaloniaProperty.Register<Steps, int>(nameof(Current));
+
+    public static readonly StyledProperty<int> InitialProperty =
+        AvaloniaProperty.Register<Steps, int>(nameof(Initial));
+
+    public static readonly StyledProperty<StepsStatus> StatusProperty =
+        AvaloniaProperty.Register<Steps, StepsStatus>(nameof(Status), StepsStatus.Process);
+
+    public static readonly StyledProperty<double?> PercentProperty =
+        AvaloniaProperty.Register<Steps, double?>(nameof(Percent), coerce: CoercePercent);
+
+    public static readonly StyledProperty<StepsType> TypeProperty =
+        AvaloniaProperty.Register<Steps, StepsType>(nameof(Type));
+
     public static readonly StyledProperty<Orientation> OrientationProperty =
         ScrollBar.OrientationProperty.AddOwner<Steps>();
-    
-    public static readonly StyledProperty<Orientation> LabelPlacementProperty =
-        AvaloniaProperty.Register<Steps, Orientation>(nameof(LabelPlacement), Orientation.Horizontal);
+
+    public static readonly StyledProperty<Orientation> TitlePlacementProperty =
+        AvaloniaProperty.Register<Steps, Orientation>(nameof(TitlePlacement), Orientation.Horizontal);
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<Steps>();
-    
-    public static readonly StyledProperty<StepsItemIndicatorType> ItemIndicatorTypeProperty =
-        AvaloniaProperty.Register<Steps, StepsItemIndicatorType>(nameof(ItemIndicatorType), StepsItemIndicatorType.Default);
-    
-    public static readonly StyledProperty<StepsStyle> StyleProperty =
-        AvaloniaProperty.Register<Steps, StepsStyle>(nameof(Style), StepsStyle.Default);
-        
+
+    public static readonly StyledProperty<bool> IsItemClickableProperty =
+        AvaloniaProperty.Register<Steps, bool>(nameof(IsItemClickable));
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Steps>();
-    
-    public static readonly StyledProperty<bool> IsItemClickableProperty =
-        AvaloniaProperty.Register<Steps, bool>(nameof(IsItemClickable), false);
-    
-    public static readonly StyledProperty<bool> IsShowItemProgressProperty =
-        AvaloniaProperty.Register<Steps, bool>(nameof(IsShowItemProgress), false);
-    
-    public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty =
-        ContentControl.ContentTemplateProperty.AddOwner<Steps>();
-    
-    public static readonly DirectProperty<Steps, object?> CurrentContentProperty =
-        AvaloniaProperty.RegisterDirect<Steps, object?>(nameof(CurrentContent), o => o.CurrentContent);
 
-    public static readonly DirectProperty<Steps, IDataTemplate?> CurrentContentTemplateProperty =
-        AvaloniaProperty.RegisterDirect<Steps, IDataTemplate?>(nameof(CurrentContentTemplate), o => o.CurrentContentTemplate);
-    
-    public int CurrentStep
+    public int Current
     {
-        get => GetValue(CurrentStepProperty);
-        set => SetValue(CurrentStepProperty, value);
+        get => GetValue(CurrentProperty);
+        set => SetValue(CurrentProperty, value);
     }
-    
-    public int InitialStep
+
+    public int Initial
     {
-        get => GetValue(InitialStepProperty);
-        set => SetValue(InitialStepProperty, value);
+        get => GetValue(InitialProperty);
+        set => SetValue(InitialProperty, value);
     }
-    
-    public double ProgressValue
+
+    public StepsStatus Status
     {
-        get => GetValue(ProgressValueProperty);
-        set => SetValue(ProgressValueProperty, value);
+        get => GetValue(StatusProperty);
+        set => SetValue(StatusProperty, value);
     }
-    
-    public StepsItemStatus CurrentStepStatus
+
+    public double? Percent
     {
-        get => GetValue(CurrentStepStatusProperty);
-        set => SetValue(CurrentStepStatusProperty, value);
+        get => GetValue(PercentProperty);
+        set => SetValue(PercentProperty, value);
     }
-    
+
+    public StepsType Type
+    {
+        get => GetValue(TypeProperty);
+        set => SetValue(TypeProperty, value);
+    }
+
     public Orientation Orientation
     {
         get => GetValue(OrientationProperty);
         set => SetValue(OrientationProperty, value);
     }
-    
-    public Orientation LabelPlacement
+
+    public Orientation TitlePlacement
     {
-        get => GetValue(LabelPlacementProperty);
-        set => SetValue(LabelPlacementProperty, value);
+        get => GetValue(TitlePlacementProperty);
+        set => SetValue(TitlePlacementProperty, value);
     }
-    
+
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-        
-    public StepsItemIndicatorType ItemIndicatorType
-    {
-        get => GetValue(ItemIndicatorTypeProperty);
-        set => SetValue(ItemIndicatorTypeProperty, value);
-    }
-    
-    public StepsStyle Style
-    {
-        get => GetValue(StyleProperty);
-        set => SetValue(StyleProperty, value);
-    }
-    
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-    
+
     public bool IsItemClickable
     {
         get => GetValue(IsItemClickableProperty);
         set => SetValue(IsItemClickableProperty, value);
     }
-    
-    public bool IsShowItemProgress
-    {
-        get => GetValue(IsShowItemProgressProperty);
-        set => SetValue(IsShowItemProgressProperty, value);
-    }
-    
-    public IDataTemplate? ContentTemplate
-    {
-        get => GetValue(ContentTemplateProperty);
-        set => SetValue(ContentTemplateProperty, value);
-    }
 
-    private object? _currentContent;
-
-    public object? CurrentContent
+    public bool IsMotionEnabled
     {
-        get => _currentContent;
-        internal set => SetAndRaise(CurrentContentProperty, ref _currentContent, value);
-    }
-    
-    private IDataTemplate? _currentContentTemplate;
-    public IDataTemplate? CurrentContentTemplate
-    {
-        get => _currentContentTemplate;
-        internal set => SetAndRaise(CurrentContentTemplateProperty, ref _currentContentTemplate, value);
-    }
-    #endregion
-    
-    #region 内部属性定义
-    
-    internal static readonly StyledProperty<double> HorizontalItemSpacingProperty =
-        AvaloniaProperty.Register<Steps, double>(nameof(HorizontalItemSpacing));
-    
-    internal static readonly StyledProperty<double> VerticalItemSpacingProperty =
-        AvaloniaProperty.Register<Steps, double>(nameof(VerticalItemSpacing));
-    
-    internal double HorizontalItemSpacing
-    {
-        get => GetValue(HorizontalItemSpacingProperty);
-        set => SetValue(HorizontalItemSpacingProperty, value);
-    }
-    
-    internal double VerticalItemSpacing
-    {
-        get => GetValue(VerticalItemSpacingProperty);
-        set => SetValue(VerticalItemSpacingProperty, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     #endregion
-    
-    private Grid? _grid;
-    private CompositeDisposable? _currentItemSubscriptions;
-    
+
+    #region 公共事件定义
+
+    public event EventHandler<StepsCurrentChangeRequestedEventArgs>? CurrentChangeRequested;
+
+    #endregion
+
     static Steps()
     {
-        AffectsMeasure<Steps>(SizeTypeProperty);
-        AutoScrollToSelectedItemProperty.OverrideDefaultValue<Steps>(false);
         OrientationProperty.OverrideDefaultValue<Steps>(Orientation.Horizontal);
-        SelectedIndexProperty.Changed.AddClassHandler<Steps>((x, e) => x.SyncSelectedIndexToCurrentStep());
-        SelectedItemProperty.Changed.AddClassHandler<Steps>((x, e) => x.UpdateCurrentContent());
+        AffectsMeasure<Steps>(TypeProperty, OrientationProperty, TitlePlacementProperty, SizeTypeProperty);
     }
-    
+
     public Steps()
     {
-        SelectionMode                     =  SelectionMode.Single;
+        ItemsView.CollectionChanged += HandleItemsCollectionChanged;
+        UpdatePseudoClasses();
     }
-    
-    private static double CoerceProgressValue(AvaloniaObject sender, double value)
-    {
-        if (value < 0.0)
-        {
-            return 0.0;
-        }
-        if (value > 100.0)
-        {
-            return 100.0;
-        }
-        return value;
-    }
-    
+
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         return new StepsItem();
@@ -249,49 +138,83 @@ public class Steps : SelectingItemsControl,
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         base.PrepareContainerForItemOverride(container, item, index);
+
+        if (container is not StepsItem stepsItem)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(container),
+                "The container type is incorrect, it must be type StepsItem.");
+        }
+
+        var isGenerated = !ReferenceEquals(container, item);
+        if (isGenerated)
+        {
+            stepsItem.ClearValue(HeaderedContentControl.HeaderProperty);
+            stepsItem.ClearValue(HeaderedContentControl.HeaderTemplateProperty);
+            stepsItem[!ContentControl.ContentTemplateProperty] = this[!ItemTemplateProperty];
+        }
+
+        stepsItem[!StepsItem.TypeProperty] = this[!TypeProperty];
+        stepsItem[!StepsItem.OrientationProperty] = this[!OrientationProperty];
+        stepsItem[!StepsItem.TitlePlacementProperty] = this[!TitlePlacementProperty];
+        stepsItem[!StepsItem.SizeTypeProperty] = this[!SizeTypeProperty];
+        stepsItem[!StepsItem.IsClickableProperty] = this[!IsItemClickableProperty];
+        stepsItem[!StepsItem.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+        stepsItem[!StepsItem.PercentProperty] = this[!PercentProperty];
+
+        stepsItem.AttachToOwner(this, index);
+        ApplyItemState(stepsItem, index);
+        RefreshItemState(index - 1);
+    }
+
+    protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
+    {
+        base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
+
         if (container is StepsItem stepsItem)
         {
-            if (item != null && item is not Visual)
-            {
-                if (!stepsItem.IsSet(StepsItem.ContentProperty))
-                {
-                    stepsItem.SetCurrentValue(StepsItem.ContentProperty, item);
-                }
-            }
-            
-            if (ItemTemplate != null)
-            {
-                stepsItem[!StepsItem.ContentTemplateProperty] = this[!ItemTemplateProperty];
-            }
-            
-            stepsItem[!StepsItem.SizeTypeProperty]        = this[!SizeTypeProperty];
-            stepsItem[!StepsItem.StyleProperty]           = this[!StyleProperty];
-            stepsItem[!StepsItem.IndicatorTypeProperty]   = this[!ItemIndicatorTypeProperty];
-            stepsItem[!StepsItem.IsClickableProperty]     = this[!IsItemClickableProperty];
-            stepsItem[!StepsItem.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            stepsItem[!StepsItem.OrientationProperty]     = this[!OrientationProperty];
-            stepsItem[!StepsItem.IsShowProgressProperty]  = this[!IsShowItemProgressProperty];
-            stepsItem[!StepsItem.ProgressValueProperty]   = this[!ProgressValueProperty];
-            stepsItem[!StepsItem.LabelPlacementProperty]  = this[!LabelPlacementProperty];
-            
-            PrepareStepsItem(stepsItem, item, index);
-        }
-        else
-        {
-            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type StepsItem.");
+            stepsItem.AttachToOwner(this, newIndex);
+            ApplyItemState(stepsItem, newIndex);
+            RefreshItemState(oldIndex - 1);
+            RefreshItemState(oldIndex);
+            RefreshItemState(newIndex - 1);
         }
     }
 
-    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
+    protected override void ClearContainerForItemOverride(Control container)
     {
-        base.ContainerForItemPreparedOverride(container, item, index);
-        ConfigureItemsLayout();
+        var oldIndex = -1;
+        if (container is StepsItem stepsItem)
+        {
+            oldIndex = stepsItem.ItemIndex;
+            stepsItem.DetachFromOwner();
+            ClearGeneratedContainerBindings(stepsItem);
+        }
+
+        base.ClearContainerForItemOverride(container);
+        RefreshItemState(oldIndex - 1);
     }
-    
-    protected virtual void PrepareStepsItem(StepsItem stepsItem, object? item, int index)
+
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        if (e.Action == NotifyCollectionChangedAction.Reset)
+        {
+            foreach (var container in GetRealizedContainers())
+            {
+                DetachDirectItem(container as StepsItem);
+            }
+        }
+        else if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace &&
+                 e.OldItems is not null)
+        {
+            foreach (var oldItem in e.OldItems)
+            {
+                DetachDirectItem(oldItem as StepsItem);
+            }
+        }
+
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -299,261 +222,149 @@ public class Steps : SelectingItemsControl,
         if (change.Property == OrientationProperty)
         {
             UpdatePseudoClasses();
-            ConfigureItemsLayout();
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == CurrentProperty ||
+            change.Property == InitialProperty ||
+            change.Property == StatusProperty)
         {
-            if (change.Property == SelectedIndexProperty)
-            {
-                ConfigureCurrentStepsItem();
-            }
-        }
-        if (change.Property == CurrentStepProperty)
-        {
-            SyncCurrentStepToSelectedItem();    
-        }
-        else if (change.Property == ContentTemplateProperty)
-        {
-            var newTemplate = change.GetNewValue<IDataTemplate?>();
-            if (CurrentContentTemplate != newTemplate &&
-                ContainerFromIndex(SelectedIndex) is { } container && 
-                container.GetValue(ContentControl.ContentTemplateProperty) == null)
-            {
-                CurrentContentTemplate = newTemplate;
-            }
+            RefreshRealizedItems();
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    internal void HandleItemStatusChanged(StepsItem item)
     {
-        base.OnApplyTemplate(e);
-        var itemsPresenter = e.NameScope.Find<ItemsPresenter>("PART_ItemsPresenter");
-        itemsPresenter?.ApplyTemplate();
-        if (itemsPresenter?.Panel != null)
+        var index = item.ItemIndex;
+        if (!ReferenceEquals(item.Owner, this) ||
+            index < 0 ||
+            !ReferenceEquals(ContainerFromIndex(index), item))
         {
-            _grid = itemsPresenter.Panel as Grid;
-        }
-        ConfigureItemsPanel();
-        UpdatePseudoClasses();
-        if (InitialStep != -1)
-        {
-            SetCurrentValue(CurrentStepProperty, InitialStep);
+            return;
         }
 
-        SyncCurrentStepToSelectedItem();
-        ConfigureCurrentStepsItem();
+        ApplyItemState(item, index);
+        RefreshItemState(index - 1);
+    }
+
+    internal void RequestCurrentChange(StepsItem item)
+    {
+        if (!ReferenceEquals(item.Owner, this) ||
+            !IsItemClickable ||
+            !IsEffectivelyEnabled ||
+            !item.CanInvoke ||
+            item.StepNumber == Current)
+        {
+            return;
+        }
+
+        CurrentChangeRequested?.Invoke(
+            this,
+            new StepsCurrentChangeRequestedEventArgs(item.StepNumber));
+    }
+
+    private static double? CoercePercent(AvaloniaObject sender, double? value)
+    {
+        if (!value.HasValue || !double.IsFinite(value.Value))
+        {
+            return null;
+        }
+
+        return Math.Clamp(value.Value, 0d, 100d);
+    }
+
+    private StepsStatus GetAutomaticStatus(int stepNumber)
+    {
+        if (stepNumber == Current)
+        {
+            return Status;
+        }
+
+        return stepNumber < Current ? StepsStatus.Finish : StepsStatus.Wait;
+    }
+
+    private StepsStatus GetEffectiveStatus(int index)
+    {
+        var stepNumber = Initial + index;
+        var automaticStatus = GetAutomaticStatus(stepNumber);
+
+        if (ContainerFromIndex(index) is StepsItem container)
+        {
+            return container.Status ?? automaticStatus;
+        }
+
+        if (index >= 0 && index < ItemsView.Count && ItemsView[index] is StepsItem item)
+        {
+            return item.Status ?? automaticStatus;
+        }
+
+        return automaticStatus;
+    }
+
+    private void ApplyItemState(StepsItem item, int index)
+    {
+        var stepNumber = Initial + index;
+        var automaticStatus = GetAutomaticStatus(stepNumber);
+        var connectorStatus = index < ItemCount - 1
+            ? GetEffectiveStatus(index + 1)
+            : StepsStatus.Wait;
+
+        item.ApplyOwnerState(
+            stepNumber,
+            stepNumber == Current,
+            automaticStatus,
+            index == 0,
+            index == ItemCount - 1,
+            connectorStatus);
+    }
+
+    private void RefreshRealizedItems()
+    {
+        for (var index = 0; index < ItemCount; index++)
+        {
+            RefreshItemState(index);
+        }
+    }
+
+    private void RefreshItemState(int index)
+    {
+        if (index >= 0 && index < ItemCount && ContainerFromIndex(index) is StepsItem item)
+        {
+            item.AttachToOwner(this, index);
+            ApplyItemState(item, index);
+        }
+    }
+
+    private void DetachDirectItem(StepsItem? item)
+    {
+        if (item is null || !ReferenceEquals(item.Owner, this))
+        {
+            return;
+        }
+
+        item.DetachFromOwner();
+        ClearOwnerBindings(item);
+    }
+
+    private static void ClearGeneratedContainerBindings(StepsItem item)
+    {
+        ClearOwnerBindings(item);
+        item.ClearValue(ContentControl.ContentTemplateProperty);
+    }
+
+    private static void ClearOwnerBindings(StepsItem item)
+    {
+        item.ClearValue(StepsItem.TypeProperty);
+        item.ClearValue(StepsItem.OrientationProperty);
+        item.ClearValue(StepsItem.TitlePlacementProperty);
+        item.ClearValue(StepsItem.SizeTypeProperty);
+        item.ClearValue(StepsItem.IsClickableProperty);
+        item.ClearValue(StepsItem.IsMotionEnabledProperty);
+        item.ClearValue(StepsItem.PercentProperty);
     }
 
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Vertical, Orientation == Orientation.Vertical);
         PseudoClasses.Set(StdPseudoClass.Horizontal, Orientation == Orientation.Horizontal);
-    }
-
-    private void ConfigureItemsPanel()
-    {
-        if (_grid != null)
-        {
-            var count = ItemCount;
-            _grid.RowDefinitions.Clear();
-            _grid.ColumnDefinitions.Clear();
-            if (Orientation == Orientation.Horizontal)
-            {
-                var columnDefinitions = new ColumnDefinitions();
-                for (var i = 0; i < count; i++)
-                {
-                    GridLength gridLength       = default;
-                    
-                    if (i != count - 1)
-                    {
-                        gridLength = GridLength.Star;
-                    }
-                    else
-                    {
-                        if (Style == StepsStyle.Default || Style == StepsStyle.Inline)
-                        {
-                            gridLength = GridLength.Auto;
-                        }
-                        else
-                        {
-                            gridLength = GridLength.Star;
-                        }
-                    }
-                    
-                    columnDefinitions.Add(new ColumnDefinition(gridLength));
-                }
-                _grid.ColumnDefinitions = columnDefinitions;
-            }
-            else
-            {
-                var rowDefinitions = new RowDefinitions();
-                for (var i = 0; i < count; i++)
-                {
-                    var rowDefinition =  new RowDefinition(GridLength.Auto);
-                    if (Style == StepsStyle.Navigation)
-                    {
-                        rowDefinition.SharedSizeGroup = "NavStepsGridSizeGroup";
-                    }
-                    rowDefinitions.Add(rowDefinition);
-                }
-                _grid.RowDefinitions = rowDefinitions;
-                _grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
-            }
-        }
-    }
-
-    private void ConfigureItemsLayout()
-    {
-        ConfigureItemsPanel();
-        ConfigureCurrentStepsItem();
-    }
-
-    private void ConfigureCurrentStepsItem()
-    {
-        for (var i = 0; i < ItemCount; ++i)
-        {
-            if (ContainerFromIndex(i) is StepsItem stepsItem)
-            {
-                stepsItem.SetCurrentValue(StepsItem.PositionProperty, i + 1);
-                stepsItem.SetCurrentValue(StepsItem.IsFirstProperty, i == 0);
-                stepsItem.SetCurrentValue(StepsItem.IsLastProperty, i == ItemCount - 1);
-                if (SelectedIndex != -1)
-                {
-                    if (i < SelectedIndex)
-                    {
-                        stepsItem.SetCurrentValue(StepsItem.IsFinishedProperty, true);
-                        stepsItem.SetValue(StepsItem.StatusProperty, StepsItemStatus.Finish, BindingPriority.Template);
-                    }
-                    else if (i == SelectedIndex)
-                    {
-                        stepsItem.SetValue(StepsItem.StatusProperty, CurrentStepStatus, BindingPriority.Template);
-                    }
-                    else
-                    {
-                        stepsItem.SetCurrentValue(StepsItem.IsFinishedProperty, false);
-                        stepsItem.SetValue(StepsItem.StatusProperty, StepsItemStatus.Wait, BindingPriority.Template);
-                    }
-                }
-                else
-                {
-                    if (CurrentStep >= ItemCount)
-                    {
-                        stepsItem.SetCurrentValue(StepsItem.IsFinishedProperty, true);
-                        stepsItem.SetValue(StepsItem.StatusProperty, StepsItemStatus.Finish, BindingPriority.Template);
-                    }
-                }
-
-                if (Orientation == Orientation.Horizontal)
-                {
-                    Grid.SetRow(stepsItem, 0);
-                    Grid.SetColumn(stepsItem, i);
-                }
-                else
-                {
-                    Grid.SetRow(stepsItem, i);
-                    Grid.SetColumn(stepsItem, 0);
-                }
-            }
-        }
-    }
-
-    private void SyncCurrentStepToSelectedItem()
-    {
-        if (CurrentStep >= 0 && CurrentStep < ItemCount)
-        {
-            SetCurrentValue(SelectedIndexProperty, CurrentStep);
-        }
-        else
-        {
-            SetCurrentValue(SelectedIndexProperty, -1);
-        }
-    }
-
-    private void SyncSelectedIndexToCurrentStep()
-    {
-        if (SelectedIndex >= 0 && SelectedIndex != CurrentStep)
-        {
-            SetCurrentValue(CurrentStepProperty, SelectedIndex);
-        }
-    }
-    
-    protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
-    {
-        base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
-
-        var selectedIndex = SelectedIndex;
-
-        if (selectedIndex == oldIndex || selectedIndex == newIndex)
-        {
-            UpdateCurrentContent();
-        }
-
-        ConfigureItemsLayout();
-    }
-
-    protected override void ClearContainerForItemOverride(Control element)
-    {
-        base.ClearContainerForItemOverride(element);
-        UpdateCurrentContent();
-        ConfigureItemsLayout();
-    }
-    
-    private void UpdateCurrentContent(Control? container = null)
-    {
-        _currentItemSubscriptions?.Dispose();
-        _currentItemSubscriptions = null;
-
-        if (SelectedIndex == -1)
-        {
-            CurrentContent = CurrentContentTemplate = null;
-        }
-        else
-        {
-            container ??= ContainerFromIndex(SelectedIndex);
-            if (container != null)
-            {
-                if (CurrentContentTemplate != EffectiveCurrentContentTemplate(container.GetValue(ContentTemplateProperty)))
-                {
-                    // If the value of CurrentContentTemplate is about to change, clear it first. This ensures
-                    // that the template is not reused as soon as CurrentContent changes in the statement below
-                    // this block, and also that controls generated from it are unloaded before CurrentContent
-                    // (which is typically their DataContext) changes.
-                    CurrentContentTemplate = null;
-                }
-
-                _currentItemSubscriptions = new CompositeDisposable(
-                    container.GetObservable(ContentControl.ContentProperty).Subscribe(v => CurrentContent = v),
-                    container.GetObservable(ContentControl.ContentTemplateProperty).Subscribe(v => CurrentContentTemplate = EffectiveCurrentContentTemplate(v)));
-
-                // Note how we fall back to our own ContentTemplate if the container doesn't specify one
-                IDataTemplate? EffectiveCurrentContentTemplate(IDataTemplate? containerTemplate) => containerTemplate ?? ContentTemplate;
-            }
-        }
-    }
-    
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-        if (IsItemClickable && e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse)
-        {
-            var container = GetContainerFromEventSource(e.Source);
-            if (container != null)
-            {
-                e.Handled = UpdateSelectionFromEvent(container, e);
-            }
-        }
-    }
-
-    protected override void OnPointerReleased(PointerReleasedEventArgs e)
-    {
-        if (IsItemClickable && e.InitialPressMouseButton == MouseButton.Left && e.Pointer.Type != PointerType.Mouse)
-        {
-            var container = GetContainerFromEventSource(e.Source);
-            if (container != null && container.ContainsSelfOrDescendantAt(e.GetPosition(container)))
-            {
-                e.Handled = UpdateSelectionFromEvent(container, e);
-            }
-        }
     }
 }

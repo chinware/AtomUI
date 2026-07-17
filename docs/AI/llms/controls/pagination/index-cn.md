@@ -42,7 +42,7 @@ Pagination 的公共契约由 public/protected 类型成员、Avalonia 属性、
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `Icon`、`JumpToText`、`PageText`、`PaginationItemType`、`TotalInfoTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `CurrentPage`、`IsHideOnSinglePage`、`IsSelected`、`PageCount`、`PageSize` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `CurrentPage`、`IsHideOnSinglePage`、`IsSelected`、`PageCount`、`PageSize` | 维护选择、展开、过滤、分页、分组或集合状态；`CurrentPage` 和 `PageSize` 默认 `TwoWay`。 |
 | 交互与状态 | `IsMotionEnabled`、`IsPressed`、`IsReadOnly`、`IsShowQuickJumper`、`IsShowSizeChanger`、`IsShowTotalInfo` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `Align`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `Maximum`、`Minimum`、`Total` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
@@ -88,7 +88,7 @@ Pagination 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 ### 基础分页
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:141`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -96,11 +96,50 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:Pagination Total="50" CurrentPage="1" />
 ```
 
-### 对齐方式
+### 受控绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:154`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:51`
 
 Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="12">
+    <atom:Pagination Total="120"
+                     CurrentPage="{Binding BoundCurrentPage}"
+                     PageSize="{Binding BoundPageSize}"
+                     IsShowSizeChanger="True"
+                     IsShowQuickJumper="True"
+                     IsShowTotalInfo="True" />
+    <StackPanel Orientation="Horizontal" Spacing="16">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="CurrentPage：" />
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{Binding BoundCurrentPageText}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="PageSize：" />
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{Binding BoundPageSizeText}" />
+        </StackPanel>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetBoundPaginationCommand}"
+                     Content="设置第 5 页 / 20" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ResetBoundPaginationCommand}"
+                     Content="重置" />
+    </StackPanel>
+</StackPanel>
+```
+
+### 对齐方式
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:93`
+
+Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
 <StackPanel Orientation="Vertical" Spacing="10">
@@ -112,26 +151,12 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 更多页码
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:171`
-
-Gallery key：`ExamplesContent` / item `2`
-
-```axaml
-<atom:Pagination Total="500" CurrentPage="6" IsShowSizeChanger="True" />
-```
-
-### 更多页码
-
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:184`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:110`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:Pagination Total="500" CurrentPage="3" IsShowSizeChanger="True" IsShowQuickJumper="True" />
-    <atom:Pagination Total="500" CurrentPage="3" IsShowSizeChanger="True" IsEnabled="False"
-                     IsShowQuickJumper="True" />
-</StackPanel>
+<atom:Pagination Total="500" CurrentPage="6" IsShowSizeChanger="True" />
 ```
 
 ## 状态模型
@@ -149,6 +174,7 @@ Public API / inherited command / item source / user input
 状态维护规则：
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
+- 用户点击页码、快速跳转或切换页大小时，通过 `CurrentPage` / `PageSize` 写回同一个受控状态；绑定方不需要显式设置 `Mode=TwoWay`。
 - selection/checked/active、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。

@@ -18,7 +18,7 @@
 
 ```xml
 <Panel>
-    <Border Name="Frame" />
+    <PixelAlignedBorder Name="Frame" />
     <DockPanel>
         <IconPresenter Name="IconPresenter" />
         <IconButton Name="PART_CloseButton" />
@@ -37,7 +37,7 @@
 Tag
   -> Tag (control theme, TagTheme.axaml)
      -> Panel (template-stable)
-        -> Border#Frame (template-stable)
+        -> PixelAlignedBorder#Frame (template-stable)
         -> DockPanel (template-stable)
            -> IconPresenter#IconPresenter (internal-observable)
            -> IconButton#PART_CloseButton (template-stable)
@@ -51,7 +51,7 @@ Tag
 | `Tag` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Tag` | control theme | `TagTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `CloseIcon`, `CornerRadius`, `Foreground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `TagTheme.axaml` | Tag | `Background`, `BorderBrush`, `BorderThickness`, `CloseIcon`, `CornerRadius`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (Border) | `TagTheme.axaml` | Tag | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `TagTheme.axaml` | Tag | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DockPanel` | template node (DockPanel) | `TagTheme.axaml` | Tag | `CloseIcon`, `Icon`, `IsClosable`, `Padding`, `TagTextPaddingInline`, `Text` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `IconPresenter` | template node (IconPresenter) | `TagTheme.axaml` | Tag | `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_CloseButton` | template node (IconButton) | `TagTheme.axaml` | Tag | `CloseIcon`, `IsClosable` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

@@ -17,7 +17,7 @@
 来源：`src/AtomUI.Desktop.Controls/ListView/Themes/ListViewTheme.axaml`
 
 ```xml
-<Border Name="Frame">
+<PixelAlignedBorder Name="Frame">
     <DockPanel>
         <ContentPresenter Name="TopPaginationPresenter" />
         <ContentPresenter Name="BottomPaginationPresenter" />
@@ -27,10 +27,11 @@
                     <ItemsPresenter Name="ItemsPresenter" />
                 </ScrollViewer>
                 <ContentPresenter Name="EmptyIndicator" />
+                <Empty Name="DefaultEmptyIndicator" />
             </Panel>
         </Spin>
     </DockPanel>
-</Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -47,7 +48,7 @@ ListView
            -> IconTemplatePresenter#SelectedIndicator (internal-observable)
            -> ContentPresenter#ContentPresenter (internal-observable)
   -> ListView (control theme, ListViewTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> DockPanel (template-stable)
            -> ContentPresenter#TopPaginationPresenter (internal-observable)
            -> ContentPresenter#BottomPaginationPresenter (internal-observable)
@@ -56,6 +57,7 @@ ListView
                  -> ScrollViewer#{x:Static atom:ListViewThemeConstants.ScrollViewerPart} (template-stable)
                     -> ItemsPresenter#ItemsPresenter (internal-observable)
                  -> ContentPresenter#EmptyIndicator (internal-observable)
+                 -> Empty#DefaultEmptyIndicator (template-stable)
 ```
 
 ### 协作节点
@@ -69,14 +71,15 @@ ListView
 | `SelectedIndicator` | template node (IconTemplatePresenter) | `ListViewItemTheme.axaml` | ListViewItem | `IsSelectedIndicatorVisible`, `SelectedIndicator` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentPresenter` | template node (ContentPresenter) | `ListViewItemTheme.axaml` | ListViewItem | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ListView` | control theme | `ListViewTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BottomPagination`, `CornerRadius`, `CustomOperatingIndicator`, `CustomOperatingIndicatorTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `ListViewTheme.axaml` | ListView | `Background`, `BorderBrush`, `BottomPagination`, `CornerRadius`, `CustomOperatingIndicator`, `CustomOperatingIndicatorTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `ListViewTheme.axaml` | ListView | `Background`, `BorderBrush`, `BottomPagination`, `CornerRadius`, `CustomOperatingIndicator`, `CustomOperatingIndicatorTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DockPanel` | template node (DockPanel) | `ListViewTheme.axaml` | ListView | `BottomPagination`, `CustomOperatingIndicator`, `CustomOperatingIndicatorTemplate`, `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TopPaginationPresenter` | template node (ContentPresenter) | `ListViewTheme.axaml` | ListView | `TopPagination` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `BottomPaginationPresenter` | template node (ContentPresenter) | `ListViewTheme.axaml` | ListView | `BottomPagination` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Panel` | template node (Panel) | `ListViewTheme.axaml` | ListView | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsEffectiveEmptyVisible`, `ItemsPanel`, `ScrollViewer` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Panel` | template node (Panel) | `ListViewTheme.axaml` | ListView | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsDefaultEmptyIndicatorVisible`, `IsEffectiveEmptyVisible`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:ListViewThemeConstants.ScrollViewerPart}` | template node (ScrollViewer) | `ListViewTheme.axaml` | ListView | `IsEffectiveEmptyVisible`, `ItemsPanel`, `ScrollViewer`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ItemsPresenter` | template node (ItemsPresenter) | `ListViewTheme.axaml` | ListView | `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `EmptyIndicator` | template node (ContentPresenter) | `ListViewTheme.axaml` | ListView | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsEffectiveEmptyVisible` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `DefaultEmptyIndicator` | template node (Empty) | `ListViewTheme.axaml` | ListView | `EmptyIndicatorPadding`, `IsDefaultEmptyIndicatorVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -118,6 +121,7 @@ ListView 的状态模型由数据视图状态、选择状态、分页状态、�
 - 未分组时，选择源优先指向 collection view 的 `SourceCollection`，选择索引表达原始数据集合索引。
 - 分组开启时，选择源指向 `IListCollectionView` 当前视图，组标题项不会被 pointer 选择路径选中。
 - 分页开启时，容器索引和选择索引之间通过 `PageIndex * PageSize` 做全局索引转换。
+- `SelectedItems` 作为受控选中集合时，以绑定集合为单一对外来源；外部替换集合、用户选择写回以及集合 mutation 都必须同步到选择模型和容器 selected 状态。
 - `SelectionMode.AlwaysSelected` 在存在数据且丢失选择时恢复到首项。
 - `SelectedValueBinding` 存在时，`SelectedValue` 从选中项派生；外部设置 `SelectedValue` 时按绑定值查找选中项。
 
@@ -230,6 +234,7 @@ ListViewToken 不承载 `ItemsSource`、`SelectedIndex`、`SelectedItem`、`Sele
 
 - `ListView.cs` 保留 public API、事件、ItemsSource 归一、容器生命周期和 collection view 配置入口。
 - `ListView.Selecting.cs` 保持选择模型、索引映射、SelectedValue 和键盘 / 文本搜索职责，不把选择状态写入数据项作为唯一来源。
+- `SelectedItems` 的 property replacement、用户选择写回和 data validation 投射必须共享同一 direct property，不得新增平行 selected collection。
 - `ListView.Pagination.cs` 只处理分页器接入和 collection view page 状态同步，不执行数据请求。
 - `ListViewItem.cs` 保持条目容器角色，不承载排序、过滤、分页或跨列表全局状态。
 - collection view 替换时必须解绑旧 view 事件；只有 ListView 自建 view 才能由 ListView dispose。

@@ -23,22 +23,23 @@
         <ContentPresenter Name="WindowFrameLayer" />
     </Border>
     <Panel />
-    <VisualLayerManager Name="PART_VisualLayerManager">
-        <Border Name="WindowContentClip">
-            <DockPanel>
-                <Panel Name="TitleBarPanel">
-                    <ContentPresenter Name="TitleBarFrameLayer" />
-                    <ContentPresenter />
-                </Panel>
-                <Panel>
-                    <ContentPresenter Name="ContentFrameLayer" />
-                    <Border Name="ContentFrame">
-                        <ContentPresenter Name="PART_ContentPresenter" />
-                    </Border>
-                </Panel>
-            </DockPanel>
-        </Border>
-    </VisualLayerManager>
+    <WindowVisualLayerClip>
+        <VisualLayerManager Name="PART_VisualLayerManager">
+            <Border Name="WindowContentClip">
+                <DockPanel>
+                    <Panel Name="TitleBarPanel">
+                        <ContentPresenter Name="TitleBarFrameLayer" />
+                        <ContentPresenter />
+                    </Panel>
+                    <Panel>
+                        <ContentPresenter Name="ContentFrameLayer" />
+                        <Border Name="ContentFrame">
+                        </Border>
+                    </Panel>
+                </DockPanel>
+            </Border>
+        </VisualLayerManager>
+    </WindowVisualLayerClip>
     <FullscreenPopoverLayer Name="PART_FullscreenPopoverLayer" />
     <WindowResizer Name="PART_WindowResizer" />
 </Panel>
@@ -80,34 +81,19 @@ Window
         -> Border#WindowFrame (template-stable)
            -> ContentPresenter#WindowFrameLayer (internal-observable)
         -> Panel (template-stable)
-        -> VisualLayerManager#PART_VisualLayerManager (template-stable)
-           -> Border#WindowContentClip (template-stable)
-              -> DockPanel (template-stable)
-                 -> Panel#TitleBarPanel (template-stable)
-                    -> ContentPresenter#TitleBarFrameLayer (internal-observable)
-                    -> ContentPresenter (internal-observable)
-                 -> Panel (template-stable)
-                    -> ContentPresenter#ContentFrameLayer (internal-observable)
-                    -> Border#ContentFrame (template-stable)
-                       -> ContentPresenter#PART_ContentPresenter (template-stable)
+        -> WindowVisualLayerClip (template-stable)
+           -> VisualLayerManager#PART_VisualLayerManager (template-stable)
+              -> Border#WindowContentClip (template-stable)
+                 -> DockPanel (template-stable)
+                    -> Panel#TitleBarPanel (template-stable)
+                       -> ContentPresenter#TitleBarFrameLayer (internal-observable)
+                       -> ContentPresenter (internal-observable)
+                    -> Panel (template-stable)
+                       -> ContentPresenter#ContentFrameLayer (internal-observable)
+                       -> Border#ContentFrame (template-stable)
+                          -> ContentPresenter#PART_ContentPresenter (template-stable)
         -> FullscreenPopoverLayer#PART_FullscreenPopoverLayer (template-stable)
         -> WindowResizer#PART_WindowResizer (template-stable)
-     -> Panel (template-stable)
-        -> MediaBreakPointIndicator#{x:Static atom:MediaBreakPointIndicator.MediaQueryIndicatorName} (internal-observable)
-        -> Border#PART_TransparencyFallback (template-stable)
-        -> Border#WindowFrame (template-stable)
-           -> ContentPresenter#WindowFrameLayer (internal-observable)
-        -> Panel (template-stable)
-        -> VisualLayerManager#PART_VisualLayerManager (template-stable)
-           -> DockPanel (template-stable)
-              -> Panel#TitleBarPanel (template-stable)
-                 -> ContentPresenter#TitleBarFrameLayer (internal-observable)
-                 -> ContentPresenter (internal-observable)
-              -> Panel (template-stable)
-                 -> ContentPresenter#ContentFrameLayer (internal-observable)
-                 -> Border#ContentFrame (template-stable)
-                    -> ContentPresenter#PART_ContentPresenter (template-stable)
-        -> FullscreenPopoverLayer#PART_FullscreenPopoverLayer (template-stable)
      -> Panel (template-stable)
         -> MediaBreakPointIndicator#{x:Static atom:MediaBreakPointIndicator.MediaQueryIndicatorName} (internal-observable)
         -> Border#PART_TransparencyFallback (template-stable)
@@ -128,11 +114,13 @@ Window
         -> Border#PART_TransparencyFallback (template-stable)
         -> Panel (template-stable)
         -> Border#WindowFullScreenFrame (template-stable)
-        -> VisualLayerManager#PART_VisualLayerManager (template-stable)
-           -> Panel (template-stable)
-              -> ContentPresenter#ContentFrameLayer (internal-observable)
-              -> Border#ContentFrame (template-stable)
-                 -> ContentPresenter#PART_ContentPresenter (template-stable)
+        -> WindowVisualLayerClip (template-stable)
+           -> VisualLayerManager#PART_VisualLayerManager (template-stable)
+              -> Panel (template-stable)
+                 -> ContentPresenter#ContentFrameLayer (internal-observable)
+                 -> Border#ContentFrame (template-stable)
+                    -> ContentPresenter#PART_ContentPresenter (template-stable)
+        -> WindowResizer#PART_WindowResizer (template-stable)
 ```
 
 ### 协作节点
@@ -175,7 +163,7 @@ Window
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 11 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
+| 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 11 项 | 定义控件展示内容、输入数据、模板或业务对象入口；其中 `TitleBarFrameLayer` 是标题栏背景或装饰层，交互按钮、菜单、搜索框应通过自定义 `TitleBar` 承载。 |
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
@@ -204,6 +192,7 @@ Public API / inherited command / item source / user input
 - open/close 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- 标题栏交互内容应由 `TitleBar` / `WindowTitleBar` 承载；`TitleBarFrameLayer` 只表达标题栏背景、遮罩或装饰视觉，不保证内部控件获得 pointer、focus、keyboard 或 command 事件。
 
 ## Theme and Token Boundaries
 
@@ -226,6 +215,18 @@ Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视�
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
 
+### 5.1 标题栏背景层与自定义 TitleBar 模型
+
+Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定义标题栏层三类稳定语义。该模型同时约束普通自绘模板和 Avalonia `WindowDrawnDecorations` CSD 模板：
+
+| 语义层 | 代表入口 | 职责 | 命中语义 |
+| --- | --- | --- | --- |
+| 标题栏背景/装饰层 | `TitleBarFrameBackground` / `TitleBarFrameLayer` / `TitleBarFrameLayerTemplate` | 提供标题栏背景、遮罩、纹理、圆角、裁剪或装饰视觉。 | 不作为用户交互入口；CSD 下可处于标题栏拖拽 role 中。 |
+| 默认标题栏层 | `TitleBar` / `WindowTitleBar` | 展示标题、Logo、caption buttons，并在空白区域提供窗口拖拽语义。 | 只处理标题栏默认交互和窗口操作。 |
+| 自定义标题栏层 | `TitleBar` | 承载用户自定义标题栏布局、按钮、菜单、搜索框或其他交互控件。 | 用户控件按普通 Avalonia client input 语义命中；空白区域由自定义标题栏自行决定是否保留拖拽。 |
+
+维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要在标题栏放置按钮、菜单或搜索框时，应创建自定义 `WindowTitleBar` 或其他标题栏控件，并设置到 `Window.TitleBar`。
+
 Token 边界：
 
 Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
@@ -241,6 +242,7 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
+- `TitleBarFrameLayer` 是标题栏背景/装饰入口，不是标题栏用户交互入口；标题栏按钮、菜单、搜索框等交互内容必须通过 `TitleBar` 承载。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
@@ -252,6 +254,7 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- `TitleBarFrameLayer` 的背景/装饰层语义，以及标题栏交互内容必须通过 `TitleBar` 承载的职责边界。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。

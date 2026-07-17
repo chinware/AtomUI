@@ -17,8 +17,8 @@
 
 ```xml
 <DockPanel Name="PART_MainLayout">
-    <Button Name="PART_PrimaryButton" />
     <Button Name="PART_SecondaryButton" />
+    <Button Name="PART_PrimaryButton" />
 </DockPanel>
 ```
 
@@ -32,8 +32,8 @@
 SplitButton
   -> SplitButton (control theme, SplitButtonTheme.axaml)
      -> DockPanel#PART_MainLayout (template-stable)
-        -> Button#PART_PrimaryButton (template-stable)
         -> Button#PART_SecondaryButton (template-stable)
+        -> Button#PART_PrimaryButton (template-stable)
 ```
 
 ### 协作节点
@@ -43,8 +43,8 @@ SplitButton
 | `SplitButton` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `SplitButton` | control theme | `SplitButtonTheme.axaml` | 用户代码 / 控件宿主 | `Content`, `ContentTemplate`, `EffectiveButtonType`, `FontSize`, `Height`, `Icon` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_MainLayout` | template node (DockPanel) | `SplitButtonTheme.axaml` | SplitButton | `Content`, `ContentTemplate`, `EffectiveButtonType`, `FontSize`, `Height`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_PrimaryButton` | template node (Button) | `SplitButtonTheme.axaml` | SplitButton | `Content`, `ContentTemplate`, `EffectiveButtonType`, `FontSize`, `Height`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_SecondaryButton` | template node (Button) | `SplitButtonTheme.axaml` | SplitButton | `EffectiveButtonType`, `FontSize`, `Height`, `IsDanger`, `IsEnabled`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_PrimaryButton` | template node (Button) | `SplitButtonTheme.axaml` | SplitButton | `Content`, `ContentTemplate`, `EffectiveButtonType`, `FontSize`, `Height`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 

@@ -72,7 +72,7 @@ Breadcrumb 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:37`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -89,7 +89,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 带参数
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:175`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:74`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -104,7 +104,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 配置分隔符
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:191`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:91`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -121,7 +121,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 单独配置分隔符
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:209`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:110`
 
 Gallery key：`ExamplesContent` / item `4`
 

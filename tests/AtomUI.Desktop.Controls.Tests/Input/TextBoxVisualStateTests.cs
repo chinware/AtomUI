@@ -319,7 +319,7 @@ public class TextBoxVisualStateTests
                 border.Transitions.ShouldBeNull();
             },
             window => window.Resources[
-                new ControlSharedTokenResourceKey(null, "TextBox", SharedTokenKind.EnableMotion)] = false);
+                new ControlSharedTokenResourceKey("AtomUI", "TextBox", SharedTokenKind.EnableMotion)] = false);
     }
 
     [Fact]

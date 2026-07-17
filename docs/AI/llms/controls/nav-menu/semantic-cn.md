@@ -18,9 +18,9 @@
 
 ```xml
 <ScrollViewer>
-    <Border>
+    <PixelAlignedBorder>
         <ItemsPresenter Name="PART_ItemsPresenter" />
-    </Border>
+    </PixelAlignedBorder>
 </ScrollViewer>
 ```
 
@@ -36,13 +36,13 @@ NavMenu
      -> Panel (template-stable)
         -> HorizontalNavMenuItemHeader#PART_Header (template-stable)
         -> Popup#PART_Popup (template-stable)
-           -> Border#PART_PopupFrame (template-stable)
+           -> NavMenuPopupFrame#PART_PopupFrame (template-stable)
               -> ScrollViewer (template-stable)
                  -> ItemsPresenter#PART_ItemsPresenter (template-stable)
      -> Panel (template-stable)
         -> VerticalNavMenuItemHeader#PART_Header (template-stable)
         -> Popup#PART_Popup (template-stable)
-           -> Border#PART_PopupFrame (template-stable)
+           -> NavMenuPopupFrame#PART_PopupFrame (template-stable)
               -> ScrollViewer (template-stable)
                  -> ItemsPresenter#PART_ItemsPresenter (template-stable)
      -> StackPanel (template-stable)
@@ -52,11 +52,11 @@ NavMenu
               -> ItemsPresenter#ChildItemsPresenter (internal-observable)
   -> NavMenu (control theme, NavMenuTheme.axaml)
      -> ScrollViewer (template-stable)
-        -> Border (template-stable)
+        -> PixelAlignedBorder (template-stable)
            -> ItemsPresenter#PART_ItemsPresenter (template-stable)
      -> DockPanel (template-stable)
-        -> Rectangle#PART_HorizontalLine (template-stable)
-        -> Border (template-stable)
+        -> PixelAlignedBorder#PART_HorizontalLine (template-stable)
+        -> PixelAlignedBorder (template-stable)
            -> ItemsPresenter#PART_ItemsPresenter (template-stable)
   -> VerticalNavMenuItemHeader (control theme, VerticalNavMenuItemHeaderTheme.axaml)
      -> Border#Frame (template-stable)
@@ -76,7 +76,7 @@ NavMenu
 | `Panel` | template node (Panel) | `NavMenuItemTheme.axaml` | NavMenuItem | `EffectivePopupMinWidth`, `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Header` | template node (HorizontalNavMenuItemHeader) | `NavMenuItemTheme.axaml` | NavMenuItem | `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle`, `IsEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Popup` | template node (Popup) | `NavMenuItemTheme.axaml` | NavMenuItem | `EffectivePopupMinWidth`, `IsMotionEnabled`, `ItemsPanel`, `ShouldUseOverlayPopup`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_PopupFrame` | template node (Border) | `NavMenuItemTheme.axaml` | NavMenuItem | `EffectivePopupMinWidth`, `IsMotionEnabled`, `ItemsPanel`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_PopupFrame` | template node (NavMenuPopupFrame) | `NavMenuItemTheme.axaml` | NavMenuItem | `EffectivePopupMinWidth`, `IsMotionEnabled`, `ItemsPanel`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `NavMenuItemTheme.axaml` | NavMenuItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Header` | template node (VerticalNavMenuItemHeader) | `NavMenuItemTheme.axaml` | NavMenuItem | `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle`, `IsEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `NavMenuItemTheme.axaml` | NavMenuItem | `Focusable`, `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -87,7 +87,7 @@ NavMenu
 | `NavMenu` | control theme | `NavMenuTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `NavMenuTheme.axaml` | NavMenu | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DockPanel` | template node (DockPanel) | `NavMenuTheme.axaml` | NavMenu | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_HorizontalLine` | template node (Rectangle) | `NavMenuTheme.axaml` | NavMenu | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_HorizontalLine` | template node (PixelAlignedBorder) | `NavMenuTheme.axaml` | NavMenu | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `VerticalNavMenuItemHeader` | control theme | `VerticalNavMenuItemHeaderTheme.axaml` | NavMenu | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `Height`, `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (Border) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `Height`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderLayout` | template node (Grid) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `Header`, `HeaderTemplate`, `Icon`, `IsEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -146,6 +146,7 @@ NavMenu 的交互行为由 mode 决定。
 公共交互状态：
 
 - `Disabled` 由节点 `IsEnabled` 和 command can-execute 共同决定，禁用项不应触发有效点击。
+- 节点命令必须复用 `NavMenuItem` 的有效点击入口；pointer 与 keyboard 提交不能形成两条独立命令执行路径，也不能因选择事件再次执行命令。
 - `PointerOver` 改变 header 前景和背景，但不能改变选中路径。
 - `Pressed` 只作为点击过程状态，不应通过 ancestor selector 误作用到 header。
 - `KeyboardActive` 表示键盘漫游中的当前项，只影响 focus 和 active 视觉，不改变选中路径。
@@ -216,7 +217,9 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 - 进入或退出 inline collapsed 不得调用 `Close()`，不得清空 `SelectedItem`，不得丢失 selected path。
 - inline collapsed 期间打开的 popup 状态不得污染展开后恢复的 inline open path cache。
 - 键盘 active/focus 状态不得进入公共 API，不得改变 `SelectedItem`、`DefaultSelectedPath` 或 `DefaultOpenPaths` 的语义。
-- `NavMenuNode` 的 `Header`、`HeaderTemplate`、`ItemKey`、`Icon`、`IsEnabled`、`Children` 名称、类型和语义不变。
+- `NavMenuNode` / `INavMenuNode` 的 `Header`、`HeaderTemplate`、`ItemKey`、`Icon`、`IsEnabled`、`Command`、`CommandParameter`、`Children` 名称、类型和语义不变。
+- `NavMenuNode` 只承载命令配置，不实现 `ICommandSource`，不直接订阅 `CanExecuteChanged`，也不保存当前 `NavMenuItem` 容器。
+- `CommandParameter` 保持标准显式参数语义，不隐式回退到 `ItemKey`、`Header`、`SelectedItem` 或节点自身。
 - `NavMenuItemClick` 和 `NavMenuNodeSelected` 的事件语义不变。
 - 方向键移动 active 项不得触发 `NavMenuItemClick` 或 `NavMenuNodeSelected`。
 - Esc 关闭 popup 分支不得调用 `Close()`，不得清空已选中节点。
@@ -251,3 +254,8 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 - `IsItemBackgroundEnabled=false` 不关闭 header 颜色和交互状态。
 - popup、root、inline child frame、header 四类背景职责保持分离。
 - handler 取消逻辑不能泄漏事件订阅或延迟任务。
+- `NavMenuNode` 不实现 `ICommandSource`，不直接执行命令或订阅 `CanExecuteChanged`。
+- scoped resource-host attachment、node relay binding 和 command subscription 必须各自具有确定释放点。
+- `CanExecuteChanged` 的合并 operation 必须由当前 container 持有，并在 command / parameter 替换和 logical-tree detach 时取消。
+- container rebind、clear、recycle、Items reset 和 re-template 后，旧节点、旧命令和旧 owner 不得继续持有当前容器。
+- `CommandParameter` 不隐式使用 `ItemKey`，避免显式 `null` 和容器同步语义分叉。

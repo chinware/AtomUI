@@ -4,7 +4,7 @@
 
 ## 概述
 
-DatePicker 是 AtomUI 桌面控件体系中的日期选择控件，用于单日期、日期范围和日历面板选择。
+DatePicker 是 AtomUI 桌面控件体系中的日期选择控件，用于单日期、周、月份、季度、年份以及日期范围的日历面板选择。
 
 DatePicker 不负责业务日程系统、时间选择或完整日期时间解析服务。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
 
@@ -42,17 +42,18 @@ DatePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `HeaderBackground` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `DisplayMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SecondarySelectedDate`、`SecondarySelectedDateTime`、`SelectedDate`、`SelectedDateTime`、`TempSelectedTime` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `PickerMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SelectedDateTime` | 维护提交值、范围端点和选择颗粒度；`SelectedDateTime`、`RangeStartSelectedDate`、`RangeEndSelectedDate` 默认 `TwoWay` 绑定并启用 Avalonia data validation。 |
+| 弹层显示游标 | `PickerDisplayDate`；内部 `Calendar.DisplayDate`、`DisplayDateStart`、`DisplayDateEnd` | 维护弹出面板打开时显示到哪个日期区域，不代表已选值。 |
 | 交互与状态 | `IsFloatingArrowPosition`、`IsHorizontalFlipped`、`IsNeedConfirm`、`IsShowNow`、`IsShowTime`、`IsTodayHighlighted` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `RangePickerIndicatorOffsetEnd`、`RangePickerIndicatorOffsetStart` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
-| 其他稳定入口 | `ClockIdentifier`、`DefaultDateTime`、`DisplayDate`、`DisplayDateEnd`、`DisplayDateStart`、`FirstDayOfWeek`、`Format` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 其他稳定入口 | `ClockIdentifier`、`DefaultDateTime`、`Format` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
 主要公开类型与枚举：
 
 - 类型：`Calendar`、`CalendarItem`、`ChoosingStatusEventArgs`、`DatePicker`、`DatePickerPresenter`、`DateSelectedEventArgs`、`DualMonthArrowDecoratedBox`、`DualMonthCalendarItem`、`DualMonthRangeCalendar`、`DualMonthRangeDatePickerPresenter`、`RangeCalendar`、`RangeCalendarItem`、`RangeDatePicker`、`RangeDatePickerPresenter` 等 19 项。
-- 枚举：无。
+- 枚举：`DatePickerMode`，取值为 `Date`、`Week`、`Month`、`Quarter`、`Year`。
 
 稳定 template part：
 
@@ -84,7 +85,7 @@ DatePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 | `PART_SecondaryMonthView` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | 其他 part | 7 项 | 参见源码和主题文件；维护时按同一生命周期规则检查。 |
 
-控件专属或内部伪类包括 `Blackout=:blackout`、`BtnFocusedPC`、`CalendarDayButtonPseudoClass.Blackout`、`CalendarDayButtonPseudoClass.DayFocused`、`CalendarDayButtonPseudoClass.RangeEnd`、`CalendarDayButtonPseudoClass.RangeMiddle`、`CalendarDayButtonPseudoClass.RangeStart`、`CalendarDayButtonPseudoClass.Today`、`CalendarDisabledPC`、`DayFocused=:dayfocused`、`RangeEnd=:range-end`、`RangeMiddle=:range-middle` 等 14 项。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
+控件专属或内部伪类包括 `Blackout=:blackout`、`BtnFocusedPC`、`CalendarDayButtonPseudoClass.Blackout`、`CalendarDayButtonPseudoClass.DayFocused`、`CalendarDayButtonPseudoClass.RangeEnd`、`CalendarDayButtonPseudoClass.RangeMiddle`、`CalendarDayButtonPseudoClass.RangePreviewEnd`、`CalendarDayButtonPseudoClass.RangePreviewMiddle`、`CalendarDayButtonPseudoClass.RangePreviewStart`、`CalendarDayButtonPseudoClass.RangeStart`、`CalendarDayButtonPseudoClass.Today`、`CalendarDayButtonPseudoClass.WeekHoverStart`、`CalendarDayButtonPseudoClass.WeekHoverMiddle`、`CalendarDayButtonPseudoClass.WeekHoverEnd`、`CalendarDayButtonPseudoClass.WeekSelectionStart`、`CalendarDayButtonPseudoClass.WeekSelectionMiddle`、`CalendarDayButtonPseudoClass.WeekSelectionEnd`、`CalendarDisabledPC`、`DayFocused=:dayfocused`、`RangeEnd=:range-end`、`RangeMiddle=:range-middle`、`RangePreviewEnd=:range-preview-end`、`RangePreviewMiddle=:range-preview-middle`、`RangePreviewStart=:range-preview-start` 等。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
 
 ## 事件与命令
 
@@ -100,50 +101,115 @@ DatePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:35`
 
 Gallery key：`ExamplesContent` / item `0`
 
 ```axaml
-<atom:DatePicker PlaceholderText="选择日期"/>
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:DatePicker PickerMode="Date"
+                     PlaceholderText="选择日期" />
+    <atom:DatePicker PickerMode="Week"
+                     PlaceholderText="选择周" />
+    <atom:DatePicker PickerMode="Month"
+                     PlaceholderText="选择月份" />
+    <atom:DatePicker PickerMode="Quarter"
+                     PlaceholderText="选择季度" />
+    <atom:DatePicker PickerMode="Year"
+                     PlaceholderText="选择年份" />
+</StackPanel>
 ```
 
-### 范围选择器
+### SelectedDateTime 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:150`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:58`
 
 Gallery key：`ExamplesContent` / item `1`
 
 ```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <!-- <atom:RangeDatePicker IsShowTime="true" PlaceholderText="选择日期" SecondaryPlaceholderText="结束日期"/> -->
-    <atom:RangeDatePicker IsShowTime="False" PlaceholderText="选择日期" SecondaryPlaceholderText="结束日期" />
+<StackPanel Orientation="Vertical" Spacing="16">
+    <StackPanel Orientation="Vertical" Spacing="12">
+        <atom:DatePicker Width="240"
+                         SelectedDateTime="{Binding BoundSelectedDateTime}"
+                         PlaceholderText="选择日期" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="选中值：" />
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{Binding BoundSelectedDateTimeText}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:Button SizeType="Small"
+                         Click="SetBoundSelectedDateTimeTomorrow"
+                         Content="设置为明天" />
+            <atom:Button SizeType="Small"
+                         Click="ClearBoundSelectedDateTime"
+                         Content="清空" />
+        </StackPanel>
+    </StackPanel>
+    <StackPanel Orientation="Vertical" Spacing="12">
+        <atom:RangeDatePicker PickerMode="Date"
+                              IsShowTime="False"
+                              RangeStartSelectedDate="{Binding BoundRangeStartSelectedDate}"
+                              RangeEndSelectedDate="{Binding BoundRangeEndSelectedDate}"
+                              PlaceholderText="开始日期"
+                              SecondaryPlaceholderText="结束日期" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="选中范围：" />
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{Binding BoundRangeSelectedDateText}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:Button SizeType="Small"
+                         Click="SetBoundSelectedDateRangeThisWeek"
+                         Content="设置为本周" />
+            <atom:Button SizeType="Small"
+                         Click="ClearBoundSelectedDateRange"
+                         Content="清空" />
+        </StackPanel>
+    </StackPanel>
 </StackPanel>
 ```
 
-### 需要确认
+### 弹出面板显示日期
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:164`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:112`
 
 Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:DatePicker IsNeedConfirm="True" PlaceholderText="选择日期" />
-    <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="False" PlaceholderText="选择日期" SecondaryPlaceholderText="结束日期" />
-</StackPanel>
+<atom:DatePicker PickerDisplayDate="2026-10-20"
 ```
 
-### 选择时间
+### 范围选择器
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:178`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:125`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <StackPanel Orientation="Vertical" Spacing="10">
-    <atom:DatePicker IsNeedConfirm="True" IsShowTime="True" PlaceholderText="选择日期" />
-    <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="True" PlaceholderText="选择日期" SecondaryPlaceholderText="结束日期" />
+    <atom:RangeDatePicker PickerMode="Date"
+                          IsShowTime="False"
+                          PlaceholderText="开始日期"
+                          SecondaryPlaceholderText="结束日期" />
+    <atom:RangeDatePicker PickerMode="Date"
+                          IsShowTime="True"
+                          PlaceholderText="开始日期"
+                          SecondaryPlaceholderText="结束日期" />
+    <atom:RangeDatePicker PickerMode="Week"
+                          PlaceholderText="开始周"
+                          SecondaryPlaceholderText="结束周" />
+    <atom:RangeDatePicker PickerMode="Month"
+                          PlaceholderText="开始月份"
+                          SecondaryPlaceholderText="结束月份" />
+    <atom:RangeDatePicker PickerMode="Quarter"
+                          PlaceholderText="开始季度"
+                          SecondaryPlaceholderText="结束季度" />
+    <atom:RangeDatePicker PickerMode="Year"
+                          PlaceholderText="开始年份"
+                          SecondaryPlaceholderText="结束年份" />
 </StackPanel>
 ```
 
@@ -163,6 +229,15 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `PickerMode` 决定选择颗粒度和初始面板：`Date`、`Week` 使用月视图，`Month`、`Quarter` 使用年视图，`Year` 使用十年视图。目标颗粒度不能继续降级到更细面板。
+- `SelectedDateTime`、`DefaultDateTime` 和 `PickerDisplayDate` 必须保持语义分离：`SelectedDateTime` 是已提交值，`DefaultDateTime` 是默认选中值/reset 值，`PickerDisplayDate` 只作为弹出面板打开时的显示锚点。
+- `SelectedDateTime` 是单值 DatePicker 的受控 Form 值入口，默认 `BindingMode.TwoWay`，并通过 Avalonia `DataValidationErrors` 参与原生数据校验。
+- 设置 `PickerDisplayDate` 后不得写入 `SelectedDateTime`，不得改变输入框文本、Form value 或清除按钮状态；当已有已选值时，弹出面板仍优先围绕已选值展示。
+- DatePicker / RangeDatePicker 输入壳体必须把 `DataValidationErrors` 同步转发到外层 AddOn 和内部文本框；range indicator 等附属视觉读取 effective status，native error 优先于手动 warning/error 状态。
+- `PickerMode=Week` 的月视图是带周序号列的 8 列 week panel，不是普通日期面板的 7 个日期按钮逐个选中；选中视觉和 hover 视觉都必须按整周连续行渲染，不能退回单个日期按钮的普通 pointerover 背景。
+- 非 `Date` 颗粒度仍使用 `DateTime?` 保存提交值：`Week` 保存 ISO 周起始日，`Month` 保存当月 1 日，`Quarter` 保存季度首月 1 日，`Year` 保存当年 1 月 1 日。
+- `IsShowTime` 只在 `PickerMode=Date` 时形成有效时间选择；其他颗粒度忽略时间面板和时间拼接。
+- 范围选择的 committed 状态和 hover preview 状态必须分开：`:selected`、`:range-start`、`:range-end`、`:range-middle` 只来自真实端点；hover 只写入 `:range-preview-start`、`:range-preview-end`、`:range-preview-middle`，其中 preview start/end 在视觉上按临时端点显示，但不能污染真实提交状态。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -224,8 +299,8 @@ DatePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/DatePicker`：8 个文件，代表文件 `DatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerToken.cs`、`DualMonthArrowDecoratedBox.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
-- `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：10 个文件，代表文件 `Calendar.cs`、`CalendarBlackoutDatesCollection.cs`、`CalendarButton.cs`、`CalendarDayButton.cs`、`CalendarDayButtonPseudoClass.cs` 等。
+- `src/AtomUI.Desktop.Controls/DatePicker`：DatePicker 控件家族根目录，代表文件 `DatePicker.cs`、`RangeDatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerFormattingHelper.cs`、`DatePickerToken.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
+- `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：CalendarView runtime。`State` 保存归一化状态和 action，`Models` 保存纯 panel model，`Rendering` 将 model 应用到 generated buttons，`Infrastructure` 封装 culture 和 pointer tracking。
 - `src/AtomUI.Desktop.Controls/DatePicker/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
 - `src/AtomUI.Desktop.Controls/DatePicker/Themes`：19 个文件，代表文件 `CalendarButtonTheme.axaml`、`CalendarButtonTheme.cs`、`CalendarDayButtonTheme.axaml`、`CalendarItemTheme.axaml`、`CalendarItemTheme.cs` 等。
 
@@ -235,6 +310,7 @@ DatePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- CalendarView 的深度重构必须以 [CalendarView 系统性优化设计](calendar-view-system-optimization.md) 中定义的单向状态模型、panel model、renderer 和生命周期规则为边界。
 
 ## 相关文档
 
