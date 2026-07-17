@@ -567,7 +567,8 @@ public class WindowResizeArtifactTests
                                     (string?)style.Attribute("Selector") == "^:is(atom|WindowTitleBar)");
         baseStyle.Elements(av + "Setter").ShouldContain(setter =>
             (string?)setter.Attribute("Property") == "Background" &&
-            (string?)setter.Attribute("Value") == "{atom:SharedTokenResource ColorBgContainer}");
+            (string?)setter.Attribute("Value") ==
+            "{atom:WindowTitleBarTokenSharedTokenResource ColorBgContainer}");
         baseStyle.Elements(av + "Setter").ShouldNotContain(setter =>
             (string?)setter.Attribute("Property") == "Background" &&
             (string?)setter.Attribute("Value") == "Transparent");
