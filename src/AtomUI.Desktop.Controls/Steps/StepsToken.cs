@@ -188,7 +188,7 @@ internal class StepsToken : AbstractControlDesignToken
         WaitIconBorderColor   = Colors.Transparent;
         WaitTitleColor        = SharedToken.ColorTextDescription;
         WaitDescriptionColor  = SharedToken.ColorTextDescription;
-        WaitTailColor         = SharedToken.ColorSplit;
+        WaitTailColor         = SharedToken.ColorTextDisabled;
         WaitDotColor          = SharedToken.ColorTextDisabled;
         
         ProcessIconColor        = SharedToken.ColorTextLightSolid;
@@ -197,7 +197,7 @@ internal class StepsToken : AbstractControlDesignToken
         ProcessIconBgColor      = SharedToken.ColorPrimary;
         ProcessIconBorderColor  = SharedToken.ColorPrimary;
         ProcessDotColor         = SharedToken.ColorPrimary;
-        ProcessTailColor        = SharedToken.ColorSplit;
+        ProcessTailColor        = SharedToken.ColorTextDisabled;
 
         ProgressGrooveColor = SharedToken.ColorSplit;
         ProgressColor       = SharedToken.ColorPrimary;
@@ -213,7 +213,7 @@ internal class StepsToken : AbstractControlDesignToken
         ErrorIconColor          = SharedToken.ColorTextLightSolid;
         ErrorTitleColor         = SharedToken.ColorError;
         ErrorDescriptionColor   = SharedToken.ColorError;
-        ErrorTailColor          = SharedToken.ColorSplit;
+        ErrorTailColor          = SharedToken.ColorTextDisabled;
         ErrorIconBgColor        = SharedToken.ColorError;
         ErrorIconBorderColor    = SharedToken.ColorError;
         ErrorDotColor           = SharedToken.ColorError;

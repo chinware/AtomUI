@@ -1,5 +1,5 @@
 using AtomUI.Animations;
-using Avalonia.Threading;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls;
 using AtomUI.Media;
 using Avalonia;
@@ -198,6 +198,8 @@ internal class StepsItemIndicator : TemplatedControl
     }
     #endregion
 
+    private WaveSpiritDecorator? _waveSpiritDecorator;
+
     static StepsItemIndicator()
     {
         AffectsMeasure<StepsItemIndicator>(SizeTypeProperty, IndicatorTypeProperty, IsCurrentProperty,
@@ -218,6 +220,26 @@ internal class StepsItemIndicator : TemplatedControl
         {
             SetCurrentValue(IsCustomProperty, Icon != null);
         }
+        else if (change.Property == IsCurrentProperty && change.GetNewValue<bool>())
+        {
+            PlayWave();
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(WaveSpiritDecorator.WaveSpiritPart);
+    }
+
+    private void PlayWave()
+    {
+        if (!IsClickable || !IsEnabled || !IsMotionEnabled || !IsLoaded || _waveSpiritDecorator is null)
+        {
+            return;
+        }
+
+        _waveSpiritDecorator.Play();
     }
 
     public override void Render(DrawingContext context)

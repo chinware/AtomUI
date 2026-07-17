@@ -344,12 +344,9 @@ internal class OverlayDialogHost : ContentControl,
 
         if (IsMotionEnabled && _animatedOverlayHost is { } overlayHost)
         {
-            if (!_dialog.UsesPlacementTargetAsMotionAnchor)
-            {
-                ConfigureUnanchoredCloseTransitions(overlayHost);
-            }
-
             var (origin, transform)           = BuildCollapsedMotionState(overlayHost);
+            var shouldAnimateTransform        = !transform.IsIdentity;
+            ConfigureCloseTransitions(overlayHost, shouldAnimateTransform);
             overlayHost.RenderTransformOrigin = origin;
             overlayHost.Opacity               = 0.0;
             overlayHost.RenderTransform       = transform;
@@ -389,9 +386,9 @@ internal class OverlayDialogHost : ContentControl,
         host.Transitions = CreateOverlayHostTransitions(new CircularEaseOut(), includeTransform);
     }
 
-    private void ConfigureUnanchoredCloseTransitions(OverlayPopupHost host)
+    private void ConfigureCloseTransitions(OverlayPopupHost host, bool includeTransform)
     {
-        host.Transitions = CreateOverlayHostTransitions(new CubicEaseIn(), false);
+        host.Transitions = CreateOverlayHostTransitions(new CubicEaseIn(), includeTransform);
         if (_dialogMask is not null)
         {
             _dialogMask.Transitions = CreateMaskTransitions(new CubicEaseIn());
