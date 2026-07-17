@@ -6,318 +6,200 @@
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:StepsItemIndicator}" TargetType="atom:StepsItemIndicator">
         <Setter Property="ClipToBounds" Value="False" />
-
-        <Style Selector="^:not(^[Style=Inline])">
-            <Style Selector="^[IndicatorType=Default]">
-                <Setter Property="Template">
-                    <ControlTemplate>
+        <Setter Property="FontSize" Value="{atom:StepsTokenResource IconFontSize}" />
+        <Setter Property="ProgressGrooveColor" Value="{atom:StepsTokenResource ProgressGrooveColor}" />
+        <Setter Property="ProgressColor" Value="{atom:StepsTokenResource ProgressColor}" />
+        <Setter Property="ProgressLineThickness" Value="{atom:StepsTokenSharedTokenResource LineWidthBold}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Margin="{TemplateBinding Padding}">
+                    <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}" />
+                    <atom:PixelAlignedBorder
+                        Name="Frame"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
                         <Panel>
-                            <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}" />
-                            <Border Name="ProgressFrame">
-                                <atom:PixelAlignedBorder Name="Frame"
-                                                         IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNull}}"
-                                                         BorderThickness="1"
-                                                         BorderBrush="{TemplateBinding BorderBrush}"
-                                                         Background="{TemplateBinding Background}"
-                                                         CornerRadius="{TemplateBinding CornerRadius}">
-                                    <Panel>
-                                        <TextBlock Name="PositionText"
-                                                   Text="{TemplateBinding Position}"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Center"
-                                                   IsVisible="True" />
-                                        <antdicons:CheckOutlined Name="FinishedMark"
-                                                                 VerticalAlignment="Center"
-                                                                 HorizontalAlignment="Center"
-                                                                 IsVisible="False" />
-                                        
-                                        <antdicons:CloseOutlined Name="ErrorMark"
-                                                                 VerticalAlignment="Center"
-                                                                 HorizontalAlignment="Center"
-                                                                 IsVisible="False" />
-                                    </Panel>
-                                </atom:PixelAlignedBorder>
-                            </Border>
-
-                            <atom:IconPresenter
-                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                Name="CustomIconPresenter"
-                                Icon="{TemplateBinding Icon}" />
+                            <TextBlock
+                                Name="StepNumberText"
+                                Text="{TemplateBinding DisplayStepNumber}"
+                                FontSize="{TemplateBinding FontSize}"
+                                Foreground="{TemplateBinding Foreground}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                            <antdicons:CheckOutlined
+                                Name="FinishedMark"
+                                Width="{TemplateBinding FontSize}"
+                                Height="{TemplateBinding FontSize}"
+                                Foreground="{TemplateBinding Foreground}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsVisible="False" />
+                            <antdicons:CloseOutlined
+                                Name="ErrorMark"
+                                Width="{TemplateBinding FontSize}"
+                                Height="{TemplateBinding FontSize}"
+                                Foreground="{TemplateBinding Foreground}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsVisible="False" />
                         </Panel>
-                    </ControlTemplate>
-                </Setter>
+                    </atom:PixelAlignedBorder>
+                    <atom:IconPresenter
+                        Name="CustomIconPresenter"
+                        Width="{atom:StepsTokenResource CustomIconFontSize}"
+                        Height="{atom:StepsTokenResource CustomIconFontSize}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Icon="{TemplateBinding Icon}"
+                        IconBrush="{TemplateBinding Foreground}"
+                        IsVisible="{TemplateBinding IsCustom}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
 
-                <Style Selector="^[IsShowProgress=True]">
-                    <Setter Property="ProgressGrooveColor"
-                            Value="{atom:StepsTokenResource ProgressGrooveColor}" />
-                    <Setter Property="ProgressColor"
-                            Value="{atom:StepsTokenResource ProgressColor}" />
-                    <Setter Property="ProgressLineThickness"
-                            Value="{atom:StepsTokenSharedTokenResource LineWidthBold}" />
-                    <Style Selector="^ /template/ Border#ProgressFrame">
-                        <Setter Property="Padding"
-                                Value="{atom:StepsTokenResource ProgressFramePadding}" />
-                    </Style>
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
+            <Setter Property="Width" Value="{atom:StepsTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:StepsTokenResource IconSize}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
 
-                    <Style Selector="^[SizeType=Small]">
-                        <Setter Property="ProgressLineThickness"
-                                Value="{atom:StepsTokenSharedTokenResource LineWidth}" />
-                        <Style Selector="^ /template/ Border#ProgressFrame">
-                            <Setter Property="Padding"
-                                    Value="{atom:StepsTokenResource ProgressFramePaddingSM}" />
-                        </Style>
-                    </Style>
-                </Style>
-
-                <Style Selector="^[Status=Finish]">
-                    <Style Selector="^ /template/ TextBlock#PositionText">
-                        <Setter Property="IsVisible" Value="False" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#FinishedMark">
-                        <Setter Property="IsVisible" Value="True" />
-                    </Style>
-                </Style>
-    
-                <Style Selector="^[Status=Error]">
-                    <Style Selector="^ /template/ TextBlock#PositionText">
-                        <Setter Property="IsVisible" Value="False" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#ErrorMark">
-                        <Setter Property="IsVisible" Value="True" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^[IsCustom=False]">
-                    <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
-                        <Setter Property="Width" Value="{atom:StepsTokenResource IconSize}" />
-                        <Setter Property="Height" Value="{atom:StepsTokenResource IconSize}" />
-                    </Style>
-
-                    <Setter Property="FontSize" Value="{atom:StepsTokenResource IconFontSize}" />
-
-                    <Style Selector="^ /template/ atom|Icon">
-                        <Setter Property="Width" Value="{atom:StepsTokenResource IconFontSize}" />
-                        <Setter Property="Height" Value="{atom:StepsTokenResource IconFontSize}" />
-                    </Style>
-
-                    <Style Selector="^[SizeType=Small]">
-                        <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
-                            <Setter Property="Width" Value="{atom:StepsTokenResource IconSizeSM}" />
-                            <Setter Property="Height"
-                                    Value="{atom:StepsTokenResource IconSizeSM}" />
-                        </Style>
-                        <Setter Property="FontSize" Value="{atom:StepsTokenSharedTokenResource FontSizeSM}" />
-                        <Style Selector="^ /template/ atom|Icon">
-                            <Setter Property="Width"
-                                    Value="{atom:StepsTokenSharedTokenResource FontSizeSM}" />
-                            <Setter Property="Height"
-                                    Value="{atom:StepsTokenSharedTokenResource FontSizeSM}" />
-                        </Style>
-
-                    </Style>
-                </Style>
-
-                <Style Selector="^[IsCustom=True]">
-                    <Setter Property="Width" Value="{atom:StepsTokenResource CustomIconSize}" />
-                    <Setter Property="Height" Value="{atom:StepsTokenResource CustomIconSize}" />
-                    <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                        <Setter Property="Width"
-                                Value="{atom:StepsTokenResource CustomIconFontSize}" />
-                        <Setter Property="Height"
-                                Value="{atom:StepsTokenResource CustomIconFontSize}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^[Status=Wait]">
-                    <Setter Property="Background"
-                            Value="{atom:StepsTokenResource WaitIconBgColor}" />
-                    <Setter Property="BorderBrush"
-                            Value="{atom:StepsTokenResource WaitIconBorderColor}" />
-                    <Setter Property="Foreground" Value="{atom:StepsTokenResource WaitIconColor}" />
-
-                    <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                        <Setter Property="IconBrush"
-                                Value="{atom:StepsTokenResource WaitDotColor}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^[Status=Process]">
-                    <Setter Property="Background"
-                            Value="{atom:StepsTokenResource ProcessIconBgColor}" />
-                    <Setter Property="BorderBrush"
-                            Value="{atom:StepsTokenResource ProcessIconBorderColor}" />
-                    <Setter Property="Foreground"
-                            Value="{atom:StepsTokenResource ProcessIconColor}" />
-
-                    <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                        <Setter Property="IconBrush"
-                                Value="{atom:StepsTokenResource ProcessDotColor}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^[Status=Finish]">
-                    <Setter Property="Background"
-                            Value="{atom:StepsTokenResource FinishIconBgColor}" />
-                    <Setter Property="BorderBrush"
-                            Value="{atom:StepsTokenResource FinishIconBorderColor}" />
-                    <Setter Property="Foreground"
-                            Value="{atom:StepsTokenResource FinishIconColor}" />
-
-                    <Style Selector="^ /template/ atom|Icon#FinishedMark">
-                        <Setter Property="FillBrush"
-                                Value="{atom:StepsTokenResource FinishIconColor}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:StepsTokenResource FinishIconColor}" />
-                    </Style>
-
-                    <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                        <Setter Property="IconBrush"
-                                Value="{atom:StepsTokenResource FinishDotColor}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^[Status=Error]">
-                    <Setter Property="Background"
-                            Value="{atom:StepsTokenResource ErrorIconBgColor}" />
-                    <Setter Property="BorderBrush"
-                            Value="{atom:StepsTokenResource ErrorIconBorderColor}" />
-                    <Setter Property="Foreground"
-                            Value="{atom:StepsTokenResource ErrorIconColor}" />
-                    <Style Selector="^ /template/ atom|Icon#ErrorMark">
-                        <Setter Property="FillBrush"
-                                Value="{atom:StepsTokenResource ErrorIconColor}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:StepsTokenResource ErrorIconColor}" />
-                    </Style>
-
-                    <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                        <Setter Property="IconBrush"
-                                Value="{atom:StepsTokenResource ErrorDotColor}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^[IsClickable=True]">
-                    <Style Selector="^[IsCustom=False]">
-                        <Style Selector="^[IsItemHover=True]">
-                            <Style Selector="^:not(^[Status=Process])">
-                                <Setter Property="BorderBrush"
-                                        Value="{atom:StepsTokenResource ProcessIconBorderColor}" />
-                                <Setter Property="Foreground"
-                                        Value="{atom:StepsTokenResource ProcessIconBorderColor}" />
-                            </Style>
-
-                            <Style Selector="^:not(^[Status=Process])">
-                                <Style Selector="^ /template/ atom|Icon#ErrorMark">
-                                    <Setter Property="FillBrush"
-                                            Value="{atom:StepsTokenResource ProcessIconBorderColor}" />
-                                    <Setter Property="StrokeBrush"
-                                            Value="{atom:StepsTokenResource ProcessIconBorderColor}" />
-                                </Style>
-                            </Style>
-                        </Style>
-                    </Style>
-                </Style>
+        <Style Selector="^[Status=Wait]">
+            <Setter Property="BorderBrush" Value="{atom:StepsTokenResource WaitIconBorderColor}" />
+            <Setter Property="Background" Value="{atom:StepsTokenResource WaitIconBgColor}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource WaitIconColor}" />
+        </Style>
+        <Style Selector="^[Status=Process]">
+            <Setter Property="BorderBrush" Value="{atom:StepsTokenResource ProcessIconBorderColor}" />
+            <Setter Property="Background" Value="{atom:StepsTokenResource ProcessIconBgColor}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource ProcessIconColor}" />
+        </Style>
+        <Style Selector="^[Status=Finish]">
+            <Setter Property="BorderBrush" Value="{atom:StepsTokenResource FinishIconBorderColor}" />
+            <Setter Property="Background" Value="{atom:StepsTokenResource FinishIconBgColor}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource FinishIconColor}" />
+            <Style Selector="^ /template/ TextBlock#StepNumberText">
+                <Setter Property="IsVisible" Value="False" />
             </Style>
-
-            <Style Selector="^[IndicatorType=Dot]">
-                <Setter Property="Template">
-                    <ControlTemplate>
-                        <Panel>
-                            <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}" />
-                            <Border Name="Frame"
-                                    Background="{TemplateBinding Background}"
-                                    CornerRadius="{TemplateBinding CornerRadius}"
-                                    Width="{TemplateBinding Width}"
-                                    Height="{TemplateBinding Height}" />
-                        </Panel>
-                    </ControlTemplate>
-                </Setter>
-
-                <Setter Property="Width" Value="{atom:StepsTokenResource DotSize}" />
-                <Setter Property="Height" Value="{atom:StepsTokenResource DotSize}" />
-
-                <Style Selector="^[IsCurrent=True]">
-                    <Setter Property="Width" Value="{atom:StepsTokenResource DotCurrentSize}" />
-                    <Setter Property="Height" Value="{atom:StepsTokenResource DotCurrentSize}" />
-                </Style>
-
-                <Style Selector="^[Status=Wait]">
-                    <Setter Property="Background" Value="{atom:StepsTokenResource WaitDotColor}" />
-                </Style>
-
-                <Style Selector="^[Status=Process]">
-                    <Setter Property="Background"
-                            Value="{atom:StepsTokenResource ProcessDotColor}" />
-                </Style>
-
-                <Style Selector="^[Status=Finish]">
-                    <Setter Property="Background"
-                            Value="{atom:StepsTokenResource FinishDotColor}" />
-                </Style>
-
-                <Style Selector="^[Status=Error]">
-                    <Setter Property="Background" Value="{atom:StepsTokenResource ErrorDotColor}" />
-                </Style>
+            <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+        <Style Selector="^[Status=Error]">
+            <Setter Property="BorderBrush" Value="{atom:StepsTokenResource ErrorIconBorderColor}" />
+            <Setter Property="Background" Value="{atom:StepsTokenResource ErrorIconBgColor}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource ErrorIconColor}" />
+            <Style Selector="^ /template/ TextBlock#StepNumberText">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#ErrorMark">
+                <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>
 
-        <Style Selector="^[Style=Inline]">
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <Panel>
-                        <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}" />
-                        <atom:PixelAlignedBorder Name="Frame"
-                                                 Background="{TemplateBinding Background}"
-                                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                                 CornerRadius="{TemplateBinding CornerRadius}"
-                                                 Width="{TemplateBinding Width}"
-                                                 Height="{TemplateBinding Height}" />
-                    </Panel>
-                </ControlTemplate>
-            </Setter>
-
-            <Setter Property="Width" Value="{atom:StepsTokenResource InlineDotSize}" />
-            <Setter Property="Height" Value="{atom:StepsTokenResource InlineDotSize}" />
-
-            <Style Selector="^[IsCurrent=True]">
-
+        <Style Selector="^[IsCustom=True]">
+            <Setter Property="MinWidth" Value="{atom:StepsTokenResource CustomIconSize}" />
+            <Setter Property="MinHeight" Value="{atom:StepsTokenResource CustomIconSize}" />
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
+                <Setter Property="IsVisible" Value="False" />
             </Style>
-            <Style Selector="^[Status=Wait]">
-                <Setter Property="Background" Value="{atom:StepsTokenSharedTokenResource ColorBorderBg}" />
-                <Setter Property="BorderBrush" Value="{atom:StepsTokenResource InlineTailColor}" />
-                <Setter Property="BorderThickness" Value="1" />
-            </Style>
-            <Style Selector="^[Status=Process]">
-                <Setter Property="Background"
-                        Value="{atom:StepsTokenResource ProcessDotColor}" />
-            </Style>
+        </Style>
 
-            <Style Selector="^[Status=Finish]">
-                <Setter Property="Background" Value="{atom:StepsTokenResource InlineTailColor}" />
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="FontSize" Value="{atom:StepsTokenSharedTokenResource FontSizeSM}" />
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
+                <Setter Property="Width" Value="{atom:StepsTokenResource IconSizeSM}" />
+                <Setter Property="Height" Value="{atom:StepsTokenResource IconSizeSM}" />
             </Style>
+        </Style>
 
-            <Style Selector="^[Status=Error]">
-                <Setter Property="Background" Value="{atom:StepsTokenResource ErrorDotColor}" />
+        <Style Selector="^[Type=Dot]">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
+                <Setter Property="Width" Value="{atom:StepsTokenResource DotSize}" />
+                <Setter Property="Height" Value="{atom:StepsTokenResource DotSize}" />
+                <Setter Property="BorderThickness" Value="0" />
             </Style>
+            <Style Selector="^ /template/ TextBlock#StepNumberText">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#ErrorMark">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+        <Style Selector="^[Type=Dot][IsCurrent=True] /template/ atom|PixelAlignedBorder#Frame">
+            <Setter Property="Width" Value="{atom:StepsTokenResource DotCurrentSize}" />
+            <Setter Property="Height" Value="{atom:StepsTokenResource DotCurrentSize}" />
+        </Style>
+        <Style Selector="^[Type=Dot][Status=Wait]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource WaitDotColor}" />
+        </Style>
+        <Style Selector="^[Type=Dot][Status=Process]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource ProcessDotColor}" />
+        </Style>
+        <Style Selector="^[Type=Dot][Status=Finish]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource FinishDotColor}" />
+        </Style>
+        <Style Selector="^[Type=Dot][Status=Error]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource ErrorDotColor}" />
+        </Style>
 
+        <Style Selector="^[Type=Inline]">
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
+                <Setter Property="Width" Value="{atom:StepsTokenResource InlineDotSize}" />
+                <Setter Property="Height" Value="{atom:StepsTokenResource InlineDotSize}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+            <Style Selector="^ /template/ TextBlock#StepNumberText">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#ErrorMark">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+        <Style Selector="^[Type=Inline][Status=Wait]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource WaitDotColor}" />
+        </Style>
+        <Style Selector="^[Type=Inline][Status=Process]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource ProcessDotColor}" />
+        </Style>
+        <Style Selector="^[Type=Inline][Status=Finish]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource FinishDotColor}" />
+        </Style>
+        <Style Selector="^[Type=Inline][Status=Error]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource ErrorDotColor}" />
+        </Style>
+
+        <Style Selector="^[IsProgressVisible=True]">
+            <Setter Property="Padding" Value="{atom:StepsTokenResource ProgressFramePadding}" />
+        </Style>
+        <Style Selector="^[IsProgressVisible=True][SizeType=Small]">
+            <Setter Property="Padding" Value="{atom:StepsTokenResource ProgressFramePaddingSM}" />
+        </Style>
+
+        <Style Selector="^[IsClickable=True][IsItemHover=True]">
+            <Setter Property="BorderBrush" Value="{atom:StepsTokenResource ProcessIconBorderColor}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource ProcessIconBorderColor}" />
+        </Style>
+        <Style Selector="^[Type=Dot][IsClickable=True][IsItemHover=True]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource ProcessDotColor}" />
         </Style>
 
         <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
             <Setter Property="WaveType" Value="CircleWave" />
         </Style>
-
-        <Style Selector="^[IsMotionEnabled=True]">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                    <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                    <atom:SolidColorBrushTransition Property="Foreground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                    <DoubleTransition Property="Width" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                    <DoubleTransition Property="Height" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                </Transitions>
-            </Setter>
-        </Style>
-
     </ControlTheme>
 </ResourceDictionary>

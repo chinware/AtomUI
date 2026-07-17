@@ -1,9 +1,12 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using AtomUI.Controls.Primitives;
-using AtomUI.Theme.Styling;
+using AtomUI.Desktop.Controls.DesignTokens;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Headless;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -21,77 +24,117 @@ public class StepsConnectorTests
         AvaloniaTestApp.EnsureInitialized();
     }
 
-    [Theory]
-    [InlineData(StepsItemStatus.Wait)]
-    [InlineData(StepsItemStatus.Process)]
-    [InlineData(StepsItemStatus.Finish)]
-    [InlineData(StepsItemStatus.Error)]
-    public void Default_Horizontal_Connector_Is_Visible_And_Colored(StepsItemStatus status)
+    [Fact]
+    public void Connector_Uses_The_Next_Items_Effective_Status_Color()
     {
-        var steps = new Desktop.Controls.Steps
-        {
-            Width          = 760,
-            Style          = StepsStyle.Default,
-            Orientation    = Orientation.Horizontal,
-            LabelPlacement = Orientation.Horizontal
-        };
-        steps.Items.Add(new StepsItem
-        {
-            Header = "Step 1",
-            Status = status
-        });
-        steps.Items.Add(new StepsItem
-        {
-            Header = "Step 2"
-        });
-        steps.Items.Add(new StepsItem
-        {
-            Header = "Step 3"
-        });
+        var steps = CreateSteps(Orientation.Horizontal);
+        steps.Items[0].ShouldBeOfType<Desktop.Controls.StepsItem>().Status = Desktop.Controls.StepsStatus.Finish;
+        steps.Items[1].ShouldBeOfType<Desktop.Controls.StepsItem>().Status = Desktop.Controls.StepsStatus.Error;
 
         ShowInWindow(steps, () =>
         {
-            var items = steps.GetVisualDescendants()
-                             .OfType<StepsItem>()
-                             .ToList();
-            var connector = FindConnector(items[0]);
-            var lastConnector = FindConnector(items[^1]);
+            var first = steps.Items[0].ShouldBeOfType<Desktop.Controls.StepsItem>();
+            var connector = FindConnector(first);
+            var expected = GetThemeResource<IBrush>(StepsTokenKind.ErrorTailColor);
 
-            connector.IsVisible.ShouldBeTrue();
-            connector.Bounds.Width.ShouldBeGreaterThan(0);
-            connector.BorderThickness.Bottom.ShouldBeGreaterThan(0);
-            connector.BorderBrush.ShouldNotBeNull(
-                $"the {status} connector should resolve its status-specific Steps tail color.");
-            if (status is not StepsItemStatus.Finish)
-            {
-                GetSolidBrushColor(connector.BorderBrush).ShouldBe(
-                    GetSolidBrushColor(GetThemeResource<IBrush>(SharedTokenKind.ColorTextDisabled)),
-                    $"the non-finish {status} tail should use Ant Design's disabled-text gray.");
-            }
-            lastConnector.IsVisible.ShouldBeFalse();
+            first.ConnectorStatus.ShouldBe(Desktop.Controls.StepsStatus.Error);
+            GetColor(connector.Background).ShouldBe(GetColor(expected));
         });
     }
 
-    private static PixelAlignedBorder FindConnector(StepsItem item)
+    [Theory]
+    [InlineData(Orientation.Horizontal)]
+    [InlineData(Orientation.Vertical)]
+    public void Connector_Uses_Orientation_And_Last_Item_Visibility(Orientation orientation)
+    {
+        var steps = CreateSteps(orientation);
+
+        ShowInWindow(steps, () =>
+        {
+            var firstConnector = FindConnector(steps.Items[0].ShouldBeOfType<Desktop.Controls.StepsItem>());
+            var lastConnector = FindConnector(steps.Items[2].ShouldBeOfType<Desktop.Controls.StepsItem>());
+
+            firstConnector.IsVisible.ShouldBeTrue();
+            lastConnector.IsVisible.ShouldBeFalse();
+            if (orientation == Orientation.Horizontal)
+            {
+                firstConnector.Bounds.Width.ShouldBeGreaterThan(firstConnector.Bounds.Height);
+            }
+            else
+            {
+                firstConnector.Bounds.Height.ShouldBeGreaterThan(firstConnector.Bounds.Width);
+            }
+        });
+    }
+
+    [Fact]
+    public void Every_Remaining_Steps_Token_Has_A_Theme_Consumer()
+    {
+        var themeSource = string.Join(
+            Environment.NewLine,
+            ReadRepoFile("src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml"),
+            ReadRepoFile("src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemTheme.axaml"),
+            ReadRepoFile("src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemIndicatorTheme.axaml"));
+
+        var unconsumed = typeof(Desktop.Controls.StepsToken)
+                         .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
+                         .Select(property => property.Name)
+                         .Where(name => !themeSource.Contains($"StepsTokenResource {name}", StringComparison.Ordinal))
+                         .ToArray();
+
+        unconsumed.ShouldBeEmpty();
+    }
+
+    private static Desktop.Controls.Steps CreateSteps(Orientation orientation)
+    {
+        var steps = new Desktop.Controls.Steps
+        {
+            Width       = 720,
+            Current     = 0,
+            Type        = Desktop.Controls.StepsType.Default,
+            Orientation = orientation
+        };
+        steps.Items.Add(new Desktop.Controls.StepsItem { Header = "First", Content = "Content" });
+        steps.Items.Add(new Desktop.Controls.StepsItem { Header = "Second", Content = "Content" });
+        steps.Items.Add(new Desktop.Controls.StepsItem { Header = "Last", Content = "Content" });
+        return steps;
+    }
+
+    private static PixelAlignedBorder FindConnector(Desktop.Controls.StepsItem item)
     {
         return item.GetVisualDescendants()
                    .OfType<PixelAlignedBorder>()
-                   .Single(control => control.Name == "SeparatorLine");
+                   .Single(control => control.Name == "Connector");
     }
 
     private static T GetThemeResource<T>(object key)
     {
-        var application = Application.Current;
-        application.ShouldNotBeNull();
-        application!.TryGetResource(key, application.ActualThemeVariant, out var value).ShouldBeTrue();
+        var application = Application.Current.ShouldNotBeNull();
+        application.TryGetResource(key, application.ActualThemeVariant, out var value).ShouldBeTrue();
         value.ShouldBeAssignableTo<T>();
         return (T)value!;
     }
 
-    private static Color GetSolidBrushColor(IBrush? brush)
+    private static Color GetColor(IBrush? brush)
     {
         brush.ShouldNotBeNull();
-        return brush.ShouldBeAssignableTo<ISolidColorBrush>().Color;
+        return ((ISolidColorBrush)brush!).Color;
+    }
+
+    private static string ReadRepoFile(string relativePath)
+    {
+        for (var directory = new DirectoryInfo(AppContext.BaseDirectory);
+             directory is not null;
+             directory = directory.Parent)
+        {
+            var path = Path.Combine(directory.FullName, relativePath);
+            if (File.Exists(path))
+            {
+                return File.ReadAllText(path);
+            }
+        }
+
+        throw new FileNotFoundException(relativePath);
     }
 
     private static void ShowInWindow(Control content, Action assertion)
@@ -99,13 +142,15 @@ public class StepsConnectorTests
         var window = new AvaloniaWindow
         {
             Width   = 900,
-            Height  = 220,
+            Height  = 420,
             Content = content
         };
 
         try
         {
             window.Show();
+            Dispatcher.UIThread.RunJobs();
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick(1);
             Dispatcher.UIThread.RunJobs();
             assertion();
         }
