@@ -5,12 +5,14 @@
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:StepsItemIndicator}" TargetType="atom:StepsItemIndicator">
+        <Setter Property="ClipToBounds" Value="False" />
 
         <Style Selector="^:not(^[Style=Inline])">
             <Style Selector="^[IndicatorType=Default]">
                 <Setter Property="Template">
                     <ControlTemplate>
                         <Panel>
+                            <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}" />
                             <Border Name="ProgressFrame">
                                 <atom:PixelAlignedBorder Name="Frame"
                                                          IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNull}}"
@@ -220,11 +222,14 @@
             <Style Selector="^[IndicatorType=Dot]">
                 <Setter Property="Template">
                     <ControlTemplate>
-                        <Border Name="Frame"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="{TemplateBinding CornerRadius}"
-                                Width="{TemplateBinding Width}"
-                                Height="{TemplateBinding Height}" />
+                        <Panel>
+                            <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}" />
+                            <Border Name="Frame"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="{TemplateBinding CornerRadius}"
+                                    Width="{TemplateBinding Width}"
+                                    Height="{TemplateBinding Height}" />
+                        </Panel>
                     </ControlTemplate>
                 </Setter>
 
@@ -259,13 +264,16 @@
         <Style Selector="^[Style=Inline]">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <atom:PixelAlignedBorder Name="Frame"
-                                             Background="{TemplateBinding Background}"
-                                             BorderThickness="{TemplateBinding BorderThickness}"
-                                             BorderBrush="{TemplateBinding BorderBrush}"
-                                             CornerRadius="{TemplateBinding CornerRadius}"
-                                             Width="{TemplateBinding Width}"
-                                             Height="{TemplateBinding Height}" />
+                    <Panel>
+                        <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}" />
+                        <atom:PixelAlignedBorder Name="Frame"
+                                                 Background="{TemplateBinding Background}"
+                                                 BorderThickness="{TemplateBinding BorderThickness}"
+                                                 BorderBrush="{TemplateBinding BorderBrush}"
+                                                 CornerRadius="{TemplateBinding CornerRadius}"
+                                                 Width="{TemplateBinding Width}"
+                                                 Height="{TemplateBinding Height}" />
+                    </Panel>
                 </ControlTemplate>
             </Setter>
 
@@ -293,6 +301,10 @@
                 <Setter Property="Background" Value="{atom:StepsTokenResource ErrorDotColor}" />
             </Style>
 
+        </Style>
+
+        <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
+            <Setter Property="WaveType" Value="CircleWave" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

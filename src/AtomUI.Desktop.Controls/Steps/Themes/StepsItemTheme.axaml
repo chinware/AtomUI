@@ -6,6 +6,8 @@
     x:ClassModifier="internal">
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" TextWrapping="Wrap" />
     <ControlTheme x:Key="{x:Type atom:StepsItem}" TargetType="atom:StepsItem">
+        <Setter Property="ClipToBounds" Value="False" />
+
         <!-- 通用样式 -->
         <Style Selector="^[IsClickable=True]">
             <Style Selector="^[IsSelected=False]">
@@ -16,7 +18,7 @@
             </Style>
         </Style>
 
-        <Style Selector="^ /template/ Border.IndicatorLine">
+        <Style Selector="^ /template/ atom|PixelAlignedBorder.IndicatorLine">
             <Setter Property="BorderBrush" Value="{atom:StepsTokenResource ProcessTailColor}" />
         </Style>
 
@@ -26,7 +28,7 @@
             <Setter Property="DescriptionForeground"
                     Value="{atom:StepsTokenResource WaitDescriptionColor}" />
 
-            <Style Selector="^ /template/ Border.IndicatorLine">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder.IndicatorLine">
                 <Setter Property="BorderBrush"
                         Value="{atom:StepsTokenResource WaitTailColor}" />
             </Style>
@@ -38,7 +40,7 @@
             <Setter Property="DescriptionForeground"
                     Value="{atom:StepsTokenResource ProcessDescriptionColor}" />
 
-            <Style Selector="^ /template/ Border.IndicatorLine">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder.IndicatorLine">
                 <Setter Property="BorderBrush"
                         Value="{atom:StepsTokenResource ProcessTailColor}" />
             </Style>
@@ -49,7 +51,7 @@
                     Value="{atom:StepsTokenResource FinishTitleColor}" />
             <Setter Property="DescriptionForeground"
                     Value="{atom:StepsTokenResource FinishDescriptionColor}" />
-            <Style Selector="^ /template/ Border.IndicatorLine">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder.IndicatorLine">
                 <Setter Property="BorderBrush"
                         Value="{atom:StepsTokenResource FinishTailColor}" />
             </Style>
@@ -61,7 +63,7 @@
             <Setter Property="DescriptionForeground"
                     Value="{atom:StepsTokenResource ErrorDescriptionColor}" />
 
-            <Style Selector="^ /template/ Border.IndicatorLine">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder.IndicatorLine">
                 <Setter Property="BorderBrush"
                         Value="{atom:StepsTokenResource ErrorTailColor}" />
             </Style>

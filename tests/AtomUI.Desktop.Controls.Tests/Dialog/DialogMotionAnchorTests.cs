@@ -171,6 +171,42 @@ public class DialogMotionAnchorTests
     }
 
     [Fact]
+    public void Modal_Dialog_With_Explicit_Anchor_Uses_Close_Easing_For_Host_And_Mask()
+    {
+        var anchor = new Border
+        {
+            Width  = 40,
+            Height = 40
+        };
+        var window = CreateWindow(anchor, out var overlayPanel);
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            Content         = new AtomUI.Desktop.Controls.TextBlock { Text = "Dialog" },
+            PlacementTarget = anchor,
+            IsModal         = true,
+            IsMotionEnabled = true,
+            HostWidth       = 160,
+            HostHeight      = 100
+        };
+
+        overlayPanel.Children.Add(dialog);
+
+        try
+        {
+            var closingState = CaptureModalClosingState(dialog, window);
+
+            closingState.HostOpacityTransition.Easing.ShouldBeOfType<CubicEaseIn>(
+                "anchored dialog opacity should use the close curve instead of reusing the opening curve.");
+            closingState.MaskOpacityTransition.Easing.ShouldBeOfType<CubicEaseIn>(
+                "the modal mask should fade out with the same close curve as the anchored host.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Dialog_Close_Keeps_Footer_Buttons_Until_Overlay_Fade_Finishes()
     {
         var trigger = new AtomUI.Desktop.Controls.Button
