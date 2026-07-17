@@ -135,7 +135,7 @@ public class StepsInteractionTests
     [Theory]
     [InlineData(Key.Enter, PhysicalKey.Enter)]
     [InlineData(Key.Space, PhysicalKey.Space)]
-    public void Keyboard_Activation_Requests_Change_Without_Wave(Key key, PhysicalKey physicalKey)
+    public void Keyboard_Activation_Requests_Change_And_Plays_Wave(Key key, PhysicalKey physicalKey)
     {
         var steps = CreateSteps();
         int? requested = null;
@@ -151,18 +151,19 @@ public class StepsInteractionTests
 
             requested.ShouldBe(1);
             steps.Current.ShouldBe(0);
-            GetIndicator(item).IsWavePlaying.ShouldBeFalse();
+            GetIndicator(item).IsWavePlaying.ShouldBeTrue();
         });
     }
 
     [Theory]
-    [InlineData(0, true, true)]
-    [InlineData(1, false, true)]
-    [InlineData(1, true, false)]
-    public void Keyboard_Does_Not_Request_Current_Disabled_Or_NonClickable_Item(
+    [InlineData(0, true, true, true)]
+    [InlineData(1, false, true, false)]
+    [InlineData(1, true, false, false)]
+    public void Keyboard_Does_Not_Request_Current_Disabled_Or_NonClickable_Item_And_Waves_Only_When_Invokable(
         int index,
         bool isItemClickable,
-        bool isItemEnabled)
+        bool isItemEnabled,
+        bool expectedWave)
     {
         var steps = CreateSteps();
         steps.IsItemClickable = isItemClickable;
@@ -179,7 +180,7 @@ public class StepsInteractionTests
             Dispatcher.UIThread.RunJobs();
 
             requests.ShouldBe(0);
-            GetIndicator(item).IsWavePlaying.ShouldBeFalse();
+            GetIndicator(item).IsWavePlaying.ShouldBe(expectedWave);
         });
     }
 

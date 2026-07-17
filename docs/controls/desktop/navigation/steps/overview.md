@@ -45,7 +45,7 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | 反馈 | Wave 表达真实 pointer click，不表达状态变化。 | Indicator Wave。 |
 | 密度 | 尺寸控制 Indicator、文字和间距。 | `SizeType`。 |
 
-`StepsType.Default` 表达标准流程，`Dot` 表达点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程。
+`StepsType.Default` 表达标准流程，`Dot` 表达实心点状流程，`OutlineDot` 表达空心点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程。
 
 ## 3. API 与契约模型
 
@@ -59,11 +59,13 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | `Initial` | `int` | 第一个 item 的编号偏移，默认 `0`；不用于初始化或重置 `Current`。 |
 | `Status` | `StepsStatus` | 当前步骤的默认状态，默认 `Process`。 |
 | `Percent` | `double?` | 当前 Process item 的局部进度；`null` 表示不显示。 |
-| `Type` | `StepsType` | `Default`、`Dot`、`Navigation` 或 `Inline`。 |
+| `Type` | `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation` 或 `Inline`。 |
 | `Orientation` | `Orientation` | 步骤排列方向，默认 `Horizontal`。 |
 | `TitlePlacement` | `Orientation` | 标题相对 Indicator 的请求布局，默认 `Horizontal`。 |
 | `SizeType` | `SizeType` | Indicator、文字和间距尺寸，默认 `Middle`。 |
 | `IsItemClickable` | `bool` | 是否允许 item 发出导航请求，默认 `false`。 |
+| `Offset` | `int` | Inline 类型前方保留的空 item 单元数量，默认 `0`；其他类型忽略。 |
+| `HorizontalContentAlignment` | `HorizontalAlignment` | 垂直 Navigation item 列的水平对齐，默认 `Center`；普通 Steps 和水平 Navigation 不使用。 |
 | `IsMotionEnabled` | `bool` | 是否启用 transition 和 Wave，默认来自 SharedToken。 |
 | `Items` / `ItemsSource` / `ItemTemplate` | inherited | 步骤集合和数据模板入口。 |
 
@@ -98,9 +100,10 @@ public event EventHandler<StepsCurrentChangeRequestedEventArgs>?
 | 枚举 | 成员 | 语义 |
 | --- | --- | --- |
 | `StepsStatus` | `Wait`、`Process`、`Finish`、`Error` | 根当前状态、item 显式状态和有效状态。 |
-| `StepsType` | `Default`、`Dot`、`Navigation`、`Inline` | Steps 的完整视觉类型。 |
+| `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation`、`Inline` | Steps 的完整视觉类型。 |
 
 `StepsType` 同时表达原 Style 和 Indicator 类型，禁止形成 `Navigation + Dot` 等没有明确 Steps 语义的组合。
+`OutlineDot` 与 `Dot` 共享布局语义和 Dot 尺寸 Token，但 Indicator 使用透明背景和状态色边框，并且不播放 Indicator Wave。
 
 ### 3.5 主题契约
 
@@ -161,7 +164,7 @@ IsCurrent       = StepNumber == Current
 
 ### 4.4 Connector 语义
 
-连接 item `i` 和 `i + 1` 的 Connector 使用后一个 item 的 `EffectiveStatus`：
+连接 item `i` 和 `i + 1` 的 Connector 使用下一个 item 的 `EffectiveStatus`，让指向当前错误或当前进行中步骤的线段跟随目标步骤状态：
 
 ```text
 Connector[i].Status = Item[i + 1].EffectiveStatus
@@ -182,6 +185,7 @@ Steps.IsItemClickable
 - Pointer 只有在同一 item 内完成 press/release 才视为 click。
 - 点击非当前 item：播放目标 Indicator Wave，并发出 `CurrentChangeRequested`。
 - 点击当前 item：播放 Wave，不发出请求。
+- `Type=OutlineDot` 点击仍按可交互规则发出请求，但不播放 Indicator Wave。
 - Enter/Space：非当前 item 发出请求，不播放 Wave。
 - 程序化修改 `Current`、Items 变化、模板重套和状态重算都不播放 Wave。
 - 不可交互 item 不显示 hand cursor、hover 激活视觉，也不进入 Tab 焦点序列。
@@ -216,12 +220,14 @@ Steps
 ```
 
 `StepsPanel` 负责 item 间的 flex/stack 布局；`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽和 Navigation active 线的排列。二者不创建视觉、不计算状态。
+`OutlineDot` 复用 `Dot` 的布局路径，只改变 Indicator 的填充、边框和 Wave 语义。
 
 有效标题布局：
 
 ```text
 Orientation == Vertical -> Horizontal
 Type == Dot             -> Vertical
+Type == OutlineDot      -> Vertical
 Type == Inline          -> Vertical
 Type == Navigation      -> Horizontal
 其他                    -> TitlePlacement
@@ -252,6 +258,7 @@ Steps 不实现 Form、CompactSpace、Popup、路由或页面内容接口。
 - `Type` 是视觉类型唯一入口，不得恢复独立 Style/IndicatorType 组合。
 - `Percent=null` 是 Progress 的唯一关闭语义。
 - Wave 只能由真实 pointer click 触发，不得监听 `Current` 或 `IsCurrent`。
+- `OutlineDot` 必须保持 Dot 布局、空心状态色边框和无 Wave 语义。
 - `PART_ItemsPresenter` 和 `PART_Indicator` 是稳定 template part。
 - 每个根、item 和 indicator 主题各保留一套语义模板。
 
@@ -285,6 +292,18 @@ Percent.HasValue
 - 普通数据项生成 `StepsItem`，数据项进入 `Content`，`ItemTemplate` 负责完整文字区域。
 - 容器只保存派生展示状态，不保存业务流程状态。
 
+### 8.5 Inline Offset 模型
+
+`Offset` 对齐 Ant Design inline steps 的 offset cell 语义，只在 `Type=Inline` 时参与布局。它在可见 item 前方保留同等宽度的空 item 单元，使部分步骤可以和完整步骤条的后续列对齐。
+
+`Offset` 不参与 `StepNumber`、`Current`、`Initial` 或状态计算。声明 `Offset=2` 且只提供 Step 3-5 三个 item 时，`Current=1` 仍表示当前声明集合中的第二个 item。
+
+### 8.6 垂直 Navigation 对齐
+
+`Type=Navigation` 且 `Orientation=Vertical` 时，`HorizontalContentAlignment` 控制整列 item 在可用宽度内的水平对齐。默认 `Center` 对齐 Ant Design navigation 的居中语义；需要贴边或填满容器时可设置为 `Left`、`Right` 或 `Stretch`。
+
+该属性不改变普通垂直 Steps 的左侧流程阅读布局，也不改变水平 Navigation 的等宽布局。
+
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
@@ -308,7 +327,7 @@ LLMS 导出来源：
 
 | 层次 | 验证内容 |
 | --- | --- |
-| Public API | Current、Initial、Status、Percent、Type、Orientation、TitlePlacement、SizeType、IsItemClickable、IsMotionEnabled、CurrentChangeRequested。 |
+| Public API | Current、Initial、Status、Percent、Type、Orientation、TitlePlacement、SizeType、IsItemClickable、Offset、HorizontalContentAlignment、IsMotionEnabled、CurrentChangeRequested。 |
 | Item API | Header、SubHeader、Content、Icon、nullable Status、IsEnabled。 |
 | 状态 | 纯状态算法、显式覆盖、越界、动态 Items、Connector nextStatus。 |
 | 交互 | Pointer、Enter/Space、disabled、当前 item 重复激活、受控请求、Wave。 |

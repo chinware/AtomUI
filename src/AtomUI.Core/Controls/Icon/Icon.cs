@@ -3,13 +3,14 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Avalonia;
-using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Rendering;
-using Avalonia.Styling;
+using Avalonia.Rendering.Composition;
+using Avalonia.Rendering.Composition.Animations;
 
 namespace AtomUI.Controls;
 
@@ -127,26 +128,14 @@ public abstract class Icon : PathIcon, ICustomHitTest
         set => SetValue(LoadingAnimationProperty, value);
     }
 
-    #region 内部属性定义
+    private const float FULL_ROTATION_RADIANS = (float)(Math.PI * 2);
+    private const string ROTATION_PROPERTY    = "RotationAngle";
 
-    internal static readonly StyledProperty<double> AngleAnimationRotateProperty =
-        AvaloniaProperty.Register<Icon, double>(
-            nameof(AngleAnimationRotate));
-
-    internal double AngleAnimationRotate
-    {
-        get => GetValue(AngleAnimationRotateProperty);
-        set => SetValue(AngleAnimationRotateProperty, value);
-    }
-
-    #endregion
-    
     protected virtual IList<DrawingInstruction> DrawingInstructions { get; } = Array.Empty<DrawingInstruction>();
     protected Rect ViewBox;
     
     protected readonly IBrush?[] DrawBrushes = new IBrush[5];
     protected readonly Pen?[] DrawPens = new Pen?[5];
-    private Style? _animationStyle;
 
     static Icon()
     {
@@ -199,11 +188,6 @@ public abstract class Icon : PathIcon, ICustomHitTest
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == AngleAnimationRotateProperty)
-        {
-            SetCurrentValue(RenderTransformProperty, new RotateTransform(AngleAnimationRotate));
-        }
-
         if (change.Property == StrokeBrushProperty)
         {
             HandleBrushChanged(IconBrushType.Stroke, StrokeBrush, change.Priority);
@@ -239,11 +223,34 @@ public abstract class Icon : PathIcon, ICustomHitTest
 
         if (IsLoaded)
         {
-            if (change.Property == LoadingAnimationDurationProperty ||
-                change.Property == LoadingAnimationProperty ||
-                change.Property == IsVisibleProperty)
+            if (change.Property == LoadingAnimationProperty)
             {
-                SetupRotateAnimation(true);
+                RestartLoadingAnimation();
+            }
+            else if (change.Property == LoadingAnimationDurationProperty)
+            {
+                if (IsLoadingAnimationConfigured())
+                {
+                    RestartLoadingAnimation();
+                }
+            }
+            else if (change.Property == IsVisibleProperty)
+            {
+                if (change.GetNewValue<bool>())
+                {
+                    StartLoadingAnimation();
+                }
+                else
+                {
+                    StopLoadingAnimation();
+                }
+            }
+            else if (change.Property == BoundsProperty)
+            {
+                if (CanRunLoadingAnimation())
+                {
+                    UpdateLoadingAnimationCenterPoint();
+                }
             }
         }
     }
@@ -301,85 +308,108 @@ public abstract class Icon : PathIcon, ICustomHitTest
         }
     }
     
-    private void SetupRotateAnimation(bool force)
+    private void StartLoadingAnimation()
     {
-        if (!IsVisible)
+        if (!CanRunLoadingAnimation())
         {
-            if (_animationStyle != null)
-            {
-                Styles.Remove(_animationStyle);
-                _animationStyle = null;
-            }
             return;
         }
 
-        if (LoadingAnimation == IconAnimation.Spin || LoadingAnimation == IconAnimation.Pulse)
+        var visual = ElementComposition.GetElementVisual(this);
+        if (visual?.Compositor is null)
         {
-            if (_animationStyle == null || force)
-            {
-                if (_animationStyle != null)
-                {
-                    Styles.Remove(_animationStyle);
-                }
-                _animationStyle = new Style();
-                var animation = new Animation
-                {
-                    Duration       = LoadingAnimationDuration,
-                    IterationCount = IterationCount.Infinite,
-                    FillMode = FillMode.Backward,
-                    Children =
-                    {
-                        new KeyFrame
-                        {
-                            Cue     = new Cue(0d),
-                            Setters = { new Setter(AngleAnimationRotateProperty, 0d) }
-                        },
-                        new KeyFrame
-                        {
-                            Cue     = new Cue(1d),
-                            Setters = { new Setter(AngleAnimationRotateProperty, 360d) }
-                        }
-                    }
-                };
-                if (LoadingAnimation == IconAnimation.Pulse)
-                {
-                    animation.Easing = new PulseEasing();
-                }
-                _animationStyle.Animations.Add(animation);
-                Styles.Add(_animationStyle);
-            }
+            return;
         }
-        else if (_animationStyle != null)
+
+        visual.StopAnimation(ROTATION_PROPERTY);
+        UpdateLoadingAnimationCenterPoint(visual);
+
+        Easing easing = LoadingAnimation == IconAnimation.Pulse
+            ? new PulseEasing()
+            : new LinearEasing();
+        var rotationAnimation = visual.Compositor.CreateScalarKeyFrameAnimation();
+        rotationAnimation.Target            = ROTATION_PROPERTY;
+        rotationAnimation.Duration          = GetCompositionAnimationDuration();
+        rotationAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
+        rotationAnimation.StopBehavior      = AnimationStopBehavior.SetToInitialValue;
+        rotationAnimation.InsertKeyFrame(0, 0, easing);
+        rotationAnimation.InsertKeyFrame(1, FULL_ROTATION_RADIANS, easing);
+        visual.StartAnimation(ROTATION_PROPERTY, rotationAnimation);
+    }
+
+    private void StopLoadingAnimation()
+    {
+        var visual = ElementComposition.GetElementVisual(this);
+        visual?.StopAnimation(ROTATION_PROPERTY);
+        if (visual is not null)
         {
-            Styles.Remove(_animationStyle);
-            _animationStyle = null;
+            visual.RotationAngle = 0;
         }
+    }
+
+    private void RestartLoadingAnimation()
+    {
+        StopLoadingAnimation();
+        StartLoadingAnimation();
+    }
+
+    private bool CanRunLoadingAnimation()
+    {
+        return IsVisible &&
+               IsLoaded &&
+               IsLoadingAnimationConfigured();
+    }
+
+    private bool IsLoadingAnimationConfigured()
+    {
+        return LoadingAnimation == IconAnimation.Spin ||
+               LoadingAnimation == IconAnimation.Pulse;
+    }
+
+    private void UpdateLoadingAnimationCenterPoint()
+    {
+        var visual = ElementComposition.GetElementVisual(this);
+        if (visual is not null)
+        {
+            UpdateLoadingAnimationCenterPoint(visual);
+        }
+    }
+
+    private void UpdateLoadingAnimationCenterPoint(CompositionVisual visual)
+    {
+        var size = Bounds.Size;
+        visual.CenterPoint = new Vector3D(size.Width / 2, size.Height / 2, 0);
+    }
+
+    private TimeSpan GetCompositionAnimationDuration()
+    {
+        return LoadingAnimationDuration < TimeSpan.FromMilliseconds(1)
+            ? TimeSpan.FromMilliseconds(1)
+            : LoadingAnimationDuration;
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        StartLoadingAnimation();
     }
 
     protected override void OnUnloaded(RoutedEventArgs e)
     {
+        StopLoadingAnimation();
         base.OnUnloaded(e);
-        if (_animationStyle != null)
-        {
-            Styles.Remove(_animationStyle);
-        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupRotateAnimation(false);
+        StartLoadingAnimation();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        StopLoadingAnimation();
         base.OnDetachedFromVisualTree(e);
-        if (_animationStyle != null)
-        {
-            Styles.Remove(_animationStyle);  
-        }
-
-        _animationStyle = null;
     }
 
     public override void Render(DrawingContext context)
@@ -390,6 +420,7 @@ public abstract class Icon : PathIcon, ICustomHitTest
         {
             return;
         }
+
         var       realSize             = DesiredSize.Deflate(Margin);
         var       scale                = new Vector(realSize.Width / ViewBox.Width, realSize.Height / ViewBox.Height);
         var       globalGeometryMatrix = CalculateGlobalGeometryMatrix();

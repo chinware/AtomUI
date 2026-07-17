@@ -12,12 +12,14 @@ public enum StepsType
 {
     Default,
     Dot,
+    OutlineDot,
     Navigation,
     Inline
 }
 
 internal enum StepsItemLayoutRole
 {
+    ItemWrapper,
     Indicator,
     Header,
     SubHeader,

@@ -4,6 +4,7 @@ using System.Linq;
 using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Headless;
 using Avalonia.Layout;
 using Avalonia.Threading;
@@ -11,6 +12,7 @@ using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AtomUISizeType = AtomUI.SizeType;
+using AvaloniaTextBlock = Avalonia.Controls.TextBlock;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUI.Desktop.Controls.Tests.Steps;
@@ -124,11 +126,14 @@ public class StepsLayoutMatrixTests
         });
     }
 
-    [Fact]
-    public void Dot_Current_Item_Is_Larger_And_Inline_Content_Is_Removed_From_Layout()
+    [Theory]
+    [InlineData(Desktop.Controls.StepsType.Dot)]
+    [InlineData(Desktop.Controls.StepsType.OutlineDot)]
+    public void Dot_Types_Reserve_Current_Size_And_Inline_Content_Is_Removed_From_Layout(
+        Desktop.Controls.StepsType type)
     {
         var steps = CreateSteps(
-            Desktop.Controls.StepsType.Dot,
+            type,
             Orientation.Horizontal,
             Orientation.Horizontal,
             AtomUISizeType.Middle);
@@ -139,14 +144,228 @@ public class StepsLayoutMatrixTests
             var second = steps.Items[1].ShouldBeOfType<Desktop.Controls.StepsItem>();
             var currentIndicator = GetIndicator(first);
             var waitingIndicator = GetIndicator(second);
+            var currentFrame = GetIndicatorFrame(currentIndicator);
+            var waitingFrame = GetIndicatorFrame(waitingIndicator);
 
-            currentIndicator.Bounds.Width.ShouldBeGreaterThan(waitingIndicator.Bounds.Width);
-            currentIndicator.Bounds.Height.ShouldBeGreaterThan(waitingIndicator.Bounds.Height);
+            currentIndicator.Bounds.Width.ShouldBe(waitingIndicator.Bounds.Width);
+            currentIndicator.Bounds.Height.ShouldBe(waitingIndicator.Bounds.Height);
+            currentFrame.Bounds.Width.ShouldBeGreaterThan(waitingFrame.Bounds.Width);
+            currentFrame.Bounds.Height.ShouldBeGreaterThan(waitingFrame.Bounds.Height);
 
             steps.Type = Desktop.Controls.StepsType.Inline;
             Relayout();
             FindControl(first, "ContentPresenter").IsVisible.ShouldBeFalse();
             GetIndicator(first).Bounds.Width.ShouldBe(GetIndicator(second).Bounds.Width);
+        });
+    }
+
+    [Theory]
+    [InlineData(AtomUISizeType.Middle)]
+    [InlineData(AtomUISizeType.Small)]
+    public void Horizontal_Default_Connector_Has_Symmetric_Endpoint_Gaps(AtomUISizeType sizeType)
+    {
+        var steps = CreateSteps(
+            Desktop.Controls.StepsType.Default,
+            Orientation.Horizontal,
+            Orientation.Horizontal,
+            sizeType);
+        steps.Items[0].ShouldBeOfType<Desktop.Controls.StepsItem>().Content =
+            "A description that is deliberately wider than the title row";
+
+        ShowInWindow(steps, () =>
+        {
+            var first = steps.Items[0].ShouldBeOfType<Desktop.Controls.StepsItem>();
+            var layoutPanel = GetLayoutPanel(first);
+            var header = FindControl(first, "HeaderPresenter");
+            var subHeader = FindControl(first, "SubHeaderPresenter");
+            var connector = FindControl(first, "Connector");
+            var headerRowRight = Math.Max(header.Bounds.Right, subHeader.Bounds.Right);
+
+            connector.Margin.Left.ShouldBeGreaterThan(0);
+            connector.Margin.Right.ShouldBe(connector.Margin.Left);
+            connector.Bounds.X.ShouldBe(headerRowRight + connector.Margin.Left, 0.01);
+            (layoutPanel.Bounds.Width - connector.Bounds.Right).ShouldBe(connector.Margin.Right, 0.01);
+        });
+    }
+
+    [Theory]
+    [InlineData(AtomUISizeType.Middle)]
+    [InlineData(AtomUISizeType.Small)]
+    public void Horizontal_Default_Connector_Center_Matches_Indicator_Center(AtomUISizeType sizeType)
+    {
+        var steps = CreateSteps(
+            Desktop.Controls.StepsType.Default,
+            Orientation.Horizontal,
+            Orientation.Horizontal,
+            sizeType);
+
+        ShowInWindow(steps, () =>
+        {
+            foreach (var item in steps.Items.Cast<Desktop.Controls.StepsItem>().Take(2))
+            {
+                var indicator = GetIndicator(item);
+                var connector = FindControl(item, "Connector");
+
+                connector.Bounds.Center.Y.ShouldBe(indicator.Bounds.Center.Y, 0.01);
+            }
+        });
+    }
+
+    [Theory]
+    [InlineData(AtomUISizeType.Middle)]
+    [InlineData(AtomUISizeType.Small)]
+    public void Horizontal_Default_Header_Row_Centers_Stay_Aligned_When_SubHeader_Is_Present(AtomUISizeType sizeType)
+    {
+        var steps = CreateSteps(
+            Desktop.Controls.StepsType.Default,
+            Orientation.Horizontal,
+            Orientation.Horizontal,
+            sizeType);
+
+        ShowInWindow(steps, () =>
+        {
+            var items = steps.Items.Cast<Desktop.Controls.StepsItem>().ToArray();
+            var centerY = GetIndicator(items[0]).Bounds.Center.Y;
+
+            foreach (var item in items)
+            {
+                GetIndicator(item).Bounds.Center.Y.ShouldBe(centerY, 0.01);
+                FindControl(item, "HeaderPresenter").Bounds.Center.Y.ShouldBe(centerY, 0.01);
+            }
+
+            FindControl(items[1], "SubHeaderPresenter").Bounds.Center.Y.ShouldBe(centerY, 0.01);
+
+            foreach (var item in items.Take(2))
+            {
+                FindControl(item, "Connector").Bounds.Center.Y.ShouldBe(centerY, 0.01);
+            }
+        });
+    }
+
+    [Theory]
+    [InlineData(AtomUISizeType.Middle)]
+    [InlineData(AtomUISizeType.Small)]
+    public void Horizontal_Default_Content_Row_Starts_At_Same_Y_When_SubHeader_Is_Present(AtomUISizeType sizeType)
+    {
+        var steps = CreateSteps(
+            Desktop.Controls.StepsType.Default,
+            Orientation.Horizontal,
+            Orientation.Horizontal,
+            sizeType);
+
+        ShowInWindow(steps, () =>
+        {
+            var items = steps.Items.Cast<Desktop.Controls.StepsItem>().ToArray();
+            var contentY = FindControl(items[0], "ContentPresenter").Bounds.Y;
+
+            foreach (var item in items)
+            {
+                FindControl(item, "ContentPresenter").Bounds.Y.ShouldBe(contentY, 0.01);
+            }
+        });
+    }
+
+    [Theory]
+    [InlineData(AtomUISizeType.Middle)]
+    [InlineData(AtomUISizeType.Small)]
+    public void Horizontal_Default_SubHeader_Margin_Is_Inline_Start_Only(AtomUISizeType sizeType)
+    {
+        var steps = CreateSteps(
+            Desktop.Controls.StepsType.Default,
+            Orientation.Horizontal,
+            Orientation.Horizontal,
+            sizeType);
+
+        ShowInWindow(steps, () =>
+        {
+            var second = steps.Items[1].ShouldBeOfType<Desktop.Controls.StepsItem>();
+            var header = FindControl(second, "HeaderPresenter");
+            var subHeader = FindControl(second, "SubHeaderPresenter");
+
+            subHeader.IsVisible.ShouldBeTrue();
+            subHeader.Margin.Left.ShouldBeGreaterThan(0);
+            subHeader.Margin.Top.ShouldBe(0);
+            subHeader.Margin.Right.ShouldBe(0);
+            subHeader.Margin.Bottom.ShouldBe(0);
+            subHeader.Bounds.Center.Y.ShouldBe(header.Bounds.Center.Y, 0.01);
+        });
+    }
+
+    [Theory]
+    [InlineData(AtomUISizeType.Middle)]
+    [InlineData(AtomUISizeType.Small)]
+    public void Horizontal_Default_Items_Without_SubHeader_Do_Not_Reserve_SubHeader_Margin(AtomUISizeType sizeType)
+    {
+        var steps = CreateSteps(
+            Desktop.Controls.StepsType.Default,
+            Orientation.Horizontal,
+            Orientation.Horizontal,
+            sizeType);
+        steps.Items[0].ShouldBeOfType<Desktop.Controls.StepsItem>().SubHeader = null;
+        steps.Items[2].ShouldBeOfType<Desktop.Controls.StepsItem>().SubHeader = null;
+
+        ShowInWindow(steps, () =>
+        {
+            var items = steps.Items.Cast<Desktop.Controls.StepsItem>().ToArray();
+            var rowCenterY = GetIndicator(items[0]).Bounds.Center.Y;
+            var contentY = FindControl(items[0], "ContentPresenter").Bounds.Y;
+
+            FindControl(items[0], "SubHeaderPresenter").IsVisible.ShouldBeFalse();
+            FindControl(items[2], "SubHeaderPresenter").IsVisible.ShouldBeFalse();
+
+            foreach (var item in items)
+            {
+                GetIndicator(item).Bounds.Center.Y.ShouldBe(rowCenterY, 0.01);
+                FindControl(item, "HeaderPresenter").Bounds.Center.Y.ShouldBe(rowCenterY, 0.01);
+                FindControl(item, "ContentPresenter").Bounds.Y.ShouldBe(contentY, 0.01);
+            }
+
+            var firstHeader = FindControl(items[0], "HeaderPresenter");
+            var firstConnector = FindControl(items[0], "Connector");
+            firstConnector.Bounds.X.ShouldBe(firstHeader.Bounds.Right + firstConnector.Margin.Left, 0.01);
+        });
+    }
+
+    [Theory]
+    [InlineData(AtomUISizeType.Middle)]
+    [InlineData(AtomUISizeType.Small)]
+    public void Vertical_Default_Content_Text_Starts_At_Header_Text_Start_When_SubHeader_Is_Present(AtomUISizeType sizeType)
+    {
+        var steps = CreateSteps(
+            Desktop.Controls.StepsType.Default,
+            Orientation.Vertical,
+            Orientation.Horizontal,
+            sizeType);
+
+        ShowInWindow(steps, () =>
+        {
+            var second = steps.Items[1].ShouldBeOfType<Desktop.Controls.StepsItem>();
+            var header = FindControl(second, "HeaderPresenter").ShouldBeOfType<ContentPresenter>();
+            var content = FindControl(second, "ContentPresenter").ShouldBeOfType<ContentPresenter>();
+            var headerText = header.Content.ShouldBeOfType<AvaloniaTextBlock>();
+            var contentText = content.Content.ShouldBeOfType<AvaloniaTextBlock>();
+
+            content.Margin.Left.ShouldBe(0);
+            content.Padding.Left.ShouldBe(0);
+            GetLeftInItem(headerText, second).ShouldBe(GetLeftInItem(contentText, second), 0.01);
+        });
+    }
+
+    [Fact]
+    public void Horizontal_Default_Item_Row_Is_Centered_When_Steps_Is_Stretched()
+    {
+        var steps = CreateSteps(
+            Desktop.Controls.StepsType.Default,
+            Orientation.Horizontal,
+            Orientation.Horizontal,
+            AtomUISizeType.Middle);
+
+        ShowInWindow(steps, () =>
+        {
+            var first = steps.Items[0].ShouldBeOfType<Desktop.Controls.StepsItem>();
+
+            first.Bounds.Y.ShouldBeGreaterThan(0);
+            first.Bounds.Center.Y.ShouldBe(steps.Bounds.Center.Y, 0.01);
         });
     }
 
@@ -169,6 +388,42 @@ public class StepsLayoutMatrixTests
                                             .Single(control => control.Name == "StepNumberText");
 
             number.Text.ShouldBe("5");
+        });
+    }
+
+    [Fact]
+    public void Offset_Is_Bound_To_Items_Panel()
+    {
+        var steps = CreateSteps(
+            Desktop.Controls.StepsType.Inline,
+            Orientation.Horizontal,
+            Orientation.Vertical,
+            AtomUISizeType.Middle);
+        steps.Offset = 2;
+
+        ShowInWindow(steps, () =>
+        {
+            var panel = steps.GetVisualDescendants().OfType<Desktop.Controls.StepsPanel>().Single();
+
+            panel.Offset.ShouldBe(2);
+        });
+    }
+
+    [Fact]
+    public void Horizontal_Content_Alignment_Is_Bound_To_Items_Panel()
+    {
+        var steps = CreateSteps(
+            Desktop.Controls.StepsType.Navigation,
+            Orientation.Vertical,
+            Orientation.Horizontal,
+            AtomUISizeType.Middle);
+        steps.HorizontalContentAlignment = HorizontalAlignment.Right;
+
+        ShowInWindow(steps, () =>
+        {
+            var panel = steps.GetVisualDescendants().OfType<Desktop.Controls.StepsPanel>().Single();
+
+            panel.HorizontalContentAlignment.ShouldBe(HorizontalAlignment.Right);
         });
     }
 
@@ -214,9 +469,24 @@ public class StepsLayoutMatrixTests
         return item.GetVisualDescendants().OfType<Desktop.Controls.StepsItemIndicator>().Single();
     }
 
+    private static Desktop.Controls.StepsItemLayoutPanel GetLayoutPanel(Desktop.Controls.StepsItem item)
+    {
+        return item.GetVisualDescendants().OfType<Desktop.Controls.StepsItemLayoutPanel>().Single();
+    }
+
+    private static Control GetIndicatorFrame(Desktop.Controls.StepsItemIndicator indicator)
+    {
+        return indicator.GetVisualDescendants().OfType<Control>().Single(control => control.Name == "Frame");
+    }
+
     private static Control FindControl(Desktop.Controls.StepsItem item, string name)
     {
         return item.GetVisualDescendants().OfType<Control>().Single(control => control.Name == name);
+    }
+
+    private static double GetLeftInItem(Control control, Desktop.Controls.StepsItem item)
+    {
+        return control.TranslatePoint(default, item)!.Value.X;
     }
 
     private static void AssertFinite(Control control)

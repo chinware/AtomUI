@@ -103,6 +103,12 @@ internal class StepsItemIndicator : TemplatedControl
             indicator => indicator.IsProgressVisible,
             (indicator, value) => indicator.IsProgressVisible = value);
 
+    internal static readonly DirectProperty<StepsItemIndicator, bool> IsProgressFrameReservedProperty =
+        AvaloniaProperty.RegisterDirect<StepsItemIndicator, bool>(
+            nameof(IsProgressFrameReserved),
+            indicator => indicator.IsProgressFrameReserved,
+            (indicator, value) => indicator.IsProgressFrameReserved = value);
+
     internal static readonly DirectProperty<StepsItemIndicator, double?> PercentProperty =
         AvaloniaProperty.RegisterDirect<StepsItemIndicator, double?>(
             nameof(Percent),
@@ -178,6 +184,14 @@ internal class StepsItemIndicator : TemplatedControl
         set => SetAndRaise(IsProgressVisibleProperty, ref _isProgressVisible, value);
     }
 
+    private bool _isProgressFrameReserved;
+
+    internal bool IsProgressFrameReserved
+    {
+        get => _isProgressFrameReserved;
+        set => SetAndRaise(IsProgressFrameReservedProperty, ref _isProgressFrameReserved, value);
+    }
+
     private double? _percent;
 
     internal double? Percent
@@ -218,7 +232,7 @@ internal class StepsItemIndicator : TemplatedControl
             SizeTypeProperty,
             TypeProperty,
             IsCurrentProperty,
-            IsProgressVisibleProperty);
+            IsProgressFrameReservedProperty);
         AffectsRender<StepsItemIndicator>(
             PercentProperty,
             ProgressLineThicknessProperty,
@@ -231,7 +245,7 @@ internal class StepsItemIndicator : TemplatedControl
 
     internal void PlayWave()
     {
-        if (!IsEnabled || !IsMotionEnabled || !IsLoaded || _waveSpiritDecorator is null)
+        if (Type == StepsType.OutlineDot || !IsEnabled || !IsMotionEnabled || !IsLoaded || _waveSpiritDecorator is null)
         {
             return;
         }
@@ -282,4 +296,5 @@ internal class StepsItemIndicator : TemplatedControl
             lineCap: PenLineCap.Round);
         context.DrawArc(_progressPen, progressRect, -90, 360 * Percent.Value / 100);
     }
+
 }

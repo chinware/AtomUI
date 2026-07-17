@@ -14,7 +14,9 @@
                             <atom:StepsPanel
                                 Type="{Binding Type, RelativeSource={RelativeSource AncestorType=atom:Steps}}"
                                 Orientation="{Binding Orientation, RelativeSource={RelativeSource AncestorType=atom:Steps}}"
-                                VerticalItemSpacing="{atom:StepsTokenResource VerticalItemSpacing}" />
+                                Offset="{Binding Offset, RelativeSource={RelativeSource AncestorType=atom:Steps}}"
+                                HorizontalContentAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType=atom:Steps}}"
+                                TitlePlacement="{Binding TitlePlacement, RelativeSource={RelativeSource AncestorType=atom:Steps}}" />
                         </ItemsPanelTemplate>
                     </ItemsPresenter.ItemsPanel>
                 </ItemsPresenter>

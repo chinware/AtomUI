@@ -42,6 +42,14 @@ public class Steps : ItemsControl,
     public static readonly StyledProperty<bool> IsItemClickableProperty =
         AvaloniaProperty.Register<Steps, bool>(nameof(IsItemClickable));
 
+    public static readonly StyledProperty<int> OffsetProperty =
+        AvaloniaProperty.Register<Steps, int>(nameof(Offset), coerce: CoerceOffset);
+
+    public static readonly StyledProperty<HorizontalAlignment> HorizontalContentAlignmentProperty =
+        AvaloniaProperty.Register<Steps, HorizontalAlignment>(
+            nameof(HorizontalContentAlignment),
+            HorizontalAlignment.Center);
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Steps>();
 
@@ -99,6 +107,18 @@ public class Steps : ItemsControl,
         set => SetValue(IsItemClickableProperty, value);
     }
 
+    public int Offset
+    {
+        get => GetValue(OffsetProperty);
+        set => SetValue(OffsetProperty, value);
+    }
+
+    public HorizontalAlignment HorizontalContentAlignment
+    {
+        get => GetValue(HorizontalContentAlignmentProperty);
+        set => SetValue(HorizontalContentAlignmentProperty, value);
+    }
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -116,7 +136,7 @@ public class Steps : ItemsControl,
     static Steps()
     {
         OrientationProperty.OverrideDefaultValue<Steps>(Orientation.Horizontal);
-        AffectsMeasure<Steps>(TypeProperty, OrientationProperty, TitlePlacementProperty, SizeTypeProperty);
+        AffectsMeasure<Steps>(TypeProperty, OrientationProperty, TitlePlacementProperty, SizeTypeProperty, OffsetProperty);
     }
 
     public Steps()
@@ -272,6 +292,11 @@ public class Steps : ItemsControl,
         return Math.Clamp(value.Value, 0d, 100d);
     }
 
+    private static int CoerceOffset(AvaloniaObject sender, int value)
+    {
+        return Math.Max(0, value);
+    }
+
     private StepsStatus GetAutomaticStatus(int stepNumber)
     {
         if (stepNumber == Current)
@@ -284,26 +309,26 @@ public class Steps : ItemsControl,
 
     private StepsStatus GetEffectiveStatus(int index)
     {
-        var stepNumber = Initial + index;
+        var stepNumber      = Initial + index;
         var automaticStatus = GetAutomaticStatus(stepNumber);
+        return GetItemStatus(index) ?? automaticStatus;
+    }
 
+    private StepsStatus? GetItemStatus(int index)
+    {
         if (ContainerFromIndex(index) is StepsItem container)
         {
-            return container.Status ?? automaticStatus;
+            return container.Status;
         }
 
-        if (index >= 0 && index < ItemsView.Count && ItemsView[index] is StepsItem item)
-        {
-            return item.Status ?? automaticStatus;
-        }
-
-        return automaticStatus;
+        return ItemsView[index] is StepsItem item ? item.Status : null;
     }
 
     private void ApplyItemState(StepsItem item, int index)
     {
         var stepNumber = Initial + index;
         var automaticStatus = GetAutomaticStatus(stepNumber);
+        var effectiveStatus = item.Status ?? automaticStatus;
         var connectorStatus = index < ItemCount - 1
             ? GetEffectiveStatus(index + 1)
             : StepsStatus.Wait;

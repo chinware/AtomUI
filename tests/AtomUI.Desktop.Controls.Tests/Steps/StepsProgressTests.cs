@@ -48,6 +48,7 @@ public class StepsProgressTests
     [InlineData(true, Desktop.Controls.StepsStatus.Finish, Desktop.Controls.StepsType.Default, false, 50d, false)]
     [InlineData(true, Desktop.Controls.StepsStatus.Error, Desktop.Controls.StepsType.Default, false, 50d, false)]
     [InlineData(true, Desktop.Controls.StepsStatus.Process, Desktop.Controls.StepsType.Dot, false, 50d, false)]
+    [InlineData(true, Desktop.Controls.StepsStatus.Process, Desktop.Controls.StepsType.OutlineDot, false, 50d, false)]
     [InlineData(true, Desktop.Controls.StepsStatus.Process, Desktop.Controls.StepsType.Inline, false, 50d, false)]
     [InlineData(true, Desktop.Controls.StepsStatus.Process, Desktop.Controls.StepsType.Default, true, 50d, false)]
     [InlineData(true, Desktop.Controls.StepsStatus.Process, Desktop.Controls.StepsType.Default, false, null, false)]
