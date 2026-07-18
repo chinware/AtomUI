@@ -147,11 +147,17 @@ public class SplashShowCasePageTests
         codeBehindSource.ShouldContain("new GallerySplashService()");
         codeBehindSource.ShouldContain("private sealed class GallerySplashService : SplashService");
         codeBehindSource.ShouldContain("SplashTokenKind.SurfaceBackground");
+        codeBehindSource.ShouldContain("ControlSharedTokenResourceKey");
         codeBehindSource.ShouldContain("SharedTokenKind.ColorTextHeading");
         codeBehindSource.ShouldContain("SharedTokenKind.ColorText");
         codeBehindSource.ShouldContain("SplashTokenKind.SubtleForeground");
         codeBehindSource.ShouldContain("window.Resources[SplashTokenKind.SurfaceBackground]");
-        codeBehindSource.ShouldContain("window.Resources[SharedTokenKind.ColorTextHeading]");
+        codeBehindSource.ShouldContain("WindowSplashTitleResourceKey");
+        codeBehindSource.ShouldContain("WindowSplashMessageResourceKey");
+        codeBehindSource.ShouldContain("window.Resources[WindowSplashTitleResourceKey]");
+        codeBehindSource.ShouldContain("window.Resources[WindowSplashMessageResourceKey]");
+        codeBehindSource.ShouldNotContain("window.Resources[SharedTokenKind.ColorTextHeading]");
+        codeBehindSource.ShouldNotContain("window.Resources[SharedTokenKind.ColorText]");
         codeBehindSource.ShouldNotContain("window.Splash.Resources");
         codeBehindSource.ShouldContain("#0B1026");
         codeBehindSource.ShouldContain("#1D39C4");

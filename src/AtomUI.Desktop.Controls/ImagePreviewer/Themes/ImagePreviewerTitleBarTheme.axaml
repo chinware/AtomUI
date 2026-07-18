@@ -8,6 +8,8 @@
         <atom:WindowTitleBarTheme TargetType="atom:ImagePreviewerTitleBar" />
     </ControlTheme.BasedOn>
 
+    <Setter Property="Background" Value="{atom:ImagePreviewerTokenResource TitleBarBackgroundColor}" />
+
     <Style Selector="^[OsType=Linux]">
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:ImagePreviewerTitleBar">

@@ -7,6 +7,22 @@ namespace AtomUI.Desktop.Controls.Tests.ImagePreviewer;
 public class ImagePreviewerTitleBarThemeTests
 {
     [Fact]
+    public void ImagePreviewer_TitleBar_Background_Uses_Dialog_Frame_Background_Token()
+    {
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTitleBarTheme.axaml"));
+
+        var backgroundSetter = document.Root!.Elements()
+                                       .SingleOrDefault(element =>
+                                           element.Name.LocalName == "Setter" &&
+                                           (string?)element.Attribute("Property") == "Background");
+
+        backgroundSetter.ShouldNotBeNull();
+        backgroundSetter.Attribute("Value")?.Value.ShouldBe(
+            "{atom:ImagePreviewerTokenResource TitleBarBackgroundColor}");
+    }
+
+    [Fact]
     public void ImagePreviewer_Linux_TitleBar_Applies_Frame_Padding_To_Caption_Buttons()
     {
         var document = XDocument.Load(GetRepoFile(

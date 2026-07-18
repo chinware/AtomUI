@@ -142,6 +142,9 @@ public class LineEditShowCasePageTests
         var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Localization/zh_CN.cs");
         var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Localization/zh_TW.cs");
 
+        en.ShouldContain("P2SearchButtonTextText = \"Search\"");
+        en.ShouldNotContain("Search now");
+
         foreach (var source in new[] { en, zhCn, zhTw })
         {
             source.ShouldContain("ScenarioExamples");

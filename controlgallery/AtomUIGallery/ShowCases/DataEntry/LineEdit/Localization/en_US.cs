@@ -95,7 +95,7 @@ internal partial class en_US
 
     public const string P2SearchButtonTextSearch = "Search";
 
-    public const string P2SearchButtonTextText = "Search now";
+    public const string P2SearchButtonTextText = "Search";
     public const string PageSubtitle = "Capture single-line text, search input, passwords, and multi-line text.";
     public const string PageDescription = "LineEdit covers standard inputs, add-ons, clear actions, password reveal, prefixes and suffixes, validation status, SearchEdit, and TextArea scenarios.";
     public const string ComponentCategory = "Data Entry";
