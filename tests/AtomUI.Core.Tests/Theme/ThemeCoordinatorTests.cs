@@ -135,17 +135,14 @@ public class ThemeCoordinatorTests
     }
 
     [Fact]
-    public async Task Request_From_Non_UI_Thread_Is_Rejected()
+    public void Request_When_Access_Check_Fails_Is_Rejected()
     {
-        var coordinator = CreateManager(useInjectedAccess: false).ThemeCoordinator;
+        var coordinator = CreateManager(static () => false).ThemeCoordinator;
 
-        await Task.Run(() =>
-        {
-            Should.Throw<InvalidOperationException>(() => coordinator.Request(new ThemeRequest(
-                IThemeManager.DEFAULT_THEME_ID,
-                [ThemeAlgorithm.Default],
-                ThemeTransitionReason.UserRequest)));
-        }, TestContext.Current.CancellationToken);
+        Should.Throw<InvalidOperationException>(() => coordinator.Request(new ThemeRequest(
+            IThemeManager.DEFAULT_THEME_ID,
+            [ThemeAlgorithm.Default],
+            ThemeTransitionReason.UserRequest)));
     }
 
     [Fact]
@@ -167,15 +164,13 @@ public class ThemeCoordinatorTests
         return (manager ?? CreateManager()).ThemeCoordinator;
     }
 
-    private static ThemeManager CreateManager(bool useInjectedAccess = true)
+    private static ThemeManager CreateManager(Func<bool>? themeTransitionAccessCheck = null)
     {
         using var _ = AvaloniaLocator.EnterScope();
         AvaloniaLocator.CurrentMutable
                        .Bind<IAssetLoader>()
                        .ToConstant(new TestAssetLoader());
-        var manager = useInjectedAccess
-            ? new ThemeManager(static () => true)
-            : new ThemeManager();
+        var manager = new ThemeManager(themeTransitionAccessCheck ?? (static () => true));
         manager.ScanThemes();
         return manager;
     }

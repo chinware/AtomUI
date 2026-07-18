@@ -1,6 +1,7 @@
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Theme.Resources;
 using AtomUI.Theme.Styling;
 using AtomUIGallery.Localization;
 using Avalonia;
@@ -20,6 +21,10 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
 
     private const double WindowSplashWidth = 560;
     private const double WindowSplashMinHeight = 360;
+    private static readonly ControlSharedTokenResourceKey WindowSplashTitleResourceKey =
+        new("AtomUI", "Splash", SharedTokenKind.ColorTextHeading);
+    private static readonly ControlSharedTokenResourceKey WindowSplashMessageResourceKey =
+        new("AtomUI", "Splash", SharedTokenKind.ColorText);
 
     private static readonly TimeSpan WindowSplashDuration = TimeSpan.FromSeconds(5);
     private static readonly IBrush WindowSplashTitleBrush = Brushes.White;
@@ -212,8 +217,8 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
             var window = base.CreateWindow(null);
 
             window.Resources[SplashTokenKind.SurfaceBackground] = CreateWindowSplashSurfaceBrush();
-            window.Resources[SharedTokenKind.ColorTextHeading]   = WindowSplashTitleBrush;
-            window.Resources[SharedTokenKind.ColorText]          = WindowSplashPrimaryTextBrush;
+            window.Resources[WindowSplashTitleResourceKey]       = WindowSplashTitleBrush;
+            window.Resources[WindowSplashMessageResourceKey]     = WindowSplashPrimaryTextBrush;
             window.Resources[SplashTokenKind.SubtleForeground]   = WindowSplashSubtleTextBrush;
 
             return window;

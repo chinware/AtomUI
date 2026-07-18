@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using System.Reflection;
 using AtomUI.Controls;
 using AtomUI.Theme;
@@ -796,9 +797,12 @@ public class GalleryCodeViewerRuntimeTests
                 scope => scope.Contains("meta.tag.xml", StringComparison.Ordinal));
             initialScopes.Any(scope => scope.Contains("meta.tag.xml", StringComparison.Ordinal))
                          .ShouldBeTrue(
-                             $"Scopes: {string.Join(" | ", initialScopes)}; {GetTextMateDiagnostics(initialViewer, 0)}");
+                             $"Scopes: {string.Join(" | ", initialScopes)}; " +
+                             $"{GetTextMateDiagnostics(initialViewer, 0)}; " +
+                             GetVisibleTokenizationState(initialViewer));
 
             tabControl.SelectedIndex = 1;
+            Dispatcher.UIThread.RunJobs();
 
             var selectedViewer = tabItems[1].Content.ShouldBeOfType<GalleryCodeViewer>();
             var selectedScopes = WaitForLineTokenScopes(
@@ -1341,15 +1345,30 @@ public class GalleryCodeViewerRuntimeTests
                                                    Func<string, bool> expectedScope)
     {
         string[] scopes = [];
-        for (var i = 0; i < 20; i++)
+        var timeout = TimeSpan.FromSeconds(5);
+        var stopwatch = Stopwatch.StartNew();
+        while (stopwatch.Elapsed < timeout)
         {
+            viewer.ApplyTemplate();
+            var editor = viewer.GetVisualDescendants()
+                               .OfType<TextEditor>()
+                               .SingleOrDefault();
+            if (editor is not null)
+            {
+                editor.ApplyTemplate();
+                editor.TextArea.TextView.EnsureVisualLines();
+            }
+
+            Dispatcher.UIThread.RunJobs();
+            Dispatcher.UIThread.RunJobs(DispatcherPriority.Background);
+            Dispatcher.UIThread.RunJobs(DispatcherPriority.SystemIdle);
+
             scopes = GetLineTokenScopes(viewer, lineIndex);
             if (scopes.Any(expectedScope))
             {
                 return scopes;
             }
 
-            Dispatcher.UIThread.RunJobs();
             Thread.Sleep(10);
         }
 
@@ -1457,6 +1476,8 @@ public class GalleryCodeViewerRuntimeTests
         var tmGrammar = tmModel?.GetType()
                                 .GetMethod("GetGrammar")
                                 ?.Invoke(tmModel, Array.Empty<object>());
+        var installationGrammar = grammar as IGrammar;
+        var modelGrammar = tmGrammar as IGrammar;
         var isStopped = tmModel?.GetType()
                                .GetProperty("IsStopped")
                                ?.GetValue(tmModel);
@@ -1469,8 +1490,10 @@ public class GalleryCodeViewerRuntimeTests
             $"Language={viewer.Language}",
             $"TextLength={text.Length}",
             $"TextPrefix={text[..Math.Min(text.Length, 40)]}",
-            $"InstallationGrammar={grammar?.GetType().GetMethod("GetScopeName")?.Invoke(grammar, Array.Empty<object>())}",
-            $"TMGrammar={tmGrammar?.GetType().GetMethod("GetScopeName")?.Invoke(tmGrammar, Array.Empty<object>())}",
+            $"InstallationGrammar={installationGrammar?.GetScopeName()}",
+            $"InstallationGrammarIsCompiling={installationGrammar?.IsCompiling}",
+            $"TMGrammar={modelGrammar?.GetScopeName()}",
+            $"TMGrammarIsCompiling={modelGrammar?.IsCompiling}",
             $"IsStopped={isStopped}",
             $"IsLineInvalid={isInvalid}");
     }

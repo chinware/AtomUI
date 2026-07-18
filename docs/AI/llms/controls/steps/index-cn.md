@@ -47,7 +47,7 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | 反馈 | Wave 表达真实 pointer click，不表达状态变化。 | Indicator Wave。 |
 | 密度 | 尺寸控制 Indicator、文字和间距。 | `SizeType`。 |
 
-`StepsType.Default` 表达标准流程，`Dot` 表达点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程。
+`StepsType.Default` 表达标准流程，`Dot` 表达实心点状流程，`OutlineDot` 表达空心点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程。
 
 ## 公共 API
 
@@ -61,11 +61,13 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | `Initial` | `int` | 第一个 item 的编号偏移，默认 `0`；不用于初始化或重置 `Current`。 |
 | `Status` | `StepsStatus` | 当前步骤的默认状态，默认 `Process`。 |
 | `Percent` | `double?` | 当前 Process item 的局部进度；`null` 表示不显示。 |
-| `Type` | `StepsType` | `Default`、`Dot`、`Navigation` 或 `Inline`。 |
+| `Type` | `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation` 或 `Inline`。 |
 | `Orientation` | `Orientation` | 步骤排列方向，默认 `Horizontal`。 |
 | `TitlePlacement` | `Orientation` | 标题相对 Indicator 的请求布局，默认 `Horizontal`。 |
 | `SizeType` | `SizeType` | Indicator、文字和间距尺寸，默认 `Middle`。 |
 | `IsItemClickable` | `bool` | 是否允许 item 发出导航请求，默认 `false`。 |
+| `Offset` | `int` | Inline 类型前方保留的空 item 单元数量，默认 `0`；其他类型忽略。 |
+| `HorizontalContentAlignment` | `HorizontalAlignment` | 垂直 Navigation item 列的水平对齐，默认 `Center`；普通 Steps 和水平 Navigation 不使用。 |
 | `IsMotionEnabled` | `bool` | 是否启用 transition 和 Wave，默认来自 SharedToken。 |
 | `Items` / `ItemsSource` / `ItemTemplate` | inherited | 步骤集合和数据模板入口。 |
 
@@ -100,9 +102,10 @@ public event EventHandler<StepsCurrentChangeRequestedEventArgs>?
 | 枚举 | 成员 | 语义 |
 | --- | --- | --- |
 | `StepsStatus` | `Wait`、`Process`、`Finish`、`Error` | 根当前状态、item 显式状态和有效状态。 |
-| `StepsType` | `Default`、`Dot`、`Navigation`、`Inline` | Steps 的完整视觉类型。 |
+| `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation`、`Inline` | Steps 的完整视觉类型。 |
 
 `StepsType` 同时表达原 Style 和 Indicator 类型，禁止形成 `Navigation + Dot` 等没有明确 Steps 语义的组合。
+`OutlineDot` 与 `Dot` 共享布局语义和 Dot 尺寸 Token，但 Indicator 使用透明背景和状态色边框，并且不播放 Indicator Wave。
 
 ### 3.5 主题契约
 
@@ -231,7 +234,7 @@ IsCurrent       = StepNumber == Current
 
 ### 4.4 Connector 语义
 
-连接 item `i` 和 `i + 1` 的 Connector 使用后一个 item 的 `EffectiveStatus`：
+连接 item `i` 和 `i + 1` 的 Connector 使用下一个 item 的 `EffectiveStatus`，让指向当前错误或当前进行中步骤的线段跟随目标步骤状态：
 
 ```text
 Connector[i].Status = Item[i + 1].EffectiveStatus
@@ -252,6 +255,7 @@ Steps.IsItemClickable
 - Pointer 只有在同一 item 内完成 press/release 才视为 click。
 - 点击非当前 item：播放目标 Indicator Wave，并发出 `CurrentChangeRequested`。
 - 点击当前 item：播放 Wave，不发出请求。
+- `Type=OutlineDot` 点击仍按可交互规则发出请求，但不播放 Indicator Wave。
 - Enter/Space：非当前 item 发出请求，不播放 Wave。
 - 程序化修改 `Current`、Items 变化、模板重套和状态重算都不播放 Wave。
 - 不可交互 item 不显示 hand cursor、hover 激活视觉，也不进入 Tab 焦点序列。
@@ -286,12 +290,14 @@ Steps
 ```
 
 `StepsPanel` 负责 item 间的 flex/stack 布局；`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽和 Navigation active 线的排列。二者不创建视觉、不计算状态。
+`OutlineDot` 复用 `Dot` 的布局路径，只改变 Indicator 的填充、边框和 Wave 语义。
 
 有效标题布局：
 
 ```text
 Orientation == Vertical -> Horizontal
 Type == Dot             -> Vertical
+Type == OutlineDot      -> Vertical
 Type == Inline          -> Vertical
 Type == Navigation      -> Horizontal
 其他                    -> TitlePlacement
@@ -299,7 +305,7 @@ Type == Navigation      -> Horizontal
 
 Token 来源：
 
-StepsToken 描述步骤标题、详情内容、Indicator、Dot、Connector、Navigation、Inline 和 Progress ring 的组件级视觉语义。
+StepsToken 描述步骤标题、详情内容、Indicator、Dot、OutlineDot、Connector、Navigation、Inline 和 Progress ring 的组件级视觉语义。
 
 StepsToken 不承载：
 

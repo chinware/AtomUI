@@ -58,7 +58,7 @@
                     <Style Selector="^[SizeType=Small]">
                         <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                             <Setter Property="Padding"
-                                    Value="{atom:SelectTokenResource Padding}" />
+                                    Value="{atom:SelectTokenResource PaddingSM}" />
                         </Style>
                     </Style>
                 </Style>
