@@ -55,6 +55,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private readonly CompositeDisposable _bindings = new();
     private DialogOverlayLayer? _dialogLayer;
     private Window? _ownerWindow;
+    private IDisposable? _drawnTitleBarOverlaySuppression;
     private MotionActor? _maskMotionActor;
     private MotionActor? _surfaceMotionActor;
     private OverlayDialogMask? _dialogMask;
@@ -83,6 +84,8 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         Content = _surface;
 
         _bindings.Add(Bind(IsModalProperty, dialog.GetObservable(Dialog.IsModalProperty)));
+        _bindings.Add(this.GetObservable(IsModalProperty)
+            .Subscribe(_ => UpdateDrawnTitleBarOverlaySuppression()));
         _bindings.Add(Bind(IsMotionEnabledProperty, dialog.GetObservable(Dialog.IsMotionEnabledProperty)));
         _bindings.Add(dialog.GetObservable(Dialog.HostWidthProperty).Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(dialog.GetObservable(Dialog.HostHeightProperty).Subscribe(_ => UpdateCurrentLayerBounds()));
@@ -133,6 +136,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             ((ILogical)_dialog).IsAttachedToLogicalTree ? _dialog : _placementTarget);
         _dialogLayer = DialogOverlayLayer.GetOrCreate(_placementTarget);
         _ownerWindow = TopLevel.GetTopLevel(_placementTarget) as Window;
+        UpdateDrawnTitleBarOverlaySuppression();
         _dialogLayer.Add(this);
         AttachOwnerGeometryBindings();
         UpdateLayerBounds(_dialogLayer.Bounds.Size);
@@ -284,6 +288,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         ReleaseDialogMask();
+        ReleaseDrawnTitleBarOverlaySuppression();
         Content = null;
         _ownerWindow = null;
         _maskMotionActor = null;
@@ -305,6 +310,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void RemoveFromDialogLayer()
     {
+        ReleaseDrawnTitleBarOverlaySuppression();
         if (_dialogLayer is not { } dialogLayer)
         {
             return;
@@ -322,7 +328,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         var ownerBounds = ResolveOwnerBounds(layerSize);
-        ApplyMaskBounds(ownerBounds);
+        ApplyMaskBounds(layerSize);
         if (_surface.IsDialogMaximized)
         {
             ApplyMaximizedBounds(ownerBounds);
@@ -370,9 +376,9 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         _bindings.Add(window.GetObservable(Window.OsTypeProperty)
-                            .Subscribe(_ => UpdateCurrentLayerBounds()));
+                            .Subscribe(_ => UpdateOwnerGeometry()));
         _bindings.Add(window.GetObservable(Window.IsCsdEnabledProperty)
-                            .Subscribe(_ => UpdateCurrentLayerBounds()));
+                            .Subscribe(_ => UpdateOwnerGeometry()));
         _bindings.Add(window.GetObservable(AvaloniaWindow.WindowDecorationMarginProperty)
                             .Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(window.GetObservable(Window.FrameShadowThicknessProperty)
@@ -383,6 +389,30 @@ internal sealed class OverlayDialogPresenter : ContentControl,
                             .Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(window.GetObservable(AvaloniaWindow.WindowStateProperty)
                             .Subscribe(_ => UpdateCurrentLayerBounds()));
+    }
+
+    private void UpdateOwnerGeometry()
+    {
+        UpdateDrawnTitleBarOverlaySuppression();
+        UpdateCurrentLayerBounds();
+    }
+
+    private void UpdateDrawnTitleBarOverlaySuppression()
+    {
+        if (IsModal &&
+            _ownerWindow is { OsType: OsType.Linux, IsCsdEnabled: true } window)
+        {
+            _drawnTitleBarOverlaySuppression ??= window.SuppressDrawnTitleBarOverlay();
+            return;
+        }
+
+        ReleaseDrawnTitleBarOverlaySuppression();
+    }
+
+    private void ReleaseDrawnTitleBarOverlaySuppression()
+    {
+        _drawnTitleBarOverlaySuppression?.Dispose();
+        _drawnTitleBarOverlaySuppression = null;
     }
 
     private void UpdateSurfacePlacement(Rect ownerBounds)
@@ -443,7 +473,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             Math.Max(0, bounds.Height - top - bottom));
     }
 
-    private void ApplyMaskBounds(Rect ownerBounds)
+    private void ApplyMaskBounds(Size layerSize)
     {
         if (_maskMotionActor is null)
         {
@@ -452,9 +482,9 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
         _maskMotionActor.HorizontalAlignment = HorizontalAlignment.Left;
         _maskMotionActor.VerticalAlignment = VerticalAlignment.Top;
-        _maskMotionActor.Width = ownerBounds.Width;
-        _maskMotionActor.Height = ownerBounds.Height;
-        _maskMotionActor.Margin = new Thickness(ownerBounds.X, ownerBounds.Y, 0, 0);
+        _maskMotionActor.Width = layerSize.Width;
+        _maskMotionActor.Height = layerSize.Height;
+        _maskMotionActor.Margin = default;
     }
 
     private Thickness ResolveSurfaceShadowThickness()
