@@ -2,6 +2,24 @@
 
 本文档记录 Modal 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-18
+
+- Architecture
+  - Replace the multi-owner host lifecycle with one `DialogSession`, two async presenters and one shared `DialogSurface` implementation.
+  - Make `MessageBox` a direct Dialog specialization without a hidden Dialog or parallel host lifecycle.
+- Behavior
+  - Make `OpenAsync` represent the complete opening, active and teardown lifetime; reject concurrent instance opens.
+  - Unify normal and forced close sources, deterministic post-commit teardown, opening/closing motion, nested focus restoration and owner close behavior.
+  - Preserve natural Overlay/Window sizing, runtime size updates, placement, standard/custom buttons, loading and semantic MessageBox styles.
+  - Fix real modal mask pointer routing while allowing modeless background input.
+  - Construct generic static API views on the UI Dispatcher and remove Gallery dispatcher-yield workarounds from direct click handlers.
+- Lifecycle
+  - Pair presenter bindings, events, logical/resource parents, content references and button subscriptions with deterministic release paths.
+  - Disconnect Surface composition children before host removal so retained Content or CustomButton controls cannot retain a closed Presenter/Surface.
+  - Add Overlay and Window WeakReference coverage for Session, Presenter, Surface, user Content and retained custom controls.
+- API
+  - Remove synchronous/callback display APIs and obsolete host/action-result types.
+
 ## 2026-07-06
 
 - API

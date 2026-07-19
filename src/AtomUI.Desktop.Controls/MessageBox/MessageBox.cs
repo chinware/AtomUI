@@ -1,17 +1,10 @@
-using System.Collections.Specialized;
-using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Theme;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.Metadata;
-using Avalonia.VisualTree;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -21,87 +14,31 @@ public enum MessageBoxOkButtonStyle
     Primary
 }
 
-public class MessageBox : TemplatedControl, IMotionAwareControl
+public class MessageBox : Dialog
 {
-    #region 公共属性定义
-
-    public static readonly StyledProperty<string?> TitleProperty =
-        AvaloniaProperty.Register<MessageBox, string?>(nameof (Title));
+    #region Public Properties
 
     public static readonly StyledProperty<PathIcon?> IconProperty =
-        AvaloniaProperty.Register<MessageBox, PathIcon?>(nameof (Icon));
-
-    public static readonly StyledProperty<object?> ContentProperty = Dialog.ContentProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty = Dialog.ContentTemplateProperty.AddOwner<MessageBox>();
+        AvaloniaProperty.Register<MessageBox, PathIcon?>(nameof(Icon));
 
     public static readonly StyledProperty<MessageBoxStyle> StyleProperty =
-        AvaloniaProperty.Register<MessageBox, MessageBoxStyle>(nameof (Style), MessageBoxStyle.Information);
-
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<DialogHostType> DialogHostTypeProperty =
-        Dialog.DialogHostTypeProperty.AddOwner<MessageBox>();
+        AvaloniaProperty.Register<MessageBox, MessageBoxStyle>(
+            nameof(Style),
+            MessageBoxStyle.Information);
 
     public static readonly StyledProperty<MessageBoxOkButtonStyle> OkButtonStyleProperty =
-        AvaloniaProperty.Register<MessageBox, MessageBoxOkButtonStyle>(nameof(OkButtonStyle), MessageBoxOkButtonStyle.Primary);
+        AvaloniaProperty.Register<MessageBox, MessageBoxOkButtonStyle>(
+            nameof(OkButtonStyle),
+            MessageBoxOkButtonStyle.Primary);
 
-    public static readonly StyledProperty<string?> OkButtonTextProperty = AvaloniaProperty.Register<MessageBox, string?>(nameof(OkButtonText));
+    public static readonly StyledProperty<string?> OkButtonTextProperty =
+        AvaloniaProperty.Register<MessageBox, string?>(nameof(OkButtonText));
 
-    public static readonly StyledProperty<string?> CancelButtonTextProperty = AvaloniaProperty.Register<MessageBox, string?>(nameof(CancelButtonText));
-
-    public static readonly StyledProperty<bool> IsLoadingProperty = Dialog.IsLoadingProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<bool> IsConfirmLoadingProperty = Dialog.IsConfirmLoadingProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<bool> IsOpenProperty =
-        Dialog.IsOpenProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<bool> IsModalProperty =
-        Dialog.IsModalProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<bool> IsDragMovableProperty =
-        Dialog.IsDragMovableProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<object?> ResultProperty =
-        Dialog.ResultProperty.AddOwner<MessageBox>();
+    public static readonly StyledProperty<string?> CancelButtonTextProperty =
+        AvaloniaProperty.Register<MessageBox, string?>(nameof(CancelButtonText));
 
     public static readonly StyledProperty<bool> IsCenterOnStartupProperty =
         AvaloniaProperty.Register<MessageBox, bool>(nameof(IsCenterOnStartup), true);
-
-    public static readonly StyledProperty<Dimension?> HorizontalOffsetProperty =
-        AvaloniaProperty.Register<MessageBox, Dimension?>(nameof(HorizontalOffset));
-
-    public static readonly StyledProperty<Dimension?> VerticalOffsetProperty =
-        AvaloniaProperty.Register<MessageBox, Dimension?>(nameof(VerticalOffset));
-
-    public static readonly StyledProperty<Control?> PlacementTargetProperty =
-        AvaloniaProperty.Register<MessageBox, Control?>(nameof(PlacementTarget));
-
-    public static readonly StyledProperty<double> HostWidthProperty =
-        Dialog.HostWidthProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<double> HostHeightProperty =
-        Dialog.HostHeightProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<double> HostMinWidthProperty =
-        Dialog.HostMinWidthProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<double> HostMinHeightProperty =
-        Dialog.HostMinHeightProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<double> HostMaxWidthProperty =
-        Dialog.HostMaxWidthProperty.AddOwner<MessageBox>();
-
-    public static readonly StyledProperty<double> HostMaxHeightProperty =
-        Dialog.HostMaxHeightProperty.AddOwner<MessageBox>();
-
-    public string? Title
-    {
-        get => GetValue(TitleProperty);
-        set => SetValue(TitleProperty, value);
-    }
 
     public PathIcon? Icon
     {
@@ -109,36 +46,10 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
         set => SetValue(IconProperty, value);
     }
 
-    [Content]
-    [DependsOn(nameof(ContentTemplate))]
-    public object? Content
-    {
-        get => GetValue(ContentProperty);
-        set => SetValue(ContentProperty, value);
-    }
-
-    public IDataTemplate? ContentTemplate
-    {
-        get => GetValue(ContentTemplateProperty);
-        set => SetValue(ContentTemplateProperty, value);
-    }
-
     public MessageBoxStyle Style
     {
         get => GetValue(StyleProperty);
         set => SetValue(StyleProperty, value);
-    }
-
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-
-    public DialogHostType DialogHostType
-    {
-        get => GetValue(DialogHostTypeProperty);
-        set => SetValue(DialogHostTypeProperty, value);
     }
 
     public MessageBoxOkButtonStyle OkButtonStyle
@@ -159,269 +70,314 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
         set => SetValue(CancelButtonTextProperty, value);
     }
 
-    public bool IsLoading
-    {
-        get => GetValue(IsLoadingProperty);
-        set => SetValue(IsLoadingProperty, value);
-    }
-
-    public bool IsConfirmLoading
-    {
-        get => GetValue(IsConfirmLoadingProperty);
-        set => SetValue(IsConfirmLoadingProperty, value);
-    }
-
-    public bool IsOpen
-    {
-        get => GetValue(IsOpenProperty);
-        set => SetValue(IsOpenProperty, value);
-    }
-
-    public bool IsModal
-    {
-        get => GetValue(IsModalProperty);
-        set => SetValue(IsModalProperty, value);
-    }
-
-    public bool IsDragMovable
-    {
-        get => GetValue(IsDragMovableProperty);
-        set => SetValue(IsDragMovableProperty, value);
-    }
-
-    public object? Result
-    {
-        get => GetValue(ResultProperty);
-        set => SetValue(ResultProperty, value);
-    }
-
     public bool IsCenterOnStartup
     {
         get => GetValue(IsCenterOnStartupProperty);
         set => SetValue(IsCenterOnStartupProperty, value);
     }
 
-    public Dimension? HorizontalOffset
-    {
-        get => GetValue(HorizontalOffsetProperty);
-        set => SetValue(HorizontalOffsetProperty, value);
-    }
-
-    public Dimension? VerticalOffset
-    {
-        get => GetValue(VerticalOffsetProperty);
-        set => SetValue(VerticalOffsetProperty, value);
-    }
-
-    [ResolveByName]
-    public Control? PlacementTarget
-    {
-        get => GetValue(PlacementTargetProperty);
-        set => SetValue(PlacementTargetProperty, value);
-    }
-
-    public double HostWidth
-    {
-        get => GetValue(HostWidthProperty);
-        set => SetValue(HostWidthProperty, value);
-    }
-
-    public double HostHeight
-    {
-        get => GetValue(HostHeightProperty);
-        set => SetValue(HostHeightProperty, value);
-    }
-
-    public double HostMinWidth
-    {
-        get => GetValue(HostMinWidthProperty);
-        set => SetValue(HostMinWidthProperty, value);
-    }
-
-    public double HostMinHeight
-    {
-        get => GetValue(HostMinHeightProperty);
-        set => SetValue(HostMinHeightProperty, value);
-    }
-
-    public double HostMaxWidth
-    {
-        get => GetValue(HostMaxWidthProperty);
-        set => SetValue(HostMaxWidthProperty, value);
-    }
-
-    public double HostMaxHeight
-    {
-        get => GetValue(HostMaxHeightProperty);
-        set => SetValue(HostMaxHeightProperty, value);
-    }
-
-    private Action<IReadOnlyList<DialogButton>>? _buttonsConfigure;
-
-    public Action<IReadOnlyList<DialogButton>>? ButtonsConfigure
-    {
-        get => _buttonsConfigure;
-        set
-        {
-            _buttonsConfigure = value;
-            if (_dialog != null)
-            {
-                _dialog.ButtonsConfigure = _buttonsConfigure;
-            }
-        }
-    }
-
-    public AvaloniaList<DialogButton> CustomButtons { get; } = new ();
-
-    internal DialogMotionAnchorMode MotionAnchorMode { get; set; }
-
     #endregion
 
-    #region 公共事件定义
-    public event EventHandler? Opened;
-    public event EventHandler? Closed;
+    #region Public Events
+
     public event EventHandler? Cancelled;
     public event EventHandler? Confirmed;
+
     #endregion
 
-    private Dialog? _dialog;
-    private MessageBoxContent? _dialogContent;
-    private CompositeDisposable? _dialogBindings;
-    private CompositeDisposable? _dialogContentBindings;
-    private bool _ignoreIsOpenChanged;
+    private readonly MessageBoxContent _messageContent = new();
 
     static MessageBox()
     {
-        IsOpenProperty.Changed.AddClassHandler<MessageBox>((x, e) =>
-            x.HandleIsOpenChanged((AvaloniaPropertyChangedEventArgs<bool>)e));
+        IsDragMovableProperty.OverrideDefaultValue<MessageBox>(false);
     }
 
     public MessageBox()
     {
-        CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
-    }
-
-    private void HandleIsOpenChanged(AvaloniaPropertyChangedEventArgs<bool> e)
-    {
-        if (_ignoreIsOpenChanged)
-        {
-            return;
-        }
-
-        if (e.NewValue.Value)
-        {
-            Dispatcher.InvokeAsync(() => OpenAsync());
-        }
-        else
-        {
-            Cancel();
-        }
-    }
-
-    public object? Open()
-    {
-        var dialog = EnsureDialog();
-        using (BeginIgnoringIsOpen())
-        {
-            SetCurrentValue(IsOpenProperty, true);
-        }
-        return dialog.Open();
-    }
-
-    public async Task OpenAsync(CancellationToken cancellationToken = default)
-    {
-        var dialog = EnsureDialog();
-        using (BeginIgnoringIsOpen())
-        {
-            SetCurrentValue(IsOpenProperty, true);
-        }
-        await dialog.OpenAsync(cancellationToken);
+        Accepted += HandleAccepted;
+        Rejected += HandleRejected;
+        ConfigureStyle();
+        ConfigureOkButton();
+        ConfigurePositionOnStartup();
+        UpdateMessageContent();
     }
 
     public void Cancel()
     {
-        _dialog?.Reject();
+        Reject();
     }
 
     public void Confirm()
     {
-        _dialog?.Accept();
+        Accept();
     }
 
-    #region 静态 API
+    internal override object? GetSurfaceContent()
+    {
+        return _messageContent;
+    }
 
-    public static object? ShowMessageBox<TView, TViewModel>(TViewModel? dataContext, MessageBoxOptions? options = null,
-                                                            TopLevel? topLevel = null)
+    internal override IDataTemplate? GetSurfaceContentTemplate()
+    {
+        return null;
+    }
+
+    internal override void ConfigureSurfaceButtons(IReadOnlyList<DialogButton> buttons)
+    {
+        ApplyButtonConfiguration(buttons);
+        base.ConfigureSurfaceButtons(buttons);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == ContentProperty ||
+            change.Property == ContentTemplateProperty ||
+            change.Property == IconProperty)
+        {
+            UpdateMessageContent();
+        }
+        else if (change.Property == StyleProperty)
+        {
+            ConfigureStyle();
+            UpdateMessageContent();
+        }
+        else if (change.Property == OkButtonStyleProperty)
+        {
+            ConfigureOkButton();
+            ApplyButtonConfiguration();
+        }
+        else if (change.Property == OkButtonTextProperty ||
+                 change.Property == CancelButtonTextProperty)
+        {
+            ApplyButtonConfiguration();
+        }
+        else if (change.Property == IsCenterOnStartupProperty)
+        {
+            ConfigurePositionOnStartup();
+        }
+    }
+
+    private void HandleAccepted(object? sender, EventArgs e)
+    {
+        Confirmed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void HandleRejected(object? sender, EventArgs e)
+    {
+        Cancelled?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void ConfigureStyle()
+    {
+        SetValue(
+            EscapeStandardButtonProperty,
+            DialogStandardButton.NoButton,
+            BindingPriority.Template);
+        switch (Style)
+        {
+            case MessageBoxStyle.Normal:
+                SetValue(IconProperty, null, BindingPriority.Template);
+                SetValue(StandardButtonsProperty, DialogStandardButton.Ok, BindingPriority.Template);
+                break;
+            case MessageBoxStyle.Confirm:
+                SetValue(IconProperty, new ExclamationCircleFilled(), BindingPriority.Template);
+                SetValue(
+                    StandardButtonsProperty,
+                    DialogStandardButton.Ok | DialogStandardButton.Cancel,
+                    BindingPriority.Template);
+                SetValue(
+                    EscapeStandardButtonProperty,
+                    DialogStandardButton.Cancel,
+                    BindingPriority.Template);
+                break;
+            case MessageBoxStyle.Information:
+                SetValue(IconProperty, new InfoCircleFilled(), BindingPriority.Template);
+                SetValue(StandardButtonsProperty, DialogStandardButton.Ok, BindingPriority.Template);
+                break;
+            case MessageBoxStyle.Success:
+                SetValue(IconProperty, new CheckCircleFilled(), BindingPriority.Template);
+                SetValue(StandardButtonsProperty, DialogStandardButton.Ok, BindingPriority.Template);
+                break;
+            case MessageBoxStyle.Warning:
+                SetValue(IconProperty, new ExclamationCircleFilled(), BindingPriority.Template);
+                SetValue(StandardButtonsProperty, DialogStandardButton.Ok, BindingPriority.Template);
+                break;
+            case MessageBoxStyle.Error:
+                SetValue(IconProperty, new CloseCircleFilled(), BindingPriority.Template);
+                SetValue(StandardButtonsProperty, DialogStandardButton.Ok, BindingPriority.Template);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private void ConfigureOkButton()
+    {
+        SetValue(
+            DefaultStandardButtonProperty,
+            OkButtonStyle == MessageBoxOkButtonStyle.Primary
+                ? DialogStandardButton.Ok
+                : DialogStandardButton.NoButton,
+            BindingPriority.Template);
+    }
+
+    private void ConfigurePositionOnStartup()
+    {
+        SetValue(
+            HorizontalStartupLocationProperty,
+            IsCenterOnStartup ? DialogHorizontalAnchor.Center : DialogHorizontalAnchor.Custom,
+            BindingPriority.Template);
+        SetValue(
+            VerticalStartupLocationProperty,
+            IsCenterOnStartup ? DialogVerticalAnchor.Center : DialogVerticalAnchor.Custom,
+            BindingPriority.Template);
+    }
+
+    private void UpdateMessageContent()
+    {
+        _messageContent.StyleIcon      = Icon;
+        _messageContent.Style          = Style;
+        _messageContent.Content        = Content;
+        _messageContent.ContentTemplate = ContentTemplate;
+    }
+
+    private void ApplyButtonConfiguration()
+    {
+        var buttons = SurfaceButtons;
+        if (buttons.Count == 0)
+        {
+            return;
+        }
+
+        ApplyButtonConfiguration(buttons);
+        base.ConfigureSurfaceButtons(buttons);
+    }
+
+    private void ApplyButtonConfiguration(IReadOnlyList<DialogButton> buttons)
+    {
+        foreach (var button in buttons)
+        {
+            if (button.StandardButtonType == DialogStandardButton.Ok)
+            {
+                button.ButtonType = OkButtonStyle == MessageBoxOkButtonStyle.Primary
+                    ? ButtonType.Primary
+                    : ButtonType.Default;
+                if (OkButtonText is null)
+                {
+                    button.ClearValue(Button.ContentProperty);
+                }
+                else
+                {
+                    button.SetValue(Button.ContentProperty, OkButtonText);
+                }
+            }
+            else if (button.StandardButtonType == DialogStandardButton.Cancel)
+            {
+                if (CancelButtonText is null)
+                {
+                    button.ClearValue(Button.ContentProperty);
+                }
+                else
+                {
+                    button.SetValue(Button.ContentProperty, CancelButtonText);
+                }
+            }
+        }
+    }
+
+    #region Static API
+
+    public static async Task<object?> ShowMessageBoxAsync<TView, TViewModel>(
+        TViewModel? dataContext,
+        MessageBoxOptions? options = null,
+        TopLevel? topLevel = null,
+        CancellationToken cancellationToken = default)
         where TView : Control, new()
     {
-        return ShowMessageBox(new TView(), dataContext, options, topLevel);
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            return await Dispatcher.UIThread.InvokeAsync(() =>
+                ShowMessageBoxAsync<TView, TViewModel>(dataContext, options, topLevel, cancellationToken));
+        }
+
+        return await ShowMessageBoxAsync(new TView(), dataContext, options, topLevel, cancellationToken);
     }
 
-    public static object? ShowMessageBox(Control content, object? dataContext = null, MessageBoxOptions? options = null, TopLevel? topLevel = null)
+    public static async Task<object?> ShowMessageBoxModalAsync<TView, TViewModel>(
+        TViewModel? dataContext,
+        MessageBoxOptions? options = null,
+        TopLevel? topLevel = null,
+        CancellationToken cancellationToken = default)
+        where TView : Control, new()
     {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            return await Dispatcher.UIThread.InvokeAsync(() =>
+                ShowMessageBoxModalAsync<TView, TViewModel>(dataContext, options, topLevel, cancellationToken));
+        }
+
+        return await ShowMessageBoxModalAsync(new TView(), dataContext, options, topLevel, cancellationToken);
+    }
+
+    public static Task<object?> ShowMessageBoxAsync(
+        Control content,
+        object? dataContext = null,
+        MessageBoxOptions? options = null,
+        TopLevel? topLevel = null,
+        CancellationToken cancellationToken = default)
+    {
+        return ShowMessageBoxCoreAsync(
+            content,
+            dataContext,
+            options,
+            topLevel,
+            isModal: false,
+            cancellationToken);
+    }
+
+    public static Task<object?> ShowMessageBoxModalAsync(
+        Control content,
+        object? dataContext = null,
+        MessageBoxOptions? options = null,
+        TopLevel? topLevel = null,
+        CancellationToken cancellationToken = default)
+    {
+        return ShowMessageBoxCoreAsync(
+            content,
+            dataContext,
+            options,
+            topLevel,
+            isModal: true,
+            cancellationToken);
+    }
+
+    private static async Task<object?> ShowMessageBoxCoreAsync(
+        Control content,
+        object? dataContext,
+        MessageBoxOptions? options,
+        TopLevel? topLevel,
+        bool isModal,
+        CancellationToken cancellationToken)
+    {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            return await Dispatcher.UIThread.InvokeAsync(() => ShowMessageBoxCoreAsync(
+                content,
+                dataContext,
+                options,
+                topLevel,
+                isModal,
+                cancellationToken));
+        }
+
         var overlayLayer = ResolveOverlayLayer(options, topLevel);
         var messageBox   = CreateMessageBox(content, dataContext, options, overlayLayer);
+        messageBox.IsModal = isModal;
         overlayLayer.Children.Add(messageBox);
         try
         {
-            return messageBox.Open();
-        }
-        finally
-        {
-            overlayLayer.Children.Remove(messageBox);
-        }
-    }
-
-    public static async Task ShowMessageBoxAsync<TView, TViewModel>(TViewModel? dataContext,
-                                                                    MessageBoxOptions? options = null,
-                                                                    Action<IMessageBoxActionResult>? closed = null,
-                                                                    TopLevel? topLevel = null)
-        where TView : Control, new()
-    {
-        await ShowMessageAsync(new TView(), dataContext, options, closed, topLevel);
-    }
-
-    public static async Task<object?> ShowMessageBoxModalAsync<TView, TViewModel>(TViewModel? dataContext, MessageBoxOptions? options = null, TopLevel? topLevel = null)
-        where TView : Control, new()
-    {
-        return await ShowMessageModalAsync(new TView(), dataContext, options, topLevel);
-    }
-
-    public static async Task ShowMessageAsync(Control content,
-                                              object? dataContext = null,
-                                              MessageBoxOptions? options = null,
-                                              Action<IMessageBoxActionResult>? closed = null,
-                                              TopLevel? topLevel = null)
-    {
-        var overlayLayer = ResolveOverlayLayer(options, topLevel);
-        var messageBox   = CreateMessageBox(content, dataContext, options, overlayLayer);
-
-        messageBox.Closed += (_, _) =>
-        {
-            closed?.Invoke(new MessageBoxActionResult(messageBox.Result));
-            overlayLayer.Children.Remove(messageBox);
-        };
-        overlayLayer.Children.Add(messageBox);
-        try
-        {
-            await messageBox.Dispatcher.InvokeAsync(async () => await messageBox.OpenAsync());
-        }
-        catch
-        {
-            overlayLayer.Children.Remove(messageBox);
-            throw;
-        }
-    }
-
-    public static async Task<object?> ShowMessageModalAsync(Control content, object? dataContext = null, MessageBoxOptions? options = null, TopLevel? topLevel = null)
-    {
-        var overlayLayer = ResolveOverlayLayer(options, topLevel);
-        var messageBox   = CreateMessageBox(content, dataContext, options, overlayLayer);
-        messageBox.IsModal = true;
-        overlayLayer.Children.Add(messageBox);
-        try
-        {
-            await messageBox.Dispatcher.InvokeAsync(async () => await messageBox.OpenAsync());
+            await messageBox.OpenAsync(cancellationToken);
             return messageBox.Result;
         }
         finally
@@ -430,7 +386,11 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
         }
     }
 
-    private static MessageBox CreateMessageBox(Control content, object? dataContext, MessageBoxOptions? options, Control placementTarget)
+    private static MessageBox CreateMessageBox(
+        Control content,
+        object? dataContext,
+        MessageBoxOptions? options,
+        Control placementTarget)
     {
         var messageBox = new MessageBox
         {
@@ -449,332 +409,37 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
             DataContext       = dataContext,
             HostWidth         = options?.Width ?? double.NaN,
             HostHeight        = options?.Height ?? double.NaN,
-            HostMinWidth      = options?.MinWidth ?? 0d,
             HostMinHeight     = options?.MinHeight ?? 0d,
             HostMaxWidth      = options?.MaxWidth ?? double.PositiveInfinity,
             HostMaxHeight     = options?.MaxHeight ?? double.PositiveInfinity,
             IsConfirmLoading  = options?.IsConfirmLoading ?? false,
             IsLoading         = options?.IsLoading ?? false,
+            IsMotionEnabled   = options?.IsMotionEnabled ?? true,
+            OkButtonStyle     = options?.OkButtonStyle ?? MessageBoxOkButtonStyle.Primary,
+            OkButtonText      = options?.OkButtonText,
+            CancelButtonText  = options?.CancelButtonText,
+            BeforeCloseAsync  = options?.BeforeCloseAsync
         };
-        if (options?.Icon != null)
+        if (options?.Icon is not null)
         {
             messageBox.Icon = options.Icon;
         }
+
+        if (options is { MinWidth: var minWidth } && !double.IsNaN(minWidth))
+        {
+            messageBox.HostMinWidth = minWidth;
+        }
+
         return messageBox;
     }
 
     private static Panel ResolveOverlayLayer(MessageBoxOptions? options, TopLevel? topLevel)
     {
-        return OverlayLayerResolver.ResolveOverlayLayer(options?.PlacementTarget, topLevel, nameof(MessageBox));
+        return OverlayLayerResolver.ResolveOverlayLayer(
+            options?.PlacementTarget,
+            topLevel,
+            nameof(MessageBox));
     }
 
     #endregion
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == StyleProperty)
-            {
-                ConfigureIcon();
-            }
-            else if (change.Property == OkButtonStyleProperty)
-            {
-                ConfigureOkButton();
-            }
-            else if (change.Property == IsCenterOnStartupProperty)
-            {
-                ConfigurePositionOnStartup();
-            }
-            else if (change.Property == PlacementTargetProperty)
-            {
-                MotionAnchorMode = PlacementTarget is null
-                    ? DialogMotionAnchorMode.FallbackPlacementTarget
-                    : DialogMotionAnchorMode.ExplicitPlacementTarget;
-                SyncDialogPlacementTarget();
-            }
-        }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        ReleaseTemplateDialog();
-        var templateDialog = e.NameScope.Find<Dialog>("PART_Dialog");
-        if (templateDialog != null)
-        {
-            AttachDialog(templateDialog);
-        }
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        if (_dialog is { IsOpen: true } dialog)
-        {
-            dialog.Done();
-        }
-        ReleaseTemplateDialog();
-    }
-
-    private Dialog EnsureDialog()
-    {
-        ApplyStyling();
-        if (_dialog != null)
-        {
-            return _dialog;
-        }
-
-        var dialog = new Dialog();
-        AttachDialog(dialog);
-        return dialog;
-    }
-
-    private void AttachDialog(Dialog dialog)
-    {
-        ReleaseTemplateDialog();
-
-        _dialog = dialog;
-        _dialogBindings = new CompositeDisposable
-        {
-            BindUtils.RelayBind(this, TitleProperty, dialog, Dialog.TitleProperty),
-            BindUtils.RelayBind(this, IsModalProperty, dialog, Dialog.IsModalProperty),
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, dialog, Dialog.IsMotionEnabledProperty),
-            BindUtils.RelayBind(this, DialogHostTypeProperty, dialog, Dialog.DialogHostTypeProperty),
-            BindUtils.RelayBind(this, IsDragMovableProperty, dialog, Dialog.IsDragMovableProperty),
-            BindUtils.RelayBind(this, HorizontalOffsetProperty, dialog, Dialog.HorizontalOffsetProperty, BindingMode.TwoWay),
-            BindUtils.RelayBind(this, VerticalOffsetProperty, dialog, Dialog.VerticalOffsetProperty, BindingMode.TwoWay),
-            BindUtils.RelayBind(this, HostWidthProperty, dialog, Dialog.HostWidthProperty),
-            BindUtils.RelayBind(this, HostMinWidthProperty, dialog, Dialog.HostMinWidthProperty),
-            BindUtils.RelayBind(this, HostMaxWidthProperty, dialog, Dialog.HostMaxWidthProperty),
-            BindUtils.RelayBind(this, HostHeightProperty, dialog, Dialog.HostHeightProperty),
-            BindUtils.RelayBind(this, HostMinHeightProperty, dialog, Dialog.HostMinHeightProperty),
-            BindUtils.RelayBind(this, HostMaxHeightProperty, dialog, Dialog.HostMaxHeightProperty),
-            BindUtils.RelayBind(this, IsLoadingProperty, dialog, Dialog.IsLoadingProperty),
-            BindUtils.RelayBind(this, IsConfirmLoadingProperty, dialog, Dialog.IsConfirmLoadingProperty),
-            BindUtils.RelayBind(this, ResultProperty, dialog, Dialog.ResultProperty, BindingMode.TwoWay)
-        };
-
-        _dialogContent = new MessageBoxContent();
-        _dialogContentBindings = new CompositeDisposable
-        {
-            BindUtils.RelayBind(this, IconProperty, _dialogContent, MessageBoxContent.StyleIconProperty),
-            BindUtils.RelayBind(this, StyleProperty, _dialogContent, MessageBoxContent.StyleProperty),
-            BindUtils.RelayBind(this, ContentProperty, _dialogContent, ContentControl.ContentProperty),
-            BindUtils.RelayBind(this, ContentTemplateProperty, _dialogContent, ContentControl.ContentTemplateProperty)
-        };
-
-        SyncDialogPlacementTarget();
-        dialog.Content          =  _dialogContent;
-        dialog.Opened           += HandleDialogOpened;
-        dialog.Closed           += HandleDialogClosed;
-        dialog.Rejected         += HandleDialogCancelled;
-        dialog.Accepted         += HandleDialogConfirmed;
-        dialog.Finished         += HandleDialogFinished;
-        dialog.ButtonsConfigure =  ButtonsConfigure;
-        dialog.CustomButtons.AddRange(CustomButtons);
-
-        ConfigureOkButton();
-        ConfigureIcon();
-        ConfigurePositionOnStartup();
-    }
-
-    private void ReleaseTemplateDialog()
-    {
-        if (_dialog != null)
-        {
-            _dialog.Opened   -= HandleDialogOpened;
-            _dialog.Closed   -= HandleDialogClosed;
-            _dialog.Rejected -= HandleDialogCancelled;
-            _dialog.Accepted -= HandleDialogConfirmed;
-            _dialog.Finished -= HandleDialogFinished;
-            _dialog.ButtonsConfigure = null;
-            _dialog.CustomButtons.Clear();
-            _dialog.Content = null;
-        }
-
-        _dialogBindings?.Dispose();
-        _dialogBindings = null;
-        _dialogContentBindings?.Dispose();
-        _dialogContentBindings = null;
-        _dialogContent = null;
-        _dialog = null;
-    }
-
-    private void SyncDialogPlacementTarget()
-    {
-        if (_dialog != null)
-        {
-            var placementTarget = PlacementTarget;
-            _dialog.PlacementTarget  = placementTarget ?? this;
-            _dialog.MotionAnchorMode = ResolveDialogMotionAnchorMode(placementTarget);
-        }
-    }
-
-    private DialogMotionAnchorMode ResolveDialogMotionAnchorMode(Control? placementTarget)
-    {
-        return MotionAnchorMode switch
-        {
-            DialogMotionAnchorMode.ExplicitPlacementTarget => DialogMotionAnchorMode.ExplicitPlacementTarget,
-            DialogMotionAnchorMode.FallbackPlacementTarget => DialogMotionAnchorMode.FallbackPlacementTarget,
-            _ => placementTarget is null
-                ? DialogMotionAnchorMode.FallbackPlacementTarget
-                : DialogMotionAnchorMode.ExplicitPlacementTarget
-        };
-    }
-
-    private void HandleDialogOpened(object? sender, EventArgs e)
-    {
-        Opened?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void HandleDialogClosed(object? sender, EventArgs e)
-    {
-        using (BeginIgnoringIsOpen())
-        {
-            SetCurrentValue(IsOpenProperty, false);
-        }
-        Closed?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void HandleDialogCancelled(object? sender, EventArgs e)
-    {
-        Cancelled?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void HandleDialogConfirmed(object? sender, EventArgs e)
-    {
-        Confirmed?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void HandleDialogFinished(object? sender, DialogFinishedEventArgs e)
-    {
-        SetCurrentValue(ResultProperty, e.Result);
-    }
-
-    private void ConfigureIcon()
-    {
-        if (_dialog is not { } dialog)
-        {
-            return;
-        }
-
-        dialog.EscapeStandardButton = DialogStandardButton.NoButton;
-        if (Style == MessageBoxStyle.Information)
-        {
-            SetValue(IconProperty, new InfoCircleFilled(), BindingPriority.Template);
-            dialog.StandardButtons = DialogStandardButton.Ok;
-        }
-        else if (Style == MessageBoxStyle.Success)
-        {
-            SetValue(IconProperty, new CheckCircleFilled(), BindingPriority.Template);
-            dialog.StandardButtons = DialogStandardButton.Ok;
-        }
-        else if (Style == MessageBoxStyle.Error)
-        {
-            SetValue(IconProperty, new CloseCircleFilled(), BindingPriority.Template);
-            dialog.StandardButtons = DialogStandardButton.Ok;
-        }
-        else if (Style == MessageBoxStyle.Warning)
-        {
-            SetValue(IconProperty, new ExclamationCircleFilled(), BindingPriority.Template);
-            dialog.StandardButtons = DialogStandardButton.Ok;
-        }
-        else if (Style == MessageBoxStyle.Normal)
-        {
-            dialog.StandardButtons = DialogStandardButton.Ok;
-        }
-        else if (Style == MessageBoxStyle.Confirm)
-        {
-            SetValue(IconProperty, new ExclamationCircleFilled(), BindingPriority.Template);
-            dialog.EscapeStandardButton = DialogStandardButton.Cancel;
-            dialog.StandardButtons = DialogStandardButton.Ok | DialogStandardButton.Cancel;
-        }
-    }
-
-    private void ConfigureOkButton()
-    {
-        if (_dialog is not { } dialog)
-        {
-            return;
-        }
-
-        if (OkButtonStyle == MessageBoxOkButtonStyle.Primary)
-        {
-            dialog.DefaultStandardButton = DialogStandardButton.Ok;
-        }
-        else
-        {
-            dialog.DefaultStandardButton = DialogStandardButton.NoButton;
-        }
-    }
-
-    private void ConfigurePositionOnStartup()
-    {
-        if (_dialog != null)
-        {
-            if (IsCenterOnStartup)
-            {
-                _dialog.HorizontalStartupLocation = DialogHorizontalAnchor.Center;
-                _dialog.VerticalStartupLocation   = DialogVerticalAnchor.Center;
-            }
-            else
-            {
-                _dialog.HorizontalStartupLocation = DialogHorizontalAnchor.Custom;
-                _dialog.VerticalStartupLocation   = DialogVerticalAnchor.Custom;
-            }
-        }
-    }
-
-    protected override Size MeasureCore(Size availableSize)
-    {
-        if (IsVisible)
-        {
-            ApplyStyling();
-        }
-
-        return new Size();
-    }
-
-    private IgnoreIsOpenScope BeginIgnoringIsOpen()
-    {
-        return new IgnoreIsOpenScope(this);
-    }
-
-    private readonly struct IgnoreIsOpenScope : IDisposable
-    {
-        private readonly MessageBox _owner;
-
-        public IgnoreIsOpenScope(MessageBox owner)
-        {
-            _owner                      = owner;
-            _owner._ignoreIsOpenChanged = true;
-        }
-
-        public void Dispose()
-        {
-            _owner._ignoreIsOpenChanged = false;
-        }
-    }
-
-    private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (_dialog != null)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    DialogButtonCollectionUtils.AddRange(_dialog.CustomButtons, e.NewItems!);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    DialogButtonCollectionUtils.RemoveAll(_dialog.CustomButtons, e.OldItems!);
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                case NotifyCollectionChangedAction.Move:
-                case NotifyCollectionChangedAction.Reset:
-                    throw new NotSupportedException();
-            }
-        }
-    }
 }

@@ -5,58 +5,52 @@ using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.VisualTree;
+using Avalonia.Data;
 
 namespace AtomUI.Desktop.Controls;
 
 public class DialogButtonBox : TemplatedControl, IMotionAwareControl
 {
-    private static readonly IReadOnlyList<DialogButton> EmptyButtonList = Array.Empty<DialogButton>();
-    private const int DialogButtonRoleCapacity = (int)DialogButtonRole.CustomRole + 1;
-
     #region 公共属性定义
 
     public static readonly StyledProperty<DialogStandardButtons> StandardButtonsProperty =
-        AvaloniaProperty.Register<DialogButtonBox, DialogStandardButtons>(nameof (StandardButtons), DialogStandardButton.NoButton);
-    
+        AvaloniaProperty.Register<DialogButtonBox, DialogStandardButtons>(nameof(StandardButtons), DialogStandardButton.NoButton);
+
     public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
-        AvaloniaProperty.Register<DialogButtonBox, DialogStandardButton>(nameof (DefaultStandardButton));
-    
+        AvaloniaProperty.Register<DialogButtonBox, DialogStandardButton>(nameof(DefaultStandardButton));
+
     public static readonly StyledProperty<DialogStandardButton> EscapeStandardButtonProperty =
-        AvaloniaProperty.Register<DialogButtonBox, DialogStandardButton>(nameof (EscapeStandardButton));
-    
+        AvaloniaProperty.Register<DialogButtonBox, DialogStandardButton>(nameof(EscapeStandardButton));
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DialogButtonBox>();
-    
+
     public DialogStandardButtons StandardButtons
     {
         get => GetValue(StandardButtonsProperty);
         set => SetValue(StandardButtonsProperty, value);
     }
-    
+
     public DialogStandardButton DefaultStandardButton
     {
         get => GetValue(DefaultStandardButtonProperty);
         set => SetValue(DefaultStandardButtonProperty, value);
     }
-    
+
     public DialogStandardButton EscapeStandardButton
     {
         get => GetValue(EscapeStandardButtonProperty);
         set => SetValue(EscapeStandardButtonProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public AvaloniaList<DialogButton> CustomButtons { get; } = new ();
+    public AvaloniaList<DialogButton> CustomButtons { get; } = new();
 
-    public Dictionary<DialogButtonRole, List<DialogButton>> ButtonGroup => _buttonGroup;
-    public Dictionary<DialogButtonRole, List<DialogButton>> StandardButtonGroup => _standardButtonGroup;
-    
     #endregion
 
     #region 公共事件定义
@@ -65,177 +59,176 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
     public event EventHandler<DialogButtonClickedEventArgs>? Clicked;
     public event EventHandler? HelpRequested;
     public event EventHandler? Rejected;
-    public event EventHandler<DialogBoxButtonSyncEventArgs>? ButtonsSynchronized;
 
     #endregion
 
     #region 按钮语言属性定义
 
     public static readonly StyledProperty<string?> OkButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (OkButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(OkButtonText));
+
     public static readonly StyledProperty<string?> OpenButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (OpenButtonText));
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(OpenButtonText));
 
     public static readonly StyledProperty<string?> SaveButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (SaveButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(SaveButtonText));
+
     public static readonly StyledProperty<string?> CancelButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (CancelButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(CancelButtonText));
+
     public static readonly StyledProperty<string?> CloseButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (CloseButtonText));
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(CloseButtonText));
 
     public static readonly StyledProperty<string?> DiscardButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (DiscardButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(DiscardButtonText));
+
     public static readonly StyledProperty<string?> ApplyButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (ApplyButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(ApplyButtonText));
+
     public static readonly StyledProperty<string?> ResetButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (ResetButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(ResetButtonText));
+
     public static readonly StyledProperty<string?> ReloadButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (ReloadButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(ReloadButtonText));
+
     public static readonly StyledProperty<string?> RestoreDefaultsButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (RestoreDefaultsButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(RestoreDefaultsButtonText));
+
     public static readonly StyledProperty<string?> HelpButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (HelpButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(HelpButtonText));
+
     public static readonly StyledProperty<string?> SaveAllButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (SaveAllButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(SaveAllButtonText));
+
     public static readonly StyledProperty<string?> YesButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (YesButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(YesButtonText));
+
     public static readonly StyledProperty<string?> YesToAllButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (YesToAllButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(YesToAllButtonText));
+
     public static readonly StyledProperty<string?> NoButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (NoButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(NoButtonText));
+
     public static readonly StyledProperty<string?> NoToAllButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (NoToAllButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(NoToAllButtonText));
+
     public static readonly StyledProperty<string?> AbortButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (AbortButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(AbortButtonText));
+
     public static readonly StyledProperty<string?> RetryButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (RetryButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(RetryButtonText));
+
     public static readonly StyledProperty<string?> IgnoreButtonTextProperty =
-        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (IgnoreButtonText));
-    
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof(IgnoreButtonText));
+
     public string? OkButtonText
     {
         get => GetValue(OkButtonTextProperty);
         set => SetValue(OkButtonTextProperty, value);
     }
-    
+
     public string? OpenButtonText
     {
         get => GetValue(OpenButtonTextProperty);
         set => SetValue(OpenButtonTextProperty, value);
     }
-    
+
     public string? SaveButtonText
     {
         get => GetValue(SaveButtonTextProperty);
         set => SetValue(SaveButtonTextProperty, value);
     }
-    
+
     public string? CancelButtonText
     {
         get => GetValue(CancelButtonTextProperty);
         set => SetValue(CancelButtonTextProperty, value);
     }
-    
+
     public string? CloseButtonText
     {
         get => GetValue(CloseButtonTextProperty);
         set => SetValue(CloseButtonTextProperty, value);
     }
-    
+
     public string? DiscardButtonText
     {
         get => GetValue(DiscardButtonTextProperty);
         set => SetValue(DiscardButtonTextProperty, value);
     }
-    
+
     public string? ApplyButtonText
     {
         get => GetValue(ApplyButtonTextProperty);
         set => SetValue(ApplyButtonTextProperty, value);
     }
-    
+
     public string? ResetButtonText
     {
         get => GetValue(ResetButtonTextProperty);
         set => SetValue(ResetButtonTextProperty, value);
     }
-    
+
     public string? ReloadButtonText
     {
         get => GetValue(ReloadButtonTextProperty);
         set => SetValue(ReloadButtonTextProperty, value);
     }
-    
+
     public string? RestoreDefaultsButtonText
     {
         get => GetValue(RestoreDefaultsButtonTextProperty);
         set => SetValue(RestoreDefaultsButtonTextProperty, value);
     }
-    
+
     public string? HelpButtonText
     {
         get => GetValue(HelpButtonTextProperty);
         set => SetValue(HelpButtonTextProperty, value);
     }
-    
+
     public string? SaveAllButtonText
     {
         get => GetValue(SaveAllButtonTextProperty);
         set => SetValue(SaveAllButtonTextProperty, value);
     }
-    
+
     public string? YesButtonText
     {
         get => GetValue(YesButtonTextProperty);
         set => SetValue(YesButtonTextProperty, value);
     }
-    
+
     public string? YesToAllButtonText
     {
         get => GetValue(YesToAllButtonTextProperty);
         set => SetValue(YesToAllButtonTextProperty, value);
     }
-    
+
     public string? NoButtonText
     {
         get => GetValue(NoButtonTextProperty);
         set => SetValue(NoButtonTextProperty, value);
     }
-    
+
     public string? NoToAllButtonText
     {
         get => GetValue(NoToAllButtonTextProperty);
         set => SetValue(NoToAllButtonTextProperty, value);
     }
-    
+
     public string? AbortButtonText
     {
         get => GetValue(AbortButtonTextProperty);
         set => SetValue(AbortButtonTextProperty, value);
     }
-    
+
     public string? RetryButtonText
     {
         get => GetValue(RetryButtonTextProperty);
         set => SetValue(RetryButtonTextProperty, value);
     }
-    
+
     public string? IgnoreButtonText
     {
         get => GetValue(IgnoreButtonTextProperty);
@@ -243,715 +236,371 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
     }
     #endregion
 
+    #region 内部协作 API
+
+    internal event EventHandler? EffectiveButtonsChanged;
+
+    internal IReadOnlyList<DialogButton> EffectiveButtons => _effectiveButtons;
+
+    #endregion
+
+    private static readonly (
+        DialogStandardButton Type,
+        DialogButtonRole Role,
+        StyledProperty<string?> ContentProperty)[] StandardButtonDefinitions =
+    {
+        (DialogStandardButton.Ok, DialogButtonRole.AcceptRole, OkButtonTextProperty),
+        (DialogStandardButton.Open, DialogButtonRole.AcceptRole, OpenButtonTextProperty),
+        (DialogStandardButton.Save, DialogButtonRole.AcceptRole, SaveButtonTextProperty),
+        (DialogStandardButton.SaveAll, DialogButtonRole.AcceptRole, SaveAllButtonTextProperty),
+        (DialogStandardButton.Retry, DialogButtonRole.AcceptRole, RetryButtonTextProperty),
+        (DialogStandardButton.Ignore, DialogButtonRole.AcceptRole, IgnoreButtonTextProperty),
+        (DialogStandardButton.Yes, DialogButtonRole.YesRole, YesButtonTextProperty),
+        (DialogStandardButton.YesToAll, DialogButtonRole.YesRole, YesToAllButtonTextProperty),
+        (DialogStandardButton.Cancel, DialogButtonRole.RejectRole, CancelButtonTextProperty),
+        (DialogStandardButton.Close, DialogButtonRole.RejectRole, CloseButtonTextProperty),
+        (DialogStandardButton.Abort, DialogButtonRole.RejectRole, AbortButtonTextProperty),
+        (DialogStandardButton.No, DialogButtonRole.NoRole, NoButtonTextProperty),
+        (DialogStandardButton.NoToAll, DialogButtonRole.NoRole, NoToAllButtonTextProperty),
+        (DialogStandardButton.Discard, DialogButtonRole.DestructiveRole, DiscardButtonTextProperty),
+        (DialogStandardButton.Help, DialogButtonRole.HelpRole, HelpButtonTextProperty),
+        (DialogStandardButton.Reset, DialogButtonRole.ResetRole, ResetButtonTextProperty),
+        (DialogStandardButton.Reload, DialogButtonRole.ActionRole, ReloadButtonTextProperty),
+        (DialogStandardButton.RestoreDefaults, DialogButtonRole.ResetRole, RestoreDefaultsButtonTextProperty),
+        (DialogStandardButton.Apply, DialogButtonRole.ApplyRole, ApplyButtonTextProperty)
+    };
+
     private DockPanel? _leftGroup;
     private DockPanel? _centerGroup;
     private DockPanel? _rightGroup;
-    private List<DialogButton>? _standardButtons;
-    private Dictionary<DialogButtonRole, List<DialogButton>> _buttonGroup;
-    private Dictionary<DialogButtonRole, List<DialogButton>> _standardButtonGroup;
-    
+    private readonly List<DialogButton> _standardButtons = new();
+    private readonly List<IDisposable> _standardButtonBindings = new();
+    private readonly HashSet<DialogButton> _subscribedCustomButtons = new();
+    private readonly AvaloniaList<DialogButton> _effectiveButtons = new();
+
     static DialogButtonBox()
     {
         AffectsMeasure<DialogButtonBox>(StandardButtonsProperty);
     }
-    
+
     public DialogButtonBox()
     {
-        CustomButtons.CollectionChanged += new (HandleCustomButtonsChanged);
-        _standardButtonGroup            = new Dictionary<DialogButtonRole, List<DialogButton>>(DialogButtonRoleCapacity);
-        _buttonGroup                    = new Dictionary<DialogButtonRole, List<DialogButton>>(DialogButtonRoleCapacity);
+        CustomButtons.CollectionChanged += new(HandleCustomButtonsChanged);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == StandardButtonsProperty)
+        if (change.Property == TemplateProperty)
+        {
+            ReleaseTemplateParts();
+        }
+        else if (change.Property == StandardButtonsProperty)
         {
             BuildStandardButtons();
-            if (this.IsAttachedToVisualTree())
-            {
-                SyncButtonsToGroup();
-            }
+            SynchronizeButtons();
+        }
+        else if (change.Property == DefaultStandardButtonProperty ||
+                 change.Property == EscapeStandardButtonProperty)
+        {
+            UpdateStandardButtonDefaults();
+            NotifyButtonsSynchronized();
         }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _leftGroup   = e.NameScope.Find<DockPanel>("PART_LeftGroup");
+        ReleaseTemplateParts();
+        _leftGroup = e.NameScope.Find<DockPanel>("PART_LeftGroup");
         _centerGroup = e.NameScope.Find<DockPanel>("PART_CenterGroup");
-        _rightGroup  = e.NameScope.Find<DockPanel>("PART_RightGroup");
+        _rightGroup = e.NameScope.Find<DockPanel>("PART_RightGroup");
         BuildStandardButtons();
-        SyncButtonsToGroup();
+        SynchronizeButtons();
     }
 
     private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        switch (e.Action)
-        {
-            case NotifyCollectionChangedAction.Add:
-                var newItems = e.NewItems!;
-                for (var i = 0; i < newItems.Count; i++)
-                {
-                    if (newItems[i] is not DialogButton button)
-                    {
-                        continue;
-                    }
-
-                    AddButtonToGroup(button.Role, button, false);
-                }
-                break;
-            case NotifyCollectionChangedAction.Remove:
-                var oldItems = e.OldItems!;
-                for (var i = 0; i < oldItems.Count; i++)
-                {
-                    if (oldItems[i] is not DialogButton button)
-                    {
-                        continue;
-                    }
-
-                    RemoveButtonFromGroup(button.Role, button, false);
-                }
-                break;
-            case NotifyCollectionChangedAction.Replace:
-            case NotifyCollectionChangedAction.Move:
-            case NotifyCollectionChangedAction.Reset:
-                throw new NotSupportedException();
-        }
-
-        SyncButtonsToGroup();
-    }
-
-    private void AddButtonToGroup(DialogButtonRole buttonRole, DialogButton button, bool isStandard)
-    {
-        var targetGroup = isStandard ? _standardButtonGroup : _buttonGroup;
-        if (!targetGroup.TryGetValue(buttonRole, out var buttons))
-        {
-            buttons = new List<DialogButton>(1);
-            targetGroup.Add(buttonRole, buttons);
-        }
-
-        if (buttons.Contains(button))
-        {
-            return;
-        }
-
-        button.Click += HandleButtonClicked;
-        buttons.Add(button);
-    }
-    
-    private void RemoveButtonFromGroup(DialogButtonRole buttonRole, DialogButton button, bool isStandard)
-    {
-        var targetGroup = isStandard ? _standardButtonGroup : _buttonGroup;
-        if (targetGroup.TryGetValue(buttonRole, out var buttons))
-        {
-            button.Click -= HandleButtonClicked;
-            buttons.Remove(button);
-        }
+        SynchronizeCustomButtonSubscriptions();
+        SynchronizeButtons();
     }
 
     private void BuildStandardButtons()
     {
         ReleaseStandardButtons();
 
-        var standardButtons     = StandardButtons;
-        var standardButtonFlags = standardButtons.ButtonFlags;
-        if (standardButtonFlags == DialogStandardButton.NoButton)
+        foreach (var definition in StandardButtonDefinitions)
         {
-            return;
-        }
-        
-        _standardButtons = new List<DialogButton>(standardButtons.Count);
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Ok))
-        {
-            var button = new DialogButton
+            if (!StandardButtons.HasFlag(definition.Type))
             {
-                Role = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Ok ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Ok,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Ok,
-                StandardButtonType = DialogStandardButton.Ok
-            };
-            button[!Button.ContentProperty]         = this[!OkButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
-        }
+                continue;
+            }
 
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Open))
-        {
+            var isDefault = definition.Type == DefaultStandardButton;
             var button = new DialogButton
             {
-                Role        = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Open ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Open,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Open,
-                StandardButtonType = DialogStandardButton.Open
+                Role = definition.Role,
+                ButtonType = isDefault ? ButtonType.Primary : ButtonType.Default,
+                IsDefaultConfirmButton = isDefault,
+                IsDefaultEscapeButton = definition.Type == EscapeStandardButton,
+                StandardButtonType = definition.Type
             };
-            button[!Button.ContentProperty]         = this[!OpenButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+            _standardButtonBindings.Add(
+                button.Bind(
+                    Button.ContentProperty,
+                    this.GetObservable(definition.ContentProperty),
+                    BindingPriority.Template));
+            _standardButtonBindings.Add(
+                button.Bind(Button.IsMotionEnabledProperty, this.GetObservable(IsMotionEnabledProperty)));
+            button.Click += HandleButtonClicked;
             _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
         }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Save))
+    }
+
+    private void UpdateStandardButtonDefaults()
+    {
+        foreach (var button in _standardButtons)
         {
-            var button = new DialogButton
-            {
-                Role        = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Save ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Save,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Save,
-                StandardButtonType = DialogStandardButton.Save
-            };
-            button[!Button.ContentProperty]         = this[!SaveButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.SaveAll))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.SaveAll ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.SaveAll,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.SaveAll,
-                StandardButtonType = DialogStandardButton.SaveAll
-            };
-            button[!Button.ContentProperty]         = this[!SaveAllButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Retry))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Retry ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Retry,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Retry,
-                StandardButtonType = DialogStandardButton.Retry
-            };
-            button[!Button.ContentProperty]         = this[!RetryButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Ignore))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Ignore ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Ignore,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Ignore,
-                StandardButtonType = DialogStandardButton.Ignore
-            };
-            button[!Button.ContentProperty]         = this[!IgnoreButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Yes))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.YesRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Yes ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Yes,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Yes,
-                StandardButtonType = DialogStandardButton.Yes
-            };
-            button[!Button.ContentProperty]         = this[!YesButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.YesRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.YesToAll))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.YesRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.YesToAll ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.YesToAll,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.YesToAll,
-                StandardButtonType = DialogStandardButton.YesToAll
-            };
-            button[!Button.ContentProperty]         = this[!YesToAllButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.YesRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Cancel))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.RejectRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Cancel ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Cancel,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Cancel,
-                StandardButtonType = DialogStandardButton.Cancel
-            };
-            button[!Button.ContentProperty]         = this[!CancelButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Close))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.RejectRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Close ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Close,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Close,
-                StandardButtonType = DialogStandardButton.Close
-            };
-            button[!Button.ContentProperty]         = this[!CloseButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Abort))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.RejectRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Abort ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Abort,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Abort,
-                StandardButtonType = DialogStandardButton.Abort
-            };
-            button[!Button.ContentProperty]         = this[!AbortButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.No))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.NoRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.No ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.No,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.No,
-                StandardButtonType = DialogStandardButton.No
-            };
-            button[!Button.ContentProperty]         = this[!NoButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.NoRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.NoToAll))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.NoRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.NoToAll ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.NoToAll,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.NoToAll,
-                StandardButtonType = DialogStandardButton.NoToAll
-            };
-            button[!Button.ContentProperty]         = this[!NoToAllButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.NoRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Discard))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.DestructiveRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Discard ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Discard,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Discard,
-                StandardButtonType = DialogStandardButton.Discard
-            };
-            button[!Button.ContentProperty]         = this[!DiscardButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.DestructiveRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Help))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.HelpRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Help ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Help,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Help,
-                StandardButtonType = DialogStandardButton.Help
-            };
-            button[!Button.ContentProperty]         = this[!HelpButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.HelpRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Reset))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.ResetRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Reset ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Reset,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Reset,
-                StandardButtonType = DialogStandardButton.Reset
-            };
-            button[!Button.ContentProperty]         = this[!ResetButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.ResetRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Reload))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.ActionRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Reload ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Reload,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Reload,
-                StandardButtonType = DialogStandardButton.Reload
-            };
-            button[!Button.ContentProperty]         = this[!ReloadButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.ActionRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.RestoreDefaults))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.ResetRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.RestoreDefaults ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.RestoreDefaults,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.RestoreDefaults,
-                StandardButtonType = DialogStandardButton.RestoreDefaults
-            };
-            button[!Button.ContentProperty]         = this[!RestoreDefaultsButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.ResetRole, button, true);
-        }
-        
-        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Apply))
-        {
-            var button = new DialogButton
-            {
-                Role = DialogButtonRole.ApplyRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Apply ? ButtonType.Primary : ButtonType.Default,
-                IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Apply,
-                IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Apply,
-                StandardButtonType = DialogStandardButton.Apply
-            };
-            button[!Button.ContentProperty]         = this[!ApplyButtonTextProperty];
-            button[!Button.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            _standardButtons.Add(button);
-            AddButtonToGroup(DialogButtonRole.ApplyRole, button, true);
+            var standardButton = button.StandardButtonType;
+            var isDefault = standardButton == DefaultStandardButton;
+            button.ButtonType = isDefault ? ButtonType.Primary : ButtonType.Default;
+            button.IsDefaultConfirmButton = isDefault;
+            button.IsDefaultEscapeButton = standardButton == EscapeStandardButton;
         }
     }
 
     private void ReleaseStandardButtons()
     {
-        if (_standardButtons == null)
-        {
-            return;
-        }
-
+        var retainedValues = _standardButtons
+            .Select(button => (button.Content, button.IsMotionEnabled))
+            .ToArray();
         foreach (var button in _standardButtons)
         {
             button.Click -= HandleButtonClicked;
-            foreach (var buttons in _standardButtonGroup.Values)
-            {
-                buttons.RemoveAll(x => x == button);
-            }
         }
+
+        foreach (var binding in _standardButtonBindings)
+        {
+            binding.Dispose();
+        }
+
+        for (var index = 0; index < _standardButtons.Count; index++)
+        {
+            var button = _standardButtons[index];
+            var values = retainedValues[index];
+            button.SetCurrentValue(Button.ContentProperty, values.Content);
+            button.SetCurrentValue(Button.IsMotionEnabledProperty, values.IsMotionEnabled);
+        }
+
+        _standardButtonBindings.Clear();
         _standardButtons.Clear();
-        _standardButtons = null;
     }
 
     internal void ReleaseButtons()
     {
+        ReleaseTemplateParts();
+        ReleaseStandardButtons();
+        ReleaseCustomButtonSubscriptions();
+        _effectiveButtons.Clear();
+    }
+
+    private void SynchronizeCustomButtonSubscriptions()
+    {
+        var currentButtons = new HashSet<DialogButton>(CustomButtons);
+        foreach (var button in new List<DialogButton>(_subscribedCustomButtons))
+        {
+            if (currentButtons.Contains(button))
+            {
+                continue;
+            }
+
+            button.Click -= HandleButtonClicked;
+            _subscribedCustomButtons.Remove(button);
+        }
+
+        foreach (var button in currentButtons)
+        {
+            if (_subscribedCustomButtons.Add(button))
+            {
+                button.Click += HandleButtonClicked;
+            }
+        }
+    }
+
+    private void ReleaseCustomButtonSubscriptions()
+    {
+        foreach (var button in _subscribedCustomButtons)
+        {
+            button.Click -= HandleButtonClicked;
+        }
+
+        _subscribedCustomButtons.Clear();
+    }
+
+    private void ReleaseTemplateParts()
+    {
         ClearButtonPanel(_leftGroup);
         ClearButtonPanel(_centerGroup);
         ClearButtonPanel(_rightGroup);
-        ReleaseStandardButtons();
-        ReleaseCustomButtons();
+        _leftGroup = null;
+        _centerGroup = null;
+        _rightGroup = null;
     }
 
-    private void ReleaseCustomButtons()
+    private void SynchronizeButtons()
     {
-        foreach (var buttons in _buttonGroup.Values)
-        {
-            foreach (var button in buttons)
-            {
-                button.Click -= HandleButtonClicked;
-            }
-            buttons.Clear();
-        }
-        _buttonGroup.Clear();
-    }
-
-    private static bool HasStandardButton(DialogStandardButton buttons, DialogStandardButton button)
-    {
-        return (buttons & button) == button;
-    }
-
-    private void SyncButtonsToGroup()
-    {
-        if (_leftGroup == null ||
-            _rightGroup == null ||
-            _centerGroup == null)
+        if (_leftGroup is null || _centerGroup is null || _rightGroup is null)
         {
             return;
         }
-        var rightButtons       = SyncRightGroupButtons(_rightGroup);
-        var centerGroupButtons = SyncCenterGroupButtons(_centerGroup);
-        var leftGroupButtons   = SyncLeftGroupButtons(_leftGroup);
-        var buttons            = new List<DialogButton>(rightButtons.Count + centerGroupButtons.Count + leftGroupButtons.Count);
-        buttons.AddRange(rightButtons);
-        buttons.AddRange(centerGroupButtons);
-        buttons.AddRange(leftGroupButtons);
-        ButtonsSynchronized?.Invoke(this, new DialogBoxButtonSyncEventArgs(buttons));
+
+        ClearButtonPanel(_leftGroup);
+        ClearButtonPanel(_centerGroup);
+        ClearButtonPanel(_rightGroup);
+
+        var customButtons = GetDistinctCustomButtons();
+        var rightButtons = BuildRightGroupButtons(customButtons);
+        var centerButtons = BuildCenterGroupButtons(customButtons);
+        var leftButtons = BuildLeftGroupButtons(customButtons);
+
+        PopulateButtonPanel(_rightGroup, rightButtons, Dock.Right);
+        PopulateButtonPanel(_centerGroup, centerButtons, Dock.Left);
+        PopulateButtonPanel(_leftGroup, leftButtons, Dock.Left);
+
+        _effectiveButtons.Clear();
+        _effectiveButtons.AddRange(rightButtons);
+        _effectiveButtons.AddRange(centerButtons);
+        _effectiveButtons.AddRange(leftButtons);
+        NotifyButtonsSynchronized();
     }
-    
-    private List<DialogButton> SyncRightGroupButtons(DockPanel rightGroup)
+
+    private List<DialogButton> BuildRightGroupButtons(IReadOnlyList<DialogButton> customButtons)
     {
-        // 后面可以定义各种操作系统的风格，现在先写死
-        // 标准
-        var standardAcceptList  = GetRoleButtons(_standardButtonGroup, DialogButtonRole.AcceptRole);
-        var standardAcceptIndex = 0;
-        var acceptList          = GetRoleButtons(_buttonGroup, DialogButtonRole.AcceptRole);
-        var standardYesList     = GetRoleButtons(_standardButtonGroup, DialogButtonRole.YesRole);
-        var yesList             = GetRoleButtons(_buttonGroup, DialogButtonRole.YesRole);
-        var standardRejectList  = GetRoleButtons(_standardButtonGroup, DialogButtonRole.RejectRole);
-        var rejectList          = GetRoleButtons(_buttonGroup, DialogButtonRole.RejectRole);
-        var standardNoList      = GetRoleButtons(_standardButtonGroup, DialogButtonRole.NoRole);
-        var noList              = GetRoleButtons(_buttonGroup, DialogButtonRole.NoRole);
-        var rightGroupButtons   = new List<DialogButton>(standardAcceptList.Count + acceptList.Count +
-                                                          standardYesList.Count + yesList.Count +
-                                                          standardRejectList.Count + rejectList.Count +
-                                                          standardNoList.Count + noList.Count);
-        
-        if (standardAcceptList.Count > 0)
-        {
-            var acceptButton = standardAcceptList[standardAcceptIndex++];
-            rightGroupButtons.Add(acceptButton);
-        }
-        
-        // 自定义
-        var acceptIndex = 0;
-        
-        if (acceptList.Count > 0)
-        {
-            var acceptButton = acceptList[acceptIndex++];
-            rightGroupButtons.Add(acceptButton);
-        }
-        
-        // 标准
-        var standardYesIndex = 0;
-        
-        if (standardYesList.Count > 0)
-        {
-            var yesButton = standardYesList[standardYesIndex++];
-            rightGroupButtons.Add(yesButton);
-        }
-        // 自定义
-        
-        var yesIndex = 0;
-        
-        if (yesList.Count > 0)
-        {
-            var yesButton = yesList[yesIndex++];
-            rightGroupButtons.Add(yesButton);
-        }
-        
-        // 输出 reject
-        // 标准
-        foreach (var rejectButton in standardRejectList)
-        {
-            rightGroupButtons.Add(rejectButton);
-        }
-        
-        // 自定义
-        foreach (var rejectButton in rejectList)
-        {
-            rightGroupButtons.Add(rejectButton);
-        }
-        
-        // 输出 No
-        foreach (var button in standardNoList)
-        {
-            rightGroupButtons.Add(button);
-        }
-        
-        // 自定义
-        foreach (var button in noList)
-        {
-            rightGroupButtons.Add(button);
-        }
-        
-        // 输出剩下的 Accept
-        // 标准
-        for (var i = standardAcceptIndex; i < standardAcceptList.Count; i++)
-        {
-            rightGroupButtons.Add(standardAcceptList[i]);
-        }
-        
-        // 自定义
+        var standardAccept = GetRoleButtons(_standardButtons, DialogButtonRole.AcceptRole);
+        var customAccept = GetRoleButtons(customButtons, DialogButtonRole.AcceptRole);
+        var standardYes = GetRoleButtons(_standardButtons, DialogButtonRole.YesRole);
+        var customYes = GetRoleButtons(customButtons, DialogButtonRole.YesRole);
+        var buttons = new List<DialogButton>();
 
-        for (var i = acceptIndex; i < acceptList.Count; i++)
-        {
-            rightGroupButtons.Add(acceptList[i]);
-        }
-        
-        // 输出剩下的 Yes
-        // 标准
-        for (var i = standardYesIndex; i < standardYesList.Count; i++)
-        {
-            rightGroupButtons.Add(standardYesList[i]);
-        }
-        
-        // 自定义
+        var standardAcceptIndex = AddFirst(buttons, standardAccept);
+        var customAcceptIndex = AddFirst(buttons, customAccept);
+        var standardYesIndex = AddFirst(buttons, standardYes);
+        var customYesIndex = AddFirst(buttons, customYes);
 
-        for (var i = yesIndex; i < yesList.Count; i++)
-        {
-            rightGroupButtons.Add(yesList[i]);
-        }
-
-        ClearButtonPanel(rightGroup);
-        foreach (var button in rightGroupButtons)
-        {
-            DockPanel.SetDock(button, Dock.Right);
-        }
-        
-        rightGroup.Children.AddRange(rightGroupButtons);
-        rightGroup.Children.Add(new Control());
-        return rightGroupButtons;
+        buttons.AddRange(GetRoleButtons(_standardButtons, DialogButtonRole.RejectRole));
+        buttons.AddRange(GetRoleButtons(customButtons, DialogButtonRole.RejectRole));
+        buttons.AddRange(GetRoleButtons(_standardButtons, DialogButtonRole.NoRole));
+        buttons.AddRange(GetRoleButtons(customButtons, DialogButtonRole.NoRole));
+        AddRemaining(buttons, standardAccept, standardAcceptIndex);
+        AddRemaining(buttons, customAccept, customAcceptIndex);
+        AddRemaining(buttons, standardYes, standardYesIndex);
+        AddRemaining(buttons, customYes, customYesIndex);
+        buttons.AddRange(GetRoleButtons(customButtons, DialogButtonRole.CustomRole));
+        return buttons;
     }
 
-    private List<DialogButton> SyncCenterGroupButtons(DockPanel centerGroup)
+    private List<DialogButton> BuildCenterGroupButtons(IReadOnlyList<DialogButton> customButtons)
     {
-        // 标准
-        var standardDestructiveList  = GetRoleButtons(_standardButtonGroup, DialogButtonRole.DestructiveRole);
-        var destructiveList          = GetRoleButtons(_buttonGroup, DialogButtonRole.DestructiveRole);
-        var centerGroupButtons       = new List<DialogButton>(standardDestructiveList.Count + destructiveList.Count);
-        
-        foreach (var button in standardDestructiveList)
-        {
-            centerGroupButtons.Add(button);
-        }
-        
-        // 自定义
-        foreach (var button in destructiveList)
-        {
-            centerGroupButtons.Add(button);
-        }
-        ClearButtonPanel(centerGroup);
-        foreach (var button in centerGroupButtons)
-        {
-            DockPanel.SetDock(button, Dock.Left);
-        }
-        centerGroup.Children.AddRange(centerGroupButtons);
-        centerGroup.Children.Add(new Control());
-        return centerGroupButtons;
+        var buttons = new List<DialogButton>();
+        buttons.AddRange(GetRoleButtons(_standardButtons, DialogButtonRole.DestructiveRole));
+        buttons.AddRange(GetRoleButtons(customButtons, DialogButtonRole.DestructiveRole));
+        return buttons;
     }
 
-    private List<DialogButton> SyncLeftGroupButtons(DockPanel leftGroup)
+    private List<DialogButton> BuildLeftGroupButtons(IReadOnlyList<DialogButton> customButtons)
     {
-        // 标准
-        var standardHelpList = GetRoleButtons(_standardButtonGroup, DialogButtonRole.HelpRole);
-        var helpList         = GetRoleButtons(_buttonGroup, DialogButtonRole.HelpRole);
-        var standardResetList = GetRoleButtons(_standardButtonGroup, DialogButtonRole.ResetRole);
-        var resetList         = GetRoleButtons(_buttonGroup, DialogButtonRole.ResetRole);
-        var standardApplyList = GetRoleButtons(_standardButtonGroup, DialogButtonRole.ApplyRole);
-        var applyList         = GetRoleButtons(_buttonGroup, DialogButtonRole.ApplyRole);
-        var standardActionList = GetRoleButtons(_standardButtonGroup, DialogButtonRole.ActionRole);
-        var actionList         = GetRoleButtons(_buttonGroup, DialogButtonRole.ActionRole);
-        var leftGroupButtons   = new List<DialogButton>(standardHelpList.Count + helpList.Count +
-                                                        standardResetList.Count + resetList.Count +
-                                                        standardApplyList.Count + applyList.Count +
-                                                        standardActionList.Count + actionList.Count);
-        foreach (var button in standardHelpList)
-        {
-            leftGroupButtons.Add(button);
-        }
-        
-        // 自定义
-        foreach (var button in helpList)
-        {
-            leftGroupButtons.Add(button);
-        }
-        
-        // 标准
-        foreach (var button in standardResetList)
-        {
-            leftGroupButtons.Add(button);
-        }
-        
-        // 自定义
-        foreach (var button in resetList)
-        {
-            leftGroupButtons.Add(button);
-        }
-        
-        // 标准
-        foreach (var button in standardApplyList)
-        {
-            leftGroupButtons.Add(button);
-        }
-        
-        // 自定义
-        foreach (var button in applyList)
-        {
-            leftGroupButtons.Add(button);
-        }
-        
-        // 标准
-        foreach (var button in standardActionList)
-        {
-            leftGroupButtons.Add(button);
-        }
-        
-        // 自定义
-        foreach (var button in actionList)
-        {
-            leftGroupButtons.Add(button);
-        }
-        
-        ClearButtonPanel(leftGroup);
-        foreach (var button in leftGroupButtons)
-        {
-            DockPanel.SetDock(button, Dock.Left);
-        }
-
-        leftGroup.Children.AddRange(leftGroupButtons);
-        leftGroup.Children.Add(new Control());
-        return leftGroupButtons;
+        var buttons = new List<DialogButton>();
+        AppendRoleButtons(buttons, customButtons, DialogButtonRole.HelpRole);
+        AppendRoleButtons(buttons, customButtons, DialogButtonRole.ResetRole);
+        AppendRoleButtons(buttons, customButtons, DialogButtonRole.ApplyRole);
+        AppendRoleButtons(buttons, customButtons, DialogButtonRole.ActionRole);
+        return buttons;
     }
 
-    private static IReadOnlyList<DialogButton> GetRoleButtons(
-        Dictionary<DialogButtonRole, List<DialogButton>> group,
+    private void AppendRoleButtons(
+        List<DialogButton> target,
+        IReadOnlyList<DialogButton> customButtons,
         DialogButtonRole role)
     {
-        return group.GetValueOrDefault(role) ?? EmptyButtonList;
+        target.AddRange(GetRoleButtons(_standardButtons, role));
+        target.AddRange(GetRoleButtons(customButtons, role));
+    }
+
+    private List<DialogButton> GetDistinctCustomButtons()
+    {
+        var result = new List<DialogButton>(CustomButtons.Count);
+        var seen = new HashSet<DialogButton>();
+        foreach (var button in CustomButtons)
+        {
+            if (seen.Add(button))
+            {
+                result.Add(button);
+            }
+        }
+
+        return result;
+    }
+
+    private static List<DialogButton> GetRoleButtons(
+        IReadOnlyList<DialogButton> buttons,
+        DialogButtonRole role)
+    {
+        var result = new List<DialogButton>();
+        foreach (var button in buttons)
+        {
+            if (button.Role == role)
+            {
+                result.Add(button);
+            }
+        }
+
+        return result;
+    }
+
+    private static int AddFirst(List<DialogButton> target, IReadOnlyList<DialogButton> source)
+    {
+        if (source.Count == 0)
+        {
+            return 0;
+        }
+
+        target.Add(source[0]);
+        return 1;
+    }
+
+    private static void AddRemaining(
+        List<DialogButton> target,
+        IReadOnlyList<DialogButton> source,
+        int startIndex)
+    {
+        for (var index = startIndex; index < source.Count; index++)
+        {
+            target.Add(source[index]);
+        }
+    }
+
+    private static void PopulateButtonPanel(
+        Panel panel,
+        IReadOnlyList<DialogButton> buttons,
+        Dock dock)
+    {
+        foreach (var button in buttons)
+        {
+            DockPanel.SetDock(button, dock);
+            panel.Children.Add(button);
+        }
+
+        panel.Children.Add(new Control());
+    }
+
+    private void NotifyButtonsSynchronized()
+    {
+        if (_leftGroup is null || _centerGroup is null || _rightGroup is null)
+        {
+            return;
+        }
+
+        EffectiveButtonsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private static void ClearButtonPanel(Panel? panel)

@@ -1,122 +1,100 @@
 using Avalonia.Controls;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
 public partial class Dialog
 {
-    public static object? ShowDialog<TView, TViewModel>(TViewModel? dataContext,
-                                                        DialogOptions? options = null,
-                                                        TopLevel? topLevel = null)
+    public static async Task<object?> ShowDialogAsync<TView, TViewModel>(
+        TViewModel? dataContext,
+        DialogOptions? options = null,
+        TopLevel? topLevel = null,
+        CancellationToken cancellationToken = default)
         where TView : Control, new()
     {
-        return ShowDialog(new TView(), dataContext, options, topLevel);
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            return await Dispatcher.UIThread.InvokeAsync(() =>
+                ShowDialogAsync<TView, TViewModel>(dataContext, options, topLevel, cancellationToken));
+        }
+
+        return await ShowDialogAsync(new TView(), dataContext, options, topLevel, cancellationToken);
     }
 
-    public static object? ShowDialogModal<TView, TViewModel>(TViewModel? dataContext,
-                                                             DialogOptions? options = null,
-                                                             TopLevel? topLevel = null)
+    public static async Task<object?> ShowDialogModalAsync<TView, TViewModel>(
+        TViewModel? dataContext,
+        DialogOptions? options = null,
+        TopLevel? topLevel = null,
+        CancellationToken cancellationToken = default)
         where TView : Control, new()
     {
-        return ShowDialogModal(new TView(), dataContext, options, topLevel);
-    }
-
-    public static object? ShowDialog(Control content,
-                                     object? dataContext = null,
-                                     DialogOptions? options = null,
-                                     TopLevel? topLevel = null)
-    {
-        var overlayLayer = ResolveOverlayLayer(options, topLevel);
-        var dialog       = CreateDialog(content, dataContext, options, overlayLayer);
-        overlayLayer.Children.Add(dialog);
-        try
+        if (!Dispatcher.UIThread.CheckAccess())
         {
-            return dialog.Open();
+            return await Dispatcher.UIThread.InvokeAsync(() =>
+                ShowDialogModalAsync<TView, TViewModel>(dataContext, options, topLevel, cancellationToken));
         }
-        finally
-        {
-            overlayLayer.Children.Remove(dialog);
-        }
-    }
 
-    public static object? ShowDialogModal(Control content,
-                                          object? dataContext = null,
-                                          DialogOptions? options = null,
-                                          TopLevel? topLevel = null)
-    {
-        var overlayLayer = ResolveOverlayLayer(options, topLevel);
-        var dialog       = CreateDialog(content, dataContext, options, overlayLayer);
-        dialog.IsModal = true;
-        overlayLayer.Children.Add(dialog);
-        try
-        {
-            return dialog.Open();
-        }
-        finally
-        {
-            overlayLayer.Children.Remove(dialog);
-        }
-    }
-
-    public static async Task ShowDialogAsync<TView, TViewModel>(TViewModel? dataContext,
-                                                                DialogOptions? options = null,
-                                                                Action<IDialogActionResult>? closed = null,
-                                                                TopLevel? topLevel = null,
-                                                                CancellationToken cancellationToken = default)
-        where TView : Control, new()
-    {
-        await ShowDialogAsync(new TView(), dataContext, options, closed, topLevel, cancellationToken);
-    }
-
-    public static async Task<object?> ShowDialogModalAsync<TView, TViewModel>(TViewModel? dataContext,
-                                                                              DialogOptions? options = null,
-                                                                              TopLevel? topLevel = null,
-                                                                              CancellationToken cancellationToken = default)
-        where TView : Control, new()
-    {
         return await ShowDialogModalAsync(new TView(), dataContext, options, topLevel, cancellationToken);
     }
 
-    public static async Task ShowDialogAsync(Control content,
-                                             object? dataContext = null,
-                                             DialogOptions? options = null,
-                                             Action<IDialogActionResult>? closed = null,
-                                             TopLevel? topLevel = null,
-                                             CancellationToken cancellationToken = default)
+    public static Task<object?> ShowDialogAsync(
+        Control content,
+        object? dataContext = null,
+        DialogOptions? options = null,
+        TopLevel? topLevel = null,
+        CancellationToken cancellationToken = default)
     {
-        var overlayLayer = ResolveOverlayLayer(options, topLevel);
-        var dialog       = CreateDialog(content, dataContext, options, overlayLayer);
-        dialog.Closed += (_, _) =>
-        {
-            closed?.Invoke(new DialogActionResult(dialog.Result));
-            overlayLayer.Children.Remove(dialog);
-        };
-        overlayLayer.Children.Add(dialog);
-        try
-        {
-            await dialog.Dispatcher.InvokeAsync(async () => await dialog.OpenAsync(cancellationToken));
-        }
-        catch
-        {
-            // OpenAsync 抛异常或被 cancel 时 Closed 不会触发，手动摘除避免 overlayLayer 残留
-            // dialog。Remove 对不存在项是 no-op，Closed 已经跑过的场景不会双删。
-            overlayLayer.Children.Remove(dialog);
-            throw;
-        }
+        return ShowDialogCoreAsync(
+            content,
+            dataContext,
+            options,
+            topLevel,
+            isModal: false,
+            cancellationToken);
     }
 
-    public static async Task<object?> ShowDialogModalAsync(Control content,
-                                                           object? dataContext = null,
-                                                           DialogOptions? options = null,
-                                                           TopLevel? topLevel = null,
-                                                           CancellationToken cancellationToken = default)
+    public static Task<object?> ShowDialogModalAsync(
+        Control content,
+        object? dataContext = null,
+        DialogOptions? options = null,
+        TopLevel? topLevel = null,
+        CancellationToken cancellationToken = default)
     {
+        return ShowDialogCoreAsync(
+            content,
+            dataContext,
+            options,
+            topLevel,
+            isModal: true,
+            cancellationToken);
+    }
+
+    private static async Task<object?> ShowDialogCoreAsync(
+        Control content,
+        object? dataContext,
+        DialogOptions? options,
+        TopLevel? topLevel,
+        bool isModal,
+        CancellationToken cancellationToken)
+    {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            return await Dispatcher.UIThread.InvokeAsync(() => ShowDialogCoreAsync(
+                content,
+                dataContext,
+                options,
+                topLevel,
+                isModal,
+                cancellationToken));
+        }
+
         var overlayLayer = ResolveOverlayLayer(options, topLevel);
         var dialog       = CreateDialog(content, dataContext, options, overlayLayer);
-        dialog.IsModal = true;
+        dialog.IsModal = isModal;
         overlayLayer.Children.Add(dialog);
         try
         {
-            await dialog.Dispatcher.InvokeAsync(async () => await dialog.OpenAsync(cancellationToken));
+            await dialog.OpenAsync(cancellationToken);
             return dialog.Result;
         }
         finally
@@ -125,7 +103,11 @@ public partial class Dialog
         }
     }
 
-    private static Dialog CreateDialog(Control content, object? dataContext, DialogOptions? options, Control placementTarget)
+    private static Dialog CreateDialog(
+        Control content,
+        object? dataContext,
+        DialogOptions? options,
+        Control placementTarget)
     {
         return new Dialog
         {
@@ -137,6 +119,7 @@ public partial class Dialog
             IsMinimizable             = options?.IsMinimizable ?? true,
             IsDragMovable             = options?.IsDragMovable ?? true,
             IsFooterVisible           = options?.IsFooterVisible ?? true,
+            IsMotionEnabled           = options?.IsMotionEnabled ?? true,
             PlacementTarget           = options?.PlacementTarget ?? placementTarget,
             MotionAnchorMode          = options?.PlacementTarget is null
                 ? DialogMotionAnchorMode.FallbackPlacementTarget

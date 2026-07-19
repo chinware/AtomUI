@@ -1,6 +1,5 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
                     xmlns:atom="https://atomui.net"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
@@ -8,10 +7,9 @@
         <ResourceInclude Source="DialogCaptionButtonTheme.axaml"/>
         <ResourceInclude Source="OverlayDialogResizerTheme.axaml"/>
         <ResourceInclude Source="DialogButtonBoxTheme.axaml"/>
-        <ResourceInclude Source="DialogWindowContentTheme.axaml"/>
+        <ResourceInclude Source="DialogSurfaceTheme.axaml"/>
+        <ResourceInclude Source="OverlayDialogPresenterTheme.axaml"/>
         <ResourceInclude Source="DialogTheme.axaml"/>
         <ResourceInclude Source="OverlayDialogMaskTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
-    <themes:DialogHostTheme x:Key="{x:Type atom:DialogHost}" TargetType="atom:DialogHost" />
-    <themes:OverlayDialogHostTheme x:Key="{x:Type atom:OverlayDialogHost}" TargetType="atom:OverlayDialogHost" />
 </ResourceDictionary>

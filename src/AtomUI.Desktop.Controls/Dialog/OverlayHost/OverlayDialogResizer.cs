@@ -8,8 +8,6 @@ namespace AtomUI.Desktop.Controls;
 
 internal class OverlayDialogResizer : TemplatedControl
 {
-    public OverlayDialogHost? TargetDialog { get; set; }
-    
     public event EventHandler<OverlayDialogResizeEventArgs>? AboutToResize;
     public event EventHandler<OverlayDialogResizeEventArgs>? ResizeRequest;
     public event EventHandler<OverlayDialogResizeEventArgs>? ResizeCompleted;
