@@ -1,5 +1,4 @@
 using AtomUI.Controls.Primitives;
-using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
@@ -787,7 +786,7 @@ public class OverlayDialogPresenterTests
     }
 
     [Fact]
-    public void Linux_Header_Drag_Keeps_The_Complete_Dialog_Shadow_Inside_Client_Bounds()
+    public void Linux_Header_Drag_Constrains_The_Dialog_Body_Without_Shadow_Inset()
     {
         RunOnUIThread(() =>
         {
@@ -810,11 +809,6 @@ public class OverlayDialogPresenterTests
             {
                 var surface = fixture.Presenter.Surface;
                 var header = surface.Header.ShouldNotBeNull();
-                var shadow = surface.GetVisualDescendants()
-                                    .OfType<ShadowsAwareContainer>()
-                                    .Single()
-                                    .BoxShadow
-                                    .Thickness();
                 var ownerBounds = new Rect(
                     decoration.Left,
                     decoration.Top,
@@ -823,15 +817,13 @@ public class OverlayDialogPresenterTests
 
                 Drag(header, fixture.Window, new Point(240, 140), new Point(-1000, -1000));
 
-                surface.Margin.Left.ShouldBeGreaterThanOrEqualTo(ownerBounds.Left + shadow.Left);
-                surface.Margin.Top.ShouldBeGreaterThanOrEqualTo(ownerBounds.Top + shadow.Top);
+                surface.Margin.Left.ShouldBe(ownerBounds.Left);
+                surface.Margin.Top.ShouldBe(ownerBounds.Top);
 
                 Drag(header, fixture.Window, new Point(240, 140), new Point(2000, 2000));
 
-                (surface.Margin.Left + surface.Bounds.Width + shadow.Right)
-                    .ShouldBeLessThanOrEqualTo(ownerBounds.Right);
-                (surface.Margin.Top + surface.Bounds.Height + shadow.Bottom)
-                    .ShouldBeLessThanOrEqualTo(ownerBounds.Bottom);
+                (surface.Margin.Left + surface.Bounds.Width).ShouldBe(ownerBounds.Right);
+                (surface.Margin.Top + surface.Bounds.Height).ShouldBe(ownerBounds.Bottom);
             }
             finally
             {
@@ -841,7 +833,44 @@ public class OverlayDialogPresenterTests
     }
 
     [Fact]
-    public void Linux_Csd_Decoration_Changes_Reflow_Mask_And_Dialog_From_The_Same_Bounds()
+    public void Linux_Oversized_Host_Uses_The_Full_Dialog_Body_Bounds()
+    {
+        RunOnUIThread(() =>
+        {
+            var decoration = new Thickness(14, 58, 22, 26);
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsMotionEnabled = false,
+                    HostWidth = 2000,
+                    HostHeight = 2000
+                },
+                window =>
+                {
+                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(12));
+                    SetPlatformDecorationMargin(window, decoration);
+                });
+
+            try
+            {
+                var expectedBodySize = new Size(
+                    fixture.Presenter.Bounds.Width - decoration.Left - decoration.Right,
+                    fixture.Presenter.Bounds.Height - decoration.Top - decoration.Bottom);
+                var surface = fixture.Presenter.Surface;
+
+                surface.MaxWidth.ShouldBe(expectedBodySize.Width);
+                surface.MaxHeight.ShouldBe(expectedBodySize.Height);
+                surface.Bounds.Size.ShouldBe(expectedBodySize);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Linux_Csd_Decoration_Changes_Keep_Full_Mask_And_Reflow_Dialog_Body()
     {
         RunOnUIThread(() =>
         {
@@ -871,13 +900,11 @@ public class OverlayDialogPresenterTests
                 var maskActor = fixture.Presenter.GetVisualDescendants()
                                        .OfType<MotionActor>()
                                        .Single(actor => actor.Name == "PART_MaskMotionActor");
-                var shadow = fixture.Presenter.Surface.ShadowHost.ShouldNotBeNull().BoxShadow.Thickness();
 
-                maskActor.Margin.ShouldBe(new Thickness(updated.Left, updated.Top, 0, 0));
-                fixture.Presenter.Surface.Margin.Left
-                       .ShouldBeGreaterThanOrEqualTo(updated.Left + shadow.Left);
-                fixture.Presenter.Surface.Margin.Top
-                       .ShouldBeGreaterThanOrEqualTo(updated.Top + shadow.Top);
+                maskActor.Margin.ShouldBe(default);
+                maskActor.Bounds.Size.ShouldBe(fixture.Presenter.Bounds.Size);
+                fixture.Presenter.Surface.Margin.Left.ShouldBe(updated.Left);
+                fixture.Presenter.Surface.Margin.Top.ShouldBe(updated.Top);
             }
             finally
             {
