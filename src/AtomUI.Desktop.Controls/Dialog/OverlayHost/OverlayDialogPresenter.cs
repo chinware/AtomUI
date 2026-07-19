@@ -51,6 +51,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private readonly DialogSurface _surface;
     private readonly CompositeDisposable _bindings = new();
     private DialogOverlayLayer? _dialogLayer;
+    private Window? _ownerWindow;
     private MotionActor? _maskMotionActor;
     private MotionActor? _surfaceMotionActor;
     private OverlayDialogMask? _dialogMask;
@@ -128,10 +129,12 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         ((ISetInheritanceParent)this).SetParent(
             ((ILogical)_dialog).IsAttachedToLogicalTree ? _dialog : _placementTarget);
         _dialogLayer = DialogOverlayLayer.GetOrCreate(_placementTarget);
+        _ownerWindow = TopLevel.GetTopLevel(_placementTarget) as Window;
         _dialogLayer.Add(this);
         UpdateLayerBounds(_dialogLayer.Bounds.Size);
         ApplyTemplate();
         _surface.ApplyTemplate();
+        UpdateLayerBounds(_dialogLayer.Bounds.Size);
         if (_surfaceMotionActor is not null)
         {
             _surfaceMotionActor.Opacity = IsMotionEnabled ? 0 : 1;
@@ -278,6 +281,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
         ReleaseDialogMask();
         Content = null;
+        _ownerWindow = null;
         _maskMotionActor = null;
         _surfaceMotionActor = null;
         try
@@ -314,6 +318,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         var ownerBounds = ResolveOwnerBounds(layerSize);
+        ApplyMaskBounds(ownerBounds);
         if (_surface.IsDialogMaximized)
         {
             ApplyMaximizedBounds(ownerBounds);
@@ -370,9 +375,58 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _surface.Margin = new Thickness(position.X, position.Y, 0, 0);
     }
 
-    private static Rect ResolveOwnerBounds(Size layerSize)
+    private Rect ResolveOwnerBounds(Size layerSize)
     {
-        return new Rect(default, layerSize);
+        var layerBounds = new Rect(default, layerSize);
+        if (_ownerWindow is not { OsType: OsType.Linux } window)
+        {
+            return layerBounds;
+        }
+
+        if (window.IsCsdEnabled)
+        {
+            return DeflateBounds(layerBounds, window.WindowDecorationMargin);
+        }
+
+        var visibleFrame = DeflateBounds(layerBounds, window.FrameShadowThickness);
+        if (!window.IsTitleBarVisible || window.WindowState == WindowState.FullScreen)
+        {
+            return visibleFrame;
+        }
+
+        var titleBarHeight = Math.Min(Math.Max(0, window.TitleBarHeight), visibleFrame.Height);
+        return new Rect(
+            visibleFrame.X,
+            visibleFrame.Y + titleBarHeight,
+            visibleFrame.Width,
+            visibleFrame.Height - titleBarHeight);
+    }
+
+    private static Rect DeflateBounds(Rect bounds, Thickness thickness)
+    {
+        var left = Math.Max(0, thickness.Left);
+        var top = Math.Max(0, thickness.Top);
+        var right = Math.Max(0, thickness.Right);
+        var bottom = Math.Max(0, thickness.Bottom);
+        return new Rect(
+            bounds.X + left,
+            bounds.Y + top,
+            Math.Max(0, bounds.Width - left - right),
+            Math.Max(0, bounds.Height - top - bottom));
+    }
+
+    private void ApplyMaskBounds(Rect ownerBounds)
+    {
+        if (_maskMotionActor is null)
+        {
+            return;
+        }
+
+        _maskMotionActor.HorizontalAlignment = HorizontalAlignment.Left;
+        _maskMotionActor.VerticalAlignment = VerticalAlignment.Top;
+        _maskMotionActor.Width = ownerBounds.Width;
+        _maskMotionActor.Height = ownerBounds.Height;
+        _maskMotionActor.Margin = new Thickness(ownerBounds.X, ownerBounds.Y, 0, 0);
     }
 
     private static Point ConstrainSurfacePosition(Rect ownerBounds, Size surfaceSize, Point position)

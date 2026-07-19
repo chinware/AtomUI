@@ -11,6 +11,8 @@ using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 
+using BindingFlags = System.Reflection.BindingFlags;
+
 namespace AtomUI.Desktop.Controls.Tests.Dialog;
 
 public class OverlayDialogPresenterTests
@@ -670,6 +672,85 @@ public class OverlayDialogPresenterTests
     }
 
     [Fact]
+    public void Linux_Csd_Mask_Uses_The_Visible_Client_Bounds_Below_The_Title_Bar()
+    {
+        RunOnUIThread(() =>
+        {
+            var decoration = new Thickness(14, 58, 22, 26);
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsModal = true,
+                    IsMotionEnabled = false,
+                    HostWidth = 320,
+                    HostHeight = 180
+                },
+                window =>
+                {
+                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(12));
+                    SetPlatformDecorationMargin(window, decoration);
+                });
+
+            try
+            {
+                var maskActor = fixture.Presenter.GetVisualDescendants()
+                                       .OfType<MotionActor>()
+                                       .Single(actor => actor.Name == "PART_MaskMotionActor");
+                var expectedSize = new Size(
+                    fixture.Presenter.Bounds.Width - decoration.Left - decoration.Right,
+                    fixture.Presenter.Bounds.Height - decoration.Top - decoration.Bottom);
+
+                maskActor.Margin.ShouldBe(new Thickness(decoration.Left, decoration.Top, 0, 0));
+                maskActor.Bounds.Size.ShouldBe(expectedSize);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Linux_NonCsd_Mask_Excludes_Frame_Shadow_And_Managed_Title_Bar()
+    {
+        RunOnUIThread(() =>
+        {
+            var frameShadow = new Thickness(12, 18, 24, 30);
+            const double titleBarHeight = 42;
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsModal = true,
+                    IsMotionEnabled = false,
+                    HostWidth = 320,
+                    HostHeight = 180
+                },
+                window => ConfigureLinuxWindow(
+                    window,
+                    isCsdEnabled: false,
+                    frameShadow,
+                    titleBarHeight));
+
+            try
+            {
+                var maskActor = fixture.Presenter.GetVisualDescendants()
+                                       .OfType<MotionActor>()
+                                       .Single(actor => actor.Name == "PART_MaskMotionActor");
+                var expectedTop = frameShadow.Top + titleBarHeight;
+
+                maskActor.Margin.ShouldBe(new Thickness(frameShadow.Left, expectedTop, 0, 0));
+                maskActor.Bounds.Size.ShouldBe(new Size(
+                    fixture.Presenter.Bounds.Width - frameShadow.Left - frameShadow.Right,
+                    fixture.Presenter.Bounds.Height - expectedTop - frameShadow.Bottom));
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
     public void Header_Drag_Updates_Dialog_Offsets()
     {
         RunOnUIThread(() =>
@@ -960,7 +1041,9 @@ public class OverlayDialogPresenterTests
         });
     }
 
-    private static PresenterFixture ShowPresenter(AtomUI.Desktop.Controls.Dialog dialog)
+    private static PresenterFixture ShowPresenter(
+        AtomUI.Desktop.Controls.Dialog dialog,
+        Action<AtomUI.Desktop.Controls.Window>? configureWindow = null)
     {
         var placementTarget = new Border { Width = 100, Height = 40 };
         var root = new ScopeAwareOverlayLayerPanel
@@ -977,10 +1060,39 @@ public class OverlayDialogPresenterTests
 
         window.Show();
         Dispatcher.UIThread.RunJobs();
+        configureWindow?.Invoke(window);
+        Dispatcher.UIThread.RunJobs();
         WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
         Dispatcher.UIThread.RunJobs();
 
         return new PresenterFixture(window, dialog, presenter);
+    }
+
+    private static void ConfigureLinuxWindow(
+        AtomUI.Desktop.Controls.Window window,
+        bool isCsdEnabled,
+        Thickness frameShadow,
+        double titleBarHeight = 40)
+    {
+        window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, OsType.Linux);
+        window.IsCsdEnabled = isCsdEnabled;
+        window.FrameShadowThickness = frameShadow;
+        window.TitleBarHeight = titleBarHeight;
+        window.IsTitleBarVisible = true;
+    }
+
+    private static void SetPlatformDecorationMargin(
+        AtomUI.Desktop.Controls.Window window,
+        Thickness margin)
+    {
+        var setter = typeof(Avalonia.Controls.Window)
+                     .GetProperty(
+                         nameof(Avalonia.Controls.Window.WindowDecorationMargin),
+                         BindingFlags.Instance | BindingFlags.Public)
+                     .ShouldNotBeNull()
+                     .GetSetMethod(nonPublic: true)
+                     .ShouldNotBeNull();
+        setter.Invoke(window, new object?[] { margin });
     }
 
     private static void Drag(Control source, Visual root, Point start, Point end)
