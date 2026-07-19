@@ -1,5 +1,6 @@
 using System.Collections;
 using AtomUI.Controls;
+using AtomUI.Controls.Data;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Threading;
@@ -34,6 +35,49 @@ public class TransferItemDecoratorTests
             decorator.SelectionsIcon.ShouldBeSameAs(icon);
             transferView.SelectionsIcon.ShouldBeSameAs(icon);
         });
+    }
+
+    [Fact]
+    public void Initial_List_View_Item_Count_Is_Applied_To_Decorator()
+    {
+        var items = Enumerable.Range(1, 3)
+                              .Select(index => (IItemKey)new ListItemData
+                              {
+                                  ItemKey = index.ToString(),
+                                  Content = $"Item {index}"
+                              })
+                              .ToArray();
+        var decorator = new TransferItemDecorator
+        {
+            ItemsSource = items,
+            Content     = new TransferListView()
+        };
+
+        ShowInWindow(decorator, () => decorator.ItemCount.ShouldBe(items.Length));
+    }
+
+    [Fact]
+    public void Initial_Tree_View_Item_Count_Is_Applied_To_Decorator()
+    {
+        var child = new TreeItemNode
+        {
+            ItemKey = "child",
+            Header  = "Child"
+        };
+        var parent = new TreeItemNode
+        {
+            ItemKey = "parent",
+            Header  = "Parent"
+        };
+        parent.Children.Add(child);
+        var items = new IItemKey[] { parent };
+        var decorator = new TransferItemDecorator
+        {
+            ItemsSource = items,
+            Content     = new TransferTreeView()
+        };
+
+        ShowInWindow(decorator, () => decorator.ItemCount.ShouldBe(2));
     }
 
     private static void ShowInWindow(Control content, Action assertion)

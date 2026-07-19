@@ -538,6 +538,7 @@ internal class TransferItemDecorator : TemplatedControl,
     private void ConfigureTransferView(ITransferView transferView, Control transferControl)
     {
         _disposables = new CompositeDisposable(2);
+        transferView.ItemCountChanged += HandleItemsCountChanged;
         if (transferView.IsSupportPagination)
         {
             transferView.SetPaginationEnabled(IsPaginationEnabled);
@@ -547,7 +548,6 @@ internal class TransferItemDecorator : TemplatedControl,
         transferView.SetItemsSource(ItemsSource);
         transferView.SetSelectionsIcon(SelectionsIconTemplate?.Build());
         transferView.NotifyIsOneWay(IsOneWay);
-        transferView.ItemCountChanged      += HandleItemsCountChanged;
         transferView.SelectionCountChanged += HandleSelectionCountChanged;
         transferView.ViewType              =  ViewType;
         TransferViewCreated?.Invoke(this, new TransferViewCreatedEventArgs(transferView));
