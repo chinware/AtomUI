@@ -11,6 +11,7 @@ BoxShadow 当成布局边距，因而只部分修复了问题，并引入了新�
 - `HostWidth` / `HostHeight` 的有效可用范围被 Dialog BoxShadow 缩小，与主体尺寸契约不一致。
 - Mask 复用标题栏以下的 Dialog 可用区，没有覆盖标题栏和窗口边框。
 - Mask 再次扣除窗口左右及底部装饰，与既有 `WindowVisualLayerClip` 形成二次内缩，底边和圆角处出现缝隙。
+- 为补偿 drawn title-bar overlay 位于 visual layer 之上的层级差异而隐藏整个 overlay，导致标题栏菜单、标题和窗口按钮一并消失。
 
 本次修复把以下三套几何彻底分开：
 
@@ -76,9 +77,9 @@ AtomUI Window 已有 `WindowVisualLayerClip`，它把整个 `VisualLayerManager`
 frame clip，产生边框间隙和抗锯齿接缝。
 
 Wayland CSD 还有一层独立的 `WindowDrawnDecorationsContent.Overlay`，其中的交互标题栏绘制在 visual layer
-之上。Mask 即使填满 visual layer，也会被该 overlay 盖住。AtomUI Window 已提供引用计数的
-`SuppressDrawnTitleBarOverlay()` 生命周期原语，Drawer 已使用同一模式让窗口级 mask 覆盖标题栏；Dialog 应复用
-该原语，而不是复制标题栏视觉或提升新的 overlay 层。
+之上。该 overlay 承载 Gallery 菜单、窗口标题和 caption buttons，不能为了让 mask 覆盖标题栏背景而整体隐藏。
+Dialog 的 mask 应覆盖完整 visual layer 和标题栏 underlay；drawn title-bar overlay 则继续位于 mask 上方，保持
+可见和可操作。这是本次明确选择的 modal 行为，不新增第二套标题栏 mask 或输入拦截层。
 
 ## 4. 方案比较
 
@@ -88,7 +89,7 @@ Wayland CSD 还有一层独立的 `WindowDrawnDecorationsContent.Overlay`，其�
 - Linux Dialog 主体单独解析标题栏以下的 body bounds。
 - Dialog BoxShadow 不进入任何尺寸或位置计算。
 - 窗口阴影和圆角只由 `WindowVisualLayerClip` 裁剪。
-- Linux CSD modal 存续期间抑制 drawn title-bar overlay，让 mask 覆盖其下方的标题栏 underlay。
+- Linux CSD drawn title-bar overlay 保持可见和可操作；mask 覆盖其下方的标题栏 underlay。
 
 优点：每套几何只有一个职责和真源；符合既有 Window clip 与 `IsOverlayMode` 契约；不会重复圆角计算。
 
@@ -116,15 +117,14 @@ maskBounds = Rect(0, 0, layerWidth, layerHeight)
 
 在 AtomUI Window 中，mask 位于 `WindowVisualLayerClip` 下方的 VisualLayerManager 内，因此：
 
-- Mask 覆盖标题栏、内容和窗口可见边框。
+- Mask 覆盖标题栏 underlay、内容和窗口可见边框。
 - 外部窗口阴影由 frame clip 排除，不会被 mask 着色。
 - Window CornerRadius 由同一个 frame clip 一次性裁剪，mask 不再建立第二套圆角边界。
 - 最大化和全屏时 Window 现有 CornerRadius / FrameShadowThickness 状态继续决定最终轮廓。
 
-Linux CSD modal 显示时，Presenter 通过现有 `Window.SuppressDrawnTitleBarOverlay()` 获取一个 suppression lease。
-该 lease 只隐藏位于 visual layer 上方的交互标题栏 overlay；标题栏 underlay 仍保留并由满层 mask 着色。
-关闭、dispose、切换为非 modal、退出 Linux CSD 时释放 lease。Window 内部引用计数保证多个 Dialog/Drawer
-重叠时，只有最后一个 lease 释放后才恢复标题栏 overlay。
+Linux CSD modal 显示时，Presenter 不获取 `Window.SuppressDrawnTitleBarOverlay()` lease。位于 visual layer
+上方的 drawn title-bar overlay 继续显示，Gallery 菜单、标题与 caption buttons 保持可操作。标题栏背景由
+underlay 提供，仍会被满层 mask 着色；overlay 中的交互内容不受 mask 着色或命中测试限制。
 
 非 Linux 继续保持现有整层 mask 行为。
 
@@ -195,8 +195,8 @@ Presenter 在以下时机重新解析 Dialog body 几何：
 现有订阅继续由 Presenter 的 `_bindings` 持有并在 `DisposeAsync` 释放。不增加全局服务、timer、dispatcher delay、
 suppression flag 或新的 public contract。
 
-Drawn title-bar suppression lease 由 Presenter 持有，在 mask 生效前获取，并在从 DialogLayer 移除或 dispose 时释放。
-`IsModal`、`OsType` 或 `IsCsdEnabled` 变化时同步重算是否需要 lease；不自行维护计数或状态标记。
+Presenter 不再持有 drawn title-bar suppression lease，也不再订阅 `IsModal`、`OsType` 或 `IsCsdEnabled` 来切换
+标题栏 overlay 可见性。Dialog 的生命周期只管理自身 mask、surface、motion 与既有几何订阅。
 
 ## 6. 测试设计
 
@@ -206,7 +206,7 @@ Drawn title-bar suppression lease 由 Presenter 持有，在 mask 生效前获�
 
 1. Linux CSD mask 的 origin 为 `(0, 0)`，尺寸等于完整 presenter layer，不扣标题栏或装饰边距。
 2. Linux 非 CSD mask 同样覆盖完整 layer；窗口 frame clip 是唯一外轮廓裁剪者。
-3. Linux CSD modal 打开时 drawn title-bar overlay 被抑制，关闭/dispose 后恢复；非 modal 不获取 lease。
+3. Linux CSD modal 打开、关闭和 dispose 前后 drawn title-bar overlay 始终可见，标题栏菜单仍可操作。
 4. Linux CSD Dialog 拖到左上边界时，主体恰好贴合 `dialogBodyBounds`，不增加 Dialog shadow inset。
 5. Linux CSD Dialog 拖到右下边界时，主体 Bounds 不越界，但不为 BoxShadow 预留空间。
 6. 非零 Dialog BoxShadow 下，显式 `HostWidth` / `HostHeight` 仍精确表示主体尺寸。
@@ -233,7 +233,8 @@ git diff --check
 
 Linux Wayland Gallery 手动验证：
 
-- 打开 Modal Overlay，确认 mask 覆盖标题栏、内容和四周可见边框，底边及圆角无缝隙。
+- 打开 Modal Overlay，确认 mask 覆盖标题栏背景、内容和四周可见边框，底边及圆角无缝隙。
+- 确认标题栏菜单、标题和窗口按钮保持可见，菜单仍可正常操作。
 - 确认 mask 不着色窗口外部 compositor shadow。
 - 分别把 Dialog 拖到上、下、左、右边界，确认白色主体可以贴边且不进入标题栏。
 - 确认 Dialog 自身阴影不改变主体尺寸；靠边时允许被窗口 frame clip 裁剪。
@@ -243,8 +244,8 @@ Linux Wayland Gallery 手动验证：
 
 - Public API/theme contract changed：No。
 - Observable behavior changed：Yes，仅修正 Linux Overlay Dialog 的错误边界。
-- Rendered result changed：Yes，mask 完整覆盖窗口可见轮廓，Dialog 主体不再为自身阴影留白。
+- Rendered result changed：Yes，mask 覆盖窗口可见轮廓的背景层，drawn title-bar 交互内容保持在其上方，Dialog 主体不再为自身阴影留白。
 - Files split：No。
 - AOT impact：No reflection、dynamic discovery 或新动态 binding。
-- Lifecycle risk：低；继续使用现有 Presenter disposable owner，并测试 drawn title-bar suppression lease 的获取与释放。
+- Lifecycle risk：低；删除 Dialog 对 drawn title-bar suppression lease 的获取与释放，不新增跨层状态。
 - Residual risk：当前开发环境不能直接运行 Linux Wayland compositor，最终仍需要 Linux Gallery 手动验证。
