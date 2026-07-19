@@ -1,6 +1,8 @@
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Headless;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Shouldly;
@@ -86,6 +88,125 @@ public class GridResponsiveTests
 
         row.DesiredSize.Height.ShouldBe(10);
         row.Children.ShouldAllBe(child => child.Bounds.Y == 0);
+    }
+
+    [Fact]
+    public void Row_Layout_Recovers_After_Splitter_Pane_Shrinks_And_Expands()
+    {
+        var firstCard = new Col
+        {
+            Span    = 12,
+            Content = new Border { Height = 100, Background = Brushes.White }
+        };
+        var secondCard = new Col
+        {
+            Span    = 12,
+            Content = new Border { Height = 100, Background = Brushes.White }
+        };
+        var cardRow = new Row
+        {
+            Gutter = GridGutter.Parse("16,16")
+        };
+        cardRow.Children.Add(firstCard);
+        cardRow.Children.Add(secondCard);
+
+        var nameInput = new AtomUI.Desktop.Controls.LineEdit();
+        var extensionInput = new AtomUI.Desktop.Controls.LineEdit { Width = 64 };
+        var phoneInput = new AtomUI.Desktop.Controls.LineEdit();
+        var namePanel = new DockPanel
+        {
+            HorizontalSpacing = 4,
+            Children =
+            {
+                new Avalonia.Controls.TextBlock { Text = "Name:" },
+                nameInput
+            }
+        };
+        var phonePanel = new DockPanel
+        {
+            HorizontalSpacing = 4,
+            LastChildFill = true,
+            Children =
+            {
+                new Avalonia.Controls.TextBlock { Text = "Phone:" },
+                extensionInput,
+                new Avalonia.Controls.TextBlock { Text = "-" },
+                phoneInput
+            }
+        };
+        DockPanel.SetDock(extensionInput, Dock.Right);
+        DockPanel.SetDock(phonePanel.Children[2], Dock.Right);
+
+        var formRow = new Row
+        {
+            Gutter = GridGutter.Parse("16,16")
+        };
+        var nameCol = new Col { Span = 10, Content = namePanel };
+        var spacerCol = new Col { Span = 2 };
+        var phoneCol = new Col { Span = 12, Content = phonePanel };
+        formRow.Children.Add(nameCol);
+        formRow.Children.Add(spacerCol);
+        formRow.Children.Add(phoneCol);
+
+        var leftPane = new Border { Background = Brushes.Yellow };
+        var rightPane = new StackPanel
+        {
+            Margin = new Thickness(20),
+            Spacing = 12,
+            Children =
+            {
+                cardRow,
+                formRow
+            }
+        };
+        var splitter = new AtomUI.Desktop.Controls.Splitter
+        {
+            Orientation = Orientation.Vertical
+        };
+        AtomUI.Desktop.Controls.Splitter.SetSize(leftPane, AtomUI.Dimension.Parse("50%"));
+        splitter.Children.Add(leftPane);
+        splitter.Children.Add(rightPane);
+
+        var window = new AvaloniaWindow
+        {
+            Width = 1000,
+            Height = 360,
+            Content = splitter
+        };
+
+        try
+        {
+            window.Show();
+            window.SetRenderScaling(1.25);
+            Dispatcher.UIThread.RunJobs();
+
+            var initialRightPaneWidth = rightPane.Bounds.Width;
+            var initialNameInputWidth = nameInput.Bounds.Width;
+            var initialPhoneInputWidth = phoneInput.Bounds.Width;
+            initialNameInputWidth.ShouldBeGreaterThan(0);
+            initialPhoneInputWidth.ShouldBeGreaterThan(0);
+
+            foreach (var percent in new[] { 65, 35, 72, 28, 58, 42, 50 })
+            {
+                AtomUI.Desktop.Controls.Splitter.SetSize(
+                    leftPane,
+                    AtomUI.Dimension.Parse($"{percent}%"));
+                Dispatcher.UIThread.RunJobs();
+
+                secondCard.Bounds.Y.ShouldBe(0, 0.5,
+                    $"two Span=12 columns must not wrap at {percent}% splitter size.");
+                phoneCol.Bounds.Y.ShouldBe(0, 0.5,
+                    $"the 10+2+12 form row must not wrap at {percent}% splitter size.");
+            }
+
+            rightPane.Bounds.Width.ShouldBe(initialRightPaneWidth, 0.5);
+            nameInput.Bounds.Width.ShouldBe(initialNameInputWidth, 0.5);
+            phoneInput.Bounds.Width.ShouldBe(initialPhoneInputWidth, 0.5);
+        }
+        finally
+        {
+            window.Close();
+        }
     }
 
     [Fact]
