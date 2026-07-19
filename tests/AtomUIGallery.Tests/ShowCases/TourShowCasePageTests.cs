@@ -4,8 +4,11 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using AtomUI.Desktop.Controls;
+using Avalonia.Controls;
 using Shouldly;
 using Xunit;
+using AtomUITour = AtomUI.Desktop.Controls.Tour;
 
 namespace AtomUIGallery.Tests.ShowCases;
 
@@ -124,6 +127,30 @@ public class TourShowCasePageTests
         tokenSource.ShouldContain("Width=\"*\"");
         tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
         tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
+    }
+
+    [Fact]
+    public void Tour_ShowCase_Resolves_PreRealized_Step_From_Tour_Steps()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var target = new Border { Name = "Target" };
+        var step   = new TourStep { Name = "Step" };
+        var tour   = new AtomUITour();
+        tour.Steps.Add(step);
+
+        var root = new StackPanel
+        {
+            Children =
+            {
+                target,
+                tour
+            }
+        };
+
+        AtomUIGallery.ShowCases.Tour.TourShowCase.SetTourStepTarget(root, step.Name, target.Name);
+
+        step.Target.ShouldBeSameAs(target);
     }
 
     [Fact]

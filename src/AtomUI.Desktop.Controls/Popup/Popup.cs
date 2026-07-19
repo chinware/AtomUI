@@ -348,6 +348,10 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 _ignoreRequestedPlacementChange--;
             }
         }
+        else if (change.Property == MarginToAnchorProperty)
+        {
+            this.HandlePositionChange();
+        }
         else if (change.Property == PopupRootShadowProperty ||
                  change.Property == OverlayHostShadowProperty ||
                  change.Property == IsUsingOverlayLayerProperty)

@@ -20,6 +20,7 @@
             <_Parameter1>AtomUIVersion</_Parameter1>
             <_Parameter2>$(AtomUIVersion)</_Parameter2>
         </AssemblyAttribute>
+        <InternalsVisibleTo Include="AtomUIGallery.Tests" />
     </ItemGroup>
 
     <ItemGroup>

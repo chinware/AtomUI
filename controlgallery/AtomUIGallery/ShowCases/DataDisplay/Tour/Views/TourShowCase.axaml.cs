@@ -104,9 +104,14 @@ public partial class TourShowCase : GalleryReactiveUserControl<TourViewModel>
         SetTourStepTarget(root, "CustomGapStep", "CustomGapControl");
     }
 
-    private static void SetTourStepTarget(Control root, string stepName, string targetName)
+    internal static void SetTourStepTarget(Control root, string stepName, string targetName)
     {
-        var step = FindDescendantByName<TourStep>(root, stepName);
+        var step = FindDescendantByName<TourStep>(root, stepName)
+                   ?? root.GetVisualDescendants()
+                          .OfType<AtomUITour>()
+                          .SelectMany(tour => tour.Steps.Cast<object?>())
+                          .OfType<TourStep>()
+                          .FirstOrDefault(candidate => candidate.Name == stepName);
         var target = FindDescendantByName<Control>(root, targetName);
         if (step is not null && target is not null)
         {

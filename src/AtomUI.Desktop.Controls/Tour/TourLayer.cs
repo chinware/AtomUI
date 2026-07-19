@@ -1,3 +1,4 @@
+using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,7 +10,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-internal class TourLayer : Control
+internal class TourLayer : Control, IMotionAwareControl
 {
     private const int TourLayerZIndex = int.MaxValue - 98;
     private readonly RectangleGeometry _layerGeometry = new();
@@ -28,6 +29,9 @@ internal class TourLayer : Control
     
     public static readonly StyledProperty<double> TargetRegionCornerRadiusProperty =
         AvaloniaProperty.Register<TourLayer, double>(nameof(TargetRegionCornerRadius));
+
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TourLayer>();
     
     public Rect TargetRegion
     {
@@ -45,6 +49,12 @@ internal class TourLayer : Control
     {
         get => GetValue(TargetRegionCornerRadiusProperty);
         set => SetValue(TargetRegionCornerRadiusProperty, value);
+    }
+
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     #endregion
 
