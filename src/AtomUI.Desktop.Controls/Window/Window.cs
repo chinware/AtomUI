@@ -252,11 +252,6 @@ public partial class Window : AvaloniaWindow,
             o => o.IsCustomResizerVisible,
             (o, v) => o.IsCustomResizerVisible = v);
 
-    internal static readonly DirectProperty<Window, bool> IsDrawnTitleBarOverlayVisibleProperty =
-        AvaloniaProperty.RegisterDirect<Window, bool>(
-            nameof(IsDrawnTitleBarOverlayVisible),
-            o => o.IsDrawnTitleBarOverlayVisible);
-
     internal static readonly DirectProperty<Window, bool> IsEffectiveFullscreenLogoVisibleProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsEffectiveFullscreenLogoVisible),
@@ -316,17 +311,6 @@ public partial class Window : AvaloniaWindow,
         set => SetAndRaise(IsCustomResizerVisibleProperty, ref _isCustomResizerVisible, value);
     }
 
-    private bool _isDrawnTitleBarOverlayVisible = true;
-
-    internal bool IsDrawnTitleBarOverlayVisible
-    {
-        get => _isDrawnTitleBarOverlayVisible;
-        private set => SetAndRaise(
-            IsDrawnTitleBarOverlayVisibleProperty,
-            ref _isDrawnTitleBarOverlayVisible,
-            value);
-    }
-
     private bool _isEffectiveFullscreenLogoVisible;
 
     internal bool IsEffectiveFullscreenLogoVisible
@@ -362,7 +346,6 @@ public partial class Window : AvaloniaWindow,
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
-    private int _drawnTitleBarOverlaySuppressionCount;
     private IDisposable? _windowsCsdFrameThemeSubscription;
     private ThemeContextLease? _themeContextLease;
 
@@ -498,27 +481,6 @@ public partial class Window : AvaloniaWindow,
             Math.Max(0, shadow.Top - gripThickness.Top),
             Math.Max(0, shadow.Right - gripThickness.Right),
             Math.Max(0, shadow.Bottom - gripThickness.Bottom));
-    }
-
-    internal IDisposable SuppressDrawnTitleBarOverlay()
-    {
-        _drawnTitleBarOverlaySuppressionCount++;
-        IsDrawnTitleBarOverlayVisible = false;
-        return Disposable.Create(this, static window => window.ReleaseDrawnTitleBarOverlaySuppression());
-    }
-
-    private void ReleaseDrawnTitleBarOverlaySuppression()
-    {
-        if (_drawnTitleBarOverlaySuppressionCount == 0)
-        {
-            return;
-        }
-
-        _drawnTitleBarOverlaySuppressionCount--;
-        if (_drawnTitleBarOverlaySuppressionCount == 0)
-        {
-            IsDrawnTitleBarOverlayVisible = true;
-        }
     }
 
     private void HandleFrameShadowPropertyChanged(BoxShadows frameShadow)
