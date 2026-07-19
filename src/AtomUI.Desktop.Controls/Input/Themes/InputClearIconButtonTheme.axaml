@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:LineEditThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:InputClearIconButton}" TargetType="atom:InputClearIconButton">
         <ControlTheme.BasedOn>
@@ -9,22 +12,22 @@
         </ControlTheme.BasedOn>
         
         <Setter Property="IconWidth"
-                Value="{atom:LineEditTokenSharedTokenResource IconSize}" />
+                Value="{atom:SharedTokenResource IconSize}" />
         
         <Setter Property="IconHeight"
-                Value="{atom:LineEditTokenSharedTokenResource IconSize}" />
+                Value="{atom:SharedTokenResource IconSize}" />
 
         <Setter Property="IconBrush"
-                Value="{atom:LineEditTokenSharedTokenResource ColorTextQuaternary}" />
+                Value="{atom:SharedTokenResource ColorTextQuaternary}" />
         
         <Style Selector="^:pointerover">
             <Setter Property="IconBrush"
-                    Value="{atom:LineEditTokenSharedTokenResource ColorTextTertiary}" />
+                    Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>
         
         <Style Selector="^:pressed">
             <Setter Property="IconBrush"
-                    Value="{atom:LineEditTokenSharedTokenResource ColorText}" />
+                    Value="{atom:SharedTokenResource ColorText}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -194,5 +194,4 @@ public class ColorPickerToken : AbstractControlDesignToken
         ColorPickerPresetColorGroupPadding = new Thickness(0, SharedToken.UniformlyPaddingXXS);
     }
 
-    protected override Type GetTokenKindType() => typeof(ColorPickerTokenKind);
 }

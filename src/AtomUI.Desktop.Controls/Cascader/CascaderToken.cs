@@ -103,5 +103,4 @@ internal class CascaderToken : AbstractControlDesignToken
         ItemHeaderSpacing        = SharedToken.SpacingXXS;
     }
     
-    protected override Type GetTokenKindType() => typeof(CascaderTokenKind);
 }

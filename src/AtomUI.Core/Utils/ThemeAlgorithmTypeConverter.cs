@@ -1,6 +1,6 @@
 using System.ComponentModel;
 using System.Globalization;
-using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 
 namespace AtomUI.Utils;
 
@@ -31,4 +31,3 @@ public class ThemeAlgorithmTypeConverter : TypeConverter
         throw new NotSupportedException("ThemeAlgorithm type converter supports only build in variants. For custom variants please use x:Static markup extension.");
     }
 }
-

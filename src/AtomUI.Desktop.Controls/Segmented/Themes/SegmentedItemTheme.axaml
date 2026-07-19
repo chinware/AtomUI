@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SegmentedThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SegmentedItem}" TargetType="atom:SegmentedItem">
         <Setter Property="Template">
@@ -79,9 +82,9 @@
 
         <Style Selector="^[SizeType=Large]">
             <Setter Property="CornerRadius"
-                    Value="{atom:SegmentedTokenSharedTokenResource BorderRadius}" />
+                    Value="{atom:SharedTokenResource BorderRadius}" />
             <Setter Property="FontSize"
-                    Value="{atom:SegmentedTokenSharedTokenResource FontSizeLG}" />
+                    Value="{atom:SharedTokenResource FontSizeLG}" />
             <Setter Property="MinHeight"
                     Value="{atom:SegmentedTokenResource ItemMinHeightLG}" />
             <Setter Property="Padding"
@@ -90,9 +93,9 @@
 
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="CornerRadius"
-                    Value="{atom:SegmentedTokenSharedTokenResource BorderRadiusSM}" />
+                    Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="FontSize"
-                    Value="{atom:SegmentedTokenSharedTokenResource FontSize}" />
+                    Value="{atom:SharedTokenResource FontSize}" />
             <Setter Property="MinHeight"
                     Value="{atom:SegmentedTokenResource ItemMinHeight}" />
             <Setter Property="Padding"
@@ -101,9 +104,9 @@
 
         <Style Selector="^[SizeType=Small]">
             <Setter Property="CornerRadius"
-                    Value="{atom:SegmentedTokenSharedTokenResource BorderRadiusXS}" />
+                    Value="{atom:SharedTokenResource BorderRadiusXS}" />
             <Setter Property="FontSize"
-                    Value="{atom:SegmentedTokenSharedTokenResource FontSize}" />
+                    Value="{atom:SharedTokenResource FontSize}" />
             <Setter Property="MinHeight"
                     Value="{atom:SegmentedTokenResource ItemMinHeightSM}" />
             <Setter Property="Padding"
@@ -120,36 +123,36 @@
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="Width"
-                        Value="{atom:SegmentedTokenSharedTokenResource IconSizeLG}" />
+                        Value="{atom:SharedTokenResource IconSizeLG}" />
                 <Setter Property="Height"
-                        Value="{atom:SegmentedTokenSharedTokenResource IconSizeLG}" />
+                        Value="{atom:SharedTokenResource IconSizeLG}" />
             </Style>
         </Style>
 
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="Width"
-                        Value="{atom:SegmentedTokenSharedTokenResource IconSize}" />
+                        Value="{atom:SharedTokenResource IconSize}" />
                 <Setter Property="Height"
-                        Value="{atom:SegmentedTokenSharedTokenResource IconSize}" />
+                        Value="{atom:SharedTokenResource IconSize}" />
             </Style>
         </Style>
 
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="Width"
-                        Value="{atom:SegmentedTokenSharedTokenResource IconSizeSM}" />
+                        Value="{atom:SharedTokenResource IconSizeSM}" />
                 <Setter Property="Height"
-                        Value="{atom:SegmentedTokenSharedTokenResource IconSizeSM}" />
+                        Value="{atom:SharedTokenResource IconSizeSM}" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground"
-                    Value="{atom:SegmentedTokenSharedTokenResource ColorTextDisabled}" />
+                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
-                        Value="{atom:SegmentedTokenSharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
 

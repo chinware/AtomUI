@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:MenuThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="TopLevelMenuItemTheme" TargetType="atom:MenuItem">
         <Setter Property="Template">
@@ -73,7 +76,7 @@
             <Style Selector="^[SizeType=Large]">
                 <Setter Property="CornerRadius"
                         Value="{atom:MenuTokenResource TopLevelItemBorderRadiusLG}" />
-                <Setter Property="MinHeight" Value="{atom:MenuTokenSharedTokenResource ControlHeightLG}" />
+                <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
                 <Setter Property="Padding" Value="{atom:MenuTokenResource TopLevelItemPaddingLG}" />
                 <Setter Property="FontSize"
                         Value="{atom:MenuTokenResource TopLevelItemFontSizeLG}" />
@@ -86,7 +89,7 @@
             <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Setter Property="CornerRadius"
                         Value="{atom:MenuTokenResource TopLevelItemBorderRadius}" />
-                <Setter Property="MinHeight" Value="{atom:MenuTokenSharedTokenResource ControlHeight}" />
+                <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
                 <Setter Property="Padding" Value="{atom:MenuTokenResource TopLevelItemPadding}" />
                 <Setter Property="FontSize" Value="{atom:MenuTokenResource TopLevelItemFontSize}" />
                 <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
@@ -98,7 +101,7 @@
             <Style Selector="^[SizeType=Small]">
                 <Setter Property="CornerRadius"
                         Value="{atom:MenuTokenResource TopLevelItemBorderRadiusSM}" />
-                <Setter Property="MinHeight" Value="{atom:MenuTokenSharedTokenResource ControlHeightSM}" />
+                <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
                 <Setter Property="Padding" Value="{atom:MenuTokenResource TopLevelItemPaddingSM}" />
                 <Setter Property="FontSize"
                         Value="{atom:MenuTokenResource TopLevelItemFontSizeSM}" />
@@ -110,7 +113,7 @@
 
             <Style Selector="^ /template/ Border#PopupFrame">
                 <Setter Property="Background"
-                        Value="{atom:MenuTokenSharedTokenResource ColorBgElevated}" />
+                        Value="{atom:SharedTokenResource ColorBgElevated}" />
                 <Setter Property="CornerRadius"
                         Value="{atom:PopupHostTokenResource BorderRadius}" />
                 <Setter Property="MinWidth"

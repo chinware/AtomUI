@@ -47,12 +47,12 @@ public static class ThemeManagerBuilderExtensions
             themeManagerBuilder.AddLanguageProviders(languageProvider);
         }
 
-        themeManagerBuilder.InitializedHandlers.Add(HandleThemeManagerInitialized);
+        themeManagerBuilder.AddInitializer(InitializeDesktopRuntime);
 
         return themeManagerBuilder;
     }
 
-    private static void HandleThemeManagerInitialized(object? sender, EventArgs e)
+    private static void InitializeDesktopRuntime(IThemeManager manager)
     {
         Animation.RegisterCustomAnimator<TransformOperations, MotionTransformOptionsAnimator>();
         var inputManager = AvaloniaLocator.CurrentMutable.GetService<IInputManager>();
@@ -66,7 +66,7 @@ public static class ThemeManagerBuilderExtensions
             return;
         }
 
-        if (sender is ThemeManager themeManager)
+        if (manager is ThemeManager themeManager)
         {
             MediaBreakPointThemeBootstrapper.Attach(themeManager);
         }

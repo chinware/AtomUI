@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:RateThemeAsset.Identity}"
     xmlns:atomc="https://atomui.net/common-controls"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atomc:RateItemsControl}" TargetType="atomc:RateItemsControl">
@@ -18,7 +21,7 @@
         </Setter>
         
         <Style Selector="^ /template/ StackPanel#ItemsLayout">
-            <Setter Property="Spacing" Value="{atom:RateTokenSharedTokenResource SpacingXS}"/>
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}"/>
         </Style>
         <Setter Property="ClipToBounds" Value="False"/>
     </ControlTheme>

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ComboBoxThemeAsset.Identity}"
     x:ClassModifier="internal">
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:ComboBoxItem}" TargetType="atom:ComboBoxItem">
@@ -23,7 +26,7 @@
         <Setter Property="Foreground" Value="{atom:ComboBoxTokenResource ItemColor}" />
         <Setter Property="Background" Value="{atom:ComboBoxTokenResource ItemBgColor}" />
         <Setter Property="Padding" Value="{atom:ComboBoxTokenResource ItemPadding}" />
-        <Setter Property="CornerRadius" Value="{atom:ComboBoxTokenSharedTokenResource BorderRadiusSM}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
 
         <Style Selector="^:pointerover">
@@ -48,7 +51,7 @@
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground"
-                    Value="{atom:ComboBoxTokenSharedTokenResource ColorTextDisabled}" />
+                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
 
 

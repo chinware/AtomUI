@@ -1,6 +1,6 @@
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
-using AtomUI.Theme.Palette;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 
@@ -63,5 +63,4 @@ internal class RateToken : AbstractControlDesignToken
         StarBg         = SharedToken.ColorFillContent;
     }
     
-    protected override Type GetTokenKindType() => typeof(RateTokenKind);
 }

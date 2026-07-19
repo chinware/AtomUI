@@ -169,5 +169,4 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
         OffStateLoadIndicatorColor = ColorUtils.FromRgbF(0.4,0.0, 0.0, 0.0);
     }
     
-    protected override Type GetTokenKindType() => typeof(ToggleSwitchTokenKind);
 }

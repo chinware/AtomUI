@@ -1,6 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:TagThemeAsset.Identity}"
               x:ClassModifier="internal"
               x:Class="AtomUI.Desktop.Controls.Themes.TagTheme"
               TargetType="atom:Tag">
@@ -39,14 +42,14 @@
         <Setter Property="Foreground" Value="{atom:TagTokenResource DefaultColor}" />
         <Setter Property="FontSize" Value="{atom:TagTokenResource TagFontSize}" />
         <Setter Property="Padding" Value="{atom:TagTokenResource TagPadding}" />
-        <Setter Property="BorderBrush" Value="{atom:TagTokenSharedTokenResource ColorBorder}" />
-        <Setter Property="RenderScaleAwareBorderThickness" Value="{atom:TagTokenSharedTokenResource BorderThickness}" />
-        <Setter Property="CornerRadius" Value="{atom:TagTokenSharedTokenResource BorderRadiusSM}" />
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        <Setter Property="RenderScaleAwareBorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         <Setter Property="TagTextPaddingInline"
                 Value="{atom:TagTokenResource TagTextPaddingInline}" />
 
         <Style Selector="^:custom-color">
-            <Setter Property="Foreground" Value="{atom:TagTokenSharedTokenResource ColorTextLightSolid}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
@@ -58,7 +61,7 @@
         <Style Selector="^[IsColorSet=True]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
-                        Value="{atom:TagTokenSharedTokenResource ColorTextLightSolid}" />
+                        Value="{atom:SharedTokenResource ColorTextLightSolid}" />
             </Style>
         </Style>
         <Style Selector="^[IsPresetColorTag=True]">
@@ -70,14 +73,14 @@
 
         <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
             <Setter Property="IconWidth"
-                    Value="{atom:TagTokenSharedTokenResource IconSizeXS}" />
+                    Value="{atom:SharedTokenResource IconSizeXS}" />
             <Setter Property="IconHeight"
-                    Value="{atom:TagTokenSharedTokenResource IconSizeXS}" />
+                    Value="{atom:SharedTokenResource IconSizeXS}" />
         </Style>
         <Style Selector="^[IsColorSet=True][IsPresetColorTag=False]">
             <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
                 <Setter Property="IconBrush"
-                        Value="{atom:TagTokenSharedTokenResource ColorTextLightSolid}" />
+                        Value="{atom:SharedTokenResource ColorTextLightSolid}" />
             </Style>
         </Style>
 

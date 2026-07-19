@@ -15,6 +15,7 @@ public class CustomizeThemeShowCasePageTests
     public void CustomizeTheme_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeShowCase.axaml");
+        var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/ViewModels/CustomizeThemeViewModel.cs");
 
         source.ShouldContain("CustomizeThemeShowCaseLangResource PageSubtitle");
         source.ShouldContain("CustomizeThemeShowCaseLangResource PageDescription");
@@ -54,8 +55,9 @@ public class CustomizeThemeShowCasePageTests
         source.ShouldContain("CustomizeThemeShowCaseLangResource CustomizeComponentTokenTitle");
         source.ShouldContain("CustomizeThemeShowCaseLangResource NestedThemeTitle");
         source.ShouldContain("CustomizeThemeShowCaseLangResource RuntimeTokenUpdatesTitle");
-        source.ShouldContain("Inherit=\"False\"");
-        source.ShouldContain("SharedTokenSetters=\"{Binding RuntimeSharedTokenSetters}\"");
+        source.ShouldNotContain("Inherit=\"False\"");
+        viewModelSource.ShouldContain(".WithInherit(false)");
+        source.ShouldContain("Config=\"{Binding RuntimeThemeConfig}\"");
         source.ShouldContain("Command=\"{Binding UseRuntimePrimaryGreen}\"");
         source.ShouldContain("Name=\"ComponentTokenContentIsolationProbe\"");
         source.ShouldContain("Text=\"{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}\"");
@@ -140,9 +142,11 @@ public class CustomizeThemeShowCasePageTests
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiMemberThemeConfigProviderAlgorithms");
-            source.ShouldContain("ApiMemberThemeConfigProviderSharedTokenSetters");
-            source.ShouldContain("ApiMemberControlTokenInfoSetter");
+            source.ShouldContain("ApiMemberThemeConfigProviderConfig");
+            source.ShouldContain("ApiMemberThemeConfigAlgorithms");
+            source.ShouldContain("ApiMemberControlThemeConfigAlgorithm");
+            source.ShouldNotContain("TokenSetter");
+            source.ShouldNotContain("ControlTokenInfoSetter");
             source.ShouldContain("TokenNameColorPrimary");
             source.ShouldContain("TokenNameBorderRadius");
             source.ShouldContain("TokenNameColorBgContainer");

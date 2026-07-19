@@ -2,10 +2,11 @@ using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Theme;
+using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Schema;
 using AtomUI.Theme.TokenSystem;
 using AtomUIGallery.Localization;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Threading;
 using ReactiveUI;
 
@@ -22,7 +23,7 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
 
     private ObservableCollection<CustomizeThemeApiRow>? _apiRows;
     private ObservableCollection<CustomizeThemeDesignTokenRow>? _designTokenRows;
-    private readonly TokenSetter _runtimePrimaryTokenSetter;
+    private ThemeConfig _runtimeThemeConfig;
 
     public ObservableCollection<CustomizeThemeApiRow>? ApiRows
     {
@@ -36,7 +37,21 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
 
-    public AvaloniaList<TokenSetter> RuntimeSharedTokenSetters { get; }
+    public ThemeConfig GreenThemeConfig { get; }
+    public ThemeConfig RedThemeConfig { get; }
+    public ThemeConfig PurpleThemeConfig { get; }
+    public ThemeConfig DarkThemeConfig { get; }
+    public ThemeConfig ControlAlgorithmEnabledConfig { get; }
+    public ThemeConfig ControlAlgorithmDisabledConfig { get; }
+    public ThemeConfig NestedBlueThemeConfig { get; }
+    public ThemeConfig NestedGreenThemeConfig { get; }
+    public ThemeConfig NestedOrangeThemeConfig { get; }
+    public ThemeConfig RuntimeThemeConfig
+    {
+        get => _runtimeThemeConfig;
+        private set => this.RaiseAndSetIfChanged(ref _runtimeThemeConfig, value);
+    }
+
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> UseRuntimePrimaryBlue { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> UseRuntimePrimaryGreen { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> UseRuntimePrimaryMagenta { get; }
@@ -45,8 +60,24 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
     {
         Activator                  = new ViewModelActivator();
         HostScreen                 = screen;
-        _runtimePrimaryTokenSetter = new TokenSetter(null, nameof(DesignToken.ColorPrimary), "#1677ff");
-        RuntimeSharedTokenSetters  = [_runtimePrimaryTokenSetter];
+        GreenThemeConfig = BuildGlobalConfig(
+            "#00b96b",
+            (nameof(DesignToken.BorderRadius), "2"),
+            (nameof(DesignToken.ColorBgContainer), "#f6ffed"));
+        RedThemeConfig = BuildGlobalConfig(
+            "#ff0000",
+            (nameof(DesignToken.BorderRadius), "0"));
+        PurpleThemeConfig = BuildGlobalConfig("#7D3C98");
+        DarkThemeConfig = new ThemeConfigBuilder().WithAlgorithms("Dark").Build();
+        ControlAlgorithmEnabledConfig = BuildControlConfig(ControlAlgorithmMode.Global);
+        ControlAlgorithmDisabledConfig = BuildControlConfig(ControlAlgorithmMode.Disabled);
+        NestedBlueThemeConfig = BuildGlobalConfig("#1677ff");
+        NestedGreenThemeConfig = BuildGlobalConfig("#00b96b");
+        NestedOrangeThemeConfig = new ThemeConfigBuilder()
+                                 .WithInherit(false)
+                                 .WithToken(nameof(DesignToken.ColorPrimary), "#faad14")
+                                 .Build();
+        _runtimeThemeConfig = BuildGlobalConfig("#1677ff");
         UseRuntimePrimaryBlue      = ReactiveCommand.Create(() => SetRuntimePrimaryColor("#1677ff"));
         UseRuntimePrimaryGreen     = ReactiveCommand.Create(() => SetRuntimePrimaryColor("#00b96b"));
         UseRuntimePrimaryMagenta   = ReactiveCommand.Create(() => SetRuntimePrimaryColor("#eb2f96"));
@@ -54,7 +85,39 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
 
     private void SetRuntimePrimaryColor(string color)
     {
-        _runtimePrimaryTokenSetter.Value = color;
+        RuntimeThemeConfig = BuildGlobalConfig(color);
+    }
+
+    private static ThemeConfig BuildGlobalConfig(
+        string primaryColor,
+        params (string Name, string Value)[] additionalTokens)
+    {
+        var builder = new ThemeConfigBuilder()
+                      .WithAlgorithms("Default")
+                      .WithToken(nameof(DesignToken.ColorPrimary), primaryColor);
+        foreach (var token in additionalTokens)
+        {
+            builder.WithToken(token.Name, token.Value);
+        }
+        return builder.Build();
+    }
+
+    private static ThemeConfig BuildControlConfig(ControlAlgorithmMode algorithm)
+    {
+        return new ThemeConfigBuilder()
+               .WithControl(
+                   new ControlTokenIdentity("AtomUI", "Button"),
+                   new ControlThemeConfigBuilder()
+                       .WithAlgorithm(algorithm)
+                       .WithToken(nameof(DesignToken.ColorPrimary), "#00b96b")
+                       .Build())
+               .WithControl(
+                   new ControlTokenIdentity("AtomUI", "AddOnDecoratedBox"),
+                   new ControlThemeConfigBuilder()
+                       .WithAlgorithm(algorithm)
+                       .WithToken(nameof(DesignToken.ColorPrimary), "#eb2f96")
+                       .Build())
+               .Build();
     }
 
     public void EnsureApiRows()
@@ -66,15 +129,14 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
 
         ApiRows =
         [
-            new CustomizeThemeApiRow("ThemeConfigProvider.Algorithms", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderAlgorithms), "AvaloniaList<string>", "blue", "[]"),
-            new CustomizeThemeApiRow("ThemeConfigProvider.SharedTokenSetters", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderSharedTokenSetters), "AvaloniaList<TokenSetter>", "cyan", "[]"),
-            new CustomizeThemeApiRow("ThemeConfigProvider.ControlTokenInfoSetters", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderControlTokenInfoSetters), "AvaloniaList<ControlTokenInfoSetter>", "cyan", "[]"),
-            new CustomizeThemeApiRow("TokenSetter.Key", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberTokenSetterKey), "string", "purple", "string.Empty"),
-            new CustomizeThemeApiRow("TokenSetter.Value", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberTokenSetterValue), "string", "purple", "string.Empty"),
-            new CustomizeThemeApiRow("TokenSetter.Catalog", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberTokenSetterCatalog), "string?", "purple", "null"),
-            new CustomizeThemeApiRow("ControlTokenInfoSetter.TokenId", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlTokenInfoSetter), "string", "purple", "string.Empty"),
-            new CustomizeThemeApiRow("ControlTokenInfoSetter.EnableAlgorithm", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlTokenInfoSetterEnableAlgorithm), "bool", "purple", "false"),
-            new CustomizeThemeApiRow("ControlTokenInfoSetter.Setters", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlTokenInfoSetterSetters), "AvaloniaList<TokenSetter>", "cyan", "[]")
+            new CustomizeThemeApiRow("ThemeConfigProvider.Config", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderConfig), "ThemeConfig?", "blue", "null"),
+            new CustomizeThemeApiRow("ThemeConfig.Inherit", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigInherit), "bool", "purple", "true"),
+            new CustomizeThemeApiRow("ThemeConfig.Algorithms", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigAlgorithms), "IReadOnlyList<string>?", "cyan", "null"),
+            new CustomizeThemeApiRow("ThemeConfig.Tokens", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigTokens), "IReadOnlyDictionary<string, string>", "cyan", "{}"),
+            new CustomizeThemeApiRow("ThemeConfig.Controls", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigControls), "IReadOnlyDictionary<ControlTokenIdentity, ControlThemeConfig>", "cyan", "{}"),
+            new CustomizeThemeApiRow("ControlThemeConfig.Algorithm", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigAlgorithm), "ControlAlgorithmMode", "purple", "Unspecified"),
+            new CustomizeThemeApiRow("ControlThemeConfig.Algorithms", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigAlgorithms), "IReadOnlyList<string>?", "cyan", "null"),
+            new CustomizeThemeApiRow("ControlThemeConfig.Tokens", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigTokens), "IReadOnlyDictionary<string, string>", "cyan", "{}")
         ];
     }
 
@@ -109,15 +171,14 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
     {
         return kind switch
         {
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderAlgorithms              => en_US.ApiMemberThemeConfigProviderAlgorithms,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderSharedTokenSetters      => en_US.ApiMemberThemeConfigProviderSharedTokenSetters,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderControlTokenInfoSetters => en_US.ApiMemberThemeConfigProviderControlTokenInfoSetters,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberTokenSetterKey                             => en_US.ApiMemberTokenSetterKey,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberTokenSetterValue                           => en_US.ApiMemberTokenSetterValue,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberTokenSetterCatalog                         => en_US.ApiMemberTokenSetterCatalog,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberControlTokenInfoSetter                     => en_US.ApiMemberControlTokenInfoSetter,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberControlTokenInfoSetterEnableAlgorithm      => en_US.ApiMemberControlTokenInfoSetterEnableAlgorithm,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberControlTokenInfoSetterSetters              => en_US.ApiMemberControlTokenInfoSetterSetters,
+            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderConfig          => en_US.ApiMemberThemeConfigProviderConfig,
+            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigInherit                  => en_US.ApiMemberThemeConfigInherit,
+            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigAlgorithms               => en_US.ApiMemberThemeConfigAlgorithms,
+            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigTokens                   => en_US.ApiMemberThemeConfigTokens,
+            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigControls                 => en_US.ApiMemberThemeConfigControls,
+            CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigAlgorithm         => en_US.ApiMemberControlThemeConfigAlgorithm,
+            CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigAlgorithms        => en_US.ApiMemberControlThemeConfigAlgorithms,
+            CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigTokens            => en_US.ApiMemberControlThemeConfigTokens,
             CustomizeThemeShowCaseLangResourceKind.TokenNameColorPrimary                               => en_US.TokenNameColorPrimary,
             CustomizeThemeShowCaseLangResourceKind.TokenNameBorderRadius                               => en_US.TokenNameBorderRadius,
             CustomizeThemeShowCaseLangResourceKind.TokenNameColorBgContainer                           => en_US.TokenNameColorBgContainer,

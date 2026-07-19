@@ -1,6 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:ProgressBarThemeAsset.Identity}"
               xmlns:atomc="https://atomui.net/common-controls"
               xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
               x:Class="AtomUI.Desktop.Controls.Themes.AbstractCircleProgressTheme"
@@ -46,16 +49,16 @@
                 Value="{atom:ProgressBarTokenResource CircleMinimumIconSize}" />
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_ExceptionCompletedIconPresenter">
-            <Setter Property="IconBrush" Value="{atom:ProgressBarTokenSharedTokenResource ColorError}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_SuccessCompletedIconPresenter">
-            <Setter Property="IconBrush" Value="{atom:ProgressBarTokenSharedTokenResource ColorSuccess}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorSuccess}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconPresenter:disabled">
             <Setter Property="IconBrush"
-                    Value="{atom:ProgressBarTokenSharedTokenResource ControlItemBgActiveDisabled}" />
+                    Value="{atom:SharedTokenResource ControlItemBgActiveDisabled}" />
         </Style>
 
     </Style>

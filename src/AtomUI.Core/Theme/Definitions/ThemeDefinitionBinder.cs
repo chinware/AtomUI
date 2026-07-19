@@ -10,6 +10,7 @@ internal static class ThemeDefinitionBinder
     private const string UnknownTokenCode = "ATMTHM2003";
     private const string InvalidAlgorithmPolicyCode = "ATMTHM3001";
     private const string InvalidTokenValueCode = "ATMTHM3002";
+    private const string InvalidAppearanceCode = "ATMTHM3003";
 
     internal static ThemeDefinitionBindResult Bind(
         ThemeDocument document,
@@ -22,7 +23,18 @@ internal static class ThemeDefinitionBinder
         var algorithms = BindAlgorithms(document.Algorithms, registry, diagnostics);
         var tokens = BindGlobalTokens(document.Tokens, registry, diagnostics);
         var controls = BindControls(document.Controls, registry, diagnostics);
-        if (diagnostics.Any(static diagnostic => diagnostic.Severity == ThemeDiagnosticSeverity.Error))
+        var effectiveAppearance = ResolveAppearance(algorithms);
+        if (effectiveAppearance != document.Appearance)
+        {
+            AddError(
+                diagnostics,
+                InvalidAppearanceCode,
+                document.Location,
+                $"Theme appearance '{document.Appearance}' does not match algorithm result '{effectiveAppearance}'.");
+        }
+
+        if (diagnostics.Any(static diagnostic =>
+                diagnostic.Severity == ThemeDefinitionDiagnosticSeverity.Error))
         {
             return new ThemeDefinitionBindResult(null, diagnostics);
         }
@@ -32,7 +44,7 @@ internal static class ThemeDefinitionBinder
                 document.Id,
                 document.Name,
                 document.Appearance,
-                ResolveAppearance(document.Appearance, algorithms),
+                effectiveAppearance,
                 document.IsDefault,
                 algorithms,
                 tokens,
@@ -208,10 +220,9 @@ internal static class ThemeDefinitionBinder
     }
 
     private static ThemeAppearance ResolveAppearance(
-        ThemeAppearance declaredAppearance,
         IReadOnlyList<ThemeAlgorithmDescriptor> algorithms)
     {
-        var appearance = declaredAppearance;
+        var appearance = ThemeAppearance.Light;
         foreach (var algorithm in algorithms)
         {
             appearance = algorithm.AppearanceEffect switch
@@ -237,7 +248,7 @@ internal static class ThemeDefinitionBinder
     {
         diagnostics.Add(new ThemeDefinitionDiagnostic(
                             code,
-                            ThemeDiagnosticSeverity.Error,
+                            ThemeDefinitionDiagnosticSeverity.Error,
                             location.Source,
                             location.Line,
                             location.Column,

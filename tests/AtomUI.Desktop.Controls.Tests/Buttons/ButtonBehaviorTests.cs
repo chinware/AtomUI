@@ -4,6 +4,7 @@ using System.Reflection;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Theme;
+using AtomUI.Theme.Configuration;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
@@ -228,6 +229,7 @@ public class ButtonBehaviorTests
 
         ShowInWindow(button, () =>
         {
+            button.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull();
             GetInternalPropertyValue<ButtonColor>(button, "EffectiveColor")
                 .ShouldBe(ButtonColor.Default);
             GetInternalPropertyValue<ButtonVariant>(button, "EffectiveVariant")
@@ -256,11 +258,10 @@ public class ButtonBehaviorTests
         var button             = CreateScopedPrimaryButton(scenario);
         var provider = new ThemeConfigProvider
         {
-            SharedTokenSetters =
-            [
-                new TokenSetter(null, "ColorPrimary", "#00A1D6")
-            ],
-            Content = button
+            Config = new ThemeConfigBuilder()
+                     .WithToken("ColorPrimary", "#00A1D6")
+                     .Build(),
+            Child = button
         };
 
         ShowInWindow(provider, () =>

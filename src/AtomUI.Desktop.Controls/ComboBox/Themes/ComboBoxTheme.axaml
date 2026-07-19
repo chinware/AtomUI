@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ComboBoxThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ComboBox}" TargetType="atom:ComboBox">
         <Setter Property="Template">
@@ -24,7 +27,7 @@
                         ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
                         ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}">
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
-                             <StackPanel Orientation="Horizontal" Spacing="{atom:ComboBoxTokenSharedTokenResource SpacingXS}">
+                             <StackPanel Orientation="Horizontal" Spacing="{atom:SharedTokenResource SpacingXS}">
                                  <ContentPresenter
                                      Name="PART_ContentRightAddOnPresenter"
                                      Content="{CompiledBinding $parent[atom:ComboBox].ContentRightAddOn}"
@@ -70,9 +73,9 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 Padding="0"
-                                CaretBrush="{atom:ComboBoxTokenSharedTokenResource ColorText}"
-                                SelectionBrush="{atom:ComboBoxTokenSharedTokenResource SelectionBackground}"
-                                SelectionForegroundBrush="{atom:ComboBoxTokenSharedTokenResource SelectionForeground}"
+                                CaretBrush="{atom:SharedTokenResource ColorText}"
+                                SelectionBrush="{atom:SharedTokenResource SelectionBackground}"
+                                SelectionForegroundBrush="{atom:SharedTokenResource SelectionForeground}"
                                 Text="{TemplateBinding Text, Mode=TwoWay}"
                                 PlaceholderText="{TemplateBinding PlaceholderText}"
                                 PlaceholderForeground="{TemplateBinding PlaceholderForeground}"
@@ -144,7 +147,7 @@
                                 </atom:ScrollViewer>
                                 <Border
                                     Name="PART_EmptyIndicator"
-                                    Padding="{atom:ComboBoxTokenSharedTokenResource Padding}"
+                                    Padding="{atom:SharedTokenResource Padding}"
                                     IsVisible="{TemplateBinding IsEffectiveEmptyVisible}">
                                     <atom:Empty
                                         HorizontalAlignment="Center"
@@ -163,19 +166,19 @@
         <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="IsMotionEnabled" Value="{atom:ComboBoxTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="PopupContentPadding" Value="{atom:ComboBoxTokenResource PopupContentPadding}" />
-        <Setter Property="OptionFontSize" Value="{atom:ComboBoxTokenSharedTokenResource FontSize}" />
-        <Setter Property="ItemHeight" Value="{atom:ComboBoxTokenSharedTokenResource ControlHeight}" />
+        <Setter Property="OptionFontSize" Value="{atom:SharedTokenResource FontSize}" />
+        <Setter Property="ItemHeight" Value="{atom:SharedTokenResource ControlHeight}" />
         
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="FontSize" Value="{atom:ComboBoxTokenSharedTokenResource FontSizeLG}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeLG}" />
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Setter Property="FontSize" Value="{atom:ComboBoxTokenSharedTokenResource FontSize}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="FontSize" Value="{atom:ComboBoxTokenSharedTokenResource FontSizeSM}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeSM}" />
             <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
                 <Setter Property="Margin" Value="0, 1, 0, 1" />
             </Style>
@@ -196,7 +199,7 @@
             <Setter Property="PopupRootShadow" Value="{atom:PopupHostTokenResource PopupRootShadow}" />
         </Style>
         <Style Selector="^ /template/ Border#PopupFrame">
-            <Setter Property="Background" Value="{atom:ComboBoxTokenSharedTokenResource ColorBgElevated}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
             <Setter Property="CornerRadius"
                     Value="{atom:PopupHostTokenResource BorderRadius}" />
         </Style>
@@ -205,13 +208,13 @@
             <Style Selector="^:error">
                 <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
                     <Setter Property="Foreground"
-                            Value="{atom:ComboBoxTokenSharedTokenResource ColorErrorText}" />
+                            Value="{atom:SharedTokenResource ColorErrorText}" />
                 </Style>
             </Style>
             <Style Selector="^:warning">
                 <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
                     <Setter Property="Foreground"
-                            Value="{atom:ComboBoxTokenSharedTokenResource ColorWarningText}" />
+                            Value="{atom:SharedTokenResource ColorWarningText}" />
                 </Style>
             </Style>
         </Style>
@@ -220,13 +223,13 @@
             <Style Selector="^:error">
                 <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
                     <Setter Property="Foreground"
-                            Value="{atom:ComboBoxTokenSharedTokenResource ColorErrorText}" />
+                            Value="{atom:SharedTokenResource ColorErrorText}" />
                 </Style>
             </Style>
             <Style Selector="^:warning">
                 <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
                     <Setter Property="Foreground"
-                            Value="{atom:ComboBoxTokenSharedTokenResource ColorWarningText}" />
+                            Value="{atom:SharedTokenResource ColorWarningText}" />
                 </Style>
             </Style>
         </Style>

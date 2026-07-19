@@ -7,7 +7,10 @@ using AtomUI.Controls;
 using AtomUI.Controls.Commons;
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Theme;
+using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
+using AtomUI.Theme.Schema;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
@@ -121,8 +124,9 @@ public class TextBoxVisualStateTests
             .ShouldBeNull();
 
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Input/Themes/TextBoxTheme.axaml");
-        source.ShouldContain("TextBoxTokenSharedTokenResource FontSize");
-        source.ShouldNotContain("{atom:SharedTokenResource ");
+        source.ShouldContain("SharedTokenResource FontSize");
+        source.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        source.ShouldNotContain("TokenSharedTokenResource");
     }
 
     [Fact]
@@ -214,15 +218,16 @@ public class TextBoxVisualStateTests
         source.ShouldContain("TextBoxTokenResource Padding");
         source.ShouldContain("TextBoxTokenResource PaddingSM");
         source.ShouldNotContain("IsCustomPadding");
-        source.ShouldContain("TextBoxTokenSharedTokenResource UniformlyPaddingXXS");
-        source.ShouldContain("TextBoxTokenSharedTokenResource FontHeightLG");
-        source.ShouldContain("TextBoxTokenSharedTokenResource FontHeight");
-        source.ShouldContain("TextBoxTokenSharedTokenResource FontHeightSM");
-        source.ShouldContain("TextBoxTokenSharedTokenResource FontSizeLG");
-        source.ShouldContain("TextBoxTokenSharedTokenResource FontSize");
-        source.ShouldContain("TextBoxTokenSharedTokenResource FontSizeSM");
-        source.ShouldContain("TextBoxTokenSharedTokenResource ColorTextPlaceholder");
-        source.ShouldContain("TextBoxTokenSharedTokenResource ColorTextDisabled");
+        source.ShouldContain("SharedTokenResource UniformlyPaddingXXS");
+        source.ShouldContain("SharedTokenResource FontHeightLG");
+        source.ShouldContain("SharedTokenResource FontHeight");
+        source.ShouldContain("SharedTokenResource FontHeightSM");
+        source.ShouldContain("SharedTokenResource FontSizeLG");
+        source.ShouldContain("SharedTokenResource FontSize");
+        source.ShouldContain("SharedTokenResource FontSizeSM");
+        source.ShouldContain("SharedTokenResource ColorTextPlaceholder");
+        source.ShouldContain("SharedTokenResource ColorTextDisabled");
+        source.ShouldContain("themeResources:ControlTokenScope.Identity=");
         source.ShouldNotContain("LineEditTokenResource");
         source.ShouldNotContain("AddOnDecoratedBoxTokenResource");
         source.ShouldNotContain("AddOn");
@@ -309,17 +314,26 @@ public class TextBoxVisualStateTests
         {
             Width = 180
         };
+        var provider = new ThemeConfigProvider
+        {
+            Config = new ThemeConfigBuilder()
+                     .WithControl(
+                         new ControlTokenIdentity("AtomUI", TextBoxToken.ID),
+                         new ControlThemeConfigBuilder()
+                             .WithAlgorithm(ControlAlgorithmMode.Disabled)
+                             .WithToken(nameof(SharedTokenKind.EnableMotion), "false")
+                             .Build())
+                     .Build(),
+            Child = textBox
+        };
 
-        ShowInWindow(textBox,
-            () =>
-            {
-                var border = FindTemplatePart<PixelAlignedBorder>(textBox, "InnerBoxDecorator");
+        ShowInWindow(provider, () =>
+        {
+            var border = FindTemplatePart<PixelAlignedBorder>(textBox, "InnerBoxDecorator");
 
-                textBox.IsMotionEnabled.ShouldBeFalse();
-                border.Transitions.ShouldBeNull();
-            },
-            window => window.Resources[
-                new ControlSharedTokenResourceKey("AtomUI", "TextBox", SharedTokenKind.EnableMotion)] = false);
+            textBox.IsMotionEnabled.ShouldBeFalse();
+            border.Transitions.ShouldBeNull();
+        });
     }
 
     [Fact]

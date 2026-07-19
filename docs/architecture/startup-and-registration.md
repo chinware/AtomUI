@@ -52,18 +52,23 @@ public override void Initialize()
 }
 ```
 
-`UseAtomUI()` 会创建 `ThemeManagerBuilder`，设置默认语言和初始主题请求，执行用户传入的注册动作，然后
-构建主题 schema、首个 snapshot、ThemeEngine 和 ThemeManager。
+`UseAtomUI()` 会创建 `ThemeManagerBuilder`，设置默认语言和不可变初始主题请求，执行用户传入的注册动作，然后
+构建主题 schema、ControlTheme asset manifest、首个 snapshot、Root ThemeContext 和唯一 ThemeManager。
 
 构建后的主题运行流见 [AtomUI.Core 主题系统](../modules/core/theme-system.md)。简化顺序是：
 
-1. Builder 收集生成式 Control descriptor、主题 Provider、算法 descriptor、语言和初始 `ThemeConfig`。
-2. `ThemeSchemaRegistry` 在读取主题文件前完成构建并拒绝无效注册。
+1. Builder 收集生成式 Control descriptor、ControlTheme asset manifest、主题 Provider、算法 descriptor、语言和
+   不可变初始 `ThemeRequest` 模板。
+2. `ThemeSchemaRegistry` 在读取主题文件前完成构建并冻结；无效 descriptor、重复 identity、资产 URI/identity
+   冲突在此失败。
 3. `ThemeCatalog` 通过 Reader 和 Binder 生成 typed theme definition。
-4. `ThemeCompiler` 在 ThemeManager 挂载前同步生成首个不可变 `ThemeSnapshot`。
-5. Root ThemeContext 和唯一的 `ThemeTokenResourceProvider` 使用该 snapshot 初始化。
-6. ThemeManager 挂载到 Application 后设置 Avalonia Light/Dark variant，并且只发布一次资源通知。
-7. 后续全局和局部更新统一由 ThemeEngine 准备和事务提交。
+4. FollowSystem 在编译前解析初始系统 appearance，并选择完整的 Light/Dark request 模板。
+5. `ThemeCompiler` 在 ThemeManager 挂载前同步生成首个不可变 `ThemeSnapshot`。
+6. Root ThemeContext 和唯一的 `ThemeTokenResourceProvider` 使用该 snapshot 初始化；ThemeManager 同时准备向
+   每个 TopLevel 注入 Root ThemeContext 的全局 style。
+7. ThemeManager 以完整资源状态挂载到 Application，显式设置匹配 snapshot 的 Avalonia Light/Dark variant，
+   并且只发布一次初始 Token 资源通知。
+8. 后续全局和局部更新统一由 ThemeManager 创建五阶段 `ThemeTransaction`、准备并提交。
 
 如果应用需要首帧就是暗色或紧凑主题，应在 builder 阶段通过 `ThemeConfig` 配置初始主题算法，而不是在
 `UseAtomUI()` 之后调用运行期切换 API：
@@ -73,27 +78,36 @@ this.UseAtomUI(builder =>
 {
     builder.WithInitialTheme(
         IThemeManager.DEFAULT_THEME_ID,
-        new ThemeConfig
-        {
-            Algorithms = { ThemeAlgorithms.Default, ThemeAlgorithms.Dark }
-        });
+        new ThemeConfigBuilder()
+            .WithAlgorithms(ThemeAlgorithms.Default, ThemeAlgorithms.Dark)
+            .Build());
     builder.UseDesktopControls();
 });
 ```
 
+`ThemeConfigBuilder` 只用于一次性构造并在 `Build()` 时防御性复制；传入 Manager 或
+`ThemeConfigProvider.Config` 的 `ThemeConfig` 及其集合均不可变。运行时更新必须替换完整 Config，不能修改已
+提交对象中的 Algorithms、Tokens 或 Controls 集合。
+
 应用启动后的主题变化使用 `IThemeManager.ApplyThemeAsync(ThemeRequest)`。AtomUI 的主题 id 和 Compact
 算法不编码进 Avalonia `ThemeVariant`；运行时只根据已提交 snapshot 设置 Avalonia Light 或 Dark。
+
+局部主题由继承 `ThemeVariantScope` 的 `ThemeConfigProvider` 建立。Provider 首次 attach 在内容可见前同步创建
+稳定 ThemeContext 和唯一 ResourceProvider；后续 Config 替换由同一个 ThemeManager 事务化处理。普通
+Popup/Flyout 通过逻辑树自然继承，独立 Window/Dialog/Notification TopLevel 必须从显式 owner 获得
+`ThemeContextLease` 和宿主私有 ResourceBridge；无 owner 静态 API 使用根主题。
 
 ## ThemeManagerBuilder 收集内容
 
 `ThemeManagerBuilder` 在构建前收集以下内容：
 
 - `ControlTokenDescriptors`：生成式 Control identity、Token schema、强类型构造和资源投影。
+- `ControlThemeAssetManifests`：生成式资产 URI、单一 Control identity、资源 key schema 摘要和构建期校验结果。
 - `ControlThemesProviders`：AXAML 主题 Provider。
 - `ThemeAssetPathProviders`：自定义主题资源路径 Provider。
 - `LanguageProviders`：本地化资源 Provider。
 - `ThemeAlgorithmDescriptors`：默认、暗色、紧凑和自定义算法。
-- `InitialThemeRequest`：首帧使用的主题 id 和 `ThemeConfig`。
+- `InitialThemeRequests`：固定主题或 FollowSystem 的 Light/Dark 不可变 root request 模板。
 - `ModuleInitializers`：与 ThemeLoaded 等主题生命周期无关的模块初始化回调。
 
 构建时会把这些内容注册到 `ThemeManager`。
@@ -115,8 +129,10 @@ DataGrid 和 ColorPicker 独立包通过 `UseDesktopDataGrid()`、`UseDesktopCol
 控件包不手工维护完整 Token/Language 列表，而是依赖 `AtomUI.Generator` 生成：
 
 - `ControlTokenDescriptorPool.GetDescriptors()`：返回当前项目内完整的 Control Token descriptor。
+- `ControlThemeAssetManifest.GetDescriptors()`：返回当前项目内通过构建校验的 ControlTheme asset descriptor。
 - `LanguageProviderPool.GetLanguageProviders()`：返回当前项目内的语言 Provider。
-- Token 资源键常量：供 AXAML 和 C# 使用。
+- Token 资源键、`ControlTokenScope.Identity` 和资产 identity 引用：供 AXAML 和 C# 使用。
 
-Builder 必须原样注册 descriptor，不能退化成只传递 `Type`。因此新增控件 Token 或语言 Provider 时，
-需要确认对应 Attribute 正确，并检查生成 descriptor、资源键和注册池是否一致。
+Builder 必须原样注册 descriptor 和 manifest，不能退化成只传递 `Type` 或运行时扫描 AXAML。因此新增控件
+Token、ControlTheme 资产或语言 Provider 时，需要确认对应 Attribute/资产元数据正确，并检查生成 descriptor、
+资源键、单一 identity 和注册池是否一致。

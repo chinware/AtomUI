@@ -1,6 +1,6 @@
 using AtomUI.Controls;
 using AtomUI.Theme;
-using AtomUI.Theme.Palette;
+using AtomUI.Theme.Algorithms;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;

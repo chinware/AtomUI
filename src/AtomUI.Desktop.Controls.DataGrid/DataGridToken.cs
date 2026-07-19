@@ -379,5 +379,4 @@ internal class DataGridToken : AbstractControlDesignToken
         PaginationMarginSM = new Thickness(0, SharedToken.UniformlyMarginXS);
     }
     
-    protected override Type GetTokenKindType() => typeof(DataGridTokenKind);
 }

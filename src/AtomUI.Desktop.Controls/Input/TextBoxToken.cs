@@ -102,5 +102,4 @@ internal class TextBoxToken : AbstractControlDesignToken
         });
     }
 
-    protected override Type GetTokenKindType() => typeof(TextBoxTokenKind);
 }

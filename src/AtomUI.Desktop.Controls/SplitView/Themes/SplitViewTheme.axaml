@@ -2,13 +2,16 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SplitViewThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SplitView}" TargetType="atom:SplitView">
         <Setter Property="OpenPaneLength"
                 Value="{atom:SplitViewTokenResource OpenPaneThemeLength}" />
         <Setter Property="CompactPaneLength"
                 Value="{atom:SplitViewTokenResource CompactPaneThemeLength}" />
-        <Setter Property="PaneBackground" Value="{atom:SplitViewTokenSharedTokenResource ColorBgContainer}" />
+        <Setter Property="PaneBackground" Value="{atom:SharedTokenResource ColorBgContainer}" />
         <Setter Property="PaneOpenMotionDuration"
                 Value="{atom:SplitViewTokenResource PaneOpenMotionDuration}" />
         <Setter Property="PaneCloseMotionDuration"
@@ -36,7 +39,7 @@
                                               Content="{TemplateBinding Pane}"
                                               ContentTemplate="{TemplateBinding PaneTemplate}" />
                             <atom:PixelAlignedBorder Name="HCPaneBorder"
-                                                     BorderBrush="{atom:SplitViewTokenSharedTokenResource ColorBorder}"
+                                                     BorderBrush="{atom:SharedTokenResource ColorBorder}"
                                                      BorderThickness="0,0,1,0"
                                                      Width="1"
                                                      HorizontalAlignment="Right" />
@@ -126,7 +129,7 @@
                                               Content="{TemplateBinding Pane}"
                                               ContentTemplate="{TemplateBinding PaneTemplate}" />
                             <atom:PixelAlignedBorder Name="HCPaneBorder"
-                                                     BorderBrush="{atom:SplitViewTokenSharedTokenResource ColorBorder}"
+                                                     BorderBrush="{atom:SharedTokenResource ColorBorder}"
                                                      BorderThickness="1,0,0,0"
                                                      Width="1"
                                                      HorizontalAlignment="Left" />
@@ -216,7 +219,7 @@
                                               Content="{TemplateBinding Pane}"
                                               ContentTemplate="{TemplateBinding PaneTemplate}" />
                             <atom:PixelAlignedBorder Name="HCPaneBorder"
-                                                     BorderBrush="{atom:SplitViewTokenSharedTokenResource ColorBorder}"
+                                                     BorderBrush="{atom:SharedTokenResource ColorBorder}"
                                                      BorderThickness="0,0,0,1"
                                                      Height="1"
                                                      VerticalAlignment="Bottom" />
@@ -307,7 +310,7 @@
                                               Content="{TemplateBinding Pane}"
                                               ContentTemplate="{TemplateBinding PaneTemplate}" />
                             <atom:PixelAlignedBorder Name="HCPaneBorder"
-                                                     BorderBrush="{atom:SplitViewTokenSharedTokenResource ColorBorder}"
+                                                     BorderBrush="{atom:SharedTokenResource ColorBorder}"
                                                      BorderThickness="0,1,0,0"
                                                      Height="1"
                                                      VerticalAlignment="Top" />
@@ -426,7 +429,7 @@
         </Style>
 
         <Style Selector="^:lightDismiss /template/ Rectangle#LightDismissLayer">
-            <Setter Property="Fill" Value="{atom:SplitViewTokenSharedTokenResource ColorBgMask}" />
+            <Setter Property="Fill" Value="{atom:SharedTokenResource ColorBgMask}" />
         </Style>
         <Style Selector="^:overlay:open /template/ Rectangle#LightDismissLayer">
             <Setter Property="IsVisible" Value="True" />

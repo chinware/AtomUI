@@ -42,5 +42,4 @@ internal class LineEditToken : AbstractControlDesignToken
         InputFontSizeSM = SharedToken.FontSizeSM;
     }
 
-    protected override Type GetTokenKindType() => typeof(LineEditTokenKind);
 }

@@ -105,5 +105,4 @@ internal class SegmentedToken : AbstractControlDesignToken
         ItemMinHeightSM = SharedToken.ControlHeightSM - TrackPadding.Top - TrackPadding.Bottom;
     }
     
-    protected override Type GetTokenKindType() => typeof(SegmentedTokenKind);
 }

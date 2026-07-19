@@ -9,7 +9,7 @@ namespace AtomUI.Generator.Tests;
 public class TokenResourceKeyGeneratorTests
 {
     [Fact]
-    public void Generates_Control_Shared_Token_Extension_And_Metadata_Registration()
+    public void Generates_Control_Token_Extension_And_Descriptor_Without_Legacy_Shared_Extension()
     {
         var outputCompilation = RunGenerator(CreateCompilation("""
             using AtomUI.Theme.TokenSystem;
@@ -27,11 +27,6 @@ public class TokenResourceKeyGeneratorTests
                     }
 
                     public double Height { get; set; }
-
-                    protected override System.Type GetTokenKindType()
-                    {
-                        return typeof(object);
-                    }
                 }
             }
             """), out var diagnostics);
@@ -42,10 +37,9 @@ public class TokenResourceKeyGeneratorTests
                          .ShouldBeEmpty();
 
         var tokenResources = GetGeneratedSource(outputCompilation, "TokenResourceConst.g.cs");
-        tokenResources.ShouldContain("public sealed class ButtonTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension");
-        tokenResources.ShouldContain("public ButtonTokenSharedTokenResourceExtension(SharedTokenKind kind)");
-        tokenResources.ShouldContain(": base(\"AtomUI\", \"Button\", kind)");
         tokenResources.ShouldContain("public class ButtonTokenResourceExtension : TokenResourceExtension<ButtonTokenKind>");
+        tokenResources.ShouldNotContain("ButtonTokenSharedTokenResourceExtension");
+        tokenResources.ShouldNotContain("ControlSharedTokenResourceExtension");
 
         var descriptorPool = GetGeneratedSource(outputCompilation, "GeneratedThemeSchema.g.cs");
         descriptorPool.ShouldContain("new ControlTokenIdentity(\"AtomUI\", \"Button\")");
@@ -71,11 +65,6 @@ public class TokenResourceKeyGeneratorTests
                     }
 
                     public double Height { get; set; }
-
-                    protected override System.Type GetTokenKindType()
-                    {
-                        return typeof(object);
-                    }
                 }
             }
             """), out var diagnostics);
@@ -104,11 +93,6 @@ public class TokenResourceKeyGeneratorTests
                     }
 
                     public double Height { get; set; }
-
-                    protected override System.Type GetTokenKindType()
-                    {
-                        return typeof(object);
-                    }
                 }
             }
             """), out var diagnostics);
@@ -179,13 +163,12 @@ public class TokenResourceKeyGeneratorTests
             }
         }
 
-        namespace AtomUI.Theme.Resources
+        namespace AtomUI.Theme
         {
-            public class ControlSharedTokenResourceExtension
+            public enum ThemeAppearance : byte
             {
-                public ControlSharedTokenResourceExtension(string? catalog, string controlId, AtomUI.Theme.Styling.SharedTokenKind kind)
-                {
-                }
+                Light,
+                Dark
             }
         }
 
@@ -232,7 +215,7 @@ public class TokenResourceKeyGeneratorTests
                     ControlTokenIdentity identity,
                     System.Collections.Generic.IReadOnlyList<TokenDescriptor> ownTokens,
                     System.Func<AtomUI.Theme.TokenSystem.AbstractControlDesignToken> factory,
-                    System.Action<AtomUI.Theme.TokenSystem.AbstractControlDesignToken, bool> evaluator)
+                    System.Action<AtomUI.Theme.TokenSystem.AbstractControlDesignToken, AtomUI.Theme.ThemeAppearance> evaluator)
                 {
                 }
             }
@@ -280,8 +263,6 @@ public class TokenResourceKeyGeneratorTests
                 protected AbstractControlDesignToken(string id)
                 {
                 }
-
-                protected abstract System.Type GetTokenKindType();
 
                 public virtual void CalculateTokenValues(bool isDark)
                 {

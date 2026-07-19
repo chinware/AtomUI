@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:CheckBoxThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:CheckBoxItemsControl}" TargetType="atom:CheckBoxItemsControl">
         <Setter Property="Template">
@@ -20,8 +23,8 @@
             </ItemsPanelTemplate>
         </Setter>
 
-        <Setter Property="ItemSpacing" Value="{atom:CheckBoxTokenSharedTokenResource SpacingXS}" />
-        <Setter Property="LineSpacing" Value="{atom:CheckBoxTokenSharedTokenResource SpacingXS}" />
+        <Setter Property="ItemSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
+        <Setter Property="LineSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
         <Setter Property="ClipToBounds" Value="False" />
         
     </ControlTheme>

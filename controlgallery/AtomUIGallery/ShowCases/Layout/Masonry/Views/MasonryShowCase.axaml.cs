@@ -1,7 +1,6 @@
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
-using Avalonia.Data;
-using Avalonia.Data.Converters;
 using Avalonia.LogicalTree;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
@@ -50,12 +49,12 @@ public partial class MasonryShowCase : GalleryReactiveUserControl<MasonryViewMod
             return;
         }
 
-        skeleton.Bind(IsVisibleProperty, new Binding
-        {
-            Source    = image,
-            Path      = nameof(Image.Source),
-            Converter = ObjectConverters.IsNull
-        });
+        _ = BindUtils.RelayBind(
+            image,
+            Image.SourceProperty,
+            skeleton,
+            IsVisibleProperty,
+            static source => source is null);
     }
 
     private static T? FindDescendantByName<T>(Control root, string name)

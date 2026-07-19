@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SegmentedThemeAsset.Identity}"
     xmlns:atomc="https://atomui.net/common-controls"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Segmented}" TargetType="atom:Segmented">
@@ -22,30 +25,30 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="IsMotionEnabled" Value="{atom:SegmentedTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="Padding" Value="{atom:SegmentedTokenResource TrackPadding}" />
         <Setter Property="Background" Value="{atom:SegmentedTokenResource TrackBg}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="SelectedThumbBg" Value="{atom:SegmentedTokenResource ItemSelectedBg}" />
-        <Setter Property="SelectedThumbBoxShadows" Value="{atom:SegmentedTokenSharedTokenResource BoxShadowsTertiary}" />
+        <Setter Property="SelectedThumbBoxShadows" Value="{atom:SharedTokenResource BoxShadowsTertiary}" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Style Selector="^[IsExpanding=True]">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
         </Style>
         
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="CornerRadius" Value="{atom:SegmentedTokenSharedTokenResource BorderRadiusLG}" />
-            <Setter Property="SelectedThumbCornerRadius" Value="{atom:SegmentedTokenSharedTokenResource BorderRadius}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+            <Setter Property="SelectedThumbCornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
         </Style>
                 
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Setter Property="CornerRadius" Value="{atom:SegmentedTokenSharedTokenResource BorderRadius}" />
-            <Setter Property="SelectedThumbCornerRadius" Value="{atom:SegmentedTokenSharedTokenResource BorderRadiusSM}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            <Setter Property="SelectedThumbCornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         </Style>
                 
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="CornerRadius" Value="{atom:SegmentedTokenSharedTokenResource BorderRadiusSM}" />
-            <Setter Property="SelectedThumbCornerRadius" Value="{atom:SegmentedTokenSharedTokenResource BorderRadiusXS}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+            <Setter Property="SelectedThumbCornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

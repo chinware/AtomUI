@@ -1,7 +1,10 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:FormThemeAsset.Identity}">
     <ControlTheme x:Key="{x:Type atom:FormItem}" TargetType="atom:FormItem">
         <Setter Property="Template">
             <ControlTemplate>
@@ -95,13 +98,13 @@
 
         <Style Selector="^[ValidateStatus=Error]">
             <Style Selector="^ /template/ TextBlock#PART_ErrorMsg">
-                <Setter Property="Foreground" Value="{atom:FormTokenSharedTokenResource ColorErrorText}" />
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorErrorText}" />
             </Style>
         </Style>
 
         <Style Selector="^[ValidateStatus=Warning]">
             <Style Selector="^ /template/ TextBlock#PART_ErrorMsg">
-                <Setter Property="Foreground" Value="{atom:FormTokenSharedTokenResource ColorWarningText}" />
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWarningText}" />
             </Style>
         </Style>
 
@@ -121,7 +124,7 @@
         </Style>
 
         <Style Selector="^ /template/ DockPanel#PART_RootLayout">
-            <Setter Property="HorizontalSpacing" Value="{atom:FormTokenSharedTokenResource SpacingXS}" />
+            <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
         </Style>
 
         <Style Selector="^ /template/ TextBlock#PART_Label">
@@ -131,7 +134,7 @@
 
         <Style Selector="^ /template/ DockPanel#PART_LabelContentLayout">
             <Setter Property="HorizontalSpacing"
-                    Value="{atom:FormTokenSharedTokenResource SpacingXXS}" />
+                    Value="{atom:SharedTokenResource SpacingXXS}" />
         </Style>
 
         <Style Selector="^[LabelAlign=Right]">
@@ -154,13 +157,13 @@
 
         <Style Selector="^ /template/ Panel#ItemDeleteButtonLayout">
             <Setter Property="Width"
-                    Value="{atom:FormTokenSharedTokenResource IconSize}" />
+                    Value="{atom:SharedTokenResource IconSize}" />
         </Style>
         <Style Selector="^ /template/ atom|IconButton#ItemDeleteButton">
             <Setter Property="IconWidth"
-                    Value="{atom:FormTokenSharedTokenResource IconSize}" />
+                    Value="{atom:SharedTokenResource IconSize}" />
             <Setter Property="IconHeight"
-                    Value="{atom:FormTokenSharedTokenResource IconSize}" />
+                    Value="{atom:SharedTokenResource IconSize}" />
         </Style>
 
         <Style Selector="^[IsValueItem=True][IsEffectiveShowItemDeleteButton=True]">
@@ -178,39 +181,39 @@
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#TooltipIconPresenter">
-            <Setter Property="Width" Value="{atom:FormTokenSharedTokenResource IconSize}" />
-            <Setter Property="Height" Value="{atom:FormTokenSharedTokenResource IconSize}" />
-            <Setter Property="IconBrush" Value="{atom:FormTokenSharedTokenResource ColorIcon}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorIcon}" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ Panel#PART_LabelLayout">
                 <Setter Property="MinHeight"
-                        Value="{atom:FormTokenSharedTokenResource ControlHeightLG}" />
+                        Value="{atom:SharedTokenResource ControlHeightLG}" />
             </Style>
             <Style Selector="^ /template/ Panel#ItemDeleteButtonLayout">
                 <Setter Property="Height"
-                        Value="{atom:FormTokenSharedTokenResource ControlHeightLG}" />
+                        Value="{atom:SharedTokenResource ControlHeightLG}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ Panel#PART_LabelLayout">
                 <Setter Property="MinHeight"
-                        Value="{atom:FormTokenSharedTokenResource ControlHeight}" />
+                        Value="{atom:SharedTokenResource ControlHeight}" />
             </Style>
             <Style Selector="^ /template/ Panel#ItemDeleteButtonLayout">
                 <Setter Property="Height"
-                        Value="{atom:FormTokenSharedTokenResource ControlHeight}" />
+                        Value="{atom:SharedTokenResource ControlHeight}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ Panel#PART_LabelLayout">
                 <Setter Property="MinHeight"
-                        Value="{atom:FormTokenSharedTokenResource ControlHeightSM}" />
+                        Value="{atom:SharedTokenResource ControlHeightSM}" />
             </Style>
             <Style Selector="^ /template/ Panel#ItemDeleteButtonLayout">
                 <Setter Property="Height"
-                        Value="{atom:FormTokenSharedTokenResource ControlHeightSM}" />
+                        Value="{atom:SharedTokenResource ControlHeightSM}" />
             </Style>
         </Style>
 
@@ -258,19 +261,19 @@
         <Style Selector="^[ValidateStatus=Default],^[ValidateStatus=Success],^[ValidateStatus=Validating]">
             <Style Selector="^ /template/ TextBlock#HelpText">
                 <Setter Property="Foreground"
-                        Value="{atom:FormTokenSharedTokenResource ColorTextDescription}" />
+                        Value="{atom:SharedTokenResource ColorTextDescription}" />
             </Style>
         </Style>
 
         <Style Selector="^[ValidateStatus=Warning]">
             <Style Selector="^ /template/ TextBlock#HelpText">
-                <Setter Property="Foreground" Value="{atom:FormTokenSharedTokenResource ColorWarningText}" />
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWarningText}" />
             </Style>
         </Style>
 
         <Style Selector="^[ValidateStatus=Error]">
             <Style Selector="^ /template/ TextBlock#HelpText">
-                <Setter Property="Foreground" Value="{atom:FormTokenSharedTokenResource ColorErrorText}" />
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorErrorText}" />
             </Style>
         </Style>
 

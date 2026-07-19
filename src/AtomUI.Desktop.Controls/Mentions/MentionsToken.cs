@@ -39,5 +39,4 @@ internal class MentionsToken : AbstractControlDesignToken
         MinPopupWidth       = 120;
     }
     
-    protected override Type GetTokenKindType() => typeof(MentionsTokenKind);
 }

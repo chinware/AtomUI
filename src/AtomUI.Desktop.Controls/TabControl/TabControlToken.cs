@@ -213,5 +213,4 @@ internal class TabControlToken : AbstractControlDesignToken
         TabAndContentGutter = SharedToken.UniformlyMarginSM;
     }
     
-    protected override Type GetTokenKindType() => typeof(TabControlTokenKind);
 }

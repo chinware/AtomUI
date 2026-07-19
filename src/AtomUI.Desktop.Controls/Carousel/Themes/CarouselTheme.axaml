@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:CarouselThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Carousel}" TargetType="atom:Carousel">
@@ -40,9 +43,9 @@
         </Setter>
 
         <Setter Property="PaginationOffset" Value="{atom:CarouselTokenResource PaginationOffset}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:CarouselTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="PageTransitionDuration"
-                Value="{atom:CarouselTokenSharedTokenResource MotionDurationSlow}" />
+                Value="{atom:SharedTokenResource MotionDurationSlow}" />
         <Setter Property="PageInEasing" Value="CubicEaseOut" />
         <Setter Property="PageOutEasing" Value="CubicEaseOut" />
 

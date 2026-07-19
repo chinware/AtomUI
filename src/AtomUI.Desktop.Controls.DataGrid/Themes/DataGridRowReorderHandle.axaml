@@ -3,7 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:ClassModifier="internal"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DataGridThemeAsset.Identity}">
     <ControlTheme x:Key="{x:Type atom:DataGridRowReorderHandle}" TargetType="atom:DataGridRowReorderHandle">
         <Setter Property="Template">
             <ControlTemplate>
@@ -20,17 +23,17 @@
         <Style Selector="^ /template/ atom|IconButton#PART_IndicatorIconButton">
             <Setter Property="Width" Value="{atom:DataGridTokenResource RowReorderIndicatorSize}"/>
             <Setter Property="Height" Value="{atom:DataGridTokenResource RowReorderIndicatorSize}"/>
-            <Setter Property="IconWidth" Value="{atom:DataGridTokenSharedTokenResource IconSize}"/>
-            <Setter Property="IconHeight" Value="{atom:DataGridTokenSharedTokenResource IconSize}"/>
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}"/>
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}"/>
             <Setter Property="Cursor" Value="SizeAll"/>
         </Style>
         
         <Style Selector="^ /template/ atom|IconButton#PART_IndicatorIconButton:pointerover">
-            <Setter Property="Background" Value="{atom:DataGridTokenSharedTokenResource ColorBgTextHover}"/>
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextHover}"/>
         </Style>
         
         <Style Selector="^ /template/ atom|IconButton#PART_IndicatorIconButton:pressed">
-            <Setter Property="Background" Value="{atom:DataGridTokenSharedTokenResource ColorBgTextActive}"/>
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextActive}"/>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

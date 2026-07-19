@@ -1,6 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:TabControlThemeAsset.Identity}"
               x:Class="AtomUI.Desktop.Controls.Themes.BaseTabItemTheme"
               TargetType="atom:TabItem"
               x:ClassModifier="internal">
@@ -32,8 +35,8 @@
 
         <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseButton">
             <Setter Property="Margin" Value="{atom:TabControlTokenResource CloseIconMargin}" />
-            <Setter Property="IconWidth" Value="{atom:TabControlTokenSharedTokenResource IconSizeSM}" />
-            <Setter Property="IconHeight" Value="{atom:TabControlTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
@@ -59,11 +62,11 @@
         </Style>
 
         <Style Selector="^:pressed">
-            <Setter Property="Foreground" Value="{atom:TabControlTokenSharedTokenResource ColorPrimaryActive}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimaryActive}" />
         </Style>
 
         <Style Selector="^[IsTabReorderDragging=True]">
-            <Setter Property="Background" Value="{atom:TabControlTokenSharedTokenResource ColorBgContainer}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
         </Style>
 
         <Style Selector="^:selected">
@@ -74,9 +77,9 @@
             <Setter Property="FontSize" Value="{atom:TabControlTokenResource TitleFontSizeLG}" />
             <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
                 <Setter Property="Width"
-                        Value="{atom:TabControlTokenSharedTokenResource IconSize}" />
+                        Value="{atom:SharedTokenResource IconSize}" />
                 <Setter Property="Height"
-                        Value="{atom:TabControlTokenSharedTokenResource IconSize}" />
+                        Value="{atom:SharedTokenResource IconSize}" />
             </Style>
         </Style>
 
@@ -84,9 +87,9 @@
             <Setter Property="FontSize" Value="{atom:TabControlTokenResource TitleFontSize}" />
             <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
                 <Setter Property="Width"
-                        Value="{atom:TabControlTokenSharedTokenResource IconSize}" />
+                        Value="{atom:SharedTokenResource IconSize}" />
                 <Setter Property="Height"
-                        Value="{atom:TabControlTokenSharedTokenResource IconSize}" />
+                        Value="{atom:SharedTokenResource IconSize}" />
             </Style>
         </Style>
 
@@ -94,9 +97,9 @@
             <Setter Property="FontSize" Value="{atom:TabControlTokenResource TitleFontSizeSM}" />
             <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
                 <Setter Property="Width"
-                        Value="{atom:TabControlTokenSharedTokenResource IconSizeSM}" />
+                        Value="{atom:SharedTokenResource IconSizeSM}" />
                 <Setter Property="Height"
-                        Value="{atom:TabControlTokenSharedTokenResource IconSizeSM}" />
+                        Value="{atom:SharedTokenResource IconSizeSM}" />
             </Style>
         </Style>
 
@@ -128,7 +131,7 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:TabControlTokenSharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseButton">

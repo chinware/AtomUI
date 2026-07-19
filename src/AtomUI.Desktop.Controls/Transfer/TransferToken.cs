@@ -78,5 +78,4 @@ internal class TransferToken : AbstractControlDesignToken
         DataGridSelectionHeaderMargin = new Thickness(SharedToken.UniformlyPaddingXS * 2, 0, 0, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(TransferTokenKind);
 }

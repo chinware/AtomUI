@@ -1,66 +1,36 @@
 using System.Globalization;
-using System.Diagnostics.CodeAnalysis;
+using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.Styling;
 using Avalonia.Media;
 
 namespace AtomUI.Theme;
 
-internal class ThemeManagerBuilder : IThemeManagerBuilder
+internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
 {
-    public IList<Type> ControlDesignTokens { get; }
-    public IList<BaseControlTheme> ControlThemes { get; }
-    public IList<IThemeAssetPathProvider> ThemeAssetPathProviders { get; }
-    public IList<IControlThemesProvider> ControlThemesProviders { get; }
-    public IList<LanguageProvider> LanguageProviders { get; }
-    public IList<EventHandler> InitializedHandlers { get; }
-    
-    public IThemeVariantCalculatorFactory? ThemeVariantCalculatorFactory { get; internal set; }
-
-    public LanguageVariant LanguageVariant { get; private set; }
-    public string ThemeId { get; private set; }
-    public FontFamily? FontFamily { get; private set; }
-    internal bool HasExplicitDefaultTheme { get; private set; }
-    internal string? ExplicitDefaultThemeBaseId { get; private set; }
-
-    private readonly HashSet<string> _registeredTokenTypes;
-    private readonly List<ControlTokenDescriptor> _controlTokenDescriptors;
-    private readonly HashSet<ControlTokenIdentity> _registeredControlTokenIdentities;
-    private readonly HashSet<string> _registeredControlThemesProviders;
-    private readonly HashSet<string> _registeredLanguageProviders;
+    private readonly List<ControlTokenDescriptor> _controlTokenDescriptors = new();
+    private readonly List<IControlThemesProvider> _controlThemesProviders = new();
+    private readonly List<LanguageProvider> _languageProviders = new();
+    private readonly List<Action<IThemeManager>> _initializers = new();
+    private readonly HashSet<ControlTokenIdentity> _registeredControlTokenIdentities = new();
+    private readonly HashSet<string> _registeredControlThemeProviders = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _registeredLanguageProviders = new(StringComparer.Ordinal);
 
     internal ThemeManagerBuilder()
     {
-        ControlDesignTokens               = new List<Type>();
-        ControlThemes                     = new List<BaseControlTheme>();
-        ThemeAssetPathProviders           = new List<IThemeAssetPathProvider>();
-        ControlThemesProviders            = new List<IControlThemesProvider>();
-        LanguageProviders                 = new List<LanguageProvider>();
-        InitializedHandlers               = new List<EventHandler>();
-        LanguageVariant                   = LanguageVariant.en_US;
-        ThemeId                           = IThemeManager.DEFAULT_THEME_ID;
-        _registeredTokenTypes             = new HashSet<string>();
-        _controlTokenDescriptors          = new List<ControlTokenDescriptor>();
-        _registeredControlTokenIdentities = new HashSet<ControlTokenIdentity>();
-        _registeredLanguageProviders      = new HashSet<string>();
-        _registeredControlThemesProviders = new HashSet<string>();
+        LanguageVariant = LanguageVariant.en_US;
+        InitialRequest = new ThemeRequest(
+            IThemeManager.DEFAULT_THEME_ID,
+            null,
+            ThemeTransitionReason.Startup);
     }
 
-    public void AddControlToken(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor |
-                                    DynamicallyAccessedMemberTypes.PublicProperties |
-                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
-        Type tokenType)
-    {
-        var typeStr = tokenType.FullName!;
-        if (!_registeredTokenTypes.Add(typeStr))
-        {
-            throw new ThemeResourceRegisterException($"Control design token '{typeStr}' is already registered.");
-        }
-
-        ControlDesignTokens.Add(tokenType);
-    }
+    internal LanguageVariant LanguageVariant { get; private set; }
+    internal FontFamily? FontFamily { get; private set; }
+    internal ThemeRequest InitialRequest { get; private set; }
+    internal ThemeRequest? FollowSystemLightRequest { get; private set; }
+    internal ThemeRequest? FollowSystemDarkRequest { get; private set; }
+    internal IReadOnlyList<Action<IThemeManager>> Initializers => _initializers;
 
     public void AddControlToken(ControlTokenDescriptor descriptor)
     {
@@ -74,51 +44,56 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         _controlTokenDescriptors.Add(descriptor);
     }
 
-    public void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)
-    {
-        if (!ThemeAssetPathProviders.Contains(themeAssetPathProvider))
-        {
-            ThemeAssetPathProviders.Add(themeAssetPathProvider);
-        }
-    }
-    
     public void AddControlThemesProvider(IControlThemesProvider controlThemesProvider)
     {
-        if (string.IsNullOrEmpty(controlThemesProvider.Id))
+        ArgumentNullException.ThrowIfNull(controlThemesProvider);
+        if (string.IsNullOrWhiteSpace(controlThemesProvider.Id))
         {
-            throw new ThemeResourceRegisterException($"Control theme provider '{controlThemesProvider.Id}' is invalid, maybe empty.");
+            throw new ThemeResourceRegisterException("Control theme provider id cannot be empty.");
         }
-        if (!_registeredControlThemesProviders.Add(controlThemesProvider.Id))
+        if (!_registeredControlThemeProviders.Add(controlThemesProvider.Id))
         {
-            throw new ThemeResourceRegisterException($"Control theme provider '{controlThemesProvider.Id}' is already registered.");
+            throw new ThemeResourceRegisterException(
+                $"Control theme provider '{controlThemesProvider.Id}' is already registered.");
         }
-        ControlThemesProviders.Add(controlThemesProvider);
+
+        _controlThemesProviders.Add(controlThemesProvider);
     }
 
     public void AddLanguageProviders(LanguageProvider languageProvider)
     {
-        var id = languageProvider.GetType().FullName!;
+        ArgumentNullException.ThrowIfNull(languageProvider);
+        var id = languageProvider.GetType().FullName ?? languageProvider.GetType().Name;
         if (!_registeredLanguageProviders.Add(id))
         {
-            throw new ThemeResourceRegisterException($"Language provider '{id}' is already registered.");
+            throw new ThemeResourceRegisterException(
+                $"Language provider '{id}' is already registered.");
         }
 
-        LanguageProviders.Add(languageProvider);
+        _languageProviders.Add(languageProvider);
     }
 
-    public void WithDefaultTheme(string themeId)
+    public void AddInitializer(Action<IThemeManager> initializer)
     {
-        SetExplicitDefaultTheme(themeId, themeId);
+        ArgumentNullException.ThrowIfNull(initializer);
+        _initializers.Add(initializer);
     }
 
-    internal void SetExplicitDefaultTheme(string themeId, string baseThemeId)
+    public void WithInitialTheme(string themeId, ThemeConfig? config = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(themeId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(baseThemeId);
+        InitialRequest = new ThemeRequest(themeId, config, ThemeTransitionReason.Startup);
+        FollowSystemLightRequest = null;
+        FollowSystemDarkRequest = null;
+    }
 
-        ThemeId                         = themeId;
-        ExplicitDefaultThemeBaseId       = baseThemeId;
-        HasExplicitDefaultTheme          = true;
+    public void WithFollowSystemThemes(ThemeRequest light, ThemeRequest dark)
+    {
+        ArgumentNullException.ThrowIfNull(light);
+        ArgumentNullException.ThrowIfNull(dark);
+        FollowSystemLightRequest = light with { Reason = ThemeTransitionReason.FollowSystem };
+        FollowSystemDarkRequest = dark with { Reason = ThemeTransitionReason.FollowSystem };
+        InitialRequest = FollowSystemLightRequest;
     }
 
     public void WithDefaultFontFamily(FontFamily fontFamily)
@@ -133,62 +108,43 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
 
     public void WithDefaultCultureInfo(CultureInfo cultureInfo)
     {
+        ArgumentNullException.ThrowIfNull(cultureInfo);
         LanguageVariant = LanguageVariant.FromCultureInfo(cultureInfo);
     }
-    
+
     public void WithDefaultLanguageVariant(LanguageVariant languageVariant)
     {
         LanguageVariant = languageVariant;
     }
 
-    [UnconditionalSuppressMessage("Trimming", "IL2072",
-        Justification = "AddControlToken and generated token pools preserve token constructors/properties. Direct ControlDesignTokens mutation is kept for compatibility and must preserve token metadata at the app boundary.")]
     internal ThemeManager Build()
     {
-        var themeManager = new ThemeManager();
-        themeManager.DefaultThemeId                = ThemeId;
-        themeManager.HasExplicitDefaultTheme       = HasExplicitDefaultTheme;
-        themeManager.ExplicitDefaultThemeBaseId    = ExplicitDefaultThemeBaseId;
-        themeManager.ThemeVariantCalculatorFactory = ThemeVariantCalculatorFactory;
-        themeManager.EnsureRegistrationCapacity(ControlDesignTokens.Count + _controlTokenDescriptors.Count,
-                                                ControlThemesProviders.Count,
-                                                ThemeAssetPathProviders.Count,
-                                                LanguageProviders.Count);
-        foreach (var controlThemesProvider in ControlThemesProviders)
+        var themeManager = new ThemeManager
         {
-            themeManager.RegisterControlThemesProvider(controlThemesProvider);
-        }
+            FontFamily = FontFamily
+        };
+        themeManager.ConfigureStartup(
+            InitialRequest,
+            FollowSystemLightRequest,
+            FollowSystemDarkRequest);
+        themeManager.EnsureRegistrationCapacity(
+            _controlTokenDescriptors.Count,
+            _controlThemesProviders.Count,
+            _languageProviders.Count);
 
-        foreach (var tokenType in ControlDesignTokens)
+        foreach (var provider in _controlThemesProviders)
         {
-            themeManager.RegisterControlTokenType(tokenType);
+            themeManager.RegisterControlThemesProvider(provider);
         }
-
         foreach (var descriptor in _controlTokenDescriptors)
         {
             themeManager.RegisterControlTokenDescriptor(descriptor);
         }
-        
-        foreach (var themeAssetPathProvider in ThemeAssetPathProviders)
+        foreach (var provider in _languageProviders)
         {
-            themeManager.RegisterControlThemesProvider(themeAssetPathProvider);
-        }
-
-        foreach (var languageProvider in LanguageProviders)
-        {
-            themeManager.RegisterLanguageProvider(languageProvider);
-        }
-
-        foreach (var handler in InitializedHandlers)
-        {
-            themeManager.Initialized += handler;
+            themeManager.RegisterLanguageProvider(provider);
         }
 
         return themeManager;
-    }
-
-    public void WithThemeVariantCalculatorFactory(IThemeVariantCalculatorFactory factory)
-    {
-        ThemeVariantCalculatorFactory = factory;
     }
 }

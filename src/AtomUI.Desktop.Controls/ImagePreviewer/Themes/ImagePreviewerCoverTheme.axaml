@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ImagePreviewerThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ImagePreviewerCover}" TargetType="atom:ImagePreviewerCover">
@@ -21,7 +24,7 @@
                                 VerticalAlignment="Stretch"
                                 MinWidth="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 MinHeight="{atom:ImagePreviewerTokenResource CoverImageWidth}"
-                                Background="{atom:ImagePreviewerTokenSharedTokenResource ColorFillTertiary}"
+                                Background="{atom:SharedTokenResource ColorFillTertiary}"
                                 IsVisible="{TemplateBinding IsLoading}">
                             <Panel HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
@@ -39,14 +42,14 @@
                                 VerticalAlignment="Stretch"
                                 MinWidth="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 MinHeight="{atom:ImagePreviewerTokenResource CoverImageWidth}"
-                                Background="{atom:ImagePreviewerTokenSharedTokenResource ColorFillTertiary}"
+                                Background="{atom:SharedTokenResource ColorFillTertiary}"
                                 IsVisible="{TemplateBinding IsFailed}">
                             <Panel HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
                                 <StackPanel Name="DefaultErrorLayout"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Spacing="{atom:ImagePreviewerTokenSharedTokenResource SpacingXXS}"
+                                            Spacing="{atom:SharedTokenResource SpacingXXS}"
                                             IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNull}}">
                                     <antdicons:PictureOutlined Name="DefaultErrorIcon"
                                                               HorizontalAlignment="Center" />
@@ -79,19 +82,19 @@
         </Style>
       
         <Setter Property="ClipToBounds" Value="True" />
-        <Setter Property="IsMotionEnabled" Value="{atom:ImagePreviewerTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Style Selector="^ /template/ Border#Mask">
             <Setter Property="Background" Value="{atom:ImagePreviewerTokenResource MaskBgColor}" />
             <Setter Property="TemplatedControl.Foreground"
-                    Value="{atom:ImagePreviewerTokenSharedTokenResource ColorTextLightSolid}" />
+                    Value="{atom:SharedTokenResource ColorTextLightSolid}" />
         </Style>
         <Style Selector="^ /template/ TextBlock#DefaultErrorText">
-            <Setter Property="Foreground" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorTextTertiary}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>
         <Style Selector="^ /template/ atom|Icon#DefaultErrorIcon">
             <Setter Property="Width" Value="48" />
             <Setter Property="Height" Value="48" />
-            <Setter Property="StrokeBrush" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorTextTertiary}" />
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>
 
         <Style Selector="^[IsCoverMaskVisible=True]:pointerover">

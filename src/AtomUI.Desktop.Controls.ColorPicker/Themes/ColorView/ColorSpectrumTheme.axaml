@@ -3,6 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="using:Avalonia.Controls.Converters"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_ColorPicker"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ColorPickerThemeAsset.Identity}"
     x:ClassModifier="internal">
     <converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
     <converters:CornerRadiusToDoubleConverter x:Key="TopLeftCornerRadiusConverter" Corner="TopLeft" />
@@ -50,7 +53,7 @@
             </ControlTemplate>
         </Setter>
 
-        <Setter Property="CornerRadius" Value="{atom:ColorPickerTokenSharedTokenResource BorderRadiusSM}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
 
         <Style Selector="^ /template/ Border#PART_Frame">
             <Setter Property="BoxShadow"

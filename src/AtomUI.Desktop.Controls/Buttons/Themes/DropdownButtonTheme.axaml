@@ -1,6 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:ButtonThemeAsset.Identity}"
               TargetType="{x:Type atom:DropdownButton}"
               x:Class="AtomUI.Desktop.Controls.Themes.DropdownButtonTheme">
     <ControlTheme.BasedOn>
@@ -71,8 +74,8 @@
                 Value="{atom:PopupHostTokenResource MarginToAnchor}" />
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_DropdownIndicator">
-            <Setter Property="Width" Value="{atom:ButtonTokenSharedTokenResource IconSizeSM}" />
-            <Setter Property="Height" Value="{atom:ButtonTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeSM}" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">

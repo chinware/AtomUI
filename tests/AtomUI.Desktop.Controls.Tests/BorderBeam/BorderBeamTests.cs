@@ -1,6 +1,9 @@
 using System;
 using System.Linq;
 using AtomUI.Controls;
+using AtomUI.Theme;
+using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -133,44 +136,34 @@ public class BorderBeamTests
     [Fact]
     public void Default_Theme_Keeps_Beam_Enabled_When_Global_Motion_Is_Disabled()
     {
-        var application = Application.Current;
-        application.ShouldNotBeNull();
-        var themeManager = application!.GetThemeManager();
-        themeManager.ShouldNotBeNull();
-        var originalMotionState = themeManager!.IsMotionEnabled;
-
-        try
+        var borderBeam = new AtomUI.Desktop.Controls.BorderBeam
         {
-            themeManager.IsMotionEnabled = false;
-            Dispatcher.UIThread.RunJobs();
-
-            var borderBeam = new AtomUI.Desktop.Controls.BorderBeam
+            Width  = 120,
+            Height = 60,
+            Content = new Border
             {
                 Width  = 120,
-                Height = 60,
-                Content = new Border
-                {
-                    Width  = 120,
-                    Height = 60
-                }
-            };
-
-            ShowInWindow(borderBeam, () =>
-            {
-                var presenter = borderBeam.GetVisualDescendants()
-                                          .OfType<BorderBeamPresenter>()
-                                          .Single(item => item.Name == "PART_BeamPresenter");
-
-                borderBeam.IsMotionEnabled.ShouldBeTrue();
-                presenter.IsMotionEnabled.ShouldBeTrue();
-                presenter.IsVisible.ShouldBeTrue();
-            });
-        }
-        finally
+                Height = 60
+            }
+        };
+        var provider = new ThemeConfigProvider
         {
-            themeManager.IsMotionEnabled = originalMotionState;
-            Dispatcher.UIThread.RunJobs();
-        }
+            Config = new ThemeConfigBuilder()
+                     .WithToken(nameof(SharedTokenKind.EnableMotion), "false")
+                     .Build(),
+            Child = borderBeam
+        };
+
+        ShowInWindow(provider, () =>
+        {
+            var presenter = borderBeam.GetVisualDescendants()
+                                      .OfType<BorderBeamPresenter>()
+                                      .Single(item => item.Name == "PART_BeamPresenter");
+
+            borderBeam.IsMotionEnabled.ShouldBeTrue();
+            presenter.IsMotionEnabled.ShouldBeTrue();
+            presenter.IsVisible.ShouldBeTrue();
+        });
     }
 
     private sealed class TestBorderBeamAwareControl : Control, IBorderBeamAwareControl

@@ -47,5 +47,4 @@ internal class OtpLineEditToken : AbstractControlDesignToken
         SeparatorMarginInlineSM = SharedToken.UniformlyPaddingXXS;
     }
 
-    protected override Type GetTokenKindType() => typeof(OtpLineEditTokenKind);
 }

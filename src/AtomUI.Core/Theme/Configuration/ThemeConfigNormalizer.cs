@@ -41,7 +41,7 @@ internal static class ThemeConfigNormalizer
     }
 
     private static IReadOnlyList<ThemeAlgorithmDescriptor> BindAlgorithms(
-        IList<string>? algorithmIds,
+        IReadOnlyList<string>? algorithmIds,
         ThemeSchemaRegistry registry,
         List<ThemeDefinitionDiagnostic> diagnostics,
         string path)
@@ -82,7 +82,7 @@ internal static class ThemeConfigNormalizer
     }
 
     private static IReadOnlyList<NormalizedTokenValue> BindGlobalTokens(
-        IDictionary<string, string>? values,
+        IReadOnlyDictionary<string, string>? values,
         ThemeSchemaRegistry registry,
         List<ThemeDefinitionDiagnostic> diagnostics)
     {
@@ -114,7 +114,7 @@ internal static class ThemeConfigNormalizer
     }
 
     private static IReadOnlyList<NormalizedControlThemeConfig> BindControls(
-        IDictionary<ControlTokenIdentity, ControlThemeConfig>? values,
+        IReadOnlyDictionary<ControlTokenIdentity, ControlThemeConfig>? values,
         ThemeSchemaRegistry registry,
         List<ThemeDefinitionDiagnostic> diagnostics)
     {
@@ -190,7 +190,7 @@ internal static class ThemeConfigNormalizer
     }
 
     private static void BindControlTokens(
-        IDictionary<string, string>? values,
+        IReadOnlyDictionary<string, string>? values,
         ControlTokenDescriptor control,
         List<ThemeDefinitionDiagnostic> diagnostics,
         string controlPath,
@@ -285,7 +285,7 @@ internal static class ThemeConfigNormalizer
     {
         diagnostics.Add(new ThemeDefinitionDiagnostic(
             code,
-            ThemeDiagnosticSeverity.Error,
+            Definitions.ThemeDefinitionDiagnosticSeverity.Error,
             Source,
             0,
             0,

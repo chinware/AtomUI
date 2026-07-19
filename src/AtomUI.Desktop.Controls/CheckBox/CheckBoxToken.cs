@@ -31,5 +31,4 @@ internal class CheckBoxToken : AbstractControlDesignToken
         TextMargin                = new Thickness(SharedToken.UniformlyMarginXS, 0, SharedToken.UniformlyMarginXS, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(CheckBoxTokenKind);
 }

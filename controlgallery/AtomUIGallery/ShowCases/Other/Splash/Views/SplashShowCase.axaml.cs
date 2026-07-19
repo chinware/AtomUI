@@ -1,8 +1,6 @@
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Theme.Resources;
-using AtomUI.Theme.Styling;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,6 +8,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 using AtomUITextBlock = AtomUI.Desktop.Controls.TextBlock;
 
@@ -21,11 +20,6 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
 
     private const double WindowSplashWidth = 560;
     private const double WindowSplashMinHeight = 360;
-    private static readonly ControlSharedTokenResourceKey WindowSplashTitleResourceKey =
-        new("AtomUI", "Splash", SharedTokenKind.ColorTextHeading);
-    private static readonly ControlSharedTokenResourceKey WindowSplashMessageResourceKey =
-        new("AtomUI", "Splash", SharedTokenKind.ColorText);
-
     private static readonly TimeSpan WindowSplashDuration = TimeSpan.FromSeconds(5);
     private static readonly IBrush WindowSplashTitleBrush = Brushes.White;
     private static readonly IBrush WindowSplashPrimaryTextBrush = new SolidColorBrush(Color.Parse("#F5F8FF"));
@@ -217,11 +211,24 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
             var window = base.CreateWindow(null);
 
             window.Resources[SplashTokenKind.SurfaceBackground] = CreateWindowSplashSurfaceBrush();
-            window.Resources[WindowSplashTitleResourceKey]       = WindowSplashTitleBrush;
-            window.Resources[WindowSplashMessageResourceKey]     = WindowSplashPrimaryTextBrush;
             window.Resources[SplashTokenKind.SubtleForeground]   = WindowSplashSubtleTextBrush;
+            AddTemplateForegroundStyle(window, "PART_TitleBlock", WindowSplashTitleBrush);
+            AddTemplateForegroundStyle(window, "PART_MessageBlock", WindowSplashPrimaryTextBrush);
 
             return window;
+        }
+
+        private static void AddTemplateForegroundStyle(
+            SplashWindow window,
+            string partName,
+            IBrush foreground)
+        {
+            var style = new Style(selector => selector
+                .OfType<AtomUI.Desktop.Controls.Splash>()
+                .Template()
+                .Name(partName));
+            style.Setters.Add(new Setter(Avalonia.Controls.TextBlock.ForegroundProperty, foreground));
+            window.Styles.Add(style);
         }
     }
 }

@@ -1,7 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Theme Name="Daybreak Blue" IsDefault="true">
-    <SharedTokens>
-    </SharedTokens>
-    <ControlTokens>
-    </ControlTokens>
+<?xml version="1.0" encoding="utf-8"?>
+<Theme xmlns="https://atomui.net/schemas/theme/v1"
+       Id="DaybreakBlue"
+       Name="Daybreak Blue"
+       Appearance="Light"
+       IsDefault="true">
+  <Algorithms>
+    <Algorithm Id="Default" />
+  </Algorithms>
 </Theme>

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DatePickerThemeAsset.Identity}"
     xmlns:calendarView="using:AtomUI.Desktop.Controls.CalendarView"
     x:ClassModifier="internal">
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
@@ -54,15 +57,15 @@
         <Setter Property="ClickMode" Value="Release" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{atom:DatePickerTokenSharedTokenResource ColorTextLabel}" />
-        <Setter Property="CornerRadius" Value="{atom:DatePickerTokenSharedTokenResource BorderRadiusSM}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLabel}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="{atom:DatePickerTokenSharedTokenResource BorderThickness}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="FontSize" Value="{atom:DatePickerTokenSharedTokenResource FontSize}" />
+        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
         <Setter Property="MinHeight" Value="{atom:CalendarTokenResource CellHeight}" />
 
         <Style Selector="^ /template/ Border#RangeIndicator">
@@ -88,16 +91,16 @@
         </Style>
 
         <Style Selector="^:inactive">
-            <Setter Property="Foreground" Value="{atom:DatePickerTokenSharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
 
         <Style Selector="^:today">
-            <Setter Property="BorderBrush" Value="{atom:DatePickerTokenSharedTokenResource ColorPrimary}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
         </Style>
 
         <Style Selector="^:selected:not(:inactive)">
-            <Setter Property="Background" Value="{atom:DatePickerTokenSharedTokenResource ColorPrimary}" />
-            <Setter Property="Foreground" Value="{atom:DatePickerTokenSharedTokenResource ColorWhite}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWhite}" />
             <Setter Property="BorderThickness" Value="0" />
         </Style>
 
@@ -125,8 +128,8 @@
         </Style>
 
         <Style Selector="^:range-start:not(:inactive), ^:range-end:not(:inactive), ^:range-preview-start:not(:inactive), ^:range-preview-end:not(:inactive)">
-            <Setter Property="Background" Value="{atom:DatePickerTokenSharedTokenResource ColorPrimary}" />
-            <Setter Property="Foreground" Value="{atom:DatePickerTokenSharedTokenResource ColorWhite}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWhite}" />
             <Setter Property="BorderThickness" Value="0" />
         </Style>
 

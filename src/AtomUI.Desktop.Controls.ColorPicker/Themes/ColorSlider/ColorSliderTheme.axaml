@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_ColorPicker"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ColorPickerThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ColorSlider}" TargetType="atom:ColorSlider">
         <Setter Property="Template">
@@ -70,7 +73,7 @@
         </Setter>
 
         <Setter Property="TransparentBgIntervalColor"
-                Value="{atom:ColorPickerTokenSharedTokenResource ColorFillSecondary}" />
+                Value="{atom:SharedTokenResource ColorFillSecondary}" />
         <Setter Property="TransparentBgSize"
                 Value="{atom:ColorPickerTokenResource TransparentBgSize}" />
         <Setter Property="ClipToBounds" Value="False" />

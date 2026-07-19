@@ -143,7 +143,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.SplashToken)token).WindowWidth)),
             },
             static () => new global::AtomUI.Desktop.Controls.SplashToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.SplashToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.SplashToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
     };
 
     private static readonly ThemeAlgorithmDescriptor[] s_algorithms = new ThemeAlgorithmDescriptor[]

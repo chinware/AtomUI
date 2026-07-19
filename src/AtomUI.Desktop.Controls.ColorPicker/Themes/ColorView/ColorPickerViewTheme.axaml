@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_ColorPicker"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ColorPickerThemeAsset.Identity}"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ColorPickerView}" TargetType="atom:ColorPickerView">
@@ -32,7 +35,7 @@
                                                  IsVisible="{TemplateBinding IsPaletteGroupEnabled}" />
                         <StackPanel Orientation="Vertical"
                                     ClipToBounds="False"
-                                    Spacing="{atom:ColorPickerTokenSharedTokenResource SpacingXS}">
+                                    Spacing="{atom:SharedTokenResource SpacingXS}">
                             <atom:ColorBlock Name="PART_ClearColor"
                                              HorizontalAlignment="Right"
                                              IsEmptyColorMode="True"

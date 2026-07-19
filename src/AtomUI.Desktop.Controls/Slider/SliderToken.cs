@@ -180,5 +180,4 @@ internal class SliderToken : AbstractControlDesignToken
         ThumbSize = ThumbCircleSizeHover + ThumbCircleBorderThicknessHover.Left * 2 + ThumbOutlineThickness.Left * 2;
     }
     
-    protected override Type GetTokenKindType() => typeof(SliderTokenKind);
 }

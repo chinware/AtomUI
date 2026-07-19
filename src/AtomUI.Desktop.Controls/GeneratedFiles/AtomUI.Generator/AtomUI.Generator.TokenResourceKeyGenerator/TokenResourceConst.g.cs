@@ -1,6 +1,5 @@
 ﻿using AtomUI.Theme.TokenSystem;
 using AtomUI.Theme;
-using AtomUI.Theme.Resources;
 using AtomUI.Theme.Styling;
 
 namespace AtomUI.Desktop.Controls.DesignTokens
@@ -1338,13 +1337,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class AddOnDecoratedBoxTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public AddOnDecoratedBoxTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "AddOnDecoratedBox", kind)
-        {
-        }
-    }
-
     public class AdornerLayerTokenResourceExtension : TokenResourceExtension<AdornerLayerTokenKind>
     {
         public AdornerLayerTokenResourceExtension()
@@ -1352,13 +1344,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public AdornerLayerTokenResourceExtension(AdornerLayerTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class AdornerLayerTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public AdornerLayerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "AdornerLayer", kind)
         {
         }
     }
@@ -1374,13 +1359,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class AlertTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public AlertTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Alert", kind)
-        {
-        }
-    }
-
     public class ArrowDecoratedBoxTokenResourceExtension : TokenResourceExtension<ArrowDecoratedBoxTokenKind>
     {
         public ArrowDecoratedBoxTokenResourceExtension()
@@ -1388,13 +1366,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ArrowDecoratedBoxTokenResourceExtension(ArrowDecoratedBoxTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class ArrowDecoratedBoxTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ArrowDecoratedBoxTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ArrowDecoratedBox", kind)
         {
         }
     }
@@ -1410,13 +1381,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class AutoCompleteTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public AutoCompleteTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "AutoComplete", kind)
-        {
-        }
-    }
-
     public class AvatarTokenResourceExtension : TokenResourceExtension<AvatarTokenKind>
     {
         public AvatarTokenResourceExtension()
@@ -1424,13 +1388,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public AvatarTokenResourceExtension(AvatarTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class AvatarTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public AvatarTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Avatar", kind)
         {
         }
     }
@@ -1446,13 +1403,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class BadgeTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public BadgeTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Badge", kind)
-        {
-        }
-    }
-
     public class BorderBeamTokenResourceExtension : TokenResourceExtension<BorderBeamTokenKind>
     {
         public BorderBeamTokenResourceExtension()
@@ -1460,13 +1410,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public BorderBeamTokenResourceExtension(BorderBeamTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class BorderBeamTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public BorderBeamTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "BorderBeam", kind)
         {
         }
     }
@@ -1482,13 +1425,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class BreadcrumbTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public BreadcrumbTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Breadcrumb", kind)
-        {
-        }
-    }
-
     public class ButtonSpinnerTokenResourceExtension : TokenResourceExtension<ButtonSpinnerTokenKind>
     {
         public ButtonSpinnerTokenResourceExtension()
@@ -1496,13 +1432,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ButtonSpinnerTokenResourceExtension(ButtonSpinnerTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class ButtonSpinnerTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ButtonSpinnerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ButtonSpinner", kind)
         {
         }
     }
@@ -1518,13 +1447,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class ButtonTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ButtonTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Button", kind)
-        {
-        }
-    }
-
     public class CalendarTokenResourceExtension : TokenResourceExtension<CalendarTokenKind>
     {
         public CalendarTokenResourceExtension()
@@ -1532,13 +1454,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public CalendarTokenResourceExtension(CalendarTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class CalendarTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public CalendarTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Calendar", kind)
         {
         }
     }
@@ -1554,13 +1469,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class CardTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public CardTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Card", kind)
-        {
-        }
-    }
-
     public class CarouselTokenResourceExtension : TokenResourceExtension<CarouselTokenKind>
     {
         public CarouselTokenResourceExtension()
@@ -1568,13 +1476,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public CarouselTokenResourceExtension(CarouselTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class CarouselTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public CarouselTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Carousel", kind)
         {
         }
     }
@@ -1590,13 +1491,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class CascaderTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public CascaderTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Cascader", kind)
-        {
-        }
-    }
-
     public class CheckBoxTokenResourceExtension : TokenResourceExtension<CheckBoxTokenKind>
     {
         public CheckBoxTokenResourceExtension()
@@ -1604,13 +1498,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public CheckBoxTokenResourceExtension(CheckBoxTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class CheckBoxTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public CheckBoxTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "CheckBox", kind)
         {
         }
     }
@@ -1626,13 +1513,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class CollapseTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public CollapseTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Collapse", kind)
-        {
-        }
-    }
-
     public class ComboBoxTokenResourceExtension : TokenResourceExtension<ComboBoxTokenKind>
     {
         public ComboBoxTokenResourceExtension()
@@ -1640,13 +1520,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ComboBoxTokenResourceExtension(ComboBoxTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class ComboBoxTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ComboBoxTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ComboBox", kind)
         {
         }
     }
@@ -1662,13 +1535,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class DatePickerTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public DatePickerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "DatePicker", kind)
-        {
-        }
-    }
-
     public class DescriptionsTokenResourceExtension : TokenResourceExtension<DescriptionsTokenKind>
     {
         public DescriptionsTokenResourceExtension()
@@ -1676,13 +1542,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public DescriptionsTokenResourceExtension(DescriptionsTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class DescriptionsTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public DescriptionsTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Descriptions", kind)
         {
         }
     }
@@ -1698,13 +1557,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class DialogTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public DialogTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Dialog", kind)
-        {
-        }
-    }
-
     public class DrawerTokenResourceExtension : TokenResourceExtension<DrawerTokenKind>
     {
         public DrawerTokenResourceExtension()
@@ -1712,13 +1564,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public DrawerTokenResourceExtension(DrawerTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class DrawerTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public DrawerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Drawer", kind)
         {
         }
     }
@@ -1734,13 +1579,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class EmptyTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public EmptyTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Empty", kind)
-        {
-        }
-    }
-
     public class ExpanderTokenResourceExtension : TokenResourceExtension<ExpanderTokenKind>
     {
         public ExpanderTokenResourceExtension()
@@ -1748,13 +1586,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ExpanderTokenResourceExtension(ExpanderTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class ExpanderTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ExpanderTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Expander", kind)
         {
         }
     }
@@ -1770,13 +1601,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class FloatButtonTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public FloatButtonTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "FloatButton", kind)
-        {
-        }
-    }
-
     public class FlyoutHostTokenResourceExtension : TokenResourceExtension<FlyoutHostTokenKind>
     {
         public FlyoutHostTokenResourceExtension()
@@ -1784,13 +1608,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public FlyoutHostTokenResourceExtension(FlyoutHostTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class FlyoutHostTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public FlyoutHostTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "FlyoutHost", kind)
         {
         }
     }
@@ -1806,13 +1623,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class FormTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public FormTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Form", kind)
-        {
-        }
-    }
-
     public class GroupBoxTokenResourceExtension : TokenResourceExtension<GroupBoxTokenKind>
     {
         public GroupBoxTokenResourceExtension()
@@ -1820,13 +1630,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public GroupBoxTokenResourceExtension(GroupBoxTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class GroupBoxTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public GroupBoxTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "GroupBox", kind)
         {
         }
     }
@@ -1842,13 +1645,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class ImagePreviewerTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ImagePreviewerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ImagePreviewer", kind)
-        {
-        }
-    }
-
     public class LineEditTokenResourceExtension : TokenResourceExtension<LineEditTokenKind>
     {
         public LineEditTokenResourceExtension()
@@ -1856,13 +1652,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public LineEditTokenResourceExtension(LineEditTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class LineEditTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public LineEditTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "LineEdit", kind)
         {
         }
     }
@@ -1878,13 +1667,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class ListBoxTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ListBoxTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ListBox", kind)
-        {
-        }
-    }
-
     public class ListViewTokenResourceExtension : TokenResourceExtension<ListViewTokenKind>
     {
         public ListViewTokenResourceExtension()
@@ -1892,13 +1674,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ListViewTokenResourceExtension(ListViewTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class ListViewTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ListViewTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ListView", kind)
         {
         }
     }
@@ -1914,13 +1689,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class MarqueeLabelTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public MarqueeLabelTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "MarqueeLabel", kind)
-        {
-        }
-    }
-
     public class MentionsTokenResourceExtension : TokenResourceExtension<MentionsTokenKind>
     {
         public MentionsTokenResourceExtension()
@@ -1928,13 +1696,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public MentionsTokenResourceExtension(MentionsTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class MentionsTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public MentionsTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Mentions", kind)
         {
         }
     }
@@ -1950,13 +1711,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class MenuTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public MenuTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Menu", kind)
-        {
-        }
-    }
-
     public class MessageBoxTokenResourceExtension : TokenResourceExtension<MessageBoxTokenKind>
     {
         public MessageBoxTokenResourceExtension()
@@ -1964,13 +1718,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public MessageBoxTokenResourceExtension(MessageBoxTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class MessageBoxTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public MessageBoxTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "MessageBox", kind)
         {
         }
     }
@@ -1986,13 +1733,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class MessageTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public MessageTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Message", kind)
-        {
-        }
-    }
-
     public class NavMenuTokenResourceExtension : TokenResourceExtension<NavMenuTokenKind>
     {
         public NavMenuTokenResourceExtension()
@@ -2000,13 +1740,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public NavMenuTokenResourceExtension(NavMenuTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class NavMenuTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public NavMenuTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "NavMenu", kind)
         {
         }
     }
@@ -2022,13 +1755,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class NotificationTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public NotificationTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Notification", kind)
-        {
-        }
-    }
-
     public class NumericUpDownTokenResourceExtension : TokenResourceExtension<NumericUpDownTokenKind>
     {
         public NumericUpDownTokenResourceExtension()
@@ -2036,13 +1762,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public NumericUpDownTokenResourceExtension(NumericUpDownTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class NumericUpDownTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public NumericUpDownTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "NumericUpDown", kind)
         {
         }
     }
@@ -2058,13 +1777,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class OptionButtonTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public OptionButtonTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "OptionButton", kind)
-        {
-        }
-    }
-
     public class OtpLineEditTokenResourceExtension : TokenResourceExtension<OtpLineEditTokenKind>
     {
         public OtpLineEditTokenResourceExtension()
@@ -2072,13 +1784,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public OtpLineEditTokenResourceExtension(OtpLineEditTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class OtpLineEditTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public OtpLineEditTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "OtpLineEdit", kind)
         {
         }
     }
@@ -2094,13 +1799,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class PaginationTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public PaginationTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Pagination", kind)
-        {
-        }
-    }
-
     public class PopupConfirmTokenResourceExtension : TokenResourceExtension<PopupConfirmTokenKind>
     {
         public PopupConfirmTokenResourceExtension()
@@ -2108,13 +1806,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public PopupConfirmTokenResourceExtension(PopupConfirmTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class PopupConfirmTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public PopupConfirmTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "PopupConfirm", kind)
         {
         }
     }
@@ -2130,13 +1821,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class PopupHostTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public PopupHostTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "PopupHost", kind)
-        {
-        }
-    }
-
     public class ProgressBarTokenResourceExtension : TokenResourceExtension<ProgressBarTokenKind>
     {
         public ProgressBarTokenResourceExtension()
@@ -2144,13 +1828,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ProgressBarTokenResourceExtension(ProgressBarTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class ProgressBarTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ProgressBarTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ProgressBar", kind)
         {
         }
     }
@@ -2166,13 +1843,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class QRCodeTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public QRCodeTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "QRCode", kind)
-        {
-        }
-    }
-
     public class RadioButtonTokenResourceExtension : TokenResourceExtension<RadioButtonTokenKind>
     {
         public RadioButtonTokenResourceExtension()
@@ -2180,13 +1850,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public RadioButtonTokenResourceExtension(RadioButtonTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class RadioButtonTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public RadioButtonTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "RadioButton", kind)
         {
         }
     }
@@ -2202,13 +1865,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class RateTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public RateTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Rate", kind)
-        {
-        }
-    }
-
     public class ResultTokenResourceExtension : TokenResourceExtension<ResultTokenKind>
     {
         public ResultTokenResourceExtension()
@@ -2216,13 +1872,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ResultTokenResourceExtension(ResultTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class ResultTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ResultTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Result", kind)
         {
         }
     }
@@ -2238,13 +1887,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class ScrollViewerTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ScrollViewerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ScrollViewer", kind)
-        {
-        }
-    }
-
     public class SegmentedTokenResourceExtension : TokenResourceExtension<SegmentedTokenKind>
     {
         public SegmentedTokenResourceExtension()
@@ -2252,13 +1894,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SegmentedTokenResourceExtension(SegmentedTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class SegmentedTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public SegmentedTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Segmented", kind)
         {
         }
     }
@@ -2274,13 +1909,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class SelectTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public SelectTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Select", kind)
-        {
-        }
-    }
-
     public class SeparatorTokenResourceExtension : TokenResourceExtension<SeparatorTokenKind>
     {
         public SeparatorTokenResourceExtension()
@@ -2288,13 +1916,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SeparatorTokenResourceExtension(SeparatorTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class SeparatorTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public SeparatorTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Separator", kind)
         {
         }
     }
@@ -2310,13 +1931,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class SkeletonTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public SkeletonTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Skeleton", kind)
-        {
-        }
-    }
-
     public class SliderTokenResourceExtension : TokenResourceExtension<SliderTokenKind>
     {
         public SliderTokenResourceExtension()
@@ -2324,13 +1938,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SliderTokenResourceExtension(SliderTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class SliderTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public SliderTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Slider", kind)
         {
         }
     }
@@ -2346,13 +1953,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class SpaceTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public SpaceTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Space", kind)
-        {
-        }
-    }
-
     public class SpinTokenResourceExtension : TokenResourceExtension<SpinTokenKind>
     {
         public SpinTokenResourceExtension()
@@ -2360,13 +1960,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SpinTokenResourceExtension(SpinTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class SpinTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public SpinTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Spin", kind)
         {
         }
     }
@@ -2382,13 +1975,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class SplitterTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public SplitterTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Splitter", kind)
-        {
-        }
-    }
-
     public class SplitViewTokenResourceExtension : TokenResourceExtension<SplitViewTokenKind>
     {
         public SplitViewTokenResourceExtension()
@@ -2396,13 +1982,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SplitViewTokenResourceExtension(SplitViewTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class SplitViewTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public SplitViewTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "SplitView", kind)
         {
         }
     }
@@ -2418,13 +1997,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class StatisticTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public StatisticTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Statistic", kind)
-        {
-        }
-    }
-
     public class StepsTokenResourceExtension : TokenResourceExtension<StepsTokenKind>
     {
         public StepsTokenResourceExtension()
@@ -2432,13 +2004,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public StepsTokenResourceExtension(StepsTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class StepsTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public StepsTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Steps", kind)
         {
         }
     }
@@ -2454,13 +2019,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class TabControlTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TabControlTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "TabControl", kind)
-        {
-        }
-    }
-
     public class TagTokenResourceExtension : TokenResourceExtension<TagTokenKind>
     {
         public TagTokenResourceExtension()
@@ -2468,13 +2026,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TagTokenResourceExtension(TagTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class TagTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TagTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Tag", kind)
         {
         }
     }
@@ -2490,13 +2041,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class TextAreaTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TextAreaTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "TextArea", kind)
-        {
-        }
-    }
-
     public class TextBoxTokenResourceExtension : TokenResourceExtension<TextBoxTokenKind>
     {
         public TextBoxTokenResourceExtension()
@@ -2504,13 +2048,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TextBoxTokenResourceExtension(TextBoxTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class TextBoxTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TextBoxTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "TextBox", kind)
         {
         }
     }
@@ -2526,13 +2063,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class TimelineTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TimelineTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Timeline", kind)
-        {
-        }
-    }
-
     public class TimePickerTokenResourceExtension : TokenResourceExtension<TimePickerTokenKind>
     {
         public TimePickerTokenResourceExtension()
@@ -2540,13 +2070,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TimePickerTokenResourceExtension(TimePickerTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class TimePickerTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TimePickerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "TimePicker", kind)
         {
         }
     }
@@ -2562,13 +2085,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class ToggleSwitchTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ToggleSwitchTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ToggleSwitch", kind)
-        {
-        }
-    }
-
     public class ToolTipTokenResourceExtension : TokenResourceExtension<ToolTipTokenKind>
     {
         public ToolTipTokenResourceExtension()
@@ -2576,13 +2092,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ToolTipTokenResourceExtension(ToolTipTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class ToolTipTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ToolTipTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ToolTip", kind)
         {
         }
     }
@@ -2598,13 +2107,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class TourTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TourTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Tour", kind)
-        {
-        }
-    }
-
     public class TransferTokenResourceExtension : TokenResourceExtension<TransferTokenKind>
     {
         public TransferTokenResourceExtension()
@@ -2612,13 +2114,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TransferTokenResourceExtension(TransferTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class TransferTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TransferTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Transfer", kind)
         {
         }
     }
@@ -2634,13 +2129,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class TreeFlyoutTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TreeFlyoutTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "TreeFlyout", kind)
-        {
-        }
-    }
-
     public class TreeSelectTokenResourceExtension : TokenResourceExtension<TreeSelectTokenKind>
     {
         public TreeSelectTokenResourceExtension()
@@ -2648,13 +2136,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TreeSelectTokenResourceExtension(TreeSelectTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class TreeSelectTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TreeSelectTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "TreeSelect", kind)
         {
         }
     }
@@ -2670,13 +2151,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class TreeViewTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public TreeViewTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "TreeView", kind)
-        {
-        }
-    }
-
     public class UploadTokenResourceExtension : TokenResourceExtension<UploadTokenKind>
     {
         public UploadTokenResourceExtension()
@@ -2684,13 +2158,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public UploadTokenResourceExtension(UploadTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class UploadTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public UploadTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Upload", kind)
         {
         }
     }
@@ -2706,13 +2173,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
-    public sealed class WindowTitleBarTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public WindowTitleBarTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "WindowTitleBar", kind)
-        {
-        }
-    }
-
     public class WindowTokenResourceExtension : TokenResourceExtension<WindowTokenKind>
     {
         public WindowTokenResourceExtension()
@@ -2720,13 +2180,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public WindowTokenResourceExtension(WindowTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class WindowTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public WindowTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Window", kind)
         {
         }
     }
@@ -2760,13 +2213,6 @@ namespace AtomUI.Desktop.Controls.Primitives.DesignTokens
         }
     }
 
-    public sealed class IndicatorScrollViewerTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public IndicatorScrollViewerTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "IndicatorScrollViewer", kind)
-        {
-        }
-    }
-
     public class InfoPickerInputTokenResourceExtension : TokenResourceExtension<InfoPickerInputTokenKind>
     {
         public InfoPickerInputTokenResourceExtension()
@@ -2774,13 +2220,6 @@ namespace AtomUI.Desktop.Controls.Primitives.DesignTokens
         }
 
         public InfoPickerInputTokenResourceExtension(InfoPickerInputTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class InfoPickerInputTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public InfoPickerInputTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "InfoPickerInput", kind)
         {
         }
     }

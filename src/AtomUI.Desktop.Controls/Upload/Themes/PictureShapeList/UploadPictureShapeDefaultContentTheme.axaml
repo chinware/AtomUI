@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:UploadThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:UploadPictureShapeDefaultContent}" TargetType="atom:UploadPictureShapeDefaultContent">
@@ -52,19 +55,19 @@
 
         <Style Selector="^[Status=Failed]">
             <Style Selector="^ /template/ atom|Icon">
-                <Setter Property="StrokeBrush" Value="{atom:UploadTokenSharedTokenResource ColorError}" />
+                <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorError}" />
             </Style>
         </Style>
 
         <Style Selector="^[Status=Cancelled]">
             <Style Selector="^ /template/ atom|Icon">
-                <Setter Property="StrokeBrush" Value="{atom:UploadTokenSharedTokenResource ColorError}" />
+                <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorError}" />
             </Style>
         </Style>
 
         <Style Selector="^[Status=Success]">
             <Style Selector="^ /template/ atom|Icon">
-                <Setter Property="StrokeBrush" Value="{atom:UploadTokenSharedTokenResource ColorPrimary}" />
+                <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
                 

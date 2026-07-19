@@ -89,5 +89,4 @@ internal class ComboBoxToken : ButtonSpinnerToken
         ItemMargin  = new Thickness(0, 0.5);
     }
     
-    protected override Type GetTokenKindType() => typeof(ComboBoxTokenKind);
 }

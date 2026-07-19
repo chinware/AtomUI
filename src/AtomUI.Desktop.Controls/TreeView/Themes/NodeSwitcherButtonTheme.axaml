@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TreeViewThemeAsset.Identity}"
     x:ClassModifier="internal">
     <!--
         我们需要在这个切换按钮显示几种状态的图标
@@ -27,11 +30,11 @@
         
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="CornerRadius" Value="{atom:TreeViewTokenSharedTokenResource BorderRadius}"/>
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}"/>
 
         <Style Selector="^ /template/ atom|IconPresenter atom|Icon">
-            <Setter Property="FillBrush" Value="{atom:TreeViewTokenSharedTokenResource ColorTextSecondary}"/>
-            <Setter Property="StrokeBrush" Value="{atom:TreeViewTokenSharedTokenResource ColorTextSecondary}"/>
+            <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorTextSecondary}"/>
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextSecondary}"/>
         </Style>
         
         <Style Selector="^:pointerover">
@@ -39,17 +42,17 @@
         </Style>
         
         <Style Selector="^ /template/ atom|IconPresenter">
-            <Setter Property="Width" Value="{atom:TreeViewTokenSharedTokenResource IconSize}"/>
-            <Setter Property="Height" Value="{atom:TreeViewTokenSharedTokenResource IconSize}"/>
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}"/>
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}"/>
         </Style>
         
         <Style Selector="^[IconMode=Rotation] /template/ atom|IconPresenter#CurrentIconPresenter">
-            <Setter Property="Width" Value="{atom:TreeViewTokenSharedTokenResource IconSizeXS}"/>
-            <Setter Property="Height" Value="{atom:TreeViewTokenSharedTokenResource IconSizeXS}"/>
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeXS}"/>
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeXS}"/>
         </Style>
         
         <Style Selector="^[IconMode=Loading] /template/ atom|IconPresenter#CurrentIconPresenter">
-            <Setter Property="IconBrush" Value="{atom:TreeViewTokenSharedTokenResource ColorPrimary}"/>
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorPrimary}"/>
         </Style>
         
         <Style Selector="^:checked[IconMode=Rotation]">

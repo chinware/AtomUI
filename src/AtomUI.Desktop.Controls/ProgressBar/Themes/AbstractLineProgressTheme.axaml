@@ -1,6 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:ProgressBarThemeAsset.Identity}"
               xmlns:atomc="https://atomui.net/common-controls"
               x:Class="AtomUI.Desktop.Controls.Themes.AbstractLineProgressTheme"
               TargetType="atomc:AbstractLineProgress"
@@ -39,21 +42,21 @@
         <Setter Property="LineExtraInfoMargin" Value="{atom:ProgressBarTokenResource LineExtraInfoMargin}" />
         
         <Style Selector="^ /template/ atom|IconPresenter#PART_ExceptionCompletedIconPresenter">
-            <Setter Property="IconBrush" Value="{atom:ProgressBarTokenSharedTokenResource ColorError}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconPresenter#PART_SuccessCompletedIconPresenter">
-            <Setter Property="IconBrush" Value="{atom:ProgressBarTokenSharedTokenResource ColorSuccess}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorSuccess}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconPresenter:disabled">
             <Setter Property="IconBrush"
-                    Value="{atom:ProgressBarTokenSharedTokenResource ControlItemBgActiveDisabled}" />
+                    Value="{atom:SharedTokenResource ControlItemBgActiveDisabled}" />
         </Style>
         
         <Style Selector="^[EffectiveSizeType=Large]">
             <Setter Property="LineInfoIconSize" Value="{atom:ProgressBarTokenResource LineInfoIconSize}" />
-            <Setter Property="FontSize" Value="{atom:ProgressBarTokenSharedTokenResource FontSize}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
             <Style Selector="^ /template/ atom|IconPresenter">
                 <Setter Property="Width" Value="{atom:ProgressBarTokenResource LineInfoIconSize}" />
                 <Setter Property="Height" Value="{atom:ProgressBarTokenResource LineInfoIconSize}" />
@@ -62,7 +65,7 @@
         
         <Style Selector="^[EffectiveSizeType=Middle]">
             <Setter Property="LineInfoIconSize" Value="{atom:ProgressBarTokenResource LineInfoIconSize}" />
-            <Setter Property="FontSize" Value="{atom:ProgressBarTokenSharedTokenResource FontSizeSM}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeSM}" />
             <Style Selector="^ /template/ atom|IconPresenter">
                 <Setter Property="Width" Value="{atom:ProgressBarTokenResource LineInfoIconSizeSM}" />
                 <Setter Property="Height" Value="{atom:ProgressBarTokenResource LineInfoIconSizeSM}" />
@@ -71,7 +74,7 @@
         
         <Style Selector="^[EffectiveSizeType=Small]">
             <Setter Property="LineInfoIconSize" Value="{atom:ProgressBarTokenResource LineInfoIconSizeSM}" />
-            <Setter Property="FontSize" Value="{atom:ProgressBarTokenSharedTokenResource FontSizeSM}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeSM}" />
             <Style Selector="^ /template/ atom|IconPresenter">
                 <Setter Property="Width" Value="{atom:ProgressBarTokenResource LineInfoIconSizeSM}" />
                 <Setter Property="Height" Value="{atom:ProgressBarTokenResource LineInfoIconSizeSM}" />

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SpinThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Spin}" TargetType="atom:Spin">
         <Setter Property="Template">
@@ -41,7 +44,7 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="MotionEasingCurve" Value="LinearEasing" />
         <Setter Property="MaskOpacity" Value="1.0" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SpinTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="MotionDuration"
                 Value="{atom:SpinTokenResource IndicatorDuration}" />
 
@@ -53,7 +56,7 @@
             </Setter>
         </Style>
         <Style Selector="^ /template/ atom|TextBlock#Tip">
-            <Setter Property="Foreground" Value="{atom:SpinTokenSharedTokenResource ColorPrimary}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimary}" />
         </Style>
         
         <Style Selector="^[IsSpinning=True]">
@@ -72,14 +75,14 @@
             
             <Style Selector="^[IsMaskBackgroundEnabled=True]">
                 <Style Selector="^ /template/ Border#Mask">
-                    <Setter Property="Background" Value="{atom:SpinTokenSharedTokenResource ColorBgMask}" />
+                    <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgMask}" />
                 </Style>
             </Style>
             
         </Style>
         
         <Style Selector="^ /template/ StackPanel#IndicatorLayout">
-            <Setter Property="Spacing" Value="{atom:SpinTokenSharedTokenResource SpacingXXS}"/>
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXXS}"/>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

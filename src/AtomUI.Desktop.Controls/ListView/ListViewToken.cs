@@ -124,5 +124,4 @@ internal class ListViewToken : AbstractControlDesignToken
         SelectedIndicatorMargin = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(ListViewTokenKind);
 }

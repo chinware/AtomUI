@@ -129,8 +129,8 @@ internal sealed class GeneratedThemeSchemaWriter
             }
             source.AppendLine("            },");
             source.Append("            static () => new ").Append(typeName).AppendLine("(),");
-            source.Append("            static (token, isDark) => ((").Append(typeName)
-                  .AppendLine(")token).CalculateTokenValues(isDark)),");
+            source.Append("            static (token, appearance) => ((").Append(typeName)
+                  .AppendLine(")token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),");
         }
         source.AppendLine("    };");
     }
@@ -143,17 +143,9 @@ internal sealed class GeneratedThemeSchemaWriter
         {
             var id = SymbolDisplay.FormatLiteral(algorithm.Id, quote: true);
             source.Append("        new ThemeAlgorithmDescriptor(").Append(id)
-                  .Append(", ThemeAppearanceEffect.").Append(algorithm.AppearanceEffect)
-                  .Append(", ").Append(algorithm.RequiresBase ? "true" : "false").AppendLine(",");
-            if (algorithm.RequiresBase)
-            {
-                source.Append("            static baseAlgorithm => new ").Append(algorithm.TypeName)
-                      .Append("((").Append(algorithm.BaseParameterType).AppendLine(")baseAlgorithm!)),");
-            }
-            else
-            {
-                source.Append("            static baseAlgorithm => new ").Append(algorithm.TypeName).AppendLine("()),");
-            }
+                  .Append(", ").Append(algorithm.Revision)
+                  .Append(", ThemeAppearanceEffect.").Append(algorithm.AppearanceEffect).AppendLine(",");
+            source.Append("            static () => new ").Append(algorithm.TypeName).AppendLine("()),");
         }
         source.AppendLine("    };");
     }

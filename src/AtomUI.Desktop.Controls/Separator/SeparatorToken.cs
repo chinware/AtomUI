@@ -63,5 +63,4 @@ internal class SeparatorToken : AbstractControlDesignToken
         HorizontalWithTextGutterMargin = new Thickness(0, SharedToken.UniformlyMargin);
     }
     
-    protected override Type GetTokenKindType() => typeof(SeparatorTokenKind);
 }

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ImagePreviewerThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ImagePreviewToolbar}" TargetType="atom:ImagePreviewToolbar">
@@ -41,37 +44,37 @@
 
         <Style Selector="^ /template/ atom|IconButton">
             <Setter Property="IsPassthroughMouseEvent" Value="False" />
-            <Setter Property="IconWidth" Value="{atom:ImagePreviewerTokenSharedTokenResource IconSizeLG}" />
-            <Setter Property="IconHeight" Value="{atom:ImagePreviewerTokenSharedTokenResource IconSizeLG}" />
-            <Setter Property="Width" Value="{atom:ImagePreviewerTokenSharedTokenResource ControlHeightSM}" />
-            <Setter Property="Height" Value="{atom:ImagePreviewerTokenSharedTokenResource ControlHeightSM}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
         </Style>
 
         <Style Selector="^ /template/ atom|ToggleIconButton">
-            <Setter Property="IconWidth" Value="{atom:ImagePreviewerTokenSharedTokenResource IconSizeLG}" />
-            <Setter Property="IconHeight" Value="{atom:ImagePreviewerTokenSharedTokenResource IconSizeLG}" />
-            <Setter Property="Width" Value="{atom:ImagePreviewerTokenSharedTokenResource ControlHeightSM}" />
-            <Setter Property="Height" Value="{atom:ImagePreviewerTokenSharedTokenResource ControlHeightSM}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton:pointerover">
-            <Setter Property="Background" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorBgTextHover}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextHover}" />
         </Style>
 
         <Style Selector="^ /template/ atom|ToggleIconButton:pointerover">
-            <Setter Property="Background" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorBgTextHover}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextHover}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton:pressed">
-            <Setter Property="Background" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorBgTextActive}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextActive}" />
         </Style>
 
         <Style Selector="^ /template/ atom|ToggleIconButton:pressed">
-            <Setter Property="Background" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorBgTextActive}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextActive}" />
         </Style>
 
         <Style Selector="^ /template/ StackPanel#RootLayout">
-            <Setter Property="Spacing" Value="{atom:ImagePreviewerTokenSharedTokenResource SpacingXXS}" />
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXXS}" />
         </Style>
 
     </ControlTheme>

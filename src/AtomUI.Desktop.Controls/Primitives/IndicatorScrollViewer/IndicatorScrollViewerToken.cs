@@ -45,5 +45,4 @@ internal class IndicatorScrollViewerToken : AbstractControlDesignToken
         ThumbCornerRadius  = new CornerRadius(SharedToken.LineWidthBold / 2.0);
     }
     
-    protected override Type GetTokenKindType() => typeof(IndicatorScrollViewerTokenKind);
 }

@@ -5,12 +5,10 @@ namespace AtomUI.Toolkits.GalleryBase.Tests.Controls;
 
 public class GalleryBaseThemeScopeMigrationTests
 {
-    private static readonly (string Path, string Extension)[] ComponentThemeFiles =
+    private static readonly string[] ControlThemeFiles =
     [
-        ("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeaderTheme.axaml",
-            "GalleryShowCaseHeaderTokenSharedTokenResource"),
-        ("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml",
-            "ShowCaseItemTokenSharedTokenResource")
+        "src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeaderTheme.axaml",
+        "src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml"
     ];
 
     [Fact]
@@ -32,14 +30,15 @@ public class GalleryBaseThemeScopeMigrationTests
     }
 
     [Fact]
-    public void GalleryBase_Component_Themes_Use_Component_Shared_Token_Resources()
+    public void GalleryBase_Control_Themes_Use_Ambient_Shared_Token_Scopes()
     {
-        foreach (var (relativePath, componentResourceExtension) in ComponentThemeFiles)
+        foreach (var relativePath in ControlThemeFiles)
         {
             var text = File.ReadAllText(GetRepoFile(relativePath));
 
-            text.ShouldContain(componentResourceExtension);
-            text.ShouldNotContain("{atom:SharedTokenResource ");
+            text.ShouldContain("{atom:SharedTokenResource ");
+            text.ShouldContain("themeResources:ControlTokenScope.Identity=");
+            text.ShouldNotContain("TokenSharedTokenResource");
         }
     }
 

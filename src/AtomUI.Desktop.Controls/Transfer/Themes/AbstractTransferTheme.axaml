@@ -2,24 +2,27 @@
               xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:TransferThemeAsset.Identity}"
               xmlns:antdicons="https://atomui.net/icons/antdesign"
               xmlns:system="using:System"
               x:Class="AtomUI.Desktop.Controls.Themes.AbstractTransferTheme">
 
     <Style Selector="^:is(atom|AbstractTransfer)">
         <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="IsMotionEnabled" Value="{atom:TransferTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
 
         <Style Selector="^ /template/ StackPanel#ActionsLayout">
-            <Setter Property="Spacing" Value="{atom:TransferTokenSharedTokenResource SpacingXXS}" />
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXXS}" />
         </Style>
 
         <Style Selector="^ /template/ Grid#RootLayout">
-            <Setter Property="ColumnSpacing" Value="{atom:TransferTokenSharedTokenResource SpacingXS}" />
+            <Setter Property="ColumnSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:TransferTokenSharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
 
         <Setter Property="SelectionsIcon">

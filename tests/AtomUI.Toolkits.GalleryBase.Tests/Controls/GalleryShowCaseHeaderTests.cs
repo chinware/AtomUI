@@ -29,7 +29,7 @@ public class GalleryShowCaseHeaderTests
     }
 
     [Fact]
-    public void Uses_Component_Shared_Token_Resources_Without_Legacy_Scope_Registration()
+    public void Uses_Ambient_Shared_Token_Resources_Without_Legacy_Scope_Registration()
     {
         var source = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeader.cs");
         var token  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeaderToken.cs");
@@ -37,8 +37,9 @@ public class GalleryShowCaseHeaderTests
 
         source.ShouldNotContain("RegisterTokenResourceScope");
         token.ShouldNotContain("ScopeProvider");
-        theme.ShouldContain("GalleryShowCaseHeaderTokenSharedTokenResource");
-        theme.ShouldNotContain("{atom:SharedTokenResource ");
+        theme.ShouldContain("{atom:SharedTokenResource ");
+        theme.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        theme.ShouldNotContain("TokenSharedTokenResource");
     }
 
     [Fact]

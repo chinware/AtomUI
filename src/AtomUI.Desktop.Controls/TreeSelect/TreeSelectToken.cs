@@ -25,5 +25,4 @@ internal class TreeSelectToken : AbstractControlDesignToken
         MinPopupWidth = 300;
     }
     
-    protected override Type GetTokenKindType() => typeof(TreeSelectTokenKind);
 }

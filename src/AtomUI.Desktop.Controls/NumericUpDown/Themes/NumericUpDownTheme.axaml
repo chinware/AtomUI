@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:NumericUpDownThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <Thickness x:Key="NumericUpDownSpinnerContentPadding">0</Thickness>
@@ -33,7 +36,7 @@
                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
                     <atom:ButtonSpinner.InnerRightContent>
                         <StackPanel Orientation="Horizontal"
-                                    Spacing="{atom:NumericUpDownTokenSharedTokenResource UniformlyPaddingXXS}">
+                                    Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                             <atom:InputClearIconButton
                                 Name="PART_ClearButton"
                                 IsPassthroughMouseEvent="False" />
@@ -141,8 +144,8 @@
                                                 BorderThickness="0"
                                                 Padding="{atom:AddOnDecoratedBoxTokenResource Padding}"
                                                 BackgroundSizing="InnerBorderEdge"
-                                                IconWidth="{atom:NumericUpDownTokenSharedTokenResource IconSize}"
-                                                IconHeight="{atom:NumericUpDownTokenSharedTokenResource IconSize}"
+                                                IconWidth="{atom:SharedTokenResource IconSize}"
+                                                IconHeight="{atom:SharedTokenResource IconSize}"
                                                 HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Stretch" />
                                         </atom:PixelAlignedBorder>
@@ -158,8 +161,8 @@
                                                 BorderThickness="0"
                                                 Padding="{atom:AddOnDecoratedBoxTokenResource Padding}"
                                                 BackgroundSizing="InnerBorderEdge"
-                                                IconWidth="{atom:NumericUpDownTokenSharedTokenResource IconSize}"
-                                                IconHeight="{atom:NumericUpDownTokenSharedTokenResource IconSize}"
+                                                IconWidth="{atom:SharedTokenResource IconSize}"
+                                                IconHeight="{atom:SharedTokenResource IconSize}"
                                                 HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Stretch" />
                                         </atom:PixelAlignedBorder>
@@ -191,7 +194,7 @@
                         </atom:ButtonSpinner.Template>
                         <atom:ButtonSpinner.InnerRightContent>
                             <StackPanel Orientation="Horizontal"
-                                        Spacing="{atom:NumericUpDownTokenSharedTokenResource UniformlyPaddingXXS}">
+                                        Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                                 <atom:InputClearIconButton
                                     Name="PART_ClearButton"
                                     IsPassthroughMouseEvent="False" />
@@ -229,12 +232,12 @@
         </Style>
 
         <Setter Property="IsMotionEnabled"
-                Value="{atom:NumericUpDownTokenSharedTokenResource EnableMotion}" />
+                Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="SpinnerHandleWidth"
                 Value="{atom:ButtonSpinnerTokenResource HandleWidth}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="PlaceholderForeground" Value="{atom:NumericUpDownTokenSharedTokenResource ColorTextPlaceholder}" />
+        <Setter Property="PlaceholderForeground" Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
 
     </ControlTheme>
 </ResourceDictionary>

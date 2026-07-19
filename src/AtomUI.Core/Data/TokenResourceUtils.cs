@@ -12,7 +12,7 @@ public static class TokenResourceUtils
     {
         if (themeVariant is null)
         {
-            themeVariant = TokenFinderUtils.FindThemeVariant(control);
+            themeVariant = control.ActualThemeVariant;
         }
 
         if (control.TryFindResource(resourceKey, themeVariant, out var value))

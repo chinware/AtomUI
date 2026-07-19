@@ -62,5 +62,4 @@ internal class PopupConfirmToken : AbstractControlDesignToken
         ButtonContainerMargin  = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(PopupConfirmTokenKind);
 }

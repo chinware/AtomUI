@@ -61,5 +61,4 @@ internal class ToolTipToken : AbstractControlDesignToken
         MotionDuration = SharedToken.MotionDurationMid;
     }
     
-    protected override Type GetTokenKindType() => typeof(ToolTipTokenKind);
 }

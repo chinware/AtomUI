@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ScrollViewerThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type ScrollViewer}" TargetType="ScrollViewer">
         <Setter Property="Template">
@@ -44,7 +47,7 @@
                         <Panel Name="ScrollBarsSeparator"
                                Grid.Row="1"
                                Grid.Column="1"
-                               Background="{atom:ScrollViewerTokenSharedTokenResource ColorBgContainer}"
+                               Background="{atom:SharedTokenResource ColorBgContainer}"
                                Opacity="0">
                             <Panel.Transitions>
                                 <Transitions>

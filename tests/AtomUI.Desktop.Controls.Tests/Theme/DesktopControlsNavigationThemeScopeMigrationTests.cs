@@ -29,29 +29,22 @@ public class DesktopControlsNavigationThemeScopeMigrationTests
     }
 
     [Fact]
-    public void Navigation_Component_Themes_Use_Component_Shared_Token_Resources()
+    public void Navigation_Control_Themes_Use_Ambient_Shared_Token_Scopes()
     {
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/Breadcrumb/Themes",
-            "BreadcrumbTokenSharedTokenResource");
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/Menu/Themes",
-            "MenuTokenSharedTokenResource");
-        AssertComponentThemeFile(
-            "src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml",
-            "MenuTokenSharedTokenResource");
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/NavMenu/Themes",
-            "NavMenuTokenSharedTokenResource");
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/Pagination/Themes",
-            "PaginationTokenSharedTokenResource");
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/Steps/Themes",
-            "StepsTokenSharedTokenResource");
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/TabControl/Themes",
-            "TabControlTokenSharedTokenResource");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/Breadcrumb/Themes");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/Menu/Themes");
+        ThemeAssetScopeAssertions.AssertFileUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/NavMenu/Themes");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/Pagination/Themes");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/Steps/Themes");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/TabControl/Themes");
     }
 
     private static void AssertNoLegacyScope(params string[] relativePaths)
@@ -62,36 +55,6 @@ public class DesktopControlsNavigationThemeScopeMigrationTests
             text.ShouldNotContain("RegisterTokenResourceScope");
             text.ShouldNotContain("ScopeProvider");
         }
-    }
-
-    private static void AssertComponentThemeResources(
-        string relativeDirectory,
-        string componentResourceExtension)
-    {
-        var themeFiles = Directory.GetFiles(
-            GetRepoFile(relativeDirectory),
-            "*.axaml",
-            SearchOption.AllDirectories);
-
-        themeFiles.ShouldNotBeEmpty();
-        themeFiles.ShouldContain(file =>
-            File.ReadAllText(file).Contains(componentResourceExtension, StringComparison.Ordinal));
-
-        foreach (var themeFile in themeFiles)
-        {
-            File.ReadAllText(themeFile)
-                .ShouldNotContain("{atom:SharedTokenResource ");
-        }
-    }
-
-    private static void AssertComponentThemeFile(
-        string relativePath,
-        string componentResourceExtension)
-    {
-        var text = ReadRepoFile(relativePath);
-
-        text.ShouldContain(componentResourceExtension);
-        text.ShouldNotContain("{atom:SharedTokenResource ");
     }
 
     private static string ReadRepoFile(string relativePath)

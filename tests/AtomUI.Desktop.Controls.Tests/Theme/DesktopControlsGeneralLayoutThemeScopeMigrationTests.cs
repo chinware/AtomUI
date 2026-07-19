@@ -38,26 +38,20 @@ public class DesktopControlsGeneralLayoutThemeScopeMigrationTests
     }
 
     [Fact]
-    public void General_And_Layout_Component_Themes_Use_Component_Shared_Token_Resources()
+    public void General_And_Layout_Control_Themes_Use_Ambient_Shared_Token_Scopes()
     {
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/Buttons/Themes",
-            "ButtonTokenSharedTokenResource");
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/FloatButton/Themes",
-            "FloatButtonTokenSharedTokenResource");
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/Space/Themes",
-            "SpaceTokenSharedTokenResource");
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/Splitter/Themes",
-            "SplitterTokenSharedTokenResource");
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/SplitView/Themes",
-            "SplitViewTokenSharedTokenResource");
-        AssertComponentThemeResources(
-            "src/AtomUI.Desktop.Controls/Separator/Themes",
-            "SeparatorTokenSharedTokenResource");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/Buttons/Themes");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/FloatButton/Themes");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/Space/Themes");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/Splitter/Themes");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/SplitView/Themes");
+        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+            "src/AtomUI.Desktop.Controls/Separator/Themes");
     }
 
     private static void AssertNoLegacyScope(params string[] relativePaths)
@@ -67,26 +61,6 @@ public class DesktopControlsGeneralLayoutThemeScopeMigrationTests
             var text = ReadRepoFile(relativePath);
             text.ShouldNotContain("RegisterTokenResourceScope");
             text.ShouldNotContain("ScopeProvider");
-        }
-    }
-
-    private static void AssertComponentThemeResources(
-        string relativeDirectory,
-        string componentResourceExtension)
-    {
-        var themeFiles = Directory.GetFiles(
-            GetRepoFile(relativeDirectory),
-            "*.axaml",
-            SearchOption.AllDirectories);
-
-        themeFiles.ShouldNotBeEmpty();
-        themeFiles.ShouldContain(file =>
-            File.ReadAllText(file).Contains(componentResourceExtension, StringComparison.Ordinal));
-
-        foreach (var themeFile in themeFiles)
-        {
-            File.ReadAllText(themeFile)
-                .ShouldNotContain("{atom:SharedTokenResource ");
         }
     }
 

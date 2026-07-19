@@ -15,15 +15,13 @@ public class DesktopControlsMiscThemeScopeMigrationTests
         "src/AtomUI.Desktop.Controls/Primitives/IndicatorScrollViewer"
     ];
 
-    private static readonly (string Directory, string Extension)[] ThemeDirectories =
+    private static readonly string[] ThemeDirectories =
     [
-        ("src/AtomUI.Desktop.Controls/BorderBeam/Themes", "BorderBeamTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/GroupBox/Themes", "GroupBoxTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/ScrollViewer/Themes", "ScrollViewerTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Primitives/ArrowDecoratedBox/Themes",
-            "ArrowDecoratedBoxTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Primitives/IndicatorScrollViewer/Themes",
-            "IndicatorScrollViewerTokenSharedTokenResource")
+        "src/AtomUI.Desktop.Controls/BorderBeam/Themes",
+        "src/AtomUI.Desktop.Controls/GroupBox/Themes",
+        "src/AtomUI.Desktop.Controls/ScrollViewer/Themes",
+        "src/AtomUI.Desktop.Controls/Primitives/ArrowDecoratedBox/Themes",
+        "src/AtomUI.Desktop.Controls/Primitives/IndicatorScrollViewer/Themes"
     ];
 
     [Fact]
@@ -48,24 +46,11 @@ public class DesktopControlsMiscThemeScopeMigrationTests
     }
 
     [Fact]
-    public void Misc_Component_Themes_Use_Component_Shared_Token_Resources()
+    public void Misc_Control_Themes_Use_Ambient_Shared_Token_Scopes()
     {
-        foreach (var (relativeDirectory, componentResourceExtension) in ThemeDirectories)
+        foreach (var relativeDirectory in ThemeDirectories)
         {
-            var themeFiles = Directory.GetFiles(
-                GetRepoFile(relativeDirectory),
-                "*.axaml",
-                SearchOption.AllDirectories);
-
-            themeFiles.ShouldNotBeEmpty();
-            themeFiles.ShouldContain(file =>
-                File.ReadAllText(file).Contains(componentResourceExtension, StringComparison.Ordinal));
-
-            foreach (var themeFile in themeFiles)
-            {
-                File.ReadAllText(themeFile)
-                    .ShouldNotContain("{atom:SharedTokenResource ");
-            }
+            ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(relativeDirectory);
         }
     }
 

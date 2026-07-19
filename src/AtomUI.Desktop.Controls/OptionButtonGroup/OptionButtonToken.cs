@@ -1,6 +1,6 @@
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.TokenSystem;
 using AtomUI.Utils;
 using Avalonia;
@@ -156,5 +156,4 @@ internal class OptionButtonToken : AbstractControlDesignToken
             Math.Max((controlHeightLG - controlHeightLG * controlHeightLG) / 2 - lineWidth, 0));
     }
     
-    protected override Type GetTokenKindType() => typeof(OptionButtonTokenKind);
 }

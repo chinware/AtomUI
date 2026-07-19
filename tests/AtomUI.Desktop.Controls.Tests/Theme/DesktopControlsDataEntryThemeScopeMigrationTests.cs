@@ -32,39 +32,8 @@ public class DesktopControlsDataEntryThemeScopeMigrationTests
         "src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput"
     ];
 
-    private static readonly (string Directory, string[] Extensions)[] ThemeDirectories =
-    [
-        ("src/AtomUI.Desktop.Controls/AutoComplete/Themes", ["AutoCompleteTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/ButtonSpinner/Themes", ["ButtonSpinnerTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Cascader/Themes", ["CascaderTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/CheckBox/Themes", ["CheckBoxTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/ComboBox/Themes", ["ComboBoxTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/DatePicker/Themes", ["DatePickerTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Form/Themes", ["FormTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Input/Themes",
-        [
-            "LineEditTokenSharedTokenResource",
-            "TextAreaTokenSharedTokenResource",
-            "TextBoxTokenSharedTokenResource"
-        ]),
-        ("src/AtomUI.Desktop.Controls/Mentions/Themes", ["MentionsTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/NumericUpDown/Themes", ["NumericUpDownTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/OtpLineEdit/Themes", ["OtpLineEditTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/OptionButtonGroup/Themes", ["OptionButtonTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/RadioButton/Themes", ["RadioButtonTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Rate/Themes", ["RateTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Select/Themes", ["SelectTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Slider/Themes", ["SliderTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Switch/Themes", ["ToggleSwitchTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/TimePicker/Themes", ["TimePickerTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Transfer/Themes", ["TransferTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/TreeSelect/Themes", ["TreeSelectTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Upload/Themes", ["UploadTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Primitives/AddOnDecoratedBox/Themes",
-            ["AddOnDecoratedBoxTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/Themes",
-            ["InfoPickerInputTokenSharedTokenResource"])
-    ];
+    private static readonly string[] ThemeDirectories =
+        ControlDirectories.Select(static directory => $"{directory}/Themes").ToArray();
 
     [Fact]
     public void DataEntry_Controls_Remove_Legacy_Token_Scope_Registration()
@@ -88,28 +57,11 @@ public class DesktopControlsDataEntryThemeScopeMigrationTests
     }
 
     [Fact]
-    public void DataEntry_Component_Themes_Use_Component_Shared_Token_Resources()
+    public void DataEntry_Control_Themes_Use_Ambient_Shared_Token_Scopes()
     {
-        foreach (var (relativeDirectory, componentResourceExtensions) in ThemeDirectories)
+        foreach (var relativeDirectory in ThemeDirectories)
         {
-            var themeFiles = Directory.GetFiles(
-                GetRepoFile(relativeDirectory),
-                "*.axaml",
-                SearchOption.AllDirectories);
-
-            themeFiles.ShouldNotBeEmpty();
-
-            foreach (var componentResourceExtension in componentResourceExtensions)
-            {
-                themeFiles.ShouldContain(file =>
-                    File.ReadAllText(file).Contains(componentResourceExtension, StringComparison.Ordinal));
-            }
-
-            foreach (var themeFile in themeFiles)
-            {
-                File.ReadAllText(themeFile)
-                    .ShouldNotContain("{atom:SharedTokenResource ");
-            }
+            ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(relativeDirectory);
         }
     }
 

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DialogThemeAsset.Identity}"
     x:ClassModifier="internal"
     x:Class="AtomUI.Desktop.Controls.Themes.OverlayDialogHostTheme"
     TargetType="atom:OverlayDialogHost">
@@ -44,14 +47,14 @@
     <Style Selector="^:is(atom|OverlayDialogHost)">
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Cursor" Value="Arrow" />
-        <Setter Property="IsMotionEnabled" Value="{atom:DialogTokenSharedTokenResource EnableMotion}" />
-        <Setter Property="AnimationDuration" Value="{atom:DialogTokenSharedTokenResource MotionDurationMid}" />
-        <Setter Property="CornerRadius" Value="{atom:DialogTokenSharedTokenResource BorderRadiusLG}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="AnimationDuration" Value="{atom:SharedTokenResource MotionDurationMid}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
 
         <Style Selector="^ /template/ atom|OverlayDialogHeader#PART_Header">
             <Setter Property="TitleFontSize" Value="{atom:DialogTokenResource HeaderFontSize}" />
             <Setter Property="TitleFontWeight"
-                    Value="{atom:DialogTokenSharedTokenResource FontWeightStrong}" />
+                    Value="{atom:SharedTokenResource FontWeightStrong}" />
             <Setter Property="Margin" Value="{atom:DialogTokenResource HeaderMarginBottom}" />
         </Style>
 

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SpaceThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:CompactSpaceAddOn}" TargetType="atom:CompactSpaceAddOn">
         <Setter Property="Template">
@@ -20,61 +23,61 @@
         </Setter>
 
         <Setter Property="ClipToBounds" Value="True" />
-        <Setter Property="BorderThickness" Value="{atom:SpaceTokenSharedTokenResource BorderThickness}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
 
         <Style Selector="^[SizeType=Large]">
             <Setter Property="FontSize"
-                    Value="{atom:SpaceTokenSharedTokenResource FontSizeLG}" />
+                    Value="{atom:SharedTokenResource FontSizeLG}" />
             <Setter Property="CornerRadius"
-                    Value="{atom:SpaceTokenSharedTokenResource BorderRadiusLG}" />
+                    Value="{atom:SharedTokenResource BorderRadiusLG}" />
             <Setter Property="Padding"
                     Value="{atom:SpaceTokenResource AddOnPaddingLG}" />
-            <Setter Property="MinHeight" Value="{atom:SpaceTokenSharedTokenResource ControlHeightLG}" />
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="FontSize"
-                    Value="{atom:SpaceTokenSharedTokenResource FontSize}" />
+                    Value="{atom:SharedTokenResource FontSize}" />
             <Setter Property="CornerRadius"
-                    Value="{atom:SpaceTokenSharedTokenResource BorderRadius}" />
+                    Value="{atom:SharedTokenResource BorderRadius}" />
             <Setter Property="Padding"
                     Value="{atom:SpaceTokenResource AddOnPadding}" />
-            <Setter Property="MinHeight" Value="{atom:SpaceTokenSharedTokenResource ControlHeight}" />
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Setter Property="FontSize"
-                    Value="{atom:SpaceTokenSharedTokenResource FontSizeSM}" />
+                    Value="{atom:SharedTokenResource FontSizeSM}" />
             <Setter Property="CornerRadius"
-                    Value="{atom:SpaceTokenSharedTokenResource BorderRadiusSM}" />
+                    Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="Padding"
                     Value="{atom:SpaceTokenResource AddOnPaddingSM}" />
-            <Setter Property="MinHeight" Value="{atom:SpaceTokenSharedTokenResource ControlHeightSM}" />
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
         </Style>
         
         <Style Selector="^[Status=Error]">
             <Setter Property="Foreground"
-                    Value="{atom:SpaceTokenSharedTokenResource ColorErrorText}" />
+                    Value="{atom:SharedTokenResource ColorErrorText}" />
         </Style>
         
         <Style Selector="^[Status=Warning]">
             <Setter Property="Foreground"
-                    Value="{atom:SpaceTokenSharedTokenResource ColorWarningText}" />
+                    Value="{atom:SharedTokenResource ColorWarningText}" />
         </Style>
         
         <Style Selector="^[StyleVariant=Outlined]">
             <Setter Property="Background"
                     Value="{atom:SpaceTokenResource AddonBg}" />
-            <Setter Property="BorderBrush" Value="{atom:SpaceTokenSharedTokenResource ColorBorder}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
             
             <Style Selector="^[Status=Error]">
                 <Setter Property="BorderBrush"
-                        Value="{atom:SpaceTokenSharedTokenResource ColorError}" />
+                        Value="{atom:SharedTokenResource ColorError}" />
             </Style>
         
             <Style Selector="^[Status=Warning]">
                 <Setter Property="BorderBrush"
-                        Value="{atom:SpaceTokenSharedTokenResource ColorWarning}" />
+                        Value="{atom:SharedTokenResource ColorWarning}" />
             </Style>
         </Style>
 
@@ -84,21 +87,21 @@
             
             <Style Selector="^[Status=Error]">
                 <Setter Property="Background"
-                        Value="{atom:SpaceTokenSharedTokenResource ColorErrorBg}" />
+                        Value="{atom:SharedTokenResource ColorErrorBg}" />
             </Style>
         
             <Style Selector="^[Status=Warning]">
                 <Setter Property="Background"
-                        Value="{atom:SpaceTokenSharedTokenResource ColorWarningBg}" />
+                        Value="{atom:SharedTokenResource ColorWarningBg}" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="BorderBrush" Value="{atom:SpaceTokenSharedTokenResource ColorBorder}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
             <Setter Property="Foreground"
-                    Value="{atom:SpaceTokenSharedTokenResource ColorTextDisabled}" />
+                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
             <Setter Property="Background"
-                    Value="{atom:SpaceTokenSharedTokenResource ColorBgContainerDisabled}" />
+                    Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

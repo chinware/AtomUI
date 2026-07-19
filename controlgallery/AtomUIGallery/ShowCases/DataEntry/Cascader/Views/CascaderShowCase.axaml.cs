@@ -25,12 +25,12 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
             {
                 RefreshCascaderData(viewModel);
 
-                var themeManager = Application.Current?.GetThemeManager();
-                if (themeManager != null)
+                var languageManager = Application.Current?.GetLanguageManager();
+                if (languageManager != null)
                 {
                     EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshCascaderData(viewModel);
-                    themeManager.LanguageVariantChanged += handler;
-                    disposables.Add(Disposable.Create(() => themeManager.LanguageVariantChanged -= handler));
+                    languageManager.LanguageVariantChanged += handler;
+                    disposables.Add(Disposable.Create(() => languageManager.LanguageVariantChanged -= handler));
                 }
 
                 disposables.Add(Disposable.Create(() =>

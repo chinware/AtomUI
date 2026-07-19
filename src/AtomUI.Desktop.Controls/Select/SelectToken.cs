@@ -185,5 +185,4 @@ internal class SelectToken : AbstractControlDesignToken
         PaddingLG = new Thickness(multiPaddingRightLG,  multiPaddingVerticalLG);
     }
 
-    protected override Type GetTokenKindType() => typeof(SelectTokenKind);
 }

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:RadioButtonThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:RadioButtonGroup}" TargetType="atom:RadioButtonGroup">
         <Setter Property="Template">
@@ -17,7 +20,7 @@
         </Setter>
 
         <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="IsMotionEnabled" Value="{atom:RadioButtonTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
 
         <Setter Property="ItemsPanel">
             <ItemsPanelTemplate>
@@ -28,8 +31,8 @@
             </ItemsPanelTemplate>
         </Setter>
 
-        <Setter Property="ItemSpacing" Value="{atom:RadioButtonTokenSharedTokenResource SpacingXS}" />
-        <Setter Property="LineSpacing" Value="{atom:RadioButtonTokenSharedTokenResource SpacingXS}" />
+        <Setter Property="ItemSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
+        <Setter Property="LineSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
 
         <Setter Property="ItemTemplate">
             <DataTemplate x:DataType="atom:IRadioButtonOption">

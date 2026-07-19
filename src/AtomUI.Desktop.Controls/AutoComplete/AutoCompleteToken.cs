@@ -45,5 +45,4 @@ internal class AutoCompleteToken : AbstractControlDesignToken
         MaxPopupWidth       = 200;
     }
     
-    protected override Type GetTokenKindType() => typeof(AutoCompleteTokenKind);
 }

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SplitterThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Splitter}" TargetType="atom:Splitter">
         <Setter Property="Template">
@@ -26,6 +29,6 @@
         <Setter Property="ClipToBounds" Value="True" />
         <Setter Property="HandleSize" Value="{atom:SplitterTokenResource SplitBarHandleSize}" />
         <Setter Property="LineThickness" Value="{atom:SplitterTokenResource HandleLineThickness}" />
-        <Setter Property="LineCornerRadius" Value="{atom:SplitterTokenSharedTokenResource BorderRadiusXS}" />
+        <Setter Property="LineCornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
     </ControlTheme>
 </ResourceDictionary>

@@ -75,7 +75,8 @@ internal static class ThemeDocumentReader
                 "The theme definition is not well-formed XML.");
         }
 
-        if (diagnostics.Any(static diagnostic => diagnostic.Severity == ThemeDiagnosticSeverity.Error))
+        if (diagnostics.Any(static diagnostic =>
+                diagnostic.Severity == ThemeDefinitionDiagnosticSeverity.Error))
         {
             return new ThemeDocumentReadResult(null, diagnostics);
         }
@@ -85,7 +86,7 @@ internal static class ThemeDocumentReader
         {
             diagnostics.Add(new ThemeDefinitionDiagnostic(
                                 MalformedXmlCode,
-                                ThemeDiagnosticSeverity.Error,
+                                ThemeDefinitionDiagnosticSeverity.Error,
                                 source,
                                 0,
                                 0,
@@ -117,8 +118,8 @@ internal static class ThemeDocumentReader
             diagnostics.Add(new ThemeDefinitionDiagnostic(
                                 SchemaValidationCode,
                                 args.Severity == XmlSeverityType.Warning
-                                    ? ThemeDiagnosticSeverity.Warning
-                                    : ThemeDiagnosticSeverity.Error,
+                                    ? ThemeDefinitionDiagnosticSeverity.Warning
+                                    : ThemeDefinitionDiagnosticSeverity.Error,
                                 source,
                                 exception?.LineNumber ?? 0,
                                 exception?.LinePosition ?? 0,
@@ -180,7 +181,7 @@ internal static class ThemeDocumentReader
             null,
             [new ThemeDefinitionDiagnostic(
                 code,
-                ThemeDiagnosticSeverity.Error,
+                ThemeDefinitionDiagnosticSeverity.Error,
                 source,
                 line,
                 column,

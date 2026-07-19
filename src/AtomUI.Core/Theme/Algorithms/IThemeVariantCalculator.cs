@@ -1,6 +1,4 @@
-﻿using AtomUI.Theme.Algorithms;
-
-namespace AtomUI.Theme.Styling;
+﻿namespace AtomUI.Theme.Algorithms;
 
 public interface IThemeVariantCalculator : IThemeAlgorithm
 {

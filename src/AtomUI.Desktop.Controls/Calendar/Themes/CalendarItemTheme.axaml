@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:CalendarThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <atom:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
@@ -15,7 +18,7 @@
                         LastChildFill="True">
                         <Grid Name="PART_HeaderLayout"
                               ColumnDefinitions="Auto, Auto, *, Auto, Auto"
-                              MinHeight="{atom:CalendarTokenSharedTokenResource ControlHeight}"
+                              MinHeight="{atom:SharedTokenResource ControlHeight}"
                               DockPanel.Dock="Top">
                             <atom:IconButton
                                 Name="PART_PreviousButton"
@@ -97,18 +100,18 @@
 
         <Style Selector="^ /template/ atom|IconButton">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="IconWidth" Value="{atom:CalendarTokenSharedTokenResource IconSizeSM}" />
-            <Setter Property="IconHeight" Value="{atom:CalendarTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="IconBrush"
-                    Value="{atom:CalendarTokenSharedTokenResource ColorTextDescription}" />
+                    Value="{atom:SharedTokenResource ColorTextDescription}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconButton:pointerover">
-            <Setter Property="IconBrush" Value="{atom:CalendarTokenSharedTokenResource ColorText}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorText}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconButton:pressed">
-            <Setter Property="IconBrush" Value="{atom:CalendarTokenSharedTokenResource ColorText}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorText}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -2,21 +2,15 @@
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 
-namespace AtomUI.Theme.Styling;
+namespace AtomUI.Theme.Algorithms;
 
 public abstract class AbstractThemeVariantCalculator : IThemeVariantCalculator
 {
-    protected IThemeVariantCalculator? _compositeGenerator;
     protected Color _colorBgBase;
     protected Color _colorTextBase;
 
     public Color ColorBgBase => _colorBgBase;
     public Color ColorTextBase => _colorTextBase;
-
-    protected AbstractThemeVariantCalculator(IThemeVariantCalculator? calculator)
-    {
-        _compositeGenerator = calculator;
-    }
 
     protected virtual ColorMap GenerateColorPalettes(Color baseColor)
     {
@@ -27,7 +21,7 @@ public abstract class AbstractThemeVariantCalculator : IThemeVariantCalculator
     {
     }
 
-    public abstract void Calculate(DesignToken designToken);
+    public abstract void Evaluate(DesignToken effectiveSeed, DesignToken? previousMap, DesignToken nextMap);
 
     protected void CalculateColorMapTokenValues(DesignToken designToken)
     {

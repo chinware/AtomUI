@@ -13,15 +13,12 @@ namespace AtomUI.Core.Tests.Theme;
 public class ThemeGeneratedDescriptorContractTests
 {
     [Fact]
-    public void Descriptor_Registration_Preserves_Identity_And_Uses_Direct_Factory()
+    public void Descriptor_Preserves_Identity_And_Uses_Direct_Factory()
     {
         var descriptor = Control("Button", "Height");
-        var registration = new ControlTokenRegistration(descriptor);
 
-        registration.Descriptor.ShouldBeSameAs(descriptor);
-        registration.TryGetIdentity(out var identity).ShouldBeTrue();
-        identity.ShouldBe(descriptor.Identity);
-        registration.Activate().ShouldBeOfType<SchemaControlToken>();
+        descriptor.Identity.ShouldBe(new ControlTokenIdentity("AtomUI", "Button"));
+        descriptor.CreateBuilder().ShouldBeOfType<SchemaControlToken>();
     }
 
     [Fact]
@@ -67,28 +64,34 @@ public class ThemeGeneratedDescriptorContractTests
         boundButton.ShouldNotBeSameAs(button);
 
         var builder = boundButton!.CreateBuilder().ShouldBeOfType<SchemaControlToken>();
-        boundButton.Evaluate(builder, isDark: true);
-        builder.WasEvaluatedAsDark.ShouldBeTrue();
+        boundButton.Evaluate(builder, ThemeAppearance.Dark);
+        builder.EvaluatedAppearance.ShouldBe(ThemeAppearance.Dark);
     }
 
     [Fact]
-    public void Algorithm_Descriptor_Validates_Base_Requirements_Before_Aot_Factory_Invocation()
+    public void Algorithm_Descriptor_Uses_Revisioned_Independent_Factory_And_Exact_Evaluate_Contract()
     {
-        var defaultDescriptor = new ThemeAlgorithmDescriptor(
+        var descriptor = new ThemeAlgorithmDescriptor(
             "Default",
+            revision: 3,
+            ThemeAppearanceEffect.Light,
+            static () => new SchemaAlgorithm());
+        var effectiveSeed = new DesignToken();
+        var previousMap = new DesignToken();
+        var nextMap = new DesignToken();
+
+        var algorithm = descriptor.Create().ShouldBeOfType<SchemaAlgorithm>();
+        algorithm.Evaluate(effectiveSeed, previousMap, nextMap);
+
+        descriptor.Revision.ShouldBe(3);
+        algorithm.EffectiveSeed.ShouldBeSameAs(effectiveSeed);
+        algorithm.PreviousMap.ShouldBeSameAs(previousMap);
+        algorithm.NextMap.ShouldBeSameAs(nextMap);
+        Should.Throw<ArgumentOutOfRangeException>(() => new ThemeAlgorithmDescriptor(
+            "Invalid",
+            revision: 0,
             ThemeAppearanceEffect.Preserve,
-            requiresBase: false,
-            static _ => new SchemaAlgorithm());
-        var darkDescriptor = new ThemeAlgorithmDescriptor(
-            "Dark",
-            ThemeAppearanceEffect.Dark,
-            requiresBase: true,
-            static algorithm => new SchemaAlgorithm(algorithm));
-
-        var algorithm = defaultDescriptor.Create(null);
-
-        darkDescriptor.Create(algorithm).ShouldBeOfType<SchemaAlgorithm>().Base.ShouldBeSameAs(algorithm);
-        Should.Throw<InvalidOperationException>(() => darkDescriptor.Create(null));
+            static () => new SchemaAlgorithm()));
     }
 
     [Fact]
@@ -134,7 +137,7 @@ public class ThemeGeneratedDescriptorContractTests
             0,
             TokenStage.Control,
             typeof(double),
-            SchemaResourceKey.Scale,
+            $"{id}.{tokenName}",
             static value => ThemeTokenValueParser.Parse<double>(value),
             static value => ThemeTokenValueFormatter.Format((double)value!),
             static token => ((SchemaControlToken)token).Value,
@@ -144,7 +147,7 @@ public class ThemeGeneratedDescriptorContractTests
             new ControlTokenIdentity("AtomUI", id),
             [ownToken],
             static () => new SchemaControlToken(),
-            static (token, isDark) => ((SchemaControlToken)token).WasEvaluatedAsDark = isDark);
+            static (token, appearance) => ((SchemaControlToken)token).EvaluatedAppearance = appearance);
     }
 
     private enum SchemaResourceKey
@@ -165,24 +168,20 @@ public class ThemeGeneratedDescriptorContractTests
         }
 
         public double Value { get; set; }
-        public bool WasEvaluatedAsDark { get; set; }
-
-        protected override Type GetTokenKindType() => typeof(SchemaResourceKey);
+        public ThemeAppearance EvaluatedAppearance { get; set; }
     }
 
     private sealed class SchemaAlgorithm : IThemeAlgorithm
     {
-        public SchemaAlgorithm(IThemeAlgorithm? algorithm = null)
-        {
-            Base = algorithm;
-        }
+        public DesignToken? EffectiveSeed { get; private set; }
+        public DesignToken? PreviousMap { get; private set; }
+        public DesignToken? NextMap { get; private set; }
 
-        public IThemeAlgorithm? Base { get; }
-        public Color ColorBgBase => default;
-        public Color ColorTextBase => default;
-
-        public void Calculate(DesignToken designToken)
+        public void Evaluate(DesignToken effectiveSeed, DesignToken? previousMap, DesignToken nextMap)
         {
+            EffectiveSeed = effectiveSeed;
+            PreviousMap   = previousMap;
+            NextMap       = nextMap;
         }
     }
 }

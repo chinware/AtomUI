@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:UploadThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:UploadPictureShapeList}" TargetType="atom:UploadPictureShapeList">
         <Setter Property="Template">
@@ -20,8 +23,8 @@
         
         <Setter Property="ItemsPanel">
             <ItemsPanelTemplate>
-                <WrapPanel LineSpacing="{atom:UploadTokenSharedTokenResource SpacingXS}"
-                           ItemSpacing="{atom:UploadTokenSharedTokenResource SpacingXS}"/>
+                <WrapPanel LineSpacing="{atom:SharedTokenResource SpacingXS}"
+                           ItemSpacing="{atom:SharedTokenResource SpacingXS}"/>
             </ItemsPanelTemplate>
         </Setter>
     </ControlTheme>

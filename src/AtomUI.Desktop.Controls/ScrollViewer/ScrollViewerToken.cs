@@ -82,5 +82,4 @@ internal class ScrollViewerToken : AbstractControlDesignToken
         ScrollBarContentVPadding = new Thickness(0d, SharedToken.UniformlyPaddingXXS);
     }
     
-    protected override Type GetTokenKindType() => typeof(ScrollViewerTokenKind);
 }

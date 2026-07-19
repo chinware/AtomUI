@@ -33,5 +33,4 @@ internal class StatisticToken : AbstractControlDesignToken
         ContentFontSize = SharedToken.FontSizeHeading3;
     }
     
-    protected override Type GetTokenKindType() => typeof(StatisticTokenKind);
 }

@@ -38,5 +38,4 @@ internal class InfoPickerInputToken : AbstractControlDesignToken
         RangeMarginToAnchor           = SharedToken.UniformlyMarginXS;
     }
     
-    protected override Type GetTokenKindType() => typeof(InfoPickerInputTokenKind);
 }

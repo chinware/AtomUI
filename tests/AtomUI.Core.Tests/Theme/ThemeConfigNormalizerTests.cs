@@ -15,20 +15,16 @@ public class ThemeConfigNormalizerTests
     public void Normalize_Captures_Typed_Values_And_Classifies_Control_Tokens()
     {
         var schema = ThemeConfigTestSchema.Create();
-        var input = new ThemeConfig
-        {
-            Algorithms = ["Default"]
-        };
-        input.Tokens["Alpha"] = "1.5";
-        input.Controls[ThemeConfigTestSchema.ButtonIdentity] = new ControlThemeConfig
-        {
-            Algorithm = ControlAlgorithmMode.Global,
-            Tokens =
-            {
-                ["Alpha"] = "2.5",
-                ["Height"] = "32"
-            }
-        };
+        var buttonConfig = new ControlThemeConfigBuilder()
+                           .WithAlgorithm(ControlAlgorithmMode.Global)
+                           .WithToken("Alpha", "2.5")
+                           .WithToken("Height", "32")
+                           .Build();
+        var input = new ThemeConfigBuilder()
+                    .WithAlgorithms("Default")
+                    .WithToken("Alpha", "1.5")
+                    .WithControl(ThemeConfigTestSchema.ButtonIdentity, buttonConfig)
+                    .Build();
 
         var result = ThemeConfigNormalizer.Normalize(input, schema);
 
@@ -45,22 +41,19 @@ public class ThemeConfigNormalizerTests
     }
 
     [Fact]
-    public void Normalize_Captures_Input_And_Produces_Order_And_Culture_Independent_Fingerprint()
+    public void Normalize_Produces_Order_And_Culture_Independent_Fingerprint()
     {
         var schema = ThemeConfigTestSchema.Create();
-        var first = new ThemeConfig
-        {
-            Algorithms = ["Default", "Compact"]
-        };
-        first.Tokens["Beta"] = "2.50";
-        first.Tokens["Alpha"] = "1.50";
-
-        var second = new ThemeConfig
-        {
-            Algorithms = ["Default", "Compact"]
-        };
-        second.Tokens["Alpha"] = "1.5";
-        second.Tokens["Beta"] = "2.5";
+        var first = new ThemeConfigBuilder()
+                    .WithAlgorithms("Default", "Compact")
+                    .WithToken("Beta", "2.50")
+                    .WithToken("Alpha", "1.50")
+                    .Build();
+        var second = new ThemeConfigBuilder()
+                     .WithAlgorithms("Default", "Compact")
+                     .WithToken("Alpha", "1.5")
+                     .WithToken("Beta", "2.5")
+                     .Build();
 
         NormalizedThemeConfig firstNormalized;
         using (new CultureScope("fr-FR"))
@@ -71,28 +64,25 @@ public class ThemeConfigNormalizerTests
         var secondNormalized = ThemeConfigNormalizer.Normalize(second, schema).Config.ShouldNotBeNull();
         firstNormalized.ShouldBe(secondNormalized);
         firstNormalized.Fingerprint.ShouldBe(secondNormalized.Fingerprint);
-
-        first.Tokens["Alpha"] = "99";
-        first.Algorithms![0] = "Compact";
-        firstNormalized.GlobalTokens.Single(item => item.Descriptor.Name == "Alpha").Value.ShouldBe(1.5d);
-        firstNormalized.Algorithms[0].Id.ShouldBe("Default");
     }
 
     [Fact]
     public void Normalize_Returns_Diagnostics_Without_Publishing_Partial_Config()
     {
         var schema = ThemeConfigTestSchema.Create();
-        var input = new ThemeConfig
-        {
-            Algorithms = ["Unknown"]
-        };
-        input.Tokens["Alpha"] = "not-a-number";
-        input.Tokens["Missing"] = "1";
-        input.Controls[new ControlTokenIdentity("AtomUI", "Missing")] = new ControlThemeConfig();
-        input.Controls[ThemeConfigTestSchema.ButtonIdentity] = new ControlThemeConfig
-        {
-            Algorithm = ControlAlgorithmMode.Custom
-        };
+        var input = new ThemeConfigBuilder()
+                    .WithAlgorithms("Unknown")
+                    .WithToken("Alpha", "not-a-number")
+                    .WithToken("Missing", "1")
+                    .WithControl(
+                        new ControlTokenIdentity("AtomUI", "Missing"),
+                        new ControlThemeConfigBuilder().Build())
+                    .WithControl(
+                        ThemeConfigTestSchema.ButtonIdentity,
+                        new ControlThemeConfigBuilder()
+                            .WithAlgorithm(ControlAlgorithmMode.Custom)
+                            .Build())
+                    .Build();
 
         var result = ThemeConfigNormalizer.Normalize(input, schema);
 
@@ -103,6 +93,21 @@ public class ThemeConfigNormalizerTests
         result.Diagnostics.Select(static item => item.Code).ShouldContain("ATMTHM4004");
         result.Diagnostics.Select(static item => item.Code).ShouldContain("ATMTHM4005");
         result.Diagnostics.Select(static item => item.Code).ShouldContain("ATMTHM4006");
+    }
+
+    [Fact]
+    public void Normalize_Fingerprint_Changes_With_Algorithm_Revision()
+    {
+        var config = new ThemeConfigBuilder()
+                     .WithAlgorithms("Default")
+                     .Build();
+
+        var first = ThemeConfigNormalizer.Normalize(config, ThemeConfigTestSchema.Create()).Config.ShouldNotBeNull();
+        var changed = ThemeConfigNormalizer.Normalize(
+            config,
+            ThemeConfigTestSchema.Create(defaultAlgorithmRevision: 2)).Config.ShouldNotBeNull();
+
+        changed.Fingerprint.ShouldNotBe(first.Fingerprint);
     }
 
     private sealed class CultureScope : IDisposable
@@ -128,7 +133,7 @@ internal static class ThemeConfigTestSchema
 {
     internal static readonly ControlTokenIdentity ButtonIdentity = new("AtomUI", "Button");
 
-    internal static ThemeSchemaRegistry Create()
+    internal static ThemeSchemaRegistry Create(int defaultAlgorithmRevision = 1)
     {
         var globalTokens = new[]
         {
@@ -149,14 +154,14 @@ internal static class ThemeConfigTestSchema
         {
             new ThemeAlgorithmDescriptor(
                 "Compact",
+                revision: 1,
                 ThemeAppearanceEffect.Preserve,
-                false,
-                static _ => new TestAlgorithm()),
+                static () => new TestAlgorithm()),
             new ThemeAlgorithmDescriptor(
                 "Default",
-                ThemeAppearanceEffect.Preserve,
-                false,
-                static _ => new TestAlgorithm())
+                revision: defaultAlgorithmRevision,
+                ThemeAppearanceEffect.Light,
+                static () => new TestAlgorithm())
         };
         return new ThemeSchemaRegistry(globalTokens, [control], algorithms);
     }
@@ -187,16 +192,11 @@ internal static class ThemeConfigTestSchema
             : base("Button")
         {
         }
-
-        protected override Type GetTokenKindType() => typeof(TestTokenKind);
     }
 
     private sealed class TestAlgorithm : IThemeAlgorithm
     {
-        public Color ColorBgBase => default;
-        public Color ColorTextBase => default;
-
-        public void Calculate(DesignToken designToken)
+        public void Evaluate(DesignToken effectiveSeed, DesignToken? previousMap, DesignToken nextMap)
         {
         }
     }

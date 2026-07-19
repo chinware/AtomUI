@@ -3,7 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DataGridThemeAsset.Identity}">
     <ControlTheme x:Key="{x:Type atom:DataGridSortIndicator}" TargetType="atom:DataGridSortIndicator">
         <Setter Property="Template">
             <ControlTemplate>
@@ -36,7 +39,7 @@
         <Style Selector="^[CurrentSortDirection=Ascending]">
             <Style Selector="^ /template/ atom|Icon#PART_Ascending">
                 <Setter Property="StrokeBrush"
-                        Value="{atom:DataGridTokenSharedTokenResource ColorPrimary}" />
+                        Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
         <Style Selector="^:not(^[CurrentSortDirection=Ascending])">
@@ -55,7 +58,7 @@
         <Style Selector="^[CurrentSortDirection=Descending]">
             <Style Selector="^ /template/ atom|Icon#PART_Descending">
                 <Setter Property="StrokeBrush"
-                        Value="{atom:DataGridTokenSharedTokenResource ColorPrimary}" />
+                        Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
         <Style Selector="^:not(^[CurrentSortDirection=Descending])">

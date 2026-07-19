@@ -31,5 +31,4 @@ internal class ShowCasePanelToken : AbstractControlDesignToken
         RowGap        = SharedToken.SizeUnit * 4;
     }
 
-    protected override Type GetTokenKindType() => typeof(ShowCasePanelTokenKind);
 }

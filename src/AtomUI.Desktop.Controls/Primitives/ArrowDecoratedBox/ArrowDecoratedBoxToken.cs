@@ -46,5 +46,4 @@ internal class ArrowDecoratedBoxToken : AbstractControlDesignToken
         ArrowStrokeThickness = 1;
     }
 
-    protected override Type GetTokenKindType() => typeof(ArrowDecoratedBoxTokenKind);
 }

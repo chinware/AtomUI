@@ -11,34 +11,30 @@ public enum ThemeAppearanceEffect : byte
 
 public sealed class ThemeAlgorithmDescriptor
 {
-    private readonly Func<IThemeAlgorithm?, IThemeAlgorithm> _factory;
+    private readonly Func<IThemeAlgorithm> _factory;
 
     public ThemeAlgorithmDescriptor(
         string id,
+        int revision,
         ThemeAppearanceEffect appearanceEffect,
-        bool requiresBase,
-        Func<IThemeAlgorithm?, IThemeAlgorithm> factory)
+        Func<IThemeAlgorithm> factory)
     {
         SchemaIdentifier.Validate(id, nameof(id));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(revision);
         ArgumentNullException.ThrowIfNull(factory);
         Id               = id;
+        Revision         = revision;
         AppearanceEffect = appearanceEffect;
-        RequiresBase     = requiresBase;
         _factory         = factory;
     }
 
     public string Id { get; }
+    public int Revision { get; }
     public ThemeAppearanceEffect AppearanceEffect { get; }
-    public bool RequiresBase { get; }
 
-    public IThemeAlgorithm Create(IThemeAlgorithm? baseAlgorithm)
+    public IThemeAlgorithm Create()
     {
-        if (RequiresBase && baseAlgorithm is null)
-        {
-            throw new InvalidOperationException($"Theme algorithm '{Id}' requires a base algorithm.");
-        }
-
-        return _factory(baseAlgorithm) ??
+        return _factory() ??
                throw new InvalidOperationException($"Theme algorithm '{Id}' factory returned null.");
     }
 }

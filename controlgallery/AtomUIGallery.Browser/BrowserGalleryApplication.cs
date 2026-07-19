@@ -16,7 +16,7 @@ public class BrowserGalleryApplication : Application
         this.UseAtomUI(builder =>
         {
             builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
-            builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
+            builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseAlibabaPuHuiTiFont();
             builder.WithDefaultFontFamily(FontFamily.Parse(

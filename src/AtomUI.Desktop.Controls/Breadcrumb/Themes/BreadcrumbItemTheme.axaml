@@ -1,7 +1,10 @@
 ﻿<ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:BreadcrumbThemeAsset.Identity}">
     <ControlTheme x:Key="{x:Type atom:BreadcrumbItem}" TargetType="atom:BreadcrumbItem">
         <Setter Property="Template">
             <ControlTemplate>
@@ -10,7 +13,7 @@
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Padding="{TemplateBinding Padding}"
                             Background="{TemplateBinding Background}">
-                        <StackPanel Orientation="Horizontal" Spacing="{atom:BreadcrumbTokenSharedTokenResource SpacingXXS}">
+                        <StackPanel Orientation="Horizontal" Spacing="{atom:SharedTokenResource SpacingXXS}">
                             <atom:IconPresenter Name="IconPresenter"
                                                  Icon="{TemplateBinding Icon}"
                                                  IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -32,7 +35,7 @@
         </Setter>
         
         <Setter Property="Padding" Value="{atom:BreadcrumbTokenResource BreadcrumbItemContentPadding}"/>
-        <Setter Property="CornerRadius" Value="{atom:BreadcrumbTokenSharedTokenResource BorderRadius}"/>
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{atom:BreadcrumbTokenResource ItemColor}"/>
         
@@ -61,9 +64,9 @@
             <Setter Property="IconBrush"
                     Value="{atom:BreadcrumbTokenResource ItemColor}" />
             <Setter Property="Width"
-                    Value="{atom:BreadcrumbTokenSharedTokenResource IconSizeSM}" />
+                    Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="Height"
-                    Value="{atom:BreadcrumbTokenSharedTokenResource IconSizeSM}" />
+                    Value="{atom:SharedTokenResource IconSizeSM}" />
         </Style>
         
 

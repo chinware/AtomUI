@@ -16,22 +16,8 @@ public class DesktopControlsWindowOverlayThemeScopeMigrationTests
         "src/AtomUI.Desktop.Controls/WindowTitleBar"
     ];
 
-    private static readonly (string Directory, string[] Extensions)[] ThemeDirectories =
-    [
-        ("src/AtomUI.Desktop.Controls/AdornerLayer/Themes", ["AdornerLayerTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Dialog/Themes", ["DialogTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Drawer/Themes", ["DrawerTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Flyouts/Themes", [
-            "FlyoutHostTokenSharedTokenResource",
-            "TreeFlyoutTokenSharedTokenResource"
-        ]),
-        ("src/AtomUI.Desktop.Controls/Popup/Themes", ["PopupHostTokenSharedTokenResource"]),
-        ("src/AtomUI.Desktop.Controls/Window/Themes", [
-            "WindowTokenSharedTokenResource",
-            "WindowTitleBarTokenSharedTokenResource"
-        ]),
-        ("src/AtomUI.Desktop.Controls/WindowTitleBar/Themes", ["WindowTitleBarTokenSharedTokenResource"])
-    ];
+    private static readonly string[] ThemeDirectories =
+        ControlDirectories.Select(static directory => $"{directory}/Themes").ToArray();
 
     [Fact]
     public void WindowOverlay_Controls_Remove_Legacy_Token_Scope_Registration()
@@ -55,28 +41,11 @@ public class DesktopControlsWindowOverlayThemeScopeMigrationTests
     }
 
     [Fact]
-    public void WindowOverlay_Component_Themes_Use_Component_Shared_Token_Resources()
+    public void WindowOverlay_Control_Themes_Use_Ambient_Shared_Token_Scopes()
     {
-        foreach (var (relativeDirectory, componentResourceExtensions) in ThemeDirectories)
+        foreach (var relativeDirectory in ThemeDirectories)
         {
-            var themeFiles = Directory.GetFiles(
-                GetRepoFile(relativeDirectory),
-                "*.axaml",
-                SearchOption.AllDirectories);
-
-            themeFiles.ShouldNotBeEmpty();
-
-            foreach (var componentResourceExtension in componentResourceExtensions)
-            {
-                themeFiles.ShouldContain(file =>
-                    File.ReadAllText(file).Contains(componentResourceExtension, StringComparison.Ordinal));
-            }
-
-            foreach (var themeFile in themeFiles)
-            {
-                File.ReadAllText(themeFile)
-                    .ShouldNotContain("{atom:SharedTokenResource ");
-            }
+            ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(relativeDirectory);
         }
     }
 

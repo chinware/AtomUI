@@ -14,5 +14,4 @@ internal class NumericUpDownToken : ButtonSpinnerToken
     {
     }
     
-    protected override Type GetTokenKindType() => typeof(NumericUpDownTokenKind);
 }

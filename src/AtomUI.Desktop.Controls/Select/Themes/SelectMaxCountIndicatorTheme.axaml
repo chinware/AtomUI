@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SelectThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SelectMaxCountIndicator}" TargetType="atom:SelectMaxCountIndicator">
         <Setter Property="Template">
@@ -10,6 +13,6 @@
             </ControlTemplate>
         </Setter>
 
-        <Setter Property="Foreground" Value="{atom:SelectTokenSharedTokenResource ColorTextDescription}"/>
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}"/>
     </ControlTheme>
 </ResourceDictionary>

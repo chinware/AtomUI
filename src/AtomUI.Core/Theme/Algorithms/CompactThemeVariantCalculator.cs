@@ -1,33 +1,37 @@
-﻿using AtomUI.Theme.Algorithms;
-using AtomUI.Theme.Schema;
+﻿using AtomUI.Theme.Schema;
 using AtomUI.Theme.TokenSystem;
+using Avalonia.Media;
 
-namespace AtomUI.Theme.Styling;
+namespace AtomUI.Theme.Algorithms;
 
-[ThemeAlgorithmAttribute("Compact", ThemeAppearanceEffect.Preserve)]
+[ThemeAlgorithmAttribute("Compact", 1, ThemeAppearanceEffect.Preserve)]
 public class CompactThemeVariantCalculator : AbstractThemeVariantCalculator
 {
     public const ThemeAlgorithm Algorithm = ThemeAlgorithm.Compact;
 
-    public CompactThemeVariantCalculator(IThemeVariantCalculator calculator)
-        : base(calculator)
+    public CompactThemeVariantCalculator()
     {
     }
 
-    public override void Calculate(DesignToken designToken)
+    public override void Evaluate(DesignToken effectiveSeed, DesignToken? previousMap, DesignToken nextMap)
     {
-        _compositeGenerator!.Calculate(designToken);
+        ArgumentNullException.ThrowIfNull(effectiveSeed);
+        ArgumentNullException.ThrowIfNull(nextMap);
+        if (previousMap is null)
+        {
+            new DefaultThemeVariantCalculator().Evaluate(effectiveSeed, null, nextMap);
+        }
 
-        _colorBgBase   = _compositeGenerator.ColorBgBase;
-        _colorTextBase = _compositeGenerator.ColorTextBase;
+        _colorBgBase   = nextMap.ColorBgBase ?? Color.FromRgb(255, 255, 255);
+        _colorTextBase = nextMap.ColorTextBase ?? Color.FromRgb(0, 0, 0);
         
-        var controlHeight = designToken.ControlHeight - 4;
+        var controlHeight = nextMap.ControlHeight - 4;
 
-        CalculateCompactSizeMapTokenValues(designToken);
-        CalculatorUtils.CalculateFontMapTokenValues(designToken);
+        CalculateCompactSizeMapTokenValues(nextMap);
+        CalculatorUtils.CalculateFontMapTokenValues(nextMap);
 
-        designToken.ControlHeight = controlHeight;
-        CalculatorUtils.CalculateControlHeightMapTokenValues(designToken);
+        nextMap.ControlHeight = controlHeight;
+        CalculatorUtils.CalculateControlHeightMapTokenValues(nextMap);
     }
 
     private void CalculateCompactSizeMapTokenValues(DesignToken designToken)

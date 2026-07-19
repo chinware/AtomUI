@@ -26,26 +26,8 @@ public class DesktopControlsDataDisplayThemeScopeMigrationTests
         "src/AtomUI.Desktop.Controls/TreeView"
     ];
 
-    private static readonly (string Directory, string Extension)[] ThemeDirectories =
-    [
-        ("src/AtomUI.Desktop.Controls/Avatar/Themes", "AvatarTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Badge/Themes", "BadgeTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Calendar/Themes", "CalendarTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Card/Themes", "CardTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Carousel/Themes", "CarouselTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Descriptions/Themes", "DescriptionsTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Empty/Themes", "EmptyTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Expander/Themes", "ExpanderTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/ImagePreviewer/Themes", "ImagePreviewerTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/ListBox/Themes", "ListBoxTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/ListView/Themes", "ListViewTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/QRCode/Themes", "QRCodeTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Segmented/Themes", "SegmentedTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Statistic/Themes", "StatisticTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Tag/Themes", "TagTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/Timeline/Themes", "TimelineTokenSharedTokenResource"),
-        ("src/AtomUI.Desktop.Controls/TreeView/Themes", "TreeViewTokenSharedTokenResource")
-    ];
+    private static readonly string[] ThemeDirectories =
+        ControlDirectories.Select(static directory => $"{directory}/Themes").ToArray();
 
     [Fact]
     public void DataDisplay_Controls_Remove_Legacy_Token_Scope_Registration()
@@ -69,24 +51,11 @@ public class DesktopControlsDataDisplayThemeScopeMigrationTests
     }
 
     [Fact]
-    public void DataDisplay_Component_Themes_Use_Component_Shared_Token_Resources()
+    public void DataDisplay_Control_Themes_Use_Ambient_Shared_Token_Scopes()
     {
-        foreach (var (relativeDirectory, componentResourceExtension) in ThemeDirectories)
+        foreach (var relativeDirectory in ThemeDirectories)
         {
-            var themeFiles = Directory.GetFiles(
-                GetRepoFile(relativeDirectory),
-                "*.axaml",
-                SearchOption.AllDirectories);
-
-            themeFiles.ShouldNotBeEmpty();
-            themeFiles.ShouldContain(file =>
-                File.ReadAllText(file).Contains(componentResourceExtension, StringComparison.Ordinal));
-
-            foreach (var themeFile in themeFiles)
-            {
-                File.ReadAllText(themeFile)
-                    .ShouldNotContain("{atom:SharedTokenResource ");
-            }
+            ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(relativeDirectory);
         }
     }
 

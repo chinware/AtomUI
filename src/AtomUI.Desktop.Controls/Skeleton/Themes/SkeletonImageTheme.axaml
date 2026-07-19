@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SkeletonThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:Class="AtomUI.Desktop.Controls.Themes.SkeletonImageTheme"
     TargetType="atom:SkeletonImage"
@@ -34,7 +37,7 @@
     <Style Selector="^:is(atom|SkeletonImage)">
         <Setter Property="Height" Value="{atom:SkeletonTokenResource ImageContainerSize}" />
         <Setter Property="Width" Value="{atom:SkeletonTokenResource ImageContainerSize}" />
-        <Setter Property="CornerRadius" Value="{atom:SkeletonTokenSharedTokenResource BorderRadiusSM}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         <Setter Property="MaxWidth" Value="{atom:SkeletonTokenResource ImageContainerMaxSize}" />
         <Setter Property="MaxHeight" Value="{atom:SkeletonTokenResource ImageContainerMaxSize}" />
     

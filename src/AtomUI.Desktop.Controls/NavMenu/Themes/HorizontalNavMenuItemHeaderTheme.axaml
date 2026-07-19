@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:NavMenuThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
@@ -63,7 +66,7 @@
         </Setter>
 
         <Style Selector="^:is(atom|HorizontalNavMenuItemHeader)">
-            <Setter Property="FontSize" Value="{atom:NavMenuTokenSharedTokenResource FontSize}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
 
             <Style Selector="^[IsTopLevel=False]">
                 <Setter Property="Height" Value="{atom:NavMenuTokenResource ItemHeight}" />
@@ -116,7 +119,7 @@
 
                 <Style Selector="^:pointerover, ^[IsSubMenuOpen=True], ^[IsSelected=True], ^[IsInSelectedPath=True]">
                     <Setter Property="ActiveBarColor"
-                            Value="{atom:NavMenuTokenSharedTokenResource ColorPrimary}" />
+                            Value="{atom:SharedTokenResource ColorPrimary}" />
                 </Style>
 
                 <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">

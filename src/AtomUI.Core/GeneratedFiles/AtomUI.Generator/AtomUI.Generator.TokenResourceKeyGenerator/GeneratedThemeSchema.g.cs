@@ -1503,12 +1503,12 @@ internal static class GeneratedThemeSchema
 
     private static readonly ThemeAlgorithmDescriptor[] s_algorithms = new ThemeAlgorithmDescriptor[]
     {
-        new ThemeAlgorithmDescriptor("Compact", ThemeAppearanceEffect.Preserve, true,
-            static baseAlgorithm => new global::AtomUI.Theme.Styling.CompactThemeVariantCalculator((global::AtomUI.Theme.Styling.IThemeVariantCalculator)baseAlgorithm!)),
-        new ThemeAlgorithmDescriptor("Dark", ThemeAppearanceEffect.Dark, true,
-            static baseAlgorithm => new global::AtomUI.Theme.Styling.DarkThemeVariantCalculator((global::AtomUI.Theme.Styling.IThemeVariantCalculator)baseAlgorithm!)),
-        new ThemeAlgorithmDescriptor("Default", ThemeAppearanceEffect.Preserve, false,
-            static baseAlgorithm => new global::AtomUI.Theme.Styling.DefaultThemeVariantCalculator()),
+        new ThemeAlgorithmDescriptor("Compact", 1, ThemeAppearanceEffect.Preserve,
+            static () => new global::AtomUI.Theme.Algorithms.CompactThemeVariantCalculator()),
+        new ThemeAlgorithmDescriptor("Dark", 1, ThemeAppearanceEffect.Dark,
+            static () => new global::AtomUI.Theme.Algorithms.DarkThemeVariantCalculator()),
+        new ThemeAlgorithmDescriptor("Default", 1, ThemeAppearanceEffect.Light,
+            static () => new global::AtomUI.Theme.Algorithms.DefaultThemeVariantCalculator()),
     };
 
     internal static global::System.Collections.Generic.IReadOnlyList<TokenDescriptor> GetGlobalTokens() => s_globalTokens;

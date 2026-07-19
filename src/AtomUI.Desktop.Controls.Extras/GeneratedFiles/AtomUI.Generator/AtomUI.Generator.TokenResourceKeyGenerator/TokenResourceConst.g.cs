@@ -1,6 +1,5 @@
 ﻿using AtomUI.Theme.TokenSystem;
 using AtomUI.Theme;
-using AtomUI.Theme.Resources;
 using AtomUI.Theme.Styling;
 
 namespace AtomUI.Desktop.Controls.DesignTokens
@@ -37,13 +36,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SplashTokenResourceExtension(SplashTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class SplashTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public SplashTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "Splash", kind)
         {
         }
     }

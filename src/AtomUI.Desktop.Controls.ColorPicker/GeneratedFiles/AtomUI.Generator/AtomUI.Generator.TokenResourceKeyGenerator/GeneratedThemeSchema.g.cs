@@ -161,7 +161,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ColorPickerToken)token).TriggerTextMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.ColorPickerToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ColorPickerToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ColorPickerToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
     };
 
     private static readonly ThemeAlgorithmDescriptor[] s_algorithms = new ThemeAlgorithmDescriptor[]

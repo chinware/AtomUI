@@ -246,5 +246,4 @@ internal class CardToken : AbstractControlDesignToken
         CardActionsIconSize = SharedToken.FontSize;
     }
     
-    protected override Type GetTokenKindType() => typeof(CardTokenKind);
 }

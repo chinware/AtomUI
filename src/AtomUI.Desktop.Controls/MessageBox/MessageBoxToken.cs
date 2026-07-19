@@ -31,5 +31,4 @@ internal class MessageBoxToken : AbstractControlDesignToken
         MinWidth      = 410;
     }
 
-    protected override Type GetTokenKindType() => typeof(MessageBoxTokenKind);
 }

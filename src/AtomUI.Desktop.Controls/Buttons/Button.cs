@@ -3,10 +3,13 @@ using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Palette;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Compilation;
+using AtomUI.Theme.Algorithms;
+using AtomUI.Theme.Resources;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -451,6 +454,9 @@ public class Button : AvaloniaButton,
     #endregion
     
     private static readonly IBrush TransparentBrush = new ImmutableSolidColorBrush(Colors.Transparent);
+    private static readonly ThemeTokenResolver s_themeTokenResolver = new();
+    private static readonly AtomUI.Theme.Schema.ControlTokenIdentity s_buttonTokenIdentity =
+        new("AtomUI", ButtonToken.ID);
     private WaveSpiritDecorator? _waveSpiritDecorator;
     private IDisposable? _themeScopeSubscription;
 
@@ -552,8 +558,10 @@ public class Button : AvaloniaButton,
     {
         base.OnAttachedToLogicalTree(e);
         _themeScopeSubscription?.Dispose();
-        _themeScopeSubscription = this.GetObservable(ThemeScope.SnapshotProperty)
-                                      .Subscribe(_ => ConfigureVariantThemeVariables());
+        _themeScopeSubscription = s_themeTokenResolver.Subscribe(
+            this,
+            _ => ConfigureVariantThemeVariables());
+        ConfigureVariantThemeVariables();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -561,25 +569,6 @@ public class Button : AvaloniaButton,
         _themeScopeSubscription?.Dispose();
         _themeScopeSubscription = null;
         base.OnDetachedFromLogicalTree(e);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        if (ThemeManager.Current is not null)
-        {
-            ThemeManager.Current.ThemeChanged += HandleThemeChanged;
-        }
-        ConfigureVariantThemeVariables();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        if (ThemeManager.Current is not null)
-        {
-            ThemeManager.Current.ThemeChanged -= HandleThemeChanged;
-        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -652,11 +641,6 @@ public class Button : AvaloniaButton,
         {
             ConfigureEffectiveCornerRadius();
         }
-    }
-
-    private void HandleThemeChanged(object? sender, ThemeChangedEventArgs e)
-    {
-        ConfigureVariantThemeVariables();
     }
 
     private void HandlePressedChanged(AvaloniaPropertyChangedEventArgs change)
@@ -819,91 +803,91 @@ public class Button : AvaloniaButton,
 
     private void ConfigureVariantThemeVariables()
     {
-        var buttonToken = TokenFinderUtils.FindControlToken(this, ButtonToken.ID) as ButtonToken;
-        if (buttonToken is null)
+        if (!ButtonThemeTokenReader.TryCreate(this, out var tokens))
         {
             return;
         }
-        var sharedToken = buttonToken.AssignedSharedToken ?? TokenFinderUtils.FindSharedToken(this);
 
         if (EffectiveColor == ButtonColor.Default)
         {
-            ConfigureDefaultVariantThemeVariables(buttonToken, sharedToken);
+            ConfigureDefaultVariantThemeVariables(tokens);
         }
         else if (EffectiveColor == ButtonColor.Primary)
         {
             ConfigureSemanticVariantThemeVariables(
-                sharedToken.ColorPrimary,
-                sharedToken.ColorPrimaryHover,
-                sharedToken.ColorPrimaryActive,
-                sharedToken.ColorPrimaryBg,
-                sharedToken.ColorPrimaryBgHover,
-                sharedToken.ColorPrimaryBorder,
-                buttonToken.PrimaryColor,
-                buttonToken.PrimaryShadow);
+                tokens.Global<Color>(SharedTokenKind.ColorPrimary),
+                tokens.Global<Color>(SharedTokenKind.ColorPrimaryHover),
+                tokens.Global<Color>(SharedTokenKind.ColorPrimaryActive),
+                tokens.Global<Color>(SharedTokenKind.ColorPrimaryBg),
+                tokens.Global<Color>(SharedTokenKind.ColorPrimaryBgHover),
+                tokens.Global<Color>(SharedTokenKind.ColorPrimaryBorder),
+                tokens.Control<Color>(ButtonTokenKind.PrimaryColor),
+                tokens.Control<BoxShadows>(ButtonTokenKind.PrimaryShadow));
         }
         else if (EffectiveColor == ButtonColor.Danger)
         {
-            ConfigureDangerVariantThemeVariables(buttonToken, sharedToken);
+            ConfigureDangerVariantThemeVariables(tokens);
         }
         else if (TryGetPresetPrimaryColor(EffectiveColor, out var presetColor))
         {
-            var colorMap = sharedToken.GetColorPalette(presetColor);
-            if (colorMap is null)
-            {
-                return;
-            }
+            var palette = tokens.PresetPalette(presetColor);
+            var colors = palette.ColorSequence;
             ConfigureSemanticVariantThemeVariables(
-                colorMap.Color6,
-                colorMap.Color5,
-                colorMap.Color7,
-                colorMap.Color1,
-                colorMap.Color2,
-                colorMap.Color3,
-                buttonToken.SolidTextColor,
-                CreatePresetShadow(sharedToken, colorMap.Color1));
+                colors[5],
+                colors[4],
+                colors[6],
+                colors[0],
+                colors[1],
+                colors[2],
+                tokens.Control<Color>(ButtonTokenKind.SolidTextColor),
+                CreatePresetShadow(tokens, colors[0]));
         }
     }
 
-    private void ConfigureDangerVariantThemeVariables(ButtonToken buttonToken, DesignToken sharedToken)
+    private void ConfigureDangerVariantThemeVariables(ButtonThemeTokenReader tokens)
     {
+        var dangerColor = tokens.Control<Color>(ButtonTokenKind.DangerColor);
+        var dangerShadow = tokens.Control<BoxShadows>(ButtonTokenKind.DangerShadow);
+        var colorError = tokens.Global<Color>(SharedTokenKind.ColorError);
+        var colorErrorHover = tokens.Global<Color>(SharedTokenKind.ColorErrorHover);
+        var colorErrorActive = tokens.Global<Color>(SharedTokenKind.ColorErrorActive);
         switch (EffectiveVariant)
         {
             case ButtonVariant.Solid:
                 SetVariantThemeVariables(
-                    buttonToken.DangerColor,
-                    buttonToken.DangerColor,
-                    buttonToken.DangerColor,
-                    sharedToken.ColorError,
-                    sharedToken.ColorErrorHover,
-                    sharedToken.ColorErrorActive,
-                    sharedToken.ColorError,
-                    sharedToken.ColorErrorHover,
-                    sharedToken.ColorErrorActive,
-                    EffectiveIsGhost ? new BoxShadows() : buttonToken.DangerShadow);
+                    dangerColor,
+                    dangerColor,
+                    dangerColor,
+                    colorError,
+                    colorErrorHover,
+                    colorErrorActive,
+                    colorError,
+                    colorErrorHover,
+                    colorErrorActive,
+                    EffectiveIsGhost ? new BoxShadows() : dangerShadow);
                 break;
             case ButtonVariant.Outlined:
             case ButtonVariant.Dashed:
                 SetVariantThemeVariables(
-                    sharedToken.ColorError,
-                    sharedToken.ColorErrorBorderHover,
-                    sharedToken.ColorErrorActive,
-                    EffectiveIsGhost ? Colors.Transparent : buttonToken.DefaultBg,
-                    EffectiveIsGhost ? Colors.Transparent : buttonToken.DefaultHoverBg,
-                    EffectiveIsGhost ? Colors.Transparent : buttonToken.DefaultActiveBg,
-                    sharedToken.ColorError,
-                    sharedToken.ColorErrorBorderHover,
-                    sharedToken.ColorErrorActive,
-                    EffectiveIsGhost ? new BoxShadows() : buttonToken.DangerShadow);
+                    colorError,
+                    tokens.Global<Color>(SharedTokenKind.ColorErrorBorderHover),
+                    colorErrorActive,
+                    EffectiveIsGhost ? Colors.Transparent : tokens.Control<Color>(ButtonTokenKind.DefaultBg),
+                    EffectiveIsGhost ? Colors.Transparent : tokens.Control<Color>(ButtonTokenKind.DefaultHoverBg),
+                    EffectiveIsGhost ? Colors.Transparent : tokens.Control<Color>(ButtonTokenKind.DefaultActiveBg),
+                    colorError,
+                    tokens.Global<Color>(SharedTokenKind.ColorErrorBorderHover),
+                    colorErrorActive,
+                    EffectiveIsGhost ? new BoxShadows() : dangerShadow);
                 break;
             case ButtonVariant.Filled:
                 SetVariantThemeVariables(
-                    sharedToken.ColorError,
-                    sharedToken.ColorError,
-                    sharedToken.ColorError,
-                    sharedToken.ColorErrorBg,
-                    sharedToken.ColorErrorBgHover,
-                    sharedToken.ColorErrorBgActive,
+                    colorError,
+                    colorError,
+                    colorError,
+                    tokens.Global<Color>(SharedTokenKind.ColorErrorBg),
+                    tokens.Global<Color>(SharedTokenKind.ColorErrorBgHover),
+                    tokens.Global<Color>(SharedTokenKind.ColorErrorBgActive),
                     Colors.Transparent,
                     Colors.Transparent,
                     Colors.Transparent,
@@ -911,12 +895,12 @@ public class Button : AvaloniaButton,
                 break;
             case ButtonVariant.Text:
                 SetVariantThemeVariables(
-                    sharedToken.ColorError,
-                    sharedToken.ColorErrorHover,
-                    sharedToken.ColorErrorActive,
+                    colorError,
+                    colorErrorHover,
+                    colorErrorActive,
                     Colors.Transparent,
-                    sharedToken.ColorErrorBgHover,
-                    sharedToken.ColorErrorBgActive,
+                    tokens.Global<Color>(SharedTokenKind.ColorErrorBgHover),
+                    tokens.Global<Color>(SharedTokenKind.ColorErrorBgActive),
                     Colors.Transparent,
                     Colors.Transparent,
                     Colors.Transparent,
@@ -924,9 +908,9 @@ public class Button : AvaloniaButton,
                 break;
             case ButtonVariant.Link:
                 SetVariantThemeVariables(
-                    sharedToken.ColorError,
-                    sharedToken.ColorErrorHover,
-                    sharedToken.ColorErrorActive,
+                    colorError,
+                    colorErrorHover,
+                    colorErrorActive,
                     Colors.Transparent,
                     Colors.Transparent,
                     Colors.Transparent,
@@ -938,72 +922,72 @@ public class Button : AvaloniaButton,
         }
     }
 
-    private void ConfigureDefaultVariantThemeVariables(ButtonToken buttonToken, DesignToken sharedToken)
+    private void ConfigureDefaultVariantThemeVariables(ButtonThemeTokenReader tokens)
     {
         var text = EffectiveVariant == ButtonVariant.Text
-            ? buttonToken.TextTextColor
-            : buttonToken.DefaultColor;
+            ? tokens.Control<Color>(ButtonTokenKind.TextTextColor)
+            : tokens.Control<Color>(ButtonTokenKind.DefaultColor);
         var textHover = EffectiveVariant == ButtonVariant.Text
-            ? buttonToken.TextTextHoverColor
-            : buttonToken.DefaultHoverColor;
+            ? tokens.Control<Color>(ButtonTokenKind.TextTextHoverColor)
+            : tokens.Control<Color>(ButtonTokenKind.DefaultHoverColor);
         var textPressed = EffectiveVariant == ButtonVariant.Text
-            ? buttonToken.TextTextActiveColor
-            : buttonToken.DefaultActiveColor;
+            ? tokens.Control<Color>(ButtonTokenKind.TextTextActiveColor)
+            : tokens.Control<Color>(ButtonTokenKind.DefaultActiveColor);
 
         switch (EffectiveVariant)
         {
             case ButtonVariant.Solid:
                 SetVariantThemeVariables(
-                    buttonToken.SolidTextColor,
-                    buttonToken.SolidTextColor,
-                    buttonToken.SolidTextColor,
-                    sharedToken.ColorBgSolid,
-                    sharedToken.ColorBgSolidHover,
-                    sharedToken.ColorBgSolidActive,
-                    sharedToken.ColorBgSolid,
-                    sharedToken.ColorBgSolidHover,
-                    sharedToken.ColorBgSolidActive,
-                    EffectiveIsGhost ? new BoxShadows() : buttonToken.DefaultShadow);
+                    tokens.Control<Color>(ButtonTokenKind.SolidTextColor),
+                    tokens.Control<Color>(ButtonTokenKind.SolidTextColor),
+                    tokens.Control<Color>(ButtonTokenKind.SolidTextColor),
+                    tokens.Global<Color>(SharedTokenKind.ColorBgSolid),
+                    tokens.Global<Color>(SharedTokenKind.ColorBgSolidHover),
+                    tokens.Global<Color>(SharedTokenKind.ColorBgSolidActive),
+                    tokens.Global<Color>(SharedTokenKind.ColorBgSolid),
+                    tokens.Global<Color>(SharedTokenKind.ColorBgSolidHover),
+                    tokens.Global<Color>(SharedTokenKind.ColorBgSolidActive),
+                    EffectiveIsGhost ? new BoxShadows() : tokens.Control<BoxShadows>(ButtonTokenKind.DefaultShadow));
                 break;
             case ButtonVariant.Outlined:
             case ButtonVariant.Dashed:
                 if (EffectiveIsGhost)
                 {
                     SetVariantThemeVariables(
-                        buttonToken.DefaultGhostColor,
-                        buttonToken.DefaultHoverColor,
-                        buttonToken.DefaultActiveColor,
-                        buttonToken.GhostBg,
-                        buttonToken.GhostBg,
-                        buttonToken.GhostBg,
-                        buttonToken.DefaultGhostBorderColor,
-                        buttonToken.DefaultHoverBorderColor,
-                        buttonToken.DefaultActiveBorderColor,
+                        tokens.Control<Color>(ButtonTokenKind.DefaultGhostColor),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultHoverColor),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultActiveColor),
+                        tokens.Control<Color>(ButtonTokenKind.GhostBg),
+                        tokens.Control<Color>(ButtonTokenKind.GhostBg),
+                        tokens.Control<Color>(ButtonTokenKind.GhostBg),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultGhostBorderColor),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultHoverBorderColor),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultActiveBorderColor),
                         new BoxShadows());
                 }
                 else
                 {
                     SetVariantThemeVariables(
-                        buttonToken.DefaultColor,
-                        buttonToken.DefaultHoverColor,
-                        buttonToken.DefaultActiveColor,
-                        buttonToken.DefaultBg,
-                        buttonToken.DefaultHoverBg,
-                        buttonToken.DefaultActiveBg,
-                        buttonToken.DefaultBorderColor,
-                        buttonToken.DefaultHoverBorderColor,
-                        buttonToken.DefaultActiveBorderColor,
-                        buttonToken.DefaultShadow);
+                        tokens.Control<Color>(ButtonTokenKind.DefaultColor),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultHoverColor),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultActiveColor),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultBg),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultHoverBg),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultActiveBg),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultBorderColor),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultHoverBorderColor),
+                        tokens.Control<Color>(ButtonTokenKind.DefaultActiveBorderColor),
+                        tokens.Control<BoxShadows>(ButtonTokenKind.DefaultShadow));
                 }
                 break;
             case ButtonVariant.Filled:
                 SetVariantThemeVariables(
-                    buttonToken.DefaultColor,
-                    buttonToken.DefaultColor,
-                    buttonToken.DefaultColor,
-                    sharedToken.ColorFillTertiary,
-                    sharedToken.ColorFillSecondary,
-                    sharedToken.ColorFill,
+                    tokens.Control<Color>(ButtonTokenKind.DefaultColor),
+                    tokens.Control<Color>(ButtonTokenKind.DefaultColor),
+                    tokens.Control<Color>(ButtonTokenKind.DefaultColor),
+                    tokens.Global<Color>(SharedTokenKind.ColorFillTertiary),
+                    tokens.Global<Color>(SharedTokenKind.ColorFillSecondary),
+                    tokens.Global<Color>(SharedTokenKind.ColorFill),
                     Colors.Transparent,
                     Colors.Transparent,
                     Colors.Transparent,
@@ -1015,8 +999,8 @@ public class Button : AvaloniaButton,
                     textHover,
                     textPressed,
                     Colors.Transparent,
-                    buttonToken.TextHoverBg,
-                    sharedToken.ColorBgTextActive,
+                    tokens.Control<Color>(ButtonTokenKind.TextHoverBg),
+                    tokens.Global<Color>(SharedTokenKind.ColorBgTextActive),
                     Colors.Transparent,
                     Colors.Transparent,
                     Colors.Transparent,
@@ -1024,11 +1008,12 @@ public class Button : AvaloniaButton,
                 break;
             case ButtonVariant.Link:
                 SetVariantThemeVariables(
-                    sharedToken.ColorLink ?? sharedToken.ColorPrimary,
-                    sharedToken.ColorLinkHover,
-                    sharedToken.ColorLinkActive,
+                    tokens.Global<Color?>(SharedTokenKind.ColorLink) ??
+                    tokens.Global<Color>(SharedTokenKind.ColorPrimary),
+                    tokens.Global<Color>(SharedTokenKind.ColorLinkHover),
+                    tokens.Global<Color>(SharedTokenKind.ColorLinkActive),
                     Colors.Transparent,
-                    buttonToken.LinkHoverBg,
+                    tokens.Control<Color>(ButtonTokenKind.LinkHoverBg),
                     Colors.Transparent,
                     Colors.Transparent,
                     Colors.Transparent,
@@ -1121,8 +1106,9 @@ public class Button : AvaloniaButton,
 
     private Color GetDefaultBackgroundColor()
     {
-        var buttonToken = TokenFinderUtils.FindControlToken(this, ButtonToken.ID) as ButtonToken;
-        return buttonToken?.DefaultBg ?? Colors.Transparent;
+        return ButtonThemeTokenReader.TryCreate(this, out var tokens)
+            ? tokens.Control<Color>(ButtonTokenKind.DefaultBg)
+            : Colors.Transparent;
     }
 
     private void SetVariantThemeVariables(
@@ -1157,16 +1143,65 @@ public class Button : AvaloniaButton,
             : new ImmutableSolidColorBrush(color);
     }
 
-    private static BoxShadows CreatePresetShadow(DesignToken sharedToken, Color lightColor)
+    private static BoxShadows CreatePresetShadow(ButtonThemeTokenReader tokens, Color lightColor)
     {
         return new BoxShadows(new BoxShadow
         {
             OffsetX = 0,
-            OffsetY = sharedToken.ControlOutlineWidth,
+            OffsetY = tokens.Global<double>(SharedTokenKind.ControlOutlineWidth),
             Blur    = 3,
             Spread  = 0,
-            Color   = ColorUtils.CalculateAlphaColor(lightColor, sharedToken.ColorBgContainer)
+            Color   = ColorUtils.CalculateAlphaColor(
+                lightColor,
+                tokens.Global<Color>(SharedTokenKind.ColorBgContainer))
         });
+    }
+
+    private readonly struct ButtonThemeTokenReader
+    {
+        private readonly ThemeSnapshot _snapshot;
+        private readonly int _controlSlot;
+
+        private ButtonThemeTokenReader(ThemeSnapshot snapshot, int controlSlot)
+        {
+            _snapshot = snapshot;
+            _controlSlot = controlSlot;
+        }
+
+        internal static bool TryCreate(Button owner, out ButtonThemeTokenReader reader)
+        {
+            if (owner.GetValue(ThemeScope.ContextProperty) is not { } context)
+            {
+                reader = default;
+                return false;
+            }
+
+            var snapshot = context.Snapshot;
+            var controlSlot = s_themeTokenResolver.GetControlSlot(snapshot, s_buttonTokenIdentity);
+            reader = new ButtonThemeTokenReader(snapshot, controlSlot);
+            return true;
+        }
+
+        internal T Global<T>(SharedTokenKind token)
+        {
+            return s_themeTokenResolver.GetEffectiveGlobal<T>(
+                _snapshot,
+                _controlSlot,
+                (int)token);
+        }
+
+        internal T Control<T>(ButtonTokenKind token)
+        {
+            return s_themeTokenResolver.GetControl<T>(
+                _snapshot,
+                _controlSlot,
+                (int)token);
+        }
+
+        internal PaletteInfo PresetPalette(PresetPrimaryColor primaryColor)
+        {
+            return s_themeTokenResolver.GetPresetPalette(_snapshot, primaryColor);
+        }
     }
 
     private static bool TryGetPresetPrimaryColor(ButtonColor color, out PresetPrimaryColor presetColor)

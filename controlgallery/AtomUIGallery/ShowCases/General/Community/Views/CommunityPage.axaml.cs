@@ -1,5 +1,5 @@
+using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
 
@@ -10,7 +10,7 @@ public partial class CommunityPage : GalleryReactiveUserControl<CommunityViewMod
     public const string LanguageId = nameof(CommunityPage);
 
     public static readonly StyledProperty<bool> IsDarkThemeModeProperty =
-        IThemeManager.IsDarkThemeModeProperty.AddOwner<CommunityPage>();
+        AvaloniaProperty.Register<CommunityPage, bool>(nameof(IsDarkThemeMode));
 
     public bool IsDarkThemeMode
     {
@@ -25,10 +25,17 @@ public partial class CommunityPage : GalleryReactiveUserControl<CommunityViewMod
             var themeManager = Application.Current?.GetThemeManager();
             if (themeManager != null)
             {
-                disposables.Add(BindUtils.RelayBind(themeManager.BindingSource, IThemeManager.IsDarkThemeModeProperty,
-                    this, IsDarkThemeModeProperty));
+                SyncThemeMode(themeManager.CurrentTheme);
+                EventHandler<ThemeChangedEventArgs> handler = (_, args) => SyncThemeMode(args.State);
+                themeManager.ThemeChanged += handler;
+                disposables.Add(Disposable.Create(() => themeManager.ThemeChanged -= handler));
             }
         });
         InitializeComponent();
+    }
+
+    private void SyncThemeMode(ThemeState? state)
+    {
+        SetCurrentValue(IsDarkThemeModeProperty, state?.Appearance == ThemeAppearance.Dark);
     }
 }

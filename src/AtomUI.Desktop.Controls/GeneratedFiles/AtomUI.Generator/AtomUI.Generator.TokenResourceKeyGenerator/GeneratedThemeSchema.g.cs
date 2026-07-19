@@ -119,7 +119,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.AddOnDecoratedBoxToken)token).WarningActiveShadow)),
             },
             static () => new global::AtomUI.Desktop.Controls.AddOnDecoratedBoxToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.AddOnDecoratedBoxToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.AddOnDecoratedBoxToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "AdornerLayer"),
             new TokenDescriptor[]
@@ -132,7 +132,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.AdornerLayerToken)token).FocusVisualMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.AdornerLayerToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.AdornerLayerToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.AdornerLayerToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Alert"),
             new TokenDescriptor[]
@@ -199,7 +199,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.AlertToken)token).WithDescriptionPadding)),
             },
             static () => new global::AtomUI.Desktop.Controls.AlertToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.AlertToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.AlertToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ArrowDecoratedBox"),
             new TokenDescriptor[]
@@ -230,7 +230,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ArrowDecoratedBoxToken)token).Padding)),
             },
             static () => new global::AtomUI.Desktop.Controls.ArrowDecoratedBoxToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ArrowDecoratedBoxToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ArrowDecoratedBoxToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "AutoComplete"),
             new TokenDescriptor[]
@@ -261,7 +261,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.AutoCompleteToken)token).PopupContentPadding)),
             },
             static () => new global::AtomUI.Desktop.Controls.AutoCompleteToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.AutoCompleteToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.AutoCompleteToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Avatar"),
             new TokenDescriptor[]
@@ -334,7 +334,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.AvatarToken)token).TextFontSizeSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.AvatarToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.AvatarToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.AvatarToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Badge"),
             new TokenDescriptor[]
@@ -473,7 +473,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.BadgeToken)token).TextFontWeight)),
             },
             static () => new global::AtomUI.Desktop.Controls.BadgeToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.BadgeToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.BadgeToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "BorderBeam"),
             new TokenDescriptor[]
@@ -504,7 +504,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.BorderBeamToken)token).MotionDuration)),
             },
             static () => new global::AtomUI.Desktop.Controls.BorderBeamToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.BorderBeamToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.BorderBeamToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Breadcrumb"),
             new TokenDescriptor[]
@@ -565,7 +565,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.BreadcrumbToken)token).SeparatorMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.BreadcrumbToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.BreadcrumbToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.BreadcrumbToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Button"),
             new TokenDescriptor[]
@@ -890,7 +890,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ButtonToken)token).TextTextHoverColor)),
             },
             static () => new global::AtomUI.Desktop.Controls.ButtonToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ButtonToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ButtonToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ButtonSpinner"),
             new TokenDescriptor[]
@@ -963,7 +963,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ButtonSpinnerToken)token).InputFontSizeSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.ButtonSpinnerToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ButtonSpinnerToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ButtonSpinnerToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Calendar"),
             new TokenDescriptor[]
@@ -1072,7 +1072,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.CalendarToken)token).WithoutTimeCellHeight)),
             },
             static () => new global::AtomUI.Desktop.Controls.CalendarToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.CalendarToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.CalendarToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Card"),
             new TokenDescriptor[]
@@ -1211,7 +1211,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.CardToken)token).TabsMarginBottom)),
             },
             static () => new global::AtomUI.Desktop.Controls.CardToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.CardToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.CardToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Carousel"),
             new TokenDescriptor[]
@@ -1260,7 +1260,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.CarouselToken)token).PaginationOffset)),
             },
             static () => new global::AtomUI.Desktop.Controls.CarouselToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.CarouselToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.CarouselToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Cascader"),
             new TokenDescriptor[]
@@ -1339,7 +1339,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.CascaderToken)token).OptionSelectedFontWeight)),
             },
             static () => new global::AtomUI.Desktop.Controls.CascaderToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.CascaderToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.CascaderToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "CheckBox"),
             new TokenDescriptor[]
@@ -1370,7 +1370,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.CheckBoxToken)token).TextMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.CheckBoxToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.CheckBoxToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.CheckBoxToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Collapse"),
             new TokenDescriptor[]
@@ -1467,7 +1467,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.CollapseToken)token).RightExpandButtonMarginSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.CollapseToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.CollapseToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.CollapseToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ComboBox"),
             new TokenDescriptor[]
@@ -1600,7 +1600,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ComboBoxToken)token).PopupContentPadding)),
             },
             static () => new global::AtomUI.Desktop.Controls.ComboBoxToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ComboBoxToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ComboBoxToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "DatePicker"),
             new TokenDescriptor[]
@@ -1727,7 +1727,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.DatePickerToken)token).YearMonthCellWidth)),
             },
             static () => new global::AtomUI.Desktop.Controls.DatePickerToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.DatePickerToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.DatePickerToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Descriptions"),
             new TokenDescriptor[]
@@ -1794,7 +1794,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.DescriptionsToken)token).TitleColor)),
             },
             static () => new global::AtomUI.Desktop.Controls.DescriptionsToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.DescriptionsToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.DescriptionsToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Dialog"),
             new TokenDescriptor[]
@@ -1897,7 +1897,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.DialogToken)token).MinWidth)),
             },
             static () => new global::AtomUI.Desktop.Controls.DialogToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.DialogToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.DialogToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Drawer"),
             new TokenDescriptor[]
@@ -1982,7 +1982,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.DrawerToken)token).SmallSize)),
             },
             static () => new global::AtomUI.Desktop.Controls.DrawerToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.DrawerToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.DrawerToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Empty"),
             new TokenDescriptor[]
@@ -2019,7 +2019,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.EmptyToken)token).EmptyImgHeightSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.EmptyToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.EmptyToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.EmptyToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Expander"),
             new TokenDescriptor[]
@@ -2104,7 +2104,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ExpanderToken)token).RightExpandButtonVMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.ExpanderToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ExpanderToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ExpanderToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "FloatButton"),
             new TokenDescriptor[]
@@ -2159,7 +2159,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.FloatButtonToken)token).SquareBadgeOffset)),
             },
             static () => new global::AtomUI.Desktop.Controls.FloatButtonToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.FloatButtonToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.FloatButtonToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "FlyoutHost"),
             new TokenDescriptor[]
@@ -2196,7 +2196,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.FlyoutHostToken)token).VerticalOffset)),
             },
             static () => new global::AtomUI.Desktop.Controls.FlyoutHostToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.FlyoutHostToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.FlyoutHostToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Form"),
             new TokenDescriptor[]
@@ -2251,7 +2251,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.FormToken)token).VerticalLabelPadding)),
             },
             static () => new global::AtomUI.Desktop.Controls.FormToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.FormToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.FormToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "GroupBox"),
             new TokenDescriptor[]
@@ -2300,7 +2300,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.GroupBoxToken)token).VerticalMarginInline)),
             },
             static () => new global::AtomUI.Desktop.Controls.GroupBoxToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.GroupBoxToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.GroupBoxToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ImagePreviewer"),
             new TokenDescriptor[]
@@ -2391,7 +2391,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ImagePreviewerToken)token).TitleBarBackgroundColor)),
             },
             static () => new global::AtomUI.Desktop.Controls.ImagePreviewerToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ImagePreviewerToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ImagePreviewerToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "IndicatorScrollViewer"),
             new TokenDescriptor[]
@@ -2422,7 +2422,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.Primitives.IndicatorScrollViewerToken)token).ThumbThickness)),
             },
             static () => new global::AtomUI.Desktop.Controls.Primitives.IndicatorScrollViewerToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.Primitives.IndicatorScrollViewerToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.Primitives.IndicatorScrollViewerToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "InfoPickerInput"),
             new TokenDescriptor[]
@@ -2447,7 +2447,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.Primitives.InfoPickerInputToken)token).RangePickerIndicatorThickness)),
             },
             static () => new global::AtomUI.Desktop.Controls.Primitives.InfoPickerInputToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.Primitives.InfoPickerInputToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.Primitives.InfoPickerInputToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "LineEdit"),
             new TokenDescriptor[]
@@ -2472,7 +2472,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.LineEditToken)token).InputFontSizeSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.LineEditToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.LineEditToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.LineEditToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ListBox"),
             new TokenDescriptor[]
@@ -2563,7 +2563,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ListBoxToken)token).SelectedIndicatorMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.ListBoxToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ListBoxToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ListBoxToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ListView"),
             new TokenDescriptor[]
@@ -2660,7 +2660,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ListViewToken)token).SelectedIndicatorMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.ListViewToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ListViewToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ListViewToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "MarqueeLabel"),
             new TokenDescriptor[]
@@ -2679,7 +2679,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.MarqueeLabelToken)token).DefaultSpeed)),
             },
             static () => new global::AtomUI.Desktop.Controls.MarqueeLabelToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.MarqueeLabelToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.MarqueeLabelToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Mentions"),
             new TokenDescriptor[]
@@ -2704,7 +2704,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.MentionsToken)token).PopupContentPadding)),
             },
             static () => new global::AtomUI.Desktop.Controls.MentionsToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.MentionsToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.MentionsToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Menu"),
             new TokenDescriptor[]
@@ -2957,7 +2957,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.MenuToken)token).TopLevelItemSelectedColor)),
             },
             static () => new global::AtomUI.Desktop.Controls.MenuToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.MenuToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.MenuToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Message"),
             new TokenDescriptor[]
@@ -3000,7 +3000,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.MessageToken)token).MessageTopMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.MessageToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.MessageToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.MessageToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "MessageBox"),
             new TokenDescriptor[]
@@ -3019,7 +3019,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.MessageBoxToken)token).StyleIconSize)),
             },
             static () => new global::AtomUI.Desktop.Controls.MessageBoxToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.MessageBoxToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.MessageBoxToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "NavMenu"),
             new TokenDescriptor[]
@@ -3434,7 +3434,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.NavMenuToken)token).VerticalMenuContentPadding)),
             },
             static () => new global::AtomUI.Desktop.Controls.NavMenuToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.NavMenuToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.NavMenuToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Notification"),
             new TokenDescriptor[]
@@ -3531,7 +3531,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.NotificationToken)token).NotificationWidth)),
             },
             static () => new global::AtomUI.Desktop.Controls.NotificationToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.NotificationToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.NotificationToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "NumericUpDown"),
             new TokenDescriptor[]
@@ -3604,7 +3604,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.NumericUpDownToken)token).InputFontSizeSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.NumericUpDownToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.NumericUpDownToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.NumericUpDownToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "OptionButton"),
             new TokenDescriptor[]
@@ -3725,7 +3725,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.OptionButtonToken)token).PaddingSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.OptionButtonToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.OptionButtonToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.OptionButtonToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "OtpLineEdit"),
             new TokenDescriptor[]
@@ -3786,7 +3786,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.OtpLineEditToken)token).SeparatorMarginInlineSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.OtpLineEditToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.OtpLineEditToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.OtpLineEditToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Pagination"),
             new TokenDescriptor[]
@@ -3877,7 +3877,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.PaginationToken)token).PaginationQuickJumperInputWidth)),
             },
             static () => new global::AtomUI.Desktop.Controls.PaginationToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.PaginationToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.PaginationToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "PopupConfirm"),
             new TokenDescriptor[]
@@ -3926,7 +3926,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.PopupConfirmToken)token).TitleMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.PopupConfirmToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.PopupConfirmToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.PopupConfirmToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "PopupHost"),
             new TokenDescriptor[]
@@ -3957,7 +3957,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.PopupHostToken)token).PopupRootShadow)),
             },
             static () => new global::AtomUI.Desktop.Controls.PopupHostToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.PopupHostToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.PopupHostToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ProgressBar"),
             new TokenDescriptor[]
@@ -4042,7 +4042,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ProgressBarToken)token).RemainingColor)),
             },
             static () => new global::AtomUI.Desktop.Controls.ProgressBarToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ProgressBarToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ProgressBarToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "QRCode"),
             new TokenDescriptor[]
@@ -4061,7 +4061,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.QRCodeToken)token).QRCodeTextColor)),
             },
             static () => new global::AtomUI.Desktop.Controls.QRCodeToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.QRCodeToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.QRCodeToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "RadioButton"),
             new TokenDescriptor[]
@@ -4110,7 +4110,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.RadioButtonToken)token).TextMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.RadioButtonToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.RadioButtonToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.RadioButtonToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Rate"),
             new TokenDescriptor[]
@@ -4153,7 +4153,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.RateToken)token).StarSizeSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.RateToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.RateToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.RateToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Result"),
             new TokenDescriptor[]
@@ -4250,7 +4250,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ResultToken)token).SubHeaderFontSize)),
             },
             static () => new global::AtomUI.Desktop.Controls.ResultToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ResultToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ResultToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ScrollViewer"),
             new TokenDescriptor[]
@@ -4305,7 +4305,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ScrollViewerToken)token).ThumbHoverBg)),
             },
             static () => new global::AtomUI.Desktop.Controls.ScrollViewerToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ScrollViewerToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ScrollViewerToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Segmented"),
             new TokenDescriptor[]
@@ -4396,7 +4396,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.SegmentedToken)token).TrackPadding)),
             },
             static () => new global::AtomUI.Desktop.Controls.SegmentedToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.SegmentedToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.SegmentedToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Select"),
             new TokenDescriptor[]
@@ -4535,7 +4535,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.SelectToken)token).SelectAffixPadding)),
             },
             static () => new global::AtomUI.Desktop.Controls.SelectToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.SelectToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.SelectToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Separator"),
             new TokenDescriptor[]
@@ -4584,7 +4584,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.SeparatorToken)token).VerticalMarginInline)),
             },
             static () => new global::AtomUI.Desktop.Controls.SeparatorToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.SeparatorToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.SeparatorToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Skeleton"),
             new TokenDescriptor[]
@@ -4681,7 +4681,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.SkeletonToken)token).TitleHeight)),
             },
             static () => new global::AtomUI.Desktop.Controls.SkeletonToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.SkeletonToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.SkeletonToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Slider"),
             new TokenDescriptor[]
@@ -4838,7 +4838,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.SliderToken)token).TrackHoverBg)),
             },
             static () => new global::AtomUI.Desktop.Controls.SliderToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.SliderToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.SliderToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Space"),
             new TokenDescriptor[]
@@ -4887,7 +4887,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.SpaceToken)token).GapSmallSize)),
             },
             static () => new global::AtomUI.Desktop.Controls.SpaceToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.SpaceToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.SpaceToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Spin"),
             new TokenDescriptor[]
@@ -4936,7 +4936,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.SpinToken)token).IndicatorSizeSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.SpinToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.SpinToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.SpinToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "SplitView"),
             new TokenDescriptor[]
@@ -4973,7 +4973,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.SplitViewToken)token).PaneOpenMotionDuration)),
             },
             static () => new global::AtomUI.Desktop.Controls.SplitViewToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.SplitViewToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.SplitViewToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Splitter"),
             new TokenDescriptor[]
@@ -5070,7 +5070,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.SplitterToken)token).SplitTriggerSize)),
             },
             static () => new global::AtomUI.Desktop.Controls.SplitterToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.SplitterToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.SplitterToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Statistic"),
             new TokenDescriptor[]
@@ -5089,7 +5089,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.StatisticToken)token).TitleFontSize)),
             },
             static () => new global::AtomUI.Desktop.Controls.StatisticToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.StatisticToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.StatisticToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Steps"),
             new TokenDescriptor[]
@@ -5444,7 +5444,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.StepsToken)token).WaitTitleColor)),
             },
             static () => new global::AtomUI.Desktop.Controls.StepsToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.StepsToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.StepsToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "TabControl"),
             new TokenDescriptor[]
@@ -5625,7 +5625,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TabControlToken)token).VerticalItemPadding)),
             },
             static () => new global::AtomUI.Desktop.Controls.TabControlToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TabControlToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TabControlToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Tag"),
             new TokenDescriptor[]
@@ -5686,7 +5686,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TagToken)token).TagTextPaddingInline)),
             },
             static () => new global::AtomUI.Desktop.Controls.TagToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TagToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TagToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "TextArea"),
             new TokenDescriptor[]
@@ -5741,7 +5741,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TextAreaToken)token).RightAddOnPaddingSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.TextAreaToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TextAreaToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TextAreaToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "TextBox"),
             new TokenDescriptor[]
@@ -5814,7 +5814,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TextBoxToken)token).PaddingSM)),
             },
             static () => new global::AtomUI.Desktop.Controls.TextBoxToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TextBoxToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TextBoxToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "TimePicker"),
             new TokenDescriptor[]
@@ -5869,7 +5869,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TimePickerToken)token).RangePickerIndicatorThickness)),
             },
             static () => new global::AtomUI.Desktop.Controls.TimePickerToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TimePickerToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TimePickerToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Timeline"),
             new TokenDescriptor[]
@@ -5942,7 +5942,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TimelineToken)token).LastItemContentMinHeight)),
             },
             static () => new global::AtomUI.Desktop.Controls.TimelineToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TimelineToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TimelineToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ToggleSwitch"),
             new TokenDescriptor[]
@@ -6075,7 +6075,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ToggleSwitchToken)token).TrackPadding)),
             },
             static () => new global::AtomUI.Desktop.Controls.ToggleSwitchToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ToggleSwitchToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ToggleSwitchToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ToolTip"),
             new TokenDescriptor[]
@@ -6118,7 +6118,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.ToolTipToken)token).ToolTipMaxWidth)),
             },
             static () => new global::AtomUI.Desktop.Controls.ToolTipToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.ToolTipToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.ToolTipToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Tour"),
             new TokenDescriptor[]
@@ -6179,7 +6179,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TourToken)token).TourViewMinWidth)),
             },
             static () => new global::AtomUI.Desktop.Controls.TourToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TourToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TourToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Transfer"),
             new TokenDescriptor[]
@@ -6240,7 +6240,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TransferToken)token).PaginationMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.TransferToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TransferToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TransferToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "TreeFlyout"),
             new TokenDescriptor[]
@@ -6283,7 +6283,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TreeFlyoutToken)token).PopupMinWidth)),
             },
             static () => new global::AtomUI.Desktop.Controls.TreeFlyoutToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TreeFlyoutToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TreeFlyoutToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "TreeSelect"),
             new TokenDescriptor[]
@@ -6296,7 +6296,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TreeSelectToken)token).MinPopupWidth)),
             },
             static () => new global::AtomUI.Desktop.Controls.TreeSelectToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TreeSelectToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TreeSelectToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "TreeView"),
             new TokenDescriptor[]
@@ -6375,7 +6375,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.TreeViewToken)token).TreeNodeSwitcherMargin)),
             },
             static () => new global::AtomUI.Desktop.Controls.TreeViewToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.TreeViewToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.TreeViewToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Upload"),
             new TokenDescriptor[]
@@ -6448,7 +6448,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.UploadToken)token).UploadThumbnailSize)),
             },
             static () => new global::AtomUI.Desktop.Controls.UploadToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.UploadToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.UploadToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "Window"),
             new TokenDescriptor[]
@@ -6503,7 +6503,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.WindowToken)token).TitleBarHeight)),
             },
             static () => new global::AtomUI.Desktop.Controls.WindowToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.WindowToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.WindowToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "WindowTitleBar"),
             new TokenDescriptor[]
@@ -6672,7 +6672,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.WindowTitleBarToken)token).WindowsCloseButtonPressedBgColor)),
             },
             static () => new global::AtomUI.Desktop.Controls.WindowTitleBarToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.WindowTitleBarToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.WindowTitleBarToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
     };
 
     private static readonly ThemeAlgorithmDescriptor[] s_algorithms = new ThemeAlgorithmDescriptor[]

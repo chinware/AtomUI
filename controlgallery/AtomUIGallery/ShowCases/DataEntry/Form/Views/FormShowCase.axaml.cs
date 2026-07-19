@@ -30,12 +30,12 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
             if (DataContext is FormViewModel viewModel)
             {
                 RefreshLocalizedOptionData(viewModel);
-                var themeManager = Application.Current?.GetThemeManager();
-                if (themeManager != null)
+                var languageManager = Application.Current?.GetLanguageManager();
+                if (languageManager != null)
                 {
                     EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedOptionData(viewModel);
-                    themeManager.LanguageVariantChanged += handler;
-                    disposables.Add(Disposable.Create(() => themeManager.LanguageVariantChanged -= handler));
+                    languageManager.LanguageVariantChanged += handler;
+                    disposables.Add(Disposable.Create(() => languageManager.LanguageVariantChanged -= handler));
                 }
             }
         });

@@ -2,6 +2,9 @@
               xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:ButtonThemeAsset.Identity}"
               x:Class="AtomUI.Desktop.Controls.Themes.ToggleIconButtonTheme"
               x:ClassModifier="internal">
     <Setter Property="Template">
@@ -40,17 +43,17 @@
     </Setter>
 
     <Style Selector="^:is(atom|ToggleIconButton)">
-        <Setter Property="IconWidth" Value="{atom:ButtonTokenSharedTokenResource IconSizeSM}" />
-        <Setter Property="IconHeight" Value="{atom:ButtonTokenSharedTokenResource IconSizeSM}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:ButtonTokenSharedTokenResource EnableMotion}" />
-        <Setter Property="CornerRadius" Value="{atom:ButtonTokenSharedTokenResource BorderRadiusSM}" />
+        <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
+        <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Background" Value="Transparent" />
 
         <Setter Property="IconBrush"
-                Value="{atom:ButtonTokenSharedTokenResource ColorIcon}" />
+                Value="{atom:SharedTokenResource ColorIcon}" />
 
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">
@@ -64,17 +67,17 @@
 
         <Style Selector="^:pointerover">
             <Setter Property="IconBrush"
-                    Value="{atom:ButtonTokenSharedTokenResource ColorIconHover}" />
+                    Value="{atom:SharedTokenResource ColorIconHover}" />
         </Style>
 
         <Style Selector="^:pressed">
             <Setter Property="IconBrush"
-                    Value="{atom:ButtonTokenSharedTokenResource ColorText}" />
+                    Value="{atom:SharedTokenResource ColorText}" />
         </Style>
 
         <Style Selector="^:disabled">
             <Setter Property="IconBrush"
-                    Value="{atom:ButtonTokenSharedTokenResource ColorTextDisabled}" />
+                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
 
     </Style>

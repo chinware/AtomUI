@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using AtomUI.Controls;
-using AtomUI.Theme.Palette;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Toolkits.GalleryBase.Models;
 using ReactiveUI;
 

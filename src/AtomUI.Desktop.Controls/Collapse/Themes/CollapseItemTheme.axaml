@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:CollapseThemeAsset.Identity}"
     x:ClassModifier="internal">
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:CollapseItem}" TargetType="atom:CollapseItem">
@@ -10,7 +13,7 @@
             <ControlTemplate>
                 <atom:PixelAlignedBorder
                     BorderThickness="{TemplateBinding ItemBorderThickness}"
-                    BorderBrush="{atom:CollapseTokenSharedTokenResource ColorBorder}">
+                    BorderBrush="{atom:SharedTokenResource ColorBorder}">
                     <DockPanel Name="PART_MainLayout"
                                LastChildFill="True">
                         <atom:PixelAlignedBorder Name="PART_HeaderDecorator"
@@ -62,23 +65,23 @@
             </ControlTemplate>
         </Setter>
 
-        <Setter Property="MotionDuration" Value="{atom:CollapseTokenSharedTokenResource MotionDurationSlow}" />
+        <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationSlow}" />
         <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
             <Setter Property="Background" Value="{atom:CollapseTokenResource HeaderBg}" />
-            <Setter Property="BorderBrush" Value="{atom:CollapseTokenSharedTokenResource ColorBorder}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
         <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_ContentFrame">
-            <Setter Property="BorderBrush" Value="{atom:CollapseTokenSharedTokenResource ColorBorder}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
-            <Setter Property="Foreground" Value="{atom:CollapseTokenSharedTokenResource ColorTextHeading}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextHeading}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
-            <Setter Property="IconWidth" Value="{atom:CollapseTokenSharedTokenResource IconSizeSM}" />
-            <Setter Property="IconHeight" Value="{atom:CollapseTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
         </Style>
 
         <Style Selector="^[IsSelected=True]">
@@ -109,25 +112,25 @@
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
-                        Value="{atom:CollapseTokenSharedTokenResource FontSizeLG}" />
+                        Value="{atom:SharedTokenResource FontSizeLG}" />
                 <Setter Property="TextBlock.LineHeight"
-                        Value="{atom:CollapseTokenSharedTokenResource FontHeightLG}" />
+                        Value="{atom:SharedTokenResource FontHeightLG}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
-                        Value="{atom:CollapseTokenSharedTokenResource FontSize}" />
+                        Value="{atom:SharedTokenResource FontSize}" />
                 <Setter Property="TextBlock.LineHeight"
-                        Value="{atom:CollapseTokenSharedTokenResource FontHeight}" />
+                        Value="{atom:SharedTokenResource FontHeight}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
-                        Value="{atom:CollapseTokenSharedTokenResource FontSize}" />
+                        Value="{atom:SharedTokenResource FontSize}" />
                 <Setter Property="TextBlock.LineHeight"
-                        Value="{atom:CollapseTokenSharedTokenResource FontHeight}" />
+                        Value="{atom:SharedTokenResource FontHeight}" />
             </Style>
         </Style>
 
@@ -206,10 +209,10 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:CollapseTokenSharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator ContentPresenter">
                 <Setter Property="Foreground"
-                        Value="{atom:CollapseTokenSharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
 

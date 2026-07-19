@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using AtomUI.Theme;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Compilation;
+using AtomUI.Theme.Styling;
 using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
@@ -25,15 +26,15 @@ internal static class MediaBreakPointThemeBootstrapper
     private static ControlTheme? _windowTheme;
     private static ThemeManager? _themeManager;
 
-    private static readonly (Func<DesignToken, double?> Min, Func<DesignToken, double?> Max, MediaBreakPoint Bp)[] Rows =
+    private static readonly (Func<ThemeSnapshot, double?> Min, Func<ThemeSnapshot, double?> Max, MediaBreakPoint Bp)[] Rows =
     {
-        (t => t.ScreenXXXLMin, _ => null,              MediaBreakPoint.ExtraExtraExtraLarge),
-        (t => t.ScreenXXLMin,  t => t.ScreenXXLMax,    MediaBreakPoint.ExtraExtraLarge),
-        (t => t.ScreenXLMin,   t => t.ScreenXLMax,     MediaBreakPoint.ExtraLarge),
-        (t => t.ScreenLGMin,   t => t.ScreenLGMax,     MediaBreakPoint.Large),
-        (t => t.ScreenMDMin,   t => t.ScreenMDMax,     MediaBreakPoint.Medium),
-        (t => t.ScreenSMMin,   t => t.ScreenSMMax,     MediaBreakPoint.Small),
-        (_ => null,            t => t.ScreenSMMin - 1, MediaBreakPoint.ExtraSmall),
+        (t => Global(t, SharedTokenKind.ScreenXXXLMin), _ => null, MediaBreakPoint.ExtraExtraExtraLarge),
+        (t => Global(t, SharedTokenKind.ScreenXXLMin), t => Global(t, SharedTokenKind.ScreenXXLMax), MediaBreakPoint.ExtraExtraLarge),
+        (t => Global(t, SharedTokenKind.ScreenXLMin), t => Global(t, SharedTokenKind.ScreenXLMax), MediaBreakPoint.ExtraLarge),
+        (t => Global(t, SharedTokenKind.ScreenLGMin), t => Global(t, SharedTokenKind.ScreenLGMax), MediaBreakPoint.Large),
+        (t => Global(t, SharedTokenKind.ScreenMDMin), t => Global(t, SharedTokenKind.ScreenMDMax), MediaBreakPoint.Medium),
+        (t => Global(t, SharedTokenKind.ScreenSMMin), t => Global(t, SharedTokenKind.ScreenSMMax), MediaBreakPoint.Small),
+        (_ => null, t => Global(t, SharedTokenKind.ScreenSMMin) - 1, MediaBreakPoint.ExtraSmall),
     };
 
     public static void Attach(ThemeManager themeManager)
@@ -45,6 +46,10 @@ internal static class MediaBreakPointThemeBootstrapper
 
         _themeManager              =  themeManager;
         themeManager.ThemeChanged  += HandleThemeChanged;
+        if (themeManager.CurrentSnapshot is { } snapshot)
+        {
+            Rebuild(themeManager, snapshot);
+        }
     }
 
     private static void HandleThemeChanged(object? sender, ThemeChangedEventArgs args)
@@ -54,10 +59,13 @@ internal static class MediaBreakPointThemeBootstrapper
             return;
         }
 
-        Rebuild(tm, args.NewTheme);
+        if (tm.CurrentSnapshot is { } snapshot)
+        {
+            Rebuild(tm, snapshot);
+        }
     }
 
-    private static void Rebuild(ThemeManager themeManager, ITheme theme)
+    private static void Rebuild(ThemeManager themeManager, ThemeSnapshot snapshot)
     {
         if (_windowTheme == null)
         {
@@ -69,14 +77,12 @@ internal static class MediaBreakPointThemeBootstrapper
             _windowTheme = controlTheme;
         }
 
-        var token = theme.SharedToken;
-
         if (InjectedQueries.Count == 0)
         {
             var children = _windowTheme.Children;
             foreach (var (minFn, maxFn, bp) in Rows)
             {
-                var cq = BuildContainerQuery(minFn(token), maxFn(token), bp);
+                var cq = BuildContainerQuery(minFn(snapshot), maxFn(snapshot), bp);
                 children.Add(cq);
                 InjectedQueries.Add(cq);
             }
@@ -86,9 +92,14 @@ internal static class MediaBreakPointThemeBootstrapper
             for (var i = 0; i < Rows.Length; i++)
             {
                 var (minFn, maxFn, _) = Rows[i];
-                InjectedQueries[i].Query = BuildStyleQuery(minFn(token), maxFn(token));
+                InjectedQueries[i].Query = BuildStyleQuery(minFn(snapshot), maxFn(snapshot));
             }
         }
+    }
+
+    private static int Global(ThemeSnapshot snapshot, SharedTokenKind token)
+    {
+        return snapshot.GlobalTokenValues.Get<int>((int)token);
     }
 
     private static StyleQuery? BuildStyleQuery(double? min, double? max)

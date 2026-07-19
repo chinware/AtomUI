@@ -120,5 +120,4 @@ internal class ImagePreviewerToken : AbstractControlDesignToken
         FloatToolbarIndicatorPadding = new Thickness(SharedToken.UniformlyPaddingXS, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(ImagePreviewerTokenKind);
 }

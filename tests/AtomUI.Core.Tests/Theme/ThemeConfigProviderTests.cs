@@ -1,12 +1,14 @@
+using System.Runtime.CompilerServices;
 using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
+using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Threading;
+using Avalonia.Styling;
 using Shouldly;
 using Xunit;
 
@@ -16,453 +18,189 @@ namespace AtomUI.Core.Tests.Theme;
 public class ThemeConfigProviderTests
 {
     [Fact]
-    public void Child_Provider_Inherits_Unchanged_Parent_Tokens()
+    public void First_Attach_Synchronously_Publishes_Context_Resources_And_Variant()
     {
-        using var _ = UseThemeManager();
-        var childContent = new Border();
-        var parent = Provider(
-            Token(nameof(DesignToken.ColorPrimary), "#ff0000"),
-            Token(nameof(DesignToken.BorderRadius), "12"));
-        var child = Provider(Token(nameof(DesignToken.ColorPrimary), "#00b96b"));
-
-        parent.Content = child;
-        child.Content = childContent;
-        Attach(parent);
-        FlushThemeUpdates();
-
-        child.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
-        child.SharedToken.BorderRadius.ShouldBe(new CornerRadius(12));
-        GetSnapshot(childContent).ShouldBeSameAs(GetTokenResourceProvider(child).Snapshot);
-    }
-
-    [Fact]
-    public void Child_Provider_Inherits_Parent_Map_And_Alias_Overrides()
-    {
-        using var _ = UseThemeManager();
-        var parent = Provider(
-            Token(nameof(DesignToken.ColorPrimaryBg), "#010203"),
-            Token(nameof(DesignToken.ColorBgTextHover), "#040506"));
-        var child = Provider(Token(nameof(DesignToken.ColorPrimary), "#00b96b"));
-
-        parent.Content = child;
-        child.Content = new Border();
-        Attach(parent);
-        FlushThemeUpdates();
-
-        child.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
-        child.SharedToken.ColorPrimaryBg.ShouldBe(Color.Parse("#010203"));
-        child.SharedToken.ColorBgTextHover.ShouldBe(Color.Parse("#040506"));
-    }
-
-    [Fact]
-    public void Child_Provider_Can_Disable_Inheritance()
-    {
-        using var _ = UseThemeManager();
-        var parent = Provider(Token(nameof(DesignToken.BorderRadius), "12"));
-        var child = Provider();
-        child.Inherit = false;
-
-        parent.Content = child;
-        child.Content = new Border();
-        Attach(parent);
-        FlushThemeUpdates();
-
-        child.SharedToken.BorderRadius.ShouldBe(new CornerRadius(6));
-    }
-
-    [Fact]
-    public void Child_Provider_Recompiles_When_Parent_Token_Changes()
-    {
-        using var _ = UseThemeManager();
-        var parentColor = Token(nameof(DesignToken.ColorPrimary), "#ff0000");
-        var parent = Provider(parentColor);
-        var child = Provider();
-
-        parent.Content = child;
-        child.Content = new Border();
-        Attach(parent);
-        FlushThemeUpdates();
-        child.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
-
-        parentColor.Value = "#00b96b";
-        FlushThemeUpdates();
-
-        child.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
-    }
-
-    [Fact]
-    public void Provider_Recompiles_For_Collection_Add_Remove_And_Item_Value_Changes()
-    {
-        using var _ = UseThemeManager();
-        var provider = Provider();
-        var primary = Token(nameof(DesignToken.ColorPrimary), "#ff0000");
-        Attach(provider);
-
-        provider.SharedTokenSetters.Add(primary);
-        FlushThemeUpdates();
-        provider.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
-
-        primary.Value = "#00b96b";
-        FlushThemeUpdates();
-        provider.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
-
-        provider.SharedTokenSetters.Remove(primary);
-        FlushThemeUpdates();
-        provider.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#1677ff"));
-    }
-
-    [Fact]
-    public void Provider_Recompiles_For_Algorithm_Collection_Changes()
-    {
-        using var _ = UseThemeManager();
-        var provider = Provider();
-        Attach(provider);
-
-        provider.Algorithms.Add(nameof(ThemeAlgorithm.Dark));
-        FlushThemeUpdates();
-
-        provider.IsDarkMode.ShouldBeTrue();
-        provider.SharedToken.ColorBgBase.ShouldBe(Color.FromRgb(0, 0, 0));
-
-        provider.Algorithms.Clear();
-        FlushThemeUpdates();
-
-        provider.IsDarkMode.ShouldBeFalse();
-        provider.SharedToken.ColorBgBase.ShouldBe(Color.FromRgb(255, 255, 255));
-    }
-
-    [Fact]
-    public void Child_Provider_Inherits_Parent_Dark_Compact_Algorithms_When_Local_Algorithms_Are_Empty()
-    {
-        using var _ = UseThemeManager();
-        var parent = Provider();
-        var child = Provider();
-
-        parent.Algorithms.Add(nameof(ThemeAlgorithm.Dark));
-        parent.Algorithms.Add(nameof(ThemeAlgorithm.Compact));
-        parent.Content = child;
-        child.Content = new Border();
-        Attach(parent);
-        FlushThemeUpdates();
-
-        child.IsDarkMode.ShouldBeTrue();
-        child.SharedToken.ColorBgBase.ShouldBe(Color.FromRgb(0, 0, 0));
-        GetSnapshot(child)!.Algorithms.ShouldBe(
-        [
-            ThemeAlgorithm.Default,
-            ThemeAlgorithm.Dark,
-            ThemeAlgorithm.Compact
-        ]);
-    }
-
-    [Fact]
-    public void Provider_Recompiles_For_Control_Token_Setter_Add_Remove_And_Value_Changes()
-    {
-        using var _ = UseThemeManager();
-        var provider = Provider();
-        var height = new ControlTokenSetter
+        var manager = CreateInitializedManager();
+        var provider = new ThemeConfigProvider
         {
-            Key = nameof(CompilerButtonToken.Height),
-            Value = "44"
+            Config = ConfigWithToken(nameof(DesignToken.ColorPrimary), "#ff0000"),
+            Child = new Border()
         };
-        var infoSetter = new ControlTokenInfoSetter(CompilerButtonToken.ID);
-        Attach(provider);
 
-        infoSetter.Setters.Add(height);
-        provider.ControlTokenInfoSetters.Add(infoSetter);
-        FlushThemeUpdates();
-        GetButtonToken(provider).Height.ShouldBe(44);
+        using var root = Attach(manager, provider);
 
-        height.Value = "48";
-        FlushThemeUpdates();
-        GetButtonToken(provider).Height.ShouldBe(48);
-
-        provider.ControlTokenInfoSetters.Remove(infoSetter);
-        FlushThemeUpdates();
-        GetButtonToken(provider).Height.ShouldBe(32);
+        var context = provider.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull();
+        context.Snapshot.Global<Color>(nameof(DesignToken.ColorPrimary)).ShouldBe(Color.Parse("#ff0000"));
+        context.ResourceProvider.ShouldBeSameAs(GetTokenResourceProvider(provider));
+        provider.RequestedThemeVariant.ShouldBe(ThemeVariant.Light);
     }
 
     [Fact]
-    public void Child_Provider_Inherits_Parent_Control_Override_When_It_Has_No_Local_Override()
+    public void Config_Replacement_Updates_The_Stable_Context_And_Resource_Provider()
     {
-        using var _ = UseThemeManager();
-        var parent = Provider();
-        var child = Provider();
-
-        parent.ControlTokenInfoSetters.Add(ControlOverride(44));
-        parent.Content = child;
-        child.Content = new Border();
-        Attach(parent);
-        FlushThemeUpdates();
-
-        GetButtonToken(child).Height.ShouldBe(44);
-    }
-
-    [Fact]
-    public void Child_Provider_Control_Override_Wins_Over_Parent_Control_Override()
-    {
-        using var _ = UseThemeManager();
-        var parent = Provider();
-        var child = Provider();
-
-        parent.ControlTokenInfoSetters.Add(ControlOverride(44));
-        child.ControlTokenInfoSetters.Add(ControlOverride(48));
-        parent.Content = child;
-        child.Content = new Border();
-        Attach(parent);
-        FlushThemeUpdates();
-
-        GetButtonToken(child).Height.ShouldBe(48);
-    }
-
-    [Fact]
-    public void Failed_Compile_Retains_Previous_Published_Token_Provider_And_Content_Scope()
-    {
-        using var _ = UseThemeManager();
-        var content = new Border();
-        var provider = Provider(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
-        provider.Content = content;
-        Attach(provider);
-        FlushThemeUpdates();
-        var previousSharedToken = provider.SharedToken;
-        var previousResourceProvider = GetTokenResourceProvider(provider);
-        var previousSnapshot = GetSnapshot(content);
-        ThemeScopeCompileFailedEventArgs? failed = null;
-        provider.ThemeScopeCompileFailed += (_, args) => failed = args;
-
-        provider.SharedTokenSetters.Add(Token("MissingSharedToken", "1"));
-        FlushThemeUpdates();
-
-        failed.ShouldNotBeNull();
-        failed!.Diagnostics.ShouldContain(diagnostic =>
-            diagnostic.Message.Contains("MissingSharedToken", StringComparison.Ordinal));
-        provider.SharedToken.ShouldBeSameAs(previousSharedToken);
-        GetTokenResourceProvider(provider).ShouldBeSameAs(previousResourceProvider);
-        GetSnapshot(content).ShouldBeSameAs(previousSnapshot);
-    }
-
-    [Fact]
-    public void Invalid_Algorithm_Failure_Raises_Event_And_Retains_Previous_Published_State()
-    {
-        using var _ = UseThemeManager();
-        var content = new Border();
-        var provider = Provider(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
-        provider.Content = content;
-        Attach(provider);
-        FlushThemeUpdates();
-        var previousSharedToken = provider.SharedToken;
-        var previousControlTokens = provider.ControlTokens;
-        var previousButtonToken = GetButtonToken(provider);
-        var previousResourceProvider = GetTokenResourceProvider(provider);
-        var previousSnapshot = previousResourceProvider.Snapshot;
-        var previousContentSnapshot = GetSnapshot(content);
-        var previousDarkMode = provider.IsDarkMode;
-        var resourcesChanged = 0;
-        ThemeScopeCompileFailedEventArgs? failed = null;
-        ((IResourceHost)provider).ResourcesChanged += (_, _) => resourcesChanged++;
-        provider.ThemeScopeCompileFailed += (_, args) => failed = args;
-
-        provider.Algorithms.Add("DefinitelyNotAnAlgorithm");
-        Should.NotThrow(FlushThemeUpdates);
-
-        failed.ShouldNotBeNull();
-        failed!.Exception.ShouldBeOfType<ThemeLoadException>();
-        provider.SharedToken.ShouldBeSameAs(previousSharedToken);
-        provider.ControlTokens.ShouldBeSameAs(previousControlTokens);
-        GetButtonToken(provider).ShouldBeSameAs(previousButtonToken);
-        GetTokenResourceProvider(provider).ShouldBeSameAs(previousResourceProvider);
-        previousResourceProvider.Snapshot.ShouldBeSameAs(previousSnapshot);
-        provider.IsDarkMode.ShouldBe(previousDarkMode);
-        GetSnapshot(content).ShouldBeSameAs(previousContentSnapshot);
-        resourcesChanged.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Provider_Maintains_One_Token_Resource_Provider_After_Repeated_Updates()
-    {
-        using var _ = UseThemeManager();
-        var primary = Token(nameof(DesignToken.ColorPrimary), "#ff0000");
-        var provider = Provider(primary);
-        Attach(provider);
+        var manager = CreateInitializedManager();
+        var provider = new ThemeConfigProvider
+        {
+            Config = ConfigWithToken(nameof(DesignToken.ColorPrimary), "#ff0000"),
+            Child = new Border()
+        };
+        using var root = Attach(manager, provider);
+        var context = provider.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull();
         var resourceProvider = GetTokenResourceProvider(provider);
 
-        for (var i = 0; i < 20; i++)
+        provider.Config = ConfigWithToken(nameof(DesignToken.ColorPrimary), "#00b96b");
+
+        provider.GetValue(ThemeScope.ContextProperty).ShouldBeSameAs(context);
+        GetTokenResourceProvider(provider).ShouldBeSameAs(resourceProvider);
+        context.Snapshot.Global<Color>(nameof(DesignToken.ColorPrimary)).ShouldBe(Color.Parse("#00b96b"));
+    }
+
+    [Fact]
+    public void Nested_Providers_Inherit_The_Parent_Effective_Config()
+    {
+        var manager = CreateInitializedManager();
+        var child = new ThemeConfigProvider
         {
-            primary.Value = $"#{i + 1:00}{i + 2:00}{i + 3:00}";
-            FlushThemeUpdates();
-            GetTokenResourceProvider(provider).ShouldBeSameAs(resourceProvider);
-        }
+            Config = ConfigWithToken(nameof(DesignToken.ColorPrimary), "#00b96b"),
+            Child = new Border()
+        };
+        var parent = new ThemeConfigProvider
+        {
+            Config = ConfigWithToken(nameof(DesignToken.BorderRadius), "12"),
+            Child = child
+        };
 
-        provider.Resources.MergedDictionaries
-                .OfType<ThemeTokenResourceProvider>()
-                .Count()
-                .ShouldBe(1);
+        using var root = Attach(manager, parent);
+
+        var snapshot = child.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull().Snapshot;
+        snapshot.Global<Color>(nameof(DesignToken.ColorPrimary)).ShouldBe(Color.Parse("#00b96b"));
+        snapshot.Global<CornerRadius>(nameof(DesignToken.BorderRadius)).ShouldBe(new CornerRadius(12));
     }
 
     [Fact]
-    public void Content_Replacement_Clears_Old_Scope_And_Publishes_New_Scope()
+    public void Inherit_False_Uses_The_Definition_Baseline_Instead_Of_Parent_Overrides()
     {
-        using var _ = UseThemeManager();
-        var first = new Border();
-        var second = new Border();
-        var provider = Provider(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
+        var manager = CreateInitializedManager();
+        var child = new ThemeConfigProvider
+        {
+            Config = new ThemeConfigBuilder().WithInherit(false).Build(),
+            Child = new Border()
+        };
+        var parent = new ThemeConfigProvider
+        {
+            Config = ConfigWithToken(nameof(DesignToken.BorderRadius), "12"),
+            Child = child
+        };
 
-        provider.Content = first;
-        Attach(provider);
-        FlushThemeUpdates();
-        GetSnapshot(first).ShouldNotBeNull();
+        using var root = Attach(manager, parent);
 
-        provider.Content = second;
-        FlushThemeUpdates();
-
-        GetSnapshot(first).ShouldBeNull();
-        GetSnapshot(second).ShouldBeSameAs(GetTokenResourceProvider(provider).Snapshot);
+        child.GetValue(ThemeScope.ContextProperty)
+             .ShouldNotBeNull()
+             .Snapshot.Global<CornerRadius>(nameof(DesignToken.BorderRadius))
+             .ShouldBe(new CornerRadius(6));
     }
 
     [Fact]
-    public void Compatibility_Token_Mutations_Do_Not_Change_Scoped_Snapshots_Or_Inheriting_Child()
+    public void Invalid_Config_Keeps_The_Published_Snapshot_And_Last_Valid_Config()
     {
-        using var _ = UseThemeManager();
-        var childContent = new Border();
-        var parent = Provider(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
-        var child = Provider();
-        parent.Content = child;
-        child.Content = childContent;
-        Attach(parent);
-        FlushThemeUpdates();
-        var parentSnapshot = GetSnapshot(child).ShouldNotBeNull();
-        var childSnapshot = GetSnapshot(childContent).ShouldNotBeNull();
-
-        parent.SharedToken.ColorPrimary = Color.Parse("#00b96b");
-        GetButtonToken(parent).Height = 44;
-
-        parentSnapshot.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
-        GetSnapshot(child).ShouldBeSameAs(parentSnapshot);
-        childSnapshot.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
-        GetSnapshot(childContent).ShouldBeSameAs(childSnapshot);
-        GetSnapshot(childContent)!.Controls.Values
-            .Single()
-            .ControlToken
-            .ShouldBeOfType<CompilerButtonToken>()
-            .Height
-            .ShouldBe(32);
-    }
-
-    [Fact]
-    public void Logical_Attach_Compiles_Synchronously_And_Logical_Remove_Cleans_And_Suspends_Updates()
-    {
-        using var _ = UseThemeManager();
-        var root = new LogicalTestRoot();
-        var firstContent = new Border();
+        var manager = CreateInitializedManager();
+        var valid = ConfigWithToken(nameof(DesignToken.ColorPrimary), "#ff0000");
         var provider = new ThemeConfigProvider
         {
-            Content = firstContent
+            Config = valid,
+            Child = new Border()
         };
-        provider.SharedTokenSetters.Add(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
+        using var root = Attach(manager, provider);
+        var context = provider.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull();
+        var snapshot = context.Snapshot;
+        ThemeChangeFailedEventArgs? failure = null;
+        provider.ThemeChangeFailed += (_, args) => failure = args;
 
-        root.Child = provider;
-        var publishedSnapshot = GetSnapshot(firstContent);
+        provider.Config = ConfigWithToken("MissingToken", "1");
 
-        publishedSnapshot.ShouldNotBeNull();
-        provider.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#ff0000"));
-        var publishedSharedToken = provider.SharedToken;
-        var publishedResourceProvider = GetTokenResourceProvider(provider);
-        var publishedProviderSnapshot = publishedResourceProvider.Snapshot;
-
-        root.Child = null;
-        GetSnapshot(firstContent).ShouldBeNull();
-
-        var secondContent = new Border();
-        provider.Content = secondContent;
-        provider.Inherit = false;
-        provider.SharedTokenSetters.Add(Token(nameof(DesignToken.ColorPrimary), "#00b96b"));
-        provider.ControlTokenInfoSetters.Add(ControlOverride(48));
-        FlushThemeUpdates();
-
-        GetSnapshot(secondContent).ShouldBeNull();
-        provider.SharedToken.ShouldBeSameAs(publishedSharedToken);
-        GetTokenResourceProvider(provider).ShouldBeSameAs(publishedResourceProvider);
-        publishedResourceProvider.Snapshot.ShouldBeSameAs(publishedProviderSnapshot);
-
-        root.Child = provider;
-
-        provider.SharedToken.ColorPrimary.ShouldBe(Color.Parse("#00b96b"));
-        GetButtonToken(provider).Height.ShouldBe(48);
-        GetSnapshot(secondContent).ShouldBeSameAs(GetTokenResourceProvider(provider).Snapshot);
+        failure.ShouldNotBeNull();
+        context.Snapshot.ShouldBeSameAs(snapshot);
+        manager.ScopeGraph.TryGetNode(provider, out var node).ShouldBeTrue();
+        node!.LastValidConfig.ShouldBeSameAs(valid);
     }
 
     [Fact]
-    public void Initial_Compile_Notifies_Once_After_Public_State_Is_Published()
+    public void Detach_And_Reattach_Uses_A_New_Registration_Without_Leaving_The_Old_Edge()
     {
-        using var _ = UseThemeManager();
-        var content = new Border();
+        var manager = CreateInitializedManager();
         var provider = new ThemeConfigProvider
         {
-            Content = content
+            Config = new ThemeConfigBuilder().Build(),
+            Child = new Border()
         };
-        provider.SharedTokenSetters.Add(Token(nameof(DesignToken.ColorPrimary), "#ff0000"));
-        var root = new LogicalTestRoot();
-        var notifications = 0;
-        ThemeSnapshot? notifiedSnapshot = null;
-        var wasCommittedAtNotification = true;
-        ((IResourceHost)provider).ResourcesChanged += (_, _) =>
-        {
-            var providerSnapshot = provider.Resources.MergedDictionaries
-                                           .OfType<ThemeTokenResourceProvider>()
-                                           .SingleOrDefault()
-                                           ?.Snapshot;
-            if (providerSnapshot is null || ReferenceEquals(providerSnapshot, notifiedSnapshot))
-            {
-                return;
-            }
+        var firstRoot = Attach(manager, provider);
+        manager.ScopeGraph.TryGetNode(provider, out var firstNode).ShouldBeTrue();
+        var firstId = firstNode!.RegistrationId;
 
-            notifiedSnapshot = providerSnapshot;
-            notifications++;
-            wasCommittedAtNotification &= GetSnapshot(content)?.SharedToken.ColorPrimary == Color.Parse("#ff0000") &&
-                                         provider.SharedToken.ColorPrimary == Color.Parse("#ff0000");
-        };
+        firstRoot.Child = null;
+        manager.ScopeGraph.TryGetNode(provider, out _).ShouldBeFalse();
+        using var secondRoot = Attach(manager, provider);
 
-        root.Child = provider;
-        FlushThemeUpdates();
-
-        notifications.ShouldBe(1);
-        wasCommittedAtNotification.ShouldBeTrue();
+        manager.ScopeGraph.TryGetNode(provider, out var secondNode).ShouldBeTrue();
+        secondNode!.RegistrationId.ShouldBeGreaterThan(firstId);
+        firstRoot.Dispose();
     }
 
-    private static ThemeConfigProvider Provider(params TokenSetter[] sharedTokenSetters)
+    [Fact]
+    public void Config_Replacement_Does_Not_Retain_The_Previous_Immutable_Config()
     {
+        var manager = CreateInitializedManager();
         var provider = new ThemeConfigProvider
         {
-            Content = new Border()
+            Child = new Border()
         };
-        foreach (var setter in sharedTokenSetters)
-        {
-            provider.SharedTokenSetters.Add(setter);
-        }
+        using var root = Attach(manager, provider);
 
-        FlushThemeUpdates();
-        return provider;
+        var oldConfig = SetTemporaryConfig(provider);
+        provider.Config = new ThemeConfigBuilder().Build();
+        Collect();
+
+        oldConfig.IsAlive.ShouldBeFalse();
     }
 
-    private static TokenSetter Token(string key, string value)
+    [Fact]
+    public void Detached_Provider_Context_And_Resource_Provider_Are_Collectible()
     {
-        return new TokenSetter(null, key, value);
+        var manager = CreateInitializedManager();
+        var references = AttachAndDetachTemporaryProvider(manager);
+
+        Collect();
+
+        references.Provider.IsAlive.ShouldBeFalse();
+        references.Context.IsAlive.ShouldBeFalse();
+        references.ResourceProvider.IsAlive.ShouldBeFalse();
     }
 
-    private static ControlTokenInfoSetter ControlOverride(double height)
+    private static ThemeManager CreateInitializedManager()
     {
-        var setter = new ControlTokenInfoSetter(CompilerButtonToken.ID);
-        setter.Setters.Add(new ControlTokenSetter
-        {
-            Key = nameof(CompilerButtonToken.Height),
-            Value = height.ToString(System.Globalization.CultureInfo.InvariantCulture)
-        });
-        return setter;
+        var prepared = CreatePrepared();
+        var manager = new ThemeManager(
+            static () => true,
+            (_, _, _) => ValueTask.FromResult(prepared));
+        manager.ApplyThemeAsync(
+                   new ThemeRequest("Test", null, ThemeTransitionReason.Startup))
+               .GetAwaiter()
+               .GetResult()
+               .Status.ShouldBe(ThemeTransitionStatus.Committed);
+        return manager;
     }
 
-    private static ThemeSnapshot? GetSnapshot(StyledElement element)
+    private static ThemeTransactionPreparation CreatePrepared()
     {
-        return element.GetValue(ThemeScope.SnapshotProperty);
+        var registry = TypedThemeSnapshotCacheTests.CreateRegistry();
+        var input = TypedThemeSnapshotCacheTests.CreateInput(registry);
+        var snapshot = new ThemeCompiler().Compile(input).Snapshot!;
+        return ThemeTransactionPreparation.Succeeded(snapshot, ThemeSnapshotCacheKey.Create(input));
+    }
+
+    private static ThemeConfig ConfigWithToken(string name, string value)
+    {
+        return new ThemeConfigBuilder().WithToken(name, value).Build();
     }
 
     private static ThemeTokenResourceProvider GetTokenResourceProvider(ThemeConfigProvider provider)
@@ -472,43 +210,64 @@ public class ThemeConfigProviderTests
                        .ShouldHaveSingleItem();
     }
 
-    private static CompilerButtonToken GetButtonToken(ThemeConfigProvider provider)
+    private static TestRoot Attach(ThemeManager manager, Control child)
     {
-        return provider.GetControlToken(CompilerButtonToken.ID)
-                       .ShouldBeOfType<CompilerButtonToken>();
-    }
-
-    private static IDisposable UseThemeManager()
-    {
-        var scope = AvaloniaLocator.EnterScope();
-        var manager = new ThemeManager();
-        manager.RegisterControlTokenType(typeof(CompilerButtonToken));
-        AvaloniaLocator.CurrentMutable.BindToSelf(manager);
-        return scope;
-    }
-
-    private static void FlushThemeUpdates()
-    {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            Dispatcher.UIThread.RunJobs();
-            return;
-        }
-
-        Dispatcher.UIThread.Invoke(static () => Dispatcher.UIThread.RunJobs());
-    }
-
-    private static LogicalTestRoot Attach(Control control)
-    {
-        var root = new LogicalTestRoot
-        {
-            Child = control
-        };
-        FlushThemeUpdates();
+        var root = new TestRoot();
+        root.SetValue(ThemeScope.ContextProperty, manager.RootContext);
+        root.Child = child;
         return root;
     }
 
-    private sealed class LogicalTestRoot : Decorator, ILogicalRoot
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static WeakReference SetTemporaryConfig(ThemeConfigProvider provider)
     {
+        var config = ConfigWithToken(nameof(DesignToken.ColorPrimary), "#ff0000");
+        provider.Config = config;
+        return new WeakReference(config);
     }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static CollectibleReferences AttachAndDetachTemporaryProvider(ThemeManager manager)
+    {
+        var root = new TestRoot();
+        root.SetValue(ThemeScope.ContextProperty, manager.RootContext);
+        var provider = new ThemeConfigProvider
+        {
+            Config = new ThemeConfigBuilder().Build(),
+            Child = new Border()
+        };
+        root.Child = provider;
+        var context = provider.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull();
+        var resourceProvider = context.ResourceProvider;
+        root.Child = null;
+        provider.Child = null;
+        return new CollectibleReferences(
+            new WeakReference(provider),
+            new WeakReference(context),
+            new WeakReference(resourceProvider));
+    }
+
+    private static void Collect()
+    {
+        for (var attempt = 0; attempt < 3; attempt++)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+    }
+
+    private sealed class TestRoot : Decorator, ILogicalRoot, IDisposable
+    {
+        public void Dispose()
+        {
+            Child = null;
+            ClearValue(ThemeScope.ContextProperty);
+        }
+    }
+
+    private sealed record CollectibleReferences(
+        WeakReference Provider,
+        WeakReference Context,
+        WeakReference ResourceProvider);
 }

@@ -2,12 +2,19 @@
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.Theme.Palette;
+namespace AtomUI.Theme.Algorithms;
 
-public class PaletteInfo
+public sealed class PaletteInfo
 {
-    public Color Primary { get; set; }
-    public IReadOnlyList<Color> ColorSequence { get; set; } = default!;
+    public PaletteInfo(Color primary, IEnumerable<Color> colorSequence)
+    {
+        ArgumentNullException.ThrowIfNull(colorSequence);
+        Primary       = primary;
+        ColorSequence = Array.AsReadOnly(colorSequence.ToArray());
+    }
+
+    public Color Primary { get; }
+    public IReadOnlyList<Color> ColorSequence { get; }
 }
 
 public static class PresetPalettes
@@ -58,20 +65,12 @@ public static class PresetPalettes
             if (isDark)
             {
                 var colorSequence = PaletteGenerator.GeneratePalette(presetColor.Color(), sm_darkPaletteOption);
-                target[presetColor] = new PaletteInfo
-                {
-                    Primary       = colorSequence[5],
-                    ColorSequence = colorSequence
-                };
+                target[presetColor] = new PaletteInfo(colorSequence[5], colorSequence);
             }
             else
             {
                 var colorSequence = PaletteGenerator.GeneratePalette(presetColor.Color());
-                target[presetColor] = new PaletteInfo
-                {
-                    Primary       = colorSequence[5],
-                    ColorSequence = colorSequence
-                };
+                target[presetColor] = new PaletteInfo(colorSequence[5], colorSequence);
             }
         }
     }

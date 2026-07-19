@@ -2,6 +2,9 @@
               xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:TreeViewThemeAsset.Identity}"
               x:Class="AtomUI.Desktop.Controls.Themes.TreeViewItemHeaderTheme"
               x:ClassModifier="internal">
     <Setter Property="Template">
@@ -89,17 +92,17 @@
         <Setter Property="MinHeight" Value="{atom:TreeViewTokenResource HeaderHeight}" />
         <Setter Property="Margin" Value="{atom:TreeViewTokenResource TreeItemMargin}" />
         <Setter Property="CornerRadius"
-                Value="{atom:TreeViewTokenSharedTokenResource BorderRadius}" />
+                Value="{atom:SharedTokenResource BorderRadius}" />
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-            <Setter Property="Height" Value="{atom:TreeViewTokenSharedTokenResource IconSize}" />
-            <Setter Property="Width" Value="{atom:TreeViewTokenSharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
             <Setter Property="Margin" Value="{atom:TreeViewTokenResource TreeNodeIconMargin}" />
         </Style>
 
         <Style Selector="^ /template/ Border#PART_HeaderContentFrame">
             <Setter Property="CornerRadius"
-                    Value="{atom:TreeViewTokenSharedTokenResource BorderRadius}" />
+                    Value="{atom:SharedTokenResource BorderRadius}" />
             <Setter Property="Margin" Value="{atom:TreeViewTokenResource TreeItemHeaderMargin}" />
             <Setter Property="Padding" Value="{atom:TreeViewTokenResource TreeItemHeaderPadding}" />
             <Setter Property="Cursor" Value="Hand" />
@@ -199,14 +202,14 @@
 
         <Style Selector="^[IsDragging=True]">
             <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
-                <Setter Property="BorderBrush" Value="{atom:TreeViewTokenSharedTokenResource ColorPrimary}" />
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
                 <Setter Property="Foreground"
-                        Value="{atom:TreeViewTokenSharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
                 <Setter Property="Opacity" Value="0.3" />
@@ -219,7 +222,7 @@
                 <Style Selector="^[IsSelectable=True]">
                     <Style Selector="^[IsSelected=True]">
                         <Setter Property="ContentFrameBackground"
-                                Value="{atom:TreeViewTokenSharedTokenResource ColorBgContainerDisabled}" />
+                                Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
                     </Style>
                 </Style>
             </Style>
@@ -228,7 +231,7 @@
                 <Style Selector="^[IsSelectable=True]">
                     <Style Selector="^[IsSelected=True]">
                         <Setter Property="Background"
-                                Value="{atom:TreeViewTokenSharedTokenResource ColorBgContainerDisabled}" />
+                                Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
                     </Style>
                 </Style>
             </Style>

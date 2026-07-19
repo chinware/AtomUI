@@ -72,5 +72,4 @@ internal class ProgressBarToken : AbstractControlDesignToken
         LineProgressPadding       = SharedToken.UniformlyPaddingXXS / 2;
     }
     
-    protected override Type GetTokenKindType() => typeof(ProgressBarTokenKind);
 }

@@ -8,23 +8,20 @@ internal sealed class ThemeAlgorithmInfo
 
     internal ThemeAlgorithmInfo(
         string id,
+        int revision,
         string appearanceEffect,
-        string typeName,
-        bool requiresBase,
-        string? baseParameterType)
+        string typeName)
     {
         Id = id;
+        Revision = revision;
         AppearanceEffect = appearanceEffect;
         TypeName = typeName;
-        RequiresBase = requiresBase;
-        BaseParameterType = baseParameterType;
     }
 
     public string Id { get; }
+    public int Revision { get; }
     public string AppearanceEffect { get; }
     public string TypeName { get; }
-    public bool RequiresBase { get; }
-    public string? BaseParameterType { get; }
 
     internal static ThemeAlgorithmInfo? Create(GeneratorAttributeSyntaxContext context)
     {
@@ -38,14 +35,16 @@ internal sealed class ThemeAlgorithmInfo
 
         var attribute = context.Attributes.FirstOrDefault();
         if (attribute is null ||
-            attribute.ConstructorArguments.Length != 2 ||
+            attribute.ConstructorArguments.Length != 3 ||
             attribute.ConstructorArguments[0].Value is not string id ||
-            string.IsNullOrWhiteSpace(id))
+            string.IsNullOrWhiteSpace(id) ||
+            attribute.ConstructorArguments[1].Value is not int revision ||
+            revision <= 0)
         {
             return null;
         }
 
-        var appearanceValue = attribute.ConstructorArguments[1].Value switch
+        var appearanceValue = attribute.ConstructorArguments[2].Value switch
         {
             byte value  => value,
             short value => value,
@@ -71,27 +70,12 @@ internal sealed class ThemeAlgorithmInfo
         {
             return new ThemeAlgorithmInfo(
                 id,
+                revision,
                 appearance,
-                type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                false,
-                null);
+                type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
         }
 
-        var composite = type.InstanceConstructors.FirstOrDefault(static constructor =>
-            constructor.DeclaredAccessibility == Accessibility.Public &&
-            constructor.Parameters.Length == 1 &&
-            ImplementsThemeAlgorithm(constructor.Parameters[0].Type));
-        if (composite is null)
-        {
-            return null;
-        }
-
-        return new ThemeAlgorithmInfo(
-            id,
-            appearance,
-            type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-            true,
-            composite.Parameters[0].Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+        return null;
     }
 
     private static bool ImplementsThemeAlgorithm(ITypeSymbol type)

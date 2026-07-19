@@ -76,5 +76,4 @@ internal class BreadcrumbToken : AbstractControlDesignToken
             SharedToken.UniformlyPaddingXXS, SharedToken.UniformlyPaddingXXS);
     }
     
-    protected override Type GetTokenKindType() => typeof(BreadcrumbTokenKind);
 }

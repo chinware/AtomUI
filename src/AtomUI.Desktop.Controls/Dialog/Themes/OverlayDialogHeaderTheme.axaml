@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DialogThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:OverlayDialogHeader}" TargetType="atom:OverlayDialogHeader">
@@ -10,7 +13,7 @@
                 <Border Name="HeaderFrame" Padding="{TemplateBinding Padding}"
                         Background="{TemplateBinding Background}">
                     <DockPanel LastChildFill="True"
-                               HorizontalSpacing="{atom:DialogTokenSharedTokenResource SpacingSM}">
+                               HorizontalSpacing="{atom:SharedTokenResource SpacingSM}">
                         <atom:IconPresenter Name="IconPresenter" DockPanel.Dock="Left"
                                             Icon="{TemplateBinding Logo}"
                                             IsVisible="{TemplateBinding Logo, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -47,8 +50,8 @@
         <Style Selector="^ /template/ atom|DialogCaptionButton">
             <Setter Property="Width" Value="{atom:DialogTokenResource CloseBtnSize}" />
             <Setter Property="Height" Value="{atom:DialogTokenResource CloseBtnSize}" />
-            <Setter Property="IconWidth" Value="{atom:DialogTokenSharedTokenResource IconSize}" />
-            <Setter Property="IconHeight" Value="{atom:DialogTokenSharedTokenResource IconSize}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
         </Style>
 
         <Style Selector="^ /template/ TextBlock#Title">

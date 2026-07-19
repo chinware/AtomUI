@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SeparatorThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Separator}" TargetType="atom:Separator">
         <Setter Property="Template">
@@ -17,22 +20,22 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="TitleColor" Value="{atom:SeparatorTokenSharedTokenResource ColorTextHeading}" />
-        <Setter Property="LineColor" Value="{atom:SeparatorTokenSharedTokenResource ColorSplit}" />
+        <Setter Property="TitleColor" Value="{atom:SharedTokenResource ColorTextHeading}" />
+        <Setter Property="LineColor" Value="{atom:SharedTokenResource ColorSplit}" />
         
         <Setter Property="TextPaddingInline" Value="{atom:SeparatorTokenResource TextPaddingInline}" />
         <Setter Property="OrientationMarginPercent" Value="{atom:SeparatorTokenResource OrientationMarginPercent}" />
-        <Setter Property="LineWidth" Value="{atom:SeparatorTokenSharedTokenResource LineWidth}" />
+        <Setter Property="LineWidth" Value="{atom:SharedTokenResource LineWidth}" />
         
         <Style Selector="^[IsPlain=True]">
             <Style Selector="^ /template/ atom|TextBlock#PART_Title">
-                <Setter Property="FontSize" Value="{atom:SeparatorTokenSharedTokenResource FontSize}" />
+                <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
                 <Setter Property="FontWeight" Value="Normal" />
             </Style>
         </Style>
         <Style Selector="^[IsPlain=False]">
             <Style Selector="^ /template/ atom|TextBlock#PART_Title">
-                <Setter Property="FontSize" Value="{atom:SeparatorTokenSharedTokenResource FontSizeLG}" />
+                <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeLG}" />
                 <Setter Property="FontWeight" Value="500" />
             </Style>
         </Style>

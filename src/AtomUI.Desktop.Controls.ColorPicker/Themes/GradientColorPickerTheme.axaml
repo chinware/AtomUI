@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_ColorPicker"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ColorPickerThemeAsset.Identity}"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:GradientColorPicker}" TargetType="atom:GradientColorPicker">
@@ -52,17 +55,17 @@
         </Setter>
 
         <Setter Property="InactiveStopTextColor"
-                Value="{atom:ColorPickerTokenSharedTokenResource ColorTextDisabled}" />
+                Value="{atom:SharedTokenResource ColorTextDisabled}" />
         <Style Selector="^ /template/ WrapPanel#PART_ColorTextPanel">
             <Setter Property="TextElement.Foreground"
-                    Value="{atom:ColorPickerTokenSharedTokenResource ColorText}" />
+                    Value="{atom:SharedTokenResource ColorText}" />
             <Setter Property="Margin" Value="{atom:ColorPickerTokenResource TriggerTextMargin}" />
         </Style>
 
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ TextBlock#PART_ColorTextPanel">
                 <Setter Property="Foreground"
-                        Value="{atom:ColorPickerTokenSharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
     </ControlTheme>

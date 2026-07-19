@@ -13,6 +13,17 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class MasonryShowCasePageTests
 {
     [Fact]
+    public void Masonry_ShowCase_Image_State_Binding_Is_Aot_Safe()
+    {
+        var source = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml.cs");
+
+        source.ShouldContain("BindUtils.RelayBind");
+        source.ShouldNotContain("new Binding");
+        source.ShouldNotContain("Path      = nameof(Image.Source)");
+    }
+
+    [Fact]
     public void Masonry_ShowCase_Basic_Demo_Matches_Ant_Design_Structure()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml");

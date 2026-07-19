@@ -72,5 +72,4 @@ internal class FloatButtonToken : AbstractControlDesignToken
         CircleBadgeOffset = SharedToken.ControlHeight / 2 * offsetR;
     }
     
-    protected override Type GetTokenKindType() => typeof(FloatButtonTokenKind);
 }

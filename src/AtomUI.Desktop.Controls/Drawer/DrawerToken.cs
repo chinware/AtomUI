@@ -201,5 +201,4 @@ internal class DrawerToken : AbstractControlDesignToken
         PushOffsetPercent = 0.4;
     }
     
-    protected override Type GetTokenKindType() => typeof(DrawerTokenKind);
 }

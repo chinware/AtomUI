@@ -1,6 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:TreeFlyoutThemeAsset.Identity}"
               x:Class="AtomUI.Desktop.Controls.Themes.TreeViewFlyoutPresenterTheme"
               TargetType="atom:TreeViewFlyoutPresenter"
               x:ClassModifier="internal">
@@ -20,7 +23,7 @@
     </Setter>
     
     <Style Selector="^:is(atom|TreeViewFlyoutPresenter)">
-        <Setter Property="IsMotionEnabled" Value="{atom:TreeFlyoutTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="CornerRadius" Value="{atom:PopupHostTokenResource BorderRadius}" />
         <Setter Property="Padding" Value="{atom:TreeFlyoutTokenResource PopupContentPadding}" />
         

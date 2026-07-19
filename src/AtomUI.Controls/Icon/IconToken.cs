@@ -50,5 +50,4 @@ internal class IconToken : AbstractControlDesignToken
         StrokeLineJoin       = PenLineJoin.Round;
     }
     
-    protected override Type GetTokenKindType() => typeof(IconTokenKind);
 }

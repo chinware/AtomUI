@@ -1,11 +1,10 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
-using AtomUI.Theme.Definitions;
+using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Shouldly;
 using Xunit;
 
@@ -14,8 +13,6 @@ namespace AtomUI.Core.Tests.Theme;
 [Collection(ThemeConfigProviderTestCollection.Name)]
 public class ThemeTokenResourceProviderTests
 {
-    private static readonly ControlTokenIdentity s_buttonIdentity = new(null, CompilerButtonToken.ID);
-
     [Fact]
     public void ControlShared_Key_Resolves_Private_Value_Without_Changing_Global()
     {
@@ -24,7 +21,7 @@ public class ThemeTokenResourceProviderTests
 
         provider.TryGetResource(SharedTokenKind.ColorPrimary, null, out var global).ShouldBeTrue();
         provider.TryGetResource(
-            new ControlSharedTokenResourceKey(null, CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
+            BoundKey(snapshot, "AtomUI", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
             null,
             out var control).ShouldBeTrue();
 
@@ -39,7 +36,7 @@ public class ThemeTokenResourceProviderTests
 
         provider.TryGetResource(SharedTokenKind.ColorPrimary, null, out var global).ShouldBeTrue();
         provider.TryGetResource(
-            new ControlSharedTokenResourceKey(null, CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
+            BoundKey(snapshot, "AtomUI", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
             null,
             out var control).ShouldBeTrue();
 
@@ -49,28 +46,15 @@ public class ThemeTokenResourceProviderTests
     [Fact]
     public void ControlShared_Key_Uses_Catalog_As_Part_Of_Control_Identity()
     {
-        var first = CompileButtonPrimary("#00b96b");
-        var second = CompileButtonPrimary("#ff4d4f");
-        var snapshot = new ThemeSnapshot(
-            first.Id,
-            first.Version,
-            first.Algorithms,
-            first.IsDark,
-            first.SharedToken,
-            first.SharedResources,
-            new Dictionary<ControlTokenIdentity, ControlThemeSnapshot>
-            {
-                [new ControlTokenIdentity("First", CompilerButtonToken.ID)] = first.Controls[s_buttonIdentity],
-                [new ControlTokenIdentity("Second", CompilerButtonToken.ID)] = second.Controls[s_buttonIdentity]
-            });
+        var snapshot = CompileCatalogControls();
         var provider = new ThemeTokenResourceProvider(snapshot);
 
         provider.TryGetResource(
-            new ControlSharedTokenResourceKey("First", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
+            BoundKey(snapshot, "First", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
             null,
             out var firstValue).ShouldBeTrue();
         provider.TryGetResource(
-            new ControlSharedTokenResourceKey("Second", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
+            BoundKey(snapshot, "Second", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary),
             null,
             out var secondValue).ShouldBeTrue();
 
@@ -87,22 +71,22 @@ public class ThemeTokenResourceProviderTests
         foreach (var (parentControl, childControl) in CrossControlPairs)
         {
             provider.TryGetResource(
-                new ControlSharedTokenResourceKey(null, parentControl, SharedTokenKind.ColorPrimary),
+                BoundKey(snapshot, "AtomUI", parentControl, SharedTokenKind.ColorPrimary),
                 null,
                 out var parentPrimary).ShouldBeTrue();
             provider.TryGetResource(
-                new ControlSharedTokenResourceKey(null, childControl, SharedTokenKind.ColorPrimary),
+                BoundKey(snapshot, "AtomUI", childControl, SharedTokenKind.ColorPrimary),
                 null,
                 out var childPrimary).ShouldBeTrue();
 
             parentPrimary.ShouldNotBe(childPrimary);
 
             provider.TryGetResource(
-                new ControlSharedTokenResourceKey(null, parentControl, SharedTokenKind.ColorInfo),
+                BoundKey(snapshot, "AtomUI", parentControl, SharedTokenKind.ColorInfo),
                 null,
                 out var parentInfo).ShouldBeTrue();
             provider.TryGetResource(
-                new ControlSharedTokenResourceKey(null, childControl, SharedTokenKind.ColorInfo),
+                BoundKey(snapshot, "AtomUI", childControl, SharedTokenKind.ColorInfo),
                 null,
                 out var childInfo).ShouldBeTrue();
 
@@ -112,35 +96,13 @@ public class ThemeTokenResourceProviderTests
     }
 
     [Fact]
-    public void ControlShared_Key_Normalizes_Empty_Catalog_To_Null()
+    public void ControlShared_Key_Is_Boxed_Once_Per_Registry_Slot()
     {
-        var emptyCatalog = new ControlSharedTokenResourceKey(
-            string.Empty,
-            CompilerButtonToken.ID,
-            SharedTokenKind.ColorPrimary);
-        var noCatalog = new ControlSharedTokenResourceKey(
-            null,
-            CompilerButtonToken.ID,
-            SharedTokenKind.ColorPrimary);
+        var snapshot = Compile();
+        var first = BoundKey(snapshot, "AtomUI", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary);
+        var second = BoundKey(snapshot, "AtomUI", CompilerButtonToken.ID, SharedTokenKind.ColorPrimary);
 
-        emptyCatalog.ShouldBe(noCatalog);
-    }
-
-    [Fact]
-    public void ControlShared_Extension_Produces_Normalized_Dynamic_Resource_Key()
-    {
-        var extension = new ControlSharedTokenResourceExtension(
-            string.Empty,
-            CompilerButtonToken.ID,
-            SharedTokenKind.ColorPrimary);
-
-        var dynamicResource = extension.ProvideValue(null!).ShouldBeOfType<DynamicResourceExtension>();
-
-        dynamicResource.ResourceKey.ShouldBe(
-            new ControlSharedTokenResourceKey(
-                ControlDesignTokenAttribute.DefaultCatalog,
-                CompilerButtonToken.ID,
-                SharedTokenKind.ColorPrimary));
+        first.ShouldBeSameAs(second);
     }
 
     [Fact]
@@ -151,7 +113,9 @@ public class ThemeTokenResourceProviderTests
         provider.TryGetResource("Missing", null, out var unknownResource).ShouldBeFalse();
         unknownResource.ShouldBeNull();
         provider.TryGetResource(
-            new ControlSharedTokenResourceKey(null, "Missing", SharedTokenKind.ColorPrimary),
+            ControlSharedTokenResourceKey.Unbound(
+                new AtomUI.Theme.Schema.ControlTokenIdentity("AtomUI", "Missing"),
+                SharedTokenKind.ColorPrimary),
             null,
             out var unknownControl).ShouldBeFalse();
         unknownControl.ShouldBeNull();
@@ -209,60 +173,32 @@ public class ThemeTokenResourceProviderTests
         notifications.ShouldBe(1);
     }
 
-    private static ThemeSnapshot Compile(string? globalPrimary = null)
+    internal static ThemeSnapshot Compile(string? globalPrimary = null)
     {
-        var sharedOverrides = globalPrimary is null
-            ? new Dictionary<string, string>()
-            : Tokens((nameof(DesignToken.ColorPrimary), globalPrimary));
-        var definition = new ThemeDefinition(
-            "TestTheme",
-            "Test Theme",
-            false,
-            [ThemeAlgorithm.Default],
-            new Dictionary<string, string>(),
-            new Dictionary<string, ThemeControlTokenDefinition>());
-        var result = new ThemeCompiler().Compile(new ThemeCompileRequest(
-            "TestTheme",
-            definition,
-            null,
-            [ThemeAlgorithm.Default],
-            sharedOverrides,
-            new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>(),
-            [new ControlTokenRegistration(typeof(CompilerButtonToken))],
-            new Dictionary<string, string>()));
-
-        result.Success.ShouldBeTrue();
-        return result.Snapshot!;
+        var builder = new ThemeConfigBuilder();
+        if (globalPrimary is not null)
+        {
+            builder.WithToken(nameof(DesignToken.ColorPrimary), globalPrimary);
+        }
+        return ThemeTestSnapshotFactory.Compile(
+            builder.Build(),
+            ThemeCompilerTests.CreateCompilerButtonDescriptor());
     }
 
     private static ThemeSnapshot CompileButtonPrimary(string primary)
     {
-        var definition = new ThemeDefinition(
-            "TestTheme",
-            "Test Theme",
-            false,
-            [ThemeAlgorithm.Default],
-            new Dictionary<string, string>(),
-            new Dictionary<string, ThemeControlTokenDefinition>
-            {
-                [CompilerButtonToken.ID] = new ThemeControlTokenDefinition(
-                    CompilerButtonToken.ID,
-                    false,
-                    new Dictionary<string, string>(),
-                    Tokens((nameof(DesignToken.ColorPrimary), primary)))
-            });
-        var result = new ThemeCompiler().Compile(new ThemeCompileRequest(
-            "TestTheme",
-            definition,
-            null,
-            [ThemeAlgorithm.Default],
-            new Dictionary<string, string>(),
-            new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>(),
-            [new ControlTokenRegistration(typeof(CompilerButtonToken))],
-            new Dictionary<string, string>()));
-
-        result.Success.ShouldBeTrue();
-        return result.Snapshot!;
+        var identity = new AtomUI.Theme.Schema.ControlTokenIdentity("AtomUI", CompilerButtonToken.ID);
+        var config = new ThemeConfigBuilder()
+                     .WithControl(
+                         identity,
+                         new ControlThemeConfigBuilder()
+                             .WithAlgorithm(ControlAlgorithmMode.Disabled)
+                             .WithToken(nameof(DesignToken.ColorPrimary), primary)
+                             .Build())
+                     .Build();
+        return ThemeTestSnapshotFactory.Compile(
+            config,
+            ThemeCompilerTests.CreateCompilerButtonDescriptor());
     }
 
     private static ThemeSnapshot CompileCrossControlSnapshot()
@@ -278,42 +214,68 @@ public class ThemeTokenResourceProviderTests
             [CompilerDialogToken.ID] = "#eb2f96",
             [CompilerDataGridToken.ID] = "#52c41a"
         };
-        var controlTokens = controlSharedOverrides.ToDictionary(
-            entry => entry.Key,
-            entry => new ThemeControlTokenDefinition(
-                entry.Key,
-                false,
-                new Dictionary<string, string>(),
-                Tokens((nameof(DesignToken.ColorPrimary), entry.Value))),
-            StringComparer.Ordinal);
-        var definition = new ThemeDefinition(
-            "TestTheme",
-            "Test Theme",
-            false,
-            [ThemeAlgorithm.Default],
-            new Dictionary<string, string>(),
-            controlTokens);
-        var result = new ThemeCompiler().Compile(new ThemeCompileRequest(
-            "TestTheme",
-            definition,
-            null,
-            [ThemeAlgorithm.Default],
-            Tokens((nameof(DesignToken.ColorInfo), "#722ed1")),
-            new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>(),
-            [
-                new ControlTokenRegistration(typeof(CompilerButtonToken)),
-                new ControlTokenRegistration(typeof(CompilerIconToken)),
-                new ControlTokenRegistration(typeof(CompilerLineEditToken)),
-                new ControlTokenRegistration(typeof(CompilerAddOnDecoratedBoxToken)),
-                new ControlTokenRegistration(typeof(CompilerSelectToken)),
-                new ControlTokenRegistration(typeof(CompilerDatePickerToken)),
-                new ControlTokenRegistration(typeof(CompilerDialogToken)),
-                new ControlTokenRegistration(typeof(CompilerDataGridToken))
-            ],
-            new Dictionary<string, string>()));
+        var descriptors = new[]
+        {
+            ThemeCompilerTests.CreateCompilerButtonDescriptor(),
+            CreateCrossControlDescriptor(CompilerIconToken.ID, static () => new CompilerIconToken()),
+            CreateCrossControlDescriptor(CompilerLineEditToken.ID, static () => new CompilerLineEditToken()),
+            CreateCrossControlDescriptor(CompilerAddOnDecoratedBoxToken.ID, static () => new CompilerAddOnDecoratedBoxToken()),
+            CreateCrossControlDescriptor(CompilerSelectToken.ID, static () => new CompilerSelectToken()),
+            CreateCrossControlDescriptor(CompilerDatePickerToken.ID, static () => new CompilerDatePickerToken()),
+            CreateCrossControlDescriptor(CompilerDialogToken.ID, static () => new CompilerDialogToken()),
+            CreateCrossControlDescriptor(CompilerDataGridToken.ID, static () => new CompilerDataGridToken())
+        };
+        var builder = new ThemeConfigBuilder()
+                      .WithToken(nameof(DesignToken.ColorInfo), "#722ed1");
+        foreach (var entry in controlSharedOverrides)
+        {
+            builder.WithControl(
+                new AtomUI.Theme.Schema.ControlTokenIdentity("AtomUI", entry.Key),
+                new ControlThemeConfigBuilder()
+                    .WithAlgorithm(ControlAlgorithmMode.Disabled)
+                    .WithToken(nameof(DesignToken.ColorPrimary), entry.Value)
+                    .Build());
+        }
+        return ThemeTestSnapshotFactory.Compile(builder.Build(), descriptors);
+    }
 
-        result.Success.ShouldBeTrue();
-        return result.Snapshot!;
+    internal static ThemeSnapshot CompileCatalogControls()
+    {
+        var first = CreateCrossControlDescriptor(
+            CompilerButtonToken.ID,
+            static () => new CompilerButtonToken(),
+            "First");
+        var second = CreateCrossControlDescriptor(
+            CompilerButtonToken.ID,
+            static () => new CompilerButtonToken(),
+            "Second");
+        var config = new ThemeConfigBuilder()
+                     .WithControl(
+                         first.Identity,
+                         new ControlThemeConfigBuilder()
+                             .WithAlgorithm(ControlAlgorithmMode.Disabled)
+                             .WithToken(nameof(DesignToken.ColorPrimary), "#00b96b")
+                             .Build())
+                     .WithControl(
+                         second.Identity,
+                         new ControlThemeConfigBuilder()
+                             .WithAlgorithm(ControlAlgorithmMode.Disabled)
+                             .WithToken(nameof(DesignToken.ColorPrimary), "#ff4d4f")
+                             .Build())
+                     .Build();
+        return ThemeTestSnapshotFactory.Compile(config, first, second);
+    }
+
+    private static AtomUI.Theme.Schema.ControlTokenDescriptor CreateCrossControlDescriptor(
+        string id,
+        Func<AbstractControlDesignToken> factory,
+        string catalog = ControlDesignTokenAttribute.DefaultCatalog)
+    {
+        return new AtomUI.Theme.Schema.ControlTokenDescriptor(
+            new AtomUI.Theme.Schema.ControlTokenIdentity(catalog, id),
+            Array.Empty<AtomUI.Theme.Schema.TokenDescriptor>(),
+            factory,
+            static (token, appearance) => token.CalculateTokenValues(appearance == ThemeAppearance.Dark));
     }
 
     private static readonly (string ParentControl, string ChildControl)[] CrossControlPairs =
@@ -326,9 +288,15 @@ public class ThemeTokenResourceProviderTests
         (CompilerDataGridToken.ID, CompilerButtonToken.ID)
     ];
 
-    private static Dictionary<string, string> Tokens(params (string Name, string Value)[] values)
+    private static object BoundKey(
+        ThemeSnapshot snapshot,
+        string catalog,
+        string id,
+        SharedTokenKind kind)
     {
-        return values.ToDictionary(value => value.Name, value => value.Value, StringComparer.Ordinal);
+        return snapshot.Registry.GetControlSharedResourceKey(
+            new AtomUI.Theme.Schema.ControlTokenIdentity(catalog, id),
+            kind);
     }
 }
 
@@ -344,11 +312,6 @@ internal abstract class CrossControlCompilerToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         Height = SharedToken.ControlHeight;
-    }
-
-    protected override Type GetTokenKindType()
-    {
-        return typeof(CompilerButtonTokenKind);
     }
 }
 

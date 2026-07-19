@@ -2,6 +2,9 @@
               xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:WindowTitleBarThemeAsset.Identity}"
               x:Class="AtomUI.Desktop.Controls.Themes.WindowTitleBarTheme">
     <Style Selector="^[OsType=Linux]">
         <Setter Property="Template">
@@ -147,7 +150,7 @@
     </Style>
 
     <Style Selector="^:is(atom|WindowTitleBar)">
-        <Setter Property="IsMotionEnabled" Value="{atom:WindowTitleBarTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="Padding" Value="{atom:WindowTitleBarTokenResource TitleBarPadding}" />
         <Setter Property="Height" Value="{atom:WindowTitleBarTokenResource Height}" />
 
@@ -159,7 +162,7 @@
             <Setter Property="Foreground" Value="{atom:WindowTitleBarTokenResource InactiveColor}" />
         </Style>
 
-        <Setter Property="Background" Value="{atom:WindowTitleBarTokenSharedTokenResource ColorBgContainer}" />
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
 
         <Style Selector="^ /template/ ContentPresenter#PART_Logo">
             <Setter Property="Width" Value="{atom:WindowTitleBarTokenResource LogoSize}" />

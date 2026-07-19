@@ -1,6 +1,6 @@
 namespace AtomUI.Theme.Definitions;
 
-internal enum ThemeDiagnosticSeverity
+internal enum ThemeDefinitionDiagnosticSeverity
 {
     Warning,
     Error
@@ -8,7 +8,7 @@ internal enum ThemeDiagnosticSeverity
 
 internal sealed record ThemeDefinitionDiagnostic(
     string Code,
-    ThemeDiagnosticSeverity Severity,
+    ThemeDefinitionDiagnosticSeverity Severity,
     string FilePath,
     int Line,
     int Column,

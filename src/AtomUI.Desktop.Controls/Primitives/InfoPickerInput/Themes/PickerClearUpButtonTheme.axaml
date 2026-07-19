@@ -1,7 +1,10 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:InfoPickerInputThemeAsset.Identity}">
     <ControlTheme x:Key="{x:Type atom:PickerClearUpButton}" TargetType="atom:PickerClearUpButton">
         <Setter Property="Template">
             <ControlTemplate>
@@ -28,14 +31,14 @@
         </Setter>
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_InfoIconPresenter">
-            <Setter Property="Width" Value="{atom:InfoPickerInputTokenSharedTokenResource IconSize}" />
-            <Setter Property="Height" Value="{atom:InfoPickerInputTokenSharedTokenResource IconSize}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
             <Setter Property="IconBrush"
-                    Value="{atom:InfoPickerInputTokenSharedTokenResource ColorTextQuaternary}" />
+                    Value="{atom:SharedTokenResource ColorTextQuaternary}" />
         </Style>
 
         <Style Selector="^ /template/ StackPanel#IconLayout">
-            <Setter Property="Spacing" Value="{atom:InfoPickerInputTokenSharedTokenResource SpacingXS}" />
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}" />
         </Style>
 
     </ControlTheme>

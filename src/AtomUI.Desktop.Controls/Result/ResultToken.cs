@@ -72,5 +72,4 @@ internal class ResultToken : AbstractControlDesignToken
         FramePadding      = new Thickness(SharedToken.UniformlyPaddingLG * 2, SharedToken.UniformlyMarginXL);
     }
     
-    protected override Type GetTokenKindType() => typeof(ResultTokenKind);
 }

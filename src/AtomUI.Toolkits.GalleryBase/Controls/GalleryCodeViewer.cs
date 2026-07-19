@@ -55,7 +55,6 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
     private Application? _subscribedApplication;
     private IThemeManager? _subscribedThemeManager;
     private IDisposable? _editorBoundsSubscription;
-    private IDisposable? _themeVariantSubscription;
     private ThemeName? _currentSyntaxTheme;
     private bool _isScrollBarInsetUpdatePending;
     private bool _isUpdatingScrollBarInset;
@@ -214,7 +213,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         ApplySyntaxTheme();
     }
 
-    private void HandleThemeManagerThemeVariantChanged(ThemeVariant themeVariant)
+    private void HandleThemeManagerThemeChanged(object? sender, ThemeChangedEventArgs args)
     {
         ApplySyntaxTheme();
     }
@@ -480,7 +479,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             return false;
         }
 
-        return Application.Current?.IsDarkThemeMode() == true;
+        return Application.Current?.GetThemeManager()?.CurrentTheme?.Appearance == ThemeAppearance.Dark;
     }
 
     private void SubscribeThemeVariantChanges()
@@ -503,9 +502,10 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         }
 
         _subscribedThemeManager = themeManager;
-        _themeVariantSubscription = themeManager?.BindingSource
-                                                .GetObservable(IThemeManager.ThemeVariantProperty)
-                                                .Subscribe(HandleThemeManagerThemeVariantChanged);
+        if (_subscribedThemeManager is not null)
+        {
+            _subscribedThemeManager.ThemeChanged += HandleThemeManagerThemeChanged;
+        }
     }
 
     private void ReleaseThemeVariantSubscriptions()
@@ -516,8 +516,10 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             _subscribedApplication = null;
         }
 
-        _themeVariantSubscription?.Dispose();
-        _themeVariantSubscription = null;
+        if (_subscribedThemeManager is not null)
+        {
+            _subscribedThemeManager.ThemeChanged -= HandleThemeManagerThemeChanged;
+        }
         _subscribedThemeManager = null;
     }
 
@@ -837,6 +839,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             if (NeedsLineTokenization(editorModel, tmModel, startLine, endLine))
             {
                 IncludePendingVisibleLineRange(startLine, endLine);
+                QueueVisibleLineTokenizationRetry();
                 return;
             }
 

@@ -68,5 +68,4 @@ internal class CarouselToken : AbstractControlDesignToken
         PaginationOffset     = 12;
     }
     
-    protected override Type GetTokenKindType() => typeof(CarouselTokenKind);
 }

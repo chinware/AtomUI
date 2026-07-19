@@ -1,7 +1,10 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:FormThemeAsset.Identity}">
     <ControlTheme x:Key="{x:Type atom:FormItemDecorator}" TargetType="atom:FormItemDecorator">
         <Setter Property="Template">
             <ControlTemplate>
@@ -25,7 +28,7 @@
         </Setter>
 
         <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="ItemSpacing" Value="{atom:FormTokenSharedTokenResource SpacingXS}" />
+        <Setter Property="ItemSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
         
     </ControlTheme>
 </ResourceDictionary>

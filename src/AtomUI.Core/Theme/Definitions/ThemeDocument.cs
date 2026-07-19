@@ -2,12 +2,6 @@ using AtomUI.Theme.Configuration;
 
 namespace AtomUI.Theme.Definitions;
 
-internal enum ThemeAppearance : byte
-{
-    Light,
-    Dark
-}
-
 internal readonly record struct ThemeSourceLocation(
     string Source,
     int Line,
@@ -98,5 +92,6 @@ internal sealed class ThemeDocumentReadResult
 
     public bool Success =>
         Document is not null &&
-        Diagnostics.All(static diagnostic => diagnostic.Severity != ThemeDiagnosticSeverity.Error);
+        Diagnostics.All(static diagnostic =>
+            diagnostic.Severity != ThemeDefinitionDiagnosticSeverity.Error);
 }

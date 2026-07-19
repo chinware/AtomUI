@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DrawerThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:DrawerContainer}" TargetType="atom:DrawerContainer">
         <Setter Property="Template">
@@ -37,9 +40,9 @@
         </Setter>
         
         <Setter Property="MotionDuration"
-                Value="{atom:DrawerTokenSharedTokenResource MotionDurationSlow}" />
+                Value="{atom:SharedTokenResource MotionDurationSlow}" />
         <Setter Property="Background"
-                Value="{atom:DrawerTokenSharedTokenResource ColorBgMask}" />
+                Value="{atom:SharedTokenResource ColorBgMask}" />
 
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">

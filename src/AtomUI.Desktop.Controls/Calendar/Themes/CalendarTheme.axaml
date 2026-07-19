@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:CalendarThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Calendar}" TargetType="atom:Calendar">
         <Setter Property="Template">
@@ -21,11 +24,11 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="IsMotionEnabled" Value="{atom:CalendarTokenSharedTokenResource EnableMotion}"/>
-        <Setter Property="BorderBrush" Value="{atom:CalendarTokenSharedTokenResource ColorBorder}"/>
-        <Setter Property="BorderThickness" Value="{atom:CalendarTokenSharedTokenResource BorderThickness}"/>
-        <Setter Property="CornerRadius" Value="{atom:CalendarTokenSharedTokenResource BorderRadius}"/>
-        <Setter Property="Background" Value="{atom:CalendarTokenSharedTokenResource ColorBgContainer}"/>
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}"/>
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}"/>
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}"/>
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}"/>
         <Setter Property="Padding" Value="{atom:CalendarTokenResource PanelContentPadding}"/>
         <Setter Property="MinWidth" Value="{atom:CalendarTokenResource ItemPanelMinWidth}"/>
         <Setter Property="MinHeight" Value="{atom:CalendarTokenResource ItemPanelMinHeight}"/>

@@ -66,5 +66,4 @@ internal class SpinToken : AbstractControlDesignToken
         IndicatorSizeLG   = indicatorSizeLG + 4;
     }
     
-    protected override Type GetTokenKindType() => typeof(SpinTokenKind);
 }

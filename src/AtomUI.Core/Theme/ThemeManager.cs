@@ -1,62 +1,26 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using AtomUI.Controls;
-using AtomUI.Theme.Catalog;
+using AtomUI.Generated.AtomUI_Core;
 using AtomUI.Theme.Compilation;
+using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Language;
+using AtomUI.Theme.Resources;
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.Styling;
-using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Styling;
+using Avalonia.Threading;
 
 namespace AtomUI.Theme;
 
-/// <summary>
-/// 当切换主题时候就是动态的换 ResourceDictionary 里面的东西
-/// </summary>
-internal class ThemeManager : Styles, IThemeManager
+internal class ThemeManager : Styles, IThemeManager, ILanguageManager
 {
-    public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Core/Assets/{THEME_DIR}";
-    public const string DEFAULT_APP_NAME = "AtomUIApplication";
-    public const string THEME_DIR = "Themes";
+    private static readonly LanguageVariant s_defaultLanguage = LanguageVariant.zh_CN;
 
-    private static readonly IReadOnlyList<ThemeAlgorithm>[] s_algorithmCombinations =
-    {
-        [ThemeAlgorithm.Default],
-        [ThemeAlgorithm.Default, ThemeAlgorithm.Dark],
-        [ThemeAlgorithm.Default, ThemeAlgorithm.Dark, ThemeAlgorithm.Compact],
-        [ThemeAlgorithm.Default, ThemeAlgorithm.Compact]
-    };
-
-    #region 公共属性定义
-    
-    public static readonly StyledProperty<ThemeVariant> ThemeVariantProperty =
-        IThemeManager.ThemeVariantProperty.AddOwner<ThemeManager>();
-    
     public static readonly StyledProperty<LanguageVariant> LanguageVariantProperty = 
         LanguageVariant.LanguageVariantProperty.AddOwner<ThemeManager>();
-    
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ThemeManager>();
-    
-    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
-        AvaloniaProperty.Register<ThemeManager, bool>(nameof(IsWaveSpiritEnabled));
-    
-    public static readonly StyledProperty<bool> IsDarkThemeModeProperty =
-        IThemeManager.IsDarkThemeModeProperty.AddOwner<ThemeManager>();
-    
-    public static readonly StyledProperty<bool> IsCompactThemeModeProperty =
-        IThemeManager.IsCompactThemeModeProperty.AddOwner<ThemeManager>();
-    
-    public ThemeVariant ThemeVariant
-    {
-        get => GetValue(ThemeVariantProperty);
-        set => SetValue(ThemeVariantProperty, value);
-    }
     
     public LanguageVariant LanguageVariant
     {
@@ -64,103 +28,562 @@ internal class ThemeManager : Styles, IThemeManager
         set => SetValue(LanguageVariantProperty, value);
     }
     
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-    
-    public bool IsWaveSpiritEnabled
-    {
-        get => GetValue(IsWaveSpiritEnabledProperty);
-        set => SetValue(IsWaveSpiritEnabledProperty, value);
-    }
-    
-    public bool IsDarkThemeMode
-    {
-        get => GetValue(IsDarkThemeModeProperty);
-        set => SetValue(IsDarkThemeModeProperty, value);
-    }
-    
-    public bool IsCompactThemeMode
-    {
-        get => GetValue(IsCompactThemeModeProperty);
-        set => SetValue(IsCompactThemeModeProperty, value);
-    }
-    
-    public IList<ThemeAlgorithm>? ActivatedThemeAlgorithms { get; internal set; }
-    public AvaloniaObject BindingSource => this;
-
-    #endregion
-    
-    public ITheme? ActivatedTheme => _activatedTheme;
-    public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
-    public static ThemeManager? Current => AvaloniaLocator.Current.GetService(typeof(ThemeManager)) as ThemeManager;
-    public string DefaultThemeId { get; set; }
     public FontFamily? FontFamily { get; internal set; }
-    internal List<ControlTokenRegistration> ControlTokenTypes { get; set; }
-    internal IThemeVariantCalculatorFactory? ThemeVariantCalculatorFactory { get; set; }
-    internal bool HasExplicitDefaultTheme { get; set; }
-    internal string? ExplicitDefaultThemeBaseId { get; set; }
-    internal ThemeCoordinator ThemeCoordinator => _themeCoordinator;
-    
-    public event EventHandler<ThemeOperateEventArgs>? ThemeCreated;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoad;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeLoaded;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeLoadFailed;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToChange;
+    internal ThemeSnapshot? CurrentSnapshot => Volatile.Read(ref _currentSnapshot);
+    public ThemeState? CurrentTheme => Volatile.Read(ref _currentTheme);
+    public IReadOnlyList<ThemeInfo> AvailableThemes =>
+        _compiledThemeCatalog?.AvailableThemes ?? Array.Empty<ThemeInfo>();
+
     public event EventHandler<ThemeChangedEventArgs>? ThemeChanged;
+    public event EventHandler<ThemeChangeFailedEventArgs>? ThemeChangeFailed;
     public event EventHandler<LanguageVariantChangedEventArgs>? LanguageVariantChanged;
 
-    public event EventHandler? Initialized;
-    
-    private Theme? _activatedTheme;
-    private readonly Dictionary<ThemeVariant, Theme> _themePool;
-    private readonly List<string> _customThemeDirs;
-    private readonly List<string> _builtInThemeDirs;
-    private IList<IControlThemesProvider> _controlThemesProviders;
-    private IList<IThemeAssetPathProvider> _themeAssetPathProviders;
-    private ThemeCatalog? _themeCatalog;
+    private readonly List<ControlTokenDescriptor> _controlTokenDescriptors;
+    private readonly List<IControlThemesProvider> _controlThemesProviders;
     private ThemeCompiler? _themeCompiler;
     private ThemeSnapshotCache? _themeSnapshotCache;
-    private readonly ThemeCoordinator _themeCoordinator;
+    private readonly object _transactionGate;
+    private readonly SemaphoreSlim _transactionExecutionGate;
+    private readonly Func<bool> _checkTransitionAccess;
+    private readonly ThemePrepareDelegate _prepareTheme;
+    private ThemeTransaction? _activeTransaction;
+    private ThemeTransaction? _queuedTransaction;
+    private ThemeRequestCacheKey? _lastCommittedRequestKey;
+    private ThemeSnapshot? _currentSnapshot;
+    private ThemeSnapshotCacheKey? _currentSnapshotKey;
+    private ThemeTokenResourceProvider? _rootTokenResourceProvider;
+    private ThemeContext? _rootContext;
+    private readonly ThemeScopeGraph _scopeGraph;
+    private ThemeState? _currentTheme;
+    private Application? _application;
+    private ThemeSchemaRegistry? _startupRegistry;
+    private CompiledThemeCatalog? _compiledThemeCatalog;
+    private ThemeRequest _initialRequest = new(
+        IThemeManager.DEFAULT_THEME_ID,
+        null,
+        ThemeTransitionReason.Startup);
+    private ThemeRequest? _followSystemLightRequest;
+    private ThemeRequest? _followSystemDarkRequest;
+    private bool _applicationInitialized;
+    private long _generation;
+    private long _nextTransitionId;
     
     private readonly Dictionary<LanguageVariant, ResourceDictionary> _languages;
     private List<ILanguageProvider>? _languageProviders;
     
-    internal ThemeManager(Func<bool>? themeTransitionAccessCheck = null)
+    internal ThemeManager(
+        Func<bool>? themeTransitionAccessCheck = null,
+        ThemePrepareDelegate? prepareTheme = null)
     {
-        _themePool       = new Dictionary<ThemeVariant, Theme>();
-        _customThemeDirs = new List<string>();
-        var appName = Application.Current?.Name ?? DEFAULT_APP_NAME;
-        _builtInThemeDirs = [Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName),
-            THEME_DIR)];
-        DefaultThemeId           = IThemeManager.DEFAULT_THEME_ID;
+        _controlTokenDescriptors = new List<ControlTokenDescriptor>();
         _controlThemesProviders  = new List<IControlThemesProvider>();
-        _themeAssetPathProviders = new List<IThemeAssetPathProvider>();
-        ControlTokenTypes        = new List<ControlTokenRegistration>();
         _languageProviders       = new List<ILanguageProvider>();
         _languages               = new Dictionary<LanguageVariant, ResourceDictionary>();
-        _themeCoordinator        = themeTransitionAccessCheck is null
-            ? new ThemeCoordinator(this)
-            : new ThemeCoordinator(this, themeTransitionAccessCheck);
+        _transactionGate         = new object();
+        _transactionExecutionGate = new SemaphoreSlim(1, 1);
+        _scopeGraph              = new ThemeScopeGraph(this);
+        _checkTransitionAccess   = themeTransitionAccessCheck ?? (static () => Dispatcher.UIThread.CheckAccess());
+        _prepareTheme            = prepareTheme ?? PrepareThemeAsync;
     }
 
-    internal void EnsureRegistrationCapacity(int controlTokenCount,
-                                             int controlThemesProviderCount,
-                                             int themeAssetPathProviderCount,
-                                             int languageProviderCount)
+    internal ThemeContext RootContext => _rootContext ??
+        throw new InvalidOperationException("The root ThemeContext has not been initialized.");
+
+    internal ThemeScopeGraph ScopeGraph => _scopeGraph;
+    internal void ConfigureStartup(
+        ThemeRequest initialRequest,
+        ThemeRequest? followSystemLightRequest,
+        ThemeRequest? followSystemDarkRequest)
     {
-        EnsureListCapacity(ControlTokenTypes, controlTokenCount);
-        if (_controlThemesProviders is List<IControlThemesProvider> controlThemesProviders)
+        ArgumentNullException.ThrowIfNull(initialRequest);
+        if ((followSystemLightRequest is null) != (followSystemDarkRequest is null))
         {
-            EnsureListCapacity(controlThemesProviders, controlThemesProviderCount);
+            throw new ArgumentException(
+                "FollowSystem requires both Light and Dark requests.");
         }
 
-        if (_themeAssetPathProviders is List<IThemeAssetPathProvider> themeAssetPathProviders)
+        _initialRequest            = initialRequest;
+        _followSystemLightRequest  = followSystemLightRequest;
+        _followSystemDarkRequest   = followSystemDarkRequest;
+    }
+
+    internal void InitializeApplication(
+        Application application,
+        ThemeAppearance? initialSystemAppearance = null)
+    {
+        ArgumentNullException.ThrowIfNull(application);
+        if (_applicationInitialized)
         {
-            EnsureListCapacity(themeAssetPathProviders, themeAssetPathProviderCount);
+            throw new InvalidOperationException("ThemeManager is already initialized.");
         }
+
+        _application = application;
+        _startupRegistry = CreateStartupRegistry();
+        _compiledThemeCatalog = CompiledThemeCatalog.LoadBuiltIn(_startupRegistry);
+        MountStaticResources();
+
+        var request = _followSystemLightRequest is null
+            ? _initialRequest
+            : (initialSystemAppearance ?? ResolveSystemAppearance(application)) == ThemeAppearance.Dark
+                ? _followSystemDarkRequest!
+                : _followSystemLightRequest;
+        var result = ApplyThemeAsync(request).GetAwaiter().GetResult();
+        if (result.Status is not ThemeTransitionStatus.Committed and not ThemeTransitionStatus.NoOp)
+        {
+            var exceptionMessage = result.Exception is null
+                ? string.Empty
+                : $" {result.Exception.GetBaseException().Message}";
+            throw new ThemeLoadException(
+                $"Initial theme '{request.ThemeId}' failed with status '{result.Status}': " +
+                string.Join(" ", result.Diagnostics.Select(static diagnostic => diagnostic.Message)) +
+                exceptionMessage,
+                result.Exception);
+        }
+
+        var rootContextStyle = new Style(selector => selector.OfType<TopLevel>());
+        rootContextStyle.Setters.Add(new Setter(ThemeScope.ContextProperty, RootContext));
+        Add(rootContextStyle);
+        application.Styles.Add(this);
+        _applicationInitialized = true;
+        SubscribeSystemAppearance(application);
+    }
+
+    internal Task<ThemeTransitionResult> ApplySystemAppearanceAsync(
+        ThemeAppearance appearance,
+        CancellationToken cancellationToken = default)
+    {
+        var request = appearance == ThemeAppearance.Dark
+            ? _followSystemDarkRequest
+            : _followSystemLightRequest;
+        if (request is null)
+        {
+            throw new InvalidOperationException("FollowSystem is not configured.");
+        }
+        return ApplyThemeAsync(request, cancellationToken);
+    }
+
+    public Task<ThemeTransitionResult> ApplyThemeAsync(
+        ThemeRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        VerifyTransitionAccess();
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentException.ThrowIfNullOrWhiteSpace(request.ThemeId);
+
+        var requestKey = ThemeRequestCacheKey.Create(request);
+        ThemeTransaction? transaction;
+        ThemeTransitionResult? immediateResult = null;
+        var startProcessor = false;
+        lock (_transactionGate)
+        {
+            if (_queuedTransaction is not null &&
+                _queuedTransaction.RequestKey.Equals(requestKey))
+            {
+                transaction = _queuedTransaction;
+            }
+            else if (_queuedTransaction is null &&
+                     _activeTransaction is not null &&
+                     _activeTransaction.RequestKey.Equals(requestKey))
+            {
+                transaction = _activeTransaction;
+            }
+            else if (_activeTransaction is null &&
+                     _lastCommittedRequestKey is not null &&
+                     _lastCommittedRequestKey.Equals(requestKey))
+            {
+                transaction = null;
+                immediateResult = new ThemeTransitionResult(
+                    NextTransitionId(),
+                    ThemeTransitionStatus.NoOp,
+                    _currentTheme,
+                    Array.Empty<ThemeDiagnostic>(),
+                    Array.Empty<ThemeDiagnostic>(),
+                    null);
+            }
+            else
+            {
+                var generation = ++_generation;
+                transaction = new ThemeTransaction(
+                    NextTransitionId(),
+                    generation,
+                    request,
+                    requestKey)
+                {
+                    ScopeCapture = _scopeGraph.CaptureAll()
+                };
+                if (_activeTransaction is null)
+                {
+                    _activeTransaction = transaction;
+                    startProcessor = true;
+                }
+                else
+                {
+                    if (_queuedTransaction is not null)
+                    {
+                        _queuedTransaction.Complete(CreateSupersededResult(_queuedTransaction));
+                    }
+                    _queuedTransaction = transaction;
+                }
+            }
+        }
+
+        if (immediateResult is not null)
+        {
+            return WaitForCallerAsync(Task.FromResult(immediateResult), cancellationToken);
+        }
+
+        if (startProcessor)
+        {
+            _ = ProcessTransactionQueueAsync(transaction!);
+        }
+
+        return WaitForCallerAsync(transaction!.Completion, cancellationToken);
+    }
+
+    private async Task ProcessTransactionQueueAsync(ThemeTransaction transaction)
+    {
+        var current = transaction;
+        while (true)
+        {
+            var result = await ExecuteTransactionAsync(current).ConfigureAwait(true);
+            ThemeTransaction? next;
+            lock (_transactionGate)
+            {
+                Debug.Assert(ReferenceEquals(_activeTransaction, current));
+                next = _queuedTransaction;
+                _queuedTransaction = null;
+                _activeTransaction = next;
+            }
+
+            current.Complete(result);
+            if (next is null)
+            {
+                return;
+            }
+            current = next;
+        }
+    }
+
+    private async ValueTask<ThemeTransitionResult> ExecuteTransactionAsync(
+        ThemeTransaction transaction)
+    {
+        await _transactionExecutionGate.WaitAsync().ConfigureAwait(true);
+        try
+        {
+            return await ExecuteTransactionCoreAsync(transaction).ConfigureAwait(true);
+        }
+        finally
+        {
+            _transactionExecutionGate.Release();
+        }
+    }
+
+    private async ValueTask<ThemeTransitionResult> ExecuteTransactionCoreAsync(
+        ThemeTransaction transaction)
+    {
+        var committed = false;
+        try
+        {
+            transaction.Phase = ThemeTransactionPhase.Prepare;
+            var preparation = await _prepareTheme(
+                transaction.Request,
+                CurrentSnapshot,
+                CancellationToken.None).ConfigureAwait(true);
+            transaction.Preparation = preparation;
+            lock (_transactionGate)
+            {
+                if (!IsTransactionCurrent(transaction))
+                {
+                    return CreateSupersededResult(transaction);
+                }
+            }
+
+            if (!preparation.Success)
+            {
+                return CreateFailedResult(transaction, preparation.Diagnostics, preparation.Exception);
+            }
+
+            var scopePreparation = PrepareScopeCapture(
+                preparation.Snapshot!,
+                transaction.ScopeCapture!,
+                useLastValidConfig: true);
+            if (!scopePreparation.Success)
+            {
+                lock (_transactionGate)
+                {
+                    if (!IsTransactionCurrent(transaction))
+                    {
+                        return CreateSupersededResult(transaction);
+                    }
+                }
+
+                return CreateFailedResult(
+                    transaction,
+                    scopePreparation.Diagnostics,
+                    scopePreparation.Exception);
+            }
+            transaction.PreparedScopes = scopePreparation.Snapshots;
+
+            lock (_transactionGate)
+            {
+                if (!IsTransactionCurrent(transaction))
+                {
+                    return CreateSupersededResult(transaction);
+                }
+
+                if (_currentSnapshotKey is ThemeSnapshotCacheKey currentKey &&
+                    currentKey.Equals(preparation.SnapshotKey))
+                {
+                    return new ThemeTransitionResult(
+                        transaction.TransitionId,
+                        ThemeTransitionStatus.NoOp,
+                        _currentTheme,
+                        preparation.Diagnostics,
+                        Array.Empty<ThemeDiagnostic>(),
+                        null);
+                }
+            }
+
+            PrepareCommitPayload(transaction);
+            lock (_transactionGate)
+            {
+                if (!IsTransactionCurrent(transaction))
+                {
+                    return CreateSupersededResult(transaction);
+                }
+
+                transaction.Phase = ThemeTransactionPhase.CommitCore;
+                CommitCore(transaction);
+                committed = true;
+            }
+
+            transaction.Phase = ThemeTransactionPhase.Publish;
+            var publishDiagnostics = Publish(transaction);
+            return new ThemeTransitionResult(
+                transaction.TransitionId,
+                ThemeTransitionStatus.Committed,
+                transaction.PreparedState,
+                preparation.Diagnostics,
+                publishDiagnostics,
+                null);
+        }
+        catch (Exception exception)
+        {
+            if (committed)
+            {
+                return new ThemeTransitionResult(
+                    transaction.TransitionId,
+                    ThemeTransitionStatus.Committed,
+                    transaction.PreparedState,
+                    transaction.Preparation?.Diagnostics ?? Array.Empty<ThemeDiagnostic>(),
+                    [new ThemeDiagnostic(
+                        "ATMTHM7006",
+                        ThemeDiagnosticSeverity.Warning,
+                        nameof(ThemeManager),
+                        "$",
+                        $"Theme publish failed after commit: {exception.GetBaseException().Message}")],
+                    null);
+            }
+
+            return CreateFailedResult(
+                transaction,
+                [new ThemeDiagnostic(
+                    "ATMTHM7002",
+                    ThemeDiagnosticSeverity.Error,
+                    nameof(ThemeManager),
+                    "$",
+                    $"Theme transition failed before commit: {exception.GetBaseException().Message}")],
+                exception);
+        }
+    }
+
+    private void PrepareCommitPayload(ThemeTransaction transaction)
+    {
+        var snapshot = transaction.Preparation!.Snapshot!;
+        transaction.PreparedState = new ThemeState(
+            transaction.Request.ThemeId,
+            snapshot.EffectiveConfig.Algorithms.Select(static algorithm => algorithm.Id).ToArray(),
+            snapshot.Appearance,
+            snapshot.ContentFingerprint.Value,
+            transaction.TransitionId);
+        transaction.AddsResourceProvider = _rootContext is null;
+        transaction.PreparedRootContext = _rootContext ??
+                                          new ThemeContext(this, snapshot, 0);
+        transaction.PreparedResourceProvider = transaction.PreparedRootContext.ResourceProvider;
+    }
+
+    private void CommitCore(ThemeTransaction transaction)
+    {
+        var preparation = transaction.Preparation!;
+        var rootContext = transaction.PreparedRootContext!;
+        if (!transaction.AddsResourceProvider)
+        {
+            rootContext.Commit(preparation.Snapshot!);
+        }
+
+        foreach (var scope in transaction.PreparedScopes)
+        {
+            scope.Context.Commit(scope.Snapshot);
+        }
+
+        _rootContext               = rootContext;
+        _rootTokenResourceProvider = rootContext.ResourceProvider;
+        _currentSnapshot           = preparation.Snapshot;
+        _currentSnapshotKey        = preparation.SnapshotKey;
+        _currentTheme              = transaction.PreparedState;
+        _lastCommittedRequestKey   = transaction.RequestKey;
+    }
+
+    private IReadOnlyList<ThemeDiagnostic> Publish(ThemeTransaction transaction)
+    {
+        var diagnostics = new List<ThemeDiagnostic>();
+        var snapshot = transaction.Preparation!.Snapshot!;
+        var avaloniaVariant = snapshot.Appearance == ThemeAppearance.Dark
+            ? Avalonia.Styling.ThemeVariant.Dark
+            : Avalonia.Styling.ThemeVariant.Light;
+
+        PublishBoundary(
+            () =>
+            {
+                if (_application is not null)
+                {
+                    _application.RequestedThemeVariant = avaloniaVariant;
+                }
+            },
+            diagnostics,
+            "ApplicationThemeVariant");
+
+        PublishBoundary(
+            () =>
+            {
+                if (transaction.AddsResourceProvider)
+                {
+                    Resources.MergedDictionaries.Add(transaction.PreparedResourceProvider!);
+                    transaction.PreparedRootContext!.Publish(notifyResources: false);
+                }
+                else
+                {
+                    transaction.PreparedRootContext!.Publish();
+                }
+            },
+            diagnostics,
+            "ThemeResources");
+
+        foreach (var scope in transaction.PreparedScopes)
+        {
+            if (!_scopeGraph.TryGetNode(scope.Stamp.RegistrationId, out var node) ||
+                node!.Stamp != scope.Stamp)
+            {
+                continue;
+            }
+
+            PublishBoundary(
+                () => node.Provider.PublishCommittedContext(scope.Context, notifyResources: true),
+                diagnostics,
+                $"ThemeScope[{scope.Stamp.RegistrationId}]");
+        }
+
+        ThemeEventDispatcher.Dispatch(
+            ThemeChanged,
+            this,
+            new ThemeChangedEventArgs(
+                transaction.Request,
+                transaction.PreparedState!,
+                diagnostics),
+            diagnostics,
+            nameof(ThemeChanged));
+        return diagnostics.AsReadOnly();
+    }
+
+    private bool IsTransactionCurrent(ThemeTransaction transaction)
+    {
+        return transaction.Generation == _generation &&
+               transaction.ScopeCapture is not null &&
+               _scopeGraph.IsCurrent(transaction.ScopeCapture);
+    }
+
+    private ThemeTransitionResult CreateFailedResult(
+        ThemeTransaction transaction,
+        IReadOnlyList<ThemeDiagnostic> diagnostics,
+        Exception? exception)
+    {
+        var publishDiagnostics = new List<ThemeDiagnostic>();
+        ThemeEventDispatcher.Dispatch(
+            ThemeChangeFailed,
+            this,
+            new ThemeChangeFailedEventArgs(transaction.Request, diagnostics, exception),
+            publishDiagnostics,
+            nameof(ThemeChangeFailed));
+        return new ThemeTransitionResult(
+            transaction.TransitionId,
+            ThemeTransitionStatus.Failed,
+            _currentTheme,
+            diagnostics,
+            publishDiagnostics,
+            exception);
+    }
+
+    private ThemeTransitionResult CreateSupersededResult(ThemeTransaction transaction)
+    {
+        return new ThemeTransitionResult(
+            transaction.TransitionId,
+            ThemeTransitionStatus.Superseded,
+            _currentTheme,
+            transaction.Preparation?.Diagnostics ?? Array.Empty<ThemeDiagnostic>(),
+            Array.Empty<ThemeDiagnostic>(),
+            null);
+    }
+
+    private static Task<ThemeTransitionResult> WaitForCallerAsync(
+        Task<ThemeTransitionResult> transaction,
+        CancellationToken cancellationToken)
+    {
+        return cancellationToken.CanBeCanceled
+            ? transaction.WaitAsync(cancellationToken)
+            : transaction;
+    }
+
+    private static void PublishBoundary(
+        Action action,
+        List<ThemeDiagnostic> diagnostics,
+        string source)
+    {
+        try
+        {
+            action();
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine(exception);
+            diagnostics.Add(new ThemeDiagnostic(
+                "ATMTHM7003",
+                ThemeDiagnosticSeverity.Warning,
+                source,
+                "$",
+                $"Theme publish boundary failed: {exception.GetBaseException().Message}"));
+        }
+    }
+
+    private long NextTransitionId()
+    {
+        return ++_nextTransitionId;
+    }
+
+    private void VerifyTransitionAccess()
+    {
+        if (!_checkTransitionAccess())
+        {
+            throw new InvalidOperationException("Theme transitions must be captured on the UI thread.");
+        }
+    }
+
+    internal void EnsureRegistrationCapacity(
+        int controlTokenCount,
+        int controlThemesProviderCount,
+        int languageProviderCount)
+    {
+        EnsureListCapacity(_controlTokenDescriptors, controlTokenCount);
+        EnsureListCapacity(_controlThemesProviders, controlThemesProviderCount);
 
         if (_languageProviders is not null)
         {
@@ -176,203 +599,404 @@ internal class ThemeManager : Styles, IThemeManager
         }
     }
 
-    public IReadOnlyCollection<ITheme> AvailableThemes
-    {
-        get
-        {
-            if (_themePool.Count == 0)
-            {
-                ScanThemes();
-            }
-
-            return _themePool.Values;
-        }
-    }
-
-    internal Theme LoadTheme(
-        ThemeVariant themeVariant,
-        IReadOnlyDictionary<string, string>? runtimeOverrides = null)
-    {
-        ScanThemes();
-        if (!_themePool.TryGetValue(themeVariant, out var theme))
-        {
-            throw new ThemeNotFoundException($"Theme {themeVariant} not found");
-        }
-        
-        if (theme.IsLoaded)
-        {
-            return theme;
-        }
-
-        theme.NotifyAboutToLoad();
-        NotifyThemeOperate(ThemeAboutToLoad, new ThemeOperateEventArgs(theme));
-        try
-        {
-            theme.Load(runtimeOverrides);
-            theme.NotifyLoaded();
-            NotifyThemeOperate(ThemeLoaded, new ThemeOperateEventArgs(theme));
-            return theme;
-        }
-        catch (Exception)
-        {
-            NotifyThemeOperate(ThemeLoadFailed, new ThemeOperateEventArgs(theme));
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// 取消主题在 avalonia 里面的 resource 资源
-    /// </summary>
-    /// <param name="themeVariant"></param>
-    internal void UnLoadTheme(ThemeVariant themeVariant)
-    {
-        if (!_themePool.ContainsKey(themeVariant))
-        {
-            // TODO 需要记录一个日志
-            return;
-        }
-
-        if (_activatedTheme != null && _activatedTheme.ThemeVariant == themeVariant)
-        {
-            // TODO 需要记录一个日志
-            return;
-        }
-    }
-
-    public Theme? SetActiveTheme(ThemeVariant themeVariant)
-    {
-        var oldTheme = _activatedTheme;
-        _themeCoordinator.Request(CreateThemeRequest(themeVariant, ThemeTransitionReason.UserRequest));
-        return oldTheme;
-    }
-
-    internal Theme? CommitActiveTheme(Theme theme)
-    {
-        var oldTheme = _activatedTheme;
-        if (ReferenceEquals(oldTheme, theme))
-        {
-            return oldTheme;
-        }
-
-        if (oldTheme is not null)
-        {
-            oldTheme.NotifyAboutToDeActive();
-        }
-        
-        theme.NotifyAboutToActive();
-        NotifyThemeOperate(ThemeAboutToChange, new ThemeOperateEventArgs(oldTheme));
-        _activatedTheme = theme;
-        
-        if (!Resources.ThemeDictionaries.ContainsKey(theme.ThemeVariant))
-        {
-            Resources.ThemeDictionaries.Add(theme.ThemeVariant, theme.ThemeResource);
-        }
-
-        if (oldTheme is not null)
-        {
-            oldTheme.NotifyDeActivated();
-        }
-        
-        theme.NotifyActivated();
-        ActivatedThemeAlgorithms = theme.Algorithms;
-        SetCurrentValue(ThemeVariantProperty, theme.ThemeVariant);
-        SetCurrentValue(IsDarkThemeModeProperty, theme.Algorithms.Contains(ThemeAlgorithm.Dark));
-        SetCurrentValue(IsCompactThemeModeProperty, theme.Algorithms.Contains(ThemeAlgorithm.Compact));
-
-        ConfigureThemeSwitchRuntimeResources(oldTheme);
-        return oldTheme;
-    }
-    
-    public void RegisterControlThemesProvider(IControlThemesProvider controlThemesProvider)
+    internal void RegisterControlThemesProvider(IControlThemesProvider controlThemesProvider)
     {
         _controlThemesProviders.Add(controlThemesProvider);
     }
 
-    public void RegisterControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)
-    {
-        _themeAssetPathProviders.Add(themeAssetPathProvider);
-    }
-
-    public void RegisterLanguageProvider(ILanguageProvider languageProvider)
+    internal void RegisterLanguageProvider(ILanguageProvider languageProvider)
     {
         _languageProviders?.Add(languageProvider);
     }
 
-    public void RegisterControlTokenType(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor |
-                                    DynamicallyAccessedMemberTypes.PublicProperties |
-                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
-        Type tokenType)
+    internal void RegisterControlTokenDescriptor(ControlTokenDescriptor descriptor)
     {
-        ControlTokenTypes.Add(new ControlTokenRegistration(tokenType));
+        _controlTokenDescriptors.Add(descriptor);
     }
 
-    public void RegisterControlTokenDescriptor(ControlTokenDescriptor descriptor)
+    internal ThemeScopeRegistration RegisterScope(
+        ThemeConfigProvider provider,
+        ThemeContext parentContext,
+        ThemeConfig config,
+        out ThemeScopeUpdateResult result)
     {
-        ControlTokenTypes.Add(new ControlTokenRegistration(descriptor));
-    }
-
-    internal void ScanThemes()
-    {
-        if (_themeCatalog is not null)
+        VerifyTransitionAccess();
+        var registration = _scopeGraph.Register(provider, parentContext, config);
+        var request = CreateScopeRequest(config);
+        var capture = _scopeGraph.CaptureSubtree(registration.RegistrationId);
+        var preparation = PrepareScopeCapture(
+            parentContext.Snapshot,
+            capture,
+            useLastValidConfig: false);
+        if (!preparation.Success)
         {
-            return;
+            result = ThemeScopeUpdateResult.Failed(
+                request,
+                CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
+                preparation.Diagnostics,
+                preparation.Exception);
+            return registration;
         }
 
-        var controlTokenSchemas = CreateControlTokenSchemas();
-        var catalog = CreateThemeCatalog(controlTokenSchemas);
-        catalog.EnsureRequiredBuiltInThemesAvailable();
-        var defaultDescriptor = catalog.ResolveDefaultDescriptor(
-            HasExplicitDefaultTheme ? ExplicitDefaultThemeBaseId : null);
-        var compiler = GetThemeCompiler();
-        var snapshotCache = GetThemeSnapshotCache();
-        var themes = new List<Theme>();
-        foreach (var descriptor in catalog.Descriptors)
+        if (!_scopeGraph.IsCurrent(capture))
         {
-            if (!descriptor.IsAvailable)
+            result = ThemeScopeUpdateResult.Failed(
+                request,
+                CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
+                [new ThemeDiagnostic(
+                    "ATMTHM8001",
+                    ThemeDiagnosticSeverity.Error,
+                    nameof(ThemeScopeGraph),
+                    "$",
+                    "Theme scope topology changed before the initial snapshot could be committed.")],
+                null);
+            return registration;
+        }
+
+        foreach (var staged in preparation.Snapshots)
+        {
+            staged.Context.Commit(staged.Snapshot);
+            _scopeGraph.AcceptConfig(staged.Stamp.RegistrationId);
+        }
+        result = ThemeScopeUpdateResult.Succeeded(
+            request,
+            CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."));
+        return registration;
+    }
+
+    internal void ReplaceScopeConfig(
+        ThemeConfigProvider provider,
+        ThemeConfig config)
+    {
+        VerifyTransitionAccess();
+        if (!_scopeGraph.TryGetNode(provider, out var node))
+        {
+            throw new InvalidOperationException("The ThemeConfigProvider is not registered.");
+        }
+
+        _scopeGraph.ReplaceConfig(node!.RegistrationId, config);
+        var registrationId = node.RegistrationId;
+        var configRevision = node.ConfigRevision;
+        long generation;
+        lock (_transactionGate)
+        {
+            generation = _generation;
+        }
+
+        _ = ProcessScopeUpdateAsync(provider, registrationId, configRevision, generation);
+    }
+
+    private async Task ProcessScopeUpdateAsync(
+        ThemeConfigProvider provider,
+        long registrationId,
+        long configRevision,
+        long generation)
+    {
+        await _transactionExecutionGate.WaitAsync().ConfigureAwait(true);
+        try
+        {
+            lock (_transactionGate)
+            {
+                if (generation != _generation ||
+                    !_scopeGraph.TryGetNode(registrationId, out var current) ||
+                    current!.ConfigRevision != configRevision ||
+                    !ReferenceEquals(current.Provider, provider))
+                {
+                    return;
+                }
+            }
+
+            var result = ApplyScopeConfig(provider, registrationId, generation);
+            provider.DispatchResult(result);
+        }
+        finally
+        {
+            _transactionExecutionGate.Release();
+        }
+    }
+
+    private ThemeScopeUpdateResult ApplyScopeConfig(
+        ThemeConfigProvider provider,
+        long registrationId,
+        long generation)
+    {
+        if (!_scopeGraph.TryGetNode(registrationId, out var node) ||
+            !ReferenceEquals(node!.Provider, provider))
+        {
+            throw new InvalidOperationException("The ThemeConfigProvider is not registered.");
+        }
+
+        var config = node.Config;
+        var request = CreateScopeRequest(config);
+        var capture = _scopeGraph.CaptureSubtree(node.RegistrationId);
+        var parentSnapshot = ResolveParentSnapshot(capture.Nodes[0].Stamp.ParentRegistrationId);
+        var preparation = PrepareScopeCapture(
+            parentSnapshot,
+            capture,
+            useLastValidConfig: false);
+        if (!preparation.Success)
+        {
+            return ThemeScopeUpdateResult.Failed(
+                request,
+                CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
+                preparation.Diagnostics,
+                preparation.Exception);
+        }
+        lock (_transactionGate)
+        {
+            if (generation != _generation || !_scopeGraph.IsCurrent(capture))
+            {
+                return ThemeScopeUpdateResult.Failed(
+                    request,
+                    CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
+                    [new ThemeDiagnostic(
+                        "ATMTHM8002",
+                        ThemeDiagnosticSeverity.Error,
+                        nameof(ThemeScopeGraph),
+                        "$",
+                        "Theme scope changed while its configuration was being prepared.")],
+                    null);
+            }
+
+            foreach (var staged in preparation.Snapshots)
+            {
+                staged.Context.Commit(staged.Snapshot);
+                _scopeGraph.AcceptConfig(staged.Stamp.RegistrationId);
+            }
+        }
+
+        var publishDiagnostics = new List<ThemeDiagnostic>();
+        foreach (var staged in preparation.Snapshots)
+        {
+            if (!_scopeGraph.TryGetNode(staged.Stamp.RegistrationId, out var stagedNode))
             {
                 continue;
             }
+            PublishBoundary(
+                () => stagedNode!.Provider.PublishCommittedContext(
+                    staged.Context,
+                    notifyResources: true),
+                publishDiagnostics,
+                $"ThemeScope[{staged.Stamp.RegistrationId}]");
+        }
 
-            foreach (var algorithms in s_algorithmCombinations)
+        return ThemeScopeUpdateResult.Succeeded(
+            request,
+            CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
+            publishDiagnostics.AsReadOnly());
+    }
+
+    private ScopePreparation PrepareScopeCapture(
+        ThemeSnapshot rootParentSnapshot,
+        ThemeScopeCapture capture,
+        bool useLastValidConfig)
+    {
+        if (capture.Nodes.Count == 0)
+        {
+            return ScopePreparation.Succeeded(Array.Empty<ThemeScopeStagedSnapshot>());
+        }
+
+        var staged = new ThemeScopeStagedSnapshot[capture.Nodes.Count];
+        var snapshots = new Dictionary<long, ThemeSnapshot>(capture.Nodes.Count);
+        for (var index = 0; index < capture.Nodes.Count; index++)
+        {
+            var node = capture.Nodes[index];
+            ThemeSnapshot parentSnapshot;
+            if (node.Stamp.ParentRegistrationId == 0)
             {
-                themes.Add(new Theme(descriptor, catalog, compiler, snapshotCache, algorithms));
+                parentSnapshot = rootParentSnapshot;
             }
-        }
+            else if (!snapshots.TryGetValue(node.Stamp.ParentRegistrationId, out parentSnapshot!))
+            {
+                parentSnapshot = ResolveParentSnapshot(node.Stamp.ParentRegistrationId);
+            }
 
-        if (!HasExplicitDefaultTheme)
-        {
-            DefaultThemeId = defaultDescriptor.Id;
-        }
+            var config = useLastValidConfig ? node.LastValidConfig : node.Config;
+            var compileResult = CompileScopeSnapshot(parentSnapshot, config);
+            if (!compileResult.Success)
+            {
+                return ScopePreparation.Failed(
+                    ConvertDiagnostics(compileResult.Diagnostics),
+                    compileResult.Exception);
+            }
 
-        _themeCatalog = catalog;
-        foreach (var theme in themes)
-        {
-            _themePool.Add(theme.ThemeVariant, theme);
+            var snapshot = compileResult.Snapshot!;
+            staged[index] = new ThemeScopeStagedSnapshot(node.Stamp, node.Context, snapshot);
+            snapshots.Add(node.Stamp.RegistrationId, snapshot);
         }
-
-        foreach (var theme in themes)
-        {
-            ThemeCreated?.Invoke(this, new ThemeOperateEventArgs(theme));
-            theme.NotifyRegistered();
-        }
-
-        Debug.Assert(_themePool.Count > 0);
+        return ScopePreparation.Succeeded(Array.AsReadOnly(staged));
     }
 
-    internal ThemeCompileResult CompileSnapshot(ThemeCompileRequest request)
+    private ThemeCompileResult CompileScopeSnapshot(
+        ThemeSnapshot parentSnapshot,
+        ThemeConfig config)
     {
-        return GetThemeSnapshotCache().GetOrCompile(request, GetThemeCompiler());
+        var normalized = ThemeConfigNormalizer.Normalize(config, parentSnapshot.Registry);
+        if (!normalized.Success)
+        {
+            return new ThemeCompileResult(null, normalized.Diagnostics, null);
+        }
+
+        var defaults = ThemeCompiler.CreateDefinitionDefaults(
+            parentSnapshot.Definition,
+            parentSnapshot.Registry);
+        var effective = ThemeConfigMerger.Merge(
+            defaults,
+            parentSnapshot.EffectiveConfig,
+            normalized.Config!).EffectiveConfig;
+        var input = new ThemeCompileInput(
+            parentSnapshot.Definition,
+            parentSnapshot.DefinitionRevision,
+            effective,
+            parentSnapshot.Registry,
+            parentSnapshot);
+        return GetThemeSnapshotCache().GetOrCompile(input, GetThemeCompiler());
     }
 
-    internal IDisposable PinSnapshot(ThemeSnapshot snapshot)
+    private ThemeSnapshot ResolveParentSnapshot(long parentRegistrationId)
     {
-        return GetThemeSnapshotCache().Pin(snapshot);
+        if (parentRegistrationId == 0)
+        {
+            return RootContext.Snapshot;
+        }
+        if (_scopeGraph.TryGetNode(parentRegistrationId, out var parent))
+        {
+            return parent!.Context.Snapshot;
+        }
+        throw new InvalidOperationException(
+            $"Parent theme scope '{parentRegistrationId}' is not active.");
+    }
+
+    private ThemeRequest CreateScopeRequest(ThemeConfig config)
+    {
+        return new ThemeRequest(
+            CurrentTheme?.ThemeId ?? IThemeManager.DEFAULT_THEME_ID,
+            config,
+            ThemeTransitionReason.LocalConfigChanged);
+    }
+
+    private ValueTask<ThemeTransactionPreparation> PrepareThemeAsync(
+        ThemeRequest request,
+        ThemeSnapshot? currentSnapshot,
+        CancellationToken cancellationToken)
+    {
+        Debug.Assert(cancellationToken == CancellationToken.None);
+        if (_compiledThemeCatalog is null || _startupRegistry is null)
+        {
+            return ValueTask.FromResult(ThemeTransactionPreparation.Failed(
+                [new ThemeDiagnostic(
+                    "ATMTHM7006",
+                    ThemeDiagnosticSeverity.Error,
+                    nameof(ThemeManager),
+                    "$",
+                    "ThemeManager has not initialized its schema registry and compiled catalog.")]));
+        }
+
+        return ValueTask.FromResult(PrepareCompiledTheme(request, currentSnapshot));
+    }
+
+    private ThemeTransactionPreparation PrepareCompiledTheme(
+        ThemeRequest request,
+        ThemeSnapshot? currentSnapshot)
+    {
+        try
+        {
+            var entry = _compiledThemeCatalog!.Get(request.ThemeId);
+            var config = AddDefaultFont(request.Config) ?? new ThemeConfigBuilder().Build();
+            var normalized = ThemeConfigNormalizer.Normalize(config, _startupRegistry!);
+            if (!normalized.Success)
+            {
+                return ThemeTransactionPreparation.Failed(
+                    ConvertDiagnostics(normalized.Diagnostics));
+            }
+
+            var defaults = ThemeCompiler.CreateDefinitionDefaults(
+                entry.Definition,
+                _startupRegistry!);
+            var effective = ThemeConfigMerger.Merge(
+                defaults,
+                null,
+                normalized.Config!).EffectiveConfig;
+            var input = new ThemeCompileInput(
+                entry.Definition,
+                entry.Revision,
+                effective,
+                _startupRegistry!,
+                currentSnapshot);
+            var key = ThemeSnapshotCacheKey.Create(input);
+            if (_currentSnapshotKey is ThemeSnapshotCacheKey currentKey &&
+                currentSnapshot is not null &&
+                currentKey.Equals(key))
+            {
+                return ThemeTransactionPreparation.Succeeded(currentSnapshot, key);
+            }
+
+            var result = GetThemeSnapshotCache().GetOrCompile(input, GetThemeCompiler());
+            return result.Success
+                ? ThemeTransactionPreparation.Succeeded(
+                    result.Snapshot!,
+                    key,
+                    ConvertDiagnostics(result.Diagnostics))
+                : ThemeTransactionPreparation.Failed(
+                    ConvertDiagnostics(result.Diagnostics),
+                    result.Exception);
+        }
+        catch (Exception exception)
+        {
+            return ThemeTransactionPreparation.Failed(
+                [new ThemeDiagnostic(
+                    "ATMTHM7005",
+                    ThemeDiagnosticSeverity.Error,
+                    nameof(ThemeManager),
+                    "$",
+                    $"Theme preparation failed: {exception.GetBaseException().Message}")],
+                exception);
+        }
+    }
+
+    private ThemeConfig? AddDefaultFont(ThemeConfig? config)
+    {
+        const string fontFamilyToken = "FontFamily";
+        if (FontFamily is null ||
+            config?.Tokens.ContainsKey(fontFamilyToken) == true)
+        {
+            return config;
+        }
+
+        var tokens = config is null
+            ? new Dictionary<string, string>(StringComparer.Ordinal)
+            : new Dictionary<string, string>(config.Tokens, StringComparer.Ordinal);
+        tokens[fontFamilyToken] = FontFamily.ToString();
+        return new ThemeConfig(
+            config?.Inherit ?? true,
+            config?.Algorithms,
+            tokens,
+            config?.Controls ??
+            new Dictionary<Schema.ControlTokenIdentity, ControlThemeConfig>());
+    }
+
+    private static IReadOnlyList<ThemeDiagnostic> ConvertDiagnostics(
+        IReadOnlyList<Definitions.ThemeDefinitionDiagnostic> diagnostics)
+    {
+        var converted = new ThemeDiagnostic[diagnostics.Count];
+        for (var index = 0; index < converted.Length; index++)
+        {
+            var diagnostic = diagnostics[index];
+            converted[index] = new ThemeDiagnostic(
+                diagnostic.Code,
+                diagnostic.Severity == Definitions.ThemeDefinitionDiagnosticSeverity.Error
+                    ? ThemeDiagnosticSeverity.Error
+                    : ThemeDiagnosticSeverity.Warning,
+                diagnostic.FilePath,
+                diagnostic.Path,
+                diagnostic.Message);
+        }
+        return Array.AsReadOnly(converted);
     }
 
     private ThemeCompiler GetThemeCompiler()
     {
-        return _themeCompiler ??= new ThemeCompiler(ThemeVariantCalculatorFactory);
+        return _themeCompiler ??= new ThemeCompiler();
     }
 
     private ThemeSnapshotCache GetThemeSnapshotCache()
@@ -388,197 +1012,9 @@ internal class ThemeManager : Styles, IThemeManager
         }
         return null;
     }
-    
-    private ResourceDictionary GetLanguageResourceOrDefault(LanguageVariant languageVariant, 
-                                                            ResourceDictionary defaultResourceDictionary)
+
+    private void MountStaticResources()
     {
-        return _languages.GetValueOrDefault(languageVariant, defaultResourceDictionary);
-    }
-
-    public void AddCustomThemePaths(IList<string> paths)
-    {
-        foreach (var path in paths)
-        {
-            var fullPath = Path.GetFullPath(path);
-            if (!_customThemeDirs.Contains(fullPath) && Directory.Exists(fullPath))
-            {
-                _customThemeDirs.Add(fullPath);
-            }
-        }
-    }
-
-    private ThemeCatalog CreateThemeCatalog(
-        IReadOnlyDictionary<string, IReadOnlySet<string>> controlTokenSchemas)
-    {
-        var sources = new List<IThemeCatalogSource>();
-        var sourcePriority = 0;
-        AddDirectorySources(_customThemeDirs, false, sources, ref sourcePriority);
-        AddDirectorySources(_builtInThemeDirs, false, sources, ref sourcePriority);
-
-        foreach (var provider in _themeAssetPathProviders)
-        {
-            AddSources(provider.GetThemeFilePaths(), true, false, sources, ref sourcePriority);
-        }
-
-        AddSources(
-            AssetLoader.GetAssets(new Uri(DEFAULT_THEME_RES_PATH), null)
-                       .Select(static path => path.ToString()),
-            true,
-            true,
-            sources,
-            ref sourcePriority);
-
-        return new ThemeCatalog(
-            sources,
-            CreateSharedTokenSchema(),
-            controlTokenSchemas,
-            ControlTokenTypes);
-    }
-
-    private static void AddDirectorySources(
-        IEnumerable<string> directories,
-        bool isBuiltIn,
-        List<IThemeCatalogSource> sources,
-        ref int sourcePriority)
-    {
-        foreach (var directory in directories)
-        {
-            if (!Directory.Exists(directory))
-            {
-                continue;
-            }
-
-            AddSources(
-                Directory.GetFiles(directory, "*.xml"),
-                isBuiltIn,
-                false,
-                sources,
-                ref sourcePriority);
-        }
-    }
-
-    private static void AddSources(
-        IEnumerable<string> filePaths,
-        bool isBuiltIn,
-        bool isCoreAssets,
-        List<IThemeCatalogSource> sources,
-        ref int sourcePriority)
-    {
-        foreach (var filePath in filePaths.OrderBy(static path => path, StringComparer.Ordinal))
-        {
-            var id = Path.GetFileNameWithoutExtension(filePath);
-            var isRequiredBuiltInDefault = isCoreAssets &&
-                                           string.Equals(id, IThemeManager.DEFAULT_THEME_ID, StringComparison.Ordinal);
-            IThemeDefinitionStreamOpener opener = filePath.StartsWith("avares://", StringComparison.OrdinalIgnoreCase)
-                ? AssetThemeDefinitionStreamOpener.Instance
-                : FileThemeDefinitionStreamOpener.Instance;
-            sources.Add(new ThemeCatalogSource(
-                id,
-                filePath,
-                isBuiltIn,
-                isRequiredBuiltInDefault,
-                sourcePriority++,
-                opener));
-        }
-    }
-
-    private static IReadOnlySet<string> CreateSharedTokenSchema()
-    {
-        var names = new HashSet<string>(
-            DesignToken.GetTokenPropertyNames(DesignTokenKind.Seed),
-            StringComparer.Ordinal);
-        names.UnionWith(DesignToken.GetTokenPropertyNames(DesignTokenKind.Map));
-        names.UnionWith(DesignToken.GetTokenPropertyNames(DesignTokenKind.Alias));
-        return names;
-    }
-
-    internal IReadOnlyDictionary<string, IReadOnlySet<string>> CreateControlTokenSchemas()
-    {
-        var schemas = new Dictionary<string, IReadOnlySet<string>>(StringComparer.Ordinal);
-        var errors = new List<string>();
-        foreach (var registration in ControlTokenTypes)
-        {
-            if (registration.TryGetIdentity(out var registeredIdentity))
-            {
-                if (registration.Descriptor is not null)
-                {
-                    var tokenNames = registration.Descriptor.OwnTokens.Select(static token => token.Name);
-                    if (!schemas.TryAdd(
-                            registeredIdentity.Id,
-                            new HashSet<string>(tokenNames, StringComparer.Ordinal)))
-                    {
-                        errors.Add($"Duplicate control token id '{registeredIdentity.Id}'.");
-                    }
-
-                    continue;
-                }
-
-                if (!typeof(AbstractControlDesignToken).IsAssignableFrom(registration.TokenType))
-                {
-                    errors.Add(
-                        $"Registration '{registration.TokenType.FullName}' does not create an {nameof(AbstractControlDesignToken)}.");
-                    continue;
-                }
-
-                if (!schemas.TryAdd(
-                        registeredIdentity.Id,
-                        CreateControlTokenSchema(registration.TokenType)))
-                {
-                    errors.Add($"Duplicate control token id '{registeredIdentity.Id}'.");
-                }
-
-                continue;
-            }
-
-            AbstractControlDesignToken? token;
-            try
-            {
-                token = registration.Activate();
-            }
-            catch (Exception exception)
-            {
-                errors.Add(
-                    $"Registration '{registration.TokenType.FullName}' activation failed: {exception.GetBaseException().Message}");
-                continue;
-            }
-
-            if (token is null)
-            {
-                errors.Add(
-                    $"Registration '{registration.TokenType.FullName}' does not create an {nameof(AbstractControlDesignToken)}.");
-                continue;
-            }
-
-            if (!schemas.TryAdd(token.Id, CreateControlTokenSchema(registration.TokenType)))
-            {
-                errors.Add($"Duplicate control token id '{token.Id}'.");
-            }
-        }
-
-        if (errors.Count > 0)
-        {
-            throw new ThemeLoadException(
-                $"Invalid control token registrations: {string.Join(" ", errors)}");
-        }
-
-        return schemas;
-    }
-
-    private static IReadOnlySet<string> CreateControlTokenSchema(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
-        Type tokenType)
-    {
-        var names = tokenType
-                    .GetProperties(System.Reflection.BindingFlags.Instance |
-                                   System.Reflection.BindingFlags.Public)
-                    .Where(static property => property.SetMethod?.IsPublic == true)
-                    .Select(static property => property.Name);
-        return new HashSet<string>(names, StringComparer.Ordinal);
-    }
-
-    internal void Configure()
-    {
-        ScanThemes();
         foreach (var provider in _controlThemesProviders)
         {
             foreach (var resourceProvider in provider.ControlThemes)
@@ -589,6 +1025,50 @@ internal class ThemeManager : Styles, IThemeManager
         _controlThemesProviders.Clear();
         BuildLanguageResources();
         SwitchLanguageResource(null, LanguageVariant);
+    }
+
+    private ThemeSchemaRegistry CreateStartupRegistry()
+    {
+        return new ThemeSchemaRegistry(
+            GeneratedThemeSchema.GetGlobalTokens(),
+            _controlTokenDescriptors,
+            GeneratedThemeSchema.GetAlgorithms());
+    }
+
+    private static ThemeAppearance ResolveSystemAppearance(Application application)
+    {
+        if (application.PlatformSettings is { } settings)
+        {
+            return settings.GetColorValues().ThemeVariant == PlatformThemeVariant.Dark
+                ? ThemeAppearance.Dark
+                : ThemeAppearance.Light;
+        }
+        return application.ActualThemeVariant == Avalonia.Styling.ThemeVariant.Dark
+            ? ThemeAppearance.Dark
+            : ThemeAppearance.Light;
+    }
+
+    private void SubscribeSystemAppearance(Application application)
+    {
+        if (_followSystemLightRequest is not null && application.PlatformSettings is { } settings)
+        {
+            settings.ColorValuesChanged += HandleSystemColorValuesChanged;
+        }
+    }
+
+    private async void HandleSystemColorValuesChanged(object? sender, PlatformColorValues values)
+    {
+        try
+        {
+            await ApplySystemAppearanceAsync(
+                values.ThemeVariant == PlatformThemeVariant.Dark
+                    ? ThemeAppearance.Dark
+                    : ThemeAppearance.Light).ConfigureAwait(true);
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine(exception);
+        }
     }
 
     private void SwitchLanguageResource(LanguageVariant? oldVariant, LanguageVariant? newVariant)
@@ -602,9 +1082,9 @@ internal class ThemeManager : Styles, IThemeManager
             }
         }
 
-        newVariant ??= IThemeManager.DEFAULT_LANGUAGE;
+        newVariant ??= s_defaultLanguage;
         var languageResource = TryGetLanguageResource(newVariant);
-        if (_languages.TryGetValue(IThemeManager.DEFAULT_LANGUAGE, out var defaultLang))
+        if (_languages.TryGetValue(s_defaultLanguage, out var defaultLang))
         {
             languageResource ??= defaultLang;
         }
@@ -635,282 +1115,52 @@ internal class ThemeManager : Styles, IThemeManager
         }
     }
 
-    internal virtual void NotifyInitialized()
-    {
-        Initialized?.Invoke(this, EventArgs.Empty);
-    }
-
-    internal virtual void NotifyAttachedToApplication()
-    {
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
         if (change.Property == LanguageVariantProperty)
         {
             SwitchLanguageResource(change.OldValue as LanguageVariant, change.NewValue as LanguageVariant);
-            NotifyLanguageVariantChanged();
             LanguageVariantChanged?.Invoke(this, new LanguageVariantChangedEventArgs(LanguageVariant, change.GetOldValue<LanguageVariant>()));
         }
-        else if (change.Property == ThemeVariantProperty)
-        {
-            if (!_themeCoordinator.IsCommitting)
-            {
-                _themeCoordinator.Request(CreateThemeRequest(
-                    ThemeVariant,
-                    ThemeTransitionReason.ApplicationThemeVariantChanged));
-            }
-        }
-        else if (change.Property == IsDarkThemeModeProperty ||
-                 change.Property == IsCompactThemeModeProperty)
-        {
-            if (!_themeCoordinator.IsCommitting)
-            {
-                _themeCoordinator.Request(CreateThemeRequest(
-                    ActivatedTheme?.Id ?? GetDefaultRequestThemeId(),
-                    IsDarkThemeMode,
-                    IsCompactThemeMode,
-                    ThemeTransitionReason.PropertyChanged));
-            }
-        }
-        else if (change.Property == IsMotionEnabledProperty)
-        {
-            ConfigureEnableMotion();
-        }
-        else if (change.Property == IsWaveSpiritEnabledProperty)
-        {
-            ConfigureEnableWaveSpirit();
-        }
-    }
-    
-    protected virtual void NotifyLanguageVariantChanged()
-    {}
-
-    internal IThemeVariantCalculator CreateThemeVariantCalculator(ThemeAlgorithm algorithm, IThemeVariantCalculator? baseCalculator)
-    {
-        if (ThemeVariantCalculatorFactory != null)
-        {
-            return ThemeVariantCalculatorFactory.Create(algorithm, baseCalculator);
-        }
-
-        if (algorithm == ThemeAlgorithm.Default)
-        {
-            return new DefaultThemeVariantCalculator();
-        }
-        if (algorithm == ThemeAlgorithm.Dark)
-        {
-            Debug.Assert(baseCalculator is not null);
-            return new DarkThemeVariantCalculator(baseCalculator);
-        } 
-        if (algorithm == ThemeAlgorithm.Compact)
-        {
-            Debug.Assert(baseCalculator is not null);
-            return new CompactThemeVariantCalculator(baseCalculator);
-        }
-
-        throw new ArgumentOutOfRangeException(nameof(algorithm), $"Unsupported theme variant algorithm: {algorithm}");
     }
 
-    public void AttachApplication(Application application)
+    private sealed class ScopePreparation
     {
-        _themeCoordinator.AttachApplication(application);
-        application.Styles.Add(this);
-        NotifyAttachedToApplication();
-        _themeCoordinator.Request(CreateThemeRequest(
-            new ThemeVariant(DefaultThemeId, null),
-            ThemeTransitionReason.Startup));
-        this[!ThemeVariantProperty] = application[!Application.ActualThemeVariantProperty];
-    }
-
-    private void ConfigureThemeSwitchRuntimeResources(ITheme? oldTheme)
-    {
-        if (oldTheme is not null)
+        private ScopePreparation(
+            IReadOnlyList<ThemeScopeStagedSnapshot> snapshots,
+            IReadOnlyList<ThemeDiagnostic> diagnostics,
+            Exception? exception)
         {
-            ConfigureEnableMotion();
-            ConfigureEnableWaveSpirit();
-            return;
+            Snapshots   = snapshots;
+            Diagnostics = diagnostics;
+            Exception   = exception;
         }
 
-        if (TryGetResource(SharedTokenKind.EnableMotion, ThemeVariant, out var enableMotionResource) &&
-            enableMotionResource is bool enableMotion)
+        internal IReadOnlyList<ThemeScopeStagedSnapshot> Snapshots { get; }
+        internal IReadOnlyList<ThemeDiagnostic> Diagnostics { get; }
+        internal Exception? Exception { get; }
+        internal bool Success => Exception is null &&
+                                 Diagnostics.All(static diagnostic =>
+                                     diagnostic.Severity != ThemeDiagnosticSeverity.Error);
+
+        internal static ScopePreparation Succeeded(
+            IReadOnlyList<ThemeScopeStagedSnapshot> snapshots)
         {
-            SetCurrentValue(IsMotionEnabledProperty, enableMotion);
+            return new ScopePreparation(
+                snapshots,
+                Array.Empty<ThemeDiagnostic>(),
+                null);
         }
 
-        if (TryGetResource(SharedTokenKind.EnableWaveSpirit, ThemeVariant, out var enableWaveSpiritResource) &&
-            enableWaveSpiritResource is bool enableWaveSpirit)
+        internal static ScopePreparation Failed(
+            IReadOnlyList<ThemeDiagnostic> diagnostics,
+            Exception? exception)
         {
-            SetCurrentValue(IsWaveSpiritEnabledProperty, enableWaveSpirit);
+            return new ScopePreparation(
+                Array.Empty<ThemeScopeStagedSnapshot>(),
+                diagnostics,
+                exception);
         }
-    }
-
-    internal ThemeRequest CreateThemeRequest(
-        ThemeVariant themeVariant,
-        ThemeTransitionReason reason)
-    {
-        var variantName = themeVariant.Key?.ToString() ?? themeVariant.ToString();
-        var baseThemeId = ExplicitDefaultThemeBaseId;
-        if (baseThemeId is not null &&
-            variantName.StartsWith(baseThemeId, StringComparison.Ordinal))
-        {
-            var suffix = variantName[baseThemeId.Length..];
-            return CreateThemeRequest(
-                baseThemeId,
-                suffix.Contains($"-{nameof(ThemeAlgorithm.Dark)}", StringComparison.Ordinal),
-                suffix.Contains($"-{nameof(ThemeAlgorithm.Compact)}", StringComparison.Ordinal),
-                reason);
-        }
-
-        var themeId    = variantName;
-        var hasCompact = TryTrimAlgorithmSuffix(ref themeId, ThemeAlgorithm.Compact);
-        var hasDark    = TryTrimAlgorithmSuffix(ref themeId, ThemeAlgorithm.Dark);
-        return CreateThemeRequest(themeId, hasDark, hasCompact, reason);
-    }
-
-    internal ThemeRequest CreateThemeRequest(
-        string themeId,
-        bool hasDark,
-        bool hasCompact,
-        ThemeTransitionReason reason)
-    {
-        var algorithms = new List<ThemeAlgorithm>
-        {
-            ThemeAlgorithm.Default
-        };
-        if (hasDark)
-        {
-            algorithms.Add(ThemeAlgorithm.Dark);
-        }
-
-        if (hasCompact)
-        {
-            algorithms.Add(ThemeAlgorithm.Compact);
-        }
-
-        return new ThemeRequest(themeId, algorithms, reason);
-    }
-
-    private string GetDefaultRequestThemeId()
-    {
-        if (ExplicitDefaultThemeBaseId is not null)
-        {
-            return ExplicitDefaultThemeBaseId;
-        }
-
-        var defaultThemeId = DefaultThemeId;
-        TryTrimAlgorithmSuffix(ref defaultThemeId, ThemeAlgorithm.Compact);
-        TryTrimAlgorithmSuffix(ref defaultThemeId, ThemeAlgorithm.Dark);
-        return defaultThemeId;
-    }
-
-    private static bool TryTrimAlgorithmSuffix(ref string themeId, ThemeAlgorithm algorithm)
-    {
-        var suffix = $"-{algorithm}";
-        if (!themeId.EndsWith(suffix, StringComparison.Ordinal))
-        {
-            return false;
-        }
-
-        themeId = themeId[..^suffix.Length];
-        return true;
-    }
-
-    internal void NotifyThemeChanged(Theme newTheme, ITheme? oldTheme)
-    {
-        NotifyThemeChanged(new ThemeChangedEventArgs(newTheme, oldTheme));
-    }
-
-    private void NotifyThemeChanged(ThemeChangedEventArgs args)
-    {
-        var handlers = ThemeChanged;
-        if (handlers is null)
-        {
-            return;
-        }
-
-        foreach (var invocation in handlers.GetInvocationList())
-        {
-            if (invocation is not EventHandler<ThemeChangedEventArgs> handler)
-            {
-                continue;
-            }
-
-            try
-            {
-                handler(this, args);
-            }
-            catch (Exception exception)
-            {
-                Debug.WriteLine(exception);
-            }
-        }
-    }
-
-    private void NotifyThemeOperate(
-        EventHandler<ThemeOperateEventArgs>? handlers,
-        ThemeOperateEventArgs args)
-    {
-        if (handlers is null)
-        {
-            return;
-        }
-
-        foreach (var invocation in handlers.GetInvocationList())
-        {
-            if (invocation is not EventHandler<ThemeOperateEventArgs> handler)
-            {
-                continue;
-            }
-
-            try
-            {
-                handler(this, args);
-            }
-            catch (Exception exception)
-            {
-                Debug.WriteLine(exception);
-            }
-        }
-    }
-
-    private void ConfigureEnableMotion()
-    {
-        var themeResource = Resources.ThemeDictionaries[ThemeVariant];
-        if (themeResource is ResourceDictionary globalResourceDictionary)
-        {
-            globalResourceDictionary[SharedTokenKind.EnableMotion] = IsMotionEnabled;
-        }
-    }
-    
-    private void ConfigureEnableWaveSpirit()
-    {
-        var themeResource = Resources.ThemeDictionaries[ThemeVariant];
-        if (themeResource is ResourceDictionary globalResourceDictionary)
-        {
-            globalResourceDictionary[SharedTokenKind.EnableWaveSpirit] = IsWaveSpiritEnabled;
-        }
-    }
-}
-
-public class ThemeOperateEventArgs : EventArgs
-{
-    public ITheme? Theme { get; }
-
-    public ThemeOperateEventArgs(ITheme? theme)
-    {
-        Theme = theme;
-    }
-}
-
-public class ThemeChangedEventArgs : EventArgs
-{
-    public ITheme? OldTheme { get; }
-    public ITheme NewTheme { get; }
-
-    public ThemeChangedEventArgs(ITheme newTheme, ITheme? oldTheme)
-    {
-        NewTheme = newTheme;
-        OldTheme = oldTheme;
     }
 }
