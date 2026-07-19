@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using AtomUI.Controls;
-using AtomUI.Theme.Tokens;
+using AtomUI.Theme.DesignTokens;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;

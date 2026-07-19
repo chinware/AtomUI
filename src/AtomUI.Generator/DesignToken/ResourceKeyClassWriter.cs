@@ -20,7 +20,7 @@ internal class ResourceKeyClassWriter
 
     private void SetupUsingInfos()
     {
-        _usingInfos.Add("AtomUI.Theme.Tokens");
+        _usingInfos.Add("AtomUI.Theme.DesignTokens");
         _usingInfos.Add("AtomUI.Theme");
         _usingInfos.Add("AtomUI.Theme.Resources");
     }

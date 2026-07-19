@@ -26,7 +26,7 @@ internal class TokenValueConverterRegistryClassWriter
         source.AppendLine("using System;");
         source.AppendLine("using System.Collections.Generic;");
         source.AppendLine();
-        source.AppendLine("namespace AtomUI.Theme.Tokens;");
+        source.AppendLine("namespace AtomUI.Theme.DesignTokens;");
         source.AppendLine();
         source.AppendLine("internal static class TokenValueConverterRegistry");
         source.AppendLine("{");

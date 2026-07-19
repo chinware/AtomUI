@@ -105,7 +105,7 @@ public class ThemeSchemaGeneratorTests
     private const string TokenSource = """
         using AtomUI.Theme.Algorithms;
         using AtomUI.Theme.Schema;
-        using AtomUI.Theme.Tokens;
+        using AtomUI.Theme.DesignTokens;
 
         namespace Demo
         {
@@ -154,7 +154,7 @@ public class ThemeSchemaGeneratorTests
     private const string ReorderedTokenSource = """
         using AtomUI.Theme.Algorithms;
         using AtomUI.Theme.Schema;
-        using AtomUI.Theme.Tokens;
+        using AtomUI.Theme.DesignTokens;
 
         namespace Demo
         {
@@ -265,9 +265,9 @@ public class ThemeSchemaGeneratorTests
                     object resourceKey,
                     System.Func<string, object?> parser,
                     System.Func<object?, string> formatter,
-                    System.Func<AtomUI.Theme.Tokens.AbstractDesignToken, object?> getter,
-                    System.Action<AtomUI.Theme.Tokens.AbstractDesignToken, object?> setter,
-                    System.Func<AtomUI.Theme.Tokens.AbstractDesignToken, object?> resourceProjector)
+                    System.Func<AtomUI.Theme.DesignTokens.AbstractDesignToken, object?> getter,
+                    System.Action<AtomUI.Theme.DesignTokens.AbstractDesignToken, object?> setter,
+                    System.Func<AtomUI.Theme.DesignTokens.AbstractDesignToken, object?> resourceProjector)
                 {
                 }
             }
@@ -277,8 +277,8 @@ public class ThemeSchemaGeneratorTests
                 public ControlTokenDescriptor(
                     ControlTokenIdentity identity,
                     System.Collections.Generic.IReadOnlyList<TokenDescriptor> ownTokens,
-                    System.Func<AtomUI.Theme.Tokens.AbstractControlDesignToken> factory,
-                    System.Action<AtomUI.Theme.Tokens.AbstractControlDesignToken, AtomUI.Theme.ThemeAppearance> evaluator)
+                    System.Func<AtomUI.Theme.DesignTokens.AbstractControlDesignToken> factory,
+                    System.Action<AtomUI.Theme.DesignTokens.AbstractControlDesignToken, AtomUI.Theme.ThemeAppearance> evaluator)
                 {
                 }
             }
@@ -337,7 +337,7 @@ public class ThemeSchemaGeneratorTests
             }
         }
 
-        namespace AtomUI.Theme.Tokens
+        namespace AtomUI.Theme.DesignTokens
         {
             public enum DesignTokenKind
             {

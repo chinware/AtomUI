@@ -3,7 +3,7 @@ using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.Tokens;
+using AtomUI.Theme.DesignTokens;
 
 namespace AtomUI.Theme.Compilation;
 

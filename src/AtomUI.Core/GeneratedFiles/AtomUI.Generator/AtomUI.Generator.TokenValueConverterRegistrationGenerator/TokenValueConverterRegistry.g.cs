@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AtomUI.Theme.Tokens;
+namespace AtomUI.Theme.DesignTokens;
 
 internal static class TokenValueConverterRegistry
 {
@@ -10,33 +10,33 @@ internal static class TokenValueConverterRegistry
     {
         ITokenValueConverter[] valueConverters = new ITokenValueConverter[]
         {
-            new global::AtomUI.Theme.Tokens.BoolTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.BoxShadowsTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.BoxShadowTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.BrushTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.ColorTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.CornerRadiusTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.DimensionTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.DoubleTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.EasingTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.FloatTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.FontFamilyTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.FontWeightTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.ImmutableBrushTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.ImmutableTransformTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.IntegerTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.LineStyleTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.NullableColorTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.NullableTextDecorationTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.PenLineCapTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.PenLineJoinTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.PointTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.SizeTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.SolidColorBrushTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.StringTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.TextDecorationTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.ThicknessTokenValueConverter(),
-            new global::AtomUI.Theme.Tokens.TimeSpanTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.BoolTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.BoxShadowsTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.BoxShadowTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.BrushTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.ColorTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.CornerRadiusTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.DimensionTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.DoubleTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.EasingTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.FloatTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.FontFamilyTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.FontWeightTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.ImmutableBrushTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.ImmutableTransformTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.IntegerTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.LineStyleTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.NullableColorTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.NullableTextDecorationTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.PenLineCapTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.PenLineJoinTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.PointTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.SizeTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.SolidColorBrushTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.StringTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.TextDecorationTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.ThicknessTokenValueConverter(),
+            new global::AtomUI.Theme.DesignTokens.TimeSpanTokenValueConverter(),
         };
 
         var map = new Dictionary<Type, ITokenValueConverter>(valueConverters.Length);

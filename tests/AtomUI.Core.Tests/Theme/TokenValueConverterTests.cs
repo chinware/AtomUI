@@ -1,6 +1,6 @@
 using System.Globalization;
 using AtomUI.Theme;
-using AtomUI.Theme.Tokens;
+using AtomUI.Theme.DesignTokens;
 using Shouldly;
 using Xunit;
 

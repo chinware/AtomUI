@@ -5,7 +5,7 @@ using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.Tokens;
+using AtomUI.Theme.DesignTokens;
 using Shouldly;
 
 namespace AtomUI.Core.Tests.Theme;
