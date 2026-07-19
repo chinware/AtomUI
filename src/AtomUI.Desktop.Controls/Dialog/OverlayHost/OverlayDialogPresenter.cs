@@ -2,7 +2,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
-using AtomUI.Media;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -335,11 +334,10 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             return;
         }
 
-        var surfaceBounds = ResolveSurfaceBounds(ownerBounds);
-        var minWidth = Math.Min(_dialog.HostMinWidth, surfaceBounds.Width);
-        var minHeight = Math.Min(_dialog.HostMinHeight, surfaceBounds.Height);
-        var maxWidth = ResolveMaximum(_dialog.HostMaxWidth, minWidth, surfaceBounds.Width);
-        var maxHeight = ResolveMaximum(_dialog.HostMaxHeight, minHeight, surfaceBounds.Height);
+        var minWidth = Math.Min(_dialog.HostMinWidth, ownerBounds.Width);
+        var minHeight = Math.Min(_dialog.HostMinHeight, ownerBounds.Height);
+        var maxWidth = ResolveMaximum(_dialog.HostMaxWidth, minWidth, ownerBounds.Width);
+        var maxHeight = ResolveMaximum(_dialog.HostMaxHeight, minHeight, ownerBounds.Height);
 
         _surface.MinWidth = minWidth;
         _surface.MinHeight = minHeight;
@@ -487,31 +485,17 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _maskMotionActor.Margin = default;
     }
 
-    private Thickness ResolveSurfaceShadowThickness()
+    private static Point ConstrainSurfacePosition(Rect ownerBounds, Size surfaceSize, Point position)
     {
-        if (_ownerWindow is not { OsType: OsType.Linux })
-        {
-            return default;
-        }
-
-        return _surface.ShadowHost?.BoxShadow.Thickness() ?? default;
-    }
-
-    private Rect ResolveSurfaceBounds(Rect ownerBounds)
-    {
-        return DeflateBounds(ownerBounds, ResolveSurfaceShadowThickness());
-    }
-
-    private Point ConstrainSurfacePosition(Rect ownerBounds, Size surfaceSize, Point position)
-    {
-        var shadow = ResolveSurfaceShadowThickness();
-        var minX = ownerBounds.X + shadow.Left;
-        var minY = ownerBounds.Y + shadow.Top;
-        var maxX = Math.Max(minX, ownerBounds.Right - shadow.Right - surfaceSize.Width);
-        var maxY = Math.Max(minY, ownerBounds.Bottom - shadow.Bottom - surfaceSize.Height);
         return new Point(
-            Math.Clamp(position.X, minX, maxX),
-            Math.Clamp(position.Y, minY, maxY));
+            Math.Clamp(
+                position.X,
+                ownerBounds.X,
+                Math.Max(ownerBounds.X, ownerBounds.Right - surfaceSize.Width)),
+            Math.Clamp(
+                position.Y,
+                ownerBounds.Y,
+                Math.Max(ownerBounds.Y, ownerBounds.Bottom - surfaceSize.Height)));
     }
 
     private static double ResolveMaximum(double value, double min, double available)
