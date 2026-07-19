@@ -1,0 +1,44 @@
+using AtomUI.Theme.Schema;
+
+namespace AtomUI.Theme.Configuration;
+
+public sealed class ThemeConfigBuilder
+{
+    private bool _inherit = true;
+    private List<string>? _algorithms;
+    private readonly Dictionary<string, string> _tokens = new(StringComparer.Ordinal);
+    private readonly Dictionary<ControlTokenIdentity, ControlThemeConfig> _controls = new();
+
+    public ThemeConfigBuilder WithInherit(bool inherit)
+    {
+        _inherit = inherit;
+        return this;
+    }
+
+    public ThemeConfigBuilder WithAlgorithms(params string[] algorithms)
+    {
+        ArgumentNullException.ThrowIfNull(algorithms);
+        _algorithms = new List<string>(algorithms);
+        return this;
+    }
+
+    public ThemeConfigBuilder WithToken(string name, string value)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(value);
+        _tokens[name] = value;
+        return this;
+    }
+
+    public ThemeConfigBuilder WithControl(ControlTokenIdentity identity, ControlThemeConfig config)
+    {
+        ArgumentNullException.ThrowIfNull(config);
+        _controls[identity] = config;
+        return this;
+    }
+
+    public ThemeConfig Build()
+    {
+        return new ThemeConfig(_inherit, _algorithms, _tokens, _controls);
+    }
+}
