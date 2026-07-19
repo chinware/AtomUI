@@ -128,6 +128,40 @@ public class CascaderBindableOptionTests
     }
 
     [Fact]
+    public void Recycled_Container_Restores_Expansion_From_Option_Instead_Of_Stale_Context()
+    {
+        var option = new CascaderOption
+        {
+            Header     = "Root",
+            IsExpanded = true
+        };
+        var cascaderView = new CascaderView
+        {
+            IsMotionEnabled      = false,
+            IsShowEmptyIndicator = false
+        };
+        var levelList = new TestCascaderViewLevelList
+        {
+            OwnerView = cascaderView
+        };
+        var container = new CascaderViewItem
+        {
+            DataContext = option
+        };
+        CascaderViewItem.ApplyOptionData(container, option);
+
+        var savedContext = new Dictionary<object, object?>();
+        levelList.SaveContainerContext(container, savedContext);
+
+        option.IsExpanded = false;
+        levelList.ClearContainerContext(container);
+        levelList.RestoreDefaultContainerContext(container, option);
+        levelList.RestoreContainerContext(container, savedContext);
+
+        container.IsExpanded.ShouldBeFalse();
+    }
+
+    [Fact]
     public void BindableCascaderOption_Children_Changes_Update_Realized_Container_Leaf_State()
     {
         var option = new BindableCascaderOption
@@ -382,6 +416,29 @@ public class CascaderBindableOptionTests
             {
                 return;
             }
+        }
+    }
+
+    private sealed class TestCascaderViewLevelList : CascaderViewLevelList
+    {
+        public void SaveContainerContext(CascaderViewItem item, IDictionary<object, object?> context)
+        {
+            NotifySaveVirtualizingContext(item, context);
+        }
+
+        public void RestoreContainerContext(CascaderViewItem item, IDictionary<object, object?> context)
+        {
+            NotifyRestoreVirtualizingContext(item, context);
+        }
+
+        public void RestoreDefaultContainerContext(CascaderViewItem item, ICascaderOption option)
+        {
+            NotifyRestoreDefaultContext(item, option);
+        }
+
+        public void ClearContainerContext(CascaderViewItem item)
+        {
+            NotifyClearContainerForVirtualizingContext(item);
         }
     }
 }

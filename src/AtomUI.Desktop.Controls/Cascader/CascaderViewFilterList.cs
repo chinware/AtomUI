@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -58,6 +59,12 @@ internal class CascaderViewFilterList : ListBox
                 CascaderViewFilterListItem.IsCandidateSelectedProperty,
                 Equals(item, CandidateSelectedItem));
         }
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+        ClearCandidate();
     }
 
     internal bool TryMoveCandidate(int delta)

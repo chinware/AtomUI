@@ -691,6 +691,7 @@ public class ListBox : AvaloniaListBox,
     protected virtual void NotifyRestoreDefaultContext(ListBoxItem item, IListItemData itemData)
     {
         item.SetCurrentValue(ListBoxItem.ContentProperty, itemData);
+        item.SetCurrentValue(ListBoxItem.IsEnabledProperty, itemData.IsEnabled);
     }
 
     protected virtual void NotifyClearContainerForVirtualizingContext(ListBoxItem item)

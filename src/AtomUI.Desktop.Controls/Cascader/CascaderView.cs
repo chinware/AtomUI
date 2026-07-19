@@ -13,6 +13,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -326,6 +327,7 @@ public partial class CascaderView : TemplatedControl,
     private bool _isSynchronizingSelectedOptionToView;
     private CascaderViewLevelList? _rootLevelList;
     private CascaderViewItem? _keyboardCandidateItem;
+    private DispatcherOperation? _pendingSelectedOptionPresentation;
     
     static CascaderView()
     {
@@ -401,9 +403,22 @@ public partial class CascaderView : TemplatedControl,
             _defaultExpandPathApplied = true;
         }
         
-        if (SelectedOption != null)
+        RestoreSelectedOptionPath();
+    }
+
+    internal void ResetInteractionState()
+    {
+        CancelPendingSelectedOptionPresentation();
+        SetKeyboardCandidate(null);
+        _filterList?.ClearCandidate();
+        CollapseAll();
+    }
+
+    internal void RestoreSelectedOptionPath()
+    {
+        if (SelectedOption is { } option)
         {
-            SelectTargetOption(SelectedOption);
+            SelectTargetOption(option);
         }
     }
 
@@ -472,6 +487,7 @@ public partial class CascaderView : TemplatedControl,
 
     private void HandleCascaderSourceChanged(AvaloniaPropertyChangedEventArgs args)
     {
+        CancelPendingSelectedOptionPresentation();
         ResetLevelListsForOptionsSourceChanging();
         _options.SetItemsSource(args.GetNewValue<IEnumerable<ICascaderOption>?>());
         RestoreRootLevelListItemsSource();
@@ -557,6 +573,7 @@ public partial class CascaderView : TemplatedControl,
             }
             else
             {
+                CancelPendingSelectedOptionPresentation();
                 CollapseAll();
             }
         }
@@ -571,7 +588,8 @@ public partial class CascaderView : TemplatedControl,
             throw new ArgumentException($"Option {option.Header} is not a Leaf node.");
         }
     
-        Dispatcher.InvokeAsync(async () =>
+        CancelPendingSelectedOptionPresentation();
+        _pendingSelectedOptionPresentation = Dispatcher.InvokeAsync<Task>(async () =>
         {
             await ExpandItemAsync(option);
             var targetLevelList = GetLevelListForOption(option);
@@ -588,6 +606,12 @@ public partial class CascaderView : TemplatedControl,
                 }
             }
         });
+    }
+
+    private void CancelPendingSelectedOptionPresentation()
+    {
+        _pendingSelectedOptionPresentation?.Abort();
+        _pendingSelectedOptionPresentation = null;
     }
 
     private void SelectOptionFromInteraction(ICascaderOption option)
@@ -940,6 +964,7 @@ public partial class CascaderView : TemplatedControl,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        CancelPendingSelectedOptionPresentation();
         
         // 清理所有待处理的异步加载操作
         _asyncLoadCoordinator.CancelAll();

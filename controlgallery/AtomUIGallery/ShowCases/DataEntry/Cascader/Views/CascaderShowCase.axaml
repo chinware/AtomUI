@@ -700,6 +700,7 @@
             <atom:SearchEdit PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextSearch}"
                              SearchButtonClick="HandleFilterCascaderViewClicked" />
             <atom:CascaderView Name="SearchCascaderView"
+                               OptionSelected="HandleSearchCascaderViewOptionSelected"
                                OptionsSource="{Binding SearchCascaderViewNodes}" />
         </StackPanel>
                         </DataTemplate>
@@ -717,6 +718,7 @@
                              SearchButtonClick="HandleFilterCascaderViewItemsSourceClicked" />
             <atom:CascaderView
                 Name="SearchCascaderViewItemsSource"
+                OptionSelected="HandleSearchCascaderViewOptionSelected"
                 OptionsSource="{Binding SearchCascaderViewNodes}">
                 <atom:CascaderView.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
