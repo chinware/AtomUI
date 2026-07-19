@@ -79,7 +79,9 @@ frame clip，产生边框间隙和抗锯齿接缝。
 Wayland CSD 还有一层独立的 `WindowDrawnDecorationsContent.Overlay`，其中的交互标题栏绘制在 visual layer
 之上。该 overlay 承载 Gallery 菜单、窗口标题和 caption buttons，不能为了让 mask 覆盖标题栏背景而整体隐藏。
 Dialog 的 mask 应覆盖完整 visual layer 和标题栏 underlay；drawn title-bar overlay 则继续位于 mask 上方，保持
-可见和可操作。这是本次明确选择的 modal 行为，不新增第二套标题栏 mask 或输入拦截层。
+可见和可操作。drawn-decoration theme 必须把 overlay 中 `WindowTitleBar` 的背景设为透明，让已被同一块 mask
+着色的标题栏 underlay 连续透出；否则 `WindowTitleBar` 默认的不透明 `ColorBgContainer` 会重新盖白标题栏，
+在标题栏与正文之间形成明显断层。这是本次明确选择的 modal 行为，不新增第二套标题栏 mask 或输入拦截层。
 
 ## 4. 方案比较
 
@@ -89,7 +91,7 @@ Dialog 的 mask 应覆盖完整 visual layer 和标题栏 underlay；drawn title
 - Linux Dialog 主体单独解析标题栏以下的 body bounds。
 - Dialog BoxShadow 不进入任何尺寸或位置计算。
 - 窗口阴影和圆角只由 `WindowVisualLayerClip` 裁剪。
-- Linux CSD drawn title-bar overlay 保持可见和可操作；mask 覆盖其下方的标题栏 underlay。
+- Linux CSD drawn title-bar overlay 保持可见和可操作；其背景透明，mask 覆盖并通过下方标题栏 underlay 连续显示。
 
 优点：每套几何只有一个职责和真源；符合既有 Window clip 与 `IsOverlayMode` 契约；不会重复圆角计算。
 
@@ -124,7 +126,8 @@ maskBounds = Rect(0, 0, layerWidth, layerHeight)
 
 Linux CSD modal 显示时，Presenter 不获取 `Window.SuppressDrawnTitleBarOverlay()` lease。位于 visual layer
 上方的 drawn title-bar overlay 继续显示，Gallery 菜单、标题与 caption buttons 保持可操作。标题栏背景由
-underlay 提供，仍会被满层 mask 着色；overlay 中的交互内容不受 mask 着色或命中测试限制。
+underlay 提供，仍会被满层 mask 着色；drawn-decoration theme 仅在该 overlay 内把 `WindowTitleBar.Background`
+设为透明，普通 WindowTitleBar theme 的默认容器背景不变。overlay 中的交互内容不受 mask 着色或命中测试限制。
 
 非 Linux 继续保持现有整层 mask 行为。
 
@@ -187,13 +190,16 @@ Mask 独立填满 visual layer，不随 Dialog 最大化或恢复改变覆盖范
 Presenter 在以下时机重新解析 Dialog body 几何：
 
 - 首次加入 DialogLayer 并完成 template/layout。
-- DialogLayer/TopLevel size 变化。
+- DialogLayer/TopLevel client size 变化。
 - Dialog HostWidth/Height/Min/Max 变化。
 - Window CSD、WindowDecorationMargin、FrameShadowThickness、TitleBarHeight、标题栏可见性或 WindowState 变化。
 - surface size 变化、最大化和恢复。
 
-现有订阅继续由 Presenter 的 `_bindings` 持有并在 `DisposeAsync` 释放。不增加全局服务、timer、dispatcher delay、
-suppression flag 或新的 public contract。
+桌面 top-level popup 模式下，`TopLevel.ClientSize` 是共享 `DialogOverlayLayer` 的尺寸真源。Wayland 最大化和恢复可能
+只更新该属性而不触发 popup overlay layer 的 `SizeChanged`，因此 DialogLayer 在存在 presenter 时直接观察
+`ClientSize`，并在最后一个 presenter 移除时解绑。scope overlay 模式继续使用 `ScopeAwareOverlayLayer.AvailableSize`，
+不会被扩大到整个 TopLevel。Presenter 自身的几何订阅继续由 `_bindings` 持有并在 `DisposeAsync` 释放。不增加
+全局服务、timer、dispatcher delay、suppression flag 或新的 public contract。
 
 Presenter 不再持有 drawn title-bar suppression lease，也不再订阅 `IsModal`、`OsType` 或 `IsCsdEnabled` 来切换
 标题栏 overlay 可见性。Dialog 的生命周期只管理自身 mask、surface、motion 与既有几何订阅。
@@ -207,12 +213,13 @@ Presenter 不再持有 drawn title-bar suppression lease，也不再订阅 `IsMo
 1. Linux CSD mask 的 origin 为 `(0, 0)`，尺寸等于完整 presenter layer，不扣标题栏或装饰边距。
 2. Linux 非 CSD mask 同样覆盖完整 layer；窗口 frame clip 是唯一外轮廓裁剪者。
 3. Linux CSD modal 打开、关闭和 dispose 前后 drawn title-bar overlay 始终可见，标题栏菜单仍可操作。
-4. Linux CSD Dialog 拖到左上边界时，主体恰好贴合 `dialogBodyBounds`，不增加 Dialog shadow inset。
-5. Linux CSD Dialog 拖到右下边界时，主体 Bounds 不越界，但不为 BoxShadow 预留空间。
-6. 非零 Dialog BoxShadow 下，显式 `HostWidth` / `HostHeight` 仍精确表示主体尺寸。
-7. 请求尺寸超过客户区时，最大主体尺寸等于 `dialogBodyBounds`，不再额外扣 Dialog shadow。
-8. CSD decoration、owner resize 或窗口状态变化后，mask 仍覆盖完整 layer，Dialog 主体重新约束到当前 body bounds。
-9. 非 Linux fixture 保留整层 mask 与原位置断言，防止范围外行为变化。
+4. drawn title-bar overlay 的 WindowTitleBar 背景透明，标题栏 underlay 与正文共享同一块连续 mask。
+5. Linux CSD Dialog 拖到左上边界时，主体恰好贴合 `dialogBodyBounds`，不增加 Dialog shadow inset。
+6. Linux CSD Dialog 拖到右下边界时，主体 Bounds 不越界，但不为 BoxShadow 预留空间。
+7. 非零 Dialog BoxShadow 下，显式 `HostWidth` / `HostHeight` 仍精确表示主体尺寸。
+8. 请求尺寸超过客户区时，最大主体尺寸等于 `dialogBodyBounds`，不再额外扣 Dialog shadow。
+9. CSD decoration、owner `ClientSize`、resize 或窗口状态变化后，mask 仍覆盖完整 layer，Dialog 主体重新约束到当前 body bounds。
+10. 非 Linux fixture 保留整层 mask 与原位置断言，防止范围外行为变化。
 
 验证命令：
 
@@ -234,6 +241,7 @@ git diff --check
 Linux Wayland Gallery 手动验证：
 
 - 打开 Modal Overlay，确认 mask 覆盖标题栏背景、内容和四周可见边框，底边及圆角无缝隙。
+- 确认标题栏背景与正文使用同一遮罩色连续过渡，不出现未着色的白色横条或交界缝；标题栏前景内容仍可见。
 - 确认标题栏菜单、标题和窗口按钮保持可见，菜单仍可正常操作。
 - 确认 mask 不着色窗口外部 compositor shadow。
 - 分别把 Dialog 拖到上、下、左、右边界，确认白色主体可以贴边且不进入标题栏。
@@ -244,8 +252,9 @@ Linux Wayland Gallery 手动验证：
 
 - Public API/theme contract changed：No。
 - Observable behavior changed：Yes，仅修正 Linux Overlay Dialog 的错误边界。
-- Rendered result changed：Yes，mask 覆盖窗口可见轮廓的背景层，drawn title-bar 交互内容保持在其上方，Dialog 主体不再为自身阴影留白。
+- Rendered result changed：Yes，mask 覆盖窗口可见轮廓的背景层，drawn title-bar 使用透明 overlay 背景并把交互内容保持在其上方，Dialog 主体不再为自身阴影留白。
 - Files split：No。
 - AOT impact：No reflection、dynamic discovery 或新动态 binding。
-- Lifecycle risk：低；删除 Dialog 对 drawn title-bar suppression lease 的获取与释放，不新增跨层状态。
+- Lifecycle risk：低；删除 Dialog 对 drawn title-bar suppression lease 的获取与释放；共享 DialogLayer 的
+  TopLevel 尺寸订阅随第一个 presenter 建立，并在最后一个 presenter 移除时释放。
 - Residual risk：当前开发环境不能直接运行 Linux Wayland compositor，最终仍需要 Linux Gallery 手动验证。

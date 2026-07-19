@@ -37,19 +37,30 @@
                     </WindowDrawnDecorationsContent.Underlay>
 
                     <WindowDrawnDecorationsContent.Overlay>
-                        <Panel Name="PART_OverlayWrapper"
-                               IsVisible="{Binding $parent[atom:Window].IsDrawnTitleBarOverlayVisible}">
-                            <Border ClipToBounds="True"
-                                    CornerRadius="{Binding $parent[atom:Window].CornerRadius, Converter={StaticResource TitleBarCornerRadiusFilter}}">
-                                <ContentPresenter Name="PART_TitleBarPresenter"
-                                                  VerticalAlignment="Top"
-                                                  Height="{TemplateBinding TitleBarHeight}"
-                                                  IsVisible="{TemplateBinding HasTitleBar}"
-                                                  Content="{Binding $parent[atom:Window].TitleBar}"
-                                                  WindowDecorationProperties.ElementRole="User" />
-                            </Border>
-                        </Panel>
+                        <Panel>
+                            <Panel Name="PART_OverlayWrapper">
+                                <Border ClipToBounds="True"
+                                        CornerRadius="{Binding $parent[atom:Window].CornerRadius, Converter={StaticResource TitleBarCornerRadiusFilter}}">
+                                    <ContentPresenter Name="PART_TitleBarPresenter"
+                                                      VerticalAlignment="Top"
+                                                      Height="{TemplateBinding TitleBarHeight}"
+                                                      IsVisible="{TemplateBinding HasTitleBar}"
+                                                      Content="{Binding $parent[atom:Window].TitleBar}"
+                                                      WindowDecorationProperties.ElementRole="User" />
+                                </Border>
+                            </Panel>
 
+                            <atom:WindowVisualLayerClip
+                                ShadowThickness="{Binding $parent[atom:Window].FrameShadowThickness}"
+                                CornerRadius="{Binding $parent[atom:Window].CornerRadius}">
+                                <Panel>
+                                    <atom:ScopeAwareAdornerLayer
+                                        Name="PART_DrawerOverlayLayerHost"
+                                        LayerHost="{Binding $parent[atom:Window]}" />
+                                    <Panel Name="PART_DialogOverlayLayerHost" />
+                                </Panel>
+                            </atom:WindowVisualLayerClip>
+                        </Panel>
                     </WindowDrawnDecorationsContent.Overlay>
 
                     <WindowDrawnDecorationsContent.FullscreenPopover>

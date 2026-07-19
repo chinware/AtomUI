@@ -8,38 +8,54 @@ namespace AtomUI.Desktop.Controls;
 internal sealed class DialogOverlayLayer : Canvas
 {
     private readonly Panel _hostLayer;
+    private readonly TopLevel? _topLevel;
 
-    private DialogOverlayLayer(Panel hostLayer)
+    internal Size AvailableSize { get; private set; }
+
+    private DialogOverlayLayer(Panel hostLayer, TopLevel? topLevel)
     {
         _hostLayer = hostLayer;
+        _topLevel = topLevel;
         _hostLayer.SizeChanged += HandleHostLayerSizeChanged;
+        if (_topLevel is not null)
+        {
+            _topLevel.PropertyChanged += HandleTopLevelPropertyChanged;
+        }
         SynchronizeBounds();
     }
 
     internal static DialogOverlayLayer GetOrCreate(Visual anchor)
     {
-        var hostLayer = ResolveHostLayer(anchor);
+        var (hostLayer, topLevel) = ResolveHostLayer(anchor);
         var dialogLayer = hostLayer.Children.OfType<DialogOverlayLayer>().FirstOrDefault();
         if (dialogLayer is not null)
         {
             return dialogLayer;
         }
 
-        dialogLayer = new DialogOverlayLayer(hostLayer);
+        dialogLayer = new DialogOverlayLayer(hostLayer, topLevel);
         hostLayer.Children.Add(dialogLayer);
         return dialogLayer;
     }
 
-    private static Panel ResolveHostLayer(Visual anchor)
+    private static (Panel HostLayer, TopLevel? TopLevel) ResolveHostLayer(Visual anchor)
     {
-        if (TopLevel.GetTopLevel(anchor) is { } topLevel &&
-            topLevel.GetPopupOverlayLayer() is Panel topLevelLayer)
+        var topLevel = TopLevel.GetTopLevel(anchor);
+        if (topLevel is Window { OsType: OsType.Linux, IsCsdEnabled: true } window &&
+            window.GetDrawnDialogOverlayLayer() is { } drawnDialogLayer)
         {
-            return topLevelLayer;
+            return (drawnDialogLayer, topLevel);
         }
 
-        return ScopeAwareOverlayLayer.GetLayer(anchor) ??
-               throw new InvalidOperationException("Unable to resolve an overlay layer for Dialog.");
+        if (topLevel is not null &&
+            topLevel.GetPopupOverlayLayer() is Panel topLevelLayer)
+        {
+            return (topLevelLayer, topLevel);
+        }
+
+        var scopeLayer = ScopeAwareOverlayLayer.GetLayer(anchor) ??
+                         throw new InvalidOperationException("Unable to resolve an overlay layer for Dialog.");
+        return (scopeLayer, null);
     }
 
     internal void Add(OverlayDialogPresenter presenter)
@@ -64,6 +80,10 @@ internal sealed class DialogOverlayLayer : Canvas
         }
 
         _hostLayer.SizeChanged -= HandleHostLayerSizeChanged;
+        if (_topLevel is not null)
+        {
+            _topLevel.PropertyChanged -= HandleTopLevelPropertyChanged;
+        }
         _hostLayer.Children.Remove(this);
     }
 
@@ -102,16 +122,26 @@ internal sealed class DialogOverlayLayer : Canvas
         SynchronizeBounds();
     }
 
+    private void HandleTopLevelPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == TopLevel.ClientSizeProperty)
+        {
+            SynchronizeBounds();
+        }
+    }
+
     private void SynchronizeBounds()
     {
-        var size = _hostLayer is ScopeAwareOverlayLayer scopeLayer
-            ? scopeLayer.AvailableSize
-            : _hostLayer.Bounds.Size;
+        var size = _topLevel?.ClientSize ??
+                   (_hostLayer is ScopeAwareOverlayLayer scopeLayer
+                       ? scopeLayer.AvailableSize
+                       : _hostLayer.Bounds.Size);
         if (size.Width <= 0 || size.Height <= 0)
         {
             size = _hostLayer.Bounds.Size;
         }
 
+        AvailableSize = size;
         Width  = size.Width;
         Height = size.Height;
         Canvas.SetLeft(this, 0);

@@ -54,7 +54,6 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private readonly CompositeDisposable _bindings = new();
     private DialogOverlayLayer? _dialogLayer;
     private Window? _ownerWindow;
-    private IDisposable? _drawnTitleBarOverlaySuppression;
     private MotionActor? _maskMotionActor;
     private MotionActor? _surfaceMotionActor;
     private OverlayDialogMask? _dialogMask;
@@ -83,8 +82,6 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         Content = _surface;
 
         _bindings.Add(Bind(IsModalProperty, dialog.GetObservable(Dialog.IsModalProperty)));
-        _bindings.Add(this.GetObservable(IsModalProperty)
-            .Subscribe(_ => UpdateDrawnTitleBarOverlaySuppression()));
         _bindings.Add(Bind(IsMotionEnabledProperty, dialog.GetObservable(Dialog.IsMotionEnabledProperty)));
         _bindings.Add(dialog.GetObservable(Dialog.HostWidthProperty).Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(dialog.GetObservable(Dialog.HostHeightProperty).Subscribe(_ => UpdateCurrentLayerBounds()));
@@ -135,13 +132,12 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             ((ILogical)_dialog).IsAttachedToLogicalTree ? _dialog : _placementTarget);
         _dialogLayer = DialogOverlayLayer.GetOrCreate(_placementTarget);
         _ownerWindow = TopLevel.GetTopLevel(_placementTarget) as Window;
-        UpdateDrawnTitleBarOverlaySuppression();
         _dialogLayer.Add(this);
         AttachOwnerGeometryBindings();
-        UpdateLayerBounds(_dialogLayer.Bounds.Size);
+        UpdateLayerBounds(_dialogLayer.AvailableSize);
         ApplyTemplate();
         _surface.ApplyTemplate();
-        UpdateLayerBounds(_dialogLayer.Bounds.Size);
+        UpdateLayerBounds(_dialogLayer.AvailableSize);
         if (_surfaceMotionActor is not null)
         {
             _surfaceMotionActor.Opacity = IsMotionEnabled ? 0 : 1;
@@ -153,7 +149,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         await Dispatcher.UIThread.InvokeAsync(
-            () => UpdateLayerBounds(_dialogLayer?.Bounds.Size ?? default),
+            () => UpdateLayerBounds(_dialogLayer?.AvailableSize ?? default),
             DispatcherPriority.Loaded);
 
         if (IsMotionEnabled && _surfaceMotionActor is not null)
@@ -287,7 +283,6 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         ReleaseDialogMask();
-        ReleaseDrawnTitleBarOverlaySuppression();
         Content = null;
         _ownerWindow = null;
         _maskMotionActor = null;
@@ -309,7 +304,6 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void RemoveFromDialogLayer()
     {
-        ReleaseDrawnTitleBarOverlaySuppression();
         if (_dialogLayer is not { } dialogLayer)
         {
             return;
@@ -362,7 +356,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void UpdateCurrentLayerBounds()
     {
-        var layerSize = _dialogLayer?.Bounds.Size ?? Bounds.Size;
+        var layerSize = _dialogLayer?.AvailableSize ?? Bounds.Size;
         UpdateLayerBounds(layerSize);
     }
 
@@ -374,9 +368,9 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         _bindings.Add(window.GetObservable(Window.OsTypeProperty)
-                            .Subscribe(_ => UpdateOwnerGeometry()));
+                            .Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(window.GetObservable(Window.IsCsdEnabledProperty)
-                            .Subscribe(_ => UpdateOwnerGeometry()));
+                            .Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(window.GetObservable(AvaloniaWindow.WindowDecorationMarginProperty)
                             .Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(window.GetObservable(Window.FrameShadowThicknessProperty)
@@ -387,31 +381,6 @@ internal sealed class OverlayDialogPresenter : ContentControl,
                             .Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(window.GetObservable(AvaloniaWindow.WindowStateProperty)
                             .Subscribe(_ => UpdateCurrentLayerBounds()));
-    }
-
-    private void UpdateOwnerGeometry()
-    {
-        UpdateDrawnTitleBarOverlaySuppression();
-        UpdateCurrentLayerBounds();
-    }
-
-    private void UpdateDrawnTitleBarOverlaySuppression()
-    {
-        if (_dialogLayer is not null &&
-            IsModal &&
-            _ownerWindow is { OsType: OsType.Linux, IsCsdEnabled: true } window)
-        {
-            _drawnTitleBarOverlaySuppression ??= window.SuppressDrawnTitleBarOverlay();
-            return;
-        }
-
-        ReleaseDrawnTitleBarOverlaySuppression();
-    }
-
-    private void ReleaseDrawnTitleBarOverlaySuppression()
-    {
-        _drawnTitleBarOverlaySuppression?.Dispose();
-        _drawnTitleBarOverlaySuppression = null;
     }
 
     private void UpdateSurfacePlacement(Rect ownerBounds)
@@ -545,7 +514,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void HandleSurfaceSizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        UpdateSurfacePlacement(ResolveOwnerBounds(Bounds.Size));
+        UpdateSurfacePlacement(ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size));
     }
 
     private void HandleHostCloseRequested(object? sender, EventArgs e)
@@ -559,14 +528,14 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private void HandleMaximizeRequested(object? sender, EventArgs e)
     {
         _surface.IsDialogMaximized = true;
-        ApplyMaximizedBounds(ResolveOwnerBounds(Bounds.Size));
+        ApplyMaximizedBounds(ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size));
     }
 
     private void HandleRestoreRequested(object? sender, EventArgs e)
     {
         _surface.IsDialogMaximized = false;
         _surface.ClearValue(TemplatedControl.CornerRadiusProperty);
-        UpdateLayerBounds(Bounds.Size);
+        UpdateLayerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
     }
 
     private void HandleResizeRequested(object? sender, OverlayDialogResizeEventArgs e)
@@ -602,7 +571,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
         _surface.Width = width;
         _surface.Height = height;
-        var ownerBounds = ResolveOwnerBounds(Bounds.Size);
+        var ownerBounds = ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
         var surfaceSize = new Size(width, height);
         var offset = _dialog.CalculatePlacementOffset(surfaceSize, ownerBounds.Size);
         var position = ConstrainSurfacePosition(
@@ -648,7 +617,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             : _surface.Bounds.Size;
         var pointerOffset = _dragPointerOffset!.Value;
         var position = ConstrainSurfacePosition(
-            ResolveOwnerBounds(Bounds.Size),
+            ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size),
             surfaceSize,
             pointerPosition - new Vector(pointerOffset.X, pointerOffset.Y));
 
