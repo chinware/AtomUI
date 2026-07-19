@@ -1,4 +1,5 @@
 using AtomUI.Controls.Primitives;
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
@@ -742,6 +743,60 @@ public class OverlayDialogPresenterTests
                 maskActor.Bounds.Size.ShouldBe(new Size(
                     fixture.Presenter.Bounds.Width - frameShadow.Left - frameShadow.Right,
                     fixture.Presenter.Bounds.Height - expectedTop - frameShadow.Bottom));
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Linux_Header_Drag_Keeps_The_Complete_Dialog_Shadow_Inside_Client_Bounds()
+    {
+        RunOnUIThread(() =>
+        {
+            var decoration = new Thickness(14, 58, 22, 26);
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsMotionEnabled = false,
+                    IsDragMovable = true,
+                    HostWidth = 320,
+                    HostHeight = 180
+                },
+                window =>
+                {
+                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(12));
+                    SetPlatformDecorationMargin(window, decoration);
+                });
+
+            try
+            {
+                var surface = fixture.Presenter.Surface;
+                var header = surface.Header.ShouldNotBeNull();
+                var shadow = surface.GetVisualDescendants()
+                                    .OfType<ShadowsAwareContainer>()
+                                    .Single()
+                                    .BoxShadow
+                                    .Thickness();
+                var ownerBounds = new Rect(
+                    decoration.Left,
+                    decoration.Top,
+                    fixture.Presenter.Bounds.Width - decoration.Left - decoration.Right,
+                    fixture.Presenter.Bounds.Height - decoration.Top - decoration.Bottom);
+
+                Drag(header, fixture.Window, new Point(240, 140), new Point(-1000, -1000));
+
+                surface.Margin.Left.ShouldBeGreaterThanOrEqualTo(ownerBounds.Left + shadow.Left);
+                surface.Margin.Top.ShouldBeGreaterThanOrEqualTo(ownerBounds.Top + shadow.Top);
+
+                Drag(header, fixture.Window, new Point(240, 140), new Point(2000, 2000));
+
+                (surface.Margin.Left + surface.Bounds.Width + shadow.Right)
+                    .ShouldBeLessThanOrEqualTo(ownerBounds.Right);
+                (surface.Margin.Top + surface.Bounds.Height + shadow.Bottom)
+                    .ShouldBeLessThanOrEqualTo(ownerBounds.Bottom);
             }
             finally
             {
