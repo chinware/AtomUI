@@ -673,7 +673,7 @@ public class OverlayDialogPresenterTests
     }
 
     [Fact]
-    public void Linux_Csd_Mask_Uses_The_Visible_Client_Bounds_Below_The_Title_Bar()
+    public void Linux_Csd_Mask_Covers_The_Complete_Window_Layer()
     {
         RunOnUIThread(() =>
         {
@@ -697,12 +697,12 @@ public class OverlayDialogPresenterTests
                 var maskActor = fixture.Presenter.GetVisualDescendants()
                                        .OfType<MotionActor>()
                                        .Single(actor => actor.Name == "PART_MaskMotionActor");
-                var expectedSize = new Size(
-                    fixture.Presenter.Bounds.Width - decoration.Left - decoration.Right,
-                    fixture.Presenter.Bounds.Height - decoration.Top - decoration.Bottom);
 
-                maskActor.Margin.ShouldBe(new Thickness(decoration.Left, decoration.Top, 0, 0));
-                maskActor.Bounds.Size.ShouldBe(expectedSize);
+                maskActor.Margin.ShouldBe(default);
+                maskActor.Bounds.Size.ShouldBe(fixture.Presenter.Bounds.Size);
+                maskActor.GetVisualAncestors()
+                         .OfType<WindowVisualLayerClip>()
+                         .ShouldHaveSingleItem();
             }
             finally
             {
@@ -712,7 +712,7 @@ public class OverlayDialogPresenterTests
     }
 
     [Fact]
-    public void Linux_NonCsd_Mask_Excludes_Frame_Shadow_And_Managed_Title_Bar()
+    public void Linux_NonCsd_Mask_Covers_The_Complete_Window_Layer()
     {
         RunOnUIThread(() =>
         {
@@ -737,16 +737,51 @@ public class OverlayDialogPresenterTests
                 var maskActor = fixture.Presenter.GetVisualDescendants()
                                        .OfType<MotionActor>()
                                        .Single(actor => actor.Name == "PART_MaskMotionActor");
-                var expectedTop = frameShadow.Top + titleBarHeight;
 
-                maskActor.Margin.ShouldBe(new Thickness(frameShadow.Left, expectedTop, 0, 0));
-                maskActor.Bounds.Size.ShouldBe(new Size(
-                    fixture.Presenter.Bounds.Width - frameShadow.Left - frameShadow.Right,
-                    fixture.Presenter.Bounds.Height - expectedTop - frameShadow.Bottom));
+                maskActor.Margin.ShouldBe(default);
+                maskActor.Bounds.Size.ShouldBe(fixture.Presenter.Bounds.Size);
+                maskActor.GetVisualAncestors()
+                         .OfType<WindowVisualLayerClip>()
+                         .ShouldHaveSingleItem();
             }
             finally
             {
                 fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Linux_Csd_Modal_Mask_Suppresses_The_Drawn_TitleBar_Overlay_Until_Disposed()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsModal = true,
+                    IsMotionEnabled = false,
+                    HostWidth = 320,
+                    HostHeight = 180
+                },
+                window =>
+                {
+                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(12));
+                    SetPlatformDecorationMargin(window, new Thickness(12, 52, 12, 20));
+                });
+
+            try
+            {
+                fixture.Window.IsDrawnTitleBarOverlayVisible.ShouldBeFalse();
+
+                WaitWithDispatcherPump(fixture.Presenter.CloseAsync().AsTask());
+                WaitWithDispatcherPump(fixture.Presenter.DisposeAsync().AsTask());
+
+                fixture.Window.IsDrawnTitleBarOverlayVisible.ShouldBeTrue();
+            }
+            finally
+            {
+                fixture.Window.Close();
             }
         });
     }
