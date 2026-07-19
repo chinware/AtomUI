@@ -11,7 +11,7 @@ internal static partial class Program
         VerifyMessageBoxOpenCloseLifecycle(failures);
         VerifyDialogOpenCloseLifecycle(failures);
         VerifyDialogButtonBoxLifecycle(failures);
-        VerifyOverlayHostLazyPartsLifecycle(failures);
+        VerifyOverlayPresenterPartsLifecycle(failures);
 
         if (failures.Count == 0)
         {
@@ -117,14 +117,14 @@ internal static partial class Program
         using var realized = RealizeControl(root);
         dialog.OpenAsync().GetAwaiter().GetResult();
         RefreshLayout(realized.Window);
-        Expect(dialog.Host != null,
-            "Dialog.OpenAsync should create a host.",
+        Expect(GetPrivateField(dialog, "AtomUI.Desktop.Controls.Dialog", "_session") != null,
+            "Dialog.OpenAsync should create a session.",
             failures);
 
         dialog.Reject();
         RefreshLayout(realized.Window);
-        Expect(dialog.Host == null && !dialog.IsOpen,
-            "Dialog.Reject should close the host and reset IsOpen.",
+        Expect(GetPrivateField(dialog, "AtomUI.Desktop.Controls.Dialog", "_session") == null && !dialog.IsOpen,
+            "Dialog.Reject should release the session and reset IsOpen.",
             failures);
     }
 
@@ -167,7 +167,7 @@ internal static partial class Program
             failures);
     }
 
-    private static void VerifyOverlayHostLazyPartsLifecycle(ICollection<string> failures)
+    private static void VerifyOverlayPresenterPartsLifecycle(ICollection<string> failures)
     {
         var button = new AtomUI.Desktop.Controls.Button
         {
@@ -200,29 +200,33 @@ internal static partial class Program
         var openTask = dialog.OpenAsync();
         RefreshLayout(window);
 
-        var host = dialog.Host as Avalonia.Controls.Control;
-        Expect(host != null,
-            "Modal Dialog.OpenAsync should create an overlay host.",
+        var presenter = FindVisualByTypeName(window, "OverlayDialogPresenter");
+        Expect(presenter != null,
+            "Modal Dialog.OpenAsync should create an overlay presenter.",
             failures);
-        if (host != null)
+        if (presenter != null)
         {
-            Expect(CountVisualsByTypeName(host, "OverlayDialogResizer") == 0,
-                "Non-resizable overlay host should not create OverlayDialogResizer.",
+            var resizer = FindVisualByTypeName(presenter, "OverlayDialogResizer");
+            Expect(resizer is { IsVisible: false },
+                "Non-resizable overlay presenter should keep OverlayDialogResizer hidden.",
                 failures);
-            Expect(GetPrivateField(host, "AtomUI.Desktop.Controls.OverlayDialogHost", "_dialogMask") != null,
-                "Modal overlay host should create mask on open.",
+            Expect(GetPrivateField(
+                       presenter,
+                       "AtomUI.Desktop.Controls.OverlayDialogPresenter",
+                       "_dialogMask") != null,
+                "Modal overlay presenter should own its mask while open.",
                 failures);
 
             dialog.IsResizable = true;
             RefreshLayout(window);
-            Expect(CountVisualsByTypeName(host, "OverlayDialogResizer") == 1,
-                "Resizable overlay host should create OverlayDialogResizer on demand.",
+            Expect(resizer?.IsVisible == true,
+                "Resizable overlay presenter should show OverlayDialogResizer.",
                 failures);
 
             dialog.IsResizable = false;
             RefreshLayout(window);
-            Expect(CountVisualsByTypeName(host, "OverlayDialogResizer") == 0,
-                "Disabling IsResizable should remove OverlayDialogResizer.",
+            Expect(resizer?.IsVisible == false,
+                "Disabling IsResizable should hide OverlayDialogResizer.",
                 failures);
         }
 
@@ -231,13 +235,16 @@ internal static partial class Program
         openTask.GetAwaiter().GetResult();
         window.Close();
 
-        if (host != null)
+        if (presenter != null)
         {
-            Expect(GetPrivateField(host, "AtomUI.Desktop.Controls.OverlayDialogHost", "_dialogMask") == null,
-                "Closed overlay host should release mask field.",
+            Expect(GetPrivateField(
+                       presenter,
+                       "AtomUI.Desktop.Controls.OverlayDialogPresenter",
+                       "_dialogMask") == null,
+                "Closed overlay presenter should release its mask field.",
                 failures);
-            Expect(GetPrivateField(host, "AtomUI.Desktop.Controls.OverlayDialogHost", "_dialogMaskCornerRadiusBinding") == null,
-                "Closed overlay host should dispose mask corner-radius binding.",
+            Expect(FindVisualByTypeName(window, "OverlayDialogPresenter") == null,
+                "Closed overlay presenter should detach from the window overlay layer.",
                 failures);
         }
     }

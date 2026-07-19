@@ -177,31 +177,31 @@ internal static partial class Program
         dialog.OpenAsync().GetAwaiter().GetResult();
         RefreshLayout(window);
 
-        var host = dialog.Host as Control;
-        Expect(host != null,
-            "Opening overlay Dialog should create a visual host.",
+        var presenter = FindVisualByTypeName(window, "OverlayDialogPresenter");
+        Expect(presenter != null,
+            "Opening overlay Dialog should create a visual presenter.",
             failures);
-        if (host != null)
+        if (presenter != null)
         {
-            Expect(CountVisualsByTypeName(host, "Skeleton") == 0,
+            Expect(CountVisualsByTypeName(presenter, "Skeleton") == 0,
                 "Non-loading Dialog content should not create Skeleton visuals.",
                 failures);
 
             dialog.IsLoading = true;
             RefreshLayout(window);
-            Expect(CountVisualsByTypeName(host, "Skeleton") == 1,
+            Expect(CountVisualsByTypeName(presenter, "Skeleton") == 1,
                 "Loading Dialog content should create Skeleton visuals on demand.",
                 failures);
 
             dialog.IsLoading = false;
             RefreshLayout(window);
-            Expect(CountVisualsByTypeName(host, "Skeleton") == 0,
+            Expect(CountVisualsByTypeName(presenter, "Skeleton") == 0,
                 "Disabling Dialog loading should release Skeleton visuals.",
                 failures);
 
             dialog.IsLoading = true;
             RefreshLayout(window);
-            Expect(CountVisualsByTypeName(host, "Skeleton") == 1,
+            Expect(CountVisualsByTypeName(presenter, "Skeleton") == 1,
                 "Re-enabling Dialog loading should recreate Skeleton visuals.",
                 failures);
         }
@@ -209,9 +209,9 @@ internal static partial class Program
         dialog.Reject();
         RefreshLayout(window);
         window.Close();
-        if (host != null)
+        if (presenter != null)
         {
-            Expect(CountVisualsByTypeName(host, "Skeleton") == 0,
+            Expect(CountVisualsByTypeName(presenter, "Skeleton") == 0,
                 "Detached Dialog loading presenter should release Skeleton visuals.",
                 failures);
         }

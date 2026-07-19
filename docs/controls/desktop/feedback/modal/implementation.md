@@ -1,181 +1,183 @@
 # Modal 桌面版实现原理
 
-本文档描述 Modal 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Modal 桌面版架构设计](overview.md)，变化记录见 [Modal Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Modal Token 设计](token.md)。
+本文档描述 `Dialog` 和 `MessageBox` 的当前内部实现、状态所有权、组合结构、资源边界和释放规则。公共契约见 [Modal 桌面版架构设计](overview.md)，Token 语义见 [Modal Token 设计](token.md)。
 
 ## 1. 实现定位
 
-本文档覆盖 Modal 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
+实现由一个 Dialog 打开意图、一个当前 `DialogSession`、两种 `IDialogPresenter` 和一个共享 `DialogSurface` 组成。私有方法和具体 AXAML selector 仍以源码为准；本文只记录稳定职责和维护不变量。
 
 ## 2. 源码文件结构
 
-主要源码文件：
+| 路径 | 职责 |
+| --- | --- |
+| `Dialog.cs` | public 属性、事件、内容、按钮和内部协作入口。 |
+| `Dialog.Lifecycle.cs` | `IsOpen` reconcile、`OpenAsync`、事件通知和 presenter 选择。 |
+| `Dialog.StaticAPI.cs` | 静态 modeless/modal 异步创建入口。 |
+| `DialogSession.cs` | 单次展示状态机、关闭仲裁、取消、结果、焦点和 teardown。 |
+| `IDialogPresenter.cs` | Overlay/Window 共用的最小异步协议。 |
+| `DialogSurface.cs` | 标题、内容、Footer、按钮和 Overlay resize 的共享表面。 |
+| `ButtonBox/DialogButtonBox.cs` | 标准按钮生成、唯一有效按钮序列和自定义集合同步。 |
+| `OverlayHost/DialogOverlayLayer.cs` | owner scope 内的 presenter stack。 |
+| `OverlayHost/OverlayDialogPresenter.cs` | 同时拥有 mask、Surface、placement、drag/resize 和 motion。 |
+| `WindowHost/WindowDialogPresenter.cs` | 原生 Window 属性映射、modal owner、尺寸、位置和 motion。 |
+| `WindowHost/DialogWindow.cs` | 原生 caption close 仲裁和显式尺寸应用。 |
+| `MessageBox/MessageBox.cs` | Dialog 派生的消息语义、静态 API 和按钮配置。 |
+| `MessageBox/MessageBoxContent.cs` | MessageBox 的图标与内容组合。 |
+| `Dialog/Themes` / `MessageBox/Themes` | 共享 Surface、Overlay presenter 和 MessageBox AXAML 结构。 |
 
-- `src/AtomUI.Desktop.Controls/Dialog`：16 个文件，代表文件 `Dialog.StaticAPI.cs`、`Dialog.cs`、`DialogActionResult.cs`、`DialogButtonCollectionUtils.cs`、`DialogFinishedEventArgs.cs` 等。
-- `src/AtomUI.Desktop.Controls/Dialog/ButtonBox`：8 个文件，代表文件 `DialogBoxButtonSyncEventArgs.cs`、`DialogButton.cs`、`DialogButtonBox.cs`、`DialogButtonClickedEventArgs.cs`、`DialogButtonRole.cs` 等。
-- `src/AtomUI.Desktop.Controls/Dialog/Converters`：1 个文件，代表文件 `OverlayDialogResizerVisibleConverter.cs`。
-- `src/AtomUI.Desktop.Controls/Dialog/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
-- `src/AtomUI.Desktop.Controls/Dialog/OverlayHost`：6 个文件，代表文件 `OverlayDialogHeader.cs`、`OverlayDialogHost.cs`、`OverlayDialogMask.cs`、`OverlayDialogResizeEventArgs.cs`、`OverlayDialogResizer.cs` 等。
-- `src/AtomUI.Desktop.Controls/Dialog/Themes`：12 个文件，代表文件 `DialogButtonBoxTheme.axaml`、`DialogCaptionButtonTheme.axaml`、`DialogHostTheme.axaml`、`DialogHostTheme.cs`、`DialogTheme.axaml` 等。
-- `src/AtomUI.Desktop.Controls/Dialog/WindowHost`：2 个文件，代表文件 `DialogHost.cs`、`DialogWindowContent.cs`。
-
-职责边界：
-
-- 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
-- Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+对应回归测试位于 `tests/AtomUI.Desktop.Controls.Tests/Dialog` 和 `tests/AtomUI.Desktop.Controls.Tests/MessageBox`。
 
 ## 3. 核心类职责
 
-- `Dialog`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DialogActionResult`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DialogButton`：动作触发类型，负责点击、导航或局部操作状态。
-- `DialogButtonBox`：模板协作类型，承载内容展示、宿主或视觉边界。
-- `DialogCaptionButton`：动作触发类型，负责点击、导航或局部操作状态。
-- `DialogHost`：模板协作类型，承载内容展示、宿主或视觉边界。
-- `DialogHostTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `DialogToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
-- `DialogWindowContent`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `OverlayDialogHeader`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `OverlayDialogHost`：模板协作类型，承载内容展示、宿主或视觉边界。
-- `OverlayDialogHostTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `OverlayDialogMask`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `OverlayDialogResizer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `OverlayDialogResizerVisibleConverter`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-
-核心协作规则：
-
-- 控件实例是 public API 和运行时状态 owner。
-- Template part 是视觉协作对象，生命周期必须受 `OnApplyTemplate` 或模板加载流程管理。
-- 数据对象、选项对象、任务对象或节点对象只保存业务数据，不应反向持有不可释放的视觉对象。
-- 弹层、窗口、计时器、异步 loader 和全局管理器必须有明确关闭、解绑或释放路径。
+- `Dialog` 只拥有最新 `IsOpen` 意图和当前 Session 引用，不拥有 presenter 视觉状态。
+- `DialogSession` 独占一次展示的状态、取消源、普通关闭策略、结果、owner/target 订阅、前一焦点和完成任务。
+- `IDialogPresenter` 只暴露 `ShowAsync`、`CloseAsync`、`FocusScope`、`CloseRequested` 和 `IAsyncDisposable`。
+- `DialogSurface` 是两种 presenter 的唯一内容/按钮视觉源。
+- `DialogButtonBox` 的 `_effectiveButtons` 是唯一视觉按钮序列。标准按钮来自私有元数据，自定义按钮仍由用户集合拥有。
+- `DialogOverlayLayer` 只管理同一 owner scope 内的 presenter 顺序和栈顶键盘路由。
+- `OverlayDialogPresenter` 是 Dialog layer 的直接子节点；mask 与 Surface 不拆成独立 popup。
+- `WindowDialogPresenter` 包装一个 `DialogWindow` 和一个 `MotionActor`，但仍使用同一个 `DialogSurface`。
+- `MessageBox` 不拥有隐藏 Dialog；它覆盖 Surface 内容和按钮配置 hook。
 
 ## 4. 状态与数据流
 
-Modal 的状态流遵循下面路径：
-
 ```text
-Public API / ItemsSource / Command / Event
-  -> 控件实例状态
-  -> internal state / effective state / pseudo-class
-  -> template part property / AXAML selector
-  -> renderer / popup / adorner / Gallery observable behavior
+IsOpen / OpenAsync
+  -> Dialog reconcile
+  -> create DialogSession + concrete presenter
+  -> presenter.ShowAsync
+  -> focus DialogSurface
+  -> Dialog.Opened
+  -> one close request
+  -> Closing / BeforeCloseAsync
+  -> commit result and outcome events
+  -> presenter.CloseAsync + DisposeAsync
+  -> restore focus
+  -> Closed and task completion
 ```
 
-源码中的状态入口按以下语义维护：
+Session 状态为 `Created -> Opening -> Open -> ClosePending -> Closing -> Closed`。
 
-- 内容与数据：`AbortButtonText`、`AddOnTemplate`、`ApplyButtonText`、`CancelButtonText`、`CheckedIcon`、`CloseButtonText`、`Content`、`ContentTemplate`、`DialogContent`、`DialogContentTemplate` 等 33 项。
-- 选择与集合：`IsChecked`。
-- 交互与状态：`IsActivated`、`IsClosable`、`IsCloseButtonEnabled`、`IsConfirmLoading`、`IsDragMovable`、`IsEffectiveFooterVisible`、`IsFooterVisible`、`IsLoading`、`IsOpen`、`IsMaximizable`、`IsMaximizeButtonEnabled` 等 17 项。
-- 视觉与布局：`HorizontalOffset`、`HorizontalStartupLocation`、`HostHeight`、`HostMaxHeight`、`HostMaxWidth`、`HostMinHeight`、`HostMinWidth`、`HostWidth`、`PlacementTarget`、`VerticalOffset` 等 11 项。
-- 弹层与窗口：`DialogHostType`。
-- 动效与异步：`AnimationDuration`。
-- 其他稳定入口：`AddOn`、`DefaultStandardButton`、`EscapeStandardButton`、`Logo`、`Result`、`StandardButtons`。
+- 普通关闭只在 `Open` 接受，并在执行 `Closing`/`BeforeCloseAsync` 前进入 `ClosePending`。
+- veto 或关闭策略异常返回 `Open`；声明式 `IsOpen=false` 被 veto 时恢复为 `true`。
+- 强制关闭取消 pending policy 与 opening motion，从可关闭状态直接进入 `Closing`。
+- 一旦结果提交，后续事件或 presenter 异常不允许把 Session 恢复为 Open。
+- completion 只有在 presenter close/dispose、焦点恢复和 Session `Closed` 后才完成、取消或 fault。
 
-维护要求：
+`Dialog` 的 reconcile 负责区分实例 `OpenAsync` 与声明式重开：实例在活跃 Session 期间拒绝并发打开；声明式 `IsOpen=true` 可等待当前 Closing 完成后重新创建 Session。
 
-- 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
-- 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
-- `Dialog.IsOpen` 必须保持默认 `TwoWay`；内部打开或关闭路径应通过 public 属性状态回写 ViewModel，不用样式优先级或模板局部状态覆盖用户绑定。
-- 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
-- Gallery API 表中的状态说明应与源码实际状态流一致。
+`OpenAsync`、静态 Dialog/MessageBox 创建入口以及 `Accept`/`Reject`/`Done` 在读取视觉树或推进 Session 前统一切回 UI Dispatcher；泛型静态入口的 `TView` 也只在 UI Dispatcher 上实例化。`DialogSession` 不承担跨线程状态同步，调用方不需要通过空 Dispatcher 调度或延迟来避开 routed event 时序。
 
-## 5. 生命周期与模板接入
+## 5. 组合结构模型
 
-生命周期规则：
+```mermaid
+flowchart TD
+    D["Dialog / MessageBox"] --> S["DialogSession"]
+    S --> P{"IDialogPresenter"}
+    P --> OP["OverlayDialogPresenter"]
+    P --> WP["WindowDialogPresenter"]
+    OP --> DL["DialogOverlayLayer"]
+    OP --> MA["Mask MotionActor"]
+    OP --> SA["Surface MotionActor"]
+    WP --> W["DialogWindow"]
+    WP --> WA["Window MotionActor"]
+    SA --> DS["DialogSurface"]
+    WA --> DS
+    DS --> H["PART_Header"]
+    DS --> C["Content / MessageBoxContent"]
+    DS --> B["PART_ButtonBox"]
+    B --> EB["Effective button sequence"]
+```
 
-- 构造阶段只注册必要状态，不依赖 template part。
-- 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
-- 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
-- DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
-- Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+| 节点 | 来源 | 稳定性 | Agent 使用边界 |
+| --- | --- | --- | --- |
+| `Dialog` / `MessageBox` | public control | public-stable | 用户可直接使用。 |
+| `DialogSession` | runtime C# | internal-observable | 只用于理解状态与任务边界。 |
+| `OverlayDialogPresenter` / `WindowDialogPresenter` | runtime C# | internal-observable | 只用于维护宿主一致性。 |
+| `DialogSurface` | runtime + `DialogSurfaceTheme.axaml` | internal-observable | 两种宿主必须共享，不建议用户直接创建。 |
+| `PART_Header`, `PART_ButtonBox`, `PART_Resizer` | `DialogSurfaceTheme.axaml` | template-stable | 变更需同步实现、主题、测试和文档。 |
+| `PART_MaskMotionActor`, `PART_SurfaceMotionActor` | `OverlayDialogPresenterTheme.axaml` | template-stable | 变更需保持 mask/Surface 同一 presenter。 |
+| `DialogOverlayLayer` | runtime C# | internal-observable | 只管理 scope 内栈，不提供全局 service。 |
 
-稳定 template part 接入点：
+Window 和 Overlay 各自拥有一个 Surface 实例，不共享同一个视觉对象；“共享 Surface”指共享类型、主题与行为实现。
 
-- `PART_ButtonBox`：承载用户触发入口、导航或关闭动作。
-- `PART_CenterGroup`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_CloseButton`：承载用户触发入口、导航或关闭动作。
-- `PART_Header`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_LeftGroup`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_MaximizeButton`：承载用户触发入口、导航或关闭动作。
-- `PART_RightGroup`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_RootLayout`：承载根视觉、边框、背景或尺寸基线。
+## 6. 生命周期与模板接入
 
-## 6. 交互与事件处理
+| 获取 | Owner | 释放 |
+| --- | --- | --- |
+| presenter `CloseRequested` | `DialogSession` | `BeginClosing` |
+| placement target detach / owner closed | `DialogSession` | `BeginClosing` |
+| pending close CancellationTokenSource | `DialogSession` | veto、commit 或 forced close |
+| presenter opening cancellation | concrete presenter | `CloseAsync` / `DisposeAsync` |
+| Dialog property bindings | `DialogSurface` / presenter | `Dispose` / `DisposeAsync` |
+| custom button Click handlers | `DialogButtonBox` | collection change、template release、Surface dispose |
+| Overlay mask/header/resize handlers | `OverlayDialogPresenter` | re-template 或 `DisposeAsync` |
+| Window events and property bindings | `WindowDialogPresenter` | `DisposeAsync` |
+| Surface composition child links | concrete presenter | closing motion 后、移除 layer/window 前同步断开 |
+| inheritance/resource parent | presenter | 从 layer/window 移除后清空 |
+| MessageBox default button content cache | `MessageBox` 当前 Surface | `ReleaseSurfaceButtons` |
 
-Modal 的交互事件应从输入源收敛到控件级语义事件：
+`DialogSurface.OnApplyTemplate` 先释放旧 Header/ButtonBox/Resizer 订阅，再接入新 parts。`DialogButtonBox` 在 template 为空或重套用时立即清空旧 panel 和视觉父级。
 
-- Pointer、keyboard、focus 和 command 事件不应绕过 Avalonia 基础控件语义。
-- 弹层、窗口或 overlay 类路径必须稳定处理打开、关闭、取消、重复打开和宿主失活。
-- 非集合控件不应通过隐藏集合状态模拟业务数据。
-- 输入类路径必须保持 Form、validation、clear、placeholder 和键盘行为一致。
+Presenter 在永久 teardown 时先断开 `DialogSurface` 子树的 composition children，再释放 Surface 并移除 Overlay layer 或关闭 Window。该顺序防止调用方保留 Content/CustomButton 等子控件时，其旧 `CompositionVisual.Parent` 链反向保留 Presenter 和 Surface。Overlay presenter 移除后，空的 `DialogOverlayLayer` 也从 `ScopeAwareOverlayLayer` 删除并解绑 size 事件。Window presenter 即使 close motion 或 Window.Closing 抛出，也会继续清空 bindings、Surface、Window.Content 和 MotionActor.Content，再传播首个异常。
 
-Dialog 的交互语义主要通过 `ButtonClicked`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Closed`、命令、属性变化和 Gallery 可观察行为体现。维护关闭流程时必须保持这些事件的相对顺序和取消语义。
+## 7. 交互与事件处理
 
-## 7. 内部算法与关键流程
+- DialogSurface 把标准/自定义按钮点击转成 `DialogPresenterCloseRequestedEventArgs`，Session 决定是否关闭。
+- Enter/Escape 由栈顶 Overlay presenter 或当前 Window 转发给 Surface 的有效按钮序列。
+- modal mask 只在左键、真实 mask visual subtree、且 presenter 为栈顶时请求关闭。
+- modeless presenter 在 Surface 外不阻断 pointer hit-test；点击 Surface 会把整个 presenter 激活到栈顶。
+- Overlay 标题栏拖动和 resize 修改 Dialog offset 或 Surface 尺寸；maximize 使用整个 Dialog layer bounds。
+- Window caption close 先请求 Session 关闭；Session commit 后 `DialogWindowCloseState.Closing` 放行一次真实 native close。`OwnerWindowClosing` 始终放行，随后由 owner closed 强制 teardown。
+- Window presenter 禁用 Surface 内隐藏 header 的 `TitleIcon`，由原生 Window 标题栏唯一承载该图标，避免两个 presenter 争用同一个 `PathIcon` visual parent。
+- Session 在 Show 前记录当前焦点，Show 后聚焦可聚焦的 DialogSurface，Close 后优先恢复原焦点，其次恢复 placement target。
 
-维护者需要重点关注以下流程：
+## 8. 内部算法与关键流程
 
-- API 默认值到 effective state 的归一。
-- Template part 重新应用时的状态回放。
-- 主题资源、Token 和 SharedToken 计算后的视觉更新。
-- 内容、命令和视觉状态在模板节点之间的同步。
-- 动效启停、初始加载阶段 transition 抑制和卸载取消。
+### 8.1 有效按钮序列
 
-实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
+`DialogButtonBox` 使用一张私有标准按钮定义表创建标准按钮，再与 `CustomButtons` 组合成 `_effectiveButtons`。每次 Add/Remove/Replace/Move/Reset/Clear 都重建视觉分组并对称同步自定义按钮 Click 订阅。Surface 对有效序列取快照，用于键盘查找、confirm loading binding 和 MessageBox 配置。
 
-### 7.1 关闭前校验管线
+标准按钮默认文案使用 `Template` priority binding；MessageBox 的显式 OK/Cancel 文案使用 local value 覆盖，清空后自动恢复最新语言资源。MessageBox 的样式、默认按钮和启动位置也只写入 `Template` priority，调用方 local 配置始终优先。MessageBox 语义配置运行时变化后重新执行现有 `ButtonsConfigure`，维持调用方配置最后生效的顺序。
 
-静态 API 的关闭前校验应在 `Dialog` 内部形成统一管线，而不是只挂接某一个按钮事件。管线的维护目标是让 `ShowDialogModalAsync` 用户能够通过 `DialogOptions.BeforeCloseAsync` 拦截关闭，同时保留现有 `ButtonClicked`、`Closing`、`Accepted`、`Rejected`、`Finished` 和 `Closed` 的顺序。
+### 8.2 自然尺寸
 
-实现边界：
+- Overlay 将 `HostWidth/Height=NaN` 保留为 auto，先应用 min/max，再测量 Surface 的 `DesiredSize` 并计算 placement。
+- Window 将 NaN 映射到 Avalonia `SizeToContent`；运行时显式尺寸变化通过 `DialogWindow.ApplyRequestedSize` 更新 ClientSize。
+- 不存在固定 `520x240` fallback 或额外像素补偿。
 
-- `DialogOptions` 承载 `BeforeCloseAsync`，`CreateDialog(...)` 将该选项复制到 `Dialog` 实例或内部关闭策略中。
-- `Dialog` 使用 close request 归一逻辑，将 `Accept()`、`Reject()`、`Done(...)`、caption close、host close request、parent close 和 placement target detach 映射为统一的 `DialogClosingContext`。
-- `NotifyDialogButtonBoxClicked(...)` 继续先触发 `ButtonClicked`；当 `DialogButtonClickedEventArgs.Handled` 为 `true` 时，不进入默认关闭，也不调用 `BeforeCloseAsync`。
-- 既有 `Closing` 事件仍先于新增回调执行；`CancelEventArgs.Cancel` 为 `true` 时直接取消本次关闭请求。
-- `BeforeCloseAsync` 返回 `false` 或发生异常时，Dialog 保持打开，`Result` 不应被提交为最终关闭结果，关闭请求状态必须复位。
-- `IsOpen=false` 触发的关闭请求如果被取消，需要把 `IsOpen` 恢复为 `true`；这是 close request 的状态责任，不应在外部绑定层打补丁。
-- `BeforeCloseAsync` 返回 `true` 后，继续执行现有 `Accepted`、`Rejected`、`Finished`、`NotifyClosed`、host close 和 `Closed` 流程。
-- 同一时刻只允许一个关闭请求处于校验或关闭中。异步校验未完成时，重复点击、快捷键和 host close request 应被忽略或合并为当前请求，不能并发调用业务校验。
+### 8.3 Motion
 
-同步 public 方法 `Accept()`、`Reject()`、`Done(...)` 和 `Done()` 不改签名。未配置 `BeforeCloseAsync`，或回调同步完成时，关闭管线走同步快路径，保持既有事件时序和同步异常传播；只有回调返回未完成的异步结果时，关闭请求才进入 in-flight 状态并由异步续跑完成。`ShowDialog(...)` 的同步 frame 和 `ShowDialogModalAsync(...)` 的 task 仍以最终关闭完成作为结束条件。同步 `ShowDialogModal(...)` 依赖现有 `DispatcherFrame` 消息循环承载异步校验，不允许用阻塞式 `.Result` / `.GetAwaiter().GetResult()` 等方式等待 `BeforeCloseAsync`。
+Overlay 的 mask 和 Surface motion 并行等待。Window 的 Surface 在 `Opened` 和初始 placement 后执行 opening motion，closing motion 完成前 Window 保持可见。duration 来自 Dialog scope 的 `MotionDurationMid`。关闭期间会取消 opening token，避免旧入场继续决定 Session 完成时点。
 
-## 8. 资源、性能与 AOT 边界
+## 9. 资源、性能与 AOT 边界
 
-资源和 AOT 约束：
+- Overlay presenter 在 Dialog 已附加时以 Dialog 为 inheritance parent，否则以 placement target 为 parent。
+- Window 在 `Show()` 后把 DialogSurface inheritance parent 指向已附加 Dialog 或 owner，避开 TopLevel 的全局 styling parent；dispose 前清空。
+- runtime binding 只用于动态 presenter/Surface/按钮关系，并由 owning presenter、Surface 或 ButtonBox 对称释放。
+- 不使用反射修改 TemplatedParent，不扫描程序集发现 Dialog API，不使用同步 DispatcherFrame。
+- Session、Presenter、Surface 和 Content 的关闭回收由 Overlay/Window WeakReference 测试覆盖。
+- 状态机、按钮表和 presenter 选择都是静态类型路径，保持 NativeAOT 友好。
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
-- 不把可静态声明的模板结构迁移到 C# 动态创建。
-- 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
-- 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
-- Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
+## 10. 维护不变量
 
-性能边界：
+- `Dialog` 打开意图与一个当前 Session 是唯一生命周期 owner。
+- 所有关闭来源最终执行同一个 `CompleteCloseAsync` teardown。
+- 普通 veto 发生在结果提交前；结果提交后只允许完成 teardown 和传播异常。
+- Overlay 与 Window 的 `ShowAsync`/`CloseAsync` 都等待真实 presentation 边界。
+- mask 与 Surface 必须保留在同一个 Overlay presenter 中。
+- MessageBox 继续作为 Dialog 派生类，不增加平行 host/session/button cache 生命周期。
+- 新增 binding、事件、资源 parent、motion source 或内容引用时，必须在同一个 owner 中增加释放点和回归测试。
 
-- 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
-- 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+## 11. 测试与验证
 
-## 9. 维护不变量
+重点测试：
 
-维护 Modal 时不得破坏：
+- `DialogSessionTests`: 状态转换、veto、forced close、异常和 presenter failure。
+- `DialogLifecycleTests`: 实例/声明式打开、取消、detach、重开、嵌套焦点和 WeakReference。
+- `OverlayDialogPresenterTests`: mask ownership、modal/modeless 输入、栈顶路由、尺寸、拖动、resize 和 motion。
+- `WindowDialogPresenterTests`: Opened/motion 时序、原生关闭、owner close、SizeToContent、placement 和资源 parent。
+- `DialogButtonBoxTests` / `DialogSurfaceTests`: 有效按钮集合、template 生命周期、内容和配置。
+- MessageBox tests: 派生结构、语义样式、motion anchor、重入和按钮引用释放。
 
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
-
-## 10. 测试与验证
-
-推荐验证：
-
-- 纯文档改动运行 `git diff --check` 并检查相对链接。
-- 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
-- DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
-- Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests`。
-- AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
+迭代先运行 Dialog/MessageBox filter，再运行完整 `AtomUI.Desktop.Controls.Tests`、Gallery tests/build、NativeAOT publish 和 `git diff --check`。

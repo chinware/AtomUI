@@ -13,7 +13,6 @@
         </Setter>
         <Setter Property="Opacity" Value="1"/>
         <Setter Property="Background" Value="{atom:DialogTokenSharedTokenResource ColorBgMask}"/>
-        <Setter Property="AnimationDuration" Value="{atom:DialogTokenSharedTokenResource MotionDurationMid}"/>
 
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">

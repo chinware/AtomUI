@@ -1,4 +1,3 @@
-using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using Avalonia;
@@ -135,29 +134,8 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
     
     #endregion
     
-    private CompositeDisposable? _disposables;
     private DialogCaptionButton? _maximizeButton;
     private DialogCaptionButton? _closeButton;
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-
-        _disposables?.Dispose();
-        _disposables = null;
-
-        if (TemplatedParent is OverlayDialogHost host)
-        {
-            _disposables = new CompositeDisposable(1)
-            {
-                host.GetObservable(OverlayDialogHost.WindowStateProperty).Subscribe(x =>
-                {
-                    PseudoClasses.Set(StdPseudoClass.Normal, x == OverlayDialogState.Normal);
-                    PseudoClasses.Set(StdPseudoClass.Maximized, x == OverlayDialogState.Maximized);
-                }),
-            };
-        }
-    }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -211,13 +189,6 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
     private void HandleCloseButtonClicked(object? sender, RoutedEventArgs e)
     {
         CloseRequest?.Invoke(this, EventArgs.Empty);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _disposables?.Dispose();
-        _disposables = null;
     }
 
     protected override void OnInitialized()

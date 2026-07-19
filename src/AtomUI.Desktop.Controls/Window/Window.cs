@@ -599,7 +599,7 @@ public partial class Window : AvaloniaWindow,
             return;
         }
 
-        if (windowState == WindowState.Normal && (OsType == OsType.macOS || CanMaximize))
+        if (windowState == WindowState.Normal && CanMaximize)
         {
             WindowState = WindowState.Maximized;
         }

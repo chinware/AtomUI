@@ -43,7 +43,7 @@ internal partial class zh_CN
     public const string ApiPropertyDialogIsLoading = "在对话框内容上显示加载状态。";
     public const string ApiPropertyDialogIsConfirmLoading = "异步确认操作进行中时显示确认按钮加载状态。";
     public const string ApiPropertyDialogHostWidth = "对话框宿主的显式宽度。";
-    public const string ApiPropertyDialogOptionsBeforeCloseAsync = "异步回调，用于决定静态 Dialog 的关闭请求是否可以继续。";
+    public const string ApiPropertyDialogOptionsBeforeCloseAsync = "异步回调，用于决定 Dialog 的关闭请求是否可以继续。";
     public const string ApiMethodDialogShowDialogModalAsync = "通过静态 API 创建并显示模态对话框。";
     public const string ApiPropertyMessageBoxStyle = "MessageBox 的语义样式，例如 Confirm、Information、Success、Warning 或 Error。";
     public const string ApiPropertyMessageBoxOkButtonStyle = "MessageBox 确认按钮使用的视觉样式。";

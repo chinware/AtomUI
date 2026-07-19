@@ -347,8 +347,6 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
     {
         try
         {
-            // 鼠标会被卡死，强制刷新一次事件循环
-            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
             var content = BuildDialogContent();
             var options = new DialogOptions
             {
@@ -363,7 +361,7 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
                 HostMinWidth              = 400,
                 PlacementTarget           = sender as Control
             };
-            await Dialog.ShowDialogModalAsync(content, null, options);
+            await Dialog.ShowDialogAsync(content, null, options);
         }
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
     }
@@ -372,8 +370,6 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
     {
         try
         {
-            // 鼠标会被卡死，强制刷新一次事件循环
-            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
             var content = BuildDialogContent();
             var options = new DialogOptions
             {
@@ -397,8 +393,6 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
     {
         try
         {
-            // 鼠标会被卡死，强制刷新一次事件循环
-            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
             var options = new DialogOptions
             {
                 Title                     = "Basic Modal",
@@ -426,7 +420,6 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
     {
         try
         {
-            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
             var validationAttempts = 0;
             var statusText = new TextBlock
             {
@@ -489,7 +482,6 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
     {
         try
         {
-            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
             var content = BuildMessageBoxContent();
             var options = new MessageBoxOptions
             {
@@ -498,7 +490,7 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
                 IsCenterOnStartup = true,
                 Style             = MessageBoxStyle.Confirm
             };
-            await MessageBox.ShowMessageModalAsync(content, null, options);
+            await MessageBox.ShowMessageBoxModalAsync(content, null, options);
         }
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
     }
@@ -507,7 +499,6 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
     {
         try
         {
-            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
             var content = BuildMessageBoxContent();
             var options = new MessageBoxOptions
             {
@@ -516,7 +507,7 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
                 IsCenterOnStartup = true,
                 Style             = MessageBoxStyle.Information
             };
-            await MessageBox.ShowMessageModalAsync(content, null, options);
+            await MessageBox.ShowMessageBoxModalAsync(content, null, options);
         }
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
     }
@@ -525,7 +516,6 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
     {
         try
         {
-            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
             var content = BuildMessageBoxContent();
             var options = new MessageBoxOptions
             {
@@ -534,7 +524,7 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
                 IsCenterOnStartup = true,
                 Style             = MessageBoxStyle.Success
             };
-            await MessageBox.ShowMessageModalAsync(content, null, options);
+            await MessageBox.ShowMessageBoxModalAsync(content, null, options);
         }
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
     }
@@ -543,7 +533,6 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
     {
         try
         {
-            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
             var content = BuildMessageBoxContent();
             var options = new MessageBoxOptions
             {
@@ -552,7 +541,7 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
                 IsCenterOnStartup = true,
                 Style             = MessageBoxStyle.Error
             };
-            await MessageBox.ShowMessageModalAsync(content, null, options);
+            await MessageBox.ShowMessageBoxModalAsync(content, null, options);
         }
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
     }
@@ -561,7 +550,6 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
     {
         try
         {
-            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
             var content = BuildMessageBoxContent();
             var options = new MessageBoxOptions
             {
@@ -570,7 +558,7 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
                 IsCenterOnStartup = true,
                 Style             = MessageBoxStyle.Warning
             };
-            await MessageBox.ShowMessageModalAsync(content, null, options);
+            await MessageBox.ShowMessageBoxModalAsync(content, null, options);
         }
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
     }

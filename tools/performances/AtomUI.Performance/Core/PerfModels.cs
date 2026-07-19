@@ -179,9 +179,9 @@ internal sealed record TreeStats(
     double DescriptionBorderedItemContentPerRoot,
     double DialogPerRoot,
     double MessageBoxPerRoot,
-    double OverlayDialogHostPerRoot,
-    double DialogHostPerRoot,
-    double DialogWindowContentPerRoot,
+    double OverlayDialogPresenterPerRoot,
+    double DialogWindowPerRoot,
+    double DialogSurfacePerRoot,
     double DialogButtonBoxPerRoot,
     double DialogButtonPerRoot,
     double DialogCaptionButtonPerRoot,
@@ -327,9 +327,9 @@ internal sealed record TreeStats(
         var descriptionBorderedItemContentCount = 0;
         var dialogCount                 = 0;
         var messageBoxCount             = 0;
-        var overlayDialogHostCount      = 0;
-        var dialogHostCount             = 0;
-        var dialogWindowContentCount    = 0;
+        var overlayDialogPresenterCount = 0;
+        var dialogWindowCount           = 0;
+        var dialogSurfaceCount          = 0;
         var dialogButtonBoxCount        = 0;
         var dialogButtonCount           = 0;
         var dialogCaptionButtonCount    = 0;
@@ -769,17 +769,17 @@ internal sealed record TreeStats(
                 {
                     messageBoxCount++;
                 }
-                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.OverlayDialogHost"))
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.OverlayDialogPresenter"))
                 {
-                    overlayDialogHostCount++;
+                    overlayDialogPresenterCount++;
                 }
-                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogHost"))
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogWindow"))
                 {
-                    dialogHostCount++;
+                    dialogWindowCount++;
                 }
-                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogWindowContent"))
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogSurface"))
                 {
-                    dialogWindowContentCount++;
+                    dialogSurfaceCount++;
                 }
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogButtonBox"))
                 {
@@ -1082,9 +1082,9 @@ internal sealed record TreeStats(
             descriptionBorderedItemContentCount / (double)rootCount,
             dialogCount / (double)rootCount,
             messageBoxCount / (double)rootCount,
-            overlayDialogHostCount / (double)rootCount,
-            dialogHostCount / (double)rootCount,
-            dialogWindowContentCount / (double)rootCount,
+            overlayDialogPresenterCount / (double)rootCount,
+            dialogWindowCount / (double)rootCount,
+            dialogSurfaceCount / (double)rootCount,
             dialogButtonBoxCount / (double)rootCount,
             dialogButtonCount / (double)rootCount,
             dialogCaptionButtonCount / (double)rootCount,

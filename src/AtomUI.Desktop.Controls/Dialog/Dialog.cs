@@ -1,10 +1,5 @@
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Collections;
@@ -14,13 +9,10 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Metadata;
-using Avalonia.Input;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
 public partial class Dialog : TemplatedControl,
-                              IDialogHostProvider,
                               IMotionAwareControl,
                               IDialog
 {
@@ -106,10 +98,8 @@ public partial class Dialog : TemplatedControl,
     public static readonly StyledProperty<bool> IsConfirmLoadingProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsConfirmLoading));
 
-    // Dialog 控件自身（TemplatedControl）从 Layoutable 继承的 Width / MinWidth 等尺寸属性
-    // 在这里语义上是死属性 —— Dialog 仅作为状态持有者，不直接参与可视布局。下面 6 个
-    // Host* 属性用于声明"希望 host（DialogHost / OverlayDialogHost）采用的尺寸约束"，
-    // 所有 host 的 sizing 逻辑都从这 6 个读取。
+    // Dialog 仅持有会话状态，不直接参与可视布局。下面的 Host* 属性定义 Presenter Surface
+    // 的尺寸约束。
     public static readonly StyledProperty<double> HostWidthProperty =
         AvaloniaProperty.Register<Dialog, double>(nameof(HostWidth), double.NaN);
 
@@ -155,16 +145,6 @@ public partial class Dialog : TemplatedControl,
     }
 
     public IAvaloniaDependencyResolver? DependencyResolver { get; set; }
-
-    internal DialogMotionAnchorMode MotionAnchorMode { get; set; }
-
-    internal bool UsesPlacementTargetAsMotionAnchor =>
-        MotionAnchorMode switch
-        {
-            DialogMotionAnchorMode.ExplicitPlacementTarget => PlacementTarget is not null,
-            DialogMotionAnchorMode.FallbackPlacementTarget => false,
-            _ => PlacementTarget is not null
-        };
 
     public bool IsOpen
     {
@@ -335,11 +315,22 @@ public partial class Dialog : TemplatedControl,
         set => SetValue(HostMaxHeightProperty, value);
     }
 
-    public IDialogHost? Host => _openState?.DialogHost;
-    IDialogHost? IDialogHostProvider.DialogHost => Host;
-
     public AvaloniaList<DialogButton> CustomButtons { get; } = new();
-    public Action<IReadOnlyList<DialogButton>>? ButtonsConfigure { get; set; }
+
+    public Action<IReadOnlyList<DialogButton>>? ButtonsConfigure
+    {
+        get => _buttonsConfigure;
+        set
+        {
+            _buttonsConfigure = value;
+            if (_surfaceButtons is not null)
+            {
+                value?.Invoke(_surfaceButtons);
+            }
+        }
+    }
+
+    public Func<DialogClosingContext, ValueTask<bool>>? BeforeCloseAsync { get; set; }
 
     #endregion
 
@@ -352,12 +343,6 @@ public partial class Dialog : TemplatedControl,
     public event EventHandler? Rejected;
     public event EventHandler<DialogFinishedEventArgs>? Finished;
     public event EventHandler<DialogButtonClickedEventArgs>? ButtonClicked;
-
-    event Action<IDialogHost?>? IDialogHostProvider.DialogHostChanged
-    {
-        add => _dialogHostChangedHandler += value;
-        remove => _dialogHostChangedHandler -= value;
-    }
 
     #endregion
 
@@ -405,754 +390,49 @@ public partial class Dialog : TemplatedControl,
         set => SetAndRaise(EffectiveMinimizableProperty, ref _effectiveMinimizable, value);
     }
 
+    internal DialogMotionAnchorMode MotionAnchorMode { get; set; }
+
+    internal bool UsesPlacementTargetAsMotionAnchor =>
+        MotionAnchorMode switch
+        {
+            DialogMotionAnchorMode.ExplicitPlacementTarget => PlacementTarget is not null,
+            DialogMotionAnchorMode.FallbackPlacementTarget => false,
+            _ => PlacementTarget is not null
+        };
+
+    private protected IReadOnlyList<DialogButton> SurfaceButtons =>
+        _surfaceButtons ?? Array.Empty<DialogButton>();
+
     #endregion
 
-    private bool _ignoreIsOpenChanged;
-    private DialogOpenState? _openState;
-    private Action<IDialogHost?>? _dialogHostChangedHandler;
-    private CancellationTokenSource? _frameCancellationTokenSource;
-    private DispatcherFrame? _synchronousOpenFrame;
-    private bool _opening;
-    private bool _closing;
-    private Func<DialogClosingContext, ValueTask<bool>>? BeforeCloseAsync { get; set; }
-    private CancellationToken _openCancellationToken;
-    private IReadOnlyList<DialogButton> _synchronizedButtons = Array.Empty<DialogButton>();
+    #region 运行时字段
 
-    static Dialog()
+    private Action<IReadOnlyList<DialogButton>>? _buttonsConfigure;
+    private IReadOnlyList<DialogButton>? _surfaceButtons;
+
+    #endregion
+
+    internal virtual object? GetSurfaceContent()
     {
-        IsHitTestVisibleProperty.OverrideDefaultValue<Dialog>(false);
-        IsOpenProperty.Changed.AddClassHandler<Dialog>((x, e) => x.HandleIsOpenChanged((AvaloniaPropertyChangedEventArgs<bool>)e));
+        return Content;
     }
 
-    public Dialog()
+    internal virtual IDataTemplate? GetSurfaceContentTemplate()
     {
-        CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
-        SetCurrentValue(EffectiveMinimizableProperty, IsMinimizable);
+        return ContentTemplate;
     }
 
-    private void HandleIsOpenChanged(AvaloniaPropertyChangedEventArgs<bool> e)
+    internal virtual void ConfigureSurfaceButtons(IReadOnlyList<DialogButton> buttons)
     {
-        if (_ignoreIsOpenChanged)
-        {
-            return;
-        }
-
-        if (e.NewValue.Value)
-        {
-            Dispatcher.InvokeAsync(() => OpenAsync());
-        }
-        else
-        {
-            RequestClose(DialogCloseRequest.OpenStateChanged(Result));
-        }
+        _surfaceButtons = buttons;
+        _buttonsConfigure?.Invoke(buttons);
     }
 
-    public object? Open()
+    internal virtual void ReleaseSurfaceButtons(IReadOnlyList<DialogButton> buttons)
     {
-        if (_openState != null || _opening || _closing)
+        if (ReferenceEquals(_surfaceButtons, buttons))
         {
-            return null;
+            _surfaceButtons = null;
         }
-
-        _frameCancellationTokenSource?.Cancel();
-        _frameCancellationTokenSource?.Dispose();
-        _frameCancellationTokenSource = new CancellationTokenSource();
-        var frame = new DispatcherFrame();
-        _synchronousOpenFrame = frame;
-        _frameCancellationTokenSource.Token.Register(() => frame.Continue = false);
-        DialogInputCaptureTracker.ReleaseCurrentMouseCapture();
-        Dispatcher.InvokeAsync(async () => await OpenAsync(_frameCancellationTokenSource.Token));
-        try
-        {
-            Dispatcher.PushFrame(frame);
-        }
-        finally
-        {
-            if (ReferenceEquals(_synchronousOpenFrame, frame))
-            {
-                _synchronousOpenFrame = null;
-            }
-        }
-        return Result;
-    }
-
-    public async Task OpenAsync(CancellationToken cancellationToken = default)
-    {
-        if (_openState != null || _opening || _closing)
-        {
-            return;
-        }
-
-        cancellationToken.ThrowIfCancellationRequested();
-        _openCancellationToken = cancellationToken;
-        _opening = true;
-
-        try
-        {
-            var placementTarget = ResolvePlacementTarget();
-            var topLevel        = TopLevel.GetTopLevel(placementTarget);
-            if (topLevel is null)
-            {
-                throw new InvalidOperationException("Unable to resolve TopLevel for Dialog.");
-            }
-
-            var disposables          = new CompositeDisposable();
-            var ownershipTransferred = false;
-            try
-            {
-                var effectiveHostType = ResolveDialogHostType(DialogHostType);
-                var dialogHost = effectiveHostType == DialogHostType.Window
-                    ? CreateDialogHost(topLevel, this)
-                    : CreateOverlayDialogHost(placementTarget, this);
-
-                dialogHost.BindDialog(this, disposables);
-                dialogHost.CustomButtons.AddRange(CustomButtons);
-
-                dialogHost.Content         = Content;
-                dialogHost.ContentTemplate = ContentTemplate;
-                dialogHost.UpdateSizing();
-                dialogHost.Topmost         = IsTopmost;
-
-                SubscribeToEventHandler<IDialogHost, EventHandler<TemplateAppliedEventArgs>>(dialogHost, RootTemplateApplied,
-                    (x, handler) => x.TemplateApplied += handler,
-                    (x, handler) => x.TemplateApplied -= handler).DisposeWith(disposables);
-
-                SubscribeToEventHandler<Control, EventHandler<VisualTreeAttachmentEventArgs>>(placementTarget, TargetDetached,
-                    (x, handler) => x.DetachedFromVisualTree += handler,
-                    (x, handler) => x.DetachedFromVisualTree -= handler).DisposeWith(disposables);
-
-                if (topLevel is Window parentWindow)
-                {
-                    SubscribeToEventHandler<Window, EventHandler>(parentWindow, ParentClosed,
-                    (x, handler) => x.Closed += handler,
-                    (x, handler) => x.Closed -= handler).DisposeWith(disposables);
-                }
-
-                dialogHost.AttachPlacement(placementTarget);
-
-                var openState = new DialogOpenState(dialogHost,
-                    disposables);
-                _openState           = openState;
-                ownershipTransferred = true;
-                _dialogHostChangedHandler?.Invoke(dialogHost);
-
-                using (BeginIgnoringIsOpen())
-                {
-                    SetCurrentValue(IsOpenProperty, true);
-                }
-
-                try
-                {
-                    if (dialogHost is DialogHost windowDialog &&
-                    IsModal &&
-                    topLevel is Window ownerWindow &&
-                    RuntimePlatform.Features.SupportsWindowModalDialog)
-                    {
-                        // Window 宿主 + modal：必须用 ShowDialog() 拿 OS 级 modal 语义
-                        // （父窗禁用、焦点限制、macOS 下表现为 sheet）。
-                        // 仅用 Show() 再 await ClosedTask 只是应用层等待，父窗仍然可交互。
-                        Opened?.Invoke(this, EventArgs.Empty);
-                        await windowDialog.ShowDialog(ownerWindow).WaitAsync(cancellationToken);
-                    }
-                    else
-                    {
-                        dialogHost.Show();
-                        Opened?.Invoke(this, EventArgs.Empty);
-
-                        if (IsModal)
-                        {
-                            await openState.ClosedTask.WaitAsync(cancellationToken);
-                        }
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    dialogHost.Close();
-                    throw;
-                }
-            }
-            catch when (!ownershipTransferred)
-            {
-                // openState 还没接管 disposables；这里手动释放避免事件订阅 / binding 残留。
-                // ownershipTransferred 之后抛异常的分支不走这里，由 _openState.Dispose() 负责清理。
-                disposables.Dispose();
-                throw;
-            }
-        }
-        finally
-        {
-            _opening = false;
-        }
-    }
-
-    private protected virtual IDialogHost CreateDialogHost(TopLevel topLevel, Dialog dialog)
-    {
-        return new DialogHost(topLevel, dialog);
-    }
-
-    private protected virtual IDialogHost CreateOverlayDialogHost(Control placementTarget, Dialog dialog)
-    {
-        return new OverlayDialogHost(placementTarget, dialog, DependencyResolver);
-    }
-
-    private static DialogHostType ResolveDialogHostType(DialogHostType requestedHostType)
-    {
-        if (requestedHostType == DialogHostType.Window && !RuntimePlatform.Features.SupportsNativeWindow)
-        {
-            return DialogHostType.Overlay;
-        }
-
-        return requestedHostType;
-    }
-
-    public void Accept()
-    {
-        RequestClose(DialogCloseRequest.Accepted(null));
-    }
-
-    public void Reject()
-    {
-        RequestClose(DialogCloseRequest.Rejected(null));
-    }
-
-    public void Done(object? dialogResult)
-    {
-        RequestClose(DialogCloseRequest.Programmatic(dialogResult));
-    }
-
-    public void Done()
-    {
-        RequestClose(DialogCloseRequest.Programmatic(Result));
-    }
-
-    private void RequestClose(DialogCloseRequest request)
-    {
-        if (IsConfirmLoading || _closing)
-        {
-            return;
-        }
-
-        _closing = true;
-        var closeCompletionPending = false;
-        var previousResult         = Result;
-
-        try
-        {
-            SetCurrentValue(ResultProperty, request.Result);
-
-            if (!NotifyClosing())
-            {
-                CancelCloseRequest(request, previousResult);
-                return;
-            }
-
-            if (BeforeCloseAsync is null)
-            {
-                CommitClose(request.Result, ref closeCompletionPending);
-                return;
-            }
-
-            var beforeCloseTask = CreateBeforeCloseTask(request);
-            if (beforeCloseTask.IsCompleted)
-            {
-                if (!ReadBeforeCloseResult(beforeCloseTask))
-                {
-                    CancelCloseRequest(request, previousResult);
-                    return;
-                }
-
-                CommitClose(request.Result, ref closeCompletionPending);
-                return;
-            }
-
-            closeCompletionPending = true;
-            _ = ContinueCloseAsync(request, previousResult, beforeCloseTask);
-        }
-        finally
-        {
-            if (!closeCompletionPending)
-            {
-                _closing = false;
-            }
-        }
-    }
-
-    private bool NotifyClosing()
-    {
-        var closingArgs = new CancelEventArgs();
-        Closing?.Invoke(this, closingArgs);
-        return !closingArgs.Cancel;
-    }
-
-    private async Task ContinueCloseAsync(
-        DialogCloseRequest request,
-        object? previousResult,
-        ValueTask<bool> beforeCloseTask)
-    {
-        var closeCompletionPending = false;
-        try
-        {
-            if (!await ReadBeforeCloseResultAsync(beforeCloseTask))
-            {
-                CancelCloseRequest(request, previousResult);
-                return;
-            }
-
-            CommitClose(request.Result, ref closeCompletionPending);
-        }
-        finally
-        {
-            if (!closeCompletionPending)
-            {
-                _closing = false;
-            }
-        }
-    }
-
-    private ValueTask<bool> CreateBeforeCloseTask(DialogCloseRequest request)
-    {
-        var context = new DialogClosingContext(
-            this,
-            request.Result,
-            request.Reason,
-            request.SourceButton,
-            _openCancellationToken);
-        try
-        {
-            return BeforeCloseAsync?.Invoke(context) ?? ValueTask.FromResult(true);
-        }
-        catch (Exception ex)
-        {
-            TraceBeforeCloseException(ex);
-            return ValueTask.FromResult(false);
-        }
-    }
-
-    private static bool ReadBeforeCloseResult(ValueTask<bool> beforeCloseTask)
-    {
-        try
-        {
-            return beforeCloseTask.GetAwaiter().GetResult();
-        }
-        catch (Exception ex)
-        {
-            TraceBeforeCloseException(ex);
-            return false;
-        }
-    }
-
-    private static async ValueTask<bool> ReadBeforeCloseResultAsync(ValueTask<bool> beforeCloseTask)
-    {
-        try
-        {
-            return await beforeCloseTask;
-        }
-        catch (Exception ex)
-        {
-            TraceBeforeCloseException(ex);
-            return false;
-        }
-    }
-
-    private static void TraceBeforeCloseException(Exception exception)
-    {
-        Debug.WriteLine($"Dialog before-close callback failed: {exception}");
-    }
-
-    private void CommitClose(object? result, ref bool closeCompletionPending)
-    {
-        if (result is DialogCode code)
-        {
-            if (code == DialogCode.Accepted)
-            {
-                Accepted?.Invoke(this, EventArgs.Empty);
-            }
-            else if (code == DialogCode.Rejected)
-            {
-                Rejected?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        Finished?.Invoke(this, new DialogFinishedEventArgs(result));
-        if (DataContext is IDialogAwareDataContext dialogAwareDataContext)
-        {
-            dialogAwareDataContext.NotifyClosed();
-        }
-
-        var openState = _openState;
-        _openState    = null;
-        _dialogHostChangedHandler?.Invoke(null);
-
-        using (BeginIgnoringIsOpen())
-        {
-            SetCurrentValue(IsOpenProperty, false);
-        }
-
-        StopSynchronousOpenFrame();
-        if (openState is not null)
-        {
-            var closeCompletedSynchronously = false;
-            openState.Close(() =>
-            {
-                closeCompletedSynchronously = true;
-                CompleteClose(openState, result);
-            });
-            closeCompletionPending = !closeCompletedSynchronously;
-        }
-        else
-        {
-            CompleteClose(null, result);
-        }
-    }
-
-    private void RestoreResult(object? previousResult)
-    {
-        SetCurrentValue(ResultProperty, previousResult);
-    }
-
-    private void CancelCloseRequest(DialogCloseRequest request, object? previousResult)
-    {
-        RestoreResult(previousResult);
-        if (request.RestoreIsOpenOnCancel)
-        {
-            using (BeginIgnoringIsOpen())
-            {
-                SetCurrentValue(IsOpenProperty, true);
-            }
-        }
-    }
-
-    private void StopSynchronousOpenFrame()
-    {
-        if (_synchronousOpenFrame is { } frame)
-        {
-            frame.Continue = false;
-        }
-    }
-
-    private void CompleteClose(DialogOpenState? openState, object? result)
-    {
-        openState?.SetClosed(result);
-        _synchronizedButtons = Array.Empty<DialogButton>();
-        Closed?.Invoke(this, EventArgs.Empty);
-        _frameCancellationTokenSource?.Cancel();
-        _frameCancellationTokenSource?.Dispose();
-        _frameCancellationTokenSource = null;
-        _openCancellationToken        = default;
-        _closing = false;
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-
-        if (_openState is not null)
-        {
-            if (change.Property == HostWidthProperty ||
-                change.Property == HostMinWidthProperty ||
-                change.Property == HostMaxWidthProperty ||
-                change.Property == HostHeightProperty ||
-                change.Property == HostMinHeightProperty ||
-                change.Property == HostMaxHeightProperty)
-            {
-                _openState.DialogHost.UpdateSizing();
-            }
-            else if (change.Property == HorizontalStartupLocationProperty ||
-                     change.Property == VerticalStartupLocationProperty ||
-                     change.Property == HorizontalOffsetProperty ||
-                     change.Property == VerticalOffsetProperty ||
-                     change.Property == OffsetXProperty ||
-                     change.Property == OffsetYProperty)
-            {
-                _openState.DialogHost.UpdatePlacement();
-            }
-            else if (change.Property == ContentTemplateProperty)
-            {
-                _openState.DialogHost.ContentTemplate = change.GetNewValue<IDataTemplate?>();
-            }
-            else if (change.Property == ContentProperty)
-            {
-                var hostedContent = change.GetNewValue<object?>() as Control;
-                _openState.DialogHost.Content = hostedContent;
-            }
-            else if (change.Property == IsTopmostProperty)
-            {
-                _openState.DialogHost.Topmost = change.GetNewValue<bool>();
-            }
-        }
-
-        if (change.Property == IsModalProperty || change.Property == IsMinimizableProperty)
-        {
-            SetCurrentValue(EffectiveMinimizableProperty, !IsModal && IsMinimizable);
-        }
-        else if (change.Property == DataContextProperty)
-        {
-            if (change.OldValue is IDialogAwareDataContext oldDataContext)
-            {
-                oldDataContext.NotifyDetachedFromDialog();
-            }
-
-            if (change.NewValue is IDialogAwareDataContext newDataContext)
-            {
-                newDataContext.NotifyAttachedToDialog(this);
-            }
-        }
-    }
-
-    private static IDisposable SubscribeToEventHandler<T, TEventHandler>(
-        T target,
-        TEventHandler handler,
-        Action<T, TEventHandler> subscribe,
-        Action<T, TEventHandler> unsubscribe)
-    {
-        subscribe(target, handler);
-        return Disposable.Create((unsubscribe, target, handler),
-            state => state.unsubscribe(state.target, state.handler));
-    }
-
-    private void RootTemplateApplied(object? sender, TemplateAppliedEventArgs e)
-    {
-        SetTemplatedParentAndApplyChildTemplates(Content as Control);
-    }
-
-    private void SetTemplatedParentAndApplyChildTemplates(Control? control)
-    {
-        if (control is null)
-        {
-            return;
-        }
-
-        control.SetTemplatedParent(this);
-        control.ApplyTemplate();
-    }
-
-    private void ParentClosed(object? sender, EventArgs e)
-    {
-        RequestClose(new DialogCloseRequest(null, DialogCloseReason.OwnerClosed, null, false));
-    }
-
-    private void TargetDetached(object? sender, VisualTreeAttachmentEventArgs e)
-    {
-        RequestClose(new DialogCloseRequest(Result, DialogCloseReason.PlacementTargetDetached, null, false));
-    }
-
-    internal void NotifyDialogHostCloseRequest()
-    {
-        RequestClose(new DialogCloseRequest(Result, DialogCloseReason.HostCloseRequest, null, false));
-    }
-
-    internal Point CalculatePlacementOffset(Size hostSize, Size ownerSize)
-    {
-        var x = CalculateHorizontalPlacementOffset(hostSize, ownerSize) + OffsetX;
-        var y = CalculateVerticalPlacementOffset(hostSize, ownerSize) + OffsetY;
-        return new Point(x, y);
-    }
-
-    private double CalculateHorizontalPlacementOffset(Size hostSize, Size ownerSize)
-    {
-        return HorizontalStartupLocation switch
-        {
-            DialogHorizontalAnchor.Left => 0,
-            DialogHorizontalAnchor.Center => Math.Max((ownerSize.Width - hostSize.Width) / 2, 0),
-            DialogHorizontalAnchor.Right => Math.Max(ownerSize.Width - hostSize.Width, 0),
-            _ => HorizontalOffset?.Resolve(ownerSize.Width) ?? 0
-        };
-    }
-
-    private double CalculateVerticalPlacementOffset(Size hostSize, Size ownerSize)
-    {
-        return VerticalStartupLocation switch
-        {
-            DialogVerticalAnchor.Top => 0,
-            DialogVerticalAnchor.Center => Math.Max((ownerSize.Height - hostSize.Height) / 2, 0),
-            DialogVerticalAnchor.Bottom => Math.Max(ownerSize.Height - hostSize.Height, 0),
-            _ => VerticalOffset?.Resolve(ownerSize.Height) ?? 0
-        };
-    }
-
-    private Control ResolvePlacementTarget()
-    {
-        return OverlayLayerResolver.ResolvePlacementTarget(this, PlacementTarget, nameof(Dialog));
-    }
-
-    private IgnoreIsOpenScope BeginIgnoringIsOpen()
-    {
-        return new IgnoreIsOpenScope(this);
-    }
-
-    private readonly struct IgnoreIsOpenScope : IDisposable
-    {
-        private readonly Dialog _owner;
-
-        public IgnoreIsOpenScope(Dialog owner)
-        {
-            _owner = owner;
-            _owner._ignoreIsOpenChanged = true;
-        }
-
-        public void Dispose()
-        {
-            _owner._ignoreIsOpenChanged = false;
-        }
-    }
-
-    private sealed record DialogCloseRequest(
-        object? Result,
-        DialogCloseReason Reason,
-        DialogButton? SourceButton,
-        bool RestoreIsOpenOnCancel)
-    {
-        public static DialogCloseRequest Accepted(DialogButton? sourceButton)
-        {
-            return new DialogCloseRequest(DialogCode.Accepted, DialogCloseReason.Accepted, sourceButton, false);
-        }
-
-        public static DialogCloseRequest Rejected(DialogButton? sourceButton)
-        {
-            return new DialogCloseRequest(DialogCode.Rejected, DialogCloseReason.Rejected, sourceButton, false);
-        }
-
-        public static DialogCloseRequest Programmatic(object? result)
-        {
-            return new DialogCloseRequest(result, DialogCloseReason.Programmatic, null, false);
-        }
-
-        public static DialogCloseRequest OpenStateChanged(object? result)
-        {
-            return new DialogCloseRequest(result, DialogCloseReason.Programmatic, null, true);
-        }
-    }
-
-    private class DialogOpenState : IDisposable
-    {
-        private readonly IDisposable _cleanup;
-        private readonly TaskCompletionSource<object?> _closedTaskSource =
-            new(TaskCreationOptions.RunContinuationsAsynchronously);
-
-        public DialogOpenState(IDialogHost dialogHost,
-                               IDisposable cleanup)
-        {
-            DialogHost          = dialogHost;
-            _cleanup            = cleanup;
-        }
-
-        public IDialogHost DialogHost { get; }
-        public Task<object?> ClosedTask => _closedTaskSource.Task;
-
-        public void SetClosed(object? result)
-        {
-            _closedTaskSource.TrySetResult(result);
-        }
-
-        public void Close(Action? closedCallback = null)
-        {
-            DialogHost.Close(() =>
-            {
-                _cleanup.Dispose();
-                DialogHost.Content = null;
-                closedCallback?.Invoke();
-            });
-        }
-
-        public void Dispose()
-        {
-            Close();
-        }
-    }
-
-    private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        var targetButtons = _openState?.DialogHost.CustomButtons;
-
-        if (targetButtons is null)
-        {
-            return;
-        }
-
-        switch (e.Action)
-        {
-            case NotifyCollectionChangedAction.Add:
-                DialogButtonCollectionUtils.AddRange(targetButtons, e.NewItems!);
-                break;
-            case NotifyCollectionChangedAction.Remove:
-                DialogButtonCollectionUtils.RemoveAll(targetButtons, e.OldItems!);
-                break;
-            case NotifyCollectionChangedAction.Replace:
-            case NotifyCollectionChangedAction.Move:
-            case NotifyCollectionChangedAction.Reset:
-                throw new NotSupportedException();
-        }
-    }
-
-    internal void NotifyDialogButtonBoxClicked(DialogButton button)
-    {
-        var buttonClickedArgs = new DialogButtonClickedEventArgs(button);
-        ButtonClicked?.Invoke(this, buttonClickedArgs);
-        if (buttonClickedArgs.Handled)
-        {
-            return;
-        }
-
-        if (button.Role == DialogButtonRole.AcceptRole ||
-            button.Role == DialogButtonRole.YesRole ||
-            button.Role == DialogButtonRole.ApplyRole ||
-            button.Role == DialogButtonRole.ResetRole)
-        {
-            RequestClose(DialogCloseRequest.Accepted(button));
-        }
-        else if (button.Role == DialogButtonRole.RejectRole ||
-                 button.Role == DialogButtonRole.NoRole)
-        {
-            RequestClose(DialogCloseRequest.Rejected(button));
-        }
-    }
-
-    internal void NotifyDialogButtonSynchronized(IReadOnlyList<DialogButton> buttons)
-    {
-        _synchronizedButtons = buttons;
-        ButtonsConfigure?.Invoke(buttons);
-    }
-
-    internal bool TryHandleStandardButtonKey(Key key)
-    {
-        var standardButton = ResolveStandardButtonForKey(key);
-
-        if (standardButton == DialogStandardButton.NoButton)
-        {
-            return false;
-        }
-
-        var button = _synchronizedButtons.FirstOrDefault(x =>
-            x.StandardButtonType == standardButton &&
-            x.IsEffectivelyEnabled);
-        if (button is null)
-        {
-            return false;
-        }
-
-        NotifyDialogButtonBoxClicked(button);
-        return true;
-    }
-
-    private DialogStandardButton ResolveStandardButtonForKey(Key key)
-    {
-        return key switch
-        {
-            Key.Enter  => DefaultStandardButton,
-            Key.Escape => ResolveEscapeStandardButton(),
-            _          => DialogStandardButton.NoButton
-        };
-    }
-
-    private DialogStandardButton ResolveEscapeStandardButton()
-    {
-        if (IsSet(EscapeStandardButtonProperty))
-        {
-            return EscapeStandardButton;
-        }
-
-        return StandardButtons.HasFlag(DialogStandardButton.Cancel)
-            ? DialogStandardButton.Cancel
-            : DialogStandardButton.NoButton;
     }
 }

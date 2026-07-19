@@ -1,17 +1,13 @@
-using System.Reflection;
-using System.Diagnostics;
+using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Headless;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
-using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUI.Desktop.Controls.Tests.MessageBox;
 
@@ -23,716 +19,430 @@ public class MessageBoxReentrancyTests
     }
 
     [Fact]
-    public void ShowMessageBox_Called_From_Button_Click_Does_Not_Reenter_Click_Handler()
+    public void Semantic_Defaults_Do_Not_Override_Local_Dialog_Configuration()
     {
-        var trigger = new AtomUI.Desktop.Controls.Button
+        var messageBox = new AtomUI.Desktop.Controls.MessageBox
         {
-            Width   = 120,
-            Height  = 32,
-            Content = "Show"
-        };
-        var window = CreateWindow(trigger);
-
-        var clickCount = 0;
-        trigger.Click += (_, _) =>
-        {
-            clickCount++;
-            ScheduleClickOpenMessageBoxButton(window);
-
-            var result = AtomUI.Desktop.Controls.MessageBox.ShowMessageBox(
-                new AtomUI.Desktop.Controls.TextBlock { Text = "Confirm?" },
-                options: new MessageBoxOptions
-                {
-                    Title             = "Confirm",
-                    IsCenterOnStartup = true,
-                    Style             = MessageBoxStyle.Confirm
-                },
-                topLevel: window);
-
-            result.ShouldBe(DialogCode.Accepted);
+            StandardButtons = DialogStandardButton.Yes | DialogStandardButton.No,
+            DefaultStandardButton = DialogStandardButton.Yes,
+            EscapeStandardButton = DialogStandardButton.No,
+            HorizontalStartupLocation = DialogHorizontalAnchor.Left,
+            VerticalStartupLocation = DialogVerticalAnchor.Bottom
         };
 
-        try
-        {
-            Click(trigger, window);
-            Dispatcher.UIThread.RunJobs();
+        messageBox.Style = MessageBoxStyle.Confirm;
+        messageBox.OkButtonStyle = MessageBoxOkButtonStyle.Default;
+        messageBox.IsCenterOnStartup = false;
 
-            clickCount.ShouldBe(1);
-        }
-        finally
-        {
-            window.Close();
-        }
+        messageBox.StandardButtons.ShouldBe(DialogStandardButton.Yes | DialogStandardButton.No);
+        messageBox.DefaultStandardButton.ShouldBe(DialogStandardButton.Yes);
+        messageBox.EscapeStandardButton.ShouldBe(DialogStandardButton.No);
+        messageBox.HorizontalStartupLocation.ShouldBe(DialogHorizontalAnchor.Left);
+        messageBox.VerticalStartupLocation.ShouldBe(DialogVerticalAnchor.Bottom);
     }
 
     [Fact]
-    public void ShowMessageBox_Called_From_Button_Click_Accepts_Default_Button_With_Enter_Without_Reentering_Click_Handler()
+    public void Static_Async_MessageBox_Returns_The_Result_After_Complete_Teardown()
     {
-        var trigger = new AtomUI.Desktop.Controls.Button
+        RunOnUIThread(() =>
         {
-            Width   = 120,
-            Height  = 32,
-            Content = "Show"
-        };
-        var window = CreateWindow(trigger);
+            var window = CreateWindow(new Border());
 
-        var clickCount = 0;
-        var fallbackClickRequired = false;
-        object? result = null;
-        trigger.Click += (_, _) =>
-        {
-            clickCount++;
-            if (clickCount > 1)
+            try
             {
-                return;
+                var resultTask = AtomUI.Desktop.Controls.MessageBox.ShowMessageBoxModalAsync(
+                    new AtomUI.Desktop.Controls.TextBlock { Text = "Confirm?" },
+                    options: new MessageBoxOptions
+                    {
+                        Title           = "Confirm",
+                        Style           = MessageBoxStyle.Confirm,
+                        IsMotionEnabled = false
+                    },
+                    topLevel: window);
+
+                PumpUntil(() => FindStandardButton(window, DialogStandardButton.Ok) is not null);
+                FindStandardButton(window, DialogStandardButton.Ok)!
+                    .RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent));
+
+                WaitWithDispatcherPump(resultTask).ShouldBe(DialogCode.Accepted);
+                window.GetVisualDescendants().OfType<OverlayDialogPresenter>().ShouldBeEmpty();
+                window.GetVisualDescendants().OfType<AtomUI.Desktop.Controls.MessageBox>().ShouldBeEmpty();
             }
-
-            ScheduleKeyPressOpenMessageBoxButton(
-                window,
-                Key.Enter,
-                DialogStandardButton.Ok,
-                () => fallbackClickRequired = true);
-
-            result = AtomUI.Desktop.Controls.MessageBox.ShowMessageBox(
-                new AtomUI.Desktop.Controls.TextBlock { Text = "Confirm?" },
-                options: new MessageBoxOptions
-                {
-                    Title             = "Confirm",
-                    IsCenterOnStartup = true,
-                    Style             = MessageBoxStyle.Confirm
-                },
-                topLevel: window);
-        };
-
-        try
-        {
-            Click(trigger, window);
-            Dispatcher.UIThread.RunJobs();
-
-            result.ShouldBe(DialogCode.Accepted);
-            clickCount.ShouldBe(1);
-            fallbackClickRequired.ShouldBeFalse(
-                "Enter should activate the MessageBox default button without needing a mouse click fallback.");
-        }
-        finally
-        {
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void ShowMessageBox_Called_From_Button_Click_Rejects_Escape_Button_Without_Reentering_Click_Handler()
-    {
-        var trigger = new AtomUI.Desktop.Controls.Button
-        {
-            Width   = 120,
-            Height  = 32,
-            Content = "Show"
-        };
-        var window = CreateWindow(trigger);
-
-        var clickCount = 0;
-        var fallbackClickRequired = false;
-        object? result = null;
-        trigger.Click += (_, _) =>
-        {
-            clickCount++;
-            if (clickCount > 1)
+            finally
             {
-                return;
+                window.Close();
             }
-
-            ScheduleKeyPressOpenMessageBoxButton(
-                window,
-                Key.Escape,
-                DialogStandardButton.Cancel,
-                () => fallbackClickRequired = true);
-
-            result = AtomUI.Desktop.Controls.MessageBox.ShowMessageBox(
-                new AtomUI.Desktop.Controls.TextBlock { Text = "Confirm?" },
-                options: new MessageBoxOptions
-                {
-                    Title             = "Confirm",
-                    IsCenterOnStartup = true,
-                    Style             = MessageBoxStyle.Confirm
-                },
-                topLevel: window);
-        };
-
-        try
-        {
-            Click(trigger, window);
-            Dispatcher.UIThread.RunJobs();
-
-            result.ShouldBe(DialogCode.Rejected);
-            clickCount.ShouldBe(1);
-            fallbackClickRequired.ShouldBeFalse(
-                "Escape should activate the MessageBox cancel button without needing a mouse click fallback.");
-        }
-        finally
-        {
-            window.Close();
-        }
+        });
     }
 
     [Fact]
-    public void ShowMessageBox_Returns_When_Dialog_Is_Logically_Closed_Instead_Of_Waiting_For_Close_Animation()
+    public void Static_MessageBox_From_A_Background_Thread_Uses_The_UI_Dispatcher()
     {
-        var trigger = new AtomUI.Desktop.Controls.Button
+        RunOnUIThread(() =>
         {
-            Width   = 120,
-            Height  = 32,
-            Content = "Show"
-        };
-        var window = CreateWindow(trigger);
+            var window = CreateWindow(new Border());
 
-        TimeSpan showMessageBoxDuration = default;
-        trigger.Click += (_, _) =>
-        {
-            ScheduleClickOpenMessageBoxButton(
-                window,
-                canClick: IsOverlayDialogHostAnimationReady,
-                beforeClick: () => SetOverlayDialogHostAnimationDuration(window, TimeSpan.FromSeconds(1)));
-
-            var stopwatch = Stopwatch.StartNew();
-            AtomUI.Desktop.Controls.MessageBox.ShowMessageBox(
-                new AtomUI.Desktop.Controls.TextBlock { Text = "Confirm?" },
-                options: new MessageBoxOptions
-                {
-                    Title             = "Confirm",
-                    IsCenterOnStartup = true,
-                    Style             = MessageBoxStyle.Confirm
-                },
-                topLevel: window);
-            stopwatch.Stop();
-            showMessageBoxDuration = stopwatch.Elapsed;
-        };
-
-        try
-        {
-            Click(trigger, window);
-            Dispatcher.UIThread.RunJobs();
-
-            showMessageBoxDuration.ShouldBeLessThan(
-                TimeSpan.FromMilliseconds(500),
-                "synchronous MessageBox should return once OK logically closes the dialog; close animation cleanup can continue asynchronously.");
-        }
-        finally
-        {
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void ShowMessageBox_Called_From_Button_Pointer_Click_Accepts_First_Dialog_Mouse_Click()
-    {
-        var trigger = new AtomUI.Desktop.Controls.Button
-        {
-            Width   = 120,
-            Height  = 32,
-            Content = "Show"
-        };
-        var window = CreateWindow(trigger);
-
-        var firstDialogMouseClickHandled = false;
-        object? result = null;
-        trigger.Click += (_, _) =>
-        {
-            ScheduleFirstMouseClickOpenMessageBoxButton(
-                window,
-                () => firstDialogMouseClickHandled = true);
-
-            result = AtomUI.Desktop.Controls.MessageBox.ShowMessageBox(
-                new AtomUI.Desktop.Controls.TextBlock { Text = "Confirm?" },
-                options: new MessageBoxOptions
-                {
-                    Title             = "Confirm",
-                    IsCenterOnStartup = true,
-                    Style             = MessageBoxStyle.Confirm
-                },
-                topLevel: window);
-        };
-
-        try
-        {
-            Click(trigger, window);
-            Dispatcher.UIThread.RunJobs();
-
-            result.ShouldBe(DialogCode.Accepted);
-            firstDialogMouseClickHandled.ShouldBeTrue(
-                "a synchronous MessageBox opened from a pointer click must release the trigger's pointer capture before entering the nested dispatcher frame.");
-        }
-        finally
-        {
-            window.Close();
-        }
-    }
-
-
-    [Fact]
-    public void ShowMessageBox_Called_From_MenuItem_Click_Accepts_Default_Button_With_Enter_Without_Reentering_Click_Handler()
-    {
-        var aboutMenuItem = new AtomUI.Desktop.Controls.MenuItem
-        {
-            Header = "About"
-        };
-        var helpMenuItem = new AtomUI.Desktop.Controls.MenuItem
-        {
-            Header = "Help"
-        };
-        helpMenuItem.Items.Add(aboutMenuItem);
-
-        var menu = new AtomUI.Desktop.Controls.Menu
-        {
-            Width = 320
-        };
-        menu.Items.Add(helpMenuItem);
-
-        var window = CreateWindow(menu);
-        var clickCount = 0;
-        var fallbackClickRequired = false;
-        object? result = null;
-
-        aboutMenuItem.Click += (_, _) =>
-        {
-            clickCount++;
-            if (clickCount > 1)
+            try
             {
-                return;
+                var content = new AtomUI.Desktop.Controls.TextBlock { Text = "Background" };
+                var resultTask = Task.Run(() => AtomUI.Desktop.Controls.MessageBox.ShowMessageBoxAsync(
+                    content,
+                    options: new MessageBoxOptions { IsMotionEnabled = false },
+                    topLevel: window,
+                    cancellationToken: TestContext.Current.CancellationToken));
+                PumpUntil(() => resultTask.IsCompleted ||
+                                FindStandardButton(window, DialogStandardButton.Ok) is not null);
+
+                resultTask.IsCompleted.ShouldBeFalse();
+                FindStandardButton(window, DialogStandardButton.Ok)!
+                    .RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent));
+
+                WaitWithDispatcherPump(resultTask).ShouldBe(DialogCode.Accepted);
             }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
 
-            ScheduleKeyPressOpenMessageBoxButton(
-                window,
-                Key.Enter,
-                DialogStandardButton.Ok,
-                () => fallbackClickRequired = true);
+    [Fact]
+    public void Generic_Static_MessageBox_From_A_Background_Thread_Constructs_The_View_On_The_UI_Dispatcher()
+    {
+        RunOnUIThread(() =>
+        {
+            var window = CreateWindow(new Border());
 
-            result = AtomUI.Desktop.Controls.MessageBox.ShowMessageBox(
-                new AtomUI.Desktop.Controls.TextBlock { Text = "About" },
-                options: new MessageBoxOptions
+            try
+            {
+                var resultTask = Task.Run(() =>
+                    AtomUI.Desktop.Controls.MessageBox.ShowMessageBoxAsync<UiThreadMessageBoxContent, object>(
+                        null,
+                        new MessageBoxOptions { IsMotionEnabled = false },
+                        window,
+                        TestContext.Current.CancellationToken));
+                PumpUntil(() => resultTask.IsCompleted ||
+                                FindStandardButton(window, DialogStandardButton.Ok) is not null);
+
+                resultTask.IsCompleted.ShouldBeFalse();
+                FindStandardButton(window, DialogStandardButton.Ok)!
+                    .RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent));
+
+                WaitWithDispatcherPump(resultTask).ShouldBe(DialogCode.Accepted);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Declarative_MessageBox_Uses_One_Dialog_Surface_And_Forwards_Semantic_Events()
+    {
+        RunOnUIThread(() =>
+        {
+            var placementTarget = new Border { Width = 80, Height = 32 };
+            var messageBox = new AtomUI.Desktop.Controls.MessageBox
+            {
+                PlacementTarget = placementTarget,
+                Content         = "Delete this item?",
+                Style           = MessageBoxStyle.Confirm,
+                IsMotionEnabled = false
+            };
+            var root = new ScopeAwareOverlayLayerPanel
+            {
+                Children = { placementTarget, messageBox }
+            };
+            var window = new AtomUI.Desktop.Controls.Window
+            {
+                Width   = 480,
+                Height  = 360,
+                Content = root
+            };
+            var cancelledCount = 0;
+            var confirmedCount = 0;
+            messageBox.Cancelled += (_, _) => cancelledCount++;
+            messageBox.Confirmed += (_, _) => confirmedCount++;
+
+            try
+            {
+                window.Show();
+                messageBox.IsOpen = true;
+                PumpUntil(() => messageBox.IsOpen &&
+                                window.GetVisualDescendants().OfType<DialogSurface>().Any());
+
+                var surface = window.GetVisualDescendants()
+                                    .OfType<DialogSurface>()
+                                    .ShouldHaveSingleItem();
+                var content = surface.Content.ShouldBeOfType<MessageBoxContent>();
+                content.Content.ShouldBe("Delete this item?");
+                content.Style.ShouldBe(MessageBoxStyle.Confirm);
+                content.StyleIcon.ShouldBeOfType<ExclamationCircleFilled>();
+                window.GetVisualDescendants().OfType<DialogSurface>().Count().ShouldBe(1);
+
+                FindStandardButton(window, DialogStandardButton.Cancel)!
+                    .RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent));
+                PumpUntil(() => !messageBox.IsOpen);
+
+                cancelledCount.ShouldBe(1);
+                confirmedCount.ShouldBe(0);
+                messageBox.Result.ShouldBe(DialogCode.Rejected);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void MessageBox_Can_Reopen_After_A_Completed_Session()
+    {
+        RunOnUIThread(() =>
+        {
+            var placementTarget = new Border { Width = 80, Height = 32 };
+            var messageBox = new AtomUI.Desktop.Controls.MessageBox
+            {
+                PlacementTarget = placementTarget,
+                Content         = "Again?",
+                Style           = MessageBoxStyle.Information,
+                IsMotionEnabled = false
+            };
+            var root = new ScopeAwareOverlayLayerPanel
+            {
+                Children = { placementTarget, messageBox }
+            };
+            var window = new AtomUI.Desktop.Controls.Window
+            {
+                Width   = 480,
+                Height  = 360,
+                Content = root
+            };
+            var openedCount = 0;
+            var closedCount = 0;
+            messageBox.Opened += (_, _) => openedCount++;
+            messageBox.Closed += (_, _) => closedCount++;
+
+            try
+            {
+                window.Show();
+
+                for (var index = 0; index < 2; index++)
                 {
-                    Title = "About",
-                    Style = MessageBoxStyle.Information
-                },
-                topLevel: window);
-        };
+                    messageBox.IsOpen = true;
+                    PumpUntil(() => openedCount == index + 1);
+                    FindStandardButton(window, DialogStandardButton.Ok)!
+                        .RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent));
+                    PumpUntil(() => closedCount == index + 1);
+                }
 
-        try
-        {
-            menu.Open();
-            helpMenuItem.IsSubMenuOpen = true;
-            Dispatcher.UIThread.RunJobs();
-
-            aboutMenuItem.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.MenuItem.ClickEvent, aboutMenuItem));
-            Dispatcher.UIThread.RunJobs();
-
-            result.ShouldBe(DialogCode.Accepted);
-            clickCount.ShouldBe(1);
-            fallbackClickRequired.ShouldBeFalse(
-                "Enter should close the MessageBox and must not re-trigger the menu item while ShowMessageBox is nested in the click handler.");
-        }
-        finally
-        {
-            window.Close();
-        }
+                openedCount.ShouldBe(2);
+                closedCount.ShouldBe(2);
+                messageBox.IsOpen.ShouldBeFalse();
+                window.GetVisualDescendants().OfType<OverlayDialogPresenter>().ShouldBeEmpty();
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
     }
 
     [Fact]
-    public void ShowMessageBox_Called_From_MenuItem_Click_Sees_Menu_Closed_Before_Handler_Blocks()
+    public void MessageBox_Applies_And_Updates_Button_Text_And_Style()
     {
-        var aboutMenuItem = new AtomUI.Desktop.Controls.MenuItem
+        RunOnUIThread(() =>
         {
-            Header = "About"
-        };
-        var helpMenuItem = new AtomUI.Desktop.Controls.MenuItem
-        {
-            Header = "Help"
-        };
-        helpMenuItem.Items.Add(aboutMenuItem);
+            var placementTarget = new Border { Width = 80, Height = 32 };
+            var messageBox = new AtomUI.Desktop.Controls.MessageBox
+            {
+                PlacementTarget = placementTarget,
+                Style           = MessageBoxStyle.Confirm,
+                OkButtonText    = "Proceed",
+                CancelButtonText = "Keep",
+                OkButtonStyle   = MessageBoxOkButtonStyle.Default,
+                IsMotionEnabled = false
+            };
+            var root = new ScopeAwareOverlayLayerPanel
+            {
+                Children = { placementTarget, messageBox }
+            };
+            var window = new AtomUI.Desktop.Controls.Window
+            {
+                Width   = 480,
+                Height  = 360,
+                Content = root
+            };
 
-        var menu = new AtomUI.Desktop.Controls.Menu
-        {
-            Width = 320
-        };
-        menu.Items.Add(helpMenuItem);
+            try
+            {
+                window.Show();
+                messageBox.IsOpen = true;
+                PumpUntil(() => FindStandardButton(window, DialogStandardButton.Cancel) is not null);
 
-        var window = CreateWindow(menu);
-        var menuWasOpenWhenHandlerStarted = false;
+                var okButton     = FindStandardButton(window, DialogStandardButton.Ok).ShouldNotBeNull();
+                var cancelButton = FindStandardButton(window, DialogStandardButton.Cancel).ShouldNotBeNull();
+                okButton.Content.ShouldBe("Proceed");
+                okButton.ButtonType.ShouldBe(ButtonType.Default);
+                cancelButton.Content.ShouldBe("Keep");
 
-        aboutMenuItem.Click += (_, _) =>
-        {
-            menuWasOpenWhenHandlerStarted = menu.IsOpen || helpMenuItem.IsSubMenuOpen;
-            ScheduleClickOpenMessageBoxButton(window);
+                messageBox.OkButtonText  = "Delete";
+                messageBox.OkButtonStyle = MessageBoxOkButtonStyle.Primary;
 
-            AtomUI.Desktop.Controls.MessageBox.ShowMessageBox(
-                new AtomUI.Desktop.Controls.TextBlock { Text = "About" },
-                options: new MessageBoxOptions
-                {
-                    Title = "About",
-                    Style = MessageBoxStyle.Information
-                },
-                topLevel: window);
-        };
+                okButton.Content.ShouldBe("Delete");
+                okButton.ButtonType.ShouldBe(ButtonType.Primary);
 
-        try
-        {
-            menu.Open();
-            helpMenuItem.IsSubMenuOpen = true;
-            Dispatcher.UIThread.RunJobs();
+                var buttonBox = window.GetVisualDescendants().OfType<DialogButtonBox>().Single();
+                buttonBox.OkButtonText = "Localized OK";
+                buttonBox.CancelButtonText = "Localized Cancel";
 
-            aboutMenuItem.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.MenuItem.ClickEvent, aboutMenuItem));
+                okButton.Content.ShouldBe("Delete");
+                cancelButton.Content.ShouldBe("Keep");
 
-            menuWasOpenWhenHandlerStarted.ShouldBeFalse(
-                "a synchronous MessageBox opened from a menu click must not block Avalonia's normal menu close path.");
-        }
-        finally
-        {
-            window.Close();
-        }
+                messageBox.OkButtonText = null;
+                messageBox.CancelButtonText = null;
+
+                okButton.Content.ShouldBe("Localized OK");
+                cancelButton.Content.ShouldBe("Localized Cancel");
+
+                messageBox.ButtonsConfigure = buttons =>
+                    buttons.Single(button => button.StandardButtonType == DialogStandardButton.Ok)
+                           .Content = "Configured";
+                messageBox.OkButtonStyle = MessageBoxOkButtonStyle.Default;
+
+                okButton.Content.ShouldBe("Configured");
+
+                messageBox.Confirm();
+                PumpUntil(() => !messageBox.IsOpen);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
     }
 
     [Fact]
-    public void MenuItem_Click_Preclose_Preserves_Bubbling_Handlers()
+    public void Static_MessageBox_Preserves_The_Theme_Default_Minimum_Width()
     {
-        var aboutMenuItem = new AtomUI.Desktop.Controls.MenuItem
+        RunOnUIThread(() =>
         {
-            Header = "About"
-        };
-        var helpMenuItem = new AtomUI.Desktop.Controls.MenuItem
-        {
-            Header = "Help"
-        };
-        helpMenuItem.Items.Add(aboutMenuItem);
+            var window = CreateWindow(new Border());
 
-        var menu = new AtomUI.Desktop.Controls.Menu();
-        menu.Items.Add(helpMenuItem);
+            try
+            {
+                var resultTask = AtomUI.Desktop.Controls.MessageBox.ShowMessageBoxAsync(
+                    new AtomUI.Desktop.Controls.TextBlock { Text = "Information" },
+                    options: new MessageBoxOptions { IsMotionEnabled = false },
+                    topLevel: window);
 
-        var window = CreateWindow(menu);
-        var bubbledToParentMenuItem = false;
-        var bubbledToMenu = false;
-        helpMenuItem.AddHandler(
-            Avalonia.Controls.MenuItem.ClickEvent,
-            (_, _) => bubbledToParentMenuItem = true);
-        menu.AddHandler(
-            Avalonia.Controls.MenuItem.ClickEvent,
-            (_, _) => bubbledToMenu = true);
+                PumpUntil(() => window.GetVisualDescendants().OfType<DialogSurface>().Any());
+                var surface = window.GetVisualDescendants().OfType<DialogSurface>().Single();
+                surface.MinWidth.ShouldBe(410);
 
-        try
-        {
-            menu.Open();
-            helpMenuItem.IsSubMenuOpen = true;
-            Dispatcher.UIThread.RunJobs();
-
-            aboutMenuItem.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.MenuItem.ClickEvent, aboutMenuItem));
-
-            bubbledToParentMenuItem.ShouldBeTrue();
-            bubbledToMenu.ShouldBeTrue();
-        }
-        finally
-        {
-            window.Close();
-        }
+                FindStandardButton(window, DialogStandardButton.Ok)!
+                    .RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent));
+                WaitWithDispatcherPump(resultTask);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
     }
 
     [Fact]
-    public void MenuItem_Click_With_StaysOpenOnClick_Does_Not_Preclose_Menu()
+    public void Surface_Teardown_Releases_MessageBox_Button_References()
     {
-        var aboutMenuItem = new AtomUI.Desktop.Controls.MenuItem
+        RunOnUIThread(() =>
         {
-            Header           = "About",
-            StaysOpenOnClick = true
-        };
-        var helpMenuItem = new AtomUI.Desktop.Controls.MenuItem
-        {
-            Header = "Help"
-        };
-        helpMenuItem.Items.Add(aboutMenuItem);
+            var messageBox = new AtomUI.Desktop.Controls.MessageBox
+            {
+                Style           = MessageBoxStyle.Confirm,
+                IsMotionEnabled = false
+            };
+            var surface = new DialogSurface(messageBox);
+            var window = new AtomUI.Desktop.Controls.Window { Content = surface };
 
-        var menu = new AtomUI.Desktop.Controls.Menu();
-        menu.Items.Add(helpMenuItem);
+            try
+            {
+                window.Show();
+                Dispatcher.UIThread.RunJobs();
+                surface.ApplyTemplate();
+                var okButton = window.GetVisualDescendants()
+                                     .OfType<DialogButton>()
+                                     .Single(button => button.StandardButtonType == DialogStandardButton.Ok);
+                var contentBeforeTeardown = okButton.Content;
 
-        var window = CreateWindow(menu);
-        var menuWasOpenWhenHandlerStarted = false;
-        aboutMenuItem.Click += (_, _) =>
-        {
-            menuWasOpenWhenHandlerStarted = menu.IsOpen || helpMenuItem.IsSubMenuOpen;
-        };
+                surface.Dispose();
+                messageBox.OkButtonText = "Stale";
 
-        try
-        {
-            menu.Open();
-            helpMenuItem.IsSubMenuOpen = true;
-            Dispatcher.UIThread.RunJobs();
-
-            aboutMenuItem.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.MenuItem.ClickEvent, aboutMenuItem));
-
-            menuWasOpenWhenHandlerStarted.ShouldBeTrue();
-        }
-        finally
-        {
-            window.Close();
-        }
+                okButton.Content.ShouldBe(contentBeforeTeardown);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
     }
 
-    private static AvaloniaWindow CreateWindow(Control content)
+    private static AtomUI.Desktop.Controls.DialogButton? FindStandardButton(
+        Visual root,
+        DialogStandardButton standardButton)
     {
-        var overlayPanel = new ScopeAwareOverlayLayerPanel
-        {
-            Width  = 320,
-            Height = 240
-        };
-        overlayPanel.Children.Add(content);
+        return root.GetVisualDescendants()
+                   .OfType<AtomUI.Desktop.Controls.DialogButton>()
+                   .FirstOrDefault(button => button.StandardButtonType == standardButton);
+    }
 
-        var visualLayerManager = new VisualLayerManager
+    private static AtomUI.Desktop.Controls.Window CreateWindow(Control content)
+    {
+        var root = new ScopeAwareOverlayLayerPanel
         {
-            Child = overlayPanel
+            Width  = 480,
+            Height = 360,
+            Children = { content }
         };
-        EnablePopupOverlayLayer(visualLayerManager);
-
-        var window = new AvaloniaWindow
+        var window = new AtomUI.Desktop.Controls.Window
         {
-            Width   = 320,
-            Height  = 240,
-            Content = visualLayerManager
+            Width   = 480,
+            Height  = 360,
+            Content = root
         };
-
         window.Show();
         Dispatcher.UIThread.RunJobs();
         return window;
     }
 
-    private static void Click(Control control, AvaloniaWindow window)
+    private sealed class UiThreadMessageBoxContent : Border
     {
-        var point = control.TranslatePoint(
-            new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
-            window);
-
-        point.ShouldNotBeNull();
-        window.MouseMove(point.Value);
-        window.MouseDown(point.Value, MouseButton.Left);
-        window.MouseUp(point.Value, MouseButton.Left);
-    }
-
-    private static void ScheduleClickOpenMessageBoxButton(
-        AvaloniaWindow window,
-        int attempt = 0,
-        Func<AvaloniaWindow, bool>? canClick = null,
-        Action? beforeClick = null)
-    {
-        Dispatcher.UIThread.Post(() =>
+        public UiThreadMessageBoxContent()
         {
-            if (TryClickOpenMessageBoxButton(window, canClick, beforeClick))
-            {
-                return;
-            }
-
-            attempt.ShouldBeLessThan(10, "MessageBox button should become available while the synchronous dispatcher frame is running.");
-            ScheduleClickOpenMessageBoxButton(window, attempt + 1, canClick, beforeClick);
-        });
-    }
-
-    private static bool TryClickOpenMessageBoxButton(
-        AvaloniaWindow window,
-        Func<AvaloniaWindow, bool>? canClick,
-        Action? beforeClick)
-    {
-        var acceptButton = window.GetVisualDescendants()
-                                 .OfType<DialogButton>()
-                                 .FirstOrDefault(x => x.StandardButtonType == DialogStandardButton.Ok);
-        if (acceptButton is null || acceptButton.Bounds.Width <= 0 || acceptButton.Bounds.Height <= 0)
-        {
-            return false;
-        }
-
-        if (canClick is not null && !canClick(window))
-        {
-            return false;
-        }
-
-        beforeClick?.Invoke();
-        acceptButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, acceptButton));
-        return true;
-    }
-
-    private static void ScheduleKeyPressOpenMessageBoxButton(
-        AvaloniaWindow window,
-        Key key,
-        DialogStandardButton fallbackButton,
-        Action fallbackClickRequired,
-        int attempt = 0)
-    {
-        Dispatcher.UIThread.Post(() =>
-        {
-            if (TryKeyPressOpenMessageBoxButton(window, key, fallbackButton, fallbackClickRequired))
-            {
-                return;
-            }
-
-            attempt.ShouldBeLessThan(10, "MessageBox should become available while the synchronous dispatcher frame is running.");
-            ScheduleKeyPressOpenMessageBoxButton(window, key, fallbackButton, fallbackClickRequired, attempt + 1);
-        });
-    }
-
-    private static bool TryKeyPressOpenMessageBoxButton(
-        AvaloniaWindow window,
-        Key key,
-        DialogStandardButton fallbackButton,
-        Action fallbackClickRequired)
-    {
-        var fallbackDialogButton = window.GetVisualDescendants()
-                                         .OfType<DialogButton>()
-                                         .FirstOrDefault(x => x.StandardButtonType == fallbackButton);
-        if (fallbackDialogButton is null || fallbackDialogButton.Bounds.Width <= 0 || fallbackDialogButton.Bounds.Height <= 0)
-        {
-            return false;
-        }
-
-        window.KeyPress(key, RawInputModifiers.None, ToPhysicalKey(key), null);
-        Dispatcher.UIThread.Post(() =>
-        {
-            if (!fallbackDialogButton.IsAttachedToVisualTree() ||
-                IsOverlayDialogCloseRequested(window))
-            {
-                return;
-            }
-
-            fallbackClickRequired();
-            fallbackDialogButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, fallbackDialogButton));
-        });
-        return true;
-    }
-
-    private static PhysicalKey ToPhysicalKey(Key key)
-    {
-        return key switch
-        {
-            Key.Enter  => PhysicalKey.Enter,
-            Key.Escape => PhysicalKey.Escape,
-            _          => PhysicalKey.None
-        };
-    }
-
-    private static bool IsOverlayDialogCloseRequested(Visual searchRoot)
-    {
-        return searchRoot.GetVisualDescendants()
-                         .Where(x => x.GetType().Name == "OverlayDialogHost")
-                         .Any(IsCloseRequested);
-
-        static bool IsCloseRequested(Visual overlayDialogHost)
-        {
-            var field = overlayDialogHost.GetType().GetField(
-                "_isCloseRequested",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-
-            field.ShouldNotBeNull();
-            return field.GetValue(overlayDialogHost) is true;
+            Dispatcher.UIThread.CheckAccess().ShouldBeTrue();
         }
     }
 
-    private static void ScheduleFirstMouseClickOpenMessageBoxButton(
-        AvaloniaWindow window,
-        Action firstDialogMouseClickHandled,
-        int attempt = 0)
+    private static T WaitWithDispatcherPump<T>(Task<T> task)
     {
-        Dispatcher.UIThread.Post(() =>
-        {
-            if (TryFirstMouseClickOpenMessageBoxButton(window, firstDialogMouseClickHandled))
-            {
-                return;
-            }
-
-            attempt.ShouldBeLessThan(20, "MessageBox button should become hittable while the synchronous dispatcher frame is running.");
-            DispatcherTimer.RunOnce(
-                () => ScheduleFirstMouseClickOpenMessageBoxButton(window, firstDialogMouseClickHandled, attempt + 1),
-                TimeSpan.FromMilliseconds(20));
-        });
+        PumpUntil(() => task.IsCompleted);
+        return task.GetAwaiter().GetResult();
     }
 
-    private static bool TryFirstMouseClickOpenMessageBoxButton(
-        AvaloniaWindow window,
-        Action firstDialogMouseClickHandled)
+    private static void PumpUntil(Func<bool> condition)
     {
-        var acceptButton = window.GetVisualDescendants()
-                                 .OfType<DialogButton>()
-                                 .FirstOrDefault(x => x.StandardButtonType == DialogStandardButton.Ok);
-        if (acceptButton is null || acceptButton.Bounds.Width <= 0 || acceptButton.Bounds.Height <= 0)
+        var timeoutAt = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(5);
+        while (!condition() && DateTimeOffset.UtcNow < timeoutAt)
         {
-            return false;
+            Dispatcher.UIThread.RunJobs();
+            Thread.Sleep(1);
         }
 
-        if (!IsCenterPointHitTestInside(acceptButton, window))
-        {
-            return false;
-        }
-
-        var handled = false;
-        void HandleAcceptButtonClick(object? sender, RoutedEventArgs args)
-        {
-            handled = true;
-            firstDialogMouseClickHandled();
-        }
-
-        acceptButton.Click += HandleAcceptButtonClick;
-        Click(acceptButton, window);
-        acceptButton.Click -= HandleAcceptButtonClick;
-
-        if (!handled)
-        {
-            acceptButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, acceptButton));
-        }
-
-        return true;
+        condition().ShouldBeTrue();
     }
 
-    private static bool IsCenterPointHitTestInside(Control control, AvaloniaWindow window)
+    private static void RunOnUIThread(Action action)
     {
-        var point = control.TranslatePoint(
-            new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
-            window);
-        if (point is null || window.InputHitTest(point.Value) is not Visual hit)
-        {
-            return false;
-        }
-
-        return ReferenceEquals(hit, control) || control.IsVisualAncestorOf(hit);
-    }
-
-    private static bool IsOverlayDialogHostAnimationReady(Visual searchRoot)
-    {
-        var overlayDialogHost = searchRoot.GetVisualDescendants()
-                                          .SingleOrDefault(x => x.GetType().Name == "OverlayDialogHost");
-        if (overlayDialogHost is null)
-        {
-            return false;
-        }
-
-        var field = overlayDialogHost.GetType().GetField(
-            "_animatedOverlayHost",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        field.ShouldNotBeNull();
-        return field.GetValue(overlayDialogHost) is not null;
-    }
-
-    private static void SetOverlayDialogHostAnimationDuration(Visual searchRoot, TimeSpan duration)
-    {
-        var overlayDialogHost = searchRoot.GetVisualDescendants()
-                                          .Single(x => x.GetType().Name == "OverlayDialogHost");
-        var property = overlayDialogHost.GetType().GetProperty(
-            "AnimationDuration",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        property.ShouldNotBeNull();
-        property.SetValue(overlayDialogHost, duration);
-    }
-
-    private static void EnablePopupOverlayLayer(VisualLayerManager visualLayerManager)
-    {
-        var property = typeof(VisualLayerManager).GetProperty(
-            "EnablePopupOverlayLayer",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        property.ShouldNotBeNull();
-        property.SetValue(visualLayerManager, true);
+        Dispatcher.UIThread.Invoke(action);
     }
 }

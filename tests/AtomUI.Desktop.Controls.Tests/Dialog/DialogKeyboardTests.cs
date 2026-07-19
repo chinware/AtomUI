@@ -1,16 +1,10 @@
-using System.Reflection;
 using AtomUI.Controls.Primitives;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Headless;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
-using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUI.Desktop.Controls.Tests.Dialog;
 
@@ -22,190 +16,123 @@ public class DialogKeyboardTests
     }
 
     [Fact]
-    public void ShowDialog_With_Cancel_Button_Rejects_With_Escape_By_Default()
+    public void Escape_Invokes_Cancel_When_No_Explicit_Escape_Button_Is_Set()
     {
-        var window = CreateWindow(new Control());
-        var fallbackClickRequired = false;
-
-        try
+        RunOnUIThread(() =>
         {
-            ScheduleKeyPressOpenDialogButton(
-                window,
-                Key.Escape,
-                DialogStandardButton.Cancel,
-                () => fallbackClickRequired = true);
+            var fixture = ShowDialog();
+            try
+            {
+                var args = RaiseEscape(fixture.Window);
+                WaitWithDispatcherPump(fixture.SessionTask);
 
-            var result = AtomUI.Desktop.Controls.Dialog.ShowDialog(
-                new AtomUI.Desktop.Controls.TextBlock { Text = "Confirm?" },
-                options: new DialogOptions
-                {
-                    StandardButtons       = DialogStandardButton.Cancel | DialogStandardButton.Ok,
-                    DefaultStandardButton = DialogStandardButton.Ok
-                },
-                topLevel: window);
-
-            result.ShouldBe(DialogCode.Rejected);
-            fallbackClickRequired.ShouldBeFalse(
-                "a Dialog that renders a Cancel standard button should treat Escape as Cancel unless EscapeStandardButton is explicitly configured.");
-        }
-        finally
-        {
-            window.Close();
-        }
+                args.Handled.ShouldBeTrue();
+                fixture.Dialog.Result.ShouldBe(DialogCode.Rejected);
+                fixture.Dialog.IsOpen.ShouldBeFalse();
+            }
+            finally
+            {
+                fixture.Window.Close();
+            }
+        });
     }
 
     [Fact]
-    public void ShowDialog_With_Explicit_No_Escape_Button_Does_Not_Infer_Cancel_Button()
+    public void Explicit_NoButton_Disables_Escape_Even_When_Cancel_Is_Visible()
     {
-        var (window, overlayPanel) = CreateWindowWithOverlayPanel(new Control());
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowDialog(DialogStandardButton.NoButton);
+            try
+            {
+                var args = RaiseEscape(fixture.Window);
+
+                args.Handled.ShouldBeFalse();
+                fixture.Dialog.IsOpen.ShouldBeTrue();
+                fixture.SessionTask.IsCompleted.ShouldBeFalse();
+
+                fixture.Dialog.Reject();
+                WaitWithDispatcherPump(fixture.SessionTask);
+            }
+            finally
+            {
+                fixture.Window.Close();
+            }
+        });
+    }
+
+    private static DialogFixture ShowDialog(DialogStandardButton? escapeButton = null)
+    {
+        var placementTarget = new Border { Width = 80, Height = 32 };
+        var root = new ScopeAwareOverlayLayerPanel
+        {
+            Width  = 480,
+            Height = 360,
+            Children = { placementTarget }
+        };
+        var window = new AtomUI.Desktop.Controls.Window
+        {
+            Width   = 480,
+            Height  = 360,
+            Content = root
+        };
         var dialog = new AtomUI.Desktop.Controls.Dialog
         {
-            Content                 = new AtomUI.Desktop.Controls.TextBlock { Text = "Confirm?" },
-            PlacementTarget         = overlayPanel,
-            StandardButtons         = DialogStandardButton.Cancel | DialogStandardButton.Ok,
-            DefaultStandardButton   = DialogStandardButton.Ok,
-            EscapeStandardButton    = DialogStandardButton.NoButton,
-            HorizontalStartupLocation = DialogHorizontalAnchor.Center,
-            VerticalStartupLocation   = DialogVerticalAnchor.Center
+            PlacementTarget       = placementTarget,
+            Content               = "Confirm?",
+            StandardButtons       = DialogStandardButton.Cancel | DialogStandardButton.Ok,
+            DefaultStandardButton = DialogStandardButton.Ok,
+            IsMotionEnabled       = false
         };
-        var fallbackClickRequired = false;
-
-        try
+        if (escapeButton is { } value)
         {
-            overlayPanel.Children.Add(dialog);
-            ScheduleKeyPressOpenDialogButton(
-                window,
-                Key.Escape,
-                DialogStandardButton.Cancel,
-                () => fallbackClickRequired = true);
-
-            var result = dialog.Open();
-
-            result.ShouldBe(DialogCode.Rejected);
-            fallbackClickRequired.ShouldBeTrue(
-                "an explicitly configured NoButton escape mapping should keep Escape disabled even when a Cancel button exists.");
+            dialog.EscapeStandardButton = value;
         }
-        finally
-        {
-            overlayPanel.Children.Remove(dialog);
-            window.Close();
-        }
-    }
-
-    private static AvaloniaWindow CreateWindow(Control content)
-    {
-        return CreateWindowWithOverlayPanel(content).Window;
-    }
-
-    private static (AvaloniaWindow Window, ScopeAwareOverlayLayerPanel OverlayPanel) CreateWindowWithOverlayPanel(Control content)
-    {
-        var overlayPanel = new ScopeAwareOverlayLayerPanel
-        {
-            Width  = 320,
-            Height = 240
-        };
-        overlayPanel.Children.Add(content);
-
-        var visualLayerManager = new VisualLayerManager
-        {
-            Child = overlayPanel
-        };
-        EnablePopupOverlayLayer(visualLayerManager);
-
-        var window = new AvaloniaWindow
-        {
-            Width   = 320,
-            Height  = 240,
-            Content = visualLayerManager
-        };
 
         window.Show();
-        Dispatcher.UIThread.RunJobs();
-        return (window, overlayPanel);
+        var sessionTask = dialog.OpenAsync();
+        PumpUntil(() => window.GetVisualDescendants().OfType<DialogSurface>().Any());
+        return new DialogFixture(window, dialog, sessionTask);
     }
 
-    private static void ScheduleKeyPressOpenDialogButton(
-        AvaloniaWindow window,
-        Key key,
-        DialogStandardButton fallbackButton,
-        Action fallbackClickRequired,
-        int attempt = 0)
+    private static KeyEventArgs RaiseEscape(AtomUI.Desktop.Controls.Window window)
     {
-        Dispatcher.UIThread.Post(() =>
+        var surface = window.GetVisualDescendants().OfType<DialogSurface>().ShouldHaveSingleItem();
+        var args = new KeyEventArgs
         {
-            if (TryKeyPressOpenDialogButton(window, key, fallbackButton, fallbackClickRequired))
-            {
-                return;
-            }
-
-            attempt.ShouldBeLessThan(10, "Dialog button should become available while the synchronous dispatcher frame is running.");
-            ScheduleKeyPressOpenDialogButton(window, key, fallbackButton, fallbackClickRequired, attempt + 1);
-        });
-    }
-
-    private static bool TryKeyPressOpenDialogButton(
-        AvaloniaWindow window,
-        Key key,
-        DialogStandardButton fallbackButton,
-        Action fallbackClickRequired)
-    {
-        var fallbackDialogButton = window.GetVisualDescendants()
-                                         .OfType<DialogButton>()
-                                         .FirstOrDefault(x => x.StandardButtonType == fallbackButton);
-        if (fallbackDialogButton is null || fallbackDialogButton.Bounds.Width <= 0 || fallbackDialogButton.Bounds.Height <= 0)
-        {
-            return false;
-        }
-
-        window.KeyPress(key, RawInputModifiers.None, ToPhysicalKey(key), null);
-        Dispatcher.UIThread.Post(() =>
-        {
-            if (!fallbackDialogButton.IsAttachedToVisualTree() ||
-                IsOverlayDialogCloseRequested(window))
-            {
-                return;
-            }
-
-            fallbackClickRequired();
-            fallbackDialogButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, fallbackDialogButton));
-        });
-        return true;
-    }
-
-    private static PhysicalKey ToPhysicalKey(Key key)
-    {
-        return key switch
-        {
-            Key.Enter  => PhysicalKey.Enter,
-            Key.Escape => PhysicalKey.Escape,
-            _          => PhysicalKey.None
+            RoutedEvent = InputElement.KeyDownEvent,
+            Source      = surface,
+            Key         = Key.Escape
         };
+        surface.RaiseEvent(args);
+        return args;
     }
 
-    private static bool IsOverlayDialogCloseRequested(Visual searchRoot)
+    private static void WaitWithDispatcherPump(Task task)
     {
-        return searchRoot.GetVisualDescendants()
-                         .Where(x => x.GetType().Name == "OverlayDialogHost")
-                         .Any(IsCloseRequested);
+        PumpUntil(() => task.IsCompleted);
+        task.GetAwaiter().GetResult();
+    }
 
-        static bool IsCloseRequested(Visual overlayDialogHost)
+    private static void PumpUntil(Func<bool> condition)
+    {
+        var timeoutAt = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(5);
+        while (!condition() && DateTimeOffset.UtcNow < timeoutAt)
         {
-            var field = overlayDialogHost.GetType().GetField(
-                "_isCloseRequested",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-
-            field.ShouldNotBeNull();
-            return field.GetValue(overlayDialogHost) is true;
+            Dispatcher.UIThread.RunJobs();
+            Thread.Sleep(1);
         }
+
+        condition().ShouldBeTrue();
     }
 
-    private static void EnablePopupOverlayLayer(VisualLayerManager visualLayerManager)
+    private static void RunOnUIThread(Action action)
     {
-        var property = typeof(VisualLayerManager).GetProperty(
-            "EnablePopupOverlayLayer",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        property.ShouldNotBeNull();
-        property.SetValue(visualLayerManager, true);
+        Dispatcher.UIThread.Invoke(action);
     }
+
+    private sealed record DialogFixture(
+        AtomUI.Desktop.Controls.Window Window,
+        AtomUI.Desktop.Controls.Dialog Dialog,
+        Task SessionTask);
 }
