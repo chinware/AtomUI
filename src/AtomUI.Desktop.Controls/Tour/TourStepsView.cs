@@ -210,13 +210,16 @@ internal class TourStepsView : SelectingItemsControl
             }
             tourStep[!TourStep.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
             tourStep[!TourStep.CloseIconTemplateProperty] = this[!CloseIconProperty];
-            tourStep[~TourStep.StyleTypeProperty] = this[!StyleTypeProperty];
-            tourStep[~TourStep.IsArrowVisibleProperty] = this[!IsArrowVisibleProperty];
-            tourStep[~TourStep.IsPointAtCenterProperty] = this[!IsPointAtCenterProperty];
-            tourStep[~TourStep.PlacementProperty] = this[!PlacementProperty];
-            tourStep[~TourStep.IsShowMaskProperty] = this[!IsShowMaskProperty];
-            tourStep[~TourStep.IsScrollIntoViewProperty] = this[!IsScrollIntoViewProperty];
-            tourStep[~TourStep.MaskColorProperty] = this[!MaskColorProperty];
+            if (!ReferenceEquals(tourStep, item))
+            {
+                tourStep[~TourStep.StyleTypeProperty] = this[!StyleTypeProperty];
+                tourStep[~TourStep.IsArrowVisibleProperty] = this[!IsArrowVisibleProperty];
+                tourStep[~TourStep.IsPointAtCenterProperty] = this[!IsPointAtCenterProperty];
+                tourStep[~TourStep.PlacementProperty] = this[!PlacementProperty];
+                tourStep[~TourStep.IsShowMaskProperty] = this[!IsShowMaskProperty];
+                tourStep[~TourStep.IsScrollIntoViewProperty] = this[!IsScrollIntoViewProperty];
+                tourStep[~TourStep.MaskColorProperty] = this[!MaskColorProperty];
+            }
             PrepareStepItem(tourStep, item, index);
         }
         else

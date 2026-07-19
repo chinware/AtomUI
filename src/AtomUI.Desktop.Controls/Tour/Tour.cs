@@ -416,7 +416,11 @@ public class Tour : TemplatedControl, IMotionAwareControl
         if (change.Property == GapOffsetXProperty ||
             change.Property == GapOffsetYProperty)
         {
-            ConfigurePopupOffset();
+            ConfigurePopupOffset(GetCurrentPlacement());
+        }
+        if (change.Property == IsMotionEnabledProperty && _layer != null && _isReallyOpened)
+        {
+            _layer.SetCurrentValue(TourLayer.IsMotionEnabledProperty, change.GetNewValue<bool>());
         }
         if (change.Property == CurrentIndexProperty)
         {
@@ -447,16 +451,21 @@ public class Tour : TemplatedControl, IMotionAwareControl
     
     private void ConfigureArrowPosition(bool isHorizontalFlipped = false, bool isVerticalFlipped = false)
     {
-        if (_popup == null)
-        {
-            return;
-        }
-        var requestedPlacement = _popup.RequestedPlacement;
+        var requestedPlacement = _popup?.RequestedPlacement;
         if (requestedPlacement == null)
         {
             return;
         }
-        var arrowPosition = PopupUtils.CalculateArrowPosition(requestedPlacement.Value, null, null);
+
+        ConfigureArrowPosition(requestedPlacement.Value, isHorizontalFlipped, isVerticalFlipped);
+    }
+
+    private void ConfigureArrowPosition(
+        PlacementMode requestedPlacement,
+        bool isHorizontalFlipped = false,
+        bool isVerticalFlipped = false)
+    {
+        var arrowPosition = PopupUtils.CalculateArrowPosition(requestedPlacement, null, null);
         if (arrowPosition.HasValue)
         {
             SetCurrentValue(ArrowPositionProperty,
@@ -535,13 +544,18 @@ public class Tour : TemplatedControl, IMotionAwareControl
         }
 
         PrepareTourLayer();
-        _popup.IsOpen = true;
-        HandleCurrentStepChanged();
         using (BeginIgnoringPropertyChanged())
         {
             SetCurrentValue(IsOpenProperty, true);
-            _isReallyOpened =  true;
+            if (CurrentIndex < 0 || CurrentIndex >= Steps.Count)
+            {
+                SetCurrentValue(CurrentIndexProperty, 0);
+            }
         }
+        HandleCurrentStepChanged();
+        _popup.IsOpen = true;
+        _isReallyOpened = true;
+        _layer?.SetCurrentValue(TourLayer.IsMotionEnabledProperty, IsMotionEnabled);
     }
 
     private void PrepareTourLayer()
@@ -549,6 +563,7 @@ public class Tour : TemplatedControl, IMotionAwareControl
         _layer = TourLayer.GetTourLayer(this);
         if (_layer != null)
         {
+            _layer.SetCurrentValue(TourLayer.IsMotionEnabledProperty, false);
             _layer[!TourLayer.BackgroundProperty]               = this[!CurrentMaskColorProperty];
             _layer[!TourLayer.TargetRegionCornerRadiusProperty] = this[!GapRadiusProperty];
             _layer[!TourLayer.TargetRegionProperty]             = this[!TargetClipBoundsProperty];
@@ -564,6 +579,7 @@ public class Tour : TemplatedControl, IMotionAwareControl
         BlockTargetScroll(null);
         if (_layer != null)
         {
+            _layer.SetCurrentValue(TourLayer.IsMotionEnabledProperty, false);
             _layer.IsVisible = false;
         }
         _popup.IsOpen = false;
@@ -611,32 +627,31 @@ public class Tour : TemplatedControl, IMotionAwareControl
         var      step   = Steps[CurrentIndex];
         if (step is ITourStepOption stepOption)
         {
-            CurrentStyleType = stepOption.StyleType ?? StyleType;
+            var stepPlacement = stepOption.Placement ?? Placement;
+            var popupPlacement = target == null
+                ? GetPopupPlacement(TourPlacementMode.Center)
+                : GetPopupPlacement(stepPlacement);
+
+            CurrentStyleType    = stepOption.StyleType ?? StyleType;
             CurrentArrowVisible = stepOption.IsArrowVisible ?? IsArrowVisible;
             if (_layer != null)
             {
                 CurrentMaskColor = stepOption.MaskColor ?? MaskColor;
-                _layer.IsVisible = stepOption.IsShowMask ?? IsArrowVisible;
+                _layer.IsVisible = stepOption.IsShowMask ?? IsShowMask;
             }
 
             if (target == null)
             {
-                _popup.RequestedPlacement = GetPopupPlacement(TourPlacementMode.Center);
                 CurrentArrowVisible = false;
             }
-            else
-            {
-                // Set placement BEFORE PlacementTarget so that when UpdateHostPosition fires
-                // (triggered by PlacementTarget change), RequestedPlacement already has the
-                // correct value and the arrow direction is computed correctly.
-                _popup.RequestedPlacement = GetPopupPlacement(stepOption.Placement ?? Placement);
-            }
+
+            ConfigurePopupOffset(stepPlacement);
+            ConfigureArrowPosition(popupPlacement);
+            _popup.RequestedPlacement = popupPlacement;
         }
 
         _popup.PlacementTarget = target;
         BlockTargetScroll(target);
-        
-        ConfigurePopupOffset();
         CalculateTargetClipBounds();
     }
 
@@ -649,6 +664,18 @@ public class Tour : TemplatedControl, IMotionAwareControl
             target = stepOption.Target;
         }
         return target;
+    }
+
+    private TourPlacementMode GetCurrentPlacement()
+    {
+        if (CurrentIndex >= 0 &&
+            CurrentIndex < Steps.Count &&
+            Steps[CurrentIndex] is ITourStepOption stepOption)
+        {
+            return stepOption.Placement ?? Placement;
+        }
+
+        return Placement;
     }
 
     private void CalculateTargetClipBounds()
@@ -694,13 +721,13 @@ public class Tour : TemplatedControl, IMotionAwareControl
         };
     }
 
-    private void ConfigurePopupOffset()
+    private void ConfigurePopupOffset(TourPlacementMode placement)
     {
         if (_popup == null)
         {
             return;
         }
-        AdjustForGap(Placement);
+        AdjustForGap(placement);
         _popup.HorizontalOffset = 0;
         _popup.VerticalOffset   = 0;
     }
