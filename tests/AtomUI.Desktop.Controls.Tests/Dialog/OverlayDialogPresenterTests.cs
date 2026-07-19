@@ -786,6 +786,44 @@ public class OverlayDialogPresenterTests
     }
 
     [Fact]
+    public void Linux_Csd_Closed_Presenter_Does_Not_Reacquire_TitleBar_Suppression()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsModal = true,
+                    IsMotionEnabled = false,
+                    HostWidth = 320,
+                    HostHeight = 180
+                },
+                window =>
+                {
+                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(12));
+                    SetPlatformDecorationMargin(window, new Thickness(12, 52, 12, 20));
+                });
+
+            try
+            {
+                WaitWithDispatcherPump(fixture.Presenter.CloseAsync().AsTask());
+                fixture.Window.IsDrawnTitleBarOverlayVisible.ShouldBeTrue();
+
+                fixture.Dialog.IsModal = false;
+                fixture.Dialog.IsModal = true;
+                Dispatcher.UIThread.RunJobs();
+
+                fixture.Window.IsDrawnTitleBarOverlayVisible.ShouldBeTrue();
+            }
+            finally
+            {
+                WaitWithDispatcherPump(fixture.Presenter.DisposeAsync().AsTask());
+                fixture.Window.Close();
+            }
+        });
+    }
+
+    [Fact]
     public void Linux_Header_Drag_Constrains_The_Dialog_Body_Without_Shadow_Inset()
     {
         RunOnUIThread(() =>
