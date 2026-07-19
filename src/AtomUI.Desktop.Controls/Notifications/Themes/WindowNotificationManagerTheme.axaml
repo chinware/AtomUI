@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:NotificationThemeAsset.Identity}"
     x:DataType="WindowNotificationManager"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:WindowNotificationManager}" TargetType="atom:WindowNotificationManager">
@@ -12,7 +15,7 @@
         </Setter>
         
         <Setter Property="IsMotionEnabled"
-                Value="{atom:NotificationTokenSharedTokenResource EnableMotion}" />
+                Value="{atom:SharedTokenResource EnableMotion}" />
         
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />

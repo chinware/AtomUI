@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ButtonThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SplitButton}" TargetType="atom:SplitButton">
         <Setter Property="Template">
@@ -42,27 +45,27 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
         <Setter Property="GutterToFlyout" Value="{atom:ButtonTokenResource GutterToFlyout}"/>
-        <Setter Property="IsMotionEnabled" Value="{atom:ButtonTokenSharedTokenResource EnableMotion}" />
-        <Setter Property="IsWaveSpiritEnabled" Value="{atom:ButtonTokenSharedTokenResource EnableWaveSpirit}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsWaveSpiritEnabled" Value="{atom:SharedTokenResource EnableWaveSpirit}" />
         <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="BorderBrush" Value="{atom:ButtonTokenSharedTokenResource ColorBorder}"/>
-        <Setter Property="BorderThickness" Value="{atom:ButtonTokenSharedTokenResource BorderThickness}"/>
-        <Setter Property="SplitSeparatorBrush" Value="{atom:ButtonTokenSharedTokenResource ColorBorder}"/>
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}"/>
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
+        <Setter Property="SplitSeparatorBrush" Value="{atom:SharedTokenResource ColorBorder}"/>
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="CornerRadius" Value="{atom:ButtonTokenSharedTokenResource BorderRadiusLG}"/>
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}"/>
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
-            <Setter Property="CornerRadius" Value="{atom:ButtonTokenSharedTokenResource BorderRadius}"/>
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}"/>
         </Style>
 
         <Style Selector="^[SizeType=Custom]">
-            <Setter Property="CornerRadius" Value="{atom:ButtonTokenSharedTokenResource BorderRadius}"/>
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}"/>
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="CornerRadius" Value="{atom:ButtonTokenSharedTokenResource BorderRadiusSM}"/>
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}"/>
         </Style>
 
         <Style Selector="^ /template/ #PART_MainLayout > atom|Button">

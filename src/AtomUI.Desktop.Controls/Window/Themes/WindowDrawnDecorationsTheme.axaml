@@ -1,6 +1,9 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:atom="https://atomui.net"
+                    xmlns:themeResources="using:AtomUI.Theme.Resources"
+                    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+                    themeResources:ControlTokenScope.Identity="{x:Static generated:WindowThemeAsset.Identity}"
                     xmlns:antdicons="https://atomui.net/icons/antdesign"
                     xmlns:converters="using:Avalonia.Controls.Converters">
     <converters:CornerRadiusFilterConverter x:Key="TitleBarCornerRadiusFilter" Filter="TopLeft, TopRight" />
@@ -155,7 +158,7 @@
         </Style>
         
         <Style Selector="^:fullscreen /template/ atom|CaptionButton">
-            <Setter Property="IsMotionEnabled" Value="{atom:WindowTokenSharedTokenResource EnableMotion}" />
+            <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
             <Setter Property="IsWindowActive" Value="True" />
             <Setter Property="IconWidth" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
             <Setter Property="IconHeight" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />

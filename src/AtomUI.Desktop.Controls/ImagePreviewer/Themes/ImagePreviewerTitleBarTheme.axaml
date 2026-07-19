@@ -1,6 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:ImagePreviewerThemeAsset.Identity}"
               TargetType="atom:ImagePreviewerTitleBar"
               x:Class="AtomUI.Desktop.Controls.Themes.ImagePreviewerTitleBarTheme"
               x:ClassModifier="internal">
@@ -29,8 +32,8 @@
                                         ClipToBounds="True"
                                         Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
                                 <atom:IconPresenter Name="PART_IconPresenter"
-                                                    Width="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
-                                                    Height="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
+                                                    Width="{atom:SharedTokenResource IconSize}"
+                                                    Height="{atom:SharedTokenResource IconSize}"
                                                     Icon="{TemplateBinding Icon}"
                                                     IconBrush="{TemplateBinding Foreground}"
                                                     IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -80,8 +83,8 @@
                                         ClipToBounds="True"
                                         Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
                                 <atom:IconPresenter Name="PART_IconPresenter"
-                                                    Width="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
-                                                    Height="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
+                                                    Width="{atom:SharedTokenResource IconSize}"
+                                                    Height="{atom:SharedTokenResource IconSize}"
                                                     Icon="{TemplateBinding Icon}"
                                                     IconBrush="{TemplateBinding Foreground}"
                                                     IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -126,8 +129,8 @@
                                     ClipToBounds="True"
                                     Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
                             <atom:IconPresenter Name="PART_IconPresenter"
-                                                Width="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
-                                                Height="{atom:ImagePreviewerTokenSharedTokenResource IconSize}"
+                                                Width="{atom:SharedTokenResource IconSize}"
+                                                Height="{atom:SharedTokenResource IconSize}"
                                                 Icon="{TemplateBinding Icon}"
                                                 IconBrush="{TemplateBinding Foreground}"
                                                 IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />

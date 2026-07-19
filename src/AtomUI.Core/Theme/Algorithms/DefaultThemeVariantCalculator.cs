@@ -1,43 +1,38 @@
 ﻿using AtomUI.Media;
-using AtomUI.Theme.Algorithms;
-using AtomUI.Theme.Palette;
 using AtomUI.Theme.Schema;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 
-namespace AtomUI.Theme.Styling;
+namespace AtomUI.Theme.Algorithms;
 
-[ThemeAlgorithmAttribute("Default", ThemeAppearanceEffect.Preserve)]
+[ThemeAlgorithmAttribute("Default", 1, ThemeAppearanceEffect.Light)]
 public class DefaultThemeVariantCalculator : AbstractThemeVariantCalculator
 {
     public const ThemeAlgorithm Algorithm = ThemeAlgorithm.Default;
     
     public DefaultThemeVariantCalculator()
-        : base(null)
     {
         _colorBgBase   = Color.FromRgb(255, 255, 255);
         _colorTextBase = Color.FromRgb(0, 0, 0);
     }
 
-    public override void Calculate(DesignToken designToken)
+    public override void Evaluate(DesignToken effectiveSeed, DesignToken? previousMap, DesignToken nextMap)
     {
-        if (designToken.ColorBgBase.HasValue)
-        {
-            _colorBgBase = designToken.ColorBgBase.Value;
-        }
+        ArgumentNullException.ThrowIfNull(effectiveSeed);
+        ArgumentNullException.ThrowIfNull(nextMap);
 
-        if (designToken.ColorTextBase.HasValue)
-        {
-            _colorTextBase = designToken.ColorTextBase.Value;
-        }
+        _colorBgBase      = effectiveSeed.ColorBgBase ?? Color.FromRgb(255, 255, 255);
+        _colorTextBase    = effectiveSeed.ColorTextBase ?? Color.FromRgb(0, 0, 0);
+        nextMap.ColorBgBase   = _colorBgBase;
+        nextMap.ColorTextBase = _colorTextBase;
 
-        SetupColorPalettes(designToken);
-        CalculateColorMapTokenValues(designToken);
+        SetupColorPalettes(nextMap);
+        CalculateColorMapTokenValues(nextMap);
 
-        CalculatorUtils.CalculateFontMapTokenValues(designToken);
-        CalculatorUtils.CalculateSizeMapTokenValues(designToken);
-        CalculatorUtils.CalculateControlHeightMapTokenValues(designToken);
-        CalculatorUtils.CalculateStyleMapTokenValues(designToken);
+        CalculatorUtils.CalculateFontMapTokenValues(nextMap);
+        CalculatorUtils.CalculateSizeMapTokenValues(nextMap);
+        CalculatorUtils.CalculateControlHeightMapTokenValues(nextMap);
+        CalculatorUtils.CalculateStyleMapTokenValues(nextMap);
     }
 
     protected override ColorMap GenerateColorPalettes(Color baseColor)

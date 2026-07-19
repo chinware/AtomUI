@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DialogThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:DialogCaptionButton}" TargetType="atom:DialogCaptionButton">
         <Setter Property="Template">
@@ -38,18 +41,18 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="CornerRadius" Value="{atom:DialogTokenSharedTokenResource BorderRadiusSM}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         
-        <Setter Property="IconBrush" Value="{atom:DialogTokenSharedTokenResource ColorIcon}" />
+        <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorIcon}" />
         
         <Style Selector="^:pointerover">
-            <Setter Property="Background" Value="{atom:DialogTokenSharedTokenResource ColorBgTextHover}" />
-            <Setter Property="IconBrush" Value="{atom:DialogTokenSharedTokenResource ColorIconHover}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextHover}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorIconHover}" />
         </Style>
         
         <Style Selector="^:pressed">
-            <Setter Property="Background" Value="{atom:DialogTokenSharedTokenResource ColorBgTextActive}" />
-            <Setter Property="IconBrush" Value="{atom:DialogTokenSharedTokenResource ColorIconHover}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextActive}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorIconHover}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:UploadThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Upload}" TargetType="atom:Upload">
 
@@ -10,7 +13,7 @@
                 <ControlTemplate>
                     <StackPanel Name="RootLayout"
                                 Orientation="Vertical"
-                                Spacing="{atom:UploadTokenSharedTokenResource SpacingXS}">
+                                Spacing="{atom:SharedTokenResource SpacingXS}">
                         <ContentPresenter Name="PART_TriggerContent"
                                           Content="{TemplateBinding TriggerContent}"
                                           ContentTemplate="{TemplateBinding TriggerContentTemplate}"
@@ -33,7 +36,7 @@
                 <ControlTemplate>
                     <StackPanel Name="RootLayout"
                                 Orientation="Vertical"
-                                Spacing="{atom:UploadTokenSharedTokenResource SpacingXS}">
+                                Spacing="{atom:SharedTokenResource SpacingXS}">
                         <atom:UploadPictureShapeList Name="PART_UploadList"
                                                      ListType="{TemplateBinding ListType}"
                                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
@@ -46,7 +49,7 @@
             </Setter>
         </Style>
 
-        <Setter Property="IsMotionEnabled" Value="{atom:UploadTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="ClipToBounds" Value="False" />
 
         <Style Selector="^[ListType=PictureCard]">
@@ -60,7 +63,7 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
 
     </ControlTheme>

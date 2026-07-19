@@ -68,5 +68,4 @@ internal class TimePickerToken : AbstractControlDesignToken
         HeaderMargin                  = new Thickness(0, 0, 0, 3);
     }
     
-    protected override Type GetTokenKindType() => typeof(TimePickerTokenKind);
 }

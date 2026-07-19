@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ImagePreviewerThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ImageViewer}" TargetType="atom:ImageViewer">
@@ -42,7 +45,7 @@
                             <StackPanel Name="DefaultErrorLayout"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Spacing="{atom:ImagePreviewerTokenSharedTokenResource SpacingXXS}"
+                                        Spacing="{atom:SharedTokenResource SpacingXXS}"
                                         IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNull}}">
                                 <antdicons:PictureOutlined Name="DefaultErrorIcon"
                                                           HorizontalAlignment="Center" />
@@ -85,18 +88,18 @@
         </Setter>
 
         <Style Selector="^ /template/ atom|ImagePreviewNavButton">
-            <Setter Property="Margin" Value="{atom:ImagePreviewerTokenSharedTokenResource Margin}" />
+            <Setter Property="Margin" Value="{atom:SharedTokenResource Margin}" />
         </Style>
         <Style Selector="^ /template/ atom|ImagePreviewRenderer#PART_ImageRenderer">
             <Setter Property="Cursor" Value="DragMove" />
         </Style>
         <Style Selector="^ /template/ TextBlock#DefaultErrorText">
-            <Setter Property="Foreground" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorTextTertiary}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>
         <Style Selector="^ /template/ atom|Icon#DefaultErrorIcon">
             <Setter Property="Width" Value="48" />
             <Setter Property="Height" Value="48" />
-            <Setter Property="StrokeBrush" Value="{atom:ImagePreviewerTokenSharedTokenResource ColorTextTertiary}" />
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

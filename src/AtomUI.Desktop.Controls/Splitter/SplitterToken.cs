@@ -64,5 +64,4 @@ internal class SplitterToken : AbstractControlDesignToken
         HandleIconSize                 = SharedToken.FontSizeSM;
     }
     
-    protected override Type GetTokenKindType() => typeof(SplitterTokenKind);
 }

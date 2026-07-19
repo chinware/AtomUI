@@ -95,5 +95,4 @@ internal class TreeViewToken : AbstractControlDesignToken
         DragIndicatorLineWidth = SharedToken.LineWidthFocus;
     }
     
-    protected override Type GetTokenKindType() => typeof(TreeViewTokenKind);
 }

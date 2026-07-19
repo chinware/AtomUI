@@ -78,10 +78,7 @@ public class ThemeConfigMergerTests
         var local = NormalizeControl(schema, true, ControlAlgorithmMode.Unspecified, null, "32");
 
         var changed = ThemeConfigMerger.Merge(defaults, parent, local);
-        var noOpConfig = Normalize(new ThemeConfig
-        {
-            Inherit = true
-        }, schema);
+        var noOpConfig = Normalize(new ThemeConfigBuilder().WithInherit(true).Build(), schema);
         var noOp = ThemeConfigMerger.Merge(defaults, changed.EffectiveConfig, noOpConfig);
 
         changed.ChangeSet.ChangedControls.ShouldBe([ThemeConfigTestSchema.ButtonIdentity]);
@@ -97,17 +94,18 @@ public class ThemeConfigMergerTests
         string[]? algorithms,
         params (string Name, string Value)[] tokens)
     {
-        var config = new ThemeConfig
+        var builder = new ThemeConfigBuilder().WithInherit(inherit);
+        if (algorithms is not null)
         {
-            Inherit = inherit,
-            Algorithms = algorithms
-        };
-        foreach (var token in tokens)
-        {
-            config.Tokens[token.Name] = token.Value;
+            builder.WithAlgorithms(algorithms);
         }
 
-        return Normalize(config, schema);
+        foreach (var token in tokens)
+        {
+            builder.WithToken(token.Name, token.Value);
+        }
+
+        return Normalize(builder.Build(), schema);
     }
 
     private static NormalizedThemeConfig NormalizeControl(
@@ -117,19 +115,18 @@ public class ThemeConfigMergerTests
         string[]? algorithms,
         string height)
     {
-        var config = new ThemeConfig
+        var controlBuilder = new ControlThemeConfigBuilder()
+                             .WithAlgorithm(mode)
+                             .WithToken("Height", height);
+        if (algorithms is not null)
         {
-            Inherit = inherit
-        };
-        config.Controls[ThemeConfigTestSchema.ButtonIdentity] = new ControlThemeConfig
-        {
-            Algorithm = mode,
-            Algorithms = algorithms,
-            Tokens =
-            {
-                ["Height"] = height
-            }
-        };
+            controlBuilder.WithAlgorithms(algorithms);
+        }
+
+        var config = new ThemeConfigBuilder()
+                     .WithInherit(inherit)
+                     .WithControl(ThemeConfigTestSchema.ButtonIdentity, controlBuilder.Build())
+                     .Build();
         return Normalize(config, schema);
     }
 

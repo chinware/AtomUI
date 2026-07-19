@@ -9,19 +9,35 @@ public class ThemeSourceLayoutTests
     public void Root_Source_Files_Use_The_Theme_Namespace()
     {
         var themeRoot = FindThemeRoot();
-        var invalidFiles = Directory
-                           .EnumerateFiles(themeRoot, "*.cs", SearchOption.TopDirectoryOnly)
-                           .Select(static path => new
-                           {
-                               FileName = Path.GetFileName(path),
-                               Namespace = File.ReadLines(path).FirstOrDefault(static line =>
-                                   line.StartsWith("namespace ", StringComparison.Ordinal))
-                           })
-                           .Where(static source => source.Namespace != "namespace AtomUI.Theme;")
-                           .Select(static source => $"{source.FileName}: {source.Namespace ?? "<missing>"}")
-                           .ToArray();
+        var invalidFiles = FindInvalidNamespaces(themeRoot, "namespace AtomUI.Theme;");
 
         invalidFiles.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Algorithms_Source_Files_Use_The_Algorithms_Namespace()
+    {
+        var algorithmsRoot = Path.Combine(FindThemeRoot(), "Algorithms");
+        var invalidFiles = FindInvalidNamespaces(
+            algorithmsRoot,
+            "namespace AtomUI.Theme.Algorithms;");
+
+        invalidFiles.ShouldBeEmpty();
+    }
+
+    private static string[] FindInvalidNamespaces(string directory, string expectedNamespace)
+    {
+        return Directory
+               .EnumerateFiles(directory, "*.cs", SearchOption.TopDirectoryOnly)
+               .Select(static path => new
+               {
+                   FileName = Path.GetFileName(path),
+                   Namespace = File.ReadLines(path).FirstOrDefault(static line =>
+                       line.StartsWith("namespace ", StringComparison.Ordinal))
+               })
+               .Where(source => source.Namespace != expectedNamespace)
+               .Select(static source => $"{source.FileName}: {source.Namespace ?? "<missing>"}")
+               .ToArray();
     }
 
     private static string FindThemeRoot()
@@ -30,7 +46,8 @@ public class ThemeSourceLayoutTests
         while (directory is not null)
         {
             var candidate = Path.Combine(directory.FullName, "src", "AtomUI.Core", "Theme");
-            if (File.Exists(Path.Combine(candidate, "Theme.cs")))
+            if (Directory.Exists(candidate) &&
+                File.Exists(Path.Combine(directory.FullName, "src", "AtomUI.Core", "AtomUI.Core.csproj")))
             {
                 return candidate;
             }

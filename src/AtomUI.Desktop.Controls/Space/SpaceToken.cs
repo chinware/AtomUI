@@ -63,5 +63,4 @@ internal class SpaceToken : AbstractControlDesignToken
         AddOnPaddingLG = new Thickness(SharedToken.ControlPaddingHorizontal, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(SpaceTokenKind);
 }

@@ -1224,7 +1224,7 @@ internal class CalendarItem : TemplatedControl
         }
     }
 
-    private IThemeManager? _subscribedThemeManager;
+    private ILanguageManager? _subscribedLanguageManager;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -1247,30 +1247,30 @@ internal class CalendarItem : TemplatedControl
 
     private void AttachLanguageVariantListener()
     {
-        if (_subscribedThemeManager is not null)
+        if (_subscribedLanguageManager is not null)
         {
             return;
         }
 
-        var themeManager = ThemeManager.Current;
-        if (themeManager is null)
+        var languageManager = Application.Current?.GetLanguageManager();
+        if (languageManager is null)
         {
             return;
         }
 
-        themeManager.LanguageVariantChanged += HandleLanguageVariantChanged;
-        _subscribedThemeManager = themeManager;
+        languageManager.LanguageVariantChanged += HandleLanguageVariantChanged;
+        _subscribedLanguageManager = languageManager;
     }
 
     private void DetachLanguageVariantListener()
     {
-        if (_subscribedThemeManager is null)
+        if (_subscribedLanguageManager is null)
         {
             return;
         }
 
-        _subscribedThemeManager.LanguageVariantChanged -= HandleLanguageVariantChanged;
-        _subscribedThemeManager = null;
+        _subscribedLanguageManager.LanguageVariantChanged -= HandleLanguageVariantChanged;
+        _subscribedLanguageManager = null;
     }
 
     private void HandleLanguageVariantChanged(object? sender, LanguageVariantChangedEventArgs e)

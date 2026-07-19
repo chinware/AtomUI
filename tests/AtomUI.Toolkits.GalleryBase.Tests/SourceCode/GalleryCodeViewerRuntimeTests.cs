@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using AtomUI.Controls;
 using AtomUI.Theme;
+using AtomUI.Theme.Configuration;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUI.Toolkits.GalleryBase.SourceCode;
 using Avalonia;
@@ -460,15 +461,15 @@ public class GalleryCodeViewerRuntimeTests
     }
 
     [Fact]
-    public void GalleryCodeViewer_Uses_Dark_Syntax_Theme_When_AtomUI_Dark_Mode_Is_Enabled()
+    public void GalleryCodeViewer_Uses_Dark_Syntax_Theme_When_ThemeManager_Appearance_Is_Dark()
     {
         var application = Application.Current!;
-        var previousDarkMode = application.IsDarkThemeMode();
+        var themeManager = application.GetThemeManager().ShouldNotBeNull();
+        var previousAlgorithms = CaptureCurrentAlgorithms(themeManager);
 
         try
         {
-            application.SetDarkThemeMode(true);
-            Dispatcher.UIThread.RunJobs();
+            SetDarkAppearance(themeManager, true);
 
             var viewer = new GalleryCodeViewer
             {
@@ -484,8 +485,7 @@ public class GalleryCodeViewerRuntimeTests
         }
         finally
         {
-            application.SetDarkThemeMode(previousDarkMode);
-            Dispatcher.UIThread.RunJobs();
+            ApplyAlgorithms(themeManager, previousAlgorithms);
         }
     }
 
@@ -538,38 +538,38 @@ public class GalleryCodeViewerRuntimeTests
     }
 
     [Fact]
-    public void GalleryCodeViewer_Treats_AtomUI_Custom_Dark_ThemeVariant_As_Dark_Syntax_Theme()
+    public void GalleryCodeViewer_Uses_Dark_Syntax_Theme_After_ThemeManager_Commits_Dark_Appearance()
     {
         var application = Application.Current!;
-        var previousDarkMode = application.IsDarkThemeMode();
-        var actualThemeVariantChangedCount = 0;
-        var isDarkModeWhenThemeManagerVariantRaised = false;
-        EventHandler handler = (_, _) => actualThemeVariantChangedCount++;
         var themeManager = application.GetThemeManager().ShouldNotBeNull();
-        using var themeVariantSubscription = themeManager.BindingSource
-                                                         .GetObservable(IThemeManager.ThemeVariantProperty)
-                                                         .Subscribe(_ =>
-                                                         {
-                                                             isDarkModeWhenThemeManagerVariantRaised =
-                                                                 themeManager.ActivatedTheme?.IsDarkMode == true;
-                                                         });
+        var previousAlgorithms = CaptureCurrentAlgorithms(themeManager);
+        var actualThemeVariantChangedCount = 0;
+        var isDarkWhenThemeChangedRaised = false;
+        EventHandler handler = (_, _) => actualThemeVariantChangedCount++;
+        EventHandler<ThemeChangedEventArgs> themeChangedHandler = (_, args) =>
+        {
+            isDarkWhenThemeChangedRaised =
+                args.State.Appearance == ThemeAppearance.Dark &&
+                themeManager.CurrentTheme?.Appearance == ThemeAppearance.Dark &&
+                application.RequestedThemeVariant == ThemeVariant.Dark;
+        };
 
         try
         {
-            application.SetDarkThemeMode(false);
-            Dispatcher.UIThread.RunJobs();
+            SetDarkAppearance(themeManager, false);
 
             application.ActualThemeVariantChanged += handler;
-            application.SetDarkThemeMode(true);
-            Dispatcher.UIThread.RunJobs();
+            themeManager.ThemeChanged += themeChangedHandler;
+            SetDarkAppearance(themeManager, true);
 
             actualThemeVariantChangedCount.ShouldBeGreaterThan(0);
-            isDarkModeWhenThemeManagerVariantRaised.ShouldBeTrue();
-            application.ActualThemeVariant.ShouldNotBe(ThemeVariant.Dark);
-            themeManager.ActivatedTheme
-                       .ShouldNotBeNull()
-                       .Algorithms
-                       .ShouldContain(ThemeAlgorithm.Dark);
+            isDarkWhenThemeChangedRaised.ShouldBeTrue();
+            application.RequestedThemeVariant.ShouldBe(ThemeVariant.Dark);
+            application.ActualThemeVariant.ShouldBe(ThemeVariant.Dark);
+            themeManager.CurrentTheme
+                        .ShouldNotBeNull()
+                        .Algorithms
+                        .ShouldContain("Dark");
 
             var viewer = new GalleryCodeViewer
             {
@@ -579,19 +579,19 @@ public class GalleryCodeViewerRuntimeTests
 
             ShowInWindow(viewer, _ =>
             {
-                viewer.ActualThemeVariant.ShouldNotBe(ThemeVariant.Dark);
-                themeManager.ActivatedTheme
-                           .ShouldNotBeNull()
-                           .IsDarkMode
-                           .ShouldBeTrue();
+                viewer.ActualThemeVariant.ShouldBe(ThemeVariant.Dark);
+                themeManager.CurrentTheme
+                            .ShouldNotBeNull()
+                            .Appearance
+                            .ShouldBe(ThemeAppearance.Dark);
                 GetCurrentSyntaxTheme(viewer).ShouldBe(ThemeName.DarkPlus);
             });
         }
         finally
         {
             application.ActualThemeVariantChanged -= handler;
-            application.SetDarkThemeMode(previousDarkMode);
-            Dispatcher.UIThread.RunJobs();
+            themeManager.ThemeChanged -= themeChangedHandler;
+            ApplyAlgorithms(themeManager, previousAlgorithms);
         }
     }
 
@@ -599,12 +599,12 @@ public class GalleryCodeViewerRuntimeTests
     public void GalleryCodeViewer_Updates_TextMate_Theme_When_AtomUI_Dark_Mode_Changes()
     {
         var application = Application.Current!;
-        var previousDarkMode = application.IsDarkThemeMode();
+        var themeManager = application.GetThemeManager().ShouldNotBeNull();
+        var previousAlgorithms = CaptureCurrentAlgorithms(themeManager);
 
         try
         {
-            application.SetDarkThemeMode(false);
-            Dispatcher.UIThread.RunJobs();
+            SetDarkAppearance(themeManager, false);
 
             var viewer = new GalleryCodeViewer
             {
@@ -616,23 +616,36 @@ public class GalleryCodeViewerRuntimeTests
             {
                 GetCurrentSyntaxTheme(viewer).ShouldBe(ThemeName.LightPlus);
 
-                application.SetDarkThemeMode(true);
-                Dispatcher.UIThread.RunJobs();
+                SetDarkAppearance(themeManager, true);
 
                 GetCurrentSyntaxTheme(viewer).ShouldBe(ThemeName.DarkPlus);
                 GetAxamlTagNameColor(viewer).ShouldBe("#569CD6", StringCompareShould.IgnoreCase);
 
-                application.SetDarkThemeMode(false);
-                Dispatcher.UIThread.RunJobs();
+                SetDarkAppearance(themeManager, false);
 
                 GetCurrentSyntaxTheme(viewer).ShouldBe(ThemeName.LightPlus);
             });
         }
         finally
         {
-            application.SetDarkThemeMode(previousDarkMode);
+            ApplyAlgorithms(themeManager, previousAlgorithms);
+        }
+    }
+
+    [Fact]
+    public void Disposed_Detached_GalleryCodeViewer_Is_Not_Retained_By_Theme_Subscriptions()
+    {
+        var viewer = AttachAndDetachTemporaryViewer();
+
+        for (var attempt = 0; attempt < 3; attempt++)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
             Dispatcher.UIThread.RunJobs();
         }
+
+        viewer.IsAlive.ShouldBeFalse();
     }
 
     [Fact]
@@ -1054,6 +1067,68 @@ public class GalleryCodeViewerRuntimeTests
                    .Select(static textBlock => textBlock.Text)
                    .ShouldContain(text => text != null && text.Contains("No source snippet found"));
         });
+    }
+
+    [System.Runtime.CompilerServices.MethodImpl(
+        System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    private static WeakReference AttachAndDetachTemporaryViewer()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = "<Button Content=\"Detached\" />",
+            Language = "axaml"
+        };
+        var window = new Avalonia.Controls.Window
+        {
+            Content = viewer
+        };
+        window.Show();
+        window.Content = null;
+        window.Close();
+        viewer.Dispose();
+        Dispatcher.UIThread.RunJobs();
+        return new WeakReference(viewer);
+    }
+
+    private static string[] CaptureCurrentAlgorithms(IThemeManager themeManager)
+    {
+        return themeManager.CurrentTheme?.Algorithms.ToArray() ?? ["Default"];
+    }
+
+    private static void SetDarkAppearance(IThemeManager themeManager, bool isDark)
+    {
+        var algorithms = CaptureCurrentAlgorithms(themeManager)
+                         .Where(static algorithm => !string.Equals(
+                             algorithm,
+                             "Dark",
+                             StringComparison.Ordinal))
+                         .ToList();
+        if (isDark)
+        {
+            algorithms.Add("Dark");
+        }
+
+        ApplyAlgorithms(themeManager, algorithms);
+    }
+
+    private static void ApplyAlgorithms(IThemeManager themeManager, IEnumerable<string> algorithms)
+    {
+        var config = new ThemeConfigBuilder()
+                     .WithAlgorithms(algorithms.ToArray())
+                     .Build();
+        var result = themeManager.ApplyThemeAsync(
+                                     new ThemeRequest(
+                                         themeManager.CurrentTheme?.ThemeId ?? IThemeManager.DEFAULT_THEME_ID,
+                                         config,
+                                         ThemeTransitionReason.UserRequest))
+                                 .GetAwaiter()
+                                 .GetResult();
+
+        (result.Status is ThemeTransitionStatus.Committed or ThemeTransitionStatus.NoOp)
+            .ShouldBeTrue(
+                $"Theme transition failed with status '{result.Status}': " +
+                string.Join(" ", result.Diagnostics.Select(static diagnostic => diagnostic.Message)));
+        Dispatcher.UIThread.RunJobs();
     }
 
     private static ShowCaseCodeSnippet CreateSnippet(string tabTitle, string language, string text)

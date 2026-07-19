@@ -1,6 +1,6 @@
-namespace AtomUI.Theme.Styling;
+namespace AtomUI.Theme.Algorithms;
 
 public interface IThemeVariantCalculatorFactory
 {
-    IThemeVariantCalculator Create(ThemeAlgorithm algorithm, IThemeVariantCalculator? baseAlgorithm);
+    IThemeVariantCalculator Create(ThemeAlgorithm algorithm);
 }

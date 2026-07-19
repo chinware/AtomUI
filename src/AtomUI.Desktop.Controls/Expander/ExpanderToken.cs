@@ -84,5 +84,4 @@ internal class ExpanderToken : AbstractControlDesignToken
         RightExpandButtonVMargin = new Thickness(0, SharedToken.UniformlyMarginSM, 0, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(ExpanderTokenKind);
 }

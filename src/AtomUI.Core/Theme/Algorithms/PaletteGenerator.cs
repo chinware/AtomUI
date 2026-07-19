@@ -3,7 +3,7 @@ using AtomUI.Utils;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.Theme.Palette;
+namespace AtomUI.Theme.Algorithms;
 
 public static class PaletteGenerator
 {

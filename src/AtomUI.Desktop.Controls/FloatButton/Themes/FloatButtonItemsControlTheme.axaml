@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:FloatButtonThemeAsset.Identity}"
     xmlns:atomc="https://atomui.net/common-controls"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:FloatButtonItemsControl}" TargetType="atom:FloatButtonItemsControl">
@@ -47,17 +50,17 @@
         <Setter Property="ClipToBounds" Value="False" />
 
         <Style Selector="^[Shape=Square]">
-            <Setter Property="Background" Value="{atom:FloatButtonTokenSharedTokenResource ColorBgElevated}" />
-            <Setter Property="BoxShadow" Value="{atom:FloatButtonTokenSharedTokenResource BoxShadowsSecondary}" />
-            <Setter Property="CornerRadius" Value="{atom:FloatButtonTokenSharedTokenResource BorderRadiusLG}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+            <Setter Property="BoxShadow" Value="{atom:SharedTokenResource BoxShadowsSecondary}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
         </Style>
         <Style Selector="^ /template/ atomc|FloatButtonSeparatorLayer">
-            <Setter Property="SeparatorBrush" Value="{atom:FloatButtonTokenSharedTokenResource ColorSplit}" />
+            <Setter Property="SeparatorBrush" Value="{atom:SharedTokenResource ColorSplit}" />
         </Style>
         
         <Style Selector="^[Shape=Circle]">
             <Style Selector="^ /template/ StackPanel#PART_ItemsLayout">
-                <Setter Property="Spacing" Value="{atom:FloatButtonTokenSharedTokenResource Spacing}" />
+                <Setter Property="Spacing" Value="{atom:SharedTokenResource Spacing}" />
             </Style>
             <Style Selector="^ /template/ atomc|FloatButtonSeparatorLayer">
                 <Setter Property="IsVisible" Value="False" />
@@ -68,25 +71,25 @@
             <Style Selector="^[MenuPlacement=Top]">
                 <Style Selector="^ /template/ Control#EmptyControl">
                     <Setter Property="DockPanel.Dock" Value="Bottom" />
-                    <Setter Property="Height" Value="{atom:FloatButtonTokenSharedTokenResource Spacing}" />
+                    <Setter Property="Height" Value="{atom:SharedTokenResource Spacing}" />
                 </Style>
             </Style>
             <Style Selector="^[MenuPlacement=Bottom]">
                 <Style Selector="^ /template/ Control#EmptyControl">
                     <Setter Property="DockPanel.Dock" Value="Top" />
-                    <Setter Property="Height" Value="{atom:FloatButtonTokenSharedTokenResource Spacing}" />
+                    <Setter Property="Height" Value="{atom:SharedTokenResource Spacing}" />
                 </Style>
             </Style>
             <Style Selector="^[MenuPlacement=Left]">
                 <Style Selector="^ /template/ Control#EmptyControl">
                     <Setter Property="DockPanel.Dock" Value="Right" />
-                    <Setter Property="Width" Value="{atom:FloatButtonTokenSharedTokenResource Spacing}" />
+                    <Setter Property="Width" Value="{atom:SharedTokenResource Spacing}" />
                 </Style>
             </Style>
             <Style Selector="^[MenuPlacement=Right]">
                 <Style Selector="^ /template/ Control#EmptyControl">
                     <Setter Property="DockPanel.Dock" Value="Left" />
-                    <Setter Property="Width" Value="{atom:FloatButtonTokenSharedTokenResource Spacing}" />
+                    <Setter Property="Width" Value="{atom:SharedTokenResource Spacing}" />
                 </Style>
             </Style>
         </Style>

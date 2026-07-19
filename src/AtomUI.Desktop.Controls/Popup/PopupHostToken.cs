@@ -59,5 +59,4 @@ internal class PopupHostToken : AbstractControlDesignToken
         MarginToAnchor = SharedToken.UniformlyMarginXXS;
     }
     
-    protected override Type GetTokenKindType() => typeof(PopupHostTokenKind);
 }

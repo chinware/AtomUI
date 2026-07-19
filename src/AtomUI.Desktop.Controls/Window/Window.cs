@@ -364,6 +364,7 @@ public partial class Window : AvaloniaWindow,
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
     private int _drawnTitleBarOverlaySuppressionCount;
     private IDisposable? _windowsCsdFrameThemeSubscription;
+    private ThemeContextLease? _themeContextLease;
 
     // macOS 下 ConfigureMacOsWindow 的输入缓存，用于在 live resize 时短路，避免重复 P/Invoke
     private double? _macOsCachedTitleBarHeight;
@@ -389,15 +390,87 @@ public partial class Window : AvaloniaWindow,
 
     public override void Show()
     {
+        var newThemeContextLease = PrepareThemeContextLease(this);
         var restoreStartupLocation = _platformChromeManager?.PrepareInitialShowState();
         try
         {
             base.Show();
         }
+        catch
+        {
+            ReleaseFailedThemeContextLease(newThemeContextLease);
+            throw;
+        }
         finally
         {
             restoreStartupLocation?.Invoke();
         }
+    }
+
+    public new void Show(AvaloniaWindow owner)
+    {
+        var newThemeContextLease = PrepareThemeContextLease(owner);
+        try
+        {
+            base.Show(owner);
+        }
+        catch
+        {
+            ReleaseFailedThemeContextLease(newThemeContextLease);
+            throw;
+        }
+    }
+
+    public new Task ShowDialog(AvaloniaWindow owner)
+    {
+        var newThemeContextLease = PrepareThemeContextLease(owner);
+        try
+        {
+            return base.ShowDialog(owner);
+        }
+        catch
+        {
+            ReleaseFailedThemeContextLease(newThemeContextLease);
+            throw;
+        }
+    }
+
+    public new Task<TResult> ShowDialog<TResult>(AvaloniaWindow owner)
+    {
+        var newThemeContextLease = PrepareThemeContextLease(owner);
+        try
+        {
+            return base.ShowDialog<TResult>(owner);
+        }
+        catch
+        {
+            ReleaseFailedThemeContextLease(newThemeContextLease);
+            throw;
+        }
+    }
+
+    private ThemeContextLease? PrepareThemeContextLease(StyledElement owner)
+    {
+        var context = ThemeScope.ResolveContext(owner);
+        if (context is null || _themeContextLease?.IsOwnedBy(context) == true)
+        {
+            return null;
+        }
+
+        var lease = ThemeContextLease.Attach(this, context);
+        _themeContextLease = lease;
+        return lease;
+    }
+
+    private void ReleaseFailedThemeContextLease(ThemeContextLease? lease)
+    {
+        if (lease is null || !ReferenceEquals(_themeContextLease, lease))
+        {
+            return;
+        }
+
+        _themeContextLease = null;
+        lease.Dispose();
     }
 
     internal void PreparePlatformChromeInitialShowLayout()
@@ -811,6 +884,8 @@ public partial class Window : AvaloniaWindow,
 
     protected override void OnClosed(EventArgs e)
     {
+        _themeContextLease?.Dispose();
+        _themeContextLease = null;
         _windowsCsdFrameThemeSubscription?.Dispose();
         _windowsCsdFrameThemeSubscription = null;
         base.OnClosed(e);
@@ -1013,9 +1088,11 @@ public partial class Window : AvaloniaWindow,
             return;
         }
 
-        _windowsCsdFrameThemeSubscription = themeManager.BindingSource
-                                                        .GetObservable(IThemeManager.IsDarkThemeModeProperty)
-                                                        .Subscribe(ApplyWindowsCsdFrameTheme);
+        EventHandler<ThemeChangedEventArgs> handler = (_, args) =>
+            ApplyWindowsCsdFrameTheme(args.State.Appearance == ThemeAppearance.Dark);
+        themeManager.ThemeChanged += handler;
+        _windowsCsdFrameThemeSubscription = Disposable.Create(() =>
+            themeManager.ThemeChanged -= handler);
     }
 
     private void ApplyCurrentWindowsCsdFrameTheme()
@@ -1026,7 +1103,7 @@ public partial class Window : AvaloniaWindow,
             return;
         }
 
-        ApplyWindowsCsdFrameTheme(themeManager.IsDarkThemeMode);
+        ApplyWindowsCsdFrameTheme(themeManager.CurrentTheme?.Appearance == ThemeAppearance.Dark);
     }
 
     private void ApplyWindowsCsdFrameTheme(bool isDarkMode)

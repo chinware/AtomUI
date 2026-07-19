@@ -40,5 +40,4 @@ internal class ShowCaseItemToken : AbstractControlDesignToken
         DeferredPlaceholderCornerRadius = SharedToken.BorderRadius;
     }
 
-    protected override Type GetTokenKindType() => typeof(ShowCaseItemTokenKind);
 }

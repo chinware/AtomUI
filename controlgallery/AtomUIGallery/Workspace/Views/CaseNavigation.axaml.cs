@@ -88,14 +88,14 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
             return;
         }
 
-        var themeManager = Application.Current?.GetThemeManager();
-        if (themeManager is null)
+        var languageManager = Application.Current?.GetLanguageManager();
+        if (languageManager is null)
         {
             return;
         }
 
         _languageVariantChangedHandler = (_, _) => ConfigureNavigationMenu();
-        themeManager.LanguageVariantChanged += _languageVariantChangedHandler;
+        languageManager.LanguageVariantChanged += _languageVariantChangedHandler;
     }
 
     private void UnsubscribeLanguageChanged()
@@ -105,10 +105,10 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
             return;
         }
 
-        var themeManager = Application.Current?.GetThemeManager();
-        if (themeManager is not null)
+        var languageManager = Application.Current?.GetLanguageManager();
+        if (languageManager is not null)
         {
-            themeManager.LanguageVariantChanged -= _languageVariantChangedHandler;
+            languageManager.LanguageVariantChanged -= _languageVariantChangedHandler;
         }
 
         _languageVariantChangedHandler = null;

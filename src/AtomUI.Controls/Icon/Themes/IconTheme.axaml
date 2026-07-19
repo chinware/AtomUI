@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:IconThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Icon}" TargetType="atom:Icon">
         
@@ -14,22 +17,22 @@
         </Setter>
         
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Height" Value="{atom:IconTokenSharedTokenResource IconSize}" />
-        <Setter Property="Width" Value="{atom:IconTokenSharedTokenResource IconSize}" />
-        <Setter Property="FillBrush" Value="{atom:IconTokenSharedTokenResource ColorIconHover}" />
-        <Setter Property="StrokeBrush" Value="{atom:IconTokenSharedTokenResource ColorIconHover}" />
+        <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+        <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+        <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorIconHover}" />
+        <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorIconHover}" />
         <Setter Property="StrokeWidth" Value="{atom:IconTokenResource StrokeWidth}" />
         <Setter Property="StrokeLineCap" Value="{atom:IconTokenResource StrokeLineCap}" />
         <Setter Property="StrokeLineJoin" Value="{atom:IconTokenResource StrokeLineJoin}" />
         
         <Style Selector="^[IconTheme=TwoTone]">
-            <Setter Property="StrokeBrush" Value="{atom:IconTokenSharedTokenResource ColorPrimary}" />
-            <Setter Property="FillBrush" Value="{atom:IconTokenSharedTokenResource ColorInfoBg}" />
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorInfoBg}" />
         </Style>
         
         <Style Selector="^[IconTheme=MultiColor]">
-            <Setter Property="StrokeBrush" Value="{atom:IconTokenSharedTokenResource ColorIconHover}" />
-            <Setter Property="FillBrush" Value="{atom:IconTokenSharedTokenResource ColorPrimary}" />
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorIconHover}" />
+            <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
         </Style>
         
         <Setter Property="SecondaryFillBrush" Value="{atom:IconTokenResource SecondaryFillColor}" />

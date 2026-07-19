@@ -48,17 +48,7 @@
                 <atom:Button ButtonType="Text" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentTextButton}" />
                 <atom:Button ButtonType="Link" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentLinkButton}" />
             </WrapPanel>
-            <atom:ThemeConfigProvider>
-                <atom:ThemeConfigProvider.Algorithms>
-                    <x:String>Default</x:String>
-                </atom:ThemeConfigProvider.Algorithms>
-                <atom:ThemeConfigProvider.SharedTokenSetters>
-                    <!-- Seed Token，影响范围大 -->
-                    <atom:TokenSetter Key="ColorPrimary" Value="#00b96b" />
-                    <atom:TokenSetter Key="BorderRadius" Value="2" />
-                    <!-- 派生变量，影响范围小 -->
-                    <atom:TokenSetter Key="ColorBgContainer" Value="#f6ffed" />
-                </atom:ThemeConfigProvider.SharedTokenSetters>
+            <atom:ThemeConfigProvider Config="{Binding GreenThemeConfig}">
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                     <atom:Button ButtonType="Primary" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentPrimaryButton}" />
                     <atom:Button Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentDefaultButton}" />
@@ -66,14 +56,7 @@
                     <atom:Button ButtonType="Link" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentLinkButton}" />
                 </WrapPanel>
             </atom:ThemeConfigProvider>
-            <atom:ThemeConfigProvider>
-                <atom:ThemeConfigProvider.Algorithms>
-                    <x:String>Default</x:String>
-                </atom:ThemeConfigProvider.Algorithms>
-                <atom:ThemeConfigProvider.SharedTokenSetters>
-                    <atom:TokenSetter Key="ColorPrimary" Value="#ff0000" />
-                    <atom:TokenSetter Key="BorderRadius" Value="0" />
-                </atom:ThemeConfigProvider.SharedTokenSetters>
+            <atom:ThemeConfigProvider Config="{Binding RedThemeConfig}">
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                     <atom:Button ButtonType="Primary" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentPrimaryButton}" />
                     <atom:Button Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentDefaultButton}" />
@@ -81,13 +64,7 @@
                     <atom:Button ButtonType="Link" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentLinkButton}" />
                 </WrapPanel>
             </atom:ThemeConfigProvider>
-            <atom:ThemeConfigProvider>
-                <atom:ThemeConfigProvider.Algorithms>
-                    <x:String>Default</x:String>
-                </atom:ThemeConfigProvider.Algorithms>
-                <atom:ThemeConfigProvider.SharedTokenSetters>
-                    <atom:TokenSetter Key="ColorPrimary" Value="#7D3C98" />
-                </atom:ThemeConfigProvider.SharedTokenSetters>
+            <atom:ThemeConfigProvider Config="{Binding PurpleThemeConfig}">
                 <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical" Margin="5, 10, 0, 0">
                     <WrapPanel Margin="0, 0, 0, 5">
                         <atom:CheckBox IsChecked="True" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentApple}" />
@@ -116,10 +93,7 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CustomizeThemeViewModel">
-        <atom:ThemeConfigProvider>
-            <atom:ThemeConfigProvider.Algorithms>
-                <x:String>Dark</x:String>
-            </atom:ThemeConfigProvider.Algorithms>
+        <atom:ThemeConfigProvider Config="{Binding DarkThemeConfig}">
             <Border Background="#2b2d30" Padding="20">
                 <StackPanel Orientation="Horizontal"
                             Spacing="5"
@@ -144,7 +118,7 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CustomizeThemeViewModel">
-        <atom:ThemeConfigProvider SharedTokenSetters="{Binding RuntimeSharedTokenSetters}">
+        <atom:ThemeConfigProvider Config="{Binding RuntimeThemeConfig}">
             <Border Padding="20">
                 <StackPanel Spacing="10">
                     <StackPanel Orientation="Horizontal"
@@ -185,15 +159,7 @@
 
         <Border Padding="20">
             <StackPanel Spacing="10">
-                <atom:ThemeConfigProvider>
-                    <atom:ThemeConfigProvider.ControlTokenInfoSetters>
-                        <atom:ControlTokenInfoSetter TokenId="Button" EnableAlgorithm="True">
-                            <atom:TokenSetter Key="ColorPrimary" Value="#00b96b" />
-                        </atom:ControlTokenInfoSetter>
-                        <atom:ControlTokenInfoSetter TokenId="AddOnDecoratedBox" EnableAlgorithm="True">
-                            <atom:TokenSetter Key="ColorPrimary" Value="#eb2f96" />
-                        </atom:ControlTokenInfoSetter>
-                    </atom:ThemeConfigProvider.ControlTokenInfoSetters>
+                <atom:ThemeConfigProvider Config="{Binding ControlAlgorithmEnabledConfig}">
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <atom:TextBlock VerticalAlignment="Center" Width="120" Text="{gallery:CustomizeThemeShowCaseLangResource P2TextEnableAlgorithm}" />
                         <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}" Width="200" VerticalAlignment="Center" />
@@ -204,15 +170,7 @@
                     </StackPanel>
                 </atom:ThemeConfigProvider>
                 <atom:Separator />
-                <atom:ThemeConfigProvider>
-                    <atom:ThemeConfigProvider.ControlTokenInfoSetters>
-                        <atom:ControlTokenInfoSetter TokenId="Button">
-                            <atom:TokenSetter Key="ColorPrimary" Value="#00b96b" />
-                        </atom:ControlTokenInfoSetter>
-                        <atom:ControlTokenInfoSetter TokenId="AddOnDecoratedBox">
-                            <atom:TokenSetter Key="ColorPrimary" Value="#eb2f96" />
-                        </atom:ControlTokenInfoSetter>
-                    </atom:ThemeConfigProvider.ControlTokenInfoSetters>
+                <atom:ThemeConfigProvider Config="{Binding ControlAlgorithmDisabledConfig}">
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <atom:TextBlock VerticalAlignment="Center" Width="120" Text="{gallery:CustomizeThemeShowCaseLangResource P2TextDisableAlgorithm}" />
                         <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}" Width="200" VerticalAlignment="Center" />
@@ -231,23 +189,14 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CustomizeThemeViewModel">
-        <atom:ThemeConfigProvider>
-            <atom:ThemeConfigProvider.SharedTokenSetters>
-                <atom:TokenSetter Key="ColorPrimary" Value="#1677ff" />
-            </atom:ThemeConfigProvider.SharedTokenSetters>
+        <atom:ThemeConfigProvider Config="{Binding NestedBlueThemeConfig}">
             <Border Padding="20">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:Button ButtonType="Primary" VerticalAlignment="Center" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentThemeN1}" />
-                    <atom:ThemeConfigProvider>
-                        <atom:ThemeConfigProvider.SharedTokenSetters>
-                            <atom:TokenSetter Key="ColorPrimary" Value="#00b96b" />
-                        </atom:ThemeConfigProvider.SharedTokenSetters>
+                    <atom:ThemeConfigProvider Config="{Binding NestedGreenThemeConfig}">
                         <atom:Button ButtonType="Primary" VerticalAlignment="Center" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentThemeN2}" />
                     </atom:ThemeConfigProvider>
-                    <atom:ThemeConfigProvider Inherit="False">
-                        <atom:ThemeConfigProvider.SharedTokenSetters>
-                            <atom:TokenSetter Key="ColorPrimary" Value="#faad14" />
-                        </atom:ThemeConfigProvider.SharedTokenSetters>
+                    <atom:ThemeConfigProvider Config="{Binding NestedOrangeThemeConfig}">
                         <atom:Button ButtonType="Primary" VerticalAlignment="Center" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentThemeN3}" />
                     </atom:ThemeConfigProvider>
                 </StackPanel>

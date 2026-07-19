@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TabControlThemeAsset.Identity}"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:TabStrip}" TargetType="atom:TabStrip">
@@ -41,7 +44,7 @@
         </Setter>
 
         <Setter Property="SelectedIndicatorThickness"
-                Value="{atom:TabControlTokenSharedTokenResource LineWidthBold}" />
+                Value="{atom:SharedTokenResource LineWidthBold}" />
 
         <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
             <Setter Property="Background" Value="{atom:TabControlTokenResource InkBarColor}" />
@@ -49,7 +52,7 @@
 
         <Style Selector="^[TabStripPlacement=Top]">
             <Style Selector="^ /template/ DockPanel#HeaderLayout">
-                <Setter Property="HorizontalSpacing" Value="{atom:TabControlTokenSharedTokenResource SpacingXS}"/>
+                <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
             </Style>
             
             <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
@@ -83,7 +86,7 @@
 
         <Style Selector="^[TabStripPlacement=Right]">
             <Style Selector="^ /template/ DockPanel#HeaderLayout">
-                <Setter Property="VerticalSpacing" Value="{atom:TabControlTokenSharedTokenResource SpacingXS}"/>
+                <Setter Property="VerticalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
             </Style>
             
             <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
@@ -117,7 +120,7 @@
 
         <Style Selector="^[TabStripPlacement=Bottom]">
             <Style Selector="^ /template/ DockPanel#HeaderLayout">
-                <Setter Property="HorizontalSpacing" Value="{atom:TabControlTokenSharedTokenResource SpacingXS}"/>
+                <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
             </Style>
             
             <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
@@ -151,7 +154,7 @@
 
         <Style Selector="^[TabStripPlacement=Left]">
             <Style Selector="^ /template/ DockPanel#HeaderLayout">
-                <Setter Property="VerticalSpacing" Value="{atom:TabControlTokenSharedTokenResource SpacingXS}"/>
+                <Setter Property="VerticalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
             </Style>
             
             <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">

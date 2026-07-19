@@ -84,5 +84,6 @@ internal sealed class ThemeDefinitionBindResult
 
     public bool Success =>
         Definition is not null &&
-        Diagnostics.All(static diagnostic => diagnostic.Severity != ThemeDiagnosticSeverity.Error);
+        Diagnostics.All(static diagnostic =>
+            diagnostic.Severity != ThemeDefinitionDiagnosticSeverity.Error);
 }

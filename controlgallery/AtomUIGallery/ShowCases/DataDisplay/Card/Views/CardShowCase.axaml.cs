@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
+using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
@@ -55,7 +56,7 @@ public partial class CardShowCase : GalleryReactiveUserControl<CardViewModel>
         {
             if (DataContext is CardViewModel cardViewModel)
             {
-                if (application.IsDarkThemeMode())
+                if (application.GetThemeManager()?.CurrentTheme?.Appearance == ThemeAppearance.Dark)
                 {
                     cardViewModel.BorderlessFrameBg = new SolidColorBrush(Color.FromRgb(48, 48, 48));
                 }

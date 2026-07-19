@@ -49,5 +49,4 @@ internal class TagToken : AbstractControlDesignToken
         TagTextPaddingInline = new Thickness(SharedToken.UniformlyPaddingXXS, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(TagTokenKind);
 }

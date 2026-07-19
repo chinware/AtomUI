@@ -1,18 +1,5 @@
 ﻿namespace AtomUI.Theme;
 
-public class ThemeDefinitionParserException : SystemException
-{
-    public ThemeDefinitionParserException(string? message)
-        : base(message)
-    {
-    }
-
-    public ThemeDefinitionParserException(string? message, Exception? innerException)
-        : base(message, innerException)
-    {
-    }
-}
-
 public class ThemeLoadException : SystemException
 {
     public ThemeLoadException(string? message)
@@ -21,19 +8,6 @@ public class ThemeLoadException : SystemException
     }
 
     public ThemeLoadException(string? message, Exception? innerException)
-        : base(message, innerException)
-    {
-    }
-}
-
-public class TokenResourceRegisterException : SystemException
-{
-    public TokenResourceRegisterException(string? message)
-        : base(message)
-    {
-    }
-
-    public TokenResourceRegisterException(string? message, Exception? innerException)
         : base(message, innerException)
     {
     }
@@ -60,19 +34,6 @@ public class ThemeResourceRegisterException : SystemException
     }
 
     public ThemeResourceRegisterException(string? message, Exception? innerException)
-        : base(message, innerException)
-    {
-    }
-}
-
-public class ThemeNotFoundException : IOException
-{
-    public ThemeNotFoundException(string? message)
-        : base(message)
-    {
-    }
-
-    public ThemeNotFoundException(string? message, Exception? innerException)
         : base(message, innerException)
     {
     }

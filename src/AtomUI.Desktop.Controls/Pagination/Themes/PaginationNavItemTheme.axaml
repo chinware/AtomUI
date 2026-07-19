@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:PaginationThemeAsset.Identity}"
     x:ClassModifier="internal">
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:PaginationNavItem}" TargetType="atom:PaginationNavItem">
@@ -30,13 +33,13 @@
             </ControlTemplate>
         </Setter>
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="CornerRadius" Value="{atom:PaginationTokenSharedTokenResource BorderRadius}" />
-        <Setter Property="FontSize" Value="{atom:PaginationTokenSharedTokenResource FontSize}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
         <Setter Property="Padding"
                 Value="{atom:PaginationTokenResource PaginationItemPaddingInline}" />
-        <Setter Property="BorderBrush" Value="{atom:PaginationTokenSharedTokenResource ColorTransparent}" />
-        <Setter Property="BorderThickness" Value="{atom:PaginationTokenSharedTokenResource BorderThickness}" />
-        <Setter Property="Foreground" Value="{atom:PaginationTokenSharedTokenResource ColorText}" />
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorTransparent}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
             <Setter Property="IconBrush" Value="{TemplateBinding Foreground}" />
         </Style>
@@ -59,45 +62,45 @@
 
             <Style Selector="^[PaginationItemType=PageIndicator]">
                 <Style Selector="^:selected">
-                    <Setter Property="Foreground" Value="{atom:PaginationTokenSharedTokenResource ColorPrimary}" />
+                    <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimary}" />
                     <Setter Property="Background"
                             Value="{atom:PaginationTokenResource ItemActiveBg}" />
                     <Setter Property="FontWeight" Value="SemiBold" />
                     <Setter Property="BorderBrush"
-                            Value="{atom:PaginationTokenSharedTokenResource ColorPrimary}" />
+                            Value="{atom:SharedTokenResource ColorPrimary}" />
                     <Style Selector="^:pointerover">
                         <Setter Property="Foreground"
-                                Value="{atom:PaginationTokenSharedTokenResource ColorPrimaryHover}" />
+                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
                         <Setter Property="BorderBrush"
-                                Value="{atom:PaginationTokenSharedTokenResource ColorPrimaryHover}" />
+                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
                     </Style>
                 </Style>
                 <Style Selector="^:not(:selected)">
                     <Setter Property="Background" Value="{atom:PaginationTokenResource ItemBg}" />
-                    <Setter Property="Foreground" Value="{atom:PaginationTokenSharedTokenResource ColorText}" />
+                    <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
                     <Style Selector="^:pointerover">
                         <Setter Property="Background"
-                                Value="{atom:PaginationTokenSharedTokenResource ColorBgTextHover}" />
+                                Value="{atom:SharedTokenResource ColorBgTextHover}" />
                     </Style>
                     <Style Selector="^:pressed">
                         <Setter Property="Background"
-                                Value="{atom:PaginationTokenSharedTokenResource ColorBgTextActive}" />
+                                Value="{atom:SharedTokenResource ColorBgTextActive}" />
                     </Style>
                 </Style>
             </Style>
 
             <Style Selector="^[PaginationItemType=Previous], ^[PaginationItemType=Next]">
                 <Setter Property="Background"
-                        Value="{atom:PaginationTokenSharedTokenResource ColorTransparent}" />
+                        Value="{atom:SharedTokenResource ColorTransparent}" />
                 <Setter Property="Foreground"
-                        Value="{atom:PaginationTokenSharedTokenResource ColorText}" />
+                        Value="{atom:SharedTokenResource ColorText}" />
                 <Style Selector="^:pointerover">
                     <Setter Property="Background"
-                            Value="{atom:PaginationTokenSharedTokenResource ColorBgTextHover}" />
+                            Value="{atom:SharedTokenResource ColorBgTextHover}" />
                 </Style>
                 <Style Selector="^:pressed">
                     <Setter Property="Background"
-                            Value="{atom:PaginationTokenSharedTokenResource ColorBgTextActive}" />
+                            Value="{atom:SharedTokenResource ColorBgTextActive}" />
                 </Style>
             </Style>
         </Style>
@@ -107,8 +110,8 @@
             <Setter Property="MinWidth" Value="{atom:PaginationTokenResource ItemSize}" />
 
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="Width" Value="{atom:PaginationTokenSharedTokenResource IconSizeLG}" />
-                <Setter Property="Height" Value="{atom:PaginationTokenSharedTokenResource IconSizeLG}" />
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
             </Style>
 
         </Style>
@@ -116,16 +119,16 @@
             <Setter Property="Height" Value="{atom:PaginationTokenResource ItemSize}" />
             <Setter Property="MinWidth" Value="{atom:PaginationTokenResource ItemSize}" />
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="Width" Value="{atom:PaginationTokenSharedTokenResource IconSize}" />
-                <Setter Property="Height" Value="{atom:PaginationTokenSharedTokenResource IconSize}" />
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Setter Property="Height" Value="{atom:PaginationTokenResource ItemSizeSM}" />
             <Setter Property="MinWidth" Value="{atom:PaginationTokenResource ItemSizeSM}" />
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="Width" Value="{atom:PaginationTokenSharedTokenResource IconSizeSM}" />
-                <Setter Property="Height" Value="{atom:PaginationTokenSharedTokenResource IconSizeSM}" />
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeSM}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeSM}" />
             </Style>
         </Style>
 

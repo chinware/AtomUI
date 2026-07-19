@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:NavMenuThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:NavMenu}" TargetType="atom:NavMenu">
         <Style Selector="^[Mode=Inline],^[Mode=Vertical]">
@@ -41,7 +44,7 @@
                         <atom:PixelAlignedBorder Name="PART_HorizontalLine"
                                                  DockPanel.Dock="Bottom"
                                                  BorderThickness="0,0,0,1"
-                                                 Height="{atom:NavMenuTokenSharedTokenResource LineWidth}" />
+                                                 Height="{atom:SharedTokenResource LineWidth}" />
                         <atom:PixelAlignedBorder HorizontalAlignment="Stretch"
                                                  Padding="{TemplateBinding Padding}"
                                                  Background="{TemplateBinding Background}"
@@ -65,8 +68,8 @@
         
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
         <Setter Property="InlineCollapsedWidth" Value="{atom:NavMenuTokenResource InlineCollapsedWidth}" />
-        <Setter Property="BorderBrush" Value="{atom:NavMenuTokenSharedTokenResource ColorBorderSecondary}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:NavMenuTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="atom:ScrollViewer.IsLiteMode" Value="True" />
         <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
 
@@ -129,7 +132,7 @@
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="Height" Value="{atom:NavMenuTokenResource MenuHorizontalHeight}" />
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HorizontalLine">
-                <Setter Property="BorderBrush" Value="{atom:NavMenuTokenSharedTokenResource ColorBorderSecondary}" />
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
             </Style>
             
             <Style Selector="^[IsDarkStyle=True]">

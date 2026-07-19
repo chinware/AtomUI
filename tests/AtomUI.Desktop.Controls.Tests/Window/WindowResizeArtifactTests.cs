@@ -568,7 +568,7 @@ public class WindowResizeArtifactTests
         baseStyle.Elements(av + "Setter").ShouldContain(setter =>
             (string?)setter.Attribute("Property") == "Background" &&
             (string?)setter.Attribute("Value") ==
-            "{atom:WindowTitleBarTokenSharedTokenResource ColorBgContainer}");
+            "{atom:SharedTokenResource ColorBgContainer}");
         baseStyle.Elements(av + "Setter").ShouldNotContain(setter =>
             (string?)setter.Attribute("Property") == "Background" &&
             (string?)setter.Attribute("Value") == "Transparent");
@@ -634,7 +634,9 @@ public class WindowResizeArtifactTests
         windowSource.ShouldContain("ResetTitleBarMoveDragState();");
         windowSource.ShouldContain("EnsureWindowsCsdFrameThemeSubscription();");
         windowSource.ShouldContain("ApplyCurrentWindowsCsdFrameTheme();");
-        windowSource.ShouldContain("IThemeManager.IsDarkThemeModeProperty");
+        windowSource.ShouldContain("themeManager.ThemeChanged += handler;");
+        windowSource.ShouldContain("themeManager.CurrentTheme?.Appearance == ThemeAppearance.Dark");
+        windowSource.ShouldContain("args.State.Appearance == ThemeAppearance.Dark");
         windowSource.ShouldContain("private void ApplyWindowsCsdFrameTheme(bool isDarkMode)");
         windowSource.ShouldNotContain("change.Property == ActualThemeVariantProperty");
         windowSource.ShouldNotContain("_isDragging");

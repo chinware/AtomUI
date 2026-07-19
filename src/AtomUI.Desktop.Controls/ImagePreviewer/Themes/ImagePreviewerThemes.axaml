@@ -1,6 +1,9 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:atom="https://atomui.net"
+                    xmlns:themeResources="using:AtomUI.Theme.Resources"
+                    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+                    themeResources:ControlTokenScope.Identity="{x:Static generated:ImagePreviewerThemeAsset.Identity}"
                     xmlns:antdicons="https://atomui.net/icons/antdesign"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
@@ -31,7 +34,7 @@
                                      Icon="{antdicons:AntDesignIconProvider CloseOutlined}"
                                      HorizontalAlignment="Right"
                                      VerticalAlignment="Top"
-                                     Margin="{atom:ImagePreviewerTokenSharedTokenResource MarginLG}" />
+                                     Margin="{atom:SharedTokenResource MarginLG}" />
                 </Panel>
             </ControlTemplate>
         </Setter>
@@ -41,7 +44,7 @@
             <Setter Property="IconBrush" Value="{atom:ImagePreviewerTokenResource PreviewOperationColor}" />
             <Setter Property="Background" Value="{atom:ImagePreviewerTokenResource NavButtonBgHoverColor}" />
             <Setter Property="CornerRadius" Value="100" />
-            <Setter Property="Padding" Value="{atom:ImagePreviewerTokenSharedTokenResource PaddingSM}" />
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingSM}" />
         </Style>
         <Style Selector="^ /template/ atom|IconButton#PART_CloseButton:pointerover">
             <Setter Property="IconBrush" Value="{atom:ImagePreviewerTokenResource PreviewOperationHoverColor}" />

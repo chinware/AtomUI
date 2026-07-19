@@ -31,12 +31,12 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
         {
             ResetInteractiveState();
 
-            var themeManager = Application.Current?.GetThemeManager();
-            if (themeManager != null)
+            var languageManager = Application.Current?.GetLanguageManager();
+            if (languageManager != null)
             {
                 EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshInteractiveText();
-                themeManager.LanguageVariantChanged += handler;
-                Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
+                languageManager.LanguageVariantChanged += handler;
+                Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
                           .DisposeWith(disposables);
             }
         });

@@ -93,7 +93,7 @@ public class PriceInput : TemplatedControl,
 
     private NumericUpDown? _numberInput;
     private AtomUISelect? _unitInput;
-    private IThemeManager? _subscribedThemeManager;
+    private ILanguageManager? _subscribedLanguageManager;
 
     protected override void OnInitialized()
     {
@@ -115,24 +115,24 @@ public class PriceInput : TemplatedControl,
 
     private void SubscribeLanguageChanged()
     {
-        if (_subscribedThemeManager != null)
+        if (_subscribedLanguageManager != null)
         {
             return;
         }
 
-        _subscribedThemeManager = Application.Current?.GetThemeManager();
-        if (_subscribedThemeManager != null)
+        _subscribedLanguageManager = Application.Current?.GetLanguageManager();
+        if (_subscribedLanguageManager != null)
         {
-            _subscribedThemeManager.LanguageVariantChanged += HandleLanguageVariantChanged;
+            _subscribedLanguageManager.LanguageVariantChanged += HandleLanguageVariantChanged;
         }
     }
 
     private void UnsubscribeLanguageChanged()
     {
-        if (_subscribedThemeManager != null)
+        if (_subscribedLanguageManager != null)
         {
-            _subscribedThemeManager.LanguageVariantChanged -= HandleLanguageVariantChanged;
-            _subscribedThemeManager = null;
+            _subscribedLanguageManager.LanguageVariantChanged -= HandleLanguageVariantChanged;
+            _subscribedLanguageManager = null;
         }
     }
 

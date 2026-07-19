@@ -1,6 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:ListBoxThemeAsset.Identity}"
               x:ClassModifier="internal"
               x:Class="AtomUI.Desktop.Controls.Themes.ListBoxItemTheme"
               TargetType="atom:ListBoxItem">
@@ -54,34 +57,34 @@
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#SelectedIndicator">
-            <Setter Property="IconBrush" Value="{atom:ListBoxTokenSharedTokenResource ColorPrimary}" />
-            <Setter Property="Width" Value="{atom:ListBoxTokenSharedTokenResource IconSize}" />
-            <Setter Property="Height" Value="{atom:ListBoxTokenSharedTokenResource IconSize}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
             <Setter Property="Margin" Value="{atom:ListBoxTokenResource SelectedIndicatorMargin}" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="CornerRadius" Value="{atom:ListBoxTokenSharedTokenResource BorderRadius}" />
-            <Setter Property="MinHeight" Value="{atom:ListBoxTokenSharedTokenResource ControlHeightLG}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
             <Setter Property="Padding" Value="{atom:ListBoxTokenResource ItemPaddingLG}" />
         </Style>
 
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Setter Property="CornerRadius" Value="{atom:ListBoxTokenSharedTokenResource BorderRadiusSM}" />
-            <Setter Property="MinHeight" Value="{atom:ListBoxTokenSharedTokenResource ControlHeight}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="Padding" Value="{atom:ListBoxTokenResource ItemPadding}" />
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="CornerRadius" Value="{atom:ListBoxTokenSharedTokenResource BorderRadiusXS}" />
-            <Setter Property="MinHeight" Value="{atom:ListBoxTokenSharedTokenResource ControlHeightSM}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
             <Setter Property="Padding" Value="{atom:ListBoxTokenResource ItemPaddingSM}" />
         </Style>
 
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
                 <Setter Property="Foreground"
-                        Value="{atom:ListBoxTokenSharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
 

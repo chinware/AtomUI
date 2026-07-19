@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TimePickerThemeAsset.Identity}"
     x:ClassModifier="internal">
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter"/>
     <ControlTheme x:Key="{x:Type atom:TimeViewCell}" TargetType="atom:TimeViewCell">
@@ -37,7 +40,7 @@
         
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-                <Setter Property="Foreground" Value="{atom:TimePickerTokenSharedTokenResource ColorTextDisabled}" />
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
 

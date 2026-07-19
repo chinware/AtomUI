@@ -47,7 +47,8 @@ public class SplitterThemeContractTests
         splitterTheme.ShouldContain("LineThickness=\"{TemplateBinding LineThickness}\"");
         splitterTheme.ShouldContain("LineCornerRadius=\"{TemplateBinding LineCornerRadius}\"");
         splitterTheme.ShouldContain("<Setter Property=\"LineThickness\" Value=\"{atom:SplitterTokenResource HandleLineThickness}\" />");
-        splitterTheme.ShouldContain("<Setter Property=\"LineCornerRadius\" Value=\"{atom:SplitterTokenSharedTokenResource BorderRadiusXS}\" />");
+        splitterTheme.ShouldContain("<Setter Property=\"LineCornerRadius\" Value=\"{atom:SharedTokenResource BorderRadiusXS}\" />");
+        splitterTheme.ShouldContain("themeResources:ControlTokenScope.Identity=");
 
         handleTheme.ShouldContain("CornerRadius=\"{TemplateBinding LineCornerRadius}\"");
         handleTheme.ShouldContain("LineCornerRadius=\"{TemplateBinding LineCornerRadius}\"");
@@ -55,7 +56,8 @@ public class SplitterThemeContractTests
 
         dragBarTheme.ShouldContain("CornerRadius=\"{TemplateBinding LineCornerRadius}\"");
         dragBarTheme.ShouldContain("<Setter Property=\"LineThickness\" Value=\"{atom:SplitterTokenResource HandleLineThickness}\" />");
-        dragBarTheme.ShouldContain("<Setter Property=\"LineCornerRadius\" Value=\"{atom:SplitterTokenSharedTokenResource BorderRadiusXS}\" />");
+        dragBarTheme.ShouldContain("<Setter Property=\"LineCornerRadius\" Value=\"{atom:SharedTokenResource BorderRadiusXS}\" />");
+        dragBarTheme.ShouldContain("themeResources:ControlTokenScope.Identity=");
         dragBarTheme.ShouldContain("<Setter Property=\"Width\" Value=\"{Binding LineThickness, RelativeSource={RelativeSource TemplatedParent}}\" />");
         dragBarTheme.ShouldContain("<Setter Property=\"Height\" Value=\"{Binding LineThickness, RelativeSource={RelativeSource TemplatedParent}}\" />");
         dragBarTheme.ShouldNotContain("<Setter Property=\"Width\" Value=\"{atom:SplitterTokenResource SplitBarSize}\" />");

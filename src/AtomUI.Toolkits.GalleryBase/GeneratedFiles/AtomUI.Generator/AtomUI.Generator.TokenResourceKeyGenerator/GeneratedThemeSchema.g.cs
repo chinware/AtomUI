@@ -131,7 +131,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Toolkits.GalleryBase.Controls.GalleryShowCaseHeaderToken)token).TitleFontWeight)),
             },
             static () => new global::AtomUI.Toolkits.GalleryBase.Controls.GalleryShowCaseHeaderToken(),
-            static (token, isDark) => ((global::AtomUI.Toolkits.GalleryBase.Controls.GalleryShowCaseHeaderToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Toolkits.GalleryBase.Controls.GalleryShowCaseHeaderToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "GalleryStickyTabsHost"),
             new TokenDescriptor[]
@@ -156,7 +156,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Toolkits.GalleryBase.Controls.GalleryStickyTabsHostToken)token).StickyContentPadding)),
             },
             static () => new global::AtomUI.Toolkits.GalleryBase.Controls.GalleryStickyTabsHostToken(),
-            static (token, isDark) => ((global::AtomUI.Toolkits.GalleryBase.Controls.GalleryStickyTabsHostToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Toolkits.GalleryBase.Controls.GalleryStickyTabsHostToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "GalleryWindowTitleBar"),
             new TokenDescriptor[]
@@ -175,7 +175,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Toolkits.GalleryBase.Controls.GalleryWindowTitleBarToken)token).MenuMargin)),
             },
             static () => new global::AtomUI.Toolkits.GalleryBase.Controls.GalleryWindowTitleBarToken(),
-            static (token, isDark) => ((global::AtomUI.Toolkits.GalleryBase.Controls.GalleryWindowTitleBarToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Toolkits.GalleryBase.Controls.GalleryWindowTitleBarToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ShowCaseItem"),
             new TokenDescriptor[]
@@ -236,7 +236,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Toolkits.GalleryBase.Controls.ShowCaseItemToken)token).TitleFontWeight)),
             },
             static () => new global::AtomUI.Toolkits.GalleryBase.Controls.ShowCaseItemToken(),
-            static (token, isDark) => ((global::AtomUI.Toolkits.GalleryBase.Controls.ShowCaseItemToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Toolkits.GalleryBase.Controls.ShowCaseItemToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
         new ControlTokenDescriptor(
             new ControlTokenIdentity("AtomUI", "ShowCasePanel"),
             new TokenDescriptor[]
@@ -273,7 +273,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Toolkits.GalleryBase.Controls.ShowCasePanelToken)token).RowGap)),
             },
             static () => new global::AtomUI.Toolkits.GalleryBase.Controls.ShowCasePanelToken(),
-            static (token, isDark) => ((global::AtomUI.Toolkits.GalleryBase.Controls.ShowCasePanelToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Toolkits.GalleryBase.Controls.ShowCasePanelToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
     };
 
     private static readonly ThemeAlgorithmDescriptor[] s_algorithms = new ThemeAlgorithmDescriptor[]

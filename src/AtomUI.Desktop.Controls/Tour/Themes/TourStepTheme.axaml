@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TourThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:TourStep}" TargetType="atom:TourStep">
         <Setter Property="Template">
@@ -36,43 +39,43 @@
         <Style Selector="^ /template/ atom|DialogCaptionButton">
             <Setter Property="Width" Value="{atom:TourTokenResource CloseBtnSize}" />
             <Setter Property="Height" Value="{atom:TourTokenResource CloseBtnSize}" />
-            <Setter Property="IconWidth" Value="{atom:TourTokenSharedTokenResource IconSize}" />
-            <Setter Property="IconHeight" Value="{atom:TourTokenSharedTokenResource IconSize}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#Title">
             <Setter Property="Foreground" Value="{atom:TourTokenResource HeaderColor}" />
-            <Setter Property="FontWeight" Value="{atom:TourTokenSharedTokenResource FontWeightStrong}" />
+            <Setter Property="FontWeight" Value="{atom:SharedTokenResource FontWeightStrong}" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
            
         <Style Selector="^[StyleType=Primary]">
-            <Setter Property="Foreground" Value="{atom:TourTokenSharedTokenResource ColorTextLightSolid}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
             
             <Style Selector="^ /template/ ContentPresenter#Title">
-                <Setter Property="Foreground" Value="{atom:TourTokenSharedTokenResource ColorTextLightSolid}" />
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
             </Style>
             
             <Style Selector="^ /template/ atom|DialogCaptionButton#CloseButton">
-                <Setter Property="IconBrush" Value="{atom:TourTokenSharedTokenResource ColorTextLightSolid}" />
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
             </Style>
             
             <Style Selector="^ /template/ atom|DialogCaptionButton#CloseButton:pointerover">
-                <Setter Property="IconBrush" Value="{atom:TourTokenSharedTokenResource ColorTextLightSolid}" />
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
             </Style>
         
             <Style Selector="^ /template/ atom|DialogCaptionButton#CloseButton:pressed">
-                <Setter Property="IconBrush" Value="{atom:TourTokenSharedTokenResource ColorTextLightSolid}" />
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
             </Style>
             
         </Style>
 
         <Style Selector="^ /template/ DockPanel#RootLayout">
-            <Setter Property="VerticalSpacing" Value="{atom:TourTokenSharedTokenResource SpacingXS}" />
+            <Setter Property="VerticalSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
         </Style>
         
         <Style Selector="^ /template/ StackPanel#ContentLayout">
-            <Setter Property="Spacing" Value="{atom:TourTokenSharedTokenResource SpacingXS}" />
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}" />
         </Style>
 
         <Setter Property="IsVisible" Value="False" />

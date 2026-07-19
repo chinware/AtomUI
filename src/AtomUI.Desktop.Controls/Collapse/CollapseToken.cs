@@ -72,5 +72,4 @@ internal class CollapseToken : AbstractControlDesignToken
         RightExpandButtonMarginLG   = new Thickness(SharedToken.UniformlyMarginSM, 0, 0, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(CollapseTokenKind);
 }

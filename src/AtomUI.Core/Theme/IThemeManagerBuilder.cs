@@ -1,35 +1,21 @@
 using System.Globalization;
-using System.Diagnostics.CodeAnalysis;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Configuration;
 using Avalonia.Media;
 
 namespace AtomUI.Theme;
 
 public interface IThemeManagerBuilder
 {
-    IList<Type> ControlDesignTokens { get; }
-    IList<IThemeAssetPathProvider> ThemeAssetPathProviders { get; }
-    IList<IControlThemesProvider> ControlThemesProviders { get; }
-    IList<LanguageProvider> LanguageProviders { get; }
-    IList<EventHandler> InitializedHandlers { get; }
-    LanguageVariant LanguageVariant { get; }
-    string ThemeId { get; }
-    void AddControlToken(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor |
-                                    DynamicallyAccessedMemberTypes.PublicProperties |
-                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
-        Type tokenType);
     void AddControlToken(ControlTokenDescriptor descriptor);
-    void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider);
     void AddControlThemesProvider(IControlThemesProvider controlThemesProvider);
     void AddLanguageProviders(LanguageProvider languageProvider);
-    
-    void WithDefaultTheme(string themeId);
+    void AddInitializer(Action<IThemeManager> initializer);
+    void WithInitialTheme(string themeId, ThemeConfig? config = null);
+    void WithFollowSystemThemes(ThemeRequest light, ThemeRequest dark);
     void WithDefaultFontFamily(FontFamily fontFamily);
     void WithDefaultFontFamily(string fontFamily);
     void WithDefaultCultureInfo(CultureInfo cultureInfo);
     void WithDefaultLanguageVariant(LanguageVariant languageVariant);
-    void WithThemeVariantCalculatorFactory(IThemeVariantCalculatorFactory factory);
 }

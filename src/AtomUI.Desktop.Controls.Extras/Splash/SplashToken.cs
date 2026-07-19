@@ -64,5 +64,4 @@ internal class SplashToken : AbstractControlDesignToken
         AccentColor          = SharedToken.ColorPrimary;
     }
 
-    protected override Type GetTokenKindType() => typeof(SplashTokenKind);
 }

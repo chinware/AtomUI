@@ -126,5 +126,4 @@ internal class DialogToken : AbstractControlDesignToken
         LoadingIndicatorMargin = new Thickness(0, 0, 0, SharedToken.UniformlyMargin);
     }
     
-    protected override Type GetTokenKindType() => typeof(DialogTokenKind);
 }

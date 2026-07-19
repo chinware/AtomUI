@@ -19,7 +19,7 @@ public class GalleryApplication : BaseGalleryApplication
         this.UseAtomUI(builder =>
         {
             builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
-            builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
+            builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();
             builder.UseDesktopExtras();

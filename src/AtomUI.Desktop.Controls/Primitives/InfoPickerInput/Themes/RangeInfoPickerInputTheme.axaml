@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:InfoPickerInputThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:Class="AtomUI.Desktop.Controls.Primitives.Themes.RangeInfoPickerInputTheme"
     TargetType="atom:RangeInfoPickerInput">
@@ -35,7 +38,7 @@
                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
                     <atom:AddOnDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal"
-                                    Spacing="{atom:InfoPickerInputTokenSharedTokenResource SpacingXS}">
+                                    Spacing="{atom:SharedTokenResource SpacingXS}">
                             <atom:PickerClearUpButton
                                 Name="PART_ClearUpButton" />
                             <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
@@ -112,7 +115,7 @@
         <Style Selector="^ /template/ atom|EmbeddedTextBox">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Foreground"
-                    Value="{atom:InfoPickerInputTokenSharedTokenResource ColorText}" />
+                    Value="{atom:SharedTokenResource ColorText}" />
         </Style>
         <Style
             Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox /template/ TextPresenter#PART_TextPresenter, ^ /template/ atom|EmbeddedTextBox#PART_SecondaryInfoInputBox /template/ TextPresenter#PART_TextPresenter">
@@ -122,18 +125,18 @@
         <Style Selector="^:flyout-open">
             <Style Selector="^ /template/ atom|EmbeddedTextBox">
                 <Setter Property="Foreground"
-                        Value="{atom:InfoPickerInputTokenSharedTokenResource ColorText}" />
+                        Value="{atom:SharedTokenResource ColorText}" />
             </Style>
             <Style Selector="^[RangeActivatedPart=Start]">
                 <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox">
                     <Setter Property="Foreground"
-                            Value="{atom:InfoPickerInputTokenSharedTokenResource ColorTextTertiary}" />
+                            Value="{atom:SharedTokenResource ColorTextTertiary}" />
                 </Style>
             </Style>
             <Style Selector="^[RangeActivatedPart=End]">
                 <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_SecondaryInfoInputBox">
                     <Setter Property="Foreground"
-                            Value="{atom:InfoPickerInputTokenSharedTokenResource ColorTextTertiary}" />
+                            Value="{atom:SharedTokenResource ColorTextTertiary}" />
                 </Style>
             </Style>
         </Style>
@@ -141,20 +144,20 @@
         <Style Selector="^ /template/ atom|Icon#PART_RangePickerArrow">
             <Setter Property="Margin"
                     Value="{atom:InfoPickerInputTokenResource RangePickerArrowMargin}" />
-            <Setter Property="Height" Value="{atom:InfoPickerInputTokenSharedTokenResource IconSize}" />
-            <Setter Property="Width" Value="{atom:InfoPickerInputTokenSharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
             <Setter Property="FillBrush"
-                    Value="{atom:InfoPickerInputTokenSharedTokenResource ColorIcon}" />
+                    Value="{atom:SharedTokenResource ColorIcon}" />
             <Setter Property="StrokeBrush"
-                    Value="{atom:InfoPickerInputTokenSharedTokenResource ColorIcon}" />
+                    Value="{atom:SharedTokenResource ColorIcon}" />
         </Style>
 
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ atom|Icon#PART_RangePickerArrow">
                 <Setter Property="FillBrush"
-                        Value="{atom:InfoPickerInputTokenSharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
                 <Setter Property="StrokeBrush"
-                        Value="{atom:InfoPickerInputTokenSharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
 
@@ -165,19 +168,19 @@
 
         <Style Selector="^[EffectiveStatus=Default]">
             <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">
-                <Setter Property="Fill" Value="{atom:InfoPickerInputTokenSharedTokenResource ColorPrimary}" />
+                <Setter Property="Fill" Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
 
         <Style Selector="^[EffectiveStatus=Error]">
             <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">
-                <Setter Property="Fill" Value="{atom:InfoPickerInputTokenSharedTokenResource ColorError}" />
+                <Setter Property="Fill" Value="{atom:SharedTokenResource ColorError}" />
             </Style>
         </Style>
 
         <Style Selector="^[EffectiveStatus=Warning]">
             <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">
-                <Setter Property="Fill" Value="{atom:InfoPickerInputTokenSharedTokenResource ColorWarning}" />
+                <Setter Property="Fill" Value="{atom:SharedTokenResource ColorWarning}" />
             </Style>
         </Style>
 

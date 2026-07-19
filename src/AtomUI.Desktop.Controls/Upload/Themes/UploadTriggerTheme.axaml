@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:UploadThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:UploadTrigger}" TargetType="atom:UploadTrigger">
         <Setter Property="Template">
@@ -15,7 +18,7 @@
         </Setter>
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorTextSecondary}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextSecondary}" />
 
         <Style Selector="^[ListType=PictureCard], ^[ListType=PictureCircle]">
             <Setter Property="Template">
@@ -34,10 +37,10 @@
                     </atom:DashedBorder>
                 </ControlTemplate>
             </Setter>
-            <Setter Property="Background" Value="{atom:UploadTokenSharedTokenResource ColorFillAlter}" />
-            <Setter Property="CornerRadius" Value="{atom:UploadTokenSharedTokenResource BorderRadiusLG}" />
-            <Setter Property="BorderBrush" Value="{atom:UploadTokenSharedTokenResource ColorBorder}" />
-            <Setter Property="BorderThickness" Value="{atom:UploadTokenSharedTokenResource BorderThickness}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillAlter}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+            <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
 
@@ -48,12 +51,12 @@
             </Style>
 
             <Style Selector="^:pointerover">
-                <Setter Property="BorderBrush" Value="{atom:UploadTokenSharedTokenResource ColorPrimary}" />
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

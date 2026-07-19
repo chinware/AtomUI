@@ -81,5 +81,4 @@ internal class AvatarToken : AbstractControlDesignToken
         AvatarColor = SharedToken.ColorTextLightSolid;
     }
     
-    protected override Type GetTokenKindType() => typeof(AvatarTokenKind);
 }

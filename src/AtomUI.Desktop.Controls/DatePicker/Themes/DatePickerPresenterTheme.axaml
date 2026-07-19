@@ -1,6 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:DatePickerThemeAsset.Identity}"
               xmlns:calendarview="using:AtomUI.Desktop.Controls.CalendarView"
               x:Class="AtomUI.Desktop.Controls.Themes.DatePickerPresenterTheme"
               TargetType="atom:DatePickerPresenter"
@@ -51,9 +54,9 @@
     </Setter>
 
     <Style Selector="^:is(atom|DatePickerPresenter)">
-        <Setter Property="BorderThickness" Value="{atom:DatePickerTokenSharedTokenResource BorderThickness}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Style Selector="^ /template/ atom|PixelAlignedBorder#ButtonsFrame">
-            <Setter Property="BorderBrush" Value="{atom:DatePickerTokenSharedTokenResource ColorBorderSecondary}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
         </Style>
 
         <Style Selector="^ /template/ Panel#ButtonsLayout">

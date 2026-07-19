@@ -61,5 +61,4 @@ internal class GalleryShowCaseHeaderToken : AbstractControlDesignToken
         MetadataValueFontFamily   = FontFamily.Parse("Consolas");
     }
 
-    protected override Type GetTokenKindType() => typeof(GalleryShowCaseHeaderTokenKind);
 }

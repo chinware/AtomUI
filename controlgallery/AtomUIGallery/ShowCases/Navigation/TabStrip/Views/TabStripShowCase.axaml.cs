@@ -120,8 +120,8 @@ public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewM
             return;
         }
 
-        var themeManager = Application.Current?.GetThemeManager();
-        if (themeManager is null)
+        var languageManager = Application.Current?.GetLanguageManager();
+        if (languageManager is null)
         {
             return;
         }
@@ -131,7 +131,7 @@ public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewM
             RefreshViewModelData();
             RefreshDynamicAddedTabs();
         };
-        themeManager.LanguageVariantChanged += _languageVariantChangedHandler;
+        languageManager.LanguageVariantChanged += _languageVariantChangedHandler;
     }
 
     private void UnsubscribeLanguageVariantChanged()
@@ -141,10 +141,10 @@ public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewM
             return;
         }
 
-        var themeManager = Application.Current?.GetThemeManager();
-        if (themeManager is not null)
+        var languageManager = Application.Current?.GetLanguageManager();
+        if (languageManager is not null)
         {
-            themeManager.LanguageVariantChanged -= _languageVariantChangedHandler;
+            languageManager.LanguageVariantChanged -= _languageVariantChangedHandler;
         }
         _languageVariantChangedHandler = null;
     }

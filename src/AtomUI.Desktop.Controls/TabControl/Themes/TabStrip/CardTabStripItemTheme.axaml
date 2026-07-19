@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TabControlThemeAsset.Identity}"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="CardTabStripItemTheme" TargetType="atom:TabStripItem">
@@ -34,14 +37,14 @@
 
         <Setter Property="Margin" Value="{atom:TabControlTokenResource HorizontalItemMargin}" />
         <Setter Property="Background" Value="{atom:TabControlTokenResource CardBg}" />
-        <Setter Property="BorderBrush" Value="{atom:TabControlTokenSharedTokenResource ColorBorderSecondary}" />
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
 
         <Style Selector="^:selected">
-            <Setter Property="Background" Value="{atom:TabControlTokenSharedTokenResource ColorBgContainer}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
         </Style>
 
         <Style Selector="^[IsTabReorderDragging=True]">
-            <Setter Property="Background" Value="{atom:TabControlTokenSharedTokenResource ColorBgContainer}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
         </Style>
 
         <Style Selector="^[TabStripPlacement=Top], ^[TabStripPlacement=Bottom]">
@@ -104,7 +107,7 @@
 
         <Style Selector="^:disabled">
             <Setter Property="Background"
-                    Value="{atom:TabControlTokenSharedTokenResource ColorBgContainerDisabled}" />
+                    Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

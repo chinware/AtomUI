@@ -2,7 +2,10 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:ClassModifier="internal"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DataGridThemeAsset.Identity}">
     <ControlTheme x:Key="{x:Type atom:DataGridColumnGroupHeader}" TargetType="atom:DataGridColumnGroupHeader">
         <Setter Property="Template">
             <ControlTemplate>
@@ -21,7 +24,7 @@
             </ControlTemplate>
         </Setter>
         <Setter Property="Foreground" Value="{atom:DataGridTokenResource TableHeaderTextColor}"/>
-        <Setter Property="FontWeight" Value="{atom:DataGridTokenSharedTokenResource FontWeightStrong}"/>
+        <Setter Property="FontWeight" Value="{atom:SharedTokenResource FontWeightStrong}"/>
         <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>

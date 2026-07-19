@@ -235,5 +235,4 @@ internal class WindowTitleBarToken : AbstractControlDesignToken
         return 8;
     }
     
-    protected override Type GetTokenKindType() => typeof(WindowTitleBarTokenKind);
 }

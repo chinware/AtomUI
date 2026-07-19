@@ -53,7 +53,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Controls.IconToken)token).StrokeWidth)),
             },
             static () => new global::AtomUI.Controls.IconToken(),
-            static (token, isDark) => ((global::AtomUI.Controls.IconToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Controls.IconToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
     };
 
     private static readonly ThemeAlgorithmDescriptor[] s_algorithms = new ThemeAlgorithmDescriptor[]

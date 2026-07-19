@@ -59,5 +59,4 @@ internal class MessageToken : AbstractControlDesignToken
         MessageIconSize   = SharedToken.FontSizeSM * SharedToken.RelativeLineHeightSM;
     }
     
-    protected override Type GetTokenKindType() => typeof(MessageTokenKind);
 }

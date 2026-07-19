@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SplitterThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SplitterHandle}" TargetType="atom:SplitterHandle">
         <Setter Property="Template">
@@ -15,7 +18,7 @@
                                 IsHitTestVisible="False" />
                         <atom:SplitterDragBar Name="PART_DragBar"
                                               Orientation="{TemplateBinding Orientation}"
-                                              LineBrush="{atom:SplitterTokenSharedTokenResource ColorFill}"
+                                              LineBrush="{atom:SharedTokenResource ColorFill}"
                                               LineThickness="{TemplateBinding LineThickness}"
                                               LineCornerRadius="{TemplateBinding LineCornerRadius}"
                                               IsDragEnabled="{TemplateBinding IsDragEnabled}" />
@@ -23,7 +26,7 @@
                                 Width="0"
                                 Height="0"
                                 ClipToBounds="False"
-                                ZIndex="{atom:SplitterTokenSharedTokenResource ZIndexPopupBase}"
+                                ZIndex="{atom:SharedTokenResource ZIndexPopupBase}"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center">
                             <atom:IconButton Name="PART_CollapsePrevButton"
@@ -40,7 +43,7 @@
 
         <Setter Property="LineBrush" Value="{atom:SplitterTokenResource HandleLineColor}" />
         <Setter Property="LineThickness" Value="{atom:SplitterTokenResource HandleLineThickness}" />
-        <Setter Property="LineCornerRadius" Value="{atom:SplitterTokenSharedTokenResource BorderRadiusXS}" />
+        <Setter Property="LineCornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
         <Setter Property="ClipToBounds" Value="False" />
 
         <Style Selector="^:pointerover">
@@ -59,42 +62,42 @@
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_CollapsePrevButton">
-            <Setter Property="Background" Value="{atom:SplitterTokenSharedTokenResource ControlItemBgHover}" />
-            <Setter Property="CornerRadius" Value="{atom:SplitterTokenSharedTokenResource BorderRadiusXS}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgHover}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="0" />
-            <Setter Property="ZIndex" Value="{atom:SplitterTokenSharedTokenResource ZIndexPopupBase}" />
+            <Setter Property="ZIndex" Value="{atom:SharedTokenResource ZIndexPopupBase}" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_CollapsePrevButton:pointerover">
-            <Setter Property="Background" Value="{atom:SplitterTokenSharedTokenResource ControlItemBgActive}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgActive}" />
             <Setter Property="IconBrush" Value="{atom:SplitterTokenResource HandleIconHoverColor}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_CollapsePrevButton:pressed">
-            <Setter Property="Background" Value="{atom:SplitterTokenSharedTokenResource ControlItemBgActiveHover}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgActiveHover}" />
             <Setter Property="IconBrush" Value="{atom:SplitterTokenResource HandleIconPressedColor}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_CollapseNextButton">
-            <Setter Property="Background" Value="{atom:SplitterTokenSharedTokenResource ControlItemBgHover}" />
-            <Setter Property="CornerRadius" Value="{atom:SplitterTokenSharedTokenResource BorderRadiusXS}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgHover}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="0" />
-            <Setter Property="ZIndex" Value="{atom:SplitterTokenSharedTokenResource ZIndexPopupBase}" />
+            <Setter Property="ZIndex" Value="{atom:SharedTokenResource ZIndexPopupBase}" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_CollapseNextButton:pointerover">
-            <Setter Property="Background" Value="{atom:SplitterTokenSharedTokenResource ControlItemBgActive}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgActive}" />
             <Setter Property="IconBrush" Value="{atom:SplitterTokenResource HandleIconHoverColor}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_CollapseNextButton:pressed">
-            <Setter Property="Background" Value="{atom:SplitterTokenSharedTokenResource ControlItemBgActiveHover}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgActiveHover}" />
             <Setter Property="IconBrush" Value="{atom:SplitterTokenResource HandleIconPressedColor}" />
         </Style>
 
@@ -121,7 +124,7 @@
         </Style>
 
         <Style Selector="^[Orientation=Vertical] /template/ atom|IconButton#PART_CollapsePrevButton">
-            <Setter Property="Width" Value="{atom:SplitterTokenSharedTokenResource FontSizeSM}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource FontSizeSM}" />
             <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
             <Setter Property="Canvas.Left"
                     Value="{atom:SplitterTokenResource SplitBarCollapseOffsetNegative}" />
@@ -130,7 +133,7 @@
         </Style>
 
         <Style Selector="^[Orientation=Vertical] /template/ atom|IconButton#PART_CollapseNextButton">
-            <Setter Property="Width" Value="{atom:SplitterTokenSharedTokenResource FontSizeSM}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource FontSizeSM}" />
             <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
             <Setter Property="Canvas.Left"
                     Value="{atom:SplitterTokenResource SplitBarCollapseOffset}" />
@@ -140,7 +143,7 @@
 
         <Style Selector="^[Orientation=Horizontal] /template/ atom|IconButton#PART_CollapsePrevButton">
             <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
-            <Setter Property="Height" Value="{atom:SplitterTokenSharedTokenResource FontSizeSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource FontSizeSM}" />
             <Setter Property="Canvas.Left"
                     Value="{atom:SplitterTokenResource SplitBarCollapseCrossOffset}" />
             <Setter Property="Canvas.Top"
@@ -149,7 +152,7 @@
 
         <Style Selector="^[Orientation=Horizontal] /template/ atom|IconButton#PART_CollapseNextButton">
             <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
-            <Setter Property="Height" Value="{atom:SplitterTokenSharedTokenResource FontSizeSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource FontSizeSM}" />
             <Setter Property="Canvas.Left"
                     Value="{atom:SplitterTokenResource SplitBarCollapseCrossOffset}" />
             <Setter Property="Canvas.Top"

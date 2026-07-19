@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:OtpLineEditThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:OtpLineEdit}" TargetType="atom:OtpLineEdit">
         <Setter Property="Template">
@@ -9,7 +12,7 @@
                 <Grid Name="PART_RootPanel">
                     <StackPanel Orientation="Horizontal"
                                 VerticalAlignment="Center"
-                                Spacing="{atom:OtpLineEditTokenSharedTokenResource UniformlyPaddingXXS}">
+                                Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                         <ItemsControl
                             Name="PART_CellsHost"
                             ItemsSource="{TemplateBinding CellItems}">
@@ -62,7 +65,7 @@
         </Setter>
 
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="IsMotionEnabled" Value="{atom:OtpLineEditTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
     </ControlTheme>
 </ResourceDictionary>

@@ -35,5 +35,4 @@ internal class QRCodeToken : AbstractControlDesignToken
         QRCodeMaskBackgroundColor = Color.FromArgb(244, colorBgContainer.R, colorBgContainer.G, colorBgContainer.B);
     }
     
-    protected override Type GetTokenKindType() => typeof(QRCodeTokenKind);
 }

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ExpanderThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Expander}" TargetType="atom:Expander">
         <Setter Property="Template">
@@ -51,7 +54,7 @@
                             ClipToBounds="True"
                             IsVisible="False">
                             <atom:PixelAlignedBorder
-                                BorderBrush="{atom:ExpanderTokenSharedTokenResource ColorBorder}"
+                                BorderBrush="{atom:SharedTokenResource ColorBorder}"
                                 BorderThickness="{TemplateBinding ContentBorderThickness}">
                                 <ContentPresenter Name="PART_ContentPresenter"
                                                   Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
@@ -64,14 +67,14 @@
             </ControlTemplate>
         </Setter>
 
-        <Setter Property="MotionDuration" Value="{atom:ExpanderTokenSharedTokenResource MotionDurationSlow}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:ExpanderTokenSharedTokenResource EnableMotion}" />
-        <Setter Property="BorderThickness" Value="{atom:ExpanderTokenSharedTokenResource BorderThickness}" />
+        <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationSlow}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         
         <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_Frame">
             <Setter Property="CornerRadius"
                     Value="{atom:ExpanderTokenResource ExpanderBorderRadius}" />
-            <Setter Property="BorderBrush" Value="{atom:ExpanderTokenSharedTokenResource ColorBorder}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
         <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
@@ -79,13 +82,13 @@
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
-            <Setter Property="Foreground" Value="{atom:ExpanderTokenSharedTokenResource ColorTextHeading}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextHeading}" />
             <Setter Property="Margin" Value="0, 1, 0, 0" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
-            <Setter Property="IconWidth" Value="{atom:ExpanderTokenSharedTokenResource IconSizeSM}" />
-            <Setter Property="IconHeight" Value="{atom:ExpanderTokenSharedTokenResource IconSizeSM}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
         </Style>
 
         <Style Selector="^[ExpandIconPosition=Start]">
@@ -222,25 +225,25 @@
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
-                        Value="{atom:ExpanderTokenSharedTokenResource FontSizeLG}" />
+                        Value="{atom:SharedTokenResource FontSizeLG}" />
                 <Setter Property="TextBlock.LineHeight"
-                        Value="{atom:ExpanderTokenSharedTokenResource FontHeightLG}" />
+                        Value="{atom:SharedTokenResource FontHeightLG}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
-                        Value="{atom:ExpanderTokenSharedTokenResource FontSize}" />
+                        Value="{atom:SharedTokenResource FontSize}" />
                 <Setter Property="TextBlock.LineHeight"
-                        Value="{atom:ExpanderTokenSharedTokenResource FontHeight}" />
+                        Value="{atom:SharedTokenResource FontHeight}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
-                        Value="{atom:ExpanderTokenSharedTokenResource FontSize}" />
+                        Value="{atom:SharedTokenResource FontSize}" />
                 <Setter Property="TextBlock.LineHeight"
-                        Value="{atom:ExpanderTokenSharedTokenResource FontHeight}" />
+                        Value="{atom:SharedTokenResource FontHeight}" />
             </Style>
             
         </Style>
@@ -270,10 +273,10 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:ExpanderTokenSharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator ContentPresenter">
                 <Setter Property="Foreground"
-                        Value="{atom:ExpanderTokenSharedTokenResource ColorTextDisabled}" />
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
     </ControlTheme>

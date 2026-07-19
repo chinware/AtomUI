@@ -1,61 +1,65 @@
-using AtomUI.Theme.TokenSystem;
-using AtomUI.Theme.Styling;
-using Avalonia.Controls;
-
 namespace AtomUI.Theme.Compilation;
 
 internal sealed class ControlThemeSnapshot
 {
-    private readonly DesignToken _effectiveSharedToken;
-    private readonly IControlDesignToken _controlToken;
-
     internal ControlThemeSnapshot(
-        DesignToken effectiveSharedToken,
-        IReadOnlyDictionary<object, object?> sharedResourceDelta,
-        IControlDesignToken controlToken,
+        int controlSlot,
+        ThemeAppearance appearance,
+        IReadOnlyDictionary<int, object?> effectiveGlobalTokenDelta,
+        IReadOnlyDictionary<object, object?> effectiveGlobalResourceDelta,
+        TokenValueTable controlTokenValues,
         IReadOnlyDictionary<object, object?> controlResources)
     {
-        _effectiveSharedToken = effectiveSharedToken;
-        SharedResourceDelta  = sharedResourceDelta;
-        _controlToken         = controlToken;
-        ControlResources     = controlResources;
+        ArgumentOutOfRangeException.ThrowIfNegative(controlSlot);
+        ArgumentNullException.ThrowIfNull(effectiveGlobalTokenDelta);
+        ArgumentNullException.ThrowIfNull(effectiveGlobalResourceDelta);
+        ArgumentNullException.ThrowIfNull(controlTokenValues);
+        ArgumentNullException.ThrowIfNull(controlResources);
+
+        ControlSlot                  = controlSlot;
+        Appearance                   = appearance;
+        EffectiveGlobalTokenDelta    = effectiveGlobalTokenDelta;
+        EffectiveGlobalResourceDelta = effectiveGlobalResourceDelta;
+        ControlTokenValues           = controlTokenValues;
+        ControlResources             = controlResources;
+        EstimatedRetainedBytes        = ThemeRetainedBytesEstimator.EstimateControl(this);
     }
 
-    public DesignToken EffectiveSharedToken => DesignTokenClone.DeepClone(_effectiveSharedToken);
-    public IReadOnlyDictionary<object, object?> SharedResourceDelta { get; }
-    public IControlDesignToken ControlToken => CloneControlToken(_controlToken, _effectiveSharedToken);
-    public IReadOnlyDictionary<object, object?> ControlResources { get; }
-    internal DesignToken EffectiveSharedTokenCore => _effectiveSharedToken;
-    internal IControlDesignToken ControlTokenCore => _controlToken;
+    internal int ControlSlot { get; }
+    internal ThemeAppearance Appearance { get; }
+    internal IReadOnlyDictionary<int, object?> EffectiveGlobalTokenDelta { get; }
+    internal IReadOnlyDictionary<object, object?> EffectiveGlobalResourceDelta { get; }
+    internal TokenValueTable ControlTokenValues { get; }
+    internal IReadOnlyDictionary<object, object?> ControlResources { get; }
+    internal long EstimatedRetainedBytes { get; }
 
-    internal static IControlDesignToken CloneControlToken(
-        IControlDesignToken source,
-        DesignToken effectiveSharedToken)
+    internal T GetEffectiveGlobalValue<T>(TokenValueTable globalValues, int slot)
     {
-        var clone = (IControlDesignToken)source.Clone();
-        clone.AssignSharedToken(DesignTokenClone.DeepClone(effectiveSharedToken));
-        clone.SetHasCustomTokenConfig(source.HasCustomTokenConfig());
-        clone.SetCustomTokens(source.GetCustomTokens().ToList());
-        CopyResourceDictionary(source.GetSharedResourceDeltaDictionary(), clone.GetSharedResourceDeltaDictionary());
-        return clone;
+        if (EffectiveGlobalTokenDelta.TryGetValue(slot, out var value))
+        {
+            if (value is T typed)
+            {
+                return typed;
+            }
+
+            if (value is null && default(T) is null)
+            {
+                return default!;
+            }
+
+            throw new InvalidCastException(
+                $"Control global Token slot {slot} contains '{value?.GetType().FullName ?? "null"}', not '{typeof(T).FullName}'.");
+        }
+
+        return globalValues.Get<T>(slot);
     }
 
     internal bool TryGetSharedResource(
-        SharedTokenKind kind,
+        object resourceKey,
         IReadOnlyDictionary<object, object?> globalResources,
         out object? value)
     {
-        return SharedResourceDelta.TryGetValue(kind, out value) ||
-               globalResources.TryGetValue(kind, out value);
-    }
-
-    private static void CopyResourceDictionary(
-        IResourceDictionary source,
-        IResourceDictionary destination)
-    {
-        foreach (var key in source.Keys)
-        {
-            destination[key] = source[key];
-        }
+        return EffectiveGlobalResourceDelta.TryGetValue(resourceKey, out value) ||
+               globalResources.TryGetValue(resourceKey, out value);
     }
 }

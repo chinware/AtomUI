@@ -31,5 +31,4 @@ internal class MarqueeLabelToken : AbstractControlDesignToken
         DefaultSpeed = 150;
     }
     
-    protected override Type GetTokenKindType() => typeof(MarqueeLabelTokenKind);
 }

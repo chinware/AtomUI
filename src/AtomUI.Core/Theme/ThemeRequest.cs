@@ -1,15 +1,17 @@
+using AtomUI.Theme.Configuration;
+
 namespace AtomUI.Theme;
 
-internal enum ThemeTransitionReason
+public enum ThemeTransitionReason : byte
 {
     Startup,
     UserRequest,
-    ApplicationThemeVariantChanged,
-    PropertyChanged
+    FollowSystem,
+    LocalConfigChanged,
+    ScopeTopologyChanged
 }
 
-internal sealed record ThemeRequest(
+public sealed record ThemeRequest(
     string ThemeId,
-    IReadOnlyList<ThemeAlgorithm> Algorithms,
-    ThemeTransitionReason Reason,
-    IReadOnlyDictionary<string, string>? RuntimeOverrides = null);
+    ThemeConfig? Config,
+    ThemeTransitionReason Reason);

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TourThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Tour}" TargetType="atom:Tour">
@@ -35,21 +38,21 @@
         </Setter>
         
         <Setter Property="Placement" Value="Bottom" />
-        <Setter Property="MaskColor" Value="{atom:TourTokenSharedTokenResource ColorBgMask}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:TourTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="MaskColor" Value="{atom:SharedTokenResource ColorBgMask}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
             <Setter Property="CornerRadius" Value="{atom:TourTokenResource TourBorderRadius}" />
-            <Setter Property="Background" Value="{atom:TourTokenSharedTokenResource ColorBgElevated}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
         </Style>
         
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
-            <Setter Property="Background" Value="{atom:TourTokenSharedTokenResource ColorBgElevated}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
         </Style>
         
         <Style Selector="^[StyleType=Primary]">
             <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
-                <Setter Property="Background" Value="{atom:TourTokenSharedTokenResource ColorPrimary}" />
+                <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
                 

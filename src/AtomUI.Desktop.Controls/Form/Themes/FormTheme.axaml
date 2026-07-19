@@ -2,7 +2,10 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:FormThemeAsset.Identity}">
     <ControlTheme x:Key="{x:Type atom:Form}" TargetType="atom:Form">
         <Setter Property="Template">
             <ControlTemplate>
@@ -21,13 +24,13 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="IsMotionEnabled" Value="{atom:FormTokenSharedTokenResource EnableMotion}"/>
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}"/>
         <Setter Property="ClipToBounds" Value="False"/>
         <Style Selector="^[FormLayout=Inline]">
             <Setter Property="FormLayoutSpacing" Value="{atom:FormTokenResource InlineItemSpacing}" />
         </Style>
-        <Setter Property="ErrorMessageForeground" Value="{atom:FormTokenSharedTokenResource ColorErrorText}" />
-        <Setter Property="WarningMessageForeground" Value="{atom:FormTokenSharedTokenResource ColorWarningText}" />
+        <Setter Property="ErrorMessageForeground" Value="{atom:SharedTokenResource ColorErrorText}" />
+        <Setter Property="WarningMessageForeground" Value="{atom:SharedTokenResource ColorWarningText}" />
         
         <Setter Property="FeedbackTemplate">
             <DataTemplate DataType="atom:Form">
@@ -45,23 +48,23 @@
         <Setter Property="SuccessFeedbackTemplate">
             <DataTemplate>
                 <antdicons:CheckCircleFilled
-                    FillBrush="{atom:FormTokenSharedTokenResource ColorSuccess}"
-                    Width="{atom:FormTokenSharedTokenResource IconSize}"
-                    Height="{atom:FormTokenSharedTokenResource IconSize}"/>
+                    FillBrush="{atom:SharedTokenResource ColorSuccess}"
+                    Width="{atom:SharedTokenResource IconSize}"
+                    Height="{atom:SharedTokenResource IconSize}"/>
             </DataTemplate>
         </Setter>
         <Setter Property="ErrorFeedbackTemplate">
             <DataTemplate>
                 <antdicons:CloseCircleFilled
-                    FillBrush="{atom:FormTokenSharedTokenResource ColorError}"
-                    Width="{atom:FormTokenSharedTokenResource IconSize}"
-                    Height="{atom:FormTokenSharedTokenResource IconSize}"/>
+                    FillBrush="{atom:SharedTokenResource ColorError}"
+                    Width="{atom:SharedTokenResource IconSize}"
+                    Height="{atom:SharedTokenResource IconSize}"/>
             </DataTemplate>
         </Setter>
         <Setter Property="WarningFeedbackTemplate">
             <DataTemplate>
                 <antdicons:ExclamationCircleFilled
-                    FillBrush="{atom:FormTokenSharedTokenResource ColorWarning}"
+                    FillBrush="{atom:SharedTokenResource ColorWarning}"
                     />
             </DataTemplate>
         </Setter>
@@ -69,7 +72,7 @@
             <DataTemplate>
                 <antdicons:LoadingOutlined
                     LoadingAnimation="Spin"
-                    StrokeBrush="{atom:FormTokenSharedTokenResource ColorIcon}"/>
+                    StrokeBrush="{atom:SharedTokenResource ColorIcon}"/>
             </DataTemplate>
         </Setter>
         

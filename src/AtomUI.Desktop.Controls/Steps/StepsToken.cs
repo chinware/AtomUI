@@ -241,5 +241,4 @@ internal class StepsToken : AbstractControlDesignToken
         ProgressFramePaddingSM     = new Thickness(SharedToken.LineWidthBold * 2);
     }
     
-    protected override Type GetTokenKindType() => typeof(StepsTokenKind);
 }

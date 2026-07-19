@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:RateThemeAsset.Identity}"
     xmlns:atomc="https://atomui.net/common-controls"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Rate}" TargetType="atom:Rate">
@@ -24,7 +27,7 @@
             </ControlTemplate>
         </Setter>
         <Setter Property="Focusable" Value="True" />
-        <Setter Property="IsMotionEnabled" Value="{atom:RateTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="StarColor" Value="{atom:RateTokenResource StarColor}" />
         <Setter Property="StarBgColor" Value="{atom:RateTokenResource StarBg}" />
         <Setter Property="ClipToBounds" Value="False" />

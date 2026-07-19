@@ -28,5 +28,4 @@ internal class GalleryStickyTabsHostToken : AbstractControlDesignToken
         StickyBorderBrush    = new SolidColorBrush(SharedToken.ColorBorderSecondary);
     }
 
-    protected override Type GetTokenKindType() => typeof(GalleryStickyTabsHostTokenKind);
 }

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:SpinThemeAsset.Identity}"
     xmlns:atomc="https://atomui.net/common-controls"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SpinIndicator}" TargetType="atom:SpinIndicator">
@@ -51,7 +54,7 @@
         <Setter Property="MotionEasingCurve" Value="LinearEasing" />
         <Setter Property="MotionDuration"
                 Value="{atom:SpinTokenResource IndicatorDuration}" />
-        <Setter Property="DotBgBrush" Value="{atom:SpinTokenSharedTokenResource ColorPrimary}" />
+        <Setter Property="DotBgBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
 
         <Style Selector="^[IsCustomIndicator=True] /template/ atomc|SpinIndicatorDotPanel#BuiltInIndicatorLayout">
             <Setter Property="IsVisible" Value="False" />

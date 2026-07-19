@@ -121,5 +121,4 @@ internal class PaginationToken : AbstractControlDesignToken
         PaginationItemPaddingInline         = new Thickness(SharedToken.UniformlyMarginXXS * 1.5);
     }
     
-    protected override Type GetTokenKindType() => typeof(PaginationTokenKind);
 }

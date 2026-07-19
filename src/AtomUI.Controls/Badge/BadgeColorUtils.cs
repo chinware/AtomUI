@@ -1,4 +1,4 @@
-using AtomUI.Theme.Palette;
+using AtomUI.Theme.Algorithms;
 using Avalonia.Media;
 
 namespace AtomUI.Controls.Commons;

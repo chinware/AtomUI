@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Theme.Palette;
+using AtomUI.Theme.Algorithms;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;

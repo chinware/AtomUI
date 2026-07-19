@@ -1,70 +1,154 @@
-using System.Collections.ObjectModel;
+using System.Collections.Frozen;
+using AtomUI.Theme.Algorithms;
+using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
-using AtomUI.Theme.Resources;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Schema;
 using AtomUI.Theme.TokenSystem;
-using Avalonia.Controls;
 
 namespace AtomUI.Theme.Compilation;
 
 internal sealed class ThemeCompiler
 {
     private const string CompilerPath = "ThemeCompiler";
-    private static long s_nextVersion;
-
-    private readonly IThemeVariantCalculatorFactory? _calculatorFactory;
-
-    internal ThemeCompiler(IThemeVariantCalculatorFactory? calculatorFactory = null)
+internal static NormalizedThemeConfig CreateDefinitionDefaults(
+        BoundThemeDefinition definition,
+        ThemeSchemaRegistry registry)
     {
-        _calculatorFactory = calculatorFactory;
+        ArgumentNullException.ThrowIfNull(definition);
+        ArgumentNullException.ThrowIfNull(registry);
+
+        IReadOnlyList<ThemeAlgorithmDescriptor> algorithms = definition.Algorithms;
+        if (algorithms.Count == 0)
+        {
+            registry.TryGetAlgorithm(nameof(ThemeAlgorithm.Default), out var defaultAlgorithm);
+            algorithms =
+            [
+                defaultAlgorithm ??
+                throw new InvalidOperationException("Default algorithm is not registered.")
+            ];
+        }
+
+        var globalTokens = new NormalizedTokenValue[definition.Tokens.Count];
+        for (var index = 0; index < globalTokens.Length; index++)
+        {
+            var token = definition.Tokens[index];
+            globalTokens[index] = new NormalizedTokenValue(
+                token.Descriptor,
+                token.Value,
+                token.Descriptor.Format(token.Value));
+        }
+        Array.Sort(
+            globalTokens,
+            static (left, right) => left.Descriptor.Slot.CompareTo(right.Descriptor.Slot));
+
+        var controls = new NormalizedControlThemeConfig[definition.Controls.Count];
+        for (var index = 0; index < controls.Length; index++)
+        {
+            var control = definition.Controls[index];
+            controls[index] = new NormalizedControlThemeConfig(
+                control.Descriptor.Identity,
+                control.AlgorithmMode,
+                control.Algorithms,
+                NormalizeBoundTokens(control.GlobalTokens),
+                NormalizeBoundTokens(control.OwnTokens));
+        }
+        return new NormalizedThemeConfig(
+            false,
+            true,
+            algorithms,
+            globalTokens,
+            controls);
     }
 
-    internal ThemeCompileResult Compile(ThemeCompileRequest request)
+    private static IReadOnlyList<NormalizedTokenValue> NormalizeBoundTokens(
+        IReadOnlyList<BoundTokenValue> tokens)
     {
-        ArgumentNullException.ThrowIfNull(request);
+        var result = new NormalizedTokenValue[tokens.Count];
+        for (var index = 0; index < result.Length; index++)
+        {
+            var token = tokens[index];
+            result[index] = new NormalizedTokenValue(
+                token.Descriptor,
+                token.Value,
+                token.Descriptor.Format(token.Value));
+        }
+        Array.Sort(
+            result,
+            static (left, right) => left.Descriptor.Slot.CompareTo(right.Descriptor.Slot));
+        return result;
+    }
+
+
+    internal ThemeCompileResult Compile(ThemeCompileInput input)
+    {
+        return Compile(input, null);
+    }
+
+    internal ThemeCompileResult Compile(
+        ThemeCompileInput input,
+        ControlCompilationCache? controlCompilationCache)
+    {
+        ArgumentNullException.ThrowIfNull(input);
 
         var diagnostics = new List<ThemeDefinitionDiagnostic>();
         try
         {
-            if (!ValidateRequest(request, diagnostics, out var registrations))
+            if (input.EffectiveConfig.Algorithms.Count == 0)
             {
+                AddError(diagnostics, "ATMTHM5001", "A theme compilation requires at least one algorithm.");
                 return Failed(diagnostics);
             }
 
-            var algorithms = ResolveEffectiveAlgorithms(request);
-            var controlConfigs = MergeControlConfigs(request);
-            var calculator = CreateCalculator(algorithms);
-            var sharedConfig = MergeSharedConfigs(request);
-            var sharedToken = CreateSharedToken();
-            ApplySharedConfig(sharedToken, sharedConfig, calculator);
-            FreezeColorPalettes(sharedToken);
-
-            var sharedResources = BuildResourceMap(sharedToken);
-            var controls = BuildControls(
-                request,
-                registrations,
-                controlConfigs,
-                algorithms,
-                calculator,
-                sharedToken,
-                sharedResources,
-                diagnostics);
-            if (diagnostics.Any(static diagnostic => diagnostic.Severity == ThemeDiagnosticSeverity.Error))
+            var appearance = ResolveAppearance(input.EffectiveConfig.Algorithms);
+            var reuseGlobal = CanReuseGlobal(input, appearance);
+            DesignToken globalBuilder;
+            TokenValueTable globalValues;
+            IReadOnlyDictionary<object, object?> globalResources;
+            IReadOnlyDictionary<PresetPrimaryColor, PaletteInfo> palettes;
+            if (reuseGlobal)
             {
-                return Failed(diagnostics);
+                var parent = input.ReusableParent!;
+                globalValues    = parent.GlobalTokenValues;
+                globalResources = parent.GlobalResources;
+                palettes        = parent.PresetColorPalettes;
+                globalBuilder   = CreateBuilder(globalValues, palettes, input.Registry.GlobalTokens);
             }
+            else
+            {
+                globalBuilder   = CompileGlobalBuilder(input);
+                globalValues    = TokenValueTable.Freeze(globalBuilder, input.Registry.GlobalTokens);
+                globalResources = BuildResourceMap(globalBuilder, input.Registry.GlobalTokens);
+                palettes        = FreezePresetPalettes(globalBuilder);
+            }
+
+            var controls = CompileControls(
+                input,
+                appearance,
+                globalBuilder,
+                globalValues,
+                globalResources,
+                reuseGlobal,
+                controlCompilationCache);
+            var fingerprint = ThemeContentFingerprint.Compute(
+                input.DefinitionRevision,
+                input.EffectiveConfig,
+                input.Registry.Revision,
+                appearance);
 
             return new ThemeCompileResult(
                 new ThemeSnapshot(
-                    request.ThemeId,
-                    Interlocked.Increment(ref s_nextVersion),
-                    CopyAlgorithms(algorithms),
-                    algorithms.Contains(ThemeAlgorithm.Dark),
-                    sharedToken,
-                    sharedResources,
-                    ReadOnly(controls),
-                    controlConfigs,
-                    sharedConfig),
+                    input.Definition.Id,
+                    input.Definition,
+                    input.DefinitionRevision,
+                    fingerprint,
+                    appearance,
+                    input.Registry.Revision,
+                    input.Registry,
+                    input.EffectiveConfig,
+                    globalValues,
+                    globalResources,
+                    palettes,
+                    controls),
                 CopyDiagnostics(diagnostics),
                 null);
         }
@@ -74,389 +158,476 @@ internal sealed class ThemeCompiler
         }
     }
 
-    private bool ValidateRequest(
-        ThemeCompileRequest request,
-        List<ThemeDefinitionDiagnostic> diagnostics,
-        out Dictionary<ControlTokenIdentity, AbstractControlDesignToken> registrations)
+    private static bool CanReuseGlobal(ThemeCompileInput input, ThemeAppearance appearance)
     {
-        var isValid = true;
-        var sharedTokenNames = GetSharedTokenNames();
-        isValid &= ValidateSharedNames(request.Definition.SharedTokens, sharedTokenNames, diagnostics);
-        isValid &= ValidateSharedNames(request.SharedOverrides, sharedTokenNames, diagnostics);
-        isValid &= ValidateSharedNames(request.RuntimeOverrides, sharedTokenNames, diagnostics);
-
-        registrations = new Dictionary<ControlTokenIdentity, AbstractControlDesignToken>();
-        foreach (var registration in request.Registrations)
-        {
-            AbstractControlDesignToken? token;
-            try
-            {
-                token = registration.Activate();
-            }
-            catch (Exception exception)
-            {
-                AddError(
-                    diagnostics,
-                    "THEME001",
-                    $"Registration '{registration.TokenType.FullName}' activation failed: {exception.GetBaseException().Message}");
-                isValid = false;
-                continue;
-            }
-
-            if (token is null)
-            {
-                AddError(diagnostics, "THEME001", $"Registration '{registration.TokenType.FullName}' does not create an {nameof(AbstractControlDesignToken)}.");
-                isValid = false;
-                continue;
-            }
-
-            var identity = registration.GetResourceIdentity(token);
-            if (!registrations.TryAdd(identity, token))
-            {
-                AddError(diagnostics, "THEME002", $"Duplicate control token identity '{identity}'.");
-                isValid = false;
-            }
-        }
-
-        foreach (var definition in request.Definition.ControlTokens.Values)
-        {
-            var identity = new ControlTokenIdentity(ControlDesignTokenAttribute.DefaultCatalog, definition.TokenId);
-            if (!registrations.TryGetValue(identity, out var token))
-            {
-                AddError(diagnostics, "THEME003", $"Unknown control token identity '{identity}'.");
-                isValid = false;
-                continue;
-            }
-
-            isValid &= ValidateControlConfig(definition.Tokens, definition.SharedTokens, token, sharedTokenNames, diagnostics);
-        }
-
-        foreach (var overrideEntry in request.ControlOverrides)
-        {
-            if (!registrations.TryGetValue(overrideEntry.Key, out var token))
-            {
-                AddError(diagnostics, "THEME003", $"Unknown control token identity '{overrideEntry.Key}'.");
-                isValid = false;
-                continue;
-            }
-
-            isValid &= ValidateControlConfig(
-                overrideEntry.Value.Tokens,
-                overrideEntry.Value.SharedTokens,
-                token,
-                sharedTokenNames,
-                diagnostics);
-        }
-
-        return isValid;
+        var parent = input.ReusableParent;
+        return parent is not null &&
+               parent.DefinitionRevision == input.DefinitionRevision &&
+               parent.RegistryRevision == input.Registry.Revision &&
+               parent.Appearance == appearance &&
+               AlgorithmSequenceEqual(
+                   parent.EffectiveConfig.Algorithms,
+                   input.EffectiveConfig.Algorithms) &&
+               TokenSequenceEqual(
+                   parent.EffectiveConfig.GlobalTokens,
+                   input.EffectiveConfig.GlobalTokens);
     }
 
-    private Dictionary<ControlTokenIdentity, ControlThemeSnapshot> BuildControls(
-        ThemeCompileRequest request,
-        IReadOnlyDictionary<ControlTokenIdentity, AbstractControlDesignToken> registrations,
-        IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo> controlConfigs,
-        IReadOnlyList<ThemeAlgorithm> algorithms,
-        IThemeVariantCalculator calculator,
-        DesignToken globalToken,
+    private static IReadOnlyList<ControlThemeSnapshot> CompileControls(
+        ThemeCompileInput input,
+        ThemeAppearance globalAppearance,
+        DesignToken globalBuilder,
+        TokenValueTable globalValues,
         IReadOnlyDictionary<object, object?> globalResources,
-        List<ThemeDefinitionDiagnostic> diagnostics)
+        bool reuseGlobal,
+        ControlCompilationCache? controlCompilationCache)
     {
-        var controls = new Dictionary<ControlTokenIdentity, ControlThemeSnapshot>(registrations.Count);
-        foreach (var (identity, controlToken) in registrations)
+        var controls = new ControlThemeSnapshot[input.Registry.Controls.Count];
+        for (var slot = 0; slot < controls.Length; slot++)
         {
-            controlConfigs.TryGetValue(identity, out var config);
-            var effectiveToken = DesignTokenClone.DeepClone(globalToken);
-            if (config is not null)
+            var descriptor = input.Registry.Controls[slot];
+            var config = FindControlConfig(input.EffectiveConfig.Controls, descriptor.Identity);
+            if (reuseGlobal && CanReuseControl(input.ReusableParent!, descriptor, config))
             {
-                ApplyControlSharedConfig(effectiveToken, config.SharedTokens, config.EnableAlgorithm, calculator);
-            }
-            FreezeColorPalettes(effectiveToken);
-
-            controlToken.AssignSharedToken(effectiveToken);
-            controlToken.SetHasCustomTokenConfig(config is not null);
-            controlToken.SetCustomTokens(config is null ? Array.Empty<string>() : config.Tokens.Keys.ToArray());
-            controlToken.CalculateTokenValues(algorithms.Contains(ThemeAlgorithm.Dark));
-            if (config is not null)
-            {
-                controlToken.LoadConfig(config.Tokens);
+                controls[slot] = input.ReusableParent!.Controls[slot];
+                continue;
             }
 
-            var effectiveResources = BuildResourceMap(effectiveToken);
-            controlToken.BuildSharedResourceDeltaDictionary(globalToken);
-            controls.Add(
-                identity,
-                new ControlThemeSnapshot(
-                    effectiveToken,
-                    BuildResourceDelta(globalResources, effectiveResources),
-                    controlToken,
-                    BuildResourceMap(controlToken)));
-        }
-
-        return controls;
-    }
-
-    private static IReadOnlyList<ThemeAlgorithm> ResolveEffectiveAlgorithms(ThemeCompileRequest request)
-    {
-        if (request.Algorithms.Count != 0)
-        {
-            return request.Algorithms;
-        }
-
-        if (request.Parent is not null)
-        {
-            return request.Parent.Algorithms;
-        }
-
-        return [ThemeAlgorithm.Default];
-    }
-
-    private static IReadOnlyDictionary<ControlTokenIdentity, ControlTokenConfigInfo> MergeControlConfigs(
-        ThemeCompileRequest request)
-    {
-        var configs = new Dictionary<ControlTokenIdentity, ControlTokenConfigInfo>();
-        if (request.Parent is not null)
-        {
-            foreach (var (identity, parentConfig) in request.Parent.ControlConfigs)
+            ControlThemeSnapshot CompileCurrentControl()
             {
-                configs.Add(identity, parentConfig.Clone());
+                return CompileControl(
+                    descriptor,
+                    config,
+                    input.EffectiveConfig.Algorithms,
+                    globalAppearance,
+                    globalBuilder,
+                    globalValues,
+                    globalResources,
+                    input.Registry.GlobalTokens);
+            }
+
+            controls[slot] = controlCompilationCache is null
+                ? CompileCurrentControl()
+                : controlCompilationCache.GetOrCompile(
+                    input,
+                    descriptor,
+                    config,
+                    globalAppearance,
+                    CompileCurrentControl);
+        }
+
+        return Array.AsReadOnly(controls);
+    }
+
+    private static bool CanReuseControl(
+        ThemeSnapshot parent,
+        ControlTokenDescriptor descriptor,
+        NormalizedControlThemeConfig? config)
+    {
+        if ((uint)descriptor.Slot >= (uint)parent.Controls.Count)
+        {
+            return false;
+        }
+
+        var parentConfig = FindControlConfig(parent.EffectiveConfig.Controls, descriptor.Identity);
+        return config is null ? parentConfig is null : config.Equals(parentConfig);
+    }
+
+    private static ControlThemeSnapshot CompileControl(
+        ControlTokenDescriptor descriptor,
+        NormalizedControlThemeConfig? config,
+        IReadOnlyList<ThemeAlgorithmDescriptor> globalAlgorithms,
+        ThemeAppearance globalAppearance,
+        DesignToken globalBuilder,
+        TokenValueTable globalValues,
+        IReadOnlyDictionary<object, object?> globalResources,
+        IReadOnlyList<TokenDescriptor> globalDescriptors)
+    {
+        var effectiveGlobalBuilder = CopyBuilder(globalBuilder, globalDescriptors);
+        var appearance = globalAppearance;
+        if (config is not null)
+        {
+            switch (config.AlgorithmMode)
+            {
+                case ControlAlgorithmMode.Global:
+                    effectiveGlobalBuilder = ReevaluateControlGlobal(
+                        effectiveGlobalBuilder,
+                        config.GlobalTokens,
+                        globalAlgorithms,
+                        globalDescriptors);
+                    appearance = ResolveAppearance(globalAppearance, globalAlgorithms);
+                    break;
+
+                case ControlAlgorithmMode.Custom:
+                    effectiveGlobalBuilder = ReevaluateControlGlobal(
+                        effectiveGlobalBuilder,
+                        config.GlobalTokens,
+                        config.Algorithms,
+                        globalDescriptors);
+                    appearance = ResolveAppearance(globalAppearance, config.Algorithms);
+                    break;
+
+                case ControlAlgorithmMode.Unspecified:
+                case ControlAlgorithmMode.Disabled:
+                    ApplyAllValues(effectiveGlobalBuilder, config.GlobalTokens);
+                    NormalizeFinalBehavior(effectiveGlobalBuilder);
+                    break;
+
+                default:
+                    throw new InvalidOperationException(
+                        $"Control '{descriptor.Identity}' has unsupported algorithm mode '{config.AlgorithmMode}'.");
             }
         }
 
-        foreach (var definition in request.Definition.ControlTokens.Values)
+        var effectiveGlobalValues = TokenValueTable.Freeze(effectiveGlobalBuilder, globalDescriptors);
+        var effectiveGlobalResources = BuildResourceMap(effectiveGlobalBuilder, globalDescriptors);
+        var globalDelta = BuildTokenDelta(globalValues, effectiveGlobalValues);
+        var globalResourceDelta = BuildDenseResourceDelta(globalResources, effectiveGlobalResources);
+
+        var controlBuilder = descriptor.CreateBuilder();
+        controlBuilder.AssignSharedToken(effectiveGlobalBuilder);
+        descriptor.Evaluate(controlBuilder, appearance);
+        if (config is not null)
         {
-            var identity = new ControlTokenIdentity(ControlDesignTokenAttribute.DefaultCatalog, definition.TokenId);
-            MergeControlConfig(
-                configs,
-                identity,
-                definition.EnableAlgorithm,
-                definition.Tokens,
-                definition.SharedTokens);
+            ApplyAllValues(controlBuilder, config.OwnTokens);
         }
 
-        foreach (var (identity, overrideConfig) in request.ControlOverrides)
-        {
-            MergeControlConfig(
-                configs,
-                identity,
-                overrideConfig.EnableAlgorithm,
-                overrideConfig.Tokens,
-                overrideConfig.SharedTokens);
-        }
-
-        return ReadOnly(configs);
+        return new ControlThemeSnapshot(
+            descriptor.Slot,
+            appearance,
+            globalDelta,
+            globalResourceDelta,
+            TokenValueTable.Freeze(controlBuilder, descriptor.OwnTokens),
+            BuildResourceMap(controlBuilder, descriptor.OwnTokens));
     }
 
-    private static void MergeControlConfig(
-        IDictionary<ControlTokenIdentity, ControlTokenConfigInfo> configs,
-        ControlTokenIdentity identity,
-        bool enableAlgorithm,
-        IEnumerable<KeyValuePair<string, string>> tokens,
-        IEnumerable<KeyValuePair<string, string>> sharedTokens)
+    private static DesignToken ReevaluateControlGlobal(
+        DesignToken baseline,
+        IReadOnlyList<NormalizedTokenValue> overrides,
+        IReadOnlyList<ThemeAlgorithmDescriptor> algorithms,
+        IReadOnlyList<TokenDescriptor> descriptors)
     {
-        if (!configs.TryGetValue(identity, out var config))
-        {
-            config = new ControlTokenConfigInfo
-            {
-                TokenId = identity.TokenId
-            };
-            configs.Add(identity, config);
-        }
-
-        config.EnableAlgorithm = enableAlgorithm;
-        MergeInto(config.Tokens, tokens);
-        MergeInto(config.SharedTokens, sharedTokens);
+        ApplyValues(baseline, overrides, TokenStage.Seed);
+        var result = EvaluateAlgorithms(baseline, algorithms, descriptors);
+        ApplyValues(result, overrides, TokenStage.Map);
+        result.CalculateAliasTokenValues();
+        ApplyValues(result, overrides, TokenStage.Alias);
+        NormalizeFinalBehavior(result);
+        return result;
     }
 
-    private static void ApplyControlSharedConfig(
-        DesignToken token,
-        IDictionary<string, string> config,
-        bool enableAlgorithm,
-        IThemeVariantCalculator calculator)
+    private static ThemeAppearance ResolveAppearance(
+        ThemeAppearance baseline,
+        IReadOnlyList<ThemeAlgorithmDescriptor> algorithms)
     {
-        var buckets = CreateBuckets(config);
-        token.LoadConfig(buckets.Seed);
-        if (enableAlgorithm)
-        {
-            calculator.Calculate(token);
-        }
-
-        token.LoadConfig(buckets.Map);
-        if (enableAlgorithm)
-        {
-            token.ColorBgBase   = calculator.ColorBgBase;
-            token.ColorTextBase = calculator.ColorTextBase;
-            token.CalculateAliasTokenValues();
-        }
-
-        token.LoadConfig(buckets.Alias);
-    }
-
-    private static void ApplySharedConfig(
-        DesignToken token,
-        IReadOnlyDictionary<string, string> config,
-        IThemeVariantCalculator calculator)
-    {
-        var buckets = CreateBuckets(config);
-        token.LoadConfig(buckets.Seed);
-        calculator.Calculate(token);
-        token.LoadConfig(buckets.Map);
-        token.ColorBgBase   = calculator.ColorBgBase;
-        token.ColorTextBase = calculator.ColorTextBase;
-        token.CalculateAliasTokenValues();
-        token.LoadConfig(buckets.Alias);
-    }
-
-    private static TokenConfigBuckets CreateBuckets(IEnumerable<KeyValuePair<string, string>> config)
-    {
-        var buckets = new TokenConfigBuckets();
-        var seedNames = DesignToken.GetTokenPropertyNames(DesignTokenKind.Seed);
-        var mapNames = DesignToken.GetTokenPropertyNames(DesignTokenKind.Map);
-        var aliasNames = DesignToken.GetTokenPropertyNames(DesignTokenKind.Alias);
-        foreach (var entry in config)
-        {
-            buckets.AddByTokenName(entry.Key, entry.Value, seedNames, mapNames, aliasNames);
-        }
-
-        return buckets;
-    }
-
-    private static IReadOnlyDictionary<string, string> MergeSharedConfigs(ThemeCompileRequest request)
-    {
-        var result = new Dictionary<string, string>(StringComparer.Ordinal);
-        if (request.Parent is not null)
-        {
-            MergeInto(result, request.Parent.SharedConfig);
-        }
-
-        MergeInto(result, request.Definition.SharedTokens);
-        MergeInto(result, request.SharedOverrides);
-        MergeInto(result, request.RuntimeOverrides);
-        return new ReadOnlyDictionary<string, string>(result);
-    }
-
-    private IThemeVariantCalculator CreateCalculator(IReadOnlyList<ThemeAlgorithm> algorithms)
-    {
-        IThemeVariantCalculator? calculator = null;
+        var appearance = baseline;
         foreach (var algorithm in algorithms)
         {
-            calculator = _calculatorFactory?.Create(algorithm, calculator) ?? CreateDefaultCalculator(algorithm, calculator);
+            appearance = algorithm.AppearanceEffect switch
+            {
+                ThemeAppearanceEffect.Light => ThemeAppearance.Light,
+                ThemeAppearanceEffect.Dark  => ThemeAppearance.Dark,
+                _                           => appearance
+            };
         }
 
-        return calculator ?? throw new InvalidOperationException("A theme compilation requires at least one algorithm.");
+        return appearance;
     }
 
-    private static IThemeVariantCalculator CreateDefaultCalculator(
-        ThemeAlgorithm algorithm,
-        IThemeVariantCalculator? baseCalculator)
+    private static NormalizedControlThemeConfig? FindControlConfig(
+        IReadOnlyList<NormalizedControlThemeConfig> controls,
+        Schema.ControlTokenIdentity identity)
     {
-        return algorithm switch
+        foreach (var control in controls)
         {
-            ThemeAlgorithm.Default => new DefaultThemeVariantCalculator(),
-            ThemeAlgorithm.Dark when baseCalculator is not null => new DarkThemeVariantCalculator(baseCalculator),
-            ThemeAlgorithm.Compact when baseCalculator is not null => new CompactThemeVariantCalculator(baseCalculator),
-            _ => throw new InvalidOperationException($"Algorithm '{algorithm}' requires a preceding calculator.")
-        };
-    }
-
-    private static DesignToken CreateSharedToken()
-    {
-        return new DesignToken();
-    }
-
-    private static void FreezeColorPalettes(DesignToken token)
-    {
-        var palettes = new Dictionary<Palette.PresetPrimaryColor, ColorMap>(token.ColorPalettes.Count);
-        foreach (var palette in token.ColorPalettes)
-        {
-            palettes.Add(palette.Key, palette.Value);
+            if (control.Identity == identity)
+            {
+                return control;
+            }
         }
 
-        token.ColorPalettes = new ReadOnlyDictionary<Palette.PresetPrimaryColor, ColorMap>(palettes);
+        return null;
     }
 
-    private static IReadOnlyDictionary<object, object?> BuildResourceMap(AbstractDesignToken token)
+    private static IReadOnlyDictionary<int, object?> BuildTokenDelta(
+        TokenValueTable globalValues,
+        TokenValueTable effectiveValues)
     {
-        var temporary = new ResourceDictionary();
-        token.BuildResourceDictionary(temporary);
-        return CopyResourceMap(temporary);
+        var delta = new Dictionary<int, object?>();
+        for (var slot = 0; slot < effectiveValues.Count; slot++)
+        {
+            var value = effectiveValues.GetValue(slot);
+            if (!globalValues.ValueEquals(slot, value))
+            {
+                delta.Add(slot, value);
+            }
+        }
+
+        return delta.ToFrozenDictionary();
     }
 
-    private static IReadOnlyDictionary<object, object?> BuildResourceDelta(
+    private static IReadOnlyDictionary<object, object?> BuildDenseResourceDelta(
         IReadOnlyDictionary<object, object?> globalResources,
         IReadOnlyDictionary<object, object?> effectiveResources)
     {
         var delta = new Dictionary<object, object?>();
-        foreach (var entry in effectiveResources)
+        foreach (var resource in effectiveResources)
         {
-            if (!globalResources.TryGetValue(entry.Key, out var globalValue) || !Equals(globalValue, entry.Value))
+            if (!globalResources.TryGetValue(resource.Key, out var globalValue) ||
+                !Equals(globalValue, resource.Value))
             {
-                delta.Add(entry.Key, entry.Value);
+                delta.Add(resource.Key, resource.Value);
             }
         }
 
-        return ReadOnly(delta);
+        return delta.ToFrozenDictionary();
     }
 
-    private static IReadOnlyDictionary<object, object?> CopyResourceMap(ResourceDictionary source)
+    private static bool AlgorithmSequenceEqual(
+        IReadOnlyList<ThemeAlgorithmDescriptor> left,
+        IReadOnlyList<ThemeAlgorithmDescriptor> right)
     {
-        var copy = new Dictionary<object, object?>(source.Count);
-        foreach (var key in source.Keys)
+        if (left.Count != right.Count)
         {
-            copy.Add(key, source[key]);
+            return false;
         }
 
-        return ReadOnly(copy);
-    }
-
-    private static bool ValidateSharedNames(
-        IEnumerable<KeyValuePair<string, string>> config,
-        IReadOnlySet<string> knownNames,
-        List<ThemeDefinitionDiagnostic> diagnostics)
-    {
-        var valid = true;
-        foreach (var entry in config)
+        for (var index = 0; index < left.Count; index++)
         {
-            if (!knownNames.Contains(entry.Key))
+            if (!string.Equals(left[index].Id, right[index].Id, StringComparison.Ordinal) ||
+                left[index].Revision != right[index].Revision)
             {
-                AddError(diagnostics, "THEME004", $"Unknown shared token '{entry.Key}'.");
-                valid = false;
+                return false;
             }
         }
 
-        return valid;
+        return true;
     }
 
-    private static bool ValidateControlConfig(
-        IEnumerable<KeyValuePair<string, string>> tokenConfig,
-        IEnumerable<KeyValuePair<string, string>> sharedConfig,
-        AbstractControlDesignToken token,
-        IReadOnlySet<string> sharedTokenNames,
-        List<ThemeDefinitionDiagnostic> diagnostics)
+    private static bool TokenSequenceEqual(
+        IReadOnlyList<NormalizedTokenValue> left,
+        IReadOnlyList<NormalizedTokenValue> right)
     {
-        var valid = ValidateSharedNames(sharedConfig, sharedTokenNames, diagnostics);
-        foreach (var entry in tokenConfig)
+        if (left.Count != right.Count)
         {
-            if (!token.HasToken(entry.Key))
+            return false;
+        }
+
+        for (var index = 0; index < left.Count; index++)
+        {
+            if (!left[index].Equals(right[index]))
             {
-                AddError(diagnostics, "THEME005", $"Unknown token '{entry.Key}' for control '{token.Id}'.");
-                valid = false;
+                return false;
             }
         }
 
-        return valid;
+        return true;
     }
 
-    private static IReadOnlySet<string> GetSharedTokenNames()
+    private static ThemeAppearance ResolveAppearance(
+        IReadOnlyList<ThemeAlgorithmDescriptor> algorithms)
     {
-        var names = new HashSet<string>(DesignToken.GetTokenPropertyNames(DesignTokenKind.Seed), StringComparer.Ordinal);
-        names.UnionWith(DesignToken.GetTokenPropertyNames(DesignTokenKind.Map));
-        names.UnionWith(DesignToken.GetTokenPropertyNames(DesignTokenKind.Alias));
-        return names;
+        var appearance = ThemeAppearance.Light;
+        foreach (var algorithm in algorithms)
+        {
+            appearance = algorithm.AppearanceEffect switch
+            {
+                ThemeAppearanceEffect.Light => ThemeAppearance.Light,
+                ThemeAppearanceEffect.Dark  => ThemeAppearance.Dark,
+                _                           => appearance
+            };
+        }
+
+        return appearance;
+    }
+
+    private static DesignToken CompileGlobalBuilder(ThemeCompileInput input)
+    {
+        var seed = new DesignToken();
+        ApplyValues(seed, input.EffectiveConfig.GlobalTokens, TokenStage.Seed);
+        var map = EvaluateAlgorithms(seed, input.EffectiveConfig.Algorithms, input.Registry.GlobalTokens);
+        ApplyValues(map, input.EffectiveConfig.GlobalTokens, TokenStage.Map);
+        map.CalculateAliasTokenValues();
+        ApplyValues(map, input.EffectiveConfig.GlobalTokens, TokenStage.Alias);
+        NormalizeFinalBehavior(map);
+        return map;
+    }
+
+    private static DesignToken EvaluateAlgorithms(
+        DesignToken effectiveSeed,
+        IReadOnlyList<ThemeAlgorithmDescriptor> algorithms,
+        IReadOnlyList<TokenDescriptor> descriptors)
+    {
+        DesignToken? previousMap = null;
+        foreach (var algorithm in algorithms)
+        {
+            var nextMap = CopyBuilder(previousMap ?? effectiveSeed, descriptors);
+            algorithm.Create().Evaluate(effectiveSeed, previousMap, nextMap);
+            previousMap = nextMap;
+        }
+
+        return previousMap ?? throw new InvalidOperationException(
+            "A theme compilation requires at least one algorithm.");
+    }
+
+    private static DesignToken CopyBuilder(
+        DesignToken source,
+        IReadOnlyList<TokenDescriptor> descriptors)
+    {
+        var copy = new DesignToken();
+        foreach (var descriptor in descriptors)
+        {
+            var value = descriptor.GetValue(source);
+            if (value is not null &&
+                !value.GetType().IsValueType &&
+                value is not string &&
+                value is not Avalonia.Media.FontFamily)
+            {
+                value = descriptor.Parse(descriptor.Format(value));
+            }
+
+            descriptor.SetValue(copy, value);
+        }
+
+        foreach (var palette in source.ColorPalettes)
+        {
+            copy.ColorPalettes[palette.Key] = CopyColorMap(palette.Value);
+        }
+
+        return copy;
+    }
+
+    private static void ApplyValues(
+        DesignToken builder,
+        IReadOnlyList<NormalizedTokenValue> values,
+        TokenStage stage)
+    {
+        foreach (var value in values)
+        {
+            if (value.Descriptor.Stage == stage)
+            {
+                value.Descriptor.SetValue(builder, value.Value);
+            }
+        }
+    }
+
+    private static void ApplyAllValues(
+        AbstractDesignToken builder,
+        IReadOnlyList<NormalizedTokenValue> values)
+    {
+        foreach (var value in values)
+        {
+            value.Descriptor.SetValue(builder, value.Value);
+        }
+    }
+
+    private static DesignToken CreateBuilder(
+        TokenValueTable values,
+        IReadOnlyDictionary<PresetPrimaryColor, PaletteInfo> palettes,
+        IReadOnlyList<TokenDescriptor> descriptors)
+    {
+        var builder = new DesignToken();
+        foreach (var descriptor in descriptors)
+        {
+            descriptor.SetValue(builder, ThawValue(descriptor, values.GetValue(descriptor.Slot)));
+        }
+
+        foreach (var palette in palettes)
+        {
+            builder.ColorPalettes[palette.Key] = ColorMap.FromColors(palette.Value.ColorSequence);
+        }
+
+        return builder;
+    }
+
+    private static object? ThawValue(TokenDescriptor descriptor, object? value)
+    {
+        if (value is null || value.GetType().IsValueType || value is string)
+        {
+            return value;
+        }
+
+        return descriptor.Parse(descriptor.Format(value));
+    }
+
+    private static void NormalizeFinalBehavior(DesignToken builder)
+    {
+        if (!builder.EnableMotion)
+        {
+            builder.MotionDurationFast     = TimeSpan.Zero;
+            builder.MotionDurationMid      = TimeSpan.Zero;
+            builder.MotionDurationSlow     = TimeSpan.Zero;
+            builder.MotionDurationVerySlow = TimeSpan.Zero;
+        }
+
+        if (!builder.EnableWaveSpirit)
+        {
+            builder.WaveAnimationRange = 0;
+            builder.WaveStartOpacity   = 0;
+        }
+    }
+
+    private static IReadOnlyDictionary<object, object?> BuildResourceMap(
+        AbstractDesignToken builder,
+        IReadOnlyList<TokenDescriptor> descriptors)
+    {
+        var resources = new Dictionary<object, object?>(descriptors.Count);
+        foreach (var descriptor in descriptors)
+        {
+            resources.Add(descriptor.ResourceKey, descriptor.ProjectResourceValue(builder));
+        }
+
+        return resources.ToFrozenDictionary();
+    }
+
+    private static IReadOnlyDictionary<PresetPrimaryColor, PaletteInfo> FreezePresetPalettes(
+        DesignToken builder)
+    {
+        var palettes = new Dictionary<PresetPrimaryColor, PaletteInfo>(
+            builder.ColorPalettes.Count);
+        foreach (var palette in builder.ColorPalettes)
+        {
+            var colors = GetColors(palette.Value);
+            palettes.Add(
+                palette.Key,
+                new PaletteInfo(palette.Value.Color6, colors));
+        }
+
+        return palettes.ToFrozenDictionary();
+    }
+
+    private static ColorMap CopyColorMap(ColorMap source)
+    {
+        return ColorMap.FromColors(GetColors(source));
+    }
+
+    private static Avalonia.Media.Color[] GetColors(ColorMap source)
+    {
+        return
+        [
+            source.Color1,
+            source.Color2,
+            source.Color3,
+            source.Color4,
+            source.Color5,
+            source.Color6,
+            source.Color7,
+            source.Color8,
+            source.Color9,
+            source.Color10
+        ];
     }
 
     private static void AddError(List<ThemeDefinitionDiagnostic> diagnostics, string code, string message)
     {
-        diagnostics.Add(new ThemeDefinitionDiagnostic(code, ThemeDiagnosticSeverity.Error, string.Empty, 0, 0, CompilerPath, message));
+        diagnostics.Add(new ThemeDefinitionDiagnostic(
+            code,
+            ThemeDefinitionDiagnosticSeverity.Error,
+            string.Empty,
+            0,
+            0,
+            CompilerPath,
+            message));
     }
 
     private static ThemeCompileResult Failed(List<ThemeDefinitionDiagnostic> diagnostics)
@@ -464,29 +635,9 @@ internal sealed class ThemeCompiler
         return new ThemeCompileResult(null, CopyDiagnostics(diagnostics), null);
     }
 
-    private static IReadOnlyList<ThemeDefinitionDiagnostic> CopyDiagnostics(List<ThemeDefinitionDiagnostic> diagnostics)
+    private static IReadOnlyList<ThemeDefinitionDiagnostic> CopyDiagnostics(
+        List<ThemeDefinitionDiagnostic> diagnostics)
     {
         return Array.AsReadOnly(diagnostics.ToArray());
-    }
-
-    private static IReadOnlyList<ThemeAlgorithm> CopyAlgorithms(IReadOnlyList<ThemeAlgorithm> algorithms)
-    {
-        return Array.AsReadOnly(algorithms.ToArray());
-    }
-
-    private static IReadOnlyDictionary<TKey, TValue> ReadOnly<TKey, TValue>(Dictionary<TKey, TValue> source)
-        where TKey : notnull
-    {
-        return new ReadOnlyDictionary<TKey, TValue>(source);
-    }
-
-    private static void MergeInto(
-        IDictionary<string, string> destination,
-        IEnumerable<KeyValuePair<string, string>> source)
-    {
-        foreach (var entry in source)
-        {
-            destination[entry.Key] = entry.Value;
-        }
     }
 }

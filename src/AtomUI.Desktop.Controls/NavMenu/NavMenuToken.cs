@@ -474,5 +474,4 @@ internal class NavMenuToken : AbstractControlDesignToken
         VerticalMenuContentPadding = new Thickness(0, SharedToken.UniformlyMarginXXS, 0, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(NavMenuTokenKind);
 }

@@ -1,6 +1,5 @@
 ﻿using AtomUI.Theme.TokenSystem;
 using AtomUI.Theme;
-using AtomUI.Theme.Resources;
 using AtomUI.Theme.Styling;
 
 namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
@@ -74,13 +73,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         }
     }
 
-    public sealed class GalleryShowCaseHeaderTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public GalleryShowCaseHeaderTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "GalleryShowCaseHeader", kind)
-        {
-        }
-    }
-
     public class GalleryStickyTabsHostTokenResourceExtension : TokenResourceExtension<GalleryStickyTabsHostTokenKind>
     {
         public GalleryStickyTabsHostTokenResourceExtension()
@@ -88,13 +80,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         }
 
         public GalleryStickyTabsHostTokenResourceExtension(GalleryStickyTabsHostTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class GalleryStickyTabsHostTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public GalleryStickyTabsHostTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "GalleryStickyTabsHost", kind)
         {
         }
     }
@@ -110,13 +95,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         }
     }
 
-    public sealed class GalleryWindowTitleBarTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public GalleryWindowTitleBarTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "GalleryWindowTitleBar", kind)
-        {
-        }
-    }
-
     public class ShowCaseItemTokenResourceExtension : TokenResourceExtension<ShowCaseItemTokenKind>
     {
         public ShowCaseItemTokenResourceExtension()
@@ -128,13 +106,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         }
     }
 
-    public sealed class ShowCaseItemTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ShowCaseItemTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ShowCaseItem", kind)
-        {
-        }
-    }
-
     public class ShowCasePanelTokenResourceExtension : TokenResourceExtension<ShowCasePanelTokenKind>
     {
         public ShowCasePanelTokenResourceExtension()
@@ -142,13 +113,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         }
 
         public ShowCasePanelTokenResourceExtension(ShowCasePanelTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class ShowCasePanelTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public ShowCasePanelTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "ShowCasePanel", kind)
         {
         }
     }

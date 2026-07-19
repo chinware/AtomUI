@@ -31,5 +31,4 @@ internal class BorderBeamToken : AbstractControlDesignToken
         MaxVisibleStopPercent = 70d;
     }
 
-    protected override Type GetTokenKindType() => typeof(BorderBeamTokenKind);
 }

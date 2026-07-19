@@ -1,9 +1,8 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using AtomUI.Theme;
+using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.Styling;
 using Avalonia.Media;
 using Shouldly;
 using Xunit;
@@ -13,65 +12,53 @@ namespace AtomUI.Desktop.Controls.Tests.Theme;
 public class ThemeInitialModeTests
 {
     [Fact]
-    public void Builder_Default_Theme_With_Dark_Algorithm_Uses_Dark_Variant_As_Initial_Theme()
+    public void Builder_Initial_Theme_Keeps_Theme_Id_And_Dark_Algorithm_Config()
     {
         var builder = new TestThemeManagerBuilder();
+        var config = new ThemeConfigBuilder().WithAlgorithms("Default", "Dark").Build();
 
-        builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID, ThemeAlgorithm.Dark);
+        builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID, config);
 
-        builder.ThemeId.ShouldBe($"{IThemeManager.DEFAULT_THEME_ID}-Dark");
+        builder.ThemeId.ShouldBe(IThemeManager.DEFAULT_THEME_ID);
+        builder.InitialConfig.ShouldBeSameAs(config);
+        builder.InitialConfig!.Algorithms.ShouldBe(["Default", "Dark"]);
     }
 
     [Fact]
-    public void Builder_Default_Theme_With_Dark_And_Compact_Algorithms_Uses_Normalized_Variant_As_Initial_Theme()
+    public void Builder_Initial_Theme_Preserves_Explicit_Algorithm_Order()
     {
         var builder = new TestThemeManagerBuilder();
+        var config = new ThemeConfigBuilder().WithAlgorithms("Default", "Compact", "Dark").Build();
 
-        builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID, ThemeAlgorithm.Compact, ThemeAlgorithm.Dark);
+        builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID, config);
 
-        builder.ThemeId.ShouldBe($"{IThemeManager.DEFAULT_THEME_ID}-Dark-Compact");
+        builder.InitialConfig!.Algorithms.ShouldBe(["Default", "Compact", "Dark"]);
     }
 
     [Fact]
-    public void Builder_Default_Theme_With_Duplicate_Algorithms_Uses_Each_Algorithm_Once()
+    public void Builder_Initial_Theme_Allows_Definition_Defaults_When_Config_Is_Null()
     {
         var builder = new TestThemeManagerBuilder();
 
-        builder.WithDefaultTheme(
-            IThemeManager.DEFAULT_THEME_ID,
-            ThemeAlgorithm.Dark,
-            ThemeAlgorithm.Dark,
-            ThemeAlgorithm.Compact);
+        builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
 
-        builder.ThemeId.ShouldBe($"{IThemeManager.DEFAULT_THEME_ID}-Dark-Compact");
+        builder.ThemeId.ShouldBe(IThemeManager.DEFAULT_THEME_ID);
+        builder.InitialConfig.ShouldBeNull();
     }
 
     private sealed class TestThemeManagerBuilder : IThemeManagerBuilder
     {
-        public IList<Type> ControlDesignTokens { get; } = new List<Type>();
-        public IList<IThemeAssetPathProvider> ThemeAssetPathProviders { get; } = new List<IThemeAssetPathProvider>();
         public IList<IControlThemesProvider> ControlThemesProviders { get; } = new List<IControlThemesProvider>();
         public IList<LanguageProvider> LanguageProviders { get; } = new List<LanguageProvider>();
-        public IList<EventHandler> InitializedHandlers { get; } = new List<EventHandler>();
+        public IList<Action<IThemeManager>> Initializers { get; } = new List<Action<IThemeManager>>();
         public LanguageVariant LanguageVariant { get; private set; } = LanguageVariant.en_US;
         public string ThemeId { get; private set; } = IThemeManager.DEFAULT_THEME_ID;
-
-        public void AddControlToken(
-            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor |
-                                        DynamicallyAccessedMemberTypes.PublicProperties |
-                                        DynamicallyAccessedMemberTypes.NonPublicProperties)]
-            Type tokenType)
-        {
-            ControlDesignTokens.Add(tokenType);
-        }
+        public ThemeConfig? InitialConfig { get; private set; }
+        public ThemeRequest? FollowSystemLight { get; private set; }
+        public ThemeRequest? FollowSystemDark { get; private set; }
 
         public void AddControlToken(ControlTokenDescriptor descriptor)
         {
-        }
-
-        public void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)
-        {
-            ThemeAssetPathProviders.Add(themeAssetPathProvider);
         }
 
         public void AddControlThemesProvider(IControlThemesProvider controlThemesProvider)
@@ -84,9 +71,21 @@ public class ThemeInitialModeTests
             LanguageProviders.Add(languageProvider);
         }
 
-        public void WithDefaultTheme(string themeId)
+        public void AddInitializer(Action<IThemeManager> initializer)
         {
-            ThemeId = themeId;
+            Initializers.Add(initializer);
+        }
+
+        public void WithInitialTheme(string themeId, ThemeConfig? config = null)
+        {
+            ThemeId      = themeId;
+            InitialConfig = config;
+        }
+
+        public void WithFollowSystemThemes(ThemeRequest light, ThemeRequest dark)
+        {
+            FollowSystemLight = light;
+            FollowSystemDark  = dark;
         }
 
         public void WithDefaultFontFamily(FontFamily fontFamily)
@@ -107,8 +106,5 @@ public class ThemeInitialModeTests
             LanguageVariant = languageVariant;
         }
 
-        public void WithThemeVariantCalculatorFactory(IThemeVariantCalculatorFactory factory)
-        {
-        }
     }
 }

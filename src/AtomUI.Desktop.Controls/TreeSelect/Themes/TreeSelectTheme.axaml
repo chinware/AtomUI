@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TreeSelectThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:TreeSelect}" TargetType="atom:TreeSelect">
         <Setter Property="Template">
@@ -31,7 +34,7 @@
                         IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
-                                        Spacing="{atom:TreeSelectTokenSharedTokenResource SpacingXS}">
+                                        Spacing="{atom:SharedTokenResource SpacingXS}">
                                 <atom:SelectMaxCountIndicator
                                     Name="PART_SelectMaxCountIndicator"
                                     MaxCount="{CompiledBinding $parent[atom:TreeSelect].MaxCount}"
@@ -110,25 +113,25 @@
             </ControlTemplate>
         </Setter>
         <Setter Property="FilterHighlightForeground"
-                Value="{atom:TreeSelectTokenSharedTokenResource ColorPrimary}" />
+                Value="{atom:SharedTokenResource ColorPrimary}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
-        <Setter Property="IsMotionEnabled" Value="{atom:TreeSelectTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="PopupContentPadding"
                 Value="{atom:SelectTokenResource PopupContentPadding}" />
-        <Setter Property="ItemHeight" Value="{atom:TreeSelectTokenSharedTokenResource ControlHeight}" />
+        <Setter Property="ItemHeight" Value="{atom:SharedTokenResource ControlHeight}" />
         <Setter Property="PlaceholderForeground"
-                Value="{atom:TreeSelectTokenSharedTokenResource ColorTextPlaceholder}" />
+                Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="FontSize" Value="{atom:TreeSelectTokenSharedTokenResource FontSizeLG}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeLG}" />
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Setter Property="FontSize" Value="{atom:TreeSelectTokenSharedTokenResource FontSize}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="FontSize" Value="{atom:TreeSelectTokenSharedTokenResource FontSize}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
         </Style>
 
         <Style Selector="^ /template/ atom|Popup#PART_Popup">
@@ -136,7 +139,7 @@
                     Value="{atom:PopupHostTokenResource MarginToAnchor}" />
         </Style>
         <Style Selector="^ /template/ Border#PopupFrame">
-            <Setter Property="Background" Value="{atom:TreeSelectTokenSharedTokenResource ColorBgElevated}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
             <Setter Property="CornerRadius"
                     Value="{atom:PopupHostTokenResource BorderRadius}" />
         </Style>
@@ -177,7 +180,7 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:TreeSelectTokenSharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

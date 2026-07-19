@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:CheckBoxThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:CheckBoxIndicator}" TargetType="atom:CheckBoxIndicator">
@@ -37,8 +40,8 @@
         </Setter>
 
         <Setter Property="ClipToBounds" Value="False"/>
-        <Setter Property="BorderThickness" Value="{atom:CheckBoxTokenSharedTokenResource BorderThickness}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:CheckBoxTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
 
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">

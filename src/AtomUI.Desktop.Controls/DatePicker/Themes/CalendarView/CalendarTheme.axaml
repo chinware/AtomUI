@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DatePickerThemeAsset.Identity}"
     xmlns:calendarView="clr-namespace:AtomUI.Desktop.Controls.CalendarView"
     x:Class="AtomUI.Desktop.Controls.Themes.CalendarTheme"
     TargetType="calendarView:Calendar"
@@ -21,7 +24,7 @@
     </Setter>
 
     <Style Selector="^:is(calendarView|Calendar)">
-        <Setter Property="Background" Value="{atom:DatePickerTokenSharedTokenResource ColorBgElevated}" />
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
     </Style>

@@ -28,12 +28,12 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
                 viewModel.SelectionMode            = SelectionMode.Single;
                 viewModel.OrderedSortDescriptions  = [ListSortDescription.FromPath(nameof(IListItemData.Content))];
 
-                var themeManager = Application.Current?.GetThemeManager();
-                if (themeManager != null)
+                var languageManager = Application.Current?.GetLanguageManager();
+                if (languageManager != null)
                 {
                     EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedListItems(viewModel);
-                    themeManager.LanguageVariantChanged += handler;
-                    Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
+                    languageManager.LanguageVariantChanged += handler;
+                    Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
                               .DisposeWith(disposables);
                 }
 

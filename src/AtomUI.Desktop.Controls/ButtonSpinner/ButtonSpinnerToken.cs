@@ -75,5 +75,4 @@ internal class ButtonSpinnerToken : LineEditToken
         HandleBorderColor = SharedToken.ColorBorder;
     }
     
-    protected override Type GetTokenKindType() => typeof(ButtonSpinnerTokenKind);
 }

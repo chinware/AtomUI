@@ -94,5 +94,4 @@ internal class UploadToken : AbstractControlDesignToken
         PictureListPreviewerSize = SharedToken.SizeXXL;
     }
     
-    protected override Type GetTokenKindType() => typeof(UploadTokenKind);
 }

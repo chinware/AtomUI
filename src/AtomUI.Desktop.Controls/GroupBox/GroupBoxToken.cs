@@ -63,5 +63,4 @@ internal class GroupBoxToken : AbstractControlDesignToken
         HeaderIconMargin     = new Thickness(0, 0, SharedToken.UniformlyMarginXXS, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(GroupBoxTokenKind);
 }

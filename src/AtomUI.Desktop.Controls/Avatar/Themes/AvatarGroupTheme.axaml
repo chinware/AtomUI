@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:AvatarThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:AvatarGroup}" TargetType="atom:AvatarGroup">
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -11,6 +14,6 @@
         <Setter Property="FoldInfoAvatarForeground"
                 Value="{atom:AvatarTokenResource AvatarColor}" />
         <Setter Property="FoldInfoAvatarBackground" Value="{atom:AvatarTokenResource AvatarBg}" />
-        <Setter Property="BorderThickness" Value="{atom:AvatarTokenSharedTokenResource BorderThickness}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
     </ControlTheme>
 </ResourceDictionary>

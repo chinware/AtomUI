@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:NotificationThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <atom:StringToSelectableTextBlockConverter x:Key="StringToSelectableTextBlockConverter" />
@@ -48,9 +51,9 @@
         </Setter>
 
         <Setter Property="IsMotionEnabled"
-                Value="{atom:NotificationTokenSharedTokenResource EnableMotion}" />
+                Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="OpenCloseMotionDuration"
-                Value="{atom:NotificationTokenSharedTokenResource MotionDurationMid}" />
+                Value="{atom:SharedTokenResource MotionDurationMid}" />
         <Setter Property="ClipToBounds" Value="False" />
 
         <Style Selector="^ /template/ atom|NotificationProgressBar#ProgressBar">
@@ -105,9 +108,9 @@
         <Style Selector="^ /template/ Border#Frame">
             <Setter Property="Padding"
                     Value="{atom:NotificationTokenResource NotificationPadding}" />
-            <Setter Property="BoxShadow" Value="{atom:NotificationTokenSharedTokenResource BoxShadows}" />
+            <Setter Property="BoxShadow" Value="{atom:SharedTokenResource BoxShadows}" />
             <Setter Property="Background" Value="{atom:NotificationTokenResource NotificationBg}" />
-            <Setter Property="CornerRadius" Value="{atom:NotificationTokenSharedTokenResource BorderRadiusLG}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
         </Style>
 
         <Style Selector="^[IsClosed=True]">
@@ -124,38 +127,38 @@
         <Style Selector="^[NotificationType=Information]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
-                        Value="{atom:NotificationTokenSharedTokenResource ColorPrimary}" />
+                        Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
 
         <Style Selector="^[NotificationType=Error]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
-                        Value="{atom:NotificationTokenSharedTokenResource ColorError}" />
+                        Value="{atom:SharedTokenResource ColorError}" />
             </Style>
         </Style>
 
         <Style Selector="^[NotificationType=Success]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
-                        Value="{atom:NotificationTokenSharedTokenResource ColorSuccess}" />
+                        Value="{atom:SharedTokenResource ColorSuccess}" />
             </Style>
         </Style>
 
         <Style Selector="^[NotificationType=Warning]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
-                        Value="{atom:NotificationTokenSharedTokenResource ColorWarning}" />
+                        Value="{atom:SharedTokenResource ColorWarning}" />
             </Style>
         </Style>
         
         <Style Selector="^ /template/ atom|SelectableTextBlock#HeaderTitle">
             <Setter Property="LineHeight"
-                    Value="{atom:NotificationTokenSharedTokenResource FontHeightLG}" />
+                    Value="{atom:SharedTokenResource FontHeightLG}" />
             <Setter Property="FontSize"
-                    Value="{atom:NotificationTokenSharedTokenResource FontSizeLG}" />
+                    Value="{atom:SharedTokenResource FontSizeLG}" />
             <Setter Property="Foreground"
-                    Value="{atom:NotificationTokenSharedTokenResource ColorTextHeading}" />
+                    Value="{atom:SharedTokenResource ColorTextHeading}" />
         </Style>
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
             <Setter Property="Margin"
@@ -171,20 +174,20 @@
             <Setter Property="Padding"
                     Value="{atom:NotificationTokenResource NotificationCloseButtonPadding}" />
             <Setter Property="CornerRadius"
-                    Value="{atom:NotificationTokenSharedTokenResource BorderRadiusSM}" />
+                    Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="IconHeight"
-                    Value="{atom:NotificationTokenSharedTokenResource IconSizeSM}" />
+                    Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="IconWidth"
-                    Value="{atom:NotificationTokenSharedTokenResource IconSizeSM}" />
+                    Value="{atom:SharedTokenResource IconSizeSM}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#Content">
             <Setter Property="Foreground"
-                    Value="{atom:NotificationTokenSharedTokenResource ColorText}" />
+                    Value="{atom:SharedTokenResource ColorText}" />
             <Setter Property="FontSize"
-                    Value="{atom:NotificationTokenSharedTokenResource FontSize}" />
+                    Value="{atom:SharedTokenResource FontSize}" />
             <Setter Property="LineHeight"
-                    Value="{atom:NotificationTokenSharedTokenResource FontHeight}" />
+                    Value="{atom:SharedTokenResource FontHeight}" />
             <Setter Property="Margin"
                     Value="{atom:NotificationTokenResource NotificationContentMargin}" />
         </Style>

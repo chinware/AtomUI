@@ -96,5 +96,4 @@ internal class TimelineToken : AbstractControlDesignToken
         IndicatorDotSize         = 8;
     }
     
-    protected override Type GetTokenKindType() => typeof(TimelineTokenKind);
 }

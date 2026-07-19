@@ -58,5 +58,4 @@ internal class TreeFlyoutToken : AbstractControlDesignToken
         PopupBgColor        = SharedToken.ColorBgElevated;
     }
     
-    protected override Type GetTokenKindType() => typeof(TreeFlyoutTokenKind);
 }

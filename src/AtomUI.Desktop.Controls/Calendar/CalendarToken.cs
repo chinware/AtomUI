@@ -127,5 +127,4 @@ internal class CalendarToken : AbstractControlDesignToken
         RangeCalendarSpacing  = 20;
     }
     
-    protected override Type GetTokenKindType() => typeof(CalendarTokenKind);
 }

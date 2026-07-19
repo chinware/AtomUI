@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:NavMenuThemeAsset.Identity}"
     xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal">
     <converters:NavMenuIsSubMenuOpenConverter x:Key="IsSubMenuOpenConverter" />
@@ -169,23 +172,23 @@
         <Style Selector="^[Mode=Horizontal],^[Mode=Vertical]">
             <Style Selector="^ /template/ atom|Popup#PART_Popup">
                 <Setter Property="RequestedPlacement" Value="RightEdgeAlignedTop" />
-                <Setter Property="HorizontalOffset" Value="{atom:NavMenuTokenSharedTokenResource SpacingXS}" />
-                <Setter Property="VerticalOffset" Value="{atom:NavMenuTokenSharedTokenResource SpacingXXS}" />
+                <Setter Property="HorizontalOffset" Value="{atom:SharedTokenResource SpacingXS}" />
+                <Setter Property="VerticalOffset" Value="{atom:SharedTokenResource SpacingXXS}" />
             </Style>
         </Style>
 
         <Style Selector="^[Mode=Horizontal]:toplevel">
-            <Setter Property="FontSize" Value="{atom:NavMenuTokenSharedTokenResource FontSize}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
             <Style Selector="^ /template/ atom|Popup#PART_Popup">
                 <Setter Property="RequestedPlacement" Value="Bottom" />
-                <Setter Property="VerticalOffset" Value="{atom:NavMenuTokenSharedTokenResource SpacingXXS}" />
+                <Setter Property="VerticalOffset" Value="{atom:SharedTokenResource SpacingXXS}" />
                 <Setter Property="HorizontalOffset" Value="0" />
             </Style>
         </Style>
 
         <Style Selector="^[Mode=Inline]">
             <Setter Property="OpenCloseMotionDuration"
-                    Value="{atom:NavMenuTokenSharedTokenResource MotionDurationSlow}" />
+                    Value="{atom:SharedTokenResource MotionDurationSlow}" />
 
             <Setter Property="Focusable" Value="False" />
             <Style Selector="^ /template/ ItemsPresenter#ChildItemsPresenter StackPanel">

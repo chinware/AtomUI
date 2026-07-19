@@ -98,7 +98,6 @@ internal class SkeletonToken : AbstractControlDesignToken
         ImageContainerMaxSize = imageSizeBase * 4;
     }
 
-    protected override Type GetTokenKindType() => typeof(SkeletonTokenKind);
 
     private LinearGradientBrush CreateLoadingBackground(double startX, double endX)
     {

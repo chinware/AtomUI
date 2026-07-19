@@ -1,7 +1,7 @@
 ﻿using AtomUI.Theme.TokenSystem;
 using Avalonia;
 
-namespace AtomUI.Theme.Styling;
+namespace AtomUI.Theme.Algorithms;
 
 internal struct RadiusInfo
 {

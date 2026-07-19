@@ -1,14 +1,12 @@
 ﻿using AtomUI.Media;
-using AtomUI.Theme.Algorithms;
-using AtomUI.Theme.Palette;
 using AtomUI.Theme.Schema;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.Theme.Styling;
+namespace AtomUI.Theme.Algorithms;
 
-[ThemeAlgorithmAttribute("Dark", ThemeAppearanceEffect.Dark)]
+[ThemeAlgorithmAttribute("Dark", 1, ThemeAppearanceEffect.Dark)]
 public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
 {
     public const ThemeAlgorithm Algorithm = ThemeAlgorithm.Dark;
@@ -17,34 +15,33 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
         ThemeVariant = ThemeVariant.Dark
     };
 
-    public DarkThemeVariantCalculator(IThemeVariantCalculator calculator)
-        : base(calculator)
+    public DarkThemeVariantCalculator()
     {
         _colorBgBase   = Color.FromRgb(0, 0, 0);
         _colorTextBase = Color.FromRgb(255, 255, 255);
     }
 
-    public override void Calculate(DesignToken designToken)
+    public override void Evaluate(DesignToken effectiveSeed, DesignToken? previousMap, DesignToken nextMap)
     {
-        _compositeGenerator!.Calculate(designToken);
-
-        if (designToken.ColorBgBase.HasValue)
+        ArgumentNullException.ThrowIfNull(effectiveSeed);
+        ArgumentNullException.ThrowIfNull(nextMap);
+        if (previousMap is null)
         {
-            _colorBgBase = designToken.ColorBgBase.Value;
+            new DefaultThemeVariantCalculator().Evaluate(effectiveSeed, null, nextMap);
         }
 
-        if (designToken.ColorTextBase.HasValue)
-        {
-            _colorTextBase = designToken.ColorTextBase.Value;
-        }
+        _colorBgBase         = effectiveSeed.ColorBgBase ?? Color.FromRgb(0, 0, 0);
+        _colorTextBase       = effectiveSeed.ColorTextBase ?? Color.FromRgb(255, 255, 255);
+        nextMap.ColorBgBase   = _colorBgBase;
+        nextMap.ColorTextBase = _colorTextBase;
 
         // Dark tokens
-        SetupColorPalettes(designToken);
-        CalculateColorMapTokenValues(designToken);
+        SetupColorPalettes(nextMap);
+        CalculateColorMapTokenValues(nextMap);
         // Customize selected item background color
         // https://github.com/ant-design/ant-design/issues/30524#issuecomment-871961867
-        designToken.ColorPrimaryBg      = designToken.ColorPrimaryBorder;
-        designToken.ColorPrimaryBgHover = designToken.ColorPrimaryBorderHover;
+        nextMap.ColorPrimaryBg      = nextMap.ColorPrimaryBorder;
+        nextMap.ColorPrimaryBgHover = nextMap.ColorPrimaryBorderHover;
     }
 
     protected override ColorMap GenerateColorPalettes(Color baseColor)

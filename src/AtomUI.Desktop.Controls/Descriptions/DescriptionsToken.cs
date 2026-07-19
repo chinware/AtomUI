@@ -91,5 +91,4 @@ internal class DescriptionsToken : AbstractControlDesignToken
         ExtraColor   = SharedToken.ColorText;
     }
     
-    protected override Type GetTokenKindType() => typeof(DescriptionsTokenKind);
 }

@@ -3,6 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:ClassModifier="internal"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:QRCodeThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign">
     <ControlTheme x:Key="{x:Type atom:QRCode}" TargetType="atom:QRCode">
         <Setter Property="Template">
@@ -86,17 +89,17 @@
         <Setter Property="Foreground" Value="{atom:QRCodeTokenResource QRCodeTextColor}" />
         <Setter Property="Background" Value="Transparent" />
         
-        <Setter Property="IconBgColor" Value="{atom:QRCodeTokenSharedTokenResource ColorBgContainer}" />
+        <Setter Property="IconBgColor" Value="{atom:SharedTokenResource ColorBgContainer}" />
         <Setter Property="BorderThickness"
-                Value="{atom:QRCodeTokenSharedTokenResource BorderThickness}" />
+                Value="{atom:SharedTokenResource BorderThickness}" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="CornerRadius" Value="{atom:QRCodeTokenSharedTokenResource BorderRadiusLG}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
 
         <Style Selector="^[IsBordered=True]">
-            <Setter Property="BorderBrush" Value="{atom:QRCodeTokenSharedTokenResource ColorSplit}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
             <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
                 <Setter Property="Padding"
-                        Value="{atom:QRCodeTokenSharedTokenResource PaddingSM}" />
+                        Value="{atom:SharedTokenResource PaddingSM}" />
             </Style>
         </Style>
 
@@ -107,7 +110,7 @@
 
         <Style Selector="^ /template/ Border#ImageFrame">
             <Setter Property="Padding"
-                    Value="{atom:QRCodeTokenSharedTokenResource PaddingXXS}" />
+                    Value="{atom:SharedTokenResource PaddingXXS}" />
         </Style>
 
         <Style Selector="^[Status=Active]">

@@ -6,13 +6,13 @@ namespace AtomUI.Theme.Schema;
 public sealed class ControlTokenDescriptor
 {
     private readonly Func<AbstractControlDesignToken> _factory;
-    private readonly Action<AbstractControlDesignToken, bool> _evaluator;
+    private readonly Action<AbstractControlDesignToken, ThemeAppearance> _evaluator;
 
     public ControlTokenDescriptor(
         ControlTokenIdentity identity,
         IEnumerable<TokenDescriptor> ownTokens,
         Func<AbstractControlDesignToken> factory,
-        Action<AbstractControlDesignToken, bool> evaluator)
+        Action<AbstractControlDesignToken, ThemeAppearance> evaluator)
         : this(identity, -1, ownTokens, Array.Empty<TokenDescriptor>(), factory, evaluator)
     {
     }
@@ -23,7 +23,7 @@ public sealed class ControlTokenDescriptor
         IEnumerable<TokenDescriptor> ownTokens,
         IReadOnlyList<TokenDescriptor> inheritedTokens,
         Func<AbstractControlDesignToken> factory,
-        Action<AbstractControlDesignToken, bool> evaluator)
+        Action<AbstractControlDesignToken, ThemeAppearance> evaluator)
     {
         ArgumentNullException.ThrowIfNull(ownTokens);
         ArgumentNullException.ThrowIfNull(inheritedTokens);
@@ -45,10 +45,10 @@ public sealed class ControlTokenDescriptor
 
     public AbstractControlDesignToken CreateBuilder() => _factory();
 
-    public void Evaluate(AbstractControlDesignToken token, bool isDark)
+    public void Evaluate(AbstractControlDesignToken token, ThemeAppearance appearance)
     {
         ArgumentNullException.ThrowIfNull(token);
-        _evaluator(token, isDark);
+        _evaluator(token, appearance);
     }
 
     internal ControlTokenDescriptor Bind(int slot, IReadOnlyList<TokenDescriptor> inheritedTokens)

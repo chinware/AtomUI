@@ -4,6 +4,9 @@
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:calendarView="clr-namespace:AtomUI.Desktop.Controls.CalendarView"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DatePickerThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type calendarView:DualMonthCalendarItem}" TargetType="calendarView:DualMonthCalendarItem">
         <ControlTheme.BasedOn>
@@ -24,7 +27,7 @@
                                          Columns="2"
                                          ColumnSpacing="{atom:DatePickerTokenResource RangeCalendarSpacing}">
                                 <Grid MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
-                                      MinHeight="{atom:DatePickerTokenSharedTokenResource ControlHeight}">
+                                      MinHeight="{atom:SharedTokenResource ControlHeight}">
                                     <atom:HeadTextButton
                                         Name="PART_HeaderButton"
                                         HorizontalAlignment="Center"
@@ -58,7 +61,7 @@
                                 </Grid>
 
                                 <Grid MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
-                                      MinHeight="{atom:DatePickerTokenSharedTokenResource ControlHeight}">
+                                      MinHeight="{atom:SharedTokenResource ControlHeight}">
                                     <atom:HeadTextButton
                                         Name="PART_SecondaryHeaderButton"
                                         HorizontalAlignment="Center"

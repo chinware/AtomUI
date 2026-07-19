@@ -114,7 +114,7 @@ public class GalleryLandingPagesTests
     {
         var source = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml");
 
-        source.ShouldContain("Background=\"{gallery:ShowCaseItemTokenSharedTokenResource ColorBgContainer}\"");
+        source.ShouldContain("Background=\"{atom:SharedTokenResource ColorBgContainer}\"");
         source.ShouldContain("BoxShadow=\"{gallery:ShowCaseItemTokenResource CardShadow}\"");
         source.ShouldNotContain("Property=\"BorderBrush\" Value=\"{atom:SharedTokenResource ColorBorder}\"");
         source.ShouldNotContain("Property=\"BorderThickness\" Value=\"1\"");

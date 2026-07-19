@@ -2,7 +2,10 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:ClassModifier="internal"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DataGridThemeAsset.Identity}">
     <ControlTheme x:Key="{x:Type atom:DataGridRowExpander}" TargetType="atom:DataGridRowExpander">
         <Setter Property="Template">
             <ControlTemplate>
@@ -33,22 +36,22 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Cursor" Value="Hand"/>
         
-        <Setter Property="Width" Value="{atom:DataGridTokenSharedTokenResource SizeMS}"/>
-        <Setter Property="Height" Value="{atom:DataGridTokenSharedTokenResource SizeMS}"/>
-        <Setter Property="CornerRadius" Value="{atom:DataGridTokenSharedTokenResource BorderRadiusSM}"/>
-        <Setter Property="BorderBrush" Value="{atom:DataGridTokenSharedTokenResource ColorBorder}"/>
-        <Setter Property="BorderThickness" Value="{atom:DataGridTokenSharedTokenResource BorderThickness}"/>
+        <Setter Property="Width" Value="{atom:SharedTokenResource SizeMS}"/>
+        <Setter Property="Height" Value="{atom:SharedTokenResource SizeMS}"/>
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}"/>
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}"/>
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
         
-        <Setter Property="IndicatorFill" Value="{atom:DataGridTokenSharedTokenResource ColorTextSecondary}"/>
+        <Setter Property="IndicatorFill" Value="{atom:SharedTokenResource ColorTextSecondary}"/>
         
         <Style Selector="^:focus">
-            <Setter Property="IndicatorFill" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryHover}"/>
-            <Setter Property="BorderBrush" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryHover}"/>
+            <Setter Property="IndicatorFill" Value="{atom:SharedTokenResource ColorPrimaryHover}"/>
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryHover}"/>
         </Style>
         
         <Style Selector="^:pointerover">
-            <Setter Property="IndicatorFill" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryHover}"/>
-            <Setter Property="BorderBrush" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryHover}"/>
+            <Setter Property="IndicatorFill" Value="{atom:SharedTokenResource ColorPrimaryHover}"/>
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryHover}"/>
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">
@@ -61,8 +64,8 @@
         </Style>
         
         <Style Selector="^:pressed">
-            <Setter Property="IndicatorFill" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryActive}"/>
-            <Setter Property="BorderBrush" Value="{atom:DataGridTokenSharedTokenResource ColorPrimaryActive}"/>
+            <Setter Property="IndicatorFill" Value="{atom:SharedTokenResource ColorPrimaryActive}"/>
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryActive}"/>
         </Style>
         
         <Style Selector="^ /template/ Rectangle#PART_VerticalIndicator">

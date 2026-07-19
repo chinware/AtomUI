@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:PopupHostThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type PopupRoot}" TargetType="PopupRoot">
         <Setter Property="Template">
@@ -22,10 +25,10 @@
         </Setter>
 
         <Setter Property="Background" Value="{x:Null}" />
-        <Setter Property="Foreground" Value="{atom:PopupHostTokenSharedTokenResource ColorText}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
         <Setter Property="TransparencyLevelHint" Value="Transparent" />
-        <Setter Property="FontSize" Value="{atom:PopupHostTokenSharedTokenResource FontSize}" />
-        <Setter Property="FontFamily" Value="{atom:PopupHostTokenSharedTokenResource FontFamily}" />
+        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
+        <Setter Property="FontFamily" Value="{atom:SharedTokenResource FontFamily}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontStyle" Value="Normal" />
 

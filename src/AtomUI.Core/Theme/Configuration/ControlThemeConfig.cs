@@ -1,11 +1,23 @@
+using System.Collections.ObjectModel;
+
 namespace AtomUI.Theme.Configuration;
 
 public sealed class ControlThemeConfig
 {
-    public ControlAlgorithmMode Algorithm { get; set; } = ControlAlgorithmMode.Unspecified;
+    internal ControlThemeConfig(
+        ControlAlgorithmMode algorithm,
+        IReadOnlyList<string>? algorithms,
+        IReadOnlyDictionary<string, string> tokens)
+    {
+        Algorithm  = algorithm;
+        Algorithms = algorithms is null ? null : Array.AsReadOnly(algorithms.ToArray());
+        Tokens     = new ReadOnlyDictionary<string, string>(
+            new Dictionary<string, string>(tokens, StringComparer.Ordinal));
+    }
 
-    public IList<string>? Algorithms { get; set; }
+    public ControlAlgorithmMode Algorithm { get; }
 
-    public IDictionary<string, string> Tokens { get; set; } =
-        new Dictionary<string, string>(StringComparer.Ordinal);
+    public IReadOnlyList<string>? Algorithms { get; }
+
+    public IReadOnlyDictionary<string, string> Tokens { get; }
 }

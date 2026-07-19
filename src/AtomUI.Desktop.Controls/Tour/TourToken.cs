@@ -73,5 +73,4 @@ internal class TourToken : AbstractControlDesignToken
         PopupMarginToAnchor   = SharedToken.SpacingXXS;
     }
     
-    protected override Type GetTokenKindType() => typeof(TourTokenKind);
 }

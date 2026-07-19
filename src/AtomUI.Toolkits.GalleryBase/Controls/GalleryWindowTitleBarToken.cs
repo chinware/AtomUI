@@ -26,5 +26,4 @@ internal class GalleryWindowTitleBarToken : AbstractControlDesignToken
         MenuMargin     = new Thickness(0, 0, SharedToken.SizeUnit * 2, 0);
     }
 
-    protected override Type GetTokenKindType() => typeof(GalleryWindowTitleBarTokenKind);
 }

@@ -473,7 +473,7 @@ internal static class GeneratedThemeSchema
                     static token => ThemeResourceValue.Project(((global::AtomUI.Desktop.Controls.DataGridToken)token).TableTopLeftColumnCornerRadius)),
             },
             static () => new global::AtomUI.Desktop.Controls.DataGridToken(),
-            static (token, isDark) => ((global::AtomUI.Desktop.Controls.DataGridToken)token).CalculateTokenValues(isDark)),
+            static (token, appearance) => ((global::AtomUI.Desktop.Controls.DataGridToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)),
     };
 
     private static readonly ThemeAlgorithmDescriptor[] s_algorithms = new ThemeAlgorithmDescriptor[]

@@ -70,5 +70,4 @@ internal class TextAreaToken : AbstractControlDesignToken
         RightAddOnPaddingLG = new Thickness(0, 0, SharedToken.ControlPaddingHorizontal - lineWidth, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(TextAreaTokenKind);
 }

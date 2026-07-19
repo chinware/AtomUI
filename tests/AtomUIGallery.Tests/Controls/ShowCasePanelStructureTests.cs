@@ -52,8 +52,9 @@ public class ShowCasePanelStructureTests
         panelTheme.ShouldContain("VerticalScrollBarVisibility=\"Auto\"");
         panelTheme.ShouldContain("Selector=\"^[IsScrollEnabled=False]\"");
         itemTheme.ShouldContain("ShowCaseItemTokenResource");
-        itemTheme.ShouldContain("ShowCaseItemTokenSharedTokenResource");
-        itemTheme.ShouldNotContain("{atom:SharedTokenResource ");
+        itemTheme.ShouldContain("{atom:SharedTokenResource ");
+        itemTheme.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        itemTheme.ShouldNotContain("TokenSharedTokenResource");
         itemTheme.ShouldContain("ShowCaseItemTokenResource BadgePreviewMargin");
         var panelSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanel.axaml.cs");
         panelSource.ShouldContain("ContentMarginProperty");
@@ -96,8 +97,9 @@ public class ShowCasePanelStructureTests
         headerToken.ShouldContain("MetadataValueWidth");
 
         headerTheme.ShouldContain("GalleryShowCaseHeaderTokenResource");
-        headerTheme.ShouldContain("GalleryShowCaseHeaderTokenSharedTokenResource");
-        headerTheme.ShouldNotContain("{atom:SharedTokenResource ");
+        headerTheme.ShouldContain("{atom:SharedTokenResource ");
+        headerTheme.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        headerTheme.ShouldNotContain("TokenSharedTokenResource");
         headerTheme.ShouldContain("GalleryShowCaseHeaderLangResource");
         headerTheme.ShouldContain("PART_IntroducedVersionTag");
         headerTheme.ShouldContain("VerticalAlignment=\"Center\"");

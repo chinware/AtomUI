@@ -95,6 +95,28 @@ public class ThemeSchemaRegistryTests
         Should.Throw<ArgumentException>(() => new ControlTokenIdentity(catalog, id));
     }
 
+    [Fact]
+    public void Registry_Revision_Is_Order_Independent_And_Changes_With_Algorithm_Revision()
+    {
+        var token = Token("ColorPrimary", 0, TokenStage.Seed);
+        var control = Control("AtomUI", "Button");
+        var first = new ThemeSchemaRegistry(
+            [token],
+            [control],
+            [Algorithm("Default", ThemeAppearanceEffect.Light, revision: 1)]);
+        var reordered = new ThemeSchemaRegistry(
+            [token],
+            [control],
+            [Algorithm("Default", ThemeAppearanceEffect.Light, revision: 1)]);
+        var changed = new ThemeSchemaRegistry(
+            [token],
+            [control],
+            [Algorithm("Default", ThemeAppearanceEffect.Light, revision: 2)]);
+
+        reordered.Revision.ShouldBe(first.Revision);
+        changed.Revision.ShouldNotBe(first.Revision);
+    }
+
     private static TokenDescriptor Token(string name, int slot, TokenStage stage)
     {
         return new TokenDescriptor(
@@ -119,12 +141,15 @@ public class ThemeSchemaRegistryTests
             static (_, _) => throw new InvalidOperationException());
     }
 
-    private static ThemeAlgorithmDescriptor Algorithm(string id, ThemeAppearanceEffect effect)
+    private static ThemeAlgorithmDescriptor Algorithm(
+        string id,
+        ThemeAppearanceEffect effect,
+        int revision = 1)
     {
         return new ThemeAlgorithmDescriptor(
             id,
+            revision,
             effect,
-            requiresBase: false,
-            static _ => throw new InvalidOperationException());
+            static () => throw new InvalidOperationException());
     }
 }

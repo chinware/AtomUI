@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TimePickerThemeAsset.Identity}"
     x:ClassModifier="internal">
     <atom:BorderThicknessFilterConverter x:Key="BorderThicknessFilterConverter" Left="False" Right="False" Bottom="False"/>
     <ControlTheme x:Key="{x:Type atom:TimePickerPresenter}" TargetType="atom:TimePickerPresenter">
@@ -41,9 +44,9 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="BorderThickness" Value="{atom:TimePickerTokenSharedTokenResource BorderThickness}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_ButtonsFrame">
-            <Setter Property="BorderBrush" Value="{atom:TimePickerTokenSharedTokenResource ColorBorderSecondary}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
         </Style>
         
         <Style Selector="^ /template/ Panel#PART_ButtonsLayout">

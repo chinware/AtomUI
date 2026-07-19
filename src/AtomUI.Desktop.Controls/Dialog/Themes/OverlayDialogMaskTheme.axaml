@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DialogThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:OverlayDialogMask}" TargetType="atom:OverlayDialogMask">
         <Setter Property="Template">
@@ -12,8 +15,8 @@
             </ControlTemplate>
         </Setter>
         <Setter Property="Opacity" Value="1"/>
-        <Setter Property="Background" Value="{atom:DialogTokenSharedTokenResource ColorBgMask}"/>
-        <Setter Property="AnimationDuration" Value="{atom:DialogTokenSharedTokenResource MotionDurationMid}"/>
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgMask}"/>
+        <Setter Property="AnimationDuration" Value="{atom:SharedTokenResource MotionDurationMid}"/>
 
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">

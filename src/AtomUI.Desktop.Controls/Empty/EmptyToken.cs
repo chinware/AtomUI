@@ -37,5 +37,4 @@ internal class EmptyToken : AbstractControlDesignToken
         DescriptionMarginSM = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
     }
     
-    protected override Type GetTokenKindType() => typeof(EmptyTokenKind);
 }

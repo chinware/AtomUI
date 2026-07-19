@@ -2,6 +2,9 @@
               xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:DataGridThemeAsset.Identity}"
               x:Class="AtomUI.Desktop.Controls.Themes.DataGridTheme"
 >
     <Setter Property="Template">
@@ -165,10 +168,10 @@
         <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="SelectionMode" Value="None" />
-        <Setter Property="BorderThickness" Value="{atom:DataGridTokenSharedTokenResource BorderThickness}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="CornerRadius" Value="{atom:DataGridTokenResource TableRadius}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:DataGridTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="OperatingMsg"
                 Value="{atom:DataGridLangResource Operating}" />
 
@@ -200,7 +203,7 @@
 
         <Style Selector="^ /template/ ContentPresenter#EmptyIndicator">
             <Setter Property="Padding"
-                    Value="{atom:DataGridTokenSharedTokenResource PaddingXL}" />
+                    Value="{atom:SharedTokenResource PaddingXL}" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">

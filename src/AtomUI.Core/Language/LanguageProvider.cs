@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using AtomUI.Data;
 using Avalonia.Controls;
 using Avalonia.Logging;
 
@@ -42,7 +43,7 @@ public abstract class LanguageProvider : ILanguageProvider
         try
         {
             var languageFields = GetLanguageFieldMap(type);
-            foreach (var entry in ThemeResourceKeyCache.GetEnumEntries(resourceKindType))
+            foreach (var entry in EnumResourceKeyCache.GetEntries(resourceKindType))
             {
                 if (languageFields.TryGetValue(entry.Name, out var field))
                 {

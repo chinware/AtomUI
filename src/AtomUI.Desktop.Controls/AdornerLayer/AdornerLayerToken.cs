@@ -23,5 +23,4 @@ internal class AdornerLayerToken : AbstractControlDesignToken
         FocusVisualMargin = new Thickness(0);
     }
     
-    protected override Type GetTokenKindType() => typeof(AdornerLayerTokenKind);
 }

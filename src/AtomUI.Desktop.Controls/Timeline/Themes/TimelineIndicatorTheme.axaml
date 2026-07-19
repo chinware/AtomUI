@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TimelineThemeAsset.Identity}"
     xmlns:atomc="https://atomui.net/common-controls"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atomc:TimelineIndicator}" TargetType="atomc:TimelineIndicator">
@@ -13,10 +16,10 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="RelativeLineHeight" Value="{atom:TimelineTokenSharedTokenResource RelativeLineHeight}"/>
+        <Setter Property="RelativeLineHeight" Value="{atom:SharedTokenResource RelativeLineHeight}"/>
         <Setter Property="IndicatorDotBorderWidth" Value="{atom:TimelineTokenResource IndicatorDotBorderWidth}"/>
         <Setter Property="IndicatorDotSize" Value="{atom:TimelineTokenResource IndicatorDotSize}"/>
-        <Setter Property="DefaultIndicatorColor" Value="{atom:TimelineTokenSharedTokenResource ColorPrimary}"/>
+        <Setter Property="DefaultIndicatorColor" Value="{atom:SharedTokenResource ColorPrimary}"/>
         <Setter Property="IndicatorTailWidth" Value="{atom:TimelineTokenResource IndicatorTailWidth}"/>
         <Setter Property="IndicatorTailColor" Value="{atom:TimelineTokenResource IndicatorTailColor}"/>
         

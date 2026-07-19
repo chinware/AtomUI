@@ -1,17 +1,36 @@
 using AtomUI.Theme.Styling;
+using SchemaControlTokenIdentity = AtomUI.Theme.Schema.ControlTokenIdentity;
 
 namespace AtomUI.Theme.Resources;
 
-public readonly record struct ControlSharedTokenResourceKey
+internal readonly record struct ControlSharedTokenResourceKey
 {
-    public ControlSharedTokenResourceKey(string? catalog, string controlId, SharedTokenKind kind)
+    internal ControlSharedTokenResourceKey(int controlSlot, SharedTokenKind kind)
     {
-        Catalog     = string.IsNullOrEmpty(catalog) ? null : catalog;
-        ControlId   = controlId;
+        ArgumentOutOfRangeException.ThrowIfNegative(controlSlot);
+        ControlSlot = controlSlot;
         Kind        = kind;
+        Identity    = default;
+        IsBound     = true;
     }
 
-    public string? Catalog { get; }
-    public string ControlId { get; }
-    public SharedTokenKind Kind { get; }
+    private ControlSharedTokenResourceKey(SchemaControlTokenIdentity identity, SharedTokenKind kind)
+    {
+        ControlSlot = -1;
+        Kind        = kind;
+        Identity    = identity;
+        IsBound     = false;
+    }
+
+    internal int ControlSlot { get; }
+    internal SharedTokenKind Kind { get; }
+    internal SchemaControlTokenIdentity Identity { get; }
+    internal bool IsBound { get; }
+
+    internal static ControlSharedTokenResourceKey Unbound(
+        SchemaControlTokenIdentity identity,
+        SharedTokenKind kind)
+    {
+        return new ControlSharedTokenResourceKey(identity, kind);
+    }
 }

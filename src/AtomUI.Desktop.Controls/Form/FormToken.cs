@@ -77,5 +77,4 @@ internal class FormToken : AbstractControlDesignToken
         VerticalLabelMargin    = default;
     }
     
-    protected override Type GetTokenKindType() => typeof(FormTokenKind);
 }

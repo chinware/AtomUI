@@ -103,5 +103,4 @@ internal class BadgeToken : AbstractControlDesignToken
         CountBadgeCornerRadiusSM      = new CornerRadius(IndicatorHeightSM);
     }
     
-    protected override Type GetTokenKindType() => typeof(BadgeTokenKind);
 }

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:RadioButtonThemeAsset.Identity}"
     xmlns:atomc="https://atomui.net/common-controls"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atomc:RadioIndicator}" TargetType="atomc:RadioIndicator">
@@ -14,7 +17,7 @@
         </Setter>
 
         <Setter Property="ClipToBounds" Value="False"/>
-        <Setter Property="RadioBorderThickness" Value="{atom:RadioButtonTokenSharedTokenResource BorderThickness}"/>
+        <Setter Property="RadioBorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
         <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
             <Setter Property="WaveType" Value="CircleWave"/>
         </Style>

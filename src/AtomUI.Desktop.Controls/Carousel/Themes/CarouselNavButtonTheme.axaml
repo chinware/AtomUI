@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:CarouselThemeAsset.Identity}"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:CarouselNavButton}" TargetType="atom:CarouselNavButton">
@@ -12,16 +15,16 @@
         <Style Selector="^:is(atom|CarouselNavButton)">
             <Setter Property="IconWidth" Value="{atom:CarouselTokenResource ArrowSize}" />
             <Setter Property="IconHeight" Value="{atom:CarouselTokenResource ArrowSize}" />
-            <Setter Property="IconBrush" Value="{atom:CarouselTokenSharedTokenResource ColorBgContainer}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorBgContainer}" />
             <Setter Property="Opacity" Value="0.2" />
 
             <Style Selector="^:pointerover">
-                <Setter Property="IconBrush" Value="{atom:CarouselTokenSharedTokenResource ColorBgContainer}" />
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorBgContainer}" />
                 <Setter Property="Opacity" Value="1.0" />
             </Style>
 
             <Style Selector="^:pressed">
-                <Setter Property="IconBrush" Value="{atom:CarouselTokenSharedTokenResource ColorBgContainer}" />
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorBgContainer}" />
             </Style>
         </Style>
 

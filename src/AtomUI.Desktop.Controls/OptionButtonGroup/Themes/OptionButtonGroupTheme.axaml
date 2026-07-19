@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:OptionButtonThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:OptionButtonGroup}" TargetType="atom:OptionButtonGroup">
         <Setter Property="Template">
@@ -17,27 +20,27 @@
         </Setter>
         
         <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="IsMotionEnabled" Value="{atom:OptionButtonTokenSharedTokenResource EnableMotion}" />
-        <Setter Property="IsWaveSpiritEnabled" Value="{atom:OptionButtonTokenSharedTokenResource EnableWaveSpirit}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsWaveSpiritEnabled" Value="{atom:SharedTokenResource EnableWaveSpirit}" />
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="Height" Value="{atom:OptionButtonTokenSharedTokenResource ControlHeightLG}" />
-            <Setter Property="CornerRadius" Value="{atom:OptionButtonTokenSharedTokenResource BorderRadiusLG}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
         </Style>
         
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Setter Property="Height" Value="{atom:OptionButtonTokenSharedTokenResource ControlHeight}" />
-            <Setter Property="CornerRadius" Value="{atom:OptionButtonTokenSharedTokenResource BorderRadius}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
         </Style>
         
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="Height" Value="{atom:OptionButtonTokenSharedTokenResource ControlHeightSM}" />
-            <Setter Property="CornerRadius" Value="{atom:OptionButtonTokenSharedTokenResource BorderRadiusSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         </Style>
         
-        <Setter Property="BorderBrush" Value="{atom:OptionButtonTokenSharedTokenResource ColorBorder}" />
-        <Setter Property="SelectedOptionBorderColor" Value="{atom:OptionButtonTokenSharedTokenResource ColorPrimary}" />
-        <Setter Property="BorderThickness" Value="{atom:OptionButtonTokenSharedTokenResource BorderThickness}" />
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        <Setter Property="SelectedOptionBorderColor" Value="{atom:SharedTokenResource ColorPrimary}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         
     </ControlTheme>
 </ResourceDictionary>

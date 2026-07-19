@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TimelineThemeAsset.Identity}"
     xmlns:atomc="https://atomui.net/common-controls"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Timeline}" TargetType="atom:Timeline">
@@ -34,9 +37,9 @@
         <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
         <Setter Property="atom:ScrollViewer.IsScrollChainingEnabled" Value="False" />
         <Setter Property="TemplatedControl.BorderBrush"
-                Value="{atom:TimelineTokenSharedTokenResource ColorBorder}" />
+                Value="{atom:SharedTokenResource ColorBorder}" />
         <Setter Property="TemplatedControl.Background"
-                Value="{atom:TimelineTokenSharedTokenResource ColorBgContainer}" />
+                Value="{atom:SharedTokenResource ColorBgContainer}" />
 
     </ControlTheme>
 </ResourceDictionary>

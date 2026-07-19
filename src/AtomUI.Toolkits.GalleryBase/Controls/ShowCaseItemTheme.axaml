@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Toolkits_GalleryBase"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ShowCaseItemThemeAsset.Identity}"
     xmlns:antdicons="using:AtomUI.Icons.AntDesign"
     xmlns:gallery="https://atomui.net/toolkits/gallery-base">
 
@@ -12,7 +15,7 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="{x:Type gallery:ShowCaseItem}">
                 <Border x:Name="PART_RootBorder"
-                        Background="{gallery:ShowCaseItemTokenSharedTokenResource ColorBgContainer}"
+                        Background="{atom:SharedTokenResource ColorBgContainer}"
                         BoxShadow="{gallery:ShowCaseItemTokenResource CardShadow}"
                         Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
                         CornerRadius="{gallery:ShowCaseItemTokenResource CardCornerRadius}">
@@ -21,7 +24,7 @@
                             <Border Name="PART_DeferredPlaceholder"
                                     IsVisible="False"
                                     MinHeight="{TemplateBinding DeferredPlaceholderHeight}"
-                                    Background="{gallery:ShowCaseItemTokenSharedTokenResource ColorFillTertiary}"
+                                    Background="{atom:SharedTokenResource ColorFillTertiary}"
                                     CornerRadius="{gallery:ShowCaseItemTokenResource DeferredPlaceholderCornerRadius}" />
                             <ContentPresenter Name="PART_ContentPresenter"
                                               Content="{TemplateBinding Content}"
@@ -62,7 +65,7 @@
                                       RibbonColor="{TemplateBinding BadgeColor}"
                                       BadgeIsVisible="True">
                         <Border x:Name="PART_RootBorder"
-                                Background="{gallery:ShowCaseItemTokenSharedTokenResource ColorBgContainer}"
+                                Background="{atom:SharedTokenResource ColorBgContainer}"
                                 BoxShadow="{gallery:ShowCaseItemTokenResource CardShadow}"
                                 Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
                                 CornerRadius="{gallery:ShowCaseItemTokenResource CardCornerRadius}">
@@ -71,7 +74,7 @@
                                     <Border Name="PART_DeferredPlaceholder"
                                             IsVisible="{Binding IsDeferredPlaceholderVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
                                             MinHeight="{Binding DeferredPlaceholderHeight, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
-                                            Background="{gallery:ShowCaseItemTokenSharedTokenResource ColorFillTertiary}"
+                                            Background="{atom:SharedTokenResource ColorFillTertiary}"
                                             CornerRadius="{gallery:ShowCaseItemTokenResource DeferredPlaceholderCornerRadius}" />
                                     <ContentPresenter Name="PART_ContentPresenter"
                                                       IsVisible="{Binding IsDeferredPlaceholderVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}, Converter={x:Static BoolConverters.Not}}"

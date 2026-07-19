@@ -31,5 +31,4 @@ internal class SplitViewToken : AbstractControlDesignToken
         PaneMotionEasing        = Easing.Parse("0.1,0.9,0.2,1.0");
     }
     
-    protected override Type GetTokenKindType() => typeof(SplitViewTokenKind);
 }

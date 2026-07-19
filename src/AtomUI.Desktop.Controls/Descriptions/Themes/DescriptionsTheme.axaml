@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DescriptionsThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Descriptions}" TargetType="atom:Descriptions">
         <Setter Property="Template">
@@ -27,10 +30,10 @@
 
         <Style Selector="^[IsBordered=True]">
             <Style Selector="^ /template/ atom|PixelAlignedBorder#ContentFrame">
-                <Setter Property="BorderBrush" Value="{atom:DescriptionsTokenSharedTokenResource ColorSplit}" />
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
                 <Setter Property="BorderThickness"
-                        Value="{atom:DescriptionsTokenSharedTokenResource BorderThickness}" />
-                <Setter Property="CornerRadius" Value="{atom:DescriptionsTokenSharedTokenResource BorderRadiusLG}" />
+                        Value="{atom:SharedTokenResource BorderThickness}" />
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
                 <Setter Property="ClipToBounds" Value="True" />
             </Style>
         </Style>
@@ -44,25 +47,25 @@
         </Style>
         <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
             <Setter Property="Foreground" Value="{atom:DescriptionsTokenResource TitleColor}" />
-            <Setter Property="FontSize" Value="{atom:DescriptionsTokenSharedTokenResource FontSizeLG}" />
-            <Setter Property="FontWeight" Value="{atom:DescriptionsTokenSharedTokenResource FontWeightStrong}" />
-            <Setter Property="LineHeight" Value="{atom:DescriptionsTokenSharedTokenResource FontHeightLG}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeLG}" />
+            <Setter Property="FontWeight" Value="{atom:SharedTokenResource FontWeightStrong}" />
+            <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightLG}" />
         </Style>
 
         <Style Selector="^[IsBordered=False]">
             <Style Selector="^[SizeType=Large]">
                 <Style Selector="^ /template/ Grid#PART_GridLayout">
-                    <Setter Property="RowSpacing" Value="{atom:DescriptionsTokenSharedTokenResource Spacing}" />
+                    <Setter Property="RowSpacing" Value="{atom:SharedTokenResource Spacing}" />
                 </Style>
             </Style>
             <Style Selector="^[SizeType=Middle]">
                 <Style Selector="^ /template/ Grid#PART_GridLayout">
-                    <Setter Property="RowSpacing" Value="{atom:DescriptionsTokenSharedTokenResource SpacingSM}" />
+                    <Setter Property="RowSpacing" Value="{atom:SharedTokenResource SpacingSM}" />
                 </Style>
             </Style>
             <Style Selector="^[SizeType=Small]">
                 <Style Selector="^ /template/ Grid#PART_GridLayout">
-                    <Setter Property="RowSpacing" Value="{atom:DescriptionsTokenSharedTokenResource SpacingXS}" />
+                    <Setter Property="RowSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
                 </Style>
             </Style>
         </Style>

@@ -122,5 +122,4 @@ internal class NotificationToken : AbstractControlDesignToken
         NotificationCloseButtonPadding = SharedToken.PaddingXXS;
     }
     
-    protected override Type GetTokenKindType() => typeof(NotificationTokenKind);
 }

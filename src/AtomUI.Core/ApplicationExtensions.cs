@@ -14,13 +14,13 @@ public static class ApplicationExtensions
         themeConfigureAction?.Invoke(themeManagerBuilder);
         
         var themeManager = themeManagerBuilder.Build();
-        var defaultFontFamily = themeManagerBuilder.FontFamily;
-        themeManager.FontFamily = defaultFontFamily;
-        themeManager.Configure();
         AvaloniaLocator.CurrentMutable.BindToSelf(themeManager);
-        themeManager.NotifyInitialized();
         themeManager.SetValue(ThemeManager.LanguageVariantProperty, themeManagerBuilder.LanguageVariant, BindingPriority.Template);
-        themeManager.AttachApplication(application);
+        themeManager.InitializeApplication(application);
+        foreach (var initializer in themeManagerBuilder.Initializers)
+        {
+            initializer(themeManager);
+        }
         return application;
     }
 }

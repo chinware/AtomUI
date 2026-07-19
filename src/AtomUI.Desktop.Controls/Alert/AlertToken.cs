@@ -1,5 +1,4 @@
 using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Theme;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 
@@ -83,5 +82,4 @@ internal class AlertToken : AbstractControlDesignToken
         IconSize      = SharedToken.FontSizeLG;
     }
     
-    protected override Type GetTokenKindType() => typeof(AlertTokenKind);
 }

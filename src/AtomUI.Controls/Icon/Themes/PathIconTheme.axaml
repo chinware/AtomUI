@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:IconThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type PathIcon}" TargetType="PathIcon">
         <Setter Property="Template">
@@ -16,10 +19,10 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="Height" Value="{atom:IconTokenSharedTokenResource IconSize}" />
-        <Setter Property="Width" Value="{atom:IconTokenSharedTokenResource IconSize}" />
+        <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+        <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{atom:IconTokenSharedTokenResource ColorIcon}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorIcon}" />
         
     </ControlTheme>
 </ResourceDictionary>

@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:MentionsThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Mentions}" TargetType="atom:Mentions">
         <Setter Property="Template">
@@ -63,7 +66,7 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="IsMotionEnabled" Value="{atom:MentionsTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="ItemHeight" Value="{atom:MentionsTokenResource OptionHeight}" />
         <Setter Property="PopupContentPadding" Value="{atom:MentionsTokenResource PopupContentPadding}" />
         <Setter Property="MinPopupWidth" Value="{atom:MentionsTokenResource MinPopupWidth}" />
@@ -73,13 +76,13 @@
             <Setter Property="OverlayHostShadow" Value="{atom:PopupHostTokenResource OverlayHostShadow}" />
         </Style>
         <Style Selector="^ /template/ Border#PopupFrame">
-            <Setter Property="Background" Value="{atom:MentionsTokenSharedTokenResource ColorBgElevated}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
             <Setter Property="CornerRadius"
                     Value="{atom:PopupHostTokenResource BorderRadius}" />
         </Style>
         
         <Style Selector="^ /template/ atom|Spin#LoadingIndicator">
-            <Setter Property="Margin" Value="{atom:MentionsTokenSharedTokenResource MarginLG}" />
+            <Setter Property="Margin" Value="{atom:SharedTokenResource MarginLG}" />
         </Style>
         
         <Setter Property="OptionTemplate">

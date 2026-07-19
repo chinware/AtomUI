@@ -85,5 +85,50 @@ internal static class AtomUIDiagnosticDescriptors
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ThemeAssetMissingIdentity = new(
+        AtomUIDiagnosticIds.ThemeAssetMissingIdentity,
+        "Theme asset requires a Control Token identity",
+        "Theme asset '{0}' uses Token resources but does not declare ControlTokenScope.Identity",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ThemeAssetUnknownIdentity = new(
+        AtomUIDiagnosticIds.ThemeAssetUnknownIdentity,
+        "Theme asset identity is not registered",
+        "Theme asset '{0}' declares unknown Control Token identity '{1}'",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ThemeAssetConflictingIdentity = new(
+        AtomUIDiagnosticIds.ThemeAssetConflictingIdentity,
+        "Theme asset contains conflicting identities",
+        "Theme asset '{0}' declares more than one Control Token identity",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ThemeAssetControlTokenMismatch = new(
+        AtomUIDiagnosticIds.ThemeAssetControlTokenMismatch,
+        "Theme asset uses a different Control Token family",
+        "Theme asset '{0}' declares identity '{1}' but uses Control Token resources for '{2}'",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ThemeAssetDuplicateUri = new(
+        AtomUIDiagnosticIds.ThemeAssetDuplicateUri,
+        "Theme asset URI is duplicated",
+        "Theme asset URI '{0}' is produced by more than one AdditionalFile",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
 }
 #pragma warning restore RS2008

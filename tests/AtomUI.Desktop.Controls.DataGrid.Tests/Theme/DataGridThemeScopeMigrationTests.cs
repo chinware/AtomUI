@@ -15,7 +15,7 @@ public class DataGridThemeScopeMigrationTests
     }
 
     [Fact]
-    public void DataGrid_Component_Themes_Use_Component_Shared_Token_Resources()
+    public void DataGrid_Control_Themes_Use_Ambient_Shared_Token_Scopes()
     {
         var themeFiles = Directory.GetFiles(
             GetRepoFile("src/AtomUI.Desktop.Controls.DataGrid/Themes"),
@@ -24,12 +24,16 @@ public class DataGridThemeScopeMigrationTests
 
         themeFiles.ShouldNotBeEmpty();
         themeFiles.ShouldContain(file =>
-            File.ReadAllText(file).Contains("DataGridTokenSharedTokenResource", StringComparison.Ordinal));
+            File.ReadAllText(file).Contains("{atom:SharedTokenResource ", StringComparison.Ordinal));
 
         foreach (var themeFile in themeFiles)
         {
-            File.ReadAllText(themeFile)
-                .ShouldNotContain("{atom:SharedTokenResource ");
+            var text = File.ReadAllText(themeFile);
+            text.ShouldNotContain("TokenSharedTokenResource");
+            if (text.Contains("{atom:SharedTokenResource ", StringComparison.Ordinal))
+            {
+                text.ShouldContain("themeResources:ControlTokenScope.Identity=");
+            }
         }
     }
 

@@ -1,6 +1,5 @@
 ﻿using AtomUI.Theme.TokenSystem;
 using AtomUI.Theme;
-using AtomUI.Theme.Resources;
 using AtomUI.Theme.Styling;
 
 namespace AtomUI.Desktop.Controls.DesignTokens
@@ -92,13 +91,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public DataGridTokenResourceExtension(DataGridTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public sealed class DataGridTokenSharedTokenResourceExtension : ControlSharedTokenResourceExtension
-    {
-        public DataGridTokenSharedTokenResourceExtension(SharedTokenKind kind) : base("AtomUI", "DataGrid", kind)
         {
         }
     }

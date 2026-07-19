@@ -98,7 +98,7 @@ Theme                                  exactly 1
 |---|---|---|---|
 | `Id` | 是 | `Identifier` | ThemeCatalog 内稳定且唯一的主题身份，不从文件名推断 |
 | `Name` | 是 | 1..128 字符 | 面向用户显示的名称 |
-| `Appearance` | 是 | `Light` 或 `Dark` | 提交后设置 Avalonia Light/Dark variant 的依据 |
+| `Appearance` | 是 | `Light` 或 `Dark` | 该 definition 算法链求值后的最终 appearance 断言 |
 | `IsDefault` | 否 | `true` 或 `false` | 是否参与默认主题选择，默认 `false` |
 
 `Id`、Algorithm `Id`、Control `Catalog`、Control `Id` 和 Token `Name` 使用相同 Identifier 词法：
@@ -112,22 +112,39 @@ Identifier 区分大小写，使用 ordinal 比较。`DaybreakBlue` 和 `daybrea
 一个可用 ThemeCatalog 最多只能有一个 `IsDefault="true"` 的主题。该约束跨文件生效，由 `ThemeCatalog`
 验证，不属于单文件 XSD 约束。
 
-`Appearance` 是主题元数据，不从算法名称猜测。Binder 必须验证算法链与声明外观不存在已知冲突，
-算法 descriptor 必须通过 `Preserve`、`Light` 或 `Dark` 声明外观影响。
+`Appearance` 不是一个可以压过算法结果的独立开关。Binder 从 AtomUI library 的 Light baseline 开始，按定义中
+的算法顺序折叠 descriptor 的 `Preserve / Light / Dark` appearance effect，并要求计算结果与声明值完全一致：
+
+```text
+computed = Fold(Light, definition.Algorithms[*].AppearanceEffect)
+require computed == Theme.Appearance
+```
+
+AtomUI 内置 `Default`、`Dark`、`Compact` descriptor 的 effect 分别为 `Light`、`Dark`、`Preserve`。Binder 不按
+算法名称猜测 effect；第三方算法必须在 descriptor 中显式声明。无法解析 descriptor、effect 不合法或最终结果
+与 `Appearance` 不一致时，整个 definition 绑定失败。
+
+绑定后，`Appearance` 作为已验证的 definition 最终 appearance 存入不可变 `ThemeDefinition`。运行时
+`ThemeConfig` 可以整体替换有效全局算法链，但不会修改 definition 元数据；`ThemeConfigMerger` 先确定当前入口
+的 BaseAppearance，再折叠有效算法链，最终 `ThemeSnapshot.Appearance` 才是发布 Avalonia Light/Dark variant 的
+唯一依据。具体根作用域、局部 `Inherit` 和 FollowSystem 规则见 [主题系统架构](theme-system.md)。
 
 ## 5. Algorithms 与 Algorithm
 
 顶层 `Algorithms` 必须存在，并至少包含一个算法。算法按照文档顺序执行：
 
 ```text
-Seed values
-    |
-    v
-Algorithm[0] -> Algorithm[1] -> ... -> Algorithm[n]
-    |
-    v
-Map and Alias overrides
+M0 = Algorithm[0].Evaluate(effectiveSeed, null)
+M1 = Algorithm[1].Evaluate(effectiveSeed, M0)
+...
+Mn = Algorithm[n].Evaluate(effectiveSeed, M[n-1])
+result = ApplyMapAndAliasOverrides(Mn)
 ```
+
+算法求值签名固定为 `Evaluate(effectiveSeed, previousMap?) -> nextMap`。整条链中的 `effectiveSeed` 是同一份不可变
+语义输入；前一个算法的输出只作为下一个算法的 `previousMap`，不能替代 Seed。算法不得修改 Seed 或 previous
+Map。第一个算法收到 `previousMap=null`；内置算法需要默认 Map 时可以在自身实现中调用 Default fallback，但
+不得改变通用链契约。
 
 `Algorithm` 是空元素，只允许一个必填 `Id` 属性。`Id` 必须解析到
 `ThemeSchemaRegistry` 中唯一的 `ThemeAlgorithmDescriptor`。算法 ID 区分大小写，同一算法链内不得重复。
@@ -135,7 +152,8 @@ Map and Alias overrides
 AtomUI 内置算法使用 `Default`、`Dark` 和 `Compact`。第三方算法必须使用包含自身命名域的稳定 ID，例如
 `Acme.HighContrast`，避免与其他 descriptor 冲突。
 
-主题文件只声明算法身份和顺序。算法实例、依赖关系、AOT 构造委托以及外观影响由 descriptor 提供。
+主题文件只声明算法身份和顺序。算法实例、依赖关系、AOT 构造委托以及外观影响由 descriptor 提供；每个
+descriptor 必须提供显式 revision/version，算法行为变化时必须提升 revision。
 
 ## 6. Tokens 与 Token
 
@@ -214,6 +232,11 @@ ControlAlgorithmMode
 
 `Global` 的含义也不是简单的“启用”，而是“使用当前作用域的全局算法链重新派生该 Control 的有效
 Token”。如果写成 `Algorithm="true"`，XML 本身无法表达启用的是哪一条算法链。
+
+Control `Global` 和 `Custom` 使用与全局算法完全相同的
+`Evaluate(sameEffectiveSeed, previousMap?) -> nextMap` 契约。Binder 同样解析每个算法 descriptor 的 appearance
+effect；计算得到的 Control appearance 只传给该 Control 的 Token evaluator，不修改所在 ThemeContext 的
+`ThemeSnapshot.Appearance` 或 Avalonia ThemeVariant。
 
 从编码能力看，可以使用“可空布尔属性 + 子算法列表”拼出四种状态：
 
@@ -344,7 +367,9 @@ Reader 必须满足：
 - 不展开外部实体，不执行 XInclude，不解释处理指令。
 - XSD 在进程初始化时编译一次，后续读取复用同一不可变 schema set。
 - 使用 validating `XmlReader` 单次流式生成 `ThemeDocument`，不为正常路径构建 `XDocument`。
-- 文件读取和绑定以 definition revision 为缓存边界，同一 revision 最多成功处理一次。
+- Reader 以 definition revision 为缓存边界，同一结构化来源最多成功读取一次；Binder 以
+  `(definition revision, schema registry revision)` 为缓存边界，同一结构化输入最多成功绑定一次。revision
+  只用于筛选缓存候选，不能跳过最终的来源或 typed 结构比较。
 
 v1 portable profile 的默认上限：
 
@@ -359,7 +384,7 @@ v1 portable profile 的默认上限：
 | Identifier 长度 | 128 字符 |
 | Token Value 长度 | 4096 字符 |
 
-实现可以通过 `ThemeDefinitionReaderOptions` 调低运行时上限，但不得高于实现可安全处理的硬上限。触发限制
+实现可以通过 `ThemeDocumentReaderOptions` 调低运行时上限，但不得高于实现可安全处理的硬上限。触发限制
 必须返回结构化 diagnostic，不能静默截断。
 
 ## 11. 规范化与内容身份
@@ -368,12 +393,22 @@ Reader 保留源码位置和声明顺序；Binder 输出 typed、不可变定义
 
 - namespace 版本。
 - Theme metadata。
-- 有序算法 identity。
+- 有序算法 `(identity, descriptor revision)`。
 - 按 Token slot 排序的 typed Token value。
 - 按 `(Catalog, Id)` 排序的 Control 配置。
 - Schema registry revision。
 
 空白、属性顺序、注释、Token 声明顺序和 Control 声明顺序不影响 fingerprint。算法顺序影响 fingerprint。
+
+Catalog 另外维护 `ThemeDefinitionRevision`，用于限定某次来源读取和绑定结果。revision 是结构化来源身份，
+至少包含稳定 source identity、source revision 和实际内容摘要；文件来源不能只依赖修改时间，程序化来源必须
+显式提供 revision。Reader 缓存以 definition revision 为边界，绑定缓存以
+`(definition revision, schema registry revision)` 为边界。
+
+definition revision、内容 fingerprint 和来源内容摘要都只能用于缓存候选定位，不能单独充当无碰撞的唯一
+身份。Reader 缓存命中后必须比较不可变来源 key，Binder 和编译缓存命中后必须比较 typed、不可变的结构化
+定义 key；相同 fingerprint 但 metadata、算法链、Token、Control 配置或 registry revision 不同的定义不得
+共享绑定或编译结果。
 
 规范 writer 应使用 UTF-8、两个空格缩进、双引号属性和本文定义的元素顺序。Writer 应按 Token name 以及
 Control `(Catalog, Id)` 进行 ordinal 排序，使代码评审 diff 稳定。
@@ -394,8 +429,15 @@ adapter。
 - 标准示例通过 XSD 和 Binder。
 - 未声明 namespace、错误元素顺序、未知属性、空容器和重复 identity 被拒绝。
 - Control 算法四态全部产生确定的规范化结果。
+- 全局和 Control 算法都以相同 effective Seed、previous Map 链式求值，算法不能修改输入。
+- Binder 从 library Light baseline 折叠 definition 算法 effect；声明 `Appearance` 与计算结果不一致时拒绝绑定。
+- 运行时替换全局算法链后只改变新 snapshot appearance；Control custom appearance 不改变作用域 variant。
 - `Algorithm` 属性与 `<Algorithms>` 同时出现时被拒绝。
 - 未知算法、Control、Token 和非法 Value 产生带行列及路径的 diagnostic。
 - DTD、外部实体、超限文件和超限元素数量在发布定义前失败。
 - 相同 typed 内容的不同 XML 排版得到相同 fingerprint。
+- 相同 fingerprint、不同 typed 结构的碰撞样例不会被判定为同一主题定义。
+- 文件内容或 schema/algorithm descriptor revision 变化时旧绑定和编译缓存失效。
+- 同一 algorithm id 提升 descriptor revision 后 definition fingerprint、Binder 缓存和 Compiler 缓存全部失效；
+  只改变 XML revision 但 typed 内容不变时，仍通过结构比较安全复用可复用的编译结果。
 - Schema 校验、Reader 和 Binder 的正常路径通过 NativeAOT 验证，不执行反射扫描或动态代码生成。

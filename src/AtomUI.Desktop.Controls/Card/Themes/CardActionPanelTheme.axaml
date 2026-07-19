@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:CardThemeAsset.Identity}"
     xmlns:converters="using:Avalonia.Controls.Converters"
     x:ClassModifier="internal">
     <converters:CornerRadiusFilterConverter x:Key="CornerRadiusFilterConverter"
@@ -18,14 +21,14 @@
             </ControlTemplate>
         </Setter>
         <Setter Property="Padding" Value="0, 1, 0, 0"/>
-        <Setter Property="MinHeight" Value="{atom:CardTokenSharedTokenResource ControlHeightLG}"/>
-        <Setter Property="FontSize" Value="{atom:CardTokenSharedTokenResource FontSize}"/>
+        <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}"/>
+        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}"/>
      
-        <Setter Property="Foreground" Value="{atom:CardTokenSharedTokenResource ColorTextDescription}"/>
-        <Setter Property="BorderBrush" Value="{atom:CardTokenSharedTokenResource ColorBorderSecondary}"/>
-        <Setter Property="BorderThickness" Value="{atom:CardTokenSharedTokenResource BorderThickness}"/>
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}"/>
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}"/>
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
         <Style Selector="^:pointerover">
-            <Setter Property="Foreground" Value="{atom:CardTokenSharedTokenResource ColorPrimary}"/>
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimary}"/>
         </Style>
         
         <Style Selector="^ /template/ Border#Frame">

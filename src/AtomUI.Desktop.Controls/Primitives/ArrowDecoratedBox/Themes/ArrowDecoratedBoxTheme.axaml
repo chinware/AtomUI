@@ -2,6 +2,9 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               x:Class="AtomUI.Desktop.Controls.Primitives.Themes.ArrowDecoratedBoxTheme"
               xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:ArrowDecoratedBoxThemeAsset.Identity}"
               TargetType="atom:ArrowDecoratedBox">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:ArrowDecoratedBox">
@@ -39,13 +42,13 @@
     </Setter>
 
     <Style Selector="^:is(atom|ArrowDecoratedBox)">
-        <Setter Property="IsMotionEnabled" Value="{atom:ArrowDecoratedBoxTokenSharedTokenResource EnableMotion}" />
-        <Setter Property="Foreground" Value="{atom:ArrowDecoratedBoxTokenSharedTokenResource ColorText}" />
-        <Setter Property="Background" Value="{atom:ArrowDecoratedBoxTokenSharedTokenResource ColorBgElevated}" />
-        <Setter Property="MinHeight" Value="{atom:ArrowDecoratedBoxTokenSharedTokenResource ControlHeight}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+        <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
         <Setter Property="Padding" Value="{atom:ArrowDecoratedBoxTokenResource Padding}" />
         <Setter Property="ArrowSize" Value="{atom:ArrowDecoratedBoxTokenResource ArrowSize}" />
-        <Setter Property="CornerRadius" Value="{atom:ArrowDecoratedBoxTokenSharedTokenResource BorderRadius}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
 
         <Style Selector="^[ArrowDirection=Top]">
             <Style Selector="^ /template/ Panel#ArrowPositionLayout">

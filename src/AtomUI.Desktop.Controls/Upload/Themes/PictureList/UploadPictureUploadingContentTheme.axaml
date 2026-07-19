@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:UploadThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:UploadPictureUploadingContent}" TargetType="atom:UploadPictureUploadingContent">
@@ -39,28 +42,28 @@
         </Style>
 
         <Style Selector="^ /template/ DockPanel#ContentLayout">
-            <Setter Property="HorizontalSpacing" Value="{atom:UploadTokenSharedTokenResource SpacingXS}" />
+            <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
             <Setter Property="Height" Value="{atom:UploadTokenResource PictureListPreviewerSize}" />
         </Style>
         
         <Style Selector="^ /template/ StackPanel#ProgressLayout">
-            <Setter Property="Spacing" Value="{atom:UploadTokenSharedTokenResource SpacingXS}" />
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconButton">
-            <Setter Property="IconBrush" Value="{atom:UploadTokenSharedTokenResource ColorTextSecondary}" />
-            <Setter Property="Padding" Value="{atom:UploadTokenSharedTokenResource PaddingXXS}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextSecondary}" />
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingXXS}" />
         </Style>
         
         <Style Selector="^ /template/ atom|Icon#LoadingIndicator">
-            <Setter Property="StrokeBrush" Value="{atom:UploadTokenSharedTokenResource ColorPrimary}" />
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
             <Setter Property="Width" Value="{atom:UploadTokenResource UploadThumbnailSize}" />
             <Setter Property="Height" Value="{atom:UploadTokenResource UploadThumbnailSize}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconButton:pointerover">
-            <Setter Property="IconBrush" Value="{atom:UploadTokenSharedTokenResource ColorTextSecondary}" />
-            <Setter Property="Background" Value="{atom:UploadTokenSharedTokenResource ColorBgTextHover}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextSecondary}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextHover}" />
         </Style>
         
     </ControlTheme>

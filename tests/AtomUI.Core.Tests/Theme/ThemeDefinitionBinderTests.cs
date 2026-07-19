@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Schema;
@@ -21,7 +22,7 @@ public class ThemeDefinitionBinderTests
                              <Theme xmlns="{{Namespace}}"
                                     Id="T"
                                     Name="Theme"
-                                    Appearance="Light"
+                                    Appearance="Dark"
                                     IsDefault="true">
                                <Algorithms>
                                  <Algorithm Id="Default" />
@@ -47,7 +48,7 @@ public class ThemeDefinitionBinderTests
         var definition = result.Definition!;
         definition.Id.ShouldBe("T");
         definition.Name.ShouldBe("Theme");
-        definition.DeclaredAppearance.ShouldBe(ThemeAppearance.Light);
+        definition.DeclaredAppearance.ShouldBe(ThemeAppearance.Dark);
         definition.EffectiveAppearance.ShouldBe(ThemeAppearance.Dark);
         definition.IsDefault.ShouldBeTrue();
         definition.Algorithms.Select(static algorithm => algorithm.Id).ShouldBe(["Default", "Dark"]);
@@ -164,6 +165,25 @@ public class ThemeDefinitionBinderTests
     }
 
     [Fact]
+    public void Bind_Rejects_Declared_Appearance_That_Differs_From_Algorithm_Result()
+    {
+        var document = Read($$"""
+                             <Theme xmlns="{{Namespace}}" Id="T" Name="T" Appearance="Light">
+                               <Algorithms>
+                                 <Algorithm Id="Default" />
+                                 <Algorithm Id="Dark" />
+                               </Algorithms>
+                             </Theme>
+                             """);
+
+        var result = ThemeDefinitionBinder.Bind(document, CreateRegistry());
+
+        result.Success.ShouldBeFalse();
+        result.Definition.ShouldBeNull();
+        result.Diagnostics.ShouldHaveSingleItem().Code.ShouldBe("ATMTHM3003");
+    }
+
+    [Fact]
     public void Bind_Returns_A_Stable_Diagnostic_When_Descriptor_Conversion_Fails()
     {
         var document = Read($$"""
@@ -253,9 +273,9 @@ public class ThemeDefinitionBinderTests
     {
         return new ThemeAlgorithmDescriptor(
             id,
+            revision: 1,
             effect,
-            requiresBase: false,
-            static _ => throw new InvalidOperationException("The Binder must not create algorithms."));
+            static () => throw new InvalidOperationException("The Binder must not create algorithms."));
     }
 
     private static ThemeDocument Read(string xml)

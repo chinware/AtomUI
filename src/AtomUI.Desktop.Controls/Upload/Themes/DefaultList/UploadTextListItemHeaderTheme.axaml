@@ -3,6 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:UploadThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:UploadTextListItemHeader}" TargetType="atom:UploadTextListItemHeader">
         <Setter Property="Template">
@@ -30,19 +33,19 @@
         </Setter>
         
         <Style Selector="^ /template/ atom|Icon">
-            <Setter Property="StrokeBrush" Value="{atom:UploadTokenSharedTokenResource ColorIcon}" />
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorIcon}" />
         </Style>
         <Setter Property="RelativeLineHeight"
-                Value="{atom:UploadTokenSharedTokenResource RelativeLineHeight}" />
+                Value="{atom:SharedTokenResource RelativeLineHeight}" />
         <Setter Property="Margin" Value="{atom:UploadTokenResource TextListItemMargin}" />
-        <Setter Property="CornerRadius" Value="{atom:UploadTokenSharedTokenResource BorderRadiusSM}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Background" Value="Transparent" />
 
         <Style Selector="^ /template/ atom|IconButton">
             <Setter Property="IconBrush" Value="{atom:UploadTokenResource ActionsColor}" />
-            <Setter Property="IconWidth" Value="{atom:UploadTokenSharedTokenResource IconSize}" />
-            <Setter Property="IconHeight" Value="{atom:UploadTokenSharedTokenResource IconSize}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
         </Style>
         
         <Style Selector="^[Status=Uploading]">
@@ -57,12 +60,12 @@
         </Style> 
         
         <Style Selector="^[Status=Failed]">
-            <Setter Property="Foreground" Value="{atom:UploadTokenSharedTokenResource ColorError}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorError}" />
             <Style Selector="^ /template/ atom|Icon">
-                <Setter Property="StrokeBrush" Value="{atom:UploadTokenSharedTokenResource ColorError}" />
+                <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorError}" />
             </Style>
             <Style Selector="^ /template/ atom|IconButton">
-                <Setter Property="IconBrush" Value="{atom:UploadTokenSharedTokenResource ColorError}" />
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
             </Style>
             <Setter Property="atom:ToolTip.Tip" Value="{Binding ErrorMessage, RelativeSource={RelativeSource Self}}" />
             <Setter Property="atom:ToolTip.Placement" Value="Top" />
@@ -74,11 +77,11 @@
 
         <Style Selector="^ /template/ atom|IconButton:pointerover">
             <Setter Property="Background"
-                    Value="{atom:UploadTokenSharedTokenResource ControlItemBgHover}" />
+                    Value="{atom:SharedTokenResource ControlItemBgHover}" />
         </Style>
 
         <Style Selector="^:pointerover">
-            <Setter Property="Background" Value="{atom:UploadTokenSharedTokenResource ControlItemBgHover}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgHover}" />
 
             <Style Selector="^ /template/ atom|IconButton#DeleteAction">
                 <Setter Property="IsVisible" Value="True" />

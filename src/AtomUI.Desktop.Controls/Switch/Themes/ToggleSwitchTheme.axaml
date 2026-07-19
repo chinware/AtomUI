@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ToggleSwitchThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ToggleSwitch}" TargetType="atom:ToggleSwitch">
         <Setter Property="Template">
@@ -30,10 +33,10 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Foreground" Value="{atom:ToggleSwitchTokenSharedTokenResource ColorTextLightSolid}" />
-        <Setter Property="IsMotionEnabled" Value="{atom:ToggleSwitchTokenSharedTokenResource EnableMotion}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="IsWaveSpiritEnabled"
-                Value="{atom:ToggleSwitchTokenSharedTokenResource EnableWaveSpirit}" />
+                Value="{atom:SharedTokenResource EnableWaveSpirit}" />
         
         <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
             <Setter Property="WaveType" Value="PillWave"/>
@@ -68,17 +71,17 @@
 
         <Style Selector="^[IsChecked=True]:pointerover">
             <Setter Property="GrooveBackground"
-                    Value="{atom:ToggleSwitchTokenSharedTokenResource ColorPrimaryHover}" />
+                    Value="{atom:SharedTokenResource ColorPrimaryHover}" />
         </Style>
 
         <Style Selector="^[IsChecked=False]">
             <Setter Property="GrooveBackground"
-                    Value="{atom:ToggleSwitchTokenSharedTokenResource ColorTextQuaternary}" />
+                    Value="{atom:SharedTokenResource ColorTextQuaternary}" />
         </Style>
 
         <Style Selector="^[IsChecked=False]:pointerover">
             <Setter Property="GrooveBackground"
-                    Value="{atom:ToggleSwitchTokenSharedTokenResource ColorTextTertiary}" />
+                    Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>
 
         <Style Selector="^[SizeType=Small]">

@@ -1,4 +1,5 @@
 using System.Text;
+using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
 using Shouldly;

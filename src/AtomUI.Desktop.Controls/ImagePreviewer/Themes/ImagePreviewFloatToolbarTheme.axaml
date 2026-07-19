@@ -2,6 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:ImagePreviewerThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ImagePreviewFloatToolbar}" TargetType="atom:ImagePreviewFloatToolbar">
@@ -59,7 +62,7 @@
         <Setter Property="Background"
                 Value="{atom:ImagePreviewerTokenResource NavButtonBgHoverColor}" />
         <Setter Property="Padding" Value="{atom:ImagePreviewerTokenResource FloatToolbarPadding}" />
-        <Setter Property="Margin" Value="{atom:ImagePreviewerTokenSharedTokenResource MarginLG}" />
+        <Setter Property="Margin" Value="{atom:SharedTokenResource MarginLG}" />
         <Style Selector="^ /template/ atom|IconButton">
             <Setter Property="IconWidth"
                     Value="{atom:ImagePreviewerTokenResource PreviewOperationSize}" />
@@ -67,7 +70,7 @@
                     Value="{atom:ImagePreviewerTokenResource PreviewOperationSize}" />
             <Setter Property="IconBrush"
                     Value="{atom:ImagePreviewerTokenResource PreviewOperationColor}" />
-            <Setter Property="Padding" Value="{atom:ImagePreviewerTokenSharedTokenResource PaddingSM}" />
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingSM}" />
         </Style>
         
         <Style Selector="^ /template/ atom|ToggleIconButton">
@@ -77,7 +80,7 @@
                     Value="{atom:ImagePreviewerTokenResource PreviewOperationSize}" />
             <Setter Property="IconBrush"
                     Value="{atom:ImagePreviewerTokenResource PreviewOperationColor}" />
-            <Setter Property="Padding" Value="{atom:ImagePreviewerTokenSharedTokenResource PaddingSM}" />
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingSM}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton:pointerover">
@@ -101,7 +104,7 @@
         </Style>
 
         <Style Selector="^ /template/ StackPanel#RootLayout">
-            <Setter Property="Spacing" Value="{atom:ImagePreviewerTokenSharedTokenResource SpacingXS}" />
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}" />
         </Style>
 
         <Style Selector="^ /template/ Border#IndicatorFrame">
