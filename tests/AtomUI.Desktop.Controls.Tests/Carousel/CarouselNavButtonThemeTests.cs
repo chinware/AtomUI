@@ -4,7 +4,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Resources;
 using Shouldly;
 using Xunit;
 using AvaloniaWindow = Avalonia.Controls.Window;

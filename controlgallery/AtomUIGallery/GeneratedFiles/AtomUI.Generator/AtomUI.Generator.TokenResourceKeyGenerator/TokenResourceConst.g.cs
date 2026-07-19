@@ -1,3 +1,3 @@
-﻿using AtomUI.Theme.TokenSystem;
+﻿using AtomUI.Theme.Tokens;
 using AtomUI.Theme;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Resources;

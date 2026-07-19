@@ -1,7 +1,7 @@
 ﻿using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Tokens;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;

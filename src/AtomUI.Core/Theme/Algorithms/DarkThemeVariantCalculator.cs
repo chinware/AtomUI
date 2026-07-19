@@ -1,6 +1,6 @@
 ﻿using AtomUI.Media;
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Tokens;
 using Avalonia.Media;
 using Avalonia.Styling;
 

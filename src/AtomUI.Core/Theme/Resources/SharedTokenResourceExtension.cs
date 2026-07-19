@@ -1,9 +1,8 @@
-using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.XamlIl.Runtime;
 
-namespace AtomUI.Theme.Styling;
+namespace AtomUI.Theme.Resources;
 
 public class SharedTokenResourceExtension : TokenResourceExtension<SharedTokenKind>
 {

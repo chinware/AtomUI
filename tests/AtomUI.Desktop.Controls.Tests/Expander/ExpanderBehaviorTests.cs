@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using AtomUI.Controls.Primitives;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Resources;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;

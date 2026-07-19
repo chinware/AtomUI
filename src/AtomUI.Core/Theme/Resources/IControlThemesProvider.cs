@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace AtomUI.Theme;
+namespace AtomUI.Theme.Resources;
 
 public interface IControlThemesProvider
 {

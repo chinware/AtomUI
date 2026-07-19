@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Markup.Xaml;
 

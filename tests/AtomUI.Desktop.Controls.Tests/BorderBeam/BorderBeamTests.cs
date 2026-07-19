@@ -3,7 +3,7 @@ using System.Linq;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;

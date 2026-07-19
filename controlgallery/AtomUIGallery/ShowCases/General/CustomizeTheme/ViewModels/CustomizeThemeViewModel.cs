@@ -4,7 +4,7 @@ using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Tokens;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Threading;

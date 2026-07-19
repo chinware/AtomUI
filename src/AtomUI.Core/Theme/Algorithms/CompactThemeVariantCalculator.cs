@@ -1,5 +1,5 @@
 ﻿using AtomUI.Theme.Schema;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Tokens;
 using Avalonia.Media;
 
 namespace AtomUI.Theme.Algorithms;

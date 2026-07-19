@@ -6,7 +6,7 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Resources;
 using AtomUI.Desktop.Controls.CalendarView.Models;
 using AtomUI.Desktop.Controls.CalendarView.Rendering;
 using Shouldly;

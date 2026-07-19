@@ -2,6 +2,7 @@ using System.Globalization;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Language;
+using AtomUI.Theme.Resources;
 using AtomUI.Theme.Schema;
 using Avalonia.Media;
 using Shouldly;

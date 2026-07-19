@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Theme.TokenSystem;
+namespace AtomUI.Theme.Tokens;
 
 [GlobalDesignToken]
 public partial class DesignToken

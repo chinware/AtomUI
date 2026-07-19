@@ -1,6 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Data;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Resources;
 using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia;

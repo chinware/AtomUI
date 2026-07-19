@@ -11,7 +11,6 @@ using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;

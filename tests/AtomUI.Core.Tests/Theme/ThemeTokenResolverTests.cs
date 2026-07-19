@@ -2,7 +2,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Algorithms;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Tokens;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Shouldly;

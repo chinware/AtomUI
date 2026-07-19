@@ -1,4 +1,3 @@
-using AtomUI.Theme.Styling;
 using SchemaControlTokenIdentity = AtomUI.Theme.Schema.ControlTokenIdentity;
 
 namespace AtomUI.Theme.Resources;

@@ -1,4 +1,4 @@
-using AtomUI.Theme;
+using AtomUI.Theme.Resources;
 
 namespace AtomUI.Controls;
 

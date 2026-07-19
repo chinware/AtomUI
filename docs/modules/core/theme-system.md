@@ -1158,13 +1158,32 @@ ThemeDictionary 和 ControlTheme 根场景。运行时 `Theme/Schema` 只消费�
 `Definitions` 同时拥有主题来源和主题定义，不再用单独的 `Catalog` 目录把一次加载流程拆开。
 `ThemeManager`、事务、上下文和作用域图都属于主题子系统的核心运行时入口，直接位于 `Theme` 根目录；
 这些类型共享同一个 snapshot 提交边界，但不需要额外的 `ThemeEngine` 长期对象或物理目录表达这一事实。
-`Theme` 根目录中的 C# 类型统一使用 `AtomUI.Theme` 命名空间；职责子目录中的类型使用与目录对应的
-`AtomUI.Theme.<Area>` 命名空间。根目录不保留 `.Scope`、`.Transitions` 等已被物理结构删除的命名空间。
+
+物理目录与 CLR namespace 必须严格一一对应：
+
+| 物理边界 | CLR namespace |
+|---|---|
+| `Theme/*.cs` | `AtomUI.Theme` |
+| `Theme/Algorithms/**` | `AtomUI.Theme.Algorithms` |
+| `Theme/Compilation/**` | `AtomUI.Theme.Compilation` |
+| `Theme/Configuration/**` | `AtomUI.Theme.Configuration` |
+| `Theme/Definitions/**` | `AtomUI.Theme.Definitions` |
+| `Theme/Resources/**` | `AtomUI.Theme.Resources` |
+| `Theme/Schema/**` | `AtomUI.Theme.Schema` |
+| `Theme/Tokens/**` | `AtomUI.Theme.Tokens` |
+
+职责目录下用于拆分 partial class 或文件数量的组织子目录不继续创建 CLR namespace，例如
+`Theme/Tokens/Definitions/**` 仍使用 `AtomUI.Theme.Tokens`。根目录不保留 `.Scope`、`.Transitions` 等已经被
+物理结构删除的 namespace。
 `Theme/Algorithms` 与 `AtomUI.Theme.Algorithms` 一一对应：`ThemeAlgorithm`、算法 contract/attribute、内置
 calculator、调色板生成、预设色、`ColorMap` 和计算辅助均归该命名空间所有。调色板不是独立运行时子系统，
 因此不保留 `AtomUI.Theme.Palette`；算法实现也不属于资源样式层，因此不保留
 `AtomUI.Theme.Styling` 兼容命名空间。
-AXAML Control theme 的发现、聚合和加载属于主题资源所有权，统一位于 `Resources`，不参与 Token 编译。
+AXAML Control theme 的发现、聚合和加载属于主题资源所有权，统一位于 `AtomUI.Theme.Resources`，不参与 Token
+编译。`SharedTokenKind`、Token Resource markup extension 和相关生成代码同样输出到该 namespace；不保留
+`AtomUI.Theme.Styling`。Token builder、Token kind、Token attribute 和 value converter 统一位于
+`AtomUI.Theme.Tokens`，不保留 `AtomUI.Theme.TokenSystem`。源生成器必须使用相同映射，禁止构建后重新生成旧
+namespace。
 
 依赖方向固定为：Definitions/Configuration/Schema 提供输入，Compilation 产生 snapshot，根目录的
 ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilation 不依赖 Avalonia 资源宿主，Resources

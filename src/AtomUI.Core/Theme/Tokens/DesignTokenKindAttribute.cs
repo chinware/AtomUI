@@ -1,4 +1,4 @@
-namespace AtomUI.Theme.TokenSystem;
+namespace AtomUI.Theme.Tokens;
 
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple=false)]
 public class DesignTokenKindAttribute : Attribute

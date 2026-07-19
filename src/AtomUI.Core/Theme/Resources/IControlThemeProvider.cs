@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Theme.Styling;
+﻿namespace AtomUI.Theme.Resources;
 
 public interface IControlThemeProvider
 {

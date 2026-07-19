@@ -1,6 +1,6 @@
 ﻿using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Tokens;
 using Avalonia;
 
 namespace AtomUI.Desktop.Controls;

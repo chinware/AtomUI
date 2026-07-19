@@ -2,7 +2,6 @@ using System.Collections.Frozen;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using AtomUI.Theme.Resources;
-using AtomUI.Theme.Styling;
 
 namespace AtomUI.Theme.Schema;
 

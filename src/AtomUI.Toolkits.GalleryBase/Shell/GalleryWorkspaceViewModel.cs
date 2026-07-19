@@ -3,7 +3,7 @@ using AtomUI.Controls;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Language;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Resources;
 using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using Avalonia;
