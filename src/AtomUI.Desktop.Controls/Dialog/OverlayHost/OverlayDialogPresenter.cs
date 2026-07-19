@@ -397,7 +397,8 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void UpdateDrawnTitleBarOverlaySuppression()
     {
-        if (IsModal &&
+        if (_dialogLayer is not null &&
+            IsModal &&
             _ownerWindow is { OsType: OsType.Linux, IsCsdEnabled: true } window)
         {
             _drawnTitleBarOverlaySuppression ??= window.SuppressDrawnTitleBarOverlay();
