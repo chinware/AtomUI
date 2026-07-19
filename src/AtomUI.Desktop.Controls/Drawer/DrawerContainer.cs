@@ -306,6 +306,8 @@ internal class DrawerContainer : ContentControl
         ClearValue(BackgroundProperty);
         if (_motionActor is not null)
         {
+            _motionActor.MotionTransform           = null;
+            _motionActor.MotionTransformOperations = null;
             _motionActor.Opacity = isMotionEnabled ? 0.0 : 1.0;
         }
     }

@@ -62,6 +62,15 @@ internal class StepsItemIndicator : TemplatedControl
 
     #region 内部属性定义
 
+    internal static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<StepsItemIndicator>();
+
+    internal bool IsWaveSpiritEnabled
+    {
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
+    }
+
     internal static readonly DirectProperty<StepsItemIndicator, int> StepNumberProperty =
         AvaloniaProperty.RegisterDirect<StepsItemIndicator, int>(
             nameof(StepNumber),
@@ -245,7 +254,12 @@ internal class StepsItemIndicator : TemplatedControl
 
     internal void PlayWave()
     {
-        if (Type == StepsType.OutlineDot || !IsEnabled || !IsMotionEnabled || !IsLoaded || _waveSpiritDecorator is null)
+        if (Type == StepsType.OutlineDot ||
+            !IsEnabled ||
+            !IsMotionEnabled ||
+            !IsWaveSpiritEnabled ||
+            !IsLoaded ||
+            _waveSpiritDecorator is null)
         {
             return;
         }

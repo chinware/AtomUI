@@ -113,6 +113,26 @@ public class StepsWaveTests
     }
 
     [Fact]
+    public void WaveSpirit_Disabled_Still_Requests_Change_But_Does_Not_Play_Wave()
+    {
+        var steps = CreateSteps();
+        int? requested = null;
+        steps.CurrentChangeRequested += (_, args) => requested = args.Current;
+
+        ShowInWindow(steps, window =>
+        {
+            var item      = GetItem(steps, 1);
+            var indicator = GetIndicator(item);
+            indicator.IsWaveSpiritEnabled = false;
+
+            Click(item, window);
+
+            requested.ShouldBe(1);
+            indicator.IsWavePlaying.ShouldBeFalse();
+        });
+    }
+
+    [Fact]
     public void Keyboard_Activation_Plays_Indicator_Wave_When_Motion_Is_Enabled()
     {
         var steps = CreateSteps();

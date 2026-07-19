@@ -132,7 +132,10 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
             change.Property == IsPressedProperty ||
             change.Property == IsCheckedProperty)
         {
-            if (change.Property == IsPressedProperty && change.OldValue as bool? == true && IsWaveSpiritEnabled)
+            if (change.Property == IsPressedProperty &&
+                change.OldValue as bool? == true &&
+                IsMotionEnabled &&
+                IsWaveSpiritEnabled)
             {
                 _waveSpiritDecorator?.Play();
             }

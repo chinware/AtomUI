@@ -13,10 +13,13 @@
         <Setter Property="ProgressGrooveColor" Value="{atom:StepsTokenResource ProgressGrooveColor}" />
         <Setter Property="ProgressColor" Value="{atom:StepsTokenResource ProgressColor}" />
         <Setter Property="ProgressLineThickness" Value="{atom:SharedTokenResource LineWidthBold}" />
+        <Setter Property="IsWaveSpiritEnabled" Value="{atom:SharedTokenResource EnableWaveSpirit}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel Margin="{TemplateBinding Padding}">
-                    <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}" />
+                    <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}"
+                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}" />
                     <atom:PixelAlignedBorder
                         Name="Frame"
                         HorizontalAlignment="Center"

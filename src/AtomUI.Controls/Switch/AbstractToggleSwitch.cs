@@ -293,10 +293,10 @@ public abstract class AbstractToggleSwitch : ToggleButton,
                  change.Property == IsCheckedProperty ||
                  change.Property == IsEnabledProperty)
         {
-            if (change.Property == IsCheckedProperty && IsMotionEnabled)
+            if (change.Property == IsCheckedProperty)
             {
                 CalculateElementsOffset(GrooveRect().Size);
-                if (IsWaveSpiritEnabled)
+                if (IsMotionEnabled && IsWaveSpiritEnabled)
                 {
                     _waveSpiritDecorator?.Play();
                 }

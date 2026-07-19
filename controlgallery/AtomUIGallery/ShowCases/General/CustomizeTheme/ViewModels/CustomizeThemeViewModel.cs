@@ -62,8 +62,7 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
         HostScreen                 = screen;
         GreenThemeConfig = BuildGlobalConfig(
             "#00b96b",
-            (nameof(DesignToken.BorderRadius), "2"),
-            (nameof(DesignToken.ColorBgContainer), "#f6ffed"));
+            (nameof(DesignToken.BorderRadius), "2"));
         RedThemeConfig = BuildGlobalConfig(
             "#ff0000",
             (nameof(DesignToken.BorderRadius), "0"));
@@ -93,7 +92,6 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
         params (string Name, string Value)[] additionalTokens)
     {
         var builder = new ThemeConfigBuilder()
-                      .WithAlgorithms("Default")
                       .WithToken(nameof(DesignToken.ColorPrimary), primaryColor);
         foreach (var token in additionalTokens)
         {

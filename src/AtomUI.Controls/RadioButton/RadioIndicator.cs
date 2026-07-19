@@ -163,6 +163,7 @@ internal class RadioIndicator : TemplatedControl
             UpdatePseudoClasses();
 
             if (change.Property == IsCheckedProperty &&
+                IsMotionEnabled &&
                 IsWaveSpiritEnabled &&
                 !PseudoClasses.Contains(StdPseudoClass.Disabled) &&
                 PseudoClasses.Contains(StdPseudoClass.Checked))

@@ -10,7 +10,9 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:WaveSpiritDecorator Name="PART_WaveSpirit"/>
+                    <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
+                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"/>
                     <Canvas Name="PART_MainContainer"
                             ClipToBounds="True">
                         <ContentPresenter Name="PART_OnContentPresenter"

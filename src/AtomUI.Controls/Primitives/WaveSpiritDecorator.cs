@@ -98,6 +98,24 @@ internal class WaveSpiritDecorator : Control
 
     #region 内部属性定义
 
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<WaveSpiritDecorator>();
+
+    internal static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<WaveSpiritDecorator>();
+
+    internal bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    internal bool IsWaveSpiritEnabled
+    {
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
+    }
+
     protected static readonly DirectProperty<WaveSpiritDecorator, double> LastWaveOpacityProperty =
         AvaloniaProperty.RegisterDirect<WaveSpiritDecorator, double>(
             nameof(LastWaveOpacity),
@@ -153,6 +171,13 @@ internal class WaveSpiritDecorator : Control
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+
+        if ((change.Property == IsMotionEnabledProperty ||
+             change.Property == IsWaveSpiritEnabledProperty) &&
+            (!IsMotionEnabled || !IsWaveSpiritEnabled))
+        {
+            CancelAnimation();
+        }
         
         if (this.IsAttachedToVisualTree())
         {
@@ -163,6 +188,7 @@ internal class WaveSpiritDecorator : Control
         }
         if (change.Property == WaveBrushProperty ||
             change.Property == OriginOpacityProperty ||
+            change.Property == WaveRangeProperty ||
             change.Property == SizeMotionDurationProperty ||
             change.Property == OpacityMotionDurationProperty ||
             change.Property == SizeEasingCurveProperty ||
@@ -261,7 +287,10 @@ internal class WaveSpiritDecorator : Control
     
     public void Play()
     {
-        if (_isPlaying || !this.IsAttachedToVisualTree())
+        if (_isPlaying ||
+            !IsMotionEnabled ||
+            !IsWaveSpiritEnabled ||
+            !this.IsAttachedToVisualTree())
         {
             return;
         }

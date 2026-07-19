@@ -139,7 +139,11 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 
     private async Task SetWaveSpiritEnabledAsync(bool enabled)
     {
-        _isWaveSpiritEnabled = enabled && _isMotionEnabled;
+        if (enabled)
+        {
+            _isMotionEnabled = true;
+        }
+        _isWaveSpiritEnabled = enabled;
         await ApplyThemeSettingsAsync();
     }
 

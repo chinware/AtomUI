@@ -1,6 +1,10 @@
 using System;
+using System.Reactive.Threading.Tasks;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUI.Controls;
+using AtomUI.Theme;
+using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Resources;
 using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using AtomUI.Toolkits.GalleryBase.Routing;
@@ -15,6 +19,11 @@ namespace AtomUIGallery.Tests.Toolkits;
 
 public class GalleryBaseFoundationTests
 {
+    static GalleryBaseFoundationTests()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+    }
+
     [Fact]
     public void Route_Registry_Creates_ViewModel_And_Rejects_Duplicate_Routes()
     {
@@ -300,6 +309,73 @@ public class GalleryBaseFoundationTests
         navigation.DisposeCallCount.ShouldBe(1);
     }
 
+    [Fact]
+    public async Task Workspace_ViewModel_Disabling_Motion_Also_Disables_WaveSpirit()
+    {
+        var configuration = CreateNavigationConfiguration(new Dictionary<EntityKey, int>());
+        var manager       = Application.Current!.GetThemeManager()!;
+        ThemeConfig? appliedConfig = null;
+        void HandleThemeChanged(object? _, ThemeChangedEventArgs args)
+        {
+            if (args.Request.Reason == ThemeTransitionReason.UserRequest)
+            {
+                appliedConfig = args.Request.Config;
+            }
+        }
+
+        manager.ThemeChanged += HandleThemeChanged;
+        var viewModel = new GalleryWorkspaceViewModel(configuration);
+        try
+        {
+            await viewModel.ToggleMotionCommand.Execute(false).ToTask();
+
+            appliedConfig.ShouldNotBeNull();
+            ReadToken(appliedConfig, nameof(SharedTokenKind.EnableMotion)).ShouldBe("false");
+            ReadToken(appliedConfig, nameof(SharedTokenKind.EnableWaveSpirit)).ShouldBe("false");
+        }
+        finally
+        {
+            manager.ThemeChanged -= HandleThemeChanged;
+            viewModel.Dispose();
+            await RestoreDefaultThemeAsync(manager);
+        }
+    }
+
+    [Fact]
+    public async Task Workspace_ViewModel_Enabling_WaveSpirit_Also_Enables_Motion()
+    {
+        var configuration = CreateNavigationConfiguration(new Dictionary<EntityKey, int>());
+        var manager       = Application.Current!.GetThemeManager()!;
+        ThemeConfig? appliedConfig = null;
+        void HandleThemeChanged(object? _, ThemeChangedEventArgs args)
+        {
+            if (args.Request.Reason == ThemeTransitionReason.UserRequest)
+            {
+                appliedConfig = args.Request.Config;
+            }
+        }
+
+        manager.ThemeChanged += HandleThemeChanged;
+        var viewModel = new GalleryWorkspaceViewModel(configuration);
+        try
+        {
+            await viewModel.ToggleMotionCommand.Execute(false).ToTask();
+            appliedConfig = null;
+
+            await viewModel.ToggleWaveSpiritCommand.Execute(true).ToTask();
+
+            appliedConfig.ShouldNotBeNull();
+            ReadToken(appliedConfig, nameof(SharedTokenKind.EnableMotion)).ShouldBe("true");
+            ReadToken(appliedConfig, nameof(SharedTokenKind.EnableWaveSpirit)).ShouldBe("true");
+        }
+        finally
+        {
+            manager.ThemeChanged -= HandleThemeChanged;
+            viewModel.Dispose();
+            await RestoreDefaultThemeAsync(manager);
+        }
+    }
+
     private static GalleryBaseConfiguration CreateNavigationConfiguration(
         IDictionary<EntityKey, int> routeCreationCounts)
     {
@@ -319,6 +395,27 @@ public class GalleryBaseFoundationTests
             () => new TestRouteView());
 
         return options.BuildConfiguration();
+    }
+
+    private static string ReadToken(ThemeConfig? config, string name)
+    {
+        config.ShouldNotBeNull();
+        config!.Tokens.TryGetValue(name, out var value).ShouldBeTrue();
+        return value!;
+    }
+
+    private static async Task RestoreDefaultThemeAsync(IThemeManager manager)
+    {
+        var config = new ThemeConfigBuilder()
+                     .WithAlgorithms("Default")
+                     .WithToken(nameof(SharedTokenKind.EnableMotion), "true")
+                     .WithToken(nameof(SharedTokenKind.EnableWaveSpirit), "true")
+                     .Build();
+        await manager.ApplyThemeAsync(
+            new ThemeRequest(
+                manager.CurrentTheme?.ThemeId ?? IThemeManager.DEFAULT_THEME_ID,
+                config,
+                ThemeTransitionReason.UserRequest));
     }
 
     private static TestRouteViewModel CreateRouteViewModel(IDictionary<EntityKey, int> routeCreationCounts,

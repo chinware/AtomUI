@@ -2,10 +2,13 @@ using System.Linq;
 using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.Media.Transformation;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using AtomUI.MotionScene;
 using Shouldly;
 using Xunit;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -85,6 +88,54 @@ public class DrawerInteractionTests
             Dispatcher.UIThread.RunJobs();
 
             drawer.IsOpen.ShouldBeFalse("left-clicking the mask should keep closing the Drawer.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Reopening_Without_Motion_Clears_Completed_Close_Transform()
+    {
+        var drawer = new AtomUI.Desktop.Controls.Drawer
+        {
+            Content = new TextBlock { Text = "Body" },
+            Width   = 1,
+            Height  = 1
+        };
+        drawer.SetValue(AtomUI.Desktop.Controls.Drawer.IsMotionEnabledProperty, false, BindingPriority.Animation);
+
+        var window = CreateWindow(drawer);
+        try
+        {
+            drawer.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var layer = ScopeAwareAdornerLayer.GetLayer(drawer);
+            layer.ShouldNotBeNull();
+            var container = layer.GetVisualDescendants().OfType<DrawerContainer>().Single();
+            var motionActor = container.GetVisualDescendants().OfType<BaseMotionActor>().Single();
+
+            drawer.IsOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            drawer.IsAttachedToVisualTree().ShouldBeTrue();
+            container.GetVisualParent().ShouldBeNull();
+
+            var transformBuilder = new TransformOperations.Builder(1);
+            transformBuilder.AppendTranslate(240, 0);
+            motionActor.MotionTransformOperations = transformBuilder.Build();
+
+            drawer.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            container.GetVisualParent().ShouldNotBeNull();
+            var reopenedMotionActor = container.GetVisualDescendants().OfType<BaseMotionActor>().Single();
+            reopenedMotionActor.ShouldBeSameAs(motionActor);
+            reopenedMotionActor.MotionTransformOperations.ShouldBeNull();
+            reopenedMotionActor.RenderTransform.ShouldNotBeNull();
+            reopenedMotionActor.RenderTransform.Value.M31.ShouldBe(0, 0.001);
+            reopenedMotionActor.RenderTransform.Value.M32.ShouldBe(0, 0.001);
         }
         finally
         {

@@ -612,9 +612,8 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
 
         if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess || forceDisabledMotion)
         {
-            _itemsPresenterMotionActor.Opacity   = 1.0;
-            _itemsPresenterMotionActor.IsVisible = true;
-            _isRealExpanded                      = true;
+            ApplyChildrenStableState(_itemsPresenterMotionActor, true);
+            _isRealExpanded = true;
             return;
         }
 
@@ -652,9 +651,8 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
 
         if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess || forceDisabledMotion)
         {
-            _itemsPresenterMotionActor.Opacity   = 0.0;
-            _itemsPresenterMotionActor.IsVisible = false;
-            _isRealExpanded                      = false;
+            ApplyChildrenStableState(_itemsPresenterMotionActor, false);
+            _isRealExpanded = false;
             return;
         }
 
@@ -672,6 +670,15 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             _header?.NotifyAnimating(false);
             _isRealExpanded = false;
         });
+    }
+
+    private static void ApplyChildrenStableState(BaseMotionActor motionActor, bool isExpanded)
+    {
+        motionActor.Transitions               = null;
+        motionActor.MotionTransform           = null;
+        motionActor.MotionTransformOperations = null;
+        motionActor.Opacity                   = isExpanded ? 1.0 : 0.0;
+        motionActor.IsVisible                 = isExpanded;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

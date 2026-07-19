@@ -11,7 +11,9 @@
             <ControlTemplate>
                 <Panel>
                     <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
-                                              CornerRadius="{TemplateBinding CornerRadius}" />
+                                              CornerRadius="{TemplateBinding CornerRadius}"
+                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}" />
                     <DockPanel Name="ContentLayout"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
