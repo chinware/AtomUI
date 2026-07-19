@@ -24,13 +24,14 @@ public record DialogOptions
     
     public bool IsDragMovable { get; init; } = true;
     public bool IsFooterVisible { get; init; } = true;
+    public bool IsMotionEnabled { get; init; } = true;
     public Control? PlacementTarget { get; init; }
     public Dimension? HorizontalOffset { get; init; }
     public Dimension? VerticalOffset { get; init; }
     public DialogHostType DialogHostType { get; init; } = DialogHostType.Overlay;
     public DialogStandardButtons StandardButtons { get; init; } = DialogStandardButton.NoButton;
-    public DialogStandardButton DefaultStandardButton { get; init; }
-    public DialogHorizontalAnchor HorizontalStartupLocation { get; init; } = DialogHorizontalAnchor.Custom;
-    public DialogVerticalAnchor VerticalStartupLocation { get; init; } = DialogVerticalAnchor.Custom;
+    public DialogStandardButton DefaultStandardButton { get; init; } = DialogStandardButton.Ok;
+    public DialogHorizontalAnchor HorizontalStartupLocation { get; init; } = DialogHorizontalAnchor.Center;
+    public DialogVerticalAnchor VerticalStartupLocation { get; init; } = DialogVerticalAnchor.Center;
     public Func<DialogClosingContext, ValueTask<bool>>? BeforeCloseAsync { get; init; }
 }

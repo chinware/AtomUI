@@ -1,14 +1,13 @@
-using System.Reflection;
 using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
-using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUI.Desktop.Controls.Tests.Dialog;
 
@@ -20,478 +19,259 @@ public class DialogBeforeCloseTests
     }
 
     [Fact]
-    public void BeforeCloseAsync_Returning_False_Keeps_Dialog_Open_And_Restores_Result()
+    public void BeforeCloseAsync_Veto_Restores_IsOpen_And_Does_Not_Commit_Result()
     {
-        var window = CreateWindow(new Control(), out var overlayPanel);
-        DialogClosingContext? capturedContext = null;
-        var callbackCount = 0;
-        var dialog = CreateStaticDialog(
-            overlayPanel,
-            new DialogOptions
+        RunOnUIThread(() =>
+        {
+            DialogClosingContext? capturedContext = null;
+            var fixture = ShowDialog(context =>
             {
-                BeforeCloseAsync = context =>
-                {
-                    callbackCount++;
-                    capturedContext = context;
-                    return ValueTask.FromResult(false);
-                }
+                capturedContext = context;
+                return ValueTask.FromResult(false);
             });
 
-        overlayPanel.Children.Add(dialog);
-
-        try
-        {
-            OpenNonModal(dialog);
-
-            dialog.Accept();
-            Dispatcher.UIThread.RunJobs();
-
-            callbackCount.ShouldBe(1);
-            dialog.IsOpen.ShouldBeTrue();
-            dialog.Result.ShouldBeNull();
-            capturedContext.ShouldNotBeNull();
-            capturedContext.Dialog.ShouldBe(dialog);
-            capturedContext.Result.ShouldBe(DialogCode.Accepted);
-            capturedContext.DialogCode.ShouldBe(DialogCode.Accepted);
-            capturedContext.Reason.ShouldBe(DialogCloseReason.Accepted);
-            capturedContext.SourceButton.ShouldBeNull();
-        }
-        finally
-        {
-            overlayPanel.Children.Remove(dialog);
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void BeforeCloseAsync_Returning_True_Allows_Dialog_To_Close()
-    {
-        var window = CreateWindow(new Control(), out var overlayPanel);
-        var callbackCount = 0;
-        var dialog = CreateStaticDialog(
-            overlayPanel,
-            new DialogOptions
+            try
             {
-                BeforeCloseAsync = _ =>
-                {
-                    callbackCount++;
-                    return ValueTask.FromResult(true);
-                }
-            });
+                fixture.Dialog.Accept();
+                Dispatcher.UIThread.RunJobs();
 
-        overlayPanel.Children.Add(dialog);
+                fixture.Dialog.IsOpen.ShouldBeTrue();
+                fixture.Dialog.Result.ShouldBeNull();
+                fixture.SessionTask.IsCompleted.ShouldBeFalse();
+                capturedContext.ShouldNotBeNull();
+                capturedContext.Result.ShouldBe(DialogCode.Accepted);
+                capturedContext.Reason.ShouldBe(DialogCloseReason.Accepted);
 
-        try
-        {
-            OpenNonModal(dialog);
-
-            dialog.Accept();
-            Dispatcher.UIThread.RunJobs();
-
-            callbackCount.ShouldBe(1);
-            dialog.IsOpen.ShouldBeFalse();
-            dialog.Result.ShouldBe(DialogCode.Accepted);
-        }
-        finally
-        {
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void Close_Without_BeforeCloseAsync_Propagates_Synchronous_Finished_Exception()
-    {
-        var window = CreateWindow(new Control(), out var overlayPanel);
-        var dialog = CreateStaticDialog(overlayPanel, new DialogOptions());
-        var exception = new InvalidOperationException("finished failed");
-        EventHandler<DialogFinishedEventArgs> handler = (_, _) => throw exception;
-        dialog.Finished += handler;
-
-        overlayPanel.Children.Add(dialog);
-
-        try
-        {
-            OpenNonModal(dialog);
-
-            var actual = Should.Throw<InvalidOperationException>(() => dialog.Accept());
-
-            actual.ShouldBeSameAs(exception);
-            dialog.IsOpen.ShouldBeTrue();
-        }
-        finally
-        {
-            dialog.Finished -= handler;
-            overlayPanel.Children.Remove(dialog);
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void ButtonClicked_Handled_Stops_Default_Close_And_Skips_BeforeCloseAsync()
-    {
-        var window = CreateWindow(new Control(), out var overlayPanel);
-        var callbackCount = 0;
-        var dialog = CreateStaticDialog(
-            overlayPanel,
-            new DialogOptions
-            {
-                StandardButtons = DialogStandardButton.Ok,
-                BeforeCloseAsync = _ =>
-                {
-                    callbackCount++;
-                    return ValueTask.FromResult(true);
-                }
-            });
-        dialog.ButtonClicked += (_, args) => args.Handled = true;
-
-        overlayPanel.Children.Add(dialog);
-
-        try
-        {
-            OpenNonModal(dialog);
-
-            ClickStandardButton(window, DialogStandardButton.Ok);
-            Dispatcher.UIThread.RunJobs();
-
-            callbackCount.ShouldBe(0);
-            dialog.IsOpen.ShouldBeTrue();
-            dialog.Result.ShouldBeNull();
-        }
-        finally
-        {
-            overlayPanel.Children.Remove(dialog);
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void Closing_Cancel_Stops_Close_And_Skips_BeforeCloseAsync()
-    {
-        var window = CreateWindow(new Control(), out var overlayPanel);
-        var callbackCount = 0;
-        var dialog = CreateStaticDialog(
-            overlayPanel,
-            new DialogOptions
-            {
-                BeforeCloseAsync = _ =>
-                {
-                    callbackCount++;
-                    return ValueTask.FromResult(true);
-                }
-            });
-        dialog.Closing += (_, args) => args.Cancel = true;
-
-        overlayPanel.Children.Add(dialog);
-
-        try
-        {
-            OpenNonModal(dialog);
-
-            dialog.Accept();
-            Dispatcher.UIThread.RunJobs();
-
-            callbackCount.ShouldBe(0);
-            dialog.IsOpen.ShouldBeTrue();
-            dialog.Result.ShouldBeNull();
-        }
-        finally
-        {
-            overlayPanel.Children.Remove(dialog);
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void IsOpen_Close_Request_Restores_IsOpen_When_BeforeCloseAsync_Denies_Close()
-    {
-        var window = CreateWindow(new Control(), out var overlayPanel);
-        var dialog = CreateStaticDialog(
-            overlayPanel,
-            new DialogOptions
-            {
-                BeforeCloseAsync = _ => ValueTask.FromResult(false)
-            });
-
-        overlayPanel.Children.Add(dialog);
-
-        try
-        {
-            OpenNonModal(dialog);
-
-            dialog.IsOpen = false;
-            Dispatcher.UIThread.RunJobs();
-
-            dialog.IsOpen.ShouldBeTrue();
-            dialog.Result.ShouldBeNull();
-        }
-        finally
-        {
-            overlayPanel.Children.Remove(dialog);
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void Pending_BeforeCloseAsync_Suppresses_Duplicate_Close_Requests()
-    {
-        var window = CreateWindow(new Control(), out var overlayPanel);
-        var callbackCount = 0;
-        var gate          = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-        var dialog = CreateStaticDialog(
-            overlayPanel,
-            new DialogOptions
-            {
-                BeforeCloseAsync = _ =>
-                {
-                    callbackCount++;
-                    return new ValueTask<bool>(gate.Task);
-                }
-            });
-
-        overlayPanel.Children.Add(dialog);
-
-        try
-        {
-            OpenNonModal(dialog);
-
-            Dispatcher.UIThread.Post(dialog.Accept);
-            Dispatcher.UIThread.RunJobs();
-            Dispatcher.UIThread.Post(dialog.Accept);
-            Dispatcher.UIThread.RunJobs();
-
-            callbackCount.ShouldBe(1);
-            dialog.IsOpen.ShouldBeTrue();
-
-            gate.SetResult(true);
-            RunDispatcherUntil(() => !dialog.IsOpen);
-
-            callbackCount.ShouldBe(1);
-            dialog.IsOpen.ShouldBeFalse();
-            dialog.Result.ShouldBe(DialogCode.Accepted);
-        }
-        finally
-        {
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void Host_Close_Request_Uses_HostCloseRequest_Reason()
-    {
-        var window = CreateWindow(new Control(), out var overlayPanel);
-        DialogClosingContext? capturedContext = null;
-        var dialog = CreateStaticDialog(
-            overlayPanel,
-            new DialogOptions
-            {
-                BeforeCloseAsync = context =>
-                {
-                    capturedContext = context;
-                    return ValueTask.FromResult(false);
-                }
-            });
-
-        overlayPanel.Children.Add(dialog);
-
-        try
-        {
-            OpenNonModal(dialog);
-
-            NotifyHostCloseRequest(dialog);
-            Dispatcher.UIThread.RunJobs();
-
-            dialog.IsOpen.ShouldBeTrue();
-            capturedContext.ShouldNotBeNull();
-            capturedContext.Reason.ShouldBe(DialogCloseReason.HostCloseRequest);
-            capturedContext.DialogCode.ShouldBeNull();
-        }
-        finally
-        {
-            overlayPanel.Children.Remove(dialog);
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void ShowDialogModal_Waits_Until_BeforeCloseAsync_Allows_Close()
-    {
-        var window = CreateWindow(new Control(), out _);
-        var callbackCount = 0;
-        var options = new DialogOptions
-        {
-            StandardButtons       = DialogStandardButton.Ok,
-            DefaultStandardButton = DialogStandardButton.Ok,
-            BeforeCloseAsync = _ =>
-            {
-                callbackCount++;
-                if (callbackCount == 1)
-                {
-                    ScheduleClickStandardButton(window, DialogStandardButton.Ok);
-                    return ValueTask.FromResult(false);
-                }
-
-                return ValueTask.FromResult(true);
+                fixture.Dialog.BeforeCloseAsync = _ => ValueTask.FromResult(true);
+                fixture.Dialog.Accept();
+                WaitWithDispatcherPump(fixture.SessionTask);
             }
-        };
+            finally
+            {
+                fixture.Window.Close();
+            }
+        });
+    }
 
-        try
+    [Fact]
+    public void IsOpen_Close_Veto_Restores_The_Declarative_Open_Intent()
+    {
+        RunOnUIThread(() =>
         {
-            ScheduleClickStandardButton(window, DialogStandardButton.Ok);
+            var fixture = ShowDialog(_ => ValueTask.FromResult(false));
 
-            var result = AtomUI.Desktop.Controls.Dialog.ShowDialogModal(
+            try
+            {
+                fixture.Dialog.IsOpen = false;
+                PumpUntil(() => fixture.Dialog.IsOpen);
+
+                fixture.SessionTask.IsCompleted.ShouldBeFalse();
+                fixture.Dialog.Result.ShouldBeNull();
+
+                fixture.Dialog.BeforeCloseAsync = _ => ValueTask.FromResult(true);
+                fixture.Dialog.IsOpen = false;
+                WaitWithDispatcherPump(fixture.SessionTask);
+            }
+            finally
+            {
+                fixture.Window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ButtonClicked_Handled_Stops_Default_Close_And_Close_Policy()
+    {
+        RunOnUIThread(() =>
+        {
+            var policyCount = 0;
+            var fixture = ShowDialog(_ =>
+            {
+                policyCount++;
+                return ValueTask.FromResult(true);
+            });
+            EventHandler<DialogButtonClickedEventArgs> handler = (_, args) => args.Handled = true;
+            fixture.Dialog.ButtonClicked += handler;
+
+            try
+            {
+                FindStandardButton(fixture.Window, DialogStandardButton.Ok)
+                    .RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent));
+
+                policyCount.ShouldBe(0);
+                fixture.Dialog.IsOpen.ShouldBeTrue();
+                fixture.Dialog.Result.ShouldBeNull();
+
+                fixture.Dialog.ButtonClicked -= handler;
+                fixture.Dialog.Accept();
+                WaitWithDispatcherPump(fixture.SessionTask);
+            }
+            finally
+            {
+                fixture.Window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Mask_Close_Request_Uses_HostCloseRequest_Reason()
+    {
+        RunOnUIThread(() =>
+        {
+            DialogClosingContext? capturedContext = null;
+            var fixture = ShowDialog(context =>
+            {
+                capturedContext = context;
+                return ValueTask.FromResult(false);
+            }, isModal: true);
+
+            try
+            {
+                var mask = fixture.Window.GetVisualDescendants()
+                                         .OfType<OverlayDialogMask>()
+                                         .ShouldHaveSingleItem();
+                RaisePointerPressed(mask);
+                Dispatcher.UIThread.RunJobs();
+
+                fixture.Dialog.IsOpen.ShouldBeTrue();
+                capturedContext.ShouldNotBeNull();
+                capturedContext.Reason.ShouldBe(DialogCloseReason.HostCloseRequest);
+                capturedContext.DialogCode.ShouldBeNull();
+
+                fixture.Dialog.BeforeCloseAsync = _ => ValueTask.FromResult(true);
+                fixture.Dialog.Done();
+                WaitWithDispatcherPump(fixture.SessionTask);
+            }
+            finally
+            {
+                fixture.Window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Static_Async_Dialog_Waits_Until_Close_Policy_Allows_Close()
+    {
+        RunOnUIThread(() =>
+        {
+            var window = CreateWindow(new Border(), out _);
+            var attempt = 0;
+            var resultTask = AtomUI.Desktop.Controls.Dialog.ShowDialogModalAsync(
                 new AtomUI.Desktop.Controls.TextBlock { Text = "Dialog" },
-                options: options,
+                options: new DialogOptions
+                {
+                    StandardButtons  = DialogStandardButton.Ok,
+                    IsMotionEnabled  = false,
+                    BeforeCloseAsync = _ => ValueTask.FromResult(++attempt > 1)
+                },
                 topLevel: window);
 
-            result.ShouldBe(DialogCode.Accepted);
-            callbackCount.ShouldBe(2);
-        }
-        finally
-        {
-            window.Close();
-        }
+            try
+            {
+                PumpUntil(() => FindStandardButtonOrNull(window, DialogStandardButton.Ok) is not null);
+                FindStandardButton(window, DialogStandardButton.Ok)
+                    .RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent));
+                Dispatcher.UIThread.RunJobs();
+
+                resultTask.IsCompleted.ShouldBeFalse();
+                attempt.ShouldBe(1);
+
+                FindStandardButton(window, DialogStandardButton.Ok)
+                    .RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent));
+
+                WaitWithDispatcherPump(resultTask).ShouldBe(DialogCode.Accepted);
+                attempt.ShouldBe(2);
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
     }
 
-    [Fact]
-    public void ShowDialogModalAsync_Waits_Until_BeforeCloseAsync_Allows_Close()
+    private static DialogFixture ShowDialog(
+        Func<DialogClosingContext, ValueTask<bool>> beforeClose,
+        bool isModal = false)
     {
-        var window = CreateWindow(new Control(), out _);
-        var callbackCount = 0;
-        var options = new DialogOptions
+        var window = CreateWindow(new Border(), out var root);
+        var placementTarget = root.Children.OfType<Border>().Single();
+        var dialog = new AtomUI.Desktop.Controls.Dialog
         {
-            StandardButtons       = DialogStandardButton.Ok,
-            DefaultStandardButton = DialogStandardButton.Ok,
-            BeforeCloseAsync = _ =>
-            {
-                callbackCount++;
-                if (callbackCount == 1)
-                {
-                    ScheduleClickStandardButton(window, DialogStandardButton.Ok);
-                    return ValueTask.FromResult(false);
-                }
-
-                return ValueTask.FromResult(true);
-            }
+            PlacementTarget  = placementTarget,
+            Content          = "Dialog",
+            StandardButtons  = DialogStandardButton.Ok | DialogStandardButton.Cancel,
+            IsModal          = isModal,
+            IsMotionEnabled  = false,
+            BeforeCloseAsync = beforeClose
         };
-
-        try
-        {
-            var resultTask = StartShowDialogModalAsync(window, options);
-            ScheduleClickStandardButton(window, DialogStandardButton.Ok);
-
-            var result = WaitWithDispatcherPump(resultTask);
-
-            result.ShouldBe(DialogCode.Accepted);
-            callbackCount.ShouldBe(2);
-        }
-        finally
-        {
-            window.Close();
-        }
+        root.Children.Add(dialog);
+        var sessionTask = dialog.OpenAsync();
+        PumpUntil(() => window.GetVisualDescendants().OfType<DialogSurface>().Any());
+        return new DialogFixture(window, dialog, sessionTask);
     }
 
-    private static void OpenNonModal(AtomUI.Desktop.Controls.Dialog dialog)
+    private static AtomUI.Desktop.Controls.DialogButton FindStandardButton(
+        Visual root,
+        DialogStandardButton standardButton)
     {
-        var openTask = dialog.OpenAsync(TestContext.Current.CancellationToken);
-        openTask.IsCompleted.ShouldBeTrue("non-modal Dialog.OpenAsync should finish after scheduling the opening motion.");
+        return FindStandardButtonOrNull(root, standardButton).ShouldNotBeNull();
+    }
+
+    private static AtomUI.Desktop.Controls.DialogButton? FindStandardButtonOrNull(
+        Visual root,
+        DialogStandardButton standardButton)
+    {
+        return root.GetVisualDescendants()
+                   .OfType<AtomUI.Desktop.Controls.DialogButton>()
+                   .FirstOrDefault(button => button.StandardButtonType == standardButton);
+    }
+
+    private static void RaisePointerPressed(Control source)
+    {
+        source.RaiseEvent(new PointerPressedEventArgs(
+            source,
+            new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true),
+            source,
+            default,
+            0,
+            new PointerPointProperties(RawInputModifiers.LeftMouseButton, PointerUpdateKind.LeftButtonPressed),
+            KeyModifiers.None));
+    }
+
+    private static AtomUI.Desktop.Controls.Window CreateWindow(
+        Control content,
+        out ScopeAwareOverlayLayerPanel root)
+    {
+        root = new ScopeAwareOverlayLayerPanel
+        {
+            Width  = 480,
+            Height = 360,
+            Children = { content }
+        };
+        var window = new AtomUI.Desktop.Controls.Window
+        {
+            Width   = 480,
+            Height  = 360,
+            Content = root
+        };
+        window.Show();
         Dispatcher.UIThread.RunJobs();
-        dialog.IsOpen.ShouldBeTrue();
+        return window;
     }
 
-    private static void ClickStandardButton(AvaloniaWindow window, DialogStandardButton standardButton)
+    private static void WaitWithDispatcherPump(Task task)
     {
-        var button = window.GetVisualDescendants()
-                           .OfType<DialogButton>()
-                           .Single(x => x.StandardButtonType == standardButton);
-        button.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, button));
-    }
-
-    private static void ScheduleClickStandardButton(
-        AvaloniaWindow window,
-        DialogStandardButton standardButton,
-        int attempt = 0)
-    {
-        Dispatcher.UIThread.Post(() =>
-        {
-            var button = window.GetVisualDescendants()
-                               .OfType<DialogButton>()
-                               .FirstOrDefault(x => x.StandardButtonType == standardButton);
-            if (button is null || button.Bounds.Width <= 0 || button.Bounds.Height <= 0)
-            {
-                attempt.ShouldBeLessThan(10, "Dialog button should become available while the dispatcher frame is running.");
-                ScheduleClickStandardButton(window, standardButton, attempt + 1);
-                return;
-            }
-
-            SetOverlayDialogHostAnimationDuration(window, TimeSpan.Zero);
-            button.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, button));
-        });
-    }
-
-    private static void SetOverlayDialogHostAnimationDuration(Visual searchRoot, TimeSpan duration)
-    {
-        var overlayDialogHost = searchRoot.GetVisualDescendants()
-                                          .FirstOrDefault(x => x.GetType().Name == "OverlayDialogHost");
-        if (overlayDialogHost is null)
-        {
-            return;
-        }
-
-        var property = overlayDialogHost.GetType().GetProperty(
-            "AnimationDuration",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        property.ShouldNotBeNull();
-        property.SetValue(overlayDialogHost, duration);
-    }
-
-    private static void NotifyHostCloseRequest(AtomUI.Desktop.Controls.Dialog dialog)
-    {
-        var method = typeof(AtomUI.Desktop.Controls.Dialog).GetMethod(
-            "NotifyDialogHostCloseRequest",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        method.ShouldNotBeNull();
-        method.Invoke(dialog, null);
-    }
-
-    private static Task<object?> StartShowDialogModalAsync(AvaloniaWindow window, DialogOptions options)
-    {
-        Task<object?>? resultTask = null;
-        Dispatcher.UIThread.Post(() =>
-        {
-            resultTask = AtomUI.Desktop.Controls.Dialog.ShowDialogModalAsync(
-                new AtomUI.Desktop.Controls.TextBlock { Text = "Dialog" },
-                options: options,
-                topLevel: window,
-                cancellationToken: TestContext.Current.CancellationToken);
-        });
-
-        var timeoutAt = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(5);
-        while (resultTask is null && DateTimeOffset.UtcNow < timeoutAt)
-        {
-            Dispatcher.UIThread.RunJobs();
-            Thread.Sleep(1);
-        }
-
-        resultTask.ShouldNotBeNull("ShowDialogModalAsync should start on the UI dispatcher.");
-        return resultTask;
+        PumpUntil(() => task.IsCompleted);
+        task.GetAwaiter().GetResult();
     }
 
     private static T WaitWithDispatcherPump<T>(Task<T> task)
     {
-        var timeoutAt = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(5);
-        while (!task.IsCompleted && DateTimeOffset.UtcNow < timeoutAt)
-        {
-            Dispatcher.UIThread.RunJobs();
-            Thread.Sleep(1);
-        }
-
-        task.IsCompleted.ShouldBeTrue("the dialog task should complete after the second before-close approval.");
+        PumpUntil(() => task.IsCompleted);
         return task.GetAwaiter().GetResult();
     }
 
-    private static void RunDispatcherUntil(Func<bool> condition)
+    private static void PumpUntil(Func<bool> condition)
     {
         var timeoutAt = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(5);
         while (!condition() && DateTimeOffset.UtcNow < timeoutAt)
@@ -500,59 +280,16 @@ public class DialogBeforeCloseTests
             Thread.Sleep(1);
         }
 
-        condition().ShouldBeTrue("the expected dialog state should be reached while pumping dispatcher jobs.");
+        condition().ShouldBeTrue();
     }
 
-    private static AtomUI.Desktop.Controls.Dialog CreateStaticDialog(
-        Control placementTarget,
-        DialogOptions options)
+    private static void RunOnUIThread(Action action)
     {
-        var createDialog = typeof(AtomUI.Desktop.Controls.Dialog).GetMethod(
-            "CreateDialog",
-            BindingFlags.Static | BindingFlags.NonPublic);
-
-        createDialog.ShouldNotBeNull();
-        var dialog = (AtomUI.Desktop.Controls.Dialog)createDialog.Invoke(
-            null,
-            [new AtomUI.Desktop.Controls.TextBlock { Text = "Dialog" }, null, options, placementTarget])!;
-        dialog.IsModal = false;
-        return dialog;
+        Dispatcher.UIThread.Invoke(action);
     }
 
-    private static AvaloniaWindow CreateWindow(Control content, out ScopeAwareOverlayLayerPanel overlayPanel)
-    {
-        overlayPanel = new ScopeAwareOverlayLayerPanel
-        {
-            Width  = 320,
-            Height = 240
-        };
-        overlayPanel.Children.Add(content);
-
-        var visualLayerManager = new VisualLayerManager
-        {
-            Child = overlayPanel
-        };
-        EnablePopupOverlayLayer(visualLayerManager);
-
-        var window = new AvaloniaWindow
-        {
-            Width   = 320,
-            Height  = 240,
-            Content = visualLayerManager
-        };
-
-        window.Show();
-        Dispatcher.UIThread.RunJobs();
-        return window;
-    }
-
-    private static void EnablePopupOverlayLayer(VisualLayerManager visualLayerManager)
-    {
-        var property = typeof(VisualLayerManager).GetProperty(
-            "EnablePopupOverlayLayer",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        property.ShouldNotBeNull();
-        property.SetValue(visualLayerManager, true);
-    }
+    private sealed record DialogFixture(
+        AtomUI.Desktop.Controls.Window Window,
+        AtomUI.Desktop.Controls.Dialog Dialog,
+        Task SessionTask);
 }

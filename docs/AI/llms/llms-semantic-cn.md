@@ -11909,11 +11909,11 @@ Source: ./controls/modal/semantic-cn.md
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Modal` | 反馈控件根语义区域，承载 public API、反馈状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `host` | `宿主或弹层区域` | 承载 overlay、popup、portal、message host、drawer 或 modal 容器。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `surface` | `反馈表面` | 承载背景、边框、阴影、尺寸、placement 和视觉状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载标题、正文、图标、进度、结果、操作或关闭入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达进入退出、loading、progress、skeleton 或水印刷新反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Dialog` / `MessageBox` | public 打开意图、内容、结果和事件入口。 | `IsOpen`, `OpenAsync`, `Result`, `BeforeCloseAsync` | `DialogToken` | stable |
+| `host` | Overlay presenter / native Window | 承载模态、placement、尺寸和宿主生命周期。 | `DialogHostType`, `IsModal`, `PlacementTarget` | SharedToken motion | internal-observable |
+| `surface` | `DialogSurface` | 共享标题、正文、Footer、按钮和 focus scope。 | `Content`, `StandardButtons`, `IsLoading` | `ContentBg`, padding/footer tokens | internal-observable |
+| `content` | Content / `MessageBoxContent` | 呈现任意 Dialog 内容或 MessageBox 语义内容。 | `Content`, `ContentTemplate`, `Style`, `Icon` | typography/color tokens | stable |
+| `motion` | `MotionActor` | 等待 opening/closing motion 并维持 task 边界。 | `IsMotionEnabled` | `MotionDurationMid` | internal-observable |
 
 ## Abstract AXAML Structure
 
@@ -11925,66 +11925,42 @@ Source: ./controls/modal/semantic-cn.md
 
 ## Template Parts
 
-| 契约组 | 代表成员 | 维护含义 |
+| Part | 所属类型 | 职责 |
 | --- | --- | --- |
-| 内容与数据 | `AbortButtonText`、`AddOnTemplate`、`ApplyButtonText`、`CancelButtonText`、`CheckedIcon`、`CloseButtonText`、`Content`、`ContentTemplate`、`DialogContent`、`DialogContentTemplate` 等 33 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `IsChecked` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsActivated`、`IsClosable`、`IsCloseButtonEnabled`、`IsConfirmLoading`、`IsDragMovable`、`IsEffectiveFooterVisible`、`IsFooterVisible`、`IsLoading`、`IsOpen`、`IsMaximizable`、`IsMaximizeButtonEnabled` 等 17 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义；`Dialog.IsOpen` 默认双向绑定。 |
-| 视觉与布局 | `HorizontalOffset`、`HorizontalStartupLocation`、`HostHeight`、`HostMaxHeight`、`HostMaxWidth`、`HostMinHeight`、`HostMinWidth`、`HostWidth`、`PlacementTarget`、`VerticalOffset` 等 11 项 | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
-| 弹层与窗口 | `DialogHostType` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
-| 动效与异步 | `AnimationDuration` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
-| 其他稳定入口 | `AddOn`、`DefaultStandardButton`、`EscapeStandardButton`、`Logo`、`Result`、`StandardButtons` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| `PART_Header` | `DialogSurface` | Overlay 标题栏、拖动与 caption 操作。 |
+| `PART_ButtonBox` | `DialogSurface` | 当前标准/自定义按钮序列。 |
+| `PART_Resizer` | `DialogSurface` | Overlay resize handles。 |
+| `PART_LeftGroup` / `PART_CenterGroup` / `PART_RightGroup` | `DialogButtonBox` | 按按钮角色布局。 |
+| `PART_MaskMotionActor` | `OverlayDialogPresenter` | modal mask 及其 motion。 |
+| `PART_SurfaceMotionActor` | `OverlayDialogPresenter` | DialogSurface 入场/退出 motion。 |
 
 ## Pseudo Classes
 
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、open/close、loading/async、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Modal Token + ControlTheme。 |
+源文档未声明控件专属伪类。控件仍可能消费 Avalonia 标准状态，例如 `:pointerover`、`:pressed`、`:disabled` 和 focus 相关状态。
 
 ## State Flow
 
-Modal 的状态流按以下路径收敛：
-
-```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
-  -> Gallery 可观察行为
-```
-
-状态维护规则：
-
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- selection/checked/active、open/close、loading/async、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- `Dialog.IsOpen` 是默认 `TwoWay` 的受控状态；内部关闭请求必须回写该属性，不得用模板局部状态绕过绑定。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- `IsOpen` 表示最新声明式意图；`DialogSession` 表示一次实际展示。两者不能由 presenter 或 template part 反向拥有。
+- modal Overlay 的真实 pointer 输入命中 mask，modeless Overlay 在 Surface 外穿透到底层。只有栈顶 presenter 响应 mask 与 Escape。
+- Enter/Escape 根据当前有效按钮序列查找 default/escape 按钮，运行时修改标准按钮或自定义按钮会立即生效。
+- `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
+- 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
+- Overlay 与 Window 都等待 opening/closing motion；`IsMotionEnabled=false` 跳过 motion，但不跳过宿主打开、关闭和释放。
 
 ## Theme and Token Boundaries
 
-Modal 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
-
 | 主题文件 | 职责 |
 | --- | --- |
-| `DialogButtonBoxTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `DialogCaptionButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `DialogHostTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `DialogTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `DialogThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
-| `DialogWindowContentTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `OverlayDialogHeaderTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `OverlayDialogHostTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `OverlayDialogMaskTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `OverlayDialogResizerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
+| `DialogTheme.axaml` | Dialog 默认属性和 Token 映射。 |
+| `DialogSurfaceTheme.axaml` | 共享标题、内容、Footer、按钮与 resize 结构。 |
+| `OverlayDialogPresenterTheme.axaml` | 同一 presenter 内组合 mask 与 Surface motion。 |
+| `DialogButtonBoxTheme.axaml` | 三组按钮布局。 |
+| `OverlayDialogHeaderTheme.axaml` | Overlay 标题栏。 |
+| `OverlayDialogMaskTheme.axaml` | modal mask。 |
+| `OverlayDialogResizerTheme.axaml` | Overlay resize handles。 |
+| `MessageBoxTheme.axaml` / `MessageBoxContentTheme.axaml` | MessageBox 默认尺寸和语义内容。 |
 
-Modal 使用 `DialogToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、loading/async、input/value、motion、visual option 运行时状态。
-
-主题维护规则：
-
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+`DialogToken` 提供背景、文字、间距、尺寸和 Footer 视觉。motion duration 使用 Dialog scope 的 SharedToken `MotionDurationMid`，不在代码中硬编码。
 
 Token 边界：
 
@@ -11996,25 +11972,24 @@ Modal Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 ## Customization Boundaries
 
-维护 Modal 时必须保持以下不变量：
+后续维护必须保持当前稳定契约：
 
-- 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
-- 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
-- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
-- Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
-- 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
-- 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
+- 一次实际展示只有一个 `DialogSession`，一次关闭只有一个提交结果。
+- Overlay 与 Window 使用相同内容、按钮、关闭、焦点和 teardown 语义。
+- Content 可以是字符串、POCO 或 Control；实现不得修改用户 Control 的 TemplatedParent。
+- 自定义按钮集合的 Add/Remove/Replace/Move/Reset/Clear 都要更新有效序列并对称管理事件订阅。
+- mask、Surface、内容、按钮、binding、逻辑/资源 parent、owner/target 订阅必须在所有关闭路径释放。
+- 不重新引入同步 DispatcherFrame、callback close、隐藏 MessageBox Dialog 或分离的 Popup mask。
 
 维护不变量：
 
-维护 Modal 时不得破坏：
-
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- `Dialog` 打开意图与一个当前 Session 是唯一生命周期 owner。
+- 所有关闭来源最终执行同一个 `CompleteCloseAsync` teardown。
+- 普通 veto 发生在结果提交前；结果提交后只允许完成 teardown 和传播异常。
+- Overlay 与 Window 的 `ShowAsync`/`CloseAsync` 都等待真实 presentation 边界。
+- mask 与 Surface 必须保留在同一个 Overlay presenter 中。
+- MessageBox 继续作为 Dialog 派生类，不增加平行 host/session/button cache 生命周期。
+- 新增 binding、事件、资源 parent、motion source 或内容引用时，必须在同一个 owner 中增加释放点和回归测试。
 
 Source: ./controls/notification/semantic-cn.md
 

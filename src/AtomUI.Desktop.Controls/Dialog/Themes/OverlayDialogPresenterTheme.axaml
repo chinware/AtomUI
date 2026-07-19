@@ -1,0 +1,27 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:OverlayDialogPresenter}" TargetType="atom:OverlayDialogPresenter">
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="MotionDuration" Value="{atom:DialogTokenSharedTokenResource MotionDurationMid}" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:OverlayDialogPresenter">
+                <Panel>
+                    <atom:MotionActor Name="PART_MaskMotionActor"
+                                      IsVisible="{TemplateBinding IsModal}"
+                                      ClipToBounds="False">
+                        <atom:OverlayDialogMask Name="PART_DialogMask"
+                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                    </atom:MotionActor>
+                    <atom:MotionActor Name="PART_SurfaceMotionActor" ClipToBounds="False">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </atom:MotionActor>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+    </ControlTheme>
+</ResourceDictionary>

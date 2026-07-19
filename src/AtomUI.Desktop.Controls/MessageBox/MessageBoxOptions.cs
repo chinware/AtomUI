@@ -16,11 +16,16 @@ public record MessageBoxOptions
 
     public bool IsLoading { get; init; }
     public bool IsConfirmLoading { get; init; }
+    public bool IsMotionEnabled { get; init; } = true;
+    public MessageBoxOkButtonStyle OkButtonStyle { get; init; } = MessageBoxOkButtonStyle.Primary;
+    public string? OkButtonText { get; init; }
+    public string? CancelButtonText { get; init; }
+    public Func<DialogClosingContext, ValueTask<bool>>? BeforeCloseAsync { get; init; }
 
     public double MaxHeight { get; init; } = double.PositiveInfinity;
     public double MaxWidth { get; init; } = double.PositiveInfinity;
     public double MinHeight { get; init; } = 0d;
-    public double MinWidth { get; init; } = 0d;
+    public double MinWidth { get; init; } = double.NaN;
     public double Width { get; init; } = double.NaN;
     public double Height { get; init; } = double.NaN;
 }
