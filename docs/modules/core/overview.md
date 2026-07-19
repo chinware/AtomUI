@@ -25,7 +25,7 @@
 | `Theme/Schema/` | 生成式 Token schema、Control/算法 descriptor、ControlTheme asset descriptor 与 manifest 契约 |
 | `Theme/Compilation/` | 纯 ThemeCompiler、不可变 ThemeSnapshot 和 Snapshot 缓存 |
 | `Theme/Resources/` | Snapshot-backed ResourceProvider、统一 SharedTokenResource、单一生成式 ControlTokenScope.Identity、ControlTheme 聚合、resolver 和样式加载辅助 |
-| `Theme/Tokens/` | 仅供编译阶段使用的 DesignToken、ControlToken builder、定义和 value converter |
+| `Theme/DesignTokens/` | 仅供编译阶段使用的 DesignToken、ControlToken builder、定义和 value converter |
 | `Language/` | 本地化变体、Provider、资源扩展 |
 | `Animations/` | Avalonia Transition 扩展 |
 | `MotionScene/` | 进入、离开、移动、折叠等 Motion 抽象 |

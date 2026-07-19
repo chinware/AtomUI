@@ -1,6 +1,6 @@
 using System.Reflection;
 using AtomUI.Theme;
-using AtomUI.Theme.Tokens;
+using AtomUI.Theme.DesignTokens;
 using Shouldly;
 using Xunit;
 
@@ -77,10 +77,10 @@ public class ThemeLegacyApiRemovalTests
             "AtomUI.Theme.Definitions.ThemeDefinitionModel",
             "AtomUI.Theme.Definitions.ThemeDefinitionParser",
             "AtomUI.Theme.Definitions.ThemeDefinitionParseResult",
-            "AtomUI.Theme.Tokens.ControlTokenConfigInfo",
-            "AtomUI.Theme.Tokens.IDesignToken",
-            "AtomUI.Theme.Tokens.IControlDesignToken",
-            "AtomUI.Theme.Tokens.TokenConfigBuckets"
+            "AtomUI.Theme.DesignTokens.ControlTokenConfigInfo",
+            "AtomUI.Theme.DesignTokens.IDesignToken",
+            "AtomUI.Theme.DesignTokens.IControlDesignToken",
+            "AtomUI.Theme.DesignTokens.TokenConfigBuckets"
         };
 
         foreach (var typeName in removedTypeNames)

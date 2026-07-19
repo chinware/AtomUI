@@ -12,7 +12,7 @@ public class TokenResourceKeyGeneratorTests
     public void Generates_Control_Token_Extension_And_Descriptor_Without_Legacy_Shared_Extension()
     {
         var outputCompilation = RunGenerator(CreateCompilation("""
-            using AtomUI.Theme.Tokens;
+            using AtomUI.Theme.DesignTokens;
 
             namespace Demo
             {
@@ -53,7 +53,7 @@ public class TokenResourceKeyGeneratorTests
     public void Reports_Diagnostic_When_Control_Token_Id_Is_Missing()
     {
         RunGenerator(CreateCompilation("""
-            using AtomUI.Theme.Tokens;
+            using AtomUI.Theme.DesignTokens;
 
             namespace Demo
             {
@@ -79,7 +79,7 @@ public class TokenResourceKeyGeneratorTests
     public void Reports_Diagnostic_When_Control_Token_Id_Is_Not_Constant()
     {
         RunGenerator(CreateCompilation("""
-            using AtomUI.Theme.Tokens;
+            using AtomUI.Theme.DesignTokens;
 
             namespace Demo
             {
@@ -207,9 +207,9 @@ public class TokenResourceKeyGeneratorTests
                     object resourceKey,
                     System.Func<string, object?> parser,
                     System.Func<object?, string> formatter,
-                    System.Func<AtomUI.Theme.Tokens.AbstractDesignToken, object?> getter,
-                    System.Action<AtomUI.Theme.Tokens.AbstractDesignToken, object?> setter,
-                    System.Func<AtomUI.Theme.Tokens.AbstractDesignToken, object?> resourceProjector)
+                    System.Func<AtomUI.Theme.DesignTokens.AbstractDesignToken, object?> getter,
+                    System.Action<AtomUI.Theme.DesignTokens.AbstractDesignToken, object?> setter,
+                    System.Func<AtomUI.Theme.DesignTokens.AbstractDesignToken, object?> resourceProjector)
                 {
                 }
             }
@@ -219,8 +219,8 @@ public class TokenResourceKeyGeneratorTests
                 public ControlTokenDescriptor(
                     ControlTokenIdentity identity,
                     System.Collections.Generic.IReadOnlyList<TokenDescriptor> ownTokens,
-                    System.Func<AtomUI.Theme.Tokens.AbstractControlDesignToken> factory,
-                    System.Action<AtomUI.Theme.Tokens.AbstractControlDesignToken, AtomUI.Theme.ThemeAppearance> evaluator)
+                    System.Func<AtomUI.Theme.DesignTokens.AbstractControlDesignToken> factory,
+                    System.Action<AtomUI.Theme.DesignTokens.AbstractControlDesignToken, AtomUI.Theme.ThemeAppearance> evaluator)
                 {
                 }
             }
@@ -245,7 +245,7 @@ public class TokenResourceKeyGeneratorTests
             }
         }
 
-        namespace AtomUI.Theme.Tokens
+        namespace AtomUI.Theme.DesignTokens
         {
             [System.AttributeUsage(System.AttributeTargets.Class, Inherited = false)]
             public sealed class ControlDesignTokenAttribute : System.Attribute

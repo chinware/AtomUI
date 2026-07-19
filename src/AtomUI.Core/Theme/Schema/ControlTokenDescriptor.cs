@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using AtomUI.Theme.Tokens;
+using AtomUI.Theme.DesignTokens;
 
 namespace AtomUI.Theme.Schema;
 

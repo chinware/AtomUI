@@ -3,7 +3,7 @@ using AtomUI.Theme.Algorithms;
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Theme.Tokens;
+namespace AtomUI.Theme.DesignTokens;
 
 public partial class DesignToken : AbstractDesignToken
 {

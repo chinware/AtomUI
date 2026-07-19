@@ -1,4 +1,4 @@
-namespace AtomUI.Theme.Tokens;
+namespace AtomUI.Theme.DesignTokens;
 
 public enum DesignTokenKind
 {

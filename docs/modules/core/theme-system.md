@@ -1144,7 +1144,7 @@ Theme/
 |   +-- BaseControlTheme and provider aggregation
 |   \-- snapshot lookup、style/template 和 Control theme 加载辅助
 |
-+-- Tokens/
++-- DesignTokens/
 |   +-- global/control compile-only builders
 |   +-- Token definitions and kind metadata
 |   \-- Token value converters
@@ -1170,11 +1170,11 @@ ThemeDictionary 和 ControlTheme 根场景。运行时 `Theme/Schema` 只消费�
 | `Theme/Definitions/**` | `AtomUI.Theme.Definitions` |
 | `Theme/Resources/**` | `AtomUI.Theme.Resources` |
 | `Theme/Schema/**` | `AtomUI.Theme.Schema` |
-| `Theme/Tokens/**` | `AtomUI.Theme.Tokens` |
+| `Theme/DesignTokens/**` | `AtomUI.Theme.DesignTokens` |
 
 职责目录下用于拆分 partial class 或文件数量的组织子目录不继续创建 CLR namespace，例如
-`Theme/Tokens/Definitions/**` 仍使用 `AtomUI.Theme.Tokens`。根目录不保留 `.Scope`、`.Transitions` 等已经被
-物理结构删除的 namespace。
+`Theme/DesignTokens/Definitions/**` 仍使用 `AtomUI.Theme.DesignTokens`。根目录不保留 `.Scope`、
+`.Transitions` 等已经被物理结构删除的 namespace。
 `Theme/Algorithms` 与 `AtomUI.Theme.Algorithms` 一一对应：`ThemeAlgorithm`、算法 contract/attribute、内置
 calculator、调色板生成、预设色、`ColorMap` 和计算辅助均归该命名空间所有。调色板不是独立运行时子系统，
 因此不保留 `AtomUI.Theme.Palette`；算法实现也不属于资源样式层，因此不保留
@@ -1182,8 +1182,8 @@ calculator、调色板生成、预设色、`ColorMap` 和计算辅助均归该�
 AXAML Control theme 的发现、聚合和加载属于主题资源所有权，统一位于 `AtomUI.Theme.Resources`，不参与 Token
 编译。`SharedTokenKind`、Token Resource markup extension 和相关生成代码同样输出到该 namespace；不保留
 `AtomUI.Theme.Styling`。Token builder、Token kind、Token attribute 和 value converter 统一位于
-`AtomUI.Theme.Tokens`，不保留 `AtomUI.Theme.TokenSystem`。源生成器必须使用相同映射，禁止构建后重新生成旧
-namespace。
+`AtomUI.Theme.DesignTokens`，不保留 `AtomUI.Theme.Tokens` 或 `AtomUI.Theme.TokenSystem`。源生成器必须使用
+相同映射，禁止构建后重新生成旧 namespace。
 
 依赖方向固定为：Definitions/Configuration/Schema 提供输入，Compilation 产生 snapshot，根目录的
 ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilation 不依赖 Avalonia 资源宿主，Resources

@@ -1,4 +1,4 @@
-using AtomUI.Theme.Tokens;
+using AtomUI.Theme.DesignTokens;
 
 namespace AtomUI.Theme.Schema;
 

@@ -4,7 +4,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 
-namespace AtomUI.Theme.Tokens;
+namespace AtomUI.Theme.DesignTokens;
 
 [TokenValueConverter]
 internal class StringTokenValueConverter : ITokenValueConverter

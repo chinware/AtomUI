@@ -1,5 +1,5 @@
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.Tokens;
+using AtomUI.Theme.DesignTokens;
 using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
