@@ -322,6 +322,7 @@ public partial class CascaderView
             return;
         }
 
+        ClearExpandedStateForLevel(startIndex + 1);
         var count = _itemsPanel.Children.Count;
         while (count > startIndex)
         {
@@ -380,6 +381,7 @@ public partial class CascaderView
             }
         }
 
+        cascaderViewOption.IsExpanded = false;
         var selfLevelList = _itemsPanel.Children[level - 1] as CascaderViewLevelList;
         Debug.Assert(selfLevelList != null);
         var cascaderViewItem = selfLevelList.ContainerFromItem(cascaderViewOption) as CascaderViewItem;
@@ -444,11 +446,12 @@ public partial class CascaderView
             {
                 foreach (var item in levelList.Items)
                 {
-                    if (item != null)
+                    if (item is ICascaderOption option)
                     {
+                        option.IsExpanded = false;
                         if (levelList.ContainerFromItem(item) is CascaderViewItem cascaderViewItem)
                         {
-                            cascaderViewItem.IsExpanded = false;
+                            cascaderViewItem.SetCurrentValue(CascaderViewItem.IsExpandedProperty, false);
                         }
                     }
                 }

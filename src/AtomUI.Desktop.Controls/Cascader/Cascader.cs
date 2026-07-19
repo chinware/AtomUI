@@ -496,7 +496,6 @@ public class Cascader : AbstractSelect
         {
             _cascaderView.SelectedOptionsChanged -= HandleCascaderViewItemsCheckedChanged;
             _cascaderView.ItemDoubleClicked      -= HandleCascaderViewItemDoubleClicked;
-            _cascaderView.ItemClicked            -= HandleCascaderViewItemClicked;
             _cascaderView.OptionSelected         -= HandleCascaderViewItemSelected;
             _cascaderView.OptionsSource          =  null;
         }
@@ -508,7 +507,6 @@ public class Cascader : AbstractSelect
         {
             _cascaderView.SelectedOptionsChanged += HandleCascaderViewItemsCheckedChanged;
             _cascaderView.ItemDoubleClicked      += HandleCascaderViewItemDoubleClicked;
-            _cascaderView.ItemClicked            += HandleCascaderViewItemClicked;
             _cascaderView.OptionSelected         += HandleCascaderViewItemSelected;
             _cascaderView.OptionsSource          =  BuildOptionsList(Options);
             SyncSelectedOptionsToCascaderView();
@@ -527,6 +525,7 @@ public class Cascader : AbstractSelect
             _singleFilterInput.Clear();
             _singleFilterInput.Width = double.NaN;
             FilterValue              = null;
+            _cascaderView?.ResetInteractionState();
         }
         base.PopupClosed(sender, e);
     }
@@ -536,6 +535,7 @@ public class Cascader : AbstractSelect
         base.PopupOpened(sender, e);
         if (!IsMultiple)
         {
+            _cascaderView?.RestoreSelectedOptionPath();
             _singleFilterInput?.Focus();
         }
     }
@@ -760,19 +760,6 @@ public class Cascader : AbstractSelect
         }
     }
 
-    private void HandleCascaderViewItemClicked(object? sender, CascaderOptionSelectedEventArgs eventArgs)
-    {
-        if (!IsMultiple)
-        {
-            var option = eventArgs.Option;
-            if ((IsAllowSelectParent && option.IsEffectiveLeaf()) || !IsAllowSelectParent)
-            {
-                SetCurrentValue(IsDropDownOpenProperty, false);
-            }
-            SetCurrentValue(SelectedOptionProperty, option);
-        }
-    }
-
     private void HandleCascaderViewItemSelected(object? sender, CascaderOptionSelectedEventArgs eventArgs)
     {
         if (!IsMultiple)
@@ -782,21 +769,6 @@ public class Cascader : AbstractSelect
             if (option.IsEffectiveLeaf())
             {
                 SetCurrentValue(IsDropDownOpenProperty, false);
-            }
-        }
-    }
-    
-    private void HandleCascaderViewItemClicked(object? sender, CascaderItemClickedEventArgs eventArgs)
-    {
-        var option = eventArgs.Item.AttachedOption;
-        if (option != null)
-        {
-            if (!IsMultiple)
-            {
-                if (eventArgs.Item.IsLeaf && !eventArgs.Item.IsLoading)
-                {
-                    SetCurrentValue(IsDropDownOpenProperty, false);
-                }
             }
         }
     }

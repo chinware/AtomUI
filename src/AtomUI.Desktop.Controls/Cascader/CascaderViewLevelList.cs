@@ -143,7 +143,7 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
             if (GetContainerFromEventSource(item) is CascaderViewItem cascaderViewItem)
             {
                 cascaderViewItem.RaiseClick();
-                if (ExpandTrigger == CascaderViewExpandTrigger.Click)
+                if (ExpandTrigger == CascaderViewExpandTrigger.Click && !cascaderViewItem.IsLeaf)
                 {
                     if (cascaderViewItem.IsExpanded)
                     {
@@ -243,7 +243,6 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
     {
         context.Add(CascaderViewItem.IsEnabledProperty, item.IsEnabled);
         context.Add(CascaderViewItem.IsCheckedProperty, item.IsChecked);
-        context.Add(CascaderViewItem.IsExpandedProperty, item.IsExpanded);
         context.Add(CascaderViewItem.IsCheckBoxEnabledProperty, item.IsCheckBoxEnabled);
         context.Add(nameof(CascaderViewItem.AsyncLoaded), item.AsyncLoaded);
     }
@@ -264,15 +263,6 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
             {
                 var isChecked = (bool?)value;
                 item.SetCurrentValue(CascaderViewItem.IsCheckedProperty, isChecked);
-            }
-        }
-        {
-            if (context.TryGetValue(CascaderViewItem.IsExpandedProperty, out var value))
-            {
-                if (value is bool isExpanded)
-                {
-                    item.SetCurrentValue(CascaderViewItem.IsExpandedProperty, isExpanded);
-                }
             }
         }
         {

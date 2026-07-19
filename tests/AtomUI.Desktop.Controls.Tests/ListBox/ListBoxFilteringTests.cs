@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using AtomUI.Controls.Data;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -54,6 +55,44 @@ public class ListBoxFilteringTests
             listBox.FilterResultCount.ShouldBe(
                 10,
                 "filtering should count matching data items, not only currently realized containers.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Disabled_ListItemData_Disables_Its_Container()
+    {
+        var listBox = new AtomListBox
+        {
+            Width  = 240,
+            Height = 96,
+            ItemsSource = new[]
+            {
+                new ListItemData
+                {
+                    Content   = "Disabled",
+                    IsEnabled = false
+                }
+            }
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 320,
+            Height  = 160,
+            Content = listBox
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var container = listBox.ContainerFromIndex(0) as AtomListBoxItem;
+            container.ShouldNotBeNull();
+            container.IsEnabled.ShouldBeFalse();
         }
         finally
         {

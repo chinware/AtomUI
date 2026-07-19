@@ -140,6 +140,17 @@ public class CascaderShowCasePageTests
     }
 
     [Fact]
+    public void Cascader_ShowCase_Clears_External_Search_Input_After_Result_Selection()
+    {
+        var pageSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml");
+        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml.cs");
+
+        CountOccurrences(pageSource, "OptionSelected=\"HandleSearchCascaderViewOptionSelected\"").ShouldBe(2);
+        codeBehindSource.ShouldContain("HandleSearchCascaderViewOptionSelected");
+        codeBehindSource.ShouldContain("searchEdit.Clear();");
+    }
+
+    [Fact]
     public void Cascader_ShowCase_Localization_Includes_Page_And_Api_Copy()
     {
         var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Localization/en_US.cs");

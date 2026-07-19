@@ -37,7 +37,13 @@ public partial class CascaderView
     
     public void FilterItems()
     {
-        if (Filter != null && FilterValue != null && IsLoaded)
+        var hasFilterValue = FilterValue switch
+        {
+            null        => false,
+            string text => !string.IsNullOrWhiteSpace(text),
+            _           => true
+        };
+        if (Filter != null && hasFilterValue && IsLoaded)
         {
             if (_allPathInfos == null)
             {
@@ -67,8 +73,8 @@ public partial class CascaderView
                     filteredPathInfos.Add(pathInfo);
                 }
             }
-            FilteredPathInfos = filteredPathInfos;
             _filterList?.ClearCandidate();
+            FilteredPathInfos = filteredPathInfos;
             IsFiltering       = true;
             FilterResultCount = FilteredPathInfos.Count;
         }
@@ -84,18 +90,20 @@ public partial class CascaderView
         var pathHeaders = new string[pathDepth];
         var current     = option;
         var pathNodes   = new ICascaderOption[pathDepth];
+        var isEnabled   = true;
         for (var i = pathDepth - 1; current != null; i--)
         {
             pathNodes[i]   = current;
             pathHeaders[i] = current.Header?.ToString() ?? string.Empty;
-            current = current.ParentNode as ICascaderOption;
+            isEnabled     &= current.IsEnabled;
+            current        = current.ParentNode as ICascaderOption;
         }
 
         return new CascaderViewFilterListItemData()
         {
             Content     = string.Join('/', pathHeaders),
             ExpandItems = pathNodes,
-            IsEnabled   = option.IsEnabled
+            IsEnabled   = isEnabled
         };
     }
 
@@ -128,12 +136,12 @@ public partial class CascaderView
     
     public void ClearFilter()
     {
+        _filterList?.ClearCandidate();
         IsFiltering       = false;
         FilterResultCount = 0;
         SetCurrentValue(FilterValueProperty, null);
         FilteredPathInfos = null;
         _allPathInfos     = null;
-        _filterList?.ClearCandidate();
     }
 
     internal bool TryMoveFilterCandidate(int delta)
@@ -167,6 +175,11 @@ public partial class CascaderView
 
     private bool TrySelectFilterResult(CascaderViewFilterListItemData itemData)
     {
+        if (!itemData.IsEnabled)
+        {
+            return false;
+        }
+
         var paths = itemData.ExpandItems;
         if (paths?.Count > 0)
         {

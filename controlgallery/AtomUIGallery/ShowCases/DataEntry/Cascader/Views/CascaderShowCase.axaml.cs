@@ -151,6 +151,16 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
         }
     }
 
+    private void HandleSearchCascaderViewOptionSelected(object? sender, CascaderOptionSelectedEventArgs args)
+    {
+        if (sender is CascaderView cascaderView &&
+            cascaderView.Parent is Control parent &&
+            parent.GetVisualDescendants().OfType<SearchEdit>().FirstOrDefault() is { } searchEdit)
+        {
+            searchEdit.Clear();
+        }
+    }
+
     private static bool TryFindTemplateCascaderView(Control source, string cascaderViewName, out CascaderView cascaderView)
     {
         var parent = source.Parent as Control;
