@@ -402,6 +402,73 @@ public class ButtonBehaviorTests
     }
 
     [Fact]
+    public void Button_WaveRange_Update_Reconfigures_Cached_WavePainter()
+    {
+        var button = new AtomUIButton
+        {
+            Width           = 120,
+            Height          = 36,
+            ButtonType      = ButtonType.Primary,
+            Content         = "Save",
+            IsMotionEnabled = true
+        };
+
+        ShowInWindow(button, () =>
+        {
+            var waveSpiritDecorator = GetPrivateFieldValue(button, "_waveSpiritDecorator");
+            SetPublicPropertyValue(waveSpiritDecorator, "SizeMotionDuration", TimeSpan.FromSeconds(1));
+            SetPublicPropertyValue(waveSpiritDecorator, "OpacityMotionDuration", TimeSpan.FromSeconds(1));
+            SetPublicPropertyValue(waveSpiritDecorator, "WaveRange", 0d);
+
+            InvokePublicMethod(waveSpiritDecorator, "Play");
+            var wavePainter = GetPrivateFieldValue(waveSpiritDecorator, "_wavePainter");
+            GetPublicPropertyValue<double>(wavePainter, "WaveRange").ShouldBe(0d);
+
+            SetPublicPropertyValue(waveSpiritDecorator, "WaveRange", 6d);
+
+            GetPublicPropertyValue<double>(wavePainter, "WaveRange").ShouldBe(6d);
+        });
+    }
+
+    [Theory]
+    [InlineData("motion")]
+    [InlineData("wave-spirit")]
+    public void Button_Disabling_Wave_Gates_Cancels_Active_Wave(string gate)
+    {
+        var button = new AtomUIButton
+        {
+            Width                = 120,
+            Height               = 36,
+            ButtonType           = ButtonType.Primary,
+            Content              = "Save",
+            IsMotionEnabled      = true,
+            IsWaveSpiritEnabled  = true
+        };
+
+        ShowInWindow(button, () =>
+        {
+            var waveSpiritDecorator = GetPrivateFieldValue(button, "_waveSpiritDecorator");
+            SetPublicPropertyValue(waveSpiritDecorator, "SizeMotionDuration", TimeSpan.FromSeconds(1));
+            SetPublicPropertyValue(waveSpiritDecorator, "OpacityMotionDuration", TimeSpan.FromSeconds(1));
+
+            InvokePublicMethod(waveSpiritDecorator, "Play");
+            GetInternalPropertyValue<bool>(waveSpiritDecorator, "IsPlaying").ShouldBeTrue();
+
+            if (gate == "motion")
+            {
+                button.IsMotionEnabled = false;
+            }
+            else
+            {
+                button.IsWaveSpiritEnabled = false;
+            }
+            Dispatcher.UIThread.RunJobs();
+
+            GetInternalPropertyValue<bool>(waveSpiritDecorator, "IsPlaying").ShouldBeFalse();
+        });
+    }
+
+    [Fact]
     public void Button_CustomBackground_Layer_Overlays_Frame_In_Normal_State()
     {
         var button = new AtomUIButton
@@ -568,6 +635,24 @@ public class ButtonBehaviorTests
             BindingFlags.Instance | BindingFlags.Public);
         property.ShouldNotBeNull();
         return (T)property.GetValue(target)!;
+    }
+
+    private static void SetPublicPropertyValue<T>(object target, string propertyName, T value)
+    {
+        var property = target.GetType().GetProperty(
+            propertyName,
+            BindingFlags.Instance | BindingFlags.Public);
+        property.ShouldNotBeNull();
+        property.SetValue(target, value);
+    }
+
+    private static void InvokePublicMethod(object target, string methodName)
+    {
+        var method = target.GetType().GetMethod(
+            methodName,
+            BindingFlags.Instance | BindingFlags.Public);
+        method.ShouldNotBeNull();
+        method.Invoke(target, null);
     }
 
     private static Border FindTemplateBorder(Control control, string name)

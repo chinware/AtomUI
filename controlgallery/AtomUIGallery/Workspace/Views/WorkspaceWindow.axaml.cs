@@ -122,25 +122,20 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
                              .Subscribe();
                     break;
                 case WindowMenuItemKind.Motion:
-                    if (menuItem.Parent is MenuItem themeMenuItem)
+                    if (!menuItem.IsChecked &&
+                        FindSiblingMenuItem(menuItem, WindowMenuItemKind.WaveSpirit) is { } waveSpiritMenuItem)
                     {
-                        foreach (var item in themeMenuItem.Items)
-                        {
-                            if (item is MenuItem themeMenuChildItem &&
-                                themeMenuChildItem.Tag is WindowMenuItemKind childKind &&
-                                childKind == WindowMenuItemKind.WaveSpirit)
-                            {
-                                if (!menuItem.IsChecked)
-                                {
-                                    themeMenuChildItem.IsChecked = false;
-                                }
-                            }
-                        }
+                        waveSpiritMenuItem.IsChecked = false;
                     }
                     ViewModel.ToggleMotionCommand.Execute(menuItem.IsChecked)
                              .Subscribe();
                     break;
                 case WindowMenuItemKind.WaveSpirit:
+                    if (menuItem.IsChecked &&
+                        FindSiblingMenuItem(menuItem, WindowMenuItemKind.Motion) is { } motionMenuItem)
+                    {
+                        motionMenuItem.IsChecked = true;
+                    }
                     ViewModel.ToggleWaveSpiritCommand.Execute(menuItem.IsChecked)
                              .Subscribe();
                     break;
@@ -158,5 +153,25 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
                     break;
             }
         }
+    }
+
+    private static MenuItem? FindSiblingMenuItem(MenuItem menuItem, WindowMenuItemKind kind)
+    {
+        if (menuItem.Parent is not MenuItem parent)
+        {
+            return null;
+        }
+
+        foreach (var item in parent.Items)
+        {
+            if (item is MenuItem sibling &&
+                sibling.Tag is WindowMenuItemKind siblingKind &&
+                siblingKind == kind)
+            {
+                return sibling;
+            }
+        }
+
+        return null;
     }
 }

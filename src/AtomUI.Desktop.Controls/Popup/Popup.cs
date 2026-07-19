@@ -192,12 +192,20 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     {
         AttachWheelGuard();
         UpdatePlacementTransformTracker();
-        if (!IsMotionEnabled || OpenMotion is null || _motionActor is null)
+        CancelMotion();
+        if (_motionActor is null)
         {
             return;
         }
 
-        _motionCts?.Cancel();
+        _motionActor.MotionTransform           = null;
+        _motionActor.MotionTransformOperations = null;
+        if (!IsMotionEnabled || OpenMotion is null)
+        {
+            _motionActor.Opacity = 1.0d;
+            return;
+        }
+
         _motionCts = new CancellationTokenSource();
 
         var motion = OpenMotion;
@@ -208,8 +216,16 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     private void HandlePopupClosed(object? sender, EventArgs e)
     {
+        CancelMotion();
         ClearPlacementTransformTracker();
         DetachWheelGuard();
+    }
+
+    private void CancelMotion()
+    {
+        _motionCts?.Cancel();
+        _motionCts?.Dispose();
+        _motionCts = null;
     }
 
     private void HandlePopupClosing(object? sender, CancelEventArgs e)

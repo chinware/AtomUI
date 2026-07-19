@@ -660,6 +660,7 @@ public class Button : AvaloniaButton,
     private bool CanPlayWaveSpirit(AvaloniaPropertyChangedEventArgs change)
     {
         return !IsLoading &&
+               IsMotionEnabled &&
                IsWaveSpiritEnabled &&
                (change.OldValue as bool? == true) &&
                IsWaveSpiritSupportedButtonType();

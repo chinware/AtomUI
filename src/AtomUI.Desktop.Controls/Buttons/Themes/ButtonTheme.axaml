@@ -14,6 +14,8 @@
                     <Panel>
                         <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
                                                   CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                  IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"
                                                   WaveType="{TemplateBinding WaveSpiritType}" />
                         <Border Name="ShadowsFrame"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
@@ -73,6 +75,8 @@
                     <Panel>
                         <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
                                                   CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                  IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"
                                                   WaveType="{TemplateBinding WaveSpiritType}" />
                         <Border Name="ShadowsFrame"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
@@ -132,6 +136,8 @@
                     <Panel>
                         <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
                                                   CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                  IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"
                                                   WaveType="{TemplateBinding WaveSpiritType}" />
                         <Border Name="ShadowsFrame"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
@@ -714,6 +720,8 @@
                 <Panel>
                     <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
                                               CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"
                                               WaveType="{TemplateBinding WaveSpiritType}" />
                     <Border Name="ShadowsFrame"
                             CornerRadius="{TemplateBinding EffectiveCornerRadius}"

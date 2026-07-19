@@ -11,7 +11,9 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}"/>
+                    <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}"
+                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"/>
                 </Panel>
             </ControlTemplate>
         </Setter>

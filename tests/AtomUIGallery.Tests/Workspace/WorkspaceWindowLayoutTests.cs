@@ -128,6 +128,17 @@ public class WorkspaceWindowLayoutTests
     }
 
     [Fact]
+    public void Workspace_Window_Menu_Keeps_Motion_And_WaveSpirit_Checks_In_Sync()
+    {
+        var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml.cs"));
+
+        source.ShouldContain("FindSiblingMenuItem(menuItem, WindowMenuItemKind.WaveSpirit)");
+        source.ShouldContain("waveSpiritMenuItem.IsChecked = false");
+        source.ShouldContain("FindSiblingMenuItem(menuItem, WindowMenuItemKind.Motion)");
+        source.ShouldContain("motionMenuItem.IsChecked = true");
+    }
+
+    [Fact]
     public void Sidebar_Footer_Shows_Website_Gitee_And_Github_Links_With_Larger_Tighter_Icons()
     {
         var moduleSource = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/AtomUIGalleryModule.cs"));

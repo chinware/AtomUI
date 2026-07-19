@@ -12,7 +12,9 @@
             <ControlTemplate>
                 <Panel>
                     <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}"
-                                              CornerRadius="{TemplateBinding CornerRadius}"/>
+                                              CornerRadius="{TemplateBinding CornerRadius}"
+                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"/>
                     <atom:PixelAlignedBorder Name="Frame"
                                              BorderThickness="{TemplateBinding BorderThickness}"
                                              BorderBrush="{TemplateBinding BorderBrush}"

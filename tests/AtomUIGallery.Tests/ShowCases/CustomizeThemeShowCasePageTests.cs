@@ -12,6 +12,36 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class CustomizeThemeShowCasePageTests
 {
     [Fact]
+    public void CustomizeTheme_Token_Only_Configs_Inherit_Current_Algorithm()
+    {
+        var viewModel = new AtomUIGallery.ShowCases.CustomizeTheme.CustomizeThemeViewModel(null!);
+        var configs = new[]
+        {
+            viewModel.GreenThemeConfig,
+            viewModel.RedThemeConfig,
+            viewModel.PurpleThemeConfig,
+            viewModel.NestedBlueThemeConfig,
+            viewModel.NestedGreenThemeConfig,
+            viewModel.RuntimeThemeConfig
+        };
+
+        foreach (var config in configs)
+        {
+            config.Algorithms.ShouldBeNull();
+        }
+    }
+
+    [Fact]
+    public void CustomizeTheme_Inherited_Config_Does_Not_Force_Light_Container_Color()
+    {
+        var viewModel = new AtomUIGallery.ShowCases.CustomizeTheme.CustomizeThemeViewModel(null!);
+
+        viewModel.GreenThemeConfig.Tokens
+                 .ContainsKey(nameof(AtomUI.Theme.DesignTokens.DesignToken.ColorBgContainer))
+                 .ShouldBeFalse();
+    }
+
+    [Fact]
     public void CustomizeTheme_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeShowCase.axaml");
