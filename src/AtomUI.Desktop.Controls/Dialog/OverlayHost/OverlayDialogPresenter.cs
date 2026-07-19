@@ -17,6 +17,8 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
+using AvaloniaWindow = Avalonia.Controls.Window;
+
 internal sealed class OverlayDialogPresenter : ContentControl,
                                                IDialogPresenter
 {
@@ -132,6 +134,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _dialogLayer = DialogOverlayLayer.GetOrCreate(_placementTarget);
         _ownerWindow = TopLevel.GetTopLevel(_placementTarget) as Window;
         _dialogLayer.Add(this);
+        AttachOwnerGeometryBindings();
         UpdateLayerBounds(_dialogLayer.Bounds.Size);
         ApplyTemplate();
         _surface.ApplyTemplate();
@@ -357,6 +360,29 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     {
         var layerSize = _dialogLayer?.Bounds.Size ?? Bounds.Size;
         UpdateLayerBounds(layerSize);
+    }
+
+    private void AttachOwnerGeometryBindings()
+    {
+        if (_ownerWindow is not { } window)
+        {
+            return;
+        }
+
+        _bindings.Add(window.GetObservable(Window.OsTypeProperty)
+                            .Subscribe(_ => UpdateCurrentLayerBounds()));
+        _bindings.Add(window.GetObservable(Window.IsCsdEnabledProperty)
+                            .Subscribe(_ => UpdateCurrentLayerBounds()));
+        _bindings.Add(window.GetObservable(AvaloniaWindow.WindowDecorationMarginProperty)
+                            .Subscribe(_ => UpdateCurrentLayerBounds()));
+        _bindings.Add(window.GetObservable(Window.FrameShadowThicknessProperty)
+                            .Subscribe(_ => UpdateCurrentLayerBounds()));
+        _bindings.Add(window.GetObservable(Window.TitleBarHeightProperty)
+                            .Subscribe(_ => UpdateCurrentLayerBounds()));
+        _bindings.Add(window.GetObservable(Window.IsTitleBarVisibleProperty)
+                            .Subscribe(_ => UpdateCurrentLayerBounds()));
+        _bindings.Add(window.GetObservable(AvaloniaWindow.WindowStateProperty)
+                            .Subscribe(_ => UpdateCurrentLayerBounds()));
     }
 
     private void UpdateSurfacePlacement(Rect ownerBounds)

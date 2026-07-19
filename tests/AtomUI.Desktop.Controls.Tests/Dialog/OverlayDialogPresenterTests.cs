@@ -806,6 +806,52 @@ public class OverlayDialogPresenterTests
     }
 
     [Fact]
+    public void Linux_Csd_Decoration_Changes_Reflow_Mask_And_Dialog_From_The_Same_Bounds()
+    {
+        RunOnUIThread(() =>
+        {
+            var initial = new Thickness(10, 48, 10, 18);
+            var updated = new Thickness(22, 72, 26, 30);
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsModal = true,
+                    IsMotionEnabled = false,
+                    HostWidth = 320,
+                    HostHeight = 180,
+                    VerticalStartupLocation = DialogVerticalAnchor.Top,
+                    HorizontalStartupLocation = DialogHorizontalAnchor.Left
+                },
+                window =>
+                {
+                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(10));
+                    SetPlatformDecorationMargin(window, initial);
+                });
+
+            try
+            {
+                SetPlatformDecorationMargin(fixture.Window, updated);
+                Dispatcher.UIThread.RunJobs();
+
+                var maskActor = fixture.Presenter.GetVisualDescendants()
+                                       .OfType<MotionActor>()
+                                       .Single(actor => actor.Name == "PART_MaskMotionActor");
+                var shadow = fixture.Presenter.Surface.ShadowHost.ShouldNotBeNull().BoxShadow.Thickness();
+
+                maskActor.Margin.ShouldBe(new Thickness(updated.Left, updated.Top, 0, 0));
+                fixture.Presenter.Surface.Margin.Left
+                       .ShouldBeGreaterThanOrEqualTo(updated.Left + shadow.Left);
+                fixture.Presenter.Surface.Margin.Top
+                       .ShouldBeGreaterThanOrEqualTo(updated.Top + shadow.Top);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
     public void Header_Drag_Updates_Dialog_Offsets()
     {
         RunOnUIThread(() =>
