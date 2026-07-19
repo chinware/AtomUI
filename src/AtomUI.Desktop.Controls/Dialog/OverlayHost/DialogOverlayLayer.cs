@@ -1,0 +1,126 @@
+using AtomUI.Controls.Primitives;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.VisualTree;
+
+namespace AtomUI.Desktop.Controls;
+
+internal sealed class DialogOverlayLayer : Canvas
+{
+    private readonly Panel _hostLayer;
+
+    private DialogOverlayLayer(Panel hostLayer)
+    {
+        _hostLayer = hostLayer;
+        _hostLayer.SizeChanged += HandleHostLayerSizeChanged;
+        SynchronizeBounds();
+    }
+
+    internal static DialogOverlayLayer GetOrCreate(Visual anchor)
+    {
+        var hostLayer = ResolveHostLayer(anchor);
+        var dialogLayer = hostLayer.Children.OfType<DialogOverlayLayer>().FirstOrDefault();
+        if (dialogLayer is not null)
+        {
+            return dialogLayer;
+        }
+
+        dialogLayer = new DialogOverlayLayer(hostLayer);
+        hostLayer.Children.Add(dialogLayer);
+        return dialogLayer;
+    }
+
+    private static Panel ResolveHostLayer(Visual anchor)
+    {
+        if (TopLevel.GetTopLevel(anchor) is { } topLevel &&
+            topLevel.GetPopupOverlayLayer() is Panel topLevelLayer)
+        {
+            return topLevelLayer;
+        }
+
+        return ScopeAwareOverlayLayer.GetLayer(anchor) ??
+               throw new InvalidOperationException("Unable to resolve an overlay layer for Dialog.");
+    }
+
+    internal void Add(OverlayDialogPresenter presenter)
+    {
+        if (presenter.Parent is Panel previousParent)
+        {
+            previousParent.Children.Remove(presenter);
+        }
+
+        SynchronizeBounds();
+        presenter.Width  = Width;
+        presenter.Height = Height;
+        Children.Add(presenter);
+    }
+
+    internal void Remove(OverlayDialogPresenter presenter)
+    {
+        Children.Remove(presenter);
+        if (Children.Count != 0)
+        {
+            return;
+        }
+
+        _hostLayer.SizeChanged -= HandleHostLayerSizeChanged;
+        _hostLayer.Children.Remove(this);
+    }
+
+    internal void Activate(OverlayDialogPresenter presenter)
+    {
+        var index = Children.IndexOf(presenter);
+        if (index < 0 || index == Children.Count - 1)
+        {
+            return;
+        }
+
+        Children.RemoveAt(index);
+        Children.Add(presenter);
+    }
+
+    internal bool IsTopmost(OverlayDialogPresenter presenter)
+    {
+        return Children.Count > 0 && ReferenceEquals(Children[^1], presenter);
+    }
+
+    protected override void OnKeyDown(Avalonia.Input.KeyEventArgs e)
+    {
+        if (!e.Handled &&
+            Children.LastOrDefault() is OverlayDialogPresenter presenter &&
+            presenter.TryInvokeStandardButton(e.Key))
+        {
+            e.Handled = true;
+            return;
+        }
+
+        base.OnKeyDown(e);
+    }
+
+    private void HandleHostLayerSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        SynchronizeBounds();
+    }
+
+    private void SynchronizeBounds()
+    {
+        var size = _hostLayer is ScopeAwareOverlayLayer scopeLayer
+            ? scopeLayer.AvailableSize
+            : _hostLayer.Bounds.Size;
+        if (size.Width <= 0 || size.Height <= 0)
+        {
+            size = _hostLayer.Bounds.Size;
+        }
+
+        Width  = size.Width;
+        Height = size.Height;
+        Canvas.SetLeft(this, 0);
+        Canvas.SetTop(this, 0);
+        foreach (var presenter in Children.OfType<OverlayDialogPresenter>())
+        {
+            presenter.Width  = size.Width;
+            presenter.Height = size.Height;
+            presenter.UpdateLayerBounds(size);
+        }
+    }
+}

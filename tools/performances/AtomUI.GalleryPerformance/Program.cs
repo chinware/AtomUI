@@ -1299,14 +1299,14 @@ internal static class Program
         builder.AppendLine();
         builder.AppendLine(SourceXamlStats.Read(showCase.XamlPath).RenderMarkdown());
         builder.AppendLine();
-        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | Alert | MarqueeLabel | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Collapse | CollapseItem | Collapse content motion | Collapse expand button | Collapse addon presenter | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | ComboBox | ComboBoxItem | ComboBoxHandle | ComboBoxHost | DatePicker | RangeDatePicker | InfoPicker | PickerHost | DatePickerPresenter | RangePickerPresenter | DateCalendar | DateCalendarItem | DateDayButton | DateCalendarButton | TimeView | DateTimePanel | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox | CheckBox | CheckBoxGroup | CheckBoxIndicator | CheckBox checked mark | CheckBox tristate mark | RadioButton | RadioButtonGroup | RadioIndicator | WaveSpiritDecorator | Descriptions | DescriptionDefaultItem | DescriptionBorderedItemLabel | DescriptionBorderedItemContent | Dialog | MessageBox | OverlayDialogHost | DialogHost | DialogWindowContent | DialogButtonBox | DialogButton | DialogCaptionButton | OverlayDialogMask | OverlayDialogResizer | MessageBoxContent | Drawer | GroupBox | GroupBoxHeaderIcon |");
+        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | Alert | MarqueeLabel | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Collapse | CollapseItem | Collapse content motion | Collapse expand button | Collapse addon presenter | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | ComboBox | ComboBoxItem | ComboBoxHandle | ComboBoxHost | DatePicker | RangeDatePicker | InfoPicker | PickerHost | DatePickerPresenter | RangePickerPresenter | DateCalendar | DateCalendarItem | DateDayButton | DateCalendarButton | TimeView | DateTimePanel | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox | CheckBox | CheckBoxGroup | CheckBoxIndicator | CheckBox checked mark | CheckBox tristate mark | RadioButton | RadioButtonGroup | RadioIndicator | WaveSpiritDecorator | Descriptions | DescriptionDefaultItem | DescriptionBorderedItemLabel | DescriptionBorderedItemContent | Dialog | MessageBox | OverlayDialogPresenter | DialogWindow | DialogSurface | DialogButtonBox | DialogButton | DialogCaptionButton | OverlayDialogMask | OverlayDialogResizer | MessageBoxContent | Drawer | GroupBox | GroupBoxHeaderIcon |");
         builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSampleRow("Cold first navigation", result.ColdRuns));
         builder.AppendLine(RenderSampleRow("Repeated navigation", result.Samples));
         builder.AppendLine();
         builder.AppendLine("## Samples");
         builder.AppendLine();
-        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | Alert | MarqueeLabel | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Collapse | CollapseItem | Collapse content motion | Collapse expand button | Collapse addon presenter | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | ComboBox | ComboBoxItem | ComboBoxHandle | ComboBoxHost | DatePicker | RangeDatePicker | InfoPicker | PickerHost | DatePickerPresenter | RangePickerPresenter | DateCalendar | DateCalendarItem | DateDayButton | DateCalendarButton | TimeView | DateTimePanel | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox | CheckBox | CheckBoxGroup | CheckBoxIndicator | CheckBox checked mark | CheckBox tristate mark | RadioButton | RadioButtonGroup | RadioIndicator | WaveSpiritDecorator | Descriptions | DescriptionDefaultItem | DescriptionBorderedItemLabel | DescriptionBorderedItemContent | Dialog | MessageBox | OverlayDialogHost | DialogHost | DialogWindowContent | DialogButtonBox | DialogButton | DialogCaptionButton | OverlayDialogMask | OverlayDialogResizer | MessageBoxContent | Drawer | GroupBox | GroupBoxHeaderIcon |");
+        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | Alert | MarqueeLabel | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Collapse | CollapseItem | Collapse content motion | Collapse expand button | Collapse addon presenter | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | ComboBox | ComboBoxItem | ComboBoxHandle | ComboBoxHost | DatePicker | RangeDatePicker | InfoPicker | PickerHost | DatePickerPresenter | RangePickerPresenter | DateCalendar | DateCalendarItem | DateDayButton | DateCalendarButton | TimeView | DateTimePanel | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox | CheckBox | CheckBoxGroup | CheckBoxIndicator | CheckBox checked mark | CheckBox tristate mark | RadioButton | RadioButtonGroup | RadioIndicator | WaveSpiritDecorator | Descriptions | DescriptionDefaultItem | DescriptionBorderedItemLabel | DescriptionBorderedItemContent | Dialog | MessageBox | OverlayDialogPresenter | DialogWindow | DialogSurface | DialogButtonBox | DialogButton | DialogCaptionButton | OverlayDialogMask | OverlayDialogResizer | MessageBoxContent | Drawer | GroupBox | GroupBoxHeaderIcon |");
         builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         foreach (var sample in result.ColdRuns)
         {
@@ -1445,9 +1445,9 @@ internal static class Program
             stats.DescriptionBorderedItemContentCount.ToString(CultureInfo.InvariantCulture),
             stats.DialogCount.ToString(CultureInfo.InvariantCulture),
             stats.MessageBoxCount.ToString(CultureInfo.InvariantCulture),
-            stats.OverlayDialogHostCount.ToString(CultureInfo.InvariantCulture),
-            stats.DialogHostCount.ToString(CultureInfo.InvariantCulture),
-            stats.DialogWindowContentCount.ToString(CultureInfo.InvariantCulture),
+            stats.OverlayDialogPresenterCount.ToString(CultureInfo.InvariantCulture),
+            stats.DialogWindowCount.ToString(CultureInfo.InvariantCulture),
+            stats.DialogSurfaceCount.ToString(CultureInfo.InvariantCulture),
             stats.DialogButtonBoxCount.ToString(CultureInfo.InvariantCulture),
             stats.DialogButtonCount.ToString(CultureInfo.InvariantCulture),
             stats.DialogCaptionButtonCount.ToString(CultureInfo.InvariantCulture),
@@ -1572,9 +1572,9 @@ internal static class Program
             sample.Stats.DescriptionBorderedItemContentCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.DialogCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.MessageBoxCount.ToString(CultureInfo.InvariantCulture),
-            sample.Stats.OverlayDialogHostCount.ToString(CultureInfo.InvariantCulture),
-            sample.Stats.DialogHostCount.ToString(CultureInfo.InvariantCulture),
-            sample.Stats.DialogWindowContentCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.OverlayDialogPresenterCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.DialogWindowCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.DialogSurfaceCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.DialogButtonBoxCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.DialogButtonCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.DialogCaptionButtonCount.ToString(CultureInfo.InvariantCulture),
@@ -1636,7 +1636,7 @@ internal static class Program
             return "none";
         }
 
-        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, alert={stats.AlertCount}, marqueeLabel={stats.MarqueeLabelCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, groupBox={stats.GroupBoxCount}, groupBoxHeaderIcon={stats.GroupBoxHeaderIconPresenterCount}, collapse={stats.CollapseCount}, collapseItem={stats.CollapseItemCount}, collapseMotion={stats.CollapseContentMotionActorCount}, collapseExpandButton={stats.CollapseExpandButtonCount}, carousel={stats.CarouselCount}, carouselIndicator={stats.CarouselPageIndicatorCount}, carouselNavButton={stats.CarouselNavButtonCount}, carouselProgressBorder={stats.CarouselProgressBorderCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, statistic={stats.StatisticCount}, timerStatistic={stats.TimerStatisticCount}, statisticCountUp={stats.StatisticCountUpCount}, steps={stats.StepsCount}, stepsItem={stats.StepsItemCount}, stepsIndicator={stats.StepsItemIndicatorCount}, calendar={stats.CalendarCount}, calendarItem={stats.CalendarItemCount}, calendarDayButton={stats.CalendarDayButtonCount}, calendarButton={stats.CalendarButtonCount}, select={stats.SelectCount}, comboBox={stats.ComboBoxCount}, comboBoxItem={stats.ComboBoxItemCount}, comboBoxHandle={stats.ComboBoxHandleCount}, comboBoxHost={stats.ComboBoxAccessoryHostCount}, colorPicker={stats.ColorPickerCount}, gradientColorPicker={stats.GradientColorPickerCount}, datePicker={stats.DatePickerCount}, rangeDatePicker={stats.RangeDatePickerCount}, datePickerPresenter={stats.DatePickerPresenterCount}, datePickerCalendar={stats.DatePickerCalendarCount}, timeView={stats.TimeViewCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, mentions={stats.MentionsCount}, mentionTextArea={stats.MentionTextAreaCount}, mentionsPopupFields={stats.MentionsPopupFieldCount}, mentionsCandidateFields={stats.MentionsCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, checkBox={stats.CheckBoxCount}, checkBoxGroup={stats.CheckBoxGroupCount}, checkBoxIndicator={stats.CheckBoxIndicatorCount}, radioButton={stats.RadioButtonCount}, radioButtonGroup={stats.RadioButtonGroupCount}, radioIndicator={stats.RadioIndicatorCount}, wave={stats.WaveSpiritDecoratorCount}, descriptions={stats.DescriptionsCount}, descriptionDefaultItem={stats.DescriptionDefaultItemCount}, descriptionBorderedLabel={stats.DescriptionBorderedItemLabelCount}, descriptionBorderedContent={stats.DescriptionBorderedItemContentCount}, drawer={stats.DrawerCount}, dialog={stats.DialogCount}, messageBox={stats.MessageBoxCount}, overlayHost={stats.OverlayDialogHostCount}, dialogHost={stats.DialogHostCount}, dialogButtonBox={stats.DialogButtonBoxCount}, dialogButton={stats.DialogButtonCount}, captionButton={stats.DialogCaptionButtonCount}, dialogMask={stats.OverlayDialogMaskCount}, dialogResizer={stats.OverlayDialogResizerCount}, messageBoxContent={stats.MessageBoxContentCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
+        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, alert={stats.AlertCount}, marqueeLabel={stats.MarqueeLabelCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, groupBox={stats.GroupBoxCount}, groupBoxHeaderIcon={stats.GroupBoxHeaderIconPresenterCount}, collapse={stats.CollapseCount}, collapseItem={stats.CollapseItemCount}, collapseMotion={stats.CollapseContentMotionActorCount}, collapseExpandButton={stats.CollapseExpandButtonCount}, carousel={stats.CarouselCount}, carouselIndicator={stats.CarouselPageIndicatorCount}, carouselNavButton={stats.CarouselNavButtonCount}, carouselProgressBorder={stats.CarouselProgressBorderCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, statistic={stats.StatisticCount}, timerStatistic={stats.TimerStatisticCount}, statisticCountUp={stats.StatisticCountUpCount}, steps={stats.StepsCount}, stepsItem={stats.StepsItemCount}, stepsIndicator={stats.StepsItemIndicatorCount}, calendar={stats.CalendarCount}, calendarItem={stats.CalendarItemCount}, calendarDayButton={stats.CalendarDayButtonCount}, calendarButton={stats.CalendarButtonCount}, select={stats.SelectCount}, comboBox={stats.ComboBoxCount}, comboBoxItem={stats.ComboBoxItemCount}, comboBoxHandle={stats.ComboBoxHandleCount}, comboBoxHost={stats.ComboBoxAccessoryHostCount}, colorPicker={stats.ColorPickerCount}, gradientColorPicker={stats.GradientColorPickerCount}, datePicker={stats.DatePickerCount}, rangeDatePicker={stats.RangeDatePickerCount}, datePickerPresenter={stats.DatePickerPresenterCount}, datePickerCalendar={stats.DatePickerCalendarCount}, timeView={stats.TimeViewCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, mentions={stats.MentionsCount}, mentionTextArea={stats.MentionTextAreaCount}, mentionsPopupFields={stats.MentionsPopupFieldCount}, mentionsCandidateFields={stats.MentionsCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, checkBox={stats.CheckBoxCount}, checkBoxGroup={stats.CheckBoxGroupCount}, checkBoxIndicator={stats.CheckBoxIndicatorCount}, radioButton={stats.RadioButtonCount}, radioButtonGroup={stats.RadioButtonGroupCount}, radioIndicator={stats.RadioIndicatorCount}, wave={stats.WaveSpiritDecoratorCount}, descriptions={stats.DescriptionsCount}, descriptionDefaultItem={stats.DescriptionDefaultItemCount}, descriptionBorderedLabel={stats.DescriptionBorderedItemLabelCount}, descriptionBorderedContent={stats.DescriptionBorderedItemContentCount}, drawer={stats.DrawerCount}, dialog={stats.DialogCount}, messageBox={stats.MessageBoxCount}, overlayPresenter={stats.OverlayDialogPresenterCount}, dialogWindow={stats.DialogWindowCount}, dialogSurface={stats.DialogSurfaceCount}, dialogButtonBox={stats.DialogButtonBoxCount}, dialogButton={stats.DialogButtonCount}, captionButton={stats.DialogCaptionButtonCount}, dialogMask={stats.OverlayDialogMaskCount}, dialogResizer={stats.OverlayDialogResizerCount}, messageBoxContent={stats.MessageBoxContentCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
     }
 }
 
@@ -2029,9 +2029,9 @@ internal sealed record RouteStats(
     int DrawerCount,
     int DialogCount,
     int MessageBoxCount,
-    int OverlayDialogHostCount,
-    int DialogHostCount,
-    int DialogWindowContentCount,
+    int OverlayDialogPresenterCount,
+    int DialogWindowCount,
+    int DialogSurfaceCount,
     int DialogButtonBoxCount,
     int DialogButtonCount,
     int DialogCaptionButtonCount,
@@ -2171,9 +2171,9 @@ internal sealed record RouteStats(
         var drawerCount = 0;
         var dialogCount = 0;
         var messageBoxCount = 0;
-        var overlayDialogHostCount = 0;
-        var dialogHostCount = 0;
-        var dialogWindowContentCount = 0;
+        var overlayDialogPresenterCount = 0;
+        var dialogWindowCount = 0;
+        var dialogSurfaceCount = 0;
         var dialogButtonBoxCount = 0;
         var dialogButtonCount = 0;
         var dialogCaptionButtonCount = 0;
@@ -2692,17 +2692,17 @@ internal sealed record RouteStats(
             {
                 messageBoxCount++;
             }
-            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.OverlayDialogHost"))
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.OverlayDialogPresenter"))
             {
-                overlayDialogHostCount++;
+                overlayDialogPresenterCount++;
             }
-            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogHost"))
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogWindow"))
             {
-                dialogHostCount++;
+                dialogWindowCount++;
             }
-            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogWindowContent"))
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogSurface"))
             {
-                dialogWindowContentCount++;
+                dialogSurfaceCount++;
             }
             if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogButtonBox"))
             {
@@ -2855,9 +2855,9 @@ internal sealed record RouteStats(
             drawerCount,
             dialogCount,
             messageBoxCount,
-            overlayDialogHostCount,
-            dialogHostCount,
-            dialogWindowContentCount,
+            overlayDialogPresenterCount,
+            dialogWindowCount,
+            dialogSurfaceCount,
             dialogButtonBoxCount,
             dialogButtonCount,
             dialogCaptionButtonCount,
@@ -2994,9 +2994,9 @@ internal sealed record RouteStats(
                DrawerCount == other.DrawerCount &&
                DialogCount == other.DialogCount &&
                MessageBoxCount == other.MessageBoxCount &&
-               OverlayDialogHostCount == other.OverlayDialogHostCount &&
-               DialogHostCount == other.DialogHostCount &&
-               DialogWindowContentCount == other.DialogWindowContentCount &&
+               OverlayDialogPresenterCount == other.OverlayDialogPresenterCount &&
+               DialogWindowCount == other.DialogWindowCount &&
+               DialogSurfaceCount == other.DialogSurfaceCount &&
                DialogButtonBoxCount == other.DialogButtonBoxCount &&
                DialogButtonCount == other.DialogButtonCount &&
                DialogCaptionButtonCount == other.DialogCaptionButtonCount &&

@@ -39,6 +39,12 @@ internal static class OverlayLayerResolver
 
     internal static Control ResolvePlacementTarget(Control requester, Control? placementTarget, string ownerName)
     {
+        return TryResolvePlacementTarget(requester, placementTarget) ??
+               throw new InvalidOperationException($"Unable to resolve {ownerName} placement target.");
+    }
+
+    internal static Control? TryResolvePlacementTarget(Control requester, Control? placementTarget)
+    {
         if (placementTarget is not null)
         {
             return placementTarget;
@@ -60,7 +66,7 @@ internal static class OverlayLayerResolver
             return mainView;
         }
 
-        throw new InvalidOperationException($"Unable to resolve {ownerName} placement target.");
+        return null;
     }
 
     private static Panel? TryResolveOverlayLayer(Visual? anchor)
