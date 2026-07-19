@@ -8,7 +8,7 @@ namespace AtomUI.Generator;
 internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
 {
     public const string NotTokenDefinitionAttribute = "NotTokenDefinition";
-    public const string BaseControlTokenClass = "global::AtomUI.Theme.TokenSystem.AbstractControlDesignToken";
+    public const string BaseControlTokenClass = "global::AtomUI.Theme.Tokens.AbstractControlDesignToken";
     public ControlTokenInfo ControlTokenInfo { get; }
     private readonly SemanticModel _semanticModel;
     public string? TokenResourceCatalog { get; set; }

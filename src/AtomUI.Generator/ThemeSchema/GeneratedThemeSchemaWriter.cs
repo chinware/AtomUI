@@ -103,7 +103,7 @@ internal sealed class GeneratedThemeSchemaWriter
                 source,
                 _globalTokens[slot],
                 slot,
-                $"global::AtomUI.Theme.Styling.SharedTokenKind.{_globalTokens[slot].Name}");
+                $"global::AtomUI.Theme.Resources.SharedTokenKind.{_globalTokens[slot].Name}");
         }
         source.AppendLine("    };");
     }

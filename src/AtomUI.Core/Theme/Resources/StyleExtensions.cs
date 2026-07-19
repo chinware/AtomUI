@@ -2,7 +2,7 @@
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
 
-namespace AtomUI.Theme.Styling;
+namespace AtomUI.Theme.Resources;
 
 public static class StyleExtensions
 {

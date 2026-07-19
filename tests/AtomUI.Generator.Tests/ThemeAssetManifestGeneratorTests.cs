@@ -163,7 +163,7 @@ public class ThemeAssetManifestGeneratorTests
         """;
 
     private const string TokenSource = """
-        using AtomUI.Theme.TokenSystem;
+        using AtomUI.Theme.Tokens;
 
         namespace Demo;
 
@@ -193,7 +193,7 @@ public class ThemeAssetManifestGeneratorTests
         """;
 
     private const string AtomUIStubs = """
-        namespace AtomUI.Theme.TokenSystem
+        namespace AtomUI.Theme.Tokens
         {
             [System.AttributeUsage(System.AttributeTargets.Class)]
             public sealed class ControlDesignTokenAttribute : System.Attribute

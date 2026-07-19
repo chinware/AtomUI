@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 
-namespace AtomUI.Theme;
+namespace AtomUI.Theme.Resources;
 
 public abstract class TokenResourceExtension<TTokenKind> : MarkupExtension
     where TTokenKind : Enum
@@ -24,4 +24,3 @@ public abstract class TokenResourceExtension<TTokenKind> : MarkupExtension
         return new DynamicResourceExtension(Kind);
     }
 }
-

@@ -1,5 +1,6 @@
 using System.Reflection;
 using AtomUI.Theme;
+using AtomUI.Theme.Resources;
 using Shouldly;
 using Xunit;
 

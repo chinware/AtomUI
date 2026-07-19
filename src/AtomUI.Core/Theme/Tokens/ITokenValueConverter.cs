@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Theme.TokenSystem;
+﻿namespace AtomUI.Theme.Tokens;
 
 public interface ITokenValueConverter
 {

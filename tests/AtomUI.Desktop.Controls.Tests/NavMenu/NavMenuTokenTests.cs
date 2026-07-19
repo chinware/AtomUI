@@ -1,4 +1,4 @@
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Tokens;
 using Avalonia;
 using Shouldly;
 using Xunit;

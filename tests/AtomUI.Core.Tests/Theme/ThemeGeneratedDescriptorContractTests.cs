@@ -2,7 +2,7 @@ using System.Globalization;
 using AtomUI.Theme;
 using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Schema;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Tokens;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using Shouldly;

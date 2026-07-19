@@ -5,7 +5,7 @@ namespace AtomUI.Generator;
 [Generator]
 public class TokenValueConverterRegistrationGenerator : IIncrementalGenerator
 {
-    private const string TokenValueConverterInterface = "global::AtomUI.Theme.TokenSystem.ITokenValueConverter";
+    private const string TokenValueConverterInterface = "global::AtomUI.Theme.Tokens.ITokenValueConverter";
 
     public void Initialize(IncrementalGeneratorInitializationContext initContext)
     {

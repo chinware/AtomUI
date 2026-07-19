@@ -7,7 +7,7 @@ using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Styling;
 
-namespace AtomUI.Theme;
+namespace AtomUI.Theme.Resources;
 
 public abstract class BaseControlTheme : ControlTheme
 {

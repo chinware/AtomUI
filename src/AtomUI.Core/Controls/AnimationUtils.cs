@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using AtomUI.Animations;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;

@@ -1,7 +1,8 @@
 using System.Globalization;
-using AtomUI.Theme.Language;
-using AtomUI.Theme.Schema;
 using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Language;
+using AtomUI.Theme.Resources;
+using AtomUI.Theme.Schema;
 using Avalonia.Media;
 
 namespace AtomUI.Theme;

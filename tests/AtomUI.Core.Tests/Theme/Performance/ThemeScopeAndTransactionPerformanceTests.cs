@@ -2,7 +2,7 @@ using AtomUI.Core.Tests.Theme;
 using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Configuration;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Tokens;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;

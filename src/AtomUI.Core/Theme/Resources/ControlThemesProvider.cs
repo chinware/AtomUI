@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Metadata;
 
-namespace AtomUI.Theme;
+namespace AtomUI.Theme.Resources;
 
 public class ControlThemesProvider : IControlThemesProvider
 {

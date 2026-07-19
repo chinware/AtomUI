@@ -9,26 +9,40 @@ public class ThemeSourceLayoutTests
     public void Root_Source_Files_Use_The_Theme_Namespace()
     {
         var themeRoot = FindThemeRoot();
-        var invalidFiles = FindInvalidNamespaces(themeRoot, "namespace AtomUI.Theme;");
-
-        invalidFiles.ShouldBeEmpty();
-    }
-
-    [Fact]
-    public void Algorithms_Source_Files_Use_The_Algorithms_Namespace()
-    {
-        var algorithmsRoot = Path.Combine(FindThemeRoot(), "Algorithms");
         var invalidFiles = FindInvalidNamespaces(
-            algorithmsRoot,
-            "namespace AtomUI.Theme.Algorithms;");
+            themeRoot,
+            "namespace AtomUI.Theme;",
+            SearchOption.TopDirectoryOnly);
 
         invalidFiles.ShouldBeEmpty();
     }
 
-    private static string[] FindInvalidNamespaces(string directory, string expectedNamespace)
+    [Theory]
+    [InlineData("Algorithms")]
+    [InlineData("Compilation")]
+    [InlineData("Configuration")]
+    [InlineData("Definitions")]
+    [InlineData("Resources")]
+    [InlineData("Schema")]
+    [InlineData("Tokens")]
+    public void Responsibility_Source_Files_Use_The_Directory_Namespace(string area)
+    {
+        var areaRoot = Path.Combine(FindThemeRoot(), area);
+        var invalidFiles = FindInvalidNamespaces(
+            areaRoot,
+            $"namespace AtomUI.Theme.{area};",
+            SearchOption.AllDirectories);
+
+        invalidFiles.ShouldBeEmpty();
+    }
+
+    private static string[] FindInvalidNamespaces(
+        string directory,
+        string expectedNamespace,
+        SearchOption searchOption)
     {
         return Directory
-               .EnumerateFiles(directory, "*.cs", SearchOption.TopDirectoryOnly)
+               .EnumerateFiles(directory, "*.cs", searchOption)
                .Select(static path => new
                {
                    FileName = Path.GetFileName(path),

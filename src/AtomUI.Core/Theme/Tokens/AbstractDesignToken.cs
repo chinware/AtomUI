@@ -1,3 +1,3 @@
-﻿namespace AtomUI.Theme.TokenSystem;
+﻿namespace AtomUI.Theme.Tokens;
 
 public abstract class AbstractDesignToken;

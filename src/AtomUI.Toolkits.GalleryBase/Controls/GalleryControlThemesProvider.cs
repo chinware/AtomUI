@@ -1,4 +1,4 @@
-using AtomUI.Theme;
+using AtomUI.Theme.Resources;
 using Avalonia.Markup.Xaml;
 
 namespace AtomUI.Toolkits.GalleryBase.Controls;

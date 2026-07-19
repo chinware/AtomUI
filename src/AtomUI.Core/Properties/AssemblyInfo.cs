@@ -9,4 +9,4 @@ using Avalonia.Metadata;
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Language")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Data")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme")]
-[assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Styling")]
+[assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Resources")]

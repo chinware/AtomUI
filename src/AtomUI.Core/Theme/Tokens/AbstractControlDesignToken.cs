@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Theme.TokenSystem;
+﻿namespace AtomUI.Theme.Tokens;
 
 /// <summary>
 /// 所有的组件 Token 定义是除了全局的 Token 的之外的专属于当前的组件的 Token 值

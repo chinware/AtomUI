@@ -20,9 +20,9 @@ internal class ResourceKeyClassWriter
 
     private void SetupUsingInfos()
     {
-        _usingInfos.Add("AtomUI.Theme.TokenSystem");
+        _usingInfos.Add("AtomUI.Theme.Tokens");
         _usingInfos.Add("AtomUI.Theme");
-        _usingInfos.Add("AtomUI.Theme.Styling");
+        _usingInfos.Add("AtomUI.Theme.Resources");
     }
 
     public void Write()
@@ -92,7 +92,7 @@ internal class ResourceKeyClassWriter
         {
             if (_tokenInfo.Tokens.Count != 0)
             {
-                var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme.Styling"));
+                var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme.Resources"));
                 namespaceSyntax = namespaceSyntax.AddMembers(BuildDesignResourceKeyEnumSyntax());
                 compilationUnit = compilationUnit.AddMembers(namespaceSyntax);
             }

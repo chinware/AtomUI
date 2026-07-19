@@ -1,6 +1,6 @@
 using Avalonia.Styling;
 
-namespace AtomUI.Theme.Styling;
+namespace AtomUI.Theme.Resources;
 
 public class SetterValueFactory<T> : ITemplate
     where T : class

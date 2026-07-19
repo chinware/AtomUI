@@ -3,8 +3,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
-using AtomUI.Theme.Styling;
-using AtomUI.Theme.TokenSystem;
+using AtomUI.Theme.Tokens;
 using Shouldly;
 using Xunit;
 
