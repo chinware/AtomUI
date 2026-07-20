@@ -94,10 +94,15 @@ internal class NotificationToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
+        var compactPaddingMD = SharedToken.UniformlyPaddingMD * 2d / 3d;
+        var compactPaddingLG = SharedToken.UniformlyPaddingLG * 2d / 3d;
+        var compactMarginXS  = SharedToken.UniformlyMarginXS * 2d / 3d;
+        var compactMarginSM  = SharedToken.UniformlyMarginSM * 2d / 3d;
+
         NotificationProgressHeight = 2;
         NotificationProgressMargin = new Thickness(0, 0, 0, 1);
-        NotificationContentMargin = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingMD);
-        NotificationPadding = new Thickness(SharedToken.UniformlyPaddingLG, SharedToken.UniformlyPaddingMD, SharedToken.UniformlyPaddingLG, 0);
+        NotificationContentMargin = new Thickness(0, 0, 0, compactPaddingMD);
+        NotificationPadding = new Thickness(compactPaddingLG, compactPaddingMD, compactPaddingLG, 0);
         NotificationBg = SharedToken.ColorBgElevated;
         NotificationIconSize = SharedToken.FontSizeLG * SharedToken.RelativeLineHeightLG;
         NotificationCloseButtonSize = SharedToken.ControlHeightLG * 0.55;
@@ -117,8 +122,8 @@ internal class NotificationToken : AbstractControlDesignToken
             }
         }.ToImmutable();
         NotificationWidth              = 384;
-        HeaderMargin                   = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
-        NotificationIconMargin         = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
+        HeaderMargin                   = new Thickness(0, 0, 0, compactMarginXS);
+        NotificationIconMargin         = new Thickness(0, 0, compactMarginSM, 0);
         NotificationCloseButtonPadding = SharedToken.PaddingXXS;
     }
     
