@@ -6,6 +6,50 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.1.0
+
+`2026-07-20`
+
+- 破坏性变更
+  - Dialog 和 MessageBox：围绕异步 Session 重建静态展示和宿主生命周期。直接引用 `IDialogHost`、`IDialogHostProvider`、`IDialogActionResult` 或 `IMessageBoxActionResult`，或依赖 callback 式宿主关闭 API 的自定义代码，应迁移到 `ShowDialogAsync`、`ShowDialogModalAsync`、`ShowMessageBoxAsync`、`ShowMessageBoxModalAsync`、`Dialog.OpenAsync`、`Dialog.BeforeCloseAsync` 和返回的 `Task<object?>`。
+  - Steps：将基于 Selection 的契约替换为受控步骤状态。请将 `CurrentStep` 迁移到 `Current`，`InitialStep` 迁移到 `Initial`，`CurrentStepStatus` / `StepsItemStatus` 迁移到 `Status` / `StepsStatus`，`Style` / `ItemIndicatorType` 迁移到 `Type`，`LabelPlacement` 迁移到 `TitlePlacement`，`ProgressValue` / `IsShowItemProgress` 迁移到可空 `Percent`；步骤项描述从 `Description` / `DescriptionTemplate` 迁移到 `Content` / `ContentTemplate`，可点击步骤变更改为处理 `CurrentChangeRequested`，不再依赖 Selection 直接变更。
+- Theme
+  - 新增基于 resolver 的主题定义加载能力，支持内置资源、应用资源和显式启用的用户主题目录，并统一使用 XML 主题定义格式。
+  - 新增 `IThemeDefinitionResolver`、`IThemeManager.AvailableThemes`、`IThemeManager.CurrentTheme`、`ThemeCatalogDiagnostics`、`ThemeCatalogChanged` 和 `ReloadThemesAsync`，应用可以发现、切换并原子刷新主题 Catalog。
+  - 新增 `WithApplicationId`、`UseUserThemeDirectory()` 和 `UseUserThemeDirectory(string directory)`；显式启用时，默认用户主题目录为应用数据目录下的 `{ApplicationId}/Themes`。
+  - 重建主题解析、绑定、Catalog 编译、Snapshot 缓存和 Token 资源发布流程，让根主题和局部主题都发布完整 Snapshot，并在解析或编译失败时保留上一版状态。
+  - 生成 AXAML 共享控件 Token 资源元数据，并隔离控件 Token 作用域，使 primary、link 和 text button 状态随当前主题稳定变化。
+- Gallery 主题
+  - 新增 Daybreak Blue、Polar Green、Sunset Orange、Golden Purple 和 Magenta 等内置主题定义，并通过带色块的主题设置子菜单暴露。
+  - Gallery 通过 Theme manager 完成主题切换，并为桌面 Gallery 启用用户主题目录加载。
+- Window 和 Native
+  - 将 Avalonia 依赖升级到 `12.1.0`，并新增原生 Wayland 支持。
+  - 稳定 Windows 和 Linux 绘制装饰，包括 Windows 10 CSD frame 渲染、深色主题标题栏、caption 按钮、实时 resize、Wayland 圆角 CSD 裁剪和 Linux client-frame 视觉层。
+  - 为 Dialog 和 Drawer overlay 分离完整窗口 mask、可见 frame bounds 和阴影范围，让 mask 覆盖绘制标题栏，同时 placement 保持在可见 frame 内。
+- Dialog、Drawer 和 MessageBox
+  - 将 Dialog 和 MessageBox 统一到同一套 Session、Presenter 和 Surface 生命周期，覆盖 UI Dispatcher 构造、异步打开/关闭、关闭拦截、owner close 和确定性 teardown。
+  - 优化 overlay 与 window presenter 的尺寸、拖动、resize、最大化、mask 路由、焦点恢复、取消和重入行为。
+  - 降低 overlay dialog transition 开销。
+- 导航和选择控件
+  - Steps：新增 `OutlineDot`、受控导航请求事件、确定性的步骤编号/status/connector 语义、pointer click wave 行为，以及用于水平、垂直和导航布局的新 layout panel。
+  - Cascader：支持键盘候选导航，并稳定展开、过滤、选中 option 同步和 popup 状态。
+  - Menu 和 NavMenu：新增子菜单 hover intent，支持 detached title bar 中的 popup，新增生命周期安全的节点命令，并修复 pointer 或布局变化导致的子菜单状态跳变。
+  - Collapse 和 Expander：优化 separator、accordion、内容可见性和 motion cleanup 行为。
+- 数据录入、数据显示和通用控件
+  - 为 CascaderView、ListView 和 ListBox 新增自定义 EmptyIndicator 支持。
+  - 为 TransferItemDecorator 新增 list 和 tree transfer 视图的 item count 处理。
+  - 修复 AddOnDecoratedBox 仅模板提供 add-on 内容、模板拥有的 EmbeddedTextBox 输入框、embedded 输入 padding、DatePicker 和 TimePicker 输入尺寸，以及 NumericUpDown 默认输入 padding 覆盖。
+  - 移除 ColorPicker spectrum 颜色名称 tooltip，并稳定 ImagePreviewer 搜索和主题资源。
+  - 修复 Row/Splitter 布局恢复和精确 grid line 换行问题。
+- 反馈和浮层控件
+  - Notification：普通通知默认不显示 type icon，对齐关闭按钮 hover/pressed 状态，使用 primary 色生成进度条渐变，将默认自动关闭时长设为 4.5 秒，并缩小内部卡片间距。
+  - Tour：修正目标 placement，并为高亮区域添加动画。
+- Icons、Gallery、Generator 和文档
+  - 新增面向 AI、应用和社交/服务场景的 SVG 图标。
+  - 为 Gallery 新增 Windows 渲染 fallback，并刷新 Gallery baseline、生成文档和主题设计文档。
+  - 新增 XML 主题绑定、Token 发布和可选控件包使用的生成式主题 schema 与控件 Token 资源元数据。
+  - 将包元数据更新到 `6.1.0`。
+
 ## 6.0.8
 
 `2026-07-10`
