@@ -4,6 +4,50 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.1.0
+
+`2026-07-20`
+
+- Breaking Changes
+  - Dialog and MessageBox: rebuild the static display and host lifecycle around async sessions. Custom code that referenced `IDialogHost`, `IDialogHostProvider`, `IDialogActionResult` or `IMessageBoxActionResult`, or depended on callback-style host close APIs, should migrate to `ShowDialogAsync`, `ShowDialogModalAsync`, `ShowMessageBoxAsync`, `ShowMessageBoxModalAsync`, `Dialog.OpenAsync`, `Dialog.BeforeCloseAsync` and the returned `Task<object?>`.
+  - Steps: replace the selection-based contract with controlled step state. Migrate `CurrentStep` to `Current`, `InitialStep` to `Initial`, `CurrentStepStatus` / `StepsItemStatus` to `Status` / `StepsStatus`, `Style` / `ItemIndicatorType` to `Type`, `LabelPlacement` to `TitlePlacement`, and `ProgressValue` / `IsShowItemProgress` to nullable `Percent`; move item descriptions from `Description` / `DescriptionTemplate` to `Content` / `ContentTemplate`, and handle clickable step changes with `CurrentChangeRequested` instead of relying on selection mutation.
+- Theme
+  - Add resolver-based theme definition loading for built-in assets, application assets and explicitly enabled user theme directories using the XML theme definition format.
+  - Add `IThemeDefinitionResolver`, `IThemeManager.AvailableThemes`, `IThemeManager.CurrentTheme`, `ThemeCatalogDiagnostics`, `ThemeCatalogChanged` and `ReloadThemesAsync` so applications can discover, switch and reload theme catalogs atomically.
+  - Add `WithApplicationId`, `UseUserThemeDirectory()` and `UseUserThemeDirectory(string directory)`; the default user directory is the application data folder under `{ApplicationId}/Themes` when explicitly enabled.
+  - Rebuild theme parsing, binding, catalog compilation, snapshot caching and token resource publication so root and scoped themes publish complete snapshots and preserve the previous state when parsing or compilation fails.
+  - Generate shared control token resource metadata for AXAML and isolate control token scopes so primary, link and text-button states follow the active theme consistently.
+- Gallery Themes
+  - Add built-in theme definitions including Daybreak Blue, Polar Green, Sunset Orange, Golden Purple and Magenta, and expose them through a Theme Settings submenu with color swatches.
+  - Enable Gallery theme switching through the theme manager and enable user theme directory loading for the desktop Gallery.
+- Window and Native
+  - Upgrade the Avalonia dependency to `12.1.0` and add native Wayland support.
+  - Stabilize Windows and Linux drawn decorations, including Windows 10 CSD frame rendering, dark-theme title bars, caption buttons, live resize, Wayland rounded CSD clipping and Linux client-frame visual layers.
+  - Separate complete-window masks, visible-frame bounds and shadow extents for Dialog and Drawer overlays so masks cover drawn title bars while placement remains inside the visible frame.
+- Dialog, Drawer and MessageBox
+  - Unify Dialog and MessageBox around one session, presenter and surface lifecycle, including UI dispatcher construction, async open/close, close veto, owner close and deterministic teardown.
+  - Improve overlay and window presenter sizing, drag, resize, maximize, mask routing, focus restoration, cancellation and reentrancy behavior.
+  - Reduce overlay dialog transition work.
+- Navigation and Selection Controls
+  - Steps: add `OutlineDot`, controlled navigation request events, deterministic step numbering/status/connector semantics, pointer-click wave behavior and new layout panels for horizontal, vertical and navigation layouts.
+  - Cascader: support keyboard candidate navigation and stabilize expansion, filtering, selected option synchronization and popup state.
+  - Menu and NavMenu: add submenu hover intent, support popups from detached title bars, add lifecycle-safe node commands and fix pointer or layout-induced submenu transitions.
+  - Collapse and Expander: improve separator, accordion, content visibility and motion cleanup behavior.
+- Data Entry, Display and General Controls
+  - Add custom EmptyIndicator support for CascaderView, ListView and ListBox.
+  - Add TransferItemDecorator item count handling for list and tree transfer views.
+  - Fix AddOnDecoratedBox template-only add-on content, template-owned embedded TextBox inputs, embedded input padding, DatePicker and TimePicker input sizing, and NumericUpDown default input padding coverage.
+  - Remove the ColorPicker spectrum color name tooltip and stabilize ImagePreviewer search and theme resources.
+  - Fix Row/Splitter layout recovery and exact grid line wrapping.
+- Feedback and Overlay Controls
+  - Notification: render plain notifications without type icons, align close button hover/pressed states, theme the progress gradient from primary colors, set the default auto-close duration to 4.5 seconds and reduce internal card spacing.
+  - Tour: correct target placement and animate the highlighted region.
+- Icons, Gallery, Generator and Documentation
+  - Add new SVG icons for AI, application and social/service scenarios.
+  - Add a Windows rendering fallback for Gallery and refresh Gallery baselines, generated documentation and theme design documentation.
+  - Add generated theme schema and control token resource metadata used by XML theme binding, token publication and optional control packages.
+  - Update package metadata to `6.1.0`.
+
 ## 6.0.8
 
 `2026-07-10`
