@@ -1,8 +1,10 @@
 using System.Globalization;
 using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Schema;
+using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Theme;
@@ -12,18 +14,25 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
     private readonly List<ControlTokenDescriptor> _controlTokenDescriptors = new();
     private readonly List<IControlThemesProvider> _controlThemesProviders = new();
     private readonly List<LanguageProvider> _languageProviders = new();
+    private readonly List<IThemeDefinitionResolver> _themeDefinitionResolvers = new();
     private readonly List<Action<IThemeManager>> _initializers = new();
     private readonly HashSet<ControlTokenIdentity> _registeredControlTokenIdentities = new();
     private readonly HashSet<string> _registeredControlThemeProviders = new(StringComparer.Ordinal);
     private readonly HashSet<string> _registeredLanguageProviders = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _registeredThemeDefinitionResolvers = new(StringComparer.Ordinal);
+    private bool _useUserThemeDirectory;
+    private string? _userThemeDirectory;
 
-    internal ThemeManagerBuilder()
+    internal ThemeManagerBuilder(Application? application = null)
     {
+        ApplicationId = ThemeApplicationIdentity.ResolveDefault(application?.GetType()) ??
+                        typeof(ThemeManagerBuilder).Assembly.GetName().Name!;
         LanguageVariant = LanguageVariant.en_US;
         InitialRequest = new ThemeRequest(
             IThemeManager.DEFAULT_THEME_ID,
             null,
             ThemeTransitionReason.Startup);
+        AddThemeDefinitionResolver(CoreThemeDefinitionResolver.Create());
     }
 
     internal LanguageVariant LanguageVariant { get; private set; }
@@ -32,6 +41,26 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
     internal ThemeRequest? FollowSystemLightRequest { get; private set; }
     internal ThemeRequest? FollowSystemDarkRequest { get; private set; }
     internal IReadOnlyList<Action<IThemeManager>> Initializers => _initializers;
+    internal IReadOnlyList<IThemeDefinitionResolver> ThemeDefinitionResolvers => _themeDefinitionResolvers;
+    internal string? ApplicationId { get; private set; }
+    internal bool UsesUserThemeDirectory => _useUserThemeDirectory;
+    internal string? UserThemeDirectory => _userThemeDirectory;
+
+    public void AddThemeDefinitionResolver(IThemeDefinitionResolver resolver)
+    {
+        ArgumentNullException.ThrowIfNull(resolver);
+        if (string.IsNullOrWhiteSpace(resolver.Id))
+        {
+            throw new ArgumentException("Theme definition resolver id cannot be empty.", nameof(resolver));
+        }
+        if (!_registeredThemeDefinitionResolvers.Add(resolver.Id))
+        {
+            throw new ThemeResourceRegisterException(
+                $"Theme definition resolver '{resolver.Id}' is already registered.");
+        }
+
+        _themeDefinitionResolvers.Add(resolver);
+    }
 
     public void AddControlToken(ControlTokenDescriptor descriptor)
     {
@@ -97,6 +126,25 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
         InitialRequest = FollowSystemLightRequest;
     }
 
+    public void WithApplicationId(string applicationId)
+    {
+        ThemeApplicationIdentity.Validate(applicationId, nameof(applicationId));
+        ApplicationId = applicationId;
+    }
+
+    public void UseUserThemeDirectory()
+    {
+        _useUserThemeDirectory = true;
+        _userThemeDirectory = null;
+    }
+
+    public void UseUserThemeDirectory(string directory)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(directory);
+        _useUserThemeDirectory = true;
+        _userThemeDirectory = Path.GetFullPath(directory);
+    }
+
     public void WithDefaultFontFamily(FontFamily fontFamily)
     {
         FontFamily = fontFamily;
@@ -120,6 +168,21 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
 
     internal ThemeManager Build()
     {
+        var themeDefinitionResolvers = new List<IThemeDefinitionResolver>(_themeDefinitionResolvers);
+        if (_useUserThemeDirectory)
+        {
+            if (themeDefinitionResolvers.Any(static resolver =>
+                    string.Equals(
+                        resolver.Id,
+                        UserDirectoryThemeDefinitionResolver.ResolverId,
+                        StringComparison.Ordinal)))
+            {
+                throw new ThemeResourceRegisterException(
+                    $"Theme definition resolver '{UserDirectoryThemeDefinitionResolver.ResolverId}' is already registered.");
+            }
+            themeDefinitionResolvers.Add(new UserDirectoryThemeDefinitionResolver(_userThemeDirectory));
+        }
+
         var themeManager = new ThemeManager
         {
             FontFamily = FontFamily
@@ -128,6 +191,10 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
             InitialRequest,
             FollowSystemLightRequest,
             FollowSystemDarkRequest);
+        themeManager.ConfigureThemeDefinitions(
+            themeDefinitionResolvers,
+            ApplicationId!,
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
         themeManager.EnsureRegistrationCapacity(
             _controlTokenDescriptors.Count,
             _controlThemesProviders.Count,

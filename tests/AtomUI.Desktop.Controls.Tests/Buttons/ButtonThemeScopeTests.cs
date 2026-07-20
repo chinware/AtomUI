@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
@@ -10,6 +11,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -77,6 +79,61 @@ public class ButtonThemeScopeTests
             FlushThemeUpdates();
 
             BrushColor(button.Background).ShouldBe(UpdatedButtonPrimary);
+        });
+    }
+
+    [Fact]
+    public void Button_Primary_Text_Color_Follows_Component_ColorPrimary_Update()
+    {
+        var button = new AtomUIButton
+        {
+            Color           = ButtonColor.Primary,
+            Variant         = ButtonVariant.Text,
+            IsMotionEnabled = false,
+            Content         = "Save"
+        };
+        var provider = Provider(
+            button,
+            ComponentSharedToken(ButtonToken.ID, nameof(DesignToken.ColorPrimary), "#00b96b"));
+
+        ShowInWindow(provider, () =>
+        {
+            BrushColor(button.Foreground).ShouldBe(ButtonPrimary);
+
+            provider.Config = BuildComponentConfig(
+                ComponentSharedToken(ButtonToken.ID, nameof(DesignToken.ColorPrimary), "#ff4d4f"));
+            FlushThemeUpdates();
+
+            BrushColor(button.Foreground).ShouldBe(UpdatedButtonPrimary);
+        });
+    }
+
+    [Fact]
+    public void Button_Default_Text_Pressed_Background_Uses_ColorFill()
+    {
+        var colorFill = Color.Parse("#112233");
+        var button = new AtomUIButton
+        {
+            ButtonType      = ButtonType.Text,
+            IsMotionEnabled = false,
+            Content         = "Text"
+        };
+        var provider = new ThemeConfigProvider
+        {
+            Child  = button,
+            Config = new ThemeConfigBuilder()
+                     .WithToken(nameof(DesignToken.ColorFill), "#112233")
+                     .WithToken(nameof(DesignToken.ColorBgTextActive), "#445566")
+                     .Build()
+        };
+        ThrowOnCompileFailure(provider);
+
+        ShowInWindow(provider, () =>
+        {
+            ((IPseudoClasses)button.Classes).Set(StdPseudoClass.Pressed, true);
+            FlushThemeUpdates();
+
+            BrushColor(button.Background).ShouldBe(colorFill);
         });
     }
 

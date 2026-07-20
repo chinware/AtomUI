@@ -8,6 +8,27 @@ namespace AtomUIGallery.Tests.Workspace;
 public class GalleryReleaseWorkflowTests
 {
     [Fact]
+    public void NativeAot_Publish_Is_Serialized_For_The_Shared_Output_Tree()
+    {
+        var script = File.ReadAllText(GetRepoFile(
+            "controlgallery/AtomUIGallery.Desktop/scripts/PublishToLocal.ps1"));
+        var publishStart = script.IndexOf(
+            "\"publish\",\n        $projectPath",
+            StringComparison.Ordinal);
+        publishStart.ShouldBeGreaterThanOrEqualTo(0);
+        var publishEnd = script.IndexOf(
+            "Test-NativeAotOutput",
+            publishStart,
+            StringComparison.Ordinal);
+        publishEnd.ShouldBeGreaterThan(publishStart);
+        var publishBlock = script[publishStart..publishEnd];
+
+        publishBlock.ShouldContain("\"--disable-build-servers\"");
+        publishBlock.ShouldContain("\"-m:1\"");
+        publishBlock.ShouldContain("\"/nr:false\"");
+    }
+
+    [Fact]
     public void MacOS_Dmg_Jobs_Remove_Unused_Homebrew_Taps_Before_Installing_Packages()
     {
         var workflow = File.ReadAllText(GetRepoFile(".github/workflows/release-gallery.yml"));

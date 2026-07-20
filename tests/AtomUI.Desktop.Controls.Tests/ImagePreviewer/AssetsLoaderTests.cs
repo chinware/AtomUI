@@ -67,7 +67,7 @@ public class AssetsLoaderTests
     [Fact]
     public void OpenStream_Keeps_Avalonia_Asset_Uri_Support()
     {
-        using var stream = AssetsLoader.OpenStream("avares://AtomUI.Core/Assets/Themes/DaybreakBlue.xml");
+        using var stream = AssetsLoader.OpenStream("avares://AtomUI.Core/Assets/Themes/DaybreakBlue.theme.xml");
         using var reader = new StreamReader(stream);
 
         reader.ReadLine().ShouldNotBeNull().ShouldContain("xml");

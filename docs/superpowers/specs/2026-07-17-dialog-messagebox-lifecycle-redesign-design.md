@@ -84,17 +84,10 @@ Dialog 是 TopLevel 内的受控模态层，不需要 Popup 的锚点窗口和�
 - `DialogButtonBox` 重复构造标准按钮，default/escape 的动态更新不完整。
 - MessageBox 创建隐藏 Dialog，并通过大量 relay binding、事件转发和 suppression flag 维护第二套状态。
 
-### 2.6 Ant Design 6 参考结论
+### 2.6 Modal 生命周期对齐原则
 
-本设计参考本地 `../ReferenceProjects/ant-design` 中的：
-
-- `components/modal/Modal.tsx`
-- `components/modal/confirm.tsx`
-- `components/modal/useModal/HookModal.tsx`
-- `components/_util/ActionButton.tsx`
-- `components/modal/__tests__`
-
-采纳的原则：
+外部 Web 组件的 Modal 行为只用于交互语义对照；具体版本、本地源码路径和私有实现不构成 AtomUI
+生命周期架构的依据。AtomUI 采纳并验证以下原则：
 
 - 业务 `open` 意图、动画保活和最终资源销毁不是同一个状态。
 - close request 与 after-close teardown 分离，关闭动画完成后才发送最终 Closed/afterClose。

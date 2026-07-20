@@ -10,6 +10,7 @@ internal partial class en_US
 
     public const string MenuItemSettings = "Settings";
     public const string MenuItemTheme = "Theme";
+    public const string MenuItemThemeSettings = "Theme Settings";
     public const string MenuItemLanguage = "Language";
 
     public const string MenuItemWindowOptions = "Window Options";

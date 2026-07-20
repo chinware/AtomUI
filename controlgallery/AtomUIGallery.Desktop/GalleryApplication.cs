@@ -18,6 +18,8 @@ public class GalleryApplication : BaseGalleryApplication
         base.Initialize();
         this.UseAtomUI(builder =>
         {
+            builder.WithApplicationId("AtomUIGallery");
+            builder.UseUserThemeDirectory();
             builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
             builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();

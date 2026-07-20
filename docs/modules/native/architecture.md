@@ -26,10 +26,10 @@ AtomUI.Native
 | 依赖 | 用途 | 影响 |
 |---|---|---|
 | `Avalonia` | `Window`、`WindowBase`、geometry 和 platform handle | AtomUI 基础依赖 |
-| `NWayland 0.11.0` | `WlSurface`、`WlCompositor`、`WlRegion` | 会进入所有引用 Native 的依赖图 |
+| `NWayland` | `WlSurface`、`WlCompositor`、`WlRegion` | 会进入所有引用 Native 的依赖图 |
 
-`Avalonia.Wayland 12.1.0` 同样依赖 NWayland 0.11.0。类型版本当前一致，但这不是稳定的跨包 ABI
-保证；升级 Avalonia.Wayland 时必须同步核对 NWayland 版本。
+`AtomUI.Native` 与 `Avalonia.Wayland` 共享 NWayland 类型。具体版本以集中包管理和最终 restore 依赖图为准；
+升级任一依赖时必须同步核对类型版本和跨包 ABI，不能把当前偶然一致视为兼容保证。
 
 ## 目录和职责
 
@@ -78,7 +78,7 @@ X11 能力必须以 `IPlatformHandle.HandleDescriptor == "XID"` 为前置条件�
 `WaylandWindowUtils` 只接受已经解析出的 NWayland `WlSurface/WlCompositor`，创建 region 并调用
 `SetInputRegion()`。它不应该知道 Avalonia 私有字段或查找 `WindowImpl`。
 
-但 Avalonia 12.1 的真实 surface 属于专用 Wayland worker。当前调用方从 UI 线程越过
+但 Avalonia Wayland 后端的真实 surface 属于专用 worker。当前调用方从 UI 线程越过
 `WXdgTopLevelProxy` 直接调用真实 `WlSurface`，不符合上游线程和重连契约。`DynamicDependency` 只保证
 reflection metadata 不被裁剪，不能解决该问题。正确边界应由 Avalonia persistent surface/proxy 提供
 input-region 方法，并通过 `WaylandWorkerClient.PostWithCommit` 下发。
@@ -121,14 +121,13 @@ input-region 方法，并通过 `WaylandWorkerClient.PostWithCommit` 下发。
 - X11/Wayland 集成测试或最小 smoke app。
 - Linux/Windows/macOS 的 NativeAOT publish matrix。
 
-## 事实源
+## 依赖升级检查
 
-Avalonia 行为以仓库同级 `../ReferenceProjects/Avalonia` 的 `12.1.0` tag
-（commit `a21b9f573172f705a944dcc8aad7f036b9986f39`）为准，重点文件：
+Native 架构结论以 AtomUI 的平台边界、公开契约和验证矩阵为准。升级 Avalonia 或原生协议依赖时，至少重新验证：
 
-- `src/Avalonia.Wayland/WindowImpl.cs`
-- `src/Avalonia.Wayland/WindowImplBase.cs`
-- `src/Avalonia.Wayland/Server/WaylandWorkerClient.cs`
-- `src/Avalonia.Wayland/Server/Persistent/WSurface.cs`
-- `src/Avalonia.Controls/TopLevelHost.Decorations.cs`
-- `src/Avalonia.X11/X11Window.cs`
+- Wayland proxy、worker 和 persistent surface 的线程所有权与 commit 顺序。
+- CSD/SSD 协商、shadow extents 和 window geometry 的状态传播。
+- X11 handle descriptor、drawn decorations gating 和 input-region 行为。
+- Win32/macOS 平台能力仍由公开 API 或隔离的 Native 边界承担。
+
+外部框架的类型名可以作为调查入口，但文件路径、源码行号和某次源码快照都不是 AtomUI 的架构契约。

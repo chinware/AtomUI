@@ -7,6 +7,7 @@ public enum ThemeTransitionReason : byte
     Startup,
     UserRequest,
     FollowSystem,
+    CatalogReload,
     LocalConfigChanged,
     ScopeTopologyChanged
 }

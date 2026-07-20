@@ -4,12 +4,8 @@
 
 在不改变 `Collapse` / `CollapseItem` public API、默认值、稳定 template part、ControlTheme key、资源 key 和现有主题数值的前提下，重构 Collapse 的展开状态、手风琴模式、分隔线和内容动效，使其行为与视觉规则对齐 Ant Design 6 Collapse。
 
-本次设计参考：
-
-- `../ReferenceProjects/ant-design/components/collapse/Collapse.tsx`
-- `../ReferenceProjects/ant-design/components/collapse/CollapsePanel.tsx`
-- `../ReferenceProjects/ant-design/components/collapse/style/index.ts`
-- `@rc-component/collapse` 1.2.x 的 `Collapse.tsx`、`Panel.tsx` 和 `useItems.tsx`
+对齐只约束 Collapse 的公开交互、视觉语义和兼容边界。外部实现可用于当次行为对照，但具体版本、
+依赖包、文件路径和私有实现都不构成 AtomUI 的设计契约；最终以本节兼容边界和 AtomUI 回归测试为准。
 
 ## 2. 兼容边界
 

@@ -144,7 +144,7 @@ DatePicker 的交互事件应从输入源收敛到控件级语义事件：
 
 输入宽度维护规则：
 
-- `DatePicker` 和 `RangeDatePicker` 的输入预留宽度以当前有效格式对应的最宽格式化日期时间为基线；未显式设置 `Format` 时，还需要与 Ant Design 默认原生 input 风格的输入基线取最大值。Ant Design 本地参考源码位于 `../ReferenceProjects/ant-design/components/date-picker/style/index.ts` 和 `../ReferenceProjects/ant-design/components/date-picker/demo/basic.tsx`：basic demo 不设置 `width`，样式只让内部 input `width: 100%`，默认宽度来自 input intrinsic width，而不是日期格式最小宽度。
+- `DatePicker` 和 `RangeDatePicker` 的输入预留宽度以当前有效格式对应的最宽格式化日期时间为基线；未显式设置 `Format` 时，还需要与 AtomUI 定义的默认单选或范围输入基线取最大值。输入基线表达控件的默认视觉宽度，不由日期格式最小宽度、当前值或外部源码实现反向推导。
 - `PlaceholderText` 和 `SecondaryPlaceholderText` 不参与 `PreferredInputWidth` / `PreferredWidth` 计算；placeholder 只能在已预留的输入内容区域内显示，超出时由文本呈现层使用 ellipsis 省略，不能反向撑大控件默认宽度。
 - `Text` 和 `SecondaryText` 只表达当前显示值或 hover preview，不作为 `PreferredInputWidth` / `PreferredWidth` 的计算来源。
 - `IsShowTime`、`Format`、`ClockIdentifier`、AM/PM 文本和字体变化会重新计算格式预留宽度；选中值、hover 值和范围端点切换不得改变预留宽度。

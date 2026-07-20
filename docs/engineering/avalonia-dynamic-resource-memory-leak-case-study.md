@@ -134,13 +134,10 @@ GalleryApplication
 
 这个根链说明根对象不是 Gallery 路由缓存，而是 `Application` 级资源订阅。
 
-## Avalonia 机制
+## Avalonia 资源绑定机制
 
-Avalonia 12 的 `DynamicResourceExpression` 会在启动时寻找资源宿主。参考：
-
-- `.referenceprojects/Avalonia/src/Markup/Avalonia.Markup.Xaml/Data/DynamicResourceExpression.cs:37`
-- `.referenceprojects/Avalonia/src/Markup/Avalonia.Markup.Xaml/Data/DynamicResourceExpression.cs:113`
-- `.referenceprojects/Avalonia/src/Markup/Avalonia.Markup.Xaml/Data/DynamicResourceExpression.cs:131`
+`DynamicResourceExpression` 启动时会寻找资源宿主。这里记录的是 AtomUI 生命周期设计需要满足的行为约束，
+不把某个框架版本的源码路径或行号作为长期依据。
 
 关键行为：
 

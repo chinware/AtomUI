@@ -16,6 +16,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     private readonly IThemeManager? _themeManager;
     private readonly ILanguageManager? _languageManager;
     private readonly EventHandler<ThemeChangedEventArgs>? _themeChangedHandler;
+    private readonly EventHandler<ThemeCatalogChangedEventArgs>? _themeCatalogChangedHandler;
     private readonly EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
     private bool _isDisposed;
     private bool _isDark;
@@ -23,6 +24,8 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     private bool _isMotionEnabled = true;
     private bool _isWaveSpiritEnabled = true;
     private string[] _baseAlgorithms = ["Default"];
+    private IReadOnlyList<ThemeInfo> _availableThemes = Array.Empty<ThemeInfo>();
+    private string _currentThemeId = IThemeManager.DEFAULT_THEME_ID;
 
     private bool _isZhCN;
     private bool _isZhTW;
@@ -40,11 +43,25 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 
     public ReactiveCommand<bool, Unit> ToggleWaveSpiritCommand { get; }
 
+    public ReactiveCommand<string, Unit> SwitchThemeCommand { get; }
+
     public ReactiveCommand<Unit, Unit> SwitchToZhCNCommand { get; }
 
     public ReactiveCommand<Unit, Unit> SwitchToZhTWCommand { get; }
 
     public ReactiveCommand<Unit, Unit> SwitchToEnUSCommand { get; }
+
+    public IReadOnlyList<ThemeInfo> AvailableThemes
+    {
+        get => _availableThemes;
+        private set => this.RaiseAndSetIfChanged(ref _availableThemes, value);
+    }
+
+    public string CurrentThemeId
+    {
+        get => _currentThemeId;
+        private set => this.RaiseAndSetIfChanged(ref _currentThemeId, value);
+    }
 
     public bool IsZhCN
     {
@@ -71,6 +88,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 
         _themeManager = Application.Current?.GetThemeManager();
         _languageManager = Application.Current?.GetLanguageManager();
+        AvailableThemes = CaptureThemes(_themeManager?.AvailableThemes);
         SyncThemeState(_themeManager?.CurrentTheme, null);
         SyncLanguageState(_languageManager?.LanguageVariant);
 
@@ -78,6 +96,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         ToggleCompactModeCommand = ReactiveCommand.CreateFromTask<bool>(SetCompactModeAsync);
         ToggleMotionCommand = ReactiveCommand.CreateFromTask<bool>(SetMotionEnabledAsync);
         ToggleWaveSpiritCommand = ReactiveCommand.CreateFromTask<bool>(SetWaveSpiritEnabledAsync);
+        SwitchThemeCommand = ReactiveCommand.CreateFromTask<string>(SwitchThemeAsync);
 
         SwitchToZhCNCommand = ReactiveCommand.Create(() => SetLanguageVariant(LanguageVariant.zh_CN));
         SwitchToZhTWCommand = ReactiveCommand.Create(() => SetLanguageVariant(LanguageVariant.zh_TW));
@@ -86,7 +105,9 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         if (_themeManager is not null)
         {
             _themeChangedHandler = HandleThemeChanged;
+            _themeCatalogChangedHandler = HandleThemeCatalogChanged;
             _themeManager.ThemeChanged += _themeChangedHandler;
+            _themeManager.ThemeCatalogChanged += _themeCatalogChangedHandler;
         }
         if (_languageManager is not null)
         {
@@ -103,13 +124,17 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         }
 
         _isDisposed = true;
-        if (_themeManager is not null && _languageVariantChangedHandler is not null)
+        if (_languageManager is not null && _languageVariantChangedHandler is not null)
         {
-            _languageManager!.LanguageVariantChanged -= _languageVariantChangedHandler;
+            _languageManager.LanguageVariantChanged -= _languageVariantChangedHandler;
         }
         if (_themeManager is not null && _themeChangedHandler is not null)
         {
             _themeManager.ThemeChanged -= _themeChangedHandler;
+        }
+        if (_themeManager is not null && _themeCatalogChangedHandler is not null)
+        {
+            _themeManager.ThemeCatalogChanged -= _themeCatalogChangedHandler;
         }
 
         Navigation.Dispose();
@@ -147,7 +172,13 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         await ApplyThemeSettingsAsync();
     }
 
-    private async Task ApplyThemeSettingsAsync()
+    private Task SwitchThemeAsync(string themeId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(themeId);
+        return ApplyThemeSettingsAsync(themeId);
+    }
+
+    private async Task ApplyThemeSettingsAsync(string? requestedThemeId = null)
     {
         if (_themeManager is null)
         {
@@ -172,13 +203,20 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
                      .Build();
         var result = await _themeManager.ApplyThemeAsync(
             new ThemeRequest(
-                _themeManager.CurrentTheme?.ThemeId ?? IThemeManager.DEFAULT_THEME_ID,
+                requestedThemeId ??
+                _themeManager.CurrentTheme?.ThemeId ??
+                IThemeManager.DEFAULT_THEME_ID,
                 config,
                 ThemeTransitionReason.UserRequest));
         if (result.Status == ThemeTransitionStatus.Failed)
         {
+            this.RaisePropertyChanged(nameof(CurrentThemeId));
             var message = string.Join(" ", result.Diagnostics.Select(static diagnostic => diagnostic.Message));
             throw new ThemeLoadException(message, result.Exception);
+        }
+        if (result.Status == ThemeTransitionStatus.Superseded)
+        {
+            this.RaisePropertyChanged(nameof(CurrentThemeId));
         }
     }
 
@@ -187,6 +225,20 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         if (!_isDisposed)
         {
             SyncThemeState(args.State, args.Request.Config);
+        }
+    }
+
+    private void HandleThemeCatalogChanged(object? sender, ThemeCatalogChangedEventArgs args)
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        AvailableThemes = CaptureThemes(args.AvailableThemes);
+        if (args.CurrentTheme is not null)
+        {
+            CurrentThemeId = args.CurrentTheme.ThemeId;
         }
     }
 
@@ -211,6 +263,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     {
         if (state is not null)
         {
+            CurrentThemeId = state.ThemeId;
             _isDark = state.Appearance == ThemeAppearance.Dark;
             _isCompact = state.Algorithms.Contains("Compact", StringComparer.Ordinal);
             _baseAlgorithms = state.Algorithms
@@ -227,6 +280,13 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         _isMotionEnabled = ReadBooleanToken(config, nameof(SharedTokenKind.EnableMotion), true);
         _isWaveSpiritEnabled = _isMotionEnabled &&
                                ReadBooleanToken(config, nameof(SharedTokenKind.EnableWaveSpirit), true);
+    }
+
+    private static IReadOnlyList<ThemeInfo> CaptureThemes(IReadOnlyList<ThemeInfo>? themes)
+    {
+        return themes is null
+            ? Array.Empty<ThemeInfo>()
+            : Array.AsReadOnly(themes.ToArray());
     }
 
     private static bool ReadBooleanToken(ThemeConfig? config, string name, bool defaultValue)

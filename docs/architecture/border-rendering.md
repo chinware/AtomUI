@@ -12,13 +12,11 @@
 
 ## 2. 背景结论
 
-Ant Design 本地引用源码中，基础线宽仍是普通设计 token：
+AtomUI 把基础线宽定义为普通设计 Token：Seed 层声明 `LineWidth = 1`，Alias 和 Control Token
+在需要时继续消费该语义值。Token 层不按分辨率、显示器或 render scale 动态改写线宽。
 
-- `.referenceprojects/ant-design/components/theme/themes/seed.ts`：`lineWidth: 1`
-- `.referenceprojects/ant-design/components/theme/util/alias.ts`：alias token 保留 `lineWidth`
-- `.referenceprojects/ant-design/components/button/style/variant.ts`：Button 将 `lineWidth` 写入 CSS 变量，并生成普通 `border: var(--border-width) var(--border-style) var(--border-color)`
-
-Ant Design 并没有在 token 层按 4K 或普通屏动态改变边框宽度。它把 CSS `1px` 交给浏览器布局和渲染管线映射到物理像素。
+网页设计系统通常把基础线宽交给浏览器布局和渲染管线映射到物理像素；这只是视觉对照，不是 AtomUI
+架构的事实来源。
 
 AtomUI 是 Avalonia/.NET 桌面控件库，不能直接复用浏览器 CSS 管线。AtomUI 应把同样的职责放在绘制层：设计层仍表达 1 DIP，渲染层负责把它变成当前显示器 scale 下稳定且接近浏览器观感的实际绘制厚度。
 

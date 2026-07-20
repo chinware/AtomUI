@@ -1,6 +1,8 @@
 using System.Reflection;
 using AtomUI.Theme;
+using AtomUI.Theme.Definitions;
 using AtomUI.Theme.DesignTokens;
+using Avalonia.Media;
 using Shouldly;
 using Xunit;
 
@@ -21,11 +23,83 @@ public class ThemeLegacyApiRemovalTests
                      .Select(static @event => @event.Name)
                      .OrderBy(static name => name, StringComparer.Ordinal)
                      .ToArray();
+        var methods = typeof(IThemeManager)
+                      .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                      .Where(static method => !method.IsSpecialName)
+                      .Select(static method => method.Name)
+                      .OrderBy(static name => name, StringComparer.Ordinal)
+                      .ToArray();
 
-        properties.ShouldBe([nameof(IThemeManager.AvailableThemes), nameof(IThemeManager.CurrentTheme)]);
-        events.ShouldBe([nameof(IThemeManager.ThemeChangeFailed), nameof(IThemeManager.ThemeChanged)]);
+        properties.ShouldBe([
+            nameof(IThemeManager.AvailableThemes),
+            nameof(IThemeManager.CurrentTheme),
+            nameof(IThemeManager.ThemeCatalogDiagnostics)
+        ]);
+        events.ShouldBe([
+            nameof(IThemeManager.ThemeCatalogChanged),
+            nameof(IThemeManager.ThemeChangeFailed),
+            nameof(IThemeManager.ThemeChanged)
+        ]);
+        methods.ShouldBe([
+            nameof(IThemeManager.ApplyThemeAsync),
+            nameof(IThemeManager.ReloadThemesAsync)
+        ]);
         typeof(IThemeManager).GetProperty(nameof(IThemeManager.AvailableThemes))!.PropertyType
                              .ShouldBe(typeof(IReadOnlyList<ThemeInfo>));
+    }
+
+    [Fact]
+    public void Theme_Builder_And_Resolver_Public_Api_Matches_The_Planned_Contract()
+    {
+        var builderMethods = typeof(IThemeManagerBuilder)
+                             .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                             .Select(static method => method.Name)
+                             .OrderBy(static name => name, StringComparer.Ordinal)
+                             .ToArray();
+
+        builderMethods.ShouldBe([
+            nameof(IThemeManagerBuilder.AddControlThemesProvider),
+            nameof(IThemeManagerBuilder.AddControlToken),
+            nameof(IThemeManagerBuilder.AddInitializer),
+            nameof(IThemeManagerBuilder.AddLanguageProviders),
+            nameof(IThemeManagerBuilder.AddThemeDefinitionResolver),
+            nameof(IThemeManagerBuilder.UseUserThemeDirectory),
+            nameof(IThemeManagerBuilder.UseUserThemeDirectory),
+            nameof(IThemeManagerBuilder.WithApplicationId),
+            nameof(IThemeManagerBuilder.WithDefaultCultureInfo),
+            nameof(IThemeManagerBuilder.WithDefaultFontFamily),
+            nameof(IThemeManagerBuilder.WithDefaultFontFamily),
+            nameof(IThemeManagerBuilder.WithDefaultLanguageVariant),
+            nameof(IThemeManagerBuilder.WithFollowSystemThemes),
+            nameof(IThemeManagerBuilder.WithInitialTheme)
+        ]);
+        typeof(IThemeDefinitionResolver).GetProperty(nameof(IThemeDefinitionResolver.Id)).ShouldNotBeNull();
+        typeof(IThemeDefinitionResolver).GetProperty(nameof(IThemeDefinitionResolver.SupportsReload)).ShouldNotBeNull();
+        typeof(IThemeDefinitionResolver).GetMethod(nameof(IThemeDefinitionResolver.Resolve)).ShouldNotBeNull();
+        typeof(IThemeDefinitionSource).GetMethod(nameof(IThemeDefinitionSource.OpenRead)).ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void ThemeInfo_Exposes_Optional_ReadOnly_AccentColor_Without_Removing_The_Existing_Constructor()
+    {
+        var accentColorProperty = typeof(ThemeInfo).GetProperty(nameof(ThemeInfo.AccentColor));
+
+        accentColorProperty.ShouldNotBeNull();
+        accentColorProperty.PropertyType.ShouldBe(typeof(Color?));
+        accentColorProperty.SetMethod.ShouldBeNull();
+        typeof(ThemeInfo).GetConstructor([
+            typeof(string),
+            typeof(string),
+            typeof(ThemeAppearance),
+            typeof(bool)
+        ]).ShouldNotBeNull();
+        typeof(ThemeInfo).GetConstructor([
+            typeof(string),
+            typeof(string),
+            typeof(ThemeAppearance),
+            typeof(bool),
+            typeof(Color?)
+        ]).ShouldNotBeNull();
     }
 
     [Fact]

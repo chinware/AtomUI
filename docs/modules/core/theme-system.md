@@ -37,14 +37,14 @@
 
 ## 2. ThemeConfig 设计结论
 
-### 2.1 Ant Design 参考模型与 Avalonia 映射
+### 2.1 主题语义与 Avalonia 映射
 
-本架构的主题语义基于 Ant Design `6.4.5`（commit `66f2b2c72a`）、
-`@ant-design/cssinjs 2.1.2` 和 `@ant-design/cssinjs-utils 2.1.2` 的源码，而不是只参考公开 API
-名称。需要保留的基本原理是：
+AtomUI 主题系统以本项目的公开配置契约、Token 模型和运行时作用域为准。设计上沿用分层 Token、配置继承、
+有序算法链和作用域隔离等通用主题语义，但不把外部项目的具体版本、commit、包实现或源码快照作为架构约束。
+需要保持的 AtomUI 契约是：
 
-- ConfigProvider 对 Token 按 key 合并，对 Control 配置先按 identity、再按字段合并；`Algorithms` 整体替换。
-- `Inherit=false` 只切断父 ConfigProvider，仍从控件库默认主题基线开始计算。
+- `ThemeConfig` 对 Token 按 key 合并，对 Control 配置先按 identity、再按字段合并；`Algorithms` 整体替换。
+- `Inherit=false` 只切断父 `ThemeContext`，仍从 AtomUI 默认主题基线开始计算。
 - Token 按 Seed、Map、Alias、Control 四层派生，Control 可以覆盖自身消费的全局 Token。
 - 算法是有序 derivative 链；每个算法接收同一份 Seed 和前一算法的 Map 结果。
 - 主题计算和组件计算按完整内容缓存，缓存身份包含算法链和所有会改变结果的配置。
@@ -338,6 +338,7 @@ fallback。
   </Algorithms>
   <Tokens>
     <Token Name="ColorPrimary" Value="#1677FF" />
+    <Token Name="ColorLink" Value="#1677FF" />
   </Tokens>
   <Controls>
     <Control Catalog="AtomUI" Id="Button" Algorithm="Global">
@@ -469,6 +470,8 @@ Environment.SpecialFolder.ApplicationData/{ApplicationId}/Themes
 用户目录只枚举顶层 `*.theme.xml`，按规范化完整路径 ordinal 排序，不递归、不跟随 symlink/reparse point。
 默认最多 128 个文件、总原始字节 32 MiB；单文件仍受 Reader 的 4 MiB 和元素/Token 上限约束。目录不存在时
 Resolver 可以创建空目录；创建或枚举失败产生 diagnostic，不能退回当前工作目录或应用安装目录。
+Resolver 在枚举前冻结规范化后的目录真实路径；打开文件时使用平台 no-follow 语义，并从实际读取流再次执行总
+字节预算。路径检查结果不能代替文件句柄约束，避免检查后替换为链接时越过主题目录边界。
 
 ### 6.5 来源优先级与冲突
 
@@ -643,7 +646,8 @@ schema binding 或资源查询细节。
 
 新公开模型由以下对象组成：
 
-- `ThemeInfo`：Catalog 中可选择主题的只读元数据。
+- `ThemeInfo`：Catalog 中可选择主题的只读元数据；`AccentColor` 只投影 Theme Definition 中显式绑定成功的
+  `ColorPrimary`，未声明时为 `null`，不从运行时 Snapshot 或算法派生结果反向推断。
 - `ThemeRequest`：主题 id、`ThemeConfig` 和变更原因。
 - `ThemeState`：当前已提交主题的 id、算法、`Appearance`、仅用于观察和快速比较的 fingerprint，以及
   transition id。

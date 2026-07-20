@@ -49,6 +49,9 @@
             </atom:MenuItem>
             <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemTheme}"
                            Icon="{antdicons:AntDesignIconProvider Kind=BulbOutlined}">
+                <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemThemeSettings}"
+                               Tag="{x:Static workspaceviews:WindowMenuItemKind.ThemeCatalog}" />
+                <atom:MenuSeparator />
                 <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemDarkMode}"
                                ToggleType="CheckBox"
                                Tag="{x:Static workspaceviews:WindowMenuItemKind.DarkMode}" />

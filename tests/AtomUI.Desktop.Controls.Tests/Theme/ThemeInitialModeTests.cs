@@ -1,6 +1,7 @@
 using System.Globalization;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Schema;
@@ -58,6 +59,10 @@ public class ThemeInitialModeTests
         public ThemeRequest? FollowSystemLight { get; private set; }
         public ThemeRequest? FollowSystemDark { get; private set; }
 
+        public void AddThemeDefinitionResolver(IThemeDefinitionResolver resolver)
+        {
+        }
+
         public void AddControlToken(ControlTokenDescriptor descriptor)
         {
         }
@@ -87,6 +92,18 @@ public class ThemeInitialModeTests
         {
             FollowSystemLight = light;
             FollowSystemDark  = dark;
+        }
+
+        public void WithApplicationId(string applicationId)
+        {
+        }
+
+        public void UseUserThemeDirectory()
+        {
+        }
+
+        public void UseUserThemeDirectory(string directory)
+        {
         }
 
         public void WithDefaultFontFamily(FontFamily fontFamily)

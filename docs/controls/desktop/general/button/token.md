@@ -103,6 +103,15 @@ ButtonToken 当前按 Button 语义分为七类。
 
 用于 ghost 背景策略、文本按钮、链接按钮和实心按钮前景策略。Ghost 是背景呈现策略，Text / Link 是低强调动作表达。
 
+Text Token 必须保持以下语义：
+
+- `ButtonType=Text` 等价于 `Color=Default + Variant=Text`，文字使用 `TextTextColor`、
+  `TextTextHoverColor` 和 `TextTextActiveColor`，默认都来自 `ColorText`，不隐式跟随品牌主色。
+- `TextHoverBg` 默认来自 `ColorFillTertiary`；pressed 背景使用 `ColorFill`。
+- `Color=Primary + Variant=Text` 的 normal、hover、pressed 文字分别来自 `ColorPrimary`、
+  `ColorPrimaryHover`、`ColorPrimaryActive`，背景分别为透明、`ColorPrimaryBg`、`ColorPrimaryBorder`。
+- Danger Text 的 hover 背景使用 `ColorErrorBg`，pressed 背景使用 `ColorErrorBgActive`。
+
 ### 2.7 结构协同 Token
 
 - `DefaultShadow`
@@ -116,7 +125,7 @@ Button 多彩模型不在 ButtonToken 中展开所有颜色与 variant 组合。
 
 ButtonToken 保留 Button 组件常用语义值，例如 default、primary、danger、text、link、shadow、padding。Preset color 的 base / hover / active / light / shadow 来源于全局 palette 或通用 preset palette resource。
 
-Button 主题按以下职责使用 Token：
+Button 颜色状态按以下职责使用 Token：
 
 ```text
 ButtonToken
@@ -125,11 +134,14 @@ ButtonToken
 Palette
   提供 preset color 色阶
 
-Color selector
-  根据 EffectiveColor 选择 ButtonToken 或 Palette 值
+Effective color resolver
+  根据 EffectiveColor 选择 ButtonToken、SharedToken 或 Palette 值
 
-Variant selector
+Variant resolver
   将颜色变量映射到文字、背景、边框和阴影变量
+
+ControlTheme
+  只把最终主题变量投影到 normal、hover、pressed 和 disabled 视觉
 ```
 
 ButtonToken 不定义 `BlueSolidHoverBg`、`PurpleFilledActiveBg` 这类组合 Token。

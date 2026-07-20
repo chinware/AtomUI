@@ -376,6 +376,56 @@ public class GalleryBaseFoundationTests
         }
     }
 
+    [Fact]
+    public async Task Workspace_ViewModel_Switches_Theme_Id_And_Preserves_Orthogonal_Settings()
+    {
+        var configuration = CreateNavigationConfiguration(new Dictionary<EntityKey, int>());
+        var manager = Application.Current!.GetThemeManager()!;
+        ThemeRequest? committedRequest = null;
+        void HandleThemeChanged(object? _, ThemeChangedEventArgs args)
+        {
+            if (args.Request.Reason == ThemeTransitionReason.UserRequest)
+            {
+                committedRequest = args.Request;
+            }
+        }
+
+        manager.ThemeChanged += HandleThemeChanged;
+        var viewModel = new GalleryWorkspaceViewModel(configuration);
+        try
+        {
+            viewModel.AvailableThemes.Select(static theme => theme.Id).ShouldBe([
+                "DaybreakBlue",
+                "PolarGreen",
+                "SunsetOrange",
+                "GoldenPurple",
+                "Magenta"
+            ]);
+            viewModel.CurrentThemeId.ShouldBe(manager.CurrentTheme!.ThemeId);
+
+            await viewModel.ToggleDarkModeCommand.Execute(true).ToTask();
+            await viewModel.ToggleCompactModeCommand.Execute(true).ToTask();
+            await viewModel.ToggleMotionCommand.Execute(false).ToTask();
+            committedRequest = null;
+
+            await viewModel.SwitchThemeCommand.Execute("PolarGreen").ToTask();
+
+            viewModel.CurrentThemeId.ShouldBe("PolarGreen");
+            manager.CurrentTheme!.ThemeId.ShouldBe("PolarGreen");
+            manager.CurrentTheme.Appearance.ShouldBe(ThemeAppearance.Dark);
+            manager.CurrentTheme.Algorithms.ShouldBe(["Default", "Compact", "Dark"]);
+            committedRequest.ShouldNotBeNull();
+            ReadToken(committedRequest!.Config, nameof(SharedTokenKind.EnableMotion)).ShouldBe("false");
+            ReadToken(committedRequest.Config, nameof(SharedTokenKind.EnableWaveSpirit)).ShouldBe("false");
+        }
+        finally
+        {
+            manager.ThemeChanged -= HandleThemeChanged;
+            viewModel.Dispose();
+            await RestoreDefaultThemeAsync(manager);
+        }
+    }
+
     private static GalleryBaseConfiguration CreateNavigationConfiguration(
         IDictionary<EntityKey, int> routeCreationCounts)
     {
@@ -413,7 +463,7 @@ public class GalleryBaseFoundationTests
                      .Build();
         await manager.ApplyThemeAsync(
             new ThemeRequest(
-                manager.CurrentTheme?.ThemeId ?? IThemeManager.DEFAULT_THEME_ID,
+                IThemeManager.DEFAULT_THEME_ID,
                 config,
                 ThemeTransitionReason.UserRequest));
     }

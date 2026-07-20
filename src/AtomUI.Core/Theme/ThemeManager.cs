@@ -32,10 +32,16 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
     internal ThemeSnapshot? CurrentSnapshot => Volatile.Read(ref _currentSnapshot);
     public ThemeState? CurrentTheme => Volatile.Read(ref _currentTheme);
     public IReadOnlyList<ThemeInfo> AvailableThemes =>
-        _compiledThemeCatalog?.AvailableThemes ?? Array.Empty<ThemeInfo>();
+        Volatile.Read(ref _compiledThemeCatalog)?.AvailableThemes ?? Array.Empty<ThemeInfo>();
+    public IReadOnlyList<ThemeDiagnostic> ThemeCatalogDiagnostics =>
+        Volatile.Read(ref _themeCatalogDiagnostics);
+    internal CompiledThemeCatalog CompiledThemeCatalog =>
+        Volatile.Read(ref _compiledThemeCatalog) ??
+        throw new InvalidOperationException("The compiled theme catalog has not been initialized.");
 
     public event EventHandler<ThemeChangedEventArgs>? ThemeChanged;
     public event EventHandler<ThemeChangeFailedEventArgs>? ThemeChangeFailed;
+    public event EventHandler<ThemeCatalogChangedEventArgs>? ThemeCatalogChanged;
     public event EventHandler<LanguageVariantChangedEventArgs>? LanguageVariantChanged;
 
     private readonly List<ControlTokenDescriptor> _controlTokenDescriptors;
@@ -49,6 +55,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
     private ThemeTransaction? _activeTransaction;
     private ThemeTransaction? _queuedTransaction;
     private ThemeRequestCacheKey? _lastCommittedRequestKey;
+    private ThemeRequest? _lastCommittedRequest;
     private ThemeSnapshot? _currentSnapshot;
     private ThemeSnapshotCacheKey? _currentSnapshotKey;
     private ThemeTokenResourceProvider? _rootTokenResourceProvider;
@@ -58,6 +65,11 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
     private Application? _application;
     private ThemeSchemaRegistry? _startupRegistry;
     private CompiledThemeCatalog? _compiledThemeCatalog;
+    private IReadOnlyList<IThemeDefinitionResolver> _themeDefinitionResolvers =
+        Array.AsReadOnly(new[] { CoreThemeDefinitionResolver.Create() });
+    private string _applicationId = typeof(ThemeManager).Assembly.GetName().Name!;
+    private string _applicationDataRoot = string.Empty;
+    private IReadOnlyList<ThemeDiagnostic> _themeCatalogDiagnostics = Array.Empty<ThemeDiagnostic>();
     private ThemeRequest _initialRequest = new(
         IThemeManager.DEFAULT_THEME_ID,
         null,
@@ -67,6 +79,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
     private bool _applicationInitialized;
     private long _generation;
     private long _nextTransitionId;
+    private long _nextCatalogReloadGeneration;
     
     private readonly Dictionary<LanguageVariant, ResourceDictionary> _languages;
     private List<ILanguageProvider>? _languageProviders;
@@ -107,6 +120,20 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         _followSystemDarkRequest   = followSystemDarkRequest;
     }
 
+    internal void ConfigureThemeDefinitions(
+        IReadOnlyList<IThemeDefinitionResolver> resolvers,
+        string applicationId,
+        string applicationDataRoot)
+    {
+        ArgumentNullException.ThrowIfNull(resolvers);
+        ThemeApplicationIdentity.Validate(applicationId, nameof(applicationId));
+        ArgumentNullException.ThrowIfNull(applicationDataRoot);
+
+        _themeDefinitionResolvers = Array.AsReadOnly(resolvers.ToArray());
+        _applicationId            = applicationId;
+        _applicationDataRoot      = applicationDataRoot;
+    }
+
     internal void InitializeApplication(
         Application application,
         ThemeAppearance? initialSystemAppearance = null)
@@ -119,7 +146,22 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
 
         _application = application;
         _startupRegistry = CreateStartupRegistry();
-        _compiledThemeCatalog = CompiledThemeCatalog.LoadBuiltIn(_startupRegistry);
+        var catalogResult = CompiledThemeCatalog.LoadInitial(
+            _startupRegistry,
+            _themeDefinitionResolvers,
+            new ThemeDefinitionResolveContext(
+                _applicationId,
+                _applicationDataRoot,
+                false,
+                0));
+        if (!catalogResult.Success)
+        {
+            throw new ThemeLoadException(
+                CompiledThemeCatalog.Describe(catalogResult.Diagnostics),
+                catalogResult.Exception);
+        }
+        _compiledThemeCatalog = catalogResult.Catalog;
+        _themeCatalogDiagnostics = catalogResult.Diagnostics;
         MountStaticResources();
 
         var request = _followSystemLightRequest is null
@@ -238,6 +280,277 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         }
 
         return WaitForCallerAsync(transaction!.Completion, cancellationToken);
+    }
+
+    public Task<ThemeCatalogReloadResult> ReloadThemesAsync(
+        CancellationToken cancellationToken = default)
+    {
+        VerifyTransitionAccess();
+        if (!_applicationInitialized ||
+            _compiledThemeCatalog is null ||
+            _startupRegistry is null ||
+            _currentSnapshot is null ||
+            _lastCommittedRequest is null)
+        {
+            throw new InvalidOperationException(
+                "ThemeManager must be initialized before its theme catalog can be reloaded.");
+        }
+
+        long mutationGeneration;
+        long reloadGeneration;
+        long transitionId;
+        ThemeScopeCapture scopeCapture;
+        CompiledThemeCatalog currentCatalog;
+        ThemeSnapshot currentSnapshot;
+        ThemeSnapshotCacheKey? currentSnapshotKey;
+        ThemeRequest currentRequest;
+        IReadOnlyList<ThemeDiagnostic> currentDiagnostics;
+        lock (_transactionGate)
+        {
+            mutationGeneration = ++_generation;
+            reloadGeneration = ++_nextCatalogReloadGeneration;
+            transitionId = NextTransitionId();
+            scopeCapture = _scopeGraph.CaptureAll();
+            currentCatalog = _compiledThemeCatalog;
+            currentSnapshot = _currentSnapshot;
+            currentSnapshotKey = _currentSnapshotKey;
+            currentRequest = _lastCommittedRequest;
+            currentDiagnostics = _themeCatalogDiagnostics;
+        }
+
+        var transaction = ProcessCatalogReloadAsync(
+            mutationGeneration,
+            reloadGeneration,
+            transitionId,
+            scopeCapture,
+            currentCatalog,
+            currentSnapshot,
+            currentSnapshotKey,
+            currentRequest,
+            currentDiagnostics);
+        return cancellationToken.CanBeCanceled
+            ? transaction.WaitAsync(cancellationToken)
+            : transaction;
+    }
+
+    private async Task<ThemeCatalogReloadResult> ProcessCatalogReloadAsync(
+        long mutationGeneration,
+        long reloadGeneration,
+        long transitionId,
+        ThemeScopeCapture scopeCapture,
+        CompiledThemeCatalog currentCatalog,
+        ThemeSnapshot currentSnapshot,
+        ThemeSnapshotCacheKey? currentSnapshotKey,
+        ThemeRequest currentRequest,
+        IReadOnlyList<ThemeDiagnostic> currentDiagnostics)
+    {
+        await _transactionExecutionGate.WaitAsync().ConfigureAwait(true);
+        try
+        {
+            CatalogReloadPreparation prepared;
+            try
+            {
+                prepared = await Task.Run(() => PrepareCatalogReload(
+                    mutationGeneration,
+                    reloadGeneration,
+                    transitionId,
+                    scopeCapture,
+                    currentCatalog,
+                    currentSnapshot,
+                    currentSnapshotKey,
+                    currentRequest,
+                    currentDiagnostics)).ConfigureAwait(true);
+            }
+            catch (Exception exception)
+            {
+                prepared = CatalogReloadPreparation.Failed(
+                    [new ThemeDiagnostic(
+                        "ATMTHM4201",
+                        ThemeDiagnosticSeverity.Error,
+                        nameof(ThemeManager),
+                        "$",
+                        $"Theme catalog reload failed during preparation: " +
+                        exception.GetBaseException().Message)],
+                    exception);
+            }
+
+            if (prepared.Success && prepared.HasChanges && prepared.SnapshotChanged)
+            {
+                try
+                {
+                    PrepareCommitPayload(prepared.ThemeTransaction!);
+                }
+                catch (Exception exception)
+                {
+                    prepared = CatalogReloadPreparation.Failed(
+                        prepared.Diagnostics.Append(new ThemeDiagnostic(
+                            "ATMTHM4202",
+                            ThemeDiagnosticSeverity.Error,
+                            nameof(ThemeManager),
+                            "$",
+                            "Theme catalog reload commit payload could not be staged: " +
+                            exception.GetBaseException().Message)).ToArray(),
+                        exception);
+                }
+            }
+
+            lock (_transactionGate)
+            {
+                if (mutationGeneration != _generation ||
+                    !_scopeGraph.IsCurrent(scopeCapture))
+                {
+                    return new ThemeCatalogReloadResult(
+                        reloadGeneration,
+                        ThemeCatalogReloadStatus.Superseded,
+                        AvailableThemes,
+                        _currentTheme,
+                        prepared.Diagnostics,
+                        Array.Empty<ThemeDiagnostic>(),
+                        null);
+                }
+
+                if (!prepared.Success)
+                {
+                    _themeCatalogDiagnostics = prepared.Diagnostics;
+                    return new ThemeCatalogReloadResult(
+                        reloadGeneration,
+                        ThemeCatalogReloadStatus.Failed,
+                        AvailableThemes,
+                        _currentTheme,
+                        prepared.Diagnostics,
+                        Array.Empty<ThemeDiagnostic>(),
+                        prepared.Exception);
+                }
+
+                if (!prepared.HasChanges)
+                {
+                    _themeCatalogDiagnostics = prepared.Diagnostics;
+                    return new ThemeCatalogReloadResult(
+                        reloadGeneration,
+                        ThemeCatalogReloadStatus.NoOp,
+                        AvailableThemes,
+                        _currentTheme,
+                        prepared.Diagnostics,
+                        Array.Empty<ThemeDiagnostic>(),
+                        null);
+                }
+
+                _compiledThemeCatalog = prepared.Catalog;
+                _themeCatalogDiagnostics = prepared.Diagnostics;
+                if (prepared.SnapshotChanged)
+                {
+                    CommitCore(prepared.ThemeTransaction!);
+                }
+            }
+
+            var publishDiagnostics = new List<ThemeDiagnostic>();
+            if (prepared.SnapshotChanged)
+            {
+                publishDiagnostics.AddRange(Publish(prepared.ThemeTransaction!));
+            }
+
+            ThemeEventDispatcher.Dispatch(
+                ThemeCatalogChanged,
+                this,
+                new ThemeCatalogChangedEventArgs(
+                    reloadGeneration,
+                    AvailableThemes,
+                    CurrentTheme),
+                publishDiagnostics,
+                nameof(ThemeCatalogChanged));
+            return new ThemeCatalogReloadResult(
+                reloadGeneration,
+                ThemeCatalogReloadStatus.Committed,
+                AvailableThemes,
+                CurrentTheme,
+                prepared.Diagnostics,
+                publishDiagnostics,
+                null);
+        }
+        finally
+        {
+            _transactionExecutionGate.Release();
+        }
+    }
+
+    private CatalogReloadPreparation PrepareCatalogReload(
+        long mutationGeneration,
+        long reloadGeneration,
+        long transitionId,
+        ThemeScopeCapture scopeCapture,
+        CompiledThemeCatalog currentCatalog,
+        ThemeSnapshot currentSnapshot,
+        ThemeSnapshotCacheKey? currentSnapshotKey,
+        ThemeRequest currentRequest,
+        IReadOnlyList<ThemeDiagnostic> currentDiagnostics)
+    {
+        var catalogResult = CompiledThemeCatalog.LoadReload(
+            _startupRegistry!,
+            currentCatalog,
+            _themeDefinitionResolvers,
+            new ThemeDefinitionResolveContext(
+                _applicationId,
+                _applicationDataRoot,
+                true,
+                reloadGeneration));
+        if (!catalogResult.Success)
+        {
+            return CatalogReloadPreparation.Failed(
+                catalogResult.Diagnostics,
+                catalogResult.Exception);
+        }
+
+        var catalog = catalogResult.Catalog!;
+        var targetThemeId = catalog.Contains(currentRequest.ThemeId)
+            ? currentRequest.ThemeId
+            : catalog.DefaultDefinition.Info.Id;
+        var request = currentRequest with
+        {
+            ThemeId = targetThemeId,
+            Reason = ThemeTransitionReason.CatalogReload
+        };
+        var transaction = new ThemeTransaction(
+            transitionId,
+            mutationGeneration,
+            request,
+            ThemeRequestCacheKey.Create(request))
+        {
+            ScopeCapture = scopeCapture
+        };
+        var themePreparation = PrepareCompiledTheme(request, currentSnapshot, catalog);
+        transaction.Preparation = themePreparation;
+        if (!themePreparation.Success)
+        {
+            return CatalogReloadPreparation.Failed(
+                catalogResult.Diagnostics.Concat(themePreparation.Diagnostics).ToArray(),
+                themePreparation.Exception);
+        }
+
+        var snapshotChanged = currentSnapshotKey is null ||
+                              !currentSnapshotKey.Value.Equals(themePreparation.SnapshotKey);
+        if (snapshotChanged)
+        {
+            var scopePreparation = PrepareScopeCapture(
+                themePreparation.Snapshot!,
+                scopeCapture,
+                useLastValidConfig: true);
+            if (!scopePreparation.Success)
+            {
+                return CatalogReloadPreparation.Failed(
+                    catalogResult.Diagnostics.Concat(scopePreparation.Diagnostics).ToArray(),
+                    scopePreparation.Exception);
+            }
+            transaction.PreparedScopes = scopePreparation.Snapshots;
+        }
+
+        var catalogChanged = !currentCatalog.ContentEquals(catalog);
+        var diagnosticsChanged = !currentDiagnostics.SequenceEqual(catalogResult.Diagnostics);
+        return CatalogReloadPreparation.Succeeded(
+            catalog,
+            transaction,
+            snapshotChanged,
+            catalogChanged || snapshotChanged || diagnosticsChanged,
+            catalogResult.Diagnostics);
     }
 
     private async Task ProcessTransactionQueueAsync(ThemeTransaction transaction)
@@ -432,6 +745,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         _currentSnapshotKey        = preparation.SnapshotKey;
         _currentTheme              = transaction.PreparedState;
         _lastCommittedRequestKey   = transaction.RequestKey;
+        _lastCommittedRequest      = transaction.Request;
     }
 
     private IReadOnlyList<ThemeDiagnostic> Publish(ThemeTransaction transaction)
@@ -897,11 +1211,12 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
 
     private ThemeTransactionPreparation PrepareCompiledTheme(
         ThemeRequest request,
-        ThemeSnapshot? currentSnapshot)
+        ThemeSnapshot? currentSnapshot,
+        CompiledThemeCatalog? catalog = null)
     {
         try
         {
-            var entry = _compiledThemeCatalog!.Get(request.ThemeId);
+            var entry = (catalog ?? _compiledThemeCatalog!).Get(request.ThemeId);
             var config = AddDefaultFont(request.Config) ?? new ThemeConfigBuilder().Build();
             var normalized = ThemeConfigNormalizer.Normalize(config, _startupRegistry!);
             if (!normalized.Success)
@@ -1159,6 +1474,64 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         {
             return new ScopePreparation(
                 Array.Empty<ThemeScopeStagedSnapshot>(),
+                diagnostics,
+                exception);
+        }
+    }
+
+    private sealed class CatalogReloadPreparation
+    {
+        private CatalogReloadPreparation(
+            CompiledThemeCatalog? catalog,
+            ThemeTransaction? themeTransaction,
+            bool snapshotChanged,
+            bool hasChanges,
+            IReadOnlyList<ThemeDiagnostic> diagnostics,
+            Exception? exception)
+        {
+            Catalog          = catalog;
+            ThemeTransaction = themeTransaction;
+            SnapshotChanged  = snapshotChanged;
+            HasChanges       = hasChanges;
+            Diagnostics      = Array.AsReadOnly(diagnostics.ToArray());
+            Exception        = exception;
+        }
+
+        internal CompiledThemeCatalog? Catalog { get; }
+        internal ThemeTransaction? ThemeTransaction { get; }
+        internal bool SnapshotChanged { get; }
+        internal bool HasChanges { get; }
+        internal IReadOnlyList<ThemeDiagnostic> Diagnostics { get; }
+        internal Exception? Exception { get; }
+        internal bool Success => Catalog is not null && ThemeTransaction is not null && Exception is null &&
+                                 Diagnostics.All(static diagnostic =>
+                                     diagnostic.Severity != ThemeDiagnosticSeverity.Error);
+
+        internal static CatalogReloadPreparation Succeeded(
+            CompiledThemeCatalog catalog,
+            ThemeTransaction transaction,
+            bool snapshotChanged,
+            bool hasChanges,
+            IReadOnlyList<ThemeDiagnostic> diagnostics)
+        {
+            return new CatalogReloadPreparation(
+                catalog,
+                transaction,
+                snapshotChanged,
+                hasChanges,
+                diagnostics,
+                null);
+        }
+
+        internal static CatalogReloadPreparation Failed(
+            IReadOnlyList<ThemeDiagnostic> diagnostics,
+            Exception? exception)
+        {
+            return new CatalogReloadPreparation(
+                null,
+                null,
+                false,
+                false,
                 diagnostics,
                 exception);
         }

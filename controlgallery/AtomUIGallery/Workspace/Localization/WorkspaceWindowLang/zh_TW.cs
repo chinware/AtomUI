@@ -10,6 +10,7 @@ internal partial class zh_TW
 
     public const string MenuItemSettings = "設置";
     public const string MenuItemTheme = "主題";
+    public const string MenuItemThemeSettings = "主題設定";
     public const string MenuItemLanguage = "語言";
 
     public const string MenuItemWindowOptions = "窗口選項";
@@ -26,4 +27,3 @@ internal partial class zh_TW
     public const string MenuItemEnableWaveSpirit = "開啓波浪動畫";
 
 }
-

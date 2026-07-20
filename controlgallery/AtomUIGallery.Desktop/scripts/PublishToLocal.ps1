@@ -250,6 +250,9 @@ if ($publishAotEnabled) {
         $buildType,
         "--no-restore",
         "-p:GalleryPublishAot=true",
+        "--disable-build-servers",
+        "-m:1",
+        "/nr:false",
         "--nologo",
         "-v:minimal"
     )

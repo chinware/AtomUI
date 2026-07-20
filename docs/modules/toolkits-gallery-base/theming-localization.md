@@ -63,6 +63,28 @@ this.UseAtomUI(builder =>
 
 GalleryBase 依赖 AtomUI Desktop 控件作为 Shell 默认 UI，因此产品应先注册 Desktop 控件主题。
 
+GalleryBase 本身不注册产品主题定义。具体产品通过 `IThemeDefinitionResolver` 显式追加自己的 XML 资源；例如
+AtomUIGallery 在 `UseGalleryControls()` 中注册四个产品主题，而单独使用 `UseGalleryBase()` 的应用不会看到这些主题。
+
+## Shell 主题选择状态
+
+`GalleryWorkspaceViewModel` 把 ThemeManager 已提交的 Catalog 和主题状态投影成 Shell 可消费的只读状态：
+
+- `AvailableThemes`：`IThemeManager.AvailableThemes` 的防御性快照；`ThemeCatalogChanged` 后整体替换。
+- `CurrentThemeId`：只由已提交的 `ThemeChanged`/Catalog 回退状态更新，不把菜单点击当成提交结果。
+- `SwitchThemeCommand`：接收 Theme Id，并沿统一请求路径组合 Dark、Compact、Motion 和 Wave Spirit 设置。
+
+主题色切换只改变 `ThemeRequest.ThemeId`。AtomUIGallery 的内置产品主题在对应 Theme Definition XML 中显式声明
+相同颜色的 `ColorPrimary` 与 `ColorLink`，使品牌控件和 Link 同步换色；`ColorInfo` 等语义色保持独立。颜色 Seed
+不写入运行时 `ThemeConfig`。Dark、Compact、Motion 和 Wave Spirit 与主题 Id 正交组合；失败或被更新请求替代时，
+Shell 会重新投影已提交的 `CurrentThemeId`，避免 Radio 菜单停留在未提交选项。
+
+ViewModel 对 `ThemeChanged`、`ThemeCatalogChanged` 和语言事件都保存对称的 handler，并在 `Dispose()` 中解除订阅。
+产品窗口可以基于 `AvailableThemes` 动态创建同组 Radio 菜单，但不应复制主题名称/Id，也不应自行解析 XML。
+AtomUIGallery 将这些 Radio 项放在本地化的 Theme Settings 子菜单中；主题声明 `AccentColor` 时，菜单项在文字右侧
+显示 `12 × 12`、`2px` 圆角的实心正方形色块，未声明时不创建占位色块。Dark、Compact、Motion 和 Wave Spirit
+仍是外层 Theme 菜单中的正交开关。
+
 ## ControlThemesProvider
 
 ```text
@@ -217,6 +239,8 @@ foreach (var provider in languageProviders)
 ## Browser 主题限制
 
 Browser 使用同一套主题 Provider，但要避免：
+
+- 隐式启用用户主题目录；Browser 只能使用随应用发布的显式 Resolver。
 
 - 依赖仅 Desktop 原生窗口 API 的主题资源。
 - 在 theme 中引用 Desktop-only 控件模板。

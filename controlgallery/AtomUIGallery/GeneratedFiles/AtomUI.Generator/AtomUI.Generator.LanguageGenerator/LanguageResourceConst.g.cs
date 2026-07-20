@@ -7716,6 +7716,7 @@ namespace AtomUIGallery.Localization
         MenuItemLanguage,
         MenuItemSettings,
         MenuItemTheme,
+        MenuItemThemeSettings,
         MenuItemWindowOptions,
         WindowTitle
     }

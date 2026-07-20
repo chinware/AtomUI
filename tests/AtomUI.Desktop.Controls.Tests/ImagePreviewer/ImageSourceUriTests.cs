@@ -9,10 +9,10 @@ public class ImageSourceUriTests
     [Fact]
     public void Parse_Classifies_Avalonia_Resource_Uri()
     {
-        var source = ImageSourceUri.Parse("avares://AtomUI.Core/Assets/Themes/DaybreakBlue.xml");
+        var source = ImageSourceUri.Parse("avares://AtomUI.Core/Assets/Themes/DaybreakBlue.theme.xml");
 
         source.Kind.ShouldBe(ImageSourceUriKind.AvaloniaResource);
-        source.CacheKey.ShouldBe("avares://AtomUI.Core/Assets/Themes/DaybreakBlue.xml");
+        source.CacheKey.ShouldBe("avares://AtomUI.Core/Assets/Themes/DaybreakBlue.theme.xml");
     }
 
     [Fact]
