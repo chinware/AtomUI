@@ -7,4 +7,8 @@
   <Algorithms>
     <Algorithm Id="Default" />
   </Algorithms>
+  <Tokens>
+    <Token Name="ColorPrimary" Value="#1677FF" />
+    <Token Name="ColorLink" Value="#1677FF" />
+  </Tokens>
 </Theme>

@@ -24976,6 +24976,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemLanguage] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.en_US.MenuItemLanguage;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemSettings] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.en_US.MenuItemSettings;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemTheme] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.en_US.MenuItemTheme;
+                dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemThemeSettings] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.en_US.MenuItemThemeSettings;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemWindowOptions] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.en_US.MenuItemWindowOptions;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.WindowTitle] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.en_US.WindowTitle;
             }
@@ -25017,6 +25018,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemLanguage] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_CN.MenuItemLanguage;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemSettings] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_CN.MenuItemSettings;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemTheme] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_CN.MenuItemTheme;
+                dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemThemeSettings] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_CN.MenuItemThemeSettings;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemWindowOptions] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_CN.MenuItemWindowOptions;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.WindowTitle] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_CN.WindowTitle;
             }
@@ -25058,6 +25060,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemLanguage] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_TW.MenuItemLanguage;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemSettings] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_TW.MenuItemSettings;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemTheme] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_TW.MenuItemTheme;
+                dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemThemeSettings] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_TW.MenuItemThemeSettings;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.MenuItemWindowOptions] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_TW.MenuItemWindowOptions;
                 dictionary[global::AtomUIGallery.Localization.WorkspaceWindowLangResourceKind.WindowTitle] = global::AtomUIGallery.Workspace.Localization.WorkspaceWindowLang.zh_TW.WindowTitle;
             }

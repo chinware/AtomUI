@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Xml.Linq;
 using Shouldly;
 using Xunit;
 
@@ -136,6 +137,66 @@ public class WorkspaceWindowLayoutTests
         source.ShouldContain("waveSpiritMenuItem.IsChecked = false");
         source.ShouldContain("FindSiblingMenuItem(menuItem, WindowMenuItemKind.Motion)");
         source.ShouldContain("motionMenuItem.IsChecked = true");
+    }
+
+    [Fact]
+    public void Workspace_Window_Builds_Theme_Color_Radio_Items_From_The_ViewModel()
+    {
+        var viewSource = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+        var codeSource = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml.cs"));
+
+        viewSource.ShouldContain("WindowMenuItemKind.ThemeCatalog");
+        viewSource.ShouldContain("<atom:MenuSeparator />");
+        codeSource.ShouldContain("ViewModel.AvailableThemes");
+        codeSource.ShouldContain("GroupName        = ThemeColorGroupName");
+        codeSource.ShouldContain("Command          = ViewModel.SwitchThemeCommand");
+        codeSource.ShouldContain("CommandParameter = theme.Id");
+        codeSource.ShouldContain("theme.AccentColor is { } accentColor");
+        codeSource.ShouldContain("Width               = 12");
+        codeSource.ShouldContain("Height              = 12");
+        codeSource.ShouldContain("CornerRadius        = new CornerRadius(2)");
+        codeSource.ShouldContain("Background          = new SolidColorBrush(accentColor)");
+        codeSource.ShouldNotContain("ReloadThemesCommand");
+    }
+
+    [Fact]
+    public void Workspace_Window_Nests_Theme_Choices_Under_A_Localized_Settings_Submenu()
+    {
+        var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+        var document = XDocument.Parse(source);
+        XNamespace atom = "https://atomui.net";
+        var topLevelItems = document.Descendants(atom + "Menu")
+                                    .Single()
+                                    .Elements(atom + "MenuItem")
+                                    .ToArray();
+        var themeMenuItem = topLevelItems.Single(static item =>
+            item.Attribute("Header")?.Value.Contains("MenuItemTheme}", StringComparison.Ordinal) == true);
+
+        themeMenuItem.Attribute("Tag").ShouldBeNull();
+        var children = themeMenuItem.Elements().ToArray();
+        children.Length.ShouldBe(6);
+        children[0].Name.ShouldBe(atom + "MenuItem");
+        children[0].Attribute("Header")!.Value.ShouldContain("MenuItemThemeSettings");
+        children[0].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.ThemeCatalog");
+        children[1].Name.ShouldBe(atom + "MenuSeparator");
+        children[2].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.DarkMode");
+        children[3].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.Compact");
+        children[4].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.Motion");
+        children[5].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.WaveSpirit");
+    }
+
+    [Theory]
+    [InlineData("en_US.cs", "public const string MenuItemThemeSettings = \"Theme Settings\";")]
+    [InlineData("zh_CN.cs", "public const string MenuItemThemeSettings = \"主题设置\";")]
+    [InlineData("zh_TW.cs", "public const string MenuItemThemeSettings = \"主題設定\";")]
+    public void Workspace_Window_Localizes_The_Theme_Settings_Submenu(
+        string fileName,
+        string expectedConstant)
+    {
+        var source = File.ReadAllText(GetRepoFile(
+            $"controlgallery/AtomUIGallery/Workspace/Localization/WorkspaceWindowLang/{fileName}"));
+
+        source.ShouldContain(expectedConstant);
     }
 
     [Fact]

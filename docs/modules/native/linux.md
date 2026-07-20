@@ -12,8 +12,8 @@ AtomUI 在 Linux 上有两条完全不同的窗口后端路径：
 不得只用 `OperatingSystem.IsLinux()` 决定调用 X11 API。所有 Xlib/XCB 路径还必须验证窗口后端为
 X11；原生 Wayland、Linux framebuffer 和 headless 后端都不是 X11。
 
-本文以 `/workspace/projects/ReferenceProjects/Avalonia` 的 `12.1.0` tag
-（commit `a21b9f573172f705a944dcc8aad7f036b9986f39`）为 Avalonia 行为事实源。
+本文以 AtomUI 当前公开的平台契约、后端隔离规则和验证条件为准。Avalonia 内部类型仅用于解释集成边界，
+不能作为 AtomUI 可直接调用的稳定 API。
 
 ## X11 能力
 
@@ -61,7 +61,7 @@ normal 状态写入阴影 extents；最大化和全屏写入全零，避免 Mutt
 
 ## Wayland 能力与线程模型
 
-Avalonia 12.1 的 Wayland 后端使用专用 `AvaloniaWayland` worker 线程：
+Avalonia Wayland 后端使用专用 `AvaloniaWayland` worker 线程：
 
 ```text
 UI thread WindowImpl
@@ -82,7 +82,7 @@ UI thread WindowImpl
 - `WindowImpl.SetShadowExtents()` 通过 proxy 更新 persistent surface；`WSurface` 再根据 shadow extents
   调用 `xdg_surface.set_window_geometry`。
 
-Wayland 核心协议虽然有 `wl_surface.set_input_region`，Avalonia 12.1 还没有公开对应 API。AtomUI 当前
+Wayland 核心协议虽然有 `wl_surface.set_input_region`，但当前公开框架 API 不能表达该能力。AtomUI 当前
 `WaylandWindowReflectionExtensions` 从私有 proxy 中取出真实 target，并由 `WaylandWindowUtils` 直接调用
 NWayland。这绕过了 worker marshalling 和重连模型，只能作为当前技术债记录，不能视为线程安全或受
 Avalonia 支持的 Native 扩展点。后续正确实现应进入 Avalonia persistent surface/proxy，并通过
@@ -96,14 +96,14 @@ Wayland 的 `NeedsManagedDecorations` 来自 xdg-decoration 协商：
 - Server-side mode：`NeedsManagedDecorations=false`，由 compositor 提供 SSD。
 - 协商结果变化时触发 `DrawnDecorationsRequestChanged`。
 
-`WindowDecorations` 在 Wayland 上不是可逆的 CSD/SSD toggle。Avalonia 12.1 的
+`WindowDecorations` 在 Wayland 上不是可逆的 CSD/SSD toggle。当前后端的
 `SetWindowDecorations(None/TitleBar)` 会设置 `_csdSticky=true` 并销毁 decoration object，之后设置
 `Full` 也不会恢复 SSD。因此，AtomUI 不能在 `IsCsdEnabled=False` 时无条件设置
 `WindowDecorations=None`；这会把刚协商出的 SSD 立即永久切回 CSD。
 
 ## 依赖和边界
 
-`AtomUI.Native` 当前直接引用 `NWayland 0.11.0`，而 `Avalonia.Wayland 12.1.0` 也依赖同一版本。
+`AtomUI.Native` 与 `Avalonia.Wayland` 共享 NWayland 类型，必须在依赖升级时验证最终解析版本和 ABI 兼容性。
 `NWayland` 因而会进入所有引用 `AtomUI.Native` 的依赖图，包括 Browser 的共享项目闭包。Browser 项目
 目前通过内部 WASM item 过滤桌面 assembly，这能消除已知 P/Invoke collector warning，但不能消除
 restore 图中的桌面依赖，也不是理想的模块边界。
@@ -113,7 +113,7 @@ restore 图中的桌面依赖，也不是理想的模块边界。
 Avalonia 控件生命周期和状态机；`AtomUI.Native` 只负责已经确定后端之后的原生调用，不负责主题、
 reflection discovery 或窗口策略。
 
-## 关键源码
+## 实现与升级检查入口
 
 ### AtomUI
 
@@ -127,12 +127,11 @@ reflection discovery 或窗口策略。
 - `src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs`
 - `src/AtomUI.Desktop.Controls/Window/WaylandWindowReflectionExtensions.cs`
 
-### Avalonia 12.1.0
+### 框架集成验证项
 
-- `src/Avalonia.Wayland/WindowImpl.cs`
-- `src/Avalonia.Wayland/WindowImpl.Sink.cs`
-- `src/Avalonia.Wayland/Server/WaylandWorkerClient.cs`
-- `src/Avalonia.Wayland/Server/Persistent/IWXdgTopLevel.cs`
-- `src/Avalonia.Wayland/Server/Persistent/WSurface.cs`
-- `src/Avalonia.Controls/TopLevelHost.Decorations.cs`
-- `src/Avalonia.X11/X11Window.cs`
+- Wayland 窗口只向 UI 线程暴露 proxy，真实协议对象留在 worker 线程。
+- 普通 surface 状态通过 commit 队列提交，不能从 UI 线程直接操作协议对象。
+- CSD/SSD 协商、shadow extents 与 window geometry 保持同一状态传播链。
+- X11 路径继续以 `XID` descriptor 为门槛，不能退化为 Linux OS 判断。
+
+框架升级时应针对当前依赖重新验证这些行为，不在长期文档中固化外部文件路径、行号或源码快照。

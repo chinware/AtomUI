@@ -25,7 +25,9 @@ Button.cs 保留公共属性、事件和接口实现入口；内部 helper 可�
 
 `Button` 是状态归一中心。它同时承担 Avalonia Button 基类扩展、AtomUI 主题状态同步、CompactSpace 圆角和边框协同、Form 语义转发、Wave 几何和颜色感知。
 
-`ButtonToken` 只提供组件级语义值，不保存实例状态。主题变量由 Button internal `StyledProperty` 承载，使 AXAML selector 和动态资源可以消费状态结果。
+`ButtonToken` 只提供组件级语义值，不保存实例状态。主题变量由 Button internal `StyledProperty` 承载，使 AXAML
+selector 和动态资源可以消费状态结果。`Button.cs` 是颜色状态矩阵的唯一计算所有者；桌面和 Browser ControlTheme
+不得再按 `ButtonType`、Danger 或 Ghost 复制一套颜色计算。
 
 Button 家族控件复用 Button 的动作语义。派生控件可以替换模板或增加行为入口，但不得重新解释 `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、loading 和 disabled 语义。
 
@@ -44,12 +46,16 @@ EffectiveBorderThickness / EffectiveCornerRadius / WaveSpiritType
       ↓
 Pseudo-classes + internal StyledProperty theme variables
       ↓
-ButtonTheme.axaml visual states
+Desktop / Browser ControlTheme visual projection
 ```
 
 `Color` 与 `Variant` 为 nullable，是兼容优先级的关键。归一逻辑必须能区分“用户未设置正交 API”和“用户显式设置默认值”。
 
 自定义背景只影响 normal 状态的视觉覆层可见性。它不参与颜色语义、文字色、边框色、阴影和 wave brush 计算。
+
+兼容 API 与正交 API 使用同一条颜色路径。`ButtonType=Text` 归一为 `Default + Text`，保持中性文字语义；需要品牌色
+Text 时使用 `Primary + Text`。两者都由 `ConfigureVariantThemeVariables()` 生成最终 normal、hover、pressed 主题变量，
+ControlTheme 只绑定这些变量。
 
 尺寸状态由 `SizeType` 与 Button 现有布局属性共同决定。`Large`、`Middle`、`Small` 走预设 Token；`Custom` 走 `Middle` 默认值，并允许用户通过本地 `Height`、`Padding`、`FontSize`、`CornerRadius` 等属性覆盖。实现不得为 Custom 增加 Button 专属尺寸属性或尺寸聚合对象。
 
@@ -82,6 +88,10 @@ Loading 状态影响 loading icon、原 icon 可见性和交互反馈，但不�
 关键流程：
 
 - API 归一：显式 `Color + Variant` 优先，其次兼容 API 映射，再回退到默认语义。
+- 颜色解析：`EffectiveColor` 选择 Default、Primary、Danger 或 preset palette；`EffectiveVariant` 再把该颜色组映射为
+  Solid、Outlined、Dashed、Filled、Text 或 Link 的最终主题变量。
+- 视觉投影：桌面和 Browser ControlTheme 只消费 `VariantText*`、`VariantBackground*`、`VariantBorder*` 和
+  `VariantShadow`，不重复解释 `ButtonType` 或语义色阶。
 - 尺寸归一：`Large`、`Middle`、`Small` 映射到对应 Token；`Custom` 以 `Middle` Token 作为 Style 默认值，Button 本地尺寸属性保持更高优先级。
 - 伪类同步：当 public API、content、icon、loading、shape、enabled 或 compact 状态变化时同步模板可见状态。
 - 有效边框：由 Button 类型、variant、enabled、bordered 状态和 compact 状态共同决定。
@@ -109,6 +119,8 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - StyledProperty / DirectProperty / RoutedEvent 与支持字段的定义顺序符合控件代码规范。
 - `Button.cs` 保留公共属性、事件、方法和接口入口；实现拆分只承载内部逻辑。
 - `Color + Variant` 优先级和旧 API 映射结果不变。
+- `ButtonType=Text` 保持 `Default + Text` 中性语义；`Primary + Text` 跟随当前主题 `ColorPrimary` 色阶。
+- 桌面和 Browser 主题必须共享 C# 计算出的最终颜色变量，不得各自维护兼容 API 颜色矩阵。
 - `SizeType=Custom` 不引入 Button 专属 `Custom*` 尺寸属性；未设置本地尺寸属性时表现等同 `Middle`，设置本地属性时由 Avalonia 属性优先级自然覆盖。
 - 主题不得以高于本地值的优先级写入 Custom 默认尺寸。
 - `CustomBackgroundLayer` 不成为用户可依赖 template part。
@@ -124,6 +136,7 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - 尺寸契约：覆盖 `SizeType=Large/Middle/Small/Custom`；验证 Custom 默认等同 Middle，并验证本地 `Height`、`Padding`、`FontSize` 覆盖 Custom 默认值。
 - 状态同步：覆盖 disabled、loading、hover、pressed、icon-only、circle、round。
 - Wave：覆盖危险态、预设色、custom background 与 disabled / loading 播放条件。
-- Theme：检查 default、primary、dashed、text、link、solid、outlined、filled、danger 和 custom background 视觉。
+- Theme：检查 default、primary、dashed、text、link、solid、outlined、filled、danger 和 custom background 视觉；Text
+  必须覆盖 Default、Primary、Danger 的 normal、hover、pressed 以及主题 Token 动态刷新。
 - 家族控件：检查 DropdownButton、SplitButton、IconButton、HyperLinkButton 是否继承或明确处理 Button 语义。
 - 文档改动：运行 `git diff --check`。

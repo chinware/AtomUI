@@ -1,10 +1,15 @@
 using System.Reactive;
+using System.ComponentModel;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme;
 using AtomUI.Toolkits.GalleryBase.Shell;
 using AtomUIGallery.Workspace.ViewModels;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Media;
+using DesktopMenu = AtomUI.Desktop.Controls.Menu;
 using MenuItem = AtomUI.Desktop.Controls.MenuItem;
 
 namespace AtomUIGallery.Workspace.Views;
@@ -17,6 +22,7 @@ internal enum WindowMenuItemKind
     Maximize,
     Move,
     Resize,
+    ThemeCatalog,
     DarkMode,
     Compact,
     Motion,
@@ -30,12 +36,17 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
 {
     public const string LanguageId = nameof(WorkspaceWindow);
     private const string TitleBarMenuResourceKey = "WorkspaceTitleBarMenu";
+    private const string ThemeColorGroupName = "ThemeColor";
     private GalleryShellView? _shellView;
+    private MenuItem? _themeMenuItem;
+    private readonly List<MenuItem> _themeMenuItems = new();
+    private PropertyChangedEventHandler? _viewModelPropertyChangedHandler;
 
     public WorkspaceWindow()
     {
         ViewModel = new WorkspaceWindowViewModel();
         InitializeComponent();
+        ConfigureThemeMenu();
 
         if (ViewModel is not null)
         {
@@ -79,10 +90,111 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         RemoveHandler(MenuItem.ClickEvent, HandleMenuItemClick);
+        if (ViewModel is not null && _viewModelPropertyChangedHandler is not null)
+        {
+            ViewModel.PropertyChanged -= _viewModelPropertyChangedHandler;
+            _viewModelPropertyChangedHandler = null;
+        }
         _shellView?.Dispose();
         _shellView = null;
         ViewModel?.Dispose();
         base.OnDetachedFromVisualTree(e);
+    }
+
+    private void ConfigureThemeMenu()
+    {
+        if (ViewModel is null ||
+            !Resources.TryGetValue(TitleBarMenuResourceKey, out var menuResource) ||
+            menuResource is not DesktopMenu menu)
+        {
+            return;
+        }
+
+        _themeMenuItem = menu.Items
+                             .OfType<MenuItem>()
+                             .SelectMany(static item => item.Items.OfType<MenuItem>())
+                             .FirstOrDefault(static item =>
+                                 item.Tag is WindowMenuItemKind.ThemeCatalog);
+        if (_themeMenuItem is null)
+        {
+            return;
+        }
+
+        RebuildThemeMenuItems();
+        _viewModelPropertyChangedHandler = HandleViewModelPropertyChanged;
+        ViewModel.PropertyChanged += _viewModelPropertyChangedHandler;
+    }
+
+    private void HandleViewModelPropertyChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName is nameof(GalleryWorkspaceViewModel.AvailableThemes) or
+            nameof(GalleryWorkspaceViewModel.CurrentThemeId))
+        {
+            RebuildThemeMenuItems();
+        }
+    }
+
+    private void RebuildThemeMenuItems()
+    {
+        if (ViewModel is null || _themeMenuItem is null)
+        {
+            return;
+        }
+
+        foreach (var existing in _themeMenuItems)
+        {
+            _themeMenuItem.Items.Remove(existing);
+        }
+        _themeMenuItems.Clear();
+
+        var insertIndex = 0;
+        foreach (var theme in ViewModel.AvailableThemes)
+        {
+            var item = new MenuItem
+            {
+                Header           = CreateThemeMenuHeader(theme),
+                ToggleType       = MenuItemToggleType.Radio,
+                GroupName        = ThemeColorGroupName,
+                IsChecked        = string.Equals(theme.Id, ViewModel.CurrentThemeId, StringComparison.Ordinal),
+                Command          = ViewModel.SwitchThemeCommand,
+                CommandParameter = theme.Id
+            };
+            _themeMenuItem.Items.Insert(insertIndex++, item);
+            _themeMenuItems.Add(item);
+        }
+    }
+
+    private static Control CreateThemeMenuHeader(ThemeInfo theme)
+    {
+        var header = new Grid
+        {
+            Width             = 160,
+            ColumnDefinitions = new ColumnDefinitions("*,Auto")
+        };
+        header.Children.Add(new Avalonia.Controls.TextBlock
+        {
+            Text              = theme.Name,
+            VerticalAlignment = VerticalAlignment.Center
+        });
+
+        if (theme.AccentColor is { } accentColor)
+        {
+            var swatch = new Border
+            {
+                Width               = 12,
+                Height              = 12,
+                CornerRadius        = new CornerRadius(2),
+                Background          = new SolidColorBrush(accentColor),
+                Margin              = new Thickness(12, 0, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment   = VerticalAlignment.Center,
+                IsHitTestVisible    = false
+            };
+            Grid.SetColumn(swatch, 1);
+            header.Children.Add(swatch);
+        }
+
+        return header;
     }
 
     private void HandleMenuItemClick(object? sender, RoutedEventArgs e)

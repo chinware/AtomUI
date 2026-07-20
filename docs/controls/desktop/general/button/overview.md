@@ -39,6 +39,10 @@ Button 的当前设计模型以 `Color + Variant` 表达语义颜色和视觉强
 
 颜色不应被视为装饰属性。`Danger` 表达破坏性或高风险动作，预设色表达业务分类或语义扩展。视觉强度不应改变语义颜色，只改变同一语义的呈现强度。
 
+Button 的兼容类型映射、`Color + Variant` 状态矩阵、组件 Token 派生以及 normal、hover、pressed、disabled
+状态语义应与 Ant Design Button 保持一致。维护时必须把对齐结论固化为 AtomUI 的公开契约、Token 规则和回归测试，
+不得在单个 ControlTheme 或 Gallery 示例中增加特殊颜色分支。
+
 ## 3. API 与契约模型
 
 Button 的公共 API 是控件最重要的稳定契约。公共属性、事件和方法集中在 `Button.cs`，内部主题变量和实现细节不得替代公共 API。
@@ -218,6 +222,9 @@ Button 与 CompactSpace、FormItem、Wave、Browser 主题协同。`Color + Vari
 - `ButtonType` 保留为兼容语法糖。
 - `IsDanger` 保留为危险语义的旧入口。
 - 预设色来源于 AtomUI palette / token 系统，不在 Button 主题中维护私有色表。
+- `ButtonType=Text` 是 `Default + Text` 的兼容语法，表达中性低强调动作，不隐式跟随品牌色。
+- 品牌色文本动作使用 `Color=Primary + Variant=Text`，其 normal、hover、pressed 状态跟随当前主题主色色阶。
+- Danger Text 使用错误语义色阶，与品牌主色保持独立。
 
 ### 8.2 CustomBackground 视觉覆层模型
 

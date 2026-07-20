@@ -8,6 +8,19 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-07-20
+
+- Fix
+  - Align the default Text hover background with `ColorFillTertiary`.
+  - Make the default Text pressed background depend directly on `ColorFill` instead of the generic text-action alias.
+  - Align the Danger Text hover background with `ColorErrorBg`.
+- Refactor
+  - Make `EffectiveColor + EffectiveVariant` and the resulting `Variant*` theme variables the single Button color-state owner.
+  - Remove duplicated `ButtonType`, Danger and Ghost color matrices from desktop and Browser ControlThemes.
+- Tests
+  - Cover Default, Primary and Danger Text normal, hover and pressed colors.
+  - Cover compatibility Button visual projection, Primary Text component-theme refresh, and the direct Default Text pressed-token dependency.
+
 ## 2026-06-26
 
 - Docs

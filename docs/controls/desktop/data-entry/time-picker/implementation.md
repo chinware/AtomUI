@@ -139,11 +139,11 @@ TimePicker 的交互事件应从输入源收敛到控件级语义事件：
 
 输入宽度维护规则：
 
-- `TimePicker` 的默认输入预留宽度以 `ClockIdentifier`、AM/PM 文本和字体对应的最宽格式化时间，与 Ant Design TimePicker 单选默认输入基线 `Select time` 两者的较大值为准。`RangeTimePicker` 使用同一时间格式宽度与 Ant Design TimePicker 范围默认输入基线 `Start time` / `End time` 的较大值。
-- Ant Design 参考路径为 `../ReferenceProjects/ant-design/components/time-picker/index.tsx`、`../ReferenceProjects/ant-design/components/date-picker/util.ts`、`../ReferenceProjects/ant-design/components/time-picker/locale/en_US.ts` 和 `../ReferenceProjects/ant-design/components/date-picker/style/index.ts`。TimePicker 复用 DatePicker picker 输入结构，`.ant-picker-input` 与内部 `input` 都是 `width: 100%`；TimePicker 更窄的默认宽度来自 `picker === 'time'` 时使用 TimePicker locale placeholder，不是单独的 CSS width。
+- `TimePicker` 的默认输入预留宽度以 `ClockIdentifier`、AM/PM 文本和字体对应的最宽格式化时间，与 AtomUI 定义的单选输入基线两者的较大值为准。`RangeTimePicker` 使用同一时间格式宽度与范围输入基线的较大值。
+- 单选和范围输入基线是 AtomUI 的稳定视觉契约，由本地化默认提示文本、字体和输入结构共同计算；它不依赖外部项目的文件路径、私有实现或源码快照。
 - `PlaceholderText` 和 `SecondaryPlaceholderText` 不参与 `PreferredInputWidth` / `PreferredWidth` 计算；placeholder 只能在已预留的输入内容区域内显示，超出时由文本呈现层使用 ellipsis 省略，不能反向撑大控件默认宽度。
 - `Text` 和 `SecondaryText` 只表达当前显示值或 hover preview，不作为 `PreferredInputWidth` / `PreferredWidth` 的计算来源。
-- `ClockIdentifier`、AM/PM 文本和字体变化会重新计算格式预留宽度和 Ant Design TimePicker 输入基线；选中值、hover 值和范围端点切换不得改变预留宽度。
+- `ClockIdentifier`、AM/PM 文本和字体变化会重新计算格式预留宽度和 AtomUI 默认输入基线；选中值、hover 值和范围端点切换不得改变预留宽度。
 - `Width` 显式设置或 `HorizontalAlignment=Stretch` 时，控件应交给外部布局系统决定实际宽度，不再强制内部预留宽度。
 - 范围选择的两端输入使用同一个格式预留宽度，`RangePickerIndicator` 和 popup placement 只跟随稳定输入框 bounds，不反向驱动输入框测量。
 - 范围输入模板的内部 `AddOnDecoratedBox` 和 content presenter 必须在控件内部 stretch；范围整体测量以 `base.MeasureOverride` 的完整宽度为基础，只替换两端输入框宽度为 `PreferredWidth`，不得重新手算 padding、spacing、icon 或 add-on 宽度。

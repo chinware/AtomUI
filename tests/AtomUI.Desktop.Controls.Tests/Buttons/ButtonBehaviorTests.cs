@@ -5,10 +5,12 @@ using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -126,6 +128,121 @@ public class ButtonBehaviorTests
                 .ShouldBe(expectedBordered);
             GetInternalPropertyValue<Thickness>(button, "EffectiveBorderThickness")
                 .ShouldBe(expectedBordered ? borderThickness : new Thickness(0));
+        });
+    }
+
+    [Theory]
+    [InlineData("default")]
+    [InlineData("primary")]
+    [InlineData("danger")]
+    public void Button_Text_Variant_Uses_Expected_Semantic_State_Colors(string scenario)
+    {
+        var button = CreateTextVariantButton(scenario);
+
+        ShowInWindow(button, () =>
+        {
+            var expected = scenario switch
+            {
+                "default" => new TextVariantColors(
+                    SharedTokenKind.ColorText,
+                    SharedTokenKind.ColorText,
+                    SharedTokenKind.ColorText,
+                    SharedTokenKind.ColorFillTertiary,
+                    SharedTokenKind.ColorFill),
+                "primary" => new TextVariantColors(
+                    SharedTokenKind.ColorPrimary,
+                    SharedTokenKind.ColorPrimaryHover,
+                    SharedTokenKind.ColorPrimaryActive,
+                    SharedTokenKind.ColorPrimaryBg,
+                    SharedTokenKind.ColorPrimaryBorder),
+                "danger" => new TextVariantColors(
+                    SharedTokenKind.ColorError,
+                    SharedTokenKind.ColorErrorHover,
+                    SharedTokenKind.ColorErrorActive,
+                    SharedTokenKind.ColorErrorBg,
+                    SharedTokenKind.ColorErrorBgActive),
+                _ => throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null)
+            };
+
+            BrushShouldHaveSameColor(button.Foreground, GetThemeResource<IBrush>(expected.Text));
+            BrushShouldBeTransparent(button.Background);
+
+            SetPseudoClass(button, StdPseudoClass.PointerOver, true);
+            Dispatcher.UIThread.RunJobs();
+
+            BrushShouldHaveSameColor(button.Foreground, GetThemeResource<IBrush>(expected.TextHover));
+            BrushShouldHaveSameColor(button.Background, GetThemeResource<IBrush>(expected.BackgroundHover));
+
+            SetPseudoClass(button, StdPseudoClass.Pressed, true);
+            Dispatcher.UIThread.RunJobs();
+
+            BrushShouldHaveSameColor(button.Foreground, GetThemeResource<IBrush>(expected.TextPressed));
+            BrushShouldHaveSameColor(button.Background, GetThemeResource<IBrush>(expected.BackgroundPressed));
+        });
+    }
+
+    [Theory]
+    [InlineData(ButtonType.Default, false, false)]
+    [InlineData(ButtonType.Dashed, false, false)]
+    [InlineData(ButtonType.Primary, false, false)]
+    [InlineData(ButtonType.Link, false, false)]
+    [InlineData(ButtonType.Text, false, false)]
+    [InlineData(ButtonType.Default, true, false)]
+    [InlineData(ButtonType.Primary, true, false)]
+    [InlineData(ButtonType.Text, true, false)]
+    [InlineData(ButtonType.Default, false, true)]
+    [InlineData(ButtonType.Primary, false, true)]
+    public void Button_Compatibility_Visuals_Project_Effective_Variant_Colors(
+        ButtonType buttonType,
+        bool isDanger,
+        bool isGhost)
+    {
+        var button = new AtomUIButton
+        {
+            ButtonType      = buttonType,
+            IsDanger        = isDanger,
+            IsGhost         = isGhost,
+            Content         = "Button",
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(button, () =>
+        {
+            BrushShouldHaveSameColor(
+                button.Foreground,
+                GetInternalPropertyValue<IBrush?>(button, "VariantTextBrush"));
+            BrushShouldHaveSameColor(
+                button.Background,
+                GetInternalPropertyValue<IBrush?>(button, "VariantBackgroundBrush"));
+            BrushShouldHaveSameColor(
+                button.BorderBrush,
+                GetInternalPropertyValue<IBrush?>(button, "VariantBorderBrush"));
+
+            SetPseudoClass(button, StdPseudoClass.PointerOver, true);
+            Dispatcher.UIThread.RunJobs();
+
+            BrushShouldHaveSameColor(
+                button.Foreground,
+                GetInternalPropertyValue<IBrush?>(button, "VariantTextHoverBrush"));
+            BrushShouldHaveSameColor(
+                button.Background,
+                GetInternalPropertyValue<IBrush?>(button, "VariantBackgroundHoverBrush"));
+            BrushShouldHaveSameColor(
+                button.BorderBrush,
+                GetInternalPropertyValue<IBrush?>(button, "VariantBorderHoverBrush"));
+
+            SetPseudoClass(button, StdPseudoClass.Pressed, true);
+            Dispatcher.UIThread.RunJobs();
+
+            BrushShouldHaveSameColor(
+                button.Foreground,
+                GetInternalPropertyValue<IBrush?>(button, "VariantTextPressedBrush"));
+            BrushShouldHaveSameColor(
+                button.Background,
+                GetInternalPropertyValue<IBrush?>(button, "VariantBackgroundPressedBrush"));
+            BrushShouldHaveSameColor(
+                button.BorderBrush,
+                GetInternalPropertyValue<IBrush?>(button, "VariantBorderPressedBrush"));
         });
     }
 
@@ -554,6 +671,34 @@ public class ButtonBehaviorTests
         return button;
     }
 
+    private static AtomUIButton CreateTextVariantButton(string scenario)
+    {
+        var button = new AtomUIButton
+        {
+            Content         = "Text",
+            IsMotionEnabled = false
+        };
+
+        switch (scenario)
+        {
+            case "default":
+                button.ButtonType = ButtonType.Text;
+                break;
+            case "primary":
+                button.Color   = ButtonColor.Primary;
+                button.Variant = ButtonVariant.Text;
+                break;
+            case "danger":
+                button.ButtonType = ButtonType.Text;
+                button.IsDanger   = true;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null);
+        }
+
+        return button;
+    }
+
     private static AtomUIButton CreateScopedPrimaryButton(string scenario)
     {
         var button = new AtomUIButton
@@ -731,6 +876,20 @@ public class ButtonBehaviorTests
         GetSolidBrushColor(actual).ShouldBe(expected);
     }
 
+    private static T GetThemeResource<T>(object key)
+    {
+        var application = Application.Current;
+        application.ShouldNotBeNull();
+        application!.TryGetResource(key, application.ActualThemeVariant, out var value).ShouldBeTrue();
+        value.ShouldBeAssignableTo<T>();
+        return (T)value!;
+    }
+
+    private static void SetPseudoClass(Control control, string pseudoClass, bool value)
+    {
+        ((IPseudoClasses)control.Classes).Set(pseudoClass, value);
+    }
+
     private static Color GetSolidBrushColor(IBrush? brush)
     {
         brush.ShouldNotBeNull();
@@ -763,4 +922,11 @@ public class ButtonBehaviorTests
             window.Close();
         }
     }
+
+    private sealed record TextVariantColors(
+        SharedTokenKind Text,
+        SharedTokenKind TextHover,
+        SharedTokenKind TextPressed,
+        SharedTokenKind BackgroundHover,
+        SharedTokenKind BackgroundPressed);
 }

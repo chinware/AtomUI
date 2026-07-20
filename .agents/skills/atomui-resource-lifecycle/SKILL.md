@@ -19,17 +19,13 @@ Violations block merge because they can root an entire Gallery ShowCase through 
 
 ### Why This Leaks
 
-Avalonia 12 `DynamicResourceExpression` chooses its resource host in this order:
+`DynamicResourceExpression` chooses its resource host in this order:
 
 1. If the binding target implements `IResourceHost`, use the target.
 2. Otherwise use the XAML anchor / provider owner.
 3. Subscribe to the selected host's `ResourcesChanged`, and to `ActualThemeVariantChanged` when the host is an `IThemeVariantHost`.
 
-Source references:
-
-- `.referenceprojects/Avalonia/src/Markup/Avalonia.Markup.Xaml/Data/DynamicResourceExpression.cs:37-61`
-- `.referenceprojects/Avalonia/src/Markup/Avalonia.Markup.Xaml/Data/DynamicResourceExpression.cs:113-141`
-- `.referenceprojects/Avalonia/src/Markup/Avalonia.Markup.Xaml/Data/DynamicResourceExpression.cs:145-153`
+This behavior has been verified against the currently resolved framework dependency and AtomUI leak regressions. Revalidate it after dependency upgrades; do not copy an external version, local source path, or line number into AtomUI's long-term lifecycle contract.
 
 If the target is a non-Visual `AvaloniaObject` and does not implement `IResourceHost`, the host can fall back to `Application`. The leak chain then becomes:
 

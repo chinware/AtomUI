@@ -33,7 +33,7 @@ Violating any of these blocks merge. No exception, no tradeoff, no "it's only on
 
 10. **5-control pattern rollout circuit breaker.** Same refactor pattern (e.g., dynamic creation, lazy popup materialization, binding restructure) applied to ≥ 5 controls = stop and audit. Two questions: (a) did at least 3 of 5 show measurable speed gain? (b) did any one introduce ≥ 2 Gallery-visible bugs? Either "no" / "yes" stops further rollout and triggers reflection before the 6th control.
 
-11. **No unsourced claims about Avalonia behavior.** Any assertion about how Avalonia 12 behaves ("X triggers Y", "Z is O(N)", "this binding takes the fast path", "IsVisible=False is free") MUST be backed by a `.referenceprojects/Avalonia/<path>:<line>` reference, or by a measurement with explicit methodology. Unsourced assertions are guesses and must not drive optimization decisions. See [Avalonia 12 Source-of-Truth](#avalonia-12-source-of-truth).
+11. **No unsupported claims about framework behavior.** Any assertion such as "X triggers Y", "Z is O(N)", "this binding takes the fast path", or "IsVisible=False is free" MUST be backed by the currently resolved dependency source or by a measurement with explicit methodology. Source inspection is evidence about the current implementation, not an AtomUI architecture contract. Long-term documents keep AtomUI invariants and revalidation conditions; exact external versions, paths and line numbers belong only in dated upgrade or investigation records. See [Framework Behavior Evidence](#framework-behavior-evidence).
 
 12. **No `_ignoreXxx` flags in property-changed handlers.** Adding a private `bool` (`_ignoreSelectedPropertyChanged`, `IgnorePropertyChange`, `_isUpdating`, `_suppressNotification`, etc.) to short-circuit property-changed dispatch hides bugs rather than fixing them. The Cascader / AbstractSelect rollbacks all follow this pattern. See [Re-entrancy & Ignore-Flag Guardrails](#re-entrancy--ignore-flag-guardrails). The few legitimate cases are listed there; the default answer is "fix the event flow, do not add the flag".
 
@@ -43,9 +43,9 @@ Violating any of these blocks merge. No exception, no tradeoff, no "it's only on
 
 ---
 
-## Avalonia 12 Source-of-Truth
+## Framework Behavior Evidence
 
-`.referenceprojects/Avalonia/src/` is the Avalonia 12 source code shipped with the repo. **Every framework-behavior claim in this skill, every commit description, every "this is cheaper because..." argument must point at it.**
+Use the source matching the currently resolved Avalonia dependency to verify framework-behavior hypotheses. **Every framework-behavior claim in a review or commit description must cite current implementation evidence or reproducible measurement.** Revalidate source-derived claims after dependency upgrades, and never promote a particular external version, commit, local path, or line number into AtomUI's long-term architecture contract.
 
 The verified cost model and counter-intuitive points below are distilled from a deeper walkthrough kept at [`docs/performances/avalonia12-control-library-pitfalls.md`](../../../docs/performances/avalonia12-control-library-pitfalls.md). Use that document when you need the longer explanation behind an entry; use the Cost Model below when you need the operational rule.
 
@@ -158,9 +158,9 @@ This is the implementation of Theme Static Rule exception 1.
 
 ---
 
-## Avalonia 12 Cost Model
+## Framework Cost Model
 
-Verified against the in-tree reference source. Every row is `behavior → path:line → control-library implication`. For the longer narrative behind each entry, follow the section pointer to the [pitfalls doc](../../../docs/performances/avalonia12-control-library-pitfalls.md).
+The following model records implementation evidence used to form and falsify performance hypotheses. Source coordinates are review aids for the currently resolved dependency and must be revalidated after upgrades; the AtomUI implication and its measurement gate are the durable parts. For the longer narrative behind each entry, follow the section pointer to the [pitfalls doc](../../../docs/performances/avalonia12-control-library-pitfalls.md).
 
 ### Property System
 
@@ -262,7 +262,7 @@ Verified against the in-tree reference source. Every row is `behavior → path:l
 
 ---
 
-## Avalonia 12 Counter-Intuitive Points (verified)
+## Counter-Intuitive Framework Behaviors (verified)
 
 These are the rules that catch new contributors most often. Each was confirmed (or refined) against source.
 
@@ -437,7 +437,7 @@ If none of the above lights up, the bottleneck may be Gallery-level page setup o
 3. The dominant cost subsystem identified, with `path:line` reference.
 4. The hypothesis to be falsified (Decision Tree Step 2 line "假设证伪点").
 
-Without all four, you have not earned the right to write code. Tier 1 §11 (no unsourced claims) and §13 (qualification documented) both gate here.
+Without all four, you have not earned the right to write code. Tier 1 §11 (no unsupported claims) and §13 (qualification documented) both gate here.
 
 ---
 
@@ -445,12 +445,12 @@ Without all four, you have not earned the right to write code. Tier 1 §11 (no u
 
 Mandatory commit-time gates. A perf commit description without all of them filled in fails review.
 
-### Gate 0 — Avalonia 子系统 + 成本量级（必填）
+### Gate 0 — 框架子系统 + 成本量级（必填）
 
 ```
-[ ] 被优化的成本属于哪个 Avalonia 12 子系统？
+[ ] 被优化的成本属于哪个框架子系统？
     (Property / Binding / Layout / Render / Event / Popup / Dispatcher / Style / Animation)
-[ ] 在该子系统的 Cost Model 中，相关条目的源码引用 (.referenceprojects/Avalonia/<path>:<line>)：
+[ ] 在该子系统的 Cost Model 中，当前实现证据或可复现测量：
     ___________________
 [ ] 该子系统的单位成本量级（来自 Cost Model）：______
 [ ] 实际触发频率（来自测量，不许估）：______
@@ -725,7 +725,7 @@ rg "DisableTransitions\\(\\)|EnableTransitions" --type cs src/
 
 ---
 
-## Avalonia 12 Measurement Toolkit
+## Measurement Toolkit
 
 Use these to ground claims in numbers, not guesses.
 

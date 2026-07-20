@@ -26,15 +26,8 @@ AtomUI 响应式规则与 Ant Design 的以下设计保持一致：
 - 求值时按 `xxxl -> xxl -> xl -> lg -> md -> sm -> xs` 从大到小查找，第一个“当前 active 且显式配置过”的值生效。
 - 响应式解析器不拥有控件默认值。默认值由具体控件在 resolver 未命中时提供。
 
-Ant Design 源码对应关系：
-
-| 能力 | Ant Design 源码 |
-|---|---|
-| 断点顺序与 `matchScreen` | `.referenceprojects/ant-design/components/_util/responsiveObserver.ts` |
-| Grid Row `gutter / align / justify` | `.referenceprojects/ant-design/components/grid/row.tsx`、`.referenceprojects/ant-design/components/grid/hooks/useGutter.ts` |
-| Grid Col responsive class | `.referenceprojects/ant-design/components/grid/col.tsx`、`.referenceprojects/ant-design/components/grid/style/index.ts` |
-| Descriptions `column` 与 `span` | `.referenceprojects/ant-design/components/descriptions/index.tsx`、`.referenceprojects/ant-design/components/descriptions/hooks/useItems.ts` |
-| Masonry `columns` 与 `gutter` | `.referenceprojects/ant-design/components/masonry/Masonry.tsx` |
+这些规则是 AtomUI 的长期响应式契约。外部设计系统只能用于交互和视觉对照，不能用某个版本的源码路径、
+实现函数或文件结构替代上述契约；后续升级时应通过 AtomUI 的公共模型和跨控件测试验证兼容性。
 
 ## 3. 断点模型
 

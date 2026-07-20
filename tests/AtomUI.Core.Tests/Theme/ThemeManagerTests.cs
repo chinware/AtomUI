@@ -1,5 +1,6 @@
 using AtomUI.Theme;
 using Avalonia;
+using Avalonia.Media;
 using Shouldly;
 using Xunit;
 
@@ -43,7 +44,8 @@ public class ThemeManagerTests
                     IThemeManager.DEFAULT_THEME_ID,
                     "Daybreak Blue",
                     ThemeAppearance.Light,
-                    true)
+                    true,
+                    Color.Parse("#1677FF"))
             ]);
         });
     }

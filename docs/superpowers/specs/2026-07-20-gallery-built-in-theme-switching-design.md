@@ -16,7 +16,7 @@ Reader、Binder、Compiler 和 ThemeManager 事务加载；Gallery 不直接把�
 - 主题 XML 是主题身份、显示名称、算法和 Seed Token 的规范来源。
 - 主题色、深色、紧凑、Motion 和 Wave Spirit 可以正交组合。
 - AtomUI Theme 通过统一 Resolver 同时支持内置资源、Gallery 资源和用户配置目录主题。
-- Desktop Gallery 启动时加载用户主题，并允许手动刷新；刷新原子更新 Catalog 与当前主题 Snapshot。
+- Desktop Gallery 启动时加载用户主题；ThemeManager 保留手动刷新能力，但 Gallery 第一版不提供刷新菜单入口。
 - 主题切换继续复用稳定 `ThemeContext` 和 `ThemeTokenResourceProvider`，不追加资源层。
 - 启动与运行时路径保持 NativeAOT 友好，不扫描程序集或资源目录。
 
@@ -24,12 +24,13 @@ Reader、Binder、Compiler 和 ThemeManager 事务加载；Gallery 不直接把�
 
 - 自定义颜色选择器或运行时写主题文件。
 - 网络主题下载、主题编辑器和 `FileSystemWatcher` 实时监听。
+- Gallery 中的“重新加载用户主题”菜单项及其专用 ViewModel Command；后续需要时再接入 ThemeManager 已有刷新 API。
 - 跨进程持久化上次选择。Gallery 现有主题开关也不持久化，本次保持相同生命周期。
-- 修改成功色、警告色、错误色等语义 Token。主题 XML 只改变 `ColorPrimary`。
+- 修改 `ColorInfo`、成功色、警告色、错误色等语义 Token。主题 XML 只改变 `ColorPrimary` 与 `ColorLink`。
 
 ## 2. 最终主题集合
 
-| Theme Id | Name | `ColorPrimary` | 所有者 | 默认 |
+| Theme Id | Name | `ColorPrimary` / `ColorLink` | 所有者 | 默认 |
 | --- | --- | --- | --- | --- |
 | `DaybreakBlue` | Daybreak Blue | `#1677FF` | AtomUI Core | 是 |
 | `PolarGreen` | Polar Green | `#52C41A` | AtomUIGallery | 否 |
@@ -81,11 +82,12 @@ controlgallery/AtomUIGallery/Assets/Themes/
   </Algorithms>
   <Tokens>
     <Token Name="ColorPrimary" Value="#1677FF" />
+    <Token Name="ColorLink" Value="#1677FF" />
   </Tokens>
 </Theme>
 ```
 
-其余 XML 结构相同，只替换 `Id`、`Name` 和 `ColorPrimary`，并且不声明 `IsDefault`。例如：
+其余 XML 结构相同，只替换 `Id`、`Name`、`ColorPrimary` 和 `ColorLink`，并且不声明 `IsDefault`。例如：
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -98,19 +100,25 @@ controlgallery/AtomUIGallery/Assets/Themes/
   </Algorithms>
   <Tokens>
     <Token Name="ColorPrimary" Value="#52C41A" />
+    <Token Name="ColorLink" Value="#52C41A" />
   </Tokens>
 </Theme>
 ```
 
-XML 不复制派生色阶、Control Token、Dark 或 Compact 配置。`Default` 算法从 `ColorPrimary` 生成 Map/Alias Token；
-Dark 和 Compact 仍由运行时算法链叠加。
+XML 不复制派生色阶、Control Token、Dark 或 Compact 配置。`Default` 算法分别从显式的 `ColorPrimary` 与
+`ColorLink` 生成品牌色和链接色的 Map/Alias Token；Dark 和 Compact 仍由运行时算法链叠加。`ColorInfo` 保持
+默认信息语义，不跟随 Gallery 品牌主题切换。
+
+当主题未显式声明 `ColorLink` 时，默认算法使用 `ColorInfo` 作为 Link 的 Seed；因此只覆盖 `ColorPrimary` 不会让
+Link 跟随品牌色。Gallery 的五份产品主题必须同时声明同值的 `ColorPrimary` 与 `ColorLink`，而不是改变这项 Core
+回退语义，也不应让 `ColorInfo` 跟随品牌色。
 
 ## 4. Theme Definition Resolver
 
 ### 4.1 当前缺口
 
-当前公开的 `IThemeManagerBuilder` 没有注册主题定义来源的入口，`CompiledThemeCatalog.LoadBuiltIn()` 也只加载硬编码
-的 `DaybreakBlue.xml`。把 Gallery XML 放入资源目录或用户配置目录本身都不会让 ThemeManager 发现它们。
+实施前公开的 `IThemeManagerBuilder` 没有注册主题定义来源的入口，`CompiledThemeCatalog.LoadBuiltIn()` 也只加载硬编码
+的 `DaybreakBlue.theme.xml`。把 Gallery XML 放入资源目录或用户配置目录本身都不会让 ThemeManager 发现它们。
 
 由于主题归 Gallery 所有，不能通过把四个 XML 移入 Core 来绕过该缺口。本次把硬编码加载重构为通用
 `IThemeDefinitionResolver` 链。这是一个有意的 Public API 增量，必须同步 API 测试和文档。
@@ -211,8 +219,11 @@ Catalog 构建规则：
 - `AvailableThemes` 保留 Resolver 与 source 的稳定顺序：Core 默认主题在前，随后是 Gallery 的 Green、Orange、
   Purple、Magenta，最后是用户主题。
 
-`ThemeInfo` 不增加 `ColorPrimary`。它继续只表示主题目录元数据，菜单也不通过运行时 Token 反向读取主题色。这样
-不会把任意主题 Token 提升成 Catalog 公开契约。
+为支持主题菜单色块，`ThemeInfo` 增加可选只读 `AccentColor`。Catalog 只在 definition 显式声明
+`ColorPrimary` 且已由 Binder 转换为 `Color` 时填充该值；未显式声明时为 `null`。该值来自与编译相同的
+`BoundThemeDefinition`，Gallery 不维护 Theme Id 到颜色的第二份映射，也不从当前运行时 Snapshot 反向猜测。
+
+保留现有四参数 `ThemeInfo` 构造函数，并增加包含 `AccentColor` 的五参数重载，避免破坏已有调用方源码。
 
 ## 6. Gallery 菜单与 ViewModel
 
@@ -222,25 +233,26 @@ Catalog 构建规则：
 
 ```text
 主题
-├── Daybreak Blue       (Radio, ThemeColor)
-├── Polar Green         (Radio, ThemeColor)
-├── Sunset Orange       (Radio, ThemeColor)
-├── Golden Purple       (Radio, ThemeColor)
-├── Magenta             (Radio, ThemeColor)
-├── user themes...      (Radio, ThemeColor)
+├── 主题设置
+│   ├── Daybreak Blue       (Radio, ThemeColor, AccentColor block)
+│   ├── Polar Green         (Radio, ThemeColor, AccentColor block)
+│   ├── Sunset Orange       (Radio, ThemeColor, AccentColor block)
+│   ├── Golden Purple       (Radio, ThemeColor, AccentColor block)
+│   ├── Magenta             (Radio, ThemeColor, AccentColor block)
+│   └── user themes...      (Radio, ThemeColor, optional AccentColor block)
 ├── separator
-├── 重新加载用户主题
 ├── 暗黑模式             (CheckBox)
 ├── 紧凑模式             (CheckBox)
 ├── 启用动画             (CheckBox)
 └── 启用点击波纹          (CheckBox)
 ```
 
-主题 Radio 项由 `IThemeManager.AvailableThemes` 构建，Header 使用 `ThemeInfo.Name`，命令参数使用
-`ThemeInfo.Id`。不在 AXAML 中复制主题名和主题 ID。所有颜色项使用同一个 `GroupName`，同一时刻只选中一项。
+“主题设置”是本地化子菜单，只包含由 `IThemeManager.AvailableThemes` 构建的主题 Radio 项。主题项文字使用
+`ThemeInfo.Name`，命令参数使用 `ThemeInfo.Id`。不在 AXAML 中复制主题名和主题 ID。所有颜色项使用同一个
+`GroupName`，同一时刻只选中一项；Dark、Compact、Motion 和 Wave Spirit 继续留在外层“主题”菜单。
 
-第一版不显示色点。XML v1 没有“菜单色样”元数据，重复维护一份 Id 到颜色的映射会制造第二来源。主题名已经足以
-区分选项；如果以后要显示色样，应另行设计通用主题展示元数据，而不是从已编译 Snapshot 猜测。
+每个存在 `AccentColor` 的主题项在文字右侧显示 `12 × 12`、`2px` 圆角的实心正方形色块。色块与左侧 Radio
+分居两端，避免两个圆形指示相互混淆。`AccentColor=null` 时不创建占位色块；用户主题仍可正常选择。
 
 ### 6.2 GalleryWorkspaceViewModel 状态
 
@@ -249,8 +261,9 @@ Catalog 构建规则：
 - `AvailableThemes`：从 ThemeManager 的只读主题列表初始化，并在 `ThemeCatalogChanged` 后原子替换菜单数据。
 - `CurrentThemeId`：只在已提交主题状态变化后更新。
 - `SwitchThemeCommand`：接收目标 Theme Id，调用统一主题请求路径。
-- `ReloadThemesCommand`：调用 `ReloadThemesAsync()` 并返回 result；失败时保留旧菜单和选中态，diagnostics 交给
-  调用方记录或展示。
+
+Gallery 第一版不增加 `ReloadThemesCommand`。`ReloadThemesAsync()` 仍是 ThemeManager 的正式 API，可由宿主代码、
+测试或未来新增的管理入口调用；刷新成功后 ViewModel 继续通过 `ThemeCatalogChanged` 被动更新菜单数据。
 
 `ApplyThemeSettingsAsync()` 改为接收可选目标 Theme Id，并始终一次性组合完整请求：
 
@@ -262,8 +275,8 @@ Tokens:
   EnableWaveSpirit
 ```
 
-主题色不写入运行时 `ThemeConfig`。切换 Theme Id 后，新的 XML definition 自己提供 `ColorPrimary`，从而不会把旧
-主题 Seed 带入新主题。
+主题色不写入运行时 `ThemeConfig`。切换 Theme Id 后，新的 XML definition 自己提供 `ColorPrimary` 和
+`ColorLink`，从而不会把旧主题 Seed 带入新主题。
 
 ### 6.3 正交组合
 
@@ -322,7 +335,7 @@ Wave Spirit 配置。
 - `AvailableThemes` 顺序与显式注册顺序一致。
 - 重复 Theme Id、零个/多个默认主题、缺失资源和无效 XML 使 Catalog 原子失败。
 - 每个 definition 生成独立 revision/content fingerprint。
-- 对每个 Theme Id 调用 `ApplyThemeAsync` 后，`CurrentTheme.ThemeId` 与编译后的 `ColorPrimary` 一致。
+- 对每个 Theme Id 调用 `ApplyThemeAsync` 后，`CurrentTheme.ThemeId` 与编译后的 `ColorPrimary`、`ColorLink` 一致。
 - Public API 审计更新，确认只增加计划内的 Resolver、Catalog reload 和 Builder 方法。
 - 用户目录文件数、总字节、symlink、目录逃逸、重复 Id、默认主题和整批失败策略均有测试。
 - `ReloadThemesAsync` 覆盖 Committed、NoOp、Superseded、Failed、当前主题重编译和删除回退。
@@ -335,11 +348,11 @@ Wave Spirit 配置。
 - 四个 Gallery XML 均通过 v1 XSD 与当前 Gallery 完整 ThemeSchemaRegistry 绑定。
 - `UseGalleryControls()` 注册后 `AvailableThemes` 恰好包含五个预期主题。
 - 菜单创建五个同组 Radio 项，并且只有当前主题被选中。
-- 从 Blue 切到 Green、Orange、Purple、Magenta 时 Theme Id 与主色正确。
+- 从 Blue 切到 Green、Orange、Purple、Magenta 时 Theme Id、主色与 Link 色正确。
 - 在 Dark + Compact + Motion/Wave 不同组合下切换主题色，所有正交状态保持不变。
 - 连续切换时旧请求 `Superseded` 不覆盖最终选中项。
 - 失败结果保持旧菜单选中态。
-- 手动刷新成功后用户主题进入菜单；失败后旧列表和选中态不变。
+- 通过 ThemeManager API 触发刷新后，成功时用户主题进入菜单；失败时旧列表和选中态不变。
 
 ### 8.3 验证命令
 

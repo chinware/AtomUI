@@ -14,43 +14,36 @@ AtomUI 在 Windows 上坚持两个单一所有者：
 | Windows 10 | `AngleEgl`，失败时 `Software` | `RedirectionSurface` | Avalonia CSD |
 | Windows 11+ | `AngleEgl`，失败时 `Software` | `RedirectionSurface` | Avalonia CSD |
 
-Windows 10 继续使用已经实机验证稳定的 `RedirectionSurface`。Windows 11 在 Avalonia 12.1.0
-下也能观察到左边缘和上边缘 live resize 时的帧不同步，因此默认同样收敛到
+Windows 10 继续使用已经实机验证稳定的 `RedirectionSurface`。Windows 11 实机验证也能观察到
+左边缘和上边缘 live resize 时的帧不同步，因此默认同样收敛到
 `RedirectionSurface`。这是平台合成模式策略，不是 Window 控件内的消息补丁。AtomUI 不处理
 `WM_NCCALCSIZE`，不返回 resize hit-test，不扩展 DWM frame，也不通过 `SWP_FRAMECHANGED`
 强制重算非客户区。
 
-## Avalonia 12.0.5 到 12.1.0 的事实
+## 机制与决策依据
 
-以下结论来自 Avalonia 仓库 `12.0.5` 与 `12.1.0` 标签的源码差异。
+本节记录 AtomUI 选择合成模式时必须保持的机制结论，不把某次框架版本差异或源码快照作为长期架构依据。
 
-### WinUI surface 的尺寸来源发生变化
+### WinUI surface 的尺寸提交
 
-`WinUiCompositedWindowSurface` 在 12.0.5 中从原生窗口信息读取尺寸和缩放：
-
-```csharp
-var size = _window.WindowInfo.Size;
-var scale = _window.WindowInfo.Scaling;
-```
-
-12.1.0 改为从当前 render scene 读取：
+当前 WinUI composition surface 从 render scene 读取尺寸和缩放：
 
 ```csharp
 var size = sceneInfo.Size;
 var scale = sceneInfo.Scaling;
 ```
 
-12.1.0 还会根据 scene transparency 创建不同 alpha mode 的 composition drawing surface。
-这使 WinUI surface 的尺寸提交更直接地依赖 composition scene 与 render tick 的时序。
+surface 还会根据 scene transparency 选择 alpha mode。这使尺寸提交依赖 composition scene 与 render tick
+的时序；AtomUI 的平台策略必须通过实机 live resize 验证这种时序，而不能从外部实现细节推导稳定性。
 
 ### Windows 10 和 Windows 11 的回调行为本来就不同
 
 `WinUiCompositorConnection` 明确记录：`RequestCommitAsync` 的完成回调在 Windows 10 的
-`DispatchMessage()` 中触发，在 Windows 11 的 `GetMessage()` 中触发。该文件在 12.0.5 与
-12.1.0 之间没有变化，因此不能把问题描述为“12.1 修改了消息循环”。更准确的结论是：
+`DispatchMessage()` 中触发，在 Windows 11 的 `GetMessage()` 中触发。不能把观察到的错帧简单归因于
+某次框架升级；AtomUI 维护的是以下可验证结论：
 
 1. 操作系统原有的回调差异一直存在；
-2. 12.1.0 改变了 WinUI drawing surface 对 scene size 的依赖；
+2. WinUI drawing surface 的提交依赖 scene size；
 3. 在测试机的 Windows 10 live resize 中，两者组合后出现了可见错帧；
 4. `RedirectionSurface` 实机验证可以消除外边缘错帧。
 
@@ -60,12 +53,11 @@ Avalonia Win32 CSD 拥有非客户区和 resize hit-test 的路径内，AtomUI �
 
 ### Avalonia 的非客户区所有权没有迁移给 AtomUI
 
-`WindowImpl.AppWndProc.cs` 中 `WM_NCCALCSIZE` 的核心处理在两个标签间没有本质变化。
-12.1.0 在 managed decorations 方向新增了请求变化通知和 shadow extents 同步，但没有要求
-控件库重新实现 Win32 chrome。
+Avalonia Win32 负责 `WM_NCCALCSIZE`、managed decorations、shadow extents 和非客户区状态同步。
+AtomUI 不重新实现 Win32 chrome，也不根据外部源码差异改变所有权边界。
 
 开发过程中曾尝试增加 AtomUI WndProc、DWM frame 和 non-client refresh。这是中间实验，
-不是 Avalonia 12.1 迁移要求。它与 Avalonia CSD 形成重复所有权，会引入黑边、原生标题栏按钮
+不是框架集成要求。它与 Avalonia CSD 形成重复所有权，会引入黑边、原生标题栏按钮
 闪现和新的 resize 回归，最终实现必须删除这条路径。
 
 ## 两类抖动必须分开诊断
@@ -118,7 +110,7 @@ track 高度时让内容层进入零高度。标题栏的手动移动状态会�
 
 ### 标题栏按钮
 
-Avalonia 12.1 提供 `WindowDecorationProperties.ElementRole`。AtomUI 的 Windows 标题栏按钮分别
+AtomUI 使用 Avalonia 公开的 `WindowDecorationProperties.ElementRole`。Windows 标题栏按钮分别
 声明 `MinimizeButton`、`MaximizeButton`、`CloseButton`、`FullScreenButton` 和
 `DecorationsElement`，由 Avalonia Win32 把角色转换为正确的非客户区命中结果。
 
@@ -137,7 +129,7 @@ macOS standard window buttons 和 Linux input region。Windows live resize、CSD
 - 不要调用 `DwmExtendFrameIntoClientArea` 修补 CSD 阴影。
 - 不要用 `SWP_FRAMECHANGED`、延时、重试或强制刷新掩盖时序问题。
 - 不要默认开启 `ShouldRenderOnUIThread`、`Software` 或 `Wgl` 来规避单机驱动问题。
-- 不要用 WndProc hook 实现 Avalonia 12.1 已公开的 caption element roles。
+- 不要用 WndProc hook 重复实现公开的 caption element roles。
 - 不要在 Windows 默认配置恢复 `WinUIComposition` / `DirectComposition` 优先级，除非上游变化后完成同等实机矩阵。
 
 ## 验证矩阵
@@ -182,7 +174,7 @@ macOS standard window buttons 和 Linux input region。Windows live resize、CSD
 4. 透明 Popup 和窗口装饰回归通过；
 5. 删除平台分支后代码和测试确实更简单。
 
-## 参考源码
+## 实现与升级检查入口
 
 AtomUI：
 
@@ -193,10 +185,6 @@ AtomUI：
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml`
 - `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml`
 
-Avalonia `12.0.5` / `12.1.0`：
-
-- `src/Windows/Avalonia.Win32/WinRT/Composition/WinUiCompositedWindowSurface.cs`
-- `src/Windows/Avalonia.Win32/WinRT/Composition/WinUiCompositorConnection.cs`
-- `src/Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs`
-- `src/Windows/Avalonia.Win32/WindowImpl.CustomCaptionProc.cs`
-- `src/Avalonia.Controls/Chrome/WindowDecorationProperties.cs`
+升级 Avalonia 或调整 Windows 合成策略时，应重新验证 WinUI surface 的 scene-size 提交、compositor
+回调时机、Win32 非客户区所有权和 caption element roles。外部类型和源码只能用于当次调查，不能把
+特定版本、tag、文件路径或行号固化为本架构的事实来源。

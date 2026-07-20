@@ -10,6 +10,7 @@ internal partial class zh_CN
 
     public const string MenuItemSettings = "设置";
     public const string MenuItemTheme = "主题";
+    public const string MenuItemThemeSettings = "主题设置";
     public const string MenuItemLanguage = "语言";
 
     public const string MenuItemWindowOptions = "窗口选项";

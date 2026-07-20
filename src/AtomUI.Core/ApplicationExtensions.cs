@@ -9,7 +9,7 @@ public static class ApplicationExtensions
 {
     public static Application UseAtomUI(this Application application, Action<IThemeManagerBuilder>? themeConfigureAction = null)
     {
-        var themeManagerBuilder = new ThemeManagerBuilder();
+        var themeManagerBuilder = new ThemeManagerBuilder(application);
         themeManagerBuilder.WithDefaultLanguageVariant(LanguageVariant.en_US);
         themeConfigureAction?.Invoke(themeManagerBuilder);
         

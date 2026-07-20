@@ -92,7 +92,7 @@ ExtendClientAreaToDecorationsHint = true
 Avalonia Win32 独占 `WM_NCCALCSIZE`、resize hit-test 和 DWM non-client frame。AtomUI 不修改
 客户区或窗口几何。
 
-AtomUI 不注册窗口消息 hook。标题栏按钮通过 Avalonia 12.1 的
+AtomUI 不注册窗口消息 hook。标题栏按钮通过 Avalonia 公开的
 `WindowDecorationProperties.ElementRole` 声明角色，由 Avalonia Win32 完成非客户区命中测试
 和 Windows 11 Snap Layout 集成。
 
@@ -192,12 +192,12 @@ if (OperatingSystem.IsLinux())
 | 把原生 Wayland 当成 XWayland | Wayland 的 `IWindowImpl.Handle` 为 `null`，不能调用 Xlib/XCB 或读取 XID |
 | 最大化/全屏时忘记重置 input region | 框架把 ShadowThickness 归零，需重置为整个客户区 |
 
-### 原生 Wayland（Avalonia 12.1）
+### 原生 Wayland
 
 `Avalonia.Wayland` 是独立后端，不经过 XWayland。`UseAtomUIPlatformDetect()` 在
 `WAYLAND_DISPLAY` 非空时选择它；Avalonia 自带的 `UsePlatformDetect()` 在 Linux 仍只加载 X11。
 
-Wayland 后端的源码约束：
+Wayland 后端的集成约束：
 
 - `WindowImplBase.Handle => null`，`Move(PixelPoint)` 和 `Activate()` 是 no-op。
 - `NeedsManagedDecorations` 来自 `zxdg_toplevel_decoration_v1` 协商；CSD 时请求
@@ -209,7 +209,7 @@ Wayland 后端的源码约束：
 - `WindowDecorations=None/TitleBar` 会锁定 sticky CSD，不能用它表示合成器协商出的 SSD。
 
 因此，X11 SHAPE、`_GTK_FRAME_EXTENTS`、绝对窗口位置和 XID 初始化几何都只能留在 X11 manager。
-Wayland input region 在 12.1 没有公开 API；AtomUI 当前越过 proxy 的反射实现不符合上游线程契约，
+Wayland input region 当前没有公开框架 API；AtomUI 当前越过 proxy 的反射实现不符合上游线程契约，
 只能视为待替换的内部适配，不能作为通用 Native API 示例。
 
 ---
@@ -228,9 +228,9 @@ Wayland input region 在 12.1 没有公开 API；AtomUI 当前越过 proxy 的�
 
 ### 为什么 Windows 使用 RedirectionSurface
 
-Avalonia 12.1 将 WinUI drawing surface 的尺寸来源从原生 `WindowInfo.Size` 改为
-`RenderTargetSceneInfo.Size`。Windows 10 与 Windows 11 的 `RequestCommitAsync` 完成回调位置
-原本就不同；两者组合后，在测试机的 Windows 10 live resize 中会出现 scene 与窗口尺寸错帧，
+WinUI drawing surface 的尺寸提交依赖 `RenderTargetSceneInfo.Size`。Windows 10 与 Windows 11 的
+`RequestCommitAsync` 完成回调位置不同；两者组合后，在测试机的 Windows 10 live resize 中会出现
+scene 与窗口尺寸错帧，
 表现为拖动左边缘或上边缘时，右边缘或下边缘剧烈抖动。
 
 `RedirectionSurface` 让 DWM redirection bitmap 与 HWND resize 走同一条系统路径，避免该错帧。
@@ -241,7 +241,7 @@ Avalonia 12.1 将 WinUI drawing surface 的尺寸来源从原生 `WindowInfo.Siz
 
 问题排查期间曾尝试让 AtomUI Windows chrome 同时处理 `WM_NCCALCSIZE`、resize hit-test、
 DWM frame 和 `SWP_FRAMECHANGED`。这与 Avalonia CSD 形成重复所有权，会出现黑边和系统
-标题栏按钮闪现；该实验路径不是 Avalonia 12.1 的迁移要求，已完整删除。
+标题栏按钮闪现；该实验路径不是框架集成要求，已完整删除。
 
 Windows 现在固定 `IsCsdEnabled=true`，并保持
 `ExtendClientAreaToDecorationsHint=true`。AtomUI 不再挂载 Windows chrome manager，
@@ -361,7 +361,7 @@ Windows 标题栏按钮在 AXAML 中声明 `WindowDecorationProperties.ElementRo
 
 ---
 
-## 9. 关键源码索引
+## 9. 实现与升级检查入口
 
 ### AtomUI 源码
 
@@ -373,26 +373,21 @@ Windows 标题栏按钮在 AXAML 中声明 `WindowDecorationProperties.ElementRo
 | `src/AtomUI.Core/AppBuilderExtensions.cs` | 强类型 Windows 10/11 合成模式策略 |
 | `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml` | 公开 caption element roles |
 
-### Avalonia 12 参考源码
+### 框架升级验证项
 
-| 文件 | 关键内容 |
+| 集成点 | 必须重新验证的契约 |
 |------|----------|
-| `Avalonia.Win32/WindowImpl.cs` | `NeedsManagedDecorations`、`RequestedDrawnDecorations`、`ExtendClientArea()` |
-| `Avalonia.Win32/WindowImpl.AppWndProc.cs` | WM_NCCALCSIZE / WM_SIZE 处理 |
-| `Avalonia.Win32/WindowImpl.CustomCaptionProc.cs` | WM_NCHITTEST、HitTestNCA |
-| `Avalonia.Win32/WindowImpl.WndProc.cs` | WndProc 分发链 |
-| `Avalonia.Controls/Chrome/WindowDecorationProperties.cs` | 跨平台 caption element roles |
-| `Avalonia.Controls/TopLevelHost.Decorations.cs` | WindowDrawnDecorations 创建、ResizeGripLayer |
-| `Avalonia.Controls/Window.cs` | `ComputeDecorationParts()`、`WindowDecorationMargin` |
-| `Avalonia.X11/X11Window.cs` | `EnableDrawnDecorations` gating、`RequestedDrawnDecorations` 四件套 |
-| `Avalonia.Native/WindowImpl.cs` | `NeedsManagedDecorations => false`（macOS 硬编码） |
-| `Avalonia.Wayland/WindowImpl.cs` | CSD/SSD、sticky CSD、shadow extents、Wayland 能力限制 |
-| `Avalonia.Wayland/Server/WaylandWorkerClient.cs` | UI→Wayland worker proxy 与 commit 编排 |
-| `Avalonia.Wayland/Server/Persistent/WSurface.cs` | persistent surface、window geometry 与 commit 生命周期 |
+| Win32 decorations | `NeedsManagedDecorations`、caption roles、非客户区和 resize 所有权仍由框架承担 |
+| Win32 composition | surface 尺寸提交和 compositor 回调时序通过 Windows 10/11 实机矩阵 |
+| X11 | `EnableDrawnDecorations` gating、`XID` descriptor 和四类绘制装饰保持一致 |
+| macOS | 原生标题栏与 standard window buttons 继续由 NSWindow 路径承担 |
+| Wayland | CSD/SSD、sticky CSD、shadow extents、worker proxy 和 commit 顺序保持一致 |
+
+外部框架的类型和源码可用于当次升级调查，但具体版本、文件路径、行号或源码快照不是 AtomUI 的架构契约。
 
 ### 相关文档
 
 | 文档 | 内容 |
 |------|------|
 | `docs/modules/native/windows-live-resize-scheme.md` | Windows live resize、合成后端与 CSD 单一所有权方案 |
-| `docs/modules/native/window-drawn-decorations.md` | Avalonia 12 WindowDrawnDecorations 完整使用指南 |
+| `docs/modules/native/window-drawn-decorations.md` | WindowDrawnDecorations 完整使用指南 |
