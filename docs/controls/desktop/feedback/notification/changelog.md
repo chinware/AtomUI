@@ -9,6 +9,7 @@
   - Align the close button size, hover background and pressed background with shared text/icon state tokens.
   - Derive `NotificationProgressBg` from primary border hover color to primary color.
   - Align the default auto-close expiration with the documented 4.5 second duration.
+  - Reduce the default internal card spacing tokens by one third while preserving the external stack spacing.
 
 ## 2026-06-26
 

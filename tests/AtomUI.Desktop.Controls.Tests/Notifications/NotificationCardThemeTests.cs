@@ -208,6 +208,31 @@ public class NotificationCardThemeTests
         gradient.GradientStops[1].Offset.ShouldBe(1);
     }
 
+    [Fact]
+    public void Internal_Spacing_Tokens_Are_Reduced_By_One_Third()
+    {
+        const double ratio = 2d / 3d;
+
+        var compactHorizontalPadding = GetThemeResource<double>(SharedTokenKind.UniformlyPaddingLG) * ratio;
+        var compactVerticalPadding   = GetThemeResource<double>(SharedTokenKind.UniformlyPaddingMD) * ratio;
+        var compactTitleGap          = GetThemeResource<double>(SharedTokenKind.UniformlyMarginXS) * ratio;
+        var compactIconGap           = GetThemeResource<double>(SharedTokenKind.UniformlyMarginSM) * ratio;
+
+        var notificationPadding = GetThemeResource<Thickness>(NotificationTokenKind.NotificationPadding);
+        ThicknessShouldBe(
+            notificationPadding,
+            new Thickness(compactHorizontalPadding, compactVerticalPadding, compactHorizontalPadding, 0));
+
+        var contentMargin = GetThemeResource<Thickness>(NotificationTokenKind.NotificationContentMargin);
+        ThicknessShouldBe(contentMargin, new Thickness(0, 0, 0, compactVerticalPadding));
+
+        var headerMargin = GetThemeResource<Thickness>(NotificationTokenKind.HeaderMargin);
+        ThicknessShouldBe(headerMargin, new Thickness(0, 0, 0, compactTitleGap));
+
+        var iconMargin = GetThemeResource<Thickness>(NotificationTokenKind.NotificationIconMargin);
+        ThicknessShouldBe(iconMargin, new Thickness(0, 0, compactIconGap, 0));
+    }
+
     private static void ShowInWindow(Control content, Action assertion)
     {
         ShowInWindow(content, _ => assertion());
@@ -264,6 +289,14 @@ public class NotificationCardThemeTests
     {
         actual.ShouldNotBeNull();
         ToColor(actual).ShouldBe(expected);
+    }
+
+    private static void ThicknessShouldBe(Thickness actual, Thickness expected)
+    {
+        actual.Left.ShouldBe(expected.Left, 0.001);
+        actual.Top.ShouldBe(expected.Top, 0.001);
+        actual.Right.ShouldBe(expected.Right, 0.001);
+        actual.Bottom.ShouldBe(expected.Bottom, 0.001);
     }
 
     private static Color ToColor(object? value)
