@@ -156,6 +156,10 @@ public class LineEditShowCasePageTests
             source.ShouldContain("TextBoxDescription");
             source.ShouldContain("P2PlaceholderTextTextBox");
             source.ShouldContain("ApiPropertyIsAllowClear");
+            source.ShouldContain("ApiPropertyLeftAddOnTemplate");
+            source.ShouldContain("ApiPropertyRightAddOnTemplate");
+            source.ShouldContain("ApiPropertyInnerLeftContentTemplate");
+            source.ShouldContain("ApiPropertyInnerRightContentTemplate");
             source.ShouldContain("ApiPropertySearchButtonStyle");
             source.ShouldContain("ApiPropertyIsAutoSize");
             source.ShouldContain("SearchEditSizeTypeTitle");
@@ -190,6 +194,25 @@ public class LineEditShowCasePageTests
         demo.ShouldContain("IsEnableRevealButton=\"True\"");
         CountOccurrences(demo, "<atom:TextBox").ShouldBe(3);
         demo.ShouldNotContain("<atom:LineEdit");
+    }
+
+    [Fact]
+    public void LineEdit_ShowCase_Demonstrates_TemplateOnly_InnerRight_ToolTip()
+    {
+        var source    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
+        var viewModel = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/ViewModels/LineEditViewModel.cs");
+        var demo      = ExtractShowCaseItem(source, "LineEditShowCaseLangResource PrefixAndSuffixTitle");
+
+        demo.ShouldContain("<atom:LineEdit.InnerRightContentTemplate>");
+        demo.ShouldContain("<DataTemplate>");
+        demo.ShouldContain("<antdicons:InfoCircleOutlined");
+        demo.ShouldContain("atom:ToolTip.Tip=\"{gallery:LineEditShowCaseLangResource PrefixAndSuffixToolTip}\"");
+        demo.ShouldNotContain("InnerRightContent=\"{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined");
+
+        viewModel.ShouldContain("\"LeftAddOnTemplate\"");
+        viewModel.ShouldContain("\"RightAddOnTemplate\"");
+        viewModel.ShouldContain("\"InnerLeftContentTemplate\"");
+        viewModel.ShouldContain("\"InnerRightContentTemplate\"");
     }
 
     [Fact]

@@ -42,7 +42,7 @@
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
                                 HorizontalAlignment="Right" />
-                            <ContentPresenter
+                            <atom:AddOnContentPresenter
                                 Name="InnerRightContentPresenter"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"

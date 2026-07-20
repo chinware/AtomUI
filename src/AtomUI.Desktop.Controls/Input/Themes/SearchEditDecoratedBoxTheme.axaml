@@ -19,9 +19,9 @@
                         BackgroundSizing="InnerBorderEdge"
                         BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
                         CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
-                        IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <ContentPresenter
-                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}"
+                        IsVisible="{Binding Child, ElementName=PART_LeftAddOnPresenter, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <atom:AddOnContentPresenter
+                            Name="PART_LeftAddOnPresenter"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             Focusable="False"
@@ -52,7 +52,7 @@
                                                         BoxShadow="{TemplateBinding BoxShadow}"
                                                         BackgroundSizing="OuterBorderEdge">
                         <DockPanel Name="ContentLayout" LastChildFill="True">
-                            <ContentPresenter
+                            <atom:AddOnContentPresenter
                                 Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
                                 DockPanel.Dock="Left"
                                 VerticalAlignment="Stretch"
@@ -60,10 +60,9 @@
                                 HorizontalAlignment="Left"
                                 Focusable="False"
                                 Content="{TemplateBinding ContentLeftAddOn}"
-                                ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
-                                IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}" />
 
-                            <ContentPresenter
+                            <atom:AddOnContentPresenter
                                 DockPanel.Dock="Right"
                                 Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}"
                                 VerticalAlignment="Stretch"
@@ -71,8 +70,7 @@
                                 HorizontalAlignment="Right"
                                 Focusable="False"
                                 Content="{TemplateBinding ContentRightAddOn}"
-                                ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}"
-                                IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}" />
 
                             <ContentPresenter
                                 Name="PART_ContentPresenter"

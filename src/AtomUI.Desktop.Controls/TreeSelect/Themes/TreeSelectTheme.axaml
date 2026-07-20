@@ -40,11 +40,10 @@
                                     MaxCount="{CompiledBinding $parent[atom:TreeSelect].MaxCount}"
                                     SelectedCount="{CompiledBinding $parent[atom:TreeSelect].SelectedCount}"
                                     IsVisible="{CompiledBinding $parent[atom:TreeSelect].IsShowMaxCountIndicator}" />
-                                <ContentPresenter
+                                <atom:AddOnContentPresenter
                                     Name="PART_ContentRightAddOnPresenter"
                                     Content="{CompiledBinding $parent[atom:TreeSelect].ContentRightAddOn}"
-                                    ContentTemplate="{CompiledBinding $parent[atom:TreeSelect].ContentRightAddOnTemplate}"
-                                    IsVisible="{CompiledBinding $parent[atom:TreeSelect].ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    ContentTemplate="{CompiledBinding $parent[atom:TreeSelect].ContentRightAddOnTemplate}" />
                                 <atom:SelectHandle
                                     Name="PART_SelectHandle"
                                     FormFeedback="{CompiledBinding $parent[atom:TreeSelect].FormFeedback}"

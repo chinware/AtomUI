@@ -475,8 +475,6 @@ public class NumericUpDown : AvaloniaNumericUpDown,
                 ContentPresenter.ContentProperty));
             _templatePartBindings.Add(BindUtils.RelayBind(this, InnerRightContentTemplateProperty,
                 innerRightContent, ContentPresenter.ContentTemplateProperty));
-            _templatePartBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
-                Visual.IsVisibleProperty, value => value is not null));
         }
 
         if (e.NameScope.Find<TextBox>("PART_TextBox") is { } textBox)

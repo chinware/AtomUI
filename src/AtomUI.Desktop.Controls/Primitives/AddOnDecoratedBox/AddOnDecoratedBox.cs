@@ -743,6 +743,13 @@ internal class AddOnDecoratedBox : ContentControl,
     {
         if (e.Property == ContentPresenter.ChildProperty)
         {
+            if (ReferenceEquals(sender, _leftAddOnPresenter) ||
+                ReferenceEquals(sender, _rightAddOnPresenter))
+            {
+                _cornerRadiusDirty = true;
+                ScheduleLayoutUpdate();
+            }
+
             if (e.OldValue is Control oldChild)
             {
                 oldChild.AttachedToVisualTree -= HandleAddOnChildAttachedToVisualTree;
@@ -1026,6 +1033,42 @@ internal class AddOnDecoratedBoxContentFrame : PixelAlignedBorder
         if (decoratedBox.IsInnerBoxPressed != isPressed)
         {
             decoratedBox.IsInnerBoxPressed = isPressed;
+        }
+    }
+}
+
+internal class AddOnContentPresenter : ContentPresenter
+{
+    public AddOnContentPresenter()
+    {
+        UpdateVisibility();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == ContentProperty ||
+            change.Property == ContentTemplateProperty)
+        {
+            UpdateVisibility();
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (Child is null && (Content is not null || ContentTemplate is not null))
+        {
+            UpdateChild();
+        }
+    }
+
+    private void UpdateVisibility()
+    {
+        var isVisible = Content is not null || ContentTemplate is not null;
+        if (IsVisible != isVisible)
+        {
+            SetCurrentValue(IsVisibleProperty, isVisible);
         }
     }
 }

@@ -15,6 +15,7 @@
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
                     ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
+                    ContentLeftAddOnTemplate="{TemplateBinding InnerLeftContentTemplate}"
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
@@ -36,7 +37,7 @@
                             <atom:InputClearIconButton Name="PART_ClearButton" />
                             <!-- 新增显示密码按钮 -->
                             <atom:RevealButton Name="PART_RevealButton" />
-                            <ContentPresenter
+                            <atom:AddOnContentPresenter
                                 Name="InnerRightContentPresenter"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"

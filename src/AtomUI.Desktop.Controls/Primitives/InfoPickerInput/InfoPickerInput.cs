@@ -597,8 +597,6 @@ public abstract class InfoPickerInput : TemplatedControl,
                 ContentPresenter.ContentProperty));
             _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnTemplateProperty,
                 contentPresenter, ContentPresenter.ContentTemplateProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
-                Visual.IsVisibleProperty, value => value is not null));
         }
     }
 

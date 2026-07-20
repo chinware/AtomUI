@@ -40,7 +40,7 @@
                             <atom:InputClearIconButton
                                 Name="PART_ClearButton"
                                 IsPassthroughMouseEvent="False" />
-                            <ContentPresenter
+                            <atom:AddOnContentPresenter
                                 Name="PART_InnerRightContentPresenter"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
@@ -167,23 +167,22 @@
                                                 VerticalAlignment="Stretch" />
                                         </atom:PixelAlignedBorder>
                                         <DockPanel LastChildFill="True">
-                                            <ContentPresenter
+                                            <atom:AddOnContentPresenter
                                                 DockPanel.Dock="Left"
                                                 VerticalAlignment="Stretch"
                                                 VerticalContentAlignment="Center"
                                                 HorizontalAlignment="Left"
                                                 Focusable="False"
                                                 Content="{TemplateBinding InnerLeftContent}"
-                                                ContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
-                                                IsVisible="{TemplateBinding InnerLeftContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                                            <ContentPresenter
+                                                ContentTemplate="{TemplateBinding InnerLeftContentTemplate}" />
+                                            <atom:AddOnContentPresenter
                                                 DockPanel.Dock="Right"
                                                 VerticalAlignment="Stretch"
                                                 VerticalContentAlignment="Center"
                                                 HorizontalAlignment="Right"
                                                 Focusable="False"
                                                 Content="{TemplateBinding InnerRightContent}"
-                                                IsVisible="{TemplateBinding InnerRightContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                                ContentTemplate="{TemplateBinding InnerRightContentTemplate}" />
                                             <ContentPresenter
                                                 Content="{TemplateBinding Content}"
                                                 ContentTemplate="{TemplateBinding ContentTemplate}" />
@@ -198,7 +197,7 @@
                                 <atom:InputClearIconButton
                                     Name="PART_ClearButton"
                                     IsPassthroughMouseEvent="False" />
-                                <ContentPresenter
+                                <atom:AddOnContentPresenter
                                     Name="PART_InnerRightContentPresenter"
                                     VerticalAlignment="Stretch"
                                     VerticalContentAlignment="Center"

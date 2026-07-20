@@ -40,6 +40,7 @@ internal partial class en_US
     public const string OtpLineEditFormValidationMessage = "Please enter the code";
     public const string PrefixAndSuffixTitle = "prefix and suffix";
     public const string PrefixAndSuffixDescription = "Add a prefix or suffix icons inside input.";
+    public const string PrefixAndSuffixToolTip = "Helpful information about this field";
     public const string InputStatusTitle = "Status";
     public const string InputStatusDescription = "Add status to Input with status, which could be error or warning.";
     public const string SearchBoxTitle = "Search box";
@@ -114,9 +115,13 @@ internal partial class en_US
     public const string ApiPropertyStyleVariant = "Chooses outlined, filled, borderless, or underlined presentation.";
     public const string ApiPropertyStatus = "Applies validation status styling such as error or warning.";
     public const string ApiPropertyLeftAddOn = "Content attached before the input frame.";
+    public const string ApiPropertyLeftAddOnTemplate = "Template used to render the left add-on, including when no LeftAddOn value is supplied.";
     public const string ApiPropertyRightAddOn = "Content attached after the input frame.";
+    public const string ApiPropertyRightAddOnTemplate = "Template used to render the right add-on, including when no RightAddOn value is supplied.";
     public const string ApiPropertyInnerLeftContent = "Content rendered inside the input before the text area.";
+    public const string ApiPropertyInnerLeftContentTemplate = "Template used to render inner-left content, including template-only icons and controls.";
     public const string ApiPropertyInnerRightContent = "Content rendered inside the input after the text area.";
+    public const string ApiPropertyInnerRightContentTemplate = "Template used to render inner-right content, including tooltip-enabled icons without a separate content value.";
     public const string ApiPropertyRevealPassword = "Controls password reveal state.";
     public const string ApiPropertySearchButtonStyle = "Sets SearchEdit button style.";
     public const string ApiPropertySearchButtonText = "Text displayed by the SearchEdit button.";

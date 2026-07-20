@@ -165,8 +165,8 @@ public class LineEdit : TextBox,
         {
             _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
                 ContentPresenter.ContentProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
-                Visual.IsVisibleProperty, value => value is not null));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentTemplateProperty,
+                innerRightContent, ContentPresenter.ContentTemplateProperty));
         }
 
         if (e.NameScope.Find<TextBlock>("TextCountIndicator") is { } textCountIndicator)

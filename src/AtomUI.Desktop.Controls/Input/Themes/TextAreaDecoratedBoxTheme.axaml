@@ -21,7 +21,7 @@
                     <Border Name="TextAreaContentFrame"
                             Padding="{TemplateBinding TextAreaFramePadding, Converter={StaticResource TextAreaFramePaddingConverter}}">
                         <DockPanel Name="ContentLayout" LastChildFill="True">
-                            <ContentPresenter
+                            <atom:AddOnContentPresenter
                                 Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
                                 DockPanel.Dock="Left"
                                 VerticalAlignment="Stretch"
@@ -29,8 +29,7 @@
                                 HorizontalAlignment="Left"
                                 Focusable="False"
                                 Content="{TemplateBinding ContentLeftAddOn}"
-                                ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
-                                IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}" />
                             <Panel>
                                 <atom:ScrollViewer Name="PART_ScrollViewer"
                                                    IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
@@ -44,15 +43,14 @@
                                         Content="{TemplateBinding Content}"
                                         ContentTemplate="{TemplateBinding ContentTemplate}" />
                                 </atom:ScrollViewer>
-                                <ContentPresenter
+                                <atom:AddOnContentPresenter
                                     Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}"
                                     VerticalAlignment="Stretch"
                                     VerticalContentAlignment="Center"
                                     HorizontalAlignment="Right"
                                     Focusable="False"
                                     Content="{TemplateBinding ContentRightAddOn}"
-                                    ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}"
-                                    IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}" />
                             </Panel>
                         </DockPanel>
                     </Border>
@@ -67,7 +65,7 @@
             <Setter Property="ClipToBounds" Value="True" />
             <Setter Property="ResizeIndicatorLineBrush"
                     Value="{atom:TextAreaTokenResource ResizeIndicatorLineColor}" />
-            <Style Selector="^ /template/ ContentPresenter#PART_ContentLeftAddOn">
+            <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentLeftAddOn">
                 <Setter Property="Margin" Value="{atom:AddOnDecoratedBoxTokenResource LeftInnerAddOnMargin}" />
             </Style>
             <Style Selector="^[SizeType=Large]">
@@ -76,7 +74,7 @@
                 </Style>
                 <Setter Property="TextAreaFramePadding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
-                <Style Selector="^ /template/ ContentPresenter#PART_ContentRightAddOn">
+                <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentRightAddOn">
                     <Setter Property="Padding" Value="{atom:TextAreaTokenResource RightAddOnPaddingLG}" />
                 </Style>
             </Style>
@@ -86,7 +84,7 @@
                 </Style>
                 <Setter Property="TextAreaFramePadding"
                         Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
-                <Style Selector="^ /template/ ContentPresenter#PART_ContentRightAddOn">
+                <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentRightAddOn">
                     <Setter Property="Padding" Value="{atom:TextAreaTokenResource RightAddOnPadding}" />
                 </Style>
             </Style>
@@ -94,7 +92,7 @@
                 <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                     <Setter Property="Padding" Value="0" />
                 </Style>
-                <Style Selector="^ /template/ ContentPresenter#PART_ContentRightAddOn">
+                <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentRightAddOn">
                     <Setter Property="Padding" Value="{atom:TextAreaTokenResource RightAddOnPaddingSM}" />
                 </Style>
                 <Setter Property="TextAreaFramePadding"

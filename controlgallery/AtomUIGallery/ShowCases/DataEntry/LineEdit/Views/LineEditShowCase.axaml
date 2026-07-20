@@ -310,8 +310,16 @@
             <DataTemplate x:DataType="vm:LineEditViewModel">
         <StackPanel Orientation="Vertical" Spacing="10">
             <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextEnterYourUsername}"
-                           InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, StrokeBrush=#D7D7D7}"
-                           InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, StrokeBrush=#8C8C8C}" />
+                           InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, StrokeBrush=#D7D7D7}">
+                <atom:LineEdit.InnerRightContentTemplate>
+                    <DataTemplate>
+                        <antdicons:InfoCircleOutlined
+                            StrokeBrush="#8C8C8C"
+                            VerticalAlignment="Center"
+                            atom:ToolTip.Tip="{gallery:LineEditShowCaseLangResource PrefixAndSuffixToolTip}" />
+                    </DataTemplate>
+                </atom:LineEdit.InnerRightContentTemplate>
+            </atom:LineEdit>
             <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" />
             <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
         </StackPanel>
