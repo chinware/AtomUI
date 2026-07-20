@@ -78,6 +78,8 @@ Public API / ItemsSource / Command / Event
 - 视觉与布局：`Position`、`ProgressIndicatorBrush`、`ProgressIndicatorThickness`。
 - 其他稳定入口：`CardExpiredPollingInterval`、`CleanupPollingInterval`、`Expiration`、`NotificationType`。
 
+`NotificationType.Default` 是普通通知入口，不生成类型图标；带类型通知由 `NotificationType` 映射到 success/info/warning/error 伪类和默认状态图标。自定义 `Icon` 始终优先于类型图标。
+
 维护要求：
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。

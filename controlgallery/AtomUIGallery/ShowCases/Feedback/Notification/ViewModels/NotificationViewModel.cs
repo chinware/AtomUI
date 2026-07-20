@@ -49,9 +49,9 @@ public class NotificationViewModel : ReactiveObject, IRoutableViewModel, IActiva
         [
             new NotificationApiRow("Notification.Title", Lang(NotificationShowCaseLangResourceKind.ApiPropertyNotificationTitle), "string", "cyan", "required"),
             new NotificationApiRow("Notification.Content", Lang(NotificationShowCaseLangResourceKind.ApiPropertyNotificationContent), "object?", "cyan", "required"),
-            new NotificationApiRow("Notification.Type", Lang(NotificationShowCaseLangResourceKind.ApiPropertyNotificationType), "NotificationType", "blue", "Information"),
+            new NotificationApiRow("Notification.Type", Lang(NotificationShowCaseLangResourceKind.ApiPropertyNotificationType), "NotificationType", "blue", "Default"),
             new NotificationApiRow("Notification.Icon", Lang(NotificationShowCaseLangResourceKind.ApiPropertyNotificationIcon), "PathIcon?", "cyan", "null"),
-            new NotificationApiRow("Notification.Expiration", Lang(NotificationShowCaseLangResourceKind.ApiPropertyNotificationExpiration), "TimeSpan", "cyan", "5s"),
+            new NotificationApiRow("Notification.Expiration", Lang(NotificationShowCaseLangResourceKind.ApiPropertyNotificationExpiration), "TimeSpan", "cyan", "4.5s"),
             new NotificationApiRow("Notification.ShowProgress", Lang(NotificationShowCaseLangResourceKind.ApiPropertyNotificationShowProgress), "bool", "purple", "false"),
             new NotificationApiRow("Notification.OnClick", Lang(NotificationShowCaseLangResourceKind.ApiPropertyNotificationOnClick), "Action?", "cyan", "null"),
             new NotificationApiRow("Notification.OnClose", Lang(NotificationShowCaseLangResourceKind.ApiPropertyNotificationOnClose), "Action?", "cyan", "null"),

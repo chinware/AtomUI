@@ -6,6 +6,8 @@ namespace AtomUI.Desktop.Controls;
 
 public class Notification : INotification, INotifyPropertyChanged
 {
+    private static readonly TimeSpan DefaultExpiration = TimeSpan.FromSeconds(4.5);
+
     private string _title;
     private object? _content;
     private bool _showProgress;
@@ -13,7 +15,7 @@ public class Notification : INotification, INotifyPropertyChanged
 
     public Notification(string title,
                         object? content,
-                        NotificationType type = NotificationType.Information,
+                        NotificationType type = NotificationType.Default,
                         PathIcon? icon = null,
                         TimeSpan? expiration = null,
                         bool showProgress = false,
@@ -24,7 +26,7 @@ public class Notification : INotification, INotifyPropertyChanged
         _content     = content;
         _icon        = icon;
         Type         = type;
-        Expiration   = expiration.HasValue ? expiration.Value : TimeSpan.FromSeconds(5);
+        Expiration   = expiration.HasValue ? expiration.Value : DefaultExpiration;
         ShowProgress = showProgress;
         OnClick      = onClick;
         OnClose      = onClose;

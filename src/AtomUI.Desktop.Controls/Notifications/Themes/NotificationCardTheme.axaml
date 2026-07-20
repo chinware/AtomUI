@@ -171,6 +171,10 @@
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
+            <Setter Property="Width"
+                    Value="{atom:NotificationTokenResource NotificationCloseButtonSize}" />
+            <Setter Property="Height"
+                    Value="{atom:NotificationTokenResource NotificationCloseButtonSize}" />
             <Setter Property="Padding"
                     Value="{atom:NotificationTokenResource NotificationCloseButtonPadding}" />
             <Setter Property="CornerRadius"
@@ -179,6 +183,22 @@
                     Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="IconWidth"
                     Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconBrush"
+                    Value="{atom:SharedTokenResource ColorIcon}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton:pointerover">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorBgTextHover}" />
+            <Setter Property="IconBrush"
+                    Value="{atom:SharedTokenResource ColorIconHover}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton:pressed">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorBgTextActive}" />
+            <Setter Property="IconBrush"
+                    Value="{atom:SharedTokenResource ColorIconHover}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#Content">

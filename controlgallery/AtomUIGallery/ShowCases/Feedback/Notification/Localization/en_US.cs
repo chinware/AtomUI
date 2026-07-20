@@ -30,8 +30,8 @@ internal partial class en_US
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertyNotificationTitle = "Title text displayed in the notification card header.";
     public const string ApiPropertyNotificationContent = "Body content displayed below the title.";
-    public const string ApiPropertyNotificationType = "Notification semantic type. It controls the default icon and status color.";
-    public const string ApiPropertyNotificationIcon = "Optional custom icon. When unset, the icon is selected from the notification type.";
+    public const string ApiPropertyNotificationType = "Notification semantic type. Default shows no type icon; typed notifications use the matching status icon and color.";
+    public const string ApiPropertyNotificationIcon = "Optional custom icon. When unset, typed notifications select the icon from the notification type.";
     public const string ApiPropertyNotificationExpiration = "Auto-close delay. Use TimeSpan.Zero to keep the notification open.";
     public const string ApiPropertyNotificationShowProgress = "Shows an auto-close progress bar at the bottom of the notification.";
     public const string ApiPropertyNotificationOnClick = "Callback invoked when the notification card is clicked.";

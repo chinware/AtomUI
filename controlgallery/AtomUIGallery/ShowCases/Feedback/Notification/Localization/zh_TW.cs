@@ -30,8 +30,8 @@ internal partial class zh_TW
     public const string ApiColumnDefault = "默認值";
     public const string ApiPropertyNotificationTitle = "顯示在通知卡片頭部的標題文本。";
     public const string ApiPropertyNotificationContent = "顯示在標題下方的正文內容。";
-    public const string ApiPropertyNotificationType = "通知語義類型，用於控制默認圖標和狀態顏色。";
-    public const string ApiPropertyNotificationIcon = "可選自定義圖標；未設置時根據通知類型選擇圖標。";
+    public const string ApiPropertyNotificationType = "通知語義類型；Default 不顯示類型圖標，帶類型通知使用對應狀態圖標和顏色。";
+    public const string ApiPropertyNotificationIcon = "可選自定義圖標；未設置時帶類型通知根據通知類型選擇圖標。";
     public const string ApiPropertyNotificationExpiration = "自動關閉延遲；使用 TimeSpan.Zero 可保持通知打開。";
     public const string ApiPropertyNotificationShowProgress = "在通知底部顯示自動關閉進度條。";
     public const string ApiPropertyNotificationOnClick = "點擊通知卡片時調用的回調。";
