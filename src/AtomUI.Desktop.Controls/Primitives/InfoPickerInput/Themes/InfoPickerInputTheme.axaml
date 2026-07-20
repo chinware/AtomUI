@@ -19,7 +19,7 @@
                     DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                     IsEnabled="{TemplateBinding IsEnabled}"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
-                    LeftAddOnTemplate="{TemplateBinding LeftAddOn}"
+                    LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOn="{TemplateBinding RightAddOn}"
                     RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
                     ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
@@ -33,7 +33,7 @@
                         <StackPanel Orientation="Horizontal" Spacing="{atom:SharedTokenResource SpacingXS}">
                             <atom:PickerClearUpButton
                                 Name="PART_ClearUpButton" />
-                            <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
+                            <atom:AddOnContentPresenter Name="PART_ContentRightAddOnPresenter" />
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
                     <atom:EmbeddedTextBox Name="PART_InfoInputBox"

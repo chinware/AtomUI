@@ -28,11 +28,10 @@
                         ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}">
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                              <StackPanel Orientation="Horizontal" Spacing="{atom:SharedTokenResource SpacingXS}">
-                                 <ContentPresenter
+                                 <atom:AddOnContentPresenter
                                      Name="PART_ContentRightAddOnPresenter"
                                      Content="{CompiledBinding $parent[atom:ComboBox].ContentRightAddOn}"
-                                     ContentTemplate="{CompiledBinding $parent[atom:ComboBox].ContentRightAddOnTemplate}"
-                                     IsVisible="{CompiledBinding $parent[atom:ComboBox].ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                     ContentTemplate="{CompiledBinding $parent[atom:ComboBox].ContentRightAddOnTemplate}" />
                                  <ContentPresenter
                                      Name="PART_FormFeedBack"
                                      VerticalAlignment="Stretch"

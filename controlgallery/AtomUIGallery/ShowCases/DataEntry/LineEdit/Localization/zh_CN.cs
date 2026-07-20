@@ -40,6 +40,7 @@ internal partial class zh_CN
     public const string OtpLineEditFormValidationMessage = "请输入验证码";
     public const string PrefixAndSuffixTitle = "前缀和后缀";
     public const string PrefixAndSuffixDescription = "在输入框内部添加前缀或后缀图标。";
+    public const string PrefixAndSuffixToolTip = "关于此字段的提示信息";
     public const string InputStatusTitle = "状态";
     public const string InputStatusDescription = "通过 status 为 Input 添加状态，可设置为错误或警告。";
     public const string SearchBoxTitle = "搜索框";
@@ -114,9 +115,13 @@ internal partial class zh_CN
     public const string ApiPropertyStyleVariant = "选择线框、填充、无边框或下划线表现。";
     public const string ApiPropertyStatus = "应用错误或警告等校验状态样式。";
     public const string ApiPropertyLeftAddOn = "输入框外框前置附加内容。";
+    public const string ApiPropertyLeftAddOnTemplate = "左侧附加内容模板；未提供 LeftAddOn 值时也可单独渲染。";
     public const string ApiPropertyRightAddOn = "输入框外框后置附加内容。";
+    public const string ApiPropertyRightAddOnTemplate = "右侧附加内容模板；未提供 RightAddOn 值时也可单独渲染。";
     public const string ApiPropertyInnerLeftContent = "输入框内部、文本区域之前渲染的内容。";
+    public const string ApiPropertyInnerLeftContentTemplate = "输入框内部左侧内容模板，支持仅通过模板提供图标或控件。";
     public const string ApiPropertyInnerRightContent = "输入框内部、文本区域之后渲染的内容。";
+    public const string ApiPropertyInnerRightContentTemplate = "输入框内部右侧内容模板，可在不提供内容值时直接渲染带提示的图标。";
     public const string ApiPropertyRevealPassword = "控制密码显示状态。";
     public const string ApiPropertySearchButtonStyle = "设置 SearchEdit 按钮样式。";
     public const string ApiPropertySearchButtonText = "SearchEdit 按钮显示文本。";

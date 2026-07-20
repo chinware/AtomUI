@@ -47,13 +47,12 @@
                                         VerticalAlignment="Stretch"
                                         VerticalContentAlignment="Center"
                                         HorizontalAlignment="Right" />
-                                    <ContentPresenter
+                                    <atom:AddOnContentPresenter
                                         Name="PART_InnerRightContentPresenter"
                                         VerticalAlignment="Center"
                                         VerticalContentAlignment="Center"
                                         HorizontalAlignment="Right"
-                                        Focusable="False"
-                                        IsVisible="False" />
+                                        Focusable="False" />
                                 </StackPanel>
                             </atom:TextAreaDecoratedBox.ContentRightAddOn>
 

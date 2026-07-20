@@ -43,7 +43,7 @@
                                         Spacing="{atom:SharedTokenResource SpacingXS}">
                                 <atom:PickerClearUpButton
                                     Name="PART_ClearUpButton" />
-                                <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
+                                <atom:AddOnContentPresenter Name="PART_ContentRightAddOnPresenter" />
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Grid ColumnDefinitions="*, Auto, *">

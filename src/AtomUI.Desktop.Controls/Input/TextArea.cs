@@ -367,7 +367,10 @@ public class TextArea : AvaloniaTextBox,
         {
             _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
                 ContentPresenter.ContentProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentTemplateProperty,
+                innerRightContent, ContentPresenter.ContentTemplateProperty));
         }
+
     }
 
     private void HandleClearButtonClicked(object? sender, RoutedEventArgs args)
