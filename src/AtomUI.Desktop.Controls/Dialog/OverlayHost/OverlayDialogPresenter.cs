@@ -404,14 +404,24 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private Rect ResolveOwnerBounds(Size layerSize)
     {
         var layerBounds = new Rect(default, layerSize);
-        if (_ownerWindow is not { OsType: OsType.Linux } window)
+        if (_ownerWindow is not { } window)
         {
             return layerBounds;
         }
 
-        if (window.IsCsdEnabled)
+        if (window.OsType == OsType.Windows)
+        {
+            return layerBounds;
+        }
+
+        if (window.WindowDecorationMargin != default)
         {
             return DeflateBounds(layerBounds, window.WindowDecorationMargin);
+        }
+
+        if (window.OsType != OsType.Linux)
+        {
+            return layerBounds;
         }
 
         var visibleFrame = DeflateBounds(layerBounds, window.FrameShadowThickness);

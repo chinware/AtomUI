@@ -52,14 +52,16 @@ public class DrawerThemeContractTests
     }
 
     [Fact]
-    public void Wayland_Drawn_TitleBar_Overlay_Tracks_Drawer_Suppression_State()
+    public void Drawn_Decorations_Overlay_Provides_TitleBar_Covering_Hosts()
     {
         var source = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"));
 
         source.ShouldContain("Name=\"PART_OverlayWrapper\"");
-        source.ShouldContain(
-            "IsVisible=\"{Binding $parent[atom:Window].IsDrawnTitleBarOverlayVisible}\"");
+        source.ShouldContain("Name=\"PART_DrawerOverlayLayerHost\"");
+        source.ShouldContain("Name=\"PART_DialogOverlayLayerHost\"");
+        source.ShouldContain("<atom:WindowVisualLayerClip");
+        source.ShouldNotContain("IsDrawnTitleBarOverlayVisible");
     }
 
     [Fact]

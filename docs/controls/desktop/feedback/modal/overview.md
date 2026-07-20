@@ -93,6 +93,8 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 
 - `IsOpen` 表示最新声明式意图；`DialogSession` 表示一次实际展示。两者不能由 presenter 或 template part 反向拥有。
 - modal Overlay 的真实 pointer 输入命中 mask，modeless Overlay 在 Surface 外穿透到底层。只有栈顶 presenter 响应 mask 与 Escape。
+- 所有平台的 `AtomUI.Window` 都按宿主能力选择 Overlay layer：drawn decorations 暴露 Dialog host 时把 presenter 放在该层，否则回退 TopLevel popup overlay。modal mask 覆盖完整 Avalonia 可绘制窗口轮廓和 managed/drawn 标题栏，标题栏内容与 caption buttons 也受同一 modal 输入阻断；位于客户端 visual tree 外的原生系统 chrome 仍由平台管理。
+- Overlay mask bounds 与 Dialog owner bounds 独立：mask 使用完整 layer bounds；Windows 的 Surface 定位、拖动、resize 和 maximize 使用完整 layer，允许进入 drawn title bar 区域；Linux/macOS 使用各自正文可用区。窗口圆角和 frame shadow 由 Window 的统一 visual-layer clip 处理，mask 不重复构造裁剪边界。
 - Enter/Escape 根据当前有效按钮序列查找 default/escape 按钮，运行时修改标准按钮或自定义按钮会立即生效。
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
 - 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
@@ -116,7 +118,8 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 ## 6. 控件家族或集成关系
 
 - `MessageBox` 继承 `Dialog`，只增加语义内容和按钮策略。
-- Overlay 使用最近的 `ScopeAwareOverlayLayer`，不会使用全局静态 TopLevel 字典。
+- Overlay 在 `AtomUI.Window` 暴露 drawn decorations Dialog host 时使用该层；其他 TopLevel 使用 popup overlay layer，单视图或局部 scope 使用最近的 `ScopeAwareOverlayLayer`。宿主解析由实际能力决定，不按操作系统硬编码，也不使用全局静态 TopLevel 字典。
+- Drawer 与 Overlay Dialog 在 CSD Window 中遵循相同的标题栏覆盖和窗口 frame clip 规则，但各自保留独立的 layer、stack 与关闭生命周期。
 - Window 使用 Avalonia 原生 `Window` modal owner 能力；不支持原生 Window 的平台会回退到 Overlay。
 - `IDialogAwareDataContext` 在 DataContext attach/detach 和 Session closed 时接收通知。
 - Gallery 展示 Overlay/Window、modal/modeless、异步关闭、loading、自定义按钮、拖动与尺寸场景。
@@ -130,6 +133,8 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 - Content 可以是字符串、POCO 或 Control；实现不得修改用户 Control 的 TemplatedParent。
 - 自定义按钮集合的 Add/Remove/Replace/Move/Reset/Clear 都要更新有效序列并对称管理事件订阅。
 - mask、Surface、内容、按钮、binding、逻辑/资源 parent、owner/target 订阅必须在所有关闭路径释放。
+- Window mask 必须覆盖完整 Avalonia 可绘制窗口轮廓；存在 drawn title bar 时必须位于其上方。Windows Dialog Surface 可以进入标题栏范围，Linux/macOS Surface 继续受正文可用区约束；不能把 mask bounds 与平台 owner bounds 合并为同一个矩形。
+- Window 外轮廓只能由现有 `WindowVisualLayerClip` 统一裁剪；Overlay Dialog 不单独复制 frame shadow margin 或 CornerRadius。
 - 不重新引入同步 DispatcherFrame、callback close、隐藏 MessageBox Dialog 或分离的 Popup mask。
 
 ## 8. 专项模型
@@ -146,9 +151,22 @@ Created -> Opening -> Open -> ClosePending -> Closing -> Closed
 
 ### 8.2 宿主选择
 
-- `DialogHostType.Overlay` 使用 owner 范围内的 Dialog overlay stack。
+- `DialogHostType.Overlay` 使用 owner 范围内的 Dialog overlay stack。`AtomUI.Window` 在 drawn decorations Dialog host 可用时优先使用该层，不可用的平台或装饰模式使用 popup overlay layer；无 TopLevel popup layer 的 scope 使用 `ScopeAwareOverlayLayer`。
+- drawn decorations host 不可用时回退到普通 TopLevel/scope overlay，保证自定义或不完整 Window theme 不阻断 Dialog 打开。
 - `DialogHostType.Window` 使用原生 Window；平台不支持时回退 Overlay。
 - `IsModal` 只控制交互模态，不改变 `OpenAsync` 的任务边界。
+
+### 8.3 Overlay 窗口几何
+
+Overlay 使用彼此独立的几何语义：
+
+- mask bounds 等于完整 Dialog layer bounds，覆盖标题栏、正文和窗口可见 frame。
+- Windows Dialog owner bounds 等于完整 layer bounds，使 placement、拖动、resize 和 maximize 可以使用 drawn title bar 区域。
+- Linux/macOS Window 发布非零 `WindowDecorationMargin` 时，Dialog owner bounds 由完整 layer bounds 按该值内缩，和平台 extended margin 或 drawn decorations 内容布局使用同一个正文边界。
+- Linux 非 CSD 的 Dialog body bounds 排除 managed frame shadow 和可见标题栏；其他非 CSD TopLevel 保持其现有 layer bounds。
+- Dialog 自身 BoxShadow 只参与绘制，不改变 `HostWidth` / `HostHeight`、最大尺寸、placement、拖动或 resize 约束。
+
+owner resize、Window state、CSD 装饰和 `ClientSize` 变化后，mask 继续使用完整 layer bounds，Dialog Surface 按最新平台 owner bounds 重新约束。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 
