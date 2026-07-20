@@ -112,7 +112,7 @@ internal class NotificationToken : AbstractControlDesignToken
             EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
             GradientStops = new GradientStops
             {
-                new() { Color = SharedToken.ColorPrimaryHover, Offset = 0 },
+                new() { Color = SharedToken.ColorPrimaryBorderHover, Offset = 0 },
                 new() { Color = SharedToken.ColorPrimary, Offset      = 1 }
             }
         }.ToImmutable();

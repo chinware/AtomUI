@@ -2,6 +2,7 @@
 
 public enum NotificationType
 {
+    Default = -1,
     Information,
     Success,
     Warning,

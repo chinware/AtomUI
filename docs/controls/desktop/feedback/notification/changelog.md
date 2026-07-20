@@ -2,6 +2,14 @@
 
 本文档记录 Notification 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-20
+
+- Fix
+  - Add `NotificationType.Default` for plain notifications so the default notification path renders without a type icon.
+  - Align the close button size, hover background and pressed background with shared text/icon state tokens.
+  - Derive `NotificationProgressBg` from primary border hover color to primary color.
+  - Align the default auto-close expiration with the documented 4.5 second duration.
+
 ## 2026-06-26
 
 - Docs

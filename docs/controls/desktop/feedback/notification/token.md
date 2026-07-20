@@ -32,6 +32,8 @@ Notification 的控件专项模型通过 Theme 消费 Token：
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
 - Gallery Token 表应显式维护，不依赖运行时反射扫描。
 
+`NotificationProgressBg` 使用主色边框 hover 色到主色的线性渐变。`NotificationCloseButtonSize` 控制关闭按钮的固定命中尺寸；hover 和 pressed 背景由 SharedToken 的文本背景状态色在主题 selector 中表达，不引入额外组件 Token。
+
 ## 4. 控件家族影响
 
 调整 Notification Token 时必须评估以下范围：

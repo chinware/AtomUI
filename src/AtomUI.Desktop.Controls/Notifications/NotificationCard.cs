@@ -34,7 +34,9 @@ public class NotificationCard : ContentControl, IMotionAwareControl
         AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsShowProgress));
     
     public static readonly StyledProperty<NotificationType> NotificationTypeProperty =
-        AvaloniaProperty.Register<NotificationCard, NotificationType>(nameof(NotificationType));
+        AvaloniaProperty.Register<NotificationCard, NotificationType>(
+            nameof(NotificationType),
+            NotificationType.Default);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NotificationCard>();
@@ -153,6 +155,8 @@ public class NotificationCard : ContentControl, IMotionAwareControl
     private Grid? _layout;
     private IconButton? _closeButton;
     private NotificationProgressBar? _progressBar;
+    private PathIcon? _templateNotificationIcon;
+    private bool _isApplyingTemplateNotificationIcon;
     private TimeSpan? _progressBarTotalExpiration;
     private BaseMotionActor? _motionActor;
 
@@ -318,6 +322,7 @@ public class NotificationCard : ContentControl, IMotionAwareControl
             if (change.Property == NotificationTypeProperty)
             {
                 SetupNotificationTypePseudoClasses();
+                SetupDefaultNotificationIcon();
             }
         }
         
@@ -343,7 +348,8 @@ public class NotificationCard : ContentControl, IMotionAwareControl
         } 
         else if (change.Property == IconProperty)
         {
-            if (Icon is null)
+            if (!_isApplyingTemplateNotificationIcon &&
+                (Icon is null || ReferenceEquals(Icon, _templateNotificationIcon)))
             {
                 SetupDefaultNotificationIcon();
             }
@@ -407,29 +413,59 @@ public class NotificationCard : ContentControl, IMotionAwareControl
 
     private void SetupDefaultNotificationIcon()
     {
-        if (Icon is null)
+        if (_isApplyingTemplateNotificationIcon)
         {
-            Icon? icon = null;
-            if (NotificationType == NotificationType.Information)
+            return;
+        }
+
+        var currentIcon = Icon;
+        if (currentIcon is not null &&
+            !ReferenceEquals(currentIcon, _templateNotificationIcon))
+        {
+            return;
+        }
+
+        var icon = CreateDefaultNotificationIcon();
+        _isApplyingTemplateNotificationIcon = true;
+        try
+        {
+            if (currentIcon is null)
             {
-                icon = new InfoCircleFilled();
+                ClearValue(IconProperty);
             }
-            else if (NotificationType == NotificationType.Success)
-            {
-                icon = new CheckCircleFilled();
-            }
-            else if (NotificationType == NotificationType.Error)
-            {
-                icon = new CloseCircleFilled();
-            }
-            else if (NotificationType == NotificationType.Warning)
-            {
-                icon = new ExclamationCircleFilled();
-            }
-        
-            ClearValue(IconProperty);
+
+            _templateNotificationIcon = icon;
             SetValue(IconProperty, icon, BindingPriority.Template);
         }
+        finally
+        {
+            _isApplyingTemplateNotificationIcon = false;
+        }
+    }
+
+    private PathIcon? CreateDefaultNotificationIcon()
+    {
+        if (NotificationType == NotificationType.Information)
+        {
+            return new InfoCircleFilled();
+        }
+
+        if (NotificationType == NotificationType.Success)
+        {
+            return new CheckCircleFilled();
+        }
+
+        if (NotificationType == NotificationType.Error)
+        {
+            return new CloseCircleFilled();
+        }
+
+        if (NotificationType == NotificationType.Warning)
+        {
+            return new ExclamationCircleFilled();
+        }
+
+        return null;
     }
 
     internal bool NotifyCloseTick(TimeSpan cycleDuration)
