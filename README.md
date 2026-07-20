@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview)
-[![AtomUI](https://img.shields.io/badge/AtomUI-6.0.7-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.0-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-contributors-shield]][github-contributors-link]
 [![][github-stars-shield]][github-stars-link]
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
@@ -125,9 +125,9 @@ The packages we have released are as follows:
 | AtomUI.Generator                    | Source generators for custom controls, tokens and localization             |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.0.7
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.7
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.7
+dotnet add package AtomUI.Desktop.Controls --version 6.1.0
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.0
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.0
 ```
 
 You can also install the packages from your IDE's NuGet package manager. In Rider, open:
@@ -155,9 +155,9 @@ Search for "AtomUI" and install the packages your project needs.
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.7"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.7"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.7"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.0"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.0"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.0"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
