@@ -15,13 +15,15 @@ Reader、Binder、Compiler 和 ThemeManager 事务加载；Gallery 不直接把�
 - 新增主题归 Gallery 所有，不把展示型主题加入 AtomUI Core 的默认产品目录。
 - 主题 XML 是主题身份、显示名称、算法和 Seed Token 的规范来源。
 - 主题色、深色、紧凑、Motion 和 Wave Spirit 可以正交组合。
+- AtomUI Theme 通过统一 Resolver 同时支持内置资源、Gallery 资源和用户配置目录主题。
+- Desktop Gallery 启动时加载用户主题，并允许手动刷新；刷新原子更新 Catalog 与当前主题 Snapshot。
 - 主题切换继续复用稳定 `ThemeContext` 和 `ThemeTokenResourceProvider`，不追加资源层。
 - 启动与运行时路径保持 NativeAOT 友好，不扫描程序集或资源目录。
 
 本次不包含：
 
 - 自定义颜色选择器或运行时写主题文件。
-- 用户主题文件导入、网络主题下载和热重载。
+- 网络主题下载、主题编辑器和 `FileSystemWatcher` 实时监听。
 - 跨进程持久化上次选择。Gallery 现有主题开关也不持久化，本次保持相同生命周期。
 - 修改成功色、警告色、错误色等语义 Token。主题 XML 只改变 `ColorPrimary`。
 
@@ -103,48 +105,59 @@ controlgallery/AtomUIGallery/Assets/Themes/
 XML 不复制派生色阶、Control Token、Dark 或 Compact 配置。`Default` 算法从 `ColorPrimary` 生成 Map/Alias Token；
 Dark 和 Compact 仍由运行时算法链叠加。
 
-## 4. Gallery 主题源注册
+## 4. Theme Definition Resolver
 
 ### 4.1 当前缺口
 
 当前公开的 `IThemeManagerBuilder` 没有注册主题定义来源的入口，`CompiledThemeCatalog.LoadBuiltIn()` 也只加载硬编码
-的 `DaybreakBlue.xml`。把 Gallery XML 放入资源目录本身不会让 ThemeManager 发现它们。
+的 `DaybreakBlue.xml`。把 Gallery XML 放入资源目录或用户配置目录本身都不会让 ThemeManager 发现它们。
 
-由于主题归 Gallery 所有，不能通过把四个 XML 移入 Core 来绕过该缺口。本次需要补齐架构文档已经列出的
-`ThemeAssetPathProviders` 能力。这是一个有意的 Public API 增量，必须同步 API 测试和文档。
+由于主题归 Gallery 所有，不能通过把四个 XML 移入 Core 来绕过该缺口。本次把硬编码加载重构为通用
+`IThemeDefinitionResolver` 链。这是一个有意的 Public API 增量，必须同步 API 测试和文档。
 
 ### 4.2 公开契约
 
-在 `AtomUI.Theme.Definitions` 增加只描述显式 Avalonia 资源路径的接口：
+在 `AtomUI.Theme.Definitions` 增加 Resolver 与 source 契约：
 
 ```csharp
-public interface IThemeAssetPathProvider
+public interface IThemeDefinitionResolver
 {
     string Id { get; }
-    IReadOnlyList<Uri> AssetPaths { get; }
+    bool SupportsReload { get; }
+    ThemeDefinitionResolveResult Resolve(ThemeDefinitionResolveContext context);
+}
+
+public interface IThemeDefinitionSource
+{
+    string SourceIdentity { get; }
+    string SourceRevision { get; }
+    Stream OpenRead();
 }
 ```
 
 在 `IThemeManagerBuilder` 增加：
 
 ```csharp
-void AddThemeAssetPathProvider(IThemeAssetPathProvider provider);
+void AddThemeDefinitionResolver(IThemeDefinitionResolver resolver);
+void WithApplicationId(string applicationId);
+void UseUserThemeDirectory();
+void UseUserThemeDirectory(string directory);
 ```
 
 边界约束：
 
-- `Id` 必须非空，并在一次 Builder 中唯一。
-- `AssetPaths` 在注册时防御性复制，后续修改 Provider 集合不影响启动输入。
-- 路径必须是绝对 `avares://` URI；v1 不接受文件系统、HTTP 或相对路径。
-- 同一 Provider 内或不同 Provider 间重复 URI 都在启动前拒绝。
-- Provider 必须显式列出全部文件，不使用程序集扫描、资源目录枚举或反射发现。
+- Resolver Id 必须非空且唯一，Resolve 结果在注册/加载边界防御性复制。
+- Resolver 只发现并打开来源；XML 仍统一经过受限 Reader、XSD、Binder 和 Compiler。
+- 内置与 Gallery Resolver 显式列出绝对 `avares://` URI，不扫描程序集或资源目录。
+- 用户 Resolver 只枚举配置目录顶层 `*.theme.xml`，不递归、不跟随链接。
+- `ThemeConfig` 继续只表示运行时覆盖，Resolver 不返回 `ThemeConfig`。
 
-Core 内部默认 Provider 始终先提供 `DaybreakBlue.theme.xml`。应用注册的 Provider 只能追加主题，不能移除或替换
-Core 默认主题。
+Core 内部 Resolver 始终先提供 `DaybreakBlue.theme.xml`。应用 Resolver 只能追加主题，不能移除或替换 Core
+默认主题。
 
-### 4.3 Gallery Provider
+### 4.3 Gallery 与用户目录 Resolver
 
-AtomUIGallery 增加 internal `GalleryThemeAssetPathProvider`，用静态只读数组明确返回四个资源 URI：
+AtomUIGallery 增加 internal Gallery asset Resolver，用静态只读数组明确返回四个资源 URI：
 
 ```text
 avares://AtomUIGallery/Assets/Themes/PolarGreen.theme.xml
@@ -153,17 +166,30 @@ avares://AtomUIGallery/Assets/Themes/GoldenPurple.theme.xml
 avares://AtomUIGallery/Assets/Themes/Magenta.theme.xml
 ```
 
-`UseGalleryControls()` 负责调用 `AddThemeAssetPathProvider(...)`。因此只有使用 AtomUIGallery 产品模块的应用看到这
+`UseGalleryControls()` 负责调用 `AddThemeDefinitionResolver(...)`。因此只有使用 AtomUIGallery 产品模块的应用看到这
 四个主题，单独使用 `UseGalleryBase()` 的第三方 Gallery 不会被注入 AtomUIGallery 品牌主题。
+
+Desktop Gallery 另外启用：
+
+```csharp
+builder.WithApplicationId("AtomUIGallery");
+builder.UseUserThemeDirectory();
+```
+
+默认用户目录为 `Environment.SpecialFolder.ApplicationData/AtomUIGallery/Themes`。未显式设置 App Id 的普通应用
+使用具体 Application 类型程序集的简单名称作为默认值。Browser Gallery 不注册用户目录 Resolver。
+
+用户 Resolver 支持手动刷新，不使用 `FileSystemWatcher`。任一用户 XML 无效时整批刷新失败并保留旧 Catalog；
+首次启动失败则忽略整个用户来源层，以完整静态 Catalog 启动并暴露 diagnostics。
 
 ## 5. Catalog 加载与验证
 
-`CompiledThemeCatalog` 从“加载一个硬编码文件”改为“加载 Core Provider 与 Builder Provider 的有序快照”。每个
+`CompiledThemeCatalog` 从“加载一个硬编码文件”改为“加载 Resolver source 的有序快照”。每个
 资源只读取一次字节，并沿用现有管线：
 
 ```text
-explicit avares URI
-    -> AssetLoader.Open
+resolver source (avares or user file)
+    -> IThemeDefinitionSource.OpenRead
     -> bounded byte buffer + SHA-256
     -> ThemeDocumentReader (XML + XSD)
     -> ThemeDefinitionBinder (frozen registry)
@@ -173,14 +199,17 @@ explicit avares URI
 
 Catalog 构建规则：
 
-- 资源 URI 是 `ThemeDefinitionRevision.SourceIdentity`。
-- Source revision 使用 Provider `Id` 与格式版本组成的稳定值；实际字节 SHA-256 继续作为内容摘要。
+- Resolver 提供的 source identity 是 `ThemeDefinitionRevision.SourceIdentity`；avares 使用资源 URI，用户文件使用
+  规范化绝对路径。
+- Source revision 使用 `IThemeDefinitionSource.SourceRevision`；实际读取字节的 SHA-256 继续作为内容摘要。
 - 不允许重复 `Theme.Id`。
 - 合并后的 Catalog 必须恰好有一个 `IsDefault=true`，本次仍为 `DaybreakBlue`。
-- 任一资源缺失、XML/XSD 无效、Binder 失败、重复 ID 或默认主题冲突都会使启动原子失败。
+- 静态资源缺失、XML/XSD 无效、Binder 失败、重复 ID 或默认主题冲突都会使启动失败。
+- 可刷新来源不得声明默认主题，也不得覆盖静态 Theme Id。
+- 用户目录刷新整批原子；任一文件失败时旧 Catalog 和 Snapshot 不变。
 - 不静默跳过坏主题，避免菜单、Catalog 与实际可加载定义不一致。
-- `AvailableThemes` 保留 Provider 和 `AssetPaths` 的注册顺序：Core 默认主题在前，随后是 Gallery 的 Green、
-  Orange、Purple、Magenta。
+- `AvailableThemes` 保留 Resolver 与 source 的稳定顺序：Core 默认主题在前，随后是 Gallery 的 Green、Orange、
+  Purple、Magenta，最后是用户主题。
 
 `ThemeInfo` 不增加 `ColorPrimary`。它继续只表示主题目录元数据，菜单也不通过运行时 Token 反向读取主题色。这样
 不会把任意主题 Token 提升成 Catalog 公开契约。
@@ -198,7 +227,9 @@ Catalog 构建规则：
 ├── Sunset Orange       (Radio, ThemeColor)
 ├── Golden Purple       (Radio, ThemeColor)
 ├── Magenta             (Radio, ThemeColor)
+├── user themes...      (Radio, ThemeColor)
 ├── separator
+├── 重新加载用户主题
 ├── 暗黑模式             (CheckBox)
 ├── 紧凑模式             (CheckBox)
 ├── 启用动画             (CheckBox)
@@ -215,9 +246,11 @@ Catalog 构建规则：
 
 `GalleryWorkspaceViewModel` 增加：
 
-- `AvailableThemes`：构造时复制 ThemeManager 的只读主题列表，供菜单生成。
+- `AvailableThemes`：从 ThemeManager 的只读主题列表初始化，并在 `ThemeCatalogChanged` 后原子替换菜单数据。
 - `CurrentThemeId`：只在已提交主题状态变化后更新。
 - `SwitchThemeCommand`：接收目标 Theme Id，调用统一主题请求路径。
+- `ReloadThemesCommand`：调用 `ReloadThemesAsync()` 并返回 result；失败时保留旧菜单和选中态，diagnostics 交给
+  调用方记录或展示。
 
 `ApplyThemeSettingsAsync()` 改为接收可选目标 Theme Id，并始终一次性组合完整请求：
 
@@ -255,6 +288,9 @@ definition。
 产物损坏，应在 ThemeManager 初始化时抛出带结构化 diagnostic 的 `ThemeLoadException`，而不是带着不完整菜单
 继续启动。
 
+用户目录是外部可编辑输入。首次加载失败不使 Gallery 无法启动，而是排除整个用户来源层，保留 Core + Gallery
+静态 Catalog，并把 diagnostics 提供给 Gallery。静态 Resolver 失败仍按损坏发布产物处理。
+
 ### 7.2 运行时失败
 
 运行时切换失败时：
@@ -268,19 +304,29 @@ definition。
 
 本次不新增 Toast 或 Dialog 错误 UI；内置主题在构建和启动阶段已经验证，正常发布产物不应出现运行时定义错误。
 
+### 7.3 Catalog 刷新失败
+
+手动刷新遵循 Capture、Resolve/Prepare、CommitCore、Publish、Complete 五阶段。任一用户文件错误、重复 Id、
+默认主题声明、读取或编译失败时返回 `Failed`，旧 Catalog、CurrentTheme 和全部 root/local Snapshot 完整保留。
+如果当前用户主题文件被正常删除且其余目录有效，则原子回退 Daybreak Blue，并保留 Dark、Compact、Motion 和
+Wave Spirit 配置。
+
 ## 8. 测试策略
 
 ### 8.1 AtomUI.Core
 
 增加或扩展 Core 主题测试：
 
-- Builder 拒绝空 Provider Id、重复 Provider Id、相对 URI、非 `avares` URI 和重复路径。
-- Catalog 能合并 Core 与测试 Provider 的多份有效 XML。
+- Builder 拒绝空/重复 Resolver Id 和非法 Application Id。
+- Catalog 能合并 Core、应用 avares 与用户目录 Resolver 的多份有效 XML。
 - `AvailableThemes` 顺序与显式注册顺序一致。
 - 重复 Theme Id、零个/多个默认主题、缺失资源和无效 XML 使 Catalog 原子失败。
 - 每个 definition 生成独立 revision/content fingerprint。
 - 对每个 Theme Id 调用 `ApplyThemeAsync` 后，`CurrentTheme.ThemeId` 与编译后的 `ColorPrimary` 一致。
-- Public API 审计更新，确认只增加计划内的 Provider 和 Builder 方法。
+- Public API 审计更新，确认只增加计划内的 Resolver、Catalog reload 和 Builder 方法。
+- 用户目录文件数、总字节、symlink、目录逃逸、重复 Id、默认主题和整批失败策略均有测试。
+- `ReloadThemesAsync` 覆盖 Committed、NoOp、Superseded、Failed、当前主题重编译和删除回退。
+- Catalog、CurrentTheme 与全部 scope Snapshot 在刷新通知前属于同一 generation。
 
 ### 8.2 AtomUIGallery
 
@@ -293,6 +339,7 @@ definition。
 - 在 Dark + Compact + Motion/Wave 不同组合下切换主题色，所有正交状态保持不变。
 - 连续切换时旧请求 `Superseded` 不覆盖最终选中项。
 - 失败结果保持旧菜单选中态。
+- 手动刷新成功后用户主题进入菜单；失败后旧列表和选中态不变。
 
 ### 8.3 验证命令
 
@@ -310,15 +357,14 @@ pwsh -NoLogo -NoProfile -File controlgallery/AtomUIGallery.Desktop/scripts/Publi
 git diff --check
 ```
 
-NativeAOT publish 是必需验收项，因为本次增加跨程序集 Avalonia 资源 URI 和公开主题来源注册路径。
+NativeAOT publish 是必需验收项，因为本次增加跨程序集 Avalonia 资源、用户目录读取和公开 Resolver 路径。
 
 ## 9. 文档影响
 
 实现时同步更新：
 
-- `docs/architecture/startup-and-registration.md`：把当前只存在于文字中的 `ThemeAssetPathProviders` 落实为具体
-  Builder 注册契约。
-- `docs/modules/core/theme-system.md`：记录显式 Provider 合并顺序、Catalog 原子验证和资源 URI 限制。
+- `docs/architecture/startup-and-registration.md`：记录 Resolver、Application Id 与用户目录注册契约。
+- `docs/modules/core/theme-system.md`：记录 Resolver、来源优先级、Catalog 原子刷新和用户文件安全限制。
 - `docs/modules/core/theme-definition-xml.md`：只在需要澄清内置 Avalonia 资源注册示例时补充，不改变 XML v1。
 - `docs/modules/toolkits-gallery-base/theming-localization.md`：记录 `AvailableThemes`、`CurrentThemeId` 和
   `SwitchThemeCommand` 的 Gallery Shell 行为。
@@ -327,8 +373,8 @@ XML v1 namespace、XSD 和 Token schema 不发生变更。
 
 ## 10. 实施边界总结
 
-本方案选择“Gallery 拥有 XML，Core 提供通用显式注册能力”。它避免把 Gallery 展示主题变成所有 AtomUI 应用的
-默认产品契约，同时完成主题系统架构已经预留但尚未实现的 Theme Asset Provider 边界。
+本方案选择“Gallery 拥有 XML，Core 提供通用 Resolver 与 Catalog 刷新能力”。它避免把 Gallery 展示主题变成
+所有 AtomUI 应用的默认产品契约，同时让 AtomUI 从应用资源和用户配置目录加载标准主题定义。
 
 运行时只切换 `ThemeRequest.ThemeId` 并组合现有算法/Token 开关；主题色仍经标准 definition、compiler、snapshot
 和稳定资源 Provider 发布。没有动态扫描、临时资源字典或针对单个控件的换色补丁。

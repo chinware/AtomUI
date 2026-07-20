@@ -1,7 +1,8 @@
 # AtomUI 主题系统架构
 
-本文是 AtomUI 主题系统唯一的长期架构设计文档。它定义最终运行时模型、公开配置语义、主题文件处理、
-Token 编译、动态作用域、资源发布、事件契约、AOT 边界和验收标准。阶段性分析、迁移过程和任务进度
+本文是 AtomUI 主题系统唯一的长期架构设计文档。它定义最终运行时模型、公开配置语义、主题来源解析、主题文件
+处理、Catalog 刷新、Token 编译、动态作用域、资源发布、事件契约、AOT 边界和验收标准。阶段性分析、迁移过程和
+任务进度
 不写入本文，统一放在 `docs/superpowers/`。
 
 本文描述目标架构。实现过程中不得为了保留旧主题系统 API 而偏离这些约束。
@@ -28,6 +29,9 @@ Token 编译、动态作用域、资源发布、事件契约、AOT 边界和验�
 - 普通 Popup 通过 Avalonia 逻辑树继承主题；独立 TopLevel 必须通过显式 owner context lease 获得局部主题。
 - 无 owner 的静态 Dialog、Notification 等 API 只能使用根主题，不能推断调用位置的局部上下文。
 - 内置正常路径不使用运行时程序集扫描、`Activator.CreateInstance` 或 Token 属性反射。
+- 内置资源、应用资源和用户配置目录通过统一的 `IThemeDefinitionResolver` 边界产生主题来源；Resolver 不解析
+  Token，也不绕过标准 Reader、Binder 和 Compiler。
+- 用户主题目录只允许显式启用，手动刷新必须原子更新 Catalog 与全部受影响 Snapshot；失败时旧状态完整保留。
 - 第一个可见帧之前完成全局主题准备和挂载。
 - 不保留旧主题系统的兼容对象、克隆查询 API、伪生命周期事件或可变资源旁路。
 
@@ -95,10 +99,10 @@ AtomUI 的控件算法必须能表达四种状态：
 定义与编译路径：
 
 ```text
-+-------------+     +---------------------+     +-----------------------+
-| Theme files | --> | ThemeDocumentReader | --> | ThemeDefinitionBinder | --+
-+-------------+     +---------------------+     +-----------------------+   |
-                                                                             |
++--------------------------+     +-------------------------+     +---------------------+     +-----------------------+
+| ThemeDefinitionResolvers | --> | ThemeDefinitionSources  | --> | ThemeDocumentReader | --> | ThemeDefinitionBinder | --+
++--------------------------+     +-------------------------+     +---------------------+     +-----------------------+   |
+                                                                                                                        |
 +-------------+     +-----------------------+                                |
 | ThemeConfig | --> | ThemeConfigNormalizer | -------------------------------+
 +-------------+     +-----------------------+                                |
@@ -154,9 +158,10 @@ ThemeSchemaRegistry 还为 Binder、Normalizer 和资源投影提供 descriptor�
                       +----------------------------+
 ```
 
-系统分成六个边界：
+系统分成七个边界：
 
-- 定义层：读取主题文件并生成与运行时注册无关的语法模型。
+- 来源层：Resolver 只发现可重开读取的主题定义来源，并提供稳定 source identity/revision。
+- 定义层：统一读取所有来源并生成与运行时注册无关的语法模型。
 - Schema 层：提供生成式 Token 元数据、强类型赋值器、资源投影器和 Control 身份。
 - 配置层：绑定不可变公开配置，生成不可变规范化配置，并执行 AtomUI 主题配置合并。
 - 编译层：纯计算 Token，输出不可变 `ThemeSnapshot`。
@@ -384,6 +389,124 @@ identity、source revision 和内容摘要：文件来源使用实际字节内�
 同一 definition revision 在进程中最多成功读取一次；同一 `(definition revision, registry revision)` 最多成功
 绑定一次。更换 registry revision 只重新绑定已有 `ThemeDocument`，不重复解析来源 XML。
 
+### 6.3 Theme Definition Resolver
+
+主题来源统一通过 Resolver 发现。Resolver 只描述“有哪些来源以及如何读取原始字节”，不得自行执行 XML 解析、
+Token 绑定、算法求值或资源发布。公开契约使用 `Definition` 而不是 `Config` 术语，因为 `ThemeConfig` 已经专指
+运行时 Token/Algorithm 覆盖；主题 XML 是包含 Id、Name、Appearance、默认标记和 revision 的完整 definition。
+
+```csharp
+public interface IThemeDefinitionResolver
+{
+    string Id { get; }
+    bool SupportsReload { get; }
+
+    ThemeDefinitionResolveResult Resolve(
+        ThemeDefinitionResolveContext context);
+}
+
+public interface IThemeDefinitionSource
+{
+    string SourceIdentity { get; }
+    string SourceRevision { get; }
+
+    Stream OpenRead();
+}
+```
+
+`ThemeDefinitionResolveResult` 包含不可变 source 列表和结构化 diagnostics；Resolver 不用异常表示普通的来源不可用
+或目录读取失败。`ThemeDefinitionResolveContext` 至少包含已冻结的 Application Id、应用配置根目录、是否为运行时
+刷新以及当次 resolver generation。Resolver 返回后，ThemeManager 防御性复制结果，不保留 Resolver 的可变集合。
+
+启动必须在第一个可见帧前同步得到初始主题，因此 Resolver 合约是同步的。运行时手动刷新由 ThemeManager 在后台
+线程调用同一同步合约，再进入统一 Reader/Binder/Compiler；不为了运行时刷新把应用启动改成先挂载空主题的异步
+流程。
+
+标准 Resolver 分为：
+
+- `BuiltInThemeDefinitionResolver`：显式列出 AtomUI Core 的 `avares://` 主题，必须成功，不支持刷新。
+- `AvaloniaAssetThemeDefinitionResolver`：由应用或控件包显式列出 `avares://` 主题，必须成功，不支持刷新。
+- `UserDirectoryThemeDefinitionResolver`：读取应用用户配置目录中的 `*.theme.xml`，允许启动降级，支持手动刷新。
+
+Builder 公开注册入口为：
+
+```csharp
+void AddThemeDefinitionResolver(IThemeDefinitionResolver resolver);
+void WithApplicationId(string applicationId);
+void UseUserThemeDirectory();
+void UseUserThemeDirectory(string directory);
+```
+
+Resolver Id 在一次 Builder 中必须非空且唯一。内置 Resolver 总是最先注册，应用 Resolver 按显式注册顺序追加；
+不执行程序集扫描、资源目录枚举或基于命名约定的类型发现。
+
+### 6.4 Application Id 与用户主题目录
+
+`UseAtomUI(Application, ...)` 在创建 Builder 时，默认从具体 Application 类型所在程序集的简单名称解析
+Application Id：
+
+```csharp
+application.GetType().Assembly.GetName().Name
+```
+
+这只是无配置默认值，不扫描程序集。`WithApplicationId(...)` 可以覆盖它；显式值优先。`Application.Name` 是平台
+显示名称，可能为空、包含空格或随品牌文案变化，不参与默认 App Id 推断。
+
+Application Id 必须是单个安全路径段，只允许 ASCII 字母、数字、`.`、`_` 和 `-`，不得为空、`.`、`..`，也不得
+包含目录分隔符。解析结果在 Builder 完成时冻结。启用用户主题但无法得到合法 App Id 时构建失败并给出明确
+diagnostic。
+
+无显式目录时，`UseUserThemeDirectory()` 使用：
+
+```text
+Environment.SpecialFolder.ApplicationData/{ApplicationId}/Themes
+```
+
+对应 Windows `%APPDATA%`、macOS `~/Library/Application Support`，以及 Linux 的 XDG 配置根目录。显式目录重载
+只改变根路径，不改变文件、安全、冲突或刷新语义。Browser/WASM 不隐式启用用户目录；没有普通文件系统能力的
+宿主只有在提供自己的 Resolver 时才能加入外部主题。
+
+用户目录只枚举顶层 `*.theme.xml`，按规范化完整路径 ordinal 排序，不递归、不跟随 symlink/reparse point。
+默认最多 128 个文件、总原始字节 32 MiB；单文件仍受 Reader 的 4 MiB 和元素/Token 上限约束。目录不存在时
+Resolver 可以创建空目录；创建或枚举失败产生 diagnostic，不能退回当前工作目录或应用安装目录。
+
+### 6.5 来源优先级与冲突
+
+来源顺序只决定 `AvailableThemes` 的稳定展示顺序，不提供覆盖语义：
+
+```text
+Core built-in -> application/package avares -> user directory
+```
+
+- 任意来源之间重复 `Theme.Id` 都是错误，不使用 first-wins、last-wins 或静默覆盖。
+- 可刷新 Resolver 不得提供 `IsDefault=true` 的 definition；默认主题只能来自不可刷新、随应用发布的来源。
+- 合并后的静态 Catalog 必须恰好有一个默认主题。
+- 用户主题只能引用当前冻结 registry 已注册的 Token、Control 和 Algorithm；XML 不能加载代码、程序集、脚本、
+  include/import、网络资源或环境变量表达式。
+- Core 和应用资源错误属于损坏的发布产物，阻止应用启动；用户目录首次加载错误不阻止应用启动，初始 Catalog
+  降级为全部不可刷新来源，并通过 `IThemeManager.ThemeCatalogDiagnostics` 暴露本次错误。
+
+用户目录是一个刷新单元。任一用户主题 XML、目录容量、重复 Id、默认主题声明或 Binder 校验失败时，本次用户
+目录解析失败，不提交有效子集，也不维护逐文件 Last Known Good。这样目录内容、候选 Catalog 和刷新结果只有一个
+明确版本。
+
+### 6.6 Catalog 构建
+
+Catalog 对所有 Resolver 结果执行同一管线：
+
+```text
+Resolver source
+    -> bounded byte copy + SHA-256
+    -> ThemeDocumentReader + v1 XSD
+    -> ThemeDefinitionBinder + frozen ThemeSchemaRegistry
+    -> BoundThemeDefinition + ThemeDefinitionRevision
+    -> immutable CompiledThemeCatalog
+```
+
+`ThemeDefinitionRevision.SourceIdentity` 来自 source identity；`SourceRevision` 来自 Resolver 的结构化 revision；
+`ContentDigest` 必须根据本次实际读取的字节计算。文件长度或修改时间只能筛选缓存候选，不能代替内容摘要。
+Catalog 构建期间只使用本次复制的字节，避免文件枚举后修改造成 Reader 与 digest 针对不同内容。
+
 ## 7. 编译器
 
 `ThemeCompiler` 是无 UI、无资源宿主、无全局服务访问的纯计算入口：
@@ -527,6 +650,12 @@ schema binding 或资源查询细节。
 - `ThemeTransitionResult`：一次请求的 transition id、`Committed / NoOp / Superseded / Failed` 状态、已提交
   `ThemeState`、失败 diagnostics/exception 以及独立的 `PublishDiagnostics`。
 - `IThemeManager.ApplyThemeAsync(...)`：返回 `Task<ThemeTransitionResult>` 的运行时主题请求入口。
+- `ThemeCatalogReloadResult`：一次 Catalog 刷新的 generation、`Committed / NoOp / Superseded / Failed` 状态、
+  新主题列表、diagnostics、publish diagnostics 和 exception。
+- `IThemeManager.ReloadThemesAsync(...)`：只重新执行 `SupportsReload=true` 的 Resolver，并原子更新 Catalog 与
+  当前主题作用域图。
+- `IThemeManager.ThemeCatalogChanged`：成功提交新 Catalog 后的结果事件。
+- `IThemeManager.ThemeCatalogDiagnostics`：最近一次启动加载或手动刷新的只读 diagnostics。
 - `IThemeManager.CurrentTheme`：只读 `ThemeState`。
 - `IThemeManagerBuilder.WithInitialTheme(...)`：首帧主题 id 和 ThemeConfig 的唯一配置入口。
 
@@ -554,6 +683,10 @@ TopLevel；不能假设 inheritable AvaloniaProperty 会从 `Application` 自动
 
 Motion 和 Wave 配置也是 ThemeConfig Token override。任何入口改变这些值时都生成新请求，不直接修改
 `ResourceDictionary`。
+
+ThemeManager 还保存最后一次已提交的完整 root `ThemeRequest`。Catalog 刷新导致当前 definition 内容变化或当前
+Theme Id 被删除时，Manager 使用该 request 的不可变 `ThemeConfig` 重新编译或回退，确保 Dark、Compact、Motion
+和其他 runtime override 不因刷新而丢失。
 
 ## 11. 动态作用域
 
@@ -716,6 +849,43 @@ Prepare 阶段只有在所有等待者都已取消且事务尚未进入 Commit �
 边界，再携带可能的 warnings 完成对应 Task；`Failed` 先派发 `ThemeChangeFailed`，然后对应 Task 才完成；
 `NoOp` 和 `Superseded` 不派发主题结果事件，直接完成结果。
 
+### 12.1 Theme Catalog 手动刷新事务
+
+`ReloadThemesAsync()` 与主题切换共享同一个 Manager mutation scheduler、generation 和 Commit gate，不能在
+ThemeTransaction 之外直接替换 `_compiledThemeCatalog`。一次刷新同样遵循五阶段：
+
+1. **Capture（UI thread）**：捕获 Catalog generation、最后一次已提交 root request、当前 ThemeState、
+   ScopeGraph stamp 和全部可刷新 Resolver 的不可变快照。
+2. **Resolve/Prepare（background）**：重新执行可刷新 Resolver，读取和绑定全部候选来源，合并不可刷新定义，
+   构建候选 Catalog。当前 Theme Id 仍存在时使用候选 definition 重编译；不存在时选择静态默认主题，并保留当前
+   request 的 `ThemeConfig`。随后按拓扑准备全部局部 snapshot。
+3. **CommitCore（UI thread）**：复核 manager generation、Catalog generation、TopologyRevision 和全部 node
+   stamp；一次性交换 Catalog、根/局部 snapshot、ThemeState、最后 request 和 cache key。该阶段不通知、不分配、
+   不调用 Resolver 或观察者。
+4. **Publish（UI thread）**：snapshot 发生变化时依次发布 Application/局部 variant、资源和 `ThemeChanged`；随后
+   发布 `ThemeCatalogChanged`。所有事件开始前 `AvailableThemes`、`CurrentTheme` 和全部 Context 已经指向同一代
+   状态。
+5. **Complete**：返回 `ThemeCatalogReloadResult`。调用方取消只取消自己的等待，不撤销已进入 Commit 的刷新。
+
+刷新结果语义：
+
+- `Committed`：候选 Catalog 或当前有效 snapshot 发生结构变化并完整提交。
+- `NoOp`：Resolver 结果、definition revision 和当前 snapshot 均与已提交状态相同，不发布事件。
+- `Superseded`：新的主题切换、局部配置更新或 Catalog 刷新改变 generation/stamp，本次不提交。
+- `Failed`：Resolver、读取、绑定、冲突、编译或 Commit 前验证失败；旧 Catalog、ThemeState 和全部 snapshot 未
+  修改。
+
+用户目录整批原子：任一文件失败时刷新返回 `Failed`，不提交有效子集。第一次启动没有旧用户 Catalog 可保留时，
+用户 Resolver 失败只排除整个用户来源层，应用使用完整静态 Catalog 启动，并把 diagnostics 保存到
+`ThemeCatalogDiagnostics`。Core/应用资源 Resolver 失败仍阻止启动。
+
+如果用户删除当前主题且其余候选定义全部有效，刷新提交静态默认 Theme Id，并复用最后 request 的 runtime
+`ThemeConfig`。这属于 `Committed`，同时发布 `ThemeChanged` 和 `ThemeCatalogChanged`。不保留“CurrentTheme 不在
+AvailableThemes 中”的悬空状态。
+
+事件处理期间发起新请求遵守现有重入队列。`ThemeCatalogChanged` 观察者异常只形成 publish warning，不回滚已经
+提交的 Catalog；刷新结果仍为 `Committed`。
+
 ## 13. 资源解析
 
 根 ThemeContext 的 Provider 在 ThemeManager 初始化时挂载一次。每个局部 ThemeContext 也只拥有一个
@@ -871,11 +1041,13 @@ Control 配置只修改当前 `ThemeContext` 中指定 `ControlTokenIdentity` �
 
 `Application.UseAtomUI()` 的主题启动顺序固定为：
 
-1. Builder 收集主题包、主题文件来源、算法 descriptor、Control theme asset manifest、不可变初始 root request
-   模板和语言配置。
+1. Builder 解析并冻结 Application Id，收集 Theme Definition Resolver、算法 descriptor、Control theme asset
+   manifest、不可变初始 root request 模板和语言配置。
 2. 构建并冻结 `ThemeSchemaRegistry`；在此时拒绝重复 Control identity、无效 descriptor、资产 identity/URI
    冲突以及 manifest 与 registry 不一致。
-3. Catalog 读取并绑定主题定义，确定默认主题和 definition revision。
+3. 同步执行不可刷新 Resolver；如启用用户主题目录，再同步执行用户 Resolver。Catalog 统一读取并绑定全部成功
+   来源，确定静态默认主题和 definition revision。静态来源失败终止启动；用户来源失败降级到静态 Catalog 并
+   保存 diagnostics。
 4. 如果启用 FollowSystem，先同步读取初始系统 appearance，再从 Light/Dark 不可变 request 模板中选择首帧
    request；不得先按 Default 编译后再补一次 Dark/Light 切换。
 5. 同步完成初始 request 的 Capture/Prepare，生成第一个完整根 `ThemeSnapshot`。
@@ -898,6 +1070,9 @@ Control 配置只修改当前 `ThemeContext` 中指定 `ControlTokenIdentity` �
 - ThemeCompiler 不访问 UI 对象，可以在后台准备运行时变更。
 - 初始根主题和 ThemeConfigProvider 首次 attach 同步准备，避免首帧闪烁。
 - 运行时更新可以后台编译，但 CommitCore、Publish 和 Complete 排序必须回到 UI 线程。
+- 手动 Catalog 刷新在后台执行 Resolver、文件读取、Reader、Binder 和编译；Resolver 及 source stream 不进入
+  CommitCore，也不能被 snapshot、Catalog 或事件参数长期持有。
+- Catalog 刷新与根/局部主题事务共享 scheduler 和 generation，不能并行提交两代 Catalog/snapshot。
 - Capture 的 generation、TopologyRevision 和 node stamp 只描述当次不可变图快照；Prepare 不得持有可变
   ScopeNode 集合。提交前 graph stamp 不一致时必须丢弃 staged result，不能尝试修补后提交。
 - Scope attach、detach、reparent 和 Content 替换必须在 ThemeScopeGraph 中对称登记和释放。
@@ -910,6 +1085,8 @@ Control 配置只修改当前 `ThemeContext` 中指定 `ControlTokenIdentity` �
   释放 local value、资源挂载和 context subscription。
 - lease 只强持有其活动宿主和 owner context，不反向让 owner Visual、已关闭 TopLevel 或旧 snapshot 超过宿主
   生命周期存活。
+- `UserDirectoryThemeDefinitionResolver` 不创建 `FileSystemWatcher`，不持有打开文件句柄。每次启动或显式刷新
+  枚举一次目录，读取完成即释放 stream；ThemeManager dispose 后不保留 Resolver、source、路径集合或旧 Catalog。
 
 ## 18. 性能与内存模型
 
@@ -1073,6 +1250,10 @@ ThemeScopeGraph 在注册有效期间强持有 ScopeNode 和对应 ThemeConfigPr
 - 不运行时扫描程序集或 Token 属性。
 - 不使用 `Activator.CreateInstance` 创建内置 Control Token。
 - 不使用字符串属性路径 Binding 完成主题配置或 Token 查询。
+- Application Id 默认值只读取具体 Application 类型所在程序集的简单名称，不扫描已加载程序集。
+- 内置和应用资源 Resolver 只使用显式 `avares://` URI；用户 Resolver 只枚举显式配置目录的顶层
+  `*.theme.xml`，不反射发现 Resolver、Theme 或 Token。
+- 手动刷新不使用 `FileSystemWatcher`、动态代码生成或运行时类型构造。
 - 自定义算法和第三方 Control Token 必须提供稳定 descriptor id；自定义算法还必须提供显式 revision/version。
 - 生成器测试必须验证 identity、继承 Token、强类型 setter、资源投影和输出稳定性。
 - 主题系统完成后必须执行真实 Gallery NativeAOT publish，不能只依赖 analyzer。
@@ -1091,10 +1272,13 @@ Theme/
 +-- ThemeManagerBuilder.cs            启动组装器
 +-- ThemeConfigProvider.cs            局部主题配置宿主
 +-- ThemeTransaction.cs               Capture/Prepare/CommitCore/Publish/Complete 事务
++-- ThemeCatalogReloadTransaction.cs  Catalog 与全部受影响 Snapshot 的原子刷新事务
 +-- ThemeState.cs                     当前已提交主题状态
 +-- ThemeTransitionResult.cs          事务结果和值状态
++-- ThemeCatalogReloadResult.cs       Catalog 刷新结果和值状态
 +-- ThemeChangedEventArgs.cs          成功结果事件
 +-- ThemeChangeFailedEventArgs.cs     失败结果事件
++-- ThemeCatalogChangedEventArgs.cs   Catalog 成功刷新事件
 +-- ThemeDiagnostic.cs                结构化诊断
 +-- ThemeContext.cs                   稳定主题上下文
 +-- ThemeContextLease.cs              独立 TopLevel 的 owner context 生命周期租约
@@ -1120,7 +1304,8 @@ Theme/
 |   \-- 一次性 immutable config builder 与结构化 value key
 |
 +-- Definitions/
-|   +-- 主题源、ThemeInfo、definition revision 和默认主题选择
+|   +-- Resolver/source contracts、内置/avares/用户目录 Resolver
+|   +-- CompiledThemeCatalog、ThemeInfo、definition revision 和默认主题选择
 |   +-- XML reader、syntax document 和 diagnostics
 |   \-- Binder、typed ThemeDefinition 和 bind result
 |
@@ -1238,6 +1423,12 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
   `ActualThemeVariant`；Control custom algorithm 的 appearance 不泄漏到作用域 variant。
 - 无 owner 的静态 Dialog、Notification 等 API 始终使用 Root ThemeContext，并产生可诊断的根主题语义，不能
   根据当前焦点猜测局部作用域。
+- Resolver 只产生 source，不产生 `ThemeConfig`、`ThemeDocument`、Token 或 snapshot；所有来源统一经过标准
+  Reader/Binder/Compiler。
+- 默认 Application Id 来自具体 Application 类型程序集名，显式 `WithApplicationId` 可稳定覆盖；
+  `Application.Name` 不参与路径身份。
+- 用户主题目录固定为应用配置根下 `{ApplicationId}/Themes`，不递归、不跟随链接、不访问网络。
+- 用户主题不得覆盖静态 Theme Id、不得声明默认主题；任意重复 Id 都产生确定 diagnostic。
 
 ### 22.2 事务
 
@@ -1256,6 +1447,13 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
 - 订阅者异常不阻断提交或其他订阅者。
 - FollowSystem 在首帧前解析初始系统 appearance，运行期切换只发布完整 Light/Dark snapshot 和对应显式
   variant，不出现 `ThemeVariant.Default` 或新旧状态混合帧。
+- `ReloadThemesAsync` 对用户目录执行整批原子刷新；任一文件失败时旧 Catalog 与全部 snapshot 保持不变。
+- Catalog 刷新提交前同时验证 Catalog generation 和 ScopeGraph stamps；任何观察者只能看到同一代 Catalog、
+  CurrentTheme 和 root/local snapshots。
+- 当前用户主题被删除时刷新原子回退静态默认主题，并保留最后一次 runtime ThemeConfig。
+- Catalog 内容相等时返回 `NoOp`，较新主题或刷新请求使旧刷新返回 `Superseded`。
+- `ThemeCatalogChanged` 在完整提交与必要的资源/ThemeChanged 发布后派发，先于 reload Task 完成；订阅者异常只形成
+  publish warning。
 
 ### 22.3 资源与生命周期
 
@@ -1279,6 +1477,8 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
 
 - 同一 definition revision 只成功读取一次，同一 `(definition revision, registry revision)` 只成功绑定一次；
   来源内容变化使 Reader/Binder 缓存失效，descriptor revision 变化只使 Binder/Compiler 缓存失效。
+- 用户目录文件数、总字节和单文件字节均受限；超限、symlink/reparse point、目录逃逸和读取竞态有覆盖测试。
+- NativeAOT 下可以使用默认程序集名解析 Application Id、读取用户目录、手动刷新并切换到用户主题。
 - 等价有效配置只编译一次。
 - 人工构造相同 fingerprint、不同结构化配置的碰撞测试不会错误复用 snapshot 或 Control 编译结果。
 - 不同 registry revision 允许 slot 重新分配，绑定、缓存和资源查询仍解析到当前 revision 的正确 slot。
