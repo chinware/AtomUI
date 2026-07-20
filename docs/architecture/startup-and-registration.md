@@ -57,11 +57,12 @@ public override void Initialize()
 
 构建后的主题运行流见 [AtomUI.Core 主题系统](../modules/core/theme-system.md)。简化顺序是：
 
-1. Builder 收集生成式 Control descriptor、ControlTheme asset manifest、主题 Provider、算法 descriptor、语言和
-   不可变初始 `ThemeRequest` 模板。
+1. Builder 解析 Application Id，收集生成式 Control descriptor、ControlTheme asset manifest、
+   `IThemeDefinitionResolver`、算法 descriptor、语言和不可变初始 `ThemeRequest` 模板。
 2. `ThemeSchemaRegistry` 在读取主题文件前完成构建并冻结；无效 descriptor、重复 identity、资产 URI/identity
    冲突在此失败。
-3. `ThemeCatalog` 通过 Reader 和 Binder 生成 typed theme definition。
+3. `ThemeCatalog` 执行内置、应用资源及可选用户目录 Resolver，并通过统一 Reader 和 Binder 生成 typed theme
+   definition。静态来源失败终止启动；用户来源失败时使用静态 Catalog 启动并保留 diagnostics。
 4. FollowSystem 在编译前解析初始系统 appearance，并选择完整的 Light/Dark request 模板。
 5. `ThemeCompiler` 在 ThemeManager 挂载前同步生成首个不可变 `ThemeSnapshot`。
 6. Root ThemeContext 和唯一的 `ThemeTokenResourceProvider` 使用该 snapshot 初始化；ThemeManager 同时准备向
@@ -92,6 +93,20 @@ this.UseAtomUI(builder =>
 应用启动后的主题变化使用 `IThemeManager.ApplyThemeAsync(ThemeRequest)`。AtomUI 的主题 id 和 Compact
 算法不编码进 Avalonia `ThemeVariant`；运行时只根据已提交 snapshot 设置 Avalonia Light 或 Dark。
 
+应用可以显式启用用户主题目录：
+
+```csharp
+this.UseAtomUI(builder =>
+{
+    builder.WithApplicationId("AtomUIGallery");
+    builder.UseUserThemeDirectory();
+});
+```
+
+未显式设置 Application Id 时，默认使用具体 Application 类型所在程序集的简单名称；`Application.Name` 不作为
+目录身份。默认目录为 `Environment.SpecialFolder.ApplicationData/{ApplicationId}/Themes`。运行时调用
+`IThemeManager.ReloadThemesAsync()` 手动刷新；主题系统不使用 `FileSystemWatcher` 自动监听。
+
 局部主题由继承 `ThemeVariantScope` 的 `ThemeConfigProvider` 建立。Provider 首次 attach 在内容可见前同步创建
 稳定 ThemeContext 和唯一 ResourceProvider；后续 Config 替换由同一个 ThemeManager 事务化处理。普通
 Popup/Flyout 通过逻辑树自然继承，独立 Window/Dialog/Notification TopLevel 必须从显式 owner 获得
@@ -104,7 +119,7 @@ Popup/Flyout 通过逻辑树自然继承，独立 Window/Dialog/Notification Top
 - `ControlTokenDescriptors`：生成式 Control identity、Token schema、强类型构造和资源投影。
 - `ControlThemeAssetManifests`：生成式资产 URI、单一 Control identity、资源 key schema 摘要和构建期校验结果。
 - `ControlThemesProviders`：AXAML 主题 Provider。
-- `ThemeAssetPathProviders`：自定义主题资源路径 Provider。
+- `ThemeDefinitionResolvers`：内置资源、应用 `avares://` 资源和可选用户配置目录的统一主题来源解析器。
 - `LanguageProviders`：本地化资源 Provider。
 - `ThemeAlgorithmDescriptors`：默认、暗色、紧凑和自定义算法。
 - `InitialThemeRequests`：固定主题或 FollowSystem 的 Light/Dark 不可变 root request 模板。
