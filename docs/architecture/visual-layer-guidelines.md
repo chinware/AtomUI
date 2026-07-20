@@ -62,8 +62,10 @@ AtomUI 的 `WindowDrawnDecorationsTheme` 在 decorations overlay 中提供 `PART
 使用规则：
 
 - `DialogOverlayLayer` 只要检测到 drawn Dialog host 就优先使用，不按 Windows、Linux、macOS 或 CSD 标志硬编码；host 不存在时回退到 TopLevel popup overlay 或局部 scope overlay。
-- Drawer 在其支持的 CSD Window 路径中使用 drawn Drawer host。Dialog 与 Drawer 共享层级和 frame clip 规则，但不共享 layer、容器或生命周期状态。
-- Overlay Dialog 的 mask 和 Surface 保持在同一个 presenter；mask actor 使用完整 layer bounds，Surface 使用 Window 正文 bounds，二者不拆成独立 popup。
+- Drawer 只要检测到 drawn Drawer host 就优先使用，不按 Windows、Linux、macOS 或 CSD 标志硬编码；host 不存在时继续使用原 `ScopeAwareAdornerLayer`。Dialog 与 Drawer 共享层级和 frame clip 规则，但不共享 layer、容器或生命周期状态。
+- Overlay Dialog 的 mask 和 Surface 保持在同一个 presenter；mask actor 使用完整 layer bounds，Surface 使用 Window visible frame bounds，二者不拆成独立 popup。
+- Window overlay 几何按职责分为三套真源：完整 layer bounds 保留 TopLevel client surface 坐标系；visible frame bounds 只排除 `FrameShadowThickness`，包含 managed/drawn 标题栏；content bounds 再排除标题栏和内容装饰。Dialog Surface 和 Drawer 使用 visible frame，普通 Window 内容或明确要求正文安全区的反馈才使用 content bounds。
+- `WindowVisualLayerClip` 的 visible frame 计算是 frame shadow 排除量的共享真源。业务 overlay 不按 `OsType`、`IsCsdEnabled` 或 `WindowDecorationMargin` 复制另一套 frame 计算。
 - 原生系统 chrome 如果位于 Avalonia client visual tree 外，客户端 overlay 不负责为该区域模拟第二套 mask；原生模态行为由平台 Window owner 关系负责。
 - drawn host 的获取集中在 `WindowDrawnDecorationsReflectionExtensions` 兼容边界，不在业务控件中复制 Avalonia private-field 反射。
 
@@ -107,6 +109,7 @@ Avalonia 原生 `AdornerLayer` 用于紧贴控件或 TopLevel 的局部装饰。
 
 - 用于“覆盖某个目标区域或作用域”的内容，而不是窗口级全局反馈。
 - 需要跟随 `ScrollContentPresenter`、被装饰元素或局部内容坐标时，应优先使用该层。
+- visual 已位于现有 `ScopeAwareAdornerLayer` 内，且没有更具体、与 adorned target 匹配的滚动宿主时，必须复用当前包含层；decorations overlay 内的嵌套 Drawer 不能依赖 `TopLevel.GetTopLevel` 重新发现窗口层。
 - 使用 `ScopeAwareAdornerLayer.SetAdornedElement` / `SetAdorner` 时，必须有对应的 detach / cleanup 路径。
 - 它的层级高于 Avalonia 原生 adorner；因此原生 `AdornerLayer` 内的内容不能假设能盖住它。
 

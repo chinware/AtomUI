@@ -89,6 +89,11 @@ internal static class WindowDrawnDecorationsReflectionExtensions
                                                          layer.Name == "PART_DrawerOverlayLayerHost");
     }
 
+    internal static Thickness GetDrawnDecorationsFrameThickness(this TopLevel topLevel)
+    {
+        return GetDrawnDecorations(topLevel)?.FrameThickness ?? default;
+    }
+
     private static Visual? GetDrawnDecorationsOverlay(TopLevel topLevel)
     {
         if (GetDrawnDecorations(topLevel)?.Content?.Overlay is not Visual overlay)

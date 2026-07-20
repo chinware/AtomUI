@@ -60,10 +60,9 @@ internal class WindowToken : AbstractControlDesignToken
         CornerRadius             = new CornerRadius(12);
         SystemBarColor           = new SolidColorBrush(SharedToken.ColorBgContainer);
         // 窗口装饰语义不属于密度算法作用域：紧凑算法会把 ControlHeightLG / SizeLG 拉小，
-        // 连带 TitleBarHeight 和全屏弹层 padding 一起缩——这里按平台分支写死，切开与
-        // compact 的链路。当前三平台同值，保留分支便于后续按平台独立调整。
-        TitleBarHeight               = GetPlatformTitleBarHeight();
-        FullscreenHeaderFramePadding = GetPlatformFullscreenHeaderPadding();
+        // 连带 TitleBarHeight 和全屏弹层 padding 一起缩，因此使用跨平台稳定值切开 compact 链路。
+        TitleBarHeight               = 40;
+        FullscreenHeaderFramePadding = new Thickness(24, 0);
         FrameShadows             = SharedToken.BoxShadowsSecondary;
         FullscreenPopoverShadows = new BoxShadows(
             new BoxShadow
@@ -83,34 +82,6 @@ internal class WindowToken : AbstractControlDesignToken
                     Color   = Color.FromArgb(13, 0, 0, 0)
                 },
             ]);
-    }
-
-    private static double GetPlatformTitleBarHeight()
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            return 40;
-        }
-        if (OperatingSystem.IsMacOS())
-        {
-            return 40;
-        }
-        // Linux / 其他
-        return 40;
-    }
-
-    private static Thickness GetPlatformFullscreenHeaderPadding()
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            return new Thickness(24, 0);
-        }
-        if (OperatingSystem.IsMacOS())
-        {
-            return new Thickness(24, 0);
-        }
-        // Linux / 其他
-        return new Thickness(24, 0);
     }
 
 }

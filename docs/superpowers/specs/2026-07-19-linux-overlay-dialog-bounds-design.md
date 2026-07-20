@@ -1,5 +1,10 @@
 # Linux Overlay Dialog 主体、Mask 与阴影边界修复设计
 
+> 历史说明：本文记录 2026-07-19 的 Linux 定向修复方案。2026-07-20 起，Dialog owner bounds 已由
+> `docs/controls/desktop/feedback/modal/overview.md` 和 `implementation.md` 统一定义为所有平台的 Window
+> visible frame（排除 `FrameShadowThickness`、保留 managed/drawn 标题栏）。本文关于“Linux Dialog body
+> 排除标题栏”以及“不改变 Windows/macOS 行为”的内容仅用于解释历史根因，不再是当前实现规范。
+
 ## 1. 背景与目标
 
 Dialog/MessageBox 生命周期重构把 Overlay Dialog 的 mask 与 surface 合并到同一个

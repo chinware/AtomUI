@@ -80,6 +80,12 @@ public class ScopeAwareAdornerLayer : Canvas
             }
         }
 
+        if (layerHost == null &&
+            visual.FindAncestorOfType<ScopeAwareAdornerLayer>(true) is { } containingLayer)
+        {
+            return containingLayer;
+        }
+
         layerHost ??= visual.FindAncestorOfType<VisualLayerManager>();
         if (layerHost == null && TopLevel.GetTopLevel(visual) is { } topLevel)
         {

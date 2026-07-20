@@ -2,6 +2,14 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-20
+
+- Architecture
+  - Define complete layer, visible frame and content bounds as separate Window geometry contracts.
+  - Make `FrameShadowThickness` plus the actual drawn-host presence the platform capability projection consumed by Dialog and Drawer.
+- Maintenance
+  - Keep native backend differences inside Window chrome managers and remove speculative same-value OS branches from Window tokens.
+
 ## 2026-07-09
 
 - Docs

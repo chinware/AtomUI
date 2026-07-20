@@ -17,6 +17,8 @@ internal sealed class WaylandWindowChromeManager : LinuxWindowChromeManager
     {
     }
 
+    public override bool UsesCustomResizer => true;
+
     protected override void AttachPlatformHooks()
     {
         Window.PropertyChanged += HandleWindowPropertyChanged;

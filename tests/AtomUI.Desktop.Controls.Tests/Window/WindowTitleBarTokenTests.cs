@@ -43,6 +43,29 @@ public class WindowTitleBarTokenTests
     }
 
     [Fact]
+    public void Shared_Window_Chrome_Metrics_Do_Not_Use_Speculative_Os_Branches()
+    {
+        var windowTokenSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/WindowToken.cs"));
+        var titleBarTokenSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs"));
+
+        windowTokenSource.ShouldContain("TitleBarHeight               = 40;");
+        windowTokenSource.ShouldContain("FullscreenHeaderFramePadding = new Thickness(24, 0);");
+        windowTokenSource.ShouldNotContain("GetPlatformTitleBarHeight");
+        windowTokenSource.ShouldNotContain("GetPlatformFullscreenHeaderPadding");
+        windowTokenSource.ShouldNotContain("OperatingSystem.");
+
+        titleBarTokenSource.ShouldContain("Height                      = 40;");
+        titleBarTokenSource.ShouldContain("FullscreenCaptionButtonSize = 24;");
+        titleBarTokenSource.ShouldContain("HeaderHorizontalSpacing     = 8;");
+        titleBarTokenSource.ShouldNotContain("GetPlatformTitleBarHeight");
+        titleBarTokenSource.ShouldNotContain("GetPlatformFullscreenCaptionButtonSize");
+        titleBarTokenSource.ShouldNotContain("GetPlatformHeaderHorizontalSpacing");
+        titleBarTokenSource.ShouldNotContain("OperatingSystem.");
+    }
+
+    [Fact]
     public void Linux_Caption_Button_Background_Is_Inset_Without_Changing_Button_Layout_Size()
     {
         var buttonTheme = XDocument.Load(GetRepoFile(

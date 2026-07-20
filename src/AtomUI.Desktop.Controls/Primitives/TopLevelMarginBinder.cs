@@ -8,42 +8,35 @@ namespace AtomUI.Desktop.Controls;
 
 internal static class TopLevelMarginBinder
 {
-    internal static IDisposable? BindCsdHostGeometry(
+    internal static IDisposable? BindWindowFrameGeometry(
         Control host,
-        Action<bool, Thickness, CornerRadius> applyGeometry)
+        Action<Thickness, CornerRadius> applyGeometry)
     {
         if (host is Window window)
         {
-            return window.GetObservable(Window.IsCsdEnabledProperty)
+            return window.GetObservable(Window.FrameShadowThicknessProperty)
                          .CombineLatest(
-                             window.GetObservable(Window.FrameShadowThicknessProperty),
                              window.GetObservable(TemplatedControl.CornerRadiusProperty),
-                             static (isCsd, frameShadowThickness, cornerRadius) =>
-                                 (isCsd,
-                                     margin: isCsd ? frameShadowThickness : default,
-                                     cornerRadius: isCsd ? cornerRadius : default))
+                             static (frameShadowThickness, cornerRadius) =>
+                                 (frameShadowThickness, cornerRadius))
                          .Subscribe(value => applyGeometry(
-                             value.isCsd,
-                             value.margin,
+                             value.frameShadowThickness,
                              value.cornerRadius));
         }
 
-        applyGeometry(false, default, default);
+        applyGeometry(default, default);
         return null;
     }
 
-    internal static Size GetCsdContentSize(Control host)
+    internal static Size GetVisibleFrameSize(Control host)
     {
         var size = host.Bounds.Size;
-        if (host is not Window { IsCsdEnabled: true } window)
+        if (host is not Window window)
         {
             return size;
         }
 
-        var margin = window.FrameShadowThickness;
-        return new Size(
-            Math.Max(0, size.Width - margin.Left - margin.Right),
-            Math.Max(0, size.Height - margin.Top - margin.Bottom));
+        return WindowVisualLayerClip.CalculateClipBounds(size, window.FrameShadowThickness).Size;
     }
 
     internal static IDisposable? BindHostMargin(TopLevel topLevel, Action<Thickness> applyMargin)
