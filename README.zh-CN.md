@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
-[![AtomUI](https://img.shields.io/badge/AtomUI-6.0.7-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.0-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-license-shield]][github-license-link]
 
@@ -121,9 +121,9 @@ AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用
 | AtomUI.Generator                    | 面向自定义控件、Token 与本地化开发的源代码生成器   |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.0.7
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.7
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.7
+dotnet add package AtomUI.Desktop.Controls --version 6.1.0
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.0
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.0
 ```
 
 您也可以在 IDE 的 NuGet 包管理器中安装。以 Rider 为例，可以依次点击：
@@ -150,9 +150,9 @@ NuGet -> 软件包
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.7"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.7"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.7"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.0"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.0"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.0"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
