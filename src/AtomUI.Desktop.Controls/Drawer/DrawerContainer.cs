@@ -444,7 +444,7 @@ internal class DrawerContainer : ContentControl
         ScopeAwareAdornerLayer fallbackLayer,
         Control? host)
     {
-        return host is Window { IsCsdEnabled: true } window &&
+        return host is Window window &&
                window.GetDrawnDrawerOverlayLayer() is { } drawnLayer
             ? drawnLayer
             : fallbackLayer;
@@ -470,9 +470,9 @@ internal class DrawerContainer : ContentControl
         _hostMarginSubscription?.Dispose();
         _hostMarginSubscription = host is null
             ? null
-            : TopLevelMarginBinder.BindCsdHostGeometry(
+            : TopLevelMarginBinder.BindWindowFrameGeometry(
                 host,
-                (_, margin, cornerRadius) => ApplyHostGeometry(margin, cornerRadius));
+                ApplyHostGeometry);
 
         if (host is null)
         {

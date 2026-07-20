@@ -82,6 +82,25 @@ public class WindowingPlatformDetectionTests
         x11Source.ShouldContain("AttachClickThroughShadow");
     }
 
+    [Fact]
+    public void Window_Consumes_Custom_Resizer_As_A_Chrome_Manager_Capability()
+    {
+        var windowSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var contractSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"));
+        var linuxSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
+        var waylandSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs"));
+
+        contractSource.ShouldContain("bool UsesCustomResizer { get; }");
+        linuxSource.ShouldContain("public virtual bool UsesCustomResizer => !Window.IsCsdEnabled;");
+        waylandSource.ShouldContain("public override bool UsesCustomResizer => true;");
+        windowSource.ShouldContain("_platformChromeManager?.UsesCustomResizer == true");
+        windowSource.ShouldNotContain("_platformChromeManager is not WaylandWindowChromeManager");
+    }
+
     [Theory]
     [SupportedOSPlatform("linux")]
     [InlineData(AtomUIWindowingPlatform.X11, null, null, 1)]

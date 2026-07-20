@@ -33,6 +33,8 @@ internal abstract class LinuxWindowChromeManager : IWindowChromeManager
 
     protected Window Window => _window;
 
+    public virtual bool UsesCustomResizer => !Window.IsCsdEnabled;
+
     public static LinuxWindowChromeManager Attach(Window window)
     {
         var configuredPlatform = AvaloniaLocator.Current.GetService<AtomUIWindowingPlatformOptions>()?.Platform;

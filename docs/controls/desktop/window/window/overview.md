@@ -171,6 +171,14 @@ Window 的当前项状态必须由单一 owner 推导。public 选择属性、�
 
 Window 涉及弹层、窗口或 overlay 宿主时，打开状态、取消事件、定位和宿主释放必须保持一致。重复打开、关闭、窗口失活和 template reapply 都必须释放旧宿主引用。
 
+Window 对上层 overlay 发布三种不可混用的几何语义：
+
+- 完整 layer bounds：保持 TopLevel client surface 坐标系，供 mask 和 layer 自身使用。
+- visible frame bounds：完整 layer 只排除 `FrameShadowThickness`，仍包含 managed/drawn 标题栏，供 Dialog Surface、Drawer 和需要贴合可见窗口边缘的 overlay 使用。
+- content bounds：在 visible frame 基础上排除标题栏和内容装饰，供普通 Window 内容或明确要求正文安全区的反馈使用。
+
+`WindowVisualLayerClip` 是 visible frame 外轮廓计算真源。Window 的平台 manager 只负责把 X11、Wayland、Win32 和 macOS 原生能力投影为 `FrameShadowThickness`、CSD 状态和 drawn host，不允许上层控件再次按 OS 复制几何算法。
+
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：

@@ -11,12 +11,11 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
-
-using AvaloniaWindow = Avalonia.Controls.Window;
 
 internal sealed class OverlayDialogPresenter : ContentControl,
                                                IDialogPresenter
@@ -51,6 +50,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private readonly Dialog _dialog;
     private readonly Control _placementTarget;
     private readonly DialogSurface _surface;
+    private readonly MatrixTransform _surfacePositionTransform = new();
     private readonly CompositeDisposable _bindings = new();
     private DialogOverlayLayer? _dialogLayer;
     private Window? _ownerWindow;
@@ -62,6 +62,8 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private Task? _closeTask;
     private Task? _disposeTask;
     private Point? _dragPointerOffset;
+    private Point _surfacePosition;
+    private Thickness _ownerFrameThickness;
 
     internal DialogSurface Surface => _surface;
 
@@ -76,7 +78,8 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _surface = new DialogSurface(dialog)
         {
             HorizontalAlignment = HorizontalAlignment.Left,
-            VerticalAlignment = VerticalAlignment.Top
+            VerticalAlignment = VerticalAlignment.Top,
+            RenderTransform = _surfacePositionTransform
         };
         _surface.Classes.Add("overlay-hosted");
         Content = _surface;
@@ -320,14 +323,21 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             return;
         }
 
-        var ownerBounds = ResolveOwnerBounds(layerSize);
+        var visibleFrameBounds = ResolveOwnerBounds(layerSize);
         ApplyMaskBounds(layerSize);
         if (_surface.IsDialogMaximized)
         {
-            ApplyMaximizedBounds(ownerBounds);
+            ApplyMaximizedBounds(ResolveDialogBodyOwnerBounds(visibleFrameBounds));
             return;
         }
 
+        var ownerBounds = ResolveDialogBodyOwnerBounds(visibleFrameBounds);
+        ApplyNormalSurfaceSizeConstraints(ownerBounds);
+        UpdateSurfacePlacement(ownerBounds);
+    }
+
+    private void ApplyNormalSurfaceSizeConstraints(Rect ownerBounds)
+    {
         var minWidth = Math.Min(_dialog.HostMinWidth, ownerBounds.Width);
         var minHeight = Math.Min(_dialog.HostMinHeight, ownerBounds.Height);
         var maxWidth = ResolveMaximum(_dialog.HostMaxWidth, minWidth, ownerBounds.Width);
@@ -339,7 +349,6 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _surface.MaxHeight = maxHeight;
         _surface.Width = ResolveExplicitSize(_dialog.HostWidth, minWidth, maxWidth);
         _surface.Height = ResolveExplicitSize(_dialog.HostHeight, minHeight, maxHeight);
-        UpdateSurfacePlacement(ownerBounds);
     }
 
     private void ApplyMaximizedBounds(Rect ownerBounds)
@@ -350,7 +359,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _surface.MaxHeight = double.PositiveInfinity;
         _surface.Width = ownerBounds.Width;
         _surface.Height = ownerBounds.Height;
-        _surface.Margin = new Thickness(ownerBounds.X, ownerBounds.Y, 0, 0);
+        SetSurfacePosition(ownerBounds.Position);
         _surface.CornerRadius = default;
     }
 
@@ -367,88 +376,47 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             return;
         }
 
-        _bindings.Add(window.GetObservable(Window.OsTypeProperty)
-                            .Subscribe(_ => UpdateCurrentLayerBounds()));
-        _bindings.Add(window.GetObservable(Window.IsCsdEnabledProperty)
-                            .Subscribe(_ => UpdateCurrentLayerBounds()));
-        _bindings.Add(window.GetObservable(AvaloniaWindow.WindowDecorationMarginProperty)
-                            .Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(window.GetObservable(Window.FrameShadowThicknessProperty)
-                            .Subscribe(_ => UpdateCurrentLayerBounds()));
-        _bindings.Add(window.GetObservable(Window.TitleBarHeightProperty)
-                            .Subscribe(_ => UpdateCurrentLayerBounds()));
-        _bindings.Add(window.GetObservable(Window.IsTitleBarVisibleProperty)
-                            .Subscribe(_ => UpdateCurrentLayerBounds()));
-        _bindings.Add(window.GetObservable(AvaloniaWindow.WindowStateProperty)
-                            .Subscribe(_ => UpdateCurrentLayerBounds()));
+                            .CombineLatest(
+                                window.GetObservable(Avalonia.Controls.Window.WindowDecorationMarginProperty),
+                                (frameShadowThickness, _) =>
+                                    (FrameShadowThickness: frameShadowThickness,
+                                     FrameThickness: window.GetDrawnDecorationsFrameThickness()))
+                            .DistinctUntilChanged()
+                            .Subscribe(geometry =>
+                            {
+                                _ownerFrameThickness = geometry.FrameThickness;
+                                UpdateCurrentLayerBounds();
+                            }));
     }
 
     private void UpdateSurfacePlacement(Rect ownerBounds)
     {
-        if (_surface.IsDialogMaximized || ownerBounds.Width <= 0 || ownerBounds.Height <= 0)
+        if (_surface.IsDialogMaximized)
         {
             return;
         }
 
-        _surface.Margin = default;
         _surface.Measure(ownerBounds.Size);
         var surfaceSize = _surface.DesiredSize;
         var offset = _dialog.CalculatePlacementOffset(surfaceSize, ownerBounds.Size);
-        var position = ConstrainSurfacePosition(
+        var position = ConstrainAndRoundSurfacePosition(
             ownerBounds,
             surfaceSize,
             new Point(ownerBounds.X + offset.X, ownerBounds.Y + offset.Y));
-        _surface.Margin = new Thickness(position.X, position.Y, 0, 0);
+        SetSurfacePosition(position);
     }
 
     private Rect ResolveOwnerBounds(Size layerSize)
     {
-        var layerBounds = new Rect(default, layerSize);
-        if (_ownerWindow is not { } window)
-        {
-            return layerBounds;
-        }
-
-        if (window.OsType == OsType.Windows)
-        {
-            return layerBounds;
-        }
-
-        if (window.WindowDecorationMargin != default)
-        {
-            return DeflateBounds(layerBounds, window.WindowDecorationMargin);
-        }
-
-        if (window.OsType != OsType.Linux)
-        {
-            return layerBounds;
-        }
-
-        var visibleFrame = DeflateBounds(layerBounds, window.FrameShadowThickness);
-        if (!window.IsTitleBarVisible || window.WindowState == WindowState.FullScreen)
-        {
-            return visibleFrame;
-        }
-
-        var titleBarHeight = Math.Min(Math.Max(0, window.TitleBarHeight), visibleFrame.Height);
-        return new Rect(
-            visibleFrame.X,
-            visibleFrame.Y + titleBarHeight,
-            visibleFrame.Width,
-            visibleFrame.Height - titleBarHeight);
+        return _ownerWindow is { } window
+            ? WindowVisualLayerClip.CalculateClipBounds(layerSize, window.FrameShadowThickness)
+            : new Rect(default, layerSize);
     }
 
-    private static Rect DeflateBounds(Rect bounds, Thickness thickness)
+    private Rect ResolveDialogBodyOwnerBounds(Rect visibleFrameBounds)
     {
-        var left = Math.Max(0, thickness.Left);
-        var top = Math.Max(0, thickness.Top);
-        var right = Math.Max(0, thickness.Right);
-        var bottom = Math.Max(0, thickness.Bottom);
-        return new Rect(
-            bounds.X + left,
-            bounds.Y + top,
-            Math.Max(0, bounds.Width - left - right),
-            Math.Max(0, bounds.Height - top - bottom));
+        return visibleFrameBounds.Deflate(_ownerFrameThickness);
     }
 
     private void ApplyMaskBounds(Size layerSize)
@@ -476,6 +444,30 @@ internal sealed class OverlayDialogPresenter : ContentControl,
                 position.Y,
                 ownerBounds.Y,
                 Math.Max(ownerBounds.Y, ownerBounds.Bottom - surfaceSize.Height)));
+    }
+
+    private Point ConstrainAndRoundSurfacePosition(Rect ownerBounds, Size surfaceSize, Point position)
+    {
+        var constrained = ConstrainSurfacePosition(ownerBounds, surfaceSize, position);
+        if (!_surface.UseLayoutRounding)
+        {
+            return constrained;
+        }
+
+        var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
+        var rounded = LayoutHelper.RoundLayoutPoint(constrained, scaling);
+        return ConstrainSurfacePosition(ownerBounds, surfaceSize, rounded);
+    }
+
+    private void SetSurfacePosition(Point position)
+    {
+        if (_surfacePosition == position)
+        {
+            return;
+        }
+
+        _surfacePosition = position;
+        _surfacePositionTransform.Matrix = Matrix.CreateTranslation(position.X, position.Y);
     }
 
     private static double ResolveMaximum(double value, double min, double available)
@@ -524,7 +516,8 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void HandleSurfaceSizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        UpdateSurfacePlacement(ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size));
+        var visibleFrameBounds = ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
+        UpdateSurfacePlacement(ResolveDialogBodyOwnerBounds(visibleFrameBounds));
     }
 
     private void HandleHostCloseRequested(object? sender, EventArgs e)
@@ -538,7 +531,8 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private void HandleMaximizeRequested(object? sender, EventArgs e)
     {
         _surface.IsDialogMaximized = true;
-        ApplyMaximizedBounds(ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size));
+        var visibleFrameBounds = ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
+        ApplyMaximizedBounds(ResolveDialogBodyOwnerBounds(visibleFrameBounds));
     }
 
     private void HandleRestoreRequested(object? sender, EventArgs e)
@@ -581,14 +575,15 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
         _surface.Width = width;
         _surface.Height = height;
-        var ownerBounds = ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
+        var visibleFrameBounds = ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
+        var ownerBounds = ResolveDialogBodyOwnerBounds(visibleFrameBounds);
         var surfaceSize = new Size(width, height);
         var offset = _dialog.CalculatePlacementOffset(surfaceSize, ownerBounds.Size);
-        var position = ConstrainSurfacePosition(
+        var position = ConstrainAndRoundSurfacePosition(
             ownerBounds,
             surfaceSize,
             new Point(ownerBounds.X + offset.X, ownerBounds.Y + offset.Y));
-        _surface.Margin = new Thickness(position.X, position.Y, 0, 0);
+        SetSurfacePosition(position);
     }
 
     private void HandleHeaderPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -621,19 +616,19 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void MoveSurface(Point pointerPosition)
     {
-        var current = _surface.Margin;
         var surfaceSize = _surface.Bounds.Size == default
             ? new Size(_surface.Width, _surface.Height)
             : _surface.Bounds.Size;
         var pointerOffset = _dragPointerOffset!.Value;
-        var position = ConstrainSurfacePosition(
-            ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size),
+        var visibleFrameBounds = ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
+        var position = ConstrainAndRoundSurfacePosition(
+            ResolveDialogBodyOwnerBounds(visibleFrameBounds),
             surfaceSize,
             pointerPosition - new Vector(pointerOffset.X, pointerOffset.Y));
 
-        _dialog.SetCurrentValue(Dialog.OffsetXProperty, _dialog.OffsetX + position.X - current.Left);
-        _dialog.SetCurrentValue(Dialog.OffsetYProperty, _dialog.OffsetY + position.Y - current.Top);
-        _surface.Margin = new Thickness(position.X, position.Y, 0, 0);
+        _dialog.SetCurrentValue(Dialog.OffsetXProperty, _dialog.OffsetX + position.X - _surfacePosition.X);
+        _dialog.SetCurrentValue(Dialog.OffsetYProperty, _dialog.OffsetY + position.Y - _surfacePosition.Y);
+        SetSurfacePosition(position);
     }
 
     private void HandleHeaderPointerReleased(object? sender, PointerReleasedEventArgs e)

@@ -5,6 +5,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal interface IWindowChromeManager
 {
+    bool UsesCustomResizer { get; }
+
     Action? PrepareInitialShowState();
 
     void HandleFrameShadowChanged(BoxShadows frameShadow);

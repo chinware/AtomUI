@@ -15,6 +15,9 @@
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerInfoContainer.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerPlacement.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerToken.cs`
+- `src/AtomUI.Desktop.Controls/Primitives/TopLevelMarginBinder.cs`
+- `src/AtomUI.Desktop.Controls/Window/WindowVisualLayerClip.cs`
+- `src/AtomUI.Desktop.Controls/Window/WindowDrawnDecorationsReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerContainerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerInfoContainerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerThemes.axaml`
@@ -89,6 +92,8 @@ Drawer 的交互事件应从输入源收敛到控件级语义事件：
 
 - Pointer、keyboard、focus 和 command 事件不应绕过 Avalonia 基础控件语义。
 - 弹层、窗口或 overlay 类路径必须稳定处理打开、关闭、取消、重复打开和宿主失活。
+- TopLevel Drawer 只按实际 drawn host 能力选择标题栏上方宿主，不读取 OS 类型或用 CSD 标志复制平台路由。
+- 嵌套 Drawer 的 layer owner 是父 Drawer container 已进入的 scope layer；resolver 在排除不匹配的滚动宿主后复用当前包含层，打开和关闭必须在同一 layer 上成对完成。
 - 非集合控件不应通过隐藏集合状态模拟业务数据。
 - 值提交或命令触发必须保持继承控件的事件顺序。
 
@@ -103,6 +108,7 @@ Drawer 的交互事件应从输入源收敛到控件级语义事件：
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - 内容、命令和视觉状态在模板节点之间的同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
+- Window host 选择和 visible frame 计算：drawn host 优先、scope layer fallback；Drawer root 与百分比尺寸统一使用排除 `FrameShadowThickness`、保留标题栏的 visible frame。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
@@ -130,6 +136,7 @@ Drawer 的交互事件应从输入源收敛到控件级语义事件：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
+- Windows、Linux、macOS 以及 CSD/non-CSD 下使用同一 visible-frame 语义；平台差异只存在于 Window 如何发布 frame shadow 和 drawn host 能力。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。
 
 ## 10. 测试与验证

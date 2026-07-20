@@ -1080,14 +1080,8 @@ public partial class Window : AvaloniaWindow,
 
     private void ConfigureCustomResizerVisible()
     {
-        if (OsType != OsType.Linux ||
-            IsCsdEnabled && _platformChromeManager is not WaylandWindowChromeManager)
-        {
-            IsCustomResizerVisible = false;
-        }
-        else
-        {
-            IsCustomResizerVisible = CanResize && WindowState == WindowState.Normal;
-        }
+        IsCustomResizerVisible = _platformChromeManager?.UsesCustomResizer == true &&
+                                 CanResize &&
+                                 WindowState == WindowState.Normal;
     }
 }

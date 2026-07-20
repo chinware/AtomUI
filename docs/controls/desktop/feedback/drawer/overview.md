@@ -80,6 +80,8 @@ Public API / inherited command / item source / user input
 - open/close、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- TopLevel Drawer 使用 Window visible frame：包含 managed/drawn 标题栏，排除透明 frame shadow；该规则不按 OS 或 CSD 模式分叉。
+- drawn decorations 暴露 Drawer host 时按能力优先使用；host 不存在时回退到原 `ScopeAwareAdornerLayer`。
 
 ## 5. 视觉与主题模型
 
@@ -116,6 +118,7 @@ Drawer 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 - 与 ThemeManager、SharedToken、ControlTheme 和 Gallery ShowCase 的示例/API/Token 表保持一致。
 - 涉及 ItemsSource、Popup、Flyout、Window、Form 或 CompactSpace 的路径必须保持生命周期释放和数据状态同步。
 - 源码目录中的共享基类和内部协作类型形成维护边界，不能只修改桌面包装类而忽略共享状态 owner。
+- 与 Overlay Dialog 共享 drawn-host 能力检测、visible frame 和 `WindowVisualLayerClip` 外轮廓规则，但不共享容器、motion、嵌套 push 或关闭状态。
 
 ## 7. 兼容性不变量
 
@@ -127,6 +130,7 @@ Drawer 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
+- 不按 `OsType` 或 `IsCsdEnabled` 为 Drawer 建立平行窗口几何；Window 的 `FrameShadowThickness` 和实际 drawn host 是唯一能力信号。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
 ## 8. 专项模型
@@ -134,6 +138,14 @@ Drawer 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 ### 8.1 弹层与宿主模型
 
 Drawer 涉及弹层、窗口或 overlay 宿主时，打开状态、取消事件、定位和宿主释放必须保持一致。重复打开、关闭、窗口失活和 template reapply 都必须释放旧宿主引用。
+
+TopLevel Drawer 的宿主和几何遵循以下顺序：
+
+1. AtomUI Window 的 drawn decorations overlay 暴露 `PART_DrawerOverlayLayerHost` 时使用该 host，使 mask 和 Drawer surface 位于 managed/drawn 标题栏之上。
+2. drawn host 不可用时使用 `ScopeAwareAdornerLayer` fallback，保留局部 Drawer 作用域语义。
+3. 无论 host 路径或 CSD 状态，Drawer root 和百分比 `DialogSize` 都使用 Window visible frame；visible frame 由完整 layer 只排除 `FrameShadowThickness` 得到，标题栏仍属于可用范围。
+4. Window CornerRadius 只用于 Drawer root clip；窗口最终外轮廓继续由 `WindowVisualLayerClip` 统一裁剪。
+5. 嵌套 Drawer 复用父 Drawer container 当前所在的 `ScopeAwareAdornerLayer`；当 decorations overlay 不能反查 `TopLevel` 时，不得丢弃已经存在的包含层或重新注入平行 layer。
 
 ### 8.2 动效模型
 

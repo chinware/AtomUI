@@ -1,4 +1,5 @@
 using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls.Tests.Window;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
@@ -761,15 +762,19 @@ public class OverlayDialogPresenterTests
 
     [Theory]
     [InlineData(OsType.Windows, true)]
+    [InlineData(OsType.Windows, false)]
     [InlineData(OsType.Linux, true)]
+    [InlineData(OsType.Linux, false)]
+    [InlineData(OsType.macOS, true)]
     [InlineData(OsType.macOS, false)]
-    public void Platform_Dialog_Owner_Bounds_Follow_The_TitleBar_Interaction_Contract(
+    public void Platform_Dialog_Owner_Bounds_Use_The_Window_Visible_Frame(
         OsType osType,
         bool isCsdEnabled)
     {
         RunOnUIThread(() =>
         {
             var decoration = new Thickness(14, 56, 20, 24);
+            var frameShadow = new Thickness(8, 12, 16, 20);
             var fixture = ShowPresenter(
                 new AtomUI.Desktop.Controls.Dialog
                 {
@@ -783,25 +788,20 @@ public class OverlayDialogPresenterTests
                 {
                     window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
                     window.IsCsdEnabled = isCsdEnabled;
+                    window.FrameShadowThickness = frameShadow;
                     SetPlatformDecorationMargin(window, decoration);
                 });
 
             try
             {
-                var expectedOwnerBounds = osType == OsType.Windows
-                    ? new Rect(default, fixture.Presenter.Bounds.Size)
-                    : new Rect(
-                        decoration.Left,
-                        decoration.Top,
-                        fixture.Presenter.Bounds.Width - decoration.Left - decoration.Right,
-                        fixture.Presenter.Bounds.Height - decoration.Top - decoration.Bottom);
+                var expectedOwnerBounds = GetDialogBodyOwnerBounds(fixture, frameShadow);
                 var surface = fixture.Presenter.Surface;
 
                 surface.MaxWidth.ShouldBe(expectedOwnerBounds.Width);
                 surface.MaxHeight.ShouldBe(expectedOwnerBounds.Height);
                 surface.Bounds.Size.ShouldBe(expectedOwnerBounds.Size);
-                surface.Margin.Left.ShouldBe(expectedOwnerBounds.Left);
-                surface.Margin.Top.ShouldBe(expectedOwnerBounds.Top);
+                GetSurfacePosition(surface, fixture.Presenter).ShouldBe(expectedOwnerBounds.Position);
+                GetSurfaceBodyBounds(surface, fixture.Presenter).ShouldBe(expectedOwnerBounds);
             }
             finally
             {
@@ -812,15 +812,19 @@ public class OverlayDialogPresenterTests
 
     [Theory]
     [InlineData(OsType.Windows, true)]
+    [InlineData(OsType.Windows, false)]
     [InlineData(OsType.Linux, true)]
+    [InlineData(OsType.Linux, false)]
+    [InlineData(OsType.macOS, true)]
     [InlineData(OsType.macOS, false)]
-    public void Platform_Maximize_Uses_The_Effective_Owner_Bounds(
+    public void Platform_Maximize_Uses_The_Window_Visible_Frame(
         OsType osType,
         bool isCsdEnabled)
     {
         RunOnUIThread(() =>
         {
             var decoration = new Thickness(16, 60, 18, 22);
+            var frameShadow = new Thickness(9, 13, 17, 21);
             var fixture = ShowPresenter(
                 new AtomUI.Desktop.Controls.Dialog
                 {
@@ -833,6 +837,7 @@ public class OverlayDialogPresenterTests
                 {
                     window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
                     window.IsCsdEnabled = isCsdEnabled;
+                    window.FrameShadowThickness = frameShadow;
                     SetPlatformDecorationMargin(window, decoration);
                 });
 
@@ -843,20 +848,14 @@ public class OverlayDialogPresenterTests
                                             .GetVisualDescendants()
                                             .OfType<DialogCaptionButton>()
                                             .Single(button => button.Name == "PART_MaximizeButton");
-                var expectedOwnerBounds = osType == OsType.Windows
-                    ? new Rect(default, fixture.Presenter.Bounds.Size)
-                    : new Rect(
-                        decoration.Left,
-                        decoration.Top,
-                        fixture.Presenter.Bounds.Width - decoration.Left - decoration.Right,
-                        fixture.Presenter.Bounds.Height - decoration.Top - decoration.Bottom);
+                var expectedOwnerBounds = GetDialogBodyOwnerBounds(fixture, frameShadow);
 
                 maximizeButton.RaiseEvent(new RoutedEventArgs(AtomUI.Desktop.Controls.Button.ClickEvent));
                 Dispatcher.UIThread.RunJobs();
 
                 surface.Bounds.Size.ShouldBe(expectedOwnerBounds.Size);
-                surface.Margin.ShouldBe(
-                    new Thickness(expectedOwnerBounds.Left, expectedOwnerBounds.Top, 0, 0));
+                surface.Margin.ShouldBe(default);
+                GetSurfacePosition(surface, fixture.Presenter).ShouldBe(expectedOwnerBounds.Position);
             }
             finally
             {
@@ -865,11 +864,18 @@ public class OverlayDialogPresenterTests
         });
     }
 
-    [Fact]
-    public void Windows_Header_Drag_Can_Move_Into_The_Drawn_TitleBar_Range()
+    [Theory]
+    [InlineData(OsType.Windows, true)]
+    [InlineData(OsType.Linux, true)]
+    [InlineData(OsType.Linux, false)]
+    [InlineData(OsType.macOS, false)]
+    public void Platform_Header_Drag_Can_Use_The_TitleBar_Within_The_Visible_Frame(
+        OsType osType,
+        bool isCsdEnabled)
     {
         RunOnUIThread(() =>
         {
+            var frameShadow = new Thickness(8, 12, 16, 20);
             var fixture = ShowPresenter(
                 new AtomUI.Desktop.Controls.Dialog
                 {
@@ -880,8 +886,9 @@ public class OverlayDialogPresenterTests
                 },
                 window =>
                 {
-                    window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, OsType.Windows);
-                    window.IsCsdEnabled = true;
+                    window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
+                    window.IsCsdEnabled = isCsdEnabled;
+                    window.FrameShadowThickness = frameShadow;
                     SetPlatformDecorationMargin(window, new Thickness(14, 56, 20, 24));
                 });
 
@@ -889,16 +896,18 @@ public class OverlayDialogPresenterTests
             {
                 var surface = fixture.Presenter.Surface;
                 var header = surface.Header.ShouldNotBeNull();
+                var ownerBounds = GetDialogBodyOwnerBounds(fixture, frameShadow);
 
                 Drag(header, fixture.Window, new Point(240, 140), new Point(-1000, -1000));
 
-                surface.Margin.Left.ShouldBe(0);
-                surface.Margin.Top.ShouldBe(0);
+                GetSurfacePosition(surface, fixture.Presenter).ShouldBe(ownerBounds.Position);
 
                 Drag(header, fixture.Window, new Point(240, 140), new Point(2000, 2000));
 
-                (surface.Margin.Left + surface.Bounds.Width).ShouldBe(fixture.Presenter.Bounds.Right);
-                (surface.Margin.Top + surface.Bounds.Height).ShouldBe(fixture.Presenter.Bounds.Bottom);
+                var bottomRightPosition = GetSurfacePosition(surface, fixture.Presenter);
+                (bottomRightPosition.X + surface.Bounds.Width).ShouldBe(ownerBounds.Right);
+                (bottomRightPosition.Y + surface.Bounds.Height).ShouldBe(ownerBounds.Bottom);
+                ownerBounds.Contains(GetSurfaceBodyBounds(surface, fixture.Presenter)).ShouldBeTrue();
             }
             finally
             {
@@ -985,18 +994,18 @@ public class OverlayDialogPresenterTests
                 Dispatcher.UIThread.RunJobs();
                 window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
                 window.IsCsdEnabled = isCsdEnabled;
-                var installedHost = InstallDrawnDialogOverlayHost(window);
-                restoreDecorations = installedHost.Restore;
+                var dialogHost = new Panel { Name = "PART_DialogOverlayLayerHost" };
+                restoreDecorations = DrawnDecorationsTestHost.Install(window, dialogHost);
 
                 WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
                 var dialogLayer = presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
 
-                dialogLayer.Parent.ShouldBeSameAs(installedHost.Host);
+                dialogLayer.Parent.ShouldBeSameAs(dialogHost);
 
                 WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
                 WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
 
-                installedHost.Host.Children.OfType<DialogOverlayLayer>().ShouldBeEmpty();
+                dialogHost.Children.OfType<DialogOverlayLayer>().ShouldBeEmpty();
             }
             finally
             {
@@ -1007,59 +1016,19 @@ public class OverlayDialogPresenterTests
         });
     }
 
-    [Fact]
-    public void Linux_Header_Drag_Constrains_The_Dialog_Body_Without_Shadow_Inset()
+    [Theory]
+    [InlineData(OsType.Windows, true)]
+    [InlineData(OsType.Linux, true)]
+    [InlineData(OsType.Linux, false)]
+    [InlineData(OsType.macOS, false)]
+    public void Platform_Oversized_Host_Uses_The_Window_Visible_Frame(
+        OsType osType,
+        bool isCsdEnabled)
     {
         RunOnUIThread(() =>
         {
             var decoration = new Thickness(14, 58, 22, 26);
-            var fixture = ShowPresenter(
-                new AtomUI.Desktop.Controls.Dialog
-                {
-                    IsMotionEnabled = false,
-                    IsDragMovable = true,
-                    HostWidth = 320,
-                    HostHeight = 180
-                },
-                window =>
-                {
-                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(12));
-                    SetPlatformDecorationMargin(window, decoration);
-                });
-
-            try
-            {
-                var surface = fixture.Presenter.Surface;
-                var header = surface.Header.ShouldNotBeNull();
-                var ownerBounds = new Rect(
-                    decoration.Left,
-                    decoration.Top,
-                    fixture.Presenter.Bounds.Width - decoration.Left - decoration.Right,
-                    fixture.Presenter.Bounds.Height - decoration.Top - decoration.Bottom);
-
-                Drag(header, fixture.Window, new Point(240, 140), new Point(-1000, -1000));
-
-                surface.Margin.Left.ShouldBe(ownerBounds.Left);
-                surface.Margin.Top.ShouldBe(ownerBounds.Top);
-
-                Drag(header, fixture.Window, new Point(240, 140), new Point(2000, 2000));
-
-                (surface.Margin.Left + surface.Bounds.Width).ShouldBe(ownerBounds.Right);
-                (surface.Margin.Top + surface.Bounds.Height).ShouldBe(ownerBounds.Bottom);
-            }
-            finally
-            {
-                fixture.Dispose();
-            }
-        });
-    }
-
-    [Fact]
-    public void Linux_Oversized_Host_Uses_The_Full_Dialog_Body_Bounds()
-    {
-        RunOnUIThread(() =>
-        {
-            var decoration = new Thickness(14, 58, 22, 26);
+            var frameShadow = new Thickness(8, 12, 16, 20);
             var fixture = ShowPresenter(
                 new AtomUI.Desktop.Controls.Dialog
                 {
@@ -1069,20 +1038,20 @@ public class OverlayDialogPresenterTests
                 },
                 window =>
                 {
-                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(12));
+                    window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
+                    window.IsCsdEnabled = isCsdEnabled;
+                    window.FrameShadowThickness = frameShadow;
                     SetPlatformDecorationMargin(window, decoration);
                 });
 
             try
             {
-                var expectedBodySize = new Size(
-                    fixture.Presenter.Bounds.Width - decoration.Left - decoration.Right,
-                    fixture.Presenter.Bounds.Height - decoration.Top - decoration.Bottom);
+                var expectedOwnerBounds = GetDialogBodyOwnerBounds(fixture, frameShadow);
                 var surface = fixture.Presenter.Surface;
 
-                surface.MaxWidth.ShouldBe(expectedBodySize.Width);
-                surface.MaxHeight.ShouldBe(expectedBodySize.Height);
-                surface.Bounds.Size.ShouldBe(expectedBodySize);
+                surface.MaxWidth.ShouldBe(expectedOwnerBounds.Width);
+                surface.MaxHeight.ShouldBe(expectedOwnerBounds.Height);
+                surface.Bounds.Size.ShouldBe(expectedOwnerBounds.Size);
             }
             finally
             {
@@ -1092,12 +1061,13 @@ public class OverlayDialogPresenterTests
     }
 
     [Fact]
-    public void Linux_Csd_Decoration_Changes_Keep_Full_Mask_And_Reflow_Dialog_Body()
+    public void Frame_Shadow_Changes_Keep_Full_Mask_And_Reflow_The_Window_Visible_Frame()
     {
         RunOnUIThread(() =>
         {
-            var initial = new Thickness(10, 48, 10, 18);
-            var updated = new Thickness(22, 72, 26, 30);
+            var decoration = new Thickness(10, 48, 10, 18);
+            var initialShadow = new Thickness(6, 8, 10, 12);
+            var updatedShadow = new Thickness(14, 18, 22, 26);
             var fixture = ShowPresenter(
                 new AtomUI.Desktop.Controls.Dialog
                 {
@@ -1110,13 +1080,13 @@ public class OverlayDialogPresenterTests
                 },
                 window =>
                 {
-                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(10));
-                    SetPlatformDecorationMargin(window, initial);
+                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: initialShadow);
+                    SetPlatformDecorationMargin(window, decoration);
                 });
 
             try
             {
-                SetPlatformDecorationMargin(fixture.Window, updated);
+                fixture.Window.FrameShadowThickness = updatedShadow;
                 Dispatcher.UIThread.RunJobs();
 
                 var maskActor = fixture.Presenter.GetVisualDescendants()
@@ -1125,8 +1095,9 @@ public class OverlayDialogPresenterTests
 
                 maskActor.Margin.ShouldBe(default);
                 maskActor.Bounds.Size.ShouldBe(fixture.Presenter.Bounds.Size);
-                fixture.Presenter.Surface.Margin.Left.ShouldBe(updated.Left);
-                fixture.Presenter.Surface.Margin.Top.ShouldBe(updated.Top);
+                var surface = fixture.Presenter.Surface;
+                var ownerBounds = GetDialogBodyOwnerBounds(fixture, updatedShadow);
+                GetSurfacePosition(surface, fixture.Presenter).ShouldBe(ownerBounds.Position);
             }
             finally
             {
@@ -1160,6 +1131,113 @@ public class OverlayDialogPresenterTests
             finally
             {
                 fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Header_Drag_Does_Not_Run_Layout_For_Each_Pointer_Move()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(new AtomUI.Desktop.Controls.Dialog
+            {
+                IsMotionEnabled = false,
+                IsDragMovable = true,
+                HostWidth = 320,
+                HostHeight = 180
+            });
+
+            try
+            {
+                var header = fixture.Presenter.Surface.Header.ShouldNotBeNull();
+                var pointer = BeginDrag(header, fixture.Window, new Point(240, 140));
+                Dispatcher.UIThread.RunJobs();
+
+                var layoutPassCount = 0;
+                fixture.Window.LayoutUpdated += HandleLayoutUpdated;
+                try
+                {
+                    for (var index = 1; index <= 60; index++)
+                    {
+                        MoveDrag(
+                            header,
+                            fixture.Window,
+                            pointer,
+                            new Point(240 + index, 140 + index / 2d),
+                            (ulong)index);
+                        Dispatcher.UIThread.RunJobs();
+                    }
+                }
+                finally
+                {
+                    fixture.Window.LayoutUpdated -= HandleLayoutUpdated;
+                    EndDrag(header, fixture.Window, pointer, new Point(300, 170), 61);
+                    Dispatcher.UIThread.RunJobs();
+                }
+
+                layoutPassCount.ShouldBe(
+                    0,
+                    "pointer-move positioning should stay off the measure/arrange path.");
+
+                void HandleLayoutUpdated(object? sender, EventArgs e)
+                {
+                    layoutPassCount++;
+                }
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Windows_Header_Drag_Uses_The_Dpi_Rounded_Frame_As_The_Top_Boundary()
+    {
+        RunOnUIThread(() =>
+        {
+            const double renderScaling = 1.5;
+            var effectiveFrame = new Thickness(Math.Round(renderScaling) / renderScaling);
+            Action? restoreDecorations = null;
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsMotionEnabled = false,
+                    IsDragMovable = true,
+                    HostWidth = 600,
+                    HostHeight = 220
+                },
+                window =>
+                {
+                    window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, OsType.Windows);
+                    window.IsCsdEnabled = true;
+                    window.FrameShadowThickness = default;
+                    window.SetRenderScaling(renderScaling);
+                    restoreDecorations = DrawnDecorationsTestHost.Install(
+                        window,
+                        new Panel(),
+                        effectiveFrame);
+                });
+
+            try
+            {
+                var surface = fixture.Presenter.Surface;
+                var header = surface.Header.ShouldNotBeNull();
+                var frameThickness = fixture.Window.GetDrawnDecorationsFrameThickness();
+                frameThickness.ShouldBe(effectiveFrame);
+                (frameThickness.Top * renderScaling).ShouldBe(2, 0.001);
+
+                Drag(header, fixture.Window, new Point(320, 140), new Point(320, -1000));
+
+                var surfaceTopLeft = GetSurfacePosition(surface, fixture.Presenter);
+                surfaceTopLeft.Y.ShouldBe(effectiveFrame.Top, 0.001);
+                (surfaceTopLeft.Y * renderScaling).ShouldBe(2, 0.001);
+            }
+            finally
+            {
+                fixture.Dispose();
+                restoreDecorations?.Invoke();
             }
         });
     }
@@ -1222,9 +1300,15 @@ public class OverlayDialogPresenterTests
                 var surface = fixture.Presenter.Surface;
                 var header = fixture.Presenter.Surface.Header.ShouldNotBeNull();
                 var grabOffset = new Vector(80, 20);
+                var visibleFrameBounds = WindowVisualLayerClip.CalculateClipBounds(
+                    fixture.Presenter.Bounds.Size,
+                    fixture.Window.FrameShadowThickness);
+                var ownerBounds = visibleFrameBounds.Deflate(
+                    fixture.Window.GetDrawnDecorationsFrameThickness());
+                var initialPosition = GetSurfacePosition(surface, fixture.Presenter);
                 var start = new Point(
-                    surface.Margin.Left + grabOffset.X,
-                    surface.Margin.Top + grabOffset.Y);
+                    initialPosition.X + grabOffset.X,
+                    initialPosition.Y + grabOffset.Y);
                 var pointer = new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true);
 
                 header.RaiseEvent(new PointerPressedEventArgs(
@@ -1250,23 +1334,23 @@ public class OverlayDialogPresenterTests
                         PointerUpdateKind.Other),
                     KeyModifiers.None));
 
-                surface.Margin.Left.ShouldBe(0);
-                surface.Margin.Top.ShouldBe(0);
+                GetSurfacePosition(surface, fixture.Presenter).ShouldBe(ownerBounds.Position);
+
+                var interiorPosition = new Point(ownerBounds.Left + 20, ownerBounds.Top + 40);
 
                 header.RaiseEvent(new PointerEventArgs(
                     InputElement.PointerMovedEvent,
                     header,
                     pointer,
                     fixture.Window,
-                    new Point(100, 60),
+                    interiorPosition + grabOffset,
                     2,
                     new PointerPointProperties(
                         RawInputModifiers.LeftMouseButton,
                         PointerUpdateKind.Other),
                     KeyModifiers.None));
 
-                surface.Margin.Left.ShouldBe(20);
-                surface.Margin.Top.ShouldBe(40);
+                GetSurfacePosition(surface, fixture.Presenter).ShouldBe(interiorPosition);
 
                 header.RaiseEvent(new PointerEventArgs(
                     InputElement.PointerMovedEvent,
@@ -1280,8 +1364,9 @@ public class OverlayDialogPresenterTests
                         PointerUpdateKind.Other),
                     KeyModifiers.None));
 
-                surface.Margin.Left.ShouldBe(fixture.Presenter.Bounds.Width - surface.Bounds.Width);
-                surface.Margin.Top.ShouldBe(fixture.Presenter.Bounds.Height - surface.Bounds.Height);
+                var bottomRightPosition = GetSurfacePosition(surface, fixture.Presenter);
+                bottomRightPosition.X.ShouldBe(ownerBounds.Right - surface.Bounds.Width);
+                bottomRightPosition.Y.ShouldBe(ownerBounds.Bottom - surface.Bounds.Height);
 
                 header.RaiseEvent(new PointerReleasedEventArgs(
                     header,
@@ -1295,12 +1380,7 @@ public class OverlayDialogPresenterTests
                     KeyModifiers.None,
                     MouseButton.Left));
 
-                surface.Margin.Left.ShouldBeGreaterThanOrEqualTo(0);
-                surface.Margin.Top.ShouldBeGreaterThanOrEqualTo(0);
-                (surface.Margin.Left + surface.Bounds.Width)
-                    .ShouldBeLessThanOrEqualTo(fixture.Presenter.Bounds.Width);
-                (surface.Margin.Top + surface.Bounds.Height)
-                    .ShouldBeLessThanOrEqualTo(fixture.Presenter.Bounds.Height);
+                ownerBounds.Contains(GetSurfaceBodyBounds(surface, fixture.Presenter)).ShouldBeTrue();
             }
             finally
             {
@@ -1453,41 +1533,6 @@ public class OverlayDialogPresenterTests
         return new PresenterFixture(window, dialog, presenter);
     }
 
-    private static (Panel Host, Action Restore) InstallDrawnDialogOverlayHost(
-        AtomUI.Desktop.Controls.Window window)
-    {
-        var topLevelHost = typeof(TopLevel)
-                           .GetField("_topLevelHost", BindingFlags.Instance | BindingFlags.NonPublic)
-                           .ShouldNotBeNull()
-                           .GetValue(window)
-                           .ShouldNotBeNull();
-        var decorationsField = topLevelHost.GetType()
-                                               .GetField("_decorations", BindingFlags.Instance | BindingFlags.NonPublic)
-                                               .ShouldNotBeNull();
-        var originalDecorations = decorationsField.GetValue(topLevelHost);
-        var dialogHost = new Panel { Name = "PART_DialogOverlayLayerHost" };
-        var overlay = new Panel
-        {
-            Children = { dialogHost }
-        };
-        var content = new Avalonia.Controls.Chrome.WindowDrawnDecorationsContent
-        {
-            Overlay = overlay
-        };
-        var decorations = new Avalonia.Controls.Chrome.WindowDrawnDecorations();
-        typeof(Avalonia.Controls.Chrome.WindowDrawnDecorations)
-            .GetProperty(
-                nameof(Avalonia.Controls.Chrome.WindowDrawnDecorations.Content),
-                BindingFlags.Instance | BindingFlags.Public)
-            .ShouldNotBeNull()
-            .GetSetMethod(nonPublic: true)
-            .ShouldNotBeNull()
-            .Invoke(decorations, new object?[] { content });
-        decorationsField.SetValue(topLevelHost, decorations);
-
-        return (dialogHost, () => decorationsField.SetValue(topLevelHost, originalDecorations));
-    }
-
     private static void ConfigureLinuxWindow(
         AtomUI.Desktop.Controls.Window window,
         bool isCsdEnabled,
@@ -1515,7 +1560,34 @@ public class OverlayDialogPresenterTests
         setter.Invoke(window, new object?[] { margin });
     }
 
+    private static Point GetSurfacePosition(DialogSurface surface, Visual relativeTo)
+    {
+        return surface.TranslatePoint(default, relativeTo).ShouldNotBeNull();
+    }
+
+    private static Rect GetSurfaceBodyBounds(DialogSurface surface, Visual relativeTo)
+    {
+        var position = GetSurfacePosition(surface, relativeTo);
+        return new Rect(position, surface.Bounds.Size);
+    }
+
+    private static Rect GetDialogBodyOwnerBounds(PresenterFixture fixture, Thickness frameShadow)
+    {
+        var visibleFrameBounds = WindowVisualLayerClip.CalculateClipBounds(
+            fixture.Presenter.Bounds.Size,
+            frameShadow);
+        return visibleFrameBounds.Deflate(fixture.Window.GetDrawnDecorationsFrameThickness());
+    }
+
     private static void Drag(Control source, Visual root, Point start, Point end)
+    {
+        var pointer = BeginDrag(source, root, start);
+        MoveDrag(source, root, pointer, end, 1);
+        EndDrag(source, root, pointer, end, 2);
+        Dispatcher.UIThread.RunJobs();
+    }
+
+    private static Pointer BeginDrag(Control source, Visual root, Point start)
     {
         var pointer = new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true);
         source.RaiseEvent(new PointerPressedEventArgs(
@@ -1526,25 +1598,33 @@ public class OverlayDialogPresenterTests
             0,
             new PointerPointProperties(RawInputModifiers.LeftMouseButton, PointerUpdateKind.LeftButtonPressed),
             KeyModifiers.None));
+        return pointer;
+    }
+
+    private static void MoveDrag(Control source, Visual root, Pointer pointer, Point position, ulong timestamp)
+    {
         source.RaiseEvent(new PointerEventArgs(
             InputElement.PointerMovedEvent,
             source,
             pointer,
             root,
-            end,
-            1,
+            position,
+            timestamp,
             new PointerPointProperties(RawInputModifiers.LeftMouseButton, PointerUpdateKind.Other),
             KeyModifiers.None));
+    }
+
+    private static void EndDrag(Control source, Visual root, Pointer pointer, Point position, ulong timestamp)
+    {
         source.RaiseEvent(new PointerReleasedEventArgs(
             source,
             pointer,
             root,
-            end,
-            2,
+            position,
+            timestamp,
             new PointerPointProperties(RawInputModifiers.None, PointerUpdateKind.LeftButtonReleased),
             KeyModifiers.None,
             MouseButton.Left));
-        Dispatcher.UIThread.RunJobs();
     }
 
     private static void RaisePointerPressed(Control source)

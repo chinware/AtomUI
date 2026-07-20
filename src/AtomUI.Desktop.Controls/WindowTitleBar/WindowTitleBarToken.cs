@@ -180,10 +180,10 @@ internal class WindowTitleBarToken : AbstractControlDesignToken
         CaptionGroupSpacing  = SharedToken.SizeUnit * 2;
 
         // 窗口装饰语义不走密度算法：紧凑模式下 ControlHeightLG / SizeLG / SpacingXS 都会被拉小，
-        // 标题栏 / 全屏按钮 / DockPanel 间距不应跟着缩。按平台分支写死，三平台当前同值。
-        Height                      = GetPlatformTitleBarHeight();
-        FullscreenCaptionButtonSize = GetPlatformFullscreenCaptionButtonSize();
-        HeaderHorizontalSpacing     = GetPlatformHeaderHorizontalSpacing();
+        // 标题栏 / 全屏按钮 / DockPanel 间距不应跟着缩，因此使用跨平台稳定值。
+        Height                      = 40;
+        FullscreenCaptionButtonSize = 24;
+        HeaderHorizontalSpacing     = 8;
 
         WindowsCloseButtonHoverBgColor   = Color.FromRgb(244, 67, 54); // #F44336
         WindowsCloseButtonPressedBgColor = Color.FromArgb(190, 244, 67, 54);
@@ -193,46 +193,4 @@ internal class WindowTitleBarToken : AbstractControlDesignToken
         TitleFontWeight = FontWeight.Bold;
     }
 
-    private static double GetPlatformTitleBarHeight()
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            return 40;
-        }
-        if (OperatingSystem.IsMacOS())
-        {
-            return 40;
-        }
-        // Linux / 其他
-        return 40;
-    }
-
-    private static double GetPlatformFullscreenCaptionButtonSize()
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            return 24;
-        }
-        if (OperatingSystem.IsMacOS())
-        {
-            return 24;
-        }
-        // Linux / 其他
-        return 24;
-    }
-
-    private static double GetPlatformHeaderHorizontalSpacing()
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            return 8;
-        }
-        if (OperatingSystem.IsMacOS())
-        {
-            return 8;
-        }
-        // Linux / 其他
-        return 8;
-    }
-    
 }

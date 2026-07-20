@@ -151,6 +151,7 @@ Window 的标题栏存在两套输入模型，维护时必须同时成立：
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - 内容、命令和视觉状态在模板节点之间的同步。
 - 标题栏背景/装饰层、自定义 `TitleBar` 与 Avalonia CSD chrome hit test 的职责划分。
+- 完整 layer、visible frame 和 content bounds 的职责划分；`WindowVisualLayerClip.CalculateClipBounds` 是排除 client-drawn frame shadow 的共享计算入口。
 - 状态变化时避免创建不必要的视觉对象、订阅或动画对象。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
@@ -178,6 +179,7 @@ Window 的标题栏存在两套输入模型，维护时必须同时成立：
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - `TitleBarFrameLayer` 的背景/装饰层语义，以及标题栏交互内容必须通过 `TitleBar` 承载的职责边界。
+- 上层 Dialog/Drawer 不按 OS 或 CSD 状态复制 Window frame 几何，而是消费 Window 发布的 `FrameShadowThickness` 和实际 drawn host 能力。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。

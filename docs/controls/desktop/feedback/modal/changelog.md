@@ -6,10 +6,15 @@
 
 - Architecture
   - Unify Overlay Dialog host selection across Windows, Linux and macOS by using the drawn decorations Dialog host whenever the current platform exposes it, with TopLevel popup and scoped overlay fallback.
-  - Separate complete mask bounds, platform Dialog body bounds and Dialog BoxShadow extents as independent geometry responsibilities.
+  - Separate complete mask bounds, Window visible-frame Dialog bounds and Dialog BoxShadow extents as independent geometry responsibilities.
+  - Replace OS-specific Dialog body bounds with one Window visible-frame calculation shared with the Window frame clip.
+  - Derive Dialog body owner bounds from the Window visible frame and the current DPI-rounded drawn-decoration frame thickness, while keeping host dimensions as body dimensions.
 - Behavior
-  - Define the modal mask as covering and blocking the complete Avalonia drawable window, including managed/drawn title bars, while applying platform owner bounds to Dialog placement, drag, resize and maximize; native system chrome outside the client visual tree remains platform-managed.
-  - Keep Windows Overlay Dialog owner bounds equal to the complete layer so the Surface can be moved into the drawn title bar range, while Linux and macOS continue using their platform body insets.
+  - Define the modal mask as covering and blocking the complete Avalonia drawable window, including managed/drawn title bars, while applying Dialog body owner bounds derived from the Window visible frame to placement, drag, resize and maximize; native system chrome outside the client visual tree remains platform-managed.
+  - Let Overlay Dialog placement, drag, resize and maximize use managed/drawn title-bar space on every platform while continuing to exclude transparent frame-shadow buffers.
+  - Keep the Dialog body inside the effective Window frame on every platform while allowing its BoxShadow to be clipped naturally at the window edge.
+- Performance
+  - Move Overlay Dialog drag positioning from layout-affecting Margin writes to one reusable render-only Matrix translation while retaining `OffsetX` / `OffsetY` as persistence state.
 - Docs
   - Document capability-driven host selection, visual-layer clipping ownership, lifecycle cleanup, AOT reflection boundary and Windows/Linux/macOS regression coverage.
 

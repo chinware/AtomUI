@@ -1,5 +1,6 @@
 using System.Linq;
 using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls.Tests.Window;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -144,12 +145,17 @@ public class DrawerInteractionTests
     }
 
     [Theory]
-    [InlineData(DrawerPlacement.Left)]
-    [InlineData(DrawerPlacement.Top)]
-    [InlineData(DrawerPlacement.Right)]
-    [InlineData(DrawerPlacement.Bottom)]
-    public void TopLevel_Drawer_Uses_Csd_Visible_Frame(
-        DrawerPlacement placement)
+    [InlineData(DrawerPlacement.Left, true)]
+    [InlineData(DrawerPlacement.Top, true)]
+    [InlineData(DrawerPlacement.Right, true)]
+    [InlineData(DrawerPlacement.Bottom, true)]
+    [InlineData(DrawerPlacement.Left, false)]
+    [InlineData(DrawerPlacement.Top, false)]
+    [InlineData(DrawerPlacement.Right, false)]
+    [InlineData(DrawerPlacement.Bottom, false)]
+    public void TopLevel_Drawer_Uses_The_Window_Visible_Frame(
+        DrawerPlacement placement,
+        bool isCsdEnabled)
     {
         var drawer = new AtomUI.Desktop.Controls.Drawer
         {
@@ -168,7 +174,7 @@ public class DrawerInteractionTests
             var cornerRadius = new CornerRadius(9, 11, 13, 15);
             window.FrameShadowThickness = shadow;
             window.CornerRadius         = cornerRadius;
-            window.IsCsdEnabled          = true;
+            window.IsCsdEnabled          = isCsdEnabled;
             Dispatcher.UIThread.RunJobs();
 
             drawer.IsOpen = true;
@@ -200,8 +206,11 @@ public class DrawerInteractionTests
         }
     }
 
-    [Fact]
-    public void X11_Style_Drawer_Does_Not_Change_Its_Host_Margin()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Available_Drawn_Decorations_Drawer_Host_Is_Used_Regardless_Of_Csd_State(
+        bool isCsdEnabled)
     {
         var drawer = new AtomUI.Desktop.Controls.Drawer
         {
@@ -212,24 +221,133 @@ public class DrawerInteractionTests
         };
 
         var window = CreateAtomWindow(drawer);
+        var drawnHost = new ScopeAwareAdornerLayer
+        {
+            Name = "PART_DrawerOverlayLayerHost",
+            LayerHost = window
+        };
+        Action? restoreDecorations = null;
         try
         {
-            window.FrameShadowThickness = new Thickness(20);
-            window.IsCsdEnabled          = false;
+            window.IsCsdEnabled = isCsdEnabled;
+            restoreDecorations = DrawnDecorationsTestHost.Install(window, drawnHost);
             Dispatcher.UIThread.RunJobs();
 
             drawer.IsOpen = true;
             Dispatcher.UIThread.RunJobs();
 
-            var layer = ScopeAwareAdornerLayer.GetLayer(drawer);
-            layer.ShouldNotBeNull();
-            var container = layer.GetVisualDescendants().OfType<DrawerContainer>().Single();
+            var container = drawnHost.Children.OfType<DrawerContainer>().Single();
 
-            container.Margin.ShouldBe(default);
-            container.CornerRadius.ShouldBe(default);
+            container.GetVisualParent().ShouldBeSameAs(drawnHost);
+
+            drawer.IsOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            drawnHost.Children.OfType<DrawerContainer>().ShouldBeEmpty();
         }
         finally
         {
+            if (drawer.IsOpen)
+            {
+                drawer.IsOpen = false;
+                Dispatcher.UIThread.RunJobs();
+            }
+            restoreDecorations?.Invoke();
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Drawer_Inside_An_Existing_Scope_Layer_Reuses_The_Containing_Layer()
+    {
+        var openOn = new Border();
+        var drawer = new AtomUI.Desktop.Controls.Drawer
+        {
+            OpenOn = openOn
+        };
+        var layer = new ScopeAwareAdornerLayer
+        {
+            LayerHost = openOn,
+            Children = { drawer }
+        };
+
+        try
+        {
+            ScopeAwareAdornerLayer.GetLayer(drawer).ShouldBeSameAs(layer);
+        }
+        finally
+        {
+            layer.Children.Remove(drawer);
+        }
+    }
+
+    [Fact]
+    public void Nested_Drawer_Reuses_The_Parent_Drawer_Layer_And_Releases_In_Order()
+    {
+        var childDrawer = new AtomUI.Desktop.Controls.Drawer
+        {
+            Content         = new TextBlock { Text = "Child body" },
+            IsMotionEnabled = false,
+            Width           = 1,
+            Height          = 1
+        };
+        var parentDrawer = new AtomUI.Desktop.Controls.Drawer
+        {
+            Content = new StackPanel
+            {
+                Children =
+                {
+                    new TextBlock { Text = "Parent body" },
+                    childDrawer
+                }
+            },
+            IsMotionEnabled = false,
+            Width           = 1,
+            Height          = 1
+        };
+        childDrawer.SetValue(
+            AtomUI.Desktop.Controls.Drawer.IsMotionEnabledProperty,
+            false,
+            BindingPriority.Animation);
+        parentDrawer.SetValue(
+            AtomUI.Desktop.Controls.Drawer.IsMotionEnabledProperty,
+            false,
+            BindingPriority.Animation);
+
+        var window = CreateAtomWindow(parentDrawer);
+        try
+        {
+            parentDrawer.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var layer = ScopeAwareAdornerLayer.GetLayer(parentDrawer).ShouldNotBeNull();
+            AtomUI.Desktop.Controls.Drawer.GetDrawer(childDrawer).ShouldBeSameAs(parentDrawer);
+            childDrawer.OpenOn.ShouldBeSameAs(window);
+            ScopeAwareAdornerLayer.GetLayer(childDrawer).ShouldBeSameAs(layer);
+
+            childDrawer.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            layer.Children.OfType<DrawerContainer>().Count().ShouldBe(2);
+
+            childDrawer.IsOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            layer.Children.OfType<DrawerContainer>().Count().ShouldBe(1);
+
+            parentDrawer.IsOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            layer.Children.OfType<DrawerContainer>().ShouldBeEmpty();
+        }
+        finally
+        {
+            if (childDrawer.IsOpen)
+            {
+                childDrawer.IsOpen = false;
+                Dispatcher.UIThread.RunJobs();
+            }
+            if (parentDrawer.IsOpen)
+            {
+                parentDrawer.IsOpen = false;
+                Dispatcher.UIThread.RunJobs();
+            }
             window.Close();
         }
     }
