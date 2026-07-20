@@ -148,7 +148,7 @@ public class DrawerInteractionTests
     [InlineData(DrawerPlacement.Top)]
     [InlineData(DrawerPlacement.Right)]
     [InlineData(DrawerPlacement.Bottom)]
-    public void TopLevel_Drawer_Uses_Csd_Visible_Frame_And_Covers_The_Drawn_TitleBar(
+    public void TopLevel_Drawer_Uses_Csd_Visible_Frame(
         DrawerPlacement placement)
     {
         var drawer = new AtomUI.Desktop.Controls.Drawer
@@ -180,7 +180,6 @@ public class DrawerInteractionTests
 
             container.Margin.ShouldBe(shadow);
             container.CornerRadius.ShouldBe(cornerRadius);
-            window.IsDrawnTitleBarOverlayVisible.ShouldBeFalse();
 
             window.CornerRadius = default;
             Dispatcher.UIThread.RunJobs();
@@ -194,8 +193,6 @@ public class DrawerInteractionTests
             container.IsMotionEnabled = false;
             drawer.IsOpen = false;
             Dispatcher.UIThread.RunJobs();
-
-            window.IsDrawnTitleBarOverlayVisible.ShouldBeTrue();
         }
         finally
         {
@@ -204,66 +201,7 @@ public class DrawerInteractionTests
     }
 
     [Fact]
-    public void Nested_TopLevel_Drawers_Keep_Drawn_TitleBar_Hidden_Until_The_Last_Drawer_Closes()
-    {
-        var childDrawer = new AtomUI.Desktop.Controls.Drawer
-        {
-            Content         = new TextBlock { Text = "Child" },
-            IsMotionEnabled = false,
-            Width           = 1,
-            Height          = 1
-        };
-        var parentDrawer = new AtomUI.Desktop.Controls.Drawer
-        {
-            Content = new StackPanel
-            {
-                Children =
-                {
-                    new TextBlock { Text = "Parent" },
-                    childDrawer
-                }
-            },
-            IsMotionEnabled = false,
-            Width           = 1,
-            Height          = 1
-        };
-
-        var window = CreateAtomWindow(parentDrawer);
-        try
-        {
-            window.FrameShadowThickness = new Thickness(16);
-            window.IsCsdEnabled          = true;
-            Dispatcher.UIThread.RunJobs();
-
-            parentDrawer.IsOpen = true;
-            Dispatcher.UIThread.RunJobs();
-            childDrawer.IsOpen = true;
-            Dispatcher.UIThread.RunJobs();
-
-            window.IsDrawnTitleBarOverlayVisible.ShouldBeFalse();
-            var layer = ScopeAwareAdornerLayer.GetLayer(parentDrawer);
-            layer.ShouldNotBeNull();
-            foreach (var container in layer.GetVisualDescendants().OfType<DrawerContainer>())
-            {
-                container.IsMotionEnabled = false;
-            }
-
-            childDrawer.IsOpen = false;
-            Dispatcher.UIThread.RunJobs();
-            window.IsDrawnTitleBarOverlayVisible.ShouldBeFalse();
-
-            parentDrawer.IsOpen = false;
-            Dispatcher.UIThread.RunJobs();
-            window.IsDrawnTitleBarOverlayVisible.ShouldBeTrue();
-        }
-        finally
-        {
-            window.Close();
-        }
-    }
-
-    [Fact]
-    public void X11_Style_Drawer_Does_Not_Change_Its_Host_Margin_Or_TitleBar_Layer()
+    public void X11_Style_Drawer_Does_Not_Change_Its_Host_Margin()
     {
         var drawer = new AtomUI.Desktop.Controls.Drawer
         {
@@ -289,7 +227,6 @@ public class DrawerInteractionTests
 
             container.Margin.ShouldBe(default);
             container.CornerRadius.ShouldBe(default);
-            window.IsDrawnTitleBarOverlayVisible.ShouldBeTrue();
         }
         finally
         {

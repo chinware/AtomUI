@@ -41,7 +41,7 @@ internal sealed class DialogOverlayLayer : Canvas
     private static (Panel HostLayer, TopLevel? TopLevel) ResolveHostLayer(Visual anchor)
     {
         var topLevel = TopLevel.GetTopLevel(anchor);
-        if (topLevel is Window { OsType: OsType.Linux, IsCsdEnabled: true } window &&
+        if (topLevel is Window window &&
             window.GetDrawnDialogOverlayLayer() is { } drawnDialogLayer)
         {
             return (drawnDialogLayer, topLevel);

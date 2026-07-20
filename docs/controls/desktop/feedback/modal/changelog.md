@@ -2,6 +2,17 @@
 
 本文档记录 Modal 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-20
+
+- Architecture
+  - Unify Overlay Dialog host selection across Windows, Linux and macOS by using the drawn decorations Dialog host whenever the current platform exposes it, with TopLevel popup and scoped overlay fallback.
+  - Separate complete mask bounds, platform Dialog body bounds and Dialog BoxShadow extents as independent geometry responsibilities.
+- Behavior
+  - Define the modal mask as covering and blocking the complete Avalonia drawable window, including managed/drawn title bars, while applying platform owner bounds to Dialog placement, drag, resize and maximize; native system chrome outside the client visual tree remains platform-managed.
+  - Keep Windows Overlay Dialog owner bounds equal to the complete layer so the Surface can be moved into the drawn title bar range, while Linux and macOS continue using their platform body insets.
+- Docs
+  - Document capability-driven host selection, visual-layer clipping ownership, lifecycle cleanup, AOT reflection boundary and Windows/Linux/macOS regression coverage.
+
 ## 2026-07-18
 
 - Architecture

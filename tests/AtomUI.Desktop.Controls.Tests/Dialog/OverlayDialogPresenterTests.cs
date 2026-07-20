@@ -710,6 +710,203 @@ public class OverlayDialogPresenterTests
         });
     }
 
+    [Theory]
+    [InlineData(OsType.Windows, true)]
+    [InlineData(OsType.Linux, true)]
+    [InlineData(OsType.macOS, false)]
+    public void Platform_Mask_Covers_The_Complete_Avalonia_Window_Layer(
+        OsType osType,
+        bool isCsdEnabled)
+    {
+        RunOnUIThread(() =>
+        {
+            var decoration = new Thickness(10, 48, 14, 18);
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsModal = true,
+                    IsMotionEnabled = false,
+                    HostWidth = 320,
+                    HostHeight = 180
+                },
+                window =>
+                {
+                    window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
+                    window.IsCsdEnabled = isCsdEnabled;
+                    window.FrameShadowThickness = new Thickness(12);
+                    SetPlatformDecorationMargin(window, decoration);
+                });
+
+            try
+            {
+                var maskActor = fixture.Presenter.GetVisualDescendants()
+                                       .OfType<MotionActor>()
+                                       .Single(actor => actor.Name == "PART_MaskMotionActor");
+
+                maskActor.Margin.ShouldBe(default);
+                maskActor.Bounds.Size.ShouldBe(fixture.Presenter.Bounds.Size);
+                if (osType != OsType.macOS)
+                {
+                    maskActor.GetVisualAncestors()
+                             .OfType<WindowVisualLayerClip>()
+                             .ShouldHaveSingleItem();
+                }
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Theory]
+    [InlineData(OsType.Windows, true)]
+    [InlineData(OsType.Linux, true)]
+    [InlineData(OsType.macOS, false)]
+    public void Platform_Dialog_Owner_Bounds_Follow_The_TitleBar_Interaction_Contract(
+        OsType osType,
+        bool isCsdEnabled)
+    {
+        RunOnUIThread(() =>
+        {
+            var decoration = new Thickness(14, 56, 20, 24);
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsMotionEnabled = false,
+                    HostWidth = 2000,
+                    HostHeight = 2000,
+                    VerticalStartupLocation = DialogVerticalAnchor.Top,
+                    HorizontalStartupLocation = DialogHorizontalAnchor.Left
+                },
+                window =>
+                {
+                    window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
+                    window.IsCsdEnabled = isCsdEnabled;
+                    SetPlatformDecorationMargin(window, decoration);
+                });
+
+            try
+            {
+                var expectedOwnerBounds = osType == OsType.Windows
+                    ? new Rect(default, fixture.Presenter.Bounds.Size)
+                    : new Rect(
+                        decoration.Left,
+                        decoration.Top,
+                        fixture.Presenter.Bounds.Width - decoration.Left - decoration.Right,
+                        fixture.Presenter.Bounds.Height - decoration.Top - decoration.Bottom);
+                var surface = fixture.Presenter.Surface;
+
+                surface.MaxWidth.ShouldBe(expectedOwnerBounds.Width);
+                surface.MaxHeight.ShouldBe(expectedOwnerBounds.Height);
+                surface.Bounds.Size.ShouldBe(expectedOwnerBounds.Size);
+                surface.Margin.Left.ShouldBe(expectedOwnerBounds.Left);
+                surface.Margin.Top.ShouldBe(expectedOwnerBounds.Top);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Theory]
+    [InlineData(OsType.Windows, true)]
+    [InlineData(OsType.Linux, true)]
+    [InlineData(OsType.macOS, false)]
+    public void Platform_Maximize_Uses_The_Effective_Owner_Bounds(
+        OsType osType,
+        bool isCsdEnabled)
+    {
+        RunOnUIThread(() =>
+        {
+            var decoration = new Thickness(16, 60, 18, 22);
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsMotionEnabled = false,
+                    IsMaximizable = true,
+                    HostWidth = 320,
+                    HostHeight = 180
+                },
+                window =>
+                {
+                    window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
+                    window.IsCsdEnabled = isCsdEnabled;
+                    SetPlatformDecorationMargin(window, decoration);
+                });
+
+            try
+            {
+                var surface = fixture.Presenter.Surface;
+                var maximizeButton = surface.Header.ShouldNotBeNull()
+                                            .GetVisualDescendants()
+                                            .OfType<DialogCaptionButton>()
+                                            .Single(button => button.Name == "PART_MaximizeButton");
+                var expectedOwnerBounds = osType == OsType.Windows
+                    ? new Rect(default, fixture.Presenter.Bounds.Size)
+                    : new Rect(
+                        decoration.Left,
+                        decoration.Top,
+                        fixture.Presenter.Bounds.Width - decoration.Left - decoration.Right,
+                        fixture.Presenter.Bounds.Height - decoration.Top - decoration.Bottom);
+
+                maximizeButton.RaiseEvent(new RoutedEventArgs(AtomUI.Desktop.Controls.Button.ClickEvent));
+                Dispatcher.UIThread.RunJobs();
+
+                surface.Bounds.Size.ShouldBe(expectedOwnerBounds.Size);
+                surface.Margin.ShouldBe(
+                    new Thickness(expectedOwnerBounds.Left, expectedOwnerBounds.Top, 0, 0));
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Windows_Header_Drag_Can_Move_Into_The_Drawn_TitleBar_Range()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(
+                new AtomUI.Desktop.Controls.Dialog
+                {
+                    IsMotionEnabled = false,
+                    IsDragMovable = true,
+                    HostWidth = 320,
+                    HostHeight = 180
+                },
+                window =>
+                {
+                    window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, OsType.Windows);
+                    window.IsCsdEnabled = true;
+                    SetPlatformDecorationMargin(window, new Thickness(14, 56, 20, 24));
+                });
+
+            try
+            {
+                var surface = fixture.Presenter.Surface;
+                var header = surface.Header.ShouldNotBeNull();
+
+                Drag(header, fixture.Window, new Point(240, 140), new Point(-1000, -1000));
+
+                surface.Margin.Left.ShouldBe(0);
+                surface.Margin.Top.ShouldBe(0);
+
+                Drag(header, fixture.Window, new Point(240, 140), new Point(2000, 2000));
+
+                (surface.Margin.Left + surface.Bounds.Width).ShouldBe(fixture.Presenter.Bounds.Right);
+                (surface.Margin.Top + surface.Bounds.Height).ShouldBe(fixture.Presenter.Bounds.Bottom);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
     [Fact]
     public void Linux_NonCsd_Mask_Covers_The_Complete_Window_Layer()
     {
@@ -750,12 +947,28 @@ public class OverlayDialogPresenterTests
         });
     }
 
-    [Fact]
-    public void Linux_Csd_Modal_Mask_Suppresses_The_Drawn_TitleBar_Overlay_Until_Disposed()
+    [Theory]
+    [InlineData(OsType.Windows, true)]
+    [InlineData(OsType.Linux, true)]
+    [InlineData(OsType.macOS, false)]
+    public void Available_Drawn_Decorations_Dialog_Host_Is_Used_On_Every_Platform(
+        OsType osType,
+        bool isCsdEnabled)
     {
         RunOnUIThread(() =>
         {
-            var fixture = ShowPresenter(
+            var placementTarget = new Border { Width = 100, Height = 40 };
+            var root = new ScopeAwareOverlayLayerPanel
+            {
+                Children = { placementTarget }
+            };
+            var window = new AtomUI.Desktop.Controls.Window
+            {
+                Width = 640,
+                Height = 480,
+                Content = root
+            };
+            var presenter = new OverlayDialogPresenter(
                 new AtomUI.Desktop.Controls.Dialog
                 {
                     IsModal = true,
@@ -763,62 +976,33 @@ public class OverlayDialogPresenterTests
                     HostWidth = 320,
                     HostHeight = 180
                 },
-                window =>
-                {
-                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(12));
-                    SetPlatformDecorationMargin(window, new Thickness(12, 52, 12, 20));
-                });
+                placementTarget);
+            Action? restoreDecorations = null;
 
             try
             {
-                fixture.Window.IsDrawnTitleBarOverlayVisible.ShouldBeFalse();
-
-                WaitWithDispatcherPump(fixture.Presenter.CloseAsync().AsTask());
-                WaitWithDispatcherPump(fixture.Presenter.DisposeAsync().AsTask());
-
-                fixture.Window.IsDrawnTitleBarOverlayVisible.ShouldBeTrue();
-            }
-            finally
-            {
-                fixture.Window.Close();
-            }
-        });
-    }
-
-    [Fact]
-    public void Linux_Csd_Closed_Presenter_Does_Not_Reacquire_TitleBar_Suppression()
-    {
-        RunOnUIThread(() =>
-        {
-            var fixture = ShowPresenter(
-                new AtomUI.Desktop.Controls.Dialog
-                {
-                    IsModal = true,
-                    IsMotionEnabled = false,
-                    HostWidth = 320,
-                    HostHeight = 180
-                },
-                window =>
-                {
-                    ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(12));
-                    SetPlatformDecorationMargin(window, new Thickness(12, 52, 12, 20));
-                });
-
-            try
-            {
-                WaitWithDispatcherPump(fixture.Presenter.CloseAsync().AsTask());
-                fixture.Window.IsDrawnTitleBarOverlayVisible.ShouldBeTrue();
-
-                fixture.Dialog.IsModal = false;
-                fixture.Dialog.IsModal = true;
+                window.Show();
                 Dispatcher.UIThread.RunJobs();
+                window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
+                window.IsCsdEnabled = isCsdEnabled;
+                var installedHost = InstallDrawnDialogOverlayHost(window);
+                restoreDecorations = installedHost.Restore;
 
-                fixture.Window.IsDrawnTitleBarOverlayVisible.ShouldBeTrue();
+                WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+                var dialogLayer = presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
+
+                dialogLayer.Parent.ShouldBeSameAs(installedHost.Host);
+
+                WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+                WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+
+                installedHost.Host.Children.OfType<DialogOverlayLayer>().ShouldBeEmpty();
             }
             finally
             {
-                WaitWithDispatcherPump(fixture.Presenter.DisposeAsync().AsTask());
-                fixture.Window.Close();
+                WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+                restoreDecorations?.Invoke();
+                window.Close();
             }
         });
     }
@@ -1267,6 +1451,41 @@ public class OverlayDialogPresenterTests
         Dispatcher.UIThread.RunJobs();
 
         return new PresenterFixture(window, dialog, presenter);
+    }
+
+    private static (Panel Host, Action Restore) InstallDrawnDialogOverlayHost(
+        AtomUI.Desktop.Controls.Window window)
+    {
+        var topLevelHost = typeof(TopLevel)
+                           .GetField("_topLevelHost", BindingFlags.Instance | BindingFlags.NonPublic)
+                           .ShouldNotBeNull()
+                           .GetValue(window)
+                           .ShouldNotBeNull();
+        var decorationsField = topLevelHost.GetType()
+                                               .GetField("_decorations", BindingFlags.Instance | BindingFlags.NonPublic)
+                                               .ShouldNotBeNull();
+        var originalDecorations = decorationsField.GetValue(topLevelHost);
+        var dialogHost = new Panel { Name = "PART_DialogOverlayLayerHost" };
+        var overlay = new Panel
+        {
+            Children = { dialogHost }
+        };
+        var content = new Avalonia.Controls.Chrome.WindowDrawnDecorationsContent
+        {
+            Overlay = overlay
+        };
+        var decorations = new Avalonia.Controls.Chrome.WindowDrawnDecorations();
+        typeof(Avalonia.Controls.Chrome.WindowDrawnDecorations)
+            .GetProperty(
+                nameof(Avalonia.Controls.Chrome.WindowDrawnDecorations.Content),
+                BindingFlags.Instance | BindingFlags.Public)
+            .ShouldNotBeNull()
+            .GetSetMethod(nonPublic: true)
+            .ShouldNotBeNull()
+            .Invoke(decorations, new object?[] { content });
+        decorationsField.SetValue(topLevelHost, decorations);
+
+        return (dialogHost, () => decorationsField.SetValue(topLevelHost, originalDecorations));
     }
 
     private static void ConfigureLinuxWindow(
