@@ -155,6 +155,7 @@ internal abstract class LinuxWindowChromeManager : IWindowChromeManager
     {
         EnsureResizeMinimumSize();
         UpdatePlatformFrameGeometry();
+        UpdateVisibleFrameBorderThickness();
     }
 
     protected virtual void UpdatePlatformFrameGeometry()
@@ -235,6 +236,17 @@ internal abstract class LinuxWindowChromeManager : IWindowChromeManager
         if (!MathUtils.AreClose(_window.ExtendClientAreaTitleBarHeightHint, height))
         {
             _window.SetCurrentValue(AvaloniaWindow.ExtendClientAreaTitleBarHeightHintProperty, height);
+        }
+    }
+
+    private void UpdateVisibleFrameBorderThickness()
+    {
+        var thickness = Window.IsCsdEnabled
+            ? Window.GetDrawnDecorationsFrameThickness()
+            : default;
+        if (!AreThicknessClose(Window.VisibleFrameBorderThickness, thickness))
+        {
+            Window.VisibleFrameBorderThickness = thickness;
         }
     }
 

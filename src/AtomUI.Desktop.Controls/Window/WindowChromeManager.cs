@@ -27,6 +27,11 @@ internal static class WindowChromeManager
             return LinuxWindowChromeManager.Attach(window);
         }
 
+        if (OperatingSystem.IsWindows())
+        {
+            return WindowsWindowChromeManager.Attach(window);
+        }
+
         return null;
     }
 }

@@ -266,6 +266,12 @@ public partial class Window : AvaloniaWindow,
     internal static readonly StyledProperty<Thickness> FrameShadowThicknessProperty =
         AvaloniaProperty.Register<Window, Thickness>(nameof(FrameShadowThickness));
 
+    internal static readonly DirectProperty<Window, Thickness> VisibleFrameBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<Window, Thickness>(
+            nameof(VisibleFrameBorderThickness),
+            o => o.VisibleFrameBorderThickness,
+            (o, v) => o.VisibleFrameBorderThickness = v);
+
     private static readonly IDataTemplate s_windowIconLogoTemplate =
         new FuncDataTemplate<WindowIcon>((icon, _) => CreateWindowIconLogo(icon));
     
@@ -336,7 +342,23 @@ public partial class Window : AvaloniaWindow,
         get => GetValue(FrameShadowThicknessProperty);
         set => SetValue(FrameShadowThicknessProperty, value);
     }
+
+    /// <summary>
+    /// The visible native or drawn frame border around the client surface.
+    /// This is separate from <see cref="FrameShadowThickness"/>, which only
+    /// describes AtomUI's shadow/transparent expansion area.
+    /// </summary>
+    internal Thickness VisibleFrameBorderThickness
+    {
+        get => _visibleFrameBorderThickness;
+        set => SetAndRaise(
+            VisibleFrameBorderThicknessProperty,
+            ref _visibleFrameBorderThickness,
+            value);
+    }
     #endregion
+
+    private Thickness _visibleFrameBorderThickness;
     
     protected override Type StyleKeyOverride { get; } = typeof(Window);
     private protected bool CloseByClickCloseCaptionButton;

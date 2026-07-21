@@ -673,11 +673,11 @@ public class WindowResizeArtifactTests
                                            .Attribute("WindowDecorationProperties.ElementRole");
         }
 
-        managerSource.ShouldNotContain("WindowsWindowChromeManager.Attach(window)");
+        managerSource.ShouldContain("WindowsWindowChromeManager.Attach(window)");
         File.Exists(Path.Combine(
             Path.GetDirectoryName(GetRepoFile(
                 "src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"))!,
-            "WindowsWindowChromeManager.cs")).ShouldBeFalse();
+            "WindowsWindowChromeManager.cs")).ShouldBeTrue();
         File.Exists(Path.Combine(
             Path.GetDirectoryName(GetRepoFile(
                 "src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"))!,

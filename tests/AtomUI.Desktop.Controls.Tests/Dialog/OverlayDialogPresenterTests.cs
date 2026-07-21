@@ -1192,14 +1192,18 @@ public class OverlayDialogPresenterTests
         });
     }
 
-    [Fact]
-    public void Windows_Header_Drag_Uses_The_Dpi_Rounded_Frame_As_The_Top_Boundary()
+    [Theory]
+    [InlineData(1.0, 1.0)]
+    [InlineData(1.25, 1.0)]
+    [InlineData(1.5, 2.0)]
+    [InlineData(2.0, 2.0)]
+    public void Windows_Header_Drag_Uses_The_Dpi_Rounded_Frame_As_The_Top_Boundary(
+        double renderScaling,
+        double physicalBorderPixels)
     {
         RunOnUIThread(() =>
         {
-            const double renderScaling = 1.5;
-            var effectiveFrame = new Thickness(Math.Round(renderScaling) / renderScaling);
-            Action? restoreDecorations = null;
+            var effectiveFrame = new Thickness(physicalBorderPixels / renderScaling);
             var fixture = ShowPresenter(
                 new AtomUI.Desktop.Controls.Dialog
                 {
@@ -1214,30 +1218,29 @@ public class OverlayDialogPresenterTests
                     window.IsCsdEnabled = true;
                     window.FrameShadowThickness = default;
                     window.SetRenderScaling(renderScaling);
-                    restoreDecorations = DrawnDecorationsTestHost.Install(
-                        window,
-                        new Panel(),
-                        effectiveFrame);
                 });
 
             try
             {
+                // The platform manager refreshes the native border after a scaling
+                // change. Set the deterministic test geometry after that refresh.
+                fixture.Window.VisibleFrameBorderThickness = effectiveFrame;
+                Dispatcher.UIThread.RunJobs();
                 var surface = fixture.Presenter.Surface;
                 var header = surface.Header.ShouldNotBeNull();
-                var frameThickness = fixture.Window.GetDrawnDecorationsFrameThickness();
+                var frameThickness = fixture.Window.VisibleFrameBorderThickness;
                 frameThickness.ShouldBe(effectiveFrame);
-                (frameThickness.Top * renderScaling).ShouldBe(2, 0.001);
+                (frameThickness.Top * renderScaling).ShouldBe(physicalBorderPixels, 0.001);
 
                 Drag(header, fixture.Window, new Point(320, 140), new Point(320, -1000));
 
                 var surfaceTopLeft = GetSurfacePosition(surface, fixture.Presenter);
                 surfaceTopLeft.Y.ShouldBe(effectiveFrame.Top, 0.001);
-                (surfaceTopLeft.Y * renderScaling).ShouldBe(2, 0.001);
+                (surfaceTopLeft.Y * renderScaling).ShouldBe(physicalBorderPixels, 0.001);
             }
             finally
             {
                 fixture.Dispose();
-                restoreDecorations?.Invoke();
             }
         });
     }
@@ -1304,7 +1307,7 @@ public class OverlayDialogPresenterTests
                     fixture.Presenter.Bounds.Size,
                     fixture.Window.FrameShadowThickness);
                 var ownerBounds = visibleFrameBounds.Deflate(
-                    fixture.Window.GetDrawnDecorationsFrameThickness());
+                    fixture.Window.VisibleFrameBorderThickness);
                 var initialPosition = GetSurfacePosition(surface, fixture.Presenter);
                 var start = new Point(
                     initialPosition.X + grabOffset.X,
@@ -1576,7 +1579,7 @@ public class OverlayDialogPresenterTests
         var visibleFrameBounds = WindowVisualLayerClip.CalculateClipBounds(
             fixture.Presenter.Bounds.Size,
             frameShadow);
-        return visibleFrameBounds.Deflate(fixture.Window.GetDrawnDecorationsFrameThickness());
+        return visibleFrameBounds.Deflate(fixture.Window.VisibleFrameBorderThickness);
     }
 
     private static void Drag(Control source, Visual root, Point start, Point end)

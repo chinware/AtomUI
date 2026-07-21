@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Versioning;
 using System.Xml.Linq;
 using AtomUI;
+using Avalonia.Controls;
 using Shouldly;
 using Xunit;
 
@@ -132,6 +133,26 @@ public class WindowingPlatformDetectionTests
     {
         CaptionButtonGroup.IsPinSupportedForBackend((LinuxWindowingBackend)backend)
                           .ShouldBe(expected);
+    }
+
+    [Theory]
+    [SupportedOSPlatform("windows")]
+    [InlineData(true, true, WindowState.Normal, true)]
+    [InlineData(false, true, WindowState.Normal, false)]
+    [InlineData(true, false, WindowState.Normal, false)]
+    [InlineData(true, true, WindowState.Maximized, false)]
+    [InlineData(true, true, WindowState.FullScreen, false)]
+    public void Windows_Visible_Frame_Border_Is_Only_Used_For_Extended_Normal_Csd_Windows(
+        bool isCsdEnabled,
+        bool isExtendedIntoWindowDecorations,
+        WindowState windowState,
+        bool expected)
+    {
+        WindowsWindowChromeManager.ShouldUseVisibleFrameBorder(
+                isCsdEnabled,
+                isExtendedIntoWindowDecorations,
+                windowState)
+            .ShouldBe(expected);
     }
 
     [Fact]

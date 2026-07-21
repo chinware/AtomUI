@@ -12,6 +12,9 @@ internal static class WindowUtilsInterop
     public const long WS_EX_LAYERED = 0x80000L;
     public const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
     public const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+    public const int DWMWA_VISIBLE_FRAME_BORDER_THICKNESS = 37;
+    public const int SM_CXBORDER = 5;
+    public const int SM_CYBORDER = 6;
     public const int WM_NCACTIVATE = 0x0086;
     public const int S_OK = 0;
 
@@ -24,6 +27,22 @@ internal static class WindowUtilsInterop
 
     [DllImport("dwmapi.dll", PreserveSig = true)]
     public static extern int DwmSetWindowAttribute(IntPtr hWnd, int dwAttribute, ref int pvAttribute, int cbAttribute);
+
+    [DllImport("dwmapi.dll", PreserveSig = true)]
+    public static extern int DwmGetWindowAttribute(
+        IntPtr hWnd,
+        int dwAttribute,
+        out uint pvAttribute,
+        int cbAttribute);
+
+    [DllImport("user32.dll")]
+    public static extern uint GetDpiForWindow(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    public static extern int GetSystemMetricsForDpi(int nIndex, uint dpi);
+
+    [DllImport("user32.dll")]
+    public static extern int GetSystemMetrics(int nIndex);
 
     [DllImport("user32.dll", EntryPoint = "DefWindowProcW")]
     public static extern IntPtr DefWindowProc(
