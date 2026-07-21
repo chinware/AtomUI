@@ -47,6 +47,45 @@ public class ImagePreviewerTitleBarThemeTests
     }
 
     [Fact]
+    public void ImagePreviewer_Windows_TitleBar_Leaves_Close_Button_Flush_To_Right_Edge()
+    {
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTitleBarTheme.axaml"));
+
+        var windowsStyle = document.Descendants()
+                                   .Single(element =>
+                                       element.Name.LocalName == "Style" &&
+                                       (string?)element.Attribute("Selector") == "^[OsType=Windows]");
+        var template = windowsStyle.Descendants()
+                                   .Single(element => element.Name.LocalName == "ControlTemplate");
+        var frame = template.Elements().Single();
+        var captionButtonGroup = FindTemplatePart(template, "PART_CaptionButtonGroup");
+        var rootDockPanel = frame.Elements().Single();
+        var contentPanel = rootDockPanel.Elements()
+                                        .Single(element => element.Name.LocalName == "Panel");
+        var leftPaddingConverter = FindResource(document.Root!, "WindowTitleBarLeftPaddingConverter");
+
+        frame.Name.LocalName.ShouldBe("Border");
+        frame.Attribute("Name")?.Value.ShouldBe("Frame");
+        frame.Attribute("Background")?.Value.ShouldBe("{TemplateBinding Background}");
+        frame.Attribute("Padding").ShouldBeNull();
+        rootDockPanel.Name.LocalName.ShouldBe("DockPanel");
+        rootDockPanel.Parent.ShouldBe(frame);
+        contentPanel.Attribute("Margin")?.Value.ShouldBe(
+            "{TemplateBinding Padding, Converter={StaticResource WindowTitleBarLeftPaddingConverter}}");
+        leftPaddingConverter.Name.LocalName.ShouldBe("BorderThicknessFilterConverter");
+        leftPaddingConverter.Attribute("Left")?.Value.ShouldNotBe("False");
+        leftPaddingConverter.Attribute("Right")?.Value.ShouldBe("False");
+        leftPaddingConverter.Attribute("Top")?.Value.ShouldBe("False");
+        leftPaddingConverter.Attribute("Bottom")?.Value.ShouldBe("False");
+        captionButtonGroup.Ancestors().ShouldContain(frame);
+        captionButtonGroup.Attribute("DockPanel.Dock")?.Value.ShouldBe("Right");
+        captionButtonGroup.Parent.ShouldNotBeNull();
+        captionButtonGroup.Parent.ShouldBe(rootDockPanel);
+        captionButtonGroup.Parent.Parent.ShouldBe(frame);
+    }
+
+    [Fact]
     public void ImagePreviewer_TitleBar_Template_Centers_Title_Outside_LeftAddOn_Flow()
     {
         var document = XDocument.Load(GetRepoFile(
@@ -138,6 +177,18 @@ public class ImagePreviewerTitleBarThemeTests
 
         part.ShouldNotBeNull();
         return part;
+    }
+
+    private static XElement FindResource(XElement root, string resourceKey)
+    {
+        var resource = root.Descendants()
+                           .SingleOrDefault(element =>
+                               element.Attributes().Any(attribute =>
+                                   attribute.Name.LocalName == "Key" &&
+                                   attribute.Value == resourceKey));
+
+        resource.ShouldNotBeNull();
+        return resource;
     }
 
     private static XElement? FindNearestAncestor(XElement element, string localName)

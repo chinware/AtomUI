@@ -11,6 +11,13 @@
         <atom:WindowTitleBarTheme TargetType="atom:ImagePreviewerTitleBar" />
     </ControlTheme.BasedOn>
 
+    <ControlTheme.Resources>
+        <atom:BorderThicknessFilterConverter x:Key="WindowTitleBarLeftPaddingConverter"
+                                             Right="False"
+                                             Top="False"
+                                             Bottom="False" />
+    </ControlTheme.Resources>
+
     <Setter Property="Background" Value="{atom:ImagePreviewerTokenResource TitleBarBackgroundColor}" />
 
     <Style Selector="^[OsType=Linux]">
@@ -67,14 +74,13 @@
     <Style Selector="^[OsType=Windows]">
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:ImagePreviewerTitleBar">
-                <DockPanel LastChildFill="True">
-                    <atom:CaptionButtonGroup DockPanel.Dock="Right"
-                                             Name="PART_CaptionButtonGroup"
-                                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                    <Border Name="Frame" Background="{TemplateBinding Background}"
-                            Padding="{TemplateBinding Padding}">
-                        <Panel>
+                <Border Name="Frame" Background="{TemplateBinding Background}">
+                    <DockPanel LastChildFill="True">
+                        <atom:CaptionButtonGroup DockPanel.Dock="Right"
+                                                 Name="PART_CaptionButtonGroup"
+                                                 IsWindowActive="{TemplateBinding IsWindowActive}"
+                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        <Panel Margin="{TemplateBinding Padding, Converter={StaticResource WindowTitleBarLeftPaddingConverter}}">
                             <StackPanel Name="PART_TitleLayout"
                                         Orientation="Horizontal"
                                         HorizontalAlignment="Center"
@@ -109,8 +115,8 @@
                                                   IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             </DockPanel>
                         </Panel>
-                    </Border>
-                </DockPanel>
+                    </DockPanel>
+                </Border>
             </ControlTemplate>
         </Setter>
     </Style>

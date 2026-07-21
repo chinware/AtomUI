@@ -43,6 +43,46 @@ public class WindowTitleBarTokenTests
     }
 
     [Fact]
+    public void Windows_Title_Bar_Theme_Leaves_Close_Button_Flush_To_The_Right_Edge()
+    {
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml"));
+
+        var windowsStyle = document.Descendants()
+                                   .Single(element =>
+                                       element.Name.LocalName == "Style" &&
+                                       (string?)element.Attribute("Selector") ==
+                                       "^[OsType=Windows]");
+        var template = windowsStyle.Descendants()
+                                     .Single(element => element.Name.LocalName == "ControlTemplate");
+        var frame = template.Elements().Single();
+        var captionButtonGroup = FindTemplatePart(template, "PART_CaptionButtonGroup");
+        var leftPaddingConverter = FindResource(document.Root!, "WindowTitleBarLeftPaddingConverter");
+        var rootDockPanel = frame.Elements().Single();
+        var titleLayout = rootDockPanel.Elements()
+                                       .Single(element => element.Name.LocalName == "StackPanel");
+        var titleMargin = titleLayout.Attribute("Margin")?.Value;
+
+        frame.Name.LocalName.ShouldBe("Border");
+        frame.Attribute("Name")?.Value.ShouldBe("Frame");
+        frame.Attribute("Background")?.Value.ShouldBe("{TemplateBinding Background}");
+        frame.Attribute("Padding").ShouldBeNull();
+        rootDockPanel.Name.LocalName.ShouldBe("DockPanel");
+        rootDockPanel.Parent.ShouldBe(frame);
+        titleMargin.ShouldBe("{TemplateBinding Padding, Converter={StaticResource WindowTitleBarLeftPaddingConverter}}");
+        leftPaddingConverter.Name.LocalName.ShouldBe("BorderThicknessFilterConverter");
+        leftPaddingConverter.Attribute("Left")?.Value.ShouldNotBe("False");
+        leftPaddingConverter.Attribute("Right")?.Value.ShouldBe("False");
+        leftPaddingConverter.Attribute("Top")?.Value.ShouldBe("False");
+        leftPaddingConverter.Attribute("Bottom")?.Value.ShouldBe("False");
+        captionButtonGroup.Ancestors().ShouldContain(frame);
+        captionButtonGroup.Attribute("DockPanel.Dock")?.Value.ShouldBe("Right");
+        captionButtonGroup.Parent.ShouldNotBeNull();
+        captionButtonGroup.Parent.Name.LocalName.ShouldBe("DockPanel");
+        captionButtonGroup.Parent.Parent.ShouldBe(rootDockPanel);
+    }
+
+    [Fact]
     public void Shared_Window_Chrome_Metrics_Do_Not_Use_Speculative_Os_Branches()
     {
         var windowTokenSource = File.ReadAllText(GetRepoFile(
@@ -253,5 +293,26 @@ public class WindowTitleBarTokenTests
         }
 
         throw new FileNotFoundException($"Could not find repository file: {relativePath}");
+    }
+
+    private static XElement FindTemplatePart(XElement root, string partName)
+    {
+        var part = root.Descendants()
+                       .SingleOrDefault(element => (string?)element.Attribute("Name") == partName);
+
+        part.ShouldNotBeNull();
+        return part;
+    }
+
+    private static XElement FindResource(XElement root, string resourceKey)
+    {
+        var resource = root.Descendants()
+                           .SingleOrDefault(element =>
+                               element.Attributes().Any(attribute =>
+                                   attribute.Name.LocalName == "Key" &&
+                                   attribute.Value == resourceKey));
+
+        resource.ShouldNotBeNull();
+        return resource;
     }
 }
