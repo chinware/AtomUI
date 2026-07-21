@@ -177,6 +177,11 @@ public class DrawerInteractionTests
             window.IsCsdEnabled          = isCsdEnabled;
             Dispatcher.UIThread.RunJobs();
 
+            // The visible frame belongs to the client surface and must remain
+            // covered by the Drawer mask. Only the transparent shadow buffer
+            // is excluded from the Drawer root bounds.
+            window.VisibleFrameBorderThickness = new Thickness(3, 5, 7, 9);
+
             drawer.IsOpen = true;
             Dispatcher.UIThread.RunJobs();
 
@@ -187,13 +192,29 @@ public class DrawerInteractionTests
             container.Margin.ShouldBe(shadow);
             container.CornerRadius.ShouldBe(cornerRadius);
 
+            var mask = container.GetVisualDescendants()
+                                .OfType<Border>()
+                                .Single(border => border.Name == "PART_Mask");
+            var maskOrigin = mask.TranslatePoint(default, window).ShouldNotBeNull();
+            var visibleFrameBounds = WindowVisualLayerClip.CalculateClipBounds(
+                window.Bounds.Size,
+                shadow);
+            maskOrigin.X.ShouldBe(visibleFrameBounds.X, 0.001);
+            maskOrigin.Y.ShouldBe(visibleFrameBounds.Y, 0.001);
+            mask.Bounds.Size.ShouldBe(visibleFrameBounds.Size);
+
             window.CornerRadius = default;
             Dispatcher.UIThread.RunJobs();
             container.CornerRadius.ShouldBe(default);
 
+            var visibleFrameInsets = new Thickness(
+                shadow.Left + window.VisibleFrameBorderThickness.Left,
+                shadow.Top + window.VisibleFrameBorderThickness.Top,
+                shadow.Right + window.VisibleFrameBorderThickness.Right,
+                shadow.Bottom + window.VisibleFrameBorderThickness.Bottom);
             var expectedReferenceSize = placement is DrawerPlacement.Top or DrawerPlacement.Bottom
-                ? Math.Max(0, window.Bounds.Height - shadow.Top - shadow.Bottom)
-                : Math.Max(0, window.Bounds.Width - shadow.Left - shadow.Right);
+                ? Math.Max(0, window.Bounds.Height - visibleFrameInsets.Top - visibleFrameInsets.Bottom)
+                : Math.Max(0, window.Bounds.Width - visibleFrameInsets.Left - visibleFrameInsets.Right);
             drawer.EffectiveDialogSize.ShouldBe(expectedReferenceSize * 0.5, 0.001);
 
             container.IsMotionEnabled = false;

@@ -14,14 +14,17 @@ internal static class TopLevelMarginBinder
     {
         if (host is Window window)
         {
+            // DrawerContainer hosts both the surface and its mask. Keep the
+            // visible frame border inside that root so the mask covers it;
+            // only FrameShadowThickness is a transparent buffer outside the
+            // window's visible client frame.
             return window.GetObservable(Window.FrameShadowThicknessProperty)
                          .CombineLatest(
-                             window.GetObservable(Window.VisibleFrameBorderThicknessProperty),
                              window.GetObservable(TemplatedControl.CornerRadiusProperty),
-                             static (frameShadowThickness, visibleFrameBorderThickness, cornerRadius) =>
-                                 (frameShadowThickness, visibleFrameBorderThickness, cornerRadius))
+                             static (frameShadowThickness, cornerRadius) =>
+                                 (frameShadowThickness, cornerRadius))
                          .Subscribe(value => applyGeometry(
-                             Add(value.frameShadowThickness, value.visibleFrameBorderThickness),
+                             value.frameShadowThickness,
                              value.cornerRadius));
         }
 
