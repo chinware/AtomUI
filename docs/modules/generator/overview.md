@@ -34,6 +34,6 @@
 
 ## 维护注意
 
-新增控件 Token 或语言 Provider 后，应检查对应项目的 `GeneratedFiles/AtomUI.Generator/` 输出，确认生成器已识别目标类型。由于生成目录被 `<Compile Remove=...>` 排除，不应把生成文件当成普通源码维护。
+新增控件 Token 或语言 Provider 后，应检查对应项目的 `GeneratedFiles/AtomUI.Generator/` 输出，确认生成器已识别目标类型。由于生成目录被 `<Compile Remove=...>` 排除且默认被 `.gitignore` 忽略，不应把生成文件当成普通源码维护；只有被结构测试明确读取的 GalleryBase 快照才需要同步提交。
 
 新增或修改 Generator 时，应同时检查 writer 代码、诊断规则和生成物稳定性。对于非 Visual `AvaloniaObject` 资源宿主类需求，不要在控件对象中复制手写资源宿主代码，应优先按 [Scoped Resource Host Source Generator 范式](scoped-resource-host-generator.md) 落地。

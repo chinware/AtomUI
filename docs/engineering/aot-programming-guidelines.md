@@ -171,7 +171,7 @@ SG 的价值不是“把反射挪个地方”，而是让运行时代码变成�
                   PrivateAssets="all" />
 ```
 
-生成文件可以输出到 `GeneratedFiles/`，但项目要继续排除重复编译：
+生成文件可以输出到 `GeneratedFiles/`，但项目要继续排除重复编译；这些编译产物默认不跟踪：
 
 ```xml
 <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
