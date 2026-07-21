@@ -1,6 +1,7 @@
 using System.Runtime.Versioning;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
+using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Media;
 using AtomUI.Native;
 using AtomUI.Theme;
@@ -10,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -396,9 +398,11 @@ public partial class Window : AvaloniaWindow,
     public override void Show()
     {
         var newThemeContextLease = PrepareThemeContextLease(this);
-        var restoreStartupLocation = _platformChromeManager?.PrepareInitialShowState();
+        Action? restoreInitialShowState = null;
         try
         {
+            using var initialSurfaceThemeValues = CreateInitialSurfaceThemeValues();
+            restoreInitialShowState = _platformChromeManager?.PrepareInitialShowState();
             base.Show();
         }
         catch
@@ -408,15 +412,18 @@ public partial class Window : AvaloniaWindow,
         }
         finally
         {
-            restoreStartupLocation?.Invoke();
+            restoreInitialShowState?.Invoke();
         }
     }
 
     public new void Show(AvaloniaWindow owner)
     {
         var newThemeContextLease = PrepareThemeContextLease(owner);
+        Action? restoreInitialShowState = null;
         try
         {
+            using var initialSurfaceThemeValues = CreateInitialSurfaceThemeValues();
+            restoreInitialShowState = _platformChromeManager?.PrepareInitialShowState();
             base.Show(owner);
         }
         catch
@@ -424,13 +431,20 @@ public partial class Window : AvaloniaWindow,
             ReleaseFailedThemeContextLease(newThemeContextLease);
             throw;
         }
+        finally
+        {
+            restoreInitialShowState?.Invoke();
+        }
     }
 
     public new Task ShowDialog(AvaloniaWindow owner)
     {
         var newThemeContextLease = PrepareThemeContextLease(owner);
+        Action? restoreInitialShowState = null;
         try
         {
+            using var initialSurfaceThemeValues = CreateInitialSurfaceThemeValues();
+            restoreInitialShowState = _platformChromeManager?.PrepareInitialShowState();
             return base.ShowDialog(owner);
         }
         catch
@@ -438,18 +452,72 @@ public partial class Window : AvaloniaWindow,
             ReleaseFailedThemeContextLease(newThemeContextLease);
             throw;
         }
+        finally
+        {
+            restoreInitialShowState?.Invoke();
+        }
     }
 
     public new Task<TResult> ShowDialog<TResult>(AvaloniaWindow owner)
     {
         var newThemeContextLease = PrepareThemeContextLease(owner);
+        Action? restoreInitialShowState = null;
         try
         {
+            using var initialSurfaceThemeValues = CreateInitialSurfaceThemeValues();
+            restoreInitialShowState = _platformChromeManager?.PrepareInitialShowState();
             return base.ShowDialog<TResult>(owner);
         }
         catch
         {
             ReleaseFailedThemeContextLease(newThemeContextLease);
+            throw;
+        }
+        finally
+        {
+            restoreInitialShowState?.Invoke();
+        }
+    }
+
+    private CompositeDisposable CreateInitialSurfaceThemeValues()
+    {
+        var values = new CompositeDisposable();
+        if (!this.TryFindResource(WindowTokenKind.DefaultBackground, out var resource))
+        {
+            return values;
+        }
+
+        IBrush? background = resource switch
+        {
+            IBrush brush => brush,
+            Color color  => new SolidColorBrush(color),
+            _            => null
+        };
+        if (background is null)
+        {
+            return values;
+        }
+
+        // WindowOpenedEvent precedes ApplyStyling. Prime only the synchronous show interval;
+        // local values still win, and WindowTheme owns the surface after these frames are removed.
+        try
+        {
+            if (SetValue(BackgroundProperty, background, BindingPriority.Template) is { } backgroundValue)
+            {
+                values.Add(backgroundValue);
+            }
+            if (SetValue(
+                    TransparencyBackgroundFallbackProperty,
+                    background,
+                    BindingPriority.Template) is { } fallbackValue)
+            {
+                values.Add(fallbackValue);
+            }
+            return values;
+        }
+        catch
+        {
+            values.Dispose();
             throw;
         }
     }

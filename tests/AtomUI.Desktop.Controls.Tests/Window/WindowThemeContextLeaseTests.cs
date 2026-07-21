@@ -1,6 +1,9 @@
+using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
+using AtomUI.Theme.Configuration;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Styling;
 using Shouldly;
 using Xunit;
@@ -57,6 +60,92 @@ public class WindowThemeContextLeaseTests
     }
 
     [Fact]
+    public async Task Show_Primes_The_Window_Surface_With_The_Dark_Theme_Before_Styling()
+    {
+        var application = Application.Current.ShouldNotBeNull();
+        var manager = AvaloniaLocator.Current.GetService(typeof(ThemeManager))
+                                     .ShouldBeOfType<ThemeManager>();
+        var darkConfig = new ThemeConfigBuilder().WithAlgorithms("Dark").Build();
+        var darkResult = await manager.ApplyThemeAsync(
+            new ThemeRequest(
+                IThemeManager.DEFAULT_THEME_ID,
+                darkConfig,
+                ThemeTransitionReason.UserRequest),
+            TestContext.Current.CancellationToken);
+        darkResult.Status.ShouldBeOneOf(ThemeTransitionStatus.Committed, ThemeTransitionStatus.NoOp);
+
+        application.TryFindResource(
+                       WindowTokenKind.DefaultBackground,
+                       ThemeVariant.Dark,
+                       out var expectedBackground)
+                   .ShouldBeTrue();
+        var expectedColor = GetColor(expectedBackground);
+        var window = new AtomUIWindow();
+        Color? backgroundAtOpening = null;
+        Color? fallbackAtOpening = null;
+        window.AddHandler(
+            AvaloniaWindow.WindowOpenedEvent,
+            (_, _) =>
+            {
+                backgroundAtOpening = GetColor(window.Background);
+                fallbackAtOpening = GetColor(window.TransparencyBackgroundFallback);
+            });
+
+        try
+        {
+            window.Show();
+
+            backgroundAtOpening.ShouldBe(expectedColor);
+            fallbackAtOpening.ShouldBe(expectedColor);
+        }
+        finally
+        {
+            window.Close();
+            await manager.ApplyThemeAsync(
+                new ThemeRequest(
+                    IThemeManager.DEFAULT_THEME_ID,
+                    null,
+                    ThemeTransitionReason.UserRequest),
+                TestContext.Current.CancellationToken);
+        }
+    }
+
+    [Fact]
+    public void Show_Preserves_Explicit_Window_Surface_Backgrounds()
+    {
+        var expectedBackground = Colors.Magenta;
+        var expectedFallback = Colors.Cyan;
+        var window = new AtomUIWindow
+        {
+            Background = new SolidColorBrush(expectedBackground),
+            TransparencyBackgroundFallback = new SolidColorBrush(expectedFallback)
+        };
+        Color? backgroundAtOpening = null;
+        Color? fallbackAtOpening = null;
+        window.AddHandler(
+            AvaloniaWindow.WindowOpenedEvent,
+            (_, _) =>
+            {
+                backgroundAtOpening = GetColor(window.Background);
+                fallbackAtOpening = GetColor(window.TransparencyBackgroundFallback);
+            });
+
+        try
+        {
+            window.Show();
+
+            backgroundAtOpening.ShouldBe(expectedBackground);
+            fallbackAtOpening.ShouldBe(expectedFallback);
+            GetColor(window.Background).ShouldBe(expectedBackground);
+            GetColor(window.TransparencyBackgroundFallback).ShouldBe(expectedFallback);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Owned_Window_Uses_The_Owner_Context_Before_The_Window_Opened_Event()
     {
         var owner = new AtomUIWindow();
@@ -96,5 +185,16 @@ public class WindowThemeContextLeaseTests
               .OfType<ThemeContextResourceBridge>()
               .ShouldBeEmpty();
         window.GetValue(ThemeScope.ContextProperty).ShouldBeNull();
+    }
+
+    private static Color GetColor(object? value)
+    {
+        return value switch
+        {
+            Color color => color,
+            ISolidColorBrush brush => brush.Color,
+            _ => throw new InvalidOperationException(
+                $"Expected a color resource, but found '{value?.GetType().FullName ?? "null"}'.")
+        };
     }
 }

@@ -156,6 +156,33 @@ Window 的标题栏存在两套输入模型，维护时必须同时成立：
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
+### 7.1 首次显示主题表面准备
+
+`Window` 的所有 AtomUI `Show` / `ShowDialog` 入口共用一条平台无关的准备路径：
+
+```text
+Resolve owner ThemeContext
+  -> attach ThemeContextLease and publish RequestedThemeVariant
+  -> synchronously resolve WindowToken.DefaultBackground from that scoped Snapshot
+  -> set temporary Background and TransparencyBackgroundFallback values at Template priority
+  -> prepare platform chrome geometry
+  -> call Avalonia base.Show / base.ShowDialog
+  -> release temporary surface values
+  -> keep ThemeContextLease until close; WindowTheme owns subsequent theme updates
+```
+
+实现必须满足以下约束：
+
+- 资源读取发生在 `ThemeContextLease` 的资源桥挂载之后，确保 owner 局部主题和 Window control token override 优先于根主题。
+- 显示调用是同步临界区，首帧背景只做一次 Snapshot-backed 资源读取和临时属性赋值，不创建 `DynamicResource`、resource observable 或短生命周期 Token 订阅。
+- 临时属性值使用 `BindingPriority.Template` 或等价的低优先级可释放值帧，因此不得覆盖用户 local value；释放时也不得影响用户值。
+- `base.ShowDialog` 返回窗口生命周期 `Task` 后即可释放首帧临时值，不得让临时值存活到 Dialog 关闭。
+- `base.Show` / `base.ShowDialog` 抛出异常时，释放本次新建的临时值和 ThemeContext lease，不保留资源桥、事件订阅或错误 owner。
+- 不通过提前应用整套 ControlTheme 改变 `WindowOpenedEvent` 前所有 Window Setter 的可观察时序；共享准备阶段只处理平台可见前不可缺少的 theme context、variant 和 surface background。
+- Windows、macOS、X11 和 Wayland chrome manager 不参与 Token 解析。只有在实机证据证明 managed 首帧已经正确但特定后端仍显示原生空白 surface 时，才允许在统一接口后增加平台后备。
+
+回归验证至少覆盖：根 Dark 主题在 `WindowOpenedEvent` 前的背景、owner 局部 ThemeContext、用户显式背景不被覆盖、关闭后 lease/资源桥释放，以及失败显示的回滚。Headless 测试只能证明 managed 状态顺序；Windows、macOS 和 Linux 的最终首帧必须通过各平台实机显示或录屏验证。
+
 ## 8. 资源、性能与 AOT 边界
 
 资源和 AOT 约束：
@@ -170,6 +197,7 @@ Window 的标题栏存在两套输入模型，维护时必须同时成立：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 首次显示主题表面使用一次性 Snapshot 读取，不为同步 `Show` 临界区创建资源 observable 或订阅。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 9. 维护不变量
@@ -180,6 +208,7 @@ Window 的标题栏存在两套输入模型，维护时必须同时成立：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - `TitleBarFrameLayer` 的背景/装饰层语义，以及标题栏交互内容必须通过 `TitleBar` 承载的职责边界。
 - 上层 Dialog/Drawer 不按 OS 或 CSD 状态复制 Window frame 几何，而是消费 Window 发布的 `FrameShadowThickness` 和实际 drawn host 能力。
+- 所有桌面平台共用 Window 首次显示主题表面准备流程，`WindowTheme` 是显示完成后的唯一长期背景所有者。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。
