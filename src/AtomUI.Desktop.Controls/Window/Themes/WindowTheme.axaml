@@ -254,6 +254,12 @@
         <Style Selector="^[OsType=Linux][IsCsdEnabled=False]">
             <Setter Property="WindowDecorations" Value="None" />
         </Style>
+        <Style Selector="^[IsCsdEnabled=True][IsTitleBarVisible=False]">
+            <Setter Property="WindowDecorations" Value="BorderOnly" />
+        </Style>
+        <Style Selector="^[OsType=macOS][IsCsdEnabled=False][IsTitleBarVisible=False]">
+            <Setter Property="WindowDecorations" Value="BorderOnly" />
+        </Style>
         <Style Selector="^[IsCsdEnabled=True][WindowState=FullScreen]">
             <Style Selector="^ /template/ Border#WindowFullScreenFrame">
                 <Setter Property="IsVisible" Value="True" />
