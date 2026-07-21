@@ -1,6 +1,5 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator;
 
@@ -66,7 +65,7 @@ internal sealed class ThemeAssetManifestWriter
         builder.AppendLine("}");
         _context.AddSource(
             "GeneratedControlThemeAssetManifest.g.cs",
-            SourceText.From(builder.ToString(), Encoding.UTF8));
+            GeneratedSourceText.From(builder.ToString()));
     }
 
     private static ulong ComputeFingerprint(ThemeAssetInfo asset)
