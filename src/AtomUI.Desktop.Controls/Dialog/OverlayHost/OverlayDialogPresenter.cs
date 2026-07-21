@@ -54,6 +54,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private readonly CompositeDisposable _bindings = new();
     private DialogOverlayLayer? _dialogLayer;
     private Window? _ownerWindow;
+    private bool _ownerIsWayland;
     private MotionActor? _maskMotionActor;
     private MotionActor? _surfaceMotionActor;
     private OverlayDialogMask? _dialogMask;
@@ -134,6 +135,9 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             ((ILogical)_dialog).IsAttachedToLogicalTree ? _dialog : _placementTarget);
         _dialogLayer = DialogOverlayLayer.GetOrCreate(_placementTarget);
         _ownerWindow = TopLevel.GetTopLevel(_placementTarget) as Window;
+        _ownerIsWayland = OperatingSystem.IsLinux() &&
+                          _ownerWindow is { } ownerWindow &&
+                          LinuxWindowChromeManager.IsWayland(ownerWindow);
         _dialogLayer.Add(this);
         AttachOwnerGeometryBindings();
         UpdateLayerBounds(_dialogLayer.AvailableSize);
@@ -287,6 +291,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         ReleaseDialogMask();
         Content = null;
         _ownerWindow = null;
+        _ownerIsWayland = false;
         _maskMotionActor = null;
         _surfaceMotionActor = null;
         try
@@ -422,10 +427,16 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             return;
         }
 
+        var maskSize = _ownerIsWayland
+            ? WindowVisualLayerClip.CalculateWaylandMaskSize(
+                layerSize,
+                TopLevel.GetTopLevel(this)?.RenderScaling ?? 1)
+            : layerSize;
+
         _maskMotionActor.HorizontalAlignment = HorizontalAlignment.Left;
         _maskMotionActor.VerticalAlignment = VerticalAlignment.Top;
-        _maskMotionActor.Width = layerSize.Width;
-        _maskMotionActor.Height = layerSize.Height;
+        _maskMotionActor.Width = maskSize.Width;
+        _maskMotionActor.Height = maskSize.Height;
         _maskMotionActor.Margin = default;
     }
 

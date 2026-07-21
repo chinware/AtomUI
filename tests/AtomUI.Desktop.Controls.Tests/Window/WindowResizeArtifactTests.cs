@@ -95,6 +95,24 @@ public class WindowResizeArtifactTests
                 Avalonia.Layout.LayoutHelper.RoundLayoutValueUp(surfaceSize.Height, renderScaling)));
     }
 
+    [Theory]
+    [InlineData(901.81, 480.2, 1.6666666666666667, 902.4, 480.6)]
+    [InlineData(901.4, 479.6, 1.5, 902, 480)]
+    [InlineData(640, 480, 1, 640, 480)]
+    public void Wayland_Overlay_Mask_Covers_The_Complete_Physical_Buffer(
+        double logicalWidth,
+        double logicalHeight,
+        double renderScaling,
+        double expectedWidth,
+        double expectedHeight)
+    {
+        var maskSize = WindowVisualLayerClip.CalculateWaylandMaskSize(
+            new Size(logicalWidth, logicalHeight),
+            renderScaling);
+        maskSize.Width.ShouldBe(expectedWidth, 0.000001);
+        maskSize.Height.ShouldBe(expectedHeight, 0.000001);
+    }
+
     [Fact]
     public void Linux_Window_Preserves_Shadow_And_Scales_Only_The_Managed_Resize_Grip()
     {

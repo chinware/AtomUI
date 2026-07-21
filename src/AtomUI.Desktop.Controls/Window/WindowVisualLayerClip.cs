@@ -104,6 +104,41 @@ internal sealed class WindowVisualLayerClip : Decorator
             Math.Max(0, bottom - top));
     }
 
+    /// <summary>
+    /// Expands a logical extent to the smallest size that covers the complete
+    /// physical render buffer allocated by Avalonia's Wayland backend.
+    /// </summary>
+    /// <remarks>
+    /// Avalonia 12.1 allocates the render buffer with
+    /// <c>PixelSize.FromSize(logicalSize, scaling)</c>.  A mask whose
+    /// logical width is only rounded to an integer can therefore stop before the
+    /// final physical buffer pixel (for example, 901.81 DIP at 1.666… scaling
+    /// needs 1504 physical pixels, or 902.4 DIP).  Quantizing the mask upward in
+    /// the same physical coordinate space keeps that pixel covered during a live
+    /// resize.
+    ///
+    /// This is intentionally a geometry helper only; it must not be applied to the
+    /// window root or to ordinary content layout.
+    ///
+    /// TODO(Avalonia upgrade): Re-check Avalonia 12.1's Wayland fractional-scale
+    /// resize path and remove this mask-only workaround once buffer allocation
+    /// and overlay composition use the same physical-pixel extent:
+    /// https://github.com/AvaloniaUI/Avalonia/issues/11360
+    /// </remarks>
+    internal static Size CalculateWaylandMaskSize(Size logicalSize, double renderScaling)
+    {
+        if (logicalSize.Width <= 0 || logicalSize.Height <= 0 ||
+            renderScaling <= 0 || double.IsNaN(renderScaling) || double.IsInfinity(renderScaling))
+        {
+            return logicalSize;
+        }
+
+        var physicalSize = PixelSize.FromSize(logicalSize, renderScaling);
+        return new Size(
+            physicalSize.Width / renderScaling,
+            physicalSize.Height / renderScaling);
+    }
+
     internal static Rect CalculateClipBounds(Size surfaceSize, Thickness shadow)
     {
         return new Rect(
