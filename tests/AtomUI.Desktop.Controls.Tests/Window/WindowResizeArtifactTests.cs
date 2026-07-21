@@ -557,6 +557,96 @@ public class WindowResizeArtifactTests
         contentFrame.Attribute("ClipToBounds").ShouldNotBeNull().Value.ShouldBe("True");
     }
 
+    [Theory]
+    [InlineData(OsType.Windows)]
+    [InlineData(OsType.Linux)]
+    public void Csd_Window_Removes_The_Drawn_TitleBar_When_TitleBar_Visibility_Is_Disabled(OsType osType)
+    {
+        AvaloniaTestApp.EnsureInitialized();
+        var window = new AtomUI.Desktop.Controls.Window();
+        window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
+        window.IsCsdEnabled = true;
+        window.IsTitleBarVisible = false;
+        window.PreparePlatformChromeInitialShowLayout();
+
+        window.WindowDecorations.ShouldBe(WindowDecorations.BorderOnly);
+
+        window.IsTitleBarVisible = true;
+        window.WindowDecorations.ShouldBe(WindowDecorations.Full);
+
+        window.IsTitleBarVisible = false;
+        window.WindowDecorations.ShouldBe(WindowDecorations.BorderOnly);
+    }
+
+    [Fact]
+    public void MacOs_NonCsd_Window_Removes_The_Native_TitleBar_When_TitleBar_Visibility_Is_Disabled()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+        var window = new AtomUI.Desktop.Controls.Window();
+        window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, OsType.macOS);
+        window.IsCsdEnabled = false;
+        window.IsTitleBarVisible = false;
+        window.PreparePlatformChromeInitialShowLayout();
+
+        window.WindowDecorations.ShouldBe(WindowDecorations.BorderOnly);
+
+        window.IsTitleBarVisible = true;
+        window.WindowDecorations.ShouldBe(WindowDecorations.Full);
+
+        window.IsTitleBarVisible = false;
+        window.WindowDecorations.ShouldBe(WindowDecorations.BorderOnly);
+    }
+
+    [Fact]
+    public void MacOs_Window_Decoration_Changes_Reapply_And_Defer_Traffic_Light_Layout()
+    {
+        var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var relayoutBlockStart = windowSource.IndexOf(
+            "if (change.Property == WindowStateProperty ||",
+            StringComparison.Ordinal);
+        var relayoutBlockEnd = windowSource.IndexOf(
+            "if (change.Property == ExtendClientAreaTitleBarHeightHintProperty ||",
+            relayoutBlockStart + 1,
+            StringComparison.Ordinal);
+        var relayoutBlock = windowSource[relayoutBlockStart..relayoutBlockEnd];
+
+        (relayoutBlock.Split(
+                "change.Property == WindowDecorationsProperty",
+                StringSplitOptions.None).Length - 1)
+            .ShouldBe(2);
+        relayoutBlock.ShouldContain("Dispatcher.Post");
+        relayoutBlock.ShouldContain("Avalonia.Threading.DispatcherPriority.Loaded");
+    }
+
+    [Fact]
+    public void Linux_NonCsd_Window_Hides_Only_The_AtomUI_TitleBar_And_Keeps_Native_Decorations_Disabled()
+    {
+        var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
+        XNamespace av = "https://github.com/avaloniaui";
+
+        var linuxTemplateStyle = document.Descendants(av + "Style")
+                                         .Single(element =>
+                                             (string?)element.Attribute("Selector") ==
+                                             "^[OsType=Linux][IsCsdEnabled=False]" &&
+                                             element.Descendants(av + "ControlTemplate").Any());
+        var titleBarPanel = linuxTemplateStyle.Descendants(av + "Panel")
+                                              .Single(element =>
+                                                  (string?)element.Attribute("Name") == "TitleBarPanel");
+        titleBarPanel.Attribute("IsVisible").ShouldNotBeNull().Value.ShouldBe(
+            "{TemplateBinding IsTitleBarVisible}");
+
+        var linuxDecorationStyle = document.Descendants(av + "Style")
+                                           .Single(element =>
+                                               (string?)element.Attribute("Selector") ==
+                                               "^[OsType=Linux][IsCsdEnabled=False]" &&
+                                               element.Elements(av + "Setter").Any(setter =>
+                                                   (string?)setter.Attribute("Property") ==
+                                                   "WindowDecorations"));
+        linuxDecorationStyle.Elements(av + "Setter").ShouldContain(setter =>
+            (string?)setter.Attribute("Property") == "WindowDecorations" &&
+            (string?)setter.Attribute("Value") == "None");
+    }
+
     [Fact]
     public void Wayland_Csd_Drawn_TitleBar_Layers_Clip_To_Top_Window_CornerRadius()
     {

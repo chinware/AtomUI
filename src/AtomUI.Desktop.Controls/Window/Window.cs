@@ -958,16 +958,18 @@ public partial class Window : AvaloniaWindow,
         base.OnPropertyChanged(change);
         if (change.Property == WindowStateProperty ||
             change.Property == ExtendClientAreaTitleBarHeightHintProperty ||
-            change.Property == TitleProperty)
+            change.Property == TitleProperty ||
+            change.Property == WindowDecorationsProperty)
         {
             if (OperatingSystem.IsMacOS())
             {
-                // WindowState / Title 变化都可能让 AppKit 重置 standard button frame。
+                // WindowState / Title / WindowDecorations 变化都可能让 AppKit 重置 standard button frame。
                 // 即使 AtomUI 的布局输入没有变化，原生按钮当前位置也可能已经偏离目标，
                 // 所以必须先让缓存失效再重新下发布局。
                 _macOsCacheValid = false;
                 ConfigureMacOsWindow();
-                if (change.Property == TitleProperty)
+                if (change.Property == TitleProperty ||
+                    change.Property == WindowDecorationsProperty)
                 {
                     Dispatcher.Post(() =>
                     {
