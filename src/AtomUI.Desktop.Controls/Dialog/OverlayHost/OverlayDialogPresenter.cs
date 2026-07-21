@@ -63,7 +63,6 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private Task? _disposeTask;
     private Point? _dragPointerOffset;
     private Point _surfacePosition;
-    private Thickness _ownerFrameThickness;
 
     internal DialogSurface Surface => _surface;
 
@@ -378,16 +377,11 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
         _bindings.Add(window.GetObservable(Window.FrameShadowThicknessProperty)
                             .CombineLatest(
-                                window.GetObservable(Avalonia.Controls.Window.WindowDecorationMarginProperty),
-                                (frameShadowThickness, _) =>
-                                    (FrameShadowThickness: frameShadowThickness,
-                                     FrameThickness: window.GetDrawnDecorationsFrameThickness()))
+                                window.GetObservable(Window.VisibleFrameBorderThicknessProperty),
+                                static (frameShadowThickness, visibleFrameBorderThickness) =>
+                                    (frameShadowThickness, visibleFrameBorderThickness))
                             .DistinctUntilChanged()
-                            .Subscribe(geometry =>
-                            {
-                                _ownerFrameThickness = geometry.FrameThickness;
-                                UpdateCurrentLayerBounds();
-                            }));
+                            .Subscribe(_ => UpdateCurrentLayerBounds()));
     }
 
     private void UpdateSurfacePlacement(Rect ownerBounds)
@@ -416,7 +410,9 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private Rect ResolveDialogBodyOwnerBounds(Rect visibleFrameBounds)
     {
-        return visibleFrameBounds.Deflate(_ownerFrameThickness);
+        return _ownerWindow is { } window
+            ? visibleFrameBounds.Deflate(window.VisibleFrameBorderThickness)
+            : visibleFrameBounds;
     }
 
     private void ApplyMaskBounds(Size layerSize)

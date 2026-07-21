@@ -16,11 +16,12 @@ internal static class TopLevelMarginBinder
         {
             return window.GetObservable(Window.FrameShadowThicknessProperty)
                          .CombineLatest(
+                             window.GetObservable(Window.VisibleFrameBorderThicknessProperty),
                              window.GetObservable(TemplatedControl.CornerRadiusProperty),
-                             static (frameShadowThickness, cornerRadius) =>
-                                 (frameShadowThickness, cornerRadius))
+                             static (frameShadowThickness, visibleFrameBorderThickness, cornerRadius) =>
+                                 (frameShadowThickness, visibleFrameBorderThickness, cornerRadius))
                          .Subscribe(value => applyGeometry(
-                             value.frameShadowThickness,
+                             Add(value.frameShadowThickness, value.visibleFrameBorderThickness),
                              value.cornerRadius));
         }
 
@@ -36,7 +37,9 @@ internal static class TopLevelMarginBinder
             return size;
         }
 
-        return WindowVisualLayerClip.CalculateClipBounds(size, window.FrameShadowThickness).Size;
+        return WindowVisualLayerClip.CalculateClipBounds(
+            size,
+            Add(window.FrameShadowThickness, window.VisibleFrameBorderThickness)).Size;
     }
 
     internal static IDisposable? BindHostMargin(TopLevel topLevel, Action<Thickness> applyMargin)
@@ -47,12 +50,24 @@ internal static class TopLevelMarginBinder
                          .CombineLatest(
                              window.GetObservable(Avalonia.Controls.Window.WindowDecorationMarginProperty),
                              window.GetObservable(Window.FrameShadowThicknessProperty),
-                             static (isCsd, windowDecorationMargin, frameShadowThickness) =>
-                                 isCsd ? windowDecorationMargin : frameShadowThickness)
+                             window.GetObservable(Window.VisibleFrameBorderThicknessProperty),
+                             static (isCsd, windowDecorationMargin, frameShadowThickness, visibleFrameBorderThickness) =>
+                                 Add(
+                                     isCsd ? windowDecorationMargin : frameShadowThickness,
+                                     visibleFrameBorderThickness))
                          .Subscribe(applyMargin);
         }
 
         applyMargin(topLevel.InsetsManager?.SafeAreaPadding ?? default);
         return null;
+    }
+
+    private static Thickness Add(Thickness first, Thickness second)
+    {
+        return new Thickness(
+            first.Left + second.Left,
+            first.Top + second.Top,
+            first.Right + second.Right,
+            first.Bottom + second.Bottom);
     }
 }
