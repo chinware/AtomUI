@@ -23,6 +23,7 @@ public class ThemeAssetManifestGeneratorTests
         source.ShouldContain("new global::AtomUI.Theme.Schema.ControlTokenIdentity(\"AtomUI\", \"Button\")");
         source.ShouldContain("new global::AtomUI.Theme.Schema.ControlThemeAssetDescriptor(");
         source.ShouldContain("avares://ThemeAssetManifestTests/Themes/ButtonTheme.axaml");
+        source.ShouldNotContain("\r");
     }
 
     [Fact]
