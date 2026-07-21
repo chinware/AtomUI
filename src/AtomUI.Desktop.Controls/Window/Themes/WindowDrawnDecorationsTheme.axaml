@@ -38,6 +38,14 @@
 
                     <WindowDrawnDecorationsContent.Overlay>
                         <Panel>
+                            <atom:WindowTitleBarShadowBackground
+                                IsHitTestVisible="False"
+                                IsVisible="{TemplateBinding HasTitleBar}"
+                                Fill="{Binding $parent[atom:Window].TitleBarFrameBackground}"
+                                ShadowThickness="{TemplateBinding ShadowThickness}"
+                                TitleBarHeight="{TemplateBinding TitleBarHeight}"
+                                CornerRadius="{Binding $parent[atom:Window].CornerRadius, Converter={StaticResource TitleBarCornerRadiusFilter}}"
+                                OsType="{Binding $parent[atom:Window].OsType}" />
                             <Panel Name="PART_OverlayWrapper">
                                 <Border ClipToBounds="True"
                                         CornerRadius="{Binding $parent[atom:Window].CornerRadius, Converter={StaticResource TitleBarCornerRadiusFilter}}">
