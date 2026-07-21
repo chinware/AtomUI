@@ -84,6 +84,23 @@ public class WindowingPlatformDetectionTests
     }
 
     [Fact]
+    public void Wayland_Only_Uses_The_Temporary_Avalonia_Fractional_Scale_Workaround()
+    {
+        var waylandSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs"));
+        var x11Source = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/X11WindowChromeManager.cs"));
+        var commonSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
+
+        waylandSource.ShouldContain("Window.UseLayoutRounding = false;");
+        waylandSource.ShouldContain("TODO(Avalonia upgrade)");
+        waylandSource.ShouldContain("github.com/AvaloniaUI/Avalonia/issues");
+        x11Source.ShouldNotContain("UseLayoutRounding = false");
+        commonSource.ShouldNotContain("UseLayoutRounding = false");
+    }
+
+    [Fact]
     public void Window_Consumes_Custom_Resizer_As_A_Chrome_Manager_Capability()
     {
         var windowSource = File.ReadAllText(GetRepoFile(

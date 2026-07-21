@@ -15,6 +15,21 @@ internal sealed class WaylandWindowChromeManager : LinuxWindowChromeManager
     public WaylandWindowChromeManager(Window window)
         : base(window)
     {
+        // Temporary workaround for Avalonia's Wayland fractional-scale resize path.
+        // Avalonia 12.1 can quantize the logical root size, viewport destination, and
+        // physical render buffer independently.  During a live resize this can leave
+        // the buffer one physical pixel short, which exposes a seam at the right or
+        // bottom edge of full-window overlays.  UseLayoutRounding is inherited from
+        // the Window; disabling it here prevents the affected root layout path from
+        // producing the fractional logical sizes that no longer match Avalonia's
+        // Wayland buffer/viewport rounding, without changing Windows, macOS, or X11.
+        //
+        // TODO(Avalonia upgrade): Re-check Avalonia's upstream Wayland fractional-scale
+        // resize issue before changing AvaloniaVersion and remove this workaround once
+        // buffer allocation, viewport destination, and window geometry share one
+        // quantization rule:
+        // https://github.com/AvaloniaUI/Avalonia/issues?q=is%3Aissue+wayland+fractional+scale
+        Window.UseLayoutRounding = false;
     }
 
     public override bool UsesCustomResizer => true;
