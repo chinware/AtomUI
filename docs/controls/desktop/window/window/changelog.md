@@ -2,6 +2,14 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-21
+
+- Architecture
+  - Define one Windows, macOS and Linux initial theme-surface contract owned by the shared Window show lifecycle.
+  - Keep `WindowTheme` as the only long-lived background owner and limit pre-show initialization to a synchronous scoped Snapshot read with disposable Template-priority values.
+- Maintenance
+  - Reserve platform chrome managers for native geometry and capability projection; require platform-specific surface fallback only after managed first-frame state is proven correct on that backend.
+
 ## 2026-07-20
 
 - Architecture

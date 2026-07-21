@@ -1063,6 +1063,12 @@ Control 配置只修改当前 `ThemeContext` 中指定 `ControlTokenIdentity` �
 
 不得先挂载空资源层再异步补主题，也不得通过 ThemeLoaded 事件修补 DefaultFont、断点或其他 Token。
 
+独立 `TopLevel` 的首帧还包括平台窗口在 Avalonia 完成 `ApplyStyling` 前可能展示的客户区表面。宿主必须在调用
+平台 `Show` 前挂载目标 `ThemeContext`、设置与 snapshot 一致的显式 variant，并从当前作用域 Snapshot 同步读取窗口
+背景 Token，预热 `Background` 与透明度回退背景。该预热只能使用低于用户 local value 的可释放临时值，不创建
+资源 observable 或订阅，并在同步样式应用完成后立即释放，由正式 `ControlTheme` 接管；不能依赖 Avalonia
+`Window` 的白色默认值，也不能保留第二套长期背景状态。
+
 `ThemeConfigProvider` 首次 attach 也必须在其内容进入首个可见帧前同步解析父 ThemeContext、准备局部 snapshot、
 初始化稳定 Provider，并设置与 snapshot 一致的 `RequestedThemeVariant`。首次 Config 无效时直接使用父 snapshot
 和父 appearance 作为安全回退；不能先暴露空 context，再依赖后续异步事务纠正。
@@ -1471,6 +1477,8 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
 - AtomUI ControlTheme 资产都具有可静态验证的 Control token scope；scope identity 未注册或与资产声明不一致时
   在主题注册阶段失败。
 - Popup、Flyout、Dialog 和窗口覆盖层继承 owner ThemeContext。
+- 独立 `TopLevel` 在平台 `Show` 前已获得目标 ThemeContext、显式 Light/Dark variant 和作用域窗口背景，暗色初始
+  主题不会暴露 Avalonia 的白色默认客户区；临时首帧值不覆盖用户 local value、不建立资源订阅，并在样式接管后释放。
 - 普通 Popup/Flyout 依靠逻辑树自然继承；独立 TopLevel 通过一个可释放 lease 和宿主私有 ResourceBridge 继承
   owner context。owner 替换后资源、imperative Token 和 variant 同时切换。
 - detach、reparent、关闭和回收后不保留旧作用域或 Control。

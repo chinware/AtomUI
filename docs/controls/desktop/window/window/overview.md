@@ -128,6 +128,23 @@ Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定
 
 维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要在标题栏放置按钮、菜单或搜索框时，应创建自定义 `WindowTitleBar` 或其他标题栏控件，并设置到 `Window.TitleBar`。
 
+### 5.2 跨平台首帧主题表面模型
+
+Windows、macOS 和 Linux 共用同一个首次显示主题契约：平台窗口进入可见状态前，`Window` 必须已经获得目标
+`ThemeContext`、与该 context 一致的 `RequestedThemeVariant`，以及当前 Window Token scope 中的首帧背景。
+该契约由 `Window` 的共享显示生命周期负责，不属于 Win32、AppKit、X11 或 Wayland chrome manager 的职责。
+
+首次显示按以下所有权模型维护：
+
+- `WindowTheme.axaml` 是窗口背景的唯一长期视觉所有者，`WindowToken.DefaultBackground` 是默认背景语义真源。
+- `Show` 和 `ShowDialog` 的所有 AtomUI 入口必须先解析 owner 作用域并挂载可释放的 `ThemeContext` lease，再进入 Avalonia 的平台显示流程。
+- 在正式 ControlTheme 接管前，`Window` 从已提交的当前作用域 Snapshot 同步读取一次默认背景，并以低于用户 local value 的优先级临时预热 `Background` 与 `TransparencyBackgroundFallback`。
+- 首帧预热只覆盖同步显示临界区，不订阅资源变化；Avalonia 完成同步样式应用后立即释放临时值，由正式 ControlTheme 继续响应主题切换。
+- 用户显式设置的 `Background` 或 `TransparencyBackgroundFallback` 始终优先，首帧预热不得改写或清除用户 local value。
+- 平台 chrome manager 只处理窗口装饰、原生几何和平台能力投影，不得分别复制 ThemeContext、Token 查找或首帧背景算法。
+
+如果上述 managed 状态在平台显示前已经正确，某个平台仍然暴露尚未提交内容的原生空白 surface，则该问题属于平台后端边界。此时应通过统一的平台能力接口提供最小后备实现，并分别验证对应后端；不得把平台消息、延时显示或透明度切换混入共享主题状态机。
+
 ## 6. 控件家族或集成关系
 
 Window 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证规则。组合或派生控件应显式说明哪些 API 被继承、覆盖或不支持。
@@ -156,6 +173,7 @@ Window 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - `TitleBarFrameLayer` 是标题栏背景/装饰入口，不是标题栏用户交互入口；标题栏按钮、菜单、搜索框等交互内容必须通过 `TitleBar` 承载。
+- Windows、macOS 和 Linux 共用同一套首次显示主题表面流程；平台可见前必须同步准备 ThemeContext、variant 和 Window Token 背景，正式显示后由 `WindowTheme` 单独持有长期主题状态。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
@@ -215,5 +233,6 @@ LLMS 导出来源：
 | Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
 | 状态模型 | 覆盖 open/close、disabled、hover、pressed、focus 以及控件特有状态。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
+| 首次显示主题表面 | 覆盖根窗口和 owner 局部主题、Light/Dark、用户显式背景优先级、显示失败回滚，并在 Windows、macOS 和 Linux 实机检查首帧。 |
 | Token | 检查 TokenKind、AXAML token resource、Gallery Token 表和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例、API 表和 Token 表入口。 |
