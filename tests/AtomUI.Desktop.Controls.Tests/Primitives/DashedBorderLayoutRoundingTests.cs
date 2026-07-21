@@ -124,6 +124,65 @@ public class DashedBorderRenderScaleTests
     }
 
     [Fact]
+    public void PixelAlignedBorder_Render_Trims_A_Subpixel_Clip_Remainder()
+    {
+        var target = new PixelAlignedBorder
+        {
+            Width           = 80,
+            Height          = 32,
+            BorderBrush     = Brushes.Black,
+            BorderThickness = new Thickness(1)
+        };
+        var clippedHost = new Canvas
+        {
+            Width        = 80,
+            Height       = 31.4,
+            ClipToBounds = true
+        };
+        clippedHost.Children.Add(target);
+
+        ShowInWindow(clippedHost, window =>
+        {
+            window.SetRenderScaling(1.5);
+            Dispatcher.UIThread.RunJobs();
+
+            RenderToDrawingGroup(target);
+
+            target.Bounds.Height.ShouldBe(32, 0.0001);
+            GetBorderRenderHelperSize(target).Height.ShouldBe(clippedHost.Bounds.Height, 0.0001);
+        });
+    }
+
+    [Fact]
+    public void PixelAlignedBorder_Render_Does_Not_Hide_A_Real_Clip_Overflow()
+    {
+        var target = new PixelAlignedBorder
+        {
+            Width           = 80,
+            Height          = 32,
+            BorderBrush     = Brushes.Black,
+            BorderThickness = new Thickness(1)
+        };
+        var clippedHost = new Canvas
+        {
+            Width        = 80,
+            Height       = 30,
+            ClipToBounds = true
+        };
+        clippedHost.Children.Add(target);
+
+        ShowInWindow(clippedHost, window =>
+        {
+            window.SetRenderScaling(1.5);
+            Dispatcher.UIThread.RunJobs();
+
+            RenderToDrawingGroup(target);
+
+            GetBorderRenderHelperSize(target).Height.ShouldBe(32, 0.0001);
+        });
+    }
+
+    [Fact]
     public void OptionButton_Render_Uses_Render_Scale_Aware_BorderThickness()
     {
         var target = new AtomUIOptionButton
@@ -267,6 +326,24 @@ public class DashedBorderRenderScaleTests
         thicknessField.ShouldNotBeNull();
 
         return (Thickness)thicknessField!.GetValue(helper)!;
+    }
+
+    private static Size GetBorderRenderHelperSize(DashedBorder border)
+    {
+        var helperField = typeof(DashedBorder).GetField(
+            "_borderRenderHelper",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        helperField.ShouldNotBeNull();
+
+        var helper = helperField!.GetValue(border);
+        helper.ShouldNotBeNull();
+
+        var sizeField = helper!.GetType().GetField(
+            "_size",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        sizeField.ShouldNotBeNull();
+
+        return (Size)sizeField!.GetValue(helper)!;
     }
 
     private static IEnumerable<GeometryDrawing> EnumerateGeometryDrawings(Drawing drawing)

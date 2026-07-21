@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Primitives;
 
@@ -108,6 +109,8 @@ public class DashedBorder : Decorator
     private Thickness? _renderThickness;
     private double _layoutScale;
 
+    internal virtual bool ClipTrailingEdgeAtFractionalScale => false;
+
     private Thickness RenderThickness
     {
         get
@@ -135,10 +138,13 @@ public class DashedBorder : Decorator
 
     public sealed override void Render(DrawingContext context)
     {
+        var renderThickness = RenderThickness;
+        var renderSize = CalculateRenderSize(Bounds.Size);
+
         _borderRenderHelper.Render(
             context,
-            Bounds.Size,
-            RenderThickness,
+            renderSize,
+            renderThickness,
             CornerRadius,
             BackgroundSizing,
             Background,
@@ -178,5 +184,49 @@ public class DashedBorder : Decorator
 
         _layoutScale     = currentScale;
         _renderThickness = null;
+    }
+
+    private Size CalculateRenderSize(Size size)
+    {
+        if (!UseLayoutRounding ||
+            !ClipTrailingEdgeAtFractionalScale ||
+            MathUtils.AreClose(_layoutScale, Math.Floor(_layoutScale)))
+        {
+            return size;
+        }
+
+        var physicalPixel = 1 / _layoutScale;
+        var renderSize    = size;
+
+        for (Visual? ancestor = this.GetVisualParent(); ancestor is not null; ancestor = ancestor.GetVisualParent())
+        {
+            if (!ancestor.ClipToBounds && ancestor.Clip is null)
+            {
+                continue;
+            }
+
+            var transform = this.TransformToVisual(ancestor);
+            if (transform is null)
+            {
+                continue;
+            }
+
+            var transformedBounds = new Rect(renderSize).TransformToAABB(transform.Value);
+            var clipBounds        = new Rect(ancestor.Bounds.Size);
+            var rightOverflow     = transformedBounds.Right - clipBounds.Right;
+            var bottomOverflow    = transformedBounds.Bottom - clipBounds.Bottom;
+
+            if (rightOverflow > 0 && rightOverflow <= physicalPixel + LayoutHelper.LayoutEpsilon)
+            {
+                renderSize = renderSize.WithWidth(Math.Max(0, renderSize.Width - rightOverflow));
+            }
+
+            if (bottomOverflow > 0 && bottomOverflow <= physicalPixel + LayoutHelper.LayoutEpsilon)
+            {
+                renderSize = renderSize.WithHeight(Math.Max(0, renderSize.Height - bottomOverflow));
+            }
+        }
+
+        return renderSize;
     }
 }

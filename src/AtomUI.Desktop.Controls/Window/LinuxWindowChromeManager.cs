@@ -78,6 +78,20 @@ internal abstract class LinuxWindowChromeManager : IWindowChromeManager
             : LinuxWindowingBackend.Other;
     }
 
+    internal static bool IsWayland(Window window)
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            return false;
+        }
+
+        var platformImpl = window.PlatformImpl;
+        return ResolveBackend(
+                   AvaloniaLocator.Current.GetService<AtomUIWindowingPlatformOptions>()?.Platform,
+                   platformImpl?.Handle?.HandleDescriptor,
+                   platformImpl?.GetType().Assembly.GetName().Name) == LinuxWindowingBackend.Wayland;
+    }
+
     private void Attach()
     {
         _window.ScalingChanged += HandleScalingChanged;
