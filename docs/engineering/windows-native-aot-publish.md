@@ -517,12 +517,12 @@ ReactiveUI.dll : warning IL3053
 
 ### GeneratedFiles 出现在 `git status`
 
-构建后可能看到多个 `GeneratedFiles/**/*.g.cs` 为 modified，但 `git diff --stat` 只有项目文件变化。
+构建产出的 `GeneratedFiles/**/*.g.cs` 默认已加入 `.gitignore`，不会作为工作区源码变更；只有 GalleryBase 中被结构测试读取的少量快照保留跟踪。
 
-本次现象主要是 Git 对 CRLF/LF 状态的提示：
+如果本地仍看到已跟踪快照显示 modified，先确认 `git diff` 是否为空，再刷新 Git 索引：
 
-```text
-CRLF will be replaced by LF the next time Git touches it
+```bash
+git update-index --refresh
 ```
 
 处理：

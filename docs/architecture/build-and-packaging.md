@@ -33,6 +33,8 @@ Avalonia、ReactiveUI、Roslyn、测试依赖等版本在此统一管理。Relea
 <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
 ```
 
+`GeneratedFiles/` 是本地编译产物，默认由 `.gitignore` 忽略；只有 GalleryBase 中被结构测试直接读取的少量快照保留跟踪。
+
 生成文件输出到项目内 `GeneratedFiles/`，但从编译输入中移除该目录，避免重复编译。源生成器通过 Analyzer 方式参与当前编译。
 
 ## Analyzer 引用方式

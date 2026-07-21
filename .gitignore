@@ -202,9 +202,16 @@ output/
 outputs/
 cmake-build-*/
 
-controlgallery/AtomUIGallery/GeneratedFiles/Avalonia.Generators/
-controlgallery/AtomUIGallery/GeneratedFiles/AtomUI.Toolkits.GalleryBase.Generator/
-src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/Avalonia.Generators/
+# Compiler-generated artifacts are local build outputs. Keep only the snapshots
+# consumed directly by ShowCasePanelStructureTests.
+**/GeneratedFiles/**
+!src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/
+!src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/
+!src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator/
+!src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator/LanguageProviderPool.g.cs
+!src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator/LanguageResourceConst.g.cs
+!src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator/
+!src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator/TokenResourceConst.g.cs
 .referenceprojects/
 .claude/settings.local.json
 .superpowers/
