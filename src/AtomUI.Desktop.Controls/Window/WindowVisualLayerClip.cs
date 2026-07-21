@@ -2,6 +2,7 @@ using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
@@ -34,7 +35,10 @@ internal sealed class WindowVisualLayerClip : Decorator
     protected override Size ArrangeOverride(Size finalSize)
     {
         var arrangedSize = base.ArrangeOverride(finalSize);
-        var clipBounds   = CalculateClipBounds(finalSize, ShadowThickness);
+        var clipBounds = CalculatePixelAlignedClipBounds(
+            finalSize,
+            ShadowThickness,
+            LayoutHelper.GetLayoutScale(this));
         if (clipBounds.Width <= 0 || clipBounds.Height <= 0)
         {
             Clip = null;
@@ -53,6 +57,51 @@ internal sealed class WindowVisualLayerClip : Decorator
         }
         Clip = geometry;
         return arrangedSize;
+    }
+
+    /// <summary>
+    /// Calculates the visible frame clip and aligns its edges to physical pixels.
+    /// </summary>
+    /// <remarks>
+    /// The visual layer keeps the window's logical coordinate system, while its
+    /// clip is rasterized at the current render scale.  Rounding the trailing
+    /// edges up prevents a fractional right/bottom edge from leaving a partially
+    /// covered physical pixel (which is visible as a one-pixel seam on Wayland).
+    /// </remarks>
+    internal static Rect CalculatePixelAlignedClipBounds(
+        Size surfaceSize,
+        Thickness shadow,
+        double renderScaling)
+    {
+        var clipBounds = CalculateClipBounds(surfaceSize, shadow);
+        if (clipBounds.Width <= 0 || clipBounds.Height <= 0 ||
+            renderScaling <= 0 || double.IsNaN(renderScaling) || double.IsInfinity(renderScaling))
+        {
+            return clipBounds;
+        }
+
+        var left = LayoutHelper.RoundLayoutValue(clipBounds.Left, renderScaling);
+        var top  = LayoutHelper.RoundLayoutValue(clipBounds.Top, renderScaling);
+
+        // The compositor can expose the first physical pixel in the shadow
+        // margin while an interactive resize commits the next buffer. Keep a
+        // one-pixel bleed on the trailing edges so a full-window overlay can
+        // cover that transition instead of revealing the transparent surface.
+        var physicalPixel = 1 / renderScaling;
+        var surfaceRight  = LayoutHelper.RoundLayoutValueUp(surfaceSize.Width, renderScaling);
+        var surfaceBottom = LayoutHelper.RoundLayoutValueUp(surfaceSize.Height, renderScaling);
+        var right = Math.Min(
+            surfaceRight,
+            LayoutHelper.RoundLayoutValueUp(clipBounds.Right + physicalPixel, renderScaling));
+        var bottom = Math.Min(
+            surfaceBottom,
+            LayoutHelper.RoundLayoutValueUp(clipBounds.Bottom + physicalPixel, renderScaling));
+
+        return new Rect(
+            left,
+            top,
+            Math.Max(0, right - left),
+            Math.Max(0, bottom - top));
     }
 
     internal static Rect CalculateClipBounds(Size surfaceSize, Thickness shadow)

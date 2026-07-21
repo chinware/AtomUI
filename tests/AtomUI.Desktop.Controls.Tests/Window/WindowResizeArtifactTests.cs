@@ -39,6 +39,62 @@ public class WindowResizeArtifactTests
             manager.Parent?.Name == atom + "WindowVisualLayerClip").ShouldBe(2);
     }
 
+    [Theory]
+    [InlineData(1.0)]
+    [InlineData(1.25)]
+    [InlineData(1.5)]
+    [InlineData(1.6666666666666667)]
+    public void Visual_Layer_Clip_Edges_Are_Aligned_To_Physical_Pixels(double renderScaling)
+    {
+        var surfaceSize = new Size(641, 480);
+        var shadow     = new Thickness(36, 27, 36, 45);
+        var rawBounds  = WindowVisualLayerClip.CalculateClipBounds(surfaceSize, shadow);
+        var clipBounds = WindowVisualLayerClip.CalculatePixelAlignedClipBounds(
+            surfaceSize,
+            shadow,
+            renderScaling);
+
+        IsPhysicalPixelAligned(clipBounds.Left, renderScaling).ShouldBeTrue();
+        IsPhysicalPixelAligned(clipBounds.Top, renderScaling).ShouldBeTrue();
+        IsPhysicalPixelAligned(clipBounds.Right, renderScaling).ShouldBeTrue();
+        IsPhysicalPixelAligned(clipBounds.Bottom, renderScaling).ShouldBeTrue();
+        clipBounds.Right.ShouldBeGreaterThanOrEqualTo(rawBounds.Right);
+        clipBounds.Bottom.ShouldBeGreaterThanOrEqualTo(rawBounds.Bottom);
+        (clipBounds.Right - rawBounds.Right).ShouldBeGreaterThanOrEqualTo(
+            1 / renderScaling - 0.000001);
+        (clipBounds.Bottom - rawBounds.Bottom).ShouldBeGreaterThanOrEqualTo(
+            1 / renderScaling - 0.000001);
+    }
+
+    [Fact]
+    public void Visual_Layer_Clip_Preserves_Empty_Bounds_When_Frame_Is_Larger_Than_Surface()
+    {
+        WindowVisualLayerClip.CalculatePixelAlignedClipBounds(
+                new Size(20, 18),
+                new Thickness(12, 10, 12, 10),
+                1.25)
+            .ShouldBe(new Rect(12, 10, 0, 0));
+    }
+
+    [Theory]
+    [InlineData(1.0)]
+    [InlineData(1.25)]
+    [InlineData(1.6666666666666667)]
+    public void Visual_Layer_Clip_Does_Not_Bleed_Past_Surface_Without_Shadow(double renderScaling)
+    {
+        var surfaceSize = new Size(641.4, 480);
+
+        WindowVisualLayerClip.CalculatePixelAlignedClipBounds(
+                surfaceSize,
+                default,
+                renderScaling)
+            .ShouldBe(new Rect(
+                0,
+                0,
+                Avalonia.Layout.LayoutHelper.RoundLayoutValueUp(surfaceSize.Width, renderScaling),
+                Avalonia.Layout.LayoutHelper.RoundLayoutValueUp(surfaceSize.Height, renderScaling)));
+    }
+
     [Fact]
     public void Linux_Window_Preserves_Shadow_And_Scales_Only_The_Managed_Resize_Grip()
     {
@@ -777,5 +833,11 @@ public class WindowResizeArtifactTests
         }
 
         throw new FileNotFoundException($"Could not find repository file: {relativePath}");
+    }
+
+    private static bool IsPhysicalPixelAligned(double value, double renderScaling)
+    {
+        var physicalValue = value * renderScaling;
+        return Math.Abs(physicalValue - Math.Round(physicalValue)) < 0.000001;
     }
 }
