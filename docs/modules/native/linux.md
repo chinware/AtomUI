@@ -40,8 +40,9 @@ normal 状态写入阴影 extents；最大化和全屏写入全零，避免 Mutt
 
 ### SHAPE input region
 
-`ClickThroughShadowExtensions` 用 XCB SHAPE 的 `XCB_SHAPE_SK_INPUT` 把输入区限制为一个矩形，目的
-是让视觉阴影区域的点击穿透到下方窗口，同时保留窄 resize band。
+`WindowExtensions.SetWindowInputRectangle()` / `ResetWindowInputRegion()` 用 XCB SHAPE 的
+`XCB_SHAPE_SK_INPUT` 把输入区限制为一个矩形，目的是让视觉阴影区域的点击穿透到下方窗口。
+Native 层只接收 device pixel 坐标并执行 input-region 请求，不决定 shadow 厚度、resize band 或订阅策略。
 
 当前实现的真实生命周期：
 
@@ -51,9 +52,10 @@ normal 状态写入阴影 extents；最大化和全屏写入全零，避免 Mutt
 4. `xcb_shape_rectangles_checked()` 替换 input region，随后检查请求并 flush。
 5. 该连接在进程生命周期内复用；不是每次调用都 connect/disconnect。
 
-`ClickThroughShadowExtensions` 监听 `Bounds`、`WindowDecorationMargin`、`WindowState`、
-`TransparencyLevelHint` 以及调用方给出的额外属性。坐标先按 `RenderScaling` 从 DIP 转成 device pixel。
-最大化或全屏时 input region 恢复为整个 surface。
+`X11WindowChromeManager` 负责高层 shadow click-through 策略。它监听 `Opened`、`Bounds`、
+`WindowDecorationMargin`、`WindowState`、`TransparencyLevelHint`、`CanResize`、`FrameShadowThickness`
+和 `IsCsdEnabled`，按 `RenderScaling` 把 DIP 转成 device pixel，并在普通状态下只保留最多 10 DIP 的
+resize band。最大化或全屏时 input region 恢复为整个 surface。
 
 这不是“整窗忽略鼠标”的 API。Linux 版本的 `SetWindowIgnoreMouseEventsLinux()`、
 `IsWindowIgnoreMouseEventsLinux()`、`xcb_get_geometry()` 和 shape-query 旧实现已经删除；文档和新代码都
@@ -83,9 +85,9 @@ UI thread WindowImpl
   调用 `xdg_surface.set_window_geometry`。
 
 Wayland 核心协议虽然有 `wl_surface.set_input_region`，但当前公开框架 API 不能表达该能力。AtomUI 当前
-`WaylandWindowReflectionExtensions` 从私有 proxy 中取出真实 target，并由 `WaylandWindowUtils` 直接调用
-NWayland。这绕过了 worker marshalling 和重连模型，只能作为当前技术债记录，不能视为线程安全或受
-Avalonia 支持的 Native 扩展点。后续正确实现应进入 Avalonia persistent surface/proxy，并通过
+`AtomUI.Native/Linux/WaylandWindowReflectionExtensions.cs` 从私有 proxy 中取出真实 target，并由
+`WaylandWindowUtils` 直接调用 NWayland。这绕过了 worker marshalling 和重连模型，只能作为当前技术债记录，
+不能视为线程安全或受 Avalonia 支持的 Native 扩展点。后续正确实现应进入 Avalonia persistent surface/proxy，并通过
 `PostWithCommit` 下发。
 
 ## Wayland CSD/SSD
@@ -120,12 +122,11 @@ reflection discovery 或窗口策略。
 - `src/AtomUI.Native/Linux/WindowUtils.Interop.cs`
 - `src/AtomUI.Native/Linux/WindowUtils.Linux.cs`
 - `src/AtomUI.Native/Linux/XcbConnectionHolder.cs`
-- `src/AtomUI.Native/Linux/ClickThroughShadowExtensions.cs`
+- `src/AtomUI.Native/Linux/WaylandWindowReflectionExtensions.cs`
 - `src/AtomUI.Native/Linux/WaylandWindowUtils.cs`
 - `src/AtomUI.Native/WindowExtensions.cs`
-- `src/AtomUI.Desktop.Controls/Window/X11WindowChromeManager.cs`
-- `src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs`
-- `src/AtomUI.Desktop.Controls/Window/WaylandWindowReflectionExtensions.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs`
 
 ### 框架集成验证项
 

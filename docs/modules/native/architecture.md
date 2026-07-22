@@ -3,17 +3,20 @@
 ## 定位
 
 `AtomUI.Native` 是 AtomUI 的内部原生调用层。它只负责在上层已经确定平台和窗口后端后执行原生操作，
-不负责窗口主题、CSD/SSD 策略、Avalonia 私有对象发现或控件生命周期。
+不负责窗口主题、CSD/SSD 策略、Window 事件订阅或控件生命周期。Avalonia drawn decorations 等
+Desktop 控件私有结构发现保留在 `AtomUI.Desktop.Controls/Window/Utils`；Wayland input-region
+的临时反射桥位于 Native，因为它直接解析 NWayland 协议对象并调用 `wl_surface.set_input_region`。
 
 ```text
 AtomUI.Desktop.Controls
   - 选择 Window chrome manager
   - 管理 Window 事件、属性和模板生命周期
-  - 维护 Avalonia private API reflection boundary
+  - 维护 drawn decorations reflection boundary
         |
         v
 AtomUI.Native
   - 校验原生 handle / 参数
+  - 解析 Wayland input-region 所需的协议对象
   - 调用 Win32、Objective-C、Xlib/XCB 或 NWayland
   - 管理原生资源和错误边界
 ```
@@ -47,7 +50,7 @@ src/AtomUI.Native/
     ├── WindowUtils.Interop.cs
     ├── WindowUtils.Linux.cs
     ├── XcbConnectionHolder.cs
-    ├── ClickThroughShadowExtensions.cs
+    ├── WaylandWindowReflectionExtensions.cs
     └── WaylandWindowUtils.cs
 ```
 
@@ -76,7 +79,8 @@ X11 能力必须以 `IPlatformHandle.HandleDescriptor == "XID"` 为前置条件�
 ### Linux/Wayland
 
 `WaylandWindowUtils` 只接受已经解析出的 NWayland `WlSurface/WlCompositor`，创建 region 并调用
-`SetInputRegion()`。它不应该知道 Avalonia 私有字段或查找 `WindowImpl`。
+`SetInputRegion()`。Avalonia 私有字段解析集中在 `WaylandWindowReflectionExtensions`，不能扩散到
+`WaylandWindowUtils` 或上层业务控件。
 
 但 Avalonia Wayland 后端的真实 surface 属于专用 worker。当前调用方从 UI 线程越过
 `WXdgTopLevelProxy` 直接调用真实 `WlSurface`，不符合上游线程和重连契约。`DynamicDependency` 只保证
@@ -86,8 +90,9 @@ input-region 方法，并通过 `WaylandWorkerClient.PostWithCommit` 下发。
 ## 设计约束
 
 1. 平台判断和后端判断是两层条件。Linux 不等于 X11，非 X11 也不等于 Wayland。
-2. Avalonia private reflection 留在 `AtomUI.Desktop.Controls/Reflection` 或对应 Window 适配边界，
-   Native 只接收已经确定的原生对象。
+2. Avalonia drawn decorations、TopLevelHost、resize grip layer 等 Desktop 控件结构反射留在
+   `AtomUI.Desktop.Controls/Window/Utils`。Wayland input-region 当前需要解析私有 proxy 才能拿到
+   NWayland 协议对象，因此作为受控 Native 边界保留在 `AtomUI.Native/Linux/WaylandWindowReflectionExtensions.cs`。
 3. 原生资源必须有明确 owner 和释放点。临时 region 在请求入队后销毁；长期连接要记录进程生命周期策略。
 4. 原生调用失败不能让 Window manager 的更新队列永久卡死；异步/延迟状态更新需要 `try/finally` 恢复标志。
 5. AOT 要同时满足 metadata 保留和真实 publish；`DynamicDependency`、普通 build、源码字符串测试分别只能

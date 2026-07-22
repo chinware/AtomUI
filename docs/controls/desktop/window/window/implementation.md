@@ -10,8 +10,11 @@
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/Window/FullscreenPopoverLayer.cs`
-- `src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/WindowsWindowChromeManager.cs`
 - `src/AtomUI.Desktop.Controls/Window/MacStandardWindowButtons.cs`
 - `src/AtomUI.Desktop.Controls/Window/MediaBreakPointThemeBootstrapper.cs`
 - `src/AtomUI.Desktop.Controls/Window/ReactiveWindow.cs`
@@ -21,25 +24,43 @@
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.cs`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowThemes.axaml`
+- `src/AtomUI.Desktop.Controls/Window/Utils/FullscreenPopoverLayer.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowResizer.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowTitleBarShadowBackground.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowVisualLayerClip.cs`
 - `src/AtomUI.Desktop.Controls/Window/Window.cs`
-- `src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs`
-- `src/AtomUI.Desktop.Controls/Window/WindowResizer.cs`
 - `src/AtomUI.Desktop.Controls/Window/WindowToken.cs`
+- `src/AtomUI.Native/WindowExtensions.cs`
+- `src/AtomUI.Native/Linux/WaylandWindowReflectionExtensions.cs`
+- `src/AtomUI.Native/Linux/WaylandWindowUtils.cs`
+- `src/AtomUI.Native/Linux/WindowUtils.Linux.cs`
 
 职责边界：
 
 - 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
+- `Window/Chrome` 只承载平台 chrome manager：选择后端、订阅 Window/PlatformImpl 事件、合并 frame geometry 更新，并把 X11、Wayland、Windows 的原生能力投影为 Window 内部状态。
+- `Window/Utils` 承载 Window 模板内部视觉 helper 和 Desktop drawn decorations 反射边界，例如 visible frame clip、managed resize grip、macOS 全屏 popover 与 `DynamicDependency` 标注；这些类型是 internal 协作对象，不是用户 API。
+- `AtomUI.Native` 只执行已经确定后端之后的底层平台调用，例如 XCB input region、Xlib geometry、Wayland `wl_surface.set_input_region`。X11 shadow 输入区订阅策略和 resize band 仍属于 `X11WindowChromeManager`，不下沉到 Native。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
 
 ## 3. 核心类职责
 
-- `FullscreenPopoverLayer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `MacStandardWindowButtons`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `ReactiveWindow`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `Window`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `WindowResizer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `Window`：public 窗口控件，持有 public API、主题上下文、平台状态投影、标题栏连接、template part 接入和显示生命周期。
+- `ReactiveWindow<TViewModel>`：public ReactiveUI 窗口基类，维护 `ViewModel` / `DataContext` 同步和 AOT 友好的 view activation。
+- `MacStandardWindowButtons`：public macOS 标准窗口按钮布局附加能力，封装 spacing、offset 和按钮布局入口。
+- `WindowChromeManager` / `IWindowChromeManager`：按平台创建 chrome manager，并定义 Window 与平台能力之间的内部协作接口。
+- `LinuxWindowChromeManager`：Linux 后端的共享 manager，负责 X11/Wayland/Other 后端识别、CSD 状态同步、frame geometry 更新合并、title-bar height hint 和 visible frame border 更新。
+- `X11WindowChromeManager`：X11 专属 manager，负责 map 前初始 geometry、`_GTK_FRAME_EXTENTS`、shadow input region 订阅策略和 10 DIP resize band 保留。
+- `WaylandWindowChromeManager`：Wayland 专属 manager，负责 shadow extents 归一、managed resize grip 接管和 input region 矩形计算。
+- `WindowsWindowChromeManager`：Windows 专属 manager，负责 Windows CSD frame dark mode 与可见 frame border 策略。
+- `FullscreenPopoverLayer`：internal 模板协作层，维护 macOS 全屏标题栏 popover 的显示、按钮和宿主 Window 订阅。
+- `WindowResizer`：internal 模板协作控件，使用 `GripThickness` 和 `BeginResizeDrag` 提供 managed resize grip。
+- `WindowVisualLayerClip`：internal visible frame 裁剪 helper，是完整 layer surface 排除 `FrameShadowThickness` 后的共享计算入口。
+- `WindowTitleBarShadowBackground`：internal drawn decorations 标题栏背景绘制 helper，按 visible frame 和圆角裁剪 Linux 标题栏背景。
+- `WindowDrawnDecorationsReflectionExtensions`：Desktop Window 内部反射边界，集中访问 Avalonia drawn decorations、resize grip layer 和 drawn overlay host。
 - `WindowTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `WindowToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
 

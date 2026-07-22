@@ -161,19 +161,11 @@ TitleBarOffsetMargin = new Thickness(offset, 0, 0, 0);
 
 X11 上 Avalonia 的 OS 窗口矩形包含阴影 buffer，默认 input region = 整个矩形 → 阴影区域会拦截鼠标事件。
 
-解决方案：通过 `XShapeCombineRectangles` 把 input region 收窄到可见窗体 + 窄 resize 带。
+解决方案：通过 XCB SHAPE `xcb_shape_rectangles_checked` 把 input region 收窄到可见窗体 + 窄 resize 带。
 
-AtomUI 实现：`Window` 构造函数中调用 `this.AttachClickThroughShadow()`，监听 `FrameShadowThickness` 变化自动重算。
-
-```csharp
-// Window.cs 构造函数
-if (OperatingSystem.IsLinux())
-{
-    this.AttachClickThroughShadow(
-        new HashSet<AvaloniaProperty> { FrameShadowThicknessProperty },
-        () => FrameShadowThickness);
-}
-```
+AtomUI 实现：`X11WindowChromeManager` 挂接 `Opened` / `PropertyChanged`，监听尺寸、窗口状态、
+透明度、`CanResize`、`FrameShadowThickness` 和 `IsCsdEnabled` 后自动重算。真正的 XCB SHAPE 请求通过
+`WindowExtensions.SetWindowInputRectangle()` / `ResetWindowInputRegion()` 进入 `AtomUI.Native`。
 
 ### 非 CSD 模式（IsCsdEnabled=false）
 

@@ -117,11 +117,11 @@ public class WindowResizeArtifactTests
     public void Linux_Window_Preserves_Shadow_And_Scales_Only_The_Managed_Resize_Grip()
     {
         var tokenSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowToken.cs"));
-        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
+        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs"));
         var reflectionSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WindowDrawnDecorationsReflectionExtensions.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs"));
         var waylandSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs"));
 
         tokenSource.ShouldContain("FrameShadows             = SharedToken.BoxShadowsSecondary;");
         tokenSource.ShouldNotContain("ScaleFrameShadows");
@@ -141,11 +141,11 @@ public class WindowResizeArtifactTests
     public void Wayland_Resize_Uses_The_Platform_Reported_Size_Unmodified()
     {
         var waylandSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs"));
         var windowSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Window.cs"));
         var resizerSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WindowResizer.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Utils/WindowResizer.cs"));
 
         waylandSource.ShouldNotContain("platformImpl.Resized =");
         waylandSource.ShouldNotContain("CorrectPlatformResize");
@@ -228,9 +228,9 @@ public class WindowResizeArtifactTests
     public void Wayland_Shadow_Input_Region_Uses_WlSurface_Protocol_And_Tracks_Size()
     {
         var chromeSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs"));
         var reflectionSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WaylandWindowReflectionExtensions.cs"));
+            "src/AtomUI.Native/Linux/WaylandWindowReflectionExtensions.cs"));
         var nativeSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Native/Linux/WaylandWindowUtils.cs"));
 
@@ -319,8 +319,8 @@ public class WindowResizeArtifactTests
     public void Window_Prepares_Linux_Initial_Client_Size_Before_Show()
     {
         var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
-        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
-        var x11Source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/X11WindowChromeManager.cs"));
+        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs"));
+        var x11Source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs"));
 
         windowSource.ShouldContain("public override void Show()");
         windowSource.ShouldContain("_platformChromeManager?.PrepareInitialShowState();");
@@ -365,8 +365,8 @@ public class WindowResizeArtifactTests
     public void Linux_Client_Drawn_Shadow_Publishes_X11_Csd_Frame_Extents()
     {
         var windowSource    = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
-        var chromeSource    = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/X11WindowChromeManager.cs"));
-        var linuxChromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
+        var chromeSource    = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs"));
+        var linuxChromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs"));
         var extensionSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
         var linuxSource     = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Linux.cs"));
         var interopSource   = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Interop.cs"));
@@ -415,7 +415,7 @@ public class WindowResizeArtifactTests
     public void Linux_Window_Frame_Geometry_Updates_Are_Coalesced_Before_Render()
     {
         var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
-        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
+        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs"));
 
         chromeSource.ShouldContain("HandleFrameShadowChanged");
         chromeSource.ShouldContain("ConfigureTitleBarHeightHint");
@@ -450,23 +450,33 @@ public class WindowResizeArtifactTests
     [Fact]
     public void Linux_Shadow_Input_Region_Keeps_Only_Ten_Dip_Resize_Band()
     {
-        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/X11WindowChromeManager.cs"));
-        var inputSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/ClickThroughShadowExtensions.cs"));
+        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs"));
+        var nativeInputSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
+        var nativeLinuxSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Linux.cs"));
 
-        chromeSource.ShouldContain("Window.AttachClickThroughShadow(");
+        File.Exists(GetRepoFileOrNull("src/AtomUI.Native/Linux/ClickThroughShadowExtensions.cs") ?? string.Empty)
+            .ShouldBeFalse();
+        chromeSource.ShouldContain("AttachClickThroughShadow();");
         chromeSource.ShouldContain("s_shadowInputRegionAffectsProperties");
-        chromeSource.ShouldContain("() => Window.FrameShadowThickness");
-        chromeSource.ShouldContain("ClickThroughShadowExtensions.DefaultResizeBand");
+        chromeSource.ShouldContain("ShadowInputRegionResizeBand");
         chromeSource.ShouldContain("CanResizeProperty");
         chromeSource.ShouldContain("FrameShadowThicknessProperty");
         chromeSource.ShouldContain("IsCsdEnabledProperty");
+        chromeSource.ShouldContain("Window.Opened +=");
+        chromeSource.ShouldContain("Window.PropertyChanged +=");
+        chromeSource.ShouldContain("Visual.BoundsProperty");
+        chromeSource.ShouldContain("AvaloniaWindow.WindowDecorationMarginProperty");
+        chromeSource.ShouldContain("TopLevel.TransparencyLevelHintProperty");
 
-        inputSource.ShouldContain("public const double DefaultResizeBand = 10.0;");
-        inputSource.ShouldContain("var effectiveResizeBand = window.CanResize ? resizeBand : 0;");
-        inputSource.ShouldContain("shadowThickness.Left - effectiveResizeBand");
-        inputSource.ShouldContain("shadowThickness.Top - effectiveResizeBand");
-        inputSource.ShouldContain("window.SetWindowInputRectangle(x, y, w, h);");
-        inputSource.ShouldContain("window.ResetWindowInputRegion(fullW, fullH);");
+        chromeSource.ShouldContain("private const double ShadowInputRegionResizeBand = 10.0;");
+        chromeSource.ShouldContain("var effectiveResizeBand = Window.CanResize ? ShadowInputRegionResizeBand : 0;");
+        chromeSource.ShouldContain("shadowThickness.Left - effectiveResizeBand");
+        chromeSource.ShouldContain("shadowThickness.Top - effectiveResizeBand");
+        chromeSource.ShouldContain("Window.SetWindowInputRectangle(x, y, w, h);");
+        chromeSource.ShouldContain("Window.ResetWindowInputRegion(fullW, fullH);");
+        nativeInputSource.ShouldContain("SetWindowInputRectangle");
+        nativeInputSource.ShouldContain("ResetWindowInputRegion");
+        nativeLinuxSource.ShouldContain("SetInputRectangle");
     }
 
     [Fact]
@@ -827,9 +837,9 @@ public class WindowResizeArtifactTests
     [Fact]
     public void Windows_Window_Uses_Avalonia_Csd_Without_The_Legacy_Chrome_Hook()
     {
-        var managerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"));
+        var managerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs"));
         var reflectionSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WindowDrawnDecorationsReflectionExtensions.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs"));
         var windowSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
         var nativeSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
         var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Windows/WindowUtils.Interop.cs"));
@@ -855,11 +865,11 @@ public class WindowResizeArtifactTests
         managerSource.ShouldContain("WindowsWindowChromeManager.Attach(window)");
         File.Exists(Path.Combine(
             Path.GetDirectoryName(GetRepoFile(
-                "src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"))!,
+                "src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs"))!,
             "WindowsWindowChromeManager.cs")).ShouldBeTrue();
         File.Exists(Path.Combine(
             Path.GetDirectoryName(GetRepoFile(
-                "src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"))!,
+                "src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs"))!,
             "WindowsInactiveFramePolicy.cs")).ShouldBeFalse();
         windowSource.ShouldContain("else if (OperatingSystem.IsWindows())");
         windowSource.ShouldContain("IsCsdEnabled = true;");
@@ -1012,6 +1022,23 @@ public class WindowResizeArtifactTests
         }
 
         throw new FileNotFoundException($"Could not find repository file: {relativePath}");
+    }
+
+    private static string? GetRepoFileOrNull(string relativePath)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, relativePath);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = directory.Parent;
+        }
+
+        return null;
     }
 
     private static string? GetLayoutRole(XElement element)

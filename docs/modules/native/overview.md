@@ -8,8 +8,8 @@
 - 提供 Windows/macOS 整窗鼠标穿透能力。
 - 提供 macOS 标题栏按钮位置、尺寸、关闭按钮状态等窗口能力。
 - 提供 Linux/X11 输入区域、窗口几何等底层辅助能力。
-- 承载 Wayland input-region 的协议调用；Avalonia worker/proxy 的发现与调度策略仍属于
-  `AtomUI.Desktop.Controls`，不能下沉到 Native。
+- 承载 Wayland input-region 的协议对象解析与 NWayland 调用；调用时机、输入矩形计算和 Window 状态策略仍属于
+  `AtomUI.Desktop.Controls`。
 - 为 `AtomUI.Core` 和 `AtomUI.Desktop.Controls` 提供内部基础设施。
 
 ## 目录结构
@@ -21,6 +21,7 @@ src/AtomUI.Native/
 ├── MacOS/
 └── Linux/
     ├── X11/XCB/Xlib helpers
+    ├── WaylandWindowReflectionExtensions.cs
     └── WaylandWindowUtils.cs
 ```
 

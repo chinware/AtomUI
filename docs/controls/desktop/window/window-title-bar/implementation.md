@@ -19,8 +19,16 @@
 src/AtomUI.Desktop.Controls/
 ├── Window/
 │   ├── Window.cs
-│   ├── WindowChromeManager.cs
 │   ├── MacStandardWindowButtons.cs
+│   ├── Chrome/
+│   │   ├── WindowChromeManager.cs
+│   │   ├── LinuxWindowChromeManager.cs
+│   │   ├── X11WindowChromeManager.cs
+│   │   ├── WaylandWindowChromeManager.cs
+│   │   └── WindowsWindowChromeManager.cs
+│   ├── Utils/
+│   │   ├── FullscreenPopoverLayer.cs
+│   │   └── WindowVisualLayerClip.cs
 │   └── Themes/
 │       ├── WindowTheme.axaml
 │       ├── WindowDrawnDecorationsTheme.axaml

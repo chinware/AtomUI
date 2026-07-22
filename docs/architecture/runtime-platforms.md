@@ -26,11 +26,10 @@ Browser Gallery 使用 `net10.0-browser` 和 `Avalonia.Browser`。浏览器环�
 
 - `Windows/`：Win32 P/Invoke。
 - `MacOS/`：Objective-C Runtime P/Invoke。
-- `Linux/`：XCB/X11 P/Invoke。
+- `Linux/`：XCB/X11 P/Invoke 与 Wayland input-region 协议 helper。
 
 上层通过 `WindowExtensions` 调用统一入口，内部按运行时平台路由。Native 能力属于基础设施，不直接面向普通控件使用者暴露。
 
 ## 移动端
 
 `AtomUI.Native` 已对 `AtomUI.Mobile.Controls` 开放 `InternalsVisibleTo`，说明未来有移动端扩展空间。当前文档只预留 [controls/mobile/overview.md](../controls/mobile/overview.md)，不把移动端作为已实现模块描述。
-

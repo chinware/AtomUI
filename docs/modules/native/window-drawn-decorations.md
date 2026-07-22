@@ -482,242 +482,40 @@ configure 加回量闭合；绘制装饰仍使用 Avalonia 的原始 fractional 
 
 ## 11. X11 输入区裁剪（点击穿透阴影）
 
-要兼顾"大阴影 + 不违和"，需要绕过 Avalonia 调 X11 SHAPE 扩展，把 input region 收窄到只包含可见窗体 + 一个窄的 resize 抓手带。
+要兼顾“大阴影 + 不违和”，AtomUI 在 X11 下使用 SHAPE input region 把可输入区域收窄到可见窗体，并在
+边缘保留一条窄 resize 抓手带。当前源码不再保留独立的 `ClickThroughShadow` helper；高层策略属于
+`src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs`，底层 XCB 调用属于
+`src/AtomUI.Native`。
 
-### 思路
+### 当前源码分层
 
-`XShapeCombineRectangles(display, win, ShapeInput, ShapeSet, &rect, 1, ...)`：把 input region 替换成单个矩形。矩形外的像素事件 fall-through 到下层窗口。
-
-### 推荐的辅助类组织
-
-建议在你的项目里拆成两个静态类（命名仅供参考）：
-
-- **`X11InputShape`**：纯 P/Invoke 封装 `libX11.so.6` + `libXext.so.6`，对外只暴露 `SetInputRectangle / ResetInputRegion` 两个方法、`IsSupported` 一个属性。
-- **`ClickThroughShadow`**：挂载到 Avalonia `Window`，监听 `Bounds / WindowDecorationMargin / WindowState / TransparencyLevelHint` 变化，自动调用上面那个方法重算 input region。
-
-#### `X11InputShape`
-
-```csharp
-using System;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
-
-[SupportedOSPlatform("linux")]
-internal static class X11InputShape
-{
-    private const string LibX11 = "libX11.so.6";
-    private const string LibXext = "libXext.so.6";
-
-    [DllImport(LibX11)] private static extern IntPtr XOpenDisplay(IntPtr displayName);
-    [DllImport(LibX11)] private static extern int XFlush(IntPtr display);
-
-    [DllImport(LibXext)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool XShapeQueryExtension(
-        IntPtr display, out int eventBase, out int errorBase);
-
-    [DllImport(LibXext)]
-    private static extern void XShapeCombineRectangles(
-        IntPtr display, IntPtr window, int kind,
-        int xOff, int yOff,
-        IntPtr rectangles, int nRectangles,
-        int op, int ordering);
-
-    private const int ShapeInput = 2;
-    private const int ShapeSet   = 0;
-    private const int Unsorted   = 0;
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct XRectangle
-    {
-        public short  X;
-        public short  Y;
-        public ushort Width;
-        public ushort Height;
-    }
-
-    private static readonly object s_lock = new();
-    private static IntPtr s_display;
-    private static bool   s_init;
-    private static bool   s_supported;
-
-    public static bool IsSupported
-    {
-        get { EnsureInit(); return s_supported; }
-    }
-
-    private static void EnsureInit()
-    {
-        if (s_init) return;
-        lock (s_lock)
-        {
-            if (s_init) return;
-            try
-            {
-                // ⚠ 自己开独立 display 连接，不要复用 Avalonia 的——
-                // 避免和主线程的 X11 事件循环抢锁。
-                s_display = XOpenDisplay(IntPtr.Zero);
-                if (s_display != IntPtr.Zero)
-                    s_supported = XShapeQueryExtension(s_display, out _, out _);
-            }
-            catch (DllNotFoundException)       { s_supported = false; }
-            catch (EntryPointNotFoundException) { s_supported = false; }
-            finally                             { s_init = true; }
-        }
-    }
-
-    /// <summary>
-    /// 把 window 的 X11 input region 替换为单个矩形。
-    /// 矩形外的像素事件 fall-through 到下层窗口（跨进程也可）。
-    /// 坐标是 device pixel，不是 DIP。
-    /// </summary>
-    public static void SetInputRectangle(IntPtr window, int x, int y, int width, int height)
-    {
-        if (!IsSupported || window == IntPtr.Zero) return;
-        if (width <= 0 || height <= 0) return;
-
-        var rect = new XRectangle
-        {
-            X      = (short) Math.Clamp(x, short.MinValue, short.MaxValue),
-            Y      = (short) Math.Clamp(y, short.MinValue, short.MaxValue),
-            Width  = (ushort)Math.Min(width,  ushort.MaxValue),
-            Height = (ushort)Math.Min(height, ushort.MaxValue),
-        };
-
-        var ptr = Marshal.AllocHGlobal(Marshal.SizeOf<XRectangle>());
-        try
-        {
-            Marshal.StructureToPtr(rect, ptr, false);
-            lock (s_lock)
-            {
-                XShapeCombineRectangles(
-                    s_display, window, ShapeInput,
-                    xOff: 0, yOff: 0,
-                    rectangles: ptr, nRectangles: 1,
-                    op: ShapeSet, ordering: Unsorted);
-                XFlush(s_display);
-            }
-        }
-        finally
-        {
-            Marshal.FreeHGlobal(ptr);
-        }
-    }
-
-    public static void ResetInputRegion(IntPtr window, int width, int height)
-        => SetInputRectangle(window, 0, 0, width, height);
-}
+```text
+X11WindowChromeManager
+  -> WindowExtensions.SetWindowInputRectangle / ResetWindowInputRegion
+  -> WindowUtilsLinux.SetInputRectangle
+  -> XcbConnectionHolder
+  -> xcb_shape_rectangles_checked(XCB_SHAPE_SK_INPUT)
 ```
 
-#### `ClickThroughShadow`
+`X11WindowChromeManager` 负责所有和 Window 状态有关的策略：
 
-```csharp
-using System;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
-using Avalonia;
-using Avalonia.Controls;
+- 只在 platform handle descriptor 为 `XID` 时生效，不能只判断 Linux OS。
+- 监听 `Opened`、`Bounds`、`WindowDecorationMargin`、`WindowState`、`TransparencyLevelHint`、
+  `CanResize`、`FrameShadowThickness` 和 `IsCsdEnabled`。
+- 输入区坐标先按 `RenderScaling` 从 DIP 转成 device pixel。
+- 普通状态下使用 `FrameShadowThickness` 计算四边 inset，并保留 `ShadowInputRegionResizeBand = 10.0`
+  DIP 的 resize 抓手带；`CanResize=false` 时不保留 resize band。
+- 最大化、全屏或没有需要穿透的 shadow inset 时，通过 `ResetWindowInputRegion()` 恢复整个 surface。
 
-internal static class ClickThroughShadow
-{
-    /// <summary>
-    /// 内边保留多少 DIP 作为 resize 抓手（外圈 = shadowThickness - ResizeBand 全穿透）。
-    /// </summary>
-    public const double ResizeBand = 6.0;
+`AtomUI.Native` 只负责已经确定坐标后的低层操作：
 
-    public static void Attach(Window window, double shadowThickness)
-    {
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return;
-        if (!IsX11Supported()) return;
-        if (shadowThickness <= 0) return;
+- `WindowExtensions.SetWindowInputRectangle()` / `ResetWindowInputRegion()` 是 Desktop manager 调用的统一入口。
+- `WindowUtilsLinux.SetInputRectangle()` 只接收 XID 和 device pixel 矩形，不读取 Window token 或模板状态。
+- `XcbConnectionHolder` 维护进程级独立 XCB 连接，缓存 SHAPE 扩展可用性，并在 `SyncRoot` 下串行发送请求。
+- `WindowUtilsInterop` 只声明 XCB/Xlib P/Invoke、结构体和枚举。
 
-        void Reapply()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                Apply(window, shadowThickness);
-        }
-
-        window.Opened += (_, _) => Reapply();
-        window.PropertyChanged += (_, e) =>
-        {
-            if (e.Property == Visual.BoundsProperty
-                || e.Property == Window.WindowDecorationMarginProperty
-                || e.Property == Window.WindowStateProperty
-                || e.Property == TopLevel.TransparencyLevelHintProperty)
-            {
-                Reapply();
-            }
-        };
-    }
-
-    private static bool IsX11Supported()
-    {
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return false;
-        return X11SupportedCore();
-    }
-
-    [SupportedOSPlatform("linux")]
-    private static bool X11SupportedCore() => X11InputShape.IsSupported;
-
-    [SupportedOSPlatform("linux")]
-    private static void Apply(Window window, double shadowThickness)
-    {
-        // 仅 X11 后端的 PlatformHandle 是 "XID"；Wayland 的 Handle 为 null
-        var handle = window.TryGetPlatformHandle();
-        if (handle is null || handle.HandleDescriptor != "XID") return;
-        var xid = handle.Handle;
-        if (xid == IntPtr.Zero) return;
-
-        var size = window.ClientSize;
-        if (size.Width <= 0 || size.Height <= 0) return;
-
-        var scale = window.RenderScaling <= 0 ? 1.0 : window.RenderScaling;
-        var fullW = (int)Math.Round(size.Width  * scale);
-        var fullH = (int)Math.Round(size.Height * scale);
-
-        // 最大化 / 全屏：框架把 ShadowThickness 归零，整个客户区都要可点
-        if (window.WindowState != WindowState.Normal)
-        {
-            X11InputShape.ResetInputRegion(xid, fullW, fullH);
-            return;
-        }
-
-        var inset = Math.Max(0, shadowThickness - ResizeBand);
-        if (inset <= 0)
-        {
-            X11InputShape.ResetInputRegion(xid, fullW, fullH);
-            return;
-        }
-
-        var x = (int)Math.Round(inset * scale);
-        var y = (int)Math.Round(inset * scale);
-        var w = (int)Math.Round((size.Width  - inset * 2) * scale);
-        var h = (int)Math.Round((size.Height - inset * 2) * scale);
-
-        X11InputShape.SetInputRectangle(xid, x, y, w, h);
-    }
-}
-```
-
-### 调用
-
-```csharp
-public MainWindow()
-{
-    InitializeComponent();
-    ClickThroughShadow.Attach(this, shadowThickness: 32);
-    //                                          ^^ 必须跟主题里 DefaultShadowThickness 一致
-}
-```
-
-### 关键点
-
-1. **`shadowThickness` 参数必须与主题里的 `DefaultShadowThickness` 同步**：因为 `WindowDrawnDecorations` 是 `StyledElement`，不在可视树，外部代码读不到运行时计算的 `ShadowThickness`，只能手动传值。
-2. **`ResizeBand=6`**：保留 6px DIP 的内边作为 resize 抓手；外圈 `shadowThickness - 6` 完全穿透。
-3. **DPI**：用 `Window.RenderScaling` 把 DIP 转物理像素后再喂给 X11。
-4. **自己开 display 连接**：`XOpenDisplay(IntPtr.Zero)` 拿独立连接，避免和 Avalonia 主线程的 X11 事件循环抢锁。
-5. **平台 gating**：`RuntimeInformation.IsOSPlatform(OSPlatform.Linux)` + `XShapeQueryExtension`，Win32/macOS/Wayland 自动 no-op。
-6. **maximized / fullscreen** 时框架把 `ShadowThickness` 归零，`ClickThroughShadow` 把 input region 重置为整个 OS 客户区。
+维护该路径时不要重新引入 Linux 版 `SetWindowIgnoreMouseEventsLinux()`、shape-query 旧实现、每次请求
+connect/disconnect 的连接模型，也不要把 Window 事件订阅、resize band 或 theme token 下沉到 Native。
 
 ---
 

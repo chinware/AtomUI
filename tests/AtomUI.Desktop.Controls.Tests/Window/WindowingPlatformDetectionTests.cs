@@ -63,11 +63,11 @@ public class WindowingPlatformDetectionTests
     public void Wayland_Chrome_Does_Not_Call_X11_Handle_Or_Absolute_Geometry_Hacks()
     {
         var commonSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs"));
         var waylandSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs"));
         var x11Source = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/X11WindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs"));
 
         commonSource.ShouldContain("new X11WindowChromeManager(window)");
         commonSource.ShouldContain("new WaylandWindowChromeManager(window)");
@@ -89,11 +89,11 @@ public class WindowingPlatformDetectionTests
         var windowSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Window.cs"));
         var contractSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs"));
         var linuxSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs"));
         var waylandSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs"));
 
         contractSource.ShouldContain("bool UsesCustomResizer { get; }");
         linuxSource.ShouldContain("public virtual bool UsesCustomResizer => !Window.IsCsdEnabled;");
@@ -188,7 +188,7 @@ public class WindowingPlatformDetectionTests
     public void Linux_Csd_Tracks_Platform_Decoration_Requests_And_Uses_AtomUI_Theme()
     {
         var commonSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs"));
         var windowSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Window.cs"));
         var document = XDocument.Load(GetRepoFile(

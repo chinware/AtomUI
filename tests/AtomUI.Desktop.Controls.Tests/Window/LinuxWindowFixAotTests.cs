@@ -15,15 +15,14 @@ public class LinuxWindowFixAotTests
         var source = string.Join(
             Environment.NewLine,
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs")),
-            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs")),
-            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs")),
-            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/X11WindowChromeManager.cs")),
-            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs")),
+            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs")),
+            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs")),
+            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs")),
+            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/DesktopAppBuilderExtensions.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Popup/DetachedTitleBarPopupSupport.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Menu/Menu.cs")),
-            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Menu/MenuItem.cs")),
-            File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/ClickThroughShadowExtensions.cs")));
+            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Menu/MenuItem.cs")));
 
         foreach (var unsafePattern in s_aotUnsafePatterns)
         {
@@ -35,7 +34,7 @@ public class LinuxWindowFixAotTests
     public void Managed_Resize_Grip_Reflection_Boundary_Is_Trimming_Safe()
     {
         var source = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WindowDrawnDecorationsReflectionExtensions.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs"));
 
         source.ShouldContain("DynamicDependency");
         source.ShouldContain("DynamicallyAccessedMemberTypes.NonPublicFields, typeof(TopLevel)");
@@ -77,7 +76,7 @@ public class LinuxWindowFixAotTests
     public void Wayland_Input_Region_Reflection_Boundary_Is_Trimming_Safe()
     {
         var source = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/WaylandWindowReflectionExtensions.cs"));
+            "src/AtomUI.Native/Linux/WaylandWindowReflectionExtensions.cs"));
 
         source.ShouldContain("DynamicDependency");
         source.ShouldContain("\"Avalonia.Wayland.WindowImpl\"");
