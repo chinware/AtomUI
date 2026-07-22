@@ -1,6 +1,6 @@
 # CheckBox 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -62,7 +62,7 @@ CheckBox
 | `PART_CheckBoxItems` | template node (CheckBoxItemsControl) | `CheckBoxGroupTheme.axaml` | CheckBoxGroup | `IsMotionEnabled`, `ItemSpacing`, `ItemTemplate`, `LineSpacing`, `Orientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CheckBoxIndicator` | control theme | `CheckBoxIndicatorTheme.axaml` | CheckBox | `Background`, `BorderBrush`, `BorderThickness`, `CheckedMarkBrush`, `CheckedMarkRenderTransform`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `Background`, `BorderBrush`, `BorderThickness`, `CheckedMarkBrush`, `CheckedMarkRenderTransform`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `CornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (PixelAlignedBorder) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `Background`, `BorderBrush`, `BorderThickness`, `CheckedMarkBrush`, `CheckedMarkRenderTransform`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CheckedMark` | template node (CheckBoldOutlined) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `CheckedMarkBrush`, `CheckedMarkRenderTransform` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TristateMark` | template node (Rectangle) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `TristateMarkBrush`, `TristateMarkSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

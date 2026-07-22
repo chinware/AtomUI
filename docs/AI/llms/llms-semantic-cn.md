@@ -1,12 +1,12 @@
 # AtomUI Desktop Controls Semantic CN
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 Source: ./controls/button/semantic-cn.md
 
 # Button 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -24,7 +24,7 @@ Source: ./controls/button/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`
 
 ```xml
 <Panel>
@@ -267,7 +267,7 @@ Source: ./controls/float-button/semantic-cn.md
 
 # FloatButton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -441,7 +441,7 @@ Source: ./controls/icon/semantic-cn.md
 
 # Icon 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -454,32 +454,11 @@ Source: ./controls/icon/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Controls/Icon/Themes/IconTheme.axaml`
-
-```xml
-<Border />
-```
+未定位到可生成抽象 AXAML 结构的 ControlTheme 模板。生成器不会根据 semantic parts 发明 AXAML 节点；请以 Template Parts、主题文件和源码索引为准。
 
 ## Composition Model
 
-该章节由控件 `Themes/` 文件夹中的真实主题文件生成，用于说明 public 控件与内部协作对象之间的运行时结构。内部节点只用于理解和维护，不应指导用户代码直接依赖。
-
-### 控件角色图
-
-```text
-Icon
-  -> IconPresenter (presenter control theme, IconPresenterTheme.axaml)
-  -> Icon (control theme, IconTheme.axaml)
-     -> Border (template-stable)
-```
-
-### 协作节点
-
-| 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Icon` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `IconPresenter` | presenter control theme | `IconPresenterTheme.axaml` | Icon | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Icon` | control theme | `IconTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Height`, `Width` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+该控件主要由 public 控件和 ControlTheme 模板直接表达，没有额外运行时组合层。
 
 ## Template Parts
 
@@ -565,7 +544,7 @@ Source: ./controls/separator/semantic-cn.md
 
 # Separator 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -578,7 +557,7 @@ Source: ./controls/separator/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Separator/Themes/SeparatorTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Separator/Themes/SeparatorTheme.axaml`
 
 ```xml
 <TextBlock Name="PART_Title" />
@@ -687,7 +666,7 @@ Source: ./controls/split-button/semantic-cn.md
 
 # SplitButton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -700,7 +679,7 @@ Source: ./controls/split-button/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
 
 ```xml
 <DockPanel Name="PART_MainLayout">
@@ -816,7 +795,7 @@ Source: ./controls/flex-panel/semantic-cn.md
 
 # FlexPanel 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -912,7 +891,7 @@ Source: ./controls/grid/semantic-cn.md
 
 # Grid 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1009,7 +988,7 @@ Source: ./controls/masonry/semantic-cn.md
 
 # Masonry 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1022,7 +1001,7 @@ Source: ./controls/masonry/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`
 
 ```xml
 <ItemsPresenter Name="PART_ItemsPresenter" />
@@ -1139,7 +1118,7 @@ Source: ./controls/space/semantic-cn.md
 
 # Space 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1244,7 +1223,7 @@ Source: ./controls/splitter/semantic-cn.md
 
 # Splitter 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1259,7 +1238,7 @@ Source: ./controls/splitter/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -1421,7 +1400,7 @@ Source: ./controls/breadcrumb/semantic-cn.md
 
 # Breadcrumb 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1435,7 +1414,7 @@ Source: ./controls/breadcrumb/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Breadcrumb/Themes/BreadcrumbTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Breadcrumb/Themes/BreadcrumbTheme.axaml`
 
 ```xml
 <ItemsPresenter />
@@ -1560,7 +1539,7 @@ Source: ./controls/button-spinner/semantic-cn.md
 
 # ButtonSpinner 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1574,7 +1553,7 @@ Source: ./controls/button-spinner/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerTheme.axaml`
 
 ```xml
 <ButtonSpinnerDecoratedBox Name="PART_DecoratedBox" />
@@ -1720,7 +1699,7 @@ Source: ./controls/combo-box/semantic-cn.md
 
 # ComboBox 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1734,7 +1713,7 @@ Source: ./controls/combo-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml`
 
 ```xml
 <Panel>
@@ -1906,7 +1885,7 @@ Source: ./controls/dropdown-button/semantic-cn.md
 
 # DropdownButton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2066,7 +2045,7 @@ Source: ./controls/menu/semantic-cn.md
 
 # Menu 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2080,7 +2059,7 @@ Source: ./controls/menu/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Menu/Themes/MenuTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Menu/Themes/MenuTheme.axaml`
 
 ```xml
 <PixelAlignedBorder>
@@ -2258,7 +2237,7 @@ Source: ./controls/nav-menu/semantic-cn.md
 
 # NavMenu 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2272,7 +2251,7 @@ Source: ./controls/nav-menu/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuTheme.axaml`
 
 ```xml
 <ScrollViewer>
@@ -2522,7 +2501,7 @@ Source: ./controls/pagination/semantic-cn.md
 
 # Pagination 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2536,7 +2515,7 @@ Source: ./controls/pagination/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationTheme.axaml`
 
 ```xml
 <StackPanel Name="PART_RootLayout">
@@ -2692,7 +2671,7 @@ Source: ./controls/steps/semantic-cn.md
 
 # Steps 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2711,7 +2690,7 @@ Source: ./controls/steps/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`
 
 ```xml
 <ItemsPresenter Name="PART_ItemsPresenter" />
@@ -2948,7 +2927,7 @@ Source: ./controls/tab-control/semantic-cn.md
 
 # TabControl 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2963,7 +2942,7 @@ Source: ./controls/tab-control/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/TabControl/Themes/TabControlTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TabControl/Themes/TabControlTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -3178,7 +3157,7 @@ Source: ./controls/tab-strip/semantic-cn.md
 
 # TabStrip 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -3193,7 +3172,7 @@ Source: ./controls/tab-strip/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/TabControl/Themes/TabStrip/TabStripTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TabControl/Themes/TabStrip/TabStripTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -3310,7 +3289,7 @@ Source: ./controls/auto-complete/semantic-cn.md
 
 # AutoComplete 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -3324,7 +3303,7 @@ Source: ./controls/auto-complete/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTheme.axaml`
 
 ```xml
 <Panel>
@@ -3479,7 +3458,7 @@ Source: ./controls/cascader/semantic-cn.md
 
 # Cascader 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -3493,7 +3472,7 @@ Source: ./controls/cascader/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Cascader/Themes/CascaderTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Cascader/Themes/CascaderTheme.axaml`
 
 ```xml
 <Panel>
@@ -3741,7 +3720,7 @@ Source: ./controls/check-box/semantic-cn.md
 
 # CheckBox 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -3755,7 +3734,7 @@ Source: ./controls/check-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/CheckBox/Themes/CheckBoxTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/CheckBox/Themes/CheckBoxTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -3904,7 +3883,7 @@ Source: ./controls/color-picker/semantic-cn.md
 
 # ColorPicker 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -3918,7 +3897,7 @@ Source: ./controls/color-picker/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls.ColorPicker/Themes/ColorPickerTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls.ColorPicker/Themes/ColorPickerTheme.axaml`
 
 ```xml
 <Panel>
@@ -4042,7 +4021,7 @@ Source: ./controls/date-picker/semantic-cn.md
 
 # DatePicker 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -4244,7 +4223,7 @@ Source: ./controls/form/semantic-cn.md
 
 # Form 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -4258,7 +4237,7 @@ Source: ./controls/form/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Form/Themes/FormTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Form/Themes/FormTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -4489,7 +4468,7 @@ Source: ./controls/line-edit/semantic-cn.md
 
 # LineEdit 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -4503,7 +4482,7 @@ Source: ./controls/line-edit/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Input/Themes/LineEditTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Input/Themes/LineEditTheme.axaml`
 
 ```xml
 <AddOnDecoratedBox Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}">
@@ -4709,7 +4688,7 @@ Source: ./controls/mentions/semantic-cn.md
 
 # Mentions 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -4723,7 +4702,7 @@ Source: ./controls/mentions/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml`
 
 ```xml
 <Panel>
@@ -4903,7 +4882,7 @@ Source: ./controls/numeric-up-down/semantic-cn.md
 
 # NumericUpDown 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -4917,7 +4896,7 @@ Source: ./controls/numeric-up-down/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`
 
 ```xml
 <ButtonSpinner Name="PART_Spinner">
@@ -5174,7 +5153,7 @@ Source: ./controls/otp-line-edit/semantic-cn.md
 
 # OtpLineEdit 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -5188,7 +5167,7 @@ Source: ./controls/otp-line-edit/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditTheme.axaml`
 
 ```xml
 <Grid Name="PART_RootPanel">
@@ -5379,7 +5358,7 @@ Source: ./controls/radio-button/semantic-cn.md
 
 # RadioButton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -5393,7 +5372,7 @@ Source: ./controls/radio-button/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -5530,7 +5509,7 @@ Source: ./controls/rate/semantic-cn.md
 
 # Rate 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -5544,7 +5523,7 @@ Source: ./controls/rate/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Rate/Themes/RateTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Rate/Themes/RateTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -5676,7 +5655,7 @@ Source: ./controls/search-edit/semantic-cn.md
 
 # SearchEdit 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -5690,7 +5669,7 @@ Source: ./controls/search-edit/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Input/Themes/SearchEditTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Input/Themes/SearchEditTheme.axaml`
 
 ```xml
 <SearchEditDecoratedBox Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}">
@@ -5884,7 +5863,7 @@ Source: ./controls/select/semantic-cn.md
 
 # Select 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -5898,7 +5877,7 @@ Source: ./controls/select/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Select/Themes/SelectTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Select/Themes/SelectTheme.axaml`
 
 ```xml
 <Panel>
@@ -6126,7 +6105,7 @@ Source: ./controls/slider/semantic-cn.md
 
 # Slider 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -6140,7 +6119,7 @@ Source: ./controls/slider/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Slider/Themes/SliderTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Slider/Themes/SliderTheme.axaml`
 
 ```xml
 <SliderTrack Name="PART_Track" />
@@ -6312,7 +6291,7 @@ Source: ./controls/time-picker/semantic-cn.md
 
 # TimePicker 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -6489,7 +6468,7 @@ Source: ./controls/toggle-switch/semantic-cn.md
 
 # ToggleSwitch 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -6503,7 +6482,7 @@ Source: ./controls/toggle-switch/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Switch/Themes/ToggleSwitchTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Switch/Themes/ToggleSwitchTheme.axaml`
 
 ```xml
 <Panel>
@@ -6653,7 +6632,7 @@ Source: ./controls/transfer/semantic-cn.md
 
 # Transfer 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -6860,7 +6839,7 @@ Source: ./controls/tree-select/semantic-cn.md
 
 # TreeSelect 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -6874,7 +6853,7 @@ Source: ./controls/tree-select/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml`
 
 ```xml
 <Panel>
@@ -7046,7 +7025,7 @@ Source: ./controls/upload/semantic-cn.md
 
 # Upload 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7061,7 +7040,7 @@ Source: ./controls/upload/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Upload/Themes/UploadTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Upload/Themes/UploadTheme.axaml`
 
 ```xml
 <StackPanel Name="RootLayout">
@@ -7237,7 +7216,7 @@ Source: ./controls/avatar/semantic-cn.md
 
 # Avatar 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7251,7 +7230,7 @@ Source: ./controls/avatar/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
 
 ```xml
 <Panel Name="RootLayout">
@@ -7387,7 +7366,7 @@ Source: ./controls/badge/semantic-cn.md
 
 # Badge 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7540,7 +7519,7 @@ Source: ./controls/calendar/semantic-cn.md
 
 # Calendar 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7554,7 +7533,7 @@ Source: ./controls/calendar/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="PART_Frame">
@@ -7713,7 +7692,7 @@ Source: ./controls/card/semantic-cn.md
 
 # Card 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7727,7 +7706,7 @@ Source: ./controls/card/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Card/Themes/CardTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Card/Themes/CardTheme.axaml`
 
 ```xml
 <Panel>
@@ -7952,7 +7931,7 @@ Source: ./controls/carousel/semantic-cn.md
 
 # Carousel 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7966,7 +7945,7 @@ Source: ./controls/carousel/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselTheme.axaml`
 
 ```xml
 <Panel>
@@ -8123,7 +8102,7 @@ Source: ./controls/collapse/semantic-cn.md
 
 # Collapse 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -8137,7 +8116,7 @@ Source: ./controls/collapse/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="PART_Frame">
@@ -8291,7 +8270,7 @@ Source: ./controls/data-grid/semantic-cn.md
 
 # DataGrid 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -8305,7 +8284,7 @@ Source: ./controls/data-grid/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls.DataGrid/Themes/DataGridTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls.DataGrid/Themes/DataGridTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -8451,7 +8430,7 @@ Source: ./controls/descriptions/semantic-cn.md
 
 # Descriptions 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -8465,7 +8444,7 @@ Source: ./controls/descriptions/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Descriptions/Themes/DescriptionsTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Descriptions/Themes/DescriptionsTheme.axaml`
 
 ```xml
 <StackPanel>
@@ -8675,7 +8654,7 @@ Source: ./controls/empty/semantic-cn.md
 
 # Empty 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -8689,7 +8668,7 @@ Source: ./controls/empty/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Empty/Themes/EmptyTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Empty/Themes/EmptyTheme.axaml`
 
 ```xml
 <StackPanel>
@@ -8804,7 +8783,7 @@ Source: ./controls/expander/semantic-cn.md
 
 # Expander 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -8818,7 +8797,7 @@ Source: ./controls/expander/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Expander/Themes/ExpanderTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Expander/Themes/ExpanderTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="PART_Frame">
@@ -9040,7 +9019,7 @@ Source: ./controls/group-box/semantic-cn.md
 
 # GroupBox 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -9054,7 +9033,7 @@ Source: ./controls/group-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/GroupBox/Themes/GroupBoxTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/GroupBox/Themes/GroupBoxTheme.axaml`
 
 ```xml
 <Border Name="PART_Frame">
@@ -9192,7 +9171,7 @@ Source: ./controls/image-previewer/semantic-cn.md
 
 # ImagePreviewer 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -9207,7 +9186,7 @@ Source: ./controls/image-previewer/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTheme.axaml`
 
 ```xml
 <PixelAlignedBorder>
@@ -9276,7 +9255,7 @@ ImagePreviewer
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
-           -> DockPanel#PART_TitleLayout (template-stable)
+           -> StackPanel#PART_TitleLayout (template-stable)
               -> IconPresenter#PART_IconPresenter (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
@@ -9285,7 +9264,7 @@ ImagePreviewer
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
-           -> DockPanel#PART_TitleLayout (template-stable)
+           -> StackPanel#PART_TitleLayout (template-stable)
               -> IconPresenter#PART_IconPresenter (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
@@ -9294,7 +9273,7 @@ ImagePreviewer
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
-           -> DockPanel#PART_TitleLayout (template-stable)
+           -> StackPanel#PART_TitleLayout (template-stable)
               -> IconPresenter#PART_IconPresenter (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
@@ -9495,7 +9474,7 @@ Source: ./controls/info-flyout/semantic-cn.md
 
 # InfoFlyout 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -9636,7 +9615,7 @@ Source: ./controls/list-box/semantic-cn.md
 
 # ListBox 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -9650,7 +9629,7 @@ Source: ./controls/list-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -9846,7 +9825,7 @@ Source: ./controls/list-view/semantic-cn.md
 
 # ListView 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -9860,7 +9839,7 @@ Source: ./controls/list-view/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/ListView/Themes/ListViewTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ListView/Themes/ListViewTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -10106,7 +10085,7 @@ Source: ./controls/qr-code/semantic-cn.md
 
 # QRCode 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10120,7 +10099,7 @@ Source: ./controls/qr-code/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -10281,7 +10260,7 @@ Source: ./controls/segmented/semantic-cn.md
 
 # Segmented 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10295,7 +10274,7 @@ Source: ./controls/segmented/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -10472,7 +10451,7 @@ Source: ./controls/statistic/semantic-cn.md
 
 # Statistic 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10581,7 +10560,7 @@ Source: ./controls/tag/semantic-cn.md
 
 # Tag 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10595,7 +10574,7 @@ Source: ./controls/tag/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.axaml`
 
 ```xml
 <Panel>
@@ -10722,7 +10701,7 @@ Source: ./controls/timeline/semantic-cn.md
 
 # Timeline 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10736,7 +10715,7 @@ Source: ./controls/timeline/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -10872,7 +10851,7 @@ Source: ./controls/tooltip/semantic-cn.md
 
 # Tooltip 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10974,7 +10953,7 @@ Source: ./controls/tour/semantic-cn.md
 
 # Tour 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10988,7 +10967,7 @@ Source: ./controls/tour/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml`
 
 ```xml
 <Popup Name="PART_Popup">
@@ -11162,7 +11141,7 @@ Source: ./controls/tree-view/semantic-cn.md
 
 # TreeView 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -11176,7 +11155,7 @@ Source: ./controls/tree-view/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/TreeView/Themes/TreeViewTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TreeView/Themes/TreeViewTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -11466,7 +11445,7 @@ Source: ./controls/alert/semantic-cn.md
 
 # Alert 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -11480,7 +11459,7 @@ Source: ./controls/alert/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Alert/Themes/AlertTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Alert/Themes/AlertTheme.axaml`
 
 ```xml
 <PixelAlignedBorder>
@@ -11628,7 +11607,7 @@ Source: ./controls/drawer/semantic-cn.md
 
 # Drawer 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -11671,6 +11650,27 @@ Drawer
            -> Separator (template-stable)
            -> ContentPresenter#InfoFooter (internal-observable)
   -> Drawer (control theme, DrawerThemes.axaml)
+  -> FullscreenPopoverLayer (control theme, FullscreenPopoverLayerTheme.axaml)
+     -> Panel (template-stable)
+        -> Border#PART_PopoverBorder (template-stable)
+           -> WindowTitleBarLayoutPanel (template-stable)
+              -> Panel (template-stable)
+              -> StackPanel (template-stable)
+                 -> ContentPresenter#FullscreenLogoPresenter (internal-observable)
+                 -> TextBlock#FullscreenTitleText (template-stable)
+              -> StackPanel#FullscreenCaptionButtonGroup (template-stable)
+                 -> CaptionButton#PART_PopoverFullScreenButton (template-stable)
+                 -> CaptionButton#PART_PopoverCloseButton (template-stable)
+  -> WindowResizer (control theme, WindowResizerTheme.axaml)
+     -> Panel#PART_RootLayout (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
 ```
 
 ### 协作节点
@@ -11695,6 +11695,18 @@ Drawer
 | `InfoContainer` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InfoFooter` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Footer`, `FooterTemplate`, `HasFooter` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Drawer` | control theme | `DrawerThemes.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `FullscreenPopoverLayer` | control theme | `FullscreenPopoverLayerTheme.axaml` | Drawer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Panel` | template node (Panel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_PopoverBorder` | template node (Border) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StackPanel` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `FullscreenLogoPresenter` | template node (ContentPresenter) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `FullscreenTitleText` | template node (TextBlock) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `FullscreenCaptionButtonGroup` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_PopoverFullScreenButton` | template node (CaptionButton) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_PopoverCloseButton` | template node (CaptionButton) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowResizer` | control theme | `WindowResizerTheme.axaml` | Drawer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_RootLayout` | template node (Panel) | `WindowResizerTheme.axaml` | WindowResizer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -11786,7 +11798,7 @@ Source: ./controls/message/semantic-cn.md
 
 # Message 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -11916,7 +11928,7 @@ Source: ./controls/modal/semantic-cn.md
 
 # Modal 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -11961,7 +11973,7 @@ Source: ./controls/modal/semantic-cn.md
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
 - 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
 - Overlay 与 Window 都等待 opening/closing motion；`IsMotionEnabled=false` 跳过 motion，但不跳过宿主打开、关闭和释放。
-- `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。Overlay handle 捕获 pointer，release 或 capture lost 都会完整结束当前 resize，不复用上一次拖拽 origin。
+- `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。
 
 ## Theme and Token Boundaries
 
@@ -12020,7 +12032,7 @@ Source: ./controls/notification/semantic-cn.md
 
 # Notification 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12160,7 +12172,7 @@ Source: ./controls/popup-confirm/semantic-cn.md
 
 # PopupConfirm 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12174,7 +12186,7 @@ Source: ./controls/popup-confirm/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmTheme.axaml`
 
 ```xml
 <ContentPresenter Name="PART_ContentPresenter" />
@@ -12305,7 +12317,7 @@ Source: ./controls/progress-bar/semantic-cn.md
 
 # ProgressBar 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12468,7 +12480,7 @@ Source: ./controls/result/semantic-cn.md
 
 # Result 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12482,7 +12494,7 @@ Source: ./controls/result/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Result/Themes/ResultTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Result/Themes/ResultTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -12614,7 +12626,7 @@ Source: ./controls/skeleton/semantic-cn.md
 
 # Skeleton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12628,7 +12640,7 @@ Source: ./controls/skeleton/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonTheme.axaml`
 
 ```xml
 <Panel>
@@ -12804,7 +12816,7 @@ Source: ./controls/spin/semantic-cn.md
 
 # Spin 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12818,7 +12830,7 @@ Source: ./controls/spin/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Spin/Themes/SpinTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Spin/Themes/SpinTheme.axaml`
 
 ```xml
 <Panel Name="RootLayout">
@@ -12964,7 +12976,7 @@ Source: ./controls/splash/semantic-cn.md
 
 # Splash 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12979,7 +12991,7 @@ Source: ./controls/splash/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashTheme.axaml`
 
 ```xml
 <Border Name="PART_RootLayout">
@@ -13163,7 +13175,7 @@ Source: ./controls/watermark/semantic-cn.md
 
 # Watermark 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -13261,7 +13273,7 @@ Source: ./controls/window/semantic-cn.md
 
 # Window 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -13274,7 +13286,7 @@ Source: ./controls/window/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 
 ```xml
 <Panel>
@@ -13319,7 +13331,7 @@ Window
         -> Border#PART_PopoverBorder (template-stable)
            -> WindowTitleBarLayoutPanel (template-stable)
               -> Panel (template-stable)
-              -> DockPanel (template-stable)
+              -> StackPanel (template-stable)
                  -> ContentPresenter#FullscreenLogoPresenter (internal-observable)
                  -> TextBlock#FullscreenTitleText (template-stable)
               -> StackPanel#FullscreenCaptionButtonGroup (template-stable)
@@ -13394,7 +13406,7 @@ Window
 | `Panel` | template node (Panel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_PopoverBorder` | template node (Border) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `DockPanel` | template node (DockPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StackPanel` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FullscreenLogoPresenter` | template node (ContentPresenter) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `FullscreenTitleText` | template node (TextBlock) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FullscreenCaptionButtonGroup` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -13463,10 +13475,10 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `FullscreenPopoverLayerTheme.axaml` | 定义 macOS 全屏标题栏 popover 的固定模板、caption buttons 和标题展示。 |
-| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
-| `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
-| `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
+| `FullscreenPopoverLayerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `WindowDrawnDecorationsTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
+| `WindowResizerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
+| `WindowTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `WindowThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
@@ -13550,7 +13562,7 @@ Source: ./controls/window-title-bar/semantic-cn.md
 
 # WindowTitleBar 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -13565,7 +13577,7 @@ Source: ./controls/window-title-bar/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -13812,7 +13824,7 @@ Source: ./controls/border-beam/semantic-cn.md
 
 # BorderBeam 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -13825,7 +13837,7 @@ Source: ./controls/border-beam/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/BorderBeam/Themes/BorderBeamTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/BorderBeam/Themes/BorderBeamTheme.axaml`
 
 ```xml
 <Grid>
