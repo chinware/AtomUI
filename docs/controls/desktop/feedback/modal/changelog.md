@@ -2,6 +2,27 @@
 
 本文档记录 Modal 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-22
+
+- Design
+  - Define one Surface-body sizing contract for Overlay and native Window hosts, including requested size, structural minimum, host capacity, effective constraints and actual size.
+  - Make structural minimum preserve the title, Footer actions and a non-zero content viewport whenever host capacity permits.
+  - Define normal resize, capacity degradation, maximize/restore and Window chrome translation as one stable host-sizing model.
+- API
+  - Keep all existing `Host*` registrations and defaults while defining `HostMin*` as a request that can raise, but cannot lower, the structural minimum.
+  - Keep `HostWidth/Height=NaN` as an initial natural-size request without converting natural size into a permanent minimum or writing user resize back to the public properties.
+- Token
+  - Define `DialogToken.MinWidth/MinHeight` as the content viewport baseline used by structural minimum resolution.
+- Docs
+  - Add the Modal host sizing and resize design and link it from the public design, implementation and Token documents.
+- Gallery
+  - Enable resize in the basic Overlay and Window examples, keep the Overlay header on its default close-only capability, demonstrate finite HostMin/Max ranges, and expose the Dialog content viewport minimum Token baselines.
+- Behavior
+  - Capture Overlay resize pointers and terminate resize state on both release and capture loss so a later drag cannot reuse a stale origin.
+  - Preserve a natural axis as actual geometry after constraints clamp it, and resolve final natural sizing and startup placement before native Window show so the first visible frame cannot show a preliminary size or platform-default position.
+  - Re-resolve structural minimum after template-subtree measure changes and translate Window chrome according to the active CSD or managed-title-bar template metrics.
+  - Disable native Window maximize whenever either HostMax axis is finite, and automatically restore the capability when both axes return to PositiveInfinity.
+
 ## 2026-07-20
 
 - Architecture

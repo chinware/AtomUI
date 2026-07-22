@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -81,6 +80,12 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         AvaloniaProperty.RegisterDirect<DialogSurface, bool>(
             nameof(IsDialogMaximized),
             surface => surface.IsDialogMaximized);
+
+    internal static readonly StyledProperty<double> ContentViewportMinWidthProperty =
+        AvaloniaProperty.Register<DialogSurface, double>(nameof(ContentViewportMinWidth));
+
+    internal static readonly StyledProperty<double> ContentViewportMinHeightProperty =
+        AvaloniaProperty.Register<DialogSurface, double>(nameof(ContentViewportMinHeight));
 
     internal string? Title
     {
@@ -182,10 +187,27 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         set => SetAndRaise(IsDialogMaximizedProperty, ref _isDialogMaximized, value);
     }
 
+    internal double ContentViewportMinWidth
+    {
+        get => GetValue(ContentViewportMinWidthProperty);
+        set => SetValue(ContentViewportMinWidthProperty, value);
+    }
+
+    internal double ContentViewportMinHeight
+    {
+        get => GetValue(ContentViewportMinHeightProperty);
+        set => SetValue(ContentViewportMinHeightProperty, value);
+    }
+
     private readonly Dialog _dialog;
     private readonly CompositeDisposable _bindings = new();
     private CompositeDisposable? _confirmLoadingBindings;
+    private CompositeDisposable? _structuralButtonBindings;
     private IReadOnlyList<DialogButton> _synchronizedButtons = Array.Empty<DialogButton>();
+    private Border? _contentFrame;
+    private Border? _footerFrame;
+    private bool _isStructuralMinimumDirty;
+    private Size? _lastStructuralMinimum;
 
     internal DialogButtonBox? ButtonBox { get; private set; }
     internal OverlayDialogHeader? Header { get; private set; }
@@ -195,10 +217,18 @@ internal sealed class DialogSurface : ContentControl, IDisposable
     internal event EventHandler? HostCloseRequested;
     internal event EventHandler? MaximizeRequested;
     internal event EventHandler? RestoreRequested;
+    internal event EventHandler<OverlayDialogResizeEventArgs>? ResizeStarted;
     internal event EventHandler<OverlayDialogResizeEventArgs>? ResizeRequested;
+    internal event EventHandler<OverlayDialogResizeEventArgs>? ResizeCompleted;
     internal event EventHandler<PointerPressedEventArgs>? HeaderPointerPressed;
     internal event EventHandler<PointerEventArgs>? HeaderPointerMoved;
     internal event EventHandler<PointerReleasedEventArgs>? HeaderPointerReleased;
+    internal event EventHandler? StructuralMinimumChanged;
+
+    static DialogSurface()
+    {
+        AffectsMeasure<DialogSurface>(ContentViewportMinWidthProperty, ContentViewportMinHeightProperty);
+    }
 
     internal DialogSurface(Dialog dialog)
     {
@@ -230,6 +260,45 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         UpdateEffectiveFooterVisibility();
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == TitleProperty ||
+            change.Property == TitleIconProperty ||
+            change.Property == IsHeaderVisibleProperty ||
+            change.Property == IsClosableProperty ||
+            change.Property == IsMaximizableProperty ||
+            change.Property == IsEffectiveFooterVisibleProperty ||
+            change.Property == ContentViewportMinWidthProperty ||
+            change.Property == ContentViewportMinHeightProperty)
+        {
+            InvalidateStructuralMinimum();
+        }
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var measuredSize = base.MeasureOverride(availableSize);
+        if (_isStructuralMinimumDirty)
+        {
+            _isStructuralMinimumDirty = false;
+            var structuralMinimum = MeasureStructuralMinimum();
+            if (_lastStructuralMinimum != structuralMinimum)
+            {
+                _lastStructuralMinimum = structuralMinimum;
+                StructuralMinimumChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        return measuredSize;
+    }
+
+    protected override void OnMeasureInvalidated()
+    {
+        _isStructuralMinimumDirty = true;
+        base.OnMeasureInvalidated();
+    }
+
     private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         SynchronizeCustomButtons();
@@ -242,10 +311,13 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         ReleaseButtonBox();
         ReleaseHeader();
         ReleaseResizer();
+        ReleaseStructuralFrames();
 
         ButtonBox = e.NameScope.Find<DialogButtonBox>("PART_ButtonBox");
         Header = e.NameScope.Find<OverlayDialogHeader>("PART_Header");
         Resizer = e.NameScope.Find<OverlayDialogResizer>("PART_Resizer");
+        _contentFrame = e.NameScope.Find<Border>("ContentFrame");
+        _footerFrame = e.NameScope.Find<Border>("FooterFrame");
         if (ButtonBox is not null)
         {
             ButtonBox.Clicked += HandleButtonClicked;
@@ -264,8 +336,12 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         }
         if (Resizer is not null)
         {
+            Resizer.AboutToResize += HandleResizeStarted;
             Resizer.ResizeRequest += HandleResizeRequest;
+            Resizer.ResizeCompleted += HandleResizeCompleted;
         }
+
+        InvalidateStructuralMinimum();
     }
 
     private void SynchronizeCustomButtons()
@@ -327,6 +403,16 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         ResizeRequested?.Invoke(this, e);
     }
 
+    private void HandleResizeStarted(object? sender, OverlayDialogResizeEventArgs e)
+    {
+        ResizeStarted?.Invoke(this, e);
+    }
+
+    private void HandleResizeCompleted(object? sender, OverlayDialogResizeEventArgs e)
+    {
+        ResizeCompleted?.Invoke(this, e);
+    }
+
     private void HandleHeaderPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         HeaderPointerPressed?.Invoke(this, e);
@@ -352,6 +438,8 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         _synchronizedButtons = ButtonBox.EffectiveButtons.ToArray();
         _confirmLoadingBindings?.Dispose();
         _confirmLoadingBindings = new CompositeDisposable(_synchronizedButtons.Count);
+        _structuralButtonBindings?.Dispose();
+        _structuralButtonBindings = new CompositeDisposable(_synchronizedButtons.Count * 2);
         foreach (var button in _synchronizedButtons)
         {
             if (button.Role is DialogButtonRole.AcceptRole or DialogButtonRole.YesRole or DialogButtonRole.ApplyRole)
@@ -359,9 +447,60 @@ internal sealed class DialogSurface : ContentControl, IDisposable
                 _confirmLoadingBindings.Add(
                     button.Bind(Button.IsLoadingProperty, this.GetObservable(IsConfirmLoadingProperty)));
             }
+
+            _structuralButtonBindings.Add(
+                button.GetObservable(Button.ContentProperty).Subscribe(_ => InvalidateStructuralMinimum()));
+            _structuralButtonBindings.Add(
+                button.GetObservable(Visual.IsVisibleProperty).Subscribe(_ => InvalidateStructuralMinimum()));
         }
 
         _dialog.ConfigureSurfaceButtons(_synchronizedButtons);
+        InvalidateStructuralMinimum();
+    }
+
+    internal Size MeasureStructuralMinimum()
+    {
+        var headerSize = default(Size);
+        if (IsHeaderVisible && Header is { IsVisible: true } header)
+        {
+            header.Measure(Size.Infinity);
+            headerSize = header.DesiredSize;
+        }
+
+        var footerSize = default(Size);
+        if (IsEffectiveFooterVisible)
+        {
+            var footer = (Control?)_footerFrame ?? ButtonBox;
+            if (footer is { IsVisible: true })
+            {
+                footer.Measure(Size.Infinity);
+                footerSize = footer.DesiredSize;
+            }
+        }
+
+        var contentPadding = _contentFrame?.Padding ?? default;
+        var contentBorder = _contentFrame?.BorderThickness ?? default;
+        var contentWidth = NormalizeViewportMinimum(ContentViewportMinWidth) +
+                           contentPadding.Left + contentPadding.Right +
+                           contentBorder.Left + contentBorder.Right;
+        var contentHeight = NormalizeViewportMinimum(ContentViewportMinHeight) +
+                            contentPadding.Top + contentPadding.Bottom +
+                            contentBorder.Top + contentBorder.Bottom;
+
+        return new Size(
+            Math.Max(contentWidth, Math.Max(headerSize.Width, footerSize.Width)),
+            contentHeight + headerSize.Height + footerSize.Height);
+    }
+
+    private static double NormalizeViewportMinimum(double value)
+    {
+        return double.IsFinite(value) ? Math.Max(0, value) : 0;
+    }
+
+    private void InvalidateStructuralMinimum()
+    {
+        _isStructuralMinimumDirty = true;
+        InvalidateMeasure();
     }
 
     internal bool TryInvokeStandardButton(Key key)
@@ -423,6 +562,7 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         ReleaseButtonBox();
         ReleaseHeader();
         ReleaseResizer();
+        ReleaseStructuralFrames();
         _bindings.Dispose();
     }
 
@@ -431,6 +571,8 @@ internal sealed class DialogSurface : ContentControl, IDisposable
         _dialog.ReleaseSurfaceButtons(_synchronizedButtons);
         _confirmLoadingBindings?.Dispose();
         _confirmLoadingBindings = null;
+        _structuralButtonBindings?.Dispose();
+        _structuralButtonBindings = null;
         _synchronizedButtons = Array.Empty<DialogButton>();
         if (ButtonBox is null)
         {
@@ -467,7 +609,15 @@ internal sealed class DialogSurface : ContentControl, IDisposable
             return;
         }
 
+        Resizer.AboutToResize -= HandleResizeStarted;
         Resizer.ResizeRequest -= HandleResizeRequest;
+        Resizer.ResizeCompleted -= HandleResizeCompleted;
         Resizer = null;
+    }
+
+    private void ReleaseStructuralFrames()
+    {
+        _footerFrame = null;
+        _contentFrame = null;
     }
 }

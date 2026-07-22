@@ -1,6 +1,6 @@
 # Modal 桌面版架构设计
 
-本文档定义 `Dialog` 和 `MessageBox` 的当前公共设计。内部状态机与宿主实现见 [Modal 桌面版实现原理](implementation.md)，视觉变量见 [Modal Token 设计](token.md)，历史变化见 [Modal Changelog](changelog.md)。
+本文档定义 `Dialog` 和 `MessageBox` 的当前公共设计。内部状态机与宿主实现见 [Modal 桌面版实现原理](implementation.md)，宿主尺寸与交互缩放见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)，视觉变量见 [Modal Token 设计](token.md)，历史变化见 [Modal Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -35,7 +35,7 @@ Modal 不承担通知队列、轻量 Tooltip、Popup 菜单或业务级导航服
 | 内容 | `Title`, `TitleIcon`, `Content`, `ContentTemplate`, `DataContext` | 定义标题和任意内容对象或模板。 |
 | 打开状态 | `IsOpen`, `OpenAsync(...)` | `IsOpen` 是默认 TwoWay 的声明式意图；`OpenAsync` 表示一次完整 Session。 |
 | 展示方式 | `DialogHostType`, `IsModal`, `PlacementTarget`, startup anchor/offset | 选择 Overlay/Window、交互模态和初始位置。 |
-| 尺寸与窗口能力 | `HostWidth/Height/Min/Max`, `IsResizable`, `IsClosable`, `IsDragMovable`, `IsMaximizable`, `IsMinimizable`, `IsTopmost` | 同一组请求映射到 Overlay Surface 或原生 Window。`NaN` 表示自然尺寸。 |
+| 尺寸与窗口能力 | `HostWidth/Height/Min/Max`, `IsResizable`, `IsClosable`, `IsDragMovable`, `IsMaximizable`, `IsMinimizable`, `IsTopmost` | 同一组 Surface 正文尺寸请求映射到 Overlay 或原生 Window。`NaN` 表示初始自然尺寸；有效最小尺寸还必须满足 Dialog 的结构性下限。 |
 | 操作 | `StandardButtons`, `CustomButtons`, `DefaultStandardButton`, `EscapeStandardButton`, `ButtonsConfigure` | 生成标准按钮、加入自定义按钮并配置当前有效按钮序列。 |
 | 状态与策略 | `IsLoading`, `IsConfirmLoading`, `IsFooterVisible`, `IsMotionEnabled`, `BeforeCloseAsync` | 控制加载、确认按钮 loading、Footer、motion 和关闭前校验。 |
 | 结果 | `Result`, `Accept()`, `Reject()`, `Done(...)` | 所有关闭来源归一为结果与 `DialogCloseReason`。 |
@@ -99,6 +99,7 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
 - 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
 - Overlay 与 Window 都等待 opening/closing motion；`IsMotionEnabled=false` 跳过 motion，但不跳过宿主打开、关闭和释放。
+- `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。Overlay handle 捕获 pointer，release 或 capture lost 都会完整结束当前 resize，不复用上一次拖拽 origin。
 
 ## 5. 视觉与主题模型
 
@@ -135,6 +136,8 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 - mask、Surface、内容、按钮、binding、逻辑/资源 parent、owner/target 订阅必须在所有关闭路径释放。
 - Window mask 必须覆盖完整 Avalonia 可绘制窗口轮廓；存在 drawn title bar 时必须位于其上方。所有平台的 Dialog Surface 正文都使用包含 managed/drawn 标题栏、排除透明 frame shadow 与有效 drawn frame 的 owner bounds；不能把 mask bounds、visible frame bounds、正文 owner bounds 与 BoxShadow 绘制范围合并为同一个矩形。
 - Window 外轮廓只能由现有 `WindowVisualLayerClip` 统一裁剪；Overlay Dialog 不单独复制 frame shadow margin 或 CornerRadius。
+- Overlay 与 Window 必须使用同一套 Surface 正文尺寸解析。Window 只允许在 presenter 边界加回 chrome；不能把 Surface `HostMin/Max` 直接解释为包含标题栏和 frame 的 Window client constraints。
+- 用户 resize、runtime `HostMin/Max`、主题或宿主容量变化不得无条件重置已调整尺寸；actual size 只有越出最新有效区间时才被 clamp。
 - 不重新引入同步 DispatcherFrame、callback close、隐藏 MessageBox Dialog 或分离的 Popup mask。
 
 ## 8. 专项模型
@@ -156,7 +159,13 @@ Created -> Opening -> Open -> ClosePending -> Closing -> Closed
 - `DialogHostType.Window` 使用原生 Window；平台不支持时回退 Overlay。
 - `IsModal` 只控制交互模态，不改变 `OpenAsync` 的任务边界。
 
-### 8.3 Overlay 窗口几何
+### 8.3 宿主尺寸与 Resize
+
+`HostWidth/Height/Min/Max` 统一描述 `DialogSurface` 正文 DIP。Dialog 以 Header、Footer 和 `DialogToken.MinWidth/MinHeight` 正文 viewport 基线解析结构性最小尺寸，再与调用方 min/max 和当前 host capacity 合成 effective constraints。
+
+normal 状态的 Overlay 直接应用 Surface constraints；Window presenter 把 Surface constraints 加回当前 Window chrome 后交给 native resize。`HostWidth/Height=NaN` 只选择初始自然尺寸，用户 resize 不反向写回 public request。Overlay maximize 临时使用 host capacity；原生 Window 任一轴配置 finite `HostMax*` 时禁用 native maximize，只有两轴都为默认 `PositiveInfinity` 才允许平台窗口铺满 working area。完整公式、失效条件、宿主策略和验证矩阵见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)。
+
+### 8.4 Overlay 窗口几何
 
 Overlay 使用彼此独立的几何语义：
 
@@ -171,6 +180,7 @@ owner resize、frame shadow、drawn frame thickness、Window state 和 `ClientSi
 ## 9. 文档导航、LLMS 导出与验证策略
 
 - [实现原理](implementation.md)
+- [宿主尺寸与 Resize 设计](host-sizing-design.md)
 - [Token 设计](token.md)
 - [控件级 Changelog](changelog.md)
 

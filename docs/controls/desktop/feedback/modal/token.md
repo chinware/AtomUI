@@ -16,7 +16,7 @@ Token 按控件语义分类维护：
 
 | 分类 | 语义 | 代表 Token |
 | --- | --- | --- |
-| 尺寸与密度 | 控件高度、宽度、图标尺寸、内容最小尺寸。 | `LogoSize`、`HeaderFontSize`、`CloseBtnSize`、`MinHeight`、`MinWidth` |
+| 尺寸与密度 | 正文 viewport 基线、控件高度、宽度和图标尺寸。 | `MinHeight`、`MinWidth`、`LogoSize`、`HeaderFontSize`、`CloseBtnSize` |
 | 间距与布局 | padding、margin、gap、offset、popup content padding。 | `HeaderMarginBottom`、`HeaderPadding`、`ContentPadding`、`FooterPadding`、`FooterMarginTop`、`LoadingIndicatorMargin` |
 | 颜色与状态视觉 | 文本、背景、边框、hover、selected、active、disabled 视觉。 | `HeaderBg`、`HeaderColor`、`ContentBg`、`FooterBg` |
 | 结构与装饰 | 圆角、阴影、指示器、弹层和装饰线相关变量。 | `LoadingIndicatorMargin` |
@@ -30,6 +30,8 @@ Modal 的控件专项模型通过 Theme 消费 Token：
 - C# 控件负责状态归一和伪类同步。
 - AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、padding、尺寸和动效。
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
+- `DialogToken.MinWidth/MinHeight` 定义结构性最小尺寸中的正文 viewport 基线，不直接等同于最终 Surface minimum。最终下限还需要组合可见 Header、Footer、调用方 `HostMin*` 与 host capacity；完整算法见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)。
+- `MessageBoxToken.MinWidth` 可以提高 MessageBox 的有效最小宽度，但不能降低 Dialog 的结构性最小高度。
 - Gallery Token 表应显式维护，不依赖运行时反射扫描。
 
 ## 4. 控件家族影响
@@ -48,6 +50,7 @@ Modal 的控件专项模型通过 Theme 消费 Token：
 - 不把实例状态、交互状态或 `EffectiveXxx` 状态写成 Token。
 - 不在 Token 中展开颜色、variant 和状态的组合矩阵；组合关系应由 Theme selector 表达。
 - Token 默认值变更必须同步评估 Gallery 示例和截图可观察外观。
+- 调用方 `HostMin*` 是实例尺寸请求，不是 Token，也不能把 effective minimum 降低到 `DialogToken.MinWidth/MinHeight` 正文 viewport 基线以下。
 - 如需引入新 Token，必须同步源码、生成文件、Gallery Token 表和本文档。
 
 ## 6. 验证策略

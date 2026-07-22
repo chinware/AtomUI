@@ -29,15 +29,8 @@ internal sealed class DialogWindow : Window
         Close();
     }
 
-    internal void ApplyRequestedSize(double width, double height)
+    internal Size ApplyRequestedSize(double width, double height)
     {
-        Width  = width;
-        Height = height;
-        if (!IsVisible)
-        {
-            return;
-        }
-
         var requestedSize = new Size(
             double.IsNaN(width)
                 ? Math.Clamp(ClientSize.Width, MinWidth, MaxWidth)
@@ -45,10 +38,19 @@ internal sealed class DialogWindow : Window
             double.IsNaN(height)
                 ? Math.Clamp(ClientSize.Height, MinHeight, MaxHeight)
                 : Math.Clamp(height, MinHeight, MaxHeight));
+        Width  = requestedSize.Width;
+        Height = requestedSize.Height;
+        if (!IsVisible)
+        {
+            return requestedSize;
+        }
+
         if (requestedSize != ClientSize)
         {
             ClientSize = requestedSize;
         }
+
+        return requestedSize;
     }
 
     private enum DialogWindowCloseState

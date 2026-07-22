@@ -42,7 +42,9 @@ internal partial class zh_CN
     public const string ApiPropertyDialogDefaultStandardButton = "按下 Enter 时触发的默认标准按钮。";
     public const string ApiPropertyDialogIsLoading = "在对话框内容上显示加载状态。";
     public const string ApiPropertyDialogIsConfirmLoading = "异步确认操作进行中时显示确认按钮加载状态。";
-    public const string ApiPropertyDialogHostWidth = "对话框宿主的显式宽度。";
+    public const string ApiPropertyDialogHostWidth = "对话框正文的显式宽度；NaN 表示打开时使用自然宽度。";
+    public const string ApiPropertyDialogHostMinimum = "请求的对话框正文最小宽度和高度；零值在宿主容量允许时仍保留结构性最小尺寸。";
+    public const string ApiPropertyDialogHostMaximum = "请求的对话框正文最大宽度和高度；PositiveInfinity 解析为宿主容量，任一轴为有限最大值时禁用原生 Window 最大化。";
     public const string ApiPropertyDialogOptionsBeforeCloseAsync = "异步回调，用于决定 Dialog 的关闭请求是否可以继续。";
     public const string ApiMethodDialogShowDialogModalAsync = "通过静态 API 创建并显示模态对话框。";
     public const string ApiPropertyMessageBoxStyle = "MessageBox 的语义样式，例如 Confirm、Information、Success、Warning 或 Error。";
@@ -54,6 +56,8 @@ internal partial class zh_CN
     public const string TokenScopeComponent = "组件";
     public const string TokenStatusStable = "稳定";
     public const string TokenNameDialogHeaderBg = "对话框头部背景色。";
+    public const string TokenNameDialogMinWidth = "结构性尺寸计算使用的对话框正文 viewport 最小宽度基线。";
+    public const string TokenNameDialogMinHeight = "结构性尺寸计算使用的对话框正文 viewport 最小高度基线。";
     public const string TokenNameDialogHeaderPadding = "对话框头部内边距。";
     public const string TokenNameDialogContentBg = "对话框内容区域背景色。";
     public const string TokenNameDialogContentPadding = "对话框内容区域内边距。";
@@ -61,7 +65,7 @@ internal partial class zh_CN
     public const string TokenNameDialogCloseBtnSize = "对话框关闭按钮尺寸。";
     public const string TokenNameDialogButtonGroupSpacing = "对话框页脚按钮之间的间距。";
     public const string TokenNameMessageBoxStyleIconSize = "MessageBox 语义图标尺寸。";
-    public const string TokenNameMessageBoxMinWidth = "MessageBox 宿主最小宽度。";
+    public const string TokenNameMessageBoxMinWidth = "可提高 Dialog 结构性最小宽度的 MessageBox 最小宽度基线。";
     public const string P2TitleBasicModal = "基础模态框";
     public const string P2TitleBasicWindowModal = "基础窗口模态框";
     public const string P2TitleAsynchronouslyCloseModal = "异步关闭模态框";

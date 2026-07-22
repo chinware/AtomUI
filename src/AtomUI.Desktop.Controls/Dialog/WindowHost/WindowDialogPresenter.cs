@@ -4,6 +4,7 @@ using AtomUI.Controls;
 using AtomUI.Native;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
@@ -15,6 +16,7 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
     private readonly Dialog _dialog;
     private readonly TopLevel _owner;
     private readonly DialogSurface _surface;
+    private readonly DialogResourceBridge _resourceBridge;
     private readonly CompositeDisposable _bindings = new();
     private readonly TaskCompletionSource _openedSource = new();
     private readonly TaskCompletionSource _closedSource =
@@ -24,6 +26,9 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
     private Task? _showTask;
     private Task? _closeTask;
     private Task? _disposeTask;
+    private DialogSizeConstraints _normalSizeConstraints;
+    private Size? _normalSurfaceSize;
+    private Size _windowChromeSize;
 
     internal DialogWindow HostWindow { get; }
 
@@ -46,6 +51,8 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             Content = _surface,
             WindowStartupLocation = WindowStartupLocation.Manual
         };
+        _resourceBridge = new DialogResourceBridge(_dialog);
+        HostWindow.Resources.MergedDictionaries.Add(_resourceBridge);
 
         ((ISetLogicalParent)HostWindow).SetParent(_dialog);
         BindDialogProperties();
@@ -53,7 +60,10 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         HostWindow.Opened += HandleWindowOpened;
         HostWindow.Closed += HandleWindowClosed;
         HostWindow.KeyDown += HandleWindowKeyDown;
+        HostWindow.PositionChanged += HandleHostWindowPositionChanged;
+        HostWindow.ScalingChanged += HandleHostWindowScalingChanged;
         _surface.CloseRequested += HandleSurfaceCloseRequested;
+        _surface.StructuralMinimumChanged += HandleStructuralMinimumChanged;
     }
 
     private void BindDialogProperties()
@@ -63,22 +73,59 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         _bindings.Add(HostWindow.Bind(Window.CanResizeProperty, _dialog.GetObservable(Dialog.IsResizableProperty)));
         _bindings.Add(HostWindow.Bind(Window.CanMinimizeProperty,
             _dialog.GetObservable(Dialog.EffectiveMinimizableProperty)));
-        _bindings.Add(HostWindow.Bind(Window.CanMaximizeProperty,
-            _dialog.GetObservable(Dialog.IsMaximizableProperty)));
+        _bindings.Add(Observable.CombineLatest(
+                _dialog.GetObservable(Dialog.IsMaximizableProperty),
+                _dialog.GetObservable(Dialog.HostMaxWidthProperty),
+                _dialog.GetObservable(Dialog.HostMaxHeightProperty),
+                static (isMaximizable, maxWidth, maxHeight) =>
+                    isMaximizable &&
+                    double.IsPositiveInfinity(maxWidth) &&
+                    double.IsPositiveInfinity(maxHeight))
+            .Subscribe(canMaximize => HostWindow.CanMaximize = canMaximize));
         _bindings.Add(HostWindow.Bind(Window.IsCloseCaptionButtonVisibleProperty,
             _dialog.GetObservable(Dialog.IsClosableProperty)));
         _bindings.Add(HostWindow.Bind(Window.IsMoveEnabledProperty,
             _dialog.GetObservable(Dialog.IsDragMovableProperty)));
         _bindings.Add(HostWindow.Bind(Window.TopmostProperty,
             _dialog.GetObservable(Dialog.IsTopmostProperty)));
-        _bindings.Add(Observable.Merge(
-                _dialog.GetObservable(Dialog.HostWidthProperty),
-                _dialog.GetObservable(Dialog.HostHeightProperty),
-                _dialog.GetObservable(Dialog.HostMinWidthProperty),
-                _dialog.GetObservable(Dialog.HostMinHeightProperty),
-                _dialog.GetObservable(Dialog.HostMaxWidthProperty),
-                _dialog.GetObservable(Dialog.HostMaxHeightProperty))
-            .Subscribe(_ => UpdateSizing()));
+        _bindings.Add(_dialog.GetObservable(Dialog.HostWidthProperty).Subscribe(HandleHostWidthChanged));
+        _bindings.Add(_dialog.GetObservable(Dialog.HostHeightProperty).Subscribe(HandleHostHeightChanged));
+        _bindings.Add(_dialog.GetObservable(Dialog.HostMinWidthProperty)
+                             .Subscribe(_ => RefreshSizingPreservingActualSize()));
+        _bindings.Add(_dialog.GetObservable(Dialog.HostMinHeightProperty)
+                             .Subscribe(_ => RefreshSizingPreservingActualSize()));
+        _bindings.Add(_dialog.GetObservable(Dialog.HostMaxWidthProperty)
+                             .Subscribe(_ => RefreshSizingPreservingActualSize()));
+        _bindings.Add(_dialog.GetObservable(Dialog.HostMaxHeightProperty)
+                             .Subscribe(_ => RefreshSizingPreservingActualSize()));
+        _bindings.Add(_dialog.GetObservable(Dialog.TitleProperty)
+                             .Subscribe(_ => RefreshSizingPreservingActualSize()));
+        _bindings.Add(_dialog.GetObservable(Dialog.TitleIconProperty)
+                             .Subscribe(_ => RefreshSizingPreservingActualSize()));
+        _bindings.Add(_dialog.GetObservable(Dialog.IsClosableProperty)
+                             .Subscribe(_ => RefreshSizingPreservingActualSize()));
+        _bindings.Add(_dialog.GetObservable(Dialog.EffectiveMinimizableProperty)
+                             .Subscribe(_ => RefreshSizingPreservingActualSize()));
+        _bindings.Add(_dialog.GetObservable(Dialog.IsMaximizableProperty)
+                             .Subscribe(_ => RefreshSizingPreservingActualSize()));
+        _bindings.Add(HostWindow.GetObservable(TemplatedControl.PaddingProperty)
+                                .Subscribe(_ => HandleWindowChromeChanged()));
+        _bindings.Add(HostWindow.GetObservable(Window.FrameShadowThicknessProperty)
+                                .Subscribe(_ => HandleWindowChromeChanged()));
+        _bindings.Add(HostWindow.GetObservable(Avalonia.Controls.Window.WindowDecorationMarginProperty)
+                                .Subscribe(_ => HandleWindowChromeChanged()));
+        _bindings.Add(HostWindow.GetObservable(Window.VisibleFrameBorderThicknessProperty)
+                                .Subscribe(_ => HandleWindowChromeChanged()));
+        _bindings.Add(HostWindow.GetObservable(Window.IsCsdEnabledProperty)
+                                .Subscribe(_ => HandleWindowChromeChanged()));
+        _bindings.Add(HostWindow.GetObservable(Window.TitleBarHeightProperty)
+                                .Subscribe(_ => HandleWindowChromeChanged()));
+        _bindings.Add(HostWindow.GetObservable(Window.IsTitleBarVisibleProperty)
+                                .Subscribe(_ => HandleWindowChromeChanged()));
+        _bindings.Add(HostWindow.GetObservable(Avalonia.Controls.Window.WindowStateProperty)
+                                .Subscribe(HandleWindowStateChanged));
+        _bindings.Add(HostWindow.GetObservable(TopLevel.ClientSizeProperty)
+                                .Subscribe(HandleHostWindowClientSizeChanged));
     }
 
     public ValueTask ShowAsync(CancellationToken cancellationToken)
@@ -95,7 +142,8 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         var openingCancellationToken = _openingCancellationSource.Token;
         // Native Window content is not attached yet, so inherit Dialog resources for natural measurement.
         ((ISetInheritanceParent)_surface).SetParent(_dialog);
-        UpdateSizing();
+        var initialWindowSize = InitializeSizing();
+        ApplyStartupPlacement(initialWindowSize);
         if (_dialog.IsModal &&
             _owner is Window ownerWindow &&
             RuntimePlatform.Features.SupportsWindowModalDialog)
@@ -107,21 +155,21 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             HostWindow.Show();
         }
 
-        // Show attaches the Window ContentPresenter and replaces the inheritance parent before first render.
-        ((ISetInheritanceParent)_surface).SetParent(_dialog);
         await _openedSource.Task.WaitAsync(openingCancellationToken);
-        ApplyStartupPlacement();
         openingCancellationToken.ThrowIfCancellationRequested();
     }
 
-    private void ApplyStartupPlacement()
+    private void ApplyStartupPlacement(Size windowSize)
     {
         var ownerBounds = GetOwnerBounds(_owner);
-        var offset = _dialog.CalculatePlacementOffset(HostWindow.ClientSize, ownerBounds.Size);
+        var offset = _dialog.CalculatePlacementOffset(windowSize, ownerBounds.Size);
         var point = ownerBounds.TopLeft + offset;
+        var scaling = !HostWindow.IsVisible && _owner is Window ownerWindow
+            ? ownerWindow.DesktopScaling
+            : HostWindow.DesktopScaling;
         HostWindow.Position = new PixelPoint(
-            (int)Math.Round(point.X * HostWindow.DesktopScaling),
-            (int)Math.Round(point.Y * HostWindow.DesktopScaling));
+            (int)Math.Round(point.X * scaling),
+            (int)Math.Round(point.Y * scaling));
     }
 
     private static Rect GetOwnerBounds(TopLevel owner)
@@ -138,79 +186,208 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         return new Rect(default, owner.ClientSize);
     }
 
-    private void UpdateSizing()
+    private Size InitializeSizing()
     {
-        HostWindow.MinWidth = _dialog.HostMinWidth;
-        HostWindow.MinHeight = _dialog.HostMinHeight;
-        HostWindow.MaxWidth = _dialog.HostMaxWidth;
-        HostWindow.MaxHeight = _dialog.HostMaxHeight;
-        var measuredSize = MeasureWindowSize();
-        HostWindow.SizeToContent = SizeToContent.Manual;
-        HostWindow.ApplyRequestedSize(
-            double.IsNaN(_dialog.HostWidth) ? measuredSize.Width : _dialog.HostWidth,
-            double.IsNaN(_dialog.HostHeight) ? measuredSize.Height : _dialog.HostHeight);
+        PrepareSizingVisuals();
+        // Measuring the managed Window tree attaches its ContentPresenter before native Show,
+        // so the Surface theme and natural size are resolved in the same geometry pass.
+        HostWindow.Measure(Size.Infinity);
+        var chrome = ResolveWindowChromeSize();
+        var capacity = ResolveSurfaceCapacity(chrome);
+        _surface.Measure(capacity);
+        ResolveAndApplyNormalConstraints(capacity, chrome);
+
+        var usesNaturalWidth = !double.IsFinite(_dialog.HostWidth);
+        var usesNaturalHeight = !double.IsFinite(_dialog.HostHeight);
+        var width = usesNaturalWidth
+            ? Math.Clamp(
+                _surface.DesiredSize.Width,
+                _normalSizeConstraints.MinWidth,
+                _normalSizeConstraints.MaxWidth)
+            : Math.Clamp(
+                ResolveInitialAxis(_dialog.HostWidth, _normalSizeConstraints.MinWidth),
+                _normalSizeConstraints.MinWidth,
+                _normalSizeConstraints.MaxWidth);
+        _surface.Measure(new Size(width, capacity.Height));
+        var height = usesNaturalHeight
+            ? Math.Clamp(
+                _surface.DesiredSize.Height,
+                _normalSizeConstraints.MinHeight,
+                _normalSizeConstraints.MaxHeight)
+            : Math.Clamp(
+                ResolveInitialAxis(_dialog.HostHeight, _normalSizeConstraints.MinHeight),
+                _normalSizeConstraints.MinHeight,
+                _normalSizeConstraints.MaxHeight);
+
+        _windowChromeSize = chrome;
+        _normalSurfaceSize = _normalSizeConstraints.Clamp(new Size(width, height));
+        return ApplyNormalWindowSize(_normalSurfaceSize.Value);
     }
 
-    private Size MeasureWindowSize()
+    private void RefreshSizingPreservingActualSize()
+    {
+        if (_normalSurfaceSize is not { } normalSurfaceSize)
+        {
+            return;
+        }
+
+        PrepareSizingVisuals();
+        var chrome = ResolveWindowChromeSize();
+        var capacity = ResolveSurfaceCapacity(chrome);
+        ResolveAndApplyNormalConstraints(capacity, chrome);
+        _normalSurfaceSize = _normalSizeConstraints.Clamp(normalSurfaceSize);
+        _windowChromeSize = chrome;
+
+        if (HostWindow.WindowState == WindowState.Normal)
+        {
+            ApplyNormalWindowSize(_normalSurfaceSize.Value);
+        }
+    }
+
+    private void ResolveAndApplyNormalConstraints(Size capacity, Size chrome)
+    {
+        _normalSizeConstraints = DialogSizeConstraints.Resolve(
+            _surface.MeasureStructuralMinimum(),
+            new Size(_dialog.HostMinWidth, _dialog.HostMinHeight),
+            new Size(_dialog.HostMaxWidth, _dialog.HostMaxHeight),
+            capacity);
+
+        _surface.MinWidth = _normalSizeConstraints.MinWidth;
+        _surface.MinHeight = _normalSizeConstraints.MinHeight;
+        _surface.MaxWidth = _normalSizeConstraints.MaxWidth;
+        _surface.MaxHeight = _normalSizeConstraints.MaxHeight;
+
+        var windowCapacity = capacity + chrome;
+        var titleBarMinimumWidth = ResolveTitleBarMinimumWindowWidth(chrome);
+        var windowMinWidth = Math.Min(
+            Math.Max(_normalSizeConstraints.MinWidth + chrome.Width, titleBarMinimumWidth),
+            windowCapacity.Width);
+        var windowMinHeight = _normalSizeConstraints.MinHeight + chrome.Height;
+        var windowMaxWidth = Math.Max(
+            windowMinWidth,
+            _normalSizeConstraints.MaxWidth + chrome.Width);
+        var windowMaxHeight = Math.Max(
+            windowMinHeight,
+            _normalSizeConstraints.MaxHeight + chrome.Height);
+
+        HostWindow.MinWidth = windowMinWidth;
+        HostWindow.MinHeight = windowMinHeight;
+        HostWindow.MaxWidth = windowMaxWidth;
+        HostWindow.MaxHeight = windowMaxHeight;
+    }
+
+    private void PrepareSizingVisuals()
     {
         HostWindow.ApplyStyling();
         HostWindow.ApplyTemplate();
         _surface.ApplyStyling();
         _surface.ApplyTemplate();
+    }
 
+    private Size ResolveWindowChromeSize()
+    {
         var padding = HostWindow.Padding;
-        var shadow = HostWindow.FrameShadowThickness;
-        var titleBarHeight = HostWindow.IsTitleBarVisible ? HostWindow.TitleBarHeight : 0;
-        var horizontalChrome = padding.Left + padding.Right + shadow.Left + shadow.Right;
-        var verticalChrome = padding.Top + padding.Bottom + shadow.Top + shadow.Bottom + titleBarHeight;
-        var ownerSize = GetOwnerBounds(_owner).Size;
-        var availableWindowSize = new Size(
-            ResolveAvailableMeasureSize(ownerSize.Width, _dialog.HostMaxWidth),
-            ResolveAvailableMeasureSize(ownerSize.Height, _dialog.HostMaxHeight));
-        var availableSurfaceSize = new Size(
-            Math.Max(0, availableWindowSize.Width - horizontalChrome),
-            Math.Max(0, availableWindowSize.Height - verticalChrome));
-
-        _surface.Measure(availableSurfaceSize);
-        var naturalSurfaceSize = _surface.DesiredSize;
-        var windowWidth = double.IsNaN(_dialog.HostWidth)
-            ? ResolveMeasuredSize(
-                naturalSurfaceSize.Width + horizontalChrome,
-                _dialog.HostMinWidth,
-                _dialog.HostMaxWidth)
-            : _dialog.HostWidth;
-
-        var constrainedSurfaceWidth = Math.Max(0, windowWidth - horizontalChrome);
-        _surface.Measure(new Size(constrainedSurfaceWidth, availableSurfaceSize.Height));
-        var windowHeight = double.IsNaN(_dialog.HostHeight)
-            ? ResolveMeasuredSize(
-                _surface.DesiredSize.Height + verticalChrome,
-                _dialog.HostMinHeight,
-                _dialog.HostMaxHeight)
-            : _dialog.HostHeight;
-        return new Size(windowWidth, windowHeight);
-    }
-
-    private static double ResolveAvailableMeasureSize(double ownerSize, double maxSize)
-    {
-        if (!double.IsNaN(maxSize) && !double.IsInfinity(maxSize))
+        var frame = HostWindow.IsCsdEnabled
+            ? HostWindow.WindowDecorationMargin
+            : HostWindow.FrameShadowThickness;
+        var titleBarHeight = 0d;
+        if (!HostWindow.IsCsdEnabled && HostWindow.IsTitleBarVisible)
         {
-            return maxSize;
+            HostWindow.TitleBar?.Measure(Size.Infinity);
+            titleBarHeight = Math.Max(
+                HostWindow.TitleBarHeight,
+                HostWindow.TitleBar?.DesiredSize.Height ?? 0);
         }
 
-        return ownerSize > 0 ? ownerSize : double.PositiveInfinity;
+        return new Size(
+            Math.Max(0, padding.Left + padding.Right + frame.Left + frame.Right),
+            Math.Max(0, padding.Top + padding.Bottom + frame.Top + frame.Bottom + titleBarHeight));
     }
 
-    private static double ResolveMeasuredSize(double measuredSize, double minSize, double maxSize)
+    private Size ResolveSurfaceCapacity(Size chrome)
     {
-        var size = double.IsFinite(measuredSize) ? measuredSize : 0;
-        size = Math.Max(size, minSize);
-        if (!double.IsNaN(maxSize) && !double.IsInfinity(maxSize))
+        var workingArea = ResolveLogicalWorkingAreaSize();
+        return new Size(
+            Math.Max(0, workingArea.Width - chrome.Width),
+            Math.Max(0, workingArea.Height - chrome.Height));
+    }
+
+    private Size ResolveLogicalWorkingAreaSize()
+    {
+        if (!HostWindow.IsVisible && _owner is not Window)
         {
-            size = Math.Min(size, maxSize);
+            var ownerSize = GetOwnerBounds(_owner).Size;
+            return new Size(
+                ownerSize.Width > 0 ? ownerSize.Width : double.PositiveInfinity,
+                ownerSize.Height > 0 ? ownerSize.Height : double.PositiveInfinity);
         }
 
-        return size;
+        var ownerWindow = !HostWindow.IsVisible ? _owner as Window : null;
+        var screen = ownerWindow is not null
+            ? ownerWindow.Screens.ScreenFromWindow(ownerWindow)
+            : HostWindow.Screens.ScreenFromWindow(HostWindow);
+        if (screen is null && _owner is WindowBase ownerWindowBase)
+        {
+            screen = ownerWindowBase.Screens.ScreenFromWindow(ownerWindowBase);
+        }
+
+        screen ??= HostWindow.Screens.Primary ?? _owner.Screens?.Primary;
+        if (screen is null)
+        {
+            var ownerSize = GetOwnerBounds(_owner).Size;
+            return new Size(
+                ownerSize.Width > 0 ? ownerSize.Width : double.PositiveInfinity,
+                ownerSize.Height > 0 ? ownerSize.Height : double.PositiveInfinity);
+        }
+
+        var scaling = ownerWindow?.DesktopScaling ?? HostWindow.DesktopScaling;
+        if (scaling <= 0)
+        {
+            scaling = screen.Scaling > 0 ? screen.Scaling : 1;
+        }
+        return new Size(
+            screen.WorkingArea.Width / scaling,
+            screen.WorkingArea.Height / scaling);
+    }
+
+    private double ResolveTitleBarMinimumWindowWidth(Size chrome)
+    {
+        if (HostWindow.IsCsdEnabled ||
+            !HostWindow.IsTitleBarVisible ||
+            HostWindow.TitleBar is not { } titleBar)
+        {
+            return 0;
+        }
+
+        titleBar.Measure(Size.Infinity);
+        return titleBar.DesiredSize.Width + chrome.Width;
+    }
+
+    private Size ApplyNormalWindowSize(Size surfaceSize)
+    {
+        var requestedWindowSize = surfaceSize + _windowChromeSize;
+        HostWindow.SizeToContent = SizeToContent.Manual;
+        var windowSize = HostWindow.ApplyRequestedSize(
+            requestedWindowSize.Width,
+            requestedWindowSize.Height);
+        _normalSurfaceSize = ResolveSurfaceSize(windowSize, _windowChromeSize);
+        return windowSize;
+    }
+
+    private static double ResolveInitialAxis(double requested, double natural)
+    {
+        return double.IsFinite(requested)
+            ? Math.Max(0, requested)
+            : double.IsFinite(natural)
+                ? Math.Max(0, natural)
+                : 0;
+    }
+
+    private static Size ResolveSurfaceSize(Size windowSize, Size chrome)
+    {
+        return new Size(
+            Math.Max(0, windowSize.Width - chrome.Width),
+            Math.Max(0, windowSize.Height - chrome.Height));
     }
 
     public ValueTask CloseAsync()
@@ -325,7 +502,10 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             HostWindow.Opened -= HandleWindowOpened;
             HostWindow.Closed -= HandleWindowClosed;
             HostWindow.KeyDown -= HandleWindowKeyDown;
+            HostWindow.PositionChanged -= HandleHostWindowPositionChanged;
+            HostWindow.ScalingChanged -= HandleHostWindowScalingChanged;
             _surface.CloseRequested -= HandleSurfaceCloseRequested;
+            _surface.StructuralMinimumChanged -= HandleStructuralMinimumChanged;
             try
             {
                 _bindings.Dispose();
@@ -355,6 +535,8 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
 
             _openingCancellationSource?.Dispose();
             _openingCancellationSource = null;
+            HostWindow.Resources.MergedDictionaries.Remove(_resourceBridge);
+            _resourceBridge.Dispose();
             HostWindow.Content = null;
             ((ISetInheritanceParent)_surface).SetParent(null);
             try
@@ -387,6 +569,82 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
     private void HandleWindowClosed(object? sender, EventArgs e)
     {
         _closedSource.TrySetResult();
+    }
+
+    private void HandleHostWidthChanged(double value)
+    {
+        if (_normalSurfaceSize is not { } normalSurfaceSize || !double.IsFinite(value))
+        {
+            return;
+        }
+
+        _normalSurfaceSize = new Size(
+            Math.Clamp(value, _normalSizeConstraints.MinWidth, _normalSizeConstraints.MaxWidth),
+            normalSurfaceSize.Height);
+        if (HostWindow.WindowState == WindowState.Normal)
+        {
+            ApplyNormalWindowSize(_normalSurfaceSize.Value);
+        }
+    }
+
+    private void HandleHostHeightChanged(double value)
+    {
+        if (_normalSurfaceSize is not { } normalSurfaceSize || !double.IsFinite(value))
+        {
+            return;
+        }
+
+        _normalSurfaceSize = new Size(
+            normalSurfaceSize.Width,
+            Math.Clamp(value, _normalSizeConstraints.MinHeight, _normalSizeConstraints.MaxHeight));
+        if (HostWindow.WindowState == WindowState.Normal)
+        {
+            ApplyNormalWindowSize(_normalSurfaceSize.Value);
+        }
+    }
+
+    private void HandleWindowChromeChanged()
+    {
+        if (HostWindow.WindowState == WindowState.Normal)
+        {
+            RefreshSizingPreservingActualSize();
+        }
+    }
+
+    private void HandleWindowStateChanged(WindowState state)
+    {
+        if (state == WindowState.Normal)
+        {
+            RefreshSizingPreservingActualSize();
+        }
+    }
+
+    private void HandleHostWindowClientSizeChanged(Size clientSize)
+    {
+        if (_normalSurfaceSize is null ||
+            !_openedSource.Task.IsCompleted ||
+            HostWindow.WindowState != WindowState.Normal)
+        {
+            return;
+        }
+
+        _normalSurfaceSize = _normalSizeConstraints.Clamp(
+            ResolveSurfaceSize(clientSize, _windowChromeSize));
+    }
+
+    private void HandleHostWindowScalingChanged(object? sender, EventArgs e)
+    {
+        RefreshSizingPreservingActualSize();
+    }
+
+    private void HandleHostWindowPositionChanged(object? sender, PixelPointEventArgs e)
+    {
+        RefreshSizingPreservingActualSize();
+    }
+
+    private void HandleStructuralMinimumChanged(object? sender, EventArgs e)
+    {
+        RefreshSizingPreservingActualSize();
     }
 
     private void HandleSurfaceCloseRequested(object? sender, DialogSurfaceCloseRequestedEventArgs e)
