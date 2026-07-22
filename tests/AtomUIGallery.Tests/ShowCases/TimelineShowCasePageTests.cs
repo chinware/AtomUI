@@ -9,7 +9,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class TimelineShowCasePageTests
 {
     [Fact]
-    public void Timeline_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void Timeline_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml");
 
@@ -49,99 +49,6 @@ public class TimelineShowCasePageTests
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void Timeline_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new TimelineApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new TimelineDesignTokenDataGrid()");
-        pageSource.ShouldContain("Click=\"ReverseButtonClick\"");
-        pageSource.ShouldContain("IsCheckedChanged=\"ModeChecked\"");
-        pageSource.ShouldContain("IsReverse=\"{Binding ReverseTimelineIsReverse}\"");
-        pageSource.ShouldContain("Mode=\"{Binding SelectedTimelineMode}\"");
-        codeBehindSource.ShouldContain("ReverseButtonClick");
-        codeBehindSource.ShouldContain("ModeChecked");
-        codeBehindSource.ShouldNotContain("ModeLeft.IsCheckedChanged      += ModeChecked");
-        codeBehindSource.ShouldNotContain("ReverseButton.Click            += ReverseButtonClick");
-        codeBehindSource.ShouldNotContain("ReverseTimeline.IsReverse = !ReverseTimeline.IsReverse");
-        codeBehindSource.ShouldNotContain("LabelTimeline.Mode = TimelineMode.Alternate");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:TimelineApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("TimelineShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("TimelineShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("TimelineShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("TimelineShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:TimelineDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("TimelineShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("TimelineShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("TimelineShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("TimelineShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void Timeline_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyMode");
-            source.ShouldContain("ApiPropertyPending");
-            source.ShouldContain("ApiPropertyIsReverse");
-            source.ShouldContain("ApiPropertyIndicatorColor");
-            source.ShouldContain("TokenNameIndicatorTailColor");
-            source.ShouldContain("TokenNameIndicatorDotSize");
-        }
     }
 
     [Fact]

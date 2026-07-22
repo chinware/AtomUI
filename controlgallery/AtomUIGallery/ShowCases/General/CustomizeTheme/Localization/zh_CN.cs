@@ -6,16 +6,10 @@ namespace AtomUIGallery.ShowCases.CustomizeTheme;
 internal partial class zh_CN
 {
     public const string ScenarioExamples = "示例";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "设计令牌";
     public const string ComponentCategory = "通用";
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "通过共享令牌、算法、组件令牌和局部嵌套作用域定制 AtomUI 主题。";
     public const string PageDescription = "Customize Theme 展示 ThemeConfigProvider 如何覆盖 Seed Token、派生 Token、预设算法、组件级 Token 和嵌套主题上下文，而不需要修改应用全局主题。";
-    public const string ApiColumnMember = "成员";
-    public const string ApiColumnDescription = "说明";
-    public const string ApiColumnType = "类型";
-    public const string ApiColumnDefault = "默认值";
     public const string ApiMemberThemeConfigProviderConfig = "不可变的局部主题配置；运行期更新需要替换完整配置值。";
     public const string ApiMemberThemeConfigInherit = "是否继承并合并父级主题配置。";
     public const string ApiMemberThemeConfigAlgorithms = "有序的全局算法标识；null 表示继承父级算法链。";
@@ -24,18 +18,6 @@ internal partial class zh_CN
     public const string ApiMemberControlThemeConfigAlgorithm = "控件算法模式：Unspecified、Disabled、Global 或 Custom。";
     public const string ApiMemberControlThemeConfigAlgorithms = "仅在 Algorithm 为 Custom 时使用的有序控件算法。";
     public const string ApiMemberControlThemeConfigTokens = "仅应用到目标控件 Token 家族的 Token 覆盖。";
-    public const string TokenColumnToken = "令牌";
-    public const string TokenColumnDescription = "说明";
-    public const string TokenColumnScope = "作用域";
-    public const string TokenColumnStatus = "状态";
-    public const string TokenNameColorPrimary = "交互控件使用的主品牌色。";
-    public const string TokenNameBorderRadius = "用于派生组件圆角的共享 Seed Token。";
-    public const string TokenNameColorBgContainer = "控件和内容容器使用的背景色。";
-    public const string TokenNameButtonColorPrimary = "Button 组件的主色覆盖。";
-    public const string TokenNameAddOnDecoratedBoxColorPrimary = "AddOnDecoratedBox 组件主色覆盖，用于输入装饰区域。";
-    public const string TokenScopeShared = "共享";
-    public const string TokenScopeComponent = "组件";
-    public const string TokenStatusStable = "稳定";
     public const string CustomizeDesignTokenTitle = "自定义设计令牌";
     public const string CustomizeDesignTokenDescription = "通过修改主题的 token 属性，可以全局修改 Design Token。部分 token 会影响其他 token，这类 token 称为 Seed Token。";
     public const string PresetAlgorithmsTitle = "使用预设算法";

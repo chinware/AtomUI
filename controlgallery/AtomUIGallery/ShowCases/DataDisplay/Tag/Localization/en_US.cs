@@ -49,38 +49,11 @@ internal partial class en_US
 
     public const string P2TextMaterialIcon = "Material icon";
     public const string ScenarioExamples = "Examples";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Label, categorize and mark status with compact colored chips.";
     public const string PageDescription =
         "Tag displays short labels with preset colors, custom colors, icons, closable actions and borderless status variants.";
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
-    public const string ApiColumnProperty = "Property";
-    public const string ApiColumnDescription = "Description";
-    public const string ApiColumnType = "Type";
-    public const string ApiColumnDefault = "Default";
-    public const string ApiPropertyText = "Text displayed inside the tag.";
-    public const string ApiPropertyTagColor = "Preset, status or hex color used by the tag.";
-    public const string ApiPropertyIsClosable = "Shows a close action button when enabled.";
-    public const string ApiPropertyIsBordered = "Shows or hides the tag border.";
-    public const string ApiPropertyIcon = "Optional icon displayed before the tag text.";
-    public const string ApiPropertyCloseIcon = "Optional icon used by the close action.";
     public const string ApiEventClosed = "Raised when the close action is clicked.";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "Description";
-    public const string TokenColumnScope = "Scope";
-    public const string TokenColumnStatus = "Status";
-    public const string TokenNameDefaultBg = "Default tag background color.";
-    public const string TokenNameDefaultColor = "Default tag text color.";
-    public const string TokenNameTagFontSize = "Font size used by tag text.";
-    public const string TokenNameTagLineHeight = "Line height used by tag text.";
-    public const string TokenNameTagIconSize = "Size of the leading tag icon.";
-    public const string TokenNameTagCloseIconSize = "Size of the close icon.";
-    public const string TokenNameTagPadding = "Padding around tag content.";
-    public const string TokenNameTagTextPaddingInline = "Inline padding around tag text.";
-    public const string TokenNameTagBorderlessBg = "Background color used by borderless tags.";
-    public const string TokenScopeComponent = "Component";
-    public const string TokenStatusStable = "Stable";
 
 }

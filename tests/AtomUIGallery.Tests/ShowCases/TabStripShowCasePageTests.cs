@@ -12,7 +12,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class TabStripShowCasePageTests
 {
     [Fact]
-    public void TabStrip_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void TabStrip_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml");
 
@@ -59,109 +59,6 @@ public class TabStripShowCasePageTests
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void TabStrip_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        pageSource.ShouldContain("OptionCheckedChanged=\"HandleTabStripPlacementOptionCheckedChanged\"");
-        pageSource.ShouldContain("OptionCheckedChanged=\"HandleCardTabStripPlacementOptionCheckedChanged\"");
-        pageSource.ShouldContain("OptionCheckedChanged=\"HandleTabStripReorderPlacementOptionCheckedChanged\"");
-        pageSource.ShouldContain("OptionCheckedChanged=\"HandleTabStripSizeTypeOptionCheckedChanged\"");
-        pageSource.ShouldContain("AddTabRequest=\"HandleTabStripAddTabRequest\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new TabStripApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new TabStripDesignTokenDataGrid()");
-        codeBehindSource.ShouldNotContain("PositionTabStripOptionGroup");
-        codeBehindSource.ShouldNotContain("PositionCardTabStripOptionGroup");
-        codeBehindSource.ShouldNotContain("SizeTypeTabStripOptionGroup");
-        codeBehindSource.ShouldNotContain("AddTabDemoStrip");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:TabStripApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("TabStripShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("TabStripShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("TabStripShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("TabStripShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:TabStripDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("TabStripShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("TabStripShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("TabStripShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("TabStripShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void TabStrip_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("TabStripReorderPlacementTitle");
-            source.ShouldContain("TabStripReorderPlacementDescription");
-            source.ShouldContain("ApiPropertySelectedIndex");
-            source.ShouldContain("ApiPropertyTabStripPlacement");
-            source.ShouldContain("ApiPropertyIsTabReorderEnabled");
-            source.ShouldContain("ApiPropertyTabActivationTrigger");
-            source.ShouldContain("ApiPropertyIsTabClosable");
-            source.ShouldContain("ApiPropertyIsShowAddTabButton");
-            source.ShouldContain("ApiPropertyAddTabRequest");
-            source.ShouldContain("ApiEventTabReordering");
-            source.ShouldContain("ApiEventTabReordered");
-            source.ShouldContain("TokenNameCardBg");
-            source.ShouldContain("TokenNameInkBarColor");
-            source.ShouldContain("TokenNameHorizontalItemGutter");
-            source.ShouldContain("TokenNameItemSelectedColor");
-            source.ShouldContain("TokenNameAddTabButtonMarginHorizontal");
-        }
     }
 
     [Fact]

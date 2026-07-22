@@ -43,7 +43,7 @@ public class BorderBeamShowCasePageTests
     }
 
     [Fact]
-    public void BorderBeam_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void BorderBeam_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml");
 
@@ -176,31 +176,6 @@ public class BorderBeamShowCasePageTests
             Color.Parse("#36CFC9"),
             Color.Parse("#95DE64")
         });
-    }
-
-    [Fact]
-    public void BorderBeam_ShowCase_Api_And_Token_Tables_Document_Public_Contract()
-    {
-        var viewModel = new BorderBeamViewModel(null!);
-
-        viewModel.EnsureApiRows();
-        viewModel.EnsureDesignTokenRows();
-
-        viewModel.ApiRows.ShouldNotBeNull();
-        viewModel.ApiRows!.Select(row => row.Property).ShouldContain("Color");
-        viewModel.ApiRows.Select(row => row.Property).ShouldContain("ColorStops");
-        viewModel.ApiRows.Select(row => row.Property).ShouldContain("Outset");
-        viewModel.ApiRows.Select(row => row.Property).ShouldContain("BorderThickness");
-        viewModel.ApiRows.Select(row => row.Property).ShouldContain("CornerRadius");
-        viewModel.ApiRows.Select(row => row.Property).ShouldContain("IsMotionEnabled");
-        viewModel.ApiRows.Select(row => row.Property).ShouldContain("Duration");
-        viewModel.ApiRows.Select(row => row.Property).ShouldContain("BeamSize");
-
-        viewModel.DesignTokenRows.ShouldNotBeNull();
-        viewModel.DesignTokenRows!.Select(row => row.Token).ShouldContain("BeamSize");
-        viewModel.DesignTokenRows.Select(row => row.Token).ShouldContain("BeamOpacity");
-        viewModel.DesignTokenRows.Select(row => row.Token).ShouldContain("MotionDuration");
-        viewModel.DesignTokenRows.Select(row => row.Token).ShouldContain("MaxVisibleStopPercent");
     }
 
     private static string ExtractShowCaseItemMarkup(string source, string titleMarker)

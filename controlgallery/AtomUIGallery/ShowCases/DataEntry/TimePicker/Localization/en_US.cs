@@ -48,37 +48,5 @@ internal partial class en_US
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
     public const string ScenarioExamples = "Examples";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "Design Token";
-    public const string ApiColumnProperty = "Property";
-    public const string ApiColumnDescription = "Description";
-    public const string ApiColumnType = "Type";
-    public const string ApiColumnDefault = "Default";
-    public const string ApiPropertySelectedTime = "Selected time value for TimePicker. The property binds TwoWay by default and supports Avalonia data validation.";
-    public const string ApiPropertyDefaultTime = "Initial time used by TimePicker reset behavior.";
-    public const string ApiPropertyPickerDisplayTime = "Popup panel display anchor; does not commit a selected value.";
-    public const string ApiPropertyIsNeedConfirm = "Requires the user to confirm the selected time before committing.";
-    public const string ApiPropertyIsShowNow = "Shows the Now shortcut in the popup panel.";
-    public const string ApiPropertyMinuteIncrement = "Minute step used when generating minute options.";
-    public const string ApiPropertySecondIncrement = "Second step used when generating second options.";
-    public const string ApiPropertyClockIdentifier = "Chooses 12-hour or 24-hour clock display.";
-    public const string ApiPropertyRangeStartSelectedTime = "Selected start time for RangeTimePicker.";
-    public const string ApiPropertyRangeEndSelectedTime = "Selected end time for RangeTimePicker.";
-    public const string ApiPropertyRangeStartDefaultTime = "Initial start time for RangeTimePicker reset behavior.";
-    public const string ApiPropertyRangeEndDefaultTime = "Initial end time for RangeTimePicker reset behavior.";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "Description";
-    public const string TokenColumnScope = "Scope";
-    public const string TokenColumnStatus = "Status";
-    public const string TokenScopeComponent = "Component";
-    public const string TokenStatusStable = "Stable";
-    public const string TokenNameItemHeight = "Height of each selectable time item.";
-    public const string TokenNameItemWidth = "Width of each hour, minute, and second column.";
-    public const string TokenNamePeriodHostWidth = "Width of the AM/PM period selector column.";
-    public const string TokenNameItemPadding = "Padding inside each selectable time item.";
-    public const string TokenNameButtonsMargin = "Top margin of the popup action button area.";
-    public const string TokenNameRangePickerArrowMargin = "Margin around the arrow between range inputs.";
-    public const string TokenNameRangePickerIndicatorThickness = "Thickness of the range selection indicator.";
-    public const string TokenNameHeaderMargin = "Margin below the time panel header.";
 
 }

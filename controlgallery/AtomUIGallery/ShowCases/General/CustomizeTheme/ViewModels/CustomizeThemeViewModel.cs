@@ -21,21 +21,7 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
 
     public string? UrlPathSegment => ID.ToString();
 
-    private ObservableCollection<CustomizeThemeApiRow>? _apiRows;
-    private ObservableCollection<CustomizeThemeDesignTokenRow>? _designTokenRows;
     private ThemeConfig _runtimeThemeConfig;
-
-    public ObservableCollection<CustomizeThemeApiRow>? ApiRows
-    {
-        get => _apiRows;
-        private set => this.RaiseAndSetIfChanged(ref _apiRows, value);
-    }
-
-    public ObservableCollection<CustomizeThemeDesignTokenRow>? DesignTokenRows
-    {
-        get => _designTokenRows;
-        private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
-    }
 
     public ThemeConfig GreenThemeConfig { get; }
     public ThemeConfig RedThemeConfig { get; }
@@ -118,89 +104,4 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
                .Build();
     }
 
-    public void EnsureApiRows()
-    {
-        if (ApiRows is not null)
-        {
-            return;
-        }
-
-        ApiRows =
-        [
-            new CustomizeThemeApiRow("ThemeConfigProvider.Config", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderConfig), "ThemeConfig?", "blue", "null"),
-            new CustomizeThemeApiRow("ThemeConfig.Inherit", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigInherit), "bool", "purple", "true"),
-            new CustomizeThemeApiRow("ThemeConfig.Algorithms", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigAlgorithms), "IReadOnlyList<string>?", "cyan", "null"),
-            new CustomizeThemeApiRow("ThemeConfig.Tokens", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigTokens), "IReadOnlyDictionary<string, string>", "cyan", "{}"),
-            new CustomizeThemeApiRow("ThemeConfig.Controls", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigControls), "IReadOnlyDictionary<ControlTokenIdentity, ControlThemeConfig>", "cyan", "{}"),
-            new CustomizeThemeApiRow("ControlThemeConfig.Algorithm", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigAlgorithm), "ControlAlgorithmMode", "purple", "Unspecified"),
-            new CustomizeThemeApiRow("ControlThemeConfig.Algorithms", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigAlgorithms), "IReadOnlyList<string>?", "cyan", "null"),
-            new CustomizeThemeApiRow("ControlThemeConfig.Tokens", Lang(CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigTokens), "IReadOnlyDictionary<string, string>", "cyan", "{}")
-        ];
-    }
-
-    public void EnsureDesignTokenRows()
-    {
-        if (DesignTokenRows is not null)
-        {
-            return;
-        }
-
-        DesignTokenRows =
-        [
-            new CustomizeThemeDesignTokenRow("ColorPrimary", Lang(CustomizeThemeShowCaseLangResourceKind.TokenNameColorPrimary), Lang(CustomizeThemeShowCaseLangResourceKind.TokenScopeShared), "cyan", Lang(CustomizeThemeShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new CustomizeThemeDesignTokenRow("BorderRadius", Lang(CustomizeThemeShowCaseLangResourceKind.TokenNameBorderRadius), Lang(CustomizeThemeShowCaseLangResourceKind.TokenScopeShared), "cyan", Lang(CustomizeThemeShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new CustomizeThemeDesignTokenRow("ColorBgContainer", Lang(CustomizeThemeShowCaseLangResourceKind.TokenNameColorBgContainer), Lang(CustomizeThemeShowCaseLangResourceKind.TokenScopeShared), "cyan", Lang(CustomizeThemeShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new CustomizeThemeDesignTokenRow("Button.ColorPrimary", Lang(CustomizeThemeShowCaseLangResourceKind.TokenNameButtonColorPrimary), Lang(CustomizeThemeShowCaseLangResourceKind.TokenScopeComponent), "blue", Lang(CustomizeThemeShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new CustomizeThemeDesignTokenRow("AddOnDecoratedBox.ColorPrimary", Lang(CustomizeThemeShowCaseLangResourceKind.TokenNameAddOnDecoratedBoxColorPrimary), Lang(CustomizeThemeShowCaseLangResourceKind.TokenScopeComponent), "blue", Lang(CustomizeThemeShowCaseLangResourceKind.TokenStatusStable), "success")
-        ];
-    }
-
-    private static string Lang(CustomizeThemeShowCaseLangResourceKind kind)
-    {
-        if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
-        {
-            return LanguageResourceBinder.GetLangResource(kind) ?? FallbackLang(kind);
-        }
-
-        return FallbackLang(kind);
-    }
-
-    private static string FallbackLang(CustomizeThemeShowCaseLangResourceKind kind)
-    {
-        return kind switch
-        {
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigProviderConfig          => en_US.ApiMemberThemeConfigProviderConfig,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigInherit                  => en_US.ApiMemberThemeConfigInherit,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigAlgorithms               => en_US.ApiMemberThemeConfigAlgorithms,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigTokens                   => en_US.ApiMemberThemeConfigTokens,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberThemeConfigControls                 => en_US.ApiMemberThemeConfigControls,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigAlgorithm         => en_US.ApiMemberControlThemeConfigAlgorithm,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigAlgorithms        => en_US.ApiMemberControlThemeConfigAlgorithms,
-            CustomizeThemeShowCaseLangResourceKind.ApiMemberControlThemeConfigTokens            => en_US.ApiMemberControlThemeConfigTokens,
-            CustomizeThemeShowCaseLangResourceKind.TokenNameColorPrimary                               => en_US.TokenNameColorPrimary,
-            CustomizeThemeShowCaseLangResourceKind.TokenNameBorderRadius                               => en_US.TokenNameBorderRadius,
-            CustomizeThemeShowCaseLangResourceKind.TokenNameColorBgContainer                           => en_US.TokenNameColorBgContainer,
-            CustomizeThemeShowCaseLangResourceKind.TokenNameButtonColorPrimary                         => en_US.TokenNameButtonColorPrimary,
-            CustomizeThemeShowCaseLangResourceKind.TokenNameAddOnDecoratedBoxColorPrimary              => en_US.TokenNameAddOnDecoratedBoxColorPrimary,
-            CustomizeThemeShowCaseLangResourceKind.TokenScopeShared                                    => en_US.TokenScopeShared,
-            CustomizeThemeShowCaseLangResourceKind.TokenScopeComponent                                 => en_US.TokenScopeComponent,
-            CustomizeThemeShowCaseLangResourceKind.TokenStatusStable                                   => en_US.TokenStatusStable,
-            _                                                                                          => kind.ToString()
-        };
-    }
 }
-
-public sealed record CustomizeThemeApiRow(
-    string Member,
-    string Description,
-    string Type,
-    string TypeTagColor,
-    string Default);
-
-public sealed record CustomizeThemeDesignTokenRow(
-    string Token,
-    string Description,
-    string Scope,
-    string ScopeTagColor,
-    string Status,
-    string StatusTagColor);

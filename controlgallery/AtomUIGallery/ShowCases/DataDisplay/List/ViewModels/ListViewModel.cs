@@ -149,21 +149,6 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _paginationListItems, value);
     }
 
-    private ObservableCollection<ListApiRow>? _apiRows;
-    private ObservableCollection<ListDesignTokenRow>? _designTokenRows;
-
-    public ObservableCollection<ListApiRow>? ApiRows
-    {
-        get => _apiRows;
-        private set => this.RaiseAndSetIfChanged(ref _apiRows, value);
-    }
-
-    public ObservableCollection<ListDesignTokenRow>? DesignTokenRows
-    {
-        get => _designTokenRows;
-        private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
-    }
-
     public ReactiveCommand<Unit, Unit> SelectBoundSelectedItemsCommand { get; }
 
     public ReactiveCommand<Unit, Unit> ClearBoundSelectedItemsCommand { get; }
@@ -213,63 +198,6 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
         this.RaisePropertyChanged(nameof(BoundSelectedItemsText));
     }
 
-    public void EnsureApiRows()
-    {
-        if (ApiRows is not null)
-        {
-            return;
-        }
-
-        ApiRows =
-        [
-            new ListApiRow("IsSelectable", Lang(ListShowCaseLangResourceKind.ApiPropertyIsSelectable), "bool", "purple", "true"),
-            new ListApiRow("SizeType", Lang(ListShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
-            new ListApiRow("IsBorderless", Lang(ListShowCaseLangResourceKind.ApiPropertyIsBorderless), "bool", "purple", "false"),
-            new ListApiRow("SelectionMode", Lang(ListShowCaseLangResourceKind.ApiPropertySelectionMode), "SelectionMode", "blue", "Single"),
-            new ListApiRow("SelectedItems", Lang(ListShowCaseLangResourceKind.ApiPropertySelectedItems), "IList?", "cyan", "null"),
-            new ListApiRow("IsShowSelectedIndicator", Lang(ListShowCaseLangResourceKind.ApiPropertyIsShowSelectedIndicator), "bool", "purple", "false"),
-            new ListApiRow("IsShowEmptyIndicator", Lang(ListShowCaseLangResourceKind.ApiPropertyIsShowEmptyIndicator), "bool", "purple", "true"),
-            new ListApiRow("IsGroupEnabled", Lang(ListShowCaseLangResourceKind.ApiPropertyIsGroupEnabled), "bool", "purple", "false"),
-            new ListApiRow("GroupPropertySelector", Lang(ListShowCaseLangResourceKind.ApiPropertyGroupPropertySelector), "DefaultFilterValueSelector?", "cyan", "null"),
-            new ListApiRow("SortDescriptions", Lang(ListShowCaseLangResourceKind.ApiPropertySortDescriptions), "IList<IListSortDescription>?", "cyan", "null"),
-            new ListApiRow("Filter", Lang(ListShowCaseLangResourceKind.ApiPropertyFilter), "IValueFilter?", "cyan", "null"),
-            new ListApiRow("FilterValue", Lang(ListShowCaseLangResourceKind.ApiPropertyFilterValue), "object?", "cyan", "null"),
-            new ListApiRow("FilterValueSelector", Lang(ListShowCaseLangResourceKind.ApiPropertyFilterValueSelector), "DefaultFilterValueSelector?", "cyan", "null"),
-            new ListApiRow("PaginationVisibility", Lang(ListShowCaseLangResourceKind.ApiPropertyPaginationVisibility), "ListPaginationVisibility", "blue", "Bottom"),
-            new ListApiRow("PageSize", Lang(ListShowCaseLangResourceKind.ApiPropertyPageSize), "int", "blue", "0"),
-            new ListApiRow("BottomPagination", Lang(ListShowCaseLangResourceKind.ApiPropertyBottomPagination), "AbstractPagination?", "cyan", "null"),
-            new ListApiRow("ListBox.FilterHighlightStrategy", Lang(ListShowCaseLangResourceKind.ApiPropertyFilterHighlightStrategy), "TextBlockHighlightStrategy", "blue", "All")
-        ];
-    }
-
-    public void EnsureDesignTokenRows()
-    {
-        if (DesignTokenRows is not null)
-        {
-            return;
-        }
-
-        DesignTokenRows =
-        [
-            new ListDesignTokenRow("ContentPadding", Lang(ListShowCaseLangResourceKind.TokenNameContentPadding), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemColor", Lang(ListShowCaseLangResourceKind.TokenNameItemColor), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemHoverColor", Lang(ListShowCaseLangResourceKind.TokenNameItemHoverColor), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemSelectedColor", Lang(ListShowCaseLangResourceKind.TokenNameItemSelectedColor), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemDisabledColor", Lang(ListShowCaseLangResourceKind.TokenNameItemDisabledColor), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemBgColor", Lang(ListShowCaseLangResourceKind.TokenNameItemBgColor), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemHoverBgColor", Lang(ListShowCaseLangResourceKind.TokenNameItemHoverBgColor), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemSelectedBgColor", Lang(ListShowCaseLangResourceKind.TokenNameItemSelectedBgColor), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemPadding", Lang(ListShowCaseLangResourceKind.TokenNameItemPadding), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemPaddingSM", Lang(ListShowCaseLangResourceKind.TokenNameItemPaddingSM), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemPaddingLG", Lang(ListShowCaseLangResourceKind.TokenNameItemPaddingLG), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("ItemMargin", Lang(ListShowCaseLangResourceKind.TokenNameItemMargin), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("PaginationMargin", Lang(ListShowCaseLangResourceKind.TokenNamePaginationMargin), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("GroupHeaderColor", Lang(ListShowCaseLangResourceKind.TokenNameGroupHeaderColor), "ListView", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("SelectedIndicatorMargin", Lang(ListShowCaseLangResourceKind.TokenNameSelectedIndicatorMargin), "ListView/ListBox", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new ListDesignTokenRow("FilterHighlightColor", Lang(ListShowCaseLangResourceKind.TokenNameFilterHighlightColor), "ListBox", "cyan", Lang(ListShowCaseLangResourceKind.TokenStatusStable), "success")
-        ];
-    }
-
     private static string Lang(ListShowCaseLangResourceKind kind)
     {
         return ListShowCase.Lang(kind, FallbackLang(kind));
@@ -279,40 +207,6 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
     {
         return kind switch
         {
-            ListShowCaseLangResourceKind.ApiPropertyIsSelectable             => en_US.ApiPropertyIsSelectable,
-            ListShowCaseLangResourceKind.ApiPropertySizeType                 => en_US.ApiPropertySizeType,
-            ListShowCaseLangResourceKind.ApiPropertyIsBorderless             => en_US.ApiPropertyIsBorderless,
-            ListShowCaseLangResourceKind.ApiPropertySelectionMode            => en_US.ApiPropertySelectionMode,
-            ListShowCaseLangResourceKind.ApiPropertySelectedItems             => en_US.ApiPropertySelectedItems,
-            ListShowCaseLangResourceKind.ApiPropertyIsShowSelectedIndicator  => en_US.ApiPropertyIsShowSelectedIndicator,
-            ListShowCaseLangResourceKind.ApiPropertyIsShowEmptyIndicator     => en_US.ApiPropertyIsShowEmptyIndicator,
-            ListShowCaseLangResourceKind.ApiPropertyIsGroupEnabled           => en_US.ApiPropertyIsGroupEnabled,
-            ListShowCaseLangResourceKind.ApiPropertyGroupPropertySelector    => en_US.ApiPropertyGroupPropertySelector,
-            ListShowCaseLangResourceKind.ApiPropertySortDescriptions         => en_US.ApiPropertySortDescriptions,
-            ListShowCaseLangResourceKind.ApiPropertyFilter                   => en_US.ApiPropertyFilter,
-            ListShowCaseLangResourceKind.ApiPropertyFilterValue              => en_US.ApiPropertyFilterValue,
-            ListShowCaseLangResourceKind.ApiPropertyFilterValueSelector      => en_US.ApiPropertyFilterValueSelector,
-            ListShowCaseLangResourceKind.ApiPropertyPaginationVisibility     => en_US.ApiPropertyPaginationVisibility,
-            ListShowCaseLangResourceKind.ApiPropertyPageSize                 => en_US.ApiPropertyPageSize,
-            ListShowCaseLangResourceKind.ApiPropertyBottomPagination         => en_US.ApiPropertyBottomPagination,
-            ListShowCaseLangResourceKind.ApiPropertyFilterHighlightStrategy  => en_US.ApiPropertyFilterHighlightStrategy,
-            ListShowCaseLangResourceKind.TokenNameContentPadding             => en_US.TokenNameContentPadding,
-            ListShowCaseLangResourceKind.TokenNameItemColor                  => en_US.TokenNameItemColor,
-            ListShowCaseLangResourceKind.TokenNameItemHoverColor             => en_US.TokenNameItemHoverColor,
-            ListShowCaseLangResourceKind.TokenNameItemSelectedColor          => en_US.TokenNameItemSelectedColor,
-            ListShowCaseLangResourceKind.TokenNameItemDisabledColor          => en_US.TokenNameItemDisabledColor,
-            ListShowCaseLangResourceKind.TokenNameItemBgColor                => en_US.TokenNameItemBgColor,
-            ListShowCaseLangResourceKind.TokenNameItemHoverBgColor           => en_US.TokenNameItemHoverBgColor,
-            ListShowCaseLangResourceKind.TokenNameItemSelectedBgColor        => en_US.TokenNameItemSelectedBgColor,
-            ListShowCaseLangResourceKind.TokenNameItemPadding                => en_US.TokenNameItemPadding,
-            ListShowCaseLangResourceKind.TokenNameItemPaddingSM              => en_US.TokenNameItemPaddingSM,
-            ListShowCaseLangResourceKind.TokenNameItemPaddingLG              => en_US.TokenNameItemPaddingLG,
-            ListShowCaseLangResourceKind.TokenNameItemMargin                 => en_US.TokenNameItemMargin,
-            ListShowCaseLangResourceKind.TokenNamePaginationMargin           => en_US.TokenNamePaginationMargin,
-            ListShowCaseLangResourceKind.TokenNameGroupHeaderColor           => en_US.TokenNameGroupHeaderColor,
-            ListShowCaseLangResourceKind.TokenNameSelectedIndicatorMargin    => en_US.TokenNameSelectedIndicatorMargin,
-            ListShowCaseLangResourceKind.TokenNameFilterHighlightColor       => en_US.TokenNameFilterHighlightColor,
-            ListShowCaseLangResourceKind.TokenStatusStable                   => en_US.TokenStatusStable,
             ListShowCaseLangResourceKind.SelectedItemsBindingTitle           => en_US.SelectedItemsBindingTitle,
             ListShowCaseLangResourceKind.SelectedItemsBindingDescription     => en_US.SelectedItemsBindingDescription,
             ListShowCaseLangResourceKind.P2TextSelectedItems                 => en_US.P2TextSelectedItems,
@@ -323,18 +217,3 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
         };
     }
 }
-
-public sealed record ListApiRow(
-    string Property,
-    string Description,
-    string Type,
-    string TypeTagColor,
-    string Default);
-
-public sealed record ListDesignTokenRow(
-    string Token,
-    string Description,
-    string Scope,
-    string ScopeTagColor,
-    string Status,
-    string StatusTagColor);

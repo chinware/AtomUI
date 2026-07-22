@@ -9,7 +9,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class DatePickerShowCasePageTests
 {
     [Fact]
-    public void DatePicker_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void DatePicker_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml");
 
@@ -76,76 +76,6 @@ public class DatePickerShowCasePageTests
     }
 
     [Fact]
-    public void DatePicker_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new DatePickerApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new DatePickerDesignTokenDataGrid()");
-        pageSource.ShouldContain("OptionCheckedChanged=\"HandlePickerSizeTypeOptionCheckedChanged\"");
-        pageSource.ShouldContain("OptionCheckedChanged=\"HandlePickerPlacementCheckedChanged\"");
-        codeBehindSource.ShouldContain("HandlePickerSizeTypeOptionCheckedChanged");
-        codeBehindSource.ShouldContain("HandlePickerPlacementCheckedChanged");
-        codeBehindSource.ShouldNotContain("PickerSizeTypeOptionGroup.OptionCheckedChanged");
-        codeBehindSource.ShouldNotContain("PickerPlacementOptionGroup.OptionCheckedChanged");
-        ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/ViewModels/DatePickerViewModel.cs")
-            .ShouldContain("new DatePickerApiRow(\"PickerMode\"");
-        ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/ViewModels/DatePickerViewModel.cs")
-            .ShouldContain("new DatePickerApiRow(\"PickerDisplayDate\"");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:DatePickerApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("DatePickerShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("DatePickerShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("DatePickerShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("DatePickerShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:DatePickerDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("DatePickerShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("DatePickerShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("DatePickerShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("DatePickerShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
     public void DatePicker_Placement_Example_Stacks_Label_And_Options_To_Avoid_Default_Card_Overflow()
     {
         var source = ExtractShowCaseItemByTitle(
@@ -196,50 +126,6 @@ public class DatePickerShowCasePageTests
         source.ShouldContain("<atom:RangeDatePicker PickerMode=\"Year\"");
         source.ShouldContain("P2PlaceholderTextStartYear");
         source.ShouldContain("P2SecondaryPlaceholderTextEndYear");
-    }
-
-    [Fact]
-    public void DatePicker_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("P2ContentCustom");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("PickerDisplayDateTitle");
-            source.ShouldContain("BindingTitle");
-            source.ShouldContain("BindingDescription");
-            source.ShouldNotContain("RangeBindingTitle");
-            source.ShouldNotContain("RangeBindingDescription");
-            source.ShouldContain("ApiPropertySelectedDateTime");
-            source.ShouldContain("ApiPropertyPickerDisplayDate");
-            source.ShouldContain("ApiPropertyPickerMode");
-            source.ShouldContain("ApiPropertyPickerPlacement");
-            source.ShouldContain("ApiPropertyIsNeedConfirm");
-            source.ShouldContain("P2PlaceholderTextSelectWeek");
-            source.ShouldContain("P2PlaceholderTextSelectMonth");
-            source.ShouldContain("P2PlaceholderTextSelectQuarter");
-            source.ShouldContain("P2PlaceholderTextSelectYear");
-            source.ShouldContain("P2PlaceholderTextStartWeek");
-            source.ShouldContain("P2SecondaryPlaceholderTextEndWeek");
-            source.ShouldContain("P2PlaceholderTextStartMonth");
-            source.ShouldContain("P2SecondaryPlaceholderTextEndMonth");
-            source.ShouldContain("P2PlaceholderTextStartQuarter");
-            source.ShouldContain("P2SecondaryPlaceholderTextEndQuarter");
-            source.ShouldContain("P2PlaceholderTextStartYear");
-            source.ShouldContain("P2SecondaryPlaceholderTextEndYear");
-            source.ShouldContain("P2TextSelectedDateRange");
-            source.ShouldContain("P2ContentSetThisWeek");
-            source.ShouldContain("TokenNameCellActiveWithRangeBg");
-            source.ShouldContain("TokenNameCellHoverBg");
-        }
     }
 
     [Fact]

@@ -13,7 +13,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class StepsShowCasePageTests
 {
     [Fact]
-    public void Steps_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void Steps_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml");
 
@@ -96,18 +96,6 @@ public class StepsShowCasePageTests
         codeBehindSource.ShouldNotContain("FindDescendantByName");
         codeBehindSource.ShouldNotContain("HandleInteractiveStepsLoaded");
 
-        viewModelSource.ShouldContain("Steps.Current\"");
-        viewModelSource.ShouldContain("Steps.Initial\"");
-        viewModelSource.ShouldContain("Steps.Status\"");
-        viewModelSource.ShouldContain("Steps.Percent\"");
-        viewModelSource.ShouldContain("Steps.Type\"");
-        viewModelSource.ShouldContain("Steps.TitlePlacement\"");
-        viewModelSource.ShouldContain("Steps.Offset\"");
-        viewModelSource.ShouldContain("Steps.CurrentChangeRequested\"");
-        viewModelSource.ShouldContain("StepsItem.Content\"");
-        viewModelSource.ShouldContain("StepsItem.ContentTemplate\"");
-        viewModelSource.ShouldContain("StepsItem.Status\"");
-        viewModelSource.ShouldContain("\"StepsStatus?\"");
         viewModelSource.ShouldContain("InteractivePageContent");
 
         foreach (var removedApi in new[]
@@ -147,125 +135,6 @@ public class StepsShowCasePageTests
 
         viewModel.Current = 2;
         viewModel.InteractivePageContent.ShouldBe("Last-content");
-    }
-
-    [Fact]
-    public void Steps_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-        pageSource.ShouldContain("Click=\"HandleNextButtonClick\"");
-        pageSource.ShouldContain("Click=\"HandlePreviousButtonClick\"");
-        pageSource.ShouldContain("CurrentChangeRequested=\"HandleCurrentChangeRequested\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new StepsApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new StepsDesignTokenDataGrid()");
-        codeBehindSource.ShouldContain("HandleNextButtonClick");
-        codeBehindSource.ShouldContain("HandlePreviousButtonClick");
-        codeBehindSource.ShouldContain("HandleCurrentChangeRequested");
-        codeBehindSource.ShouldNotContain("new StepsBasicShowCase()");
-        codeBehindSource.ShouldNotContain("new StepsInteractiveShowCase()");
-        codeBehindSource.ShouldNotContain("new StepsVerticalShowCase()");
-        codeBehindSource.ShouldNotContain("new StepsDotClickableShowCase()");
-        codeBehindSource.ShouldNotContain("new StepsNavigationShowCase()");
-        codeBehindSource.ShouldNotContain("new StepsProgressShowCase()");
-        codeBehindSource.ShouldNotContain("new StepsInlineShowCase()");
-        codeBehindSource.ShouldNotContain("NextStepButton.Click +=");
-        codeBehindSource.ShouldNotContain("PreviousButton.Click +=");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:StepsApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("StepsShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("StepsShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("StepsShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("StepsShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:StepsDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("StepsShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("StepsShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("StepsShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("StepsShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void Steps_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyCurrent");
-            source.ShouldContain("P2TextCurrent");
-            source.ShouldContain("ApiPropertyInitial");
-            source.ShouldContain("ApiPropertyStatus");
-            source.ShouldContain("ApiPropertyPercent");
-            source.ShouldContain("ApiPropertyType");
-            source.ShouldContain("ApiPropertyTitlePlacement");
-            source.ShouldContain("ApiPropertyIsItemClickable");
-            source.ShouldContain("ApiPropertyOffset");
-            source.ShouldContain("ApiPropertyIsMotionEnabled");
-            source.ShouldContain("ApiEventCurrentChangeRequested");
-            source.ShouldContain("ApiPropertyStepsItemContent");
-            source.ShouldContain("ApiPropertyStepsItemContentTemplate");
-            source.ShouldContain("InlineStyleCombinationTitle");
-            source.ShouldContain("InlineStyleCombinationDescription");
-            source.ShouldContain("P2SubHeaderSubTitle");
-            source.ShouldContain("P2HeaderStepN5");
-            source.ShouldContain("P2ContentThisIsStepN5");
-            source.ShouldContain("TokenNameDescriptionMaxWidth");
-            source.ShouldContain("TokenNameIconSize");
-            source.ShouldContain("TokenNameDotSize");
-            source.ShouldContain("TokenNameStepsNavActiveColor");
-            source.ShouldContain("TokenNameInlineItemPadding");
-            source.ShouldNotContain("ApiPropertyCurrentStep");
-            source.ShouldNotContain("ApiPropertyProgressValue");
-            source.ShouldNotContain("ApiPropertyItemIndicatorType");
-            source.ShouldNotContain("TokenNameStepsProgressSize");
-        }
     }
 
     [Fact]

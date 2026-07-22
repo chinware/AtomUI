@@ -49,38 +49,11 @@ internal partial class zh_TW
 
     public const string P2TextMaterialIcon = "Material 圖標";
     public const string ScenarioExamples = "示例";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "設計令牌";
     public const string PageSubtitle = "用緊湊的彩色標籤進行標記、分類和狀態表達。";
     public const string PageDescription =
         "Tag 用於展示短標籤，支持預設顏色、自定義顏色、圖標、可關閉操作和無邊框狀態樣式。";
     public const string ComponentCategory = "數據展示";
     public const string ComponentStatusStable = "穩定";
-    public const string ApiColumnProperty = "屬性";
-    public const string ApiColumnDescription = "說明";
-    public const string ApiColumnType = "類型";
-    public const string ApiColumnDefault = "默認值";
-    public const string ApiPropertyText = "標籤內部顯示的文本。";
-    public const string ApiPropertyTagColor = "標籤使用的預設色、狀態色或十六進制顏色。";
-    public const string ApiPropertyIsClosable = "啟用後顯示關閉操作按鈕。";
-    public const string ApiPropertyIsBordered = "顯示或隱藏標籤邊框。";
-    public const string ApiPropertyIcon = "顯示在標籤文本前面的可選圖標。";
-    public const string ApiPropertyCloseIcon = "關閉操作使用的可選圖標。";
     public const string ApiEventClosed = "點擊關閉操作時觸發。";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "說明";
-    public const string TokenColumnScope = "作用域";
-    public const string TokenColumnStatus = "狀態";
-    public const string TokenNameDefaultBg = "標籤默認背景色。";
-    public const string TokenNameDefaultColor = "標籤默認文本顏色。";
-    public const string TokenNameTagFontSize = "標籤文本字號。";
-    public const string TokenNameTagLineHeight = "標籤文本行高。";
-    public const string TokenNameTagIconSize = "標籤前置圖標尺寸。";
-    public const string TokenNameTagCloseIconSize = "關閉圖標尺寸。";
-    public const string TokenNameTagPadding = "標籤內容周圍的內邊距。";
-    public const string TokenNameTagTextPaddingInline = "標籤文本兩側的內邊距。";
-    public const string TokenNameTagBorderlessBg = "無邊框標籤使用的背景色。";
-    public const string TokenScopeComponent = "組件";
-    public const string TokenStatusStable = "穩定";
 
 }

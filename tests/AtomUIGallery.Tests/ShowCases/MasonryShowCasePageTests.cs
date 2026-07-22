@@ -229,18 +229,6 @@ public class MasonryShowCasePageTests
         viewModel.DynamicItems[2].Column.ShouldBe(1);
     }
 
-    [Fact]
-    public void Masonry_ShowCase_Api_Table_Documents_Responsive_Properties()
-    {
-        var viewModel = new MasonryViewModel(null!);
-
-        viewModel.EnsureApiRows();
-
-        viewModel.ApiRows.ShouldNotBeNull();
-        viewModel.ApiRows!.Select(row => row.Property).ShouldContain("ColumnInfo");
-        viewModel.ApiRows.Select(row => row.Property).ShouldContain("Gutter");
-    }
-
     private static string ExtractBasicDemoMarkup(string source)
     {
         return ExtractMasonryMarkup(source, "ItemsSource=\"{Binding BasicItems}\"");

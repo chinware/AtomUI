@@ -18,25 +18,11 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
 
     public string? UrlPathSegment => ID.ToString();
 
-    private ObservableCollection<MasonryApiRow>? _apiRows;
-    private ObservableCollection<MasonryDesignTokenRow>? _designTokenRows;
     private ObservableCollection<MasonryBasicItem>? _basicItems;
     private ObservableCollection<MasonryBasicItem>? _responsiveItems;
     private ObservableCollection<MasonryImageItem>? _imageItems;
     private ObservableCollection<MasonryDynamicItem>? _dynamicItems;
     private readonly Random _dynamicItemHeightRandom = new();
-
-    public ObservableCollection<MasonryApiRow>? ApiRows
-    {
-        get => _apiRows;
-        private set => this.RaiseAndSetIfChanged(ref _apiRows, value);
-    }
-
-    public ObservableCollection<MasonryDesignTokenRow>? DesignTokenRows
-    {
-        get => _designTokenRows;
-        private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
-    }
 
     /// <summary>
     /// Sample items for the basic example, mirroring the Ant Design Masonry basic demo:
@@ -230,88 +216,7 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
         }
     }
 
-    public void EnsureApiRows()
-    {
-        if (ApiRows is not null)
-        {
-            return;
-        }
-
-        ApiRows =
-        [
-            new MasonryApiRow("ColumnCount", Lang(MasonryShowCaseLangResourceKind.ApiPropertyColumnCount), "int", "orange", "0"),
-            new MasonryApiRow("ColumnInfo", Lang(MasonryShowCaseLangResourceKind.ApiPropertyColumnInfo), "ResponsiveInt?", "purple", "null"),
-            new MasonryApiRow("MinColumnWidth", Lang(MasonryShowCaseLangResourceKind.ApiPropertyMinColumnWidth), "double", "cyan", "320"),
-            new MasonryApiRow("MaxColumnCount", Lang(MasonryShowCaseLangResourceKind.ApiPropertyMaxColumnCount), "int", "orange", "4"),
-            new MasonryApiRow("ColumnGap", Lang(MasonryShowCaseLangResourceKind.ApiPropertyColumnGap), "double", "cyan", "16"),
-            new MasonryApiRow("RowGap", Lang(MasonryShowCaseLangResourceKind.ApiPropertyRowGap), "double", "cyan", "16"),
-            new MasonryApiRow("Gutter", Lang(MasonryShowCaseLangResourceKind.ApiPropertyGutter), "ResponsiveGutter?", "purple", "null"),
-            new MasonryApiRow("ItemsSource", Lang(MasonryShowCaseLangResourceKind.ApiPropertyItemsSource), "IEnumerable", "green", "null"),
-            new MasonryApiRow("ItemTemplate", Lang(MasonryShowCaseLangResourceKind.ApiPropertyItemTemplate), "IDataTemplate", "green", "null"),
-            new MasonryApiRow("Masonry.Column", Lang(MasonryShowCaseLangResourceKind.ApiPropertyMasonryColumn), "int?", "purple", "null"),
-            new MasonryApiRow("Masonry.Span", Lang(MasonryShowCaseLangResourceKind.ApiPropertyMasonrySpan), "MasonryItemSpan", "purple", "Auto"),
-            new MasonryApiRow("LayoutChanged", Lang(MasonryShowCaseLangResourceKind.ApiEventLayoutChanged), "event", "geekblue", "-")
-        ];
-    }
-
-    public void EnsureDesignTokenRows()
-    {
-        if (DesignTokenRows is not null)
-        {
-            return;
-        }
-
-        DesignTokenRows = [];
-    }
-
-    private static string Lang(MasonryShowCaseLangResourceKind kind)
-    {
-        if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
-        {
-            return LanguageResourceBinder.GetLangResource(kind) ?? FallbackLang(kind);
-        }
-
-        return FallbackLang(kind);
-    }
-
-    private static string FallbackLang(MasonryShowCaseLangResourceKind kind)
-    {
-        return kind switch
-        {
-            MasonryShowCaseLangResourceKind.ApiPropertyColumnCount     => en_US.ApiPropertyColumnCount,
-            MasonryShowCaseLangResourceKind.ApiPropertyColumnInfo      => en_US.ApiPropertyColumnInfo,
-            MasonryShowCaseLangResourceKind.ApiPropertyMinColumnWidth  => en_US.ApiPropertyMinColumnWidth,
-            MasonryShowCaseLangResourceKind.ApiPropertyMaxColumnCount  => en_US.ApiPropertyMaxColumnCount,
-            MasonryShowCaseLangResourceKind.ApiPropertyColumnGap       => en_US.ApiPropertyColumnGap,
-            MasonryShowCaseLangResourceKind.ApiPropertyRowGap          => en_US.ApiPropertyRowGap,
-            MasonryShowCaseLangResourceKind.ApiPropertyGutter          => en_US.ApiPropertyGutter,
-            MasonryShowCaseLangResourceKind.ApiPropertyItemsSource     => en_US.ApiPropertyItemsSource,
-            MasonryShowCaseLangResourceKind.ApiPropertyItemTemplate    => en_US.ApiPropertyItemTemplate,
-            MasonryShowCaseLangResourceKind.ApiPropertyMasonryColumn   => en_US.ApiPropertyMasonryColumn,
-            MasonryShowCaseLangResourceKind.ApiPropertyMasonrySpan     => en_US.ApiPropertyMasonrySpan,
-            MasonryShowCaseLangResourceKind.ApiEventLayoutChanged      => en_US.ApiEventLayoutChanged,
-            MasonryShowCaseLangResourceKind.TokenNameNoComponentToken  => en_US.TokenNameNoComponentToken,
-            MasonryShowCaseLangResourceKind.TokenScopeComponent        => en_US.TokenScopeComponent,
-            MasonryShowCaseLangResourceKind.TokenStatusNotApplicable   => en_US.TokenStatusNotApplicable,
-            _                                                            => kind.ToString()
-        };
-    }
 }
-
-public sealed record MasonryApiRow(
-    string Property,
-    string Description,
-    string Type,
-    string TypeTagColor,
-    string Default);
-
-public sealed record MasonryDesignTokenRow(
-    string Token,
-    string Description,
-    string Scope,
-    string ScopeTagColor,
-    string Status,
-    string StatusTagColor);
 
 public sealed record MasonryImageItem(int Index, string ImageSource);
 

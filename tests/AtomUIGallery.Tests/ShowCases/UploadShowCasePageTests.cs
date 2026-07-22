@@ -12,7 +12,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class UploadShowCasePageTests
 {
     [Fact]
-    public void Upload_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void Upload_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadShowCase.axaml");
 
@@ -67,112 +67,6 @@ public class UploadShowCasePageTests
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void Upload_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new UploadApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new UploadDesignTokenDataGrid()");
-        codeBehindSource.ShouldNotContain("AttachUpload(");
-        codeBehindSource.ShouldNotContain("new UploadBasicShowCase()");
-        codeBehindSource.ShouldNotContain("new UploadPicturesShowCase()");
-        codeBehindSource.ShouldNotContain("new UploadConstraintsShowCase()");
-
-        CountOccurrences(pageSource, "UploadTransport=\"{Binding UploadTransport}\"").ShouldBe(14);
-        CountOccurrences(pageSource, "UploadTaskFailed=\"HandleUploadFailed\"").ShouldBe(14);
-        CountOccurrences(pageSource, "UploadTaskCompleted=\"HandleUploadCompleted\"").ShouldBe(14);
-        CountOccurrences(pageSource, "UploadTaskAboutToScheduling=\"HandleImageUploadAboutToScheduling\"").ShouldBe(2);
-        CountOccurrences(pageSource, "UploadTaskAboutToScheduling=\"HandlePngUploadAboutToScheduling\"").ShouldBe(1);
-        codeBehindSource.ShouldContain("HandleImageUploadAboutToScheduling");
-        codeBehindSource.ShouldContain("HandlePngUploadAboutToScheduling");
-        codeBehindSource.ShouldContain("HandleUploadFailed");
-        codeBehindSource.ShouldContain("HandleUploadCompleted");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:UploadApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("UploadShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("UploadShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("UploadShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("UploadShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:UploadDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("UploadShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("UploadShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("UploadShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("UploadShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void Upload_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyFiles");
-            source.ShouldContain("ApiPropertyAccepts");
-            source.ShouldContain("ApiPropertyMaxCount");
-            source.ShouldContain("ApiPropertyUploadTransport");
-            source.ShouldContain("ApiPropertyAutoUpload");
-            source.ShouldContain("ApiPropertyListMaxHeight");
-            source.ShouldContain("ApiPropertySuccessAutoRemoveDelay");
-            source.ShouldContain("ApiPropertyTriggerContent");
-            source.ShouldContain("ApiPropertyUploadTriggerSourceKind");
-            source.ShouldNotContain("ApiPropertyDefaultTaskList");
-            source.ShouldNotContain("ApiPropertyIsUploadDirectoryEnabled");
-            source.ShouldNotContain("ApiPropertyIsShowUploadTrigger");
-            source.ShouldContain("TokenNameActionsColor");
-            source.ShouldContain("TokenNamePictureCardSize");
-            source.ShouldContain("TokenNameDragIconSize");
-        }
     }
 
     [Fact]

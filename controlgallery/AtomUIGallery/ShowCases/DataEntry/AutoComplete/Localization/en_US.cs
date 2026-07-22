@@ -40,44 +40,10 @@ internal partial class en_US
     public const string P2PlaceholderTextUnclearable = "UnClearable";
     public const string P2PlaceholderTextCustomizedClearIcon = "Customized clear icon";
     public const string ScenarioExamples = "Examples";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Type ahead and select suggested values from local or asynchronous options.";
     public const string PageDescription =
         "AutoComplete combines text input with candidate filtering, async loading, custom option rendering, status feedback and specialized search or text area variants.";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
-    public const string ApiColumnProperty = "Property";
-    public const string ApiColumnDescription = "Description";
-    public const string ApiColumnType = "Type";
-    public const string ApiColumnDefault = "Default";
-    public const string ApiPropertyValue = "Current text value of the autocomplete input.";
-    public const string ApiPropertyOptionsSource = "Static option source used for candidate suggestions.";
-    public const string ApiPropertyOptionsAsyncLoader = "Asynchronous loader that provides options from the current input context.";
-    public const string ApiPropertyOptionTemplate = "Template used to render each suggestion option.";
-    public const string ApiPropertyFilter = "Filter used to decide which options remain visible.";
-    public const string ApiPropertyFilterValueSelector = "Selects the option value passed to the filter.";
-    public const string ApiPropertyIsAllowClear = "Shows a clear affordance when the input has content.";
-    public const string ApiPropertyClearIcon = "Custom icon used by the clear affordance.";
-    public const string ApiPropertyStyleVariant = "Visual input variant such as outlined, filled, borderless or underlined.";
-    public const string ApiPropertyStatus = "Validation status displayed by the input surface.";
-    public const string ApiPropertyPlacement = "Preferred popup placement for the candidate list.";
-    public const string ApiPropertyMinimumPrefixLength = "Minimum input length before autocomplete suggestions can open.";
-    public const string ApiPropertyDisplayCandidateCount = "Number of candidate rows used to calculate popup height.";
-    public const string ApiPropertyMaxDropDownHeight = "Maximum candidate popup height.";
-    public const string ApiPropertyIsPopupMatchSelectWidth = "Matches the popup width to the input width.";
-    public const string ApiPropertyShouldUseOverlayPopup = "Uses an overlay popup host when suggestions are opened.";
-    public const string ApiPropertyAutoCompleteSearchButtonStyle = "Button style used by AutoCompleteSearchEdit.";
-    public const string ApiPropertyAutoCompleteTextAreaLines = "Visible text lines used by AutoCompleteTextArea.";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "Description";
-    public const string TokenColumnScope = "Scope";
-    public const string TokenColumnStatus = "Status";
-    public const string TokenNamePopupContentPadding = "Padding inside the candidate popup.";
-    public const string TokenNameOptionHeight = "Height of each suggestion option.";
-    public const string TokenNameMinPopupWidth = "Minimum width of the candidate popup.";
-    public const string TokenNameMaxPopupWidth = "Maximum popup width when it does not follow the input width.";
-    public const string TokenScopeComponent = "AutoComplete";
-    public const string TokenStatusStable = "Stable";
 
 }

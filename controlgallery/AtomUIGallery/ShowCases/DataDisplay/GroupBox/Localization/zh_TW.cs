@@ -21,36 +21,10 @@ internal partial class zh_TW
     public const string AutoHeightContentDetail = "當內容來自 StackPanel、Grid 或顯式尺寸控件時，GroupBox 會使用內容的 DesiredSize 計算整體高度。";
     public const string AutoHeightContentFooter = "如果父容器設定了固定高度或 MaxHeight，仍然會按 Avalonia 佈局約束進行裁剪或滾動。";
     public const string ScenarioExamples = "範例";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "設計 Token";
     public const string PageSubtitle = "用帶標題的邊框容器組織相關內容。";
     public const string PageDescription =
         "GroupBox 通過帶邊框的容器包裹相關內容，並支持配置標題、位置、圖標和字體樣式。";
     public const string ComponentCategory = "資料展示";
     public const string ComponentStatusStable = "穩定";
-    public const string ApiColumnProperty = "屬性";
-    public const string ApiColumnDescription = "說明";
-    public const string ApiColumnType = "類型";
-    public const string ApiColumnDefault = "預設值";
-    public const string ApiPropertyHeaderTitle = "顯示在分組標題區域的文字。";
-    public const string ApiPropertyHeaderTitleColor = "標題文字使用的畫刷。";
-    public const string ApiPropertyHeaderIcon = "顯示在標題文字前的可選圖標。";
-    public const string ApiPropertyHeaderTitlePosition = "控制標題左對齊、居中或右對齊。";
-    public const string ApiPropertyHeaderFontSize = "標題文字字號。";
-    public const string ApiPropertyHeaderFontStyle = "標題文字字體樣式。";
-    public const string ApiPropertyHeaderFontWeight = "標題文字字重。";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "說明";
-    public const string TokenColumnScope = "作用域";
-    public const string TokenColumnStatus = "狀態";
-    public const string TokenNameContentPadding = "內容區域內間距。";
-    public const string TokenNameHeaderContainerMargin = "標題容器外間距。";
-    public const string TokenNameHeaderContentPadding = "標題內容區域內間距。";
-    public const string TokenNameHeaderIconMargin = "標題圖標外間距。";
-    public const string TokenNameOrientationMarginPercent = "標題定位時兩側偏移比例。";
-    public const string TokenNameTextPaddingInline = "以 em 為單位的文字橫向內間距。";
-    public const string TokenNameVerticalMarginInline = "縱向分割線的橫向外間距。";
-    public const string TokenScopeComponent = "組件";
-    public const string TokenStatusStable = "穩定";
 
 }

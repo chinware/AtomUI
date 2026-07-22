@@ -9,7 +9,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class QRCodeShowCasePageTests
 {
     [Fact]
-    public void QRCode_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void QRCode_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml");
 
@@ -47,99 +47,6 @@ public class QRCodeShowCasePageTests
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void QRCode_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml.cs");
-        var viewModelSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/ViewModels/QRCodeViewModel.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new QRCodeApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new QRCodeDesignTokenDataGrid()");
-        pageSource.ShouldContain("Command=\"{Binding SmallerCommand}\"");
-        pageSource.ShouldContain("Command=\"{Binding LargerCommand}\"");
-        pageSource.ShouldContain("ItemsSource=\"{Binding EccLevels}\"");
-        pageSource.ShouldContain("EccLevel=\"{Binding SelectedEccLevel}\"");
-        pageSource.ShouldContain("SelectedItem=\"{Binding SelectedEccLevel}\"");
-        pageSource.ShouldNotContain("{Binding #");
-        viewModelSource.ShouldContain("public QRCodeEccLevel SelectedEccLevel");
-        codeBehindSource.ShouldNotContain("GalleryBindingUtils.BindCommand(SmallerBtn");
-        codeBehindSource.ShouldNotContain("GalleryBindingUtils.BindCommand(LargerBtn");
-        codeBehindSource.ShouldNotContain("EccLevelSegmented");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:QRCodeApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("QRCodeShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("QRCodeShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("QRCodeShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("QRCodeShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:QRCodeDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("QRCodeShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("QRCodeShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("QRCodeShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("QRCodeShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void QRCode_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyValue");
-            source.ShouldContain("ApiPropertyStatus");
-            source.ShouldContain("ApiPropertyEccLevel");
-            source.ShouldContain("ApiEventRefreshRequested");
-            source.ShouldContain("TokenNameQRCodeTextColor");
-        }
     }
 
     [Fact]

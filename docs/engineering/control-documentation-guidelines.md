@@ -4,7 +4,7 @@
 
 控件文档用于描述控件的最新设计状态、公共契约、交互模型、状态模型、主题架构、Token 边界、内部实现原理和维护规则。它不替代面向最终用户的站点文档、API reference、正式发布 `CHANGELOG.md` 或代码注释。
 
-控件文档也是 AtomUI LLMS 文档的唯一人工维护源。面向 AI 编程工具的 `llms.txt`、`llms-full-cn.txt`、`llms-semantic-cn.md`、单控件 `controls/<control>/index-<lang>.md` 和单控件 `controls/<control>/semantic-<lang>.md` 必须从控件文档、Gallery API / Token 表、Gallery 示例源码片段和源码结构生成，不维护第二套手写控件文档。
+控件文档也是 AtomUI LLMS 文档的唯一人工维护源。面向 AI 编程工具的 `llms.txt`、`llms-full-cn.txt`、`llms-semantic-cn.md`、单控件 `controls/<control>/index-<lang>.md` 和单控件 `controls/<control>/semantic-<lang>.md` 必须从控件文档、源码 public surface、Token 类型或生成数据、Gallery 示例源码片段和源码结构生成，不维护第二套手写控件文档。
 
 ## 文档目录结构
 
@@ -343,8 +343,8 @@ docs/AI/llms/
 - `docs/controls/<platform>/<category>/<control>/overview.md`
 - `docs/controls/<platform>/<category>/<control>/implementation.md`
 - `docs/controls/<platform>/<category>/<control>/token.md`
-- Gallery `*ApiDataGrid`
-- Gallery `*DesignTokenDataGrid`
+- 控件源码 public surface
+- 控件 Token 类型或生成数据
 - Gallery ShowCase 示例和源码片段 catalog
 - 控件源码、主题文件和 Token 类型
 
@@ -413,10 +413,10 @@ LLMS 生成必须遵守：
 ```md
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | overview.md + Gallery API / Token / ShowCase | 生成 `controls/<control>/index-cn.md` |
+| 单控件完整文档 | overview.md + implementation.md + token.md + Gallery ShowCase | 生成 `controls/<control>/index-cn.md` |
 | 单控件语义文档 | overview.md + implementation.md + Themes 文件夹 + theme/template 信息 | 生成 `controls/<control>/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 overview.md 中手工复制完整表 |
-| Design Token 表 | Gallery DesignTokenDataGrid 或 Token 类型 | 不在 token.md 中手工复制生成表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 overview.md 中机械复制完整 API 表 |
+| Design Token 表 | token.md + Token 类型或生成数据 | 不在 token.md 中手工复制生成表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | implementation.md | 用于定位控件源码、主题和测试 |
 ```
@@ -444,9 +444,9 @@ LLMS 生成必须遵守：
 内容来源要求：
 
 - “概述”“何时使用”“状态模型”主要来自 `overview.md`。
-- “公共 API”“事件与命令”来自 Gallery API 表或源码 public surface。
+- “公共 API”“事件与命令”来自 `overview.md` 语义摘要和源码 public surface。
 - “使用示例”来自 Gallery ShowCase 和源码片段 catalog。
-- “主题与 Design Token”来自 `token.md`、Gallery Token 表和 Token 类型。
+- “主题与 Design Token”来自 `token.md`、Token 类型或生成数据。
 - “AOT 与裁剪注意事项”来自 `implementation.md` 和全局 AOT 规范。
 - “源码索引”来自 `implementation.md` 的源码文件结构。
 
@@ -637,7 +637,7 @@ LLMS 生成 `llms-full-cn.txt` 时，只从 `implementation.md` 抽取以下内�
 - 不允许把实例状态、交互状态或 `EffectiveXxx` 状态写成 Token。
 - 不允许在控件 Token 中展开颜色、variant、状态的组合 Token。
 - 没有专属 Token 的控件不需要创建 `token.md`，但 `overview.md` 中仍应说明其 Theme 是否直接使用 SharedToken。
-- LLMS 中的 Token 表格应从 Gallery Token 表、Token 类型或生成数据中抽取；`token.md` 只解释这些 Token 的语义边界。
+- LLMS 中的 Token 表格应从 `token.md`、Token 类型或生成数据中抽取；`token.md` 解释这些 Token 的语义边界。
 
 如果控件没有专属 `token.md`，`overview.md` 必须明确说明：
 
@@ -733,7 +733,7 @@ LLMS 生成时不得把缺失 `token.md` 解释为文档缺失，除非 `overvie
 - 结构复杂控件的 `implementation.md` 是否基于 `Themes/` 文件夹提供 Composition Model，并明确 internal 协作对象的稳定性和 Agent 使用边界。
 - `token.md` 是否能解释 Token 语义；没有 `token.md` 的控件是否在 `overview.md` 明确说明原因。
 - Template Part、伪类、主题资源和 Token 是否足够支撑 semantic 文档生成。
-- Gallery API 表、Token 表和 ShowCase 示例是否能与控件文档对应。
+- 控件文档、源码 public surface、Token 类型和 Gallery ShowCase 示例是否对应。
 - 是否避免维护第二套 LLMS 专用手写控件文档。
 
 ## 验证要求
