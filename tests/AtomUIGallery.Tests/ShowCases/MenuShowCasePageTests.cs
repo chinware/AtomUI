@@ -15,7 +15,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class MenuShowCasePageTests
 {
     [Fact]
-    public void Menu_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void Menu_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
 
@@ -68,121 +68,6 @@ public class MenuShowCasePageTests
     }
 
     [Fact]
-    public void Menu_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new MenuApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new MenuDesignTokenDataGrid()");
-        codeBehindSource.ShouldContain("HandleChangeModeCheckChanged");
-        codeBehindSource.ShouldContain("HandleChangeStyleCheckChanged");
-        codeBehindSource.ShouldContain("HandleToggleInlineCollapsedClick");
-        codeBehindSource.ShouldNotContain("new MenuBasicShowCase()");
-        codeBehindSource.ShouldNotContain("new MenuFeaturesShowCase()");
-        codeBehindSource.ShouldNotContain("new MenuItemsSourceShowCase()");
-        codeBehindSource.ShouldNotContain("new MenuContextShowCase()");
-        codeBehindSource.ShouldNotContain("new MenuNavigationShowCase()");
-        codeBehindSource.ShouldNotContain("GalleryBindingUtils.OneWay");
-        codeBehindSource.ShouldNotContain("BasicItemsSourceMenu");
-        codeBehindSource.ShouldNotContain("InlineModeMenu");
-        codeBehindSource.ShouldNotContain("ItemsSourceDemoNavMenu,");
-        codeBehindSource.ShouldNotContain("BasicContextMenu");
-        codeBehindSource.ShouldNotContain("ChangeModeSwitch.IsCheckedChanged");
-        codeBehindSource.ShouldNotContain("ChangeStyleSwitch.IsCheckedChanged");
-        pageSource.ShouldContain("ItemsSource=\"{Binding MenuItems}\"");
-        pageSource.ShouldContain("ItemsSource=\"{Binding InlineNavMenuNodes}\"");
-        pageSource.ShouldContain("ItemsSource=\"{Binding ItemsSourceDemoNavMenuNodes}\"");
-        pageSource.ShouldContain("ItemsSource=\"{Binding ContextMenuItems}\"");
-        pageSource.ShouldContain("IsInlineCollapsed=\"{Binding IsInlineCollapsed}\"");
-        pageSource.ShouldContain("IsCheckedChanged=\"HandleChangeModeCheckChanged\"");
-        pageSource.ShouldContain("IsCheckedChanged=\"HandleChangeStyleCheckChanged\"");
-        pageSource.ShouldContain("Click=\"HandleToggleInlineCollapsedClick\"");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:MenuApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("MenuShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("MenuShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("MenuShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("MenuShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:MenuDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("MenuShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("MenuShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("MenuShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("MenuShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void Menu_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyMenuSizeType");
-            source.ShouldContain("ApiPropertyMenuDisplayPageSize");
-            source.ShouldContain("ApiPropertyNavMenuMode");
-            source.ShouldContain("ApiPropertyNavMenuDefaultOpenPaths");
-            source.ShouldContain("ApiPropertyNavMenuNodeCommand");
-            source.ShouldContain("ApiPropertyNavMenuNodeCommandParameter");
-            source.ShouldContain("TokenNameMenuItemHeight");
-            source.ShouldContain("TokenNameNavMenuItemHeight");
-            source.ShouldContain("NavMenuNodeCommandTitle");
-            source.ShouldContain("NavMenuNodeCommandDescription");
-            source.ShouldContain("P2TextLastCommandKey");
-            source.ShouldContain("InlineCollapsedMenuTitle");
-            source.ShouldContain("InlineCollapsedMenuDescription");
-            source.ShouldContain("P2HeaderOptionN5");
-            source.ShouldContain("P2HeaderOptionN8");
-        }
-    }
-
-    [Fact]
     public void Menu_ShowCase_NavMenuNode_Command_Uses_Explicit_Business_Keys_And_Displays_The_Last_Executed_Key()
     {
         var pageSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
@@ -224,8 +109,6 @@ public class MenuShowCasePageTests
         viewModelSource.ShouldContain("public ReactiveCommand<string, Unit> NavigateCommand { get; }");
         viewModelSource.ShouldContain("public string LastCommandKey");
         viewModelSource.ShouldContain("LastCommandKey = itemKey;");
-        viewModelSource.ShouldContain("new MenuApiRow(\"NavMenuNode.Command\"");
-        viewModelSource.ShouldContain("new MenuApiRow(\"NavMenuNode.CommandParameter\"");
     }
 
     [Fact]

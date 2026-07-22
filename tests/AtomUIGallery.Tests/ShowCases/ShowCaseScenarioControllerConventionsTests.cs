@@ -51,7 +51,7 @@ public class ShowCaseScenarioControllerConventionsTests
             if (source.Contains("ItemsSource=\"{Binding ApiRows}\"", StringComparison.Ordinal) ||
                 source.Contains("ItemsSource=\"{Binding DesignTokenRows}\"", StringComparison.Ordinal))
             {
-                failures.Add($"{relativePagePath}: must keep API and token DataGrids out of the main page XAML.");
+                failures.Add($"{relativePagePath}: must not bind removed API or token metadata rows.");
             }
         }
 
@@ -188,10 +188,9 @@ public class ShowCaseScenarioControllerConventionsTests
                .Where(IsMainShowCasePage)
                .Where(path =>
                {
-                   var controlName = Path.GetFileNameWithoutExtension(path)[..^"ShowCase".Length];
-                   var viewsPath   = Path.GetDirectoryName(path)!;
-                   return File.Exists(Path.Combine(viewsPath, $"{controlName}ApiDataGrid.axaml")) &&
-                          File.Exists(Path.Combine(viewsPath, $"{controlName}DesignTokenDataGrid.axaml"));
+                   var source = File.ReadAllText(path);
+                   return !source.Contains("Name=\"ScenarioTabs\"", StringComparison.Ordinal) &&
+                          !source.Contains("Name=\"ScenarioContentHost\"", StringComparison.Ordinal);
                })
                .Order(StringComparer.Ordinal)
                .ToArray();

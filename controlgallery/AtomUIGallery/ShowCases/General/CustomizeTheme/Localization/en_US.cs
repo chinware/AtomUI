@@ -6,16 +6,10 @@ namespace AtomUIGallery.ShowCases.CustomizeTheme;
 internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "Design Token";
     public const string ComponentCategory = "General";
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "Customize AtomUI themes with shared tokens, algorithms, component tokens, and nested local theme scopes.";
     public const string PageDescription = "Customize Theme demonstrates the ThemeConfigProvider model used to override seed tokens, derived tokens, preset algorithms, component-scoped tokens, and nested theme contexts without changing the global application theme.";
-    public const string ApiColumnMember = "Member";
-    public const string ApiColumnDescription = "Description";
-    public const string ApiColumnType = "Type";
-    public const string ApiColumnDefault = "Default";
     public const string ApiMemberThemeConfigProviderConfig = "Immutable scoped theme configuration. Runtime updates replace the complete value.";
     public const string ApiMemberThemeConfigInherit = "Whether this configuration inherits and merges the parent theme configuration.";
     public const string ApiMemberThemeConfigAlgorithms = "Ordered global algorithm identities. A null value inherits the parent algorithm chain.";
@@ -24,18 +18,6 @@ internal partial class en_US
     public const string ApiMemberControlThemeConfigAlgorithm = "How the control applies algorithms: Unspecified, Disabled, Global, or Custom.";
     public const string ApiMemberControlThemeConfigAlgorithms = "Ordered custom control algorithms used only when Algorithm is Custom.";
     public const string ApiMemberControlThemeConfigTokens = "Token overrides applied only to the selected control token family.";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "Description";
-    public const string TokenColumnScope = "Scope";
-    public const string TokenColumnStatus = "Status";
-    public const string TokenNameColorPrimary = "Primary brand color used by interactive components.";
-    public const string TokenNameBorderRadius = "Shared corner radius seed used to derive component radii.";
-    public const string TokenNameColorBgContainer = "Container background color used by controls and surfaces.";
-    public const string TokenNameButtonColorPrimary = "Button component primary color override.";
-    public const string TokenNameAddOnDecoratedBoxColorPrimary = "AddOnDecoratedBox component primary color override used by input decorations.";
-    public const string TokenScopeShared = "Shared";
-    public const string TokenScopeComponent = "Component";
-    public const string TokenStatusStable = "Stable";
     public const string CustomizeDesignTokenTitle = "Customize Design Token";
     public const string CustomizeDesignTokenDescription = "By modifying token property of theme, we can modify Design Token globally. Some tokens will affect other tokens. We call these tokens Seed Token.";
     public const string PresetAlgorithmsTitle = "Use Preset Algorithms";

@@ -12,7 +12,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class TreeSelectShowCasePageTests
 {
     [Fact]
-    public void TreeSelect_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void TreeSelect_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml");
 
@@ -76,110 +76,6 @@ public class TreeSelectShowCasePageTests
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void TreeSelect_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new TreeSelectApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new TreeSelectDesignTokenDataGrid()");
-        codeBehindSource.ShouldNotContain("new TreeSelectBasicShowCase()");
-        codeBehindSource.ShouldNotContain("new TreeSelectBehaviorShowCase()");
-        codeBehindSource.ShouldNotContain("new TreeSelectAppearanceShowCase()");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:TreeSelectApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("TreeSelectShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("TreeSelectShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("TreeSelectShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("TreeSelectShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:TreeSelectDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("TreeSelectShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("TreeSelectShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("TreeSelectShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("TreeSelectShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-        pageSource.ShouldContain("IsShowIcon=\"{Binding IsShowTreeSelectIcon}\"");
-        pageSource.ShouldContain("IsShowLeafIcon=\"{Binding IsShowTreeSelectLeafIcon}\"");
-        pageSource.ShouldContain("IsShowLine=\"{Binding IsShowTreeSelectLine}\"");
-        pageSource.ShouldNotContain("{Binding #");
-    }
-
-    [Fact]
-    public void TreeSelect_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyItemsSource");
-            source.ShouldContain("ApiPropertySelectedItem");
-            source.ShouldContain("ApiPropertySelectedItems");
-            source.ShouldContain("ApiPropertyIsMultiple");
-            source.ShouldContain("ApiPropertyIsTreeCheckable");
-            source.ShouldContain("ApiPropertyIsDefaultExpandAll");
-            source.ShouldContain("ApiPropertyDataLoader");
-            source.ShouldContain("ApiPropertyPlacement");
-            source.ShouldContain("ApiPropertyStatus");
-            source.ShouldContain("TokenNameMinPopupWidth");
-            source.ShouldContain("BindingTitle");
-            source.ShouldContain("BindingDescription");
-            source.ShouldContain("BindingSingleLabel");
-            source.ShouldContain("BindingMultipleLabel");
-            source.ShouldContain("SizeTypeTitle");
-            source.ShouldContain("SizeTypeDescription");
-            source.ShouldContain("P2ContentLarge");
-            source.ShouldContain("P2ContentDefault");
-            source.ShouldContain("P2ContentSmall");
-            source.ShouldContain("P2ContentCustom");
-        }
     }
 
     [Fact]

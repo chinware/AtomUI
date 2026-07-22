@@ -9,7 +9,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class SliderShowCasePageTests
 {
     [Fact]
-    public void Slider_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void Slider_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml");
 
@@ -49,90 +49,6 @@ public class SliderShowCasePageTests
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void Slider_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new SliderApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new SliderDesignTokenDataGrid()");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:SliderApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("SliderShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("SliderShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("SliderShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("SliderShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:SliderDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("SliderShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("SliderShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("SliderShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("SliderShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void Slider_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("RangeValueBindingTitle");
-            source.ShouldContain("ApiPropertyIsRangeMode");
-            source.ShouldContain("ApiPropertyRangeValue");
-            source.ShouldContain("ApiPropertyMarks");
-            source.ShouldContain("ApiPropertyIsIncluded");
-            source.ShouldContain("TokenNameRailSize");
-            source.ShouldContain("TokenNameThumbCircleSize");
-        }
     }
 
     [Fact]

@@ -28,7 +28,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class ComboBoxShowCasePageTests
 {
     [Fact]
-    public void ComboBox_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void ComboBox_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml");
 
@@ -86,103 +86,6 @@ public class ComboBoxShowCasePageTests
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void ComboBox_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new ComboBoxApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new ComboBoxDesignTokenDataGrid()");
-        codeBehindSource.ShouldNotContain("TplComboBox");
-        codeBehindSource.ShouldNotContain("GalleryBindingUtils");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:ComboBoxApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("ComboBoxShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("ComboBoxShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("ComboBoxShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("ComboBoxShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:ComboBoxDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("ComboBoxShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("ComboBoxShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("ComboBoxShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("ComboBoxShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void ComboBox_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("EditableFilterTitle");
-            source.ShouldContain("BindingTitle");
-            source.ShouldContain("BindingDescription");
-            source.ShouldContain("P2PlaceholderTextTypeToFilter");
-            source.ShouldContain("ApiPropertyIsFilterEnabled");
-            source.ShouldContain("ApiPropertyFilterValueSelector");
-            source.ShouldContain("ThreeSizesDescription");
-            source.ShouldContain("Custom");
-            source.ShouldContain("P2PlaceholderSizeTypeLarge");
-            source.ShouldContain("P2PlaceholderSizeTypeMiddle");
-            source.ShouldContain("P2PlaceholderSizeTypeSmall");
-            source.ShouldContain("P2PlaceholderSizeTypeCustom");
-            source.ShouldContain("ApiPropertyDropDownDisplayPageSize");
-            source.ShouldContain("ApiPropertyShouldUseOverlayPopup");
-            source.ShouldContain("ApiPropertyContentLeftAddOn");
-            source.ShouldContain("TokenNamePopupContentPadding");
-            source.ShouldContain("TokenNameItemSelectedBgColor");
-            source.ShouldContain("TokenNameHandleWidth");
-        }
     }
 
     [Fact]

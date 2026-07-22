@@ -1,6 +1,6 @@
 # Gallery ShowCase Design Pattern
 
-本文档约定 AtomUI Gallery 控件 ShowCase 页面的稳定结构。标准控件页面面向示例浏览，直接展示 `ExamplesContent`；API 和 Design Token 继续以旁路 DataGrid 文件保留，作为文档、生成器和元数据资产，不再作为页面一级 Tab 展示。
+本文档约定 AtomUI Gallery 控件 ShowCase 页面的稳定结构。标准控件页面面向示例浏览，直接展示 `ExamplesContent`；API 和 Design Token 表不再由 Gallery 收集或保留，相关契约回到控件文档、源码 public surface、Token 类型和生成数据维护。
 
 ## 页面模型
 
@@ -62,6 +62,7 @@ ShowCase Page
 - `GalleryShowCaseScenarioController`
 - `CreateScenarioContent`
 - `new XxxApiDataGrid()` 或 `new XxxDesignTokenDataGrid()`
+- API / Design Token DataGrid sidecar 引用或 `ApiRows` / `DesignTokenRows` metadata 绑定
 
 `IconShowCase`、`PaletteShowCase` 这类示例本身需要分组的特殊页面可以继续使用 `TabStrip + ContentControl`。这些 Tab 表示示例分组，例如 `Outlined/Filled/TwoTone` 或 `Light/Dark`，不是标准页面的 API/Design Token 导航。
 
@@ -110,27 +111,14 @@ Examples 使用 `ShowCasePanel + ShowCaseItem`。标准页面中 `ShowCasePanel`
 
 ## API 与 Design Token
 
-API 和 Design Token 继续使用独立 UserControl 承载 DataGrid，但它们不再由主 ShowCase 页面实例化：
+标准 Gallery 页面不展示、实例化或保留 API / Design Token 表格。不得新增或恢复以下旧结构：
 
-```text
-ButtonShowCase.axaml
-ButtonShowCase.axaml.cs
-ButtonApiDataGrid.axaml
-ButtonApiDataGrid.axaml.cs
-ButtonDesignTokenDataGrid.axaml
-ButtonDesignTokenDataGrid.axaml.cs
-```
+- `*ApiDataGrid.axaml`、`*ApiDataGrid.axaml.cs`
+- `*DesignTokenDataGrid.axaml`、`*DesignTokenDataGrid.axaml.cs`
+- ViewModel 中的 `ApiRows`、`DesignTokenRows`、`EnsureApiRows()`、`EnsureDesignTokenRows()`
+- `*ApiRow`、`*DesignTokenRow` record 或只服务旧表格的本地化资源
 
-DataGrid sidecar 规则：
-
-- 文件继续跟随对应控件 ShowCase 放在同一个 `Views` 目录。
-- DataGrid 自己绑定 `ApiRows` 或 `DesignTokenRows`。
-- DataGrid 仍使用真实 `atom:DataGrid`，不在主页面手写普通布局模拟表格。
-- 第一列用于 key/name，应固定。
-- 描述列使用 `Width="*"` 承接剩余宽度，只设置合理 `MinWidth`。
-- `Margin="28,10,28,28"` 保持与 Examples 左右和底部节奏一致。
-
-主 ShowCase 页面不得把 API/Token DataGrid 直接写进 `ButtonShowCase.axaml`，也不得在 code-behind 中 `new ButtonApiDataGrid()` 或 `new ButtonDesignTokenDataGrid()`。
+API 和 Token 契约的维护入口是控件文档、源码 public surface、Token 类型和生成数据；Gallery 只作为稳定示例与源码片段来源。
 
 ## Sticky Host
 
@@ -150,7 +138,6 @@ DataGrid sidecar 规则：
 
 - Header 左右：由 `GalleryShowCaseHeader` 和宿主样式控制。
 - Examples：`ContentMargin="28,10,28,28"`。
-- API/Token sidecar DataGrid：`Margin="28,10,28,28"`。
 
 标准页面不再需要让 Header、Tab、Examples、API、Token 五者对齐；只需要 Header 与 Examples 的阅读节奏稳定。
 
@@ -174,7 +161,7 @@ DataGrid sidecar 规则：
 
 ## 测试范式
 
-每个标准 ShowCase 至少覆盖三类测试。
+每个标准 ShowCase 至少覆盖两类测试。
 
 结构测试：
 
@@ -186,13 +173,6 @@ DataGrid sidecar 规则：
 - `ExamplesContent` 设置 `IsDeferredLoadingEnabled="True"`。
 - 每个有演示内容的 `ShowCaseItem` 设置 `IsDeferredContentEnabled="True"`。
 - `ShowCaseItem` 数量与 `DeferredContentTemplate` 数量一致。
-
-API/Token sidecar 测试：
-
-- `XxxApiDataGrid.axaml` 和 `XxxDesignTokenDataGrid.axaml` 仍存在。
-- sidecar DataGrid 自己绑定 `ApiRows` / `DesignTokenRows`。
-- 主页面 XAML 不绑定 `ApiRows` / `DesignTokenRows`。
-- code-behind 不创建 API/Token DataGrid。
 
 演示内容保护测试：
 
@@ -212,14 +192,15 @@ API/Token sidecar 测试：
 6. 保持 `ShowCasePanel IsScrollEnabled=False`。
 7. 开启 panel 级延迟加载：`IsDeferredLoadingEnabled=True`、`InitialDeferredLoadItemCount=4`、`DeferredLoadBatchSize=2`。
 8. 每个有演示内容的 `ShowCaseItem` 使用 `IsDeferredContentEnabled=True` 和 `DeferredContentTemplate`。
-9. 保留 API/Design Token sidecar DataGrid 文件。
+9. 删除 API/Design Token sidecar DataGrid 文件、ViewModel rows、row record 和旧表格本地化资源。
 10. 从 code-behind 删除标准场景 controller 和 `CreateScenarioContent`。
 11. 跑结构测试、deferred 创建测试、snapshot 测试和 Gallery 测试。
 
 ## 不做事项
 
-- 不删除 API/Token DataGrid sidecar 文件。
+- 不新增或恢复 API/Token DataGrid sidecar 文件。
 - 不把 API/Token 表格改写进主 ShowCase。
+- 不在 ViewModel 中维护只服务旧 API/Token 表的 metadata rows。
 - 不把演示控件直接写在 `ShowCaseItem` 内容区。
 - 不为标准页面保留 `Examples/API/Design Token` 一级 Tab。
 - 不在每个页面私有一套标准场景 lazy cache。
@@ -228,4 +209,4 @@ API/Token sidecar 测试：
 
 ## 推广结果
 
-标准控件 ShowCase 已按“Header + direct ExamplesContent”范式迁移。API/Design Token sidecar 文件继续保留为 Gallery 文档数据源；`GalleryShowCaseScenarioController` 只服务 Icon、Palette 这类真实需要示例分组 lazy content 的特殊页面。
+标准控件 ShowCase 已按“Header + direct ExamplesContent”范式迁移。API/Design Token sidecar 文件和 ViewModel metadata rows 已从 Gallery 清除；`GalleryShowCaseScenarioController` 只服务 Icon、Palette 这类真实需要示例分组 lazy content 的特殊页面。

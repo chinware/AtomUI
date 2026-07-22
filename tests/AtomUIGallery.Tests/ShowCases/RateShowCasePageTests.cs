@@ -9,7 +9,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class RateShowCasePageTests
 {
     [Fact]
-    public void Rate_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void Rate_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml");
 
@@ -51,96 +51,6 @@ public class RateShowCasePageTests
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void Rate_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-        pageSource.ShouldContain("Value=\"{Binding TwoWayValue}\"");
-        pageSource.ShouldContain("Text=\"{Binding TwoWayValueSummary}\"");
-        pageSource.ShouldContain("Command=\"{Binding SetFourStarsCommand}\"");
-        pageSource.ShouldContain("Command=\"{Binding ClearTwoWayValueCommand}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new RateApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new RateDesignTokenDataGrid()");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:RateApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("RateShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("RateShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("RateShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("RateShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:RateDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("RateShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("RateShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("RateShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("RateShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void Rate_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldContain("TwoWayBindingTitle");
-            source.ShouldContain("TwoWayBindingDescription");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyIsAllowClear");
-            source.ShouldContain("ApiPropertyIsAllowHalf");
-            source.ShouldContain("ApiPropertyToolTips");
-            source.ShouldContain("ApiPropertyValueChanged");
-            source.ShouldContain("P2TwoWayValueSummaryFormat");
-            source.ShouldContain("TokenNameStarColor");
-            source.ShouldContain("TokenNameStarHoverScale");
-        }
     }
 
     [Fact]

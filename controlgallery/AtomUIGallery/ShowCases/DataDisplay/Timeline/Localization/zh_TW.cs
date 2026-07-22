@@ -33,40 +33,10 @@ internal partial class zh_TW
     public const string P2ContentQinwareWebsiteOnline = "Qinware 網站上線";
     public const string P2ContentNetworkProblemsBeingSolved = "網絡問題正在解決";
     public const string ScenarioExamples = "示例";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "設計變量";
     public const string PageSubtitle = "按時間順序展示一組事件。";
     public const string PageDescription =
         "Timeline 用於組織里程碑、進度更新和歷史事件，支持標籤、自定義節點指示器和待處理節點。";
     public const string ComponentCategory = "數據展示";
     public const string ComponentStatusStable = "穩定";
-    public const string ApiColumnProperty = "屬性";
-    public const string ApiColumnDescription = "說明";
-    public const string ApiColumnType = "類型";
-    public const string ApiColumnDefault = "默認值";
-    public const string ApiPropertyMode = "設置時間軸佈局模式：左側、右側或交替。";
-    public const string ApiPropertyPending = "提供內容後，在時間軸末尾增加待處理節點。";
-    public const string ApiPropertyPendingIcon = "待處理節點顯示的自定義圖標。";
-    public const string ApiPropertyIsReverse = "反轉時間軸節點的顯示順序。";
-    public const string ApiPropertyLabel = "時間軸節點旁顯示的可選標籤。";
-    public const string ApiPropertyIndicatorIcon = "作為節點指示器顯示的自定義圖標。";
-    public const string ApiPropertyIndicatorColor = "節點指示器使用的自定義畫刷。";
-    public const string TokenColumnToken = "變量";
-    public const string TokenColumnDescription = "說明";
-    public const string TokenColumnScope = "作用域";
-    public const string TokenColumnStatus = "狀態";
-    public const string TokenNameIndicatorTailColor = "時間軸節點連接線顏色。";
-    public const string TokenNameIndicatorTailWidth = "時間軸節點連接線寬度。";
-    public const string TokenNameItemPaddingBottom = "時間軸項底部內邊距。";
-    public const string TokenNameItemPaddingBottomLG = "時間軸項較大底部內邊距。";
-    public const string TokenNameLastItemContentMinHeight = "最後一個時間軸項內容的最小高度。";
-    public const string TokenNameIndicatorSize = "節點指示器外部尺寸。";
-    public const string TokenNameIndicatorDotSize = "節點指示器內置圓點尺寸。";
-    public const string TokenNameIndicatorLeftModeMargin = "左側模式下節點指示器外邊距。";
-    public const string TokenNameIndicatorRightModeMargin = "右側模式下節點指示器外邊距。";
-    public const string TokenNameIndicatorMiddleModeMargin = "交替模式下節點指示器外邊距。";
-    public const string TokenNameIndicatorDotBorderWidth = "節點圓點邊框寬度。";
-    public const string TokenScopeComponent = "組件";
-    public const string TokenStatusStable = "穩定";
 
 }

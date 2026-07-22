@@ -217,19 +217,18 @@ docs/controls/<platform>/<category>/<control>/
 - 控件家族影响。
 - 验证策略。
 
-Token 表格优先来自 Gallery Token 表、Token 类型或生成数据；`token.md` 解释语义边界。
+Token 表格优先来自 `token.md`、Token 类型或生成数据；`token.md` 解释语义边界。
 
-### 7.4 Gallery 元数据
+### 7.4 Gallery 示例元数据
 
-Gallery 元数据用于生成公共 API 表、Design Token 表和稳定示例。默认 AtomUI Desktop 适配器读取以下来源：
+Gallery 元数据只用于生成稳定示例和源码片段。默认 AtomUI Desktop 适配器读取以下来源：
 
-- `*ApiDataGrid`
-- `*DesignTokenDataGrid`
 - `*ShowCase.axaml`
-- ShowCase ViewModel 中的 API / Token rows
 - ShowCase source snippet catalog
 
-如果 Gallery 元数据和控件文档冲突，生成器不得静默选择一方，必须报告差异。
+公共 API 表来自 `overview.md` 语义摘要和源码 public surface；Design Token 表来自 `token.md`、Token 类型或生成数据。Gallery 不再收集 API / Token DataGrid sidecar 或 ShowCase ViewModel rows。
+
+如果 Gallery 示例元数据、源码 public surface、Token 数据和控件文档冲突，生成器不得静默选择一方，必须报告差异。
 
 ### 7.5 Gallery 源码示例
 
@@ -349,7 +348,7 @@ docs/AI/llms/
 每个生成文件必须包含生成标记：
 
 ```md
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 ```
 
 ### 8.1 controls/<control>/index-cn.md
@@ -444,7 +443,7 @@ tools/AtomUI.Docs.LLMsGenerator/
 校验配置路径和可见性策略
 发现控件目录
 读取 overview / implementation / token / changelog
-读取 Gallery API / Token / ShowCase 元数据
+读取源码 public surface、Token 类型或生成数据、Gallery ShowCase 元数据
 从 Gallery 源码查看示例边界读取稳定示例片段
 从源码索引定位 ControlTheme 模板并抽取 Abstract AXAML Structure
 从控件 Themes 文件夹读取 Composition Model，并用 implementation.md 和源码索引补充说明
@@ -491,7 +490,7 @@ tools/AtomUI.Docs.LLMsGenerator/
 | `LLMS020` | `overview.md` 缺少 LLMS 元数据。 |
 | `LLMS021` | `overview.md` 缺少 semantic parts。 |
 | `LLMS022` | `overview.md` 缺少 LLMS 导出来源表。 |
-| `LLMS030` | Gallery API / Token 元数据与控件文档冲突。 |
+| `LLMS030` | 源码 public surface、Token 数据、Gallery 示例元数据与控件文档冲突。 |
 | `LLMS031` | 文档级 Gallery 示例缺少稳定 `SourceKey`。 |
 | `LLMS032` | Gallery 示例源码片段无法生成或无法解析目标语言资源。 |
 | `LLMS033` | 结构复杂控件缺少 `Composition Model` 或组合节点稳定性边界。 |

@@ -42,7 +42,7 @@ public class SplashShowCasePageTests
     }
 
     [Fact]
-    public void Splash_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void Splash_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml");
 
@@ -189,94 +189,6 @@ public class SplashShowCasePageTests
             source.ShouldContain("P2WindowSplashMessageStarting");
             source.ShouldContain("P2WindowSplashMessageComplete");
             source.ShouldContain("P2WindowSplashFooter");
-        }
-    }
-
-    [Fact]
-    public void Splash_ShowCase_Api_And_Token_Tables_Document_Public_Contract()
-    {
-        var viewModel = new SplashViewModel(null!);
-
-        viewModel.EnsureApiRows();
-        viewModel.EnsureDesignTokenRows();
-
-        viewModel.ApiRows.ShouldNotBeNull();
-        viewModel.ApiRows!.Select(row => row.Member).ShouldContain("Splash.Logo");
-        viewModel.ApiRows.Select(row => row.Member).ShouldContain("Splash.Progress");
-        viewModel.ApiRows.Select(row => row.Member).ShouldContain("Splash.Status");
-        viewModel.ApiRows.Select(row => row.Member).ShouldContain("Splash.ShowAsync");
-        viewModel.ApiRows.Select(row => row.Member).ShouldContain("ISplashService.ShowAsync");
-        viewModel.ApiRows.Select(row => row.Member).ShouldContain("Splash.SetProgress");
-        viewModel.ApiRows.Select(row => row.Member).ShouldContain("SplashOptions.MinimumShowDuration");
-        viewModel.ApiRows.Select(row => row.Member).ShouldNotContain("SplashController.SetProgress");
-        viewModel.ApiRows.Select(row => row.Type).ShouldNotContain("Task<SplashController>");
-        viewModel.ApiRows.Select(row => row.Type).ShouldContain("Task<Splash>");
-
-        viewModel.DesignTokenRows.ShouldNotBeNull();
-        viewModel.DesignTokenRows!.Select(row => row.Token).ShouldContain("WindowWidth");
-        viewModel.DesignTokenRows.Select(row => row.Token).ShouldContain("SurfaceBackground");
-        viewModel.DesignTokenRows.Select(row => row.Token).ShouldContain("LogoSize");
-        viewModel.DesignTokenRows.Select(row => row.Token).ShouldContain("ProgressBarHeight");
-        viewModel.DesignTokenRows.Select(row => row.Token).ShouldContain("SuccessColor");
-        viewModel.DesignTokenRows.Select(row => row.Token).ShouldContain("ErrorColor");
-    }
-
-    [Fact]
-    public void Splash_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashDesignTokenDataGrid.axaml.cs");
-
-        codeBehindSource.ShouldNotContain("GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.Detach()");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new SplashApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new SplashDesignTokenDataGrid()");
-        pageSource.ShouldNotContain("<views:SplashApiDataGrid");
-        pageSource.ShouldNotContain("<views:SplashDesignTokenDataGrid");
-
-        apiSource.ShouldContain("x:DataType=\"viewModels:SplashApiRow\"");
-        apiSource.ShouldContain("SplashShowCaseLangResource ApiColumnMember");
-        apiSource.ShouldContain("SplashShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("SplashShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("SplashShowCaseLangResource ApiColumnDefault");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("x:DataType=\"viewModels:SplashDesignTokenRow\"");
-        tokenSource.ShouldContain("SplashShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("SplashShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("SplashShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("SplashShowCaseLangResource TokenColumnStatus");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void Splash_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldContain("BasicTitle");
-            source.ShouldContain("DeterminateTitle");
-            source.ShouldContain("StatusTitle");
-            source.ShouldContain("ComposedTitle");
-            source.ShouldContain("ApiPropertyProgress");
-            source.ShouldContain("ApiStaticShowAsync");
-            source.ShouldContain("ApiServiceShowAsync");
-            source.ShouldContain("TokenNameWindowWidth");
-            source.ShouldContain("TokenNameErrorColor");
         }
     }
 

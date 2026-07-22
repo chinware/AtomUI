@@ -21,36 +21,10 @@ internal partial class en_US
     public const string AutoHeightContentDetail = "When the content comes from StackPanel, Grid or explicitly sized controls, GroupBox uses the content DesiredSize to calculate its total height.";
     public const string AutoHeightContentFooter = "If the parent sets Height or MaxHeight, Avalonia layout constraints still decide clipping or scrolling.";
     public const string ScenarioExamples = "Examples";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Group related content under a titled frame.";
     public const string PageDescription =
         "GroupBox wraps related content with a bordered container and a configurable header title, position, icon and typography.";
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
-    public const string ApiColumnProperty = "Property";
-    public const string ApiColumnDescription = "Description";
-    public const string ApiColumnType = "Type";
-    public const string ApiColumnDefault = "Default";
-    public const string ApiPropertyHeaderTitle = "Text displayed in the group header.";
-    public const string ApiPropertyHeaderTitleColor = "Brush used for the header title text.";
-    public const string ApiPropertyHeaderIcon = "Optional icon displayed before the header title.";
-    public const string ApiPropertyHeaderTitlePosition = "Controls whether the header title is aligned left, center or right.";
-    public const string ApiPropertyHeaderFontSize = "Font size of the header title.";
-    public const string ApiPropertyHeaderFontStyle = "Font style of the header title.";
-    public const string ApiPropertyHeaderFontWeight = "Font weight of the header title.";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "Description";
-    public const string TokenColumnScope = "Scope";
-    public const string TokenColumnStatus = "Status";
-    public const string TokenNameContentPadding = "Padding inside the content area.";
-    public const string TokenNameHeaderContainerMargin = "Outer margin of the header container.";
-    public const string TokenNameHeaderContentPadding = "Padding inside the header content.";
-    public const string TokenNameHeaderIconMargin = "Margin around the header icon.";
-    public const string TokenNameOrientationMarginPercent = "Header side offset ratio for title positioning.";
-    public const string TokenNameTextPaddingInline = "Inline text padding measured in em.";
-    public const string TokenNameVerticalMarginInline = "Horizontal margin for the vertical separator.";
-    public const string TokenScopeComponent = "Component";
-    public const string TokenStatusStable = "Stable";
 
 }

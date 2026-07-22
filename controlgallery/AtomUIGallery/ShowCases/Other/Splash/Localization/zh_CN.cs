@@ -6,8 +6,6 @@ namespace AtomUIGallery.ShowCases.Splash;
 internal partial class zh_CN
 {
     public const string ScenarioExamples = "示例";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "Design Token";
     public const string ComponentCategory = "其他";
     public const string ComponentStatusPreview = "预览";
     public const string ComponentIntroducedVersion = "v6.0.7";
@@ -50,45 +48,9 @@ internal partial class zh_CN
     public const string P2WindowSplashMessageComplete = "Gallery 已就绪";
     public const string P2WindowSplashDetailComplete = "模拟启动流程已完成，窗口即将关闭。";
     public const string P2WindowSplashFooter = "Desktop Extras 包 / 窗口托管启动面板";
-    public const string ApiColumnMember = "成员";
-    public const string ApiColumnDescription = "说明";
-    public const string ApiColumnType = "类型";
-    public const string ApiColumnDefault = "默认值";
-    public const string ApiPropertyLogo = "显示在标题上方的 Logo 数据。";
-    public const string ApiPropertyLogoTemplate = "用于渲染 Logo 的模板。";
-    public const string ApiPropertyTitle = "产品或应用的主标题。";
-    public const string ApiPropertySubtitle = "显示在标题下方的副标题。";
-    public const string ApiPropertyMessage = "当前启动消息。";
-    public const string ApiPropertyDetail = "用于更长启动上下文的可选详情文本。";
-    public const string ApiPropertyProgress = "0 到 1 范围内的确定进度。";
-    public const string ApiPropertyIsIndeterminate = "控制显示加载指示器还是进度条。";
-    public const string ApiPropertyStatus = "Loading、Success 或 Error 视觉状态。";
-    public const string ApiPropertyIsMotionEnabled = "控制 Splash 淡出和模板过渡。";
-    public const string ApiPropertyFooter = "显示在进度和消息区域下方的页脚数据。";
     public const string ApiStaticShowAsync = "静态便捷 API，委托给 Splash.DefaultService。";
     public const string ApiServiceShowAsync = "实例服务 API，适用于希望通过依赖注入控制启动流程的应用。";
     public const string ApiMethodSetProgress = "更新 Splash 实例的进度、消息和详情。";
     public const string ApiOptionMinimumShowDuration = "Splash 窗口允许关闭前的最短展示时间。";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "说明";
-    public const string TokenColumnScope = "范围";
-    public const string TokenColumnStatus = "状态";
-    public const string TokenNameWindowWidth = "Splash 窗口默认宽度。";
-    public const string TokenNameWindowMinHeight = "Splash 面板默认最小高度。";
-    public const string TokenNameSurfaceCornerRadius = "Splash 面板圆角。";
-    public const string TokenNameSurfaceBoxShadow = "Splash 面板阴影。";
-    public const string TokenNameSurfaceBackground = "Splash 面板背景色。";
-    public const string TokenNameContentPadding = "内容内边距。";
-    public const string TokenNameLogoSize = "Logo presenter 默认尺寸。";
-    public const string TokenNameTitleFontSize = "标题字号。";
-    public const string TokenNameSubtitleFontSize = "副标题字号。";
-    public const string TokenNameMessageFontSize = "消息字号。";
-    public const string TokenNameDetailFontSize = "详情字号。";
-    public const string TokenNameIndicatorSize = "默认加载指示器尺寸。";
-    public const string TokenNameProgressBarHeight = "确定进度条高度。";
-    public const string TokenNameSuccessColor = "Success 状态下的消息颜色。";
-    public const string TokenNameErrorColor = "Error 状态下的消息颜色。";
-    public const string TokenScopeComponent = "组件";
-    public const string TokenStatusPreview = "预览";
 
 }

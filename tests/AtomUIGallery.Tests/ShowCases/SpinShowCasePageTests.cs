@@ -9,7 +9,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class SpinShowCasePageTests
 {
     [Fact]
-    public void Spin_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void Spin_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml");
 
@@ -51,94 +51,6 @@ public class SpinShowCasePageTests
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void Spin_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinDesignTokenDataGrid.axaml.cs");
-        var viewModelSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/ViewModels/SpinViewModel.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new SpinApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new SpinDesignTokenDataGrid()");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:SpinApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("SpinShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("SpinShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("SpinShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("SpinShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:SpinDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("SpinShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("SpinShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("SpinShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("SpinShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-        viewModelSource.ShouldContain("CustomizableSizeType");
-    }
-
-    [Fact]
-    public void Spin_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyIsSpinning");
-            source.ShouldContain("ApiPropertyTip");
-            source.ShouldContain("ApiPropertyCustomIndicator");
-            source.ShouldContain("ApiPropertySizeType");
-            source.ShouldContain("ApiPropertyIndicatorSize");
-            source.ShouldContain("ApiPropertyIndicatorDotSize");
-            source.ShouldContain("TokenNameDotSize");
-            source.ShouldContain("TokenNameIndicatorSize");
-            source.ShouldContain("TokenNameIndicatorDuration");
-        }
     }
 
     [Fact]

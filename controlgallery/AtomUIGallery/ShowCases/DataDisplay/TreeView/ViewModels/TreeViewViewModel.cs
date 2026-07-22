@@ -117,21 +117,6 @@ public class TreeViewViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _filterTreeNodes, value);
     }
 
-    private ObservableCollection<TreeViewApiRow>? _apiRows;
-    private ObservableCollection<TreeViewDesignTokenRow>? _designTokenRows;
-
-    public ObservableCollection<TreeViewApiRow>? ApiRows
-    {
-        get => _apiRows;
-        private set => this.RaiseAndSetIfChanged(ref _apiRows, value);
-    }
-
-    public ObservableCollection<TreeViewDesignTokenRow>? DesignTokenRows
-    {
-        get => _designTokenRows;
-        private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
-    }
-
     private bool _showLineSwitchChecked = true;
     public bool ShowLineSwitchChecked
     {
@@ -232,57 +217,6 @@ public class TreeViewViewModel : ReactiveObject, IRoutableViewModel
         BoundSelectedTreeNodes = new ObservableCollection<ITreeItemNode>();
     }
 
-    public void EnsureApiRows()
-    {
-        if (ApiRows is not null)
-        {
-            return;
-        }
-
-        ApiRows =
-        [
-            new TreeViewApiRow("ItemsSource", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyItemsSource), "IEnumerable?", "blue", "null"),
-            new TreeViewApiRow("ItemTemplate", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyItemTemplate), "TreeDataTemplate?", "cyan", "null"),
-            new TreeViewApiRow("ToggleType", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyToggleType), "ItemToggleType", "blue", "None"),
-            new TreeViewApiRow("DefaultExpandedPaths", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyDefaultExpandedPaths), "IList<TreeNodePath>?", "cyan", "null"),
-            new TreeViewApiRow("DefaultSelectedPaths", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyDefaultSelectedPaths), "IList<TreeNodePath>?", "cyan", "null"),
-            new TreeViewApiRow("DefaultCheckedPaths", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyDefaultCheckedPaths), "IList<TreeNodePath>?", "cyan", "null"),
-            new TreeViewApiRow("IsShowLine", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyIsShowLine), "bool", "purple", "false"),
-            new TreeViewApiRow("IsShowIcon", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyIsShowIcon), "bool", "purple", "false"),
-            new TreeViewApiRow("IsShowLeafIcon", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyIsShowLeafIcon), "bool", "purple", "false"),
-            new TreeViewApiRow("NodeHoverMode", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyNodeHoverMode), "TreeItemHoverMode", "blue", "Default"),
-            new TreeViewApiRow("IsDraggable", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyIsDraggable), "bool", "purple", "false"),
-            new TreeViewApiRow("DataLoader", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyDataLoader), "ITreeItemNodeLoader?", "cyan", "null"),
-            new TreeViewApiRow("FilterValue", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyFilterValue), "object?", "cyan", "null"),
-            new TreeViewApiRow("FilterStrategy", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyFilterStrategy), "TreeFilterStrategy", "blue", "All"),
-            new TreeViewApiRow("IsSelectOnRightClick", Lang(TreeViewShowCaseLangResourceKind.ApiPropertyIsSelectOnRightClick), "bool", "purple", "true")
-        ];
-    }
-
-    public void EnsureDesignTokenRows()
-    {
-        if (DesignTokenRows is not null)
-        {
-            return;
-        }
-
-        DesignTokenRows =
-        [
-            new TreeViewDesignTokenRow("HeaderHeight", Lang(TreeViewShowCaseLangResourceKind.TokenNameHeaderHeight), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("NodeHoverBg", Lang(TreeViewShowCaseLangResourceKind.TokenNameNodeHoverBg), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("NodeSelectedBg", Lang(TreeViewShowCaseLangResourceKind.TokenNameNodeSelectedBg), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("DirectoryNodeSelectedColor", Lang(TreeViewShowCaseLangResourceKind.TokenNameDirectoryNodeSelectedColor), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("DirectoryNodeSelectedBg", Lang(TreeViewShowCaseLangResourceKind.TokenNameDirectoryNodeSelectedBg), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("TreeItemMargin", Lang(TreeViewShowCaseLangResourceKind.TokenNameTreeItemMargin), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("TreeItemHeaderPadding", Lang(TreeViewShowCaseLangResourceKind.TokenNameTreeItemHeaderPadding), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("TreeItemHeaderMargin", Lang(TreeViewShowCaseLangResourceKind.TokenNameTreeItemHeaderMargin), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("TreeNodeSwitcherMargin", Lang(TreeViewShowCaseLangResourceKind.TokenNameTreeNodeSwitcherMargin), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("TreeNodeIconMargin", Lang(TreeViewShowCaseLangResourceKind.TokenNameTreeNodeIconMargin), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("DragIndicatorLineWidth", Lang(TreeViewShowCaseLangResourceKind.TokenNameDragIndicatorLineWidth), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new TreeViewDesignTokenRow("FilterHighlightColor", Lang(TreeViewShowCaseLangResourceKind.TokenNameFilterHighlightColor), Lang(TreeViewShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TreeViewShowCaseLangResourceKind.TokenStatusStable), "success")
-        ];
-    }
-
     private static string Lang(TreeViewShowCaseLangResourceKind kind)
     {
         return TreeViewShowCase.Lang(kind, FallbackLang(kind));
@@ -292,35 +226,6 @@ public class TreeViewViewModel : ReactiveObject, IRoutableViewModel
     {
         return kind switch
         {
-            TreeViewShowCaseLangResourceKind.ApiPropertyItemsSource              => en_US.ApiPropertyItemsSource,
-            TreeViewShowCaseLangResourceKind.ApiPropertyItemTemplate             => en_US.ApiPropertyItemTemplate,
-            TreeViewShowCaseLangResourceKind.ApiPropertyToggleType               => en_US.ApiPropertyToggleType,
-            TreeViewShowCaseLangResourceKind.ApiPropertyDefaultExpandedPaths     => en_US.ApiPropertyDefaultExpandedPaths,
-            TreeViewShowCaseLangResourceKind.ApiPropertyDefaultSelectedPaths     => en_US.ApiPropertyDefaultSelectedPaths,
-            TreeViewShowCaseLangResourceKind.ApiPropertyDefaultCheckedPaths      => en_US.ApiPropertyDefaultCheckedPaths,
-            TreeViewShowCaseLangResourceKind.ApiPropertyIsShowLine               => en_US.ApiPropertyIsShowLine,
-            TreeViewShowCaseLangResourceKind.ApiPropertyIsShowIcon               => en_US.ApiPropertyIsShowIcon,
-            TreeViewShowCaseLangResourceKind.ApiPropertyIsShowLeafIcon           => en_US.ApiPropertyIsShowLeafIcon,
-            TreeViewShowCaseLangResourceKind.ApiPropertyNodeHoverMode            => en_US.ApiPropertyNodeHoverMode,
-            TreeViewShowCaseLangResourceKind.ApiPropertyIsDraggable              => en_US.ApiPropertyIsDraggable,
-            TreeViewShowCaseLangResourceKind.ApiPropertyDataLoader               => en_US.ApiPropertyDataLoader,
-            TreeViewShowCaseLangResourceKind.ApiPropertyFilterValue              => en_US.ApiPropertyFilterValue,
-            TreeViewShowCaseLangResourceKind.ApiPropertyFilterStrategy           => en_US.ApiPropertyFilterStrategy,
-            TreeViewShowCaseLangResourceKind.ApiPropertyIsSelectOnRightClick     => en_US.ApiPropertyIsSelectOnRightClick,
-            TreeViewShowCaseLangResourceKind.TokenNameHeaderHeight               => en_US.TokenNameHeaderHeight,
-            TreeViewShowCaseLangResourceKind.TokenNameNodeHoverBg                => en_US.TokenNameNodeHoverBg,
-            TreeViewShowCaseLangResourceKind.TokenNameNodeSelectedBg             => en_US.TokenNameNodeSelectedBg,
-            TreeViewShowCaseLangResourceKind.TokenNameDirectoryNodeSelectedColor => en_US.TokenNameDirectoryNodeSelectedColor,
-            TreeViewShowCaseLangResourceKind.TokenNameDirectoryNodeSelectedBg    => en_US.TokenNameDirectoryNodeSelectedBg,
-            TreeViewShowCaseLangResourceKind.TokenNameTreeItemMargin             => en_US.TokenNameTreeItemMargin,
-            TreeViewShowCaseLangResourceKind.TokenNameTreeItemHeaderPadding      => en_US.TokenNameTreeItemHeaderPadding,
-            TreeViewShowCaseLangResourceKind.TokenNameTreeItemHeaderMargin       => en_US.TokenNameTreeItemHeaderMargin,
-            TreeViewShowCaseLangResourceKind.TokenNameTreeNodeSwitcherMargin     => en_US.TokenNameTreeNodeSwitcherMargin,
-            TreeViewShowCaseLangResourceKind.TokenNameTreeNodeIconMargin         => en_US.TokenNameTreeNodeIconMargin,
-            TreeViewShowCaseLangResourceKind.TokenNameDragIndicatorLineWidth     => en_US.TokenNameDragIndicatorLineWidth,
-            TreeViewShowCaseLangResourceKind.TokenNameFilterHighlightColor       => en_US.TokenNameFilterHighlightColor,
-            TreeViewShowCaseLangResourceKind.TokenScopeComponent                 => en_US.TokenScopeComponent,
-            TreeViewShowCaseLangResourceKind.TokenStatusStable                   => en_US.TokenStatusStable,
             _                                                                    => kind.ToString()
         };
     }
@@ -371,21 +276,6 @@ public class TreeViewViewModel : ReactiveObject, IRoutableViewModel
         this.RaisePropertyChanged(nameof(BoundSelectedTreeNodesText));
     }
 }
-
-public sealed record TreeViewApiRow(
-    string Property,
-    string Description,
-    string Type,
-    string TypeTagColor,
-    string Default);
-
-public sealed record TreeViewDesignTokenRow(
-    string Token,
-    string Description,
-    string Scope,
-    string ScopeTagColor,
-    string Status,
-    string StatusTagColor);
 
 public class TreeItemDataLoader : ITreeItemNodeLoader
 {

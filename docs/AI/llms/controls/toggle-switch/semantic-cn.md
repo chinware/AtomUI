@@ -1,6 +1,6 @@
 # ToggleSwitch 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -49,9 +49,9 @@ ToggleSwitch
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `ToggleSwitch` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `ToggleSwitch` | control theme | `ToggleSwitchTheme.axaml` | 用户代码 / 控件宿主 | `IsChecked`, `IsMotionEnabled`, `OffContent`, `OffContentTemplate`, `OnContent`, `OnContentTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsChecked`, `IsMotionEnabled`, `OffContent`, `OffContentTemplate`, `OnContent`, `OnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `ToggleSwitchTheme.axaml` | ToggleSwitch | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ToggleSwitch` | control theme | `ToggleSwitchTheme.axaml` | 用户代码 / 控件宿主 | `IsChecked`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `OffContent`, `OffContentTemplate`, `OnContent` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsChecked`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `OffContent`, `OffContentTemplate`, `OnContent` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_MainContainer` | template node (Canvas) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsChecked`, `IsMotionEnabled`, `OffContent`, `OffContentTemplate`, `OnContent`, `OnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_OnContentPresenter` | template node (ContentPresenter) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `OnContent`, `OnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_OffContentPresenter` | template node (ContentPresenter) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `OffContent`, `OffContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

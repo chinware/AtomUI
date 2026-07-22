@@ -6,8 +6,6 @@ namespace AtomUIGallery.ShowCases.ImagePreviewer;
 internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "Design Token";
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Preview single or multiple images in an overlay with zooming, moving, and switching controls.";
@@ -26,47 +24,8 @@ internal partial class en_US
     public const string CustomPreviewImageDescription = "Choose which source image is displayed as the cover.";
     public const string MultipleImagePreviewTitle = "Multiple image preview";
     public const string MultipleImagePreviewDescription = "Click the left and right switch buttons to preview multiple images.";
-    public const string ApiColumnProperty = "Property";
-    public const string ApiColumnDescription = "Description";
-    public const string ApiColumnType = "Type";
-    public const string ApiColumnDefault = "Default";
-    public const string ApiPropertySource = "Primary image source used by ImagePreviewer. Supports URI and lazy stream sources.";
-    public const string ApiPropertySources = "Primary image source list used by ImagePreviewer and ImageGroupPreviewer.";
-    public const string ApiPropertyFallbackSource = "Fallback image source shown when all configured source items fail.";
-    public const string ApiPropertyIsOpen = "Controls whether the preview overlay or dialog is open. Two-way binding is enabled by default.";
-    public const string ApiPropertyCoverWidth = "Width of the image cover.";
-    public const string ApiPropertyCoverHeight = "Height of the image cover.";
-    public const string ApiPropertyCurrentIndex = "Current preview image index in a group. Two-way binding is enabled by default.";
-    public const string ApiPropertyCoverIndex = "Display-only source index used as the closed image cover.";
-    public const string ApiPropertyMaxConcurrentLoads = "Maximum number of image loading tasks running at the same time.";
-    public const string ApiPropertyPreloadCount = "Number of neighbor images preloaded before and after the current preview image.";
-    public const string ApiPropertyPreviewTitle = "Explicit title shown in the preview dialog title bar.";
-    public const string ApiPropertyPreviewTitleIcon = "Optional icon shown before the preview dialog title.";
-    public const string ApiPropertyPreviewTitleResolver = "Resolver used to derive the preview dialog title when PreviewTitle is empty.";
-    public const string ApiPropertyLoadingContent = "Custom content displayed while an image is loading.";
-    public const string ApiPropertyLoadingContentTemplate = "Template used to render custom loading content.";
-    public const string ApiPropertyErrorContent = "Custom content displayed when image loading fails.";
-    public const string ApiPropertyErrorContentTemplate = "Template used to render custom error content.";
-    public const string ApiPropertyIsShowCoverMask = "Shows or hides the cover mask and preview indicator.";
-    public const string ApiPropertyImageScaleStep = "Scale step applied by zoom-in and zoom-out actions.";
-    public const string ApiPropertyImageMinScale = "Minimum image scale in the preview surface.";
-    public const string ApiPropertyImageMaxScale = "Maximum image scale in the preview surface.";
     public const string ApiEventDialogOpened = "Raised after the preview dialog opens.";
     public const string ApiEventDialogClosing = "Raised before the preview dialog closes.";
     public const string ApiEventDialogClosed = "Raised after the preview dialog closes.";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "Description";
-    public const string TokenColumnScope = "Scope";
-    public const string TokenColumnStatus = "Status";
-    public const string TokenNamePreviewOperationSize = "Size of preview operation icons.";
-    public const string TokenNamePreviewOperationColor = "Color of preview operation icons.";
-    public const string TokenNamePreviewOperationHoverColor = "Hover color of preview operation icons.";
-    public const string TokenNameImagePreviewSwitchSize = "Size of image switch buttons.";
-    public const string TokenNameMaskBgColor = "Mask background color over the cover.";
-    public const string TokenNameDialogMinWidth = "Minimum width of the preview dialog.";
-    public const string TokenNameDialogMinHeight = "Minimum height of the preview dialog.";
-    public const string TokenNameCoverImageWidth = "Default cover image width.";
-    public const string TokenScopeComponent = "Component";
-    public const string TokenStatusStable = "Stable";
 
 }

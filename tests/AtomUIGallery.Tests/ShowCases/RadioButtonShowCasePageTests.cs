@@ -11,7 +11,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class RadioButtonShowCasePageTests
 {
     [Fact]
-    public void RadioButton_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void RadioButton_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml");
 
@@ -58,105 +58,6 @@ public class RadioButtonShowCasePageTests
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void RadioButton_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-        pageSource.ShouldContain("ItemsSource=\"{Binding RadioOptions}\"");
-        pageSource.ShouldContain("ItemsSource=\"{Binding TwoWayRadioOptions}\"");
-        pageSource.ShouldContain("CheckedItem=\"{Binding TwoWayCheckedItem}\"");
-        pageSource.ShouldContain("Text=\"{Binding TwoWayCheckedSummary}\"");
-        pageSource.ShouldContain("Command=\"{Binding SelectChengduCommand}\"");
-        pageSource.ShouldContain("Command=\"{Binding ClearTwoWayCheckedItemCommand}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new RadioButtonApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new RadioButtonDesignTokenDataGrid()");
-        codeBehindSource.ShouldContain("ConfigureRadioOptions(viewModel)");
-        codeBehindSource.ShouldNotContain("new RadioButtonBasicShowCase()");
-        codeBehindSource.ShouldNotContain("new RadioButtonGroupsShowCase()");
-        codeBehindSource.ShouldNotContain("new RadioButtonOptionsShowCase()");
-        codeBehindSource.ShouldNotContain("new RadioButtonStylesShowCase()");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:RadioButtonApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("RadioButtonShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("RadioButtonShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("RadioButtonShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("RadioButtonShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:RadioButtonDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("RadioButtonShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("RadioButtonShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("RadioButtonShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("RadioButtonShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void RadioButton_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldContain("CheckedItemBindingTitle");
-            source.ShouldContain("CheckedItemBindingDescription");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyIsChecked");
-            source.ShouldContain("ApiPropertyCheckedItem");
-            source.ShouldContain("ApiPropertyItemsSource");
-            source.ShouldContain("ApiPropertyButtonStyle");
-            source.ShouldContain("ApiPropertyIcon");
-            source.ShouldContain("P2CheckedItemSummaryFormat");
-            source.ShouldContain("TokenNameRadioSize");
-            source.ShouldContain("TokenNameButtonBackground");
-            source.ShouldContain("TokenNameButtonPadding");
-        }
     }
 
     [Fact]

@@ -11,7 +11,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class LineEditShowCasePageTests
 {
     [Fact]
-    public void LineEdit_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void LineEdit_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
 
@@ -75,108 +75,6 @@ public class LineEditShowCasePageTests
     }
 
     [Fact]
-    public void LineEdit_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new LineEditApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new LineEditDesignTokenDataGrid()");
-        codeBehindSource.ShouldNotContain("new LineEditBasicShowCase()");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:LineEditApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("LineEditShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("LineEditShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("LineEditShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("LineEditShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:LineEditDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("LineEditShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("LineEditShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("LineEditShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("LineEditShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void LineEdit_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Localization/zh_TW.cs");
-
-        en.ShouldContain("P2SearchButtonTextText = \"Search\"");
-        en.ShouldNotContain("Search now");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("TextBoxTitle");
-            source.ShouldContain("TextBoxDescription");
-            source.ShouldContain("P2PlaceholderTextTextBox");
-            source.ShouldContain("ApiPropertyIsAllowClear");
-            source.ShouldContain("ApiPropertyLeftAddOnTemplate");
-            source.ShouldContain("ApiPropertyRightAddOnTemplate");
-            source.ShouldContain("ApiPropertyInnerLeftContentTemplate");
-            source.ShouldContain("ApiPropertyInnerRightContentTemplate");
-            source.ShouldContain("ApiPropertySearchButtonStyle");
-            source.ShouldContain("ApiPropertyIsAutoSize");
-            source.ShouldContain("SearchEditSizeTypeTitle");
-            source.ShouldContain("SearchEditSizeTypeDescription");
-            source.ShouldContain("P2PlaceholderTextCustom");
-            source.ShouldNotContain("OtpLineEditBasicTitle");
-            source.ShouldContain("OtpLineEditTwoWayBindingTitle");
-            source.ShouldContain("OtpLineEditFormTitle");
-            source.ShouldContain("OtpLineEditAntDesignTitle");
-            source.ShouldContain("OtpLineEditAntDesignDescription");
-            source.ShouldContain("OtpLineEditFormValidationMessage");
-            source.ShouldContain("TokenNameInputFontSize");
-            source.ShouldContain("TokenNameRightAddOnPadding");
-        }
-    }
-
-    [Fact]
     public void LineEdit_ShowCase_Includes_TextBox_Demo()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
@@ -199,20 +97,14 @@ public class LineEditShowCasePageTests
     [Fact]
     public void LineEdit_ShowCase_Demonstrates_TemplateOnly_InnerRight_ToolTip()
     {
-        var source    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
-        var viewModel = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/ViewModels/LineEditViewModel.cs");
-        var demo      = ExtractShowCaseItem(source, "LineEditShowCaseLangResource PrefixAndSuffixTitle");
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
+        var demo   = ExtractShowCaseItem(source, "LineEditShowCaseLangResource PrefixAndSuffixTitle");
 
         demo.ShouldContain("<atom:LineEdit.InnerRightContentTemplate>");
         demo.ShouldContain("<DataTemplate>");
         demo.ShouldContain("<antdicons:InfoCircleOutlined");
         demo.ShouldContain("atom:ToolTip.Tip=\"{gallery:LineEditShowCaseLangResource PrefixAndSuffixToolTip}\"");
         demo.ShouldNotContain("InnerRightContent=\"{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined");
-
-        viewModel.ShouldContain("\"LeftAddOnTemplate\"");
-        viewModel.ShouldContain("\"RightAddOnTemplate\"");
-        viewModel.ShouldContain("\"InnerLeftContentTemplate\"");
-        viewModel.ShouldContain("\"InnerRightContentTemplate\"");
     }
 
     [Fact]

@@ -42,7 +42,7 @@ public class CustomizeThemeShowCasePageTests
     }
 
     [Fact]
-    public void CustomizeTheme_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void CustomizeTheme_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeShowCase.axaml");
         var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/ViewModels/CustomizeThemeViewModel.cs");
@@ -96,97 +96,6 @@ public class CustomizeThemeShowCasePageTests
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void CustomizeTheme_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new CustomizeThemeApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new CustomizeThemeDesignTokenDataGrid()");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:CustomizeThemeApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("CustomizeThemeShowCaseLangResource ApiColumnMember");
-        apiSource.ShouldContain("CustomizeThemeShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("CustomizeThemeShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("CustomizeThemeShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:CustomizeThemeDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("CustomizeThemeShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("CustomizeThemeShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("CustomizeThemeShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("CustomizeThemeShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void CustomizeTheme_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiMemberThemeConfigProviderConfig");
-            source.ShouldContain("ApiMemberThemeConfigAlgorithms");
-            source.ShouldContain("ApiMemberControlThemeConfigAlgorithm");
-            source.ShouldNotContain("TokenSetter");
-            source.ShouldNotContain("ControlTokenInfoSetter");
-            source.ShouldContain("TokenNameColorPrimary");
-            source.ShouldContain("TokenNameBorderRadius");
-            source.ShouldContain("TokenNameColorBgContainer");
-            source.ShouldContain("RuntimeTokenUpdatesTitle");
-            source.ShouldContain("RuntimeTokenUpdatesDescription");
-            source.ShouldContain("P2ContentUseGreen");
-            source.ShouldContain("P2ContentThemeN3");
-            source.ShouldContain("P2ContentSubmit");
-            source.ShouldNotContain("P2ContentIsolationText");
-        }
     }
 
     [Fact]

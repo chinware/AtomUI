@@ -1,6 +1,6 @@
 # Modal
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -36,7 +36,7 @@ Modal 不承担通知队列、轻量 Tooltip、Popup 菜单或业务级导航服
 | 内容 | `Title`, `TitleIcon`, `Content`, `ContentTemplate`, `DataContext` | 定义标题和任意内容对象或模板。 |
 | 打开状态 | `IsOpen`, `OpenAsync(...)` | `IsOpen` 是默认 TwoWay 的声明式意图；`OpenAsync` 表示一次完整 Session。 |
 | 展示方式 | `DialogHostType`, `IsModal`, `PlacementTarget`, startup anchor/offset | 选择 Overlay/Window、交互模态和初始位置。 |
-| 尺寸与窗口能力 | `HostWidth/Height/Min/Max`, `IsResizable`, `IsClosable`, `IsDragMovable`, `IsMaximizable`, `IsMinimizable`, `IsTopmost` | 同一组请求映射到 Overlay Surface 或原生 Window。`NaN` 表示自然尺寸。 |
+| 尺寸与窗口能力 | `HostWidth/Height/Min/Max`, `IsResizable`, `IsClosable`, `IsDragMovable`, `IsMaximizable`, `IsMinimizable`, `IsTopmost` | 同一组 Surface 正文尺寸请求映射到 Overlay 或原生 Window。`NaN` 表示初始自然尺寸；有效最小尺寸还必须满足 Dialog 的结构性下限。 |
 | 操作 | `StandardButtons`, `CustomButtons`, `DefaultStandardButton`, `EscapeStandardButton`, `ButtonsConfigure` | 生成标准按钮、加入自定义按钮并配置当前有效按钮序列。 |
 | 状态与策略 | `IsLoading`, `IsConfirmLoading`, `IsFooterVisible`, `IsMotionEnabled`, `BeforeCloseAsync` | 控制加载、确认按钮 loading、Footer、motion 和关闭前校验。 |
 | 结果 | `Result`, `Accept()`, `Reject()`, `Done(...)` | 所有关闭来源归一为结果与 `DialogCloseReason`。 |
@@ -115,14 +115,15 @@ Gallery key：`ExamplesContent` / item `0`
                      IsOpen="{Binding IsBasicModalOpened, Mode=TwoWay}"
                      Title="基础模态框"
                      IsModal="False"
-                     IsResizable="False"
+                     IsResizable="True"
                      IsDragMovable="True"
-                     IsMaximizable="False"
                      StandardButtons="Cancel,Ok"
                      DefaultStandardButton="Ok"
                      HorizontalStartupLocation="Center"
                      VerticalOffset="30%"
-                     HostMinWidth="300">
+                     HostMinWidth="300"
+                     HostMaxWidth="520"
+                     HostMaxHeight="360">
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="一些内容..." />
                 <TextBlock Text="一些内容..." />
@@ -139,13 +140,15 @@ Gallery key：`ExamplesContent` / item `0`
                      IsResizable="True"
                      IsClosable="True"
                      IsDragMovable="True"
-                     IsMaximizable="False"
+                     IsMaximizable="True"
                      DialogHostType="Window"
                      HorizontalStartupLocation="Center"
                      VerticalOffset="30%"
                      StandardButtons="Yes"
                      DefaultStandardButton="Yes"
-                     HostMinWidth="300">
+                     HostMinWidth="300"
+                     HostMaxWidth="520"
+                     HostMaxHeight="360">
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="一些内容..." />
                 <TextBlock Text="一些内容..." />
@@ -158,7 +161,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 异步关闭
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:91`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:94`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -189,7 +192,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 加载状态
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:216`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:219`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -224,7 +227,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 自定义页脚按钮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:252`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:255`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -278,10 +281,13 @@ Gallery key：`ExamplesContent` / item `4`
 
 - `IsOpen` 表示最新声明式意图；`DialogSession` 表示一次实际展示。两者不能由 presenter 或 template part 反向拥有。
 - modal Overlay 的真实 pointer 输入命中 mask，modeless Overlay 在 Surface 外穿透到底层。只有栈顶 presenter 响应 mask 与 Escape。
+- 所有平台的 `AtomUI.Window` 都按宿主能力选择 Overlay layer：drawn decorations 暴露 Dialog host 时把 presenter 放在该层，否则回退 TopLevel popup overlay。modal mask 覆盖完整 Avalonia 可绘制窗口轮廓和 managed/drawn 标题栏，标题栏内容与 caption buttons 也受同一 modal 输入阻断；位于客户端 visual tree 外的原生系统 chrome 仍由平台管理。
+- Overlay mask bounds、Window visible frame 与 Dialog 正文 owner bounds 独立：mask 使用完整 layer bounds；所有平台的 Surface 正文定位、拖动、resize 和 maximize 使用 visible frame 按当前有效 drawn frame thickness 内缩后的范围，允许进入 managed/drawn title bar，但不能覆盖窗口 frame。Dialog BoxShadow 只参与绘制并允许在窗口边缘由统一 visual-layer clip 裁剪。
 - Enter/Escape 根据当前有效按钮序列查找 default/escape 按钮，运行时修改标准按钮或自定义按钮会立即生效。
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
 - 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
 - Overlay 与 Window 都等待 opening/closing motion；`IsMotionEnabled=false` 跳过 motion，但不跳过宿主打开、关闭和释放。
+- `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。Overlay handle 捕获 pointer，release 或 capture lost 都会完整结束当前 resize，不复用上一次拖拽 origin。
 
 ## 主题与 Design Token
 
@@ -309,9 +315,10 @@ Modal Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 ## AOT 与裁剪注意事项
 
 - Overlay presenter 在 Dialog 已附加时以 Dialog 为 inheritance parent，否则以 placement target 为 parent。
-- Window 在 `Show()` 后把 DialogSurface inheritance parent 指向已附加 Dialog 或 owner，避开 TopLevel 的全局 styling parent；dispose 前清空。
+- Window 保留 DialogSurface 到 Window `ContentPresenter` 的正常 styling parent 链，避免在未附加树中提前实例化的嵌套控件失去 ControlTheme。Dialog/owner 资源由 presenter-owned `DialogResourceBridge` 转发到 Window resources；bridge 对称转发 `ResourcesChanged`，并在 `DisposeAsync` 中移除和退订。
 - runtime binding 只用于动态 presenter/Surface/按钮关系，并由 owning presenter、Surface 或 ButtonBox 对称释放。
-- 不使用反射修改 TemplatedParent，不扫描程序集发现 Dialog API，不使用同步 DispatcherFrame。
+- Presenter 为 Surface 复用单一 `MatrixTransform` 作为位置 owner。拖动 `PointerMoved` 只更新 Matrix translation 并同步不触发布局的 `Dialog.OffsetX/Y`；位置先按 DPI 取整，再二次 clamp 到 body owner bounds，避免取整重新越界。
+- drawn decorations host discovery 复用 Window 模块集中的 `WindowDrawnDecorationsReflectionExtensions` 兼容边界及其 `DynamicDependency` 标注；Modal 不新增反射入口。实现不使用反射修改 TemplatedParent，不扫描程序集发现 Dialog API，不使用同步 DispatcherFrame。
 - Session、Presenter、Surface 和 Content 的关闭回收由 Overlay/Window WeakReference 测试覆盖。
 - 状态机、按钮表和 presenter 选择都是静态类型路径，保持 NativeAOT 友好。
 
@@ -326,9 +333,9 @@ Modal Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 | `IDialogPresenter.cs` | Overlay/Window 共用的最小异步协议。 |
 | `DialogSurface.cs` | 标题、内容、Footer、按钮和 Overlay resize 的共享表面。 |
 | `ButtonBox/DialogButtonBox.cs` | 标准按钮生成、唯一有效按钮序列和自定义集合同步。 |
-| `OverlayHost/DialogOverlayLayer.cs` | owner scope 内的 presenter stack。 |
+| `OverlayHost/DialogOverlayLayer.cs` | 按能力解析 drawn decorations、TopLevel popup 或局部 scope host，并管理 owner scope 内的 presenter stack。 |
 | `OverlayHost/OverlayDialogPresenter.cs` | 同时拥有 mask、Surface、placement、drag/resize 和 motion。 |
-| `WindowHost/WindowDialogPresenter.cs` | 原生 Window 属性映射、modal owner、尺寸、位置和 motion。 |
+| `WindowHost/WindowDialogPresenter.cs` | 原生 Window 属性映射、modal owner、尺寸、位置和生命周期。 |
 | `WindowHost/DialogWindow.cs` | 原生 caption close 仲裁和显式尺寸应用。 |
 | `MessageBox/MessageBox.cs` | Dialog 派生的消息语义、静态 API 和按钮配置。 |
 | `MessageBox/MessageBoxContent.cs` | MessageBox 的图标与内容组合。 |

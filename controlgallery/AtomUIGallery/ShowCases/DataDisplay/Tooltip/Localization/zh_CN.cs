@@ -74,36 +74,10 @@ internal partial class zh_CN
 
     public const string P2ContentGrey = "灰色";
     public const string ScenarioExamples = "示例";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "设计变量";
     public const string PageSubtitle = "在用户悬停或聚焦元素时展示上下文提示。";
     public const string PageDescription =
         "Tooltip 提供简洁的辅助说明，支持弹出位置、箭头行为以及预设或自定义颜色，适合轻量级上下文引导。";
     public const string ComponentCategory = "数据展示";
     public const string ComponentStatusStable = "稳定";
-    public const string ApiColumnProperty = "属性";
-    public const string ApiColumnDescription = "说明";
-    public const string ApiColumnType = "类型";
-    public const string ApiColumnDefault = "默认值";
-    public const string ApiPropertyTip = "Tooltip 中显示的内容。";
-    public const string ApiPropertyPlacement = "相对于目标控件的首选弹出位置。";
-    public const string ApiPropertyIsArrowVisible = "在弹出位置支持时显示或隐藏 Tooltip 箭头。";
-    public const string ApiPropertyIsPointAtCenter = "让箭头指向目标控件中心。";
-    public const string ApiPropertyPresetColor = "Tooltip 背景使用的预设颜色。";
-    public const string ApiPropertyColor = "Tooltip 背景使用的自定义颜色。";
-    public const string ApiPropertyShowDelay = "Tooltip 显示前的延迟时间，单位毫秒。";
-    public const string ApiPropertyShowOnDisabled = "允许在禁用目标控件上显示 Tooltip。";
-    public const string TokenColumnToken = "变量";
-    public const string TokenColumnDescription = "说明";
-    public const string TokenColumnScope = "作用域";
-    public const string TokenColumnStatus = "状态";
-    public const string TokenNameToolTipBackground = "Tooltip 默认背景色。";
-    public const string TokenNameToolTipColor = "Tooltip 默认前景色。";
-    public const string TokenNameToolTipMaxWidth = "Tooltip 内容换行前的最大宽度。";
-    public const string TokenNameBorderRadiusOuter = "Tooltip 表面的外层圆角。";
-    public const string TokenNamePadding = "Tooltip 内容内边距。";
-    public const string TokenNameMotionDuration = "Tooltip 打开和关闭动画的持续时间。";
-    public const string TokenScopeComponent = "组件";
-    public const string TokenStatusStable = "稳定";
 
 }

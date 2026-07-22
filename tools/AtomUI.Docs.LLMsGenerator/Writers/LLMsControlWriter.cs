@@ -60,7 +60,7 @@ public static class LLMsControlWriter
                          .ToArray();
         if (lines.Length == 0)
         {
-            return $"{model.DisplayName} 的事件与命令以公共 API、Avalonia 基类契约和 Gallery API 表为准；生成器不从源码发明额外事件。";
+            return $"{model.DisplayName} 的事件与命令以控件文档、源码 public surface 和 Avalonia 基类契约为准；生成器不从源码发明额外事件。";
         }
 
         return string.Join('\n', lines);

@@ -1,6 +1,6 @@
 # Window
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -49,10 +49,13 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
-主要公开类型与枚举：
+主要 public 类型与枚举：
 
-- 类型：`FullscreenPopoverLayer`、`MacStandardWindowButtons`、`ReactiveWindow`、`Window`、`WindowResizer`。
+- 类型：`Window`、`ReactiveWindow<TViewModel>`、`MacStandardWindowButtons`。
 - 枚举：无。
+
+Window 模板还使用 `FullscreenPopoverLayer`、`WindowResizer`、`WindowVisualLayerClip` 等 internal
+协作类型。它们会影响主题和可观察窗口行为，但不是用户可直接依赖的 public API。
 
 稳定 template part：
 
@@ -114,10 +117,10 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `FullscreenPopoverLayerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `WindowDrawnDecorationsTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowResizerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
+| `FullscreenPopoverLayerTheme.axaml` | 定义 macOS 全屏标题栏 popover 的固定模板、caption buttons 和标题展示。 |
+| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
+| `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
+| `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
 | `WindowThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
@@ -191,8 +194,11 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/Window/FullscreenPopoverLayer.cs`
-- `src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/WindowsWindowChromeManager.cs`
 - `src/AtomUI.Desktop.Controls/Window/MacStandardWindowButtons.cs`
 - `src/AtomUI.Desktop.Controls/Window/MediaBreakPointThemeBootstrapper.cs`
 - `src/AtomUI.Desktop.Controls/Window/ReactiveWindow.cs`
@@ -202,22 +208,32 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.cs`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowThemes.axaml`
+- `src/AtomUI.Desktop.Controls/Window/Utils/FullscreenPopoverLayer.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowResizer.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowTitleBarShadowBackground.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowVisualLayerClip.cs`
 - `src/AtomUI.Desktop.Controls/Window/Window.cs`
-- `src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs`
-- `src/AtomUI.Desktop.Controls/Window/WindowResizer.cs`
 - `src/AtomUI.Desktop.Controls/Window/WindowToken.cs`
+- `src/AtomUI.Native/WindowExtensions.cs`
+- `src/AtomUI.Native/Linux/WaylandWindowReflectionExtensions.cs`
+- `src/AtomUI.Native/Linux/WaylandWindowUtils.cs`
+- `src/AtomUI.Native/Linux/WindowUtils.Linux.cs`
 
 职责边界：
 
 - 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
+- `Window/Chrome` 只承载平台 chrome manager：选择后端、订阅 Window/PlatformImpl 事件、合并 frame geometry 更新，并把 X11、Wayland、Windows 的原生能力投影为 Window 内部状态。
+- `Window/Utils` 承载 Window 模板内部视觉 helper 和 Desktop drawn decorations 反射边界，例如 visible frame clip、managed resize grip、macOS 全屏 popover 与 `DynamicDependency` 标注；这些类型是 internal 协作对象，不是用户 API。
+- `AtomUI.Native` 只执行已经确定后端之后的底层平台调用，例如 XCB input region、Xlib geometry、Wayland `wl_surface.set_input_region`。X11 shadow 输入区订阅策略和 resize band 仍属于 `X11WindowChromeManager`，不下沉到 Native。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
 
 ## 相关文档
 
-- 源设计文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/overview.md`
-- 实现文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/implementation.md`
-- Token 文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/token.md`
-- 变更记录：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/changelog.md`
+- 源设计文档：`docs/controls/desktop/window/window/overview.md`
+- 实现文档：`docs/controls/desktop/window/window/implementation.md`
+- Token 文档：`docs/controls/desktop/window/window/token.md`
+- 变更记录：`docs/controls/desktop/window/window/changelog.md`
 - 语义结构：`./semantic-cn.md`

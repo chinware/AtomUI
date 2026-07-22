@@ -6,8 +6,6 @@ namespace AtomUIGallery.ShowCases.Splash;
 internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "Design Token";
     public const string ComponentCategory = "Other";
     public const string ComponentStatusPreview = "Preview";
     public const string ComponentIntroducedVersion = "v6.0.7";
@@ -50,45 +48,9 @@ internal partial class en_US
     public const string P2WindowSplashMessageComplete = "Gallery ready";
     public const string P2WindowSplashDetailComplete = "The fake startup flow has completed and the window will close.";
     public const string P2WindowSplashFooter = "Desktop Extras package / window-hosted startup surface";
-    public const string ApiColumnMember = "Member";
-    public const string ApiColumnDescription = "Description";
-    public const string ApiColumnType = "Type";
-    public const string ApiColumnDefault = "Default";
-    public const string ApiPropertyLogo = "Logo data displayed above the title.";
-    public const string ApiPropertyLogoTemplate = "Template used to render Logo.";
-    public const string ApiPropertyTitle = "Primary product or application title.";
-    public const string ApiPropertySubtitle = "Secondary caption shown below the title.";
-    public const string ApiPropertyMessage = "Current startup message.";
-    public const string ApiPropertyDetail = "Optional detail text for longer startup context.";
-    public const string ApiPropertyProgress = "Determinate progress in the public 0-1 range.";
-    public const string ApiPropertyIsIndeterminate = "Controls whether the spin indicator or progress bar is shown.";
-    public const string ApiPropertyStatus = "Loading, Success or Error visual status.";
-    public const string ApiPropertyIsMotionEnabled = "Controls splash fade and template transitions.";
-    public const string ApiPropertyFooter = "Footer data displayed below the progress and message area.";
     public const string ApiStaticShowAsync = "Static convenience API that delegates to Splash.DefaultService.";
     public const string ApiServiceShowAsync = "Instance service API for applications that want dependency-injected startup flow control.";
     public const string ApiMethodSetProgress = "Updates progress, message and detail on the splash instance.";
     public const string ApiOptionMinimumShowDuration = "Minimum display time before the splash window may close.";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "Description";
-    public const string TokenColumnScope = "Scope";
-    public const string TokenColumnStatus = "Status";
-    public const string TokenNameWindowWidth = "Default splash window width.";
-    public const string TokenNameWindowMinHeight = "Default minimum height of the splash surface.";
-    public const string TokenNameSurfaceCornerRadius = "Corner radius of the splash surface.";
-    public const string TokenNameSurfaceBoxShadow = "Shadow used by the splash surface.";
-    public const string TokenNameSurfaceBackground = "Background color of the splash surface.";
-    public const string TokenNameContentPadding = "Internal content padding.";
-    public const string TokenNameLogoSize = "Default logo presenter size.";
-    public const string TokenNameTitleFontSize = "Title text size.";
-    public const string TokenNameSubtitleFontSize = "Subtitle text size.";
-    public const string TokenNameMessageFontSize = "Message text size.";
-    public const string TokenNameDetailFontSize = "Detail text size.";
-    public const string TokenNameIndicatorSize = "Default loading indicator size.";
-    public const string TokenNameProgressBarHeight = "Height of the determinate progress bar.";
-    public const string TokenNameSuccessColor = "Message color used by the success state.";
-    public const string TokenNameErrorColor = "Message color used by the error state.";
-    public const string TokenScopeComponent = "Component";
-    public const string TokenStatusPreview = "Preview";
 
 }

@@ -48,37 +48,5 @@ internal partial class zh_TW
     public const string ComponentCategory = "資料錄入";
     public const string ComponentStatusStable = "穩定";
     public const string ScenarioExamples = "示例";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "設計變數";
-    public const string ApiColumnProperty = "屬性";
-    public const string ApiColumnDescription = "說明";
-    public const string ApiColumnType = "類型";
-    public const string ApiColumnDefault = "默認值";
-    public const string ApiPropertySelectedTime = "TimePicker 當前選中的時間值；默認 TwoWay 綁定，並支持 Avalonia data validation。";
-    public const string ApiPropertyDefaultTime = "TimePicker 重置行為使用的初始時間。";
-    public const string ApiPropertyPickerDisplayTime = "彈出面板打開時使用的顯示錨點，不提交選中值。";
-    public const string ApiPropertyIsNeedConfirm = "要求使用者確認所選時間後再提交。";
-    public const string ApiPropertyIsShowNow = "是否在彈出面板中顯示「此刻」快捷操作。";
-    public const string ApiPropertyMinuteIncrement = "生成分鐘選項時使用的步進值。";
-    public const string ApiPropertySecondIncrement = "生成秒選項時使用的步進值。";
-    public const string ApiPropertyClockIdentifier = "選擇 12 小時或 24 小時時鐘顯示。";
-    public const string ApiPropertyRangeStartSelectedTime = "RangeTimePicker 當前選中的開始時間。";
-    public const string ApiPropertyRangeEndSelectedTime = "RangeTimePicker 當前選中的結束時間。";
-    public const string ApiPropertyRangeStartDefaultTime = "RangeTimePicker 重置行為使用的初始開始時間。";
-    public const string ApiPropertyRangeEndDefaultTime = "RangeTimePicker 重置行為使用的初始結束時間。";
-    public const string TokenColumnToken = "變數";
-    public const string TokenColumnDescription = "說明";
-    public const string TokenColumnScope = "作用域";
-    public const string TokenColumnStatus = "狀態";
-    public const string TokenScopeComponent = "組件";
-    public const string TokenStatusStable = "穩定";
-    public const string TokenNameItemHeight = "每個可選時間項的高度。";
-    public const string TokenNameItemWidth = "小時、分鐘和秒列的寬度。";
-    public const string TokenNamePeriodHostWidth = "上午/下午選擇列的寬度。";
-    public const string TokenNameItemPadding = "每個可選時間項的內邊距。";
-    public const string TokenNameButtonsMargin = "彈出操作按鈕區域的頂部外邊距。";
-    public const string TokenNameRangePickerArrowMargin = "範圍輸入之間箭頭的外邊距。";
-    public const string TokenNameRangePickerIndicatorThickness = "範圍選擇指示器的厚度。";
-    public const string TokenNameHeaderMargin = "時間面板頭部下方的外邊距。";
 
 }

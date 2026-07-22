@@ -12,7 +12,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class FlexPanelShowCasePageTests
 {
     [Fact]
-    public void FlexPanel_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void FlexPanel_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml");
 
@@ -58,84 +58,6 @@ public class FlexPanelShowCasePageTests
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
-    }
-
-    [Fact]
-    public void FlexPanel_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new FlexPanelApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new FlexPanelDesignTokenDataGrid()");
-        codeBehindSource.ShouldNotContain("new FlexPanelBasicShowCase()");
-        codeBehindSource.ShouldNotContain("new FlexPanelAlignmentShowCase()");
-        codeBehindSource.ShouldNotContain("new FlexPanelItemShowCase()");
-        codeBehindSource.ShouldNotContain("new FlexPanelCombinationShowCase()");
-        codeBehindSource.ShouldNotContain("new FlexPanelPlaygroundShowCase()");
-        codeBehindSource.ShouldContain("InitializeBasicExample");
-        codeBehindSource.ShouldContain("InitializePlaygroundExample");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:FlexPanelApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("FlexPanelShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("FlexPanelShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("FlexPanelShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("FlexPanelShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:FlexPanelDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("FlexPanelShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("FlexPanelShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("FlexPanelShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("FlexPanelShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void FlexPanel_ShowCase_Uses_DataGrid_Empty_State_When_No_Design_Tokens()
-    {
-        var viewModel = new AtomUIGallery.ShowCases.FlexPanel.FlexPanelViewModel(null!);
-
-        viewModel.EnsureDesignTokenRows();
-
-        viewModel.DesignTokenRows.ShouldNotBeNull();
-        viewModel.DesignTokenRows!.ShouldBeEmpty();
     }
 
     [Fact]
@@ -200,32 +122,6 @@ public class FlexPanelShowCasePageTests
         foreach (var block in blueTileBlocks)
         {
             block.ShouldContain("Foreground=\"White\"");
-        }
-    }
-
-    [Fact]
-    public void FlexPanel_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyDirection");
-            source.ShouldContain("ApiPropertyWrap");
-            source.ShouldContain("ApiPropertyJustifyContent");
-            source.ShouldContain("ApiPropertyAlignItems");
-            source.ShouldContain("ApiPropertyAlignContent");
-            source.ShouldContain("ApiPropertyColumnSpacing");
-            source.ShouldContain("ApiPropertyFlexGrow");
-            source.ShouldContain("ApiPropertyFlexBasis");
-            source.ShouldContain("ApiPropertyFlexAlignSelf");
         }
     }
 

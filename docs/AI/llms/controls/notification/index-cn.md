@@ -1,6 +1,6 @@
 # Notification
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -53,6 +53,8 @@ Notification 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 - 类型：`Notification`、`NotificationCard`、`NotificationMoveDownInMotion`、`NotificationMoveDownOutMotion`、`NotificationMoveLeftInMotion`、`NotificationMoveLeftOutMotion`、`NotificationMoveRightInMotion`、`NotificationMoveRightOutMotion`、`NotificationMoveUpInMotion`、`NotificationMoveUpOutMotion`、`NotificationProgressBar`、`NotificationProgressBarVisibleConverter`、`WindowNotificationManager`。
 - 枚举：`NotificationPosition`、`NotificationType`。
+
+`NotificationType.Default` 表达普通通知语义，默认不显示类型图标，也不投射 success/info/warning/error 状态伪类。`Information`、`Success`、`Warning` 和 `Error` 表达带类型通知语义，在未设置自定义 `Icon` 时使用对应状态图标，并参与状态颜色 selector。
 
 稳定 template part：
 

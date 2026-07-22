@@ -19,21 +19,6 @@ public class MentionsViewModel : ReactiveObject, IRoutableViewModel
 
     public string? UrlPathSegment => ID.ToString();
 
-    private ObservableCollection<MentionsApiRow>? _apiRows;
-    private ObservableCollection<MentionsDesignTokenRow>? _designTokenRows;
-
-    public ObservableCollection<MentionsApiRow>? ApiRows
-    {
-        get => _apiRows;
-        private set => this.RaiseAndSetIfChanged(ref _apiRows, value);
-    }
-
-    public ObservableCollection<MentionsDesignTokenRow>? DesignTokenRows
-    {
-        get => _designTokenRows;
-        private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
-    }
-
     private List<IMentionOption>? _basicMentionOptions = [];
 
     public List<IMentionOption>? BasicMentionOptions
@@ -98,118 +83,7 @@ public class MentionsViewModel : ReactiveObject, IRoutableViewModel
         BoundValue = null;
     }
 
-    public void EnsureApiRows()
-    {
-        if (ApiRows is not null)
-        {
-            return;
-        }
-
-        ApiRows =
-        [
-            new MentionsApiRow("Value", Lang(MentionsShowCaseLangResourceKind.ApiPropertyValue), "string?", "cyan", "null"),
-            new MentionsApiRow("DefaultValue", Lang(MentionsShowCaseLangResourceKind.ApiPropertyDefaultValue), "string?", "cyan", "null"),
-            new MentionsApiRow("OptionsSource", Lang(MentionsShowCaseLangResourceKind.ApiPropertyOptionsSource), "IEnumerable<IMentionOption>?", "cyan", "null"),
-            new MentionsApiRow("OptionsAsyncLoader", Lang(MentionsShowCaseLangResourceKind.ApiPropertyOptionsAsyncLoader), "IMentionOptionsAsyncLoader?", "cyan", "null"),
-            new MentionsApiRow("OptionTemplate", Lang(MentionsShowCaseLangResourceKind.ApiPropertyOptionTemplate), "IDataTemplate?", "cyan", "null"),
-            new MentionsApiRow("TriggerPrefix", Lang(MentionsShowCaseLangResourceKind.ApiPropertyTriggerPrefix), "IList<string>?", "cyan", "null"),
-            new MentionsApiRow("Split", Lang(MentionsShowCaseLangResourceKind.ApiPropertySplit), "string?", "cyan", "null"),
-            new MentionsApiRow("IsAllowClear", Lang(MentionsShowCaseLangResourceKind.ApiPropertyIsAllowClear), "bool", "green", "false"),
-            new MentionsApiRow("ClearIcon", Lang(MentionsShowCaseLangResourceKind.ApiPropertyClearIcon), "PathIcon?", "cyan", "null"),
-            new MentionsApiRow("StyleVariant", Lang(MentionsShowCaseLangResourceKind.ApiPropertyStyleVariant), "InputControlStyleVariant", "purple", "Outlined"),
-            new MentionsApiRow("Status", Lang(MentionsShowCaseLangResourceKind.ApiPropertyStatus), "InputControlStatus", "purple", "Default"),
-            new MentionsApiRow("Placement", Lang(MentionsShowCaseLangResourceKind.ApiPropertyPlacement), "MentionsPlacementMode", "purple", "Bottom"),
-            new MentionsApiRow("IsAutoSize", Lang(MentionsShowCaseLangResourceKind.ApiPropertyIsAutoSize), "bool", "green", "false"),
-            new MentionsApiRow("Lines", Lang(MentionsShowCaseLangResourceKind.ApiPropertyLines), "int", "green", "1"),
-            new MentionsApiRow("MinLines", Lang(MentionsShowCaseLangResourceKind.ApiPropertyMinLines), "int", "green", "1"),
-            new MentionsApiRow("MaxLines", Lang(MentionsShowCaseLangResourceKind.ApiPropertyMaxLines), "int", "green", "int.MaxValue"),
-            new MentionsApiRow("DisplayCandidateCount", Lang(MentionsShowCaseLangResourceKind.ApiPropertyDisplayCandidateCount), "int", "green", "10"),
-            new MentionsApiRow("IsReadOnly", Lang(MentionsShowCaseLangResourceKind.ApiPropertyIsReadOnly), "bool", "green", "false"),
-            new MentionsApiRow("AsyncLoadDebounce", Lang(MentionsShowCaseLangResourceKind.ApiPropertyAsyncLoadDebounce), "TimeSpan", "cyan", "0ms"),
-            new MentionsApiRow("AsyncLoadTimeout", Lang(MentionsShowCaseLangResourceKind.ApiPropertyAsyncLoadTimeout), "TimeSpan", "cyan", "30s"),
-            new MentionsApiRow("ShouldUseOverlayPopup", Lang(MentionsShowCaseLangResourceKind.ApiPropertyShouldUseOverlayPopup), "bool", "green", "true")
-        ];
-    }
-
-    public void EnsureDesignTokenRows()
-    {
-        if (DesignTokenRows is not null)
-        {
-            return;
-        }
-
-        DesignTokenRows =
-        [
-            new MentionsDesignTokenRow("PopupContentPadding", Lang(MentionsShowCaseLangResourceKind.TokenNamePopupContentPadding), Lang(MentionsShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(MentionsShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new MentionsDesignTokenRow("OptionHeight", Lang(MentionsShowCaseLangResourceKind.TokenNameOptionHeight), Lang(MentionsShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(MentionsShowCaseLangResourceKind.TokenStatusStable), "success"),
-            new MentionsDesignTokenRow("MinPopupWidth", Lang(MentionsShowCaseLangResourceKind.TokenNameMinPopupWidth), Lang(MentionsShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(MentionsShowCaseLangResourceKind.TokenStatusStable), "success")
-        ];
-    }
-
-    private static string Lang(MentionsShowCaseLangResourceKind kind)
-    {
-        if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
-        {
-            return LanguageResourceBinder.GetLangResource(kind) ?? FallbackLang(kind);
-        }
-
-        return FallbackLang(kind);
-    }
-
-    private static string FallbackLang(MentionsShowCaseLangResourceKind kind)
-    {
-        return kind switch
-        {
-            MentionsShowCaseLangResourceKind.ApiPropertyValue                 => en_US.ApiPropertyValue,
-            MentionsShowCaseLangResourceKind.ApiPropertyDefaultValue          => en_US.ApiPropertyDefaultValue,
-            MentionsShowCaseLangResourceKind.ApiPropertyOptionsSource         => en_US.ApiPropertyOptionsSource,
-            MentionsShowCaseLangResourceKind.ApiPropertyOptionsAsyncLoader    => en_US.ApiPropertyOptionsAsyncLoader,
-            MentionsShowCaseLangResourceKind.ApiPropertyOptionTemplate        => en_US.ApiPropertyOptionTemplate,
-            MentionsShowCaseLangResourceKind.ApiPropertyTriggerPrefix         => en_US.ApiPropertyTriggerPrefix,
-            MentionsShowCaseLangResourceKind.ApiPropertySplit                 => en_US.ApiPropertySplit,
-            MentionsShowCaseLangResourceKind.ApiPropertyIsAllowClear          => en_US.ApiPropertyIsAllowClear,
-            MentionsShowCaseLangResourceKind.ApiPropertyClearIcon             => en_US.ApiPropertyClearIcon,
-            MentionsShowCaseLangResourceKind.ApiPropertyStyleVariant          => en_US.ApiPropertyStyleVariant,
-            MentionsShowCaseLangResourceKind.ApiPropertyStatus                => en_US.ApiPropertyStatus,
-            MentionsShowCaseLangResourceKind.ApiPropertyPlacement             => en_US.ApiPropertyPlacement,
-            MentionsShowCaseLangResourceKind.ApiPropertyIsAutoSize            => en_US.ApiPropertyIsAutoSize,
-            MentionsShowCaseLangResourceKind.ApiPropertyLines                 => en_US.ApiPropertyLines,
-            MentionsShowCaseLangResourceKind.ApiPropertyMinLines              => en_US.ApiPropertyMinLines,
-            MentionsShowCaseLangResourceKind.ApiPropertyMaxLines              => en_US.ApiPropertyMaxLines,
-            MentionsShowCaseLangResourceKind.ApiPropertyDisplayCandidateCount => en_US.ApiPropertyDisplayCandidateCount,
-            MentionsShowCaseLangResourceKind.ApiPropertyIsReadOnly            => en_US.ApiPropertyIsReadOnly,
-            MentionsShowCaseLangResourceKind.ApiPropertyAsyncLoadDebounce     => en_US.ApiPropertyAsyncLoadDebounce,
-            MentionsShowCaseLangResourceKind.ApiPropertyAsyncLoadTimeout      => en_US.ApiPropertyAsyncLoadTimeout,
-            MentionsShowCaseLangResourceKind.ApiPropertyShouldUseOverlayPopup => en_US.ApiPropertyShouldUseOverlayPopup,
-            MentionsShowCaseLangResourceKind.ValueBindingTitle                => en_US.ValueBindingTitle,
-            MentionsShowCaseLangResourceKind.ValueBindingDescription          => en_US.ValueBindingDescription,
-            MentionsShowCaseLangResourceKind.P2TextBoundValue                 => en_US.P2TextBoundValue,
-            MentionsShowCaseLangResourceKind.P2ContentSetMention              => en_US.P2ContentSetMention,
-            MentionsShowCaseLangResourceKind.P2ContentClear                   => en_US.P2ContentClear,
-            MentionsShowCaseLangResourceKind.TokenNamePopupContentPadding     => en_US.TokenNamePopupContentPadding,
-            MentionsShowCaseLangResourceKind.TokenNameOptionHeight            => en_US.TokenNameOptionHeight,
-            MentionsShowCaseLangResourceKind.TokenNameMinPopupWidth           => en_US.TokenNameMinPopupWidth,
-            MentionsShowCaseLangResourceKind.TokenScopeComponent              => en_US.TokenScopeComponent,
-            MentionsShowCaseLangResourceKind.TokenStatusStable                => en_US.TokenStatusStable,
-            _                                                                 => kind.ToString()
-        };
-    }
 }
-
-public sealed record MentionsApiRow(
-    string Property,
-    string Description,
-    string Type,
-    string TypeTagColor,
-    string Default);
-
-public sealed record MentionsDesignTokenRow(
-    string Token,
-    string Description,
-    string Scope,
-    string ScopeTagColor,
-    string Status,
-    string StatusTagColor);
 
 public class MentionOptionsAsyncLoader : IMentionOptionsAsyncLoader
 {

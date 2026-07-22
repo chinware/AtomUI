@@ -17,7 +17,7 @@ namespace AtomUIGallery.Tests.ShowCases;
 public class FormShowCasePageTests
 {
     [Fact]
-    public void Form_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
+    public void Form_ShowCase_Uses_Document_Layout_With_Examples()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml");
 
@@ -78,107 +78,6 @@ public class FormShowCasePageTests
     }
 
     [Fact]
-    public void Form_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
-    {
-        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml.cs");
-        var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormApiDataGrid.axaml");
-        var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormApiDataGrid.axaml.cs");
-        var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormDesignTokenDataGrid.axaml");
-        var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormDesignTokenDataGrid.axaml.cs");
-
-        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldNotContain("Tag=\"Api\"");
-        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
-        pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
-
-        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldNotContain("new FormApiDataGrid()");
-        codeBehindSource.ShouldNotContain("new FormDesignTokenDataGrid()");
-        codeBehindSource.ShouldNotContain("new FormBasicShowCase()");
-        codeBehindSource.ShouldNotContain("new FormLayoutShowCase()");
-        codeBehindSource.ShouldNotContain("new FormStateShowCase()");
-        codeBehindSource.ShouldNotContain("new FormValidationShowCase()");
-        codeBehindSource.ShouldNotContain("new FormDynamicShowCase()");
-        codeBehindSource.ShouldNotContain("new FormPresetShowCase()");
-        codeBehindSource.ShouldNotContain("new FormControlsShowCase()");
-        codeBehindSource.ShouldContain("TryFindTemplateControl");
-        codeBehindSource.ShouldContain("NoBlockRuleForm.SetFormValues");
-        codeBehindSource.ShouldContain("DynamicForm.Items.Insert");
-        codeBehindSource.ShouldContain("LayoutCaseForm.PropertyChanged");
-        codeBehindSource.ShouldContain("FormSliderItem.Marks");
-        codeBehindSource.ShouldContain("BasicForm.InitialValues");
-
-        apiSource.ShouldContain("<atom:DataGrid");
-        apiSource.ShouldContain("x:DataType=\"viewModels:FormApiRow\"");
-        apiSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        apiSource.ShouldContain("PaginationVisibility=\"None\"");
-        apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
-        apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        apiSource.ShouldContain("VerticalAlignment=\"Top\"");
-        apiSource.ShouldContain("FormShowCaseLangResource ApiColumnProperty");
-        apiSource.ShouldContain("FormShowCaseLangResource ApiColumnDescription");
-        apiSource.ShouldContain("FormShowCaseLangResource ApiColumnType");
-        apiSource.ShouldContain("FormShowCaseLangResource ApiColumnDefault");
-        apiSource.ShouldContain("MinWidth=\"520\"");
-        apiSource.ShouldContain("Width=\"*\"");
-        apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
-        apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
-
-        tokenSource.ShouldContain("<atom:DataGrid");
-        tokenSource.ShouldContain("x:DataType=\"viewModels:FormDesignTokenRow\"");
-        tokenSource.ShouldContain("GridLinesVisibility=\"Horizontal\"");
-        tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
-        tokenSource.ShouldContain("PaginationVisibility=\"None\"");
-        tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
-        tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
-        tokenSource.ShouldContain("FormShowCaseLangResource TokenColumnToken");
-        tokenSource.ShouldContain("FormShowCaseLangResource TokenColumnDescription");
-        tokenSource.ShouldContain("FormShowCaseLangResource TokenColumnScope");
-        tokenSource.ShouldContain("FormShowCaseLangResource TokenColumnStatus");
-        tokenSource.ShouldContain("MinWidth=\"520\"");
-        tokenSource.ShouldContain("Width=\"*\"");
-        tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
-        tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
-    }
-
-    [Fact]
-    public void Form_ShowCase_Localization_Includes_Page_And_Api_Copy()
-    {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Localization/zh_TW.cs");
-
-        foreach (var source in new[] { en, zhCn, zhTw })
-        {
-            source.ShouldContain("ScenarioExamples");
-            source.ShouldContain("ScenarioApi");
-            source.ShouldContain("ScenarioDesignToken");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyFormLayout");
-            source.ShouldContain("ApiPropertyLabelColInfo");
-            source.ShouldContain("ApiPropertyRequiredMark");
-            source.ShouldContain("ApiPropertyValidateTrigger");
-            source.ShouldContain("ApiPropertyFormItemValidators");
-            source.ShouldContain("ApiEventSubmitted");
-            source.ShouldContain("TokenNameLabelRequiredMarkColor");
-            source.ShouldContain("TokenNameLabelColor");
-            source.ShouldContain("TokenNameLabelFontSize");
-            source.ShouldContain("TokenNameFormItemSpacing");
-            source.ShouldContain("TokenNameVerticalLabelPadding");
-        }
-    }
-
-    [Fact]
     public void Form_ShowCase_Required_Layout_Demo_Items_Have_Validators()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml");
@@ -190,17 +89,6 @@ public class FormShowCasePageTests
                 layoutDemo,
                 "<atom:FormStringNotEmptyValidator Message=\"{gallery:FormShowCaseLangResource P2MessagePleaseInput}\" />")
             .ShouldBe(6);
-    }
-
-    [Fact]
-    public void Form_ShowCase_Api_Defaults_Match_Form_Validation_Defaults()
-    {
-        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/ViewModels/FormViewModel.cs");
-
-        source.ShouldContain(
-            "new FormApiRow(\"ValidateTrigger\", Lang(FormShowCaseLangResourceKind.ApiPropertyValidateTrigger), \"FormValidateTrigger\", \"purple\", \"OnChanged\")");
-        source.ShouldNotContain(
-            "new FormApiRow(\"ValidateTrigger\", Lang(FormShowCaseLangResourceKind.ApiPropertyValidateTrigger), \"FormValidateTrigger\", \"purple\", \"OnSubmit\")");
     }
 
     [Fact]

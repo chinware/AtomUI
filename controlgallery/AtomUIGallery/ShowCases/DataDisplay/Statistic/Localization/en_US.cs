@@ -29,40 +29,11 @@ internal partial class en_US
     public const string P2ContentRecharge = "Recharge";
     public const string P2DayLevelFormat = "d\\ \\d\\ h\\ \\h\\ m\\ \\m\\ s\\ \\s";
     public const string ScenarioExamples = "Examples";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Display numeric facts, metrics and countdown values with clear visual emphasis.";
     public const string PageDescription =
         "Statistic presents important numbers with optional units, icons, loading states, animated values and timer-based countdown or countup displays.";
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
-    public const string ApiColumnProperty = "Property";
-    public const string ApiColumnDescription = "Description";
-    public const string ApiColumnType = "Type";
-    public const string ApiColumnDefault = "Default";
-    public const string ApiPropertyHeader = "Title or label displayed above the statistic value.";
-    public const string ApiPropertyValue = "Value rendered by Statistic before formatting.";
-    public const string ApiPropertyFormatter = "Custom formatter used to render Statistic values.";
-    public const string ApiPropertyDecimalSeparator = "Decimal separator used for numeric formatting.";
-    public const string ApiPropertyGroupSeparator = "Group separator used for numeric formatting.";
-    public const string ApiPropertyPrecision = "Number of fractional digits used for numeric formatting.";
-    public const string ApiPropertyIsLoading = "Shows a skeleton placeholder instead of the value content.";
-    public const string ApiPropertyValuePrefixAddOn = "Optional content displayed before the value.";
-    public const string ApiPropertyValueSuffixAddOn = "Optional content displayed after the value.";
-    public const string ApiPropertyContentForeground = "Brush used by the statistic value and add-on content.";
-    public const string ApiPropertyContentFontSize = "Font size used by the statistic value and add-on content.";
-    public const string ApiPropertyTimerValue = "Target date/time used by TimerStatistic for countdown or countup.";
-    public const string ApiPropertyFormat = "TimeSpan format string used by TimerStatistic output.";
-    public const string ApiPropertyRefreshDuration = "Timer refresh interval.";
     public const string ApiEventCountdownFinished = "Raised when a TimerStatistic countdown reaches zero.";
-    public const string ApiPropertyEndValue = "Target number animated by StatisticCountUp.";
-    public const string TokenColumnToken = "Token";
-    public const string TokenColumnDescription = "Description";
-    public const string TokenColumnScope = "Scope";
-    public const string TokenColumnStatus = "Status";
-    public const string TokenNameTitleFontSize = "Font size used by the statistic title.";
-    public const string TokenNameContentFontSize = "Font size used by the statistic value content.";
-    public const string TokenScopeComponent = "Component";
-    public const string TokenStatusStable = "Stable";
 
 }

@@ -6,8 +6,6 @@ namespace AtomUIGallery.ShowCases.ImagePreviewer;
 internal partial class zh_TW
 {
     public const string ScenarioExamples = "範例";
-    public const string ScenarioApi = "API";
-    public const string ScenarioDesignToken = "設計令牌";
     public const string ComponentCategory = "資料展示";
     public const string ComponentStatusStable = "穩定";
     public const string PageSubtitle = "在覆蓋層中預覽單張或多張圖片，並支援縮放、移動和切換。";
@@ -26,47 +24,8 @@ internal partial class zh_TW
     public const string CustomPreviewImageDescription = "選擇來源集合中的某一張作為關閉態封面。";
     public const string MultipleImagePreviewTitle = "多圖預覽";
     public const string MultipleImagePreviewDescription = "點擊左右切換按鈕預覽多張圖片。";
-    public const string ApiColumnProperty = "屬性";
-    public const string ApiColumnDescription = "說明";
-    public const string ApiColumnType = "類型";
-    public const string ApiColumnDefault = "預設值";
-    public const string ApiPropertySource = "ImagePreviewer 使用的主圖片來源，支援 URI 和按需資料流。";
-    public const string ApiPropertySources = "ImagePreviewer 和 ImageGroupPreviewer 使用的主圖片來源列表。";
-    public const string ApiPropertyFallbackSource = "所有配置圖片來源都載入失敗時顯示的容錯圖片來源。";
-    public const string ApiPropertyIsOpen = "控制預覽覆蓋層或預覽視窗是否打開，預設支援雙向繫結。";
-    public const string ApiPropertyCoverWidth = "圖片封面的寬度。";
-    public const string ApiPropertyCoverHeight = "圖片封面的高度。";
-    public const string ApiPropertyCurrentIndex = "多圖預覽中的當前圖片索引，預設支援雙向繫結。";
-    public const string ApiPropertyCoverIndex = "關閉態封面使用的來源圖片索引，只影響展示。";
-    public const string ApiPropertyMaxConcurrentLoads = "同一時間允許執行的最大圖片載入任務數。";
-    public const string ApiPropertyPreloadCount = "當前預覽圖片前後需要預載入的鄰近圖片數量。";
-    public const string ApiPropertyPreviewTitle = "預覽視窗標題列顯示的顯式標題。";
-    public const string ApiPropertyPreviewTitleIcon = "顯示在預覽視窗標題左側的可選圖標。";
-    public const string ApiPropertyPreviewTitleResolver = "PreviewTitle 為空時用於解析預覽視窗標題的 resolver。";
-    public const string ApiPropertyLoadingContent = "圖片載入中顯示的自定義內容。";
-    public const string ApiPropertyLoadingContentTemplate = "用於渲染自定義載入內容的模板。";
-    public const string ApiPropertyErrorContent = "圖片載入失敗時顯示的自定義內容。";
-    public const string ApiPropertyErrorContentTemplate = "用於渲染自定義失敗內容的模板。";
-    public const string ApiPropertyIsShowCoverMask = "是否顯示封面遮罩和預覽提示。";
-    public const string ApiPropertyImageScaleStep = "放大和縮小時套用的縮放步長。";
-    public const string ApiPropertyImageMinScale = "預覽介面中的最小圖片縮放比例。";
-    public const string ApiPropertyImageMaxScale = "預覽介面中的最大圖片縮放比例。";
     public const string ApiEventDialogOpened = "預覽視窗打開後觸發。";
     public const string ApiEventDialogClosing = "預覽視窗關閉前觸發。";
     public const string ApiEventDialogClosed = "預覽視窗關閉後觸發。";
-    public const string TokenColumnToken = "令牌";
-    public const string TokenColumnDescription = "說明";
-    public const string TokenColumnScope = "範圍";
-    public const string TokenColumnStatus = "狀態";
-    public const string TokenNamePreviewOperationSize = "預覽操作圖標尺寸。";
-    public const string TokenNamePreviewOperationColor = "預覽操作圖標顏色。";
-    public const string TokenNamePreviewOperationHoverColor = "預覽操作圖標懸浮顏色。";
-    public const string TokenNameImagePreviewSwitchSize = "圖片切換按鈕尺寸。";
-    public const string TokenNameMaskBgColor = "封面遮罩背景色。";
-    public const string TokenNameDialogMinWidth = "預覽視窗最小寬度。";
-    public const string TokenNameDialogMinHeight = "預覽視窗最小高度。";
-    public const string TokenNameCoverImageWidth = "預設封面圖片寬度。";
-    public const string TokenScopeComponent = "元件";
-    public const string TokenStatusStable = "穩定";
 
 }
