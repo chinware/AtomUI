@@ -47,10 +47,13 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
-主要公开类型与枚举：
+主要 public 类型与枚举：
 
-- 类型：`FullscreenPopoverLayer`、`MacStandardWindowButtons`、`ReactiveWindow`、`Window`、`WindowResizer`。
+- 类型：`Window`、`ReactiveWindow<TViewModel>`、`MacStandardWindowButtons`。
 - 枚举：无。
+
+Window 模板还使用 `FullscreenPopoverLayer`、`WindowResizer`、`WindowVisualLayerClip` 等 internal
+协作类型。它们会影响主题和可观察窗口行为，但不是用户可直接依赖的 public API。
 
 稳定 template part：
 
@@ -101,10 +104,10 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `FullscreenPopoverLayerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `WindowDrawnDecorationsTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowResizerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
+| `FullscreenPopoverLayerTheme.axaml` | 定义 macOS 全屏标题栏 popover 的固定模板、caption buttons 和标题展示。 |
+| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
+| `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
+| `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
 | `WindowThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
@@ -155,11 +158,15 @@ Window 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 
 主要协作类型：
 
-- `FullscreenPopoverLayer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `MacStandardWindowButtons`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `ReactiveWindow`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `Window`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `WindowResizer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `Window`：public 窗口控件，持有窗口 public API、主题上下文、平台状态投影和模板生命周期。
+- `ReactiveWindow<TViewModel>`：public ReactiveUI 窗口基类，维护 ViewModel 同步和 activation。
+- `MacStandardWindowButtons`：public macOS 标准窗口按钮布局附加能力。
+- `Window/Chrome/*WindowChromeManager`：internal 平台 manager，负责 CSD/SSD、frame geometry、X11/Wayland/Windows 原生能力投影。
+- `Window/Utils/FullscreenPopoverLayer`：internal macOS 全屏标题栏 popover 协作层。
+- `Window/Utils/WindowResizer`：internal managed resize grip 协作控件。
+- `Window/Utils/WindowVisualLayerClip`：internal visible frame 裁剪计算和模板裁剪 helper。
+- `Window/Utils/WindowDrawnDecorationsReflectionExtensions`：internal Avalonia drawn decorations 反射边界。
+- `AtomUI.Native` 的 `WindowExtensions` 与平台 `WindowUtils`：internal 底层平台调用入口，不拥有 Window 主题、订阅或策略。
 - `WindowTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `WindowToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
 

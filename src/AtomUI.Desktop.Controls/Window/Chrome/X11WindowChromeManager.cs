@@ -13,6 +13,7 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 internal sealed class X11WindowChromeManager : LinuxWindowChromeManager
 {
     private const double InitialScreenMargin = 48;
+    private const double ShadowInputRegionResizeBand = 10.0;
 
     private static readonly ISet<AvaloniaProperty> s_shadowInputRegionAffectsProperties =
         new HashSet<AvaloniaProperty>
@@ -29,10 +30,7 @@ internal sealed class X11WindowChromeManager : LinuxWindowChromeManager
 
     protected override void AttachPlatformHooks()
     {
-        Window.AttachClickThroughShadow(
-            s_shadowInputRegionAffectsProperties,
-            () => Window.FrameShadowThickness,
-            ClickThroughShadowExtensions.DefaultResizeBand);
+        AttachClickThroughShadow();
     }
 
     protected override Action? PrepareInitialPlatformShowState()
@@ -192,6 +190,67 @@ internal sealed class X11WindowChromeManager : LinuxWindowChromeManager
         }
 
         return Math.Min(Math.Max(value, effectiveMin), effectiveMax);
+    }
+
+    private void AttachClickThroughShadow()
+    {
+        Window.Opened += (_, _) => ApplyClickThroughShadow();
+        Window.PropertyChanged += (_, e) =>
+        {
+            if (e.Property == Visual.BoundsProperty ||
+                e.Property == AvaloniaWindow.WindowDecorationMarginProperty ||
+                e.Property == AvaloniaWindow.WindowStateProperty ||
+                e.Property == TopLevel.TransparencyLevelHintProperty ||
+                s_shadowInputRegionAffectsProperties.Contains(e.Property))
+            {
+                ApplyClickThroughShadow();
+            }
+        };
+    }
+
+    private void ApplyClickThroughShadow()
+    {
+        var handle = Window.TryGetPlatformHandle();
+        if (handle is null || handle.HandleDescriptor != "XID")
+        {
+            return;
+        }
+
+        var size = Window.ClientSize;
+        if (size.Width <= 0 || size.Height <= 0)
+        {
+            return;
+        }
+
+        var scale = Window.RenderScaling <= 0 ? 1.0 : Window.RenderScaling;
+        var fullW = (int)Math.Round(size.Width * scale);
+        var fullH = (int)Math.Round(size.Height * scale);
+
+        if (Window.WindowState != WindowState.Normal)
+        {
+            Window.ResetWindowInputRegion(fullW, fullH);
+            return;
+        }
+
+        var shadowThickness     = Window.FrameShadowThickness;
+        var effectiveResizeBand = Window.CanResize ? ShadowInputRegionResizeBand : 0;
+        var insetLeft           = Math.Max(0, shadowThickness.Left - effectiveResizeBand);
+        var insetTop            = Math.Max(0, shadowThickness.Top - effectiveResizeBand);
+        var insetRight          = Math.Max(0, shadowThickness.Right - effectiveResizeBand);
+        var insetBottom         = Math.Max(0, shadowThickness.Bottom - effectiveResizeBand);
+
+        if (insetLeft <= 0 && insetTop <= 0 && insetRight <= 0 && insetBottom <= 0)
+        {
+            Window.ResetWindowInputRegion(fullW, fullH);
+            return;
+        }
+
+        var x = (int)Math.Round(insetLeft * scale);
+        var y = (int)Math.Round(insetTop * scale);
+        var w = (int)Math.Round((size.Width - insetLeft - insetRight) * scale);
+        var h = (int)Math.Round((size.Height - insetTop - insetBottom) * scale);
+
+        Window.SetWindowInputRectangle(x, y, w, h);
     }
 
     private void ApplyX11CsdFrameExtents()

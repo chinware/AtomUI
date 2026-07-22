@@ -1,8 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using AtomUI.Native;
+using Avalonia.Controls;
 
-namespace AtomUI.Desktop.Controls;
+namespace AtomUI.Native;
 
 internal static class WaylandWindowReflectionExtensions
 {

@@ -2,6 +2,14 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-22
+
+- Implementation
+  - Move platform chrome managers under `Window/Chrome` and Window helper implementations under `Window/Utils`.
+  - Move the Wayland input-region reflection bridge into `AtomUI.Native/Linux` while keeping X11 shadow input-region policy in `X11WindowChromeManager`.
+- Docs
+  - Clarify that Window visual helpers are internal observable implementation details, not public API.
+
 ## 2026-07-21
 
 - Architecture

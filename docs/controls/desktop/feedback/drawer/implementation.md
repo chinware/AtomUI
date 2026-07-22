@@ -16,8 +16,8 @@
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerPlacement.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerToken.cs`
 - `src/AtomUI.Desktop.Controls/Primitives/TopLevelMarginBinder.cs`
-- `src/AtomUI.Desktop.Controls/Window/WindowVisualLayerClip.cs`
-- `src/AtomUI.Desktop.Controls/Window/WindowDrawnDecorationsReflectionExtensions.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowVisualLayerClip.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerContainerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerInfoContainerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerThemes.axaml`
