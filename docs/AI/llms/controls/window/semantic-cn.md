@@ -1,6 +1,6 @@
 # Window 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -13,7 +13,7 @@
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 
 ```xml
 <Panel>
@@ -58,7 +58,7 @@ Window
         -> Border#PART_PopoverBorder (template-stable)
            -> WindowTitleBarLayoutPanel (template-stable)
               -> Panel (template-stable)
-              -> DockPanel (template-stable)
+              -> StackPanel (template-stable)
                  -> ContentPresenter#FullscreenLogoPresenter (internal-observable)
                  -> TextBlock#FullscreenTitleText (template-stable)
               -> StackPanel#FullscreenCaptionButtonGroup (template-stable)
@@ -133,7 +133,7 @@ Window
 | `Panel` | template node (Panel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_PopoverBorder` | template node (Border) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `DockPanel` | template node (DockPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StackPanel` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FullscreenLogoPresenter` | template node (ContentPresenter) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `FullscreenTitleText` | template node (TextBlock) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FullscreenCaptionButtonGroup` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -202,10 +202,10 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `FullscreenPopoverLayerTheme.axaml` | 定义 macOS 全屏标题栏 popover 的固定模板、caption buttons 和标题展示。 |
-| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
-| `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
-| `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
+| `FullscreenPopoverLayerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `WindowDrawnDecorationsTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
+| `WindowResizerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
+| `WindowTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `WindowThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。

@@ -1,6 +1,6 @@
 # Tour 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -60,7 +60,6 @@ Tour
      -> Popup#PART_Popup (template-stable)
         -> ArrowDecoratedBox#{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart} (template-stable)
            -> TourStepsView#StepsView (internal-observable)
-  -> TourLayer (control theme, TourTheme.axaml)
 ```
 
 ### 协作节点
@@ -95,7 +94,6 @@ Tour
 | `PART_Popup` | template node (Popup) | `TourTheme.axaml` | Tour | `ArrowPosition`, `CloseIcon`, `CurrentArrowVisible`, `CurrentIndex`, `CurrentStyleType`, `Indicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `TourTheme.axaml` | Tour | `ArrowPosition`, `CloseIcon`, `CurrentArrowVisible`, `CurrentIndex`, `CurrentStyleType`, `Indicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StepsView` | template node (TourStepsView) | `TourTheme.axaml` | Tour | `CloseIcon`, `CurrentIndex`, `CurrentStyleType`, `Indicator`, `IsArrowVisible`, `IsMotionEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `TourLayer` | control theme | `TourTheme.axaml` | Tour | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 
 ## Template Parts
 

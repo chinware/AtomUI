@@ -1,6 +1,6 @@
 # ToggleSwitch
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -70,7 +70,7 @@ ToggleSwitch 的公共契约由 Avalonia `ToggleButton` 状态和 AtomUI 扩展�
 
 ## 事件与命令
 
-ToggleSwitch 的事件与命令以控件文档、源码 public surface 和 Avalonia 基类契约为准；生成器不从源码发明额外事件。
+ToggleSwitch 的事件与命令以公共 API、Avalonia 基类契约和 Gallery API 表为准；生成器不从源码发明额外事件。
 
 ## 使用示例
 

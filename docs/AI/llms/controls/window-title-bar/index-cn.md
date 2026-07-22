@@ -1,6 +1,6 @@
 # WindowTitleBar
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -202,16 +202,8 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 src/AtomUI.Desktop.Controls/
 ├── Window/
 │   ├── Window.cs
+│   ├── WindowChromeManager.cs
 │   ├── MacStandardWindowButtons.cs
-│   ├── Chrome/
-│   │   ├── WindowChromeManager.cs
-│   │   ├── LinuxWindowChromeManager.cs
-│   │   ├── X11WindowChromeManager.cs
-│   │   ├── WaylandWindowChromeManager.cs
-│   │   └── WindowsWindowChromeManager.cs
-│   ├── Utils/
-│   │   ├── FullscreenPopoverLayer.cs
-│   │   └── WindowVisualLayerClip.cs
 │   └── Themes/
 │       ├── WindowTheme.axaml
 │       ├── WindowDrawnDecorationsTheme.axaml
@@ -244,8 +236,8 @@ src/AtomUI.Desktop.Controls/
 
 ## 相关文档
 
-- 源设计文档：`docs/controls/desktop/window/window-title-bar/overview.md`
-- 实现文档：`docs/controls/desktop/window/window-title-bar/implementation.md`
-- Token 文档：`docs/controls/desktop/window/window-title-bar/token.md`
-- 变更记录：`docs/controls/desktop/window/window-title-bar/changelog.md`
+- 源设计文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/overview.md`
+- 实现文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/implementation.md`
+- Token 文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/token.md`
+- 变更记录：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/changelog.md`
 - 语义结构：`./semantic-cn.md`

@@ -1,6 +1,6 @@
 # RadioButton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -59,9 +59,9 @@ RadioButton
 | `DockPanel` | template node (DockPanel) | `RadioButtonTheme.axaml` | RadioButton | `Content`, `ContentTemplate`, `IsChecked`, `IsEnabled`, `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Indicator` | template node (RadioIndicator) | `RadioButtonTheme.axaml` | RadioButton | `IsChecked`, `IsEnabled`, `IsMotionEnabled`, `IsWaveSpiritEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentPresenter` | template node (ContentPresenter) | `RadioButtonTheme.axaml` | RadioButton | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `RadioIndicator` | control theme | `RadioIndicatorTheme.axaml` | RadioButton | `IsMotionEnabled`, `IsWaveSpiritEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Panel` | template node (Panel) | `RadioIndicatorTheme.axaml` | RadioIndicator | `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `RadioIndicatorTheme.axaml` | RadioIndicator | `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `RadioIndicator` | control theme | `RadioIndicatorTheme.axaml` | RadioButton | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Panel` | template node (Panel) | `RadioIndicatorTheme.axaml` | RadioIndicator | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `RadioIndicatorTheme.axaml` | RadioIndicator | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
