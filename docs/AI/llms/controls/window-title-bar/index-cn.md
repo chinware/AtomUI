@@ -4,13 +4,15 @@
 
 ## 概述
 
-WindowTitleBar 是 AtomUI 桌面控件体系中的窗口标题栏控件，用于承载标题、图标、拖拽区域和窗口系统按钮。
+`WindowTitleBar` 负责以下内容：
 
-WindowTitleBar 不负责完整 Window、导航栏或普通工具栏。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
+- 展示窗口 Logo、标题以及标题模板。
+- 承载标题栏左右两侧的应用自定义内容。
+- 为窗口拖动、双击最大化和系统 caption buttons 提供统一交互表面。
+- 接收宿主窗口的平台、激活状态和窗口状态，并投影为稳定的模板状态。
+- 在不同平台和窗口装饰模式下保持标题、原生按钮、managed buttons 与 add-on 互不覆盖。
 
-主要源码入口：
-
-- `src/AtomUI.Desktop.Controls/WindowTitleBar`
+`WindowTitleBar` 不是通用工具栏或导航栏。业务操作应放入 `LeftAddOn`、`RightAddOn` 或专用控件，并保留标题栏拖动区域和系统窗口操作的优先级。
 
 ## 包与命名空间
 
@@ -19,162 +21,223 @@ WindowTitleBar 不负责完整 Window、导航栏或普通工具栏。这些职�
 | NuGet 包 | `AtomUI.Desktop.Controls` |
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
-| Gallery 页面 | `未独立 Gallery 页面；以 `docs/controls/desktop/window/window-title-bar` 源文档为准` |
+| Gallery 页面 | `未提供独立页面；以本目录源文档、控件源码和回归测试为准。` |
 | 状态 | Stable |
 
 ## 何时使用
 
-WindowTitleBar 的设计语言围绕控件职责、可观察状态和主题契约组织，而不是围绕模板节点组织。
+标题栏由四类语义内容构成：
 
-| 维度 | 含义 | WindowTitleBar 中的表达 |
+| 语义 | 内容 | 责任 |
 | --- | --- | --- |
-| 产品语义 | 控件在界面中承担的稳定职责。 | WindowTitleBar 是 AtomUI 桌面控件体系中的窗口标题栏控件，用于承载标题、图标、拖拽区域和窗口系统按钮。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CheckedIcon`、`IconHeight`、`IconWidth`、`LeftAddOnTemplate`、`LogoTemplate`、`NormalIcon`、`RightAddOnTemplate`、`Title` 等 9 项。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、open/close、motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | WindowTitleBar Token + ControlTheme。 |
+| Leading | `LeftAddOn` | 承载靠近起始侧的应用操作，并占用标题安全空间。 |
+| Title | `Logo + Title` | 作为连续标题组测量、对齐和裁剪。 |
+| Trailing | `RightAddOn + CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 |
+| Native chrome | 平台原生窗口按钮或 overlay | 不进入 visual tree，通过窗口边缘安全区参与布局。 |
+
+三块 managed 区域与 native chrome 的完整几何关系由本文第 8 节和 [WindowTitleBar 实现原理](implementation.md) 定义。Logo 属于 Title，不属于 Leading；左右 add-on 属于操作区，不参与标题组中心计算。
+
+控件家族的职责边界：
+
+| 类型 | 可见性 | 职责 |
+| --- | --- | --- |
+| `WindowTitleBar` | public | 公共内容契约、宿主状态投影、交互入口和主题入口。 |
+| `WindowTitleBarLogoVisibility` | public | 定义 Logo 的显示策略。 |
+| `WindowTitleBarTitleAlignment` | public | 定义标题组的跨平台对齐语义。 |
+| `CaptionButtonGroup` | internal | 把窗口能力和状态映射为关闭、最小化、最大化、全屏和置顶按钮。 |
+| `CaptionButton` | internal | 承载 caption icon、checked icon 和按钮视觉状态。 |
+| `WindowsCaptionButton` | internal | 提供 Windows 方形 caption button 尺寸和 hover 状态修正。 |
+
+internal 类型服务于 AtomUI 内置主题，不属于应用可直接创建或继承的公共控件 API。
 
 ## 公共 API
 
-WindowTitleBar 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
+### 3.1 标题内容
 
-核心 public surface 按语义分组维护：
-
-| 契约组 | 代表成员 | 维护含义 |
+| API | 默认值 | 语义 |
 | --- | --- | --- |
-| 内容与数据 | `CheckedIcon`、`IconHeight`、`IconWidth`、`LeftAddOnTemplate`、`LogoTemplate`、`NormalIcon`、`RightAddOnTemplate`、`Title`、`TitleTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `IsChecked`、`IsWindowActive` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsMinimizeCaptionButtonVisible`、`IsMotionEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 其他稳定入口 | `LeftAddOn`、`Logo`、`LogoVisibility`、`OsType`、`OsVersion`、`RightAddOn` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| `Logo` | `null` | Logo 内容对象。 |
+| `LogoTemplate` | `null` | Logo 数据模板。 |
+| `LogoVisibility` | `Auto` | Logo 显示策略。 |
+| `Title` | `null` | 标题内容对象。 |
+| `TitleTemplate` | `null` | 标题数据模板。 |
+| `TitleAlignment` | `Auto` | 标题组对齐策略。 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+`Logo` 与 `Title` 都接受任意对象。字符串标题为空或仅包含空白时按“无标题内容”处理；非字符串对象按存在标题内容处理。
 
-主要公开类型与枚举：
+### 3.2 Add-on
 
-- 类型：`CaptionButton`、`CaptionButtonGroup`、`WindowTitleBar`、`WindowsCaptionButton`。
-- 枚举：`WindowTitleBarLogoVisibility`。
-
-稳定 template part：
-
-| Template Part | 类型 | 职责 |
+| API | 默认值 | 语义 |
 | --- | --- | --- |
-| `PART_CaptionButtonGroup` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_CloseButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_ContentPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
-| `PART_Frame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
-| `PART_FullScreenButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_IconPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
-| `PART_LeftAddOn` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_Logo` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_MaximizeButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_MinimizeButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_PinButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_RightAddOn` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
+| `LeftAddOn` | `null` | Leading 区域内容。 |
+| `LeftAddOnTemplate` | `null` | Leading 内容模板。 |
+| `RightAddOn` | `null` | Trailing 区域中位于 caption buttons 之前的内容。 |
+| `RightAddOnTemplate` | `null` | Trailing 内容模板。 |
 
-当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
+Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前没有孩子的容器。内置模板必须保留其命中测试能力，同时避免 Title 覆盖这些区域。Leading 或 Trailing 的实测宽度为零时，该区域不占用标题安全空间，也不产生 `HeaderHorizontalSpacing`；内容出现、隐藏或动态替换后由正常 measure invalidation 重新计算。
+
+### 3.3 宿主状态
+
+| API | 语义 |
+| --- | --- |
+| `IsWindowActive` | 表示宿主窗口是否激活，并驱动标题和 caption buttons 的 active/inactive 视觉。 |
+| `IsMotionEnabled` | 控制标题栏及 caption button 的状态过渡。 |
+| `OsType` | 只读平台标识，用于选择平台主题和布局 Strategy。 |
+| `OsVersion` | 只读平台版本，用于受版本约束的平台能力判断。 |
+
+`OsType` 和 `OsVersion` 由 AtomUI 平台感知基础设施写入。应用不通过 CLR setter 修改这两个值。
+
+### 3.4 交互事件
+
+`MaximizeWindowRequested` 表示标题栏收到有效的主按钮双击请求。`WindowTitleBar` 不直接修改 `WindowState`；宿主 `Window` 根据 `CanResize`、`CanMaximize` 和当前状态决定最大化或还原。
+
+事件在对应的 `PointerReleased` 阶段发出，避免窗口同步 resize 破坏当前 pointer capture。pointer capture 丢失或释放条件不匹配时，请求被取消。
 
 ## 事件与命令
 
-WindowTitleBar 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+### 3.4 交互事件
+事件在对应的 `PointerReleased` 阶段发出，避免窗口同步 resize 破坏当前 pointer capture。pointer capture 丢失或释放条件不匹配时，请求被取消。
 
 ## 使用示例
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-Gallery 目录 `未独立 Gallery 页面；以 `docs/controls/desktop/window/window-title-bar` 源文档为准` 当前不存在；请检查控件文档中的 Gallery 页面元数据。
+Gallery 目录 `未提供独立页面；以本目录源文档、控件源码和回归测试为准。` 当前不存在；请检查控件文档中的 Gallery 页面元数据。
 
 ## 状态模型
 
-WindowTitleBar 的状态流按以下路径收敛：
+### 4.1 Logo 显示模型
 
-```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
-  -> Gallery 可观察行为
-```
+`LogoVisibility` 的三个值具有以下语义：
 
-状态维护规则：
+| 值 | 规则 |
+| --- | --- |
+| `Always` | 存在 `Logo` 或 `LogoTemplate` 时显示。 |
+| `Never` | 始终隐藏。 |
+| `Auto` | 根据标题内容、平台和窗口状态计算。 |
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- selection/checked/active、open/close、motion 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+`Auto` 的计算矩阵：
+
+| 条件 | 结果 |
+| --- | --- |
+| 不存在 Logo 内容和 Logo 模板 | 隐藏。 |
+| 存在有效标题内容 | 显示。 |
+| 无标题内容且平台为 macOS | 隐藏。 |
+| 无标题内容、平台不是 macOS、窗口非全屏 | 显示。 |
+| 无标题内容、平台不是 macOS、窗口全屏 | 隐藏。 |
+
+该模型只控制 Logo 的有效可见性，不修改 `Logo`、`Window.Icon` 或应用图标来源。
+
+### 4.2 窗口状态
+
+`WindowTitleBar` 从逻辑祖先 `Window` 接收状态并维护以下伪类：
+
+| 伪类 | 条件 |
+| --- | --- |
+| `:active` | 宿主窗口处于激活状态。 |
+| `:normal` | `WindowState.Normal`。 |
+| `:minimized` | `WindowState.Minimized`。 |
+| `:maximized` | `WindowState.Maximized`。 |
+| `:fullscreen` | `WindowState.FullScreen`。 |
+
+窗口激活状态同时写入 `IsWindowActive`，供模板中的内部协作控件使用。状态 owner 始终是宿主 `Window`；模板节点不反向维护第二份窗口状态。
+
+### 4.3 Caption buttons
+
+caption button 的公共配置属于宿主 `Window`：
+
+- `CanMinimize` 和 `CanMaximize` 决定最小化、最大化按钮能力。
+- `IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible` 和 `IsCloseCaptionButtonVisible` 决定扩展按钮可见性。
+- `Topmost`、`WindowState` 和平台 backend 决定 checked state 与有效可见性。
+
+全屏时隐藏最小化和最大化按钮；最大化时隐藏进入全屏按钮。Wayland backend 不提供置顶按钮。按钮点击最终写入宿主窗口状态或调用关闭流程，状态不保存在按钮视觉中。
+
+### 4.4 拖动和双击
+
+`Window` 监听标题栏 pointer 事件并在移动距离超过拖动阈值后调用原生 `BeginMoveDrag`。`IsMoveEnabled=False` 或全屏状态禁止拖动。双击最大化与拖动共用标题栏输入表面，但 caption buttons 和 add-on 的已处理输入不应触发窗口拖动。
 
 ## 主题与 Design Token
 
-WindowTitleBar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+`WindowTitleBarTheme` 是 `WindowTitleBar` 的 ControlTheme 入口。内置主题保留以下稳定 template part 与语义节点：
 
-| 主题文件 | 职责 |
-| --- | --- |
-| `CaptionButtonGroupTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `CaptionButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `WindowTitleBarTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowTitleBarThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
-| `WindowsCaptionButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
+| 节点 | 类型 | 契约 |
+| --- | --- | --- |
+| `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
+| `PART_Logo` | `ContentPresenter` | 展示有效 Logo。 |
+| `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
+| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
+| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 运行时连接宿主窗口操作。 |
 
-WindowTitleBar 使用 `WindowTitleBarToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、motion 运行时状态。
+`PART_CaptionButtonGroup` 是 `WindowTitleBar` 代码查找并 attach/detach 的协作 part。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
 
-主题维护规则：
+平台主题可以改变 caption button 外观和 native chrome 来源，但不得改变 Public API 语义、Title/Leading/Trailing 角色或窗口操作行为。应用替换完整 ControlTheme 时负责提供等价区域、裁剪和命中测试；internal caption 类型不作为定制 API。
 
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+视觉尺寸、间距、active/inactive 颜色和 caption button 状态颜色由 [WindowTitleBar Token 设计](token.md) 管理。标题对齐值、CSD 状态和窗口状态不是 Token。
 
 Token 来源：
 
-WindowTitleBar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
+`WindowTitleBarToken` 是 scope id 为 `WindowTitleBar` 的 internal control token，源码位于 `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs`。它从 `SharedToken` 计算标题栏和 caption button 的视觉变量，并通过生成的 `WindowTitleBarTokenResource` key 供 AXAML 使用。
 
-当前 Token scope：
+Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时语义：
 
-- `WindowTitleBarToken`，scope id 为 `WindowTitleBar`，源码位于 `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs`。
+- `TitleAlignment`、Leading/Title/Trailing 角色和布局公式。
+- CSD、native chrome insets、WindowState 和 backend 能力。
+- Logo、标题、add-on 或 caption button 的有效可见性。
+- pointer capture、拖动、checked state 和窗口操作。
 
 ## AOT 与裁剪注意事项
 
-资源和 AOT 约束：
-
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
-- 不把可静态声明的模板结构迁移到 C# 动态创建。
-- 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
-- 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
-- Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
-
-性能边界：
-
-- 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
-- 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- 窗口订阅和 relay binding 都有明确的 attach/detach 或 apply/reapply 配对。
+- 标题布局 Strategy 使用静态无状态实例；measure/arrange 不创建 Context、Plan、binding 或临时 Visual。
+- TemplateBinding 和 selector 承担静态视觉投影，不在状态变化时重建模板节点。
+- Logo 计算只在相关属性或 WindowState 变化时执行。
+- native chrome metrics 缓存属于 Window/platform manager，不能复制到 Panel 或 Strategy。
+- 平台 Strategy 使用封闭 `OsType` switch，不使用反射、程序集扫描、字符串类型发现或运行时 DI。
+- Token 通过生成的静态资源入口消费；不反射枚举 public API 或 Token 属性。
 
 ## 源码索引
 
-主要源码文件：
+```text
+src/AtomUI.Desktop.Controls/
+├── Window/
+│   ├── Window.cs
+│   ├── WindowChromeManager.cs
+│   ├── MacStandardWindowButtons.cs
+│   └── Themes/
+│       ├── WindowTheme.axaml
+│       ├── WindowDrawnDecorationsTheme.axaml
+│       └── FullscreenPopoverLayerTheme.axaml
+├── WindowTitleBar/
+│   ├── WindowTitleBar.cs
+│   ├── WindowTitleBarLogoVisibility.cs
+│   ├── WindowTitleBarTitleAlignment.cs
+│   ├── WindowTitleBarLayoutPanel.cs
+│   ├── CaptionButtonGroup.cs
+│   ├── CaptionButton.cs
+│   ├── WindowsCaptionButton.cs
+│   ├── WindowTitleBarToken.cs
+│   ├── Strategies/
+│   │   ├── IWindowTitleBarLayoutStrategy.cs
+│   │   ├── MacOSWindowTitleBarLayoutStrategy.cs
+│   │   ├── WindowsWindowTitleBarLayoutStrategy.cs
+│   │   └── LinuxWindowTitleBarLayoutStrategy.cs
+│   └── Themes/
+│       ├── WindowTitleBarTheme.axaml
+│       ├── CaptionButtonGroupTheme.axaml
+│       ├── CaptionButtonTheme.axaml
+│       └── WindowsCaptionButtonTheme.axaml
+└── ImagePreviewer/
+    ├── ImagePreviewerTitleBar.cs
+    └── Themes/ImagePreviewerTitleBarTheme.axaml
+```
 
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButton.cs`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.cs`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarThemes.axaml`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowsCaptionButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBar.cs`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarLogoVisibility.cs`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs`
-- `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowsCaptionButton.cs`
-
-职责边界：
-
-- 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
-- Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+标题布局输入和中间结果使用标量、`Thickness`、`Rect` 与命名 tuple 传递，不建立独立 Context、Plan 或布局结果类型。
 
 ## 相关文档
 
-- 源设计文档：`docs/controls/desktop/window/window-title-bar/overview.md`
-- 实现文档：`docs/controls/desktop/window/window-title-bar/implementation.md`
-- Token 文档：`docs/controls/desktop/window/window-title-bar/token.md`
-- 变更记录：`docs/controls/desktop/window/window-title-bar/changelog.md`
+- 源设计文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/overview.md`
+- 实现文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/implementation.md`
+- Token 文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/token.md`
+- 变更记录：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/changelog.md`
 - 语义结构：`./semantic-cn.md`

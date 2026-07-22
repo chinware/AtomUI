@@ -262,7 +262,9 @@ ImagePreviewerOverlayHost (ImagePreviewerThemes.axaml + runtime host)
 - `PART_LoadingPresenter`：承载图片加载状态内容。默认封面使用图片 Skeleton 占位，预览层使用居中 Spin；`LoadingContent` / `LoadingContentTemplate` 只替换 presenter 内容，不拥有加载状态。
 - `PART_ErrorPresenter`：承载图片加载失败内容；当前加载批次全部失败且存在 `FallbackSource` 时优先展示 fallback 结果。没有可用 fallback 时显示 `ErrorContent` / `ErrorContentTemplate` 或默认本地化失败占位。
 - `PART_IconPresenter`：预览窗口标题图标展示入口，内容来自 `ImagePreviewer.PreviewTitleIcon`，位于 `PART_TitleLayout` 内的标题文字左侧。
-- `PART_TitleLayout`：标题图标和标题文字的水平布局，使用 `WindowTitleBarToken.LogoAndTitleSpacing` 作为二者间距。
+- `PART_TitleLayout`：共享 `WindowTitleBarLayoutPanel` 的 Title 角色，承载标题图标和标题文字；仅当两者都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。
+- `PART_LeftAddOn`：共享布局的 Leading 角色，承载图片工具栏；为空或隐藏时不产生操作区占位和间距。
+- `PART_RightAddOn` 与 `PART_CaptionButtonGroup`：共同位于 Trailing 角色，按当前实测宽度限制标题安全区。
 - `PART_NextButton`：承载用户触发入口、导航或关闭动作。
 - `PART_PreviousButton`：承载用户触发入口、导航或关闭动作。
 - `PART_RotateLeftButton`：承载用户触发入口、导航或关闭动作。

@@ -116,6 +116,54 @@ public class ImagePreviewerTitleTests
     }
 
     [Fact]
+    public void ImagePreviewerDialog_Projects_Window_TitleBar_Layout_State_To_Derived_TitleBar()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var dialog = new TestImagePreviewerDialog
+            {
+                TitleAlignment = WindowTitleBarTitleAlignment.Right,
+                WindowState    = Avalonia.Controls.WindowState.Maximized
+            };
+            dialog.SetValue(
+                global::AtomUI.Desktop.Controls.Window.NativeChromeInsetsProperty,
+                new Avalonia.Thickness(80, 0, 0, 0));
+            dialog.SetValue(
+                global::AtomUI.Desktop.Controls.Window.IsCsdEnabledProperty,
+                true);
+            var titleBar = new ImagePreviewerTitleBar();
+
+            dialog.ConfigureTitleBar(titleBar);
+
+            titleBar.TitleAlignment.ShouldBe(WindowTitleBarTitleAlignment.Right);
+            titleBar.NativeChromeInsets.ShouldBe(new Avalonia.Thickness(80, 0, 0, 0));
+            titleBar.IsCsdEnabled.ShouldBeTrue();
+            titleBar.HostWindowState.ShouldBe(Avalonia.Controls.WindowState.Maximized);
+        });
+    }
+
+    [Fact]
+    public void ImagePreviewerDialog_Configures_Derived_TitleBar_With_Effective_Preview_Title()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var dialog = new TestImagePreviewerDialog
+            {
+                ItemsSource =
+                [
+                    new ImagePreviewItem(
+                        new UriImagePreviewSource("avares://AtomUI.Tests/Assets/source.png"))
+                ]
+            };
+            var titleBar = new ImagePreviewerTitleBar();
+
+            dialog.ConfigureTitleBar(titleBar);
+
+            titleBar.Title.ShouldBe("source.png");
+        });
+    }
+
+    [Fact]
     public void ImagePreviewerOverlayHost_ItemsSource_Change_Preserves_CurrentIndex()
     {
         Dispatcher.UIThread.Invoke(() =>
@@ -213,6 +261,19 @@ public class ImagePreviewerTitleTests
         {
             var fileName = DefaultImagePreviewTitleResolver.Instance.ResolveTitle(context);
             return $"{_prefix}:{fileName}:{context.CurrentIndex + 1}/{context.Count}";
+        }
+    }
+
+    private sealed class TestImagePreviewerDialog : ImagePreviewerDialog
+    {
+        public TestImagePreviewerDialog()
+            : base(new Avalonia.Controls.Window(), new global::AtomUI.Desktop.Controls.ImagePreviewer())
+        {
+        }
+
+        public void ConfigureTitleBar(WindowTitleBar titleBar)
+        {
+            NotifyConfigureTitleBar(titleBar);
         }
     }
 }

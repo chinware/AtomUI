@@ -719,7 +719,7 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
-    public void Windows_TitleBar_Paints_The_Full_Caption_Surface()
+    public void BuiltIn_TitleBars_Use_One_Full_Frame_LayoutPanel_With_Three_Roles()
     {
         var document = XDocument.Load(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml"));
@@ -737,20 +737,91 @@ public class WindowResizeArtifactTests
             (string?)setter.Attribute("Property") == "Background" &&
             (string?)setter.Attribute("Value") == "Transparent");
 
-        var windowsStyle = document.Descendants(av + "Style")
-                                   .Single(style =>
-                                       (string?)style.Attribute("Selector") == "^[OsType=Windows]");
-        var template = windowsStyle.Descendants(av + "ControlTemplate").Single();
-        var root     = template.Elements(av + "DockPanel").Single();
+        var templates = document.Descendants(av + "ControlTemplate").ToList();
+        templates.Count.ShouldBe(3);
 
-        root.Attribute("Background").ShouldNotBeNull().Value.ShouldBe("{TemplateBinding Background}");
-        root.Elements(atom + "CaptionButtonGroup").Single()
-            .Attribute("Name")
-            .ShouldNotBeNull().Value.ShouldBe("PART_CaptionButtonGroup");
-        root.Elements(av + "Border").Single(border =>
-                (string?)border.Attribute("Name") == "Frame")
-            .Attribute("Background")
-            .ShouldNotBeNull().Value.ShouldBe("{TemplateBinding Background}");
+        foreach (var template in templates)
+        {
+            var frame = template.Elements(av + "Border").Single();
+            var layoutPanel = frame.Elements(atom + "WindowTitleBarLayoutPanel").Single();
+            var directChildren = layoutPanel.Elements().ToList();
+
+            frame.Attribute("Name")?.Value.ShouldBe("Frame");
+            frame.Attribute("Background")?.Value.ShouldBe("{TemplateBinding Background}");
+            layoutPanel.Attribute("TitleAlignment")?.Value.ShouldBe("{TemplateBinding TitleAlignment}");
+            layoutPanel.Attribute("OsType")?.Value.ShouldBe("{TemplateBinding OsType}");
+            layoutPanel.Attribute("NativeChromeInsets")?.Value.ShouldBe("{TemplateBinding NativeChromeInsets}");
+            layoutPanel.Attribute("IsCsdEnabled")?.Value.ShouldBe("{TemplateBinding IsCsdEnabled}");
+            layoutPanel.Attribute("WindowState")?.Value.ShouldBe("{TemplateBinding HostWindowState}");
+            layoutPanel.Attribute("HorizontalSpacing")?.Value.ShouldBe(
+                "{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}");
+
+            directChildren.Count(child =>
+                    (string?)child.Attribute(atom + "WindowTitleBarLayoutPanel.Role") == "Leading")
+                .ShouldBe(1);
+            directChildren.Count(child =>
+                    (string?)child.Attribute(atom + "WindowTitleBarLayoutPanel.Role") == "Title")
+                .ShouldBe(1);
+            directChildren.Count(child =>
+                    (string?)child.Attribute(atom + "WindowTitleBarLayoutPanel.Role") == "Trailing")
+                .ShouldBe(1);
+
+            layoutPanel.Descendants(atom + "CaptionButtonGroup").Single()
+                       .Attribute("Name")?.Value.ShouldBe("PART_CaptionButtonGroup");
+        }
+    }
+
+    [Fact]
+    public void Fullscreen_Title_Hosts_Use_The_Shared_Full_Frame_Layout_With_Managed_Operations()
+    {
+        var themePaths = new[]
+        {
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml",
+            "src/AtomUI.Desktop.Controls/Window/Themes/FullscreenPopoverLayerTheme.axaml"
+        };
+        XNamespace atom = "https://atomui.net";
+
+        foreach (var themePath in themePaths)
+        {
+            var document = XDocument.Load(GetRepoFile(themePath));
+            var layoutPanel = document.Descendants(atom + "WindowTitleBarLayoutPanel").Single();
+            var directChildren = layoutPanel.Elements().ToList();
+
+            layoutPanel.Attribute("TitleAlignment")?.Value.ShouldBe(
+                "{Binding $parent[atom:Window].TitleAlignment}");
+            layoutPanel.Attribute("OsType")?.Value.ShouldBe("{Binding $parent[atom:Window].OsType}");
+            layoutPanel.Attribute("NativeChromeInsets")?.Value.ShouldBe("0");
+            layoutPanel.Attribute("WindowState")?.Value.ShouldBe("FullScreen");
+            layoutPanel.Attribute("Padding")?.Value.ShouldBe(
+                "{atom:WindowTokenResource FullscreenHeaderFramePadding}");
+            layoutPanel.Attribute("HorizontalSpacing")?.Value.ShouldBe(
+                "{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}");
+
+            directChildren.Count(child => GetLayoutRole(child) == "Leading").ShouldBe(1);
+            directChildren.Count(child => GetLayoutRole(child) == "Title").ShouldBe(1);
+            directChildren.Count(child => GetLayoutRole(child) == "Trailing").ShouldBe(1);
+
+            directChildren.Single(child => GetLayoutRole(child) == "Leading")
+                          .Descendants()
+                          .ShouldBeEmpty();
+            var title = directChildren.Single(child => GetLayoutRole(child) == "Title");
+            title.Name.LocalName.ShouldBe("DockPanel");
+            title.Attribute("LastChildFill")?.Value.ShouldBe("True");
+            title.Attribute("HorizontalSpacing")?.Value.ShouldBe(
+                "{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}");
+            title.Attribute("IsHitTestVisible")?.Value.ShouldBe("False");
+            title.Attribute("ClipToBounds")?.Value.ShouldBe("True");
+            var logoPresenter = title.Descendants().Single(element =>
+                (string?)element.Attribute("Name") == "FullscreenLogoPresenter");
+            logoPresenter.Attribute("DockPanel.Dock")?.Value.ShouldBe("Left");
+            var titleText = title.Descendants().Single(element =>
+                (string?)element.Attribute("Name") == "FullscreenTitleText");
+            titleText.Attribute("TextWrapping")?.Value.ShouldBe("NoWrap");
+            titleText.Attribute("TextTrimming")?.Value.ShouldBe("CharacterEllipsis");
+
+            var trailing = directChildren.Single(child => GetLayoutRole(child) == "Trailing");
+            trailing.Descendants(atom + "CaptionButton").Count().ShouldBe(2);
+        }
     }
 
     [Fact]
@@ -941,6 +1012,14 @@ public class WindowResizeArtifactTests
         }
 
         throw new FileNotFoundException($"Could not find repository file: {relativePath}");
+    }
+
+    private static string? GetLayoutRole(XElement element)
+    {
+        return element.Attributes()
+                      .SingleOrDefault(attribute =>
+                          attribute.Name.LocalName == "WindowTitleBarLayoutPanel.Role")
+                      ?.Value;
     }
 
     private static bool IsPhysicalPixelAligned(double value, double renderScaling)

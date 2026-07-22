@@ -1,58 +1,131 @@
 # WindowTitleBar Token 设计
 
-本文档定义 WindowTitleBar 相关组件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。WindowTitleBar 整体架构见 [WindowTitleBar 桌面版架构设计](overview.md)，内部实现原理见 [WindowTitleBar 桌面版实现原理](implementation.md)，设计和契约变化记录见 [WindowTitleBar Changelog](changelog.md)。
+本文档定义 `WindowTitleBarToken` 的组件视觉语义、Theme 消费范围和兼容边界。控件设计见 [WindowTitleBar 控件设计](overview.md)，实现数据流与标题几何见 [WindowTitleBar 实现原理](implementation.md)，契约变化见 [WindowTitleBar Changelog](changelog.md)，通用规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。
 
 ## 1. 定位
 
-WindowTitleBar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
+`WindowTitleBarToken` 是 scope id 为 `WindowTitleBar` 的 internal control token，源码位于 `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs`。它从 `SharedToken` 计算标题栏和 caption button 的视觉变量，并通过生成的 `WindowTitleBarTokenResource` key 供 AXAML 使用。
 
-当前 Token scope：
+Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时语义：
 
-- `WindowTitleBarToken`，scope id 为 `WindowTitleBar`，源码位于 `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs`。
+- `TitleAlignment`、Leading/Title/Trailing 角色和布局公式。
+- CSD、native chrome insets、WindowState 和 backend 能力。
+- Logo、标题、add-on 或 caption button 的有效可见性。
+- pointer capture、拖动、checked state 和窗口操作。
 
 ## 2. Token 分类
 
-Token 按控件语义分类维护：
+### 2.1 标题栏结构
 
-| 分类 | 语义 | 代表 Token |
+| Token | 语义 | 主要消费者 |
 | --- | --- | --- |
-| 尺寸与密度 | 控件高度、宽度、图标尺寸、内容最小尺寸。 | `TitleFontSize`、`CaptionButtonIconSize`、`WindowsCaptionIconSize`、`LogoSize`、`Height`、`FullscreenCaptionButtonSize` |
-| 间距与布局 | padding、margin、gap、offset、popup content padding。 | `TitleBarPadding`、`CaptionButtonPadding` |
-| 颜色与状态视觉 | 文本、背景、边框、hover、selected、active、disabled 视觉。 | `HoverBackgroundColor`、`PressedBackgroundColor`、`CloseHoverBackgroundColor`、`ClosePressedBackgroundColor`、`ForegroundColor`、`ActiveColor` |
-| 结构与装饰 | 圆角、阴影、指示器、弹层和装饰线相关变量。 | 按源码 Token 语义维护 |
+| `Height` | 常规标题栏高度。 | `WindowTitleBarTheme` |
+| `TitleBarPadding` | 标题栏 managed 内容的左右内边距。 | `WindowTitleBarTheme`、标题布局 Panel |
+| `HeaderHorizontalSpacing` | 非零 Leading/Trailing 操作区与 Title 之间的条件水平间距。 | WindowTitleBar、ImagePreviewer、全屏标题宿主 |
+| `LogoAndTitleSpacing` | Title 组内同时可见的 Logo/Icon 与 Title 之间的条件间距。 | WindowTitleBar、ImagePreviewer、全屏标题宿主 |
+| `LogoSize` | 默认 Logo presenter 尺寸。 | WindowTitleBar 和全屏标题宿主 |
+| `TitleFontSize` | 标题字体尺寸。 | WindowTitleBar 和全屏标题宿主 |
+| `TitleFontWeight` | 标题字体粗细。 | WindowTitleBar 和全屏标题宿主 |
 
-未出现在上表中的 Token 仍按源码中的组件语义维护，不按代码顺序机械分类。
+`TitleBarPadding` 是原生安全边界后的 managed 内容间距；没有 native chrome inset 时从 frame 边缘起效。标题布局先应用 native chrome extent，再应用 `TitleBarPadding`，两段占位各自只计算一次。`Height`、`FullscreenCaptionButtonSize` 和 `HeaderHorizontalSpacing` 使用跨平台稳定值，不随紧凑密度算法缩小。
+
+`HeaderHorizontalSpacing` 不属于 add-on 固定 margin。对应操作区实测宽度为零时不应用该值；add-on 自身 margin 已由 DesiredSize 计入，不与该 Token 重复计算。`LogoAndTitleSpacing` 同样不为隐藏或空 Logo/Icon、空 Title 保留占位。
+
+### 2.2 Caption button 尺寸
+
+| Token | 语义 | 主要消费者 |
+| --- | --- | --- |
+| `CaptionButtonIconSize` | 通用 caption action icon 尺寸。 | Linux/macOS buttons、Windows extended actions、全屏 buttons |
+| `WindowsCaptionIconSize` | Windows minimize/maximize/close glyph 尺寸。 | `WindowsCaptionButton` |
+| `CaptionButtonPadding` | 通用圆形 caption button 内容 padding。 | `CaptionButtonTheme` |
+| `CaptionGroupSpacing` | 非 Windows caption buttons 及全屏操作之间的间距。 | CaptionButtonGroup、全屏标题宿主 |
+| `FullscreenCaptionButtonSize` | 全屏标题宿主中 caption button 的固定尺寸。 | Window drawn decorations、fullscreen popover |
+
+Windows 原生风格 caption buttons 连续贴合排列，group spacing 为零；Linux/macOS 与全屏操作使用 `CaptionGroupSpacing`。Linux 的按钮背景 inset 属于 Theme 状态视觉，不改变按钮布局占用尺寸。
+
+### 2.3 Active 与 inactive 视觉
+
+| Token | 语义 |
+| --- | --- |
+| `ActiveColor` | 激活窗口的标题与 caption icon 颜色。 |
+| `InactiveColor` | 非激活窗口的标题与 caption icon 颜色。 |
+| `ActiveBgColor` | 通用 caption button 默认背景。 |
+| `ActiveHoverBgColor` | 激活窗口中 caption button hover 背景。 |
+| `ActivePressedBgColor` | caption button pressed 背景。 |
+| `InactiveBgColor` | 非激活窗口中通用 caption button 背景。 |
+| `InactiveHoverBgColor` | 非激活窗口中 caption button hover 背景。 |
+
+active/inactive 是控件实例状态。Token 只提供对应颜色，实际选择由 `IsWindowActive`、`:pointerover`、`:pressed` 和 Theme selector 完成。
+
+### 2.4 Windows close button
+
+| Token | 语义 |
+| --- | --- |
+| `WindowsCloseButtonHoverColor` | Windows close button hover/pressed glyph 颜色。 |
+| `WindowsCloseButtonHoverBgColor` | Windows close button hover 背景。 |
+| `WindowsCloseButtonPressedBgColor` | Windows close button pressed 背景。 |
+
+关闭按钮危险态只应用于 `WindowsCaptionButton.IsCloseButton=True`。其他 caption action 不消费该组颜色。
+
+### 2.5 通用兼容颜色
+
+| Token | 语义 |
+| --- | --- |
+| `ForegroundColor` | 通用标题栏前景色。 |
+| `HoverBackgroundColor` | 通用文本操作 hover 背景。 |
+| `PressedBackgroundColor` | 通用文本操作 pressed 背景。 |
+| `CloseHoverBackgroundColor` | 通用 close action hover 背景。 |
+| `ClosePressedBackgroundColor` | 通用 close action pressed 背景。 |
+
+这些变量属于生成的 WindowTitleBar Token 契约。内置 caption themes 使用更精确的 active/inactive 与 Windows close 变量；通用兼容颜色仍保持可生成、可覆盖和不可随意重命名。
 
 ## 3. 控件专项模型中的 Token 使用
 
-WindowTitleBar 的控件专项模型通过 Theme 消费 Token：
+```text
+SharedToken
+  -> WindowTitleBarToken.CalculateTokenValues(isDarkMode)
+  -> generated WindowTitleBarTokenKind / WindowTitleBarTokenResource
+  -> WindowTitleBar, CaptionButton, Window and ImagePreviewer Themes
+```
 
-- C# 控件负责状态归一和伪类同步。
-- AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、padding、尺寸和动效。
-- Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
-- Gallery Token 表应显式维护，不依赖运行时反射扫描。
+主要消费范围：
+
+| Theme | 消费职责 |
+| --- | --- |
+| `WindowTitleBarTheme.axaml` | 标题栏高度、Padding、标题字体、Logo、active/inactive 前景和标题内容间距。 |
+| `CaptionButtonGroupTheme.axaml` | 平台按钮 icon size 与 group spacing。 |
+| `CaptionButtonTheme.axaml` | 通用按钮 padding、背景、active/inactive、hover、pressed 和 motion。 |
+| `WindowsCaptionButtonTheme.axaml` | Windows glyph、hover/pressed 以及 close danger state。 |
+| `WindowDrawnDecorationsTheme.axaml` | 全屏标题、Logo 和 caption operations。 |
+| `FullscreenPopoverLayerTheme.axaml` | 非 CSD 全屏弹出标题栏。 |
+| `ImagePreviewerTitleBarTheme.axaml` | 预览图标/标题间距和操作区间距；背景由 ImagePreviewer Token 覆盖。 |
+
+标题栏默认背景来自 SharedToken `ColorBgContainer`；ImagePreviewer 标题栏背景来自 `ImagePreviewerToken.TitleBarBackgroundColor`。背景 ownership 不改变 WindowTitleBar 的内容与 caption Token scope。
 
 ## 4. 控件家族影响
 
-调整 WindowTitleBar Token 时必须评估以下范围：
+调整 WindowTitleBar Token 时必须同时检查：
 
-- `WindowTitleBar`
-- 对应 Gallery ShowCase 的示例、API 表和 Token 表。
-- Light/Dark 主题、Browser/Desktop 主题和 Compact/Form/Popup 集成场景。
+- 默认 `WindowTitleBar` 的 macOS、Windows 和 Linux 模板。
+- 通用 `CaptionButton` 与 `WindowsCaptionButton`。
+- `WindowDrawnDecorations` 和 `FullscreenPopoverLayer` 的全屏标题表面。
+- `ImagePreviewerTitleBar` 的标题组和操作区。
+- Light/Dark、active/inactive、hover、pressed、maximized 和 fullscreen 状态。
+
+应用可以通过 AtomUI Token 覆盖机制定制视觉变量。应用不应通过 Token 改变标题对齐含义、CSD 判定、caption button 能力或 Template Part 结构。
 
 ## 5. 兼容性要求
 
-- 不删除或重命名已生成的 TokenKind、TokenResource key 和 AXAML 引用。
-- 不把实例状态、交互状态或 `EffectiveXxx` 状态写成 Token。
-- 不在 Token 中展开颜色、variant 和状态的组合矩阵；组合关系应由 Theme selector 表达。
-- Token 默认值变更必须同步评估 Gallery 示例和截图可观察外观。
-- 如需引入新 Token，必须同步源码、生成文件、Gallery Token 表和本文档。
+- 不删除或重命名既有 TokenKind、TokenResource key 和 AXAML 消费名。
+- 不把运行时状态、effective visibility 或 platform metrics 写入 Token。
+- Token 默认值变化不得改变 caption button 命中区域与布局占用之间的约定。
+- Token 源码变化必须同步生成资源、Theme 引用、结构测试和本文档。
 
 ## 6. 验证策略
 
-| 改动类型 | 验证要求 |
-| --- | --- |
-| Token 文档 | `git diff --check`，检查相对链接存在。 |
-| Token 默认值 | 运行对应控件测试，走查 Light/Dark 和 Browser 主题。 |
-| Token 名称或数量 | 检查 generated TokenResource key、AXAML 引用和 Gallery Token 表。 |
-| 主题映射 | 走查 hover、pressed、selected、disabled、loading 等状态视觉。 |
+- `TitleBarPadding` 变化验证四种显式标题对齐、native inset 和窄窗口退化。
+- caption 尺寸或间距变化验证 Window、ImagePreviewer 和全屏标题宿主。
+- 颜色变化验证 Light/Dark、active/inactive、hover、pressed 和 Windows close danger state。
+- Token 名称或默认值变化核对 generated `WindowTitleBarTokenKind`、`WindowTitleBarTokenResource` 和全部 AXAML 引用。
+
+文档改动执行 `git diff --check`。Token 默认值或 Theme 映射变化运行 `WindowTitleBarTokenTests`、`ImagePreviewerTitleBarThemeTests` 以及相关 Window 主题测试。

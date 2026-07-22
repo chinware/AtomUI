@@ -37,6 +37,9 @@ public partial class Window : AvaloniaWindow,
 
     public static readonly StyledProperty<WindowTitleBarLogoVisibility> LogoVisibilityProperty =
         WindowTitleBar.LogoVisibilityProperty.AddOwner<Window>();
+
+    public static readonly StyledProperty<WindowTitleBarTitleAlignment> TitleAlignmentProperty =
+        WindowTitleBar.TitleAlignmentProperty.AddOwner<Window>();
     
     public static readonly StyledProperty<bool> IsTitleBarVisibleProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsTitleBarVisible), defaultValue: true);
@@ -118,6 +121,12 @@ public partial class Window : AvaloniaWindow,
     {
         get => GetValue(LogoVisibilityProperty);
         set => SetValue(LogoVisibilityProperty, value);
+    }
+
+    public WindowTitleBarTitleAlignment TitleAlignment
+    {
+        get => GetValue(TitleAlignmentProperty);
+        set => SetValue(TitleAlignmentProperty, value);
     }
     
     [DependsOn(nameof(WindowFrameLayerTemplate))]
@@ -231,10 +240,11 @@ public partial class Window : AvaloniaWindow,
     #endregion
     
     #region 内部属性定义
-    internal static readonly DirectProperty<Window, Thickness> TitleBarOffsetMarginProperty = 
-        AvaloniaProperty.RegisterDirect<Window, Thickness>(nameof (TitleBarOffsetMargin), 
-            o => o.TitleBarOffsetMargin,
-            (o, v) => o.TitleBarOffsetMargin = v);
+    internal static readonly DirectProperty<Window, Thickness> NativeChromeInsetsProperty =
+        AvaloniaProperty.RegisterDirect<Window, Thickness>(
+            nameof(NativeChromeInsets),
+            o => o.NativeChromeInsets,
+            (o, v) => o.NativeChromeInsets = v);
     
     internal static readonly DirectProperty<Window, WindowTitleBar?> TitleBarProperty =
         AvaloniaProperty.RegisterDirect<Window, WindowTitleBar?>(
@@ -277,11 +287,12 @@ public partial class Window : AvaloniaWindow,
     private static readonly IDataTemplate s_windowIconLogoTemplate =
         new FuncDataTemplate<WindowIcon>((icon, _) => CreateWindowIconLogo(icon));
     
-    private Thickness _titleBarOffsetMargin;
-    internal Thickness TitleBarOffsetMargin
+    private Thickness _nativeChromeInsets;
+
+    internal Thickness NativeChromeInsets
     {
-        get => _titleBarOffsetMargin;
-        private set => SetAndRaise(TitleBarOffsetMarginProperty, ref _titleBarOffsetMargin, value);
+        get => _nativeChromeInsets;
+        private set => SetAndRaise(NativeChromeInsetsProperty, ref _nativeChromeInsets, value);
     }
     
     private WindowTitleBar? _titleBar;
@@ -832,6 +843,10 @@ public partial class Window : AvaloniaWindow,
         titleBar[!WindowTitleBar.LogoProperty]           = this[!LogoProperty];
         titleBar[!WindowTitleBar.LogoTemplateProperty]   = this[!LogoTemplateProperty];
         titleBar[!WindowTitleBar.LogoVisibilityProperty] = this[!LogoVisibilityProperty];
+        titleBar[!WindowTitleBar.TitleAlignmentProperty] = this[!TitleAlignmentProperty];
+        titleBar[!WindowTitleBar.NativeChromeInsetsProperty] = this[!NativeChromeInsetsProperty];
+        titleBar[!WindowTitleBar.IsCsdEnabledProperty] = this[!IsCsdEnabledProperty];
+        titleBar[!WindowTitleBar.HostWindowStateProperty] = this[!WindowStateProperty];
     }
 
     protected virtual WindowTitleBar? NotifyCreateTitleBar(WindowTitleBar? oldTitleBar)
@@ -857,8 +872,8 @@ public partial class Window : AvaloniaWindow,
     {
         if (!ExtendClientAreaToDecorationsHint)
         {
-            TitleBarOffsetMargin = default;
-            _macOsCacheValid     = false;
+            NativeChromeInsets = default;
+            _macOsCacheValid   = false;
             return;
         }
 
@@ -902,11 +917,12 @@ public partial class Window : AvaloniaWindow,
         {
             // The title bar can measure before the native NSWindow standard buttons exist.
             // Do not cache that no-op pass, otherwise OnOpened may skip the first real correction.
+            NativeChromeInsets = default;
             _macOsCacheValid = false;
             return;
         }
 
-        TitleBarOffsetMargin = new Thickness(titleBarOffset, 0, 0, 0);
+        NativeChromeInsets = new Thickness(titleBarOffset, 0, 0, 0);
 
         _macOsCachedTitleBarHeight = titleBarHeight;
         _macOsCachedOffsetX        = offsetX;

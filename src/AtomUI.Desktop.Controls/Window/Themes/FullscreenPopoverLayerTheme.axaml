@@ -16,11 +16,24 @@
                             Height="{atom:WindowTokenResource TitleBarHeight}"
                             IsVisible="False"
                             IsHitTestVisible="True">
-                        <Panel>
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
-                                        HorizontalAlignment="Center">
+                        <atom:WindowTitleBarLayoutPanel
+                            Padding="{atom:WindowTokenResource FullscreenHeaderFramePadding}"
+                            TitleAlignment="{Binding $parent[atom:Window].TitleAlignment}"
+                            OsType="{Binding $parent[atom:Window].OsType}"
+                            NativeChromeInsets="0"
+                            IsCsdEnabled="{Binding $parent[atom:Window].IsCsdEnabled}"
+                            WindowState="FullScreen"
+                            HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}"
+                            ClipToBounds="True">
+                            <Panel atom:WindowTitleBarLayoutPanel.Role="Leading" />
+                            <DockPanel atom:WindowTitleBarLayoutPanel.Role="Title"
+                                       LastChildFill="True"
+                                       HorizontalSpacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
+                                       VerticalAlignment="Center"
+                                       IsHitTestVisible="False"
+                                       ClipToBounds="True">
                                 <ContentPresenter Name="FullscreenLogoPresenter"
+                                                  DockPanel.Dock="Left"
                                                   HorizontalAlignment="Left"
                                                   VerticalAlignment="Center"
                                                   HorizontalContentAlignment="Center"
@@ -32,12 +45,14 @@
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Center"
                                            IsHitTestVisible="False"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
                                            Text="{Binding $parent[atom:Window].Title}"
                                            IsVisible="{Binding $parent[atom:Window].Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                            </StackPanel>
+                            </DockPanel>
 
                             <StackPanel Name="FullscreenCaptionButtonGroup"
-                                        HorizontalAlignment="Right"
+                                        atom:WindowTitleBarLayoutPanel.Role="Trailing"
                                         VerticalAlignment="Center"
                                         Orientation="Horizontal">
                                 <atom:CaptionButton
@@ -49,7 +64,7 @@
                                     Name="PART_PopoverCloseButton"
                                     NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}" />
                             </StackPanel>
-                        </Panel>
+                        </atom:WindowTitleBarLayoutPanel>
                     </Border>
                 </Panel>
             </ControlTemplate>
@@ -58,7 +73,6 @@
         <Style Selector="^ /template/ Border#PART_PopoverBorder">
             <Setter Property="Background" Value="{atom:WindowTokenResource DefaultBackground}" />
             <Setter Property="BoxShadow" Value="{atom:WindowTokenResource FullscreenPopoverShadows}" />
-            <Setter Property="Padding" Value="{atom:WindowTokenResource FullscreenHeaderFramePadding}" />
         </Style>
 
         <Style Selector="^ /template/ TextBlock#FullscreenTitleText">

@@ -6,28 +6,30 @@
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `WindowTitleBar` | 窗口控件根语义区域，承载窗口 public API、平台状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `chrome` | `窗口装饰区域` | 承载标题栏、caption buttons、drag region、边框和阴影。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `窗口内容区域` | 承载业务内容、系统交互和布局边界。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `state` | `窗口状态区域` | 表达最大化、最小化、激活、失焦、resize 和平台能力。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `WindowTitleBar` | 承载公共内容契约、平台状态和标题栏主题入口。 | `Logo`、`Title`、`TitleAlignment` | `Height`、`TitleBarPadding`、标题字体与颜色 | public |
+| `frame` | `Border#Frame` | 绘制标题栏背景并定义完整可见 frame。 | `Background`、`Padding` | `Height`、`TitleBarPadding` | template-stable |
+| `leading` | `ContentPresenter#PART_LeftAddOn` | 承载起始侧应用操作并占用标题安全空间。 | `LeftAddOn`、`LeftAddOnTemplate` | `HeaderHorizontalSpacing` | template-stable |
+| `title` | `PART_Logo` + `PART_ContentPresenter` | 将 Logo 与 Title 作为连续标题组展示、测量和裁剪。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`TitleTemplate` | `LogoSize`、`LogoAndTitleSpacing`、标题字体与颜色 | template-stable |
+| `trailing` | `PART_RightAddOn` + `PART_CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 | `RightAddOn`、`RightAddOnTemplate`；Window caption 配置 | `HeaderHorizontalSpacing`、caption button 尺寸、间距与状态颜色 | template-stable |
+| `native-chrome` | 平台原生窗口按钮安全区 | 以逻辑像素 inset 约束标题安全空间，不进入 visual tree。 | 平台、CSD、WindowState | 不适用 | internal-observable |
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml`
 
 ```xml
 <Border Name="Frame">
-    <DockPanel>
-        <StackPanel>
-            <ContentPresenter Name="PART_Logo" />
-            <ContentPresenter Name="PART_LeftAddOn" />
-            <ContentPresenter Name="PART_ContentPresenter" />
-        </StackPanel>
+    <WindowTitleBarLayoutPanel>
+        <ContentPresenter Name="PART_LeftAddOn" />
         <DockPanel>
-            <CaptionButtonGroup Name="PART_CaptionButtonGroup" />
-            <ContentPresenter Name="PART_RightAddOn" />
+            <ContentPresenter Name="PART_Logo" />
+            <ContentPresenter Name="PART_ContentPresenter" />
         </DockPanel>
-    </DockPanel>
+        <StackPanel>
+            <ContentPresenter Name="PART_RightAddOn" />
+            <CaptionButtonGroup Name="PART_CaptionButtonGroup" />
+        </StackPanel>
+    </WindowTitleBarLayoutPanel>
 </Border>
 ```
 
@@ -61,33 +63,32 @@ WindowTitleBar
            -> IconPresenter#PART_IconPresenter (template-stable)
   -> WindowTitleBar (control theme, WindowTitleBarTheme.axaml)
      -> Border#Frame (template-stable)
-        -> DockPanel (template-stable)
-           -> StackPanel (template-stable)
-              -> ContentPresenter#PART_Logo (template-stable)
-              -> ContentPresenter#PART_LeftAddOn (template-stable)
-              -> ContentPresenter#PART_ContentPresenter (template-stable)
-           -> DockPanel (template-stable)
-              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
-              -> ContentPresenter#PART_RightAddOn (template-stable)
-     -> DockPanel (template-stable)
-        -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
-        -> Border#Frame (template-stable)
-           -> DockPanel (template-stable)
-              -> StackPanel (template-stable)
-                 -> ContentPresenter#PART_Logo (template-stable)
-                 -> ContentPresenter#PART_LeftAddOn (template-stable)
-                 -> ContentPresenter#PART_ContentPresenter (template-stable)
-              -> ContentPresenter#PART_RightAddOn (template-stable)
-     -> Border#Frame (template-stable)
-        -> DockPanel (template-stable)
+        -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
            -> DockPanel (template-stable)
-              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
+              -> ContentPresenter#PART_Logo (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+           -> StackPanel (template-stable)
               -> ContentPresenter#PART_RightAddOn (template-stable)
-           -> Panel (template-stable)
-              -> StackPanel (template-stable)
-                 -> ContentPresenter#PART_Logo (template-stable)
-                 -> ContentPresenter#PART_ContentPresenter (template-stable)
+              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
+     -> Border#Frame (template-stable)
+        -> WindowTitleBarLayoutPanel (template-stable)
+           -> ContentPresenter#PART_LeftAddOn (template-stable)
+           -> DockPanel (template-stable)
+              -> ContentPresenter#PART_Logo (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+           -> StackPanel (template-stable)
+              -> ContentPresenter#PART_RightAddOn (template-stable)
+              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
+     -> Border#Frame (template-stable)
+        -> WindowTitleBarLayoutPanel (template-stable)
+           -> ContentPresenter#PART_LeftAddOn (template-stable)
+           -> DockPanel (template-stable)
+              -> ContentPresenter#PART_Logo (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+           -> StackPanel (template-stable)
+              -> ContentPresenter#PART_RightAddOn (template-stable)
+              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
   -> WindowsCaptionButton (control theme, WindowsCaptionButtonTheme.axaml)
      -> Border#PART_Frame (template-stable)
         -> IconPresenter#PART_IconPresenter (template-stable)
@@ -114,100 +115,145 @@ WindowTitleBar
 | `Panel` | template node (Panel) | `CaptionButtonTheme.axaml` | CaptionButton | `Background`, `BackgroundInset`, `EffectiveCornerRadius`, `EffectiveIcon`, `HorizontalAlignment`, `IconHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Frame` | template node (Border) | `CaptionButtonTheme.axaml` | CaptionButton | `Background`, `BackgroundInset`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_IconPresenter` | template node (IconPresenter) | `CaptionButtonTheme.axaml` | CaptionButton | `EffectiveIcon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `WindowTitleBar` | control theme | `WindowTitleBarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Background`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate`, `Logo` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `StackPanel` | template node (StackPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `LeftAddOn`, `LeftAddOnTemplate`, `Logo`, `LogoTemplate`, `Title` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBar` | control theme | `WindowTitleBarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Frame` | template node (Border) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Background`, `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate`, `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_CaptionButtonGroup` | template node (CaptionButtonGroup) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StackPanel` | template node (StackPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RightAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Panel` | template node (Panel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate`, `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_CaptionButtonGroup` | template node (CaptionButtonGroup) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowsCaptionButton` | control theme | `WindowsCaptionButtonTheme.axaml` | WindowTitleBar | `Background`, `EffectiveCornerRadius`, `EffectiveIcon`, `IconHeight`, `IconWidth`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_Frame` | template node (Border) | `WindowsCaptionButtonTheme.axaml` | WindowsCaptionButton | `Background`, `EffectiveCornerRadius`, `EffectiveIcon`, `IconHeight`, `IconWidth`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_IconPresenter` | template node (IconPresenter) | `WindowsCaptionButtonTheme.axaml` | WindowsCaptionButton | `EffectiveIcon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
-| 契约组 | 代表成员 | 维护含义 |
+| 节点 | 类型 | 契约 |
 | --- | --- | --- |
-| 内容与数据 | `CheckedIcon`、`IconHeight`、`IconWidth`、`LeftAddOnTemplate`、`LogoTemplate`、`NormalIcon`、`RightAddOnTemplate`、`Title`、`TitleTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `IsChecked`、`IsWindowActive` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsMinimizeCaptionButtonVisible`、`IsMotionEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 其他稳定入口 | `LeftAddOn`、`Logo`、`LogoVisibility`、`OsType`、`OsVersion`、`RightAddOn` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
+| `PART_Logo` | `ContentPresenter` | 展示有效 Logo。 |
+| `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
+| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
+| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 运行时连接宿主窗口操作。 |
 
 ## Pseudo Classes
 
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、open/close、motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | WindowTitleBar Token + ControlTheme。 |
+`WindowTitleBar` 从逻辑祖先 `Window` 接收状态并维护以下伪类：
+
+| 伪类 | 条件 |
+| --- | --- |
+| `:active` | 宿主窗口处于激活状态。 |
+| `:normal` | `WindowState.Normal`。 |
+| `:minimized` | `WindowState.Minimized`。 |
+| `:maximized` | `WindowState.Maximized`。 |
+| `:fullscreen` | `WindowState.FullScreen`。 |
+
+窗口激活状态同时写入 `IsWindowActive`，供模板中的内部协作控件使用。状态 owner 始终是宿主 `Window`；模板节点不反向维护第二份窗口状态。
 
 ## State Flow
 
-WindowTitleBar 的状态流按以下路径收敛：
+### 4.1 Logo 显示模型
 
-```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
-  -> Gallery 可观察行为
-```
+`LogoVisibility` 的三个值具有以下语义：
 
-状态维护规则：
+| 值 | 规则 |
+| --- | --- |
+| `Always` | 存在 `Logo` 或 `LogoTemplate` 时显示。 |
+| `Never` | 始终隐藏。 |
+| `Auto` | 根据标题内容、平台和窗口状态计算。 |
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- selection/checked/active、open/close、motion 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+`Auto` 的计算矩阵：
+
+| 条件 | 结果 |
+| --- | --- |
+| 不存在 Logo 内容和 Logo 模板 | 隐藏。 |
+| 存在有效标题内容 | 显示。 |
+| 无标题内容且平台为 macOS | 隐藏。 |
+| 无标题内容、平台不是 macOS、窗口非全屏 | 显示。 |
+| 无标题内容、平台不是 macOS、窗口全屏 | 隐藏。 |
+
+该模型只控制 Logo 的有效可见性，不修改 `Logo`、`Window.Icon` 或应用图标来源。
+
+### 4.2 窗口状态
+
+`WindowTitleBar` 从逻辑祖先 `Window` 接收状态并维护以下伪类：
+
+| 伪类 | 条件 |
+| --- | --- |
+| `:active` | 宿主窗口处于激活状态。 |
+| `:normal` | `WindowState.Normal`。 |
+| `:minimized` | `WindowState.Minimized`。 |
+| `:maximized` | `WindowState.Maximized`。 |
+| `:fullscreen` | `WindowState.FullScreen`。 |
+
+窗口激活状态同时写入 `IsWindowActive`，供模板中的内部协作控件使用。状态 owner 始终是宿主 `Window`；模板节点不反向维护第二份窗口状态。
+
+### 4.3 Caption buttons
+
+caption button 的公共配置属于宿主 `Window`：
+
+- `CanMinimize` 和 `CanMaximize` 决定最小化、最大化按钮能力。
+- `IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible` 和 `IsCloseCaptionButtonVisible` 决定扩展按钮可见性。
+- `Topmost`、`WindowState` 和平台 backend 决定 checked state 与有效可见性。
+
+全屏时隐藏最小化和最大化按钮；最大化时隐藏进入全屏按钮。Wayland backend 不提供置顶按钮。按钮点击最终写入宿主窗口状态或调用关闭流程，状态不保存在按钮视觉中。
+
+### 4.4 拖动和双击
+
+`Window` 监听标题栏 pointer 事件并在移动距离超过拖动阈值后调用原生 `BeginMoveDrag`。`IsMoveEnabled=False` 或全屏状态禁止拖动。双击最大化与拖动共用标题栏输入表面，但 caption buttons 和 add-on 的已处理输入不应触发窗口拖动。
 
 ## Theme and Token Boundaries
 
-WindowTitleBar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+`WindowTitleBarTheme` 是 `WindowTitleBar` 的 ControlTheme 入口。内置主题保留以下稳定 template part 与语义节点：
 
-| 主题文件 | 职责 |
-| --- | --- |
-| `CaptionButtonGroupTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `CaptionButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `WindowTitleBarTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowTitleBarThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
-| `WindowsCaptionButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
+| 节点 | 类型 | 契约 |
+| --- | --- | --- |
+| `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
+| `PART_Logo` | `ContentPresenter` | 展示有效 Logo。 |
+| `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
+| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
+| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 运行时连接宿主窗口操作。 |
 
-WindowTitleBar 使用 `WindowTitleBarToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、motion 运行时状态。
+`PART_CaptionButtonGroup` 是 `WindowTitleBar` 代码查找并 attach/detach 的协作 part。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
 
-主题维护规则：
+平台主题可以改变 caption button 外观和 native chrome 来源，但不得改变 Public API 语义、Title/Leading/Trailing 角色或窗口操作行为。应用替换完整 ControlTheme 时负责提供等价区域、裁剪和命中测试；internal caption 类型不作为定制 API。
 
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+视觉尺寸、间距、active/inactive 颜色和 caption button 状态颜色由 [WindowTitleBar Token 设计](token.md) 管理。标题对齐值、CSD 状态和窗口状态不是 Token。
 
 Token 边界：
 
-WindowTitleBar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
+`WindowTitleBarToken` 是 scope id 为 `WindowTitleBar` 的 internal control token，源码位于 `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs`。它从 `SharedToken` 计算标题栏和 caption button 的视觉变量，并通过生成的 `WindowTitleBarTokenResource` key 供 AXAML 使用。
 
-当前 Token scope：
+Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时语义：
 
-- `WindowTitleBarToken`，scope id 为 `WindowTitleBar`，源码位于 `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs`。
+- `TitleAlignment`、Leading/Title/Trailing 角色和布局公式。
+- CSD、native chrome insets、WindowState 和 backend 能力。
+- Logo、标题、add-on 或 caption button 的有效可见性。
+- pointer capture、拖动、checked state 和窗口操作。
 
 ## Customization Boundaries
 
-维护 WindowTitleBar 时必须保持以下不变量：
-
-- 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
-- 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
-- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
-- Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
-- 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
-- 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
+- Public API 的类型、默认值、绑定语义和事件时序保持稳定。
+- `Auto` Logo 规则和标题对齐的显式枚举语义保持稳定。
+- `PART_CaptionButtonGroup`、内容 presenter 名称、ControlTheme key 和伪类保持稳定。
+- Title 内容不参与命中测试；add-on 和 caption buttons 保持可交互。
+- Logo 和 Title 始终作为连续 Title 组；add-on 不进入标题中心计算。
+- CSD 开关只改变 chrome metrics 来源和可见操作区，不改变显式标题对齐含义。
+- template reapply、逻辑树 detach 和窗口替换时释放旧订阅与 part handler。
+- 平台选择和 Token 发现不依赖运行时反射或程序集扫描。
 
 维护不变量：
 
-维护 WindowTitleBar 时不得破坏：
-
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- `WindowTitleBar` 与 `Window.NotifyConfigureTitleBar` 的属性投影保持单向且完整。
+- `WindowTitleBar.OnApplyTemplate`、logical attach/detach 和 `CaptionButtonGroup.Attach/Detach` 始终成对释放。
+- 三个平台 ControlTemplate 保持相同语义角色、稳定 part 名称和平台 caption button 顺序。
+- Logo 与 Title 始终属于连续 Title 组；add-on 和 caption buttons 不进入标题中心计算。
+- Leading/Trailing 为零宽时不产生操作区间距；add-on margin 只通过 `DesiredSize` 计入一次。
+- ImagePreviewer 与两个全屏标题宿主复用同一标题布局模型。
+- Title 不参与命中测试；add-on 与 caption buttons 保持可交互。
+- `WindowTitleBarToken`、generated resource key 和 Theme 消费名保持同步。

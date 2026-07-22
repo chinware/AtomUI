@@ -58,28 +58,28 @@ public class WindowTitleBarTokenTests
         var frame = template.Elements().Single();
         var captionButtonGroup = FindTemplatePart(template, "PART_CaptionButtonGroup");
         var leftPaddingConverter = FindResource(document.Root!, "WindowTitleBarLeftPaddingConverter");
-        var rootDockPanel = frame.Elements().Single();
-        var titleLayout = rootDockPanel.Elements()
-                                       .Single(element => element.Name.LocalName == "StackPanel");
-        var titleMargin = titleLayout.Attribute("Margin")?.Value;
+        var layoutPanel = frame.Elements()
+                               .Single(element => element.Name.LocalName == "WindowTitleBarLayoutPanel");
+        var trailing = layoutPanel.Elements()
+                                  .Single(element =>
+                                      element.Attributes().Any(attribute =>
+                                          attribute.Name.LocalName == "WindowTitleBarLayoutPanel.Role" &&
+                                          attribute.Value == "Trailing"));
 
         frame.Name.LocalName.ShouldBe("Border");
         frame.Attribute("Name")?.Value.ShouldBe("Frame");
         frame.Attribute("Background")?.Value.ShouldBe("{TemplateBinding Background}");
         frame.Attribute("Padding").ShouldBeNull();
-        rootDockPanel.Name.LocalName.ShouldBe("DockPanel");
-        rootDockPanel.Parent.ShouldBe(frame);
-        titleMargin.ShouldBe("{TemplateBinding Padding, Converter={StaticResource WindowTitleBarLeftPaddingConverter}}");
+        layoutPanel.Attribute("Padding")?.Value.ShouldBe(
+            "{TemplateBinding Padding, Converter={StaticResource WindowTitleBarLeftPaddingConverter}}");
         leftPaddingConverter.Name.LocalName.ShouldBe("BorderThicknessFilterConverter");
         leftPaddingConverter.Attribute("Left")?.Value.ShouldNotBe("False");
         leftPaddingConverter.Attribute("Right")?.Value.ShouldBe("False");
         leftPaddingConverter.Attribute("Top")?.Value.ShouldBe("False");
         leftPaddingConverter.Attribute("Bottom")?.Value.ShouldBe("False");
         captionButtonGroup.Ancestors().ShouldContain(frame);
-        captionButtonGroup.Attribute("DockPanel.Dock")?.Value.ShouldBe("Right");
-        captionButtonGroup.Parent.ShouldNotBeNull();
-        captionButtonGroup.Parent.Name.LocalName.ShouldBe("DockPanel");
-        captionButtonGroup.Parent.Parent.ShouldBe(rootDockPanel);
+        captionButtonGroup.Parent.ShouldBe(trailing);
+        captionButtonGroup.ElementsAfterSelf().ShouldBeEmpty();
     }
 
     [Fact]

@@ -27,6 +27,93 @@ public class WindowTitleBarLogoVisibilityTests
     }
 
     [Fact]
+    public void Title_Bar_Title_Alignment_Exposes_The_Approved_Public_Values()
+    {
+        var enumSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarTitleAlignment.cs"));
+
+        enumSource.ShouldContain("public enum WindowTitleBarTitleAlignment");
+        enumSource.ShouldContain("Auto");
+        enumSource.ShouldContain("Left");
+        enumSource.ShouldContain("Center");
+        enumSource.ShouldContain("WindowCenter");
+        enumSource.ShouldContain("Right");
+    }
+
+    [Fact]
+    public void Title_Bar_Title_Alignment_Defaults_To_Auto()
+    {
+        var property = typeof(AtomUI.Desktop.Controls.WindowTitleBar)
+                       .GetProperty("TitleAlignment", BindingFlags.Instance | BindingFlags.Public);
+        var propertyField = typeof(AtomUI.Desktop.Controls.WindowTitleBar)
+                            .GetField("TitleAlignmentProperty", BindingFlags.Static | BindingFlags.Public);
+
+        property.ShouldNotBeNull();
+        propertyField.ShouldNotBeNull();
+        property.PropertyType.ShouldBe(typeof(AtomUI.Desktop.Controls.WindowTitleBarTitleAlignment));
+
+        var titleBar = new AtomUI.Desktop.Controls.WindowTitleBar();
+        property.GetValue(titleBar).ShouldBe(AtomUI.Desktop.Controls.WindowTitleBarTitleAlignment.Auto);
+    }
+
+    [Fact]
+    public void Window_Adds_Owner_And_Projects_Title_Alignment_To_The_Title_Bar()
+    {
+        var property = typeof(AtomUI.Desktop.Controls.Window)
+                       .GetProperty("TitleAlignment", BindingFlags.Instance | BindingFlags.Public);
+        var propertyField = typeof(AtomUI.Desktop.Controls.Window)
+                            .GetField("TitleAlignmentProperty", BindingFlags.Static | BindingFlags.Public);
+        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+
+        property.ShouldNotBeNull();
+        propertyField.ShouldNotBeNull();
+        property.PropertyType.ShouldBe(typeof(AtomUI.Desktop.Controls.WindowTitleBarTitleAlignment));
+        source.ShouldContain("WindowTitleBar.TitleAlignmentProperty.AddOwner<Window>()");
+        source.ShouldContain(
+            "titleBar[!WindowTitleBar.TitleAlignmentProperty] = this[!TitleAlignmentProperty]");
+    }
+
+    [Fact]
+    public void Window_Projects_Chrome_Layout_Inputs_To_The_Title_Bar()
+    {
+        var windowInsetsProperty = typeof(AtomUI.Desktop.Controls.Window)
+                                   .GetField(
+                                       "NativeChromeInsetsProperty",
+                                       BindingFlags.Static | BindingFlags.NonPublic);
+        var titleBarInsetsProperty = typeof(AtomUI.Desktop.Controls.WindowTitleBar)
+                                     .GetField(
+                                         "NativeChromeInsetsProperty",
+                                         BindingFlags.Static | BindingFlags.NonPublic);
+        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+
+        windowInsetsProperty.ShouldNotBeNull();
+        titleBarInsetsProperty.ShouldNotBeNull();
+        source.ShouldContain(
+            "titleBar[!WindowTitleBar.NativeChromeInsetsProperty] = this[!NativeChromeInsetsProperty]");
+        source.ShouldContain(
+            "titleBar[!WindowTitleBar.IsCsdEnabledProperty] = this[!IsCsdEnabledProperty]");
+        source.ShouldContain(
+            "titleBar[!WindowTitleBar.HostWindowStateProperty] = this[!WindowStateProperty]");
+    }
+
+    [Fact]
+    public void MacOS_Uses_The_Existing_Button_Frame_Metric_As_A_Layout_Input_Not_Host_Padding()
+    {
+        var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var windowTheme = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
+        var macButtonsSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/MacStandardWindowButtons.cs"));
+
+        windowSource.ShouldContain("GetRecommendedTitleBarContentLeftMargin(effectSpacing)");
+        windowSource.ShouldContain("NativeChromeInsets = new Thickness(titleBarOffset, 0, 0, 0)");
+        windowSource.ShouldContain("NativeChromeInsets = default;");
+        windowSource.ShouldNotContain("TitleBarOffsetMargin");
+        windowTheme.ShouldNotContain("TitleBarOffsetMargin");
+        macButtonsSource.ShouldNotContain("NativeChromeInsets");
+    }
+
+    [Fact]
     public void Title_Bar_Logo_Auto_Mode_Uses_Title_Content_Platform_And_Fullscreen_State()
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBar.cs"));
