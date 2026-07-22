@@ -183,6 +183,8 @@ public class ModalViewModel : ReactiveObject, IRoutableViewModel
             new ModalApiRow("Dialog.IsLoading", Lang(ModalShowCaseLangResourceKind.ApiPropertyDialogIsLoading), "bool", "purple", "false"),
             new ModalApiRow("Dialog.IsConfirmLoading", Lang(ModalShowCaseLangResourceKind.ApiPropertyDialogIsConfirmLoading), "bool", "purple", "false"),
             new ModalApiRow("Dialog.HostWidth", Lang(ModalShowCaseLangResourceKind.ApiPropertyDialogHostWidth), "double", "cyan", "NaN"),
+            new ModalApiRow("Dialog.HostMinWidth / Dialog.HostMinHeight", Lang(ModalShowCaseLangResourceKind.ApiPropertyDialogHostMinimum), "double / double", "cyan", "0 / 0"),
+            new ModalApiRow("Dialog.HostMaxWidth / Dialog.HostMaxHeight", Lang(ModalShowCaseLangResourceKind.ApiPropertyDialogHostMaximum), "double / double", "cyan", "PositiveInfinity / PositiveInfinity"),
             new ModalApiRow("Dialog.BeforeCloseAsync / DialogOptions.BeforeCloseAsync", Lang(ModalShowCaseLangResourceKind.ApiPropertyDialogOptionsBeforeCloseAsync), "Func<DialogClosingContext, ValueTask<bool>>?", "cyan", "null"),
             new ModalApiRow("Dialog.ShowDialogModalAsync", Lang(ModalShowCaseLangResourceKind.ApiMethodDialogShowDialogModalAsync), "Task<object?>", "cyan", "-"),
             new ModalApiRow("MessageBox.Style", Lang(ModalShowCaseLangResourceKind.ApiPropertyMessageBoxStyle), "MessageBoxStyle", "blue", "Information"),
@@ -199,6 +201,8 @@ public class ModalViewModel : ReactiveObject, IRoutableViewModel
 
         DesignTokenRows =
         [
+            new ModalDesignTokenRow("Dialog.MinWidth", Lang(ModalShowCaseLangResourceKind.TokenNameDialogMinWidth), Lang(ModalShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(ModalShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new ModalDesignTokenRow("Dialog.MinHeight", Lang(ModalShowCaseLangResourceKind.TokenNameDialogMinHeight), Lang(ModalShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(ModalShowCaseLangResourceKind.TokenStatusStable), "success"),
             new ModalDesignTokenRow("Dialog.HeaderBg", Lang(ModalShowCaseLangResourceKind.TokenNameDialogHeaderBg), Lang(ModalShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(ModalShowCaseLangResourceKind.TokenStatusStable), "success"),
             new ModalDesignTokenRow("Dialog.HeaderPadding", Lang(ModalShowCaseLangResourceKind.TokenNameDialogHeaderPadding), Lang(ModalShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(ModalShowCaseLangResourceKind.TokenStatusStable), "success"),
             new ModalDesignTokenRow("Dialog.ContentBg", Lang(ModalShowCaseLangResourceKind.TokenNameDialogContentBg), Lang(ModalShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(ModalShowCaseLangResourceKind.TokenStatusStable), "success"),
@@ -234,10 +238,14 @@ public class ModalViewModel : ReactiveObject, IRoutableViewModel
             ModalShowCaseLangResourceKind.ApiPropertyDialogIsLoading               => en_US.ApiPropertyDialogIsLoading,
             ModalShowCaseLangResourceKind.ApiPropertyDialogIsConfirmLoading        => en_US.ApiPropertyDialogIsConfirmLoading,
             ModalShowCaseLangResourceKind.ApiPropertyDialogHostWidth               => en_US.ApiPropertyDialogHostWidth,
+            ModalShowCaseLangResourceKind.ApiPropertyDialogHostMinimum             => en_US.ApiPropertyDialogHostMinimum,
+            ModalShowCaseLangResourceKind.ApiPropertyDialogHostMaximum             => en_US.ApiPropertyDialogHostMaximum,
             ModalShowCaseLangResourceKind.ApiPropertyDialogOptionsBeforeCloseAsync => en_US.ApiPropertyDialogOptionsBeforeCloseAsync,
             ModalShowCaseLangResourceKind.ApiMethodDialogShowDialogModalAsync      => en_US.ApiMethodDialogShowDialogModalAsync,
             ModalShowCaseLangResourceKind.ApiPropertyMessageBoxStyle               => en_US.ApiPropertyMessageBoxStyle,
             ModalShowCaseLangResourceKind.ApiPropertyMessageBoxOkButtonStyle       => en_US.ApiPropertyMessageBoxOkButtonStyle,
+            ModalShowCaseLangResourceKind.TokenNameDialogMinWidth                  => en_US.TokenNameDialogMinWidth,
+            ModalShowCaseLangResourceKind.TokenNameDialogMinHeight                 => en_US.TokenNameDialogMinHeight,
             ModalShowCaseLangResourceKind.TokenNameDialogHeaderBg                  => en_US.TokenNameDialogHeaderBg,
             ModalShowCaseLangResourceKind.TokenNameDialogHeaderPadding             => en_US.TokenNameDialogHeaderPadding,
             ModalShowCaseLangResourceKind.TokenNameDialogContentBg                 => en_US.TokenNameDialogContentBg,

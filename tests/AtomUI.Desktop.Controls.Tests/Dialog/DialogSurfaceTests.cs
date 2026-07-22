@@ -1,4 +1,6 @@
 using Shouldly;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Input;
 using Avalonia.Threading;
@@ -318,6 +320,140 @@ public class DialogSurfaceTests
 
             dialog.IsResizable = false;
             resizer.IsVisible.ShouldBeFalse();
+        }
+        finally
+        {
+            surface.Dispose();
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Structural_Minimum_Combines_Header_Content_Viewport_And_Visible_Footer()
+    {
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            Title = "Structural minimum",
+            StandardButtons = DialogStandardButton.Ok | DialogStandardButton.Cancel
+        };
+        var surface = new DialogSurface(dialog);
+        var window = new AtomUI.Desktop.Controls.Window { Content = surface };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            surface.ApplyTemplate();
+
+            var withFooter = surface.MeasureStructuralMinimum();
+            withFooter.Width.ShouldBeGreaterThanOrEqualTo(surface.ContentViewportMinWidth);
+            withFooter.Height.ShouldBeGreaterThan(surface.ContentViewportMinHeight);
+
+            dialog.IsFooterVisible = false;
+            Dispatcher.UIThread.RunJobs();
+
+            var withoutFooter = surface.MeasureStructuralMinimum();
+            withoutFooter.Height.ShouldBeLessThan(withFooter.Height);
+        }
+        finally
+        {
+            surface.Dispose();
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Structural_Minimum_Does_Not_Include_Arbitrary_Content_DesiredSize()
+    {
+        var content = new Border { Width = 900, Height = 700 };
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            Content = content,
+            IsFooterVisible = false
+        };
+        var surface = new DialogSurface(dialog);
+        var window = new AtomUI.Desktop.Controls.Window { Content = surface };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            surface.ApplyTemplate();
+
+            var minimum = surface.MeasureStructuralMinimum();
+
+            minimum.Width.ShouldBeLessThan(content.Width);
+            minimum.Height.ShouldBeLessThan(content.Height);
+        }
+        finally
+        {
+            surface.Dispose();
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Structural_Minimum_Tracks_Effective_Button_Content()
+    {
+        var customButton = new DialogButton { Content = "OK" };
+        var dialog = new AtomUI.Desktop.Controls.Dialog();
+        dialog.CustomButtons.Add(customButton);
+        var surface = new DialogSurface(dialog);
+        var window = new AtomUI.Desktop.Controls.Window { Content = surface };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            surface.ApplyTemplate();
+            var initialMinimum = surface.MeasureStructuralMinimum();
+
+            customButton.Content = new string('W', 80);
+            Dispatcher.UIThread.RunJobs();
+            var updatedMinimum = surface.MeasureStructuralMinimum();
+
+            updatedMinimum.Width.ShouldBeGreaterThan(initialMinimum.Width);
+        }
+        finally
+        {
+            surface.Dispose();
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Structural_Minimum_Change_Is_Published_When_Template_Spacing_Changes()
+    {
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            StandardButtons = DialogStandardButton.Ok | DialogStandardButton.Cancel
+        };
+        var surface = new DialogSurface(dialog);
+        var window = new AtomUI.Desktop.Controls.Window { Content = surface };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            surface.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            var footerFrame = surface.GetVisualDescendants()
+                                     .OfType<Border>()
+                                     .Single(border => border.Name == "FooterFrame");
+            var initialMinimum = surface.MeasureStructuralMinimum();
+            var changeCount = 0;
+            surface.StructuralMinimumChanged += (_, _) => changeCount++;
+
+            footerFrame.Padding = new Thickness(
+                footerFrame.Padding.Left,
+                footerFrame.Padding.Top + 20,
+                footerFrame.Padding.Right,
+                footerFrame.Padding.Bottom + 20);
+            Dispatcher.UIThread.RunJobs();
+
+            surface.MeasureStructuralMinimum().Height.ShouldBeGreaterThan(initialMinimum.Height);
+            changeCount.ShouldBeGreaterThan(0);
         }
         finally
         {

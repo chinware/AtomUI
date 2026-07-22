@@ -1,12 +1,9 @@
 using System.ComponentModel;
 using System.Runtime.ExceptionServices;
 using AtomUI.Controls;
-using AtomUI.Native;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 

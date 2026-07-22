@@ -42,7 +42,9 @@ internal partial class en_US
     public const string ApiPropertyDialogDefaultStandardButton = "Default standard button activated by the Enter key.";
     public const string ApiPropertyDialogIsLoading = "Shows the loading state over the dialog content.";
     public const string ApiPropertyDialogIsConfirmLoading = "Shows loading on the confirm action while async work is running.";
-    public const string ApiPropertyDialogHostWidth = "Explicit width of the dialog host.";
+    public const string ApiPropertyDialogHostWidth = "Explicit dialog body width; NaN selects natural width when opening.";
+    public const string ApiPropertyDialogHostMinimum = "Requested minimum dialog body width and height; zero keeps the structural minimum in force when host capacity permits.";
+    public const string ApiPropertyDialogHostMaximum = "Requested maximum dialog body width and height; PositiveInfinity resolves to host capacity. A finite maximum on either axis disables native Window maximize.";
     public const string ApiPropertyDialogOptionsBeforeCloseAsync = "Async callback that decides whether a Dialog close request may continue.";
     public const string ApiMethodDialogShowDialogModalAsync = "Creates and displays a modal dialog through the static API.";
     public const string ApiPropertyMessageBoxStyle = "Semantic style used by MessageBox, such as Confirm, Information, Success, Warning, or Error.";
@@ -54,6 +56,8 @@ internal partial class en_US
     public const string TokenScopeComponent = "Component";
     public const string TokenStatusStable = "Stable";
     public const string TokenNameDialogHeaderBg = "Background color of the dialog header.";
+    public const string TokenNameDialogMinWidth = "Baseline minimum width of the dialog content viewport used by structural sizing.";
+    public const string TokenNameDialogMinHeight = "Baseline minimum height of the dialog content viewport used by structural sizing.";
     public const string TokenNameDialogHeaderPadding = "Inner padding of the dialog header.";
     public const string TokenNameDialogContentBg = "Background color of the dialog content area.";
     public const string TokenNameDialogContentPadding = "Inner padding of the dialog content area.";
@@ -61,7 +65,7 @@ internal partial class en_US
     public const string TokenNameDialogCloseBtnSize = "Size of the dialog close button.";
     public const string TokenNameDialogButtonGroupSpacing = "Spacing between dialog footer buttons.";
     public const string TokenNameMessageBoxStyleIconSize = "Size of the MessageBox semantic icon.";
-    public const string TokenNameMessageBoxMinWidth = "Minimum width of the MessageBox host.";
+    public const string TokenNameMessageBoxMinWidth = "MessageBox minimum-width baseline that can raise the Dialog structural minimum.";
     public const string P2TitleBasicModal = "Basic Modal";
     public const string P2TitleBasicWindowModal = "Basic Window Modal";
     public const string P2TitleAsynchronouslyCloseModal = "Asynchronously close Modal";

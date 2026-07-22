@@ -1,6 +1,6 @@
 # Modal 桌面版实现原理
 
-本文档描述 `Dialog` 和 `MessageBox` 的当前内部实现、状态所有权、组合结构、资源边界和释放规则。公共契约见 [Modal 桌面版架构设计](overview.md)，Token 语义见 [Modal Token 设计](token.md)。
+本文档描述 `Dialog` 和 `MessageBox` 的当前内部实现、状态所有权、组合结构、资源边界和释放规则。公共契约见 [Modal 桌面版架构设计](overview.md)，宿主尺寸算法见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)，Token 语义见 [Modal Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -19,7 +19,7 @@
 | `ButtonBox/DialogButtonBox.cs` | 标准按钮生成、唯一有效按钮序列和自定义集合同步。 |
 | `OverlayHost/DialogOverlayLayer.cs` | 按能力解析 drawn decorations、TopLevel popup 或局部 scope host，并管理 owner scope 内的 presenter stack。 |
 | `OverlayHost/OverlayDialogPresenter.cs` | 同时拥有 mask、Surface、placement、drag/resize 和 motion。 |
-| `WindowHost/WindowDialogPresenter.cs` | 原生 Window 属性映射、modal owner、尺寸、位置和 motion。 |
+| `WindowHost/WindowDialogPresenter.cs` | 原生 Window 属性映射、modal owner、尺寸、位置和生命周期。 |
 | `WindowHost/DialogWindow.cs` | 原生 caption close 仲裁和显式尺寸应用。 |
 | `MessageBox/MessageBox.cs` | Dialog 派生的消息语义、静态 API 和按钮配置。 |
 | `MessageBox/MessageBoxContent.cs` | MessageBox 的图标与内容组合。 |
@@ -36,7 +36,7 @@
 - `DialogButtonBox` 的 `_effectiveButtons` 是唯一视觉按钮序列。标准按钮来自私有元数据，自定义按钮仍由用户集合拥有。
 - `DialogOverlayLayer` 解析当前 owner 的视觉宿主，并管理同一 owner scope 内的 presenter 顺序、可用尺寸和栈顶键盘路由。
 - `OverlayDialogPresenter` 是 Dialog layer 的直接子节点；mask 与 Surface 不拆成独立 popup。
-- `WindowDialogPresenter` 包装一个 `DialogWindow` 和一个 `MotionActor`，但仍使用同一个 `DialogSurface`。
+- `WindowDialogPresenter` 拥有一个 `DialogWindow`，并将同一个 `DialogSurface` 作为原生 Window 内容。
 - `MessageBox` 不拥有隐藏 Dialog；它覆盖 Surface 内容和按钮配置 hook。
 
 ## 4. 状态与数据流
@@ -80,9 +80,8 @@ flowchart TD
     OP --> MA["Mask MotionActor"]
     OP --> SA["Surface MotionActor"]
     WP --> W["DialogWindow"]
-    WP --> WA["Window MotionActor"]
     SA --> DS["DialogSurface"]
-    WA --> DS
+    W --> DS
     DS --> H["PART_Header"]
     DS --> C["Content / MessageBoxContent"]
     DS --> B["PART_ButtonBox"]
@@ -111,15 +110,16 @@ Window 和 Overlay 各自拥有一个 Surface 实例，不共享同一个视觉�
 | presenter opening cancellation | concrete presenter | `CloseAsync` / `DisposeAsync` |
 | Dialog property bindings | `DialogSurface` / presenter | `Dispose` / `DisposeAsync` |
 | custom button Click handlers | `DialogButtonBox` | collection change、template release、Surface dispose |
-| Overlay mask/header/resize handlers | `OverlayDialogPresenter` | re-template 或 `DisposeAsync` |
+| Overlay mask/header/resize handlers 与 pointer capture | `OverlayDialogPresenter` / `OverlayDialogResizer` | release、capture lost、re-template 或 `DisposeAsync` |
 | Window events and property bindings | `WindowDialogPresenter` | `DisposeAsync` |
+| Dialog-to-Window resource bridge | `WindowDialogPresenter` | 从 Window resources 移除并在 `DisposeAsync` 退订 |
 | Surface composition child links | concrete presenter | closing motion 后、移除 layer/window 前同步断开 |
 | inheritance/resource parent | presenter | 从 layer/window 移除后清空 |
 | MessageBox default button content cache | `MessageBox` 当前 Surface | `ReleaseSurfaceButtons` |
 
 `DialogSurface.OnApplyTemplate` 先释放旧 Header/ButtonBox/Resizer 订阅，再接入新 parts。`DialogButtonBox` 在 template 为空或重套用时立即清空旧 panel 和视觉父级。
 
-Presenter 在永久 teardown 时先断开 `DialogSurface` 子树的 composition children，再释放 Surface 并移除 Overlay layer 或关闭 Window。该顺序防止调用方保留 Content/CustomButton 等子控件时，其旧 `CompositionVisual.Parent` 链反向保留 Presenter 和 Surface。Overlay presenter 移除后，空的 `DialogOverlayLayer` 也从 `ScopeAwareOverlayLayer` 删除并解绑 size 事件。Window presenter 即使 close motion 或 Window.Closing 抛出，也会继续清空 bindings、Surface、Window.Content 和 MotionActor.Content，再传播首个异常。
+Presenter 在永久 teardown 时先断开 `DialogSurface` 子树的 composition children，再释放 Surface 并移除 Overlay layer 或关闭 Window。该顺序防止调用方保留 Content/CustomButton 等子控件时，其旧 `CompositionVisual.Parent` 链反向保留 Presenter 和 Surface。Overlay presenter 移除后，空的 `DialogOverlayLayer` 也从 `ScopeAwareOverlayLayer` 删除并解绑 size 事件。Window presenter 即使原生关闭抛出，也会继续清空 bindings、资源 bridge、Surface 和 `Window.Content`，再传播首个异常。
 
 ## 7. 交互与事件处理
 
@@ -127,7 +127,7 @@ Presenter 在永久 teardown 时先断开 `DialogSurface` 子树的 composition 
 - Enter/Escape 由栈顶 Overlay presenter 或当前 Window 转发给 Surface 的有效按钮序列。
 - modal mask 只在左键、真实 mask visual subtree、且 presenter 为栈顶时请求关闭。
 - modeless presenter 在 Surface 外不阻断 pointer hit-test；点击 Surface 会把整个 presenter 激活到栈顶。
-- Overlay 标题栏拖动通过复用的 render-only translation 更新 Surface，并同步 Dialog offset 作为持久化状态；resize 修改 offset 或 Surface 正文尺寸。Surface 正文受 Window visible frame 与有效 drawn frame thickness 共同约束，BoxShadow 不参与定位。
+- Overlay 标题栏拖动通过复用的 render-only translation 更新 Surface，并同步 Dialog offset 作为持久化状态；resize 修改 offset 或 Surface 正文尺寸。resize handle 按下后捕获 pointer，即使指针离开细小 handle，release/capture lost 仍会清理 origin 与 dragging state。Surface 正文受 Window visible frame 与有效 drawn frame thickness 共同约束，BoxShadow 不参与定位。
 - Window caption close 先请求 Session 关闭；Session commit 后 `DialogWindowCloseState.Closing` 放行一次真实 native close。`OwnerWindowClosing` 始终放行，随后由 owner closed 强制 teardown。
 - Window presenter 禁用 Surface 内隐藏 header 的 `TitleIcon`，由原生 Window 标题栏唯一承载该图标，避免两个 presenter 争用同一个 `PathIcon` visual parent。
 - Session 在 Show 前记录当前焦点，Show 后聚焦可聚焦的 DialogSurface，Close 后优先恢复原焦点，其次恢复 placement target。
@@ -143,14 +143,22 @@ Presenter 在永久 teardown 时先断开 `DialogSurface` 子树的 composition 
 ### 8.2 自然尺寸
 
 - Overlay 将 `HostWidth/Height=NaN` 保留为 auto，先应用 min/max，再测量 Surface 的 `DesiredSize` 并计算 placement。
-- Window 将 NaN 映射到 Avalonia `SizeToContent`；运行时显式尺寸变化通过 `DialogWindow.ApplyRequestedSize` 更新 ClientSize。
+- Window 在 native `Show()` 前应用 managed Window/Surface styling 和 template，并测量 Window tree，使 `ContentPresenter` 附加 `DialogSurface`。Presenter 将自然测量、结构性约束、chrome、owner screen working area 与 render scaling 一次性解析为最终 ClientSize 和初始 placement；首个原生可见帧直接使用这份几何快照，不使用 opacity staging、Dispatcher 延迟或 post-show reposition。打开后只跟踪实际 native resize/state 与相关 capacity/chrome 变化；运行时 finite 值通过 `DialogWindow.ApplyRequestedSize` 更新 ClientSize。
 - 不存在固定 `520x240` fallback 或额外像素补偿。
 
-### 8.3 Motion
+自然尺寸只提供初始 preferred size，不参与结构性 minimum。用户交互 resize 形成的 actual size 由 presenter 持有，不反向写入 `HostWidth/Height`。
 
-Overlay 的 mask 和 Surface motion 并行等待。Window 的 Surface 在 `Opened` 和初始 placement 后执行 opening motion，closing motion 完成前 Window 保持可见。duration 来自 Dialog scope 的 `MotionDurationMid`。关闭期间会取消 opening token，避免旧入场继续决定 Session 完成时点。
+### 8.3 结构性最小尺寸与 Resize
 
-### 8.4 Overlay 宿主与窗口几何
+`DialogSurface` 根据当前 Header、Footer、有效按钮和 `DialogToken.MinWidth/MinHeight` 正文 viewport 基线形成 structural minimum。presenter 将 structural minimum、requested `HostMin/Max` 与 host capacity 交给共享纯值解析职责，得到 normal 状态的 effective constraints。
+
+Overlay 直接把 effective constraints 应用于 Surface，并在 resize handler 中只读取缓存约束；handle 捕获 pointer，release 与 capture lost 复用同一个幂等结束路径。自然轴被新约束 clamp 后会提交为 presenter-owned actual geometry，后续放宽约束不回落。Window presenter 按当前 Template 模式把 Surface constraints 加回 chrome：managed/drawn title bar 使用 padding、frame shadow 与有效标题栏高度，CSD 使用 padding 与 `WindowDecorationMargin`；CSD、visible frame、screen、DPI 与相关 frame metrics 变化都会重新解析。Window 的 `CanMaximize` 由 `IsMaximizable` 与两个 `HostMax*` 组合得出，任一 finite maximum 都禁用 native maximize。Surface 的 measure invalidation 会重新比较 structural minimum，只有数值改变才通知 presenter。完整公式、maximize/restore 和 capacity 退化规则见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)。
+
+### 8.4 Motion
+
+Overlay 的 mask 和 Surface motion 并行等待。Window host 不创建 Surface `MotionActor`：它在 native `Show()` 前完成初始尺寸和 placement，首个可见帧直接使用已解析的几何。`DialogWindow.Opened` 和 `DialogWindow.Closed` 是 Window presenter 的原生生命周期边界；关闭流程等待原生 Window 关闭和资源清理，不依赖 Surface close motion。Overlay 的 opening/closing motion 仍由其 presenter 等待，duration 来自 Dialog scope 的 `MotionDurationMid`。
+
+### 8.5 Overlay 宿主与窗口几何
 
 `DialogOverlayLayer` 按以下顺序解析宿主：
 
@@ -180,7 +188,7 @@ mask 始终使用完整 layer bounds，不复用 owner bounds。drawn decoration
 ## 9. 资源、性能与 AOT 边界
 
 - Overlay presenter 在 Dialog 已附加时以 Dialog 为 inheritance parent，否则以 placement target 为 parent。
-- Window 在 `Show()` 后把 DialogSurface inheritance parent 指向已附加 Dialog 或 owner，避开 TopLevel 的全局 styling parent；dispose 前清空。
+- Window 保留 DialogSurface 到 Window `ContentPresenter` 的正常 styling parent 链，避免在未附加树中提前实例化的嵌套控件失去 ControlTheme。Dialog/owner 资源由 presenter-owned `DialogResourceBridge` 转发到 Window resources；bridge 对称转发 `ResourcesChanged`，并在 `DisposeAsync` 中移除和退订。
 - runtime binding 只用于动态 presenter/Surface/按钮关系，并由 owning presenter、Surface 或 ButtonBox 对称释放。
 - Presenter 为 Surface 复用单一 `MatrixTransform` 作为位置 owner。拖动 `PointerMoved` 只更新 Matrix translation 并同步不触发布局的 `Dialog.OffsetX/Y`；位置先按 DPI 取整，再二次 clamp 到 body owner bounds，避免取整重新越界。
 - drawn decorations host discovery 复用 Window 模块集中的 `WindowDrawnDecorationsReflectionExtensions` 兼容边界及其 `DynamicDependency` 标注；Modal 不新增反射入口。实现不使用反射修改 TemplatedParent，不扫描程序集发现 Dialog API，不使用同步 DispatcherFrame。
@@ -197,6 +205,8 @@ mask 始终使用完整 layer bounds，不复用 owner bounds。drawn decoration
 - 所有平台的 Overlay presenter 必须按能力优先使用 drawn decorations Dialog overlay host，使 mask 位于自绘标题栏之上；fallback 只负责该 host 不可用的装饰模式或平台。
 - mask bounds、Window visible frame、Dialog body owner bounds 和 Dialog BoxShadow extents 必须保持独立。mask 覆盖完整 layer；所有平台的 Surface 正文都可进入 managed/drawn 标题栏但不能覆盖有效 frame；BoxShadow 允许由 Window visual-layer clip 在外轮廓处裁剪。
 - drawn host 路由和 frame 几何应与 Drawer 保持一致，但不能共享 Drawer 的 layer、容器或生命周期状态。
+- Surface structural minimum、requested Host constraints 和 host capacity 必须由同一纯值规则解析；Overlay 与 Window 不能分别定义默认最小尺寸语义。
+- Window presenter 只能在 Surface constraints 解析完成后加回 Window chrome；live resize 热路径不能重新测量结构区域。
 - MessageBox 继续作为 Dialog 派生类，不增加平行 host/session/button cache 生命周期。
 - 新增 binding、事件、资源 parent、motion source 或内容引用时，必须在同一个 owner 中增加释放点和回归测试。
 
@@ -206,8 +216,8 @@ mask 始终使用完整 layer bounds，不复用 owner bounds。drawn decoration
 
 - `DialogSessionTests`: 状态转换、veto、forced close、异常和 presenter failure。
 - `DialogLifecycleTests`: 实例/声明式打开、取消、detach、重开、嵌套焦点和 WeakReference。
-- `OverlayDialogPresenterTests`: mask ownership、modal/modeless 输入、栈顶路由、跨平台 capability-driven drawn host、popup/scope fallback、完整 mask bounds、平台 body bounds、尺寸、拖动、resize、maximize/restore 和 motion。
-- `WindowDialogPresenterTests`: Opened/motion 时序、原生关闭、owner close、SizeToContent、placement 和资源 parent。
+- `OverlayDialogPresenterTests`: mask ownership、modal/modeless 输入、栈顶路由、跨平台 capability-driven drawn host、popup/scope fallback、完整 mask bounds、平台 body bounds、结构性最小尺寸、拖动 resize、capacity 退化、maximize/restore 和 motion。
+- `WindowDialogPresenterTests`: Opened/Closed 原生生命周期、首帧几何、原生关闭、owner close、自然尺寸、Surface/chrome constraints 换算、native resize、placement 和资源 parent。
 - `DialogButtonBoxTests` / `DialogSurfaceTests`: 有效按钮集合、template 生命周期、内容和配置。
 - MessageBox tests: 派生结构、语义样式、motion anchor、重入和按钮引用释放。
 

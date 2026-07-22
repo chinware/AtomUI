@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
@@ -64,6 +65,10 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private Task? _disposeTask;
     private Point? _dragPointerOffset;
     private Point _surfacePosition;
+    private DialogSizeConstraints _normalSizeConstraints;
+    private Rect? _resizeOriginBounds;
+    private Rect? _restoreBounds;
+    private bool _isInitialSizeResolved;
 
     internal DialogSurface Surface => _surface;
 
@@ -86,8 +91,8 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
         _bindings.Add(Bind(IsModalProperty, dialog.GetObservable(Dialog.IsModalProperty)));
         _bindings.Add(Bind(IsMotionEnabledProperty, dialog.GetObservable(Dialog.IsMotionEnabledProperty)));
-        _bindings.Add(dialog.GetObservable(Dialog.HostWidthProperty).Subscribe(_ => UpdateCurrentLayerBounds()));
-        _bindings.Add(dialog.GetObservable(Dialog.HostHeightProperty).Subscribe(_ => UpdateCurrentLayerBounds()));
+        _bindings.Add(dialog.GetObservable(Dialog.HostWidthProperty).Skip(1).Subscribe(HandleHostWidthChanged));
+        _bindings.Add(dialog.GetObservable(Dialog.HostHeightProperty).Skip(1).Subscribe(HandleHostHeightChanged));
         _bindings.Add(dialog.GetObservable(Dialog.HostMinWidthProperty).Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(dialog.GetObservable(Dialog.HostMinHeightProperty).Subscribe(_ => UpdateCurrentLayerBounds()));
         _bindings.Add(dialog.GetObservable(Dialog.HostMaxWidthProperty).Subscribe(_ => UpdateCurrentLayerBounds()));
@@ -96,7 +101,10 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _surface.HostCloseRequested += HandleHostCloseRequested;
         _surface.MaximizeRequested += HandleMaximizeRequested;
         _surface.RestoreRequested += HandleRestoreRequested;
+        _surface.ResizeStarted += HandleResizeStarted;
         _surface.ResizeRequested += HandleResizeRequested;
+        _surface.ResizeCompleted += HandleResizeCompleted;
+        _surface.StructuralMinimumChanged += HandleStructuralMinimumChanged;
         _surface.HeaderPointerPressed += HandleHeaderPointerPressed;
         _surface.HeaderPointerMoved += HandleHeaderPointerMoved;
         _surface.HeaderPointerReleased += HandleHeaderPointerReleased;
@@ -157,6 +165,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         await Dispatcher.UIThread.InvokeAsync(
             () => UpdateLayerBounds(_dialogLayer?.AvailableSize ?? default),
             DispatcherPriority.Loaded);
+        _isInitialSizeResolved = true;
 
         if (IsMotionEnabled && _surfaceMotionActor is not null)
         {
@@ -244,7 +253,10 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _surface.HostCloseRequested -= HandleHostCloseRequested;
         _surface.MaximizeRequested -= HandleMaximizeRequested;
         _surface.RestoreRequested -= HandleRestoreRequested;
+        _surface.ResizeStarted -= HandleResizeStarted;
         _surface.ResizeRequested -= HandleResizeRequested;
+        _surface.ResizeCompleted -= HandleResizeCompleted;
+        _surface.StructuralMinimumChanged -= HandleStructuralMinimumChanged;
         _surface.HeaderPointerPressed -= HandleHeaderPointerPressed;
         _surface.HeaderPointerMoved -= HandleHeaderPointerMoved;
         _surface.HeaderPointerReleased -= HandleHeaderPointerReleased;
@@ -342,17 +354,90 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void ApplyNormalSurfaceSizeConstraints(Rect ownerBounds)
     {
-        var minWidth = Math.Min(_dialog.HostMinWidth, ownerBounds.Width);
-        var minHeight = Math.Min(_dialog.HostMinHeight, ownerBounds.Height);
-        var maxWidth = ResolveMaximum(_dialog.HostMaxWidth, minWidth, ownerBounds.Width);
-        var maxHeight = ResolveMaximum(_dialog.HostMaxHeight, minHeight, ownerBounds.Height);
+        ResolveNormalSurfaceSizeConstraints(ownerBounds);
+        if (!_isInitialSizeResolved)
+        {
+            _surface.Width = ResolveInitialSize(
+                _dialog.HostWidth,
+                _normalSizeConstraints.MinWidth,
+                _normalSizeConstraints.MaxWidth);
+            _surface.Height = ResolveInitialSize(
+                _dialog.HostHeight,
+                _normalSizeConstraints.MinHeight,
+                _normalSizeConstraints.MaxHeight);
+            return;
+        }
 
-        _surface.MinWidth = minWidth;
-        _surface.MinHeight = minHeight;
-        _surface.MaxWidth = maxWidth;
-        _surface.MaxHeight = maxHeight;
-        _surface.Width = ResolveExplicitSize(_dialog.HostWidth, minWidth, maxWidth);
-        _surface.Height = ResolveExplicitSize(_dialog.HostHeight, minHeight, maxHeight);
+        ClampActualSurfaceGeometry(ownerBounds);
+    }
+
+    private void ResolveNormalSurfaceSizeConstraints(Rect ownerBounds)
+    {
+        _normalSizeConstraints = DialogSizeConstraints.Resolve(
+            _surface.MeasureStructuralMinimum(),
+            new Size(_dialog.HostMinWidth, _dialog.HostMinHeight),
+            new Size(_dialog.HostMaxWidth, _dialog.HostMaxHeight),
+            ownerBounds.Size);
+
+        _surface.MinWidth = _normalSizeConstraints.MinWidth;
+        _surface.MinHeight = _normalSizeConstraints.MinHeight;
+        _surface.MaxWidth = _normalSizeConstraints.MaxWidth;
+        _surface.MaxHeight = _normalSizeConstraints.MaxHeight;
+    }
+
+    private void ClampActualSurfaceGeometry(Rect ownerBounds)
+    {
+        var actualSize = ResolveActualSurfaceSize();
+        if (actualSize.Width <= 0 || actualSize.Height <= 0)
+        {
+            ClampPendingExplicitSize();
+            return;
+        }
+
+        var clampedSize = _normalSizeConstraints.Clamp(actualSize);
+        var clampedPosition = ConstrainAndRoundSurfacePosition(ownerBounds, clampedSize, _surfacePosition);
+        if (clampedSize == actualSize)
+        {
+            if (clampedPosition != _surfacePosition)
+            {
+                SynchronizeDialogOffsets(ownerBounds, clampedSize, clampedPosition);
+                SetSurfacePosition(clampedPosition);
+            }
+
+            return;
+        }
+
+        SynchronizeDialogOffsets(ownerBounds, clampedSize, clampedPosition);
+        if (!MathUtils.AreClose(clampedSize.Width, actualSize.Width))
+        {
+            _surface.Width = clampedSize.Width;
+        }
+
+        if (!MathUtils.AreClose(clampedSize.Height, actualSize.Height))
+        {
+            _surface.Height = clampedSize.Height;
+        }
+
+        SetSurfacePosition(clampedPosition);
+    }
+
+    private void ClampPendingExplicitSize()
+    {
+        if (double.IsFinite(_surface.Width))
+        {
+            _surface.Width = Math.Clamp(
+                _surface.Width,
+                _normalSizeConstraints.MinWidth,
+                _normalSizeConstraints.MaxWidth);
+        }
+
+        if (double.IsFinite(_surface.Height))
+        {
+            _surface.Height = Math.Clamp(
+                _surface.Height,
+                _normalSizeConstraints.MinHeight,
+                _normalSizeConstraints.MaxHeight);
+        }
     }
 
     private void ApplyMaximizedBounds(Rect ownerBounds)
@@ -477,17 +562,145 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _surfacePositionTransform.Matrix = Matrix.CreateTranslation(position.X, position.Y);
     }
 
-    private static double ResolveMaximum(double value, double min, double available)
+    private Size ResolveActualSurfaceSize()
     {
-        var maximum = double.IsNaN(value) || double.IsInfinity(value)
-            ? available
-            : Math.Min(value, available);
-        return Math.Max(min, maximum);
+        var boundsSize = _surface.Bounds.Size;
+        var width = double.IsFinite(_surface.Width)
+            ? _surface.Width
+            : boundsSize.Width > 0
+                ? boundsSize.Width
+                : _surface.DesiredSize.Width;
+        var height = double.IsFinite(_surface.Height)
+            ? _surface.Height
+            : boundsSize.Height > 0
+                ? boundsSize.Height
+                : _surface.DesiredSize.Height;
+        return new Size(width, height);
     }
 
-    private static double ResolveExplicitSize(double value, double min, double max)
+    private Rect ResolveActualSurfaceBounds()
     {
-        return double.IsNaN(value) ? double.NaN : Math.Clamp(value, min, max);
+        return new Rect(_surfacePosition, ResolveActualSurfaceSize());
+    }
+
+    private void ApplyNormalSurfaceGeometry(Rect ownerBounds, Size size, Point position)
+    {
+        SynchronizeDialogOffsets(ownerBounds, size, position);
+        _surface.Width = size.Width;
+        _surface.Height = size.Height;
+        SetSurfacePosition(position);
+    }
+
+    private void SynchronizeDialogOffsets(Rect ownerBounds, Size surfaceSize, Point position)
+    {
+        var currentPlacement = _dialog.CalculatePlacementOffset(surfaceSize, ownerBounds.Size);
+        var baseOffset = new Point(
+            currentPlacement.X - _dialog.OffsetX,
+            currentPlacement.Y - _dialog.OffsetY);
+        _dialog.SetCurrentValue(
+            Dialog.OffsetXProperty,
+            position.X - ownerBounds.X - baseOffset.X);
+        _dialog.SetCurrentValue(
+            Dialog.OffsetYProperty,
+            position.Y - ownerBounds.Y - baseOffset.Y);
+    }
+
+    private void HandleHostWidthChanged(double value)
+    {
+        if (!double.IsFinite(value))
+        {
+            return;
+        }
+
+        if (_surface.IsDialogMaximized && _restoreBounds is { } restoreBounds)
+        {
+            _restoreBounds = new Rect(
+                restoreBounds.Position,
+                new Size(Math.Max(0, value), restoreBounds.Height));
+            return;
+        }
+
+        ApplyRequestedWidth(value);
+    }
+
+    private void HandleHostHeightChanged(double value)
+    {
+        if (!double.IsFinite(value))
+        {
+            return;
+        }
+
+        if (_surface.IsDialogMaximized && _restoreBounds is { } restoreBounds)
+        {
+            _restoreBounds = new Rect(
+                restoreBounds.Position,
+                new Size(restoreBounds.Width, Math.Max(0, value)));
+            return;
+        }
+
+        ApplyRequestedHeight(value);
+    }
+
+    private void ApplyRequestedWidth(double requestedWidth)
+    {
+        if (_dialogLayer is null || !_isInitialSizeResolved)
+        {
+            return;
+        }
+
+        var ownerBounds = ResolveCurrentDialogBodyOwnerBounds();
+        ResolveNormalSurfaceSizeConstraints(ownerBounds);
+        var actualBounds = ResolveActualSurfaceBounds();
+        var requestedSize = new Size(
+            Math.Clamp(requestedWidth, _normalSizeConstraints.MinWidth, _normalSizeConstraints.MaxWidth),
+            actualBounds.Height);
+        var position = ConstrainAndRoundSurfacePosition(ownerBounds, requestedSize, actualBounds.Position);
+        ApplyNormalSurfaceGeometry(ownerBounds, requestedSize, position);
+    }
+
+    private void ApplyRequestedHeight(double requestedHeight)
+    {
+        if (_dialogLayer is null || !_isInitialSizeResolved)
+        {
+            return;
+        }
+
+        var ownerBounds = ResolveCurrentDialogBodyOwnerBounds();
+        ResolveNormalSurfaceSizeConstraints(ownerBounds);
+        var actualBounds = ResolveActualSurfaceBounds();
+        var requestedSize = new Size(
+            actualBounds.Width,
+            Math.Clamp(requestedHeight, _normalSizeConstraints.MinHeight, _normalSizeConstraints.MaxHeight));
+        var position = ConstrainAndRoundSurfacePosition(ownerBounds, requestedSize, actualBounds.Position);
+        ApplyNormalSurfaceGeometry(ownerBounds, requestedSize, position);
+    }
+
+    private Rect ResolveCurrentDialogBodyOwnerBounds()
+    {
+        var visibleFrameBounds = ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
+        return ResolveDialogBodyOwnerBounds(visibleFrameBounds);
+    }
+
+    private void HandleStructuralMinimumChanged(object? sender, EventArgs e)
+    {
+        if (_dialogLayer is null || _surface.IsDialogMaximized)
+        {
+            return;
+        }
+
+        var ownerBounds = ResolveCurrentDialogBodyOwnerBounds();
+        if (ownerBounds.Width <= 0 || ownerBounds.Height <= 0)
+        {
+            return;
+        }
+
+        ResolveNormalSurfaceSizeConstraints(ownerBounds);
+        ClampActualSurfaceGeometry(ownerBounds);
+    }
+
+    private static double ResolveInitialSize(double value, double min, double max)
+    {
+        return double.IsFinite(value) ? Math.Clamp(value, min, max) : double.NaN;
     }
 
     private AbstractMotion CreateSurfaceMotion(bool isOpening)
@@ -537,6 +750,8 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void HandleMaximizeRequested(object? sender, EventArgs e)
     {
+        _restoreBounds = ResolveActualSurfaceBounds();
+        _resizeOriginBounds = null;
         _surface.IsDialogMaximized = true;
         var visibleFrameBounds = ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
         ApplyMaximizedBounds(ResolveDialogBodyOwnerBounds(visibleFrameBounds));
@@ -546,7 +761,26 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     {
         _surface.IsDialogMaximized = false;
         _surface.ClearValue(TemplatedControl.CornerRadiusProperty);
-        UpdateLayerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
+        var ownerBounds = ResolveCurrentDialogBodyOwnerBounds();
+        ResolveNormalSurfaceSizeConstraints(ownerBounds);
+        var restoreBounds = _restoreBounds ?? ResolveActualSurfaceBounds();
+        var restoreSize = _normalSizeConstraints.Clamp(restoreBounds.Size);
+        var restorePosition = ConstrainAndRoundSurfacePosition(
+            ownerBounds,
+            restoreSize,
+            restoreBounds.Position);
+        ApplyNormalSurfaceGeometry(ownerBounds, restoreSize, restorePosition);
+        _restoreBounds = null;
+    }
+
+    private void HandleResizeStarted(object? sender, OverlayDialogResizeEventArgs e)
+    {
+        if (_surface.IsDialogMaximized)
+        {
+            return;
+        }
+
+        _resizeOriginBounds = ResolveActualSurfaceBounds();
     }
 
     private void HandleResizeRequested(object? sender, OverlayDialogResizeEventArgs e)
@@ -556,41 +790,60 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             return;
         }
 
-        var width = _surface.Bounds.Width;
-        var height = _surface.Bounds.Height;
+        var originBounds = _resizeOriginBounds ?? ResolveActualSurfaceBounds();
+        _resizeOriginBounds ??= originBounds;
+        var ownerBounds = ResolveCurrentDialogBodyOwnerBounds();
+        var width = originBounds.Width;
+        var height = originBounds.Height;
+        var x = originBounds.X;
+        var y = originBounds.Y;
         if ((e.Location & ResizeHandleLocation.East) != 0)
         {
-            width = Math.Clamp(width + e.DeltaOffsetX, _surface.MinWidth, _surface.MaxWidth);
+            var availableWidth = Math.Max(0, ownerBounds.Right - originBounds.Left);
+            width = Math.Clamp(
+                originBounds.Width + e.DeltaOffsetX,
+                _normalSizeConstraints.MinWidth,
+                Math.Min(_normalSizeConstraints.MaxWidth, availableWidth));
         }
         else if ((e.Location & ResizeHandleLocation.West) != 0)
         {
-            var nextWidth = Math.Clamp(width - e.DeltaOffsetX, _surface.MinWidth, _surface.MaxWidth);
-            _dialog.SetCurrentValue(Dialog.OffsetXProperty, _dialog.OffsetX + width - nextWidth);
-            width = nextWidth;
+            var availableWidth = Math.Max(0, originBounds.Right - ownerBounds.Left);
+            width = Math.Clamp(
+                originBounds.Width - e.DeltaOffsetX,
+                _normalSizeConstraints.MinWidth,
+                Math.Min(_normalSizeConstraints.MaxWidth, availableWidth));
+            x = originBounds.Right - width;
         }
 
         if ((e.Location & ResizeHandleLocation.South) != 0)
         {
-            height = Math.Clamp(height + e.DeltaOffsetY, _surface.MinHeight, _surface.MaxHeight);
+            var availableHeight = Math.Max(0, ownerBounds.Bottom - originBounds.Top);
+            height = Math.Clamp(
+                originBounds.Height + e.DeltaOffsetY,
+                _normalSizeConstraints.MinHeight,
+                Math.Min(_normalSizeConstraints.MaxHeight, availableHeight));
         }
         else if ((e.Location & ResizeHandleLocation.North) != 0)
         {
-            var nextHeight = Math.Clamp(height - e.DeltaOffsetY, _surface.MinHeight, _surface.MaxHeight);
-            _dialog.SetCurrentValue(Dialog.OffsetYProperty, _dialog.OffsetY + height - nextHeight);
-            height = nextHeight;
+            var availableHeight = Math.Max(0, originBounds.Bottom - ownerBounds.Top);
+            height = Math.Clamp(
+                originBounds.Height - e.DeltaOffsetY,
+                _normalSizeConstraints.MinHeight,
+                Math.Min(_normalSizeConstraints.MaxHeight, availableHeight));
+            y = originBounds.Bottom - height;
         }
 
-        _surface.Width = width;
-        _surface.Height = height;
-        var visibleFrameBounds = ResolveOwnerBounds(_dialogLayer?.AvailableSize ?? Bounds.Size);
-        var ownerBounds = ResolveDialogBodyOwnerBounds(visibleFrameBounds);
         var surfaceSize = new Size(width, height);
-        var offset = _dialog.CalculatePlacementOffset(surfaceSize, ownerBounds.Size);
         var position = ConstrainAndRoundSurfacePosition(
             ownerBounds,
             surfaceSize,
-            new Point(ownerBounds.X + offset.X, ownerBounds.Y + offset.Y));
-        SetSurfacePosition(position);
+            new Point(x, y));
+        ApplyNormalSurfaceGeometry(ownerBounds, surfaceSize, position);
+    }
+
+    private void HandleResizeCompleted(object? sender, OverlayDialogResizeEventArgs e)
+    {
+        _resizeOriginBounds = null;
     }
 
     private void HandleHeaderPointerPressed(object? sender, PointerPressedEventArgs e)

@@ -1,3 +1,4 @@
+using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.Tests.Window;
 using Avalonia;
@@ -346,8 +347,8 @@ public class OverlayDialogPresenterTests
 
             try
             {
-                double.IsNaN(fixture.Presenter.Surface.Width).ShouldBeTrue();
-                double.IsNaN(fixture.Presenter.Surface.Height).ShouldBeTrue();
+                fixture.Presenter.Surface.Width.ShouldBe(double.NaN);
+                fixture.Presenter.Surface.Height.ShouldBe(double.NaN);
                 fixture.Presenter.Surface.Bounds.Width.ShouldBeGreaterThanOrEqualTo(180);
                 fixture.Presenter.Surface.Bounds.Width.ShouldBeLessThan(520);
                 fixture.Presenter.Surface.Bounds.Height.ShouldBeGreaterThanOrEqualTo(70);
@@ -388,6 +389,312 @@ public class OverlayDialogPresenterTests
                 fixture.Presenter.Surface.MinHeight.ShouldBe(160);
                 fixture.Presenter.Surface.MaxWidth.ShouldBe(450);
                 fixture.Presenter.Surface.MaxHeight.ShouldBe(260);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Default_Constraints_Protect_The_Surface_Structure()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(new AtomUI.Desktop.Controls.Dialog
+            {
+                IsMotionEnabled = false,
+                IsResizable = true,
+                StandardButtons = DialogStandardButton.Ok | DialogStandardButton.Cancel,
+                HostWidth = 320,
+                HostHeight = 220
+            });
+
+            try
+            {
+                var structuralMinimum = fixture.Presenter.Surface.MeasureStructuralMinimum();
+
+                fixture.Presenter.Surface.MinWidth.ShouldBe(structuralMinimum.Width);
+                fixture.Presenter.Surface.MinHeight.ShouldBe(structuralMinimum.Height);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Runtime_Structural_Minimum_Changes_Clamp_And_Preserve_Actual_Surface_Size()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(new AtomUI.Desktop.Controls.Dialog
+            {
+                IsMotionEnabled = false,
+                IsResizable = true,
+                HostWidth = 320,
+                HostHeight = 60
+            });
+
+            try
+            {
+                fixture.Dialog.StandardButtons =
+                    DialogStandardButton.Ok | DialogStandardButton.Cancel;
+                Dispatcher.UIThread.RunJobs();
+
+                var structuralMinimum = fixture.Presenter.Surface.MeasureStructuralMinimum();
+                fixture.Presenter.Surface.MinHeight.ShouldBe(structuralMinimum.Height);
+                fixture.Presenter.Surface.Bounds.Height.ShouldBe(structuralMinimum.Height);
+
+                fixture.Dialog.StandardButtons = DialogStandardButton.NoButton;
+                Dispatcher.UIThread.RunJobs();
+                fixture.Presenter.Surface.Bounds.Height.ShouldBe(structuralMinimum.Height);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Runtime_Minimum_Clamp_Commits_A_Natural_Axis_As_Actual_Size()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(new AtomUI.Desktop.Controls.Dialog
+            {
+                Content = new Border { Width = 180, Height = 70 },
+                IsFooterVisible = false,
+                IsMotionEnabled = false,
+                IsResizable = true,
+                HostWidth = double.NaN,
+                HostHeight = 220,
+                HostMaxWidth = 600
+            });
+
+            try
+            {
+                var naturalWidth = fixture.Presenter.Surface.Bounds.Width;
+                var clampedWidth = naturalWidth + 40;
+
+                fixture.Dialog.HostMinWidth = clampedWidth;
+                Dispatcher.UIThread.RunJobs();
+
+                fixture.Presenter.Surface.Bounds.Width.ShouldBe(clampedWidth);
+                fixture.Presenter.Surface.Width.ShouldBe(clampedWidth);
+
+                fixture.Dialog.HostMinWidth = 0;
+                Dispatcher.UIThread.RunJobs();
+
+                fixture.Presenter.Surface.Bounds.Width.ShouldBe(clampedWidth);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Repeated_Resize_Moves_Use_One_Origin_Instead_Of_Accumulating_Deltas()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(new AtomUI.Desktop.Controls.Dialog
+            {
+                IsMotionEnabled = false,
+                IsResizable = true,
+                HostWidth = 320,
+                HostHeight = 220
+            });
+
+            try
+            {
+                var originalWidth = fixture.Presenter.Surface.Bounds.Width;
+
+                ResizeSurface(
+                    fixture,
+                    ResizeHandleLocation.East,
+                    new Vector(10, 0),
+                    new Vector(20, 0));
+
+                fixture.Presenter.Surface.Bounds.Width.ShouldBe(originalWidth + 20);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Resize_Handle_Captures_The_Pointer_And_Ends_When_Capture_Is_Lost()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(new AtomUI.Desktop.Controls.Dialog
+            {
+                IsMotionEnabled = false,
+                IsResizable = true,
+                HostWidth = 320,
+                HostHeight = 220
+            });
+
+            try
+            {
+                var resizer = fixture.Presenter.Surface.Resizer.ShouldNotBeNull();
+                var handle = resizer.GetVisualDescendants()
+                                    .OfType<Border>()
+                                    .Single(border => Equals(border.Tag, ResizeHandleLocation.East));
+                var start = handle.TranslatePoint(
+                    new Point(handle.Bounds.Width / 2, handle.Bounds.Height / 2),
+                    fixture.Window).ShouldNotBeNull();
+                var resizeStartedCount = 0;
+                var resizeCompletedCount = 0;
+                resizer.AboutToResize += (_, _) => resizeStartedCount++;
+                resizer.ResizeCompleted += (_, _) => resizeCompletedCount++;
+
+                var pointer = BeginDrag(handle, fixture.Window, start);
+                pointer.Captured.ShouldBeSameAs(handle);
+                MoveDrag(handle, fixture.Window, pointer, start + new Vector(20, 0), 1);
+                Dispatcher.UIThread.RunJobs();
+                resizeStartedCount.ShouldBe(1);
+
+                pointer.Capture(fixture.Presenter);
+                Dispatcher.UIThread.RunJobs();
+                resizeCompletedCount.ShouldBe(1);
+                pointer.Captured.ShouldBeSameAs(fixture.Presenter);
+                pointer.Capture(null);
+
+                var nextPointer = BeginDrag(handle, fixture.Window, start);
+                MoveDrag(handle, fixture.Window, nextPointer, start + new Vector(10, 0), 2);
+                Dispatcher.UIThread.RunJobs();
+                resizeStartedCount.ShouldBe(2);
+                EndDrag(handle, fixture.Window, nextPointer, start + new Vector(10, 0), 3);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Theory]
+    [InlineData(ResizeHandleLocation.East, 30, 0)]
+    [InlineData(ResizeHandleLocation.West, -30, 0)]
+    [InlineData(ResizeHandleLocation.South, 0, 30)]
+    [InlineData(ResizeHandleLocation.North, 0, -30)]
+    public void Edge_Resize_Preserves_The_Opposite_Surface_Edge(
+        ResizeHandleLocation location,
+        double deltaX,
+        double deltaY)
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(new AtomUI.Desktop.Controls.Dialog
+            {
+                IsMotionEnabled = false,
+                IsResizable = true,
+                HostWidth = 320,
+                HostHeight = 220
+            });
+
+            try
+            {
+                var originalBounds = GetSurfaceBodyBounds(fixture.Presenter.Surface, fixture.Presenter);
+
+                ResizeSurface(fixture, location, new Vector(deltaX, deltaY));
+
+                var resizedBounds = GetSurfaceBodyBounds(fixture.Presenter.Surface, fixture.Presenter);
+                if (location == ResizeHandleLocation.East)
+                {
+                    resizedBounds.Left.ShouldBe(originalBounds.Left);
+                }
+                else if (location == ResizeHandleLocation.West)
+                {
+                    resizedBounds.Right.ShouldBe(originalBounds.Right);
+                }
+                else if (location == ResizeHandleLocation.South)
+                {
+                    resizedBounds.Top.ShouldBe(originalBounds.Top);
+                }
+                else
+                {
+                    resizedBounds.Bottom.ShouldBe(originalBounds.Bottom);
+                }
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Runtime_Constraint_And_NaN_Changes_Do_Not_Reset_Valid_Actual_Size()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(new AtomUI.Desktop.Controls.Dialog
+            {
+                IsMotionEnabled = false,
+                IsResizable = true,
+                HostWidth = 320,
+                HostHeight = 220
+            });
+
+            try
+            {
+                ResizeSurface(fixture, ResizeHandleLocation.SouthEast, new Vector(50, 40));
+                var resizedSize = fixture.Presenter.Surface.Bounds.Size;
+
+                fixture.Dialog.HostMinWidth = 100;
+                fixture.Dialog.HostMinHeight = 100;
+                fixture.Dialog.HostWidth = double.NaN;
+                fixture.Dialog.HostHeight = double.NaN;
+                Dispatcher.UIThread.RunJobs();
+
+                fixture.Presenter.Surface.Bounds.Size.ShouldBe(resizedSize);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Restore_Returns_To_The_User_Resized_Surface_Geometry()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(new AtomUI.Desktop.Controls.Dialog
+            {
+                IsMotionEnabled = false,
+                IsResizable = true,
+                IsMaximizable = true,
+                HostWidth = 320,
+                HostHeight = 220
+            });
+
+            try
+            {
+                ResizeSurface(fixture, ResizeHandleLocation.SouthEast, new Vector(45, 35));
+                var resizedBounds = GetSurfaceBodyBounds(fixture.Presenter.Surface, fixture.Presenter);
+                var maximizeButton = fixture.Presenter.Surface.Header.ShouldNotBeNull()
+                                            .GetVisualDescendants()
+                                            .OfType<DialogCaptionButton>()
+                                            .Single(button => button.Name == "PART_MaximizeButton");
+
+                maximizeButton.RaiseEvent(new RoutedEventArgs(AtomUI.Desktop.Controls.Button.ClickEvent));
+                Dispatcher.UIThread.RunJobs();
+                maximizeButton.RaiseEvent(new RoutedEventArgs(AtomUI.Desktop.Controls.Button.ClickEvent));
+                Dispatcher.UIThread.RunJobs();
+
+                GetSurfaceBodyBounds(fixture.Presenter.Surface, fixture.Presenter).ShouldBe(resizedBounds);
             }
             finally
             {
@@ -1587,6 +1894,37 @@ public class OverlayDialogPresenterTests
         var pointer = BeginDrag(source, root, start);
         MoveDrag(source, root, pointer, end, 1);
         EndDrag(source, root, pointer, end, 2);
+        Dispatcher.UIThread.RunJobs();
+    }
+
+    private static void ResizeSurface(
+        PresenterFixture fixture,
+        ResizeHandleLocation location,
+        params Vector[] cumulativeDeltas)
+    {
+        var handle = fixture.Presenter.Surface.Resizer.ShouldNotBeNull()
+                            .GetVisualDescendants()
+                            .OfType<Border>()
+                            .Single(border => Equals(border.Tag, location));
+        var start = handle.TranslatePoint(
+            new Point(handle.Bounds.Width / 2, handle.Bounds.Height / 2),
+            fixture.Window).ShouldNotBeNull();
+        var pointer = BeginDrag(handle, fixture.Window, start);
+        for (var index = 0; index < cumulativeDeltas.Length; index++)
+        {
+            MoveDrag(
+                handle,
+                fixture.Window,
+                pointer,
+                start + cumulativeDeltas[index],
+                (ulong)(index + 1));
+            Dispatcher.UIThread.RunJobs();
+        }
+
+        var finalPosition = cumulativeDeltas.Length == 0
+            ? start
+            : start + cumulativeDeltas[^1];
+        EndDrag(handle, fixture.Window, pointer, finalPosition, (ulong)(cumulativeDeltas.Length + 1));
         Dispatcher.UIThread.RunJobs();
     }
 

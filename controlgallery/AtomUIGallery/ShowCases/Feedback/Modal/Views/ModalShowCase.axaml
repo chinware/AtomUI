@@ -39,14 +39,15 @@
                              IsOpen="{Binding IsBasicModalOpened, Mode=TwoWay}"
                              Title="{gallery:ModalShowCaseLangResource P2TitleBasicModal}"
                              IsModal="False"
-                             IsResizable="False"
+                             IsResizable="True"
                              IsDragMovable="True"
-                             IsMaximizable="False"
                              StandardButtons="Cancel,Ok"
                              DefaultStandardButton="Ok"
                              HorizontalStartupLocation="Center"
                              VerticalOffset="30%"
-                             HostMinWidth="300">
+                             HostMinWidth="300"
+                             HostMaxWidth="520"
+                             HostMaxHeight="360">
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
                         <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
@@ -63,13 +64,15 @@
                              IsResizable="True"
                              IsClosable="True"
                              IsDragMovable="True"
-                             IsMaximizable="False"
+                             IsMaximizable="True"
                              DialogHostType="Window"
                              HorizontalStartupLocation="Center"
                              VerticalOffset="30%"
                              StandardButtons="Yes"
                              DefaultStandardButton="Yes"
-                             HostMinWidth="300">
+                             HostMinWidth="300"
+                             HostMaxWidth="520"
+                             HostMaxHeight="360">
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
                         <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />

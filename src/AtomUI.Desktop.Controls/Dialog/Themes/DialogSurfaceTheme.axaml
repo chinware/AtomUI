@@ -11,6 +11,8 @@
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
         <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationMid}" />
+        <Setter Property="ContentViewportMinWidth" Value="{atom:DialogTokenResource MinWidth}" />
+        <Setter Property="ContentViewportMinHeight" Value="{atom:DialogTokenResource MinHeight}" />
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:DialogSurface">
                 <Panel>

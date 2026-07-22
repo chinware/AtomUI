@@ -47,6 +47,8 @@ public class ModalShowCasePageTests
         source.ShouldContain("ModalShowCaseLangResource MessageBoxStyleTitle");
         source.ShouldContain("ModalShowCaseLangResource StaticDialogApiTitle");
         source.ShouldContain("ModalShowCaseLangResource P2ContentOpenBeforeCloseDialog");
+        CountOccurrences(source, "HostMaxWidth=\"").ShouldBeGreaterThanOrEqualTo(2);
+        CountOccurrences(source, "HostMaxHeight=\"").ShouldBeGreaterThanOrEqualTo(2);
         source.ShouldNotContain("PlacementTarget=\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
@@ -63,6 +65,7 @@ public class ModalShowCasePageTests
         var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalApiDataGrid.axaml.cs");
         var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalDesignTokenDataGrid.axaml");
         var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalDesignTokenDataGrid.axaml.cs");
+        var viewModelSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/ViewModels/ModalViewModel.cs");
 
         pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
@@ -114,6 +117,10 @@ public class ModalShowCasePageTests
         tokenSource.ShouldContain("Width=\"*\"");
         tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
         tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
+        viewModelSource.ShouldContain("Dialog.HostMinWidth / Dialog.HostMinHeight");
+        viewModelSource.ShouldContain("Dialog.HostMaxWidth / Dialog.HostMaxHeight");
+        viewModelSource.ShouldContain("new ModalDesignTokenRow(\"Dialog.MinWidth\"");
+        viewModelSource.ShouldContain("new ModalDesignTokenRow(\"Dialog.MinHeight\"");
     }
 
     [Fact]
@@ -132,9 +139,13 @@ public class ModalShowCasePageTests
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyDialogIsOpen");
             source.ShouldContain("ApiPropertyDialogDialogHostType");
+            source.ShouldContain("ApiPropertyDialogHostMinimum");
+            source.ShouldContain("ApiPropertyDialogHostMaximum");
             source.ShouldContain("ApiPropertyDialogOptionsBeforeCloseAsync");
             source.ShouldContain("ApiMethodDialogShowDialogModalAsync");
             source.ShouldContain("ApiPropertyMessageBoxStyle");
+            source.ShouldContain("TokenNameDialogMinWidth");
+            source.ShouldContain("TokenNameDialogMinHeight");
             source.ShouldContain("TokenNameDialogHeaderBg");
             source.ShouldContain("TokenNameMessageBoxStyleIconSize");
         }
