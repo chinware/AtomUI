@@ -13,7 +13,7 @@
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 
 ```xml
 <Panel>
@@ -56,7 +56,8 @@ Window
   -> FullscreenPopoverLayer (control theme, FullscreenPopoverLayerTheme.axaml)
      -> Panel (template-stable)
         -> Border#PART_PopoverBorder (template-stable)
-           -> Panel (template-stable)
+           -> WindowTitleBarLayoutPanel (template-stable)
+              -> Panel (template-stable)
               -> StackPanel (template-stable)
                  -> ContentPresenter#FullscreenLogoPresenter (internal-observable)
                  -> TextBlock#FullscreenTitleText (template-stable)
@@ -131,6 +132,7 @@ Window
 | `FullscreenPopoverLayer` | control theme | `FullscreenPopoverLayerTheme.axaml` | Window | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_PopoverBorder` | template node (Border) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FullscreenLogoPresenter` | template node (ContentPresenter) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `FullscreenTitleText` | template node (TextBlock) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -151,7 +153,7 @@ Window
 | `DockPanel` | template node (DockPanel) | `WindowTheme.axaml` | Window | `Content`, `ContentFrameBackground`, `ContentFrameLayer`, `ContentFrameLayerOpacity`, `ContentFrameLayerTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TitleBarPanel` | template node (Panel) | `WindowTheme.axaml` | Window | `IsTitleBarVisible`, `TitleBar`, `TitleBarFrameBackground`, `TitleBarFrameLayer`, `TitleBarFrameLayerOpacity`, `TitleBarFrameLayerTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TitleBarFrameLayer` | template node (ContentPresenter) | `WindowTheme.axaml` | Window | `TitleBarFrameBackground`, `TitleBarFrameLayer`, `TitleBarFrameLayerOpacity`, `TitleBarFrameLayerTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `ContentPresenter` | template node (ContentPresenter) | `WindowTheme.axaml` | Window | `TitleBar`, `TitleBarOffsetMargin` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `ContentPresenter` | template node (ContentPresenter) | `WindowTheme.axaml` | Window | `TitleBar` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentFrameLayer` | template node (ContentPresenter) | `WindowTheme.axaml` | Window | `ContentFrameBackground`, `ContentFrameLayer`, `ContentFrameLayerOpacity`, `ContentFrameLayerTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentFrame` | template node (Border) | `WindowTheme.axaml` | Window | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `Padding`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `WindowTheme.axaml` | Window | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -167,7 +169,7 @@ Window
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
-| 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 ## Pseudo Classes
 
@@ -227,6 +229,27 @@ Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定
 
 维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要在标题栏放置按钮、菜单或搜索框时，应创建自定义 `WindowTitleBar` 或其他标题栏控件，并设置到 `Window.TitleBar`。
 
+`Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，并把配置单向投影给默认或派生
+`WindowTitleBar`。Window 只提供平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+完整协作模型见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)。
+
+### 5.2 跨平台首帧主题表面模型
+
+Windows、macOS 和 Linux 共用同一个首次显示主题契约：平台窗口进入可见状态前，`Window` 必须已经获得目标
+`ThemeContext`、与该 context 一致的 `RequestedThemeVariant`，以及当前 Window Token scope 中的首帧背景。
+该契约由 `Window` 的共享显示生命周期负责，不属于 Win32、AppKit、X11 或 Wayland chrome manager 的职责。
+
+首次显示按以下所有权模型维护：
+
+- `WindowTheme.axaml` 是窗口背景的唯一长期视觉所有者，`WindowToken.DefaultBackground` 是默认背景语义真源。
+- `Show` 和 `ShowDialog` 的所有 AtomUI 入口必须先解析 owner 作用域并挂载可释放的 `ThemeContext` lease，再进入 Avalonia 的平台显示流程。
+- 在正式 ControlTheme 接管前，`Window` 从已提交的当前作用域 Snapshot 同步读取一次默认背景，并以低于用户 local value 的优先级临时预热 `Background` 与 `TransparencyBackgroundFallback`。
+- 首帧预热只覆盖同步显示临界区，不订阅资源变化；Avalonia 完成同步样式应用后立即释放临时值，由正式 ControlTheme 继续响应主题切换。
+- 用户显式设置的 `Background` 或 `TransparencyBackgroundFallback` 始终优先，首帧预热不得改写或清除用户 local value。
+- 平台 chrome manager 只处理窗口装饰、原生几何和平台能力投影，不得分别复制 ThemeContext、Token 查找或首帧背景算法。
+
+如果上述 managed 状态在平台显示前已经正确，某个平台仍然暴露尚未提交内容的原生空白 surface，则该问题属于平台后端边界。此时应通过统一的平台能力接口提供最小后备实现，并分别验证对应后端；不得把平台消息、延时显示或透明度切换混入共享主题状态机。
+
 Token 边界：
 
 Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
@@ -243,6 +266,7 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - `TitleBarFrameLayer` 是标题栏背景/装饰入口，不是标题栏用户交互入口；标题栏按钮、菜单、搜索框等交互内容必须通过 `TitleBar` 承载。
+- Windows、macOS 和 Linux 共用同一套首次显示主题表面流程；平台可见前必须同步准备 ThemeContext、variant 和 Window Token 背景，正式显示后由 `WindowTheme` 单独持有长期主题状态。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
@@ -255,6 +279,8 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - `TitleBarFrameLayer` 的背景/装饰层语义，以及标题栏交互内容必须通过 `TitleBar` 承载的职责边界。
+- 上层 Dialog/Drawer 不按 OS 或 CSD 状态复制 Window frame 几何，而是消费 Window 发布的 `FrameShadowThickness` 和实际 drawn host 能力。
+- 所有桌面平台共用 Window 首次显示主题表面准备流程，`WindowTheme` 是显示完成后的唯一长期背景所有者。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。

@@ -39,6 +39,11 @@ public class WindowTitleBar : TemplatedControl,
     
     public static readonly StyledProperty<IDataTemplate?> TitleTemplateProperty = 
         AvaloniaProperty.Register<WindowTitleBar, IDataTemplate?>(nameof (TitleTemplate));
+
+    public static readonly StyledProperty<WindowTitleBarTitleAlignment> TitleAlignmentProperty =
+        AvaloniaProperty.Register<WindowTitleBar, WindowTitleBarTitleAlignment>(
+            nameof(TitleAlignment),
+            WindowTitleBarTitleAlignment.Auto);
     
     public static readonly StyledProperty<object?> LeftAddOnProperty =
         AvaloniaProperty.Register<WindowTitleBar, object?>(nameof(LeftAddOn));
@@ -96,6 +101,12 @@ public class WindowTitleBar : TemplatedControl,
         set => SetValue(TitleTemplateProperty, value);
     }
 
+    public WindowTitleBarTitleAlignment TitleAlignment
+    {
+        get => GetValue(TitleAlignmentProperty);
+        set => SetValue(TitleAlignmentProperty, value);
+    }
+
     [DependsOn(nameof(LeftAddOnTemplate))]
     public object? LeftAddOn
     {
@@ -145,12 +156,39 @@ public class WindowTitleBar : TemplatedControl,
             nameof(IsEffectiveLogoVisible),
             o => o.IsEffectiveLogoVisible);
 
+    internal static readonly StyledProperty<Thickness> NativeChromeInsetsProperty =
+        AvaloniaProperty.Register<WindowTitleBar, Thickness>(nameof(NativeChromeInsets));
+
+    internal static readonly StyledProperty<bool> IsCsdEnabledProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(IsCsdEnabled));
+
+    internal static readonly StyledProperty<WindowState> HostWindowStateProperty =
+        AvaloniaProperty.Register<WindowTitleBar, WindowState>(nameof(HostWindowState));
+
     private bool _isEffectiveLogoVisible;
 
     internal bool IsEffectiveLogoVisible
     {
         get => _isEffectiveLogoVisible;
         private set => SetAndRaise(IsEffectiveLogoVisibleProperty, ref _isEffectiveLogoVisible, value);
+    }
+
+    internal Thickness NativeChromeInsets
+    {
+        get => GetValue(NativeChromeInsetsProperty);
+        set => SetValue(NativeChromeInsetsProperty, value);
+    }
+
+    internal bool IsCsdEnabled
+    {
+        get => GetValue(IsCsdEnabledProperty);
+        set => SetValue(IsCsdEnabledProperty, value);
+    }
+
+    internal WindowState HostWindowState
+    {
+        get => GetValue(HostWindowStateProperty);
+        set => SetValue(HostWindowStateProperty, value);
     }
 
     #endregion

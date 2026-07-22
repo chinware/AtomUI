@@ -1,6 +1,6 @@
 # Window 桌面版架构设计
 
-本文档定义 `Window` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Window 桌面版实现原理](implementation.md)，Window Token 的专项设计见 [Window Token 设计](token.md)，设计和契约变化记录见 [Window Changelog](changelog.md)。
+本文档定义 `Window` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Window 桌面版实现原理](implementation.md)，Window 与标题栏的对齐协作见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)，Window Token 的专项设计见 [Window Token 设计](token.md)，设计和契约变化记录见 [Window Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -43,7 +43,7 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
-| 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
@@ -127,6 +127,10 @@ Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定
 | 自定义标题栏层 | `TitleBar` | 承载用户自定义标题栏布局、按钮、菜单、搜索框或其他交互控件。 | 用户控件按普通 Avalonia client input 语义命中；空白区域由自定义标题栏自行决定是否保留拖拽。 |
 
 维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要在标题栏放置按钮、菜单或搜索框时，应创建自定义 `WindowTitleBar` 或其他标题栏控件，并设置到 `Window.TitleBar`。
+
+`Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，并把配置单向投影给默认或派生
+`WindowTitleBar`。Window 只提供平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+完整协作模型见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)。
 
 ### 5.2 跨平台首帧主题表面模型
 

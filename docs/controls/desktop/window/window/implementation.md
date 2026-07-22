@@ -1,6 +1,6 @@
 # Window 桌面版实现原理
 
-本文档描述 Window 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Window 桌面版架构设计](overview.md)，变化记录见 [Window Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Window Token 设计](token.md)。
+本文档描述 Window 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Window 桌面版架构设计](overview.md)，Window 与标题栏的对齐协作见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)，变化记录见 [Window Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Window Token 设计](token.md)。
 
 ## 1. 实现定位
 

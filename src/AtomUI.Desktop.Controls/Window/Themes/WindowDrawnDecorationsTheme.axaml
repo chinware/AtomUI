@@ -76,12 +76,24 @@
                                 VerticalAlignment="Top"
                                 Height="{TemplateBinding DefaultTitleBarHeight}"
                                 WindowDecorationProperties.ElementRole="User">
-                            <Panel>
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
-                                            DockPanel.Dock="Left"
-                                            HorizontalAlignment="Center">
+                            <atom:WindowTitleBarLayoutPanel
+                                Padding="{atom:WindowTokenResource FullscreenHeaderFramePadding}"
+                                TitleAlignment="{Binding $parent[atom:Window].TitleAlignment}"
+                                OsType="{Binding $parent[atom:Window].OsType}"
+                                NativeChromeInsets="0"
+                                IsCsdEnabled="{Binding $parent[atom:Window].IsCsdEnabled}"
+                                WindowState="FullScreen"
+                                HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}"
+                                ClipToBounds="True">
+                                <Panel atom:WindowTitleBarLayoutPanel.Role="Leading" />
+                                <DockPanel atom:WindowTitleBarLayoutPanel.Role="Title"
+                                           LastChildFill="True"
+                                           HorizontalSpacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
+                                           VerticalAlignment="Center"
+                                           IsHitTestVisible="False"
+                                           ClipToBounds="True">
                                     <ContentPresenter Name="FullscreenLogoPresenter"
+                                                      DockPanel.Dock="Left"
                                                       HorizontalAlignment="Left"
                                                       VerticalAlignment="Center"
                                                       HorizontalContentAlignment="Center"
@@ -93,12 +105,14 @@
                                                HorizontalAlignment="Left"
                                                VerticalAlignment="Center"
                                                IsHitTestVisible="False"
+                                               TextWrapping="NoWrap"
+                                               TextTrimming="CharacterEllipsis"
                                                Text="{TemplateBinding Title}"
                                                IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                                </StackPanel>
+                                </DockPanel>
                                 
-                                <StackPanel Name="CaptionButtonGroup" 
-                                            HorizontalAlignment="Right"
+                                <StackPanel Name="CaptionButtonGroup"
+                                            atom:WindowTitleBarLayoutPanel.Role="Trailing"
                                             VerticalAlignment="Center"
                                             Orientation="Horizontal">
                                     <atom:CaptionButton
@@ -114,7 +128,7 @@
                                         NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}"
                                         WindowDecorationProperties.ElementRole="CloseButton"/>
                                 </StackPanel>
-                            </Panel>
+                            </atom:WindowTitleBarLayoutPanel>
                         </Border>
                     </WindowDrawnDecorationsContent.FullscreenPopover>
 
@@ -162,7 +176,6 @@
         <Style Selector="^:fullscreen /template/ Border#FullscreenHeaderFrame">
             <Setter Property="Background" Value="{atom:WindowTokenResource DefaultBackground}" />
             <Setter Property="BoxShadow" Value="{atom:WindowTokenResource FullscreenPopoverShadows}" />
-            <Setter Property="Padding" Value="{atom:WindowTokenResource FullscreenHeaderFramePadding}" />
         </Style>
         
         <Style Selector="^:fullscreen /template/ TextBlock#FullscreenTitleText">

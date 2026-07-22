@@ -23,7 +23,7 @@ public class ImagePreviewerTitleBarThemeTests
     }
 
     [Fact]
-    public void ImagePreviewer_Linux_TitleBar_Applies_Frame_Padding_To_Caption_Buttons()
+    public void ImagePreviewer_Linux_TitleBar_Applies_Frame_Padding_Through_Shared_Layout()
     {
         var document = XDocument.Load(GetRepoFile(
             "src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTitleBarTheme.axaml"));
@@ -35,15 +35,15 @@ public class ImagePreviewerTitleBarThemeTests
         var template = linuxStyle.Descendants()
                                  .Single(element => element.Name.LocalName == "ControlTemplate");
         var frame = template.Elements().Single();
+        var layoutPanel = frame.Elements().Single();
         var captionButtonGroup = FindTemplatePart(template, "PART_CaptionButtonGroup");
 
         frame.Name.LocalName.ShouldBe("Border");
         frame.Attribute("Name")?.Value.ShouldBe("Frame");
-        frame.Attribute("Padding")?.Value.ShouldBe("{TemplateBinding Padding}");
-        captionButtonGroup.Ancestors().ShouldContain(frame);
-        captionButtonGroup.Parent.ShouldNotBeNull();
-        captionButtonGroup.Parent.Name.LocalName.ShouldBe("DockPanel");
-        captionButtonGroup.Parent.Parent.ShouldBe(frame);
+        frame.Attribute("Padding").ShouldBeNull();
+        layoutPanel.Name.LocalName.ShouldBe("WindowTitleBarLayoutPanel");
+        layoutPanel.Attribute("Padding")?.Value.ShouldBe("{TemplateBinding Padding}");
+        captionButtonGroup.Ancestors().ShouldContain(layoutPanel);
     }
 
     [Fact]
@@ -60,33 +60,27 @@ public class ImagePreviewerTitleBarThemeTests
                                    .Single(element => element.Name.LocalName == "ControlTemplate");
         var frame = template.Elements().Single();
         var captionButtonGroup = FindTemplatePart(template, "PART_CaptionButtonGroup");
-        var rootDockPanel = frame.Elements().Single();
-        var contentPanel = rootDockPanel.Elements()
-                                        .Single(element => element.Name.LocalName == "Panel");
+        var layoutPanel = frame.Elements().Single();
         var leftPaddingConverter = FindResource(document.Root!, "WindowTitleBarLeftPaddingConverter");
 
         frame.Name.LocalName.ShouldBe("Border");
         frame.Attribute("Name")?.Value.ShouldBe("Frame");
         frame.Attribute("Background")?.Value.ShouldBe("{TemplateBinding Background}");
         frame.Attribute("Padding").ShouldBeNull();
-        rootDockPanel.Name.LocalName.ShouldBe("DockPanel");
-        rootDockPanel.Parent.ShouldBe(frame);
-        contentPanel.Attribute("Margin")?.Value.ShouldBe(
+        layoutPanel.Name.LocalName.ShouldBe("WindowTitleBarLayoutPanel");
+        layoutPanel.Parent.ShouldBe(frame);
+        layoutPanel.Attribute("Padding")?.Value.ShouldBe(
             "{TemplateBinding Padding, Converter={StaticResource WindowTitleBarLeftPaddingConverter}}");
         leftPaddingConverter.Name.LocalName.ShouldBe("BorderThicknessFilterConverter");
         leftPaddingConverter.Attribute("Left")?.Value.ShouldNotBe("False");
         leftPaddingConverter.Attribute("Right")?.Value.ShouldBe("False");
         leftPaddingConverter.Attribute("Top")?.Value.ShouldBe("False");
         leftPaddingConverter.Attribute("Bottom")?.Value.ShouldBe("False");
-        captionButtonGroup.Ancestors().ShouldContain(frame);
-        captionButtonGroup.Attribute("DockPanel.Dock")?.Value.ShouldBe("Right");
-        captionButtonGroup.Parent.ShouldNotBeNull();
-        captionButtonGroup.Parent.ShouldBe(rootDockPanel);
-        captionButtonGroup.Parent.Parent.ShouldBe(frame);
+        captionButtonGroup.Ancestors().ShouldContain(layoutPanel);
     }
 
     [Fact]
-    public void ImagePreviewer_TitleBar_Template_Centers_Title_Outside_LeftAddOn_Flow()
+    public void ImagePreviewer_TitleBar_Templates_Use_One_Shared_Layout_With_Three_Roles()
     {
         var document = XDocument.Load(GetRepoFile(
             "src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTitleBarTheme.axaml"));
@@ -99,30 +93,40 @@ public class ImagePreviewerTitleBarThemeTests
 
         foreach (var template in templates)
         {
-            var leftAddOnPresenter = FindTemplatePart(template, "PART_LeftAddOn");
-            var titlePresenter     = FindTemplatePart(template, "PART_ContentPresenter");
+            var frame = template.Elements().Single();
+            var layoutPanel = frame.Elements().Single();
+            var directChildren = layoutPanel.Elements().ToList();
 
-            titlePresenter.Attribute("HorizontalAlignment")?.Value.ShouldBe("Center");
-            titlePresenter.Attribute("Content")?.Value.ShouldBe("{TemplateBinding Title}");
-            titlePresenter.Attribute("IsHitTestVisible")?.Value.ShouldBe("False");
-            titlePresenter.Attribute("DockPanel.Dock").ShouldBeNull();
-            titlePresenter.Parent.ShouldNotBeNull();
-            titlePresenter.Parent.Name.LocalName.ShouldBe("StackPanel");
-            titlePresenter.Parent.Parent.ShouldNotBeNull();
-            titlePresenter.Parent.Parent.Name.LocalName.ShouldBe("Panel");
+            frame.Name.LocalName.ShouldBe("Border");
+            frame.Attribute("Padding").ShouldBeNull();
+            layoutPanel.Name.LocalName.ShouldBe("WindowTitleBarLayoutPanel");
+            layoutPanel.Attribute("TitleAlignment")?.Value.ShouldBe("{TemplateBinding TitleAlignment}");
+            layoutPanel.Attribute("OsType")?.Value.ShouldBe("{TemplateBinding OsType}");
+            layoutPanel.Attribute("NativeChromeInsets")?.Value.ShouldBe("{TemplateBinding NativeChromeInsets}");
+            layoutPanel.Attribute("IsCsdEnabled")?.Value.ShouldBe("{TemplateBinding IsCsdEnabled}");
+            layoutPanel.Attribute("WindowState")?.Value.ShouldBe("{TemplateBinding HostWindowState}");
+            layoutPanel.Attribute("HorizontalSpacing")?.Value.ShouldBe(
+                "{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}");
 
-            var leftAddOnStack = FindNearestAncestor(leftAddOnPresenter, "StackPanel");
-            var titleStack     = FindNearestAncestor(titlePresenter, "StackPanel");
+            directChildren.Count(child => GetLayoutRole(child) == "Leading").ShouldBe(1);
+            directChildren.Count(child => GetLayoutRole(child) == "Title").ShouldBe(1);
+            directChildren.Count(child => GetLayoutRole(child) == "Trailing").ShouldBe(1);
 
-            if (leftAddOnStack is not null && titleStack is not null)
-            {
-                titleStack.ShouldNotBe(leftAddOnStack);
-            }
+            FindTemplatePart(template, "PART_LeftAddOn").Parent.ShouldBe(layoutPanel);
+            FindTemplatePart(template, "PART_TitleLayout").Parent.ShouldBe(layoutPanel);
+            FindTemplatePart(template, "PART_RightAddOn")
+                .Ancestors()
+                .First(element => element.Parent == layoutPanel)
+                .ShouldBe(directChildren.Single(child => GetLayoutRole(child) == "Trailing"));
+            FindTemplatePart(template, "PART_CaptionButtonGroup")
+                .Ancestors()
+                .First(element => element.Parent == layoutPanel)
+                .ShouldBe(directChildren.Single(child => GetLayoutRole(child) == "Trailing"));
         }
     }
 
     [Fact]
-    public void ImagePreviewer_TitleBar_Template_Places_Explicit_Icon_Before_Title_In_Title_Group()
+    public void ImagePreviewer_TitleBar_Template_Constrains_The_Title_After_The_Explicit_Icon()
     {
         var document = XDocument.Load(GetRepoFile(
             "src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTitleBarTheme.axaml"));
@@ -139,17 +143,23 @@ public class ImagePreviewerTitleBarThemeTests
             var iconPresenter  = FindTemplatePart(template, "PART_IconPresenter");
             var titlePresenter = FindTemplatePart(template, "PART_ContentPresenter");
 
-            titleLayout.Name.LocalName.ShouldBe("StackPanel");
-            titleLayout.Attribute("Orientation")?.Value.ShouldBe("Horizontal");
-            titleLayout.Attribute("HorizontalAlignment")?.Value.ShouldBe("Center");
-            titleLayout.Attribute("Spacing")?.Value.ShouldBe("{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}");
+            titleLayout.Name.LocalName.ShouldBe("DockPanel");
+            titleLayout.Attribute("LastChildFill")?.Value.ShouldBe("True");
+            GetLayoutRole(titleLayout).ShouldBe("Title");
+            titleLayout.Attribute("IsHitTestVisible")?.Value.ShouldBe("False");
+            titleLayout.Attribute("ClipToBounds")?.Value.ShouldBe("True");
+            titleLayout.Attribute("HorizontalSpacing")?.Value.ShouldBe(
+                "{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}");
 
             iconPresenter.Name.LocalName.ShouldBe("IconPresenter");
+            iconPresenter.Attribute("DockPanel.Dock")?.Value.ShouldBe("Left");
             iconPresenter.Attribute("Icon")?.Value.ShouldBe("{TemplateBinding Icon}");
             iconPresenter.Attribute("IsVisible")?.Value.ShouldBe("{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}");
             iconPresenter.Parent.ShouldBe(titleLayout);
             titlePresenter.Parent.ShouldBe(titleLayout);
             iconPresenter.ElementsAfterSelf().ShouldContain(titlePresenter);
+            titlePresenter.Attribute("TextWrapping")?.Value.ShouldBe("NoWrap");
+            titlePresenter.Attribute("TextTrimming")?.Value.ShouldBe("CharacterEllipsis");
         }
 
         document.ToString().ShouldNotContain("PART_Logo");
@@ -191,10 +201,12 @@ public class ImagePreviewerTitleBarThemeTests
         return resource;
     }
 
-    private static XElement? FindNearestAncestor(XElement element, string localName)
+    private static string? GetLayoutRole(XElement element)
     {
-        return element.Ancestors()
-                      .FirstOrDefault(ancestor => ancestor.Name.LocalName == localName);
+        return element.Attributes()
+                      .SingleOrDefault(attribute =>
+                          attribute.Name.LocalName == "WindowTitleBarLayoutPanel.Role")
+                      ?.Value;
     }
 
     private static string GetRepoFile(string relativePath)

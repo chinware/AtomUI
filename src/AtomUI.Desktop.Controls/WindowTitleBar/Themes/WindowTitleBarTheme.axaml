@@ -16,44 +16,62 @@
     <Style Selector="^[OsType=Linux]">
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:WindowTitleBar">
-                <Border Name="Frame" Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}">
-                    <DockPanel LastChildFill="True"
-                               HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}">
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
-                                    DockPanel.Dock="Left">
+                <Border Name="Frame" Background="{TemplateBinding Background}">
+                    <atom:WindowTitleBarLayoutPanel
+                        Padding="{TemplateBinding Padding}"
+                        TitleAlignment="{TemplateBinding TitleAlignment}"
+                        OsType="{TemplateBinding OsType}"
+                        NativeChromeInsets="{TemplateBinding NativeChromeInsets}"
+                        IsCsdEnabled="{TemplateBinding IsCsdEnabled}"
+                        WindowState="{TemplateBinding HostWindowState}"
+                        HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}"
+                        ClipToBounds="True">
+                        <ContentPresenter Name="PART_LeftAddOn"
+                                          atom:WindowTitleBarLayoutPanel.Role="Leading"
+                                          VerticalAlignment="Center"
+                                          VerticalContentAlignment="Center"
+                                          Content="{TemplateBinding LeftAddOn}"
+                                          ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                                          IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <DockPanel atom:WindowTitleBarLayoutPanel.Role="Title"
+                                   LastChildFill="True"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False"
+                                   ClipToBounds="True"
+                                   HorizontalSpacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
                             <ContentPresenter Name="PART_Logo"
+                                              DockPanel.Dock="Left"
                                               HorizontalAlignment="Left"
                                               VerticalAlignment="Center"
                                               HorizontalContentAlignment="Center"
                                               VerticalContentAlignment="Center"
                                               Content="{TemplateBinding Logo}"
                                               ContentTemplate="{TemplateBinding LogoTemplate}"
-                                              IsVisible="{TemplateBinding IsEffectiveLogoVisible}"/>
-                            <ContentPresenter Name="PART_LeftAddOn"
-                                              Content="{TemplateBinding LeftAddOn}"
-                                              ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
-                                              IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                              IsVisible="{TemplateBinding IsEffectiveLogoVisible}" />
                             <ContentPresenter Name="PART_ContentPresenter"
                                               HorizontalAlignment="Left"
                                               VerticalAlignment="Center"
                                               IsHitTestVisible="False"
+                                              ClipToBounds="True"
+                                              TextWrapping="NoWrap"
+                                              TextTrimming="CharacterEllipsis"
                                               Content="{TemplateBinding Title}"
                                               ContentTemplate="{TemplateBinding TitleTemplate}"
                                               IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                        </StackPanel>
-                        <DockPanel LastChildFill="True">
-                            <atom:CaptionButtonGroup DockPanel.Dock="Right"
-                                                     Name="PART_CaptionButtonGroup"
-                                                     IsWindowActive="{TemplateBinding IsWindowActive}"
-                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        </DockPanel>
+                        <StackPanel atom:WindowTitleBarLayoutPanel.Role="Trailing"
+                                    Orientation="Horizontal">
                             <ContentPresenter Name="PART_RightAddOn"
+                                              VerticalAlignment="Center"
+                                              VerticalContentAlignment="Center"
                                               Content="{TemplateBinding RightAddOn}"
                                               ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                                               IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                        </DockPanel>
-                    </DockPanel>
+                            <atom:CaptionButtonGroup Name="PART_CaptionButtonGroup"
+                                                     IsWindowActive="{TemplateBinding IsWindowActive}"
+                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        </StackPanel>
+                    </atom:WindowTitleBarLayoutPanel>
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -63,43 +81,61 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:WindowTitleBar">
                 <Border Name="Frame" Background="{TemplateBinding Background}">
-                    <DockPanel LastChildFill="True"
-                               HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}">
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
-                                    DockPanel.Dock="Left"
-                                    Margin="{TemplateBinding Padding, Converter={StaticResource WindowTitleBarLeftPaddingConverter}}">
+                    <atom:WindowTitleBarLayoutPanel
+                        Padding="{TemplateBinding Padding, Converter={StaticResource WindowTitleBarLeftPaddingConverter}}"
+                        TitleAlignment="{TemplateBinding TitleAlignment}"
+                        OsType="{TemplateBinding OsType}"
+                        NativeChromeInsets="{TemplateBinding NativeChromeInsets}"
+                        IsCsdEnabled="{TemplateBinding IsCsdEnabled}"
+                        WindowState="{TemplateBinding HostWindowState}"
+                        HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}"
+                        ClipToBounds="True">
+                        <ContentPresenter Name="PART_LeftAddOn"
+                                          atom:WindowTitleBarLayoutPanel.Role="Leading"
+                                          VerticalAlignment="Center"
+                                          VerticalContentAlignment="Center"
+                                          Content="{TemplateBinding LeftAddOn}"
+                                          ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                                          IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <DockPanel atom:WindowTitleBarLayoutPanel.Role="Title"
+                                   LastChildFill="True"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False"
+                                   ClipToBounds="True"
+                                   HorizontalSpacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
                             <ContentPresenter Name="PART_Logo"
+                                              DockPanel.Dock="Left"
                                               HorizontalAlignment="Left"
                                               VerticalAlignment="Center"
                                               HorizontalContentAlignment="Center"
                                               VerticalContentAlignment="Center"
                                               Content="{TemplateBinding Logo}"
                                               ContentTemplate="{TemplateBinding LogoTemplate}"
-                                              IsVisible="{TemplateBinding IsEffectiveLogoVisible}"/>
-                            <ContentPresenter Name="PART_LeftAddOn"
-                                              Content="{TemplateBinding LeftAddOn}"
-                                              ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
-                                              IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                              IsVisible="{TemplateBinding IsEffectiveLogoVisible}" />
                             <ContentPresenter Name="PART_ContentPresenter"
                                               HorizontalAlignment="Left"
                                               VerticalAlignment="Center"
                                               IsHitTestVisible="False"
+                                              ClipToBounds="True"
+                                              TextWrapping="NoWrap"
+                                              TextTrimming="CharacterEllipsis"
                                               Content="{TemplateBinding Title}"
                                               ContentTemplate="{TemplateBinding TitleTemplate}"
                                               IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                        </StackPanel>
-                        <DockPanel LastChildFill="True">
-                            <atom:CaptionButtonGroup DockPanel.Dock="Right"
-                                                     Name="PART_CaptionButtonGroup"
-                                                     IsWindowActive="{TemplateBinding IsWindowActive}"
-                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        </DockPanel>
+                        <StackPanel atom:WindowTitleBarLayoutPanel.Role="Trailing"
+                                    Orientation="Horizontal">
                             <ContentPresenter Name="PART_RightAddOn"
+                                              VerticalAlignment="Center"
+                                              VerticalContentAlignment="Center"
                                               Content="{TemplateBinding RightAddOn}"
                                               ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                                               IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                        </DockPanel>
-                    </DockPanel>
+                            <atom:CaptionButtonGroup Name="PART_CaptionButtonGroup"
+                                                     IsWindowActive="{TemplateBinding IsWindowActive}"
+                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        </StackPanel>
+                    </atom:WindowTitleBarLayoutPanel>
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -108,48 +144,62 @@
     <Style Selector="^[OsType=macOS]">
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:WindowTitleBar">
-                <Border Name="Frame" Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}">
-                    <DockPanel LastChildFill="True" VerticalAlignment="Center">
+                <Border Name="Frame" Background="{TemplateBinding Background}">
+                    <atom:WindowTitleBarLayoutPanel
+                        Padding="{TemplateBinding Padding}"
+                        TitleAlignment="{TemplateBinding TitleAlignment}"
+                        OsType="{TemplateBinding OsType}"
+                        NativeChromeInsets="{TemplateBinding NativeChromeInsets}"
+                        IsCsdEnabled="{TemplateBinding IsCsdEnabled}"
+                        WindowState="{TemplateBinding HostWindowState}"
+                        HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}"
+                        ClipToBounds="True">
                         <ContentPresenter Name="PART_LeftAddOn"
-                                          DockPanel.Dock="Left"
+                                          atom:WindowTitleBarLayoutPanel.Role="Leading"
+                                          VerticalAlignment="Center"
+                                          VerticalContentAlignment="Center"
                                           Content="{TemplateBinding LeftAddOn}"
                                           ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
                                           IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-
-                        <DockPanel LastChildFill="True"
-                                   DockPanel.Dock="Right">
-                            <atom:CaptionButtonGroup DockPanel.Dock="Right"
-                                                     Name="PART_CaptionButtonGroup"
-                                                     IsWindowActive="{TemplateBinding IsWindowActive}"
-                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        <DockPanel atom:WindowTitleBarLayoutPanel.Role="Title"
+                                   LastChildFill="True"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False"
+                                   ClipToBounds="True"
+                                   HorizontalSpacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
+                            <ContentPresenter Name="PART_Logo"
+                                              DockPanel.Dock="Left"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Center"
+                                              HorizontalContentAlignment="Center"
+                                              VerticalContentAlignment="Center"
+                                              Content="{TemplateBinding Logo}"
+                                              ContentTemplate="{TemplateBinding LogoTemplate}"
+                                              IsVisible="{TemplateBinding IsEffectiveLogoVisible}" />
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Center"
+                                              IsHitTestVisible="False"
+                                              ClipToBounds="True"
+                                              TextWrapping="NoWrap"
+                                              TextTrimming="CharacterEllipsis"
+                                              Content="{TemplateBinding Title}"
+                                              ContentTemplate="{TemplateBinding TitleTemplate}"
+                                              IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </DockPanel>
+                        <StackPanel atom:WindowTitleBarLayoutPanel.Role="Trailing"
+                                    Orientation="Horizontal">
                             <ContentPresenter Name="PART_RightAddOn"
+                                              VerticalAlignment="Center"
+                                              VerticalContentAlignment="Center"
                                               Content="{TemplateBinding RightAddOn}"
                                               ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                                               IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                        </DockPanel>
-
-                        <Panel>
-                            <StackPanel Orientation="Horizontal"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
-                                <ContentPresenter Name="PART_Logo"
-                                                  HorizontalContentAlignment="Center"
-                                                  VerticalContentAlignment="Center"
-                                                  Content="{TemplateBinding Logo}"
-                                                  ContentTemplate="{TemplateBinding LogoTemplate}"
-                                                  IsVisible="{TemplateBinding IsEffectiveLogoVisible}"/>
-                                <ContentPresenter
-                                    Name="PART_ContentPresenter"
-                                    IsHitTestVisible="False"
-                                    Content="{TemplateBinding Title}"
-                                    ContentTemplate="{TemplateBinding TitleTemplate}"
-                                    IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                            </StackPanel>
-                        </Panel>
-
-                    </DockPanel>
+                            <atom:CaptionButtonGroup Name="PART_CaptionButtonGroup"
+                                                     IsWindowActive="{TemplateBinding IsWindowActive}"
+                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        </StackPanel>
+                    </atom:WindowTitleBarLayoutPanel>
                 </Border>
             </ControlTemplate>
         </Setter>

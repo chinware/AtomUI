@@ -57,8 +57,7 @@
                                                               ContentTemplate="{TemplateBinding TitleBarFrameLayerTemplate}"
                                                               Opacity="{TemplateBinding TitleBarFrameLayerOpacity}"
                                                               ClipToBounds="True" />
-                                            <ContentPresenter Padding="{TemplateBinding TitleBarOffsetMargin}"
-                                                              Content="{TemplateBinding TitleBar}" />
+                                            <ContentPresenter Content="{TemplateBinding TitleBar}" />
                                         </Panel>
                                         <Panel>
                                             <ContentPresenter Name="ContentFrameLayer"
@@ -128,8 +127,7 @@
                                                       ContentTemplate="{TemplateBinding TitleBarFrameLayerTemplate}"
                                                       Opacity="{TemplateBinding TitleBarFrameLayerOpacity}"
                                                       ClipToBounds="True" />
-                                    <ContentPresenter Padding="{TemplateBinding TitleBarOffsetMargin}"
-                                                      Content="{TemplateBinding TitleBar}" />
+                                    <ContentPresenter Content="{TemplateBinding TitleBar}" />
                                 </Panel>
                                 <Panel>
                                     <ContentPresenter Name="ContentFrameLayer"

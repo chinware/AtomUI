@@ -997,6 +997,8 @@ internal class ImagePreviewerDialog : Window,
 
     protected override void NotifyConfigureTitleBar(WindowTitleBar titleBar)
     {
+        base.NotifyConfigureTitleBar(titleBar);
+
         // 使用预览标题算法结果，而不是直接展示 Window.Title。
         titleBar[!WindowTitleBar.TitleProperty] = this[!EffectivePreviewTitleProperty];
 

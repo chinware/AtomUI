@@ -45,7 +45,7 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
-| 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
@@ -141,6 +141,27 @@ Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定
 
 维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要在标题栏放置按钮、菜单或搜索框时，应创建自定义 `WindowTitleBar` 或其他标题栏控件，并设置到 `Window.TitleBar`。
 
+`Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，并把配置单向投影给默认或派生
+`WindowTitleBar`。Window 只提供平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+完整协作模型见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)。
+
+### 5.2 跨平台首帧主题表面模型
+
+Windows、macOS 和 Linux 共用同一个首次显示主题契约：平台窗口进入可见状态前，`Window` 必须已经获得目标
+`ThemeContext`、与该 context 一致的 `RequestedThemeVariant`，以及当前 Window Token scope 中的首帧背景。
+该契约由 `Window` 的共享显示生命周期负责，不属于 Win32、AppKit、X11 或 Wayland chrome manager 的职责。
+
+首次显示按以下所有权模型维护：
+
+- `WindowTheme.axaml` 是窗口背景的唯一长期视觉所有者，`WindowToken.DefaultBackground` 是默认背景语义真源。
+- `Show` 和 `ShowDialog` 的所有 AtomUI 入口必须先解析 owner 作用域并挂载可释放的 `ThemeContext` lease，再进入 Avalonia 的平台显示流程。
+- 在正式 ControlTheme 接管前，`Window` 从已提交的当前作用域 Snapshot 同步读取一次默认背景，并以低于用户 local value 的优先级临时预热 `Background` 与 `TransparencyBackgroundFallback`。
+- 首帧预热只覆盖同步显示临界区，不订阅资源变化；Avalonia 完成同步样式应用后立即释放临时值，由正式 ControlTheme 继续响应主题切换。
+- 用户显式设置的 `Background` 或 `TransparencyBackgroundFallback` 始终优先，首帧预热不得改写或清除用户 local value。
+- 平台 chrome manager 只处理窗口装饰、原生几何和平台能力投影，不得分别复制 ThemeContext、Token 查找或首帧背景算法。
+
+如果上述 managed 状态在平台显示前已经正确，某个平台仍然暴露尚未提交内容的原生空白 surface，则该问题属于平台后端边界。此时应通过统一的平台能力接口提供最小后备实现，并分别验证对应后端；不得把平台消息、延时显示或透明度切换混入共享主题状态机。
+
 Token 来源：
 
 Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
@@ -163,6 +184,7 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 首次显示主题表面使用一次性 Snapshot 读取，不为同步 `Show` 临界区创建资源 observable 或订阅。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 源码索引
@@ -194,8 +216,8 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 ## 相关文档
 
-- 源设计文档：`docs/controls/desktop/window/window/overview.md`
-- 实现文档：`docs/controls/desktop/window/window/implementation.md`
-- Token 文档：`docs/controls/desktop/window/window/token.md`
-- 变更记录：`docs/controls/desktop/window/window/changelog.md`
+- 源设计文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/overview.md`
+- 实现文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/implementation.md`
+- Token 文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/token.md`
+- 变更记录：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/changelog.md`
 - 语义结构：`./semantic-cn.md`
