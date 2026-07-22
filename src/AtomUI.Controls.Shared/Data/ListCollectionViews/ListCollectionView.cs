@@ -10,7 +10,7 @@ using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
 
-internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyChanged, IDisposable
+internal partial class ListCollectionView : IListCollectionView, IList, INotifyPropertyChanged, IDisposable
 {
     #region 公共属性定义
 
@@ -719,7 +719,9 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
         _group.GroupDescriptionChanged             += HandleGroupDescriptionChanged;
         _group.GroupDescriptions.CollectionChanged += HandleGroupByChanged;
 
+        InitializeEntryProjection();
         CopySourceToInternalList();
+        RebuildEntryProjection();
         _trackingEnumerator = source.GetEnumerator();
 
         Debug.Assert(_internalList != null);
@@ -2407,59 +2409,45 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
             return;
         }
 
-        if (args.Action == NotifyCollectionChangedAction.Reset)
+        if (TryProcessEntryCollectionChanged(args))
         {
-            var enumerator = SourceCollection.GetEnumerator();
-            try
-            {
-                // if we have no items now, clear our own internal list
-                if (!enumerator.MoveNext())
-                {
-                    _internalList.Clear();
-                }
-            }
-            finally
-            {
-                if (enumerator is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
-            }
-
-            // calling Refresh, will fire the collectionchanged event
-            RefreshOrDefer();
             return;
         }
 
-        // fire notifications for removes
-        if (args.OldItems != null &&
-            (args.Action == NotifyCollectionChangedAction.Remove ||
-             args.Action == NotifyCollectionChangedAction.Replace))
+        // Transformed views cannot safely update their internal list by item value:
+        // equal values and repeated references are distinct source occurrences. Update
+        // the occurrence store by the indexed notification first, then rebuild the
+        // complete view from entry identities.
+        var entryChange = args.Action switch
         {
-            foreach (var removedItem in args.OldItems)
-            {
-                ProcessRemoveEvent(removedItem, args.Action == NotifyCollectionChangedAction.Replace);
-            }
-        }
+            NotifyCollectionChangedAction.Add when args.NewItems is not null && args.NewStartingIndex >= 0
+                => _entryStore.Add(args.NewStartingIndex, args.NewItems),
+            NotifyCollectionChangedAction.Remove when args.OldItems is not null && args.OldStartingIndex >= 0
+                => _entryStore.Remove(args.OldStartingIndex, args.OldItems.Count),
+            NotifyCollectionChangedAction.Move when args.OldItems is not null &&
+                                                    args.OldStartingIndex >= 0 &&
+                                                    args.NewStartingIndex >= 0
+                => _entryStore.Move(args.OldStartingIndex, args.NewStartingIndex, args.OldItems.Count),
+            NotifyCollectionChangedAction.Replace when args.OldItems is not null &&
+                                                       args.NewItems is not null &&
+                                                       args.OldStartingIndex >= 0
+                => _entryStore.Replace(args.OldStartingIndex, args.OldItems, args.NewItems),
+            NotifyCollectionChangedAction.Reset => _entryStore.Reset(_sourceCollection),
+            _ => throw new InvalidOperationException($"An indexed collection notification is required for {args.Action}.")
+        };
 
-        // fire notifications for adds
-        if (args.NewItems != null &&
-            (args.Action == NotifyCollectionChangedAction.Add ||
-             args.Action == NotifyCollectionChangedAction.Replace))
+        EntryChangePrepared?.Invoke(this, new ListCollectionEntryChangeEventArgs(entryChange));
+        try
         {
-            for (var i = 0; i < args.NewItems.Count; i++)
-            {
-                if (Filter == null || PassesFilter(args.NewItems[i]!))
-                {
-                    ProcessAddEvent(args.NewItems[i]!, args.NewStartingIndex + i);
-                }
-            }
+            // RefreshOverride rebuilds the internal value view and the EntryId projection
+            // before publishing the reset notification.
+            RefreshInternal();
         }
-
-        if (args.Action != NotifyCollectionChangedAction.Replace)
+        finally
         {
-            NotifyPropertyChanged(nameof(ItemCount));
+            EntryChangeCommitted?.Invoke(this, EventArgs.Empty);
         }
+        return;
     }
 
     /// <summary>
@@ -2700,9 +2688,12 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
             MoveToPage(PageCount - 1);
         }
 
+        RebuildEntryProjection();
+
         HandleCollectionChanged(
             new NotifyCollectionChangedEventArgs(
                 NotifyCollectionChangedAction.Reset));
+        ProjectionCommitted?.Invoke(this, EventArgs.Empty);
     }
     
     /// <summary>

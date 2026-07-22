@@ -8,7 +8,7 @@ public interface ISelectOption : IListItemData
     bool IsDynamicAdded { get; }
 }
 
-public record SelectOption : ListItemData, ISelectOption, IGroupListItemData
+public class SelectOption : ListItemData, ISelectOption, IGroupListItemData
 {
     public object? Header { get; init; }
 

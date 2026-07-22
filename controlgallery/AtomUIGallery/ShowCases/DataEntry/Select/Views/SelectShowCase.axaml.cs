@@ -299,7 +299,7 @@ public partial class SelectShowCase : GalleryReactiveUserControl<SelectViewModel
     }
 }
 
-public record CustomOption : SelectOption
+public class CustomOption : SelectOption
 {
     public string? Description { get; init; }
     public string? Emoji { get; init; }

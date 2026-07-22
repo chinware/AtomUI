@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
@@ -9,11 +8,9 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Selection;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Metadata;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -24,437 +21,182 @@ public partial class ListView
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> AutoScrollToSelectedItemProperty =
-        AvaloniaProperty.Register<ListView, bool>(
-            nameof(AutoScrollToSelectedItem),
-            defaultValue: true);
-    
+        AvaloniaProperty.Register<ListView, bool>(nameof(AutoScrollToSelectedItem), true);
+
+    public static readonly DirectProperty<ListView, IListViewSelection> SelectionProperty =
+        AvaloniaProperty.RegisterDirect<ListView, IListViewSelection>(nameof(Selection), o => o.Selection);
+
     public static readonly DirectProperty<ListView, int> SelectedIndexProperty =
         AvaloniaProperty.RegisterDirect<ListView, int>(
-            nameof(SelectedIndex),
-            o => o.SelectedIndex,
-            (o, v) => o.SelectedIndex = v,
-            unsetValue: -1,
-            defaultBindingMode: BindingMode.TwoWay);
-    
+            nameof(SelectedIndex), o => o.SelectedIndex, (o, value) => o.SelectedIndex = value,
+            unsetValue: -1, defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly DirectProperty<ListView, IReadOnlyList<int>> SelectedIndexesProperty =
+        AvaloniaProperty.RegisterDirect<ListView, IReadOnlyList<int>>(nameof(SelectedIndexes), o => o.SelectedIndexes);
+
     public static readonly DirectProperty<ListView, object?> SelectedItemProperty =
-        AvaloniaProperty.RegisterDirect<ListView, object?>(
-            nameof(SelectedItem),
-            o => o.SelectedItem,
-            (o, v) => o.SelectedItem = v,
-            defaultBindingMode: BindingMode.TwoWay, enableDataValidation: true);
-    
-    public static readonly StyledProperty<object?> SelectedValueProperty =
-        AvaloniaProperty.Register<ListView, object?>(nameof(SelectedValue),
-            defaultBindingMode: BindingMode.TwoWay);
+        AvaloniaProperty.RegisterDirect<ListView, object?>(nameof(SelectedItem), o => o.SelectedItem);
+
+    public static readonly DirectProperty<ListView, IReadOnlyList<object?>> SelectedItemsProperty =
+        AvaloniaProperty.RegisterDirect<ListView, IReadOnlyList<object?>>(nameof(SelectedItems), o => o.SelectedItems);
+
+    public static readonly DirectProperty<ListView, object?> SelectedValueProperty =
+        AvaloniaProperty.RegisterDirect<ListView, object?>(nameof(SelectedValue), o => o.SelectedValue);
 
     public static readonly StyledProperty<BindingBase?> SelectedValueBindingProperty =
         AvaloniaProperty.Register<ListView, BindingBase?>(nameof(SelectedValueBinding));
-    
-    public static readonly DirectProperty<ListView, IList?> SelectedItemsProperty =
-        AvaloniaProperty.RegisterDirect<ListView, IList?>(
-            nameof(SelectedItems),
-            o => o.SelectedItems,
-            (o, v) => o.SelectedItems = v,
-            defaultBindingMode: BindingMode.TwoWay,
-            enableDataValidation: true);
-    
-    public static readonly DirectProperty<ListView, ISelectionModel> SelectionProperty =
-        AvaloniaProperty.RegisterDirect<ListView, ISelectionModel>(
-            nameof(Selection),
-            o => o.Selection,
-            (o, v) => o.Selection = v);
-    
+
+    public static readonly StyledProperty<ListItemKeySelector?> ItemKeySelectorProperty =
+        AvaloniaProperty.Register<ListView, ListItemKeySelector?>(nameof(ItemKeySelector));
+
     public static readonly StyledProperty<SelectionMode> SelectionModeProperty =
-        AvaloniaProperty.Register<ListView, SelectionMode>(
-            nameof(SelectionMode));
-    
+        AvaloniaProperty.Register<ListView, SelectionMode>(nameof(SelectionMode));
+
     public static readonly StyledProperty<bool> IsSelectedProperty =
-        AvaloniaProperty.RegisterAttached<ListView, Control, bool>(
-            "IsSelected",
-            defaultBindingMode: BindingMode.TwoWay);
-    
+        AvaloniaProperty.RegisterAttached<ListView, Control, bool>("IsSelected", defaultBindingMode: BindingMode.TwoWay);
+
     public static readonly StyledProperty<bool> IsTextSearchEnabledProperty =
         AvaloniaProperty.Register<ListView, bool>(nameof(IsTextSearchEnabled), false);
-    
+
     public static readonly StyledProperty<bool> WrapSelectionProperty =
-        AvaloniaProperty.Register<ListView, bool>(nameof(WrapSelection), defaultValue: false);
-    
+        AvaloniaProperty.Register<ListView, bool>(nameof(WrapSelection), false);
+
     public bool AutoScrollToSelectedItem
     {
         get => GetValue(AutoScrollToSelectedItemProperty);
         set => SetValue(AutoScrollToSelectedItemProperty, value);
     }
-    
+
+    public IListViewSelection Selection => _selection;
+
     public int SelectedIndex
     {
-        get
-        {
-            // When a Begin/EndInit/DataContext update is in place we return the value to be
-            // updated here, even though it's not yet active and the property changed notification
-            // has not yet been raised. If we don't do this then the old value will be written back
-            // to the source when two-way bound, and the update value will be lost.
-            if (_updateState is not null)
-            {
-                return _updateState.SelectedIndex.HasValue ?
-                    _updateState.SelectedIndex.Value :
-                    TryGetExistingSelection()?.SelectedIndex ?? -1;
-            }
-
-            return Selection.SelectedIndex;
-        }
+        get => _selection.SelectedIndex;
         set
         {
-            if (_updateState != null)
+            if (value < 0)
             {
-                _updateState.SelectedIndex = value;
+                _selection.Clear();
             }
             else
             {
-                Selection.SelectedIndex = value;
+                _selection.Select(value);
             }
         }
     }
-    
-    public object? SelectedItem
-    {
-        get
-        {
-            // See SelectedIndex getter for more information.
-            if (_updateState is not null)
-            {
-                return _updateState.SelectedItem.HasValue ?
-                    _updateState.SelectedItem.Value :
-                    TryGetExistingSelection()?.SelectedItem;
-            }
 
-            return Selection.SelectedItem;
-        }
-        set
-        {
-            if (_updateState != null)
-            {
-                _updateState.SelectedItem = value;
-            }
-            else
-            {
-                Selection.SelectedItem = value;
-            }
-        }
-    }
-    
-    [AssignBinding]
-    [InheritDataTypeFromItems(nameof(ItemsSource))]
+    public IReadOnlyList<int> SelectedIndexes => _selection.SelectedIndexes;
+    public object? SelectedItem => _selection.SelectedItem;
+    public IReadOnlyList<object?> SelectedItems => _selection.SelectedItems;
+
     public BindingBase? SelectedValueBinding
     {
         get => GetValue(SelectedValueBindingProperty);
         set => SetValue(SelectedValueBindingProperty, value);
     }
-    
-    public object? SelectedValue
-    {
-        get => GetValue(SelectedValueProperty);
-        set => SetValue(SelectedValueProperty, value);
-    }
-    
-    public IList? SelectedItems
-    {
-        get
-        {
-            // See SelectedIndex setter for more information.
-            if (_updateState?.SelectedItems.HasValue == true)
-            {
-                return _updateState.SelectedItems.Value;
-            }
 
-            if (Selection is ListViewSelectionModel ism)
-            {
-                var result = ism.WritableSelectedItems;
-                _oldSelectedItems.SetTarget(result);
-                return result;
-            }
-
-            return null;
-        }
-        set
-        {
-            if (_updateState != null)
-            {
-                _updateState.SelectedItems = new Optional<IList?>(value);
-            }
-            else if (Selection is ListViewSelectionModel i)
-            {
-                i.WritableSelectedItems = value;
-            }
-            else
-            {
-                throw new InvalidOperationException("Cannot set both Selection and SelectedItems.");
-            }
-        }
+    public ListItemKeySelector? ItemKeySelector
+    {
+        get => GetValue(ItemKeySelectorProperty);
+        set => SetValue(ItemKeySelectorProperty, value);
     }
 
-    [AllowNull]
-    public ISelectionModel Selection
-    {
-        get => _updateState?.Selection.HasValue == true ?
-            _updateState.Selection.Value :
-            GetOrCreateSelectionModel();
-        set
-        {
-            value ??= CreateDefaultSelectionModel();
+    public object? SelectedValue => _selectedValue;
 
-            if (_updateState != null)
-            {
-                _updateState.Selection = new Optional<ISelectionModel>(value);
-            }
-            else if (_selection != value)
-            {
-                if (value.Source != null && ItemsSource is IListCollectionView collectionView && value.Source != collectionView.SourceCollection)
-                {
-                    throw new ArgumentException(
-                        "The supplied ISelectionModel already has an assigned Source but this " +
-                        "collection is different to the Items on the control.");
-                }
-
-                var oldSelection = _selection is null
-                    ? null
-                    : ListViewSelectionUtils.CopySelectionItems(_selection.SelectedItems);
-                DeinitializeSelectionModel(_selection);
-                _selection = value;
-
-                if (oldSelection?.Length > 0)
-                {
-                    RaiseEvent(new SelectionChangedEventArgs(
-                        SelectionChangedEvent,
-                        oldSelection,
-                        Array.Empty<object>()));
-                }
-
-                InitializeSelectionModel(_selection);
-                var selectedItems = SelectedItems;
-                _oldSelectedItems.TryGetTarget(out var oldSelectedItems);
-                if (oldSelectedItems != selectedItems)
-                {
-                    RaisePropertyChanged(SelectedItemsProperty, oldSelectedItems, selectedItems);
-                    _oldSelectedItems.SetTarget(selectedItems);
-                }
-            }
-        }
-    }
-    
     public bool IsTextSearchEnabled
     {
         get => GetValue(IsTextSearchEnabledProperty);
         set => SetValue(IsTextSearchEnabledProperty, value);
     }
-    
+
     public bool WrapSelection
     {
         get => GetValue(WrapSelectionProperty);
         set => SetValue(WrapSelectionProperty, value);
     }
-    
+
     public SelectionMode SelectionMode
     {
         get => GetValue(SelectionModeProperty);
         set => SetValue(SelectionModeProperty, value);
     }
-    
-    protected bool AlwaysSelected => SelectionMode.HasAllFlags(SelectionMode.AlwaysSelected);
-    
+
+    protected bool AlwaysSelected => (SelectionMode & SelectionMode.AlwaysSelected) == SelectionMode.AlwaysSelected;
+
     #endregion
 
     #region 公共事件定义
 
     public static readonly RoutedEvent<RoutedEventArgs> IsSelectedChangedEvent =
-        RoutedEvent.Register<ListView, RoutedEventArgs>(
-            "IsSelectedChanged",
-            RoutingStrategies.Bubble);
-    
-    public static readonly RoutedEvent<SelectionChangedEventArgs> SelectionChangedEvent =
-        RoutedEvent.Register<ListView, SelectionChangedEventArgs>(
-            nameof(SelectionChanged),
-            RoutingStrategies.Bubble);
-    
-    public event EventHandler<SelectionChangedEventArgs>? SelectionChanged
+        RoutedEvent.Register<ListView, RoutedEventArgs>("IsSelectedChanged", RoutingStrategies.Bubble);
+
+    public static readonly RoutedEvent<ListViewSelectionChangedEventArgs> SelectionChangedEvent =
+        RoutedEvent.Register<ListView, ListViewSelectionChangedEventArgs>(nameof(SelectionChanged), RoutingStrategies.Bubble);
+
+    public event EventHandler<ListViewSelectionChangedEventArgs>? SelectionChanged
     {
         add => AddHandler(SelectionChangedEvent, value);
         remove => RemoveHandler(SelectionChangedEvent, value);
     }
 
     #endregion
-   
-    private string _textSearchTerm = string.Empty;
-    private DispatcherTimer? _textSearchTimer;
-    private ISelectionModel? _selection;
-    private int _oldSelectedIndex;
-    private WeakReference _oldSelectedItem = new(null);
-    private WeakReference<IList?> _oldSelectedItems = new(null);
+
+    private readonly ListViewSelectionModel _selection = new();
+    private IListCollectionEntryView? _entryView;
+    private bool _entryEventsAttached;
     private bool _ignoreContainerSelectionChanged;
-    private UpdateState? _updateState;
     private bool _hasScrolledToSelectedItem;
+    private object? _selectedValue;
     private BindingEvaluator<object?>? _selectedValueBindingEvaluator;
-    private bool _isSelectionChangeActive;
-    
-    public override void BeginInit()
-    {
-        base.BeginInit();
-        BeginUpdating();
-    }
-    
-    public override void EndInit()
-    {
-        base.EndInit();
-        EndUpdating();
-    }
+    private string _textSearchTerm = string.Empty;
+    private int _lastSelectedIndex = -1;
+    private IReadOnlyList<int> _lastSelectedIndexes = Array.Empty<int>();
+    private object? _lastSelectedItem;
+    private IReadOnlyList<object?> _lastSelectedItems = Array.Empty<object?>();
+    private object? _lastSelectedValue;
+
+    static bool HasAllFlags(SelectionMode value, SelectionMode flags) => (value & flags) == flags;
 
     public static bool GetIsSelected(Control control) => control.GetValue(IsSelectedProperty);
-    
     public static void SetIsSelected(Control control, bool value) => control.SetValue(IsSelectedProperty, value);
 
-    protected Control? GetContainerFromEventSource(object? eventSource)
-    {
-        for (var current = eventSource as Visual; current != null; current = current.GetVisualParent())
-        {
-            if (current is Control control && control.Parent == this &&
-                GlobalIndexFromContainer(control) != -1)
-            {
-                return control;
-            }
-        }
-
-        return null;
-    }
-    
-    private void HandleItemsViewCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        //Do not change SelectedIndex during initialization
-        if (_updateState is not null)
-        {
-            return;
-        }
-    
-        if (AlwaysSelected && SelectedIndex == -1 && TotalItemCount > 0)
-        {
-            SelectedIndex = 0;
-        }
-    }
-    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-
         AutoScrollToSelectedItemIfNecessary(GetAnchorIndex());
     }
 
-    private void NotifyApplyTemplateForSelecting()
+    internal void AttachSelectionView()
     {
-        void ExecuteScrollWhenLayoutUpdated(object? sender, EventArgs e)
+        var view = _collectionView as IListCollectionEntryView;
+        if (!ReferenceEquals(_entryView, view))
         {
-            LayoutUpdated -= ExecuteScrollWhenLayoutUpdated;
-
-            AutoScrollToSelectedItemIfNecessary(GetAnchorIndex());
-        }
-
-        if (AutoScrollToSelectedItem)
-        {
-            LayoutUpdated += ExecuteScrollWhenLayoutUpdated;
-        }
-    }
-    
-    internal int GetAnchorIndex()
-    {
-        var selection = _updateState is not null ? TryGetExistingSelection() : Selection;
-        return selection?.AnchorIndex ?? -1;
-    }
-    
-    private ISelectionModel? TryGetExistingSelection()
-        => _updateState?.Selection.HasValue == true ? _updateState.Selection.Value : _selection;
-    
-    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
-    {
-        base.ContainerForItemPreparedOverride(container, item, index);
-
-        // Once the container has been full prepared and added to the tree, any bindings from
-        // styles or item container themes are guaranteed to be applied. 
-        if (!container.IsSet(IsSelectedProperty))
-        {
-            // The IsSelected property is not set on the container: update the container
-            // selection based on the current selection as understood by this control.
-            var selectionIndex = SelectionIndexFromItemIndex(index);
-            MarkContainerSelected(container, selectionIndex != -1 && Selection.IsSelected(selectionIndex));
-        }
-        else
-        {
-            // The IsSelected property is set on the container: there is a style or item
-            // container theme which has bound the IsSelected property. Update our selection
-            // based on the selection state of the container.
-            var containerIsSelected = GetIsSelected(container);
-            UpdateSelection(SelectionIndexFromItemIndex(index), containerIsSelected, toggleModifier: true);
-        }
-
-        if (Selection.AnchorIndex == SelectionIndexFromItemIndex(index))
-        {
-            KeyboardNavigation.SetTabOnceActiveElement(this, container);
-        }
-    }
-    
-    protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
-    {
-        base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
-        
-        var selectionIndex = SelectionIndexFromItemIndex(newIndex);
-        MarkContainerSelected(container, selectionIndex != -1 && Selection.IsSelected(selectionIndex));
-    }
-    
-    protected override void OnDataContextBeginUpdate()
-    {
-        base.OnDataContextBeginUpdate();
-        BeginUpdating();
-    }
-    
-    protected override void OnDataContextEndUpdate()
-    {
-        base.OnDataContextEndUpdate();
-        EndUpdating();
-    }
-    
-    protected override void UpdateDataValidation(
-        AvaloniaProperty property,
-        BindingValueType state,
-        Exception? error)
-    {
-        if (property == SelectedItemProperty ||
-            property == SelectedItemsProperty)
-        {
-            DataValidationErrors.SetError(this, error);
-        }
-    }
-    
-    protected override void OnTextInput(TextInputEventArgs e)
-    {
-        if (!e.Handled)
-        {
-            if (!IsTextSearchEnabled)
+            if (_entryView is not null && _entryEventsAttached)
             {
-                return;
+                _entryView.EntryChangePrepared -= OnEntryChangePrepared;
+                _entryView.EntryChangeCommitted -= OnEntryChangeCommitted;
+                _entryView.ProjectionCommitted -= OnProjectionCommitted;
             }
 
-            StopTextSearchTimer();
-
-            _textSearchTerm += e.Text;
-
-            var newIndex = GetIndexFromTextSearch(_textSearchTerm);
-            if (newIndex >= 0)
+            _entryView = view;
+            _selection.AttachView(view);
+            if (_entryView is not null)
             {
-                SelectedIndex = newIndex;
+                _entryView.EntryChangePrepared += OnEntryChangePrepared;
+                _entryView.EntryChangeCommitted += OnEntryChangeCommitted;
+                _entryView.ProjectionCommitted += OnProjectionCommitted;
+                _entryEventsAttached = true;
             }
-                
-            StartTextSearchTimer();
-
-            e.Handled = true;
         }
 
-        base.OnTextInput(e);
+        _selection.Mode = SelectionMode;
+        UpdateContainerSelection();
+    }
+
+    private ListViewSelectionModel GetOrCreateSelectionModel()
+    {
+        AttachSelectionView();
+        return _selection;
     }
 
     protected void HandlePropertyChangedForSelecting(AvaloniaPropertyChangedEventArgs change)
@@ -463,83 +205,167 @@ public partial class ListView
         {
             AutoScrollToSelectedItemIfNecessary(GetAnchorIndex());
         }
-        else if (change.Property == SelectionModeProperty && _selection != null)
+        else if (change.Property == SelectionModeProperty)
         {
-            var newValue = change.GetNewValue<SelectionMode>();
-            _selection.SingleSelect = !newValue.HasAllFlags(SelectionMode.Multiple);
+            _selection.Mode = change.GetNewValue<SelectionMode>();
         }
         else if (change.Property == WrapSelectionProperty)
         {
             this.SetWrapFocus(WrapSelection);
         }
-        else if (change.Property == SelectedValueProperty)
-        {
-            if (_isSelectionChangeActive)
-            {
-                return;
-            }
-
-            if (_updateState is not null)
-            {
-                _updateState.SelectedValue = change.NewValue;
-                return;
-            }
-
-            SelectItemWithValue(change.NewValue);
-        }
         else if (change.Property == SelectedValueBindingProperty)
         {
-            var idx = SelectedIndex;
+            UpdateSelectedValueFromItem();
+        }
+    }
 
-            // If no selection is active, don't do anything as SelectedValue is already null
-            if (idx == -1)
+    protected Control? GetContainerFromEventSource(object? eventSource)
+    {
+        for (var current = eventSource as Visual; current is not null; current = current.GetVisualParent())
+        {
+            if (current is Control control && control.Parent == this && IndexFromContainer(control) >= 0)
             {
-                return;
+                return control;
             }
+        }
 
-            var value = change.GetNewValue<BindingBase?>();
-            if (value is null)
+        return null;
+    }
+
+    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
+    {
+        base.ContainerForItemPreparedOverride(container, item, index);
+        SetContainerEntry(container, index);
+        MarkContainerSelected(container, container is ListViewItem listItem && listItem.EntryId is not null && _selection.SelectedEntryIds.Contains(listItem.EntryId.Value));
+        if (_selection.AnchorIndex == SourceIndexFromViewIndex(index))
+        {
+            KeyboardNavigation.SetTabOnceActiveElement(this, container);
+        }
+    }
+
+    protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
+    {
+        base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
+        SetContainerEntry(container, newIndex);
+        MarkContainerSelected(container, container is ListViewItem listItem && listItem.EntryId is not null && _selection.SelectedEntryIds.Contains(listItem.EntryId.Value));
+    }
+
+    private void SetContainerEntry(Control container, int viewIndex)
+    {
+        if (container is not ListViewItem listItem || _entryView?.TryGetViewNode(viewIndex, out var node) != true)
+        {
+            return;
+        }
+
+        listItem.EntryId = node!.Entry?.Id;
+        listItem.IsGroupItem = node.IsGroupHeader;
+    }
+
+    protected bool TryGetSourceIndexFromContainer(Control container, out int sourceIndex)
+    {
+        if (container is ListViewItem listItem && listItem.EntryId is not null &&
+            _entryView?.TryGetSourceIndex(listItem.EntryId.Value, out sourceIndex) == true)
+        {
+            return true;
+        }
+
+        sourceIndex = -1;
+        return false;
+    }
+
+    protected bool TryGetSourceItem(int sourceIndex, out object? item)
+    {
+        if (_entryView?.TryGetSourceEntry(sourceIndex, out var entry) == true)
+        {
+            item = entry!.Item;
+            return true;
+        }
+
+        item = null;
+        return false;
+    }
+
+    protected bool TryGetSourceIndexFromViewIndex(int viewIndex, out int sourceIndex)
+    {
+        if (_entryView?.TryGetViewNode(viewIndex, out var node) == true && node!.Entry is not null)
+        {
+            sourceIndex = _entryView.TryGetSourceIndex(node.Entry.Id, out var result) ? result : -1;
+            return sourceIndex >= 0;
+        }
+
+        sourceIndex = -1;
+        return false;
+    }
+
+    protected bool TryGetViewIndexFromSourceIndex(int sourceIndex, out int viewIndex)
+    {
+        if (_entryView?.TryGetSourceEntry(sourceIndex, out var entry) == true &&
+            _entryView.TryGetViewIndex(entry!.Id, out viewIndex))
+        {
+            return true;
+        }
+
+        viewIndex = -1;
+        return false;
+    }
+
+    protected IEnumerable<int> EnumerateCurrentViewSourceIndexes()
+    {
+        if (_entryView is null)
+        {
+            yield break;
+        }
+
+        for (var index = 0; _entryView.TryGetViewNode(index, out var node); index++)
+        {
+            if (node!.Entry is not null && _entryView.TryGetSourceIndex(node.Entry.Id, out var sourceIndex))
             {
-                // Clearing SelectedValueBinding makes the SelectedValue the item itself
-                SetCurrentValue(SelectedValueProperty, SelectedItem);
-                return;
-            }
-
-            var selectedItem = SelectedItem;
-
-            try
-            {
-                _isSelectionChangeActive = true;
-
-                var bindingEvaluator = GetSelectedValueBindingEvaluator(value);
-
-                // Re-evaluate SelectedValue with the new binding
-                SetCurrentValue(SelectedValueProperty, bindingEvaluator.Evaluate(selectedItem));
-            }
-            finally
-            {
-                _isSelectionChangeActive = false;
+                yield return sourceIndex;
             }
         }
     }
-     
-    protected bool MoveSelection(
-        NavigationDirection direction,
-        bool wrap = false,
-        bool rangeModifier = false)
+
+    protected IDisposable BeginSelectionBatchUpdate() => _selection.BeginSelectionBatchUpdate();
+
+    protected int GlobalIndex(int index) => SourceIndexFromViewIndex(index);
+
+    protected int GlobalIndexLocalIndex(int sourceIndex)
+        => TryGetViewIndexFromSourceIndex(sourceIndex, out var viewIndex) ? viewIndex : -1;
+
+    protected int SelectionIndexFromContainer(Control container)
+        => TryGetSourceIndexFromContainer(container, out var index) ? index : -1;
+
+    protected int SelectionIndexFromItemIndex(int itemIndex)
+        => SourceIndexFromViewIndex(itemIndex);
+
+    protected int ItemIndexFromSelectionIndex(int sourceIndex)
+        => TryGetViewIndexFromSourceIndex(sourceIndex, out var viewIndex) ? viewIndex : -1;
+
+    private int SourceIndexFromViewIndex(int viewIndex)
+        => TryGetSourceIndexFromViewIndex(viewIndex, out var sourceIndex) ? sourceIndex : -1;
+
+    protected bool UpdateSelectionFromEventSource(object? eventSource, bool select = true, bool rangeModifier = false,
+        bool toggleModifier = false, bool rightButton = false, bool fromFocus = false)
+    {
+        var container = GetContainerFromEventSource(eventSource);
+        if (container is not ListViewItem listItem || listItem.IsGroupItem || !TryGetSourceIndexFromContainer(container, out var index))
+        {
+            return false;
+        }
+
+        UpdateSelection(index, select, rangeModifier, toggleModifier, rightButton, fromFocus);
+        return true;
+    }
+
+    protected bool MoveSelection(NavigationDirection direction, bool wrap = false, bool rangeModifier = false)
     {
         var focused = FocusManagerReflectionExtensions.GetFocusManager(this)?.GetFocusedElement();
-        var from    = GetContainerFromEventSource(focused) ?? ContainerFromIndex(Selection.AnchorIndex);
-        return MoveSelection(from, direction, wrap, rangeModifier);
+        return MoveSelection(GetContainerFromEventSource(focused), direction, wrap, rangeModifier);
     }
-        
-    protected bool MoveSelection(
-        Control? from,
-        NavigationDirection direction,
-        bool wrap = false,
-        bool rangeModifier = false)
+
+    protected bool MoveSelection(Control? from, NavigationDirection direction, bool wrap = false, bool rangeModifier = false)
     {
-        if (Presenter?.Panel is not INavigableContainer container)
+        if (Presenter?.Panel is not INavigableContainer panel)
         {
             return false;
         }
@@ -548,559 +374,76 @@ public partial class ListView
         {
             direction = direction switch
             {
-                NavigationDirection.Down => NavigationDirection.First,
-                NavigationDirection.Up => NavigationDirection.Last,
-                NavigationDirection.Right => NavigationDirection.First,
-                NavigationDirection.Left => NavigationDirection.Last,
-                _ => direction,
+                NavigationDirection.Up or NavigationDirection.Left => NavigationDirection.Last,
+                _ => NavigationDirection.First,
             };
         }
 
-        if (GetNextControl(container, direction, from, wrap) is Control next)
+        if (GetNextControl(panel, direction, from, wrap) is Control next && TryGetSourceIndexFromContainer(next, out var index))
         {
-            var index = SelectionIndexFromContainer(next);
-
-            if (index != -1)
-            {
-                UpdateSelection(index, true, rangeModifier);
-                next.Focus();
-                return true;
-            }
+            UpdateSelection(index, true, rangeModifier);
+            next.Focus();
+            return true;
         }
 
         return false;
     }
-        
-    protected void UpdateSelection(
-        int index,
-        bool select = true,
-        bool rangeModifier = false,
-        bool toggleModifier = false,
-        bool rightButton = false,
-        bool fromFocus = false)
+
+    protected void UpdateSelection(int index, bool select = true, bool rangeModifier = false, bool toggleModifier = false,
+        bool rightButton = false, bool fromFocus = false)
     {
-        if (!IsSelectionIndexValid(index))
+        if (index < 0 || _entryView?.TryGetSourceEntry(index, out var entry) != true || entry is null)
         {
             return;
         }
 
-        var mode   = SelectionMode;
-        var multi  = mode.HasAllFlags(SelectionMode.Multiple);
-        var toggle = toggleModifier || mode.HasAllFlags(SelectionMode.Toggle);
-        var range  = multi && rangeModifier;
-
+        var mode = SelectionMode;
+        var multi = HasAllFlags(mode, SelectionMode.Multiple);
+        var toggle = toggleModifier || HasAllFlags(mode, SelectionMode.Toggle);
         if (!select)
         {
-            Selection.Deselect(index);
+            _selection.Deselect(index);
         }
         else if (rightButton)
         {
-            if (Selection.IsSelected(index) == false)
+            if (!_selection.IsSelected(index))
             {
-                SelectedIndex = index;
+                _selection.Select(index);
             }
         }
-        else if (range)
+        else if (rangeModifier && multi && _selection.AnchorIndex >= 0 && _entryView.TryGetSourceEntry(_selection.AnchorIndex, out var anchor))
         {
-            using var operation = Selection.BatchUpdate();
-            if (!toggleModifier)
-            {
-                Selection.Clear();
-            }
-            Selection.SelectRange(Selection.AnchorIndex, index);
+            _selection.SelectRangeToEntry(entry.Id, toggle);
         }
-        else if (!fromFocus && toggle)
+        else if (toggle && multi && !fromFocus)
         {
-            if (multi)
+            if (_selection.IsSelected(index))
             {
-                if (Selection.IsSelected(index))
-                {
-                    Selection.Deselect(index);
-                }
-                else
-                {
-                    Selection.Select(index);
-                }
+                _selection.Deselect(index);
             }
             else
             {
-                SelectedIndex = (SelectedIndex == index) ? -1 : index;
+                _selection.Select(index);
             }
         }
-        else if (!toggle)
+        else if (toggle && !multi && !fromFocus)
         {
-            using var operation = Selection.BatchUpdate();
-            Selection.Clear();
-            Selection.Select(index);
-        }
-    }
-    
-    protected void UpdateSelection(
-        Control container,
-        bool select = true,
-        bool rangeModifier = false,
-        bool toggleModifier = false,
-        bool rightButton = false,
-        bool fromFocus = false)
-    {
-        var index = SelectionIndexFromContainer(container);
-
-        if (index != -1)
-        {
-            UpdateSelection(index, select, rangeModifier, toggleModifier, rightButton, fromFocus);
-        }
-    }
-
-    protected int GlobalIndexFromContainer(Control container)
-    {
-        var index = IndexFromContainer(container);
-        return GlobalIndex(index);
-    }
-
-    protected int GlobalIndex(int index)
-    {
-        if (PageSize <= 0)
-        {
-            return index;
-        }
-        return PageIndex * PageSize + index;
-    }
-
-    protected int GlobalIndexLocalIndex(int globalIndex)
-    {
-        if (PageSize <= 0)
-        {
-            return globalIndex;
-        }
-
-        return globalIndex % PageSize;
-    }
-
-    private bool UsesSourceCollectionSelectionIndex([NotNullWhen(true)] out IListCollectionView? collectionView)
-    {
-        if (ItemsSource is IListCollectionView view &&
-            !IsGroupEnabled &&
-            ReferenceEquals(Selection.Source, view.SourceCollection))
-        {
-            collectionView = view;
-            return true;
-        }
-
-        collectionView = null;
-        return false;
-    }
-
-    private int SelectionIndexFromContainer(Control container)
-    {
-        return SelectionIndexFromItemIndex(IndexFromContainer(container));
-    }
-
-    private int SelectionIndexFromItemIndex(int itemIndex)
-    {
-        if (itemIndex < 0)
-        {
-            return -1;
-        }
-
-        if (UsesSourceCollectionSelectionIndex(out var collectionView))
-        {
-            object? item;
-            try
-            {
-                item = collectionView.GetItemAt(itemIndex);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return -1;
-            }
-
-            return IndexOf(Selection.Source, item);
-        }
-
-        return GlobalIndex(itemIndex);
-    }
-
-    private int ItemIndexFromSelectionIndex(int selectionIndex)
-    {
-        if (selectionIndex < 0)
-        {
-            return -1;
-        }
-
-        if (UsesSourceCollectionSelectionIndex(out var collectionView))
-        {
-            var item = ItemAt(Selection.Source, selectionIndex);
-            return item == AvaloniaProperty.UnsetValue ? -1 : collectionView.IndexOf(item);
-        }
-
-        return GlobalIndexLocalIndex(selectionIndex);
-    }
-
-    private bool IsSelectionIndexValid(int index)
-    {
-        if (index < 0)
-        {
-            return false;
-        }
-
-        if (UsesSourceCollectionSelectionIndex(out _))
-        {
-            return ItemAt(Selection.Source, index) != AvaloniaProperty.UnsetValue;
-        }
-
-        return index < TotalItemCount;
-    }
-
-    private static int IndexOf(IEnumerable? source, object? item)
-    {
-        if (source is null)
-        {
-            return -1;
-        }
-
-        if (source is IList list)
-        {
-            return list.IndexOf(item);
-        }
-
-        if (source is ItemsSourceView itemsSourceView)
-        {
-            return itemsSourceView.IndexOf(item);
-        }
-
-        var index = 0;
-        foreach (var current in source)
-        {
-            if (Equals(current, item))
-            {
-                return index;
-            }
-            ++index;
-        }
-
-        return -1;
-    }
-
-    private static object? ItemAt(IEnumerable? source, int index)
-    {
-        if (source is null || index < 0)
-        {
-            return AvaloniaProperty.UnsetValue;
-        }
-
-        if (source is IList list)
-        {
-            return index < list.Count ? list[index] : AvaloniaProperty.UnsetValue;
-        }
-
-        var currentIndex = 0;
-        foreach (var item in source)
-        {
-            if (currentIndex == index)
-            {
-                return item;
-            }
-            ++currentIndex;
-        }
-
-        return AvaloniaProperty.UnsetValue;
-    }
-
-    protected bool UpdateSelectionFromEventSource(
-        object? eventSource,
-        bool select = true,
-        bool rangeModifier = false,
-        bool toggleModifier = false,
-        bool rightButton = false,
-        bool fromFocus = false)
-    {
-        var container = GetContainerFromEventSource(eventSource);
-
-        if (container is ListViewItem listViewItem && (!IsGroupEnabled || !listViewItem.IsGroupItem))
-        {
-            UpdateSelection(container, select, rangeModifier, toggleModifier, rightButton, fromFocus);
-            return true;
-        }
-
-        return false;
-    }
-
-    private ISelectionModel GetOrCreateSelectionModel()
-    {
-        if (_selection is null)
-        {
-            _selection = CreateDefaultSelectionModel();
-            InitializeSelectionModel(_selection);
-        }
-
-        return _selection;
-    }
-
-    private void OnItemsViewSourceChanged(object? sender, EventArgs e)
-    {
-        if (_updateState is null)
-        {
-            TryInitializeSelectionSource(_selection, true);
-        }
-    }
-        
-    private void OnSelectionModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ISelectionModel.AnchorIndex))
-        {
-            _hasScrolledToSelectedItem = false;
-
-            var anchorIndex = GetAnchorIndex();
-            KeyboardNavigation.SetTabOnceActiveElement(this, ContainerFromIndex(anchorIndex));
-            AutoScrollToSelectedItemIfNecessary(anchorIndex);
-        }
-        else if (e.PropertyName == nameof(ISelectionModel.SelectedIndex))
-        {
-            var selectedIndex    = SelectedIndex;
-            var oldSelectedIndex = _oldSelectedIndex;
-            if (_oldSelectedIndex != selectedIndex)
-            {
-                RaisePropertyChanged(SelectedIndexProperty, oldSelectedIndex, selectedIndex);
-                _oldSelectedIndex = selectedIndex;
-            }
-        }
-        else if (e.PropertyName == nameof(ISelectionModel.SelectedItem))
-        {
-            var selectedItem    = SelectedItem;
-            var oldSelectedItem = _oldSelectedItem.Target;
-            if (selectedItem != oldSelectedItem)
-            {
-                RaisePropertyChanged(SelectedItemProperty, oldSelectedItem, selectedItem);
-                _oldSelectedItem.Target = selectedItem;
-            }
-        }
-        else if (e.PropertyName == nameof(ListViewSelectionModel.WritableSelectedItems))
-        {
-            _oldSelectedItems.TryGetTarget(out var oldSelectedItems);
-            if (oldSelectedItems != (Selection as ListViewSelectionModel)?.SelectedItems)
-            {
-                var selectedItems = SelectedItems;
-                RaisePropertyChanged(SelectedItemsProperty, oldSelectedItems, selectedItems);
-                _oldSelectedItems.SetTarget(selectedItems);
-            }
-        }
-        else if (e.PropertyName == nameof(ISelectionModel.Source))
-        {
-            ClearValue(SelectedValueProperty);
-        }
-    }
-         
-    private void OnSelectionModelSelectionChanged(object? sender, SelectionModelSelectionChangedEventArgs e)
-    {
-        void Mark(int index, bool selected)
-        {
-            var itemIndex = ItemIndexFromSelectionIndex(index);
-            var container = itemIndex == -1 ? null : ContainerFromIndex(itemIndex);
-
-            if (container != null)
-            {
-                MarkContainerSelected(container, selected);
-            }
-        }
-
-        if (PageSize <= 0)
-        {
-            foreach (var i in e.SelectedIndexes)
-            {
-                Mark(i, true);
-            }
-
-            foreach (var i in e.DeselectedIndexes)
-            {
-                Mark(i, false);
-            }
-
-            if (!_isSelectionChangeActive)
-            {
-                UpdateSelectedValueFromItem();
-            }
+            if (_selection.IsSelected(index)) _selection.Clear(); else _selection.Select(index);
         }
         else
         {
-            for (var i = 0; i < ItemCount; i++)
-            {
-                var selectionIndex = SelectionIndexFromItemIndex(i);
-                var container      = ContainerFromIndex(i);
-                if (container != null)
-                {
-                    MarkContainerSelected(container, selectionIndex != -1 && Selection.IsSelected(selectionIndex));
-                }
-            }
-        }
-
-        var route = BuildEventRoute(SelectionChangedEvent);
-
-        if (route.HasHandlers)
-        {
-            var ev = new SelectionChangedEventArgs(
-                SelectionChangedEvent,
-                ListViewSelectionUtils.CopySelectionItems(e.DeselectedItems),
-                ListViewSelectionUtils.CopySelectionItems(e.SelectedItems));
-            RaiseEvent(ev);
+            using var batch = BeginSelectionBatchUpdate();
+            _selection.Clear();
+            _selection.Select(index);
         }
     }
-        
-    private void OnSelectionModelLostSelection(object? sender, EventArgs e)
-    {
-        if (AlwaysSelected && ItemsView.Count > 0)
-        {
-            SelectedIndex = 0;
-        }
-    }
-        
-    private void SelectItemWithValue(object? value)
-    {
-        if (TotalItemCount == 0 || _isSelectionChangeActive)
-        {
-            return;
-        }
 
-        try
-        {
-            _isSelectionChangeActive = true;
-            var si = FindItemWithValue(value);
-            if (si != AvaloniaProperty.UnsetValue)
-            {
-                SelectedItem = si;
-            }
-            else
-            {
-                SelectedItem = null;
-            }
-        }
-        finally
-        {
-            _isSelectionChangeActive = false;
-        }
-    }
-        
-    private object? FindItemWithValue(object? value)
-    {
-        if (TotalItemCount == 0 || value is null)
-        {
-            return AvaloniaProperty.UnsetValue;
-        }
-
-        var items   = ItemsView;
-        var binding = SelectedValueBinding;
-
-        if (binding is null)
-        {
-            // No SelectedValueBinding set, SelectedValue is the item itself
-            // Still verify the value passed in is in the Items list
-            var index = items!.IndexOf(value);
-
-            if (index >= 0)
-            {
-                return value;
-            }
-            else
-            {
-                return AvaloniaProperty.UnsetValue;
-            }
-        }
-
-        var bindingEvaluator = GetSelectedValueBindingEvaluator(binding);
-
-        // Matching UWP behavior, if duplicates are present, return the first item matching
-        // the SelectedValue provided
-        foreach (var item in items!)
-        {
-            var itemValue = bindingEvaluator.Evaluate(item);
-
-            if (Equals(itemValue, value))
-            {
-                bindingEvaluator.ClearDataContext();
-                return item;
-            }
-        }
-
-        bindingEvaluator.ClearDataContext();
-
-        return AvaloniaProperty.UnsetValue;
-    }
-        
-    private void UpdateSelectedValueFromItem()
-    {
-        if (_isSelectionChangeActive)
-        {
-            return;
-        }
-
-        var binding = SelectedValueBinding;
-        var item    = SelectedItem;
-
-        if (binding is null || item is null)
-        {
-            // No SelectedValueBinding, SelectedValue is Item itself
-            try
-            {
-                _isSelectionChangeActive = true;
-                SetCurrentValue(SelectedValueProperty, item);
-            }
-            finally
-            {
-                _isSelectionChangeActive = false;
-            }
-            return;
-        }
-
-        var bindingEvaluator = GetSelectedValueBindingEvaluator(binding);
-
-        try
-        {
-            _isSelectionChangeActive = true;
-            SetCurrentValue(SelectedValueProperty, bindingEvaluator.Evaluate(item));
-        }
-        finally
-        {
-            _isSelectionChangeActive = false;
-        }
-    }
-        
-    private void AutoScrollToSelectedItemIfNecessary(int anchorIndex)
-    {
-        if (AutoScrollToSelectedItem &&
-            !_hasScrolledToSelectedItem &&
-            Presenter != null &&
-            anchorIndex >= 0 &&
-            this.IsAttachedToVisualTree())
-        {
-            var itemIndex = ItemIndexFromSelectionIndex(anchorIndex);
-            if (itemIndex < 0)
-            {
-                return;
-            }
-
-            Dispatcher.Post(state =>
-            {
-                ScrollIntoView((int)state!);
-                _hasScrolledToSelectedItem = true;
-            }, itemIndex);
-        }
-    }
-        
     private void ContainerSelectionChanged(RoutedEventArgs e)
     {
-        if (!_ignoreContainerSelectionChanged &&
-            e.Source is Control control &&
-            control.Parent == this &&
-            SelectionIndexFromContainer(control) is var index &&
-            index >= 0)
+        if (!_ignoreContainerSelectionChanged && e.Source is Control control && control.Parent == this &&
+            TryGetSourceIndexFromContainer(control, out var index))
         {
-            if (GetIsSelected(control))
-            {
-                Selection.Select(index);
-            }
-            else
-            {
-                Selection.Deselect(index);
-            }
+            if (GetIsSelected(control)) _selection.Select(index); else _selection.Deselect(index);
         }
 
         if (e.Source != this)
@@ -1108,280 +451,180 @@ public partial class ListView
             e.Handled = true;
         }
     }
-        
+
     private void MarkContainerSelected(Control container, bool selected)
     {
         _ignoreContainerSelectionChanged = true;
-
-        try
-        {
-            container.SetCurrentValue(IsSelectedProperty, selected);
-        }
-        finally
-        {
-            _ignoreContainerSelectionChanged = false;
-        }
+        try { container.SetCurrentValue(IsSelectedProperty, selected); }
+        finally { _ignoreContainerSelectionChanged = false; }
     }
-        
+
     private void UpdateContainerSelection()
     {
         if (Presenter?.Panel is { } panel)
         {
-            foreach (var container in panel.Children)
+            foreach (var child in panel.Children)
             {
-                MarkContainerSelected(
-                    container,
-                    SelectionIndexFromContainer(container) is var selectionIndex &&
-                    selectionIndex != -1 &&
-                    Selection.IsSelected(selectionIndex));
+                MarkContainerSelected(child, TryGetSourceIndexFromContainer(child, out var index) && _selection.IsSelected(index));
             }
         }
     }
 
-    private ISelectionModel CreateDefaultSelectionModel()
+    internal void HandleItemsViewCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        return new ListViewSelectionModel
+        if (AlwaysSelected && SelectedIndex < 0)
         {
-            SingleSelect = !SelectionMode.HasAllFlags(SelectionMode.Multiple),
-        };
+            var first = EnumerateCurrentViewSourceIndexes().FirstOrDefault(-1);
+            if (first >= 0) _selection.Select(first);
+        }
     }
 
-    private void InitializeSelectionModel(ISelectionModel model)
+    private void OnEntryChangePrepared(object? sender, ListCollectionEntryChangeEventArgs e)
     {
-        if (_updateState is null)
-        {
-            TryInitializeSelectionSource(model, false);
-        }
+        _selection.OnEntryChangePrepared(e.ChangeSet);
+    }
 
-        model.PropertyChanged  += OnSelectionModelPropertyChanged;
-        model.SelectionChanged += OnSelectionModelSelectionChanged;
-        model.LostSelection    += OnSelectionModelLostSelection;
-
-        if (model.SingleSelect)
-        {
-            SelectionMode &= ~SelectionMode.Multiple;
-        }
-        else
-        {
-            SelectionMode |= SelectionMode.Multiple;
-        }
-
-        _oldSelectedIndex       = model.SelectedIndex;
-        _oldSelectedItem.Target = model.SelectedItem;
-
-        if (_updateState is null && AlwaysSelected && model.Count == 0)
-        {
-            model.SelectedIndex = 0;
-        }
-
+    private void OnEntryChangeCommitted(object? sender, EventArgs e)
+    {
+        _selection.OnEntryChangeCommitted();
         UpdateContainerSelection();
-
-        if (SelectedIndex != -1)
-        {
-            RaiseEvent(new SelectionChangedEventArgs(
-                SelectionChangedEvent,
-                Array.Empty<object>(),
-                ListViewSelectionUtils.CopySelectionItems(Selection.SelectedItems)));
-        }
+        UpdateSelectedValueFromItem();
+        RaiseSelectionProjectionChanges();
     }
 
-    private void TryInitializeSelectionSource(ISelectionModel? selection, bool shouldSelectItemFromSelectedValue)
+    private void OnProjectionCommitted(object? sender, EventArgs e)
     {
-        if (selection is not null && ItemsSource is IListCollectionView listCollectionView)
-        {
-            // InternalSelectionModel keeps the SelectedIndex and SelectedItem values before the ItemsSource is set.
-            // However, SelectedValue isn't part of that model, so we have to set the SelectedItem from
-            // SelectedValue manually now that we have a source.
-            //
-            // While this works, this is messy: we effectively have "lazy selection initialization" in 3 places:
-            //  - UpdateState (all selection properties, for BeginInit/EndInit)
-            //  - InternalSelectionModel (SelectedIndex/SelectedItem)
-            //  - SelectedItemsControl (SelectedValue)
-            //
-            // There's the opportunity to have a single place responsible for this logic.
-            // TODO12 (or 13): refactor this.
-            if (shouldSelectItemFromSelectedValue && selection.SelectedIndex == -1 && selection.SelectedItem is null)
-            {
-                var item = FindItemWithValue(SelectedValue);
-                if (item != AvaloniaProperty.UnsetValue)
-                {
-                    selection.SelectedItem = item;
-                }
-            }
-            if (IsGroupEnabled)
-            {
-                selection.Source = listCollectionView;
-            }
-            else
-            {
-                selection.Source = listCollectionView.SourceCollection;
-            }
-        }
+        UpdateContainerSelection();
+        UpdateSelectedValueFromItem();
+        RaiseSelectionProjectionChanges();
     }
 
-    private void DeinitializeSelectionModel(ISelectionModel? model)
+    private void HandleSelectionChange(ListViewSelectionChange change)
     {
-        if (model != null)
-        {
-            model.PropertyChanged  -= OnSelectionModelPropertyChanged;
-            model.SelectionChanged -= OnSelectionModelSelectionChanged;
-            model.LostSelection    -= OnSelectionModelLostSelection;
-        }
-    }
-
-    private void BeginUpdating()
-    {
-        _updateState ??= new UpdateState();
-        _updateState.UpdateCount++;
-    }
-
-    private void EndUpdating()
-    {
-        if (_updateState != null && --_updateState.UpdateCount == 0)
-        {
-            var state = _updateState;
-            _updateState = null;
-
-            if (state.Selection.HasValue)
-            {
-                Selection = state.Selection.Value;
-            }
-
-            if (_selection is ListViewSelectionModel s)
-            {
-                s.Update(ItemsView.TryGetInitializedSource(), state.SelectedItems);
-            }
-            else
-            {
-                if (state.SelectedItems.HasValue)
-                {
-                    SelectedItems = state.SelectedItems.Value;
-                }
-
-                TryInitializeSelectionSource(Selection, false);
-            }
-
-            if (state.SelectedValue.HasValue)
-            {
-                var item = FindItemWithValue(state.SelectedValue.Value);
-                if (item != AvaloniaProperty.UnsetValue)
-                {
-                    state.SelectedItem = item;
-                }
-            }
-
-            // SelectedIndex vs SelectedItem:
-            // - If only one has a value, use it
-            // - If both have a value, prefer the one having a "non-empty" value, e.g. not -1 nor null
-            // - If both have a "non-empty" value, prefer the index
-            if (state.SelectedIndex.HasValue)
-            {
-                var selectedIndex = state.SelectedIndex.Value;
-                if (selectedIndex >= 0 || !state.SelectedItem.HasValue)
-                    SelectedIndex = selectedIndex;
-                else
-                    SelectedItem = state.SelectedItem.Value;
-            }
-            else if (state.SelectedItem.HasValue)
-            {
-                SelectedItem = state.SelectedItem.Value;
-            }
-
-            if (AlwaysSelected && SelectedIndex == -1 && TotalItemCount > 0)
-            {
-                SelectedIndex = 0;
-            }
-        }
-    }
-
-    private void StartTextSearchTimer()
-    {
-        _textSearchTimer      =  new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-        _textSearchTimer.Tick += TextSearchTimer_Tick;
-        _textSearchTimer.Start();
-    }
-
-    private void StopTextSearchTimer()
-    {
-        if (_textSearchTimer == null)
+        UpdateSelectedValueFromItem();
+        UpdateContainerSelection();
+        RaiseSelectionProjectionChanges(change);
+        if (!change.HasBusinessSelectionChange)
         {
             return;
         }
 
-        _textSearchTimer.Tick -= TextSearchTimer_Tick;
-        _textSearchTimer.Stop();
-
-        _textSearchTimer = null;
+        RaiseEvent(new ListViewSelectionChangedEventArgs(
+            SelectionChangedEvent,
+            change.DeselectedIndexes,
+            change.DeselectedItems,
+            change.SelectedIndexes,
+            change.SelectedItems));
     }
 
-    private void TextSearchTimer_Tick(object? sender, EventArgs e)
+    private void RaiseSelectionProjectionChanges(ListViewSelectionChange? change = null)
     {
-        _textSearchTerm = string.Empty;
-        StopTextSearchTimer();
+        var selectedIndex  = SelectedIndex;
+        var selectedIndexes = SelectedIndexes;
+        var selectedItem   = SelectedItem;
+        var selectedItems  = SelectedItems;
+        var selectedValue  = _selectedValue;
+
+        if (_lastSelectedIndex != selectedIndex)
+        {
+            RaisePropertyChanged(SelectedIndexProperty, _lastSelectedIndex, selectedIndex);
+        }
+
+        if (!_lastSelectedIndexes.SequenceEqual(selectedIndexes))
+        {
+            RaisePropertyChanged(SelectedIndexesProperty, _lastSelectedIndexes, selectedIndexes);
+        }
+
+        if (!ReferenceEquals(_lastSelectedItem, selectedItem))
+        {
+            RaisePropertyChanged(SelectedItemProperty, _lastSelectedItem, selectedItem);
+        }
+
+        if (!_lastSelectedItems.SequenceEqual(selectedItems, ReferenceEqualityComparer.Instance))
+        {
+            RaisePropertyChanged(SelectedItemsProperty, _lastSelectedItems, selectedItems);
+        }
+
+        if (!Equals(_lastSelectedValue, selectedValue))
+        {
+            RaisePropertyChanged(SelectedValueProperty, _lastSelectedValue, selectedValue);
+        }
+
+        _lastSelectedIndex   = selectedIndex;
+        _lastSelectedIndexes = selectedIndexes;
+        _lastSelectedItem    = selectedItem;
+        _lastSelectedItems   = selectedItems;
+        _lastSelectedValue   = selectedValue;
     }
 
-    private int GetIndexFromTextSearch(string textSearchTerm)
+    private void UpdateSelectedValueFromItem()
     {
-        if (string.IsNullOrEmpty(textSearchTerm))
+        var item = SelectedItem;
+        object? value = item;
+        if (item is not null && SelectedValueBinding is not null)
         {
-            return -1;
+            _selectedValueBindingEvaluator ??= BindingEvaluator<object?>.TryCreate(SelectedValueBinding);
+            _selectedValueBindingEvaluator!.UpdateBinding(SelectedValueBinding);
+            value = _selectedValueBindingEvaluator.Evaluate(item);
         }
 
-        var count = Items.Count;
-        if (count == 0)
+        if (!ReferenceEquals(_selectedValue, value))
         {
-            return -1;
+            var old = _selectedValue;
+            _selectedValue = value;
+            RaisePropertyChanged(SelectedValueProperty, old, value);
+        }
+    }
+
+    private void AutoScrollToSelectedItemIfNecessary(int sourceIndex)
+    {
+        if (!AutoScrollToSelectedItem || _hasScrolledToSelectedItem || Presenter is null || sourceIndex < 0 || !this.IsAttachedToVisualTree())
+        {
+            return;
         }
 
-        var       textBinding          = TextSearch.GetTextBinding(this) ?? DisplayMemberBinding;
-        using var textBindingEvaluator = BindingEvaluator<string?>.TryCreate(textBinding);
+        if (!TryGetViewIndexFromSourceIndex(sourceIndex, out var viewIndex)) return;
+        Dispatcher.Post(() => { ScrollIntoView(viewIndex); _hasScrolledToSelectedItem = true; });
+    }
 
-        for (var i = 0; i < count; i++)
+    internal int GetAnchorIndex() => _selection.AnchorIndex;
+
+    internal void NotifyApplyTemplateForSelecting()
+    {
+        _hasScrolledToSelectedItem = false;
+        AutoScrollToSelectedItemIfNecessary(GetAnchorIndex());
+    }
+
+    internal void BeginUpdating() { }
+    internal void EndUpdating() { AttachSelectionView(); }
+
+    protected void OnTextInputForSelecting(TextInputEventArgs e)
+    {
+        if (!e.Handled && IsTextSearchEnabled && !string.IsNullOrEmpty(e.Text))
         {
-            var text = TextSearchUtils.GetEffectiveText(Items[i], textBindingEvaluator);
-            if (text.StartsWith(textSearchTerm, StringComparison.OrdinalIgnoreCase))
-            {
-                return i;
-            }
+            _textSearchTerm += e.Text;
+            var index = GetIndexFromTextSearch(_textSearchTerm);
+            if (index >= 0) SelectedIndex = index;
+            e.Handled = true;
         }
+    }
 
+    private int GetIndexFromTextSearch(string term)
+    {
+        if (_entryView is null) return -1;
+        foreach (var sourceIndex in EnumerateCurrentViewSourceIndexes())
+        {
+            if (_entryView.TryGetSourceEntry(sourceIndex, out var entry) && entry!.Item?.ToString()?.StartsWith(term, StringComparison.CurrentCultureIgnoreCase) == true)
+                return sourceIndex;
+        }
         return -1;
     }
 
-    private BindingEvaluator<object?> GetSelectedValueBindingEvaluator(BindingBase binding)
+    protected override void OnDataContextBeginUpdate() { base.OnDataContextBeginUpdate(); BeginUpdating(); }
+    protected override void OnDataContextEndUpdate() { base.OnDataContextEndUpdate(); EndUpdating(); }
+
+    protected override void UpdateDataValidation(AvaloniaProperty property, BindingValueType state, Exception? error)
     {
-        _selectedValueBindingEvaluator ??= new();
-        _selectedValueBindingEvaluator.UpdateBinding(binding);
-        return _selectedValueBindingEvaluator;
-    }
-        
-    // When in a BeginInit..EndInit block, or when the DataContext is updating, we need to
-    // defer changes to the selection model because we have no idea in which order properties
-    // will be set. Consider:
-    //
-    // - Both Items and SelectedItem are bound
-    // - The DataContext changes
-    // - The binding for SelectedItem updates first, producing an item
-    // - Items is searched to find the index of the new selected item
-    // - However Items isn't yet updated; the item is not found
-    // - SelectedIndex is incorrectly set to -1
-    //
-    // This logic cannot be encapsulated in SelectionModel because the selection model can also
-    // be bound, consider:
-    //
-    // - Both Items and Selection are bound
-    // - The DataContext changes
-    // - The binding for Items updates first
-    // - The new items are assigned to Selection.Source
-    // - The binding for Selection updates, producing a new SelectionModel
-    // - Both the old and new SelectionModels have the incorrect Source
-    private class UpdateState
-    {
-        public int UpdateCount { get; set; }
-        public Optional<ISelectionModel> Selection { get; set; }
-        public Optional<IList?> SelectedItems { get; set; }
-        public Optional<int> SelectedIndex { get; set; }
-        public Optional<object?> SelectedItem { get; set; }
-        public Optional<object?> SelectedValue { get; set; }
+        base.UpdateDataValidation(property, state, error);
     }
 }

@@ -29,6 +29,10 @@ public partial class ListView : IListVirtualizingContextAware
                 list.ClearContainerValues(element);
             }
             element.ClearValue(IsSelectedProperty);
+            if (element is ListViewItem listViewItem)
+            {
+                listViewItem.EntryId = null;
+            }
             base.ClearContainerForItemOverride(element);
         }
         finally

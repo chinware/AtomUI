@@ -3,6 +3,17 @@
 本文档记录 ListView 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-07-22
+
+- Design
+  - 定义 source entry / EntryId 选择模型，统一 source index、view projection、选择状态和容器状态的映射契约。
+  - 明确 Reset 与 ItemsSource 替换仅通过唯一 item key 恢复选择，item equality 不参与源条目标识。
+  - 只有具备 internal entry bridge 的 collection view 可以直接接入 ListView，其他 view 从 `SourceCollection` 重新归一。
+- API
+  - 将 `Selection` 定义为 ListView 持有的选择状态 owner；`SelectedItem`、`SelectedItems` 和 `SelectedValue` 为只读投影。
+  - 选择索引统一使用 source index，并增加 `SelectedIndexes` 与 `ItemKeySelector` 契约。
+  - `IListItemData` 不再承载运行时 `IsSelected`；`ListItemData` 与 `GroupListItemData` 使用可变 class 实体语义。
+
 ## 2026-07-06
 
 - API

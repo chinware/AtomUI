@@ -272,7 +272,7 @@ public sealed record TransferDesignTokenRow(
     string Status,
     string StatusTagColor);
 
-public record SearchCaseItemData : ListItemData
+public class SearchCaseItemData : ListItemData
 {
     public string? Description { get; init; }
 }
