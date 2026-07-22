@@ -26,9 +26,12 @@ public class ControlledStateBindingTests
     }
 
     [Fact]
-    public void P2_Controlled_State_Properties_Have_TwoWay_Metadata()
+    public void P2_Controlled_State_Properties_Expose_Selection_Projection_As_OneWay()
     {
-        AssertTwoWayAndDataValidation(AtomListView.SelectedItemsProperty, typeof(AtomListView));
+        var selectedItemsMetadata = AtomListView.SelectedItemsProperty.GetMetadata(typeof(AtomListView));
+        selectedItemsMetadata.DefaultBindingMode.ShouldBe(BindingMode.OneWay);
+        selectedItemsMetadata.EnableDataValidation.ShouldBe(false);
+
         AssertTwoWay(AtomPagination.CurrentPageProperty, typeof(AtomPagination));
         AssertTwoWay(AtomPagination.PageSizeProperty, typeof(AtomPagination));
         AssertTwoWay(AtomImagePreviewer.IsOpenProperty, typeof(AtomImagePreviewer));
@@ -90,36 +93,6 @@ public class ControlledStateBindingTests
         Dispatcher.UIThread.RunJobs();
 
         viewModel.PageSize.ShouldBe(20);
-    }
-
-    [Fact]
-    public void ListView_SelectedItems_DefaultBindingMode_Updates_ViewModel_When_Property_Replaced()
-    {
-        var first = new ListItemData { Content = "First" };
-        var second = new ListItemData { Content = "Second" };
-        var replacement = new System.Collections.ArrayList { second };
-        var viewModel = new ControlledStateBindingViewModel
-        {
-            SelectedItems = new System.Collections.ArrayList { first }
-        };
-        var listView = new AtomListView
-        {
-            ItemsSource = new[] { first, second },
-            SelectionMode = SelectionMode.Multiple
-        };
-        listView.Bind(
-            AtomListView.SelectedItemsProperty,
-            new Binding(nameof(ControlledStateBindingViewModel.SelectedItems))
-            {
-                Source = viewModel
-            });
-
-        listView.SelectedItems.ShouldBeSameAs(viewModel.SelectedItems);
-
-        listView.SelectedItems = replacement;
-        Dispatcher.UIThread.RunJobs();
-
-        viewModel.SelectedItems.ShouldBeSameAs(replacement);
     }
 
     [Fact]
@@ -222,14 +195,6 @@ public class ControlledStateBindingTests
         var metadata = property.GetMetadata(ownerType);
 
         metadata.DefaultBindingMode.ShouldBe(BindingMode.TwoWay);
-    }
-
-    private static void AssertTwoWayAndDataValidation(AvaloniaProperty property, Type ownerType)
-    {
-        var metadata = property.GetMetadata(ownerType);
-
-        metadata.DefaultBindingMode.ShouldBe(BindingMode.TwoWay);
-        metadata.EnableDataValidation.ShouldBe(true);
     }
 
     private static string ReadRepoFile(string relativePath)

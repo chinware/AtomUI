@@ -281,7 +281,7 @@ public class TransferListView : ListView, ITransferView
         }
     }
 
-    private void HandleSelectionChanged(SelectionChangedEventArgs e)
+    private void HandleSelectionChanged(ListViewSelectionChangedEventArgs e)
     {
         if (_isApplyingSelectedKeysToSelection)
         {
@@ -291,7 +291,7 @@ public class TransferListView : ListView, ITransferView
         _isApplyingSelectionToSelectedKeys = true;
         try
         {
-            if (SelectedItems == null || SelectedItems.Count == 0)
+            if (e.SelectedItems.Count == 0 && Selection.SelectedItems.Count == 0)
             {
                 if (!AreKeyCollectionsEquivalent(SelectedKeys, null))
                 {
@@ -300,8 +300,9 @@ public class TransferListView : ListView, ITransferView
             }
             else
             {
-                var selectedKeys = new List<EntityKey>(SelectedItems.Count);
-                foreach (var item in SelectedItems)
+                var selectedItems = Selection.SelectedItems;
+                var selectedKeys = new List<EntityKey>(selectedItems.Count);
+                foreach (var item in selectedItems)
                 {
                     if (item is IListItemData listItemData && listItemData.IsEnabled)
                     {
@@ -333,11 +334,38 @@ public class TransferListView : ListView, ITransferView
         _isApplyingSelectedKeysToSelection = true;
         try
         {
-            SetCurrentValue(SelectedItemsProperty, selectedItems);
+            ApplySelectedItemsToSelection(selectedItems);
         }
         finally
         {
             _isApplyingSelectedKeysToSelection = false;
+        }
+    }
+
+    private void ApplySelectedItemsToSelection(IEnumerable? selectedItems)
+    {
+        var selectedKeys = selectedItems is null
+            ? null
+            : BuildItemKeySet(selectedItems);
+
+        var currentKeys = BuildItemKeySet(Selection.SelectedItems);
+        if (currentKeys.SetEquals(selectedKeys ?? []))
+        {
+            return;
+        }
+
+        Selection.Clear();
+        if (selectedKeys is null || selectedKeys.Count == 0)
+        {
+            return;
+        }
+
+        for (var sourceIndex = 0; TryGetSourceItem(sourceIndex, out var item); sourceIndex++)
+        {
+            if (item is IItemKey itemKey && selectedKeys.Contains(itemKey.ItemKey))
+            {
+                Selection.Select(sourceIndex);
+            }
         }
     }
 
@@ -397,7 +425,7 @@ public class TransferListView : ListView, ITransferView
     {
         if (e.Source is CheckBox checkBox && GetContainerFromEventSource(e.Source) is TransferListItem listItem)
         {
-            var index = IndexFromContainer(listItem);
+            var index = SelectionIndexFromContainer(listItem);
             if (index != -1)
             {
                 if (checkBox.IsChecked == true)

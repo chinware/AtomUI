@@ -1,6 +1,6 @@
 # ListView 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.ListView` 桌面版的最新设计定位、公共契约、行为状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [ListView 桌面版实现原理](implementation.md)，ListView Token 的专项设计见 [ListView Token 设计](token.md)，设计和契约变化记录见 [ListView Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.ListView` 桌面版的最新设计定位、公共契约、行为状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [ListView 桌面版实现原理](implementation.md)，选择专项设计见 [ListView 选择模型设计](selection-model-design.md)，ListView Token 的专项设计见 [ListView Token 设计](token.md)，设计和契约变化记录见 [ListView Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -18,10 +18,10 @@ ListView 的职责是把用户提供的 `ItemsSource` 归一到可排序、可�
 
 ListView 支持两类数据入口：
 
-- `ItemsSource` 绑定任意 `IEnumerable`，控件会使用 `IListCollectionView` 作为内部数据视图。
+- `ItemsSource` 绑定任意 `IEnumerable`，控件会归一为具备 source-entry 映射能力的 AtomUI `ListCollectionView`。只有实现 internal entry bridge 的 collection view 可以直接接入。
 - 直接 `Items` 适合少量静态条目，直接条目需要符合 ListView 的数据项语义。
 
-推荐数据项实现 `IListItemData`，以便默认模板、禁用状态、分组字段和默认内容展示保持一致。复杂业务对象应提供 `ItemTemplate`、`GroupItemTemplate`、`FilterValueSelector` 和 `SortDescriptions`。
+推荐数据项实现 `IListItemData`，以便默认模板、禁用状态、分组字段和默认内容展示保持一致。`IListItemData` 不承载 ListView 运行时选择状态；复杂业务对象应提供 `ItemTemplate`、`GroupItemTemplate`、`FilterValueSelector` 和 `SortDescriptions`。
 
 ## 2. 设计语言
 
@@ -34,7 +34,7 @@ ListView 表达的是“数据视图 + 可操作列表项”的信息浏览语�
 | 数据视图 | 原始集合经过过滤、排序、分组和分页后形成当前可见列表。 | `ListCollectionView`、`TotalItemCount`、`PageIndex`、`PageSize`。 |
 | 列表结构 | 同级条目纵向排列，默认使用虚拟化面板。 | ScrollViewer、ItemsPresenter、VirtualizingStackPanel。 |
 | 分组结构 | 组标题作为不可选择的列表项参与视图展示。 | `IsGroupEnabled`、`GroupItemTemplate`、组标题前景色。 |
-| 选择状态 | 当前业务选中目标或选中集合。 | `SelectedIndex`、`SelectedItem`、`SelectedItems`、selected 背景、选中指示器。 |
+| 选择状态 | 以 source entry 为单位表示的当前业务选中目标或选中集合。 | `Selection`、`SelectedIndex`、`SelectedIndexes`、`SelectedItem`、`SelectedItems`、selected 背景、选中指示器。 |
 | 过滤状态 | 外部条件筛选当前视图数据。 | `Filter`、`FilterValue`、`IsFiltering`、`FilterContextChanged`。 |
 | 分页状态 | 当前视图仅展示指定页数据。 | `TopPagination`、`BottomPagination`、`PaginationVisibility`。 |
 | 空状态 | 无数据或过滤后无结果。 | `EmptyIndicator` 内容区域。 |
@@ -72,9 +72,11 @@ ListView public 分组模型是单层分组模型。`IsGroupEnabled=true` 时，
 | --- | --- |
 | `IsSelectable` | 是否允许用户通过 pointer 或 keyboard 更新选择。关闭时清空当前选择。 |
 | `SelectionMode` | 选择模式，支持单选、多选、Toggle 和 AlwaysSelected 语义。 |
-| `Selection` | 可替换的 `ISelectionModel`。 |
-| `SelectedIndex` / `SelectedItem` / `SelectedItems` | 选择结果入口；`SelectedItems` 默认 `TwoWay` 绑定并启用 Avalonia data validation。 |
-| `SelectedValue` / `SelectedValueBinding` | 按绑定值查找或派生选中值。 |
+| `Selection` | ListView 持有的选择状态 owner。调用者可以执行选择命令，但不能替换模型或设置其数据源。 |
+| `SelectedIndex` / `SelectedIndexes` | 选中 entry 的 source-index 输入与只读集合投影；排序、过滤、分组和分页不改变索引语义。 |
+| `SelectedItem` / `SelectedItems` | 从选中 entries 派生的只读 item 投影；结果允许包含重复引用或重复值。 |
+| `SelectedValue` / `SelectedValueBinding` | 从 `SelectedItem` 派生只读值，不按值反向查找条目。 |
+| `ItemKeySelector` | 可选的稳定 `EntityKey` 提取器，仅用于 Reset 或 ItemsSource 替换后的选择恢复。 |
 | `AutoScrollToSelectedItem` | 首次模板和视觉树就绪后滚动到 anchor 项。 |
 | `IsTextSearchEnabled` | 是否启用文本增量搜索。 |
 | `WrapSelection` | 键盘方向导航是否循环。 |
@@ -139,19 +141,20 @@ ListView 的状态模型由数据视图状态、选择状态、分页状态、�
 
 数据视图状态：
 
-- `ItemsSource` 设置后归一为 `IListCollectionView`，ListView 监听其 `CollectionChanged`、`PropertyChanged`、`PageChanging` 和 `PageChanged`。
+- `ItemsSource` 设置后归一为具备 entry bridge 的 `IListCollectionView`，ListView 监听其 `CollectionChanged`、`PropertyChanged`、`PageChanging` 和 `PageChanged`。不具备 entry bridge 的自定义 view 从其 `SourceCollection` 重新归一。
 - `SortDescriptions`、`Filter` / `FilterValue` / `FilterValueSelector`、`IsGroupEnabled` / `GroupPropertySelector` 分别写入 collection view 的排序、过滤和分组描述。
 - `TotalItemCount` 和 `IsEmptyDataSource` 来自 collection view，用于伪类、空状态和分页器同步。
 
 选择行为：
 
-- `IsSelectable=false` 时，ListView 不响应 pointer 或 keyboard 选择更新，并清空 `SelectedIndex`、`SelectedItem` 和 `SelectedItems`。
-- 未分组时，选择源优先指向 collection view 的 `SourceCollection`，选择索引表达原始数据集合索引。
-- 分组开启时，选择源指向 `IListCollectionView` 当前视图，组标题项不会被 pointer 选择路径选中。
-- 分页开启时，容器索引和选择索引之间通过 `PageIndex * PageSize` 做全局索引转换。
-- `SelectedItems` 作为受控选中集合时，以绑定集合为单一对外来源；外部替换集合、用户选择写回以及集合 mutation 都必须同步到选择模型和容器 selected 状态。
+- `IsSelectable=false` 时，ListView 不响应 pointer 或 keyboard 选择更新，并清空 canonical selection。
+- 数据源中的每一次出现拥有独立 internal EntryId；item 引用、`Equals`、`GetHashCode` 和显示值不参与源条目标识与选择映射。
+- `ListViewSelectionModel` 持有 selected EntryIds、anchor 和 active entry；`SelectedIndex(es)`、`SelectedItem(s)`、`SelectedValue` 和容器 `IsSelected` 都是同一状态的投影。
+- 公开选择索引始终表达原始数据源的 source index。排序、过滤、分组和分页通过 entry projection 映射容器，不通过 item `IndexOf` 反查源位置。
+- 组标题是没有 EntryId 和 source index 的视图合成节点，所有选择入口均跳过组标题。
+- Reset 或 ItemsSource 替换只通过唯一、非空 item key 恢复选择；没有稳定 key 的选择清除。
 - `SelectionMode.AlwaysSelected` 在存在数据且丢失选择时恢复到首项。
-- `SelectedValueBinding` 存在时，`SelectedValue` 从选中项派生；外部设置 `SelectedValue` 时按绑定值查找选中项。
+- 完整选择、集合变化和恢复语义见 [ListView 选择模型设计](selection-model-design.md)。
 
 键盘和文本搜索行为：
 
@@ -173,7 +176,7 @@ ListView 的状态模型由数据视图状态、选择状态、分页状态、�
 - collection view 会为每个 group key 插入一个 `GroupListItemData` 作为组标题项，其 `Content` 来自 `groupKey.ToString()`，`IsGroupItem=true`。
 - 组标题项使用 `GroupItemTemplate`，普通数据项仍使用 `ItemTemplate`。
 - 组标题项参与当前视图枚举和容器生成，但它表达的是视觉分隔，不是业务数据项；pointer selection 路径会跳过 `IsGroupItem=true` 的容器。
-- 分组开启后，selection source 指向当前 `IListCollectionView`，因为当前视图包含组标题项、排序结果和过滤结果；未分组时 selection source 优先指向原始 `SourceCollection`。
+- 分组开启后，selection model 仍以业务 source entries 为选择范围；当前 view projection 只增加没有 EntryId 的组标题节点。
 - 与分页同时使用时，collection view 先按完整结果建立临时分组顺序，再按当前页重建对外可枚举的 group 结构。
 
 分页行为：
@@ -236,7 +239,7 @@ ListView 属于 Data Display 分类，与 ListBox、TreeView、DataGrid、Card�
 - `ListCollectionView`：提供排序、过滤、分组、分页、当前视图枚举和源集合桥接。
 - `ListViewItem`：条目容器，承载内容、组标题状态、选择状态、点击事件、pointer 输入和 selected indicator。
 - `IListItemData` / `ListItemData` / `GroupListItemData`：默认数据项和组标题数据契约。
-- `ISelectionModel` / `ListViewSelectionModel`：选择模型和可替换 selection source。
+- `ListViewSelectionModel`：选择状态 owner，以 EntryId 保存选择并向外投影 source index 和 item。
 - `AbstractPagination`：顶部和底部分页器的交互与显示协作对象。
 - `Spin` / `Empty`：操作态和空状态视觉组件。
 
@@ -247,12 +250,15 @@ ListView 与 ListBox 有相似条目视觉语义，但职责不同。ListBox 是
 维护 ListView 时必须保持以下不变量：
 
 - 不擅自新增、删除、重命名或改变 ListView / ListViewItem public API、事件、Avalonia 属性语义和默认值。
-- `ItemsSource` 到 `IListCollectionView` 的归一化必须保持排序、过滤、分组、分页和选择源可用。
-- 用户提供的 `IListCollectionView` 不应由 ListView 当作自建 view 释放。
+- `ItemsSource` 到 `IListCollectionView` 的归一化必须保持排序、过滤、分组、分页、entry projection 和选择映射可用。
+- 只有具备 entry bridge 的用户 view 可以直接接入，且不由 ListView 当作自建 view 释放；其他 view 使用其 `SourceCollection` 创建由 ListView 持有的 AtomUI view。
 - `SortDescriptions`、`FilterDescriptions` 和 `GroupDescriptions` 的重建必须保持 collection view 状态一致，不留下重复描述。
 - `IsSelectable=false` 必须阻止用户选择更新，并清空当前选择。
 - 组标题项必须保持不可通过普通 pointer selection 路径选中。
-- 分页开启时，选择索引和容器索引的全局 / 当前页转换必须保持稳定。
+- 源条目标识必须来自 source entry，不能以 item equality、对象引用、source index 或 view index 替代 EntryId。
+- 公开选择索引必须始终使用 source index；view index 和页内索引只能作为当前投影位置。
+- 过滤、排序、分组和分页不得替换已选 entry；隐藏 entry 再次可见时必须恢复选中投影。
+- Reset 和 ItemsSource 替换不得按 item equality 或相同索引猜测旧选择。
 - `PaginationVisibility` 只表达分页器可见性，不改变分页数据和分页器 motion 状态语义。
 - `PART_ScrollViewer`、`ItemsPresenter`、`EmptyIndicator`、分页 presenter、`SelectedIndicator` 和 `ContentPresenter` 的职责不得被无兼容说明地改变。
 - 选中指示器、空状态和操作态节点应留在 AXAML 静态模板中，通过状态属性控制，不作为普通性能优化迁移到 C# 动态创建。
@@ -283,11 +289,11 @@ ListView 的数据视图能力由 `IListCollectionView` 承担。ListView 负责
 
 组标题数据项不应被写回用户源集合，也不应作为业务选中值对外承诺。
 
-### 8.3 分页选择模型
+### 8.3 选择模型
 
-分页开启后，当前页容器索引不是全局数据索引。ListView 使用 `PageIndex` 和 `PageSize` 在两者之间转换，使 `SelectedIndex` 和 selection source 仍能表达全局数据位置。
+ListView 为原始数据源中的每一次出现建立独立 source entry，并用 internal EntryId 连接 source index、当前 view projection、选择模型和容器。选择模型保存 EntryId；公开 `SelectedIndex(es)` 投影为 source index，`SelectedItem(s)` 投影为对应业务数据。相同 item 引用、相同值和自定义相等语义不合并 source entries。
 
-未分组时，选择源应优先指向原始 `SourceCollection`；分组时选择源指向当前 view，因为当前 view 包含组标题和分组排序结果。
+过滤、排序、分组和分页只改变 view projection。业务 entry 在当前投影中不可见时仍可保持选择；组标题没有 EntryId，不进入选择结果。Reset 和 ItemsSource 替换建立新的 entry 生命周期，只通过唯一 item key 恢复逻辑选择。完整契约见 [ListView 选择模型设计](selection-model-design.md)。
 
 ### 8.4 操作态模型
 
@@ -298,6 +304,7 @@ ListView 的数据视图能力由 `IListCollectionView` 承担。ListView 负责
 文档导航：
 
 - [ListView 桌面版实现原理](implementation.md)
+- [ListView 选择模型设计](selection-model-design.md)
 - [ListView Token 设计](token.md)
 - [ListView Changelog](changelog.md)
 
@@ -326,10 +333,10 @@ LLMS 导出来源：
 
 | 分层 | 验证要求 |
 | --- | --- |
-| Public API | 检查 ListView / ListViewItem 属性、事件、默认值、`ISelectionModel` 和分页 API 语义不变。 |
-| 数据状态 | 覆盖 ItemsSource 包装、用户提供 `IListCollectionView`、排序、过滤、分组、分页和 `TotalItemCount`。 |
+| Public API | 检查 ListView / ListViewItem 属性、事件、默认值、选择模型和分页 API 符合当前契约。 |
+| 数据状态 | 覆盖 ItemsSource 包装、entry-capable view 直连、普通 `IListCollectionView` 重新归一、排序、过滤、分组、分页和 `TotalItemCount`。 |
 | 分组状态 | 覆盖默认 group selector、自定义 group selector、空 group key、组标题模板、组标题 pointer 不可选、排序 / 过滤 / 分页组合和虚拟化回收。 |
-| 选择状态 | 覆盖 selectable、AlwaysSelected、多选、分页索引转换、分组 selection source、SelectedValue 和 text search。 |
+| 选择状态 | 覆盖重复 item、source-index 投影、selectable、AlwaysSelected、多选、Reset key 恢复、视图组合、SelectedValue 和 text search。 |
 | AXAML | 检查 root、pagination、Spin、ScrollViewer、EmptyIndicator、item 和 group item 在 light / dark 和三种 SizeType 下显示稳定。 |
 | Token | 检查 `ListViewTokenKind`、AXAML token resource 和 Gallery token 表同步。 |
 | 虚拟化 | 覆盖 container prepare / clear、上下滚动后 disabled、group item 和 selected 状态不串扰。 |

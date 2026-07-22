@@ -412,9 +412,15 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
     {
         // Selecting 相关设置，只能通过反射设置目前
         ((ItemCollection)ItemsView).AddSourceChangedEvent(OnItemsViewSourceChanged);
+        _selection.Changed += (_, change) => HandleSelectionChange(change);
         var items = this.GetItems();
         items.CollectionChanged += HandleItemsViewCollectionChanged;
         Items.CollectionChanged += HandleItemCollectionChanged;
+    }
+
+    private void OnItemsViewSourceChanged(object? sender, EventArgs e)
+    {
+        AttachSelectionView();
     }
     
     private void HandleItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -471,6 +477,7 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
             ConfigureSortDescriptions();
             ConfigureGroupInfo();
             ReConfigurePagination();
+            AttachSelectionView();
             InvalidateMeasure();
             UpdatePseudoClasses();
         }
@@ -533,7 +540,7 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
         }
         ConfigureEmptyIndicator();
         ConfigureIsFiltering();
-        TryInitializeSelectionSource(_selection, _updateState is null);
+        AttachSelectionView();
     }
     
     private object? GroupSelector(object? item)
@@ -595,7 +602,7 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
                 {
                     ConfigureGroupInfo();
                 }
-                TryInitializeSelectionSource(Selection, false);
+                AttachSelectionView();
             }
         }
         else if (change.Property == GroupPropertySelectorProperty)
@@ -611,9 +618,7 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
     {
         if (e.NewValue is bool && (bool)e.NewValue == false)
         {
-            SetCurrentValue(SelectedIndexProperty, -1);
-            SetCurrentValue(SelectedItemProperty, null);
-            SetCurrentValue(SelectedItemsProperty, null);
+            Selection.Clear();
         }
     }
     

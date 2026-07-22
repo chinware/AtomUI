@@ -1,3 +1,4 @@
+using System.Collections;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Desktop.Controls.Primitives;
@@ -17,6 +18,61 @@ internal class SelectCandidateList : ListView, ICandidateList
     private static readonly FuncTemplate<Panel?> DefaultPanel = new(() => new CandidateVirtualizingStackPanel());
 
     private ScrollViewer? _scrollViewer;
+
+    private event EventHandler<SelectionChangedEventArgs>? CandidateSelectionChanged;
+
+    event EventHandler<SelectionChangedEventArgs>? ICandidateList.SelectionChanged
+    {
+        add => CandidateSelectionChanged += value;
+        remove => CandidateSelectionChanged -= value;
+    }
+
+    object? ICandidateList.SelectedItem
+    {
+        get => SelectedItem;
+        set => SetCandidateSelection(value, null);
+    }
+
+    IList? ICandidateList.SelectedItems
+    {
+        get => SelectedItems.ToList();
+        set => SetCandidateSelection(null, value);
+    }
+
+    private void SetCandidateSelection(object? item, IList? items)
+    {
+        using var batch = BeginSelectionBatchUpdate();
+        Selection.Clear();
+        if (items is not null)
+        {
+            var remaining = items.Cast<object?>().ToList();
+            foreach (var sourceIndex in EnumerateCurrentViewSourceIndexes())
+            {
+                if (!TryGetSourceItem(sourceIndex, out var sourceItem))
+                {
+                    continue;
+                }
+
+                var matchIndex = remaining.FindIndex(candidate => ReferenceEquals(candidate, sourceItem));
+                if (matchIndex >= 0)
+                {
+                    Selection.Select(sourceIndex);
+                    remaining.RemoveAt(matchIndex);
+                }
+            }
+        }
+        else if (item is not null)
+        {
+            foreach (var sourceIndex in EnumerateCurrentViewSourceIndexes())
+            {
+                if (TryGetSourceItem(sourceIndex, out var sourceItem) && ReferenceEquals(sourceItem, item))
+                {
+                    Selection.Select(sourceIndex);
+                    break;
+                }
+            }
+        }
+    }
 
     #region 公共属性定义
 
@@ -120,7 +176,7 @@ internal class SelectCandidateList : ListView, ICandidateList
         SelectedItemProperty.Changed.AddClassHandler<SelectCandidateList>((list, args) => list.HandleSelectItemChanged(args));
         CandidateSelectedIndexProperty.Changed.AddClassHandler<SelectCandidateList>((list, args) => list.HandleCandidateSelectedIndexChanged(args));
         CandidateSelectedItemProperty.Changed.AddClassHandler<SelectCandidateList>((list, args) => list.HandleCandidateSelectedItemChanged(args));
-        SelectionChangedEvent.AddClassHandler<SelectCandidateList>((list, args) => list.HandleSelectionChanged());
+        SelectionChangedEvent.AddClassHandler<SelectCandidateList>((list, args) => list.HandleSelectionChanged(args));
         ItemsPanelProperty.OverrideDefaultValue<SelectCandidateList>(DefaultPanel);
     }
 
@@ -130,13 +186,20 @@ internal class SelectCandidateList : ListView, ICandidateList
         CandidateSelectedItem  = null;
     }
 
-    private void HandleSelectionChanged()
+    private void HandleSelectionChanged(ListViewSelectionChangedEventArgs args)
     {
         if (!IsSingleMode())
         {
             ConfigureOptionsForMaxCount();
             ConfigureHasAnyVisibleItem();
         }
+
+        CandidateSelectionChanged?.Invoke(
+            this,
+            new SelectionChangedEventArgs(
+                Avalonia.Controls.Primitives.SelectingItemsControl.SelectionChangedEvent,
+                args.DeselectedItems.ToArray(),
+                args.SelectedItems.ToArray()));
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -252,15 +315,15 @@ internal class SelectCandidateList : ListView, ICandidateList
     {
         if (CandidateSelectedItem != null)
         {
-            ToggleVisibleItemSelection(CandidateSelectedItem);
+            ToggleVisibleItemSelection();
         }
     }
 
     protected virtual void NotifyCommit()
     {
-        if (CandidateSelectedItem != null)
+        if (CandidateSelectedIndex >= 0)
         {
-            SetCurrentValue(SelectedItemProperty, CandidateSelectedItem);
+            SelectedIndex = CandidateSelectedIndex;
         }
 
         RaiseEvent(new RoutedEventArgs(CommitEvent)
@@ -296,73 +359,53 @@ internal class SelectCandidateList : ListView, ICandidateList
 
     private void ClearState()
     {
-        SelectedItems          = null;
-        SelectedItem           = null;
-        SelectedIndex          = -1;
+        Selection.Clear();
     }
 
     protected virtual void SelectPreviousCandidateItem()
     {
-        if (_candidateSelectedIndex == -1)
-        {
-            CandidateSelectedIndex = SelectedIndex != -1 ? FindNextEnabledIndex(SelectedIndex, -1) : TotalItemCount - 1;
-        }
-        else
-        {
-            CandidateSelectedIndex = FindNextEnabledIndex(CandidateSelectedIndex, -1);
-        }
+        CandidateSelectedIndex = FindNextEnabledIndex(
+            _candidateSelectedIndex != -1 ? _candidateSelectedIndex : SelectedIndex,
+            -1);
     }
 
     protected virtual void SelectNextCandidateItem()
     {
-        if (_candidateSelectedIndex == -1)
-        {
-            CandidateSelectedIndex = SelectedIndex != -1 ? FindNextEnabledIndex(SelectedIndex, 1) : 0;
-        }
-        else
-        {
-            CandidateSelectedIndex = FindNextEnabledIndex(CandidateSelectedIndex, 1);
-        }
+        CandidateSelectedIndex = FindNextEnabledIndex(
+            _candidateSelectedIndex != -1 ? _candidateSelectedIndex : SelectedIndex,
+            1);
     }
 
-    private int FindNextEnabledIndex(int startIndex, int delta)
+    private int FindNextEnabledIndex(int startSourceIndex, int delta)
     {
-        var index     = startIndex;
-        var findCycle = false;
-        while (true)
+        var visibleSourceIndexes = EnumerateCurrentViewSourceIndexes().ToArray();
+        if (visibleSourceIndexes.Length == 0)
         {
-            index += delta;
-            if (index >= TotalItemCount)
+            return -1;
+        }
+
+        var currentViewIndex = startSourceIndex >= 0 &&
+                               TryGetViewIndexFromSourceIndex(startSourceIndex, out var selectedViewIndex)
+            ? selectedViewIndex
+            : delta > 0 ? -1 : visibleSourceIndexes.Length;
+
+        for (var step = 0; step < visibleSourceIndexes.Length; step++)
+        {
+            var viewIndex = currentViewIndex + delta * (step + 1);
+            viewIndex %= visibleSourceIndexes.Length;
+            if (viewIndex < 0)
             {
-                index = 0;
-                if (!findCycle)
-                {
-                    findCycle = true;
-                }
-                else
-                {
-                    return -1;
-                }
-            }
-            else if (index < 0)
-            {
-                index = TotalItemCount - 1;
-                if (!findCycle)
-                {
-                    findCycle = true;
-                }
-                else
-                {
-                    return -1;
-                }
+                viewIndex += visibleSourceIndexes.Length;
             }
 
-            var container = ContainerFromIndex(GlobalIndexLocalIndex(index));
+            var container = ContainerFromIndex(viewIndex);
             if (container == null || container is SelectCandidateListItem listItem && listItem.IsEnabled)
             {
-                return index;
+                return visibleSourceIndexes[viewIndex];
             }
         }
+
+        return -1;
     }
 
     protected internal override void NotifyItemClicked(ListViewItem item)
@@ -408,7 +451,7 @@ internal class SelectCandidateList : ListView, ICandidateList
 
     private void ConfigureOptionsForMaxCount()
     {
-        if (SelectedItems?.Count >= MaxCount)
+        if (SelectedItems.Count >= MaxCount)
         {
             for (var i = 0; i < ItemCount; i++)
             {
@@ -454,7 +497,7 @@ internal class SelectCandidateList : ListView, ICandidateList
                 continue;
             }
 
-            if (selectedItems == null || !selectedItems.Contains(item))
+            if (!selectedItems.Contains(item))
             {
                 HasAnyVisibleItem = true;
                 return;
@@ -482,18 +525,13 @@ internal class SelectCandidateList : ListView, ICandidateList
 
     public bool TrySetCandidateItemSelected(int index)
     {
-        if (index < 0 || index > TotalItemCount - 1)
+        if (!TryGetViewIndexFromSourceIndex(index, out var localIndex) ||
+            localIndex < 0 || localIndex >= ItemCount ||
+            !TryGetSourceItem(index, out var candidateItem))
         {
             return false;
         }
 
-        var localIndex = GlobalIndexLocalIndex(index);
-        if (localIndex < 0 || localIndex >= ItemCount)
-        {
-            return false;
-        }
-
-        var candidateItem = Items[localIndex];
         if (candidateItem is IGroupListItemData groupListItemData && groupListItemData.IsGroupItem)
         {
             return false;
@@ -528,59 +566,53 @@ internal class SelectCandidateList : ListView, ICandidateList
 
         if (source is ListViewItem listItem && !listItem.IsGroupItem)
         {
-            if (TryGetVisibleItem(listItem, out var item))
+            if (TryGetVisibleItem(listItem, out var viewIndex, out var item))
             {
+                var sourceIndex = SelectionIndexFromItemIndex(viewIndex);
                 if (IsSingleMode())
                 {
-                    SetCurrentValue(SelectedItemProperty, item);
+                    SelectedIndex = sourceIndex;
                 }
                 else
                 {
-                    ToggleVisibleItemSelection(item);
+                    CandidateSelectedIndex = sourceIndex;
+                    ToggleVisibleItemSelection();
                 }
             }
         }
         return true;
     }
 
-    private bool TryGetVisibleItem(ListViewItem listItem, out object? item)
+    private bool TryGetVisibleItem(ListViewItem listItem, out int viewIndex, out object? item)
     {
-        var index = IndexFromContainer(listItem);
-        if (index >= 0 && index < ItemCount)
+        viewIndex = IndexFromContainer(listItem);
+        if (viewIndex >= 0 && viewIndex < ItemCount)
         {
-            item = Items[index];
+            item = Items[viewIndex];
             return true;
         }
 
+        viewIndex = -1;
         item = null;
         return false;
     }
 
-    private void ToggleVisibleItemSelection(object? item)
+    private void ToggleVisibleItemSelection()
     {
-        var selectedItems = SelectedItems;
-        if (selectedItems == null)
+        var sourceIndex = CandidateSelectedIndex;
+        if (sourceIndex < 0)
         {
             return;
         }
 
-        var addedItems   = Array.Empty<object?>();
-        var removedItems = Array.Empty<object?>();
-        if (selectedItems.Contains(item))
+        if (Selection.IsSelected(sourceIndex))
         {
-            selectedItems.Remove(item);
-            removedItems = [item];
+            Selection.Deselect(sourceIndex);
         }
         else
         {
-            selectedItems.Add(item);
-            addedItems = [item];
+            Selection.Select(sourceIndex);
         }
-
-        RaiseEvent(new SelectionChangedEventArgs(
-            SelectionChangedEvent,
-            removedItems,
-            addedItems));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

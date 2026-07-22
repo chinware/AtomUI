@@ -4,7 +4,6 @@ namespace AtomUI.Controls.Data;
 public interface IListItemData : IItemKey, IGroupHeader
 {
     bool IsEnabled { get; set; }
-    bool IsSelected { get; set; }
     object? Content { get; set; }
 }
 

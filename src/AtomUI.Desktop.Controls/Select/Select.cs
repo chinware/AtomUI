@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
+using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Reflection;
 using AtomUI.Theme;
@@ -409,7 +410,7 @@ public partial class Select : AbstractSelect
             _candidateList[!SelectCandidateList.MaxCountProperty]       = this[!MaxCountProperty];
             _candidateList[!ListView.AutoScrollToSelectedItemProperty]  = this[!AutoScrollToSelectedOptionsProperty];
             _candidateList[!ItemsControl.ItemTemplateProperty]          = this[!OptionTemplateProperty];
-            _candidateList.SelectionChanged += HandleCandidateListSelectionChanged;
+            ((ICandidateList)_candidateList).SelectionChanged += HandleCandidateListSelectionChanged;
             _candidateList.Commit           += HandleCandidateListComplete;
             _candidateList.Cancel           += HandleCandidateListCanceled;
             ConfigureOptionsBoxSelectionMode();
@@ -618,13 +619,13 @@ public partial class Select : AbstractSelect
         {
             if (Mode == SelectMode.Single)
             {
-                _candidateList.SelectedItem = SelectedOption;
+                ((ICandidateList)_candidateList).SelectedItem = SelectedOption;
             }
             else
             {
                 if (SelectedOptions != null && SelectedOptions.Count > 0)
                 {
-                    _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
+                    ((ICandidateList)_candidateList).SelectedItems = CopySelectedOptions(SelectedOptions);
                 }
             }
         }
@@ -696,7 +697,7 @@ public partial class Select : AbstractSelect
         }
         if (_candidateList != null)
         {
-            _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
+            ((ICandidateList)_candidateList).SelectedItems = CopySelectedOptions(SelectedOptions);
         }
     }
 
@@ -752,7 +753,7 @@ public partial class Select : AbstractSelect
         ConfigureSelectionValueState();
         if (_candidateList != null)
         {
-            _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
+            ((ICandidateList)_candidateList).SelectedItems = CopySelectedOptions(SelectedOptions);
         }
     }
 
@@ -768,7 +769,7 @@ public partial class Select : AbstractSelect
 
         if (_candidateList != null)
         {
-            _candidateList.SelectedItem = SelectedOption;
+            ((ICandidateList)_candidateList).SelectedItem = SelectedOption;
         }
     }
 
@@ -844,7 +845,7 @@ public partial class Select : AbstractSelect
     {
         if (_candidateList != null)
         {
-            _candidateList.SelectionChanged -= HandleCandidateListSelectionChanged;
+            ((ICandidateList)_candidateList).SelectionChanged -= HandleCandidateListSelectionChanged;
             _candidateList.Commit           -= HandleCandidateListComplete;
             _candidateList.Cancel           -= HandleCandidateListCanceled;
             _candidateList.ItemsSource      =  null;
@@ -984,11 +985,11 @@ public partial class Select : AbstractSelect
         {
             if (Mode == SelectMode.Single)
             {
-                _candidateList.SelectedItem = SelectedOption;
+                ((ICandidateList)_candidateList).SelectedItem = SelectedOption;
             }
             else
             {
-                _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
+                ((ICandidateList)_candidateList).SelectedItems = CopySelectedOptions(SelectedOptions);
             }
         }
     }
@@ -1546,7 +1547,7 @@ public partial class Select : AbstractSelect
         var candidateList = _candidateList;
         if (candidateList != null)
         {
-            candidateList.SelectionChanged -= HandleCandidateListSelectionChanged;
+                ((ICandidateList)candidateList).SelectionChanged -= HandleCandidateListSelectionChanged;
         }
 
         try
@@ -1573,7 +1574,7 @@ public partial class Select : AbstractSelect
         {
             if (candidateList != null)
             {
-                candidateList.SelectionChanged += HandleCandidateListSelectionChanged;
+                ((ICandidateList)candidateList).SelectionChanged += HandleCandidateListSelectionChanged;
             }
         }
     }

@@ -105,25 +105,48 @@ public class ListViewStateTests
     }
 
     [Fact]
-    public void Replaced_Selection_Model_Does_Not_Handle_Old_LostSelection()
+    public void ItemsSource_Replacement_Uses_The_New_Entry_Selection_Lifecycle()
     {
-        var oldSelection = new SelectionModel<object?>();
-        var newSelection = new SelectionModel<object?>();
         var listView = new AtomListView
         {
             ItemsSource    = CreateItems("alpha", "beta", "gamma"),
-            SelectionMode  = SelectionMode.AlwaysSelected,
-            Selection      = oldSelection
+            SelectionMode  = SelectionMode.AlwaysSelected
         };
 
         listView.SelectedIndex = 1;
-        listView.Selection     = newSelection;
+        listView.ItemsSource   = CreateItems("delta", "epsilon", "zeta");
         listView.SelectedIndex = 2;
 
-        oldSelection.Clear();
-
         listView.SelectedIndex.ShouldBe(2,
-            "LostSelection from a replaced model should not drive the active selection model.");
+            "the new source owns a fresh occurrence identity lifecycle.");
+    }
+
+    [Fact]
+    public void Removing_Selected_Entry_Publishes_Deselection_With_Old_Item()
+    {
+        var first = new ListItemData { Content = "first" };
+        var second = new ListItemData { Content = "second" };
+        var source = new ObservableCollection<ListItemData> { first, second };
+        var listView = new AtomListView
+        {
+            ItemsSource   = source,
+            SelectionMode = SelectionMode.Multiple
+        };
+        ListViewSelectionChangedEventArgs? change = null;
+        listView.SelectionChanged += (_, args) =>
+        {
+            if (args.DeselectedItems.Count > 0)
+            {
+                change = args;
+            }
+        };
+
+        listView.Selection.Select(1);
+        source.RemoveAt(1);
+
+        change.ShouldNotBeNull();
+        change!.DeselectedItems.ShouldBe([second]);
+        listView.SelectedItems.ShouldBeEmpty();
     }
 
     [Fact]

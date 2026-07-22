@@ -138,6 +138,11 @@ public class ListViewItem : ContentControl,
         set => SetValue(ItemClickModeProperty, value);
     }
 
+    /// <summary>
+    /// Identity of the source occurrence currently projected into this recycled container.
+    /// </summary>
+    internal long? EntryId { get; set; }
+
     #endregion
     
     private static readonly Point s_invalidPoint = new(double.NaN, double.NaN);
