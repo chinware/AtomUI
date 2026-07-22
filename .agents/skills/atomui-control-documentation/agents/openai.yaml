@@ -1,0 +1,4 @@
+interface:
+  display_name: "AtomUI Control Documentation"
+  short_description: "Write and review AtomUI control documentation"
+  default_prompt: "Use $atomui-control-documentation to create or review an AtomUI control documentation set."
