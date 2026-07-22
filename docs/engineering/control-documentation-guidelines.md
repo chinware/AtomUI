@@ -14,6 +14,7 @@
 docs/controls/<platform>/<category>/<control>/
 ├── overview.md
 ├── implementation.md
+├── <topic>-design.md        # 可选，复杂专项设计
 ├── token.md
 └── changelog.md
 ```
@@ -25,6 +26,8 @@ docs/controls/<platform>/<category>/<control>/
 - `changelog.md` 必须存在，用于记录控件级设计、API、主题契约、Token 和实现结构变化。
 - `token.md` 仅当控件存在专属 Token 或复杂主题变量关系时存在。
 - 内容过多时可以继续拆分专题文档，但 `overview.md` 只保留设计与契约主线，`implementation.md` 只保留实现原理主线，并链接专题文档。
+- 同一主题跨越 Public API、平台/状态策略、内部架构、Template、算法和验证边界时，使用本文定义的
+  `<topic>-design.md` 控件专项设计文档，不把 Issue 分析、方案比较或实施计划塞入控件主文档。
 - 分类入口文档必须链接控件目录中的主要文档。
 
 ## 写作原则
@@ -43,6 +46,247 @@ docs/controls/<platform>/<category>/<control>/
 - `implementation.md` 不重复公共 API 清单、Token 全局规则或用户文档内容，只解释当前控件内部实现为什么这样组织、状态如何流动、维护时必须守住哪些边界。
 
 历史变化统一进入控件级 `changelog.md`。
+
+## 控件专项设计文档
+
+控件专项设计文档用于描述一个控件内部具有独立语义、跨越公共契约与实现职责、且无法在
+`overview.md` 或 `implementation.md` 中简洁说明的稳定设计主题。
+
+典型主题包括：
+
+- 跨平台窗口布局、原生能力投影或平台自适应策略。
+- 复杂选择、展开、过滤、校验、异步加载或状态同步模型。
+- 跨多个主题、presenter、popup host 或内部协作控件的组合机制。
+- 具有明确公式、边界条件和生命周期约束的布局或数据算法。
+- 同时影响 Public API、模板契约、内部职责和验证矩阵的专项能力。
+
+专项设计文档不是独立的控件总览，也不替代实现文档。它只展开一个稳定设计主题，并由控件的
+`overview.md` 和 `implementation.md` 提供导航。
+
+### 创建条件
+
+满足以下任一条件时可以创建专项设计文档：
+
+- 同一主题同时涉及公共 API、内部架构、模板或平台适配，放入单一主文档会破坏其内容边界。
+- 主题包含需要独立维护的术语、状态、区域、角色或数据模型。
+- 主题包含跨平台、跨宿主、跨模式或跨窗口状态的策略矩阵。
+- 主题包含维护者必须共同遵守的算法、公式、退化规则或时序不变量。
+- 主题需要独立的兼容性、定制边界和分层验证要求。
+
+以下情况不创建专项设计文档：
+
+- 仅罗列少量属性、事件或方法。
+- 仅记录一个私有方法或局部实现技巧。
+- 仅记录 Issue 调查、截图分析、复现过程或根因取证。
+- 仅比较候选方案、记录会议结论或实现计划。
+- 仅记录版本变化、迁移过程、commit、PR 或发布说明。
+- 内容能够在 `overview.md` 或 `implementation.md` 的一个短小章节内完整表达。
+
+### 文件位置与命名
+
+专项设计文档与对应控件的主文档放在同一目录：
+
+```text
+docs/controls/<platform>/<category>/<control>/
+├── overview.md
+├── implementation.md
+├── <topic>-design.md
+├── token.md
+└── changelog.md
+```
+
+命名规则：
+
+- 文件名使用稳定的英文 kebab-case 主题名，以 `-design.md` 结尾。
+- 标题使用 `# <Control> <专项主题>设计`。
+- 主题名表达长期设计能力，不使用 Issue 编号、版本号、日期、分支名或修复动作。
+- 同一主题只维护一份专项设计文档，不按平台或实现阶段复制多份。
+
+示例：
+
+```text
+window-title-bar/title-alignment-design.md
+tree/selection-model-design.md
+image-previewer/loading-pipeline-design.md
+```
+
+带日期的调查、迁移或方案记录继续放在对应的 specs、迁移记录或发布记录目录，不放入控件专项设计文档。
+
+### 写作边界
+
+专项设计文档只描述最终采用的设计状态，使用确定、稳定、可验证的工程语言。
+
+必须遵守：
+
+- 直接说明控件如何设计，不以 Issue、缺陷、截图、实现任务或讨论过程作为叙事入口。
+- 描述采用的模型、契约、职责和算法，不保留候选方案比较或“不采用方案”章节。
+- API 使用稳定语义描述，不使用“准备新增”“待实现”“当前尚不支持”等实施状态措辞。
+- 文件结构表达稳定 ownership，不写成目标文件清单或任务拆分清单。
+- 平台差异使用能力、metrics 和策略表达，不把当前开发机或本地路径当作设计事实。
+- 算法必须定义输入、输出、坐标系、边界条件和退化规则。
+- 兼容性必须描述不可破坏的契约和定制边界，不写一次性变更摘要。
+- 验证要求必须对应设计不变量，不写与专项主题无关的通用测试清单。
+
+不得包含：
+
+- Issue 编号、截图像素取证、复现步骤和根因调查流水。
+- 设计状态、实现状态、人员分工、排期、todo 或实施 checklist。
+- commit、PR、tag、本地仓库路径或外部项目源码行号。
+- 版本历史、迁移历史和 release note；这些内容进入 `changelog.md` 或专项历史记录。
+- 与控件专项主题无关的全局工程规范副本。
+
+### 标准结构
+
+专项设计文档按以下通用结构组织。允许根据主题合并相邻章节，但不能混淆内容职责。
+
+```text
+# <Control> <专项主题>设计
+
+1. 设计定位
+2. 设计原则
+3. 专项模型与 Public API
+4. 变体、平台或状态策略
+5. 架构、文件结构与职责
+6. Template、组合与集成契约
+7. 核心算法、数据流与生命周期
+8. 资源、性能与 AOT 边界
+9. 兼容性与定制边界
+10. 验证要求
+```
+
+章节适用规则：
+
+| 章节 | 要求 | 说明 |
+| --- | --- | --- |
+| 设计定位 | 必须 | 说明专项能力解决什么设计职责，以及覆盖哪些控件、宿主或状态。 |
+| 设计原则 | 必须 | 定义后续 API、策略和算法共同遵守的不变量。 |
+| 专项模型与 Public API | 必须 | 先定义术语、区域、状态或角色模型，再说明相关公共契约；没有 Public API 时明确内部契约边界。 |
+| 变体、平台或状态策略 | 条件必须 | 存在 `Auto`、平台、CSD、主题变体、模式或状态差异时必须提供映射或策略矩阵。 |
+| 架构、文件结构与职责 | 必须 | 说明稳定模块结构、owner、输入输出和明确不负责的内容。 |
+| Template、组合与集成契约 | 条件必须 | 涉及 ControlTheme、Template Part、internal presenter、host 或组合关系时必须说明。 |
+| 核心算法、数据流与生命周期 | 条件必须 | 存在公式、状态同步、异步流程或资源获取释放时必须说明输入、流程、边界和退化。 |
+| 资源、性能与 AOT 边界 | 必须评估 | 无专项影响时可以简短说明不引入额外资源、分配、反射或动态发现。 |
+| 兼容性与定制边界 | 必须 | 说明稳定 API、默认值、模板、渲染、平台语义和外部定制责任。 |
+| 验证要求 | 必须 | 按纯逻辑、控件行为、主题契约、平台实机、Gallery/demo 和 AOT 风险分层。 |
+
+### 各章节内容要求
+
+#### 设计定位与原则
+
+设计定位从控件能力出发，说明设计是什么、适用在哪里、与相邻职责如何分界。设计原则只记录能够约束后续
+API、架构和算法的稳定规则，不写项目目标、实施收益或讨论结论。
+
+#### 专项模型与 Public API
+
+先定义主题自己的术语和模型，例如：
+
+- Leading、Title、Trailing 区域。
+- selected、current、checked、expanded 状态 owner。
+- loading pipeline、request、result 和 cancellation 状态。
+- visible frame、content bounds、overlay bounds 等坐标语义。
+
+Public API 按语义说明属性、枚举、事件和默认值。可以使用短代码片段准确表达契约，但不复制完整 API 表，
+不把源码成员顺序改写成文档结构。
+
+#### 变体、平台或状态策略
+
+存在自动模式或变体时，文档必须明确：
+
+- `Auto` 如何解析。
+- 显式值是否跨平台保持同义。
+- CSD、平台、主题、宿主和 WindowState 如何影响输入或策略。
+- 哪些差异允许进入平台层，哪些共享语义不得复制。
+- Unknown、unsupported 或能力缺失时如何回退。
+
+映射和组合较多时使用矩阵，不用散落的条件句描述同一状态空间。
+
+#### 架构、文件结构与职责
+
+文件结构只列出该专项的稳定源码边界。每个类型、Panel、Strategy、presenter、handler 或 host 必须有单一
+职责，并说明主要输入、输出和 owner。若明确不引入某类辅助对象，应以职责和数据规模解释边界，不写成对
+历史方案的评价。
+
+#### Template、组合与集成契约
+
+涉及主题时，说明：
+
+- 语义区域与真实 Template Part 或主题节点的对应关系。
+- public control、internal control、presenter、host 和 item container 的组合结构。
+- 哪些 part、ControlTheme key、Role、伪类和命中测试语义稳定。
+- 默认模板、派生模板和特殊宿主如何复用同一模型。
+- 外部替换模板时由 AtomUI 和应用各自承担什么责任。
+
+#### 核心算法、数据流与生命周期
+
+算法设计至少定义：
+
+- 输入、输出、单位和坐标系。
+- 状态或数据的 owner 与单向流向。
+- 主流程顺序。
+- 空值、零尺寸、重叠、取消、异常或能力缺失时的退化规则。
+- 触发重新计算、重新测量、重新订阅或释放的条件。
+
+公式应集中在一个共享职责中；平台、模板或派生控件不能复制同一算法。
+
+#### 资源、性能与 AOT
+
+说明专项设计是否引入：
+
+- DynamicResource、binding、subscription、timer、cache 或异步任务。
+- measure/arrange、render、pointer move 等热路径分配。
+- 反射、动态发现、运行时注册或 trimming 风险。
+- owner/container/template reapply 对应的释放路径。
+
+不涉及这些能力时，也应写明使用纯值、静态注册或无状态对象等边界。
+
+#### 兼容性、定制与验证
+
+兼容性描述 API 默认值、显式语义、模板 part、主题 key、渲染结果和外部定制责任。验证要求必须直接证明
+这些设计不变量，并按风险选择纯函数测试、headless 控件测试、主题结构测试、Gallery/demo、平台实机或
+NativeAOT publish。
+
+### 与控件主文档的关系
+
+- `overview.md` 保留专项能力的设计摘要、Public API 入口和兼容性主线，并链接专项设计文档。
+- `implementation.md` 保留源码索引、核心 owner、生命周期和维护入口，并链接专项设计文档。
+- 专项设计文档在首段链接回 `overview.md` 和 `implementation.md`。
+- `token.md` 只记录 Token 语义；专项设计引用 Token 时链接 `token.md`，不复制 Token 表。
+- `changelog.md` 只记录专项设计、API、主题或实现结构的变化，不解释当前设计。
+- 专项设计中的公共契约和语义结构不能只存在于专题文件；`overview.md` 与 `implementation.md` 必须保留
+  足以支持 LLMS 生成的摘要和导航。
+
+### 审查清单
+
+- 文档是否从控件设计本身开始，而不是从 Issue、截图或修复过程开始。
+- 是否只描述采用的最终设计，没有候选方案比较和实施状态。
+- 设计定位、原则、专项模型、职责和兼容边界是否互相一致。
+- Public API、默认值和显式语义是否明确。
+- 平台、CSD、模式、宿主或状态差异是否使用完整矩阵表达。
+- 文件结构是否表达稳定 ownership，而不是任务拆分。
+- Template Part、Role、ControlTheme key、组合节点和外部定制责任是否明确。
+- 算法是否定义输入、输出、坐标系、边界和退化规则。
+- 生命周期是否存在明确的获取、失效、取消和释放路径。
+- 性能和 AOT 是否经过明确评估。
+- 验证要求是否能够证明每项设计不变量。
+- `overview.md`、`implementation.md` 和专项设计文档是否互相链接。
+- 是否没有重复全局规范、版本历史或无长期维护价值的实现细节。
+
+### 验证要求
+
+专项设计文档改动至少执行：
+
+```bash
+git diff --check
+```
+
+同时检查：
+
+- 文件名和标题符合专项设计命名规则。
+- 所有相对链接存在。
+- `overview.md` 和 `implementation.md` 已添加专项设计入口。
+- 文档不包含 Issue 叙事、实现状态、历史过程或任务清单。
+- 章节与专项复杂度匹配，没有为了套模板制造无意义内容。
+- Public API、Template、算法和平台矩阵与同一变更中的源码设计保持一致。
 
 ## LLMS 支持原则
 
@@ -451,6 +695,8 @@ LLMS 生成时不得把缺失 `token.md` 解释为文档缺失，除非 `overvie
 
 - `overview.md` 链接 `implementation.md`、`token.md` 和 `changelog.md`。没有 `token.md` 时只链接 `implementation.md` 和 `changelog.md`。
 - `implementation.md` 链接 `overview.md`、`changelog.md`，并在涉及控件专属 Token 时链接 `token.md`。
+- 存在 `<topic>-design.md` 时，`overview.md` 和 `implementation.md` 必须链接该专项设计文档；专项设计文档
+  必须在首段链接回 `overview.md` 和 `implementation.md`。
 - `token.md` 链接 `overview.md`、`implementation.md`、`changelog.md` 和 [AtomUI 控件 Token 设计规范](control-token-guidelines.md)。
 - `changelog.md` 不解释当前设计，只记录变化。
 
@@ -482,6 +728,8 @@ LLMS 生成时不得把缺失 `token.md` 解释为文档缺失，除非 `overvie
 - `overview.md` 是否能支撑单控件完整文档生成。
 - `overview.md` 是否包含 LLMS 导出来源表。
 - `implementation.md` 是否提供稳定源码索引、状态流、生命周期和 AOT 边界。
+- 存在专项设计文档时，是否遵循本文“控件专项设计文档”章节，并且只描述最终设计，没有混入 Issue 调查、
+  候选方案或实现状态。
 - 结构复杂控件的 `implementation.md` 是否基于 `Themes/` 文件夹提供 Composition Model，并明确 internal 协作对象的稳定性和 Agent 使用边界。
 - `token.md` 是否能解释 Token 语义；没有 `token.md` 的控件是否在 `overview.md` 明确说明原因。
 - Template Part、伪类、主题资源和 Token 是否足够支撑 semantic 文档生成。

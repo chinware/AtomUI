@@ -24,7 +24,7 @@ Source: ./controls/button/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`
 
 ```xml
 <Panel>
@@ -108,15 +108,6 @@ Button
               -> LoadingOutlined#PART_LoadingIcon (template-stable)
               -> IconPresenter#PART_ButtonIcon (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
-     -> Panel (template-stable)
-        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
-        -> Border#ShadowsFrame (template-stable)
-        -> Border#CustomBackgroundLayer (template-stable)
-        -> DashedBorder#Frame (template-stable)
-           -> DockPanel#PART_RootLayout (template-stable)
-              -> IconPresenter#PART_ButtonIcon (template-stable)
-              -> LoadingOutlined#PART_LoadingIcon (template-stable)
-              -> ContentPresenter#PART_ContentPresenter (template-stable)
 ```
 
 ### 协作节点
@@ -126,7 +117,7 @@ Button
 | `Button` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Button` | control theme | `BrowserButtonThemes.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `BrowserButtonThemes.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `BrowserButtonThemes.axaml` | Button | `EffectiveCornerRadius`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `BrowserButtonThemes.axaml` | Button | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ShadowsFrame` | template node (Border) | `BrowserButtonThemes.axaml` | Button | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (DashedBorder) | `BrowserButtonThemes.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `BrowserButtonThemes.axaml` | Button | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -136,7 +127,7 @@ Button
 | `PART_ContentPresenter` | template node (ContentPresenter) | `BrowserButtonThemes.axaml` | Button | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Button` | control theme | `ButtonTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `ButtonTheme.axaml` | Button | `EffectiveCornerRadius`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `ButtonTheme.axaml` | Button | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ShadowsFrame` | template node (Border) | `ButtonTheme.axaml` | Button | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (DashedBorder) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `ButtonTheme.axaml` | Button | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -263,6 +254,8 @@ ButtonToken 不承载 `IsPressed`、`IsPointerOver`、`IsLoading`、`EffectiveCo
 - StyledProperty / DirectProperty / RoutedEvent 与支持字段的定义顺序符合控件代码规范。
 - `Button.cs` 保留公共属性、事件、方法和接口入口；实现拆分只承载内部逻辑。
 - `Color + Variant` 优先级和旧 API 映射结果不变。
+- `ButtonType=Text` 保持 `Default + Text` 中性语义；`Primary + Text` 跟随当前主题 `ColorPrimary` 色阶。
+- 桌面和 Browser 主题必须共享 C# 计算出的最终颜色变量，不得各自维护兼容 API 颜色矩阵。
 - `SizeType=Custom` 不引入 Button 专属 `Custom*` 尺寸属性；未设置本地尺寸属性时表现等同 `Middle`，设置本地属性时由 Avalonia 属性优先级自然覆盖。
 - 主题不得以高于本地值的优先级写入 Custom 默认尺寸。
 - `CustomBackgroundLayer` 不成为用户可依赖 template part。
@@ -461,32 +454,11 @@ Source: ./controls/icon/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Controls/Icon/Themes/IconTheme.axaml`
-
-```xml
-<Border />
-```
+未定位到可生成抽象 AXAML 结构的 ControlTheme 模板。生成器不会根据 semantic parts 发明 AXAML 节点；请以 Template Parts、主题文件和源码索引为准。
 
 ## Composition Model
 
-该章节由控件 `Themes/` 文件夹中的真实主题文件生成，用于说明 public 控件与内部协作对象之间的运行时结构。内部节点只用于理解和维护，不应指导用户代码直接依赖。
-
-### 控件角色图
-
-```text
-Icon
-  -> IconPresenter (presenter control theme, IconPresenterTheme.axaml)
-  -> Icon (control theme, IconTheme.axaml)
-     -> Border (template-stable)
-```
-
-### 协作节点
-
-| 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Icon` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `IconPresenter` | presenter control theme | `IconPresenterTheme.axaml` | Icon | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Icon` | control theme | `IconTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Height`, `Width` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+该控件主要由 public 控件和 ControlTheme 模板直接表达，没有额外运行时组合层。
 
 ## Template Parts
 
@@ -585,7 +557,7 @@ Source: ./controls/separator/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Separator/Themes/SeparatorTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Separator/Themes/SeparatorTheme.axaml`
 
 ```xml
 <TextBlock Name="PART_Title" />
@@ -707,7 +679,7 @@ Source: ./controls/split-button/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
 
 ```xml
 <DockPanel Name="PART_MainLayout">
@@ -1029,7 +1001,7 @@ Source: ./controls/masonry/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`
 
 ```xml
 <ItemsPresenter Name="PART_ItemsPresenter" />
@@ -1266,7 +1238,7 @@ Source: ./controls/splitter/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -1442,7 +1414,7 @@ Source: ./controls/breadcrumb/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Breadcrumb/Themes/BreadcrumbTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Breadcrumb/Themes/BreadcrumbTheme.axaml`
 
 ```xml
 <ItemsPresenter />
@@ -1581,7 +1553,7 @@ Source: ./controls/button-spinner/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerTheme.axaml`
 
 ```xml
 <ButtonSpinnerDecoratedBox Name="PART_DecoratedBox" />
@@ -1598,14 +1570,14 @@ ButtonSpinner
   -> ButtonSpinnerDecoratedBox (control theme, ButtonSpinnerDecoratedBoxTheme.axaml)
      -> DockPanel#RootLayout (template-stable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
-           -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart} (internal-observable)
+           -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (template-stable)
-           -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPresenterPart} (internal-observable)
+           -> AddOnContentPresenter#PART_RightAddOnPresenter (template-stable)
         -> Panel (template-stable)
            -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
               -> ButtonSpinnerContentPanel#ContentLayout (internal-observable)
-                 -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
-                 -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
+                 -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
+                 -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
                  -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart} (internal-observable)
            -> ContentPresenter#PART_SpinnerHandle (template-stable)
   -> ButtonSpinnerHandle (control theme, ButtonSpinnerHandleTheme.axaml)
@@ -1624,14 +1596,14 @@ ButtonSpinner
 | `ButtonSpinnerDecoratedBox` | control theme | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinner | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (DockPanel) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (PixelAlignedBorder) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `RightAddOn`, `RightAddOnBorderThickness`, `RightAddOnCornerRadius`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPresenterPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `RightAddOn`, `RightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_RightAddOnPresenter` | template node (AddOnContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (ButtonSpinnerContentPanel) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (AddOnContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_SpinnerHandle` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `HandleOpacity`, `SpinnerContent` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ButtonSpinnerHandle` | control theme | `ButtonSpinnerHandleTheme.axaml` | ButtonSpinner | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -1741,7 +1713,7 @@ Source: ./controls/combo-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml`
 
 ```xml
 <Panel>
@@ -1969,7 +1941,7 @@ DropdownButton
 | `DropdownButton` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `DropdownButton` | control theme | `BrowserButtonThemes.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `BrowserButtonThemes.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `BrowserButtonThemes.axaml` | DropdownButton | `EffectiveCornerRadius`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `BrowserButtonThemes.axaml` | DropdownButton | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ShadowsFrame` | template node (Border) | `BrowserButtonThemes.axaml` | DropdownButton | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (DashedBorder) | `BrowserButtonThemes.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `BrowserButtonThemes.axaml` | DropdownButton | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -1980,7 +1952,7 @@ DropdownButton
 | `PART_ContentPresenter` | template node (ContentPresenter) | `BrowserButtonThemes.axaml` | DropdownButton | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DropdownButton` | control theme | `DropdownButtonTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `DropdownButtonTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `DropdownButtonTheme.axaml` | DropdownButton | `EffectiveCornerRadius`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `DropdownButtonTheme.axaml` | DropdownButton | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ShadowsFrame` | template node (Border) | `DropdownButtonTheme.axaml` | DropdownButton | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (DashedBorder) | `DropdownButtonTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `DropdownButtonTheme.axaml` | DropdownButton | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -2087,7 +2059,7 @@ Source: ./controls/menu/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Menu/Themes/MenuTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Menu/Themes/MenuTheme.axaml`
 
 ```xml
 <PixelAlignedBorder>
@@ -2279,7 +2251,7 @@ Source: ./controls/nav-menu/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuTheme.axaml`
 
 ```xml
 <ScrollViewer>
@@ -2543,7 +2515,7 @@ Source: ./controls/pagination/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationTheme.axaml`
 
 ```xml
 <StackPanel Name="PART_RootLayout">
@@ -2718,7 +2690,7 @@ Source: ./controls/steps/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`
 
 ```xml
 <ItemsPresenter Name="PART_ItemsPresenter" />
@@ -2762,7 +2734,7 @@ Steps
 | `Steps` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `StepsItemIndicator` | control theme | `StepsItemIndicatorTheme.axaml` | Steps | `Background`, `BorderBrush`, `CornerRadius`, `DisplayStepNumber`, `FontSize`, `Foreground` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `Background`, `BorderBrush`, `CornerRadius`, `DisplayStepNumber`, `FontSize`, `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (PixelAlignedBorder) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `Background`, `BorderBrush`, `CornerRadius`, `DisplayStepNumber`, `FontSize`, `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StepNumberText` | template node (TextBlock) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `DisplayStepNumber`, `FontSize`, `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FinishedMark` | template node (CheckOutlined) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `FontSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -2970,7 +2942,7 @@ Source: ./controls/tab-control/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/TabControl/Themes/TabControlTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TabControl/Themes/TabControlTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -3200,7 +3172,7 @@ Source: ./controls/tab-strip/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/TabControl/Themes/TabStrip/TabStripTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TabControl/Themes/TabStrip/TabStripTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -3331,7 +3303,7 @@ Source: ./controls/auto-complete/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTheme.axaml`
 
 ```xml
 <Panel>
@@ -3500,7 +3472,7 @@ Source: ./controls/cascader/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Cascader/Themes/CascaderTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Cascader/Themes/CascaderTheme.axaml`
 
 ```xml
 <Panel>
@@ -3762,7 +3734,7 @@ Source: ./controls/check-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/CheckBox/Themes/CheckBoxTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/CheckBox/Themes/CheckBoxTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -3810,7 +3782,7 @@ CheckBox
 | `PART_CheckBoxItems` | template node (CheckBoxItemsControl) | `CheckBoxGroupTheme.axaml` | CheckBoxGroup | `IsMotionEnabled`, `ItemSpacing`, `ItemTemplate`, `LineSpacing`, `Orientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CheckBoxIndicator` | control theme | `CheckBoxIndicatorTheme.axaml` | CheckBox | `Background`, `BorderBrush`, `BorderThickness`, `CheckedMarkBrush`, `CheckedMarkRenderTransform`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `Background`, `BorderBrush`, `BorderThickness`, `CheckedMarkBrush`, `CheckedMarkRenderTransform`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `CornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (PixelAlignedBorder) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `Background`, `BorderBrush`, `BorderThickness`, `CheckedMarkBrush`, `CheckedMarkRenderTransform`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CheckedMark` | template node (CheckBoldOutlined) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `CheckedMarkBrush`, `CheckedMarkRenderTransform` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TristateMark` | template node (Rectangle) | `CheckBoxIndicatorTheme.axaml` | CheckBoxIndicator | `TristateMarkBrush`, `TristateMarkSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -3925,7 +3897,7 @@ Source: ./controls/color-picker/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls.ColorPicker/Themes/ColorPickerTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls.ColorPicker/Themes/ColorPickerTheme.axaml`
 
 ```xml
 <Panel>
@@ -4265,7 +4237,7 @@ Source: ./controls/form/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Form/Themes/FormTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Form/Themes/FormTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -4510,7 +4482,7 @@ Source: ./controls/line-edit/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Input/Themes/LineEditTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Input/Themes/LineEditTheme.axaml`
 
 ```xml
 <AddOnDecoratedBox Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}">
@@ -4546,22 +4518,22 @@ LineEdit
   -> SearchEditDecoratedBox (control theme, SearchEditDecoratedBoxTheme.axaml)
      -> SearchEditPanel#RootLayout (internal-observable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
-           -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart} (internal-observable)
+           -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
         -> SearchButton#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (internal-observable)
         -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
            -> DockPanel#ContentLayout (template-stable)
-              -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
-              -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
+              -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
+              -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> TextAreaDecoratedBox (control theme, TextAreaDecoratedBoxTheme.axaml)
      -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
         -> Border#TextAreaContentFrame (template-stable)
            -> DockPanel#ContentLayout (template-stable)
-              -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
+              -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
               -> Panel (template-stable)
                  -> ScrollViewer#PART_ScrollViewer (template-stable)
                     -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart} (internal-observable)
-                 -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
+                 -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
 ```
 
 ### 协作节点
@@ -4584,22 +4556,22 @@ LineEdit
 | `SearchEditDecoratedBox` | control theme | `SearchEditDecoratedBoxTheme.axaml` | LineEdit | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (SearchEditPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (SearchButton) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `EffectiveStatus`, `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SizeType`, `StyleVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TextAreaDecoratedBox` | control theme | `TextAreaDecoratedBoxTheme.axaml` | LineEdit | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TextAreaContentFrame` | template node (Border) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (ContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate`, `HorizontalScrollBarVisibility`, `IsScrollChainingEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ScrollViewer` | template node (ScrollViewer) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentTemplate`, `HorizontalScrollBarVisibility`, `IsScrollChainingEnabled`, `ScrollerPadding`, `VerticalScrollBarVisibility` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart}` | template node (ContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (ContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (AddOnContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 
 ## Template Parts
 
@@ -4730,7 +4702,7 @@ Source: ./controls/mentions/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml`
 
 ```xml
 <Panel>
@@ -4924,7 +4896,7 @@ Source: ./controls/numeric-up-down/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`
 
 ```xml
 <ButtonSpinner Name="PART_Spinner">
@@ -4943,14 +4915,14 @@ NumericUpDown
   -> ButtonSpinnerDecoratedBox (control theme, ButtonSpinnerDecoratedBoxTheme.axaml)
      -> DockPanel#RootLayout (template-stable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
-           -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart} (internal-observable)
+           -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (template-stable)
-           -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPresenterPart} (internal-observable)
+           -> AddOnContentPresenter#PART_RightAddOnPresenter (template-stable)
         -> Panel (template-stable)
            -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
               -> ButtonSpinnerContentPanel#ContentLayout (internal-observable)
-                 -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
-                 -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
+                 -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
+                 -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
                  -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart} (internal-observable)
            -> ContentPresenter#PART_SpinnerHandle (template-stable)
   -> ButtonSpinnerHandle (control theme, ButtonSpinnerHandleTheme.axaml)
@@ -4966,22 +4938,22 @@ NumericUpDown
   -> SearchEditDecoratedBox (control theme, SearchEditDecoratedBoxTheme.axaml)
      -> SearchEditPanel#RootLayout (internal-observable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
-           -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart} (internal-observable)
+           -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
         -> SearchButton#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (internal-observable)
         -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
            -> DockPanel#ContentLayout (template-stable)
-              -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
-              -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
+              -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
+              -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> TextAreaDecoratedBox (control theme, TextAreaDecoratedBoxTheme.axaml)
      -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
         -> Border#TextAreaContentFrame (template-stable)
            -> DockPanel#ContentLayout (template-stable)
-              -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
+              -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
               -> Panel (template-stable)
                  -> ScrollViewer#PART_ScrollViewer (template-stable)
                     -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart} (internal-observable)
-                 -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
+                 -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
   -> NumericUpDown (control theme, NumericUpDownTheme.axaml)
      -> ButtonSpinner#PART_Spinner (template-stable)
         -> EmbeddedTextBox#PART_TextBox (template-stable)
@@ -4994,8 +4966,8 @@ NumericUpDown
            -> PixelAlignedBorder (template-stable)
               -> IconButton#PART_IncreaseButton (template-stable)
            -> DockPanel (template-stable)
-              -> ContentPresenter (internal-observable)
-              -> ContentPresenter (internal-observable)
+              -> AddOnContentPresenter (internal-observable)
+              -> AddOnContentPresenter (internal-observable)
               -> ContentPresenter (internal-observable)
 ```
 
@@ -5007,14 +4979,14 @@ NumericUpDown
 | `ButtonSpinnerDecoratedBox` | control theme | `ButtonSpinnerDecoratedBoxTheme.axaml` | NumericUpDown | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (DockPanel) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (PixelAlignedBorder) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `RightAddOn`, `RightAddOnBorderThickness`, `RightAddOnCornerRadius`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPresenterPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `RightAddOn`, `RightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_RightAddOnPresenter` | template node (AddOnContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Background`, `BorderBrush`, `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (ButtonSpinnerContentPanel) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ButtonSpinnerLocation`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (AddOnContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart}` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_SpinnerHandle` | template node (ContentPresenter) | `ButtonSpinnerDecoratedBoxTheme.axaml` | ButtonSpinnerDecoratedBox | `HandleOpacity`, `SpinnerContent` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ButtonSpinnerHandle` | control theme | `ButtonSpinnerHandleTheme.axaml` | NumericUpDown | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -5029,12 +5001,12 @@ NumericUpDown
 | `SearchEditDecoratedBox` | control theme | `SearchEditDecoratedBoxTheme.axaml` | NumericUpDown | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (SearchEditPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (SearchButton) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `EffectiveStatus`, `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SizeType`, `StyleVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TextAreaDecoratedBox` | control theme | `TextAreaDecoratedBoxTheme.axaml` | NumericUpDown | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -5195,7 +5167,7 @@ Source: ./controls/otp-line-edit/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditTheme.axaml`
 
 ```xml
 <Grid Name="PART_RootPanel">
@@ -5400,7 +5372,7 @@ Source: ./controls/radio-button/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -5445,9 +5417,9 @@ RadioButton
 | `DockPanel` | template node (DockPanel) | `RadioButtonTheme.axaml` | RadioButton | `Content`, `ContentTemplate`, `IsChecked`, `IsEnabled`, `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Indicator` | template node (RadioIndicator) | `RadioButtonTheme.axaml` | RadioButton | `IsChecked`, `IsEnabled`, `IsMotionEnabled`, `IsWaveSpiritEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentPresenter` | template node (ContentPresenter) | `RadioButtonTheme.axaml` | RadioButton | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `RadioIndicator` | control theme | `RadioIndicatorTheme.axaml` | RadioButton | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Panel` | template node (Panel) | `RadioIndicatorTheme.axaml` | RadioIndicator | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `RadioIndicatorTheme.axaml` | RadioIndicator | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `RadioIndicator` | control theme | `RadioIndicatorTheme.axaml` | RadioButton | `IsMotionEnabled`, `IsWaveSpiritEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Panel` | template node (Panel) | `RadioIndicatorTheme.axaml` | RadioIndicator | `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}` | template node (WaveSpiritDecorator) | `RadioIndicatorTheme.axaml` | RadioIndicator | `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -5551,7 +5523,7 @@ Source: ./controls/rate/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Rate/Themes/RateTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Rate/Themes/RateTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -5697,7 +5669,7 @@ Source: ./controls/search-edit/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Input/Themes/SearchEditTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Input/Themes/SearchEditTheme.axaml`
 
 ```xml
 <SearchEditDecoratedBox Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}">
@@ -5727,12 +5699,12 @@ SearchEdit
   -> SearchEditDecoratedBox (control theme, SearchEditDecoratedBoxTheme.axaml)
      -> SearchEditPanel#RootLayout (internal-observable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
-           -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart} (internal-observable)
+           -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
         -> SearchButton#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (internal-observable)
         -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
            -> DockPanel#ContentLayout (template-stable)
-              -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
-              -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
+              -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
+              -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> SearchEdit (control theme, SearchEditTheme.axaml)
      -> SearchEditDecoratedBox#{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart} (internal-observable)
@@ -5744,11 +5716,11 @@ SearchEdit
      -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
         -> Border#TextAreaContentFrame (template-stable)
            -> DockPanel#ContentLayout (template-stable)
-              -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
+              -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
               -> Panel (template-stable)
                  -> ScrollViewer#PART_ScrollViewer (template-stable)
                     -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart} (internal-observable)
-                 -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
+                 -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
 ```
 
 ### 协作节点
@@ -5765,12 +5737,12 @@ SearchEdit
 | `SearchEditDecoratedBox` | control theme | `SearchEditDecoratedBoxTheme.axaml` | SearchEdit | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (SearchEditPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (SearchButton) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `EffectiveStatus`, `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SizeType`, `StyleVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SearchEdit` | control theme | `SearchEditTheme.axaml` | 用户代码 / 控件宿主 | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `DataValidationErrors` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (SearchEditDecoratedBox) | `SearchEditTheme.axaml` | SearchEdit | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `DataValidationErrors` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -5782,11 +5754,11 @@ SearchEdit
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TextAreaContentFrame` | template node (Border) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (ContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate`, `HorizontalScrollBarVisibility`, `IsScrollChainingEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ScrollViewer` | template node (ScrollViewer) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentTemplate`, `HorizontalScrollBarVisibility`, `IsScrollChainingEnabled`, `ScrollerPadding`, `VerticalScrollBarVisibility` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart}` | template node (ContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (ContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (AddOnContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 
 ## Template Parts
 
@@ -5905,7 +5877,7 @@ Source: ./controls/select/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Select/Themes/SelectTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Select/Themes/SelectTheme.axaml`
 
 ```xml
 <Panel>
@@ -6147,7 +6119,7 @@ Source: ./controls/slider/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Slider/Themes/SliderTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Slider/Themes/SliderTheme.axaml`
 
 ```xml
 <SliderTrack Name="PART_Track" />
@@ -6510,7 +6482,7 @@ Source: ./controls/toggle-switch/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Switch/Themes/ToggleSwitchTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Switch/Themes/ToggleSwitchTheme.axaml`
 
 ```xml
 <Panel>
@@ -6545,9 +6517,9 @@ ToggleSwitch
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `ToggleSwitch` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `ToggleSwitch` | control theme | `ToggleSwitchTheme.axaml` | 用户代码 / 控件宿主 | `IsChecked`, `IsMotionEnabled`, `OffContent`, `OffContentTemplate`, `OnContent`, `OnContentTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsChecked`, `IsMotionEnabled`, `OffContent`, `OffContentTemplate`, `OnContent`, `OnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `ToggleSwitchTheme.axaml` | ToggleSwitch | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ToggleSwitch` | control theme | `ToggleSwitchTheme.axaml` | 用户代码 / 控件宿主 | `IsChecked`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `OffContent`, `OffContentTemplate`, `OnContent` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsChecked`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `OffContent`, `OffContentTemplate`, `OnContent` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_MainContainer` | template node (Canvas) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsChecked`, `IsMotionEnabled`, `OffContent`, `OffContentTemplate`, `OnContent`, `OnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_OnContentPresenter` | template node (ContentPresenter) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `OnContent`, `OnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_OffContentPresenter` | template node (ContentPresenter) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `OffContent`, `OffContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -6881,7 +6853,7 @@ Source: ./controls/tree-select/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml`
 
 ```xml
 <Panel>
@@ -7068,7 +7040,7 @@ Source: ./controls/upload/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Upload/Themes/UploadTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Upload/Themes/UploadTheme.axaml`
 
 ```xml
 <StackPanel Name="RootLayout">
@@ -7258,7 +7230,7 @@ Source: ./controls/avatar/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
 
 ```xml
 <Panel Name="RootLayout">
@@ -7561,7 +7533,7 @@ Source: ./controls/calendar/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="PART_Frame">
@@ -7734,7 +7706,7 @@ Source: ./controls/card/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Card/Themes/CardTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Card/Themes/CardTheme.axaml`
 
 ```xml
 <Panel>
@@ -7973,7 +7945,7 @@ Source: ./controls/carousel/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselTheme.axaml`
 
 ```xml
 <Panel>
@@ -8144,7 +8116,7 @@ Source: ./controls/collapse/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="PART_Frame">
@@ -8312,7 +8284,7 @@ Source: ./controls/data-grid/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls.DataGrid/Themes/DataGridTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls.DataGrid/Themes/DataGridTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -8472,7 +8444,7 @@ Source: ./controls/descriptions/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Descriptions/Themes/DescriptionsTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Descriptions/Themes/DescriptionsTheme.axaml`
 
 ```xml
 <StackPanel>
@@ -8696,7 +8668,7 @@ Source: ./controls/empty/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Empty/Themes/EmptyTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Empty/Themes/EmptyTheme.axaml`
 
 ```xml
 <StackPanel>
@@ -8825,7 +8797,7 @@ Source: ./controls/expander/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Expander/Themes/ExpanderTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Expander/Themes/ExpanderTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="PART_Frame">
@@ -9061,7 +9033,7 @@ Source: ./controls/group-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/GroupBox/Themes/GroupBoxTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/GroupBox/Themes/GroupBoxTheme.axaml`
 
 ```xml
 <Border Name="PART_Frame">
@@ -9214,7 +9186,7 @@ Source: ./controls/image-previewer/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTheme.axaml`
 
 ```xml
 <PixelAlignedBorder>
@@ -9281,34 +9253,32 @@ ImagePreviewer
         -> IconButton#PART_CloseButton (template-stable)
   -> ImagePreviewerTitleBar (control theme, ImagePreviewerTitleBarTheme.axaml)
      -> Border#Frame (template-stable)
-        -> DockPanel (template-stable)
-           -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
-           -> Panel (template-stable)
-              -> StackPanel#PART_TitleLayout (template-stable)
-                 -> IconPresenter#PART_IconPresenter (template-stable)
-                 -> ContentPresenter#PART_ContentPresenter (template-stable)
-              -> DockPanel (template-stable)
-                 -> ContentPresenter#PART_LeftAddOn (template-stable)
-                 -> ContentPresenter#PART_RightAddOn (template-stable)
-     -> DockPanel (template-stable)
-        -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
-        -> Border#Frame (template-stable)
-           -> Panel (template-stable)
-              -> StackPanel#PART_TitleLayout (template-stable)
-                 -> IconPresenter#PART_IconPresenter (template-stable)
-                 -> ContentPresenter#PART_ContentPresenter (template-stable)
-              -> DockPanel (template-stable)
-                 -> ContentPresenter#PART_LeftAddOn (template-stable)
-                 -> ContentPresenter#PART_RightAddOn (template-stable)
-     -> Border#Frame (template-stable)
-        -> Panel (template-stable)
+        -> WindowTitleBarLayoutPanel (template-stable)
+           -> ContentPresenter#PART_LeftAddOn (template-stable)
            -> StackPanel#PART_TitleLayout (template-stable)
               -> IconPresenter#PART_IconPresenter (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
-           -> DockPanel (template-stable)
-              -> ContentPresenter#PART_LeftAddOn (template-stable)
-              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
+           -> StackPanel (template-stable)
               -> ContentPresenter#PART_RightAddOn (template-stable)
+              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
+     -> Border#Frame (template-stable)
+        -> WindowTitleBarLayoutPanel (template-stable)
+           -> ContentPresenter#PART_LeftAddOn (template-stable)
+           -> StackPanel#PART_TitleLayout (template-stable)
+              -> IconPresenter#PART_IconPresenter (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+           -> StackPanel (template-stable)
+              -> ContentPresenter#PART_RightAddOn (template-stable)
+              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
+     -> Border#Frame (template-stable)
+        -> WindowTitleBarLayoutPanel (template-stable)
+           -> ContentPresenter#PART_LeftAddOn (template-stable)
+           -> StackPanel#PART_TitleLayout (template-stable)
+              -> IconPresenter#PART_IconPresenter (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+           -> StackPanel (template-stable)
+              -> ContentPresenter#PART_RightAddOn (template-stable)
+              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
   -> ImageViewer (control theme, ImageViewerTheme.axaml)
      -> Panel (template-stable)
         -> Canvas#PART_ImageViewerScene (template-stable)
@@ -9434,7 +9404,7 @@ ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和�
 
 ImagePreviewer 使用 `ImagePreviewerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
 
-预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入 `PART_TitleLayout`，图标位于标题左侧，二者之间使用 `WindowTitleBarToken.LogoAndTitleSpacing`。Windows 和 Linux 模板把系统 caption buttons 放在标题区域右侧之外；macOS 模板依赖 `Window.TitleBarOffsetMargin` 给左侧原生窗口按钮预留安全区，不能通过继承应用图标规避碰撞。
+预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
 
 加载视觉遵循以下规则：
 
@@ -9659,7 +9629,7 @@ Source: ./controls/list-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -9869,7 +9839,7 @@ Source: ./controls/list-view/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/ListView/Themes/ListViewTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ListView/Themes/ListViewTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -9966,19 +9936,20 @@ ListView 的状态模型由数据视图状态、选择状态、分页状态、�
 
 数据视图状态：
 
-- `ItemsSource` 设置后归一为 `IListCollectionView`，ListView 监听其 `CollectionChanged`、`PropertyChanged`、`PageChanging` 和 `PageChanged`。
+- `ItemsSource` 设置后归一为具备 entry bridge 的 `IListCollectionView`，ListView 监听其 `CollectionChanged`、`PropertyChanged`、`PageChanging` 和 `PageChanged`。不具备 entry bridge 的自定义 view 从其 `SourceCollection` 重新归一。
 - `SortDescriptions`、`Filter` / `FilterValue` / `FilterValueSelector`、`IsGroupEnabled` / `GroupPropertySelector` 分别写入 collection view 的排序、过滤和分组描述。
 - `TotalItemCount` 和 `IsEmptyDataSource` 来自 collection view，用于伪类、空状态和分页器同步。
 
 选择行为：
 
-- `IsSelectable=false` 时，ListView 不响应 pointer 或 keyboard 选择更新，并清空 `SelectedIndex`、`SelectedItem` 和 `SelectedItems`。
-- 未分组时，选择源优先指向 collection view 的 `SourceCollection`，选择索引表达原始数据集合索引。
-- 分组开启时，选择源指向 `IListCollectionView` 当前视图，组标题项不会被 pointer 选择路径选中。
-- 分页开启时，容器索引和选择索引之间通过 `PageIndex * PageSize` 做全局索引转换。
-- `SelectedItems` 作为受控选中集合时，以绑定集合为单一对外来源；外部替换集合、用户选择写回以及集合 mutation 都必须同步到选择模型和容器 selected 状态。
+- `IsSelectable=false` 时，ListView 不响应 pointer 或 keyboard 选择更新，并清空 canonical selection。
+- 数据源中的每一次出现拥有独立 internal EntryId；item 引用、`Equals`、`GetHashCode` 和显示值不参与源条目标识与选择映射。
+- `ListViewSelectionModel` 持有 selected EntryIds、anchor 和 active entry；`SelectedIndex(es)`、`SelectedItem(s)`、`SelectedValue` 和容器 `IsSelected` 都是同一状态的投影。
+- 公开选择索引始终表达原始数据源的 source index。排序、过滤、分组和分页通过 entry projection 映射容器，不通过 item `IndexOf` 反查源位置。
+- 组标题是没有 EntryId 和 source index 的视图合成节点，所有选择入口均跳过组标题。
+- Reset 或 ItemsSource 替换只通过唯一、非空 item key 恢复选择；没有稳定 key 的选择清除。
 - `SelectionMode.AlwaysSelected` 在存在数据且丢失选择时恢复到首项。
-- `SelectedValueBinding` 存在时，`SelectedValue` 从选中项派生；外部设置 `SelectedValue` 时按绑定值查找选中项。
+- 完整选择、集合变化和恢复语义见 [ListView 选择模型设计](selection-model-design.md)。
 
 键盘和文本搜索行为：
 
@@ -10000,7 +9971,7 @@ ListView 的状态模型由数据视图状态、选择状态、分页状态、�
 - collection view 会为每个 group key 插入一个 `GroupListItemData` 作为组标题项，其 `Content` 来自 `groupKey.ToString()`，`IsGroupItem=true`。
 - 组标题项使用 `GroupItemTemplate`，普通数据项仍使用 `ItemTemplate`。
 - 组标题项参与当前视图枚举和容器生成，但它表达的是视觉分隔，不是业务数据项；pointer selection 路径会跳过 `IsGroupItem=true` 的容器。
-- 分组开启后，selection source 指向当前 `IListCollectionView`，因为当前视图包含组标题项、排序结果和过滤结果；未分组时 selection source 优先指向原始 `SourceCollection`。
+- 分组开启后，selection model 仍以业务 source entries 为选择范围；当前 view projection 只增加没有 EntryId 的组标题节点。
 - 与分页同时使用时，collection view 先按完整结果建立临时分组顺序，再按当前页重建对外可枚举的 group 结构。
 
 分页行为：
@@ -10071,12 +10042,15 @@ ListViewToken 不承载 `ItemsSource`、`SelectedIndex`、`SelectedItem`、`Sele
 维护 ListView 时必须保持以下不变量：
 
 - 不擅自新增、删除、重命名或改变 ListView / ListViewItem public API、事件、Avalonia 属性语义和默认值。
-- `ItemsSource` 到 `IListCollectionView` 的归一化必须保持排序、过滤、分组、分页和选择源可用。
-- 用户提供的 `IListCollectionView` 不应由 ListView 当作自建 view 释放。
+- `ItemsSource` 到 `IListCollectionView` 的归一化必须保持排序、过滤、分组、分页、entry projection 和选择映射可用。
+- 只有具备 entry bridge 的用户 view 可以直接接入，且不由 ListView 当作自建 view 释放；其他 view 使用其 `SourceCollection` 创建由 ListView 持有的 AtomUI view。
 - `SortDescriptions`、`FilterDescriptions` 和 `GroupDescriptions` 的重建必须保持 collection view 状态一致，不留下重复描述。
 - `IsSelectable=false` 必须阻止用户选择更新，并清空当前选择。
 - 组标题项必须保持不可通过普通 pointer selection 路径选中。
-- 分页开启时，选择索引和容器索引的全局 / 当前页转换必须保持稳定。
+- 源条目标识必须来自 source entry，不能以 item equality、对象引用、source index 或 view index 替代 EntryId。
+- 公开选择索引必须始终使用 source index；view index 和页内索引只能作为当前投影位置。
+- 过滤、排序、分组和分页不得替换已选 entry；隐藏 entry 再次可见时必须恢复选中投影。
+- Reset 和 ItemsSource 替换不得按 item equality 或相同索引猜测旧选择。
 - `PaginationVisibility` 只表达分页器可见性，不改变分页数据和分页器 motion 状态语义。
 - `PART_ScrollViewer`、`ItemsPresenter`、`EmptyIndicator`、分页 presenter、`SelectedIndicator` 和 `ContentPresenter` 的职责不得被无兼容说明地改变。
 - 选中指示器、空状态和操作态节点应留在 AXAML 静态模板中，通过状态属性控制，不作为普通性能优化迁移到 C# 动态创建。
@@ -10088,19 +10062,22 @@ ListViewToken 不承载 `ItemsSource`、`SelectedIndex`、`SelectedItem`、`Sele
 内部重构必须保持以下不变量：
 
 - `ListView.cs` 保留 public API、事件、ItemsSource 归一、容器生命周期和 collection view 配置入口。
-- `ListView.Selecting.cs` 保持选择模型、索引映射、SelectedValue 和键盘 / 文本搜索职责，不把选择状态写入数据项作为唯一来源。
-- `SelectedItems` 的 property replacement、用户选择写回和 data validation 投射必须共享同一 direct property，不得新增平行 selected collection。
+- `ListView.Selecting.cs` 保持选择模型接入、entry/index 映射、SelectedValue 和键盘 / 文本搜索职责，不把选择状态写入数据项或容器作为 owner。
+- `ListViewSelectionModel` 是 selected EntryIds、anchor 和 active entry 的唯一 owner；公开属性不得维护平行选择状态。
+- 标识映射路径不得使用 item `Equals`、对象引用、`IList.IndexOf` 或 `IListCollectionView.IndexOf` 解析 source entry。
+- `SelectedItem`、`SelectedItems` 和 `SelectedValue` 只能从 canonical selection 投影，不作为反向选择输入。
 - `ListView.Pagination.cs` 只处理分页器接入和 collection view page 状态同步，不执行数据请求。
 - `ListViewItem.cs` 保持条目容器角色，不承载排序、过滤、分页或跨列表全局状态。
-- collection view 替换时必须解绑旧 view 事件；只有 ListView 自建 view 才能由 ListView dispose。
+- collection view 替换时必须解绑旧 view 事件；只有具备 entry bridge 的 view 可以直接接入，且只有 ListView 自建 view 才能由 ListView dispose。
 - `ConfigureFilterDescription`、`ConfigureSortDescriptions` 和 `ConfigureGroupInfo` 重建描述前必须清理旧描述。
-- `IsGroupEnabled` 切换后必须重新初始化 selection source，并保持组标题项不进入普通业务选择结果。
+- `IsGroupEnabled` 切换后只刷新 view projection，并保持组标题项没有 EntryId 且不进入业务选择结果。
 - `GroupPropertySelector` 必须返回稳定 group key；需要兜底分组时由 selector 返回明确 key，不依赖 collection view 自动处理 `null`。
 - `GroupListItemData` 是展示层合成项，不得写回用户源集合或被当作业务数据模型扩展点。
 - 分组与分页组合时必须保持 `PrepareTemporaryGroups` 和 `PrepareGroupsForCurrentPage` 的顺序，不得只对当前页局部数据直接推断全局分组顺序。
 - `PrepareContainerForItemOverride` 新增状态同步时，必须在 `ClearContainerForItemOverride` 或 virtualizing clear 路径中对称清理。
-- 分页索引转换必须同时覆盖 selection change、container prepared、container index changed、auto scroll 和 selected indicator 同步。
-- `SelectedValue` 与 selection 互相更新时必须使用 `_isSelectionChangeActive` 防止递归。
+- EntryId 映射必须同时覆盖 selection change、container prepared、container index changed、auto scroll 和 selected indicator 同步。
+- Add、Remove、Move 和 Replace 必须按 collection change index 更新 entries，不按 item equality 定位变化目标。
+- Reset 和 ItemsSource 替换只通过唯一非空 item key 恢复选择，不按 item equality 或旧索引回退。
 - 分页器替换时必须解除旧 `CurrentPageChanged` 和 relay binding。
 - Token 变更必须同步 `ListViewTokenKind`、AXAML 引用和 Gallery token 表。
 
@@ -10122,7 +10099,7 @@ Source: ./controls/qr-code/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -10297,7 +10274,7 @@ Source: ./controls/segmented/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -10597,7 +10574,7 @@ Source: ./controls/tag/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.axaml`
 
 ```xml
 <Panel>
@@ -10738,7 +10715,7 @@ Source: ./controls/timeline/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -10990,7 +10967,7 @@ Source: ./controls/tour/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml`
 
 ```xml
 <Popup Name="PART_Popup">
@@ -11036,6 +11013,7 @@ Tour
      -> Popup#PART_Popup (template-stable)
         -> ArrowDecoratedBox#{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart} (template-stable)
            -> TourStepsView#StepsView (internal-observable)
+  -> TourLayer (control theme, TourTheme.axaml)
 ```
 
 ### 协作节点
@@ -11070,6 +11048,7 @@ Tour
 | `PART_Popup` | template node (Popup) | `TourTheme.axaml` | Tour | `ArrowPosition`, `CloseIcon`, `CurrentArrowVisible`, `CurrentIndex`, `CurrentStyleType`, `Indicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `TourTheme.axaml` | Tour | `ArrowPosition`, `CloseIcon`, `CurrentArrowVisible`, `CurrentIndex`, `CurrentStyleType`, `Indicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StepsView` | template node (TourStepsView) | `TourTheme.axaml` | Tour | `CloseIcon`, `CurrentIndex`, `CurrentStyleType`, `Indicator`, `IsArrowVisible`, `IsMotionEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `TourLayer` | control theme | `TourTheme.axaml` | Tour | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 
 ## Template Parts
 
@@ -11176,7 +11155,7 @@ Source: ./controls/tree-view/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/TreeView/Themes/TreeViewTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TreeView/Themes/TreeViewTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -11480,7 +11459,7 @@ Source: ./controls/alert/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Alert/Themes/AlertTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Alert/Themes/AlertTheme.axaml`
 
 ```xml
 <PixelAlignedBorder>
@@ -11671,6 +11650,27 @@ Drawer
            -> Separator (template-stable)
            -> ContentPresenter#InfoFooter (internal-observable)
   -> Drawer (control theme, DrawerThemes.axaml)
+  -> FullscreenPopoverLayer (control theme, FullscreenPopoverLayerTheme.axaml)
+     -> Panel (template-stable)
+        -> Border#PART_PopoverBorder (template-stable)
+           -> WindowTitleBarLayoutPanel (template-stable)
+              -> Panel (template-stable)
+              -> StackPanel (template-stable)
+                 -> ContentPresenter#FullscreenLogoPresenter (internal-observable)
+                 -> TextBlock#FullscreenTitleText (template-stable)
+              -> StackPanel#FullscreenCaptionButtonGroup (template-stable)
+                 -> CaptionButton#PART_PopoverFullScreenButton (template-stable)
+                 -> CaptionButton#PART_PopoverCloseButton (template-stable)
+  -> WindowResizer (control theme, WindowResizerTheme.axaml)
+     -> Panel#PART_RootLayout (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
+        -> Border (template-stable)
 ```
 
 ### 协作节点
@@ -11695,6 +11695,18 @@ Drawer
 | `InfoContainer` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InfoFooter` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Footer`, `FooterTemplate`, `HasFooter` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Drawer` | control theme | `DrawerThemes.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `FullscreenPopoverLayer` | control theme | `FullscreenPopoverLayerTheme.axaml` | Drawer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Panel` | template node (Panel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_PopoverBorder` | template node (Border) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StackPanel` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `FullscreenLogoPresenter` | template node (ContentPresenter) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `FullscreenTitleText` | template node (TextBlock) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `FullscreenCaptionButtonGroup` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_PopoverFullScreenButton` | template node (CaptionButton) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_PopoverCloseButton` | template node (CaptionButton) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowResizer` | control theme | `WindowResizerTheme.axaml` | Drawer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_RootLayout` | template node (Panel) | `WindowResizerTheme.axaml` | WindowResizer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -11728,6 +11740,8 @@ Public API / inherited command / item source / user input
 - open/close、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- TopLevel Drawer 使用 Window visible frame：包含 managed/drawn 标题栏，排除透明 frame shadow；该规则不按 OS 或 CSD 模式分叉。
+- drawn decorations 暴露 Drawer host 时按能力优先使用；host 不存在时回退到原 `ScopeAwareAdornerLayer`。
 
 ## Theme and Token Boundaries
 
@@ -11766,6 +11780,7 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
+- 不按 `OsType` 或 `IsCsdEnabled` 为 Drawer 建立平行窗口几何；Window 的 `FrameShadowThickness` 和实际 drawn host 是唯一能力信号。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
 维护不变量：
@@ -11776,6 +11791,7 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
+- Windows、Linux、macOS 以及 CSD/non-CSD 下使用同一 visible-frame 语义；平台差异只存在于 Window 如何发布 frame shadow 和 drawn host 能力。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。
 
 Source: ./controls/message/semantic-cn.md
@@ -11951,10 +11967,13 @@ Source: ./controls/modal/semantic-cn.md
 
 - `IsOpen` 表示最新声明式意图；`DialogSession` 表示一次实际展示。两者不能由 presenter 或 template part 反向拥有。
 - modal Overlay 的真实 pointer 输入命中 mask，modeless Overlay 在 Surface 外穿透到底层。只有栈顶 presenter 响应 mask 与 Escape。
+- 所有平台的 `AtomUI.Window` 都按宿主能力选择 Overlay layer：drawn decorations 暴露 Dialog host 时把 presenter 放在该层，否则回退 TopLevel popup overlay。modal mask 覆盖完整 Avalonia 可绘制窗口轮廓和 managed/drawn 标题栏，标题栏内容与 caption buttons 也受同一 modal 输入阻断；位于客户端 visual tree 外的原生系统 chrome 仍由平台管理。
+- Overlay mask bounds、Window visible frame 与 Dialog 正文 owner bounds 独立：mask 使用完整 layer bounds；所有平台的 Surface 正文定位、拖动、resize 和 maximize 使用 visible frame 按当前有效 drawn frame thickness 内缩后的范围，允许进入 managed/drawn title bar，但不能覆盖窗口 frame。Dialog BoxShadow 只参与绘制并允许在窗口边缘由统一 visual-layer clip 裁剪。
 - Enter/Escape 根据当前有效按钮序列查找 default/escape 按钮，运行时修改标准按钮或自定义按钮会立即生效。
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
 - 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
 - Overlay 与 Window 都等待 opening/closing motion；`IsMotionEnabled=false` 跳过 motion，但不跳过宿主打开、关闭和释放。
+- `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。
 
 ## Theme and Token Boundaries
 
@@ -11988,6 +12007,10 @@ Modal Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Content 可以是字符串、POCO 或 Control；实现不得修改用户 Control 的 TemplatedParent。
 - 自定义按钮集合的 Add/Remove/Replace/Move/Reset/Clear 都要更新有效序列并对称管理事件订阅。
 - mask、Surface、内容、按钮、binding、逻辑/资源 parent、owner/target 订阅必须在所有关闭路径释放。
+- Window mask 必须覆盖完整 Avalonia 可绘制窗口轮廓；存在 drawn title bar 时必须位于其上方。所有平台的 Dialog Surface 正文都使用包含 managed/drawn 标题栏、排除透明 frame shadow 与有效 drawn frame 的 owner bounds；不能把 mask bounds、visible frame bounds、正文 owner bounds 与 BoxShadow 绘制范围合并为同一个矩形。
+- Window 外轮廓只能由现有 `WindowVisualLayerClip` 统一裁剪；Overlay Dialog 不单独复制 frame shadow margin 或 CornerRadius。
+- Overlay 与 Window 必须使用同一套 Surface 正文尺寸解析。Window 只允许在 presenter 边界加回 chrome；不能把 Surface `HostMin/Max` 直接解释为包含标题栏和 frame 的 Window client constraints。
+- 用户 resize、runtime `HostMin/Max`、主题或宿主容量变化不得无条件重置已调整尺寸；actual size 只有越出最新有效区间时才被 clamp。
 - 不重新引入同步 DispatcherFrame、callback close、隐藏 MessageBox Dialog 或分离的 Popup mask。
 
 维护不变量：
@@ -11997,6 +12020,11 @@ Modal Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 普通 veto 发生在结果提交前；结果提交后只允许完成 teardown 和传播异常。
 - Overlay 与 Window 的 `ShowAsync`/`CloseAsync` 都等待真实 presentation 边界。
 - mask 与 Surface 必须保留在同一个 Overlay presenter 中。
+- 所有平台的 Overlay presenter 必须按能力优先使用 drawn decorations Dialog overlay host，使 mask 位于自绘标题栏之上；fallback 只负责该 host 不可用的装饰模式或平台。
+- mask bounds、Window visible frame、Dialog body owner bounds 和 Dialog BoxShadow extents 必须保持独立。mask 覆盖完整 layer；所有平台的 Surface 正文都可进入 managed/drawn 标题栏但不能覆盖有效 frame；BoxShadow 允许由 Window visual-layer clip 在外轮廓处裁剪。
+- drawn host 路由和 frame 几何应与 Drawer 保持一致，但不能共享 Drawer 的 layer、容器或生命周期状态。
+- Surface structural minimum、requested Host constraints 和 host capacity 必须由同一纯值规则解析；Overlay 与 Window 不能分别定义默认最小尺寸语义。
+- Window presenter 只能在 Surface constraints 解析完成后加回 Window chrome；live resize 热路径不能重新测量结构区域。
 - MessageBox 继续作为 Dialog 派生类，不增加平行 host/session/button cache 生命周期。
 - 新增 binding、事件、资源 parent、motion source 或内容引用时，必须在同一个 owner 中增加释放点和回归测试。
 
@@ -12158,7 +12186,7 @@ Source: ./controls/popup-confirm/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmTheme.axaml`
 
 ```xml
 <ContentPresenter Name="PART_ContentPresenter" />
@@ -12466,7 +12494,7 @@ Source: ./controls/result/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Result/Themes/ResultTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Result/Themes/ResultTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -12612,7 +12640,7 @@ Source: ./controls/skeleton/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonTheme.axaml`
 
 ```xml
 <Panel>
@@ -12802,7 +12830,7 @@ Source: ./controls/spin/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Spin/Themes/SpinTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Spin/Themes/SpinTheme.axaml`
 
 ```xml
 <Panel Name="RootLayout">
@@ -12963,7 +12991,7 @@ Source: ./controls/splash/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashTheme.axaml`
 
 ```xml
 <Border Name="PART_RootLayout">
@@ -13258,7 +13286,7 @@ Source: ./controls/window/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 
 ```xml
 <Panel>
@@ -13301,7 +13329,8 @@ Window
   -> FullscreenPopoverLayer (control theme, FullscreenPopoverLayerTheme.axaml)
      -> Panel (template-stable)
         -> Border#PART_PopoverBorder (template-stable)
-           -> Panel (template-stable)
+           -> WindowTitleBarLayoutPanel (template-stable)
+              -> Panel (template-stable)
               -> StackPanel (template-stable)
                  -> ContentPresenter#FullscreenLogoPresenter (internal-observable)
                  -> TextBlock#FullscreenTitleText (template-stable)
@@ -13376,6 +13405,7 @@ Window
 | `FullscreenPopoverLayer` | control theme | `FullscreenPopoverLayerTheme.axaml` | Window | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_PopoverBorder` | template node (Border) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FullscreenLogoPresenter` | template node (ContentPresenter) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `FullscreenTitleText` | template node (TextBlock) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -13396,7 +13426,7 @@ Window
 | `DockPanel` | template node (DockPanel) | `WindowTheme.axaml` | Window | `Content`, `ContentFrameBackground`, `ContentFrameLayer`, `ContentFrameLayerOpacity`, `ContentFrameLayerTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TitleBarPanel` | template node (Panel) | `WindowTheme.axaml` | Window | `IsTitleBarVisible`, `TitleBar`, `TitleBarFrameBackground`, `TitleBarFrameLayer`, `TitleBarFrameLayerOpacity`, `TitleBarFrameLayerTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TitleBarFrameLayer` | template node (ContentPresenter) | `WindowTheme.axaml` | Window | `TitleBarFrameBackground`, `TitleBarFrameLayer`, `TitleBarFrameLayerOpacity`, `TitleBarFrameLayerTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `ContentPresenter` | template node (ContentPresenter) | `WindowTheme.axaml` | Window | `TitleBar`, `TitleBarOffsetMargin` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `ContentPresenter` | template node (ContentPresenter) | `WindowTheme.axaml` | Window | `TitleBar` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentFrameLayer` | template node (ContentPresenter) | `WindowTheme.axaml` | Window | `ContentFrameBackground`, `ContentFrameLayer`, `ContentFrameLayerOpacity`, `ContentFrameLayerTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentFrame` | template node (Border) | `WindowTheme.axaml` | Window | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `Padding`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `WindowTheme.axaml` | Window | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -13412,7 +13442,7 @@ Window
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
-| 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 ## Pseudo Classes
 
@@ -13472,6 +13502,27 @@ Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定
 
 维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要在标题栏放置按钮、菜单或搜索框时，应创建自定义 `WindowTitleBar` 或其他标题栏控件，并设置到 `Window.TitleBar`。
 
+`Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，并把配置单向投影给默认或派生
+`WindowTitleBar`。Window 只提供平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+完整协作模型见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)。
+
+### 5.2 跨平台首帧主题表面模型
+
+Windows、macOS 和 Linux 共用同一个首次显示主题契约：平台窗口进入可见状态前，`Window` 必须已经获得目标
+`ThemeContext`、与该 context 一致的 `RequestedThemeVariant`，以及当前 Window Token scope 中的首帧背景。
+该契约由 `Window` 的共享显示生命周期负责，不属于 Win32、AppKit、X11 或 Wayland chrome manager 的职责。
+
+首次显示按以下所有权模型维护：
+
+- `WindowTheme.axaml` 是窗口背景的唯一长期视觉所有者，`WindowToken.DefaultBackground` 是默认背景语义真源。
+- `Show` 和 `ShowDialog` 的所有 AtomUI 入口必须先解析 owner 作用域并挂载可释放的 `ThemeContext` lease，再进入 Avalonia 的平台显示流程。
+- 在正式 ControlTheme 接管前，`Window` 从已提交的当前作用域 Snapshot 同步读取一次默认背景，并以低于用户 local value 的优先级临时预热 `Background` 与 `TransparencyBackgroundFallback`。
+- 首帧预热只覆盖同步显示临界区，不订阅资源变化；Avalonia 完成同步样式应用后立即释放临时值，由正式 ControlTheme 继续响应主题切换。
+- 用户显式设置的 `Background` 或 `TransparencyBackgroundFallback` 始终优先，首帧预热不得改写或清除用户 local value。
+- 平台 chrome manager 只处理窗口装饰、原生几何和平台能力投影，不得分别复制 ThemeContext、Token 查找或首帧背景算法。
+
+如果上述 managed 状态在平台显示前已经正确，某个平台仍然暴露尚未提交内容的原生空白 surface，则该问题属于平台后端边界。此时应通过统一的平台能力接口提供最小后备实现，并分别验证对应后端；不得把平台消息、延时显示或透明度切换混入共享主题状态机。
+
 Token 边界：
 
 Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
@@ -13488,6 +13539,7 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - `TitleBarFrameLayer` 是标题栏背景/装饰入口，不是标题栏用户交互入口；标题栏按钮、菜单、搜索框等交互内容必须通过 `TitleBar` 承载。
+- Windows、macOS 和 Linux 共用同一套首次显示主题表面流程；平台可见前必须同步准备 ThemeContext、variant 和 Window Token 背景，正式显示后由 `WindowTheme` 单独持有长期主题状态。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
@@ -13500,6 +13552,8 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - `TitleBarFrameLayer` 的背景/装饰层语义，以及标题栏交互内容必须通过 `TitleBar` 承载的职责边界。
+- 上层 Dialog/Drawer 不按 OS 或 CSD 状态复制 Window frame 几何，而是消费 Window 发布的 `FrameShadowThickness` 和实际 drawn host 能力。
+- 所有桌面平台共用 Window 首次显示主题表面准备流程，`WindowTheme` 是显示完成后的唯一长期背景所有者。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。
@@ -13514,28 +13568,30 @@ Source: ./controls/window-title-bar/semantic-cn.md
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `WindowTitleBar` | 窗口控件根语义区域，承载窗口 public API、平台状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `chrome` | `窗口装饰区域` | 承载标题栏、caption buttons、drag region、边框和阴影。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `窗口内容区域` | 承载业务内容、系统交互和布局边界。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `state` | `窗口状态区域` | 表达最大化、最小化、激活、失焦、resize 和平台能力。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `WindowTitleBar` | 承载公共内容契约、平台状态和标题栏主题入口。 | `Logo`、`Title`、`TitleAlignment` | `Height`、`TitleBarPadding`、标题字体与颜色 | public |
+| `frame` | `Border#Frame` | 绘制标题栏背景并定义完整可见 frame。 | `Background`、`Padding` | `Height`、`TitleBarPadding` | template-stable |
+| `leading` | `ContentPresenter#PART_LeftAddOn` | 承载起始侧应用操作并占用标题安全空间。 | `LeftAddOn`、`LeftAddOnTemplate` | `HeaderHorizontalSpacing` | template-stable |
+| `title` | `PART_Logo` + `PART_ContentPresenter` | 将 Logo 与 Title 作为连续标题组展示、测量和裁剪。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`TitleTemplate` | `LogoSize`、`LogoAndTitleSpacing`、标题字体与颜色 | template-stable |
+| `trailing` | `PART_RightAddOn` + `PART_CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 | `RightAddOn`、`RightAddOnTemplate`；Window caption 配置 | `HeaderHorizontalSpacing`、caption button 尺寸、间距与状态颜色 | template-stable |
+| `native-chrome` | 平台原生窗口按钮安全区 | 以逻辑像素 inset 约束标题安全空间，不进入 visual tree。 | 平台、CSD、WindowState | 不适用 | internal-observable |
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml`
 
 ```xml
 <Border Name="Frame">
-    <DockPanel>
-        <StackPanel>
-            <ContentPresenter Name="PART_Logo" />
-            <ContentPresenter Name="PART_LeftAddOn" />
-            <ContentPresenter Name="PART_ContentPresenter" />
-        </StackPanel>
+    <WindowTitleBarLayoutPanel>
+        <ContentPresenter Name="PART_LeftAddOn" />
         <DockPanel>
-            <CaptionButtonGroup Name="PART_CaptionButtonGroup" />
-            <ContentPresenter Name="PART_RightAddOn" />
+            <ContentPresenter Name="PART_Logo" />
+            <ContentPresenter Name="PART_ContentPresenter" />
         </DockPanel>
-    </DockPanel>
+        <StackPanel>
+            <ContentPresenter Name="PART_RightAddOn" />
+            <CaptionButtonGroup Name="PART_CaptionButtonGroup" />
+        </StackPanel>
+    </WindowTitleBarLayoutPanel>
 </Border>
 ```
 
@@ -13569,33 +13625,32 @@ WindowTitleBar
            -> IconPresenter#PART_IconPresenter (template-stable)
   -> WindowTitleBar (control theme, WindowTitleBarTheme.axaml)
      -> Border#Frame (template-stable)
-        -> DockPanel (template-stable)
-           -> StackPanel (template-stable)
-              -> ContentPresenter#PART_Logo (template-stable)
-              -> ContentPresenter#PART_LeftAddOn (template-stable)
-              -> ContentPresenter#PART_ContentPresenter (template-stable)
-           -> DockPanel (template-stable)
-              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
-              -> ContentPresenter#PART_RightAddOn (template-stable)
-     -> DockPanel (template-stable)
-        -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
-        -> Border#Frame (template-stable)
-           -> DockPanel (template-stable)
-              -> StackPanel (template-stable)
-                 -> ContentPresenter#PART_Logo (template-stable)
-                 -> ContentPresenter#PART_LeftAddOn (template-stable)
-                 -> ContentPresenter#PART_ContentPresenter (template-stable)
-              -> ContentPresenter#PART_RightAddOn (template-stable)
-     -> Border#Frame (template-stable)
-        -> DockPanel (template-stable)
+        -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
            -> DockPanel (template-stable)
-              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
+              -> ContentPresenter#PART_Logo (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+           -> StackPanel (template-stable)
               -> ContentPresenter#PART_RightAddOn (template-stable)
-           -> Panel (template-stable)
-              -> StackPanel (template-stable)
-                 -> ContentPresenter#PART_Logo (template-stable)
-                 -> ContentPresenter#PART_ContentPresenter (template-stable)
+              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
+     -> Border#Frame (template-stable)
+        -> WindowTitleBarLayoutPanel (template-stable)
+           -> ContentPresenter#PART_LeftAddOn (template-stable)
+           -> DockPanel (template-stable)
+              -> ContentPresenter#PART_Logo (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+           -> StackPanel (template-stable)
+              -> ContentPresenter#PART_RightAddOn (template-stable)
+              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
+     -> Border#Frame (template-stable)
+        -> WindowTitleBarLayoutPanel (template-stable)
+           -> ContentPresenter#PART_LeftAddOn (template-stable)
+           -> DockPanel (template-stable)
+              -> ContentPresenter#PART_Logo (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+           -> StackPanel (template-stable)
+              -> ContentPresenter#PART_RightAddOn (template-stable)
+              -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
   -> WindowsCaptionButton (control theme, WindowsCaptionButtonTheme.axaml)
      -> Border#PART_Frame (template-stable)
         -> IconPresenter#PART_IconPresenter (template-stable)
@@ -13622,103 +13677,148 @@ WindowTitleBar
 | `Panel` | template node (Panel) | `CaptionButtonTheme.axaml` | CaptionButton | `Background`, `BackgroundInset`, `EffectiveCornerRadius`, `EffectiveIcon`, `HorizontalAlignment`, `IconHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Frame` | template node (Border) | `CaptionButtonTheme.axaml` | CaptionButton | `Background`, `BackgroundInset`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_IconPresenter` | template node (IconPresenter) | `CaptionButtonTheme.axaml` | CaptionButton | `EffectiveIcon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `WindowTitleBar` | control theme | `WindowTitleBarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Background`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate`, `Logo` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `StackPanel` | template node (StackPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `LeftAddOn`, `LeftAddOnTemplate`, `Logo`, `LogoTemplate`, `Title` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBar` | control theme | `WindowTitleBarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Frame` | template node (Border) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Background`, `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate`, `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_CaptionButtonGroup` | template node (CaptionButtonGroup) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StackPanel` | template node (StackPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RightAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Panel` | template node (Panel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate`, `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_CaptionButtonGroup` | template node (CaptionButtonGroup) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowsCaptionButton` | control theme | `WindowsCaptionButtonTheme.axaml` | WindowTitleBar | `Background`, `EffectiveCornerRadius`, `EffectiveIcon`, `IconHeight`, `IconWidth`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_Frame` | template node (Border) | `WindowsCaptionButtonTheme.axaml` | WindowsCaptionButton | `Background`, `EffectiveCornerRadius`, `EffectiveIcon`, `IconHeight`, `IconWidth`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_IconPresenter` | template node (IconPresenter) | `WindowsCaptionButtonTheme.axaml` | WindowsCaptionButton | `EffectiveIcon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
-| 契约组 | 代表成员 | 维护含义 |
+| 节点 | 类型 | 契约 |
 | --- | --- | --- |
-| 内容与数据 | `CheckedIcon`、`IconHeight`、`IconWidth`、`LeftAddOnTemplate`、`LogoTemplate`、`NormalIcon`、`RightAddOnTemplate`、`Title`、`TitleTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `IsChecked`、`IsWindowActive` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsMinimizeCaptionButtonVisible`、`IsMotionEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 其他稳定入口 | `LeftAddOn`、`Logo`、`LogoVisibility`、`OsType`、`OsVersion`、`RightAddOn` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
+| `PART_Logo` | `ContentPresenter` | 展示有效 Logo。 |
+| `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
+| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
+| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 运行时连接宿主窗口操作。 |
 
 ## Pseudo Classes
 
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、open/close、motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | WindowTitleBar Token + ControlTheme。 |
+`WindowTitleBar` 从逻辑祖先 `Window` 接收状态并维护以下伪类：
+
+| 伪类 | 条件 |
+| --- | --- |
+| `:active` | 宿主窗口处于激活状态。 |
+| `:normal` | `WindowState.Normal`。 |
+| `:minimized` | `WindowState.Minimized`。 |
+| `:maximized` | `WindowState.Maximized`。 |
+| `:fullscreen` | `WindowState.FullScreen`。 |
+
+窗口激活状态同时写入 `IsWindowActive`，供模板中的内部协作控件使用。状态 owner 始终是宿主 `Window`；模板节点不反向维护第二份窗口状态。
 
 ## State Flow
 
-WindowTitleBar 的状态流按以下路径收敛：
+### 4.1 Logo 显示模型
 
-```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
-  -> Gallery 可观察行为
-```
+`LogoVisibility` 的三个值具有以下语义：
 
-状态维护规则：
+| 值 | 规则 |
+| --- | --- |
+| `Always` | 存在 `Logo` 或 `LogoTemplate` 时显示。 |
+| `Never` | 始终隐藏。 |
+| `Auto` | 根据标题内容、平台和窗口状态计算。 |
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- selection/checked/active、open/close、motion 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+`Auto` 的计算矩阵：
+
+| 条件 | 结果 |
+| --- | --- |
+| 不存在 Logo 内容和 Logo 模板 | 隐藏。 |
+| 存在有效标题内容 | 显示。 |
+| 无标题内容且平台为 macOS | 隐藏。 |
+| 无标题内容、平台不是 macOS、窗口非全屏 | 显示。 |
+| 无标题内容、平台不是 macOS、窗口全屏 | 隐藏。 |
+
+该模型只控制 Logo 的有效可见性，不修改 `Logo`、`Window.Icon` 或应用图标来源。
+
+### 4.2 窗口状态
+
+`WindowTitleBar` 从逻辑祖先 `Window` 接收状态并维护以下伪类：
+
+| 伪类 | 条件 |
+| --- | --- |
+| `:active` | 宿主窗口处于激活状态。 |
+| `:normal` | `WindowState.Normal`。 |
+| `:minimized` | `WindowState.Minimized`。 |
+| `:maximized` | `WindowState.Maximized`。 |
+| `:fullscreen` | `WindowState.FullScreen`。 |
+
+窗口激活状态同时写入 `IsWindowActive`，供模板中的内部协作控件使用。状态 owner 始终是宿主 `Window`；模板节点不反向维护第二份窗口状态。
+
+### 4.3 Caption buttons
+
+caption button 的公共配置属于宿主 `Window`：
+
+- `CanMinimize` 和 `CanMaximize` 决定最小化、最大化按钮能力。
+- `IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible` 和 `IsCloseCaptionButtonVisible` 决定扩展按钮可见性。
+- `Topmost`、`WindowState` 和平台 backend 决定 checked state 与有效可见性。
+
+全屏时隐藏最小化和最大化按钮；最大化时隐藏进入全屏按钮。Wayland backend 不提供置顶按钮。按钮点击最终写入宿主窗口状态或调用关闭流程，状态不保存在按钮视觉中。
+
+### 4.4 拖动和双击
+
+`Window` 监听标题栏 pointer 事件并在移动距离超过拖动阈值后调用原生 `BeginMoveDrag`。`IsMoveEnabled=False` 或全屏状态禁止拖动。双击最大化与拖动共用标题栏输入表面，但 caption buttons 和 add-on 的已处理输入不应触发窗口拖动。
 
 ## Theme and Token Boundaries
 
-WindowTitleBar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+`WindowTitleBarTheme` 是 `WindowTitleBar` 的 ControlTheme 入口。内置主题保留以下稳定 template part 与语义节点：
 
-| 主题文件 | 职责 |
-| --- | --- |
-| `CaptionButtonGroupTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `CaptionButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `WindowTitleBarTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowTitleBarThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
-| `WindowsCaptionButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
+| 节点 | 类型 | 契约 |
+| --- | --- | --- |
+| `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
+| `PART_Logo` | `ContentPresenter` | 展示有效 Logo。 |
+| `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
+| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
+| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 运行时连接宿主窗口操作。 |
 
-WindowTitleBar 使用 `WindowTitleBarToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、motion 运行时状态。
+`PART_CaptionButtonGroup` 是 `WindowTitleBar` 代码查找并 attach/detach 的协作 part。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
 
-主题维护规则：
+平台主题可以改变 caption button 外观和 native chrome 来源，但不得改变 Public API 语义、Title/Leading/Trailing 角色或窗口操作行为。应用替换完整 ControlTheme 时负责提供等价区域、裁剪和命中测试；internal caption 类型不作为定制 API。
 
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+视觉尺寸、间距、active/inactive 颜色和 caption button 状态颜色由 [WindowTitleBar Token 设计](token.md) 管理。标题对齐值、CSD 状态和窗口状态不是 Token。
 
 Token 边界：
 
-WindowTitleBar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
+`WindowTitleBarToken` 是 scope id 为 `WindowTitleBar` 的 internal control token，源码位于 `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs`。它从 `SharedToken` 计算标题栏和 caption button 的视觉变量，并通过生成的 `WindowTitleBarTokenResource` key 供 AXAML 使用。
 
-当前 Token scope：
+Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时语义：
 
-- `WindowTitleBarToken`，scope id 为 `WindowTitleBar`，源码位于 `src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs`。
+- `TitleAlignment`、Leading/Title/Trailing 角色和布局公式。
+- CSD、native chrome insets、WindowState 和 backend 能力。
+- Logo、标题、add-on 或 caption button 的有效可见性。
+- pointer capture、拖动、checked state 和窗口操作。
 
 ## Customization Boundaries
 
-维护 WindowTitleBar 时必须保持以下不变量：
-
-- 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
-- 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
-- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
-- Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
-- 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
-- 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
+- Public API 的类型、默认值、绑定语义和事件时序保持稳定。
+- `Auto` Logo 规则和标题对齐的显式枚举语义保持稳定。
+- `PART_CaptionButtonGroup`、内容 presenter 名称、ControlTheme key 和伪类保持稳定。
+- Title 内容不参与命中测试；add-on 和 caption buttons 保持可交互。
+- Logo 和 Title 始终作为连续 Title 组；add-on 不进入标题中心计算。
+- CSD 开关只改变 chrome metrics 来源和可见操作区，不改变显式标题对齐含义。
+- template reapply、逻辑树 detach 和窗口替换时释放旧订阅与 part handler。
+- 平台选择和 Token 发现不依赖运行时反射或程序集扫描。
 
 维护不变量：
 
-维护 WindowTitleBar 时不得破坏：
-
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- `WindowTitleBar` 与 `Window.NotifyConfigureTitleBar` 的属性投影保持单向且完整。
+- `WindowTitleBar.OnApplyTemplate`、logical attach/detach 和 `CaptionButtonGroup.Attach/Detach` 始终成对释放。
+- 三个平台 ControlTemplate 保持相同语义角色、稳定 part 名称和平台 caption button 顺序。
+- Logo 与 Title 始终属于连续 Title 组；add-on 和 caption buttons 不进入标题中心计算。
+- Leading/Trailing 为零宽时不产生操作区间距；add-on margin 只通过 `DesiredSize` 计入一次。
+- ImagePreviewer 与两个全屏标题宿主复用同一标题布局模型。
+- Title 不参与命中测试；add-on 与 caption buttons 保持可交互。
+- `WindowTitleBarToken`、generated resource key 和 Theme 消费名保持同步。
 
 Source: ./controls/border-beam/semantic-cn.md
 
@@ -13737,7 +13837,7 @@ Source: ./controls/border-beam/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/BorderBeam/Themes/BorderBeamTheme.axaml`
+来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/BorderBeam/Themes/BorderBeamTheme.axaml`
 
 ```xml
 <Grid>
