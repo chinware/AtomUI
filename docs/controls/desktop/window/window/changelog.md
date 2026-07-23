@@ -2,6 +2,13 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-23
+
+- Implementation
+  - Rename the shared Linux chrome manager to `AbstractLinuxWindowChromeManager` and the fallback backend manager to `GenericLinuxWindowChromeManager`.
+- Docs
+  - Synchronize Window and WindowTitleBar implementation docs with the renamed Linux chrome manager structure.
+
 ## 2026-07-22
 
 - Implementation

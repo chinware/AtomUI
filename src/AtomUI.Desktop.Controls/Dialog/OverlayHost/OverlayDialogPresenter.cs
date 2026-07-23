@@ -145,7 +145,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _ownerWindow = TopLevel.GetTopLevel(_placementTarget) as Window;
         _ownerIsWayland = OperatingSystem.IsLinux() &&
                           _ownerWindow is { } ownerWindow &&
-                          LinuxWindowChromeManager.IsWayland(ownerWindow);
+                          AbstractLinuxWindowChromeManager.IsWayland(ownerWindow);
         _dialogLayer.Add(this);
         AttachOwnerGeometryBindings();
         UpdateLayerBounds(_dialogLayer.AvailableSize);

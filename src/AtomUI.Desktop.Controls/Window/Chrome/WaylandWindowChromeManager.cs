@@ -6,7 +6,7 @@ using Avalonia.Controls;
 namespace AtomUI.Desktop.Controls;
 
 [SupportedOSPlatform("linux")]
-internal sealed class WaylandWindowChromeManager : LinuxWindowChromeManager
+internal sealed class WaylandWindowChromeManager : AbstractLinuxWindowChromeManager
 {
     private const double ManagedResizeGripScale = 1.0 / 3.0;
 

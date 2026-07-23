@@ -10,7 +10,7 @@ namespace AtomUI.Desktop.Controls;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 [SupportedOSPlatform("linux")]
-internal sealed class X11WindowChromeManager : LinuxWindowChromeManager
+internal sealed class X11WindowChromeManager : AbstractLinuxWindowChromeManager
 {
     private const double InitialScreenMargin = 48;
     private const double ShadowInputRegionResizeBand = 10.0;

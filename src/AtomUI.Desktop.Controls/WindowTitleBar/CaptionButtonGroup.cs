@@ -393,7 +393,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
 
         var configuredPlatform = AvaloniaLocator.Current.GetService<AtomUIWindowingPlatformOptions>()?.Platform;
         var platformImpl       = HostWindow?.PlatformImpl;
-        var backend = LinuxWindowChromeManager.ResolveBackend(
+        var backend = AbstractLinuxWindowChromeManager.ResolveBackend(
             configuredPlatform,
             platformImpl?.Handle?.HandleDescriptor,
             platformImpl?.GetType().Assembly.GetName().Name);

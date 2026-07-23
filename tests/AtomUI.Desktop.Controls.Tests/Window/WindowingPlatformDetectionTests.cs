@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Versioning;
 using System.Xml.Linq;
 using AtomUI;
+using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Shouldly;
 using Xunit;
@@ -63,7 +64,7 @@ public class WindowingPlatformDetectionTests
     public void Wayland_Chrome_Does_Not_Call_X11_Handle_Or_Absolute_Geometry_Hacks()
     {
         var commonSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/AbstractLinuxWindowChromeManager.cs"));
         var waylandSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs"));
         var x11Source = File.ReadAllText(GetRepoFile(
@@ -71,7 +72,7 @@ public class WindowingPlatformDetectionTests
 
         commonSource.ShouldContain("new X11WindowChromeManager(window)");
         commonSource.ShouldContain("new WaylandWindowChromeManager(window)");
-        commonSource.ShouldContain("new OtherLinuxWindowChromeManager(window)");
+        commonSource.ShouldContain("new GenericLinuxWindowChromeManager(window)");
         commonSource.ShouldContain("HandleDescriptor, \"XID\"");
         waylandSource.ShouldNotContain("ConfigureLinuxInitialWindowGeometry");
         waylandSource.ShouldNotContain("SetLinuxX11CsdFrameExtents");
@@ -91,7 +92,7 @@ public class WindowingPlatformDetectionTests
         var contractSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs"));
         var linuxSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/AbstractLinuxWindowChromeManager.cs"));
         var waylandSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs"));
 
@@ -116,7 +117,7 @@ public class WindowingPlatformDetectionTests
         string? platformAssemblyName,
         int expected)
     {
-        LinuxWindowChromeManager.ResolveBackend(
+        AbstractLinuxWindowChromeManager.ResolveBackend(
                 configuredPlatform,
                 handleDescriptor,
                 platformAssemblyName)
@@ -188,7 +189,7 @@ public class WindowingPlatformDetectionTests
     public void Linux_Csd_Tracks_Platform_Decoration_Requests_And_Uses_AtomUI_Theme()
     {
         var commonSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs"));
+            "src/AtomUI.Desktop.Controls/Window/Chrome/AbstractLinuxWindowChromeManager.cs"));
         var windowSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Window.cs"));
         var document = XDocument.Load(GetRepoFile(

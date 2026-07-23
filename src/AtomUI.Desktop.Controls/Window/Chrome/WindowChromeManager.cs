@@ -24,7 +24,7 @@ internal static class WindowChromeManager
     {
         if (OperatingSystem.IsLinux())
         {
-            return LinuxWindowChromeManager.Attach(window);
+            return AbstractLinuxWindowChromeManager.Attach(window);
         }
 
         if (OperatingSystem.IsWindows())
