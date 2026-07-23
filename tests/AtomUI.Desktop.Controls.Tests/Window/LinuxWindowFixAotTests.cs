@@ -16,7 +16,7 @@ public class LinuxWindowFixAotTests
             Environment.NewLine,
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs")),
-            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs")),
+            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/AbstractLinuxWindowChromeManager.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs")),
             File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/DesktopAppBuilderExtensions.cs")),

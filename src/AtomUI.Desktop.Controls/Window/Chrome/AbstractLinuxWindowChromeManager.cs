@@ -16,7 +16,7 @@ internal enum LinuxWindowingBackend
 }
 
 [SupportedOSPlatform("linux")]
-internal abstract class LinuxWindowChromeManager : IWindowChromeManager
+internal abstract class AbstractLinuxWindowChromeManager : IWindowChromeManager
 {
     private readonly Window _window;
     private bool _initialShowStatePrepared;
@@ -26,7 +26,7 @@ internal abstract class LinuxWindowChromeManager : IWindowChromeManager
     private bool _hasPendingTitleBarHeightHint;
     private double _pendingTitleBarHeightHint;
 
-    protected LinuxWindowChromeManager(Window window)
+    protected AbstractLinuxWindowChromeManager(Window window)
     {
         _window = window;
     }
@@ -35,7 +35,7 @@ internal abstract class LinuxWindowChromeManager : IWindowChromeManager
 
     public virtual bool UsesCustomResizer => !Window.IsCsdEnabled;
 
-    public static LinuxWindowChromeManager Attach(Window window)
+    public static AbstractLinuxWindowChromeManager Attach(Window window)
     {
         var configuredPlatform = AvaloniaLocator.Current.GetService<AtomUIWindowingPlatformOptions>()?.Platform;
         var platformImpl       = window.PlatformImpl;
@@ -43,11 +43,11 @@ internal abstract class LinuxWindowChromeManager : IWindowChromeManager
             configuredPlatform,
             platformImpl?.Handle?.HandleDescriptor,
             platformImpl?.GetType().Assembly.GetName().Name);
-        LinuxWindowChromeManager manager = backend switch
+        AbstractLinuxWindowChromeManager manager = backend switch
         {
             LinuxWindowingBackend.X11 => new X11WindowChromeManager(window),
             LinuxWindowingBackend.Wayland => new WaylandWindowChromeManager(window),
-            _ => new OtherLinuxWindowChromeManager(window)
+            _ => new GenericLinuxWindowChromeManager(window)
         };
         manager.Attach();
         return manager;

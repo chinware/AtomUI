@@ -22,7 +22,8 @@ src/AtomUI.Desktop.Controls/
 │   ├── MacStandardWindowButtons.cs
 │   ├── Chrome/
 │   │   ├── WindowChromeManager.cs
-│   │   ├── LinuxWindowChromeManager.cs
+│   │   ├── AbstractLinuxWindowChromeManager.cs
+│   │   ├── GenericLinuxWindowChromeManager.cs
 │   │   ├── X11WindowChromeManager.cs
 │   │   ├── WaylandWindowChromeManager.cs
 │   │   └── WindowsWindowChromeManager.cs
@@ -193,7 +194,7 @@ LeftAddOn 或 RightAddOn 的内容、可见性、子节点、模板和 margin �
 
 ## 8. 内部算法与关键流程
 
-`CaptionButtonGroup` 的有效可见性集中计算：全屏按钮在最大化时隐藏；最小化和最大化按钮在全屏时隐藏；置顶按钮同时受配置与 backend 能力约束；关闭按钮直接遵循宿主配置。Wayland 不提供置顶能力，Linux backend 识别由 `LinuxWindowChromeManager` 统一收敛。
+`CaptionButtonGroup` 的有效可见性集中计算：全屏按钮在最大化时隐藏；最小化和最大化按钮在全屏时隐藏；置顶按钮同时受配置与 backend 能力约束；关闭按钮直接遵循宿主配置。Wayland 不提供置顶能力，Linux backend 识别由 `AbstractLinuxWindowChromeManager` 统一收敛。
 
 标题布局只在 `WindowTitleBarLayoutPanel` 中执行：先归一 native chrome inset，再在原生安全边界后应用 managed Padding，最后把 Leading 和 Trailing 转换为标题安全边界并执行 `Left`、`Center`、`WindowCenter` 或 `Right` 的共享公式。基础边界为 `BL = clamp(NL + PL, 0, W)` 与 `BR = clamp(W - NR - PR, 0, W)`；native extent 和 Padding 各计算一次，`WindowCenter` 仍以完整 frame 的 `W / 2` 为轴。平台 Strategy 不测量 Visual，也不复制对齐公式。
 

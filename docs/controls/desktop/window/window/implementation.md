@@ -11,7 +11,8 @@
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs`
-- `src/AtomUI.Desktop.Controls/Window/Chrome/LinuxWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/AbstractLinuxWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/GenericLinuxWindowChromeManager.cs`
 - `src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs`
 - `src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs`
 - `src/AtomUI.Desktop.Controls/Window/Chrome/WindowsWindowChromeManager.cs`
@@ -52,7 +53,8 @@
 - `ReactiveWindow<TViewModel>`：public ReactiveUI 窗口基类，维护 `ViewModel` / `DataContext` 同步和 AOT 友好的 view activation。
 - `MacStandardWindowButtons`：public macOS 标准窗口按钮布局附加能力，封装 spacing、offset 和按钮布局入口。
 - `WindowChromeManager` / `IWindowChromeManager`：按平台创建 chrome manager，并定义 Window 与平台能力之间的内部协作接口。
-- `LinuxWindowChromeManager`：Linux 后端的共享 manager，负责 X11/Wayland/Other 后端识别、CSD 状态同步、frame geometry 更新合并、title-bar height hint 和 visible frame border 更新。
+- `AbstractLinuxWindowChromeManager`：Linux 后端的抽象共享 manager，负责 X11/Wayland/Generic 后端识别、CSD 状态同步、frame geometry 更新合并、title-bar height hint 和 visible frame border 更新。
+- `GenericLinuxWindowChromeManager`：Linux generic fallback manager，承接无法确定为 X11 或 Wayland 的后端并复用共享 Linux chrome 行为。
 - `X11WindowChromeManager`：X11 专属 manager，负责 map 前初始 geometry、`_GTK_FRAME_EXTENTS`、shadow input region 订阅策略和 10 DIP resize band 保留。
 - `WaylandWindowChromeManager`：Wayland 专属 manager，负责 shadow extents 归一、managed resize grip 接管和 input region 矩形计算。
 - `WindowsWindowChromeManager`：Windows 专属 manager，负责 Windows CSD frame dark mode 与可见 frame border 策略。
