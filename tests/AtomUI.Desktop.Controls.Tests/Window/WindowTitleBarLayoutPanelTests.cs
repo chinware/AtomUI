@@ -187,8 +187,11 @@ public class WindowTitleBarLayoutPanelTests
         title.Bounds.X.ShouldBe(0);
     }
 
-    [Fact]
-    public void Templated_AddOn_Content_Changes_Invalidate_The_Shared_Layout_Without_Ghost_Spacing()
+    [Theory]
+    [InlineData(OsType.Windows)]
+    [InlineData(OsType.Linux)]
+    public void Windows_And_Linux_Templated_AddOn_Content_Changes_Recalculate_The_Shared_Title_Formula(
+        OsType osType)
     {
         var leftAddOn = new Border();
         var rightAddOn = new Border();
@@ -201,7 +204,7 @@ public class WindowTitleBarLayoutPanelTests
             Title          = "Dynamic add-on",
             TitleAlignment = Desktop.Controls.WindowTitleBarTitleAlignment.Left
         };
-        titleBar.SetValue(Desktop.Controls.WindowTitleBar.OsTypeProperty, OsType.Linux);
+        titleBar.SetValue(Desktop.Controls.WindowTitleBar.OsTypeProperty, osType);
         Application.Current!.TryFindResource(typeof(Desktop.Controls.WindowTitleBar), out var resource)
                    .ShouldBeTrue();
         titleBar.Theme = resource.ShouldBeAssignableTo<ControlTheme>();
@@ -225,31 +228,37 @@ public class WindowTitleBarLayoutPanelTests
             var title = panel.Children.Single(child =>
                 Desktop.Controls.WindowTitleBarLayoutPanel.GetRole(child) ==
                 Desktop.Controls.WindowTitleBarLayoutRole.Title);
+            AssertTitleMatchesCurrentLayout(titleBar, panel, title);
             var emptyX = title.Bounds.X;
 
             leftAddOn.Child = new Border { Width = 30, Height = 24 };
             Dispatcher.UIThread.RunJobs();
             host.UpdateLayout();
-            title.Bounds.X.ShouldBe(emptyX + 38);
+            AssertTitleMatchesCurrentLayout(titleBar, panel, title);
+            title.Bounds.X.ShouldBeGreaterThan(emptyX);
 
             leftAddOn.Child = null;
             Dispatcher.UIThread.RunJobs();
             host.UpdateLayout();
+            AssertTitleMatchesCurrentLayout(titleBar, panel, title);
             title.Bounds.X.ShouldBe(emptyX);
 
             titleBar.TitleAlignment = Desktop.Controls.WindowTitleBarTitleAlignment.Right;
             Dispatcher.UIThread.RunJobs();
             host.UpdateLayout();
+            AssertTitleMatchesCurrentLayout(titleBar, panel, title);
             var emptyRightX = title.Bounds.X;
 
             rightAddOn.Child = new Border { Width = 30, Height = 24 };
             Dispatcher.UIThread.RunJobs();
             host.UpdateLayout();
-            title.Bounds.X.ShouldBe(emptyRightX - 38);
+            AssertTitleMatchesCurrentLayout(titleBar, panel, title);
+            title.Bounds.X.ShouldBeLessThan(emptyRightX);
 
             rightAddOn.Child = null;
             Dispatcher.UIThread.RunJobs();
             host.UpdateLayout();
+            AssertTitleMatchesCurrentLayout(titleBar, panel, title);
             title.Bounds.X.ShouldBe(emptyRightX);
         }
         finally
@@ -305,6 +314,128 @@ public class WindowTitleBarLayoutPanelTests
 
             titlePresenter.Bounds.Width.ShouldBeLessThanOrEqualTo(titleLayout.Bounds.Width);
             titlePresenter.TextTrimming.ShouldBe(TextTrimming.CharacterEllipsis);
+        }
+        finally
+        {
+            host.Close();
+        }
+    }
+
+    [Theory]
+    [InlineData(OsType.Windows)]
+    [InlineData(OsType.Linux)]
+    public void Windows_And_Linux_Templates_Place_Logo_At_The_Physical_Left_Edge_Before_Left_AddOn(
+        OsType osType)
+    {
+        var titleBar = new Desktop.Controls.WindowTitleBar
+        {
+            Width          = 400,
+            Height         = 40,
+            Logo           = new Border { Width = 16, Height = 16 },
+            LeftAddOn      = new Border { Width = 120, Height = 24 },
+            TitleAlignment = Desktop.Controls.WindowTitleBarTitleAlignment.Left,
+            LogoVisibility = Desktop.Controls.WindowTitleBarLogoVisibility.Always
+        };
+        titleBar.SetValue(Desktop.Controls.WindowTitleBar.OsTypeProperty, osType);
+        Application.Current!.TryFindResource(typeof(Desktop.Controls.WindowTitleBar), out var resource)
+                   .ShouldBeTrue();
+        titleBar.Theme = resource.ShouldBeAssignableTo<ControlTheme>();
+
+        var host = new Avalonia.Controls.Window
+        {
+            Width   = 400,
+            Height  = 100,
+            Content = titleBar
+        };
+
+        try
+        {
+            host.Show();
+            titleBar.ApplyTemplate();
+            host.UpdateLayout();
+
+            var logoPresenter = titleBar.GetVisualDescendants()
+                                        .OfType<ContentPresenter>()
+                                        .Single(presenter => presenter.Name == "PART_Logo");
+            var leftAddOnPresenter = titleBar.GetVisualDescendants()
+                                             .OfType<ContentPresenter>()
+                                             .Single(presenter => presenter.Name == "PART_LeftAddOn");
+            var leadingHost = logoPresenter.GetVisualParent().ShouldBeAssignableTo<Control>()!;
+
+            leftAddOnPresenter.GetVisualParent().ShouldBe(leadingHost);
+            Desktop.Controls.WindowTitleBarLayoutPanel.GetRole(leadingHost)
+                   .ShouldBe(Desktop.Controls.WindowTitleBarLayoutRole.Leading);
+            logoPresenter.Bounds.X.ShouldBeLessThan(leftAddOnPresenter.Bounds.X);
+            logoPresenter.Bounds.X.ShouldBe(0, 0.5);
+        }
+        finally
+        {
+            host.Close();
+        }
+    }
+
+    [Theory]
+    [InlineData(OsType.Windows, Desktop.Controls.WindowTitleBarTitleAlignment.Left)]
+    [InlineData(OsType.Windows, Desktop.Controls.WindowTitleBarTitleAlignment.Center)]
+    [InlineData(OsType.Windows, Desktop.Controls.WindowTitleBarTitleAlignment.WindowCenter)]
+    [InlineData(OsType.Windows, Desktop.Controls.WindowTitleBarTitleAlignment.Right)]
+    [InlineData(OsType.Linux, Desktop.Controls.WindowTitleBarTitleAlignment.Left)]
+    [InlineData(OsType.Linux, Desktop.Controls.WindowTitleBarTitleAlignment.Center)]
+    [InlineData(OsType.Linux, Desktop.Controls.WindowTitleBarTitleAlignment.WindowCenter)]
+    [InlineData(OsType.Linux, Desktop.Controls.WindowTitleBarTitleAlignment.Right)]
+    public void Windows_And_Linux_Template_Title_Alignment_Still_Uses_The_Shared_Safe_Region_Formula(
+        OsType osType,
+        Desktop.Controls.WindowTitleBarTitleAlignment alignment)
+    {
+        var titleBar = new Desktop.Controls.WindowTitleBar
+        {
+            Width          = 800,
+            Height         = 40,
+            Logo           = new Border { Width = 16, Height = 16 },
+            LeftAddOn      = new Border { Width = 64, Height = 24 },
+            RightAddOn     = new Border { Width = 48, Height = 24 },
+            Title          = new Border { Width = 100, Height = 24 },
+            TitleAlignment = alignment,
+            LogoVisibility = Desktop.Controls.WindowTitleBarLogoVisibility.Always
+        };
+        titleBar.SetValue(Desktop.Controls.WindowTitleBar.OsTypeProperty, osType);
+        Application.Current!.TryFindResource(typeof(Desktop.Controls.WindowTitleBar), out var resource)
+                   .ShouldBeTrue();
+        titleBar.Theme = resource.ShouldBeAssignableTo<ControlTheme>();
+
+        var host = new Avalonia.Controls.Window
+        {
+            Width   = 800,
+            Height  = 100,
+            Content = titleBar
+        };
+
+        try
+        {
+            host.Show();
+            titleBar.ApplyTemplate();
+            host.UpdateLayout();
+
+            var panel = titleBar.GetVisualDescendants()
+                                .OfType<Desktop.Controls.WindowTitleBarLayoutPanel>()
+                                .Single();
+            var leading = FindRoleChild(panel, Desktop.Controls.WindowTitleBarLayoutRole.Leading);
+            var title   = FindRoleChild(panel, Desktop.Controls.WindowTitleBarLayoutRole.Title);
+            var trailing = FindRoleChild(panel, Desktop.Controls.WindowTitleBarLayoutRole.Trailing);
+
+            var expectedX = CalculateExpectedTitleX(
+                titleBar.Width,
+                panel,
+                leading.Bounds.Width,
+                title.Bounds.Width,
+                trailing.Bounds.Width,
+                alignment);
+
+            title.Bounds.X.ShouldBe(expectedX, 0.5);
+            if (alignment == Desktop.Controls.WindowTitleBarTitleAlignment.WindowCenter)
+            {
+                title.Bounds.Center.X.ShouldBe(titleBar.Width / 2, 0.5);
+            }
         }
         finally
         {
@@ -414,6 +545,83 @@ public class WindowTitleBarLayoutPanelTests
         Desktop.Controls.WindowTitleBarLayoutPanel.SetRole(child, role);
         panel.Children.Add(child);
         return child;
+    }
+
+    private static Control FindRoleChild(
+        Desktop.Controls.WindowTitleBarLayoutPanel panel,
+        Desktop.Controls.WindowTitleBarLayoutRole role)
+    {
+        return panel.Children.Single(child =>
+            Desktop.Controls.WindowTitleBarLayoutPanel.GetRole(child) == role);
+    }
+
+    private static void AssertTitleMatchesCurrentLayout(
+        Desktop.Controls.WindowTitleBar titleBar,
+        Desktop.Controls.WindowTitleBarLayoutPanel panel,
+        Control title)
+    {
+        var leading = FindRoleChild(panel, Desktop.Controls.WindowTitleBarLayoutRole.Leading);
+        var trailing = FindRoleChild(panel, Desktop.Controls.WindowTitleBarLayoutRole.Trailing);
+        var expectedX = CalculateExpectedTitleX(
+            titleBar.Width,
+            panel,
+            leading.Bounds.Width,
+            title.Bounds.Width,
+            trailing.Bounds.Width,
+            titleBar.TitleAlignment);
+
+        title.Bounds.X.ShouldBe(expectedX, 0.5);
+    }
+
+    private static double CalculateExpectedTitleX(
+        double width,
+        Desktop.Controls.WindowTitleBarLayoutPanel panel,
+        double leadingWidth,
+        double titleWidth,
+        double trailingWidth,
+        Desktop.Controls.WindowTitleBarTitleAlignment alignment)
+    {
+        var effectiveAlignment = alignment == Desktop.Controls.WindowTitleBarTitleAlignment.Auto
+            ? Desktop.Controls.WindowTitleBarLayoutStrategies.Get(panel.OsType).AutoAlignment
+            : alignment;
+        var nativeChromeInsets = Desktop.Controls.WindowTitleBarLayoutStrategies.Get(panel.OsType)
+                                     .ResolveNativeChromeInsets(
+                                         width,
+                                         panel.NativeChromeInsets,
+                                         panel.IsCsdEnabled,
+                                         panel.WindowState);
+        var leftBoundary = Math.Clamp(
+            Normalize(nativeChromeInsets.Left) + Normalize(panel.Padding.Left),
+            0,
+            width);
+        var rightBoundary = Math.Clamp(
+            width - Normalize(nativeChromeInsets.Right) - Normalize(panel.Padding.Right),
+            0,
+            width);
+        var horizontalSpacing  = Normalize(panel.HorizontalSpacing);
+        var leadingOccupation  = leadingWidth > 0 ? leadingWidth + horizontalSpacing : 0;
+        var trailingOccupation = trailingWidth > 0 ? trailingWidth + horizontalSpacing : 0;
+        var left               = Math.Clamp(leftBoundary + leadingOccupation, 0, width);
+        var right              = Math.Clamp(rightBoundary - trailingOccupation, 0, width);
+        var availableWidth     = Math.Max(0, right - left);
+        var effectiveWidth     = Math.Min(titleWidth, availableWidth);
+
+        return effectiveAlignment switch
+        {
+            Desktop.Controls.WindowTitleBarTitleAlignment.Center =>
+                left + (availableWidth - effectiveWidth) / 2,
+            Desktop.Controls.WindowTitleBarTitleAlignment.WindowCenter =>
+                width / 2 - Math.Min(
+                    titleWidth,
+                    2 * Math.Max(0, Math.Min(width / 2 - left, right - width / 2))) / 2,
+            Desktop.Controls.WindowTitleBarTitleAlignment.Right => right - effectiveWidth,
+            _ => left
+        };
+    }
+
+    private static double Normalize(double value)
+    {
+        return double.IsFinite(value) && value > 0 ? value : 0;
     }
 
     private static void Layout(Control control, double width, double height)

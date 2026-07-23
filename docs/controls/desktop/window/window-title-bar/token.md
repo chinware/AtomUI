@@ -22,14 +22,14 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 | `Height` | 常规标题栏高度。 | `WindowTitleBarTheme` |
 | `TitleBarPadding` | 标题栏 managed 内容的左右内边距。 | `WindowTitleBarTheme`、标题布局 Panel |
 | `HeaderHorizontalSpacing` | 非零 Leading/Trailing 操作区与 Title 之间的条件水平间距。 | WindowTitleBar、ImagePreviewer、全屏标题宿主 |
-| `LogoAndTitleSpacing` | Title 组内同时可见的 Logo/Icon 与 Title 之间的条件间距。 | WindowTitleBar、ImagePreviewer、全屏标题宿主 |
+| `LogoAndTitleSpacing` | Title role 内同时可见的 Logo/Icon 与 Title 之间的条件间距。 | WindowTitleBar macOS 模板、ImagePreviewer、全屏标题宿主 |
 | `LogoSize` | 默认 Logo presenter 尺寸。 | WindowTitleBar 和全屏标题宿主 |
 | `TitleFontSize` | 标题字体尺寸。 | WindowTitleBar 和全屏标题宿主 |
 | `TitleFontWeight` | 标题字体粗细。 | WindowTitleBar 和全屏标题宿主 |
 
 `TitleBarPadding` 是原生安全边界后的 managed 内容间距；没有 native chrome inset 时从 frame 边缘起效。标题布局先应用 native chrome extent，再应用 `TitleBarPadding`，两段占位各自只计算一次。`Height`、`FullscreenCaptionButtonSize` 和 `HeaderHorizontalSpacing` 使用跨平台稳定值，不随紧凑密度算法缩小。
 
-`HeaderHorizontalSpacing` 不属于 add-on 固定 margin。对应操作区实测宽度为零时不应用该值；add-on 自身 margin 已由 DesiredSize 计入，不与该 Token 重复计算。`LogoAndTitleSpacing` 同样不为隐藏或空 Logo/Icon、空 Title 保留占位。
+`HeaderHorizontalSpacing` 不属于 add-on 固定 margin。对应操作区实测宽度为零时不应用该值；add-on 自身 margin 已由 DesiredSize 计入，不与该 Token 重复计算。`LogoAndTitleSpacing` 只作用于图标和标题同在 Title role 的宿主，不为隐藏或空 Logo/Icon、空 Title 保留占位。
 
 ### 2.2 Caption button 尺寸
 

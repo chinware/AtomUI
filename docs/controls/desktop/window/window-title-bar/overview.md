@@ -28,12 +28,12 @@
 
 | 语义 | 内容 | 责任 |
 | --- | --- | --- |
-| Leading | `LeftAddOn` | 承载靠近起始侧的应用操作，并占用标题安全空间。 |
-| Title | `Logo + Title` | 作为连续标题组测量、对齐和裁剪。 |
+| Leading | Windows/Linux: `Logo + LeftAddOn`；macOS: `LeftAddOn` | 承载靠近起始侧的应用操作，并占用标题安全空间。Windows/Linux 中可见 Logo 位于物理最左侧，先于 `LeftAddOn`。 |
+| Title | Windows/Linux: `Title`；macOS: `Logo + Title` | 承载标题内容并执行对齐和裁剪。macOS 保留连续 Logo/Title 标题组以配合原生窗口按钮安全区。 |
 | Trailing | `RightAddOn + CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 |
 | Native chrome | 平台原生窗口按钮或 overlay | 不进入 visual tree，通过窗口边缘安全区参与布局。 |
 
-三块 managed 区域与 native chrome 的完整几何关系由本文第 8 节和 [WindowTitleBar 实现原理](implementation.md) 定义。Logo 属于 Title，不属于 Leading；左右 add-on 属于操作区，不参与标题组中心计算。
+三块 managed 区域与 native chrome 的完整几何关系由本文第 8 节和 [WindowTitleBar 实现原理](implementation.md) 定义。Windows/Linux 的 Logo 属于 Leading，占用左侧操作安全空间；macOS 的 Logo 属于 Title，以保持平台标题行为。左右 add-on 属于操作区，不参与标题中心计算。
 
 控件家族的职责边界：
 
@@ -150,7 +150,7 @@ caption button 的公共配置属于宿主 `Window`：
 | 节点 | 类型 | 契约 |
 | --- | --- | --- |
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
-| `PART_Logo` | `ContentPresenter` | 展示有效 Logo。 |
+| `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
 | `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
@@ -184,7 +184,7 @@ caption button 的公共配置属于宿主 `Window`：
 - `Auto` Logo 规则和标题对齐的显式枚举语义保持稳定。
 - `PART_CaptionButtonGroup`、内容 presenter 名称、ControlTheme key 和伪类保持稳定。
 - Title 内容不参与命中测试；add-on 和 caption buttons 保持可交互。
-- Logo 和 Title 始终作为连续 Title 组；add-on 不进入标题中心计算。
+- Windows/Linux 中 Logo 始终位于 Leading 最左侧并参与左侧安全空间；macOS 中 Logo 和 Title 作为连续 Title 组；add-on 不进入标题中心计算。
 - CSD 开关只改变 chrome metrics 来源和可见操作区，不改变显式标题对齐含义。
 - template reapply、逻辑树 detach 和窗口替换时释放旧订阅与 part handler。
 - 平台选择和 Token 发现不依赖运行时反射或程序集扫描。
@@ -216,8 +216,8 @@ LLMS 语义区域：
 | --- | --- | --- | --- | --- | --- |
 | `root` | `WindowTitleBar` | 承载公共内容契约、平台状态和标题栏主题入口。 | `Logo`、`Title`、`TitleAlignment` | `Height`、`TitleBarPadding`、标题字体与颜色 | public |
 | `frame` | `Border#Frame` | 绘制标题栏背景并定义完整可见 frame。 | `Background`、`Padding` | `Height`、`TitleBarPadding` | template-stable |
-| `leading` | `ContentPresenter#PART_LeftAddOn` | 承载起始侧应用操作并占用标题安全空间。 | `LeftAddOn`、`LeftAddOnTemplate` | `HeaderHorizontalSpacing` | template-stable |
-| `title` | `PART_Logo` + `PART_ContentPresenter` | 将 Logo 与 Title 作为连续标题组展示、测量和裁剪。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`TitleTemplate` | `LogoSize`、`LogoAndTitleSpacing`、标题字体与颜色 | template-stable |
+| `leading` | Windows/Linux: `PART_Logo` + `PART_LeftAddOn`；macOS: `PART_LeftAddOn` | 承载起始侧应用操作并占用标题安全空间。Windows/Linux 中 Logo 是物理最左内容。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`LeftAddOn`、`LeftAddOnTemplate` | `LogoSize`、`HeaderHorizontalSpacing` | template-stable |
+| `title` | Windows/Linux: `PART_ContentPresenter`；macOS: `PART_Logo` + `PART_ContentPresenter` | 展示、测量、对齐和裁剪标题内容；macOS 同时保留 Logo/Title 连续标题组。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`TitleTemplate` | `LogoAndTitleSpacing`、标题字体与颜色 | template-stable |
 | `trailing` | `PART_RightAddOn` + `PART_CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 | `RightAddOn`、`RightAddOnTemplate`；Window caption 配置 | `HeaderHorizontalSpacing`、caption button 尺寸、间距与状态颜色 | template-stable |
 | `native-chrome` | 平台原生窗口按钮安全区 | 以逻辑像素 inset 约束标题安全空间，不进入 visual tree。 | 平台、CSD、WindowState | 不适用 | internal-observable |
 
