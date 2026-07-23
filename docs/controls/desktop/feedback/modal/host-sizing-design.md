@@ -175,4 +175,4 @@ Dialog Host* / IsResizable / IsMaximizable
 | MessageBox | MessageBox 最小宽度继续提高 Dialog structural minimum，不能降低结构性高度。 |
 | Gallery | resizable Window/Overlay 示例无需手写 `HostMinHeight` 也不能缩到操作区不可用；显式 HostMin/Max 示例能展示收紧区间。 |
 | 平台 | Windows、macOS、X11 和 Wayland 实机验证最小尺寸、working area、DPI 和 native resize。 |
-| 文档与 AOT | Gallery API/Token 表、Modal 文档和 LLMS 来源一致；实现不增加反射或动态注册。 |
+| 文档与 AOT | 控件文档、源码 public surface、Token 类型或生成数据、Modal 文档和 LLMS 来源一致；实现不增加反射或动态注册。 |

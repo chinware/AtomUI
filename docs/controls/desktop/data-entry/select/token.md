@@ -93,12 +93,12 @@ SelectToken 直接影响 Select。TreeSelect 有独立 `TreeSelectToken`，Combo
 - `SelectAddOnDecoratedBoxTheme.axaml`
 - `SelectCandidateListItemTheme.axaml`
 - `SelectTagTheme.axaml`
-- `SelectShowCase` 的 Design Token 表
+- Select token.md 语义说明
 - `SelectShowCasePageTests`
 
 ## 5. 兼容性要求
 
-SelectToken 属于 Select 主题契约。即使 `SelectToken` 是 internal 类型，生成的 `SelectTokenKind`、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+SelectToken 属于 Select 主题契约。即使 `SelectToken` 是 internal 类型，生成的 `SelectTokenKind`、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -116,5 +116,5 @@ Token 变更要求：
 | 修改候选项 Token | 验证候选项高度、active/selected 视觉、键盘导航滚动和 `DisplayPageSize` 下的可视行数一致性。 |
 | 修改输入 padding Token | 验证单选、多选、Tags、空选择、有选择、prefix/suffix/addon 和 CompactSpace 对齐。 |
 | 修改 `PopupContentPadding` | 验证 popup 内边距、候选列表裁剪、loading/empty 视觉和最大高度计算。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |

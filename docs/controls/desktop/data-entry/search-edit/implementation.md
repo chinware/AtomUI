@@ -130,7 +130,7 @@ AOT 边界：
 
 - SearchEdit 主题通过显式 ResourceInclude 注册。
 - `AutoCompleteSearchEditBox` 使用显式 `StyleKeyOverride` 复用 SearchEdit 主题。
-- Gallery API / Token 表使用显式 view model 数据，不依赖运行时反射扫描 SearchEdit 成员。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护，不依赖运行时反射扫描。
 
 ## 9. 维护不变量
 

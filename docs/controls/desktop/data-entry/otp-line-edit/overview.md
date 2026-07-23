@@ -237,10 +237,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/otp-line-edit/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/otp-line-edit/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + `Themes` 文件夹 + theme/template 信息 | 生成 `controls/otp-line-edit/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid 或 `OtpLineEditToken` 类型 | 不在 `token.md` 中手工复制生成表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | `token.md` 或 `OtpLineEditToken` 类型 | 不在 `token.md` 中手工复制生成表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -252,6 +252,6 @@ LLMS 导出来源：
 | 交互状态 | 单字符输入、粘贴分发、Backspace、Delete、方向键、只读、禁用、清除和 focus cell。 |
 | Form/Validation | Form value、Form reset、Form trigger、`DataValidationErrors` error 投射和 warning 优先级。 |
 | AXAML/Theme | template part、SizeType、StyleVariant、Status、focus、disabled、masked、separator、clear、feedback。 |
-| Token | `OtpLineEditToken`、Gallery Token 表和主题引用一致。 |
+| Token | `OtpLineEditToken`、Token 类型、生成数据和主题引用一致。 |
 | Gallery | 走查基础验证码、数字模式、粘贴填充、分隔符、掩码、Form 验证和 v6.0.8 示例标记。 |
 | 文档 | `overview.md`、`implementation.md`、`token.md`、`changelog.md` 链接有效，Data Entry 分类入口包含 OtpLineEdit。 |

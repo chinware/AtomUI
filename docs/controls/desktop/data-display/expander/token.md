@@ -100,13 +100,13 @@ IsBorderless / IsGhostStyle
 
 ## 4. 控件家族影响
 
-ExpanderToken 只直接影响 `AtomUI.Desktop.Controls.Expander` 主题和 Gallery Expander Design Token 表。
+ExpanderToken 只直接影响 `AtomUI.Desktop.Controls.Expander` 主题和 Expander token.md 语义说明。
 
 Collapse 拥有独立的 CollapseToken 和多面板布局模型。Expander 不复用 CollapseToken，Collapse 也不应直接依赖 ExpanderToken。若两个控件需要共享某个 spacing 语义，应评估是否上升到 SharedToken，而不是跨控件引用组件 Token。
 
 ## 5. 兼容性要求
 
-ExpanderToken 属于 Expander 主题契约。即使 `ExpanderToken` 是 internal 类型，生成的 token kind、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+ExpanderToken 属于 Expander 主题契约。即使 `ExpanderToken` 是 internal 类型，生成的 token kind、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -127,5 +127,5 @@ Token 变更要求：
 | 修改背景 Token | 验证普通、Borderless 和 Ghost 示例背景。 |
 | 修改圆角 Token | 验证普通边框模式下 `PART_Frame` 圆角和裁剪。 |
 | 修改展开图标 margin Token | 验证 Start/End 图标位置、AddOnContent、Header 文本间距和自定义 HeaderPadding 分支。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |

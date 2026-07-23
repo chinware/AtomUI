@@ -56,13 +56,13 @@ TreeSelectToken 直接影响 TreeSelect。TreeSelect 还复用以下 Token 系�
 调整 TreeSelectToken 时必须评估：
 
 - `TreeSelectTheme.axaml`
-- TreeSelect Gallery 的 Design Token 表
+- TreeSelect token.md 语义说明
 - `TreeSelectShowCasePageTests`
 - TreeSelect popup 在单选、多选、勾选、过滤和异步加载场景下的宽度表现
 
 ## 5. 兼容性要求
 
-TreeSelectToken 属于 TreeSelect 主题契约。即使 `TreeSelectToken` 是 internal 类型，生成的 `TreeSelectTokenKind`、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+TreeSelectToken 属于 TreeSelect 主题契约。即使 `TreeSelectToken` 是 internal 类型，生成的 `TreeSelectTokenKind`、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -79,5 +79,5 @@ Token 变更要求：
 | 修改 `MinPopupWidth` | 验证单选、多选、勾选、过滤和长节点文本下 popup 宽度。 |
 | 调整 TreeSelect 对 SelectToken 的使用 | 验证 tag 高度、tag 间距、popup padding 和 Large / Middle / Small / Custom 尺寸。 |
 | 调整 PopupHostToken 协作 | 验证 popup 圆角、阴影、anchor margin 和 overlay popup。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |

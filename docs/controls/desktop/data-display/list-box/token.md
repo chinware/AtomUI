@@ -115,13 +115,13 @@ ListBoxToken 不影响 ListViewToken。ListView 和 ListBox 有相似的列表�
 - 不把 `SizeType` 拆成实例状态 Token；SizeType 由 theme selector 选择已有尺寸 Token 和 SharedToken。
 - 不把 `FilterHighlightStrategy` 的策略结果写入 Token。
 - 默认值应继续从 SharedToken 派生，保持 light / dark 主题一致性。
-- Token 变更必须同步 Theme 引用和 Gallery Token 表。
+- Token 变更必须同步 Theme 引用和 token.md 语义说明。
 
 ## 6. 验证策略
 
 ListBoxToken 变更验证：
 
-- `ListBoxTokenKind` 与 Gallery Token 表保持一致。
+- `ListBoxTokenKind` 与 token.md 语义说明保持一致。
 - `ContentPadding` 影响 root 内容区，不造成 ScrollViewer 与 EmptyIndicator 重叠。
 - `ItemColor`、`ItemHoverColor`、`ItemSelectedColor` 和 `ItemDisabledColor` 在 light / dark 主题下可读。
 - `ItemBgColor`、`ItemHoverBgColor` 和 `ItemSelectedBgColor` 能正确传递到 ListBoxItem hover / selected 状态。

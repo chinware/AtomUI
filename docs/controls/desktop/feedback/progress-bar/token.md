@@ -58,7 +58,7 @@ ProgressBarToken 不承载以下状态：
 
 ### 2.5 内部 Token 槽位
 
-`ProgressStepMinWidth`、`ProgressStepMarginInlineEnd` 和 `ProgressActiveMotionDuration` 当前属于 `ProgressBarToken` 声明的内部槽位。当前主题和 Gallery Token 表没有把它们作为可观察视觉契约入口。维护时不得依赖这些槽位改变现有渲染，启用任何槽位前必须同步主题、Gallery Token 表和控件文档。
+`ProgressStepMinWidth`、`ProgressStepMarginInlineEnd` 和 `ProgressActiveMotionDuration` 当前属于 `ProgressBarToken` 声明的内部槽位。当前主题和 token.md 没有把它们作为可观察视觉契约入口。维护时不得依赖这些槽位改变现有渲染，启用任何槽位前必须同步主题、token.md 和控件文档。
 
 ## 3. 控件专项模型中的 Token 使用
 
@@ -109,13 +109,13 @@ Token 变更影响范围：
 - 步骤线形进度的默认颜色、文本间距和状态图标尺寸。
 - 圆形进度的内部文本和图标最小尺寸。
 - 仪表盘进度的内部文本和图标最小尺寸。
-- Gallery ProgressBar 示例和 Design Token 表。
+- Gallery ProgressBar 示例和 token.md 语义说明。
 
 ProgressBarToken 不应被 Slider、Spin、Steps、Skeleton 或其他反馈控件直接消费。跨控件共享语义应进入 SharedToken，而不是复用 ProgressBarToken。
 
 ## 5. 兼容性要求
 
-ProgressBarToken 属于 ProgressBar 家族主题契约。即使 `ProgressBarToken` 是 internal 类型，生成的 `ProgressBarTokenKind`、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+ProgressBarToken 属于 ProgressBar 家族主题契约。即使 `ProgressBarToken` 是 internal 类型，生成的 `ProgressBarTokenKind`、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -132,9 +132,9 @@ Token 变更要求：
 
 | 改动类型 | 验证要求 |
 | --- | --- |
-| 新增 ProgressBarToken | 检查生成的 `ProgressBarTokenKind`、AXAML 引用、Gallery Token 表和默认值计算。 |
+| 新增 ProgressBarToken | 检查生成的 `ProgressBarTokenKind`、AXAML 引用、token.md 语义说明和默认值计算。 |
 | 修改默认颜色 | 验证 normal、active、success、exception、completed、disabled 和 dark theme。 |
 | 修改线形间距 | 验证水平、垂直、内嵌、外部起点、中间、终点百分比布局。 |
 | 修改图标尺寸 | 验证线形、步骤线形、圆形和仪表盘的成功 / 异常图标不裁剪。 |
 | 修改圆形最小尺寸 | 验证 Large / Middle / Small、显式宽高和小尺寸圆形中的文本与图标可见性。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步所有 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步所有 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |

@@ -372,7 +372,7 @@ dotnet build src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj --framew
 git diff --check
 ```
 
-如果改动影响 Gallery 示例、API 表或 Token 表，还需要运行：
+如果改动影响 Gallery 示例或源码片段，还需要运行：
 
 ```bash
 dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --framework net10.0 --no-restore

@@ -421,7 +421,7 @@ LLMS 生成必须遵守：
 | 源码索引 | implementation.md | 用于定位控件源码、主题和测试 |
 ```
 
-`overview.md` 中的 API 描述仍应按语义分组说明公共契约，不要求机械列出全部属性。完整 API 表应由 Gallery 表格或源码结构生成。
+`overview.md` 中的 API 描述仍应按语义分组说明公共契约，不要求机械列出全部属性。完整机械列表应由源码 public surface 或独立 API reference 生成。
 
 生成的 `controls/<control>/index-cn.md` 必须使用以下结构：
 

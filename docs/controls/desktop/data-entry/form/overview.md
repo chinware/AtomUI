@@ -283,10 +283,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/form/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/form/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/form/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -298,5 +298,5 @@ LLMS 导出来源：
 | 状态行为 | `OnSubmit/OnChanged/OnBlur`、debounce、并发验证取消、warning/error 聚合和 reset 状态。 |
 | AXAML / Template | 稳定 template part、required mark、feedback 图标、删除按钮和 inline spacing。 |
 | Token | 标签颜色、必填标记颜色、标签字体、冒号 margin 和表单项 spacing。 |
-| Gallery | Form 示例、API 表、Design Token 表和自定义表单控件示例。 |
+| Gallery | Form 示例、源码片段和自定义表单控件示例。 |
 | 文档 | 运行 `git diff --check`，检查相对链接存在。 |

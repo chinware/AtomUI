@@ -69,7 +69,7 @@ SplitterToken / SharedToken
 - C# 控件负责状态归一和 internal handle 状态传递。
 - AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、尺寸、圆角和状态视觉。
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
-- Gallery Token 表应显式维护，不依赖运行时反射扫描。
+- Token 类型、生成数据和 token.md 应显式维护，不依赖运行时反射扫描。
 
 ## 5. 控件家族影响
 
@@ -80,7 +80,7 @@ SplitterToken / SharedToken
 - `SplitterHandleTheme.axaml` 中 `PART_HandleLine` 的厚度、颜色和状态 selector。
 - `SplitterDragBarTheme.axaml` 中 `PART_Grip` 的短轴厚度、主轴长度和圆角。
 - 折叠按钮尺寸、定位和 hover/pressed 颜色。
-- Gallery ShowCase 的示例、API 表和 Token 表。
+- Gallery ShowCase 的示例和源码片段。
 - Light/Dark 主题、Desktop/Browser 宿主和不同 orientation。
 
 ## 6. 兼容性要求
@@ -89,7 +89,7 @@ SplitterToken / SharedToken
 - 不把实例状态、交互状态或 `EffectiveXxx` 状态写成 Token。
 - 不把 `HandleSize` 的默认值和可见线条厚度绑定成同一个语义。
 - Token 默认值变更必须同步评估 Gallery 示例和截图可观察外观。
-- 如需引入新 Token，必须同步源码、生成文件、Gallery Token 表和本文档。
+- 如需引入新 Token，必须同步 Token 类型、生成资源、主题引用和本文档。
 - 若实例级样式 API 能表达单控件差异，不应为每个局部视觉差异新增 Token。
 
 ## 7. 验证策略
@@ -98,6 +98,6 @@ SplitterToken / SharedToken
 | --- | --- |
 | Token 文档 | `git diff --check`，检查相对链接存在。 |
 | Token 默认值 | 运行对应控件测试，走查 Light/Dark 和 Browser 主题。 |
-| Token 名称或数量 | 检查 generated TokenResource key、AXAML 引用和 Gallery Token 表。 |
+| Token 名称或数量 | 检查 generated TokenResource key、AXAML 引用和 token.md。 |
 | 主题映射 | 走查 normal、hover、dragging、disabled、collapsed 等状态视觉。 |
 | 线条样式 | 检查 `PART_HandleLine` 和 `PART_Grip` 是否同时响应 line thickness 和 line corner radius。 |

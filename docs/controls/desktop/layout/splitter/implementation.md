@@ -16,7 +16,7 @@ Splitter
 
 `Splitter` 暴露用户 API、Children、附加属性和 resize 事件；`SplitterPanel` 负责布局算法、面板集合、handle 生成和折叠状态；`SplitterHandle` 负责单条分割边界的状态、折叠按钮和 drag bar 协调；`SplitterDragBar` 负责 pointer drag 入口和 grip 视觉。
 
-实现文档不复述完整属性清单。完整 public surface 以源码和 Gallery API 表为准。
+实现文档不复述完整属性清单。完整 public surface 以源码和 API 契约摘要为准。
 
 ## 2. 源码文件结构
 
@@ -167,7 +167,7 @@ Splitter public style API / SplitterToken
 - `HandleSize` 影响布局和 hit area；line thickness 只影响可见线条和 grip。
 - `IsResizable=False` 只禁用对应边界拖拽，不应移除分割线视觉。
 - `IsLazy=True` 时中间 drag feedback 不应提前写入面板 `Size`。
-- Gallery API 表中的状态说明应与源码实际状态流一致。
+- overview.md 的 API 契约说明应与源码实际状态流一致。
 
 ## 5. 生命周期与模板接入
 
@@ -238,7 +238,7 @@ resize 事件语义：
 
 资源边界：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - handle、drag bar、button 的事件订阅必须在模板重套用或 handle 移除时解绑。
 - `_trackedPanels` 中的面板属性订阅必须在面板离开时解绑。
@@ -252,7 +252,7 @@ resize 事件语义：
 
 AOT 边界：
 
-- Gallery API/Token 表不通过运行时反射生成。
+- API 与 Token 契约不通过运行时反射生成。
 - Source generator 生成文件不手工编辑。
 - 文档、Gallery 和源码发生冲突时，应修复源文档或结构化数据，不直接改 `docs/AI/llms` 生成产物。
 
@@ -265,7 +265,7 @@ AOT 边界：
 - `SplitterPanel` 作为尺寸与折叠状态 owner 的语义。
 - internal handle template part 的绑定关系和事件释放路径。
 - Light/Dark、Browser/Desktop 和不同方向下的主题一致性。
-- Gallery API 表、Token 表、ShowCase 示例和控件文档的一致性。
+- API 契约摘要、Token 语义、ShowCase 示例和控件文档的一致性。
 
 新增分割线样式能力时必须遵守：
 
@@ -273,7 +273,7 @@ AOT 边界：
 - `LineThickness` 不替代 `HandleSize`。
 - `LineCornerRadius` 同时作用于 `PART_HandleLine` 和 `PART_Grip`。
 - 默认值来自 Splitter Token 或 SharedToken，保证现有视觉不变。
-- Gallery API 表、Token 表、ShowCase 示例和回归测试同步更新。
+- API 契约摘要、Token 语义、ShowCase 示例和回归测试同步更新。
 
 ## 10. 测试与验证
 
@@ -281,6 +281,6 @@ AOT 边界：
 
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行 `tests/AtomUI.Desktop.Controls.Tests`。
-- Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests` 中 Splitter 相关测试。
+- Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests` 中 Splitter 相关测试。
 - 主题变更检查 `SplitterTheme.axaml`、`SplitterHandleTheme.axaml`、`SplitterDragBarTheme.axaml` 中 TemplateBinding、TokenResource 和 selector 是否一致。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

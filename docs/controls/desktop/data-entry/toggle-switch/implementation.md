@@ -145,7 +145,7 @@ ToggleSwitch 不通过反射访问模板结构。模板结构由稳定 part 和 
 AOT 边界：
 
 - Token 类型通过 generator 显式注册。
-- Gallery API / Token 表使用显式 view model 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - 文档中列出的 part 名称必须与 AXAML 和 C# 查找代码一致。
 
 ## 9. 维护不变量
@@ -173,5 +173,5 @@ AOT 边界：
 - Large / Middle / Small / Custom 下的高度、最小宽度、内容边距和图标尺寸。
 - disabled、pointerover、pressed、checked 和 unchecked 主题 selector。
 - WaveSpirit 开关不改变值状态。
-- Gallery ToggleSwitch 示例、API 表和 Token 表。
+- Gallery ToggleSwitch 示例、源码片段。
 - 文档改动运行 `git diff --check`，并检查相对链接存在。

@@ -144,7 +144,7 @@ public class ShowCasePanel : TemplatedControl
 
 - 不创建或切换 `TabStrip`。
 - 不管理 `ScenarioContentHost`。
-- 不创建 API 或 Design Token DataGrid。
+- 不创建旧 API/Token sidecar。
 - 不承载 ShowCase demo 内容。
 - 不读取产品路由、导航、ViewModel 或反射发现页面元数据。
 

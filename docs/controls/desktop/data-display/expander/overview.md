@@ -253,10 +253,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/expander/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/expander/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/expander/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -267,6 +267,6 @@ LLMS 导出来源：
 | Public API | `SizeType`、`IsShowExpandIcon`、`ExpandIcon`、`AddOnContent`、`IsGhostStyle`、`IsBorderless`、`TriggerType`、`ExpandIconPosition`、`HeaderPadding`、`ContentPadding`、`IsMotionEnabled`。 |
 | 状态行为 | Header/Icon 触发差异、禁用状态、展开方向、嵌套 Expander、动画中状态切换、模板重套用和 detach。 |
 | AXAML / Template | 稳定 template part、方向 selector、padding 伪类、图标位置 selector、禁用前景和 Header/Content padding。 |
-| Token | Header/Content padding、背景、圆角、展开图标 margin 与 Gallery Token 表一致。 |
+| Token | Header/Content padding、背景、圆角、展开图标 margin 与 Token 类型、生成数据和 token.md 语义说明一致。 |
 | Gallery | Basic、Size、Borderless、Ghost、Custom Padding、Direction、Nested、No Arrow、Icon Position、Trigger 示例。 |
 | 文档 | 运行 `git diff --check`，检查相对链接存在。 |

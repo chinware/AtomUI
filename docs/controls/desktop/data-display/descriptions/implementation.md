@@ -300,7 +300,7 @@ Application.ResourcesChanged
 AOT 边界：
 
 - 不新增字符串 path binding、反射扫描、`Activator.CreateInstance(Type)` 或动态成员访问。
-- Gallery API/Token 表使用显式 ViewModel 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - `ItemsSource` 只接受已经构造好的 `DescriptionItem`，不做基于反射的对象属性展开。
 
 ## 9. 维护不变量
@@ -331,6 +331,6 @@ AOT 边界：
 - 生命周期测试：item remove/reset/Items 替换/template reapply/detach 后，旧 `DescriptionItem`、旧 generated control、binding expression 和资源订阅不被保留。
 - 如果允许 `DescriptionItem` 使用 `DynamicResource`，必须增加 WeakReference 测试、owner resource 优先级测试和 resource update 测试。
 - Gallery Descriptions 示例：Basic、Border、Custom Size、Responsive、Vertical、Vertical Border、Row。
-- 修改 Token 或主题时验证 API 表、Token 表和 Gallery 示例视觉。
+- 修改 Token 或主题时验证 源码片段和 Gallery 示例视觉。
 - 修改控件实现时运行 `tests/AtomUI.Desktop.Controls.Tests` 中的 Descriptions 相关测试，并按影响范围扩大到完整 Desktop 控件测试。
 - 文档改动运行 `git diff --check`，并检查相对链接存在。

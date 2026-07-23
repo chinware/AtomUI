@@ -276,7 +276,7 @@ Form 不依赖运行时反射扫描控件能力。控件协作通过显式接口
 AOT 边界：
 
 - `FormToken` 通过 token generator 显式注册，生成 token kind 和资源扩展。
-- Gallery API / Token 表使用显式 ViewModel 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - Form 验证器是显式类型和接口调用，不依赖动态成员发现。
 - AXAML 模板、DataTemplate 和 Form validator provider 是显式 XAML 入口，不依赖运行时 API 扫描。
 
@@ -302,7 +302,7 @@ AOT 边界：
 
 - `tests/AtomUI.Desktop.Controls.Tests/Form/FormBehaviorTests.cs`：覆盖默认 `OnChanged`、feedback 转发释放、验证取消、reset 取消、并行验证、stop when first failed 和 SubmitButton watch 行为。
 - `tests/AtomUI.Desktop.Controls.Tests/Form/FormCustomizableSizeTypeTests.cs`：覆盖 `CustomizableSizeType` 到新旧尺寸接口的转发。
-- `tests/AtomUIGallery.Tests/ShowCases/FormShowCasePageTests.cs`：覆盖 Gallery Form 页面结构、API 表、Token 表、示例 snapshot 和本地化资源。
+- `tests/AtomUIGallery.Tests/ShowCases/FormShowCasePageTests.cs`：覆盖 Gallery Form 页面结构、示例 snapshot、源码片段和本地化资源。
 
 维护 Form 时建议按风险选择验证：
 
@@ -311,5 +311,5 @@ AOT 边界：
 | 验证逻辑 | 运行 Form behavior tests，并覆盖取消、reset、warning/error 和提交路径。 |
 | 尺寸转发 | 运行 Form customizable size tests，并在 Gallery 检查输入控件高度对齐。 |
 | AXAML / Theme | 运行 Gallery Form showcase tests，并手动检查布局、feedback、required mark 和删除按钮。 |
-| Token | 检查 Form Design Token 表、FormItem 标签和 spacing。 |
+| Token | 检查 Form Token 语义、FormItem 标签和 spacing。 |
 | 文档改动 | 运行 `git diff --check`，检查相对链接存在。 |

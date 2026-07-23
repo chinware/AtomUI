@@ -237,10 +237,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/slider/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/slider/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/slider/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -248,8 +248,8 @@ LLMS 导出来源：
 
 | 层次 | 验证内容 |
 | --- | --- |
-| Public API | 检查 `SliderViewModel.EnsureApiRows()`、Gallery API 表和源码属性保持一致。 |
+| Public API | 检查 控件文档 API 摘要、源码 public surface 和源码属性保持一致。 |
 | 行为状态 | 验证单值、范围值、mark 点击、tick 吸附、方向反转、禁用态、键盘和 tooltip。 |
 | AXAML | 验证 `PART_Track`、`PART_StartThumb`、`PART_EndThumb`、horizontal / vertical 样式和 disabled 样式。 |
-| Token | 验证 `SliderTokenKind`、主题引用和 Gallery Token 表一致。 |
+| Token | 验证 `SliderTokenKind`、主题引用和 Token 类型、生成数据和 token.md 语义说明一致。 |
 | 文档 | 运行 `git diff --check`，并检查控件文档相对链接存在。 |

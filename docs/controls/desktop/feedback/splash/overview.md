@@ -243,10 +243,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/splash/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/splash/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/splash/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -258,5 +258,5 @@ LLMS 导出来源：
 | Public API | 覆盖视觉控件默认值、服务默认值、静态 API 委托和窗口默认值。 |
 | 状态模型 | 覆盖 `Loading`、`Success`、`Error`、确定进度、不确定进度、重复关闭和取消。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和窗口宿主主题。 |
-| Token | 检查 TokenKind、AXAML token resource、Gallery Token 表和文档同步。 |
+| Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查基础启动页、确定进度、不确定进度、自定义内容和错误状态示例。 |

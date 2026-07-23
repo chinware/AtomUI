@@ -189,7 +189,7 @@ Upload 的生命周期释放必须成对设计，不能依赖 GC 或视觉树自
 
 AOT 边界：
 
-- 不通过运行时反射扫描 public API、Token、Gallery API 表或上传模型。
+- 不通过运行时反射扫描 public API、Token、API 契约摘要或上传模型。
 - 新增 public 类型应显式引用并由源码、Gallery 和测试覆盖。
 - Source generator 生成文件不手工编辑；LLMS 产物也不在本次运行时代码任务中手工修改。
 
@@ -204,7 +204,7 @@ AOT 边界：
 - `RemoveFileAsync`、`ResetAsync`、detach 必须释放上传任务、auto-remove delay、集合订阅和 container 绑定。
 - `DataValidationErrors` 是 error 状态来源，Upload 不维护独立 error 机制。
 - AXAML-first binding 是默认选择；C# binding 必须说明 AXAML 不能表达的原因和释放 owner。
-- Gallery 示例、API 表、控件文档和测试必须使用同一套 public contract。
+- Gallery 示例、控件文档和测试必须使用同一套 public contract。
 
 ## 11. 测试与验证
 
@@ -218,7 +218,7 @@ AOT 边界：
 | 触发器与拖拽 | `UploadTriggerTests` 覆盖文件触发、目录触发和 owner 委托。 |
 | 成功自动移除 | `UploadAutoRemoveTests` 覆盖 delay 到期、remove、reset、detach 和状态变更取消。 |
 | Form 与验证 | `UploadFormValueTests` 覆盖 `FileValueMode`、set/clear 和 `DataValidationErrors`。 |
-| Gallery 示例 | `UploadShowCasePageTests` 和 snapshot 覆盖示例、API 表、本地化和源码片段。 |
+| Gallery 示例 | `UploadShowCasePageTests` 和 snapshot 覆盖示例、本地化和源码片段。 |
 | 文档卫生 | `git diff --check` 和关键术语扫描。 |
 
 Task 1 文档验证命令：

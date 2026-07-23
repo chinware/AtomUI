@@ -213,7 +213,7 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Tok
 - 不让视觉容器反向持有业务任务状态。
 - 不用延时、强制刷新或 suppression flag 掩盖状态不同步。
 - Template reapply、集合替换、remove、reset、detach 都必须释放旧订阅、取消运行任务和取消 pending auto-remove。
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 文档只描述当前目标设计；历史变化记录在 `changelog.md`。
 
 ## 8. 专项模型
@@ -278,10 +278,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/upload/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/upload/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/upload/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -293,5 +293,5 @@ LLMS 导出来源：
 | Public API | 覆盖属性默认值、事件触发、命令和绑定语义。 |
 | 状态模型 | 覆盖 add、remove、reset、detach、collection replacement、cancel 和 auto-remove。 |
 | AXAML/Theme | 检查 trigger 固定、list 内部滚动、display append slot、template part、资源 key 和 Light/Dark 主题。 |
-| Token | 检查 TokenKind、AXAML token resource、Gallery Token 表和文档同步。 |
+| Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查 fixed trigger、scrollable list、file/directory dual trigger 和 auto-remove 示例。 |

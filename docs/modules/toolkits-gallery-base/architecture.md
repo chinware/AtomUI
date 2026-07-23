@@ -279,7 +279,7 @@ Desktop 与 Browser 的差异只保留在宿主边界：
 
 控件名称第一阶段保持不变。它们已经表达 Gallery 页面中的 ShowCase 范式，且当前大量 XAML 依赖这些名称。为追求术语中立而立即改名会制造大量无价值变更。
 
-`GalleryShowCaseHeader` 是针对 ShowCase 页面重复 XAML 的最小公共抽象。它只统一文档页头的 title、Tag、简介和 metadata，不接管 `TabStrip`、Examples、API/Design Token DataGrid 或页面 code-behind。所有主 ShowCase 页面已经迁移到该控件；完整页面壳抽象只有在场景切换和特殊页面差异继续收敛后再评估。
+`GalleryShowCaseHeader` 是针对 ShowCase 页面重复 XAML 的最小公共抽象。它只统一文档页头的 title、Tag、简介和 metadata，不接管 `TabStrip`、Examples 或页面 code-behind。所有主 ShowCase 页面已经迁移到该控件；完整页面壳抽象只有在场景切换和特殊页面差异继续收敛后再评估。
 
 ## 主题和 Token
 
@@ -326,8 +326,8 @@ GalleryBase 只提供 Shell 级语言资源：
 - Overview 页面标题和描述
 - Community 页面文案
 - Button、DataGrid 等控件 ShowCase 文案
-- API 表格说明
-- Design Token 表格说明
+- 控件 API 文档说明
+- Design Token 文档说明
 
 语言切换由 AtomUI `ThemeManager.LanguageVariant` 驱动。GalleryBase 只负责响应语言变更并刷新 Shell 文案；产品页面继续使用自己的语言资源扩展和绑定策略。
 
@@ -398,4 +398,3 @@ AtomUI Gallery 测试继续覆盖：
 - 可选的程序集扫描注册。
 - 多 Gallery 主题皮肤。
 - Demo 页面模板生成器。
-- API/Design Token 表格数据标准化。

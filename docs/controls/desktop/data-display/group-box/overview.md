@@ -154,10 +154,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/group-box/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/group-box/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/group-box/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -169,5 +169,5 @@ LLMS 导出来源：
 | Public API | API 表和实际 `GroupBox.cs` 属性、枚举值、默认值一致。 |
 | AXAML | Template part 名称、Header 对齐 selector、TokenResource 引用不变。 |
 | 渲染 | 验证普通背景、透明背景、不同 Header 位置、带图标和无图标场景下标题缺口无多余边框线。 |
-| Token | 验证 Gallery API/Token 表与 `GroupBoxToken` 属性一致。 |
-| Gallery | 运行 GroupBox ShowCase 相关测试，确认示例结构、API 表、Token 表和示例快照稳定。 |
+| Token | 验证 API 与 Token 契约与 `GroupBoxToken` 属性一致。 |
+| Gallery | 运行 GroupBox ShowCase 相关测试，确认示例结构、源码片段和示例快照稳定。 |

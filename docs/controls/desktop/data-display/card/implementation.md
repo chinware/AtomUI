@@ -230,7 +230,7 @@ Card 不依赖运行时反射发现模板结构。模板协作通过固定 part 
 AOT 边界：
 
 - 不新增字符串 path binding、`ReflectionBinding`、assembly scan、`Activator.CreateInstance(Type)` 或动态成员访问。
-- Gallery API/Token 表使用显式 ViewModel 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - Card 的动态内容同步只使用 `AvaloniaProperty` 强类型绑定。
 
 ## 9. 维护不变量
@@ -253,7 +253,7 @@ AOT 边界：
 
 - `CardBehaviorTests`：CardGridContent 行列定义 wrapper、ContentType 回退、旧内容 SizeType 绑定释放、GridItem container disposable 释放。
 - Gallery Card 示例：Basic、NoBorder、Simple、CustomizedContent、CardInColumn、GridCard、InnerCard、LoadingCard、WithTabs、MoreContentConfiguration。
-- `CardShowCasePageTests`：Card ShowCase 页面结构、懒加载 API/Token 表、本地化和示例 snapshot。
+- `CardShowCasePageTests`：Card ShowCase 页面结构、本地化、源码片段和示例 snapshot。
 - 修改运行时代码时运行 `tests/AtomUI.Desktop.Controls.Tests` 中 Card 相关测试，并按影响范围扩大到完整 Desktop 控件测试。
-- 修改 Gallery 或 API/Token 表时运行 `tests/AtomUIGallery.Tests` 中 Card ShowCase 相关测试。
+- 修改 Gallery 或 Gallery 示例或源码片段时运行 `tests/AtomUIGallery.Tests` 中 Card ShowCase 相关测试。
 - 文档改动运行 `git diff --check`，并检查相对链接存在。

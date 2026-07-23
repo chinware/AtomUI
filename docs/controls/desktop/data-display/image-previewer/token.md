@@ -30,7 +30,7 @@ ImagePreviewer 的控件专项模型通过 Theme 消费 Token：
 - C# 控件负责状态归一和伪类同步。
 - AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、padding、尺寸和动效。
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
-- Gallery Token 表应显式维护，不依赖运行时反射扫描。
+- Token 类型、生成数据和 token.md 应显式维护，不依赖运行时反射扫描。
 - 默认 loading/error 占位复用 Skeleton、Spin、SharedToken 和 `CoverImageWidth` 的视觉语义，不为 `Loading`、`Failed` 或网络图片失败新增实例状态 Token。
 - `CoverImageWidth` 只能作为没有显式 `CoverWidth` / `CoverHeight` 且没有有效布局约束时的封面占位尺寸兜底；它不表达图片自然尺寸，也不表达失败状态。
 
@@ -41,7 +41,7 @@ ImagePreviewer 的控件专项模型通过 Theme 消费 Token：
 - `ImagePreviewer`
 - `ImageGroupPreviewer`
 - `ImagePreviewerDialog`
-- 对应 Gallery ShowCase 的示例、API 表和 Token 表。
+- 对应 Gallery ShowCase 的示例和源码片段。
 - Light/Dark 主题、Browser/Desktop 主题和 Compact/Form/Popup 集成场景。
 
 ## 5. 兼容性要求
@@ -51,7 +51,7 @@ ImagePreviewer 的控件专项模型通过 Theme 消费 Token：
 - 不在 Token 中展开颜色、variant 和状态的组合矩阵；组合关系应由 Theme selector 表达。
 - 不为默认失败文案、加载中状态或远程图片失败状态新增 Token；文案走语言资源，状态走 `ImagePreviewItemState`，视觉由主题和 SharedToken 表达。
 - Token 默认值变更必须同步评估 Gallery 示例和截图可观察外观。
-- 如需引入新 Token，必须同步源码、生成文件、Gallery Token 表和本文档。
+- 如需引入新 Token，必须同步 Token 类型、生成资源、主题引用和本文档。
 
 ## 6. 验证策略
 
@@ -59,5 +59,5 @@ ImagePreviewer 的控件专项模型通过 Theme 消费 Token：
 | --- | --- |
 | Token 文档 | `git diff --check`，检查相对链接存在。 |
 | Token 默认值 | 运行对应控件测试，走查 Light/Dark 和 Browser 主题。 |
-| Token 名称或数量 | 检查 generated TokenResource key、AXAML 引用和 Gallery Token 表。 |
+| Token 名称或数量 | 检查 generated TokenResource key、AXAML 引用和 token.md。 |
 | 主题映射 | 走查 hover、pressed、selected、disabled、loading 等状态视觉。 |

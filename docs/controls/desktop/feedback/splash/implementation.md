@@ -34,7 +34,7 @@
 - `SplashService.cs` 是启动编排 owner，负责创建窗口、创建或复用 `Splash` 实例、应用运行时 options、更新状态、关闭窗口和 UI thread 调度。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 
 ## 3. 核心类职责
 
@@ -86,7 +86,7 @@ Application startup code
 - `Progress` 值应归一到 `0..1` 区间；无进度使用 `null`。
 - `IsIndeterminate` 优先于 `Progress` 的视觉展示。
 - `SetError()` 不关闭窗口，调用方负责决定退出、重试或继续。
-- Gallery API 表中的状态说明应与源码实际状态流一致。
+- overview.md 的 API 契约说明应与源码实际状态流一致。
 
 ### 组合结构模型
 
@@ -194,7 +194,7 @@ Splash 的交互事件应从启动服务收敛到控件状态：
 
 资源和 AOT 约束：
 
-- 不通过运行时反射扫描 public API、Token、服务或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token、服务或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 不为模板稳定节点之间的 token 资源关系创建 `TokenResourceBinder` 桥接；`PART_SurfaceHost` 和 `Splash` 内部模板应通过相同的资源树解析 `SplashTokenResource`。
 - 窗口级视觉覆盖写入 `SplashWindow.Resources`，确保 `PART_SurfaceHost` 与 `Splash` 内部模板都能解析；`Splash.Resources` 只用于仅影响 Splash 内部模板的覆盖。
@@ -218,7 +218,7 @@ Splash 的交互事件应从启动服务收敛到控件状态：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - `CloseAsync()` 幂等、最短展示时间、关闭延迟和引用释放路径。
 - Light/Dark、不同 DPI、不同平台窗口系统下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 ## 10. 测试与验证
 
@@ -228,5 +228,5 @@ Splash 的交互事件应从启动服务收敛到控件状态：
 - 控件 API、主题或行为变更运行 `tests/AtomUI.Desktop.Controls.Tests` 中的 Splash 测试。
 - 服务编排变更覆盖 `ShowAsync()`、重复 show、重复 close、取消、错误状态和 UI thread 调度。
 - 窗口宿主变更走查 macOS、Windows、Linux 的显示、居中、任务栏、Topmost 和关闭动效。
-- Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests`。
+- Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

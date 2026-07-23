@@ -134,7 +134,7 @@ StepsToken 只影响：
 - `StepsPanel`
 - `StepsItemLayoutPanel`
 - Steps 三个主题文件
-- Gallery Steps Design Token 表
+- Steps token.md 语义说明
 
 其他 Navigation 控件不跨控件引用 StepsToken。真正共享的颜色、尺寸或 motion 语义应上升为 SharedToken。
 
@@ -162,5 +162,5 @@ StepsToken 只影响：
 | Navigation Token | 验证水平/垂直 Navigation、active 表达、间距和箭头不裁剪。 |
 | Progress Token | 验证 Default/Navigation、0/100 Percent、尺寸、厚度、颜色和裁剪。 |
 | Inline Token | 验证 Inline dot、Connector、padding、hover 和 current 表达。 |
-| Token 删除或重命名 | 同步类型、生成资源、AXAML、Gallery Token 表和控件文档。 |
+| Token 删除或重命名 | 同步类型、生成资源、AXAML、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档 | 运行 `git diff --check`，检查相对链接和 LLMS 源文档一致。 |

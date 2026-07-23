@@ -115,7 +115,7 @@ docs/AI/llms.config.json
 | `visibility` | 输出可见性策略，控制公开和内部控件的边界。 |
 | `controlSets` | 一个项目内的控件集合。每个集合有独立文档根、Gallery 根和源码根。 |
 | `docsRoot` | 控件源文档目录，形如 `docs/controls/<platform>`。 |
-| `galleryRoot` | Gallery 示例、API 表和 Token 表的根目录。 |
+| `galleryRoot` | Gallery 示例和源码片段的根目录。 |
 | `sourceRoots` | 控件源码根目录，用于源码索引和链接校验。 |
 | `categoryOrder` | 聚合输出中的分类顺序。 |
 

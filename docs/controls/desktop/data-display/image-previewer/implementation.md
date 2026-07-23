@@ -20,7 +20,7 @@
 - 图片源模型文件只表达 `IImagePreviewSource`、`IImagePreviewSourceIdentity`、`UriImagePreviewSource`、`StreamImagePreviewSource`、`ImageSourceUri`、`ImagePreviewItem`、`LoadedImageSource`、加载调度器和加载服务契约，不承载视觉模板逻辑。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 
 ## 3. 核心类职责
 
@@ -129,7 +129,7 @@ PreviewTitleIcon
 - 点击封面、封面加载完成或封面加载失败只允许影响封面视觉和 `IsOpen`，不得隐式修改 `CurrentIndex`。
 - 标题 effective state 必须在 `CurrentIndex`、effective items、显式标题和 resolver 变化时重新计算，且不能使用已经被集合替换或 clamp 结果变更前的旧图片项。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
-- Gallery API 表中的状态说明应与源码实际状态流一致。
+- overview.md 的 API 契约说明应与源码实际状态流一致。
 
 图片加载状态流：
 
@@ -318,7 +318,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 
 资源和 AOT 约束：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 网络图片必须通过异步加载服务处理，不允许在 UI 线程同步等待网络 I/O。
@@ -360,7 +360,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 预览标题图标的单一路径：`PreviewTitleIcon` 只能进入 `ImagePreviewerDialog.TitleIcon`，再绑定到 `ImagePreviewerTitleBar.Icon` 和 `PART_IconPresenter`；不得转接 `Window.Icon`、`Window.Logo` 或右侧扩展区域来表达标题图标。
 - 加载完成后必须重新计算 `ImageViewer` 的布局、居中、fit-to-window 和交互边界。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 ## 11. 测试与验证
 
@@ -374,5 +374,5 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - loading/error 默认视觉变更覆盖：单图和多图封面均消费 `CoverWidth` / `CoverHeight`，封面默认 loading 使用 `SkeletonImage`，封面和预览层默认失败文案来自 `ImagePreviewerLangResource`，主题中不再出现硬编码 `Image load failed`。
 - 预览标题模型变更覆盖显式标题优先级、默认文件名解析、current item 切换、集合替换、越界 `CurrentIndex` clamp、resolver 更换、`PreviewTitleIcon` 到 `TitleIcon` 的转接、未设置图标时不显示 fallback 图标，以及标题栏 `PART_IconPresenter` 布局。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
-- Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests`。
+- Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

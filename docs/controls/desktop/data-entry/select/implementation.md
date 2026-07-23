@@ -265,7 +265,7 @@ Select 不依赖运行时反射发现模板结构。模板协作通过固定 tem
 AOT 边界：
 
 - `SelectToken` 通过 token generator 显式注册，生成 `SelectTokenKind` 和 `SelectTokenResourceExtension`。
-- Gallery API / Token 表使用显式 ViewModel 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - `OptionTemplate`、AddOn 模板和 EmptyIndicator 模板是 XAML 模板入口，不依赖运行时成员扫描。
 
 ## 9. 维护不变量
@@ -290,7 +290,7 @@ AOT 边界：
 
 验证范围：
 
-- `SelectShowCasePageTests` 和 snapshot，覆盖 Gallery 示例、API 表和 Token 表。
+- `SelectShowCasePageTests` 和 snapshot，覆盖 Gallery 示例和源码片段。
 - 单选、多选、Tags 三种模式的选择、清除、默认值和过滤行为。
 - `OptionsSource` 替换后的选择保留。
 - `Mode=Tags`、`OptionsSource` 和无匹配过滤输入组合下，运行时动态 tag 创建、提交和删除不能修改用户选项源，也不能触发 ItemsSource 只读异常。
