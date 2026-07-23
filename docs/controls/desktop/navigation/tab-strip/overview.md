@@ -111,7 +111,7 @@ TabStrip 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 
 集成关系：
 
-- 与 ThemeManager、SharedToken、ControlTheme 和 Gallery ShowCase 的示例/API/Token 表保持一致。
+- 与 ThemeManager、SharedToken、ControlTheme、控件文档和 Gallery ShowCase 示例保持一致。
 - 涉及 ItemsSource、Popup、Flyout、Window、Form 或 CompactSpace 的路径必须保持生命周期释放和数据状态同步。
 - 源码目录中的共享基类和内部协作类型形成维护边界，不能只修改桌面包装类而忽略共享状态 owner。
 
@@ -189,10 +189,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/tab-strip/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/tab-strip/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/tab-strip/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -206,4 +206,4 @@ LLMS 导出来源：
 | 拖动排序 | 覆盖 Top/Bottom 横向排序、Left/Right 纵向排序、选中项保持、可写/只读 ItemsSource、取消事件、overflow 自动滚动和 close/add/extra 区域排除。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
 | Token | 确认没有新增专属 Token，主题仍复用 SharedToken 或关联控件 Token。 |
-| Gallery | 走查对应 ShowCase 示例、API 表和 Token 表入口。 |
+| Gallery | 走查对应 ShowCase 示例和源码片段入口。 |

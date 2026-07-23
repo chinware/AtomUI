@@ -103,13 +103,13 @@ TreeViewToken 不影响 NavMenu、Masonry、GroupBox 或其他 Data Display 控�
 - 不把过滤结果、拖拽目标、当前选择、当前勾选或展开状态写入 Token。
 - 不把 `NodeHoverMode`、`ToggleType`、`FilterStrategy` 等实例配置拆成 Token。
 - 默认值应继续从 SharedToken 派生，保持 light / dark 主题一致性。
-- Token 变更必须同步 Theme 引用和 Gallery Token 表。
+- Token 变更必须同步 Theme 引用和 token.md 语义说明。
 
 ## 6. 验证策略
 
 TreeViewToken 变更验证：
 
-- `TreeViewTokenKind` 与 Gallery Token 表保持一致。
+- `TreeViewTokenKind` 与 token.md 语义说明保持一致。
 - `HeaderHeight` 影响 header 最小高度和 switcher 尺寸。
 - `NodeHoverBg` / `NodeSelectedBg` 在三种 hover mode 下均命中正确背景层。
 - `TreeItemMargin`、`TreeItemHeaderPadding`、`TreeItemHeaderMargin`、`TreeNodeSwitcherMargin`、`TreeNodeIconMargin` 不造成 header 内容重叠。

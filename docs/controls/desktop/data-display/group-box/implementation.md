@@ -124,5 +124,5 @@ Token 通过动态资源进入 Theme，不应在 `Render` 中主动查找全局�
 - 带图标和无图标时 Header 宽度、缺口宽度和内容布局正确。
 - 未设置显式高度时，GroupBox 高度包含 Header、内容内边距和内容自身期望高度。
 - 不同边框厚度、圆角和 DPI 下边框不断裂。
-- Token 表、API 表和 Gallery 示例与控件实现一致。
+- 控件文档、Token 语义和 Gallery 示例与控件实现一致。
 - 文档改动运行 `git diff --check`。

@@ -62,13 +62,13 @@ MentionsToken 只影响 Mentions 候选弹层，不直接影响 AutoComplete、S
 调整 MentionsToken 时必须评估：
 
 - `MentionsTheme.axaml`
-- `MentionsShowCase` 的 Design Token 表
+- Mentions token.md 语义说明
 - `MentionsShowCasePageTests`
 - 候选弹层 loading、候选列表可视高度和 popup 最小宽度
 
 ## 5. 兼容性要求
 
-MentionsToken 属于 Mentions 主题契约。即使 `MentionsToken` 是 internal 类型，生成的 `MentionsTokenKind`、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+MentionsToken 属于 Mentions 主题契约。即使 `MentionsToken` 是 internal 类型，生成的 `MentionsTokenKind`、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -85,5 +85,5 @@ Token 变更要求：
 | 修改 `PopupContentPadding` | 验证 popup 内边距、loading 布局、候选项裁剪和 `MaxPopupHeight`。 |
 | 修改 `OptionHeight` | 验证候选项高度、键盘选中项可见性和 `DisplayCandidateCount` 对弹层高度的影响。 |
 | 修改 `MinPopupWidth` | 验证短候选、长候选、Top/Bottom placement 和 Gallery 示例弹层宽度。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |

@@ -108,7 +108,7 @@ Separator 与同分类控件共享尺寸、状态、Token、Gallery 展示和验
 
 集成关系：
 
-- 与 ThemeManager、SharedToken、ControlTheme 和 Gallery ShowCase 的示例/API/Token 表保持一致。
+- 与 ThemeManager、SharedToken、ControlTheme、控件文档和 Gallery ShowCase 示例保持一致。
 - 涉及 ItemsSource、Popup、Flyout、Window、Form 或 CompactSpace 的路径必须保持生命周期释放和数据状态同步。
 - 源码目录中的共享基类和内部协作类型形成维护边界，不能只修改桌面包装类而忽略共享状态 owner。
 
@@ -151,10 +151,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/separator/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/separator/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/separator/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -166,5 +166,5 @@ LLMS 导出来源：
 | Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
 | 状态模型 | 覆盖 visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
-| Token | 检查 TokenKind、AXAML token resource、Gallery Token 表和文档同步。 |
-| Gallery | 走查对应 ShowCase 示例、API 表和 Token 表入口。 |
+| Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
+| Gallery | 走查对应 ShowCase 示例和源码片段入口。 |

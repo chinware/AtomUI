@@ -211,7 +211,7 @@ Mentions 不依赖运行时反射发现模板结构。模板协作通过固定 t
 AOT 边界：
 
 - `MentionsToken` 通过 token generator 显式注册，生成 `MentionsTokenKind` 和 `MentionsTokenResourceExtension`。
-- Gallery API / Token 表使用显式 ViewModel 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - `OptionTemplate` 和 `EmptyIndicatorTemplate` 是 XAML 模板入口，不依赖运行时成员扫描。
 
 ## 9. 维护不变量
@@ -232,8 +232,8 @@ AOT 边界：
 
 验证范围：
 
-- `MentionsShowCasePageTests` 覆盖 Gallery 页面结构、API 表、Token 表、示例 snapshot 和延迟加载规则。
+- `MentionsShowCasePageTests` 覆盖 Gallery 页面结构、示例 snapshot、源码片段和延迟加载规则。
 - Gallery 走查基础用法、variant、异步加载、自定义触发符、disabled/read-only、placement、status、auto-size 和 clear 示例。
 - 控件行为验证应覆盖触发符扫描、候选过滤、异步加载成功/失败/超时、键盘导航、候选提交、Form value 和模板重应用事件释放。
-- Token 改动需验证 `MentionsTokenKind`、`MentionsTokenResourceExtension`、`MentionsTheme.axaml` 引用和 Gallery Token 表一致。
+- Token 改动需验证 `MentionsTokenKind`、`MentionsTokenResourceExtension`、`MentionsTheme.axaml` 引用和 Token 类型、生成数据和 token.md 语义说明一致。
 - 文档改动运行 `git diff --check`，并检查相对链接存在。

@@ -58,7 +58,7 @@ GroupBox border geometry
 
 ## 4. 控件家族影响
 
-GroupBox 没有派生控件家族，Token 只影响 `AtomUI.Desktop.Controls.GroupBox` 主题。Gallery 的 GroupBox API/Design Token 表应与 `GroupBoxToken` 保持一致。
+GroupBox 没有派生控件家族，Token 只影响 `AtomUI.Desktop.Controls.GroupBox` 主题。GroupBox token.md 语义说明应与 `GroupBoxToken` 保持一致。
 
 Browser theme 或桌面 theme 引用 GroupBox Theme 时，应继续通过 `GroupBoxTokenResource` 获取 GroupBox 专属间距，不在主题中复制固定数值。
 
@@ -80,6 +80,6 @@ GroupBox Token 相关变更至少验证：
 | --- | --- |
 | Token 生成 | `GroupBoxTokenKind` 包含新增或修改后的 Token。 |
 | Theme 引用 | `GroupBoxTheme.axaml` 使用 `GroupBoxTokenResource`，不复制固定间距值。 |
-| Gallery 表格 | GroupBox Design Token DataGrid 与 `GroupBoxToken` 属性一致。 |
+| Token 文档 | GroupBox token.md 语义说明与 `GroupBoxToken` 属性一致。 |
 | 视觉 | Header 左/中/右位置、带图标 Header、透明背景 Header 缺口均正常。 |
 | 文档 | 本文件、`overview.md` 和 `changelog.md` 的 Token 描述一致。 |

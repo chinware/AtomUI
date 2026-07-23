@@ -150,7 +150,7 @@ Segmented 的共享实现位于 `AtomUI.Controls`，桌面实现位于 `AtomUI.D
 - `SegmentedItem`：桌面公开 item，注册 `SegmentedToken.ScopeProvider`。
 - `SegmentedStackPanel`：内部 items panel，负责普通排列和 expanding 等分排列。
 - Form：通过 `IFormItemAware` 把 `SelectedItem` 暴露为表单值。
-- Gallery：通过 Segmented ShowCase 展示基础、块级、禁用、尺寸、纯图标和图标文本示例，并展示 API 与 Token 表。
+- Gallery：通过 Segmented ShowCase 展示基础、块级、禁用、尺寸、纯图标和图标文本示例。
 
 ## 7. 兼容性不变量
 
@@ -208,10 +208,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/segmented/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/segmented/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/segmented/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -223,5 +223,5 @@ LLMS 导出来源：
 | 状态行为 | 默认选择、显式选择保留、绑定选择保留、pointer release 选择、Form value、disabled item、hidden item。 |
 | AXAML / Template | 根 `Frame`、`PART_ItemsPresenter`、`SegmentedStackPanel`、item `Frame`、`IconPresenter`、`Content` 和 SizeType 样式分支。 |
 | Token | 轨道 padding/background、item 文本/背景状态色、item 最小高度、图标和图文间距。 |
-| Gallery | Basic、Block、Disabled、Sizes、Icon Only、With Icon 示例，以及 API/Design Token 表。 |
+| Gallery | Basic、Block、Disabled、Sizes、Icon Only、With Icon 示例，以及 Token 语义和 ShowCase 示例。 |
 | 文档 | 运行 `git diff --check`，检查相对链接存在。 |

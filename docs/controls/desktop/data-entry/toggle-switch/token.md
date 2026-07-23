@@ -102,13 +102,13 @@ ToggleSwitchToken 直接影响：
 - `SwitchKnobTheme.axaml`
 - `AbstractToggleSwitch` 的测量、布局和渲染结果
 - `SwitchKnob` 的把手绘制和 loading animation
-- Gallery ToggleSwitch 示例和 Design Token 表
+- Gallery ToggleSwitch 示例和 token.md 语义说明
 
 ToggleSwitchToken 不影响 Checkbox、Radio、Segmented、Button 或 Select。这些控件有独立状态选择模型和 Token。
 
 ## 5. 兼容性要求
 
-ToggleSwitchToken 属于 ToggleSwitch 主题契约。即使 `ToggleSwitchToken` 是 internal 类型，生成的 `ToggleSwitchTokenKind`、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+ToggleSwitchToken 属于 ToggleSwitch 主题契约。即使 `ToggleSwitchToken` 是 internal 类型，生成的 `ToggleSwitchTokenKind`、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -129,5 +129,5 @@ Token 变更要求：
 | 修改图标或字体 Token | 验证 text content、PathIcon、Icon 的字号、尺寸和前景色同步。 |
 | 修改状态颜色或透明度 Token | 验证 checked、unchecked、hover、disabled、loading 和 loading indicator 颜色。 |
 | 修改加载动画 Token | 验证 loading animation 周期、attach/detach 取消和停止 loading 状态。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |

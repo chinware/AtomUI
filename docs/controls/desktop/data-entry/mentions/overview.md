@@ -264,10 +264,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/mentions/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/mentions/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/mentions/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -278,6 +278,6 @@ LLMS 导出来源：
 | Public API | `Value`、`TriggerPrefix`、候选数据、异步 loader、弹层、输入表面、Form 和事件契约。 |
 | 状态 | 触发符识别、过滤值、弹层打开/关闭、loading、disabled、readonly、error、warning、auto-size。 |
 | AXAML/Theme | `PART_TextArea`、`PART_Popup`、`PART_CandidateList`、loading、popup shadow、SizeType、StyleVariant。 |
-| Token | `PopupContentPadding`、`OptionHeight`、`MinPopupWidth` 的默认值、生成 TokenKind、Gallery Token 表和主题引用。 |
+| Token | `PopupContentPadding`、`OptionHeight`、`MinPopupWidth` 的默认值、生成 TokenKind、Token 类型、生成数据和主题引用。 |
 | Gallery | 走查基础、variant、异步加载、自定义触发符、disabled/read-only、placement、status、auto-size 和 clear 示例。 |
 | 回归测试 | `MentionsShowCasePageTests`、相关控件测试和 `git diff --check`。 |

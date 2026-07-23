@@ -203,7 +203,7 @@ AOT 边界：
 
 - `TreeSelectToken` 通过 token generator 显式注册，生成 `TreeSelectTokenKind` 和 `TreeSelectTokenResourceExtension`。
 - `ItemTemplate` 是 XAML 模板入口，不依赖运行时成员扫描。
-- Gallery API / Token 表使用显式 ViewModel 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 
 ## 9. 维护不变量
 
@@ -226,7 +226,7 @@ AOT 边界：
 - `tests/AtomUI.Desktop.Controls.Tests/TreeSelect/TreeSelectBehaviorTests.cs`：模板右侧 AXAML binding 和剩余 sibling relay binding。
 - `tests/AtomUI.Desktop.Controls.Tests/TreeSelect/TreeSelectSelectionBindingTests.cs`：`SelectedItem` / `SelectedItems` 默认双向绑定、data validation metadata、`SelectedItems` 原地变更和 checkable TreeView 同步。
 - `tests/AtomUI.Desktop.Controls.Tests/SizeType/CustomizableSizeTypeContractTests.cs`：TreeSelect 的 `ICustomizableSizeTypeAware` 契约。
-- `tests/AtomUIGallery.Tests/ShowCases/TreeSelectShowCasePageTests.cs`：Gallery TreeSelect 页面结构、示例和 API / Token 表约束。
+- `tests/AtomUIGallery.Tests/ShowCases/TreeSelectShowCasePageTests.cs`：Gallery TreeSelect 页面结构、示例和源码片段约束。
 
 维护 TreeSelect 后至少运行：
 

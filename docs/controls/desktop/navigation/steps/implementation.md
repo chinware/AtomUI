@@ -29,7 +29,7 @@ Steps 的实现目标是在 `ItemsControl` 容器体系内，把根输入和 ite
 
 Gallery 目录：
 
-- `controlgallery/AtomUIGallery/ShowCases/Navigation/Steps`：示例、API 表、Token 表和本地化资源。
+- `controlgallery/AtomUIGallery/ShowCases/Navigation/Steps`：示例、源码片段和本地化资源。
 
 ## 3. 核心类职责
 

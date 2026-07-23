@@ -33,7 +33,7 @@ Splash 的控件专项模型通过 Theme 消费 Token：
 - AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、padding、尺寸、阴影和动效。
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
 - `SuccessColor` 和 `ErrorColor` 表达状态语义色来源，不保存当前实例状态。
-- Gallery Token 表应显式维护，不依赖运行时反射扫描。
+- Token 类型、生成数据和 token.md 应显式维护，不依赖运行时反射扫描。
 
 ## 4. 控件家族影响
 
@@ -43,7 +43,7 @@ Splash 的控件专项模型通过 Theme 消费 Token：
 - `SplashWindow`
 - `SplashService` 默认选项中的尺寸和动效默认值。
 - `AtomUIExtrasThemesProvider` 的主题注册顺序。
-- 对应 Gallery ShowCase 的示例、API 表和 Token 表。
+- 对应 Gallery ShowCase 的示例和源码片段。
 - Light/Dark 主题、不同 DPI、窗口阴影和启动失败状态。
 
 ## 5. 兼容性要求
@@ -52,7 +52,7 @@ Splash 的控件专项模型通过 Theme 消费 Token：
 - 不把实例状态、交互状态、启动步骤或 `EffectiveXxx` 状态写成 Token。
 - 不在 Token 中展开状态组合矩阵；状态关系应由 Theme selector 表达。
 - Token 默认值变更必须同步评估 Gallery 示例和截图可观察外观。
-- 如需引入新 Token，必须同步源码、生成文件、Gallery Token 表和本文档。
+- 如需引入新 Token，必须同步 Token 类型、生成资源、主题引用和本文档。
 
 ## 6. 验证策略
 
@@ -60,5 +60,5 @@ Splash 的控件专项模型通过 Theme 消费 Token：
 | --- | --- |
 | Token 文档 | `git diff --check`，检查相对链接存在。 |
 | Token 默认值 | 运行 Extras 控件测试，走查 Light/Dark、错误状态和确定/不确定进度。 |
-| Token 名称或数量 | 检查 generated TokenResource key、AXAML 引用和 Gallery Token 表。 |
+| Token 名称或数量 | 检查 generated TokenResource key、AXAML 引用和 token.md。 |
 | 主题映射 | 走查品牌区、状态区、进度区、底部区和 SplashWindow 表面视觉。 |

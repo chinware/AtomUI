@@ -241,7 +241,7 @@ Steps 位于 Desktop Navigation 分类，与 Breadcrumb、Pagination、TabContro
 - `StepsItem` 是公开 item 容器。
 - `StepsItemIndicator`、`StepsPanel` 和 `StepsItemLayoutPanel` 是 internal-observable 协作控件。
 - `StepsToken` 为 Steps、StepsItem 和 Indicator 提供组件级视觉资源。
-- Gallery 提供 API、Token、状态、布局、可点击和 Wave 的可运行示例。
+- Gallery 提供状态、布局、可点击和 Wave 的可运行示例。
 
 Steps 不实现 Form、CompactSpace、Popup、路由或页面内容接口。
 
@@ -316,10 +316,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/steps/index-cn.md`。 |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/steps/index-cn.md`。 |
 | 单控件语义文档 | `overview.md` + `implementation.md` + Themes 文件夹 | 生成 `controls/steps/semantic-cn.md`。 |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 overview 中维护第二份机械列表。 |
-| Design Token 表 | Gallery DesignTokenDataGrid 或 Token 类型 | Token 文档只解释语义边界。 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 overview 中维护第二份机械列表。 |
+| Design Token 表 | token.md 或 Token 类型 | Token 文档只解释语义边界。 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只使用稳定示例。 |
 | 源码索引 | `implementation.md` | 用于定位源码、主题和测试。 |
 

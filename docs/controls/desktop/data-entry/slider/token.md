@@ -110,14 +110,14 @@ Token 变更需要评估：
 - `SliderTrackTheme.axaml`
 - `SliderThumbTheme.axaml`
 - Gallery Slider 示例
-- Gallery Slider Design Token 表
+- Slider token.md 语义说明
 - `SliderTrack.Render` 和 `SliderThumb.Render` 的直接绘制结果
 
 如果某个视觉值同时影响 Progress、ScrollBar 或其他轨道类控件，应先确认是否属于 SharedToken 或独立控件 Token，而不是直接复用 SliderToken。
 
 ## 5. 兼容性要求
 
-SliderToken 属于 Slider 主题契约。即使 `SliderToken` 是 internal 类型，生成的 `SliderTokenKind`、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+SliderToken 属于 Slider 主题契约。即使 `SliderToken` 是 internal 类型，生成的 `SliderTokenKind`、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -134,9 +134,9 @@ Token 变更要求：
 
 | 改动类型 | 验证要求 |
 | --- | --- |
-| 新增 SliderToken | 检查生成的 `SliderTokenKind`、AXAML 引用、Gallery Token 表和默认值计算。 |
+| 新增 SliderToken | 检查生成的 `SliderTokenKind`、AXAML 引用、token.md 语义说明和默认值计算。 |
 | 修改轨道尺寸 | 验证 horizontal / vertical 布局、thumb 居中、mark 文本位置和 tooltip。 |
 | 修改 thumb 尺寸 | 验证 normal、hover、focus、drag、disabled 状态，以及 thumb 不裁剪 outline。 |
 | 修改颜色 Token | 验证普通、hover、active、disabled、included / not included 和 dark theme。 |
 | 修改 padding Token | 验证带 mark 与不带 mark 场景，horizontal / vertical 轨道和 label 不重叠。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步所有 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步所有 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |

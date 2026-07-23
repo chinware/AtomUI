@@ -298,10 +298,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/select/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/select/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/select/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -313,4 +313,4 @@ LLMS 导出来源：
 | 状态行为 | 单选、多选、Tags、清除、最大选择数、隐藏已选项、默认值映射和动态选项清理。 |
 | AXAML / Template | 稳定 template part、`:dropdownopen`、AddOnDecoratedBox selector、PopupFrame 和懒创建候选列表。 |
 | Token | 多选标签、候选项、popup padding、输入 padding 和 `Custom` 尺寸默认分支。 |
-| Gallery / Docs | Select API 表、Design Token 表、ShowCase 示例和本目录文档链接。 |
+| Gallery / Docs | Select API 摘要、Token 语义、ShowCase 示例和本目录文档链接。 |

@@ -212,7 +212,7 @@ ListBox 不通过反射访问模板内部结构。模板接入依赖稳定 part 
 - 选中指示器可见性只能由 `IsShowSelectedIndicator && IsSelected` 推导。
 - `ItemClicked` 派发顺序必须允许 CandidateList 在 public event 前执行 `NotifyListBoxItemClicked`。
 - `IsBorderless` 只影响边框厚度，不改变 root padding、corner radius 或 scroll behavior。
-- Token 变更必须同步 `ListBoxTokenKind`、AXAML 引用和 Gallery token 表。
+- Token 变更必须同步 `ListBoxTokenKind`、AXAML 引用和 token.md 语义说明。
 
 ## 10. 测试与验证
 

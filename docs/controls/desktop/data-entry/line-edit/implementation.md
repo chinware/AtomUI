@@ -157,7 +157,7 @@ LineEdit 家族不依赖运行时反射发现模板结构。跨模板协作通�
 AOT 边界：
 
 - Token 类型通过 generator 显式注册。
-- Gallery API / Token 表使用显式 view model 数据，不依赖运行时反射扫描控件成员。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护，不依赖运行时反射扫描。
 - 文档中描述的 template part 名称应与 AXAML 和 C# 查找代码保持一致。
 
 ## 9. 维护不变量
@@ -177,7 +177,7 @@ AOT 边界：
 
 验证范围：
 
-- `LineEditShowCasePageTests` 覆盖 Gallery 页面结构、示例 snapshot、API 表和 Token 表入口。
+- `LineEditShowCasePageTests` 覆盖 Gallery 页面结构、示例 snapshot 和源码片段入口。
 - 清除按钮：空文本、非空文本、read-only、TextArea 和 single-line 差异。
 - SizeType：Large/Middle/Small/Custom 字号、高度、line height 和 `IsCustomFontSize` 优先级。
 - Variant/status：Outlined、Filled、Borderless、Underlined、Error、Warning、focus、disabled。

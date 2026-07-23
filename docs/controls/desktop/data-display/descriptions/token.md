@@ -101,13 +101,13 @@ DescriptionsToken 只直接影响 Descriptions 及其内部生成视觉：
 - `DescriptionDefaultItemTheme.axaml`
 - `DescriptionBorderedItemLabelTheme.axaml`
 - `DescriptionBorderedItemContentTheme.axaml`
-- Gallery Descriptions Design Token 表
+- Descriptions token.md 语义说明
 
 其他 Data Display 控件不复用 DescriptionsToken。若多个控件需要共享同一语义，应评估是否上升为 SharedToken，而不是跨控件引用 DescriptionsToken。
 
 ## 5. 兼容性要求
 
-DescriptionsToken 属于 Descriptions 主题契约。即使 `DescriptionsToken` 是 internal 类型，生成的 token kind、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+DescriptionsToken 属于 Descriptions 主题契约。即使 `DescriptionsToken` 是 internal 类型，生成的 token kind、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -127,5 +127,5 @@ Token 变更要求：
 | 修改 `HeaderMargin` | 验证 Header/Extra 与内容区域间距。 |
 | 修改 item padding Token | 验证 Large / Middle / Small 下水平边框和纵向边框 item 高度、内容居中和边框对齐。 |
 | 修改 `ColonMargin` | 验证普通 horizontal 和 vertical 非边框冒号间距，以及 `IsShowColon=false` 隐藏状态。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |

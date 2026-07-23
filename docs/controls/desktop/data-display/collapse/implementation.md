@@ -23,7 +23,7 @@
 - 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 
 ## 3. 核心类职责
 
@@ -123,7 +123,7 @@ Header 模式下，header 区域和展开图标触发 selection；Icon 模式下
 
 资源和 AOT 约束：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
@@ -148,7 +148,7 @@ Header 模式下，header 区域和展开图标触发 selection；Icon 模式下
 - 分隔线只由 item 位置、视觉模式和固定模板结构决定，不能依赖 selection 或 motion 时序。
 - 旧 template part、事件订阅和 content motion cancellation 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 ## 10. 测试与验证
 

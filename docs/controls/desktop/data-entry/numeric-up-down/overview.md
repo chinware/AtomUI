@@ -238,10 +238,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/numeric-up-down/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/numeric-up-down/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/numeric-up-down/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -252,5 +252,5 @@ LLMS 导出来源：
 | 文档 | `overview.md`、`implementation.md`、`token.md`、`changelog.md` 链接有效。 |
 | C# 状态 | custom size、string mode、键盘步进开关、清除按钮、Form、CompactSpace 状态同步。 |
 | AXAML/Theme | template part、variant、disabled、error、warning、Input / Spinner 模板切换、Handle 和 clear button。 |
-| Token | `NumericUpDownToken`、ButtonSpinnerToken 复用和 Gallery Token 表一致。 |
+| Token | `NumericUpDownToken`、ButtonSpinnerToken 复用和 Token 类型、生成数据和 token.md 语义说明一致。 |
 | Gallery | 走查基础用法、custom size、string mode、键盘行为、鼠标滚轮、最小最大值、小数步进、尺寸、变体、禁用、前后缀、清除按钮和状态示例。 |

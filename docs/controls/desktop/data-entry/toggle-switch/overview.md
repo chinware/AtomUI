@@ -189,10 +189,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/toggle-switch/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/toggle-switch/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/toggle-switch/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -204,5 +204,5 @@ LLMS 导出来源：
 | API | `IsChecked`、`SizeType`、`IsLoading`、`OnContent`、`OffContent`、Form value 和 WaveSpirit 开关。 |
 | 状态 | checked、unchecked、null、hover、pressed、disabled、loading、motion on/off。 |
 | AXAML/Theme | template part、SizeType 分支、content presenter、SwitchKnob、WaveSpirit 和 loading opacity。 |
-| Token | `ToggleSwitchToken`、生成的 TokenKind、Gallery Token 表和主题引用一致。 |
+| Token | `ToggleSwitchToken`、生成的 TokenKind、Token 类型、生成数据和主题引用一致。 |
 | Gallery | 走查基础、禁用、文字与图标、两种尺寸和加载示例。 |

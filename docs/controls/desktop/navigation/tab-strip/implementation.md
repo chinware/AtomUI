@@ -22,7 +22,7 @@
 - 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 - Tab 拖动排序属于 `BaseTabStrip` 的集合与选择协作路径；实现应落在 `BaseTabStrip`、`TabStripItem`、滚动视口和内部拖动协作对象之间，不能把排序状态散落到 Gallery、theme 或业务数据对象中。
 - 垂直页签图标对齐属于 `BaseTabStrip` 的 owner 级布局状态；`Left` / `Right` placement 下由 owner 统一判断同组是否存在图标，再把内部保留图标槽状态投射到 `TabStripItem`，不能通过 Gallery 手工补空图标或新增 public API。
 - 默认 Line TabStrip 的 `Left` / `Right` placement 应保持紧凑的垂直节奏；相邻间距和 item 自身垂直 padding 都应按 Line 紧凑模型处理。Card TabStrip 使用独立 `CardGutter` 和 Card padding 视觉节奏，本规则不得改变 Card 外观。
@@ -68,7 +68,7 @@ Public API / ItemsSource / Command / Event
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
-- Gallery API 表中的状态说明应与源码实际状态流一致。
+- overview.md 的 API 契约说明应与源码实际状态流一致。
 - Pointer 选择状态流必须按 `TabActivationTrigger` 收敛。`PointerReleased` 是默认值，按下阶段只记录候选 Tab、pointer 和起点，释放时确认仍是同一个 Tab 且未进入拖动排序后再提交选择；`PointerPressed` 模式在按下阶段直接通过统一选择入口提交选择。
 - 候选激活状态属于一次 pointer 会话，必须在 pointer released、capture lost、template reapply、detach、控件禁用或进入 reorder 时释放；不得保存在 item container、theme 或业务数据对象中。
 - 拖动排序状态流必须按 `IsTabReorderEnabled` -> pointer threshold -> Chrome-like live reorder preview -> `TabReordering` -> 逻辑集合 move -> selection/overflow recompute -> `TabReordered` 收敛。
@@ -141,7 +141,7 @@ TabStrip 的交互事件应从输入源收敛到控件级语义事件：
 
 资源和 AOT 约束：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
@@ -173,7 +173,7 @@ TabStrip 的交互事件应从输入源收敛到控件级语义事件：
 - 默认 Line TabStrip 的 `Left` / `Right` spacing / padding 调整不得影响 Card TabStrip、拖动排序阈值、选中指示条定位或 overflow 计算；选中指示条高度必须继续跟随 Line item 的真实 bounds。
 - 切换 `TabStripPlacement` 后当前选中项必须继续跟随同一个逻辑 item，不能因 container 重新准备或旧 `IsSelected` 状态回流而改变。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 ## 10. 测试与验证
 
@@ -187,5 +187,5 @@ TabStrip 的交互事件应从输入源收敛到控件级语义事件：
 - 默认 Line 垂直 spacing / padding 变更需覆盖 `TabStrip` 在 `Left` / `Right` 下的相邻 container 主轴间距和 item 高度，并明确 Card theme 不被本规则修改。
 - `TabStripPlacement` 行为变更需覆盖直接 `TabStripItem` 与数据 item 场景，确保切换 `Top` / `Right` / `Bottom` / `Left` 后 `SelectedItem` 不变。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
-- Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests`。
+- Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

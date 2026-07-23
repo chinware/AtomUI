@@ -94,14 +94,14 @@ LineEditToken 影响以下控件或主题：
 
 - `LineEditTheme.axaml`
 - `SearchEditTheme.axaml`
-- Gallery LineEdit / SearchEdit 示例和 Token 表
+- LineEdit / SearchEdit token.md 语义说明和 Gallery 示例
 
 TextAreaToken 影响以下控件或主题：
 
 - `TextAreaTheme.axaml`
 - `TextAreaDecoratedBoxTheme.axaml`
 - `ResizeHandleTheme.axaml`
-- Gallery TextArea 示例和 Token 表
+- TextArea token.md 语义说明和 Gallery 示例
 
 如果调整 TextBoxToken 边框、圆角、padding、hover/focus 边框或 focus shadow，必须评估基础 TextBox 以及依赖 AtomUI TextBox 的组合控件。DatePicker / TimePicker 等内部 picker 输入框在自定义尺寸路径中可能显式绑定字体并设置 `IsCustomFontSize=true`，不应依赖隐藏宽度补偿适配字号变化。
 
@@ -109,7 +109,7 @@ TextAreaToken 影响以下控件或主题：
 
 ## 5. 兼容性要求
 
-TextBoxToken、LineEditToken 与 TextAreaToken 属于输入控件家族的主题契约。即使 Token 类型是 internal，生成的 TokenKind、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+TextBoxToken、LineEditToken 与 TextAreaToken 属于输入控件家族的主题契约。即使 Token 类型是 internal，生成的 TokenKind、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -129,5 +129,5 @@ Token 变更要求：
 | 修改 TextArea 字号 Token | 验证 Lines、MinLines、MaxLines、IsAutoSize 和 IsResizable 下的高度计算。 |
 | 修改 TextArea padding Token | 验证 clear button、Form feedback、InnerRightContent、字数统计和文本区域不重叠。 |
 | 修改 resize Token | 验证 resize handle 可见性、拖拽命中、线条颜色和尺寸。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |

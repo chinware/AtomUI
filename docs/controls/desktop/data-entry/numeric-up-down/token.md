@@ -108,13 +108,13 @@ NumericUpDownToken 与 ButtonSpinnerToken 共享同一套输入 Handle 语义。
 - `ButtonSpinnerDecoratedBoxTheme.axaml`
 - `ButtonSpinnerHandleTheme.axaml`
 - `ComboBoxTheme.axaml` 及其 ButtonSpinner 派生用法
-- Gallery 中 NumberUpDown、ButtonSpinner、ComboBox 的 Token 表和示例
+- NumericUpDown、ButtonSpinner、ComboBox 的 token.md 语义说明和 Gallery 示例
 
 如果某个 Token 只服务 NumericUpDown 的数值编辑模型，例如格式化、精度或 string mode，不应直接加入 ButtonSpinnerToken 继承链。数值编辑状态属于控件实例状态，不属于控件 Token。
 
 ## 5. 兼容性要求
 
-NumericUpDownToken 属于 NumericUpDown 主题契约。即使 `NumericUpDownToken` 是 internal 类型，生成的 `NumericUpDownTokenKind`、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+NumericUpDownToken 属于 NumericUpDown 主题契约。即使 `NumericUpDownToken` 是 internal 类型，生成的 `NumericUpDownTokenKind`、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -129,8 +129,8 @@ Token 变更要求：
 
 | 改动类型 | 验证要求 |
 | --- | --- |
-| 新增 NumericUpDownToken | 检查生成的 `NumericUpDownTokenKind`、AXAML 引用、Gallery Token 表和默认值计算。 |
+| 新增 NumericUpDownToken | 检查生成的 `NumericUpDownTokenKind`、AXAML 引用、token.md 语义说明和默认值计算。 |
 | 修改 Handle Token 默认值 | 覆盖 NumericUpDown、ButtonSpinner、ComboBox 的普通、Filled、Disabled、hover 和 pressed 状态；`Mode=Spinner` 需额外验证分隔线、hover 图标色和 pressed 背景。 |
 | 修改尺寸 Token | 验证 `Large`、`Middle`、`Small`、`Custom` 尺寸下的文本、Handle、内容避让和 CompactSpace 边框折叠。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步所有 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步所有 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 调整数值输入状态 | 不应修改 Token；应通过 C# 状态模型或主题变量验证。 |

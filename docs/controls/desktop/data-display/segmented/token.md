@@ -59,7 +59,7 @@ SegmentedToken 不承载以下状态：
 - `SegmentedItemPaddingSM` 用于 Small。
 - `SegmentedItemContentMargin` 用于 `:has-icon` 时图标和内容之间的间距。
 
-内部间距 Token 不在 Gallery Design Token 表中展示，但它们已经被 AXAML 主题引用，维护时仍按主题契约处理。
+内部间距 Token 不作为公开 Design Token 表展示，但它们已经被 AXAML 主题引用，维护时仍按主题契约处理。
 
 ## 3. 控件专项模型中的 Token 使用
 
@@ -116,13 +116,13 @@ SegmentedToken 只直接影响 Segmented 及其 item：
 
 - `SegmentedTheme.axaml`
 - `SegmentedItemTheme.axaml`
-- Gallery Segmented Design Token 表
+- Segmented token.md 语义说明
 
 其他数据展示控件、选择控件和输入控件不复用 SegmentedToken。若多个控件需要共享同一语义，应评估是否上升为 SharedToken，而不是跨控件引用 SegmentedToken。
 
 ## 5. 兼容性要求
 
-SegmentedToken 属于 Segmented 主题契约。即使 `SegmentedToken` 是 internal 类型，生成的 token kind、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+SegmentedToken 属于 Segmented 主题契约。即使 `SegmentedToken` 是 internal 类型，生成的 token kind、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -132,7 +132,7 @@ Token 变更要求：
 - 修改 `TrackPadding` 时必须同时验证轨道 padding、item 最小高度和选中滑块边界。
 - 修改 item 状态色时必须同时验证文字和图标颜色。
 - 修改 item 尺寸 Token 时必须验证 Large、Middle、Small、Custom 及图标/文本组合。
-- 删除或重命名 Gallery 表中展示的 Token 必须先获得授权，并同步 AXAML、生成 token kind、Gallery 和文档。
+- 删除或重命名 token.md 记录的 Token 必须先获得授权，并同步 AXAML、生成 token kind、Gallery 示例和文档。
 
 ## 6. 验证策略
 
@@ -143,5 +143,5 @@ Token 变更要求：
 | 修改背景状态 Token | 验证 hover、pressed、selected item 背景和根选中滑块背景。 |
 | 修改 item 高度 Token | 验证 Large / Middle / Small / Custom 下高度、文字居中、图标居中和滑块尺寸。 |
 | 修改内部间距 Token | 验证纯文本、纯图标、图标加文本示例的内容间距。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |

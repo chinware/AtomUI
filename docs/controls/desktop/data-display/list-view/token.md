@@ -105,7 +105,7 @@ ListViewToken 影响 ListView 体系：
 
 - `ListView` root theme 使用 `ContentPadding` 和 `PaginationMargin`。
 - `ListViewItem` theme 使用条目文字、背景、padding、margin、group header color 和 selected indicator margin。
-- Gallery List ShowCase 的 Token 表展示 ListViewToken 的稳定语义。
+- ListView token.md 说明 `ListViewToken` 的稳定语义，Gallery List ShowCase 只提供示例。
 
 ListViewToken 不影响 ListBoxToken。ListView 和 ListBox 有相似的列表条目语义，但它们各自拥有独立 Token ID 和 resource scope。
 
@@ -119,13 +119,13 @@ ListViewToken 不影响 ListBoxToken。ListView 和 ListBox 有相似的列表�
 - `PaginationMargin` 只控制分页器外边距，不表达分页器 visibility、align 或 page state。
 - `GroupHeaderColor` 只控制组标题视觉，不表达分组算法或 group key。
 - 默认值应继续从 SharedToken 派生，保持 light / dark 主题一致性。
-- Token 变更必须同步 Theme 引用和 Gallery Token 表。
+- Token 变更必须同步 Theme 引用和 token.md 语义说明。
 
 ## 6. 验证策略
 
 ListViewToken 变更验证：
 
-- `ListViewTokenKind` 与 Gallery Token 表保持一致。
+- `ListViewTokenKind` 与 token.md 语义说明保持一致。
 - `ContentPadding` 影响 root 内容区，不造成 ScrollViewer、EmptyIndicator、Spin 和分页器重叠。
 - `ItemColor`、`ItemHoverColor`、`ItemSelectedColor` 和 `ItemDisabledColor` 在 light / dark 主题下可读。
 - `ItemBgColor`、`ItemHoverBgColor` 和 `ItemSelectedBgColor` 能正确传递到普通 ListViewItem hover / selected 状态。

@@ -270,10 +270,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/progress-bar/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/progress-bar/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/progress-bar/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -281,9 +281,9 @@ LLMS 导出来源：
 
 | 层次 | 验证内容 |
 | --- | --- |
-| Public API | 检查四个具体控件、Gallery API 表和源码属性保持一致。 |
+| Public API | 检查四个具体控件、控件文档 API 摘要和源码属性保持一致。 |
 | 行为状态 | 验证 RangeBase 值、`Percentage`、`IsIndeterminate`、completed、status、success threshold 和 disabled。 |
 | AXAML | 验证四类主题入口、template part、伪类 selector、状态图标和内嵌百分比布局。 |
-| Token | 验证 `ProgressBarTokenKind`、主题引用和 Gallery Token 表一致。 |
+| Token | 验证 `ProgressBarTokenKind`、主题引用和 Token 类型、生成数据和 token.md 语义说明一致。 |
 | 渲染 | 验证水平、垂直、步骤、圆形、仪表盘、分段、线帽和渐变画刷。 |
 | 文档 | 运行 `git diff --check`，并检查控件文档相对链接存在。 |

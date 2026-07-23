@@ -310,7 +310,7 @@ AOT 边界：
 
 - 不通过运行时反射扫描 public API、template part 或 token。
 - Token 类型通过 generator 显式注册。
-- Gallery API / Token 表使用显式 view model 数据或源码生成路径，不依赖 NativeAOT 不友好的运行时成员扫描。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护，不依赖 NativeAOT 不友好的运行时成员扫描。
 - separator template 和 formatter 不依赖运行时动态类型发现。
 
 ## 10. 维护不变量
@@ -347,5 +347,5 @@ AOT 边界：
 - `DataValidationErrors` 驱动根控件和所有 cell 的 error 视觉。
 - Form reset 不清除非 Form 写入的 native validation error。
 - 模板重建和 detach 不泄漏事件订阅。
-- Gallery 示例、API 表、Token 表和源码片段可被测试发现。
+- Gallery 示例、源码片段和源码片段可被测试发现。
 - 文档改动运行 `git diff --check`，并检查相对链接存在。

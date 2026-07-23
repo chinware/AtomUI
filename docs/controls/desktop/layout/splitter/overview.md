@@ -142,8 +142,8 @@ Splitter 的运行时组合关系如下：
 集成关系：
 
 - Gallery ShowCase 展示基本、水平、嵌套、禁用调整、折叠、多面板和 lazy 场景。
-- Gallery API 表是 LLMS 和用户 API 文档的结构化来源。
-- Gallery Token 表是 Splitter Token 的结构化来源。
+- API 契约摘要是 LLMS 和用户 API 文档的结构化来源。
+- Token 类型、生成数据和 token.md是 Splitter Token 的结构化来源。
 - Splitter 不参与 Form value、CompactSpace、Popup/Flyout 或 Window 生命周期。
 
 ## 7. 兼容性不变量
@@ -156,7 +156,7 @@ Splitter 的运行时组合关系如下：
 - 不删除或重命名 `PART_SplitterPanel`，也不随意重命名 internal handle template part。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - 不通过延迟刷新、吞异常或特殊 Gallery 判断掩盖布局状态问题。
-- 不引入运行时反射扫描作为 API、Token 或 Gallery 表发现机制。
+- 不引入运行时反射扫描作为 API、Token 或 Gallery 示例发现机制。
 - 文档只描述当前稳定设计和维护规则；历史变化记录在 `changelog.md`。
 
 ## 8. 专项模型
@@ -214,10 +214,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/splitter/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/splitter/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/splitter/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -229,5 +229,5 @@ LLMS 导出来源：
 | Public API | 覆盖属性默认值、事件触发、附加属性和继承语义。 |
 | 状态模型 | 覆盖 drag、lazy、collapsed、disabled、hover、dragging 和折叠按钮显示。 |
 | AXAML/Theme | 检查 `PART_SplitterPanel`、internal handle part、伪类、资源 key 和 Light/Dark 主题。 |
-| Token | 检查 TokenKind、AXAML token resource、Gallery Token 表和文档同步。 |
-| Gallery | 走查对应 ShowCase 示例、API 表和 Token 表入口。 |
+| Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
+| Gallery | 走查对应 ShowCase 示例和源码片段入口。 |

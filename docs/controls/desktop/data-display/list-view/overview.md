@@ -322,10 +322,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/list-view/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/list-view/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/list-view/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -338,6 +338,6 @@ LLMS 导出来源：
 | 分组状态 | 覆盖默认 group selector、自定义 group selector、空 group key、组标题模板、组标题 pointer 不可选、排序 / 过滤 / 分页组合和虚拟化回收。 |
 | 选择状态 | 覆盖重复 item、source-index 投影、selectable、AlwaysSelected、多选、Reset key 恢复、视图组合、SelectedValue 和 text search。 |
 | AXAML | 检查 root、pagination、Spin、ScrollViewer、EmptyIndicator、item 和 group item 在 light / dark 和三种 SizeType 下显示稳定。 |
-| Token | 检查 `ListViewTokenKind`、AXAML token resource 和 Gallery token 表同步。 |
+| Token | 检查 `ListViewTokenKind`、AXAML token resource 和 token.md 语义说明保持一致。 |
 | 虚拟化 | 覆盖 container prepare / clear、上下滚动后 disabled、group item 和 selected 状态不串扰。 |
 | 文档 | 运行 `git diff --check`，确认链接存在且只记录最新设计状态。 |

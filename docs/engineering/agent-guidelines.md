@@ -60,11 +60,11 @@ Public API 包括但不限于 `public` / `protected` 类型、成员、构造函
 
 ## Gallery
 
-Gallery 页面结构、懒加载、API DataGrid、Design Token DataGrid 和示例组织规则以 [gallery-showcase-design-pattern.md](../gallery/gallery-showcase-design-pattern.md) 为准。
+Gallery 页面结构、懒加载、示例组织和旧 API/Token sidecar 禁用规则以 [gallery-showcase-design-pattern.md](../gallery/gallery-showcase-design-pattern.md) 为准。
 
 Gallery 改动时注意：
 
-- 不把 API/Token 表格重新手写成普通布局。
+- 不把已移除的 API/Token sidecar 重新手写成普通布局。
 - 不在页面结构调整中顺手改 Demo 行为。
 - 延迟创建只能改变创建时机，不能改变示例控件树语义。
 - 涉及 NativeAOT 发布或发布脚本时，阅读 [gallery-aot-release-workflow.md](gallery-aot-release-workflow.md)。

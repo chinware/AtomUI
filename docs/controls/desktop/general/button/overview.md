@@ -268,10 +268,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/button/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/button/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + `ButtonTheme.axaml` | 生成 `controls/button/semantic-cn.md` |
-| API 表 | `ButtonViewModel.EnsureApiRows()` + `Button.cs` public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | `ButtonDesignTokenDataGrid` + `ButtonToken.cs` + `token.md` | `token.md` 解释 Token 语义边界 |
+| API 表 | overview.md 语义摘要 + `Button.cs` public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | `token.md` + `ButtonToken.cs` | `token.md` 解释 Token 语义边界 |
 | 示例 | `ButtonShowCase.axaml` + source snippet catalog | 覆盖类型、形状、尺寸、图标、加载、危险、幽灵、禁用、渐变、颜色与变体 |
 | 源码索引 | `implementation.md` | 用于定位 Button 源码、主题、伪类和测试 |
 

@@ -20,7 +20,7 @@
 模块非职责：
 
 - 不编辑源码，不提供保存、格式化、诊断、跳转定义或智能提示能力。
-- 不替代 API / Design Token 表格。
+- 不替代控件文档、API reference 或 Design Token 文档。
 - 不展示整个源码文件，除非该文件本身就是当前示例的最小片段。
 - 不为了让片段可独立编译而引入整页、整文件或无关基础设施代码；源码片段目标是阅读完整，不是生成可复制即编译的小项目。
 - 不从运行时文件系统读取 `ShowCases/**/*.axaml`、`.axaml.cs` 或 ViewModel `.cs`。
@@ -376,12 +376,12 @@ ViewModel 片段包括：
 - 属性 setter 或 getter 调用的同类型 helper 方法。
 - code-behind 事件转发到 ViewModel 的 public / internal 方法。
 - 相关属性或方法依赖的同文件 record、enum、小型 DTO 和构造初始化。
-- 构造函数中只与已选成员相关的初始化语句；如果无法安全拆分构造函数，保留完整构造函数但不引入 `EnsureApiRows()`、`EnsureDesignTokenRows()` 等无关 lazy data 方法。
+- 构造函数中只与已选成员相关的初始化语句；如果无法安全拆分构造函数，保留完整构造函数但不引入只服务旧 API/Token metadata 的无关 lazy data 方法。
 - 片段需要的 `using`、namespace 和包含类型声明。
 
 以下内容默认不进入当前 item 的 C# 片段：
 
-- API / Design Token 表格的 row 初始化方法，除非当前 item 明确 Binding 到这些成员。
+- 只服务旧 API/Token metadata 的初始化方法。
 - 其他 `ShowCaseItem` 专用事件处理器、Binding 属性和 helper。
 - 仅服务页面 Shell、Scenario tabs、路由、导航、语言刷新或 DataGrid lazy loading 的成员，除非当前 item AXAML 直接引用。
 - 整个 `.axaml.cs` 或整个 ViewModel 文件。

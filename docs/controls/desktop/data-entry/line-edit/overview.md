@@ -221,10 +221,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/line-edit/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/line-edit/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/line-edit/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -235,5 +235,5 @@ LLMS 导出来源：
 | 文档 | `overview.md`、`implementation.md`、`token.md`、`changelog.md` 链接有效，Data Entry 分类入口包含 LineEdit。 |
 | C# 状态 | 清除按钮、字数统计、Form value、Form feedback、CompactSpace、SearchEdit loading 和 TextArea resize。 |
 | AXAML/Theme | template part、variant、status、focus、disabled、SizeType、Custom size、AddOn、TextArea resize handle。 |
-| Token | `LineEditToken`、`TextAreaToken`、生成的 TokenKind、Gallery Token 表和主题引用一致。 |
+| Token | `LineEditToken`、`TextAreaToken`、生成的 TokenKind、Token 类型、生成数据和主题引用一致。 |
 | Gallery | 走查基础用法、尺寸、variant、AddOn、清除、密码、前后缀、状态、SearchEdit、TextArea、自动高度、字数统计和 resize 示例。 |

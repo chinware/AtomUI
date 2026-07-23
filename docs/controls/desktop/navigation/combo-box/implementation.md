@@ -26,7 +26,7 @@
 - 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 
 ## 3. 核心类职责
 
@@ -69,7 +69,7 @@ Public API / ItemsSource / Command / Event
 - `IFormItemAware` 的值读写直接映射到 `SelectedItem`：`SetFormValue(value)` 保留对象实例并设置选择，`GetFormValue()` 返回选择对象，`ClearFormValue()` 清空选择。
 - 非编辑态选中内容溢出提示由 `OverflowTip` 托管，只在 `SelectedContentPresenter` 视觉溢出时写入 `ToolTip.Tip`，延迟和位置分别映射到 `ToolTip.ShowDelay` 与 `ToolTip.Placement`；非编辑态显示节点以外层 `AddOnDecoratedBox` 作为 `PlacementTarget`，避免 tooltip 左边按内部文本 padding 对齐；编辑态输入文本仍由 `PART_EditableTextBox` 自己承载，不自动开启该提示。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
-- Gallery API 表中的状态说明应与源码实际状态流一致。
+- overview.md 的 API 契约说明应与源码实际状态流一致。
 
 ## 5. 生命周期与模板接入
 
@@ -121,7 +121,7 @@ ComboBox 的交互事件应从输入源收敛到控件级语义事件：
 
 资源和 AOT 约束：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
@@ -141,7 +141,7 @@ ComboBox 的交互事件应从输入源收敛到控件级语义事件：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 ## 10. 测试与验证
 
@@ -150,5 +150,5 @@ ComboBox 的交互事件应从输入源收敛到控件级语义事件：
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
-- Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests`。
+- Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

@@ -230,10 +230,10 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/list-box/index-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/list-box/index-cn.md` |
 | 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/list-box/semantic-cn.md` |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
@@ -244,6 +244,6 @@ LLMS 导出来源：
 | Public API | 检查 ListBox / ListBoxItem 属性、事件、默认值和 Avalonia selection 语义不变。 |
 | 状态 | 覆盖 selectable、selected indicator、filter、empty、disabled、keyboard navigation 和 CandidateList commit。 |
 | AXAML | 检查 root、item、empty、indicator、filter highlighter 在 light / dark 和三种 SizeType 下显示稳定。 |
-| Token | 检查 ListBoxTokenKind、AXAML token resource 和 Gallery token 表同步。 |
+| Token | 检查 ListBoxTokenKind、AXAML token resource 和 token.md 语义说明保持一致。 |
 | 虚拟化 | 覆盖 container prepare / clear、上下滚动后状态不串扰。 |
 | 文档 | 运行 `git diff --check`，确认链接存在且只记录最新设计状态。 |

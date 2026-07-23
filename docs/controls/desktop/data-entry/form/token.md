@@ -46,7 +46,7 @@ FormToken 不承载以下状态：
 - `VerticalLabelPadding`
 - `VerticalLabelMargin`
 
-这些 Token 描述垂直布局下标签区域的 padding 和 margin。当前主题使用 `VerticalLabelMargin`，`VerticalLabelPadding` 属于 FormToken 稳定契约，调整时需要同步验证主题引用和 Gallery Token 表。
+这些 Token 描述垂直布局下标签区域的 padding 和 margin。当前主题使用 `VerticalLabelMargin`，`VerticalLabelPadding` 属于 FormToken 稳定契约，调整时需要同步验证主题引用和 Token 类型、生成数据和 token.md。
 
 ## 3. 控件专项模型中的 Token 使用
 
@@ -89,12 +89,12 @@ FormToken 直接影响 Form、FormItem 和 FormItemDecorator 参与的表单布�
 - `FormTheme.axaml`
 - `FormItemTheme.axaml`
 - `FormItemDecoratorTheme.axaml`
-- Form Gallery 示例和 Design Token 表
+- Form token.md 语义说明和 Gallery 示例
 - `FormShowCasePageTests`
 
 ## 5. 兼容性要求
 
-FormToken 属于 Form 主题契约。即使 `FormToken` 是 internal 类型，生成的 `FormTokenKind`、AXAML resource 使用点和 Gallery Token 表已经形成稳定依赖。
+FormToken 属于 Form 主题契约。即使 `FormToken` 是 internal 类型，生成的 `FormTokenKind`、AXAML resource 使用点和 token.md 语义说明已经形成稳定依赖。
 
 Token 变更要求：
 
@@ -112,5 +112,5 @@ Token 变更要求：
 | 修改冒号 Token | 验证 `IsShowColon=true/false`、长标签、右对齐和垂直布局下冒号可见性。 |
 | 修改 spacing Token | 验证 Help、error、warning、无消息、inline 布局和动态表单项间距。 |
 | 修改垂直标签 Token | 验证 `FormLayout=Vertical` 下标签与输入控件的垂直节奏。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
+| 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |

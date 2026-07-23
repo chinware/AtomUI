@@ -94,7 +94,7 @@ GalleryShowCaseHeaderLang*
 
 - 替换 Header 内的 title、category/status/version Tag、subtitle、description 和 metadata 区域。
 - 保留各页面已有的 `GalleryStickyTabsHost`、`TabStrip`、`ScenarioContentHost`、`ExamplesContent` 和 `GalleryShowCaseScenarioController`。
-- 不迁移 ShowCase demo 内容，不改 API/Design Token DataGrid，不调整 ViewModel。
+- 不迁移 ShowCase demo 内容，不恢复旧 API/Token sidecar，不调整 ViewModel。
 
 覆盖组合：
 

@@ -186,7 +186,7 @@ AOT 边界：
 
 - 不新增反射访问 public API、template part 或 token kind。
 - 新增 Token 必须走 source generator 支持的 `SliderToken` 属性。
-- Gallery API / Token 表应显式维护，不依赖运行时反射扫描。
+- API 与 Token 契约应在控件文档、源码 public surface、Token 类型或生成数据中维护，不依赖运行时反射扫描。
 
 ## 9. 维护不变量
 
@@ -218,5 +218,5 @@ AOT 边界：
 - `IsMotionEnabled=false` 下 transition 禁用。
 - 模板重建后 pointer handler 和 tooltip 重新接入。
 - detach 后全局 input subscription 释放。
-- Gallery `SliderShowCasePageTests` 保持 API、Token 和示例结构一致。
+- `SliderShowCasePageTests` 保持 Gallery 示例结构和源码片段一致。
 - 文档改动运行 `git diff --check`。

@@ -379,7 +379,7 @@ ListView 不通过反射访问模板内部结构。模板接入依赖稳定 part
 - Add、Remove、Move 和 Replace 必须按 collection change index 更新 entries，不按 item equality 定位变化目标。
 - Reset 和 ItemsSource 替换只通过唯一非空 item key 恢复选择，不按 item equality 或旧索引回退。
 - 分页器替换时必须解除旧 `CurrentPageChanged` 和 relay binding。
-- Token 变更必须同步 `ListViewTokenKind`、AXAML 引用和 Gallery token 表。
+- Token 变更必须同步 `ListViewTokenKind`、AXAML 引用和 token.md 语义说明。
 
 ## 10. 测试与验证
 
@@ -409,4 +409,4 @@ git diff --check
 - selection 生命周期：重复 item、单选、多选、AlwaysSelected、`IsSelectable=false`、SelectedValue、Reset key 恢复、分页和分组。
 - pagination 生命周期：分页器替换、可见性、对齐、motion、page size、current page 和 detach 后不再被 mutation。
 - 虚拟化回收后 disabled、group item、content template 和 selected 状态不串扰。
-- Gallery List ShowCase 的基础、进阶、API 和 Token 表显示稳定。
+- Gallery List ShowCase 的基础和进阶示例显示稳定。
