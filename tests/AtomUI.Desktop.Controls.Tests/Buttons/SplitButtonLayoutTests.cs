@@ -62,6 +62,36 @@ public class SplitButtonLayoutTests
         });
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void SplitButton_Child_Bounds_Remain_Stable_When_Arrange_Allocation_Changes(bool isPrimaryButtonType)
+    {
+        var splitButton = new SplitButton
+        {
+            Content             = "Hover me",
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+            IsPrimaryButtonType = isPrimaryButtonType
+        };
+
+        ShowInWindow(splitButton, () =>
+        {
+            var primaryButton          = FindButtonPart(splitButton, "PART_PrimaryButton");
+            var secondaryButton        = FindButtonPart(splitButton, "PART_SecondaryButton");
+            var initialPrimaryBounds   = primaryButton.Bounds;
+            var initialSecondaryBounds = secondaryButton.Bounds;
+            var controlSize            = splitButton.Bounds.Size;
+
+            for (var pass = 1; pass <= 4; pass++)
+            {
+                splitButton.Arrange(new Rect(0, 0, controlSize.Width + pass * 40, controlSize.Height));
+
+                primaryButton.Bounds.ShouldBe(initialPrimaryBounds);
+                secondaryButton.Bounds.ShouldBe(initialSecondaryBounds);
+            }
+        });
+    }
+
     [Fact]
     public void Primary_SplitButton_Separator_Uses_Render_Scale_Aware_Thickness()
     {
