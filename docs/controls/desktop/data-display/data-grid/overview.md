@@ -47,6 +47,14 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 稳定事件包括 `SelectionChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 
+分页公共契约由 `PageSize`、`PaginationVisibility`、`TopPaginationAlign`、`BottomPaginationAlign` 和
+`IsHideOnSinglePage` 共同表达。`PageSize` 默认为 `0`，表示不启用内建分页；非零值配置当前
+`DataGridCollectionView` 的每页条数。`PaginationVisibility` 默认为 `Bottom`，只决定分页视觉投影出现的位置；
+`TopPaginationAlign` 与 `BottomPaginationAlign` 默认均为 `End`。`IsHideOnSinglePage` 默认为 `false`，只在已经
+启用分页后控制单页场景的有效可见性。实际总数、页大小和当前页由 `DataGridCollectionView` 持有，顶部和底部
+`Pagination` 只投影该状态并把用户翻页请求交回 CollectionView。`ItemsSource`、分页属性与模板应用的先后顺序
+不得改变分页结果；模板重新套用时必须从当前 CollectionView 回放状态，而不能把模板部件的默认值当成真源。
+
 列过滤契约采用数据源与选中值分离的模型。`Filters` 是列过滤项数据源入口，应作为可绑定 Avalonia 属性维护，允许直接绑定 ViewModel 或数据库查询结果。`SelectedFilterValues` 是当前列过滤选中值的唯一 public 状态 owner，默认按双向绑定语义工作。`DataGridColumn` 实现 `IDataContextProvider`，列加入或离开 `DataGrid` 时由 `DataGrid` 同步/释放列级 `DataContext`，保证 `Filters="{Binding ...}"` 和 `SelectedFilterValues="{Binding ...}"` 能绑定到 Gallery 或业务 ViewModel。若同一个 `DataGrid` 通过 `x:DataType` 声明行模型类型，列级 ViewModel 绑定必须避免被行模型上下文捕获：可在 XAML 绑定上显式指定 VM 类型；若具体工具链无法稳定解析这种嵌套上下文，可在页面加载或 View 初始化时直接把 VM 集合赋给列属性，但仍必须复用 `SelectedFilterValues` 作为唯一状态 owner，不能另建并行选中状态。`DataGrid` 内部的 `FilterDescriptions` 只承载 collection view 过滤投影，不应成为列过滤菜单、VM 状态或 checked state 的并行 owner。
 
 列过滤项不应强制用户构造 UI 专属对象。`Filters` 中的元素可以是 `DataGridFilterItem`，也可以是业务 DTO；当使用业务 DTO 时，通过 `FilterTextMemberPath`、`FilterValueMemberPath` 和 `FilterChildrenMemberPath` 声明展示文本、过滤值和树形子项路径。DTO 成员路径只走生成的 data member accessor，DTO 类型需要使用 `[GenerateDataMemberAccessors]` 或等价生成描述；内置过滤项解析不做运行时反射兜底。过滤值以 `object?` 作为语义类型，字符串只是默认文本匹配路径的一种输入，不应成为过滤值契约的硬限制。
@@ -64,6 +72,7 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | --- | --- | --- |
 | `PART_Ascending` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_BottomGridLine` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
+| `PART_BottomPagination` | `Pagination` | 投影 CollectionView 分页状态并转发底部翻页请求。 |
 | `PART_ContentFrame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
 | `PART_ContentPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_Descending` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
@@ -76,6 +85,7 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | `PART_RightGridLine` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_RootLayout` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
 | `PART_SortIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
+| `PART_TopPagination` | `Pagination` | 投影 CollectionView 分页状态并转发顶部翻页请求。 |
 | `PART_VerticalIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
 | `PART_VerticalSeparator` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 
@@ -100,6 +110,8 @@ Public API / inherited command / item source / user input
 - 列过滤状态以 `SelectedFilterValues` 为 owner：VM 更新它时重建当前列的 collection view 过滤投影并回放到 flyout checked state；用户在 flyout 中选择过滤项时先更新它，再由同一管线投影到 `FilterDescriptions`。
 - `Filters` 替换、reset 或 clear 时，Header 和 FilterIndicator 必须重新计算过滤入口可见性并重新物化 flyout 内容；已有 `SelectedFilterValues` 只能保留仍能匹配到有效过滤项的值。
 - `ClearFilters()` 和单列清除过滤必须通过清空列级 `SelectedFilterValues` 完成，不能只清空 `FilterDescriptions`，否则 VM 绑定、过滤图标激活态和 flyout 勾选态会分裂。
+- 分页状态以当前 `DataGridCollectionView` 为 owner；顶部和底部分页部件必须从同一份 `ItemCount`、`PageSize`
+  和 `PageIndex` 投影，不能互相覆盖，也不能在模板重建时反向重置 CollectionView。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

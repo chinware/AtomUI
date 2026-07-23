@@ -1636,6 +1636,11 @@ public partial class DataGrid : TemplatedControl,
         _topPagination    = e.NameScope.Find<Pagination>(DataGridThemeConstants.TopPaginationPart);
         _bottomPagination = e.NameScope.Find<Pagination>(DataGridThemeConstants.BottomPaginationPart);
 
+        if (CollectionView is DataGridCollectionView collectionView)
+        {
+            SyncPaginationState(collectionView);
+        }
+
         if (_topPagination != null)
         {
             _topPagination.CurrentPageChanged += HandlePageChangeRequest;
