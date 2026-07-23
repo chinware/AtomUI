@@ -1,5 +1,6 @@
 using System.Reactive;
 using System.ComponentModel;
+using System.Windows.Input;
 using AtomUI.Desktop.Controls;
 using AtomUI.Theme;
 using AtomUI.Toolkits.GalleryBase.Shell;
@@ -148,6 +149,7 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
         _themeMenuItems.Clear();
 
         var insertIndex = 0;
+        var switchThemeCommand = new StableCommand(ViewModel.SwitchThemeCommand);
         foreach (var theme in ViewModel.AvailableThemes)
         {
             var item = new MenuItem
@@ -156,7 +158,7 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
                 ToggleType       = MenuItemToggleType.Radio,
                 GroupName        = ThemeColorGroupName,
                 IsChecked        = string.Equals(theme.Id, ViewModel.CurrentThemeId, StringComparison.Ordinal),
-                Command          = ViewModel.SwitchThemeCommand,
+                Command          = switchThemeCommand,
                 CommandParameter = theme.Id
             };
             _themeMenuItem.Items.Insert(insertIndex++, item);
@@ -285,5 +287,27 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
         }
 
         return null;
+    }
+
+    private sealed class StableCommand(ICommand innerCommand) : ICommand
+    {
+        public event EventHandler? CanExecuteChanged
+        {
+            add { }
+            remove { }
+        }
+
+        public bool CanExecute(object? parameter)
+        {
+            return innerCommand.CanExecute(parameter);
+        }
+
+        public void Execute(object? parameter)
+        {
+            if (innerCommand.CanExecute(parameter))
+            {
+                innerCommand.Execute(parameter);
+            }
+        }
     }
 }

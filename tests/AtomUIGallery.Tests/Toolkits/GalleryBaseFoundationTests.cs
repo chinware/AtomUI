@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Reactive.Threading.Tasks;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUI.Controls;
@@ -426,6 +427,30 @@ public class GalleryBaseFoundationTests
         }
     }
 
+    [Fact]
+    public async Task Workspace_ViewModel_Does_Not_Reapply_Selected_Theme_Id()
+    {
+        var configuration = CreateNavigationConfiguration(new Dictionary<EntityKey, int>());
+        var manager       = Application.Current!.GetThemeManager()!;
+
+        await RestoreDefaultThemeAsync(manager);
+        var viewModel = new GalleryWorkspaceViewModel(configuration);
+        try
+        {
+            viewModel.CurrentThemeId.ShouldBe(manager.CurrentTheme!.ThemeId);
+            var transitionId = ReadNextThemeTransitionId(manager);
+
+            await viewModel.SwitchThemeCommand.Execute(viewModel.CurrentThemeId).ToTask();
+
+            ReadNextThemeTransitionId(manager).ShouldBe(transitionId);
+        }
+        finally
+        {
+            viewModel.Dispose();
+            await RestoreDefaultThemeAsync(manager);
+        }
+    }
+
     private static GalleryBaseConfiguration CreateNavigationConfiguration(
         IDictionary<EntityKey, int> routeCreationCounts)
     {
@@ -452,6 +477,15 @@ public class GalleryBaseFoundationTests
         config.ShouldNotBeNull();
         config!.Tokens.TryGetValue(name, out var value).ShouldBeTrue();
         return value!;
+    }
+
+    private static long ReadNextThemeTransitionId(IThemeManager manager)
+    {
+        var field = manager.GetType().GetField(
+            "_nextTransitionId",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return (long)field!.GetValue(manager)!;
     }
 
     private static async Task RestoreDefaultThemeAsync(IThemeManager manager)

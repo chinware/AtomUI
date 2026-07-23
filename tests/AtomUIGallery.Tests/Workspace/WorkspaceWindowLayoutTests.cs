@@ -1,6 +1,9 @@
 using System;
 using System.IO;
+using System.Reflection;
+using System.Windows.Input;
 using System.Xml.Linq;
+using AtomUIGallery.Workspace.Views;
 using Shouldly;
 using Xunit;
 
@@ -149,7 +152,9 @@ public class WorkspaceWindowLayoutTests
         viewSource.ShouldContain("<atom:MenuSeparator />");
         codeSource.ShouldContain("ViewModel.AvailableThemes");
         codeSource.ShouldContain("GroupName        = ThemeColorGroupName");
-        codeSource.ShouldContain("Command          = ViewModel.SwitchThemeCommand");
+        codeSource.ShouldContain("var switchThemeCommand = new StableCommand(ViewModel.SwitchThemeCommand)");
+        codeSource.ShouldContain("Command          = switchThemeCommand");
+        codeSource.ShouldNotContain("Command          = ViewModel.SwitchThemeCommand");
         codeSource.ShouldContain("CommandParameter = theme.Id");
         codeSource.ShouldContain("theme.AccentColor is { } accentColor");
         codeSource.ShouldContain("Width               = 12");
@@ -157,6 +162,22 @@ public class WorkspaceWindowLayoutTests
         codeSource.ShouldContain("CornerRadius        = new CornerRadius(2)");
         codeSource.ShouldContain("Background          = new SolidColorBrush(accentColor)");
         codeSource.ShouldNotContain("ReloadThemesCommand");
+    }
+
+    [Fact]
+    public void Workspace_Window_Theme_Command_Does_Not_Forward_CanExecuteChanged_To_Menu_Items()
+    {
+        var innerCommand  = new RecordingCommand();
+        var stableCommand = CreateStableThemeCommand(innerCommand);
+        var raiseCount    = 0;
+        stableCommand.CanExecuteChanged += (_, _) => raiseCount++;
+
+        innerCommand.RaiseCanExecuteChanged();
+
+        raiseCount.ShouldBe(0);
+        stableCommand.CanExecute("PolarGreen").ShouldBeTrue();
+        stableCommand.Execute("PolarGreen");
+        innerCommand.ExecuteParameters.ShouldBe(["PolarGreen"]);
     }
 
     [Fact]
@@ -244,5 +265,34 @@ public class WorkspaceWindowLayoutTests
         }
 
         throw new FileNotFoundException($"Could not find repository file: {relativePath}");
+    }
+
+    private static ICommand CreateStableThemeCommand(ICommand innerCommand)
+    {
+        var commandType = typeof(WorkspaceWindow).GetNestedType("StableCommand", BindingFlags.NonPublic);
+        commandType.ShouldNotBeNull();
+        return (ICommand)Activator.CreateInstance(commandType!, innerCommand)!;
+    }
+
+    private sealed class RecordingCommand : ICommand
+    {
+        public event EventHandler? CanExecuteChanged;
+
+        public List<object?> ExecuteParameters { get; } = [];
+
+        public bool CanExecute(object? parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object? parameter)
+        {
+            ExecuteParameters.Add(parameter);
+        }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
