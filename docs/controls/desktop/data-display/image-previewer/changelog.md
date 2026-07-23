@@ -7,9 +7,10 @@
 - Behavior
   - Make preview dialog title alignment default to `WindowCenter` on Windows, Linux and macOS while preserving explicit `TitleAlignment` projection to `ImagePreviewerTitleBar`.
   - Paint the dialog image viewer with the dialog background so Windows CSD maximize/restore frames do not expose the generic window underlay.
+  - Suppress preview image transform transitions during dialog window state/size transitions so maximize/restore does not combine outer window resizing with inner image translate animation.
 - Docs
   - Document the preview dialog title alignment invariant and its boundary with the shared `WindowTitleBarLayoutPanel` algorithm.
-  - Document the dialog-only viewer background boundary for Windows CSD state transitions.
+  - Document the dialog-only viewer background and transform suppression boundary for Windows CSD state transitions.
 
 ## 2026-07-08
 
