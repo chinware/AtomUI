@@ -825,20 +825,24 @@ public class SplitButton : ContentControl,
     {
         var size = base.ArrangeOverride(finalSize);
 
-        if (_secondaryButton is not null)
+        if (_primaryButton is not null && _secondaryButton is not null)
         {
             var originRect = _secondaryButton.Bounds;
+            var secondaryLeft = _primaryButton.Bounds.Right;
             if (!IsPrimaryButtonType)
             {
-                _secondaryButton.Arrange(
-                    originRect.Inflate(new Thickness(_secondaryButton.BorderThickness.Left, 0, 0, 0)));
+                secondaryLeft -= _secondaryButton.BorderThickness.Left;
             }
             else
             {
-                var separatorThickness = BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness.Left);
-                _secondaryButton.Arrange(
-                    originRect.Deflate(new Thickness(separatorThickness, 0, 0, 0)));
+                secondaryLeft += BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness.Left);
             }
+
+            _secondaryButton.Arrange(new Rect(
+                secondaryLeft,
+                originRect.Y,
+                Math.Max(0, originRect.Right - secondaryLeft),
+                originRect.Height));
         }
 
         return size;
