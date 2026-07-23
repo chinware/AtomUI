@@ -102,7 +102,7 @@
             <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>
 
-        <Style Selector="^[IsMotionEnabled=True]">
+        <Style Selector="^[IsMotionEnabled=True][SuppressTransformAnimation=False]">
             <Setter Property="Transitions">
                 <Transitions>
                     <TransformOperationsTransition Property="ImageRenderTransform" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />

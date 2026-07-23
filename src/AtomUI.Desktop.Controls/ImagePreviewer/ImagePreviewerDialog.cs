@@ -387,6 +387,7 @@ internal class ImagePreviewerDialog : Window,
     private readonly ImageViewer _imageViewer;
     private ImagePreviewItem? _currentItem;
     private bool _firstSizeCalculated;
+    private int _windowResizeTransformSuppressionVersion;
     private ImageSwitchTransformPolicy _switchTransformPolicy = ImageSwitchTransformPolicy.CreateDefault();
 
     static ImagePreviewerDialog()
@@ -573,12 +574,35 @@ internal class ImagePreviewerDialog : Window,
         {
             UpdateEffectivePreviewTitle();
         }
+        else if (change.Property == WindowStateProperty)
+        {
+            SuppressResizeMotion();
+        }
 
         if (change.Property == ImageScaleXProperty ||
             change.Property == ImageScaleYProperty)
         {
             UpdateScaleCapability();
         }
+    }
+
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        SuppressResizeMotion();
+    }
+
+    private void SuppressResizeMotion()
+    {
+        SetCurrentValue(SuppressTransformAnimationProperty, true);
+        var version = ++_windowResizeTransformSuppressionVersion;
+        Dispatcher.Post(() =>
+        {
+            if (version == _windowResizeTransformSuppressionVersion)
+            {
+                SetCurrentValue(SuppressTransformAnimationProperty, false);
+            }
+        }, DispatcherPriority.Background);
     }
 
     private void HandleCurrentIndexChanged()
