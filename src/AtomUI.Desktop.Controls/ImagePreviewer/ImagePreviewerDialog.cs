@@ -391,6 +391,7 @@ internal class ImagePreviewerDialog : Window,
 
     static ImagePreviewerDialog()
     {
+        TitleAlignmentProperty.OverrideDefaultValue<ImagePreviewerDialog>(WindowTitleBarTitleAlignment.WindowCenter);
         AffectsRender<ImagePreviewerDialog>(CurrentImageProperty);
         ImagePreviewBaseToolbar.HorizontalFlipRequestEvent.AddClassHandler<ImagePreviewerDialog>((dialog, args) =>
         {
@@ -478,6 +479,7 @@ internal class ImagePreviewerDialog : Window,
         {
             Name = "PART_ImageViewer"
         };
+        viewer[!ImageViewer.BackgroundProperty]                 = this[!BackgroundProperty];
         viewer[!ImageViewer.CountProperty]                      = this[!CountProperty];
         viewer[!ImageViewer.CurrentIndexProperty]               = this[!CurrentIndexProperty];
         viewer[!ImageViewer.CurrentImageProperty]               = this[!CurrentImageProperty];

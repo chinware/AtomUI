@@ -1,3 +1,4 @@
+using AtomUI;
 using AtomUI.Desktop.Controls;
 using Avalonia.Threading;
 using Shouldly;
@@ -112,6 +113,25 @@ public class ImagePreviewerTitleTests
             dialog.EffectivePreviewTitle.ShouldBe("second.png");
             dialog.IsFirstImage.ShouldBeFalse();
             dialog.IsLastImage.ShouldBeTrue();
+        });
+    }
+
+    [Theory]
+    [InlineData(OsType.Windows)]
+    [InlineData(OsType.Linux)]
+    [InlineData(OsType.macOS)]
+    public void ImagePreviewerDialog_Default_TitleAlignment_Is_WindowCenter_On_All_Platforms(OsType osType)
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var dialog = new TestImagePreviewerDialog();
+            dialog.SetValue(global::AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
+            var titleBar = new ImagePreviewerTitleBar();
+
+            dialog.ConfigureTitleBar(titleBar);
+
+            dialog.TitleAlignment.ShouldBe(WindowTitleBarTitleAlignment.WindowCenter);
+            titleBar.TitleAlignment.ShouldBe(WindowTitleBarTitleAlignment.WindowCenter);
         });
     }
 

@@ -232,6 +232,8 @@ ImagePreviewerOverlayHost (ImagePreviewerThemes.axaml + runtime host)
 
 `PreviewTitleIcon -> ImagePreviewerDialog.TitleIcon` 由打开预览时创建的 runtime open state 建立 C# relay，并在宿主关闭时随 open state 释放，因为 `ImagePreviewerDialog` 不是 `ImagePreviewer` 控件模板中的稳定 AXAML 节点。`ImagePreviewerDialog.TitleIcon -> ImagePreviewerTitleBar.Icon` 由 `Window.NotifyConfigureTitleBar(...)` 建立绑定，因为标题栏由 `Window.NotifyCreateTitleBar(...)` 运行时创建，不属于 `ImagePreviewerDialogTheme.axaml` 的静态模板节点。`ImagePreviewerTitleBar.Icon -> PART_IconPresenter.Icon` 必须留在 `ImagePreviewerTitleBarTheme.axaml` 中使用 `TemplateBinding` 表达。
 
+`ImagePreviewerDialog.Background -> ImageViewer.Background` 由 dialog 创建运行时 viewer 时建立 C# binding，并由 `ImageViewerTheme.axaml` 根 `Panel` 使用 `TemplateBinding Background` 绘制。该实心内容背景用于在 Windows CSD maximize/restore 状态切换帧中遮住 `WindowDrawnDecorations` underlay 的通用窗口背景；overlay host 未设置 viewer 背景，因此仍保持 overlay 模式的透明内容层语义。
+
 ## 6. 生命周期与模板接入
 
 生命周期规则：
@@ -250,6 +252,7 @@ ImagePreviewerOverlayHost (ImagePreviewerThemes.axaml + runtime host)
 - 加载完成后需要通知 `ImagePreviewRenderer` 和 `ImageViewer` 重新 measure/arrange，保证居中、fit-to-window、缩放按钮状态和拖拽边界基于真实图片尺寸计算。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
 - 预览 dialog 的 title bar 不直接恢复通用 `Window.Title` 绑定；`Window.Title` 只作为显式标题输入参与 effective preview title 算法，最终由 `ImagePreviewerTitleBar` 显示算法结果。
+- 预览 dialog 的 `TitleAlignment` 默认值为 `WindowCenter`，使 Windows、Linux 和 macOS 都默认按完整窗口水平中心排列标题；用户显式设置 `TitleAlignment` 时仍通过 `Window.NotifyConfigureTitleBar(...)` 投射到 `ImagePreviewerTitleBar`，并由 `WindowTitleBarLayoutPanel` 的既有算法处理左右安全区。
 
 稳定 template part 接入点：
 
@@ -306,6 +309,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 封面来源解析：从 effective items 和 `CoverIndex` 计算展示项，显示层对越界索引进行 clamp，并保持 public `CoverIndex` 原值不被静默改写。封面解析不得读取或改写 `CurrentIndex`。
 - 预览标题解析：先检查预览窗口或宿主的 `Window.Title`，非空白时直接使用；否则检查 `PreviewTitle`；仍为空时使用 `PreviewTitleResolver` 基于 current effective item 解析标题；解析不到标题时保持空态。
 - 预览窗口标题图标：`PreviewTitleIcon` relay 到 `ImagePreviewerDialog.TitleIcon`，再绑定到 `ImagePreviewerTitleBar.Icon`；主题只负责用 `PART_IconPresenter` 把显式 `PathIcon` 放在标题文字左侧，不创建右侧按钮或 action slot 语义，也不走 `Window.Icon` fallback。
+- 预览窗口标题对齐：`ImagePreviewerDialog` 覆盖 `TitleAlignment` 默认值为 `WindowCenter`；主题继续通过 `TemplateBinding` 把 `TitleAlignment` 传给 `WindowTitleBarLayoutPanel`，因此默认不触发通用 `Window` 的 `Auto` 平台策略，显式设置仍可覆盖。
 - 默认标题 resolver：`UriImagePreviewSource` 的本地路径和 `file://` 从 `ImageSourceUri.LocalPath` 提取文件名，`http(s)://` 从 `Uri.AbsolutePath` 最后一个非空 path segment 提取文件名并忽略 query/fragment，`avares://` 从资源路径最后一个非空 path segment 提取文件名；非 URI source 只使用 `DisplayName`，unsupported 或无法提取名称时返回 `null`。
 - 默认失败占位：封面和预览层共享本地化失败文案，使用图片失败语义图标和低干扰背景。主题不得硬编码 `Image load failed`，也不得把网络失败显示成仅由文本撑开的灰色窄条。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。

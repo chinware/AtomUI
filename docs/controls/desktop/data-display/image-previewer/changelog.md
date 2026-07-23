@@ -2,6 +2,15 @@
 
 本文档记录 ImagePreviewer 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-23
+
+- Behavior
+  - Make preview dialog title alignment default to `WindowCenter` on Windows, Linux and macOS while preserving explicit `TitleAlignment` projection to `ImagePreviewerTitleBar`.
+  - Paint the dialog image viewer with the dialog background so Windows CSD maximize/restore frames do not expose the generic window underlay.
+- Docs
+  - Document the preview dialog title alignment invariant and its boundary with the shared `WindowTitleBarLayoutPanel` algorithm.
+  - Document the dialog-only viewer background boundary for Windows CSD state transitions.
+
 ## 2026-07-08
 
 - API
