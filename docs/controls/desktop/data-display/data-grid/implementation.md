@@ -95,6 +95,25 @@ Public API / ItemsSource / Command / Event
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
 
+分页状态流以 `DataGridCollectionView` 为 owner：
+
+```text
+DataGrid.ItemsSource / DataGrid.PageSize
+  -> DataGridCollectionView.ItemCount / PageSize / PageIndex
+  -> DataGrid pagination state projection
+  -> PART_TopPagination / PART_BottomPagination
+
+Pagination.CurrentPageChanged
+  -> DataGridCollectionView.MoveToPage(oneBasedPage - 1)
+  -> DataGridCollectionView.PageChanging
+  -> both Pagination.CurrentPage
+```
+
+`PageSize` 配置和分页部件状态投影是两个不同职责。数据或 `PageSize` 变化时，DataGrid 先配置 CollectionView，
+再把 CollectionView 最终的 `ItemCount`、`PageSize` 和 `PageIndex` 同步到当前分页部件。模板首次应用或重新套用时，
+CollectionView 已经是有效状态真源，只回放分页投影，不应重新配置数据视图。顶部和底部分页部件不持久保存分页状态；
+任一部件缺失时只跳过该视觉投影，不改变 CollectionView 或另一个部件。
+
 列过滤状态流以列对象为状态 owner：
 
 ```text
@@ -124,6 +143,8 @@ Gallery 或业务 XAML 常见写法会在 `DataGrid` 上用 `x:DataType` 声明�
 
 - 构造阶段只注册必要状态，不依赖 template part。
 - 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
+- 分页模板部件取得后，先从当前 `DataGridCollectionView` 回放总数、页大小和当前页，再订阅
+  `CurrentPageChanged`。这一顺序防止属性回放产生的分页条件通知被误认为用户翻页请求。
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
@@ -132,6 +153,7 @@ Gallery 或业务 XAML 常见写法会在 `DataGrid` 上用 `x:DataType` 声明�
 
 - `PART_Ascending`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_BottomGridLine`：稳定模板协作入口，重命名前必须同步主题和实现。
+- `PART_BottomPagination`：底部分页状态投影；由 DataGrid 管理状态回放和翻页事件订阅。
 - `PART_ContentFrame`：承载根视觉、边框、背景或尺寸基线。
 - `PART_ContentPresenter`：展示用户内容、文本、图标或模板化数据。
 - `PART_Descending`：稳定模板协作入口，重命名前必须同步主题和实现。
@@ -144,6 +166,7 @@ Gallery 或业务 XAML 常见写法会在 `DataGrid` 上用 `x:DataType` 声明�
 - `PART_RightGridLine`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_RootLayout`：承载根视觉、边框、背景或尺寸基线。
 - `PART_SortIndicator`：展示指示器、进度、分页或状态反馈。
+- `PART_TopPagination`：顶部分页状态投影；由 DataGrid 管理状态回放和翻页事件订阅。
 - `PART_VerticalIndicator`：展示指示器、进度、分页或状态反馈。
 - `PART_VerticalSeparator`：稳定模板协作入口，重命名前必须同步主题和实现。
 
@@ -169,6 +192,18 @@ DataGrid 的交互事件应从输入源收敛到控件级语义事件：
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
+
+分页同步不变量：
+
+- 分页部件的 `Total` 来自 `DataGridCollectionView.ItemCount`，`PageSize` 来自 CollectionView 接受后的
+  `PageSize`，不能分别从不同状态源读取。
+- 分页部件使用一基页码；CollectionView 使用零基 `PageIndex`。当 `PageIndex < 0` 时投影为
+  `Pagination.DefaultCurrentPage`，否则投影为 `PageIndex + 1`。
+- 模板状态回放必须发生在新分页部件订阅 `CurrentPageChanged` 之前；旧部件必须先解绑，避免重新套模板后
+  旧视觉对象继续发出翻页请求。
+- 运行期用户翻页只通过 `MoveToPage` 修改 CollectionView；CollectionView 的 `PageChanging` 再把同一目标页
+  投影到上下两个分页部件，确保双分页显示一致。
+- `PageSize = 0` 时由 `EffectivePaginationVisibility` 隐藏分页区域；位置可见性不能代替分页状态初始化。
 
 Frame 与 Header 圆角不变量：
 

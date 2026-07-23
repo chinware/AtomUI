@@ -3777,18 +3777,28 @@ public partial class DataGrid
         if (CollectionView is DataGridCollectionView collectionView)
         {
             collectionView.PageSize = PageSize;
-            if (_topPagination != null)
-            {
-                _topPagination.Total       = collectionView.ItemCount;
-                _topPagination.PageSize    = PageSize;
-                _topPagination.CurrentPage = Pagination.DefaultCurrentPage;
-            }
-            if (_bottomPagination != null)
-            {
-                _bottomPagination.Total       = collectionView.ItemCount;
-                _bottomPagination.PageSize    = PageSize;
-                _bottomPagination.CurrentPage = Pagination.DefaultCurrentPage;
-            }
+            SyncPaginationState(collectionView);
+        }
+    }
+
+    private void SyncPaginationState(DataGridCollectionView collectionView)
+    {
+        var currentPage = collectionView.PageIndex < 0
+            ? Pagination.DefaultCurrentPage
+            : collectionView.PageIndex + 1;
+
+        if (_topPagination != null)
+        {
+            _topPagination.Total       = collectionView.ItemCount;
+            _topPagination.PageSize    = collectionView.PageSize;
+            _topPagination.CurrentPage = currentPage;
+        }
+
+        if (_bottomPagination != null)
+        {
+            _bottomPagination.Total       = collectionView.ItemCount;
+            _bottomPagination.PageSize    = collectionView.PageSize;
+            _bottomPagination.CurrentPage = currentPage;
         }
     }
 
