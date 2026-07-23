@@ -59,6 +59,17 @@ public class ImagePreviewerLoadingVisualTests
         viewerTheme.ShouldContain("<Setter Property=\"Height\" Value=\"48\" />");
     }
 
+    [Fact]
+    public void Dialog_ImageViewer_Paints_Dialog_Background_To_Cover_Csd_State_Transition_Frames()
+    {
+        var dialogSource = ReadRepoFile("src/AtomUI.Desktop.Controls/ImagePreviewer/ImagePreviewerDialog.cs");
+        var viewerTheme  = ReadRepoFile("src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImageViewerTheme.axaml");
+
+        dialogSource.ShouldContain("viewer[!ImageViewer.BackgroundProperty]");
+        dialogSource.ShouldContain("this[!BackgroundProperty]");
+        viewerTheme.ShouldContain("<Panel Background=\"{TemplateBinding Background}\">");
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
