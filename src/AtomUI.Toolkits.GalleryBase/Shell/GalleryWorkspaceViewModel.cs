@@ -175,6 +175,10 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     private Task SwitchThemeAsync(string themeId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(themeId);
+        if (string.Equals(themeId, CurrentThemeId, StringComparison.Ordinal))
+        {
+            return Task.CompletedTask;
+        }
         return ApplyThemeSettingsAsync(themeId);
     }
 
