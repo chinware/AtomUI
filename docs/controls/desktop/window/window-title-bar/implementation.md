@@ -126,11 +126,19 @@ Window
 └── Window template / drawn decorations host
     └── WindowTitleBar
         └── WindowTitleBarLayoutPanel
-            ├── Leading
+            ├── Leading (Windows/Linux)
+            │   └── DockPanel
+            │       ├── ContentPresenter#PART_Logo
+            │       └── ContentPresenter#PART_LeftAddOn
+            ├── Leading (macOS)
             │   └── ContentPresenter#PART_LeftAddOn
-            ├── Title
-            │   ├── ContentPresenter#PART_Logo
-            │   └── ContentPresenter#PART_ContentPresenter
+            ├── Title (Windows/Linux)
+            │   └── DockPanel
+            │       └── ContentPresenter#PART_ContentPresenter
+            ├── Title (macOS)
+            │   └── DockPanel
+            │       ├── ContentPresenter#PART_Logo
+            │       └── ContentPresenter#PART_ContentPresenter
             └── Trailing
                 ├── ContentPresenter#PART_RightAddOn
                 └── CaptionButtonGroup#PART_CaptionButtonGroup
@@ -207,6 +215,8 @@ MR = TrailingWidth > 0 ? TrailingWidth + HeaderHorizontalSpacing : 0
 
 `LeadingWidth` 与 `TrailingWidth` 来自 direct role child 的 `DesiredSize.Width`，已经包含该 child 自身 margin，因此 margin 不再额外累加。区域缺失、不可见、内容为空或孩子实测为零时，对应占位和间距同时为零。Title 组内的 `LogoAndTitleSpacing` 也只在 Logo/Icon 与 Title 两个有效孩子都参与布局时出现。
 
+Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并排在 `PART_LeftAddOn` 之前；因此 Logo 宽度作为 `LeadingWidth` 的一部分参与安全空间计算。macOS 默认模板、ImagePreviewer 标题宿主和全屏标题宿主仍可把图标放在 Title role 内，并继续由同一标题对齐公式处理。
+
 ## 9. 资源、性能与 AOT 边界
 
 - 窗口订阅和 relay binding 都有明确的 attach/detach 或 apply/reapply 配对。
@@ -222,7 +232,7 @@ MR = TrailingWidth > 0 ? TrailingWidth + HeaderHorizontalSpacing : 0
 - `WindowTitleBar` 与 `Window.NotifyConfigureTitleBar` 的属性投影保持单向且完整。
 - `WindowTitleBar.OnApplyTemplate`、logical attach/detach 和 `CaptionButtonGroup.Attach/Detach` 始终成对释放。
 - 三个平台 ControlTemplate 保持相同语义角色、稳定 part 名称和平台 caption button 顺序。
-- Logo 与 Title 始终属于连续 Title 组；add-on 和 caption buttons 不进入标题中心计算。
+- Windows/Linux 的 Logo 始终位于 Leading 最左侧；macOS、ImagePreviewer 与全屏标题宿主可将图标与 Title 保持为连续 Title 组。无论图标位于哪个 role，标题对齐公式只读取 Leading、Title、Trailing 三个 direct role child 的实测宽度。
 - Leading/Trailing 为零宽时不产生操作区间距；add-on margin 只通过 `DesiredSize` 计入一次。
 - ImagePreviewer 与两个全屏标题宿主复用同一标题布局模型。
 - Title 不参与命中测试；add-on 与 caption buttons 保持可交互。

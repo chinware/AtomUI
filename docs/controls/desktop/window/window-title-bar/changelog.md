@@ -2,6 +2,15 @@
 
 本文档记录 WindowTitleBar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-23
+
+- Theme
+  - Place visible Windows and Linux `PART_Logo` content at the physical leading edge before `PART_LeftAddOn`, while keeping macOS Logo/Title grouping unchanged.
+- Tests
+  - Cover Windows/Linux template Logo ordering and verify explicit title alignments plus dynamic add-on changes against the shared safe-region formula.
+- Docs
+  - Synchronize the platform-specific Logo role model and Token spacing semantics.
+
 ## 2026-07-22
 
 - API
