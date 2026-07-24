@@ -61,7 +61,9 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         HostWindow.Closed += HandleWindowClosed;
         HostWindow.KeyDown += HandleWindowKeyDown;
         HostWindow.PositionChanged += HandleHostWindowPositionChanged;
+        HostWindow.Resized += HandleHostWindowResized;
         HostWindow.ScalingChanged += HandleHostWindowScalingChanged;
+        HostWindow.NativeUserResizeCompleted += HandleHostWindowNativeUserResizeCompleted;
         _surface.CloseRequested += HandleSurfaceCloseRequested;
         _surface.StructuralMinimumChanged += HandleStructuralMinimumChanged;
     }
@@ -194,24 +196,22 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         HostWindow.Measure(Size.Infinity);
         var chrome = ResolveWindowChromeSize();
         var capacity = ResolveSurfaceCapacity(chrome);
-        _surface.Measure(capacity);
-        ResolveAndApplyNormalConstraints(capacity, chrome);
+        _normalSizeConstraints = ResolveNormalConstraints(capacity);
 
         var usesNaturalWidth = !double.IsFinite(_dialog.HostWidth);
         var usesNaturalHeight = !double.IsFinite(_dialog.HostHeight);
         var width = usesNaturalWidth
             ? Math.Clamp(
-                _surface.DesiredSize.Width,
+                ResolveNaturalSurfaceWidth(),
                 _normalSizeConstraints.MinWidth,
                 _normalSizeConstraints.MaxWidth)
             : Math.Clamp(
                 ResolveInitialAxis(_dialog.HostWidth, _normalSizeConstraints.MinWidth),
                 _normalSizeConstraints.MinWidth,
                 _normalSizeConstraints.MaxWidth);
-        _surface.Measure(new Size(width, capacity.Height));
         var height = usesNaturalHeight
             ? Math.Clamp(
-                _surface.DesiredSize.Height,
+                ResolveNaturalSurfaceHeight(width),
                 _normalSizeConstraints.MinHeight,
                 _normalSizeConstraints.MaxHeight)
             : Math.Clamp(
@@ -219,6 +219,7 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
                 _normalSizeConstraints.MinHeight,
                 _normalSizeConstraints.MaxHeight);
 
+        ApplyNormalConstraints(capacity, chrome);
         _windowChromeSize = chrome;
         _normalSurfaceSize = _normalSizeConstraints.Clamp(new Size(width, height));
         return ApplyNormalWindowSize(_normalSurfaceSize.Value);
@@ -234,24 +235,28 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         PrepareSizingVisuals();
         var chrome = ResolveWindowChromeSize();
         var capacity = ResolveSurfaceCapacity(chrome);
-        ResolveAndApplyNormalConstraints(capacity, chrome);
+        _normalSizeConstraints = ResolveNormalConstraints(capacity);
+        ApplyNormalConstraints(capacity, chrome);
         _normalSurfaceSize = _normalSizeConstraints.Clamp(normalSurfaceSize);
         _windowChromeSize = chrome;
 
-        if (HostWindow.WindowState == WindowState.Normal)
+        if (CanApplyNormalWindowSize)
         {
             ApplyNormalWindowSize(_normalSurfaceSize.Value);
         }
     }
 
-    private void ResolveAndApplyNormalConstraints(Size capacity, Size chrome)
+    private DialogSizeConstraints ResolveNormalConstraints(Size capacity)
     {
-        _normalSizeConstraints = DialogSizeConstraints.Resolve(
+        return DialogSizeConstraints.Resolve(
             _surface.MeasureStructuralMinimum(),
             new Size(_dialog.HostMinWidth, _dialog.HostMinHeight),
             new Size(_dialog.HostMaxWidth, _dialog.HostMaxHeight),
             capacity);
+    }
 
+    private void ApplyNormalConstraints(Size capacity, Size chrome)
+    {
         _surface.MinWidth = _normalSizeConstraints.MinWidth;
         _surface.MinHeight = _normalSizeConstraints.MinHeight;
         _surface.MaxWidth = _normalSizeConstraints.MaxWidth;
@@ -274,6 +279,22 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         HostWindow.MinHeight = windowMinHeight;
         HostWindow.MaxWidth = windowMaxWidth;
         HostWindow.MaxHeight = windowMaxHeight;
+    }
+
+    private double ResolveNaturalSurfaceWidth()
+    {
+        _surface.Measure(Size.Infinity);
+        return ResolveInitialAxis(
+            _surface.DesiredSize.Width,
+            _normalSizeConstraints.MinWidth);
+    }
+
+    private double ResolveNaturalSurfaceHeight(double width)
+    {
+        _surface.Measure(new Size(width, double.PositiveInfinity));
+        return ResolveInitialAxis(
+            _surface.DesiredSize.Height,
+            _normalSizeConstraints.MinHeight);
     }
 
     private void PrepareSizingVisuals()
@@ -365,6 +386,11 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
 
     private Size ApplyNormalWindowSize(Size surfaceSize)
     {
+        if (ShouldDeferNormalWindowSizeApplication)
+        {
+            return HostWindow.ClientSize;
+        }
+
         var requestedWindowSize = surfaceSize + _windowChromeSize;
         HostWindow.SizeToContent = SizeToContent.Manual;
         var windowSize = HostWindow.ApplyRequestedSize(
@@ -503,7 +529,9 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             HostWindow.Closed -= HandleWindowClosed;
             HostWindow.KeyDown -= HandleWindowKeyDown;
             HostWindow.PositionChanged -= HandleHostWindowPositionChanged;
+            HostWindow.Resized -= HandleHostWindowResized;
             HostWindow.ScalingChanged -= HandleHostWindowScalingChanged;
+            HostWindow.NativeUserResizeCompleted -= HandleHostWindowNativeUserResizeCompleted;
             _surface.CloseRequested -= HandleSurfaceCloseRequested;
             _surface.StructuralMinimumChanged -= HandleStructuralMinimumChanged;
             try
@@ -537,6 +565,7 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             _openingCancellationSource = null;
             HostWindow.Resources.MergedDictionaries.Remove(_resourceBridge);
             _resourceBridge.Dispose();
+            HostWindow.ReleasePresenterHooks();
             HostWindow.Content = null;
             ((ISetInheritanceParent)_surface).SetParent(null);
             try
@@ -564,6 +593,12 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
     private void HandleWindowOpened(object? sender, EventArgs e)
     {
         _openedSource.TrySetResult();
+        var clientSizeBeforeRefresh = HostWindow.ClientSize;
+        RefreshSizingPreservingActualSize();
+        if (HostWindow.ClientSize != clientSizeBeforeRefresh)
+        {
+            ApplyStartupPlacement(HostWindow.ClientSize);
+        }
     }
 
     private void HandleWindowClosed(object? sender, EventArgs e)
@@ -581,7 +616,7 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         _normalSurfaceSize = new Size(
             Math.Clamp(value, _normalSizeConstraints.MinWidth, _normalSizeConstraints.MaxWidth),
             normalSurfaceSize.Height);
-        if (HostWindow.WindowState == WindowState.Normal)
+        if (CanApplyNormalWindowSize)
         {
             ApplyNormalWindowSize(_normalSurfaceSize.Value);
         }
@@ -597,7 +632,7 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         _normalSurfaceSize = new Size(
             normalSurfaceSize.Width,
             Math.Clamp(value, _normalSizeConstraints.MinHeight, _normalSizeConstraints.MaxHeight));
-        if (HostWindow.WindowState == WindowState.Normal)
+        if (CanApplyNormalWindowSize)
         {
             ApplyNormalWindowSize(_normalSurfaceSize.Value);
         }
@@ -605,25 +640,45 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
 
     private void HandleWindowChromeChanged()
     {
-        if (HostWindow.WindowState == WindowState.Normal)
+        if (!_openedSource.Task.IsCompleted)
+        {
+            return;
+        }
+
+        RefreshSizingPreservingActualSize();
+    }
+
+    private void HandleWindowStateChanged(WindowState state)
+    {
+        if (_openedSource.Task.IsCompleted &&
+            state == WindowState.Normal)
         {
             RefreshSizingPreservingActualSize();
         }
     }
 
-    private void HandleWindowStateChanged(WindowState state)
+    private void HandleHostWindowResized(object? sender, WindowResizedEventArgs e)
     {
-        if (state == WindowState.Normal)
+        if (_normalSurfaceSize is null ||
+            !_openedSource.Task.IsCompleted ||
+            !HostWindow.IsVisible ||
+            HostWindow.WindowState != WindowState.Normal ||
+            e.Reason != WindowResizeReason.User)
         {
-            RefreshSizingPreservingActualSize();
+            return;
         }
+
+        _normalSurfaceSize = _normalSizeConstraints.Clamp(
+            ResolveSurfaceSize(e.ClientSize, _windowChromeSize));
     }
 
     private void HandleHostWindowClientSizeChanged(Size clientSize)
     {
         if (_normalSurfaceSize is null ||
             !_openedSource.Task.IsCompleted ||
-            HostWindow.WindowState != WindowState.Normal)
+            !HostWindow.IsVisible ||
+            HostWindow.WindowState != WindowState.Normal ||
+            !HostWindow.IsNativeUserResizeInProgress)
         {
             return;
         }
@@ -632,18 +687,43 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             ResolveSurfaceSize(clientSize, _windowChromeSize));
     }
 
+    private void HandleHostWindowNativeUserResizeCompleted(object? sender, EventArgs e)
+    {
+        if (!_openedSource.Task.IsCompleted)
+        {
+            return;
+        }
+
+        RefreshSizingPreservingActualSize();
+    }
+
     private void HandleHostWindowScalingChanged(object? sender, EventArgs e)
     {
+        if (!_openedSource.Task.IsCompleted)
+        {
+            return;
+        }
+
         RefreshSizingPreservingActualSize();
     }
 
     private void HandleHostWindowPositionChanged(object? sender, PixelPointEventArgs e)
     {
+        if (!_openedSource.Task.IsCompleted)
+        {
+            return;
+        }
+
         RefreshSizingPreservingActualSize();
     }
 
     private void HandleStructuralMinimumChanged(object? sender, EventArgs e)
     {
+        if (!_openedSource.Task.IsCompleted)
+        {
+            return;
+        }
+
         RefreshSizingPreservingActualSize();
     }
 
@@ -671,4 +751,12 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
 
         await Dispatcher.UIThread.InvokeAsync(action);
     }
+
+    private bool CanApplyNormalWindowSize =>
+        HostWindow.WindowState == WindowState.Normal &&
+        !ShouldDeferNormalWindowSizeApplication;
+
+    private bool ShouldDeferNormalWindowSizeApplication =>
+        HostWindow.IsNativeUserResizeInProgress &&
+        HostWindow.WindowState == WindowState.Normal;
 }

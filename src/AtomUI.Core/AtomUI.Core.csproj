@@ -16,7 +16,6 @@
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all"/>
-        <ProjectReference Include="../AtomUI.Native/AtomUI.Native.csproj" />
     </ItemGroup>
 
     <ItemGroup>

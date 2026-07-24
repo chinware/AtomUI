@@ -61,6 +61,9 @@ ResourceProvider 和全局 TopLevel context style 的唯一 ThemeManager 随后�
 
 ## 源码包边界
 
+- `AtomUI.Native` 是内部原生平台能力层，封装 Win32、DWM、Objective-C runtime、Xlib/XCB 和
+  Wayland protocol 等底层调用。它提供能力，不决定控件策略或主题策略；P/Invoke、原生结构体、
+  协议对象和可释放 native hook 不应散落在上层控件实现中。
 - `AtomUI.Core` 是所有上层项目的基础设施，包含主题、Token、语言、本地资源、动画、MotionScene。
 - `AtomUI.Controls.Shared` 不提供完整 UI 控件，主要沉淀跨控件复用的接口、状态、集合视图、异步加载、上传和媒体断点能力。
 - `AtomUI.Controls` 提供公共控件和 Primitives，是桌面控件包的基础。

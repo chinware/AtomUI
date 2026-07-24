@@ -92,9 +92,13 @@ ExtendClientAreaToDecorationsHint = true
 Avalonia Win32 独占 `WM_NCCALCSIZE`、resize hit-test 和 DWM non-client frame。AtomUI 不修改
 客户区或窗口几何。
 
-AtomUI 不注册窗口消息 hook。标题栏按钮通过 Avalonia 公开的
+AtomUI 不在 Window chrome 层重新实现窗口消息处理。标题栏按钮通过 Avalonia 公开的
 `WindowDecorationProperties.ElementRole` 声明角色，由 Avalonia Win32 完成非客户区命中测试
 和 Windows 11 Snap Layout 集成。
+
+允许 `AtomUI.Native` 提供窄范围、显式 opt-in、可释放的 Win32 sizing/message helper，但这类 helper
+只能服务于原生尺寸边界或 live resize 生命周期信号，不能接管 `WM_NCCALCSIZE`、`WM_NCHITTEST`、
+caption hit-test、DWM frame 或 Snap Layout。
 
 ---
 
@@ -216,7 +220,7 @@ Wayland input region 当前没有公开框架 API；AtomUI 当前越过 proxy �
 | WindowDrawnDecorations | 创建 | 创建 |
 | 合成模式 | RedirectionSurface | RedirectionSurface |
 | 非客户区与 resize | Avalonia Win32 | Avalonia Win32 |
-| AtomUI WndProc | 无 | 无 |
+| AtomUI WndProc | 普通 Window chrome 无；Native 可提供受限 sizing helper | 普通 Window chrome 无；Native 可提供受限 sizing helper |
 
 ### 为什么 Windows 使用 RedirectionSurface
 
@@ -239,6 +243,10 @@ Windows 现在固定 `IsCsdEnabled=true`，并保持
 `ExtendClientAreaToDecorationsHint=true`。AtomUI 不再挂载 Windows chrome manager，
 不再修改窗口几何。
 
+这里的“窗口几何”指非客户区、hit-test、DWM frame 和 caption 行为的所有权。Dialog 等特定 host 若遇到
+Windows 原生 track size 与 CSD client/frame 差值不一致的问题，可以通过 `AtomUI.Native` 中受限的
+sizing helper 修正 `WM_GETMINMAXINFO` 边界，但 helper 必须由 host 显式启用并在关闭时释放。
+
 ### 合成模式配置
 
 `AtomUI.Core` 直接使用 Avalonia 公开的 `Win32PlatformOptions`。策略集中在内部
@@ -251,13 +259,14 @@ CompositionMode = [RedirectionSurface];
 ### Snap Layout
 
 Windows 标题栏按钮在 AXAML 中声明 `WindowDecorationProperties.ElementRole`。最大化按钮的
-`MaximizeButton` 角色由 Avalonia Win32 转换为 `HTMAXBUTTON`，AtomUI 不接触 WndProc。
+`MaximizeButton` 角色由 Avalonia Win32 转换为 `HTMAXBUTTON`，AtomUI Window chrome 不接触 WndProc。
 
 ### 维护约束
 
 - 不要重新引入 AtomUI 自定义 `WM_NCCALCSIZE`。
 - 不要手动返回 `HTLEFT/HTTOP/...`。
 - 不要用 `DwmExtendFrameIntoClientArea` 或 `SWP_FRAMECHANGED` 修补 CSD。
+- 不要把 Native sizing helper 扩展成第二套 Window chrome 或 caption hit-test。
 - 上游修复 WinUIComposition / DirectComposition 的 live resize 同步后，必须重新做
   Windows 10 和 Windows 11 快速拖动左/上边缘的实机验证，才能恢复。
 
