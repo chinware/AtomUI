@@ -52,16 +52,15 @@ public class DrawerThemeContractTests
     }
 
     [Fact]
-    public void Drawn_Decorations_Overlay_Provides_TitleBar_Covering_Hosts()
+    public void Drawn_Decorations_Overlay_Yields_To_Interactive_Window_Overlays()
     {
         var source = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"));
 
         source.ShouldContain("Name=\"PART_OverlayWrapper\"");
-        source.ShouldContain("Name=\"PART_DrawerOverlayLayerHost\"");
-        source.ShouldContain("Name=\"PART_DialogOverlayLayerHost\"");
-        source.ShouldContain("<atom:WindowVisualLayerClip");
-        source.ShouldNotContain("IsDrawnTitleBarOverlayVisible");
+        source.ShouldContain("IsDrawnChromeOverlayVisible");
+        source.ShouldNotContain("PART_DrawerOverlayLayerHost");
+        source.ShouldNotContain("PART_DialogOverlayLayerHost");
     }
 
     [Fact]

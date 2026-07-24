@@ -1267,7 +1267,7 @@ public class OverlayDialogPresenterTests
     [InlineData(OsType.Windows, true)]
     [InlineData(OsType.Linux, true)]
     [InlineData(OsType.macOS, false)]
-    public void Available_Drawn_Decorations_Dialog_Host_Is_Used_On_Every_Platform(
+    public void Dialog_Content_Remains_In_The_TopLevel_Visual_Tree_When_Drawn_Decorations_Are_Available(
         OsType osType,
         bool isCsdEnabled)
     {
@@ -1284,9 +1284,11 @@ public class OverlayDialogPresenterTests
                 Height = 480,
                 Content = root
             };
+            var input = new AtomUI.Desktop.Controls.LineEdit();
             var presenter = new OverlayDialogPresenter(
                 new AtomUI.Desktop.Controls.Dialog
                 {
+                    Content = input,
                     IsModal = true,
                     IsMotionEnabled = false,
                     HostWidth = 320,
@@ -1301,13 +1303,15 @@ public class OverlayDialogPresenterTests
                 Dispatcher.UIThread.RunJobs();
                 window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, osType);
                 window.IsCsdEnabled = isCsdEnabled;
+                Dispatcher.UIThread.RunJobs();
                 var dialogHost = new Panel { Name = "PART_DialogOverlayLayerHost" };
                 restoreDecorations = DrawnDecorationsTestHost.Install(window, dialogHost);
 
                 WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
                 var dialogLayer = presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
 
-                dialogLayer.Parent.ShouldBeSameAs(dialogHost);
+                dialogLayer.Parent.ShouldNotBeSameAs(dialogHost);
+                TopLevel.GetTopLevel(input).ShouldBeSameAs(window);
 
                 WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
                 WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
