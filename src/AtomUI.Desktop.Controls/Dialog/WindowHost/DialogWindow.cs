@@ -6,7 +6,7 @@ namespace AtomUI.Desktop.Controls;
 
 internal sealed class DialogWindow : Window
 {
-    private readonly WindowsCsdSizingHook? _windowsSizingHook;
+    private readonly INativeWindowSizingHook? _nativeSizingHook;
     private DialogWindowCloseState _closeState;
     private bool _isNativeUserResizeInProgress;
 
@@ -14,16 +14,16 @@ internal sealed class DialogWindow : Window
     internal event EventHandler? NativeUserResizeCompleted;
 
     internal bool IsNativeUserResizeInProgress =>
-        _windowsSizingHook?.IsUserResizeInProgress ?? _isNativeUserResizeInProgress;
+        _nativeSizingHook?.IsUserResizeInProgress ?? _isNativeUserResizeInProgress;
 
     protected override Type StyleKeyOverride { get; } = typeof(Window);
 
     internal DialogWindow()
     {
-        if (OperatingSystem.IsWindows())
+        _nativeSizingHook = NativeWindowSizing.TryAttachCsdSizingHook(this, () => IsCsdEnabled);
+        if (_nativeSizingHook is not null)
         {
-            _windowsSizingHook = new WindowsCsdSizingHook(this, () => IsCsdEnabled);
-            _windowsSizingHook.UserResizeCompleted += HandleWindowsUserResizeCompleted;
+            _nativeSizingHook.UserResizeCompleted += HandleNativeUserResizeCompleted;
         }
     }
 
@@ -41,7 +41,7 @@ internal sealed class DialogWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
-        ReleaseWindowsSizingHook();
+        ReleaseNativeSizingHook();
         CancelNativeUserResize();
         base.OnClosed(e);
     }
@@ -54,7 +54,7 @@ internal sealed class DialogWindow : Window
 
     internal void ReleasePresenterHooks()
     {
-        ReleaseWindowsSizingHook();
+        ReleaseNativeSizingHook();
         CancelNativeUserResize();
     }
 
@@ -94,9 +94,9 @@ internal sealed class DialogWindow : Window
 
     internal void BeginNativeUserResize()
     {
-        if (_windowsSizingHook is not null)
+        if (_nativeSizingHook is not null)
         {
-            _windowsSizingHook.BeginUserResize();
+            _nativeSizingHook.BeginUserResize();
             return;
         }
 
@@ -105,9 +105,9 @@ internal sealed class DialogWindow : Window
 
     internal void CompleteNativeUserResize()
     {
-        if (_windowsSizingHook is not null)
+        if (_nativeSizingHook is not null)
         {
-            _windowsSizingHook.CompleteUserResize();
+            _nativeSizingHook.CompleteUserResize();
             return;
         }
 
@@ -122,22 +122,22 @@ internal sealed class DialogWindow : Window
 
     private void CancelNativeUserResize()
     {
-        _windowsSizingHook?.CancelUserResize();
+        _nativeSizingHook?.CancelUserResize();
         _isNativeUserResizeInProgress = false;
     }
 
-    private void ReleaseWindowsSizingHook()
+    private void ReleaseNativeSizingHook()
     {
-        if (_windowsSizingHook is null)
+        if (_nativeSizingHook is null)
         {
             return;
         }
 
-        _windowsSizingHook.UserResizeCompleted -= HandleWindowsUserResizeCompleted;
-        _windowsSizingHook.Dispose();
+        _nativeSizingHook.UserResizeCompleted -= HandleNativeUserResizeCompleted;
+        _nativeSizingHook.Dispose();
     }
 
-    private void HandleWindowsUserResizeCompleted(object? sender, EventArgs e)
+    private void HandleNativeUserResizeCompleted(object? sender, EventArgs e)
     {
         NativeUserResizeCompleted?.Invoke(this, EventArgs.Empty);
     }

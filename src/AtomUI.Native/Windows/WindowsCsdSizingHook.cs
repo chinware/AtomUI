@@ -5,7 +5,7 @@ using Avalonia.Threading;
 
 namespace AtomUI.Native;
 
-internal sealed class WindowsCsdSizingHook : IDisposable
+internal sealed class WindowsCsdSizingHook : INativeWindowSizingHook
 {
     private const uint WmGetMinMaxInfo = 0x0024;
     private const uint WmEnterSizeMove = 0x0231;
