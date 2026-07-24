@@ -60,6 +60,11 @@ AtomUI 不重新实现 Win32 chrome，也不根据外部源码差异改变所有
 不是框架集成要求。它与 Avalonia CSD 形成重复所有权，会引入黑边、原生标题栏按钮
 闪现和新的 resize 回归，最终实现必须删除这条路径。
 
+这条边界不等于禁止所有 Win32 消息封装。若某个 host 需要修正 Windows 原生 sizing boundary，例如
+`WM_GETMINMAXINFO` 中 track size 与 CSD client/frame 差值不一致，相关消息结构体和 hook 生命周期应封装在
+`AtomUI.Native`，由上层 host 显式启用并释放。该能力不能处理 `WM_NCCALCSIZE`、`WM_NCHITTEST`、
+caption hit-test、DWM frame 或 Snap Layout。
+
 ## 两类抖动必须分开诊断
 
 ### 窗口外边缘错帧
@@ -119,8 +124,8 @@ AtomUI 不再注册自定义 WndProc 来返回 `HTMAXBUTTON`，也不通过反�
 ### AtomUI.Native
 
 `AtomUI.Native` 继续承载 Avalonia 公共 API 无法表达的平台能力，例如 Windows 整窗鼠标穿透、
-macOS standard window buttons 和 Linux input region。Windows live resize、CSD 所有权和合成
-后端选择不下沉为 Native hack。
+Windows sizing helper、macOS standard window buttons 和 Linux input region。Windows live resize 的合成
+后端选择、CSD 所有权和 Window chrome 策略不下沉为 Native hack；Native 只封装上层明确启用的底层能力。
 
 ## 禁止重新引入
 
@@ -130,6 +135,7 @@ macOS standard window buttons 和 Linux input region。Windows live resize、CSD
 - 不要用 `SWP_FRAMECHANGED`、延时、重试或强制刷新掩盖时序问题。
 - 不要默认开启 `ShouldRenderOnUIThread`、`Software` 或 `Wgl` 来规避单机驱动问题。
 - 不要用 WndProc hook 重复实现公开的 caption element roles。
+- 不要把 Native sizing helper 扩展成第二套 Window chrome、caption hit-test 或 resize hit-test。
 - 不要在 Windows 默认配置恢复 `WinUIComposition` / `DirectComposition` 优先级，除非上游变化后完成同等实机矩阵。
 
 ## 验证矩阵
@@ -139,7 +145,7 @@ macOS standard window buttons 和 Linux input region。Windows live resize、CSD
 1. Windows 10 选项只包含 `RedirectionSurface`。
 2. Windows 11+ 选项只包含 `RedirectionSurface`。
 3. 渲染模式保持 `AngleEgl`、`Software`，且 `ShouldRenderOnUIThread=false`。
-4. Windows caption buttons 使用公开 `ElementRole`，不存在自定义 WndProc 注册。
+4. Windows caption buttons 使用公开 `ElementRole`，不存在自定义 caption WndProc 注册。
 5. Window 主题保持 Avalonia CSD，源码不存在旧 Windows chrome manager。
 6. Desktop 测试、Browser 构建和 NativeAOT publish 不依赖运行时反射发现 Win32 options。
 7. Windows CSD 最小高度始终大于标题栏高度，并为内容合成表面保留非零高度。

@@ -29,11 +29,11 @@
 
 | 项目 | 直接引用 | 说明 |
 |---|---|---|
-| `AtomUI.Native` | `Avalonia`, `NWayland` | 原生窗口 API 基础层；NWayland 用于 Wayland surface 输入区域等协议能力 |
-| `AtomUI.Core` | `AtomUI.Native`, `AtomUI.Generator` | 主题、Token、语言、动画基础设施 |
+| `AtomUI.Native` | `Avalonia`, `NWayland` | 内部原生平台能力层；封装 Win32、Objective-C、Xlib/XCB、Wayland protocol 等底层调用 |
+| `AtomUI.Core` | `AtomUI.Generator` | 主题、Token、语言、动画基础设施 |
 | `AtomUI.Controls.Shared` | `AtomUI.Core`, `AtomUI.Generator` | 控件共享契约和协调器 |
 | `AtomUI.Controls` | `AtomUI.Core`, `AtomUI.Controls.Shared`, `AtomUI.Fonts.AlibabaSans`, `AtomUI.Icons.AntDesign`, `AtomUI.Generator` | 公共控件、Primitives、公共主题 |
-| `AtomUI.Desktop.Controls` | `AtomUI.Controls`, `AtomUI.Generator`, `Avalonia.Desktop`, `Avalonia.Wayland`, `Avalonia.X11` | 桌面主控件包及 AtomUI 的桌面后端选择入口 |
+| `AtomUI.Desktop.Controls` | `AtomUI.Controls`, `AtomUI.Native`, `AtomUI.Generator`, `Avalonia.Desktop`, `Avalonia.Wayland`, `Avalonia.X11` | 桌面主控件包及 AtomUI 的桌面后端选择入口 |
 | `AtomUI.Desktop.Controls.DataGrid` | `AtomUI.Desktop.Controls`, `AtomUI.Generator` | 独立 DataGrid 包 |
 | `AtomUI.Desktop.Controls.ColorPicker` | `AtomUI.Desktop.Controls`, `AtomUI.Generator`, `Avalonia.Controls.ColorPicker` | 独立 ColorPicker 包 |
 | `AtomUI.Desktop.Controls.Extras` | `AtomUI.Desktop.Controls`, `AtomUI.Generator` | Ant Design 之外的稳定补充控件包 |
@@ -52,6 +52,10 @@
 - `AtomUI.Core` 对 `AtomUI.Controls`、`AtomUI.Controls.Shared`、`AtomUI.Desktop.Controls`、DataGrid、ColorPicker、Extras 开放内部成员。
 - `AtomUI.Controls` 对 `AtomUI.Desktop.Controls`、DataGrid、ColorPicker、Extras 开放内部成员。
 - `AtomUI.Desktop.Controls` 对 DataGrid、ColorPicker、Extras、性能工具开放内部成员。
-- `AtomUI.Native` 对 `AtomUI.Core`、`AtomUI.Desktop.Controls`、未来 `AtomUI.Mobile.Controls` 开放内部成员。
+- `AtomUI.Native` 对 `AtomUI.Desktop.Controls`、未来 `AtomUI.Mobile.Controls` 开放内部成员。
 
 这些关系说明 DataGrid、ColorPicker 和 Extras 虽然是独立包，但它们不是完全隔离的第三方扩展，而是桌面控件体系的同源扩展。
+
+`AtomUI.Native` 是能力层，不是策略层。上层库可以通过 internal API 启用原生能力，但不应把控件行为、
+主题策略或平台默认配置下沉到 Native。反过来，P/Invoke、原生结构体、协议对象和可释放 native hook
+也不应散落在控件实现里。

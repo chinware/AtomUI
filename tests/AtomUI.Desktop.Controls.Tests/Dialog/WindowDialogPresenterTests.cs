@@ -224,6 +224,116 @@ public class WindowDialogPresenterTests
     }
 
     [Fact]
+    public void Natural_Window_Dialog_Height_Does_Not_Start_At_Maximum()
+    {
+        var owner = new AtomUI.Desktop.Controls.Window
+        {
+            Width = 800,
+            Height = 600
+        };
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            Title = "Basic window modal",
+            Content = new StackPanel
+            {
+                Children =
+                {
+                    new TextBlock { Text = "Some contents..." },
+                    new TextBlock { Text = "Some contents..." },
+                    new TextBlock { Text = "Some contents..." }
+                }
+            },
+            IsModal = false,
+            IsMotionEnabled = false,
+            IsResizable = true,
+            IsClosable = true,
+            IsMaximizable = true,
+            StandardButtons = DialogStandardButton.Yes,
+            DefaultStandardButton = DialogStandardButton.Yes,
+            HostMinWidth = 300,
+            HostMaxWidth = 520,
+            HostMaxHeight = 360
+        };
+        var presenter = new WindowDialogPresenter(dialog, owner);
+
+        try
+        {
+            owner.Show();
+            WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+
+            var surface = GetSurface(presenter);
+            var chrome = GetWindowChromeSize(presenter.HostWindow);
+
+            surface.Bounds.Height.ShouldBeLessThan(dialog.HostMaxHeight);
+            presenter.HostWindow.ClientSize.Height.ShouldBe(surface.Bounds.Height + chrome.Height);
+            presenter.HostWindow.ClientSize.Height.ShouldBeLessThan(dialog.HostMaxHeight + chrome.Height);
+        }
+        finally
+        {
+            WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+            WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+            owner.Close();
+        }
+    }
+
+    [Fact]
+    public void Natural_Window_Dialog_With_Custom_Footer_Does_Not_Start_At_Working_Area()
+    {
+        var owner = new AtomUI.Desktop.Controls.Window
+        {
+            Width = 800,
+            Height = 600
+        };
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            Title = "Title",
+            Content = new StackPanel
+            {
+                Spacing = 5,
+                Children =
+                {
+                    new TextBlock { Text = "Some contents..." },
+                    new TextBlock { Text = "Some contents..." },
+                    new TextBlock { Text = "Some contents..." },
+                    new TextBlock { Text = "Some contents..." },
+                    new TextBlock { Text = "Some contents..." }
+                }
+            },
+            IsModal = false,
+            IsMotionEnabled = false,
+            StandardButtons = DialogStandardButton.Ok | DialogStandardButton.Cancel,
+            DefaultStandardButton = DialogStandardButton.Ok,
+            HostMinWidth = 400
+        };
+        dialog.CustomButtons.Add(new DialogButton
+        {
+            Role = DialogButtonRole.ActionRole,
+            Content = "Custom button"
+        });
+        var presenter = new WindowDialogPresenter(dialog, owner);
+
+        try
+        {
+            owner.Show();
+            WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+
+            var surface = GetSurface(presenter);
+            var chrome = GetWindowChromeSize(presenter.HostWindow);
+
+            surface.Bounds.Width.ShouldBeGreaterThanOrEqualTo(dialog.HostMinWidth);
+            surface.Bounds.Width.ShouldBeLessThanOrEqualTo(520);
+            surface.Bounds.Height.ShouldBeLessThanOrEqualTo(320);
+            presenter.HostWindow.ClientSize.ShouldBe(surface.Bounds.Size + chrome);
+        }
+        finally
+        {
+            WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+            WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+            owner.Close();
+        }
+    }
+
+    [Fact]
     public void Open_Window_Tracks_Dialog_Size_Constraints()
     {
         var owner = new AtomUI.Desktop.Controls.Window
@@ -439,10 +549,7 @@ public class WindowDialogPresenterTests
             var chrome = GetWindowChromeSize(presenter.HostWindow);
 
             var resizedWindowSize = new Size(420, 260) + chrome;
-            presenter.HostWindow.ApplyRequestedSize(
-                resizedWindowSize.Width,
-                resizedWindowSize.Height);
-            Dispatcher.UIThread.RunJobs();
+            ResizeHostWindowAsNativeUser(presenter.HostWindow, resizedWindowSize);
             surface.Bounds.Size.ShouldBe(new Size(420, 260));
 
             dialog.HostMinWidth = 300;
@@ -492,10 +599,7 @@ public class WindowDialogPresenterTests
             var workingArea = GetLogicalWorkingAreaSize(presenter.HostWindow, owner);
 
             var resizedWindowSize = new Size(420, 260) + chrome;
-            presenter.HostWindow.ApplyRequestedSize(
-                resizedWindowSize.Width,
-                resizedWindowSize.Height);
-            Dispatcher.UIThread.RunJobs();
+            ResizeHostWindowAsNativeUser(presenter.HostWindow, resizedWindowSize);
             surface.Bounds.Size.ShouldBe(new Size(420, 260));
 
             presenter.HostWindow.WindowState = WindowState.Maximized;
@@ -549,7 +653,8 @@ public class WindowDialogPresenterTests
             presenter.HostWindow.ClientSize.ShouldBe(surface.Bounds.Size + chrome);
             presenter.HostWindow.MinWidth.ShouldBeGreaterThanOrEqualTo(
                 structuralMinimum.Width + chrome.Width);
-            presenter.HostWindow.MinHeight.ShouldBe(structuralMinimum.Height + chrome.Height);
+            presenter.HostWindow.MinHeight.ShouldBe(
+                ResolveExpectedWindowMinHeight(presenter.HostWindow, structuralMinimum, chrome));
         }
         finally
         {
@@ -592,7 +697,64 @@ public class WindowDialogPresenterTests
             presenter.HostWindow.ClientSize.ShouldBe(surface.Bounds.Size + chrome);
             presenter.HostWindow.MinWidth.ShouldBeGreaterThanOrEqualTo(
                 structuralMinimum.Width + chrome.Width);
-            presenter.HostWindow.MinHeight.ShouldBe(structuralMinimum.Height + chrome.Height);
+            presenter.HostWindow.MinHeight.ShouldBe(
+                ResolveExpectedWindowMinHeight(presenter.HostWindow, structuralMinimum, chrome));
+        }
+        finally
+        {
+            WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+            WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+            owner.Close();
+        }
+    }
+
+    [Fact]
+    public void Windows_Csd_Track_Size_Uses_Actual_Frame_Client_Delta()
+    {
+        var trackSize = DialogWindow.CalculateWindowsCsdTrackSize(
+            new Size(500.2, 320.1),
+            new Size(15.5, 8.2),
+            1.25);
+
+        trackSize.ShouldBe((645, 411));
+    }
+
+    [Fact]
+    public void Host_Size_Changes_Defer_Client_Resize_During_Native_User_Resize()
+    {
+        var owner = new AtomUI.Desktop.Controls.Window
+        {
+            Width = 800,
+            Height = 600
+        };
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            IsModal = false,
+            IsMotionEnabled = false,
+            HostWidth = 360,
+            HostHeight = 220
+        };
+        var presenter = new WindowDialogPresenter(dialog, owner);
+
+        try
+        {
+            owner.Show();
+            WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+            var initialClientSize = presenter.HostWindow.ClientSize;
+            var chrome = GetWindowChromeSize(presenter.HostWindow);
+
+            presenter.HostWindow.BeginNativeUserResize();
+            dialog.HostHeight = 260;
+            Dispatcher.UIThread.RunJobs();
+
+            presenter.HostWindow.IsNativeUserResizeInProgress.ShouldBeTrue();
+            presenter.HostWindow.ClientSize.ShouldBe(initialClientSize);
+
+            presenter.HostWindow.CompleteNativeUserResize();
+            Dispatcher.UIThread.RunJobs();
+
+            presenter.HostWindow.IsNativeUserResizeInProgress.ShouldBeFalse();
+            presenter.HostWindow.ClientSize.Height.ShouldBe(260 + chrome.Height);
         }
         finally
         {
@@ -1102,6 +1264,31 @@ public class WindowDialogPresenterTests
         return new Size(
             Math.Max(0, window.ClientSize.Width - surface.Bounds.Width),
             Math.Max(0, window.ClientSize.Height - surface.Bounds.Height));
+    }
+
+    private static void ResizeHostWindowAsNativeUser(DialogWindow window, Size clientSize)
+    {
+        window.BeginNativeUserResize();
+        window.SetPlatformChromeClientSize(clientSize);
+        Dispatcher.UIThread.RunJobs();
+        window.CompleteNativeUserResize();
+        Dispatcher.UIThread.RunJobs();
+    }
+
+    private static double ResolveExpectedWindowMinHeight(
+        DialogWindow window,
+        Size structuralMinimum,
+        Size chrome)
+    {
+        var expectedMinHeight = structuralMinimum.Height + chrome.Height;
+        if (OperatingSystem.IsWindows() && window.IsCsdEnabled)
+        {
+            expectedMinHeight = Math.Max(
+                expectedMinHeight,
+                AtomUI.Desktop.Controls.Window.CalculateWindowsCsdMinimumHeight(window.TitleBarHeight));
+        }
+
+        return expectedMinHeight;
     }
 
     private static Size GetLogicalWorkingAreaSize(DialogWindow window, WindowBase owner)

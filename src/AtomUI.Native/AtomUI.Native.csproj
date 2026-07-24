@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="AtomUI.Core"/>
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls"/>
         <InternalsVisibleTo Include="AtomUI.Mobile.Controls"/>
     </ItemGroup>

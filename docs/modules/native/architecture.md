@@ -2,27 +2,41 @@
 
 ## 定位
 
-`AtomUI.Native` 是 AtomUI 的内部原生调用层。它只负责在上层已经确定平台和窗口后端后执行原生操作，
-不负责窗口主题、CSD/SSD 策略、Window 事件订阅或控件生命周期。Avalonia drawn decorations 等
-Desktop 控件私有结构发现保留在 `AtomUI.Desktop.Controls/Window/Utils`；Wayland input-region
-的临时反射桥位于 Native，因为它直接解析 NWayland 协议对象并调用 `wl_surface.set_input_region`。
+`AtomUI.Native` 是 AtomUI 的内部原生平台能力层。它负责把 Win32、DWM、Objective-C runtime、
+Xlib/XCB、Wayland protocol 等底层调用封装在一个受控边界内，让上层库不直接维护 P/Invoke、
+原生结构体、协议对象和平台错误处理。
+
+`AtomUI.Native` 不决定控件策略、主题策略或用户可观察行为。上层库负责选择何时启用某个原生能力，
+并承担 Avalonia 控件生命周期、事件订阅、属性同步和模板状态。Native 层提供能力，不拥有业务状态。
+
+Avalonia drawn decorations、`TopLevelHost`、resize grip layer 等 Desktop 控件私有结构发现通常保留在
+`AtomUI.Desktop.Controls`。只有当实现必须解析原生协议对象、调用原生 API，或把 P/Invoke/协议细节
+压回 Native 边界时，才应进入 `AtomUI.Native`。
 
 ```text
 AtomUI.Desktop.Controls
   - 选择 Window chrome manager
   - 管理 Window 事件、属性和模板生命周期
-  - 维护 drawn decorations reflection boundary
+  - 决定何时启用某个原生能力
         |
         v
 AtomUI.Native
   - 校验原生 handle / 参数
-  - 解析 Wayland input-region 所需的协议对象
   - 调用 Win32、Objective-C、Xlib/XCB 或 NWayland
-  - 管理原生资源和错误边界
+  - 封装原生结构体、常量、消息和协议对象
+  - 管理原生资源、hook 和错误边界
 ```
 
-所有成员目前都是 `internal`，通过 `InternalsVisibleTo` 向 `AtomUI.Core`、
-`AtomUI.Desktop.Controls` 和预留的 `AtomUI.Mobile.Controls` 开放。它是实现包，不是公共 Native SDK。
+所有成员目前都是 `internal`，通过 `InternalsVisibleTo` 向 `AtomUI.Desktop.Controls` 和预留的
+`AtomUI.Mobile.Controls` 开放。它是实现包，不是公共 Native SDK。
+
+### 能力与策略分界
+
+| 层级 | 可以做 | 不应该做 |
+|---|---|---|
+| `AtomUI.Native` | 封装 OS/backend 原生调用、消息结构体、hook/façade、句柄校验、原生资源释放 | 决定窗口主题、Dialog 行为、控件状态机、Token、默认平台策略 |
+| `AtomUI.Core` | 框架基础设施、主题/Token/语言、应用启动默认选项 | 直接依赖桌面后端细节或具体控件生命周期 |
+| `AtomUI.Desktop.Controls` | Window/Dialog/Popup 等桌面控件语义、生命周期、何时调用 Native 能力 | 直接维护 P/Invoke、原生结构体或重复实现 OS 协议 |
 
 ## 当前依赖
 
@@ -31,8 +45,11 @@ AtomUI.Native
 | `Avalonia` | `Window`、`WindowBase`、geometry 和 platform handle | AtomUI 基础依赖 |
 | `NWayland` | `WlSurface`、`WlCompositor`、`WlRegion` | 会进入所有引用 Native 的依赖图 |
 
-`AtomUI.Native` 与 `Avalonia.Wayland` 共享 NWayland 类型。具体版本以集中包管理和最终 restore 依赖图为准；
-升级任一依赖时必须同步核对类型版本和跨包 ABI，不能把当前偶然一致视为兼容保证。
+`AtomUI.Native` 当前与 `Avalonia.Wayland` 共享 NWayland 类型。具体版本以集中包管理和最终 restore
+依赖图为准；升级任一依赖时必须同步核对类型版本和跨包 ABI，不能把当前偶然一致视为兼容保证。
+
+`AtomUI.Core` 不引用 `AtomUI.Native`。后续只有出现真实 native 调用点时才重新添加引用，避免 NWayland
+或桌面后端能力扩散到平台无关基础设施。
 
 ## 目录和职责
 
@@ -57,10 +74,14 @@ src/AtomUI.Native/
 ### Windows
 
 - `SetWindowIgnoreMouseEventsWindows()` 修改 `WS_EX_TRANSPARENT/WS_EX_LAYERED`。
-- 该目录不承担 live resize、合成后端、CSD 或 non-client frame 策略。
-- 窗口装饰与 resize hit-test 由 Avalonia CSD 管理；AtomUI 不处理 `WM_NCCALCSIZE`。
+- Windows 目录可以封装 DWM 属性、系统 metric、Win32 消息结构体和受限的可释放 hook。
+- Windows 目录不决定 live resize 策略、合成后端策略、CSD/SSD 策略或控件行为。
+- 窗口装饰与 resize hit-test 由 Avalonia CSD 管理；AtomUI 不处理 `WM_NCCALCSIZE` 或
+  `WM_NCHITTEST`，不返回 resize hit-test。
 - 标题栏按钮通过 Avalonia 公共 `WindowDecorationProperties.ElementRole` 接入原生行为，
-  不需要 AtomUI WndProc hook。
+  不需要 AtomUI 自定义 caption WndProc hook。
+- 允许 Native 层提供窄范围、显式 opt-in、可释放的 sizing/message helper，例如只处理
+  `WM_GETMINMAXINFO` 或 live resize 生命周期信号；这类 helper 不能实现第二套 window chrome。
 
 ### macOS
 
@@ -90,22 +111,21 @@ input-region 方法，并通过 `WaylandWorkerClient.PostWithCommit` 下发。
 ## 设计约束
 
 1. 平台判断和后端判断是两层条件。Linux 不等于 X11，非 X11 也不等于 Wayland。
-2. Avalonia drawn decorations、TopLevelHost、resize grip layer 等 Desktop 控件结构反射留在
-   `AtomUI.Desktop.Controls/Window/Utils`。Wayland input-region 当前需要解析私有 proxy 才能拿到
-   NWayland 协议对象，因此作为受控 Native 边界保留在 `AtomUI.Native/Linux/WaylandWindowReflectionExtensions.cs`。
-3. 原生资源必须有明确 owner 和释放点。临时 region 在请求入队后销毁；长期连接要记录进程生命周期策略。
-4. 原生调用失败不能让 Window manager 的更新队列永久卡死；异步/延迟状态更新需要 `try/finally` 恢复标志。
-5. AOT 要同时满足 metadata 保留和真实 publish；`DynamicDependency`、普通 build、源码字符串测试分别只能
+2. 只有 Avalonia 公共 API 无法表达、且涉及原生调用或原生协议细节的能力才进入 Native。
+3. Native 层可以持有原生资源或可释放 hook，但 owner 必须清晰，上层必须有明确释放点。
+4. Native 层不修改 Avalonia control properties，不决定 resize band、主题 token 或 Dialog/Window 行为。
+5. Native 层不订阅控件业务事件；需要事件驱动时，上层负责订阅 Avalonia 事件并调用 Native 能力。
+6. 原生调用失败不能让 Window manager 的更新队列永久卡死；异步/延迟状态更新需要 `try/finally` 恢复标志。
+7. AOT 要同时满足 metadata 保留和真实 publish；`DynamicDependency`、普通 build、源码字符串测试分别只能
    覆盖一部分风险。
-6. Native 层不修改 Avalonia control properties，不订阅 Window 事件，不决定 resize band 或主题 token。
 
 ## 已知结构问题
 
 ### 平台依赖扩散
 
-`AtomUI.Native` 被 `AtomUI.Core` 引用，因此 NWayland 会出现在 Browser 共享依赖闭包；
-`AtomUI.Desktop.Controls` 又直接引用 `Avalonia.Desktop` 和 `Avalonia.Wayland`。Browser 当前通过 WASM
-内部 item 过滤部分 desktop assembly，这只是构建补偿，不是清晰的依赖边界。
+`AtomUI.Native` 当前只面向桌面控件等需要原生能力的上层库开放。`AtomUI.Desktop.Controls` 直接引用
+`Avalonia.Desktop` 和 `Avalonia.Wayland`，Browser 当前通过 WASM 内部 item 过滤部分 desktop assembly，
+这只是构建补偿，不是清晰的依赖边界。
 
 长期建议把 desktop bootstrap 与具体后端拆成可选 assembly，例如 X11、Wayland、Win32、macOS backend
 包；Browser 只引用平台无关 controls，不应先引入桌面包再从 bundle 中删除 assembly。
