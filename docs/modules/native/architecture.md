@@ -58,6 +58,7 @@ src/AtomUI.Native/
 ├── AtomUI.Native.csproj
 ├── WindowExtensions.cs
 ├── Windows/
+│   ├── WindowsCsdSizingHook.cs
 │   ├── WindowUtils.Interop.cs
 │   └── WindowUtils.Windows.cs
 ├── MacOS/
@@ -74,6 +75,8 @@ src/AtomUI.Native/
 ### Windows
 
 - `SetWindowIgnoreMouseEventsWindows()` 修改 `WS_EX_TRANSPARENT/WS_EX_LAYERED`。
+- `WindowsCsdSizingHook` 封装 opt-in 的 `WM_GETMINMAXINFO` track size 修正和
+  `WM_ENTERSIZEMOVE/WM_EXITSIZEMOVE` live resize 信号。
 - Windows 目录可以封装 DWM 属性、系统 metric、Win32 消息结构体和受限的可释放 hook。
 - Windows 目录不决定 live resize 策略、合成后端策略、CSD/SSD 策略或控件行为。
 - 窗口装饰与 resize hit-test 由 Avalonia CSD 管理；AtomUI 不处理 `WM_NCCALCSIZE` 或

@@ -1,12 +1,10 @@
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using AtomUI.Controls;
-using AtomUI.Native;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
