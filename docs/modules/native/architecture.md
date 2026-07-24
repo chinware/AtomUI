@@ -2,9 +2,13 @@
 
 ## 定位
 
-`AtomUI.Native` 是 AtomUI 的内部原生平台能力层。它负责把 Win32、DWM、Objective-C runtime、
-Xlib/XCB、Wayland protocol 等底层调用封装在一个受控边界内，让上层库不直接维护 P/Invoke、
-原生结构体、协议对象和平台错误处理。
+`AtomUI.Native` 是 AtomUI 的内部底层 OS 能力封装层。它按“是否属于操作系统、窗口系统或原生运行时
+调用”划定边界，而不是按 `Window`、`Dialog`、主题、控件等上层概念划定边界。只要实现需要直接接触
+P/Invoke、原生 handle、原生结构体、平台协议对象、native hook 或平台错误码，就应优先收敛到
+`AtomUI.Native`。
+
+窗口相关能力可以进入 `AtomUI.Native`。Win32、DWM、Objective-C runtime、Xlib/XCB、Wayland protocol
+等窗口系统原生调用，本质上是底层 OS/backend 能力，不应因为服务于 Window/Dialog 就回到控件层。
 
 `AtomUI.Native` 不决定控件策略、主题策略或用户可观察行为。上层库负责选择何时启用某个原生能力，
 并承担 Avalonia 控件生命周期、事件订阅、属性同步和模板状态。Native 层提供能力，不拥有业务状态。
@@ -34,9 +38,14 @@ AtomUI.Native
 
 | 层级 | 可以做 | 不应该做 |
 |---|---|---|
-| `AtomUI.Native` | 封装 OS/backend 原生调用、消息结构体、hook/façade、句柄校验、原生资源释放 | 决定窗口主题、Dialog 行为、控件状态机、Token、默认平台策略 |
-| `AtomUI.Core` | 框架基础设施、主题/Token/语言、应用启动默认选项 | 直接依赖桌面后端细节或具体控件生命周期 |
+| `AtomUI.Native` | 封装 OS/backend 原生调用、窗口系统底层能力、消息结构体、hook/façade、句柄校验、原生资源释放 | 决定窗口主题、Dialog 行为、控件状态机、Token、默认平台策略 |
+| `AtomUI.Core` | AtomUI 基础设施、主题/Token/语言、资源、动画、应用启动默认选项；必要时调用 `AtomUI.Native` 获取底层 OS 能力 | 直接散落 P/Invoke、原生结构体、平台协议细节，或依赖具体控件生命周期 |
 | `AtomUI.Desktop.Controls` | Window/Dialog/Popup 等桌面控件语义、生命周期、何时调用 Native 能力 | 直接维护 P/Invoke、原生结构体或重复实现 OS 协议 |
+
+`AtomUI.Core` 可以依赖 `AtomUI.Native`。`Core` 是 AtomUI 的基础设施层，不等于必须排除所有 Window
+或 OS 概念；判断标准是能力本身是否属于底层 OS/native 操作。例如安全打开文件、解析真实路径、读取系统
+窗口 metric、封装窗口系统原生调用，都可以由 `Core` 通过 `AtomUI.Native` 使用。相反，Dialog 的默认尺寸、
+最大/最小尺寸策略、控件状态同步和模板生命周期仍属于上层控件库。
 
 ## 当前依赖
 
@@ -48,15 +57,19 @@ AtomUI.Native
 `AtomUI.Native` 当前与 `Avalonia.Wayland` 共享 NWayland 类型。具体版本以集中包管理和最终 restore
 依赖图为准；升级任一依赖时必须同步核对类型版本和跨包 ABI，不能把当前偶然一致视为兼容保证。
 
-`AtomUI.Core` 不引用 `AtomUI.Native`。后续只有出现真实 native 调用点时才重新添加引用，避免 NWayland
-或桌面后端能力扩散到平台无关基础设施。
+上层项目是否引用 `AtomUI.Native` 取决于是否存在真实底层 OS/native 调用点。不能为了让 `Core` 看起来
+“纯净”而把 P/Invoke、native struct 或平台错误处理留在 `Core`；也不能因为某个 native 能力最终服务于
+Window/Dialog，就把底层 OS 细节放回 `AtomUI.Desktop.Controls`。
 
 ## 目录和职责
 
 ```text
 src/AtomUI.Native/
 ├── AtomUI.Native.csproj
+├── NativeWindowSizing.cs
 ├── WindowExtensions.cs
+├── FileSystem/
+│   └── NativeFileSystem.cs
 ├── Windows/
 │   ├── WindowsCsdSizingHook.cs
 │   ├── WindowUtils.Interop.cs
@@ -111,15 +124,24 @@ X11 能力必须以 `IPlatformHandle.HandleDescriptor == "XID"` 为前置条件�
 reflection metadata 不被裁剪，不能解决该问题。正确边界应由 Avalonia persistent surface/proxy 提供
 input-region 方法，并通过 `WaylandWorkerClient.PostWithCommit` 下发。
 
+### FileSystem
+
+- `NativeFileSystem` 封装跨平台文件系统原生调用，例如 no-follow 打开文件和解析目录 canonical path。
+- 文件系统能力可以被 `AtomUI.Core` 使用；判断标准是是否需要 P/Invoke、平台错误码、native handle 或
+  OS-specific flag，而不是调用方是否位于 Core。
+- Native 层只负责底层安全打开、路径解析和错误转换，不决定 ThemeDefinition 的加载策略、搜索路径或
+  用户目录信任模型。
+
 ## 设计约束
 
 1. 平台判断和后端判断是两层条件。Linux 不等于 X11，非 X11 也不等于 Wayland。
 2. 只有 Avalonia 公共 API 无法表达、且涉及原生调用或原生协议细节的能力才进入 Native。
-3. Native 层可以持有原生资源或可释放 hook，但 owner 必须清晰，上层必须有明确释放点。
-4. Native 层不修改 Avalonia control properties，不决定 resize band、主题 token 或 Dialog/Window 行为。
-5. Native 层不订阅控件业务事件；需要事件驱动时，上层负责订阅 Avalonia 事件并调用 Native 能力。
-6. 原生调用失败不能让 Window manager 的更新队列永久卡死；异步/延迟状态更新需要 `try/finally` 恢复标志。
-7. AOT 要同时满足 metadata 保留和真实 publish；`DynamicDependency`、普通 build、源码字符串测试分别只能
+3. Window 相关 native 能力可以进入 Native；限制点是不能在 Native 层拥有 Window/Dialog 控件策略。
+4. Native 层可以持有原生资源或可释放 hook，但 owner 必须清晰，上层必须有明确释放点。
+5. Native 层不修改 Avalonia control properties，不决定 resize band、主题 token 或 Dialog/Window 行为。
+6. Native 层不订阅控件业务事件；需要事件驱动时，上层负责订阅 Avalonia 事件并调用 Native 能力。
+7. 原生调用失败不能让 Window manager 的更新队列永久卡死；异步/延迟状态更新需要 `try/finally` 恢复标志。
+8. AOT 要同时满足 metadata 保留和真实 publish；`DynamicDependency`、普通 build、源码字符串测试分别只能
    覆盖一部分风险。
 
 ## 已知结构问题
