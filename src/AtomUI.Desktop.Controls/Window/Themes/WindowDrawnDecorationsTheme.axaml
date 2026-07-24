@@ -37,7 +37,7 @@
                     </WindowDrawnDecorationsContent.Underlay>
 
                     <WindowDrawnDecorationsContent.Overlay>
-                        <Panel>
+                        <Panel IsVisible="{Binding $parent[atom:Window].IsDrawnChromeOverlayVisible}">
                             <atom:WindowTitleBarShadowBackground
                                 IsHitTestVisible="False"
                                 IsVisible="{TemplateBinding HasTitleBar}"
@@ -57,17 +57,6 @@
                                                       WindowDecorationProperties.ElementRole="User" />
                                 </Border>
                             </Panel>
-
-                            <atom:WindowVisualLayerClip
-                                ShadowThickness="{Binding $parent[atom:Window].FrameShadowThickness}"
-                                CornerRadius="{Binding $parent[atom:Window].CornerRadius}">
-                                <Panel>
-                                    <atom:ScopeAwareAdornerLayer
-                                        Name="PART_DrawerOverlayLayerHost"
-                                        LayerHost="{Binding $parent[atom:Window]}" />
-                                    <Panel Name="PART_DialogOverlayLayerHost" />
-                                </Panel>
-                            </atom:WindowVisualLayerClip>
                         </Panel>
                     </WindowDrawnDecorationsContent.Overlay>
 
