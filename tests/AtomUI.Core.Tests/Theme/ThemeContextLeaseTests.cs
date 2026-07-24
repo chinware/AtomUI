@@ -25,6 +25,7 @@ public class ThemeContextLeaseTests
             host.Resources.MergedDictionaries
                 .OfType<ThemeContextResourceBridge>()
                 .ShouldHaveSingleItem();
+            host.Close();
         });
     }
 
@@ -47,6 +48,7 @@ public class ThemeContextLeaseTests
                 .OwnerContext.ShouldBeSameAs(second);
             firstLease.Dispose();
             host.GetValue(ThemeScope.ContextProperty).ShouldBeSameAs(second);
+            host.Close();
         });
     }
 
@@ -65,6 +67,7 @@ public class ThemeContextLeaseTests
             host.Resources.MergedDictionaries
                 .OfType<ThemeContextResourceBridge>()
                 .ShouldBeEmpty();
+            host.Close();
         });
     }
 
