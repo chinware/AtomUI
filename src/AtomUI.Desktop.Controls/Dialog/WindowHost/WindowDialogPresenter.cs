@@ -44,6 +44,7 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             IsResizable = false,
             TitleIcon = null
         };
+        _surface.Classes.Add("window-hosted");
         HostWindow = new DialogWindow
         {
             Content = _surface,
