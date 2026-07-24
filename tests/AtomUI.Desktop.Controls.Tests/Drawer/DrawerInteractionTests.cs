@@ -230,12 +230,13 @@ public class DrawerInteractionTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void Available_Drawn_Decorations_Drawer_Host_Is_Used_Regardless_Of_Csd_State(
+    public void Drawer_Content_Remains_In_The_TopLevel_Visual_Tree_When_Drawn_Decorations_Are_Available(
         bool isCsdEnabled)
     {
+        var input = new AtomUI.Desktop.Controls.LineEdit();
         var drawer = new AtomUI.Desktop.Controls.Drawer
         {
-            Content         = new TextBlock { Text = "Body" },
+            Content         = input,
             IsMotionEnabled = false,
             Width           = 1,
             Height          = 1
@@ -257,9 +258,8 @@ public class DrawerInteractionTests
             drawer.IsOpen = true;
             Dispatcher.UIThread.RunJobs();
 
-            var container = drawnHost.Children.OfType<DrawerContainer>().Single();
-
-            container.GetVisualParent().ShouldBeSameAs(drawnHost);
+            drawnHost.Children.OfType<DrawerContainer>().ShouldBeEmpty();
+            TopLevel.GetTopLevel(input).ShouldBeSameAs(window);
 
             drawer.IsOpen = false;
             Dispatcher.UIThread.RunJobs();

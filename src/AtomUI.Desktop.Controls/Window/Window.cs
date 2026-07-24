@@ -265,6 +265,11 @@ public partial class Window : AvaloniaWindow,
             o => o.IsCustomResizerVisible,
             (o, v) => o.IsCustomResizerVisible = v);
 
+    internal static readonly DirectProperty<Window, bool> IsDrawnChromeOverlayVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Window, bool>(
+            nameof(IsDrawnChromeOverlayVisible),
+            o => o.IsDrawnChromeOverlayVisible);
+
     internal static readonly DirectProperty<Window, bool> IsEffectiveFullscreenLogoVisibleProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsEffectiveFullscreenLogoVisible),
@@ -331,6 +336,17 @@ public partial class Window : AvaloniaWindow,
         set => SetAndRaise(IsCustomResizerVisibleProperty, ref _isCustomResizerVisible, value);
     }
 
+    private bool _isDrawnChromeOverlayVisible = true;
+
+    internal bool IsDrawnChromeOverlayVisible
+    {
+        get => _isDrawnChromeOverlayVisible;
+        private set => SetAndRaise(
+            IsDrawnChromeOverlayVisibleProperty,
+            ref _isDrawnChromeOverlayVisible,
+            value);
+    }
+
     private bool _isEffectiveFullscreenLogoVisible;
 
     internal bool IsEffectiveFullscreenLogoVisible
@@ -382,6 +398,7 @@ public partial class Window : AvaloniaWindow,
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
+    private int _drawnChromeOverlaySuppressionCount;
     private IDisposable? _windowsCsdFrameThemeSubscription;
     private ThemeContextLease? _themeContextLease;
 
@@ -405,6 +422,27 @@ public partial class Window : AvaloniaWindow,
     {
         ConfigureCsdStatus();
         _platformChromeManager = WindowChromeManager.Attach(this);
+    }
+
+    internal IDisposable SuppressDrawnChromeOverlay()
+    {
+        _drawnChromeOverlaySuppressionCount++;
+        IsDrawnChromeOverlayVisible = false;
+        return Disposable.Create(this, static window => window.ReleaseDrawnChromeOverlaySuppression());
+    }
+
+    private void ReleaseDrawnChromeOverlaySuppression()
+    {
+        if (_drawnChromeOverlaySuppressionCount == 0)
+        {
+            return;
+        }
+
+        _drawnChromeOverlaySuppressionCount--;
+        if (_drawnChromeOverlaySuppressionCount == 0)
+        {
+            IsDrawnChromeOverlayVisible = true;
+        }
     }
 
     public override void Show()
