@@ -138,6 +138,19 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    [SupportedOSPlatform("linux")]
+    public void Linux_Resize_Minimum_Does_Not_Grow_From_The_Current_TitleBar_Width()
+    {
+        var minimumSize = AbstractLinuxWindowChromeManager.CalculateResizeMinimumSize(
+            new Thickness(36, 27, 36, 45),
+            new CornerRadius(12),
+            titleBarHeight: 40);
+
+        minimumSize.Width.ShouldBe(98);
+        minimumSize.Height.ShouldBe(194);
+    }
+
+    [Fact]
     public void Wayland_Resize_Uses_The_Platform_Reported_Size_Unmodified()
     {
         var waylandSource = File.ReadAllText(GetRepoFile(
@@ -180,6 +193,27 @@ public class WindowResizeArtifactTests
 
         (geometryWidth + normalized.Left + normalized.Right).ShouldBe(surfaceWidth);
         (geometryHeight + normalized.Top + normalized.Bottom).ShouldBe(surfaceHeight);
+    }
+
+    [Fact]
+    [SupportedOSPlatform("linux")]
+    public void Wayland_Min_Max_Hints_Use_Window_Geometry_Excluding_Shadow()
+    {
+        var geometryConstraint = WaylandWindowChromeManager.CalculateWaylandGeometryConstraint(
+            new Size(594, 474),
+            new Thickness(36, 27, 36, 45));
+
+        geometryConstraint.ShouldBe(new Size(522, 402));
+
+        WaylandWindowChromeManager.CalculateWaylandGeometryConstraint(
+                new Size(double.PositiveInfinity, double.PositiveInfinity),
+                new Thickness(36, 27, 36, 45))
+            .ShouldBe(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+        WaylandWindowChromeManager.CalculateWaylandGeometryConstraint(
+                default,
+                new Thickness(36, 27, 36, 45))
+            .ShouldBe(default);
     }
 
     [Fact]

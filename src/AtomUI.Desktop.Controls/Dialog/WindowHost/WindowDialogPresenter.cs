@@ -27,6 +27,7 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
     private DialogSizeConstraints _normalSizeConstraints;
     private Size? _normalSurfaceSize;
     private Size _windowChromeSize;
+    private bool _isApplyingNormalWindowSize;
 
     internal DialogWindow HostWindow { get; }
 
@@ -392,11 +393,19 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
 
         var requestedWindowSize = surfaceSize + _windowChromeSize;
         HostWindow.SizeToContent = SizeToContent.Manual;
-        var windowSize = HostWindow.ApplyRequestedSize(
-            requestedWindowSize.Width,
-            requestedWindowSize.Height);
-        _normalSurfaceSize = ResolveSurfaceSize(windowSize, _windowChromeSize);
-        return windowSize;
+        _isApplyingNormalWindowSize = true;
+        try
+        {
+            var windowSize = HostWindow.ApplyRequestedSize(
+                requestedWindowSize.Width,
+                requestedWindowSize.Height);
+            _normalSurfaceSize = ResolveSurfaceSize(windowSize, _windowChromeSize);
+            return windowSize;
+        }
+        finally
+        {
+            _isApplyingNormalWindowSize = false;
+        }
     }
 
     private static double ResolveInitialAxis(double requested, double natural)
@@ -662,13 +671,13 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             !_openedSource.Task.IsCompleted ||
             !HostWindow.IsVisible ||
             HostWindow.WindowState != WindowState.Normal ||
+            _isApplyingNormalWindowSize ||
             e.Reason is not (WindowResizeReason.User or WindowResizeReason.Unspecified))
         {
             return;
         }
 
-        _normalSurfaceSize = _normalSizeConstraints.Clamp(
-            ResolveSurfaceSize(e.ClientSize, _windowChromeSize));
+        UpdateNormalSurfaceSizeFromClientSize(e.ClientSize);
     }
 
     private void HandleHostWindowClientSizeChanged(Size clientSize)
@@ -677,11 +686,17 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             !_openedSource.Task.IsCompleted ||
             !HostWindow.IsVisible ||
             HostWindow.WindowState != WindowState.Normal ||
-            !HostWindow.IsNativeUserResizeInProgress)
+            _isApplyingNormalWindowSize ||
+            !ShouldTrackPlatformClientSizeChanges)
         {
             return;
         }
 
+        UpdateNormalSurfaceSizeFromClientSize(clientSize);
+    }
+
+    private void UpdateNormalSurfaceSizeFromClientSize(Size clientSize)
+    {
         _normalSurfaceSize = _normalSizeConstraints.Clamp(
             ResolveSurfaceSize(clientSize, _windowChromeSize));
     }
@@ -758,4 +773,13 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
     private bool ShouldDeferNormalWindowSizeApplication =>
         HostWindow.IsNativeUserResizeInProgress &&
         HostWindow.WindowState == WindowState.Normal;
+
+    private bool ShouldTrackPlatformClientSizeChanges =>
+        HostWindow.IsNativeUserResizeInProgress ||
+        IsWaylandCustomResizerVisible;
+
+    private bool IsWaylandCustomResizerVisible =>
+        HostWindow.IsCustomResizerVisible &&
+        OperatingSystem.IsLinux() &&
+        AbstractLinuxWindowChromeManager.IsWayland(HostWindow);
 }

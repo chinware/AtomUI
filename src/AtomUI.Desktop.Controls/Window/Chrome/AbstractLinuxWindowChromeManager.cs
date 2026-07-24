@@ -2,6 +2,7 @@ using System.Runtime.Versioning;
 using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
@@ -157,6 +158,10 @@ internal abstract class AbstractLinuxWindowChromeManager : IWindowChromeManager
         if (property == AvaloniaWindow.WindowStateProperty ||
             property == AvaloniaWindow.CanResizeProperty ||
             property == AvaloniaWindow.WindowDecorationMarginProperty ||
+            property == Layoutable.MinWidthProperty ||
+            property == Layoutable.MinHeightProperty ||
+            property == Layoutable.MaxWidthProperty ||
+            property == Layoutable.MaxHeightProperty ||
             property == Window.FrameShadowThicknessProperty ||
             property == Window.TitleBarHeightProperty ||
             property == Window.IsCsdEnabledProperty)
@@ -266,8 +271,28 @@ internal abstract class AbstractLinuxWindowChromeManager : IWindowChromeManager
 
     private void EnsureResizeMinimumSize()
     {
-        var shadow       = _window.FrameShadowThickness;
-        var cornerRadius = _window.CornerRadius;
+        var titleBarHeight = Math.Max(_window.TitleBar?.DesiredSize.Height ?? 0, _window.TitleBarHeight);
+        var minimumSize = CalculateResizeMinimumSize(
+            _window.FrameShadowThickness,
+            _window.CornerRadius,
+            titleBarHeight);
+
+        if (_window.MinWidth <= 0 && minimumSize.Width > 0)
+        {
+            _window.SetCurrentValue(Layoutable.MinWidthProperty, minimumSize.Width);
+        }
+
+        if (_window.MinHeight <= 0 && minimumSize.Height > 0)
+        {
+            _window.SetCurrentValue(Layoutable.MinHeightProperty, minimumSize.Height);
+        }
+    }
+
+    internal static Size CalculateResizeMinimumSize(
+        Thickness shadow,
+        CornerRadius cornerRadius,
+        double titleBarHeight)
+    {
         var maxCorner = Math.Max(
             Math.Max(cornerRadius.TopLeft, cornerRadius.TopRight),
             Math.Max(cornerRadius.BottomLeft, cornerRadius.BottomRight));
@@ -275,26 +300,17 @@ internal abstract class AbstractLinuxWindowChromeManager : IWindowChromeManager
         const double frameBorder = 1;
 
         var horizontalChrome = shadow.Left + shadow.Right + frameBorder * 2;
-        var titleBarWidth    = _window.TitleBar?.DesiredSize.Width ?? 0;
-        var minResizeWidth = Math.Max(
-            horizontalChrome + maxCorner * 2,
-            horizontalChrome + titleBarWidth);
+        var minResizeWidth = horizontalChrome + maxCorner * 2;
 
-        var titleBarHeight = Math.Max(_window.TitleBar?.DesiredSize.Height ?? 0, _window.TitleBarHeight);
         var verticalChrome = shadow.Top + shadow.Bottom + frameBorder * 2;
+        var normalizedTitleBarHeight = double.IsFinite(titleBarHeight) && titleBarHeight > 0
+            ? titleBarHeight
+            : 0;
         var minResizeHeight = Math.Max(
-            verticalChrome + titleBarHeight + maxCorner * 2,
-            verticalChrome + titleBarHeight * 3);
+            verticalChrome + normalizedTitleBarHeight + maxCorner * 2,
+            verticalChrome + normalizedTitleBarHeight * 3);
 
-        if (_window.MinWidth < minResizeWidth)
-        {
-            _window.MinWidth = minResizeWidth;
-        }
-
-        if (_window.MinHeight < minResizeHeight)
-        {
-            _window.MinHeight = minResizeHeight;
-        }
+        return new Size(minResizeWidth, minResizeHeight);
     }
 
     private static bool AreThicknessClose(Thickness left, Thickness right)
