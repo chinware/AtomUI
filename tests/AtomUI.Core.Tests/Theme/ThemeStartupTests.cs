@@ -66,6 +66,7 @@ public class ThemeStartupTests
                   .ShouldBeSameAs(manager.RootContext);
 
             window.Content = null;
+            window.Close();
         });
     }
 
@@ -90,6 +91,7 @@ public class ThemeStartupTests
                   .ShouldBeSameAs(manager.RootContext);
 
             window.Content = null;
+            window.Close();
         });
     }
 }

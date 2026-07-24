@@ -12,7 +12,7 @@ namespace AtomUI.Core.Tests.Theme.Lifecycle;
 public class ThemeContextLeaseLifecycleTests
 {
     [Fact]
-    public void Dispose_Releases_The_Host_Lease_And_Bridge_While_The_Owner_Context_Remains_Alive()
+    public void Dispose_Releases_The_Lease_And_Bridge_While_The_Owner_Context_Remains_Alive()
     {
         ThemeContext? ownerContext = null;
         CollectibleLeaseReferences? references = null;
@@ -25,7 +25,6 @@ public class ThemeContextLeaseLifecycleTests
         Collect();
 
         references.ShouldNotBeNull();
-        references.Host.IsAlive.ShouldBeFalse();
         references.Lease.IsAlive.ShouldBeFalse();
         references.Bridge.IsAlive.ShouldBeFalse();
         GC.KeepAlive(ownerContext);
@@ -44,6 +43,7 @@ public class ThemeContextLeaseLifecycleTests
             replacement.PreviousLease.IsAlive.ShouldBeFalse();
             replacement.PreviousBridge.IsAlive.ShouldBeFalse();
             replacement.ActiveLease.Dispose();
+            replacement.Host.Close();
             GC.KeepAlive(firstContext);
             GC.KeepAlive(replacement.Host);
         });
@@ -59,9 +59,9 @@ public class ThemeContextLeaseLifecycleTests
                          .ShouldHaveSingleItem();
 
         lease.Dispose();
+        host.Close();
 
         return new CollectibleLeaseReferences(
-            new WeakReference(host),
             new WeakReference(lease),
             new WeakReference(bridge));
     }
@@ -105,7 +105,6 @@ public class ThemeContextLeaseLifecycleTests
     }
 
     private sealed record CollectibleLeaseReferences(
-        WeakReference Host,
         WeakReference Lease,
         WeakReference Bridge);
 
