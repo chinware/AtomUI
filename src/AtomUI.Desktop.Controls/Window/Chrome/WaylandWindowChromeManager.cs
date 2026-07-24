@@ -28,6 +28,7 @@ internal sealed class WaylandWindowChromeManager : AbstractLinuxWindowChromeMana
     protected override void UpdatePlatformFrameGeometry()
     {
         UpdateWaylandShadowExtents();
+        UpdateWaylandMinMaxSizeHints();
 
         _hasManagedResizeGrip = Window.TryTakeOverManagedResizeGrip(
             ManagedResizeGripScale,
@@ -42,10 +43,27 @@ internal sealed class WaylandWindowChromeManager : AbstractLinuxWindowChromeMana
 
     private void UpdateWaylandShadowExtents()
     {
-        var shadowExtents = Window.IsCsdEnabled && Window.WindowState == WindowState.Normal
+        Window.PlatformImpl?.SetShadowExtents(ResolveWaylandShadowExtents());
+    }
+
+    private void UpdateWaylandMinMaxSizeHints()
+    {
+        var shadowExtents = ResolveWaylandShadowExtents();
+        var minSize = CalculateWaylandGeometryConstraint(
+            new Size(Window.MinWidth, Window.MinHeight),
+            shadowExtents);
+        var maxSize = CalculateWaylandGeometryConstraint(
+            new Size(Window.MaxWidth, Window.MaxHeight),
+            shadowExtents);
+
+        Window.PlatformImpl?.SetMinMaxSize(minSize, maxSize);
+    }
+
+    private Thickness ResolveWaylandShadowExtents()
+    {
+        return Window.IsCsdEnabled && Window.WindowState == WindowState.Normal
             ? NormalizeWaylandShadowExtents(Window.FrameShadowThickness)
             : default;
-        Window.PlatformImpl?.SetShadowExtents(shadowExtents);
     }
 
     private void HandleWindowPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -106,8 +124,31 @@ internal sealed class WaylandWindowChromeManager : AbstractLinuxWindowChromeMana
             NormalizeWaylandShadowExtent(shadowExtents.Bottom));
     }
 
+    internal static Size CalculateWaylandGeometryConstraint(
+        Size clientConstraint,
+        Thickness shadowExtents)
+    {
+        return new Size(
+            CalculateWaylandGeometryConstraintAxis(
+                clientConstraint.Width,
+                shadowExtents.Left + shadowExtents.Right),
+            CalculateWaylandGeometryConstraintAxis(
+                clientConstraint.Height,
+                shadowExtents.Top + shadowExtents.Bottom));
+    }
+
     private static double NormalizeWaylandShadowExtent(double value)
     {
         return Math.Max(0, Math.Round(value, MidpointRounding.AwayFromZero));
+    }
+
+    private static double CalculateWaylandGeometryConstraintAxis(double value, double shadowExtent)
+    {
+        if (!double.IsFinite(value) || value <= 0)
+        {
+            return value;
+        }
+
+        return Math.Max(1, value - Math.Max(0, shadowExtent));
     }
 }

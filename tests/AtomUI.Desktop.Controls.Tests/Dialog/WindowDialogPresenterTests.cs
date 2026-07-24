@@ -766,6 +766,100 @@ public class WindowDialogPresenterTests
     }
 
     [Fact]
+    public void Native_User_Client_Size_Changes_Update_The_Window_Dialog_Normal_Size()
+    {
+        var owner = new AtomUI.Desktop.Controls.Window
+        {
+            Width = 800,
+            Height = 600
+        };
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            IsModal = false,
+            IsMotionEnabled = false,
+            IsResizable = true,
+            HostWidth = 360,
+            HostHeight = 220
+        };
+        var presenter = new WindowDialogPresenter(dialog, owner);
+
+        try
+        {
+            owner.Show();
+            WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+            var surface = GetSurface(presenter);
+            var chrome = GetWindowChromeSize(presenter.HostWindow);
+            var platformSurfaceSize = new Size(500, 280);
+
+            presenter.HostWindow.BeginNativeUserResize();
+            presenter.HostWindow.SetPlatformChromeClientSize(platformSurfaceSize + chrome);
+            Dispatcher.UIThread.RunJobs();
+            presenter.HostWindow.CompleteNativeUserResize();
+            Dispatcher.UIThread.RunJobs();
+
+            surface.Bounds.Size.ShouldBe(platformSurfaceSize);
+
+            presenter.HostWindow.Padding = new Thickness(3, 4, 5, 6);
+            Dispatcher.UIThread.RunJobs();
+
+            var updatedChrome = GetWindowChromeSize(presenter.HostWindow);
+            surface.Bounds.Size.ShouldBe(platformSurfaceSize);
+            presenter.HostWindow.ClientSize.ShouldBe(platformSurfaceSize + updatedChrome);
+        }
+        finally
+        {
+            WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+            WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+            owner.Close();
+        }
+    }
+
+    [Fact]
+    public void Sizing_Refresh_Does_Not_Treat_Stale_Client_Size_As_User_Resize()
+    {
+        var owner = new AtomUI.Desktop.Controls.Window
+        {
+            Width = 800,
+            Height = 600
+        };
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            IsModal = false,
+            IsMotionEnabled = false,
+            IsResizable = true,
+            HostWidth = 360,
+            HostHeight = 220
+        };
+        var presenter = new WindowDialogPresenter(dialog, owner);
+
+        try
+        {
+            owner.Show();
+            WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+            var surface = GetSurface(presenter);
+            var normalSurfaceSize = surface.Bounds.Size;
+            var chrome = GetWindowChromeSize(presenter.HostWindow);
+            var staleSurfaceSize = normalSurfaceSize + new Size(120, 80);
+
+            presenter.HostWindow.SetPlatformChromeClientSize(staleSurfaceSize + chrome);
+            Dispatcher.UIThread.RunJobs();
+
+            presenter.HostWindow.Padding = new Thickness(3, 4, 5, 6);
+            Dispatcher.UIThread.RunJobs();
+
+            var updatedChrome = GetWindowChromeSize(presenter.HostWindow);
+            surface.Bounds.Size.ShouldBe(normalSurfaceSize);
+            presenter.HostWindow.ClientSize.ShouldBe(normalSurfaceSize + updatedChrome);
+        }
+        finally
+        {
+            WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+            WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+            owner.Close();
+        }
+    }
+
+    [Fact]
     public void Csd_Constraints_Ignore_The_Managed_TitleBar_Minimum_Width()
     {
         var owner = new AtomUI.Desktop.Controls.Window
