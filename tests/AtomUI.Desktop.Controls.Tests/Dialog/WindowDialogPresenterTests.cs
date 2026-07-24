@@ -766,6 +766,51 @@ public class WindowDialogPresenterTests
     }
 
     [Fact]
+    public void Unspecified_Native_Window_Resize_Preserves_Surface_Size_After_Refresh()
+    {
+        var owner = new AtomUI.Desktop.Controls.Window
+        {
+            Width = 800,
+            Height = 600
+        };
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            IsModal = false,
+            IsMotionEnabled = false,
+            HostWidth = 360,
+            HostHeight = 220
+        };
+        var presenter = new WindowDialogPresenter(dialog, owner);
+
+        try
+        {
+            owner.Show();
+            WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+            var surface = GetSurface(presenter);
+            var chrome = GetWindowChromeSize(presenter.HostWindow);
+
+            var resizedWindowSize = new Size(420, 260) + chrome;
+            ResizeHostWindowFromPlatform(
+                presenter.HostWindow,
+                resizedWindowSize,
+                WindowResizeReason.Unspecified);
+            surface.Bounds.Size.ShouldBe(new Size(420, 260));
+
+            dialog.Title = "Updated title";
+            Dispatcher.UIThread.RunJobs();
+
+            surface.Bounds.Size.ShouldBe(new Size(420, 260));
+            presenter.HostWindow.ClientSize.ShouldBe(resizedWindowSize);
+        }
+        finally
+        {
+            WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+            WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+            owner.Close();
+        }
+    }
+
+    [Fact]
     public void Csd_Constraints_Ignore_The_Managed_TitleBar_Minimum_Width()
     {
         var owner = new AtomUI.Desktop.Controls.Window
@@ -1273,6 +1318,17 @@ public class WindowDialogPresenterTests
         window.SetPlatformChromeClientSize(clientSize);
         Dispatcher.UIThread.RunJobs();
         window.CompleteNativeUserResize();
+        Dispatcher.UIThread.RunJobs();
+    }
+
+    private static void ResizeHostWindowFromPlatform(
+        DialogWindow window,
+        Size clientSize,
+        WindowResizeReason reason)
+    {
+        var platformImpl = window.PlatformImpl;
+        platformImpl.ShouldNotBeNull();
+        platformImpl.Resize(clientSize, reason);
         Dispatcher.UIThread.RunJobs();
     }
 

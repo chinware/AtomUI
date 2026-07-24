@@ -661,7 +661,7 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             !_openedSource.Task.IsCompleted ||
             !HostWindow.IsVisible ||
             HostWindow.WindowState != WindowState.Normal ||
-            e.Reason != WindowResizeReason.User)
+            e.Reason is not (WindowResizeReason.User or WindowResizeReason.Unspecified))
         {
             return;
         }
