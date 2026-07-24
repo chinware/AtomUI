@@ -70,6 +70,10 @@
                     Value="{atom:SharedTokenResource BoxShadows}" />
         </Style>
 
+        <Style Selector="^.window-hosted">
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+
         <Style Selector="^ /template/ Border#ContentFrame">
             <Setter Property="Padding" Value="{atom:DialogTokenResource ContentPadding}" />
         </Style>

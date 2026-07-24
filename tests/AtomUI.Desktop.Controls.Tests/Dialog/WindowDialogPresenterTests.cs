@@ -1296,6 +1296,41 @@ public class WindowDialogPresenterTests
     }
 
     [Fact]
+    public void Window_Surface_Leaves_Corner_Radius_To_The_Native_Window()
+    {
+        var owner = new AtomUI.Desktop.Controls.Window
+        {
+            Width = 800,
+            Height = 600
+        };
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            IsModal = false,
+            IsMotionEnabled = false,
+            HostWidth = 320,
+            HostHeight = 180
+        };
+        var presenter = new WindowDialogPresenter(dialog, owner);
+
+        try
+        {
+            owner.Show();
+            WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+
+            var surface = GetSurface(presenter);
+
+            surface.Classes.ShouldContain("window-hosted");
+            surface.CornerRadius.ShouldBe(default);
+        }
+        finally
+        {
+            WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+            WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+            owner.Close();
+        }
+    }
+
+    [Fact]
     public void Native_Window_Is_The_Only_Owner_Of_The_Title_Icon()
     {
         var owner = new AtomUI.Desktop.Controls.Window
