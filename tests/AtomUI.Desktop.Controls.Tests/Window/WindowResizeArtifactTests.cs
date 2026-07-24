@@ -872,6 +872,8 @@ public class WindowResizeArtifactTests
     public void Windows_Window_Uses_Avalonia_Csd_Without_The_Legacy_Chrome_Hook()
     {
         var managerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs"));
+        var windowsChromeSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Chrome/WindowsWindowChromeManager.cs"));
         var reflectionSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs"));
         var windowSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
@@ -914,7 +916,7 @@ public class WindowResizeArtifactTests
         windowSource.ShouldContain("EnsureWindowsCsdFrameThemeSubscription();");
         windowSource.ShouldContain("ApplyCurrentWindowsCsdFrameTheme();");
         windowSource.ShouldContain("themeManager.ThemeChanged += handler;");
-        windowSource.ShouldContain("themeManager.CurrentTheme?.Appearance == ThemeAppearance.Dark");
+        windowSource.ShouldContain("TryResolveCurrentWindowDarkMode()");
         windowSource.ShouldContain("args.State.Appearance == ThemeAppearance.Dark");
         windowSource.ShouldContain("private void ApplyWindowsCsdFrameTheme(bool isDarkMode)");
         windowSource.ShouldNotContain("change.Property == ActualThemeVariantProperty");
@@ -922,6 +924,9 @@ public class WindowResizeArtifactTests
         windowSource.ShouldNotContain("IsWindowsDrawnDecorationsEnabledProperty");
         windowSource.ShouldNotContain("WindowsInactiveFramePolicy.Apply(this)");
         windowSource.ShouldNotContain("AddWndProcHookCallback");
+        windowsChromeSource.ShouldContain("PreparePlatformChromeInitialShowHandle();");
+        windowsChromeSource.ShouldContain("_backgroundHook?.PaintClientArea();");
+        windowsChromeSource.ShouldNotContain("_initialShowStatePrepared || _window.IsVisible || _window.PlatformImpl is null");
         nativeSource.ShouldContain("SetWindowsCsdFrameDarkMode");
         windowsNativeSource.ShouldContain("SetWindowFrameDarkModeWindows");
         windowsNativeSource.ShouldContain("OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)");

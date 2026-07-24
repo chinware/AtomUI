@@ -17,6 +17,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
+using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -414,6 +415,7 @@ public partial class Window : AvaloniaWindow,
         {
             using var initialSurfaceThemeValues = CreateInitialSurfaceThemeValues();
             restoreInitialShowState = _platformChromeManager?.PrepareInitialShowState();
+            ApplyCurrentWindowsCsdFrameTheme();
             base.Show();
         }
         catch
@@ -435,6 +437,7 @@ public partial class Window : AvaloniaWindow,
         {
             using var initialSurfaceThemeValues = CreateInitialSurfaceThemeValues();
             restoreInitialShowState = _platformChromeManager?.PrepareInitialShowState();
+            ApplyCurrentWindowsCsdFrameTheme();
             base.Show(owner);
         }
         catch
@@ -456,6 +459,7 @@ public partial class Window : AvaloniaWindow,
         {
             using var initialSurfaceThemeValues = CreateInitialSurfaceThemeValues();
             restoreInitialShowState = _platformChromeManager?.PrepareInitialShowState();
+            ApplyCurrentWindowsCsdFrameTheme();
             return base.ShowDialog(owner);
         }
         catch
@@ -477,6 +481,7 @@ public partial class Window : AvaloniaWindow,
         {
             using var initialSurfaceThemeValues = CreateInitialSurfaceThemeValues();
             restoreInitialShowState = _platformChromeManager?.PrepareInitialShowState();
+            ApplyCurrentWindowsCsdFrameTheme();
             return base.ShowDialog<TResult>(owner);
         }
         catch
@@ -555,12 +560,24 @@ public partial class Window : AvaloniaWindow,
 
         _themeContextLease = null;
         lease.Dispose();
+        ResetThemeContextState();
+    }
+
+    private void ResetThemeContextState()
+    {
+        SetValue(RequestedThemeVariantProperty, null);
+        SetValue(ThemeScope.ContextProperty, null);
     }
 
     internal void PreparePlatformChromeInitialShowLayout()
     {
         EnsureInitialized();
         ApplyStyling();
+    }
+
+    internal void PreparePlatformChromeInitialShowHandle()
+    {
+        EnsureInitialized();
     }
 
     internal void SetPlatformChromeClientSize(Size clientSize)
@@ -954,6 +971,7 @@ public partial class Window : AvaloniaWindow,
     {
         _themeContextLease?.Dispose();
         _themeContextLease = null;
+        ResetThemeContextState();
         _windowsCsdFrameThemeSubscription?.Dispose();
         _windowsCsdFrameThemeSubscription = null;
         base.OnClosed(e);
@@ -1068,7 +1086,8 @@ public partial class Window : AvaloniaWindow,
             }
         }
         if (change.Property == ExtendClientAreaTitleBarHeightHintProperty ||
-            change.Property == IsCsdEnabledProperty)
+            change.Property == IsCsdEnabledProperty ||
+            change.Property == RequestedThemeVariantProperty)
         {
             ApplyCurrentWindowsCsdFrameTheme();
         }
@@ -1167,13 +1186,35 @@ public partial class Window : AvaloniaWindow,
 
     private void ApplyCurrentWindowsCsdFrameTheme()
     {
-        var themeManager = Application.Current?.GetThemeManager();
-        if (themeManager is null)
+        if (TryResolveCurrentWindowDarkMode() is { } isDarkMode)
         {
-            return;
+            ApplyWindowsCsdFrameTheme(isDarkMode);
+        }
+    }
+
+    private bool? TryResolveCurrentWindowDarkMode()
+    {
+        if (GetValue(ThemeScope.ContextProperty) is { } context)
+        {
+            return context.Appearance == ThemeAppearance.Dark;
         }
 
-        ApplyWindowsCsdFrameTheme(themeManager.CurrentTheme?.Appearance == ThemeAppearance.Dark);
+        if (RequestedThemeVariant == ThemeVariant.Dark)
+        {
+            return true;
+        }
+
+        if (RequestedThemeVariant == ThemeVariant.Light)
+        {
+            return false;
+        }
+
+        return Application.Current?.GetThemeManager()?.CurrentTheme?.Appearance switch
+        {
+            ThemeAppearance.Dark  => true,
+            ThemeAppearance.Light => false,
+            _                     => null
+        };
     }
 
     private void ApplyWindowsCsdFrameTheme(bool isDarkMode)

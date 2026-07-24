@@ -3,6 +3,7 @@ using AtomUI.Media;
 using AtomUI.Native;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Threading;
 
@@ -14,12 +15,15 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 internal sealed class WindowsWindowChromeManager : IWindowChromeManager
 {
     private readonly Window _window;
+    private INativeWindowBackgroundHook? _backgroundHook;
+    private bool _initialShowStatePrepared;
     private bool _frameGeometryUpdateQueued;
 
     private WindowsWindowChromeManager(Window window)
     {
         _window = window;
         _window.ScalingChanged += HandleScalingChanged;
+        _window.Closed += HandleWindowClosed;
     }
 
     internal static WindowsWindowChromeManager Attach(Window window)
@@ -31,6 +35,18 @@ internal sealed class WindowsWindowChromeManager : IWindowChromeManager
 
     public Action? PrepareInitialShowState()
     {
+        if (_initialShowStatePrepared || _window.IsVisible)
+        {
+            return null;
+        }
+
+        _initialShowStatePrepared = true;
+        // Let the initial show path create the HWND before first paint so native
+        // background fill and DWM dark-frame setup can target a real platform handle.
+        _window.PreparePlatformChromeInitialShowHandle();
+        EnsureBackgroundHook();
+        UpdateNativeBackgroundHook();
+        _backgroundHook?.PaintClientArea();
         return null;
     }
 
@@ -54,6 +70,14 @@ internal sealed class WindowsWindowChromeManager : IWindowChromeManager
             property == Window.IsCsdEnabledProperty)
         {
             RequestFrameGeometryUpdate();
+        }
+
+        if (property == TemplatedControl.BackgroundProperty ||
+            property == TopLevel.TransparencyBackgroundFallbackProperty ||
+            property == TopLevel.RequestedThemeVariantProperty ||
+            property == Window.IsCsdEnabledProperty)
+        {
+            UpdateNativeBackgroundHook();
         }
     }
 
@@ -102,6 +126,35 @@ internal sealed class WindowsWindowChromeManager : IWindowChromeManager
         RequestFrameGeometryUpdate();
     }
 
+    private void HandleWindowClosed(object? sender, EventArgs e)
+    {
+        _backgroundHook?.Dispose();
+        _backgroundHook = null;
+        _window.ScalingChanged -= HandleScalingChanged;
+        _window.Closed -= HandleWindowClosed;
+    }
+
+    private void UpdateNativeBackgroundHook()
+    {
+        if (_backgroundHook is null)
+        {
+            return;
+        }
+
+        _backgroundHook.SetBackgroundColor(ResolveNativeBackgroundColor());
+    }
+
+    private void EnsureBackgroundHook()
+    {
+        _backgroundHook ??= NativeWindowBackground.TryAttachWindowsBackgroundHook(_window);
+    }
+
+    private Color? ResolveNativeBackgroundColor()
+    {
+        return TryGetBrushColor(_window.Background) ??
+               TryGetBrushColor(_window.TransparencyBackgroundFallback);
+    }
+
     private void RequestFrameGeometryUpdate()
     {
         if (!_window.IsVisible || _window.PlatformImpl is null)
@@ -142,5 +195,12 @@ internal sealed class WindowsWindowChromeManager : IWindowChromeManager
                Math.Abs(left.Top - right.Top) <= epsilon &&
                Math.Abs(left.Right - right.Right) <= epsilon &&
                Math.Abs(left.Bottom - right.Bottom) <= epsilon;
+    }
+
+    private static Color? TryGetBrushColor(IBrush? brush)
+    {
+        return brush is ISolidColorBrush solidBrush
+            ? solidBrush.Color
+            : null;
     }
 }
