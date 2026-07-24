@@ -5,6 +5,7 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using AtomUI.Generated.AtomUI_Desktop_Controls;
 using AtomUI.Icons.AntDesign;
+using AtomUI.Native;
 using AtomUI.Theme.DesignTokens;
 using AtomUI.Theme.Resources;
 using Shouldly;
@@ -711,7 +712,7 @@ public class WindowDialogPresenterTests
     [Fact]
     public void Windows_Csd_Track_Size_Uses_Actual_Frame_Client_Delta()
     {
-        var trackSize = DialogWindow.CalculateWindowsCsdTrackSize(
+        var trackSize = WindowsCsdSizingHook.CalculateTrackSize(
             new Size(500.2, 320.1),
             new Size(15.5, 8.2),
             1.25);
