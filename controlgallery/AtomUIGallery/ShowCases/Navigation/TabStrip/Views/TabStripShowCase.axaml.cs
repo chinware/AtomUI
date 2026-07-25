@@ -42,39 +42,39 @@ public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewM
         RefreshViewModelData();
     }
 
-    private void HandleTabStripPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    private void HandlePlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is TabStripViewModel viewModel)
         {
-            viewModel.HandleTabStripPlacementOptionCheckedChanged(sender, args);
+            viewModel.HandlePlacementOptionCheckedChanged(sender, args);
         }
     }
 
-    private void HandleCardTabStripPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    private void HandleCardPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is TabStripViewModel viewModel)
         {
-            viewModel.HandleCardTabStripPlacementOptionCheckedChanged(sender, args);
+            viewModel.HandleCardPlacementOptionCheckedChanged(sender, args);
         }
     }
 
-    private void HandleTabStripReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    private void HandleReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is TabStripViewModel viewModel)
         {
-            viewModel.HandleTabStripReorderPlacementOptionCheckedChanged(sender, args);
+            viewModel.HandleReorderPlacementOptionCheckedChanged(sender, args);
         }
     }
 
-    private void HandleTabStripSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    private void HandleSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is TabStripViewModel viewModel)
         {
-            viewModel.HandleTabStripSizeTypeOptionCheckedChanged(sender, args);
+            viewModel.HandleSizeTypeOptionCheckedChanged(sender, args);
         }
     }
 
-    private void HandleTabStripAddTabRequest(object? sender, RoutedEventArgs args)
+    private void HandleAddTabRequest(object? sender, RoutedEventArgs args)
     {
         if (sender is not CardTabStrip tabStrip)
         {
