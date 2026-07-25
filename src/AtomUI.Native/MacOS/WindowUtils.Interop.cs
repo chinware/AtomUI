@@ -144,6 +144,7 @@ internal static class WindowUtilsInterop
     public static readonly IntPtr FrameSelector = sel_registerName("frame");
     public static readonly IntPtr SuperviewSelector = sel_registerName("superview");
     public static readonly IntPtr SetFrameOriginSelector = sel_registerName("setFrameOrigin:");
+    public static readonly IntPtr SetShowsResizeIndicatorSelector = sel_registerName("setShowsResizeIndicator:");
     public static readonly IntPtr UpdateTrackingAreasSelector = sel_registerName("updateTrackingAreas");
     public static readonly IntPtr SetNeedsDisplaySelector = sel_registerName("setNeedsDisplay:");
 

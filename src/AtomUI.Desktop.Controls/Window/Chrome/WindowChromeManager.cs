@@ -32,6 +32,11 @@ internal static class WindowChromeManager
             return WindowsWindowChromeManager.Attach(window);
         }
 
+        if (OperatingSystem.IsMacOS())
+        {
+            return MacOSWindowChromeManager.Attach(window);
+        }
+
         return null;
     }
 }
