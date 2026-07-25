@@ -35,6 +35,22 @@ internal static class WindowUtilsMacOS
         var handle = window.TryGetPlatformHandle();
         return handle?.Handle ?? IntPtr.Zero;
     }
+
+    public static void SetResizeIndicatorVisible(Window window, bool isVisible)
+    {
+        if (!OperatingSystem.IsMacOS())
+        {
+            return;
+        }
+
+        var ns = GetNSWindow(window);
+        if (ns == IntPtr.Zero)
+        {
+            return;
+        }
+
+        WindowUtilsInterop.objc_msgSend_void_bool(ns, WindowUtilsInterop.SetShowsResizeIndicatorSelector, isVisible);
+    }
     
     private static IntPtr GetButton(IntPtr ns, WindowUtilsInterop.NSWindowButton which)
     {

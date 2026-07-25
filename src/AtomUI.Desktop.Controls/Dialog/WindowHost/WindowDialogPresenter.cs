@@ -24,6 +24,7 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
     private Task? _showTask;
     private Task? _closeTask;
     private Task? _disposeTask;
+    private MacOsDisabledOwnerInputActivationScope? _macOsDisabledOwnerInputActivationScope;
     private DialogSizeConstraints _normalSizeConstraints;
     private Size? _normalSurfaceSize;
     private Size _windowChromeSize;
@@ -150,7 +151,17 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
             _owner is Window ownerWindow &&
             RuntimePlatform.Features.SupportsWindowModalDialog)
         {
-            _modalTask = HostWindow.ShowDialog(ownerWindow);
+            _macOsDisabledOwnerInputActivationScope =
+                CreateMacOsDisabledOwnerInputActivationScope(ownerWindow);
+            try
+            {
+                _modalTask = HostWindow.ShowDialog(ownerWindow);
+            }
+            catch
+            {
+                ReleaseMacOsDisabledOwnerInputActivationScope();
+                throw;
+            }
         }
         else
         {
@@ -159,6 +170,22 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
 
         await _openedSource.Task.WaitAsync(openingCancellationToken);
         openingCancellationToken.ThrowIfCancellationRequested();
+    }
+
+    private MacOsDisabledOwnerInputActivationScope? CreateMacOsDisabledOwnerInputActivationScope(Window ownerWindow)
+    {
+        if (!OperatingSystem.IsMacOS())
+        {
+            return null;
+        }
+
+        return MacOsDisabledOwnerInputActivationScope.TryAttach(ownerWindow.PlatformImpl, HostWindow);
+    }
+
+    private void ReleaseMacOsDisabledOwnerInputActivationScope()
+    {
+        _macOsDisabledOwnerInputActivationScope?.Dispose();
+        _macOsDisabledOwnerInputActivationScope = null;
     }
 
     private void ApplyStartupPlacement(Size windowSize)
@@ -611,6 +638,7 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
 
     private void HandleWindowClosed(object? sender, EventArgs e)
     {
+        ReleaseMacOsDisabledOwnerInputActivationScope();
         _closedSource.TrySetResult();
     }
 
@@ -782,4 +810,71 @@ internal sealed class WindowDialogPresenter : IDialogPresenter
         HostWindow.IsCustomResizerVisible &&
         OperatingSystem.IsLinux() &&
         AbstractLinuxWindowChromeManager.IsWayland(HostWindow);
+
+    private sealed class MacOsDisabledOwnerInputActivationScope : IDisposable
+    {
+        private readonly Avalonia.Platform.IWindowImpl _ownerPlatformImpl;
+        private readonly DialogWindow _hostWindow;
+        private readonly Action? _originalCallback;
+        private readonly Action _replacementCallback;
+        private bool _isDisposed;
+
+        private MacOsDisabledOwnerInputActivationScope(
+            Avalonia.Platform.IWindowImpl ownerPlatformImpl,
+            DialogWindow hostWindow)
+        {
+            _ownerPlatformImpl  = ownerPlatformImpl;
+            _hostWindow         = hostWindow;
+            _originalCallback   = ownerPlatformImpl.GotInputWhenDisabled;
+            _replacementCallback = HandleGotInputWhenDisabled;
+            _ownerPlatformImpl.GotInputWhenDisabled = _replacementCallback;
+        }
+
+        public static MacOsDisabledOwnerInputActivationScope? TryAttach(
+            Avalonia.Platform.IWindowImpl? ownerPlatformImpl,
+            DialogWindow hostWindow)
+        {
+            return ownerPlatformImpl is null
+                ? null
+                : new MacOsDisabledOwnerInputActivationScope(ownerPlatformImpl, hostWindow);
+        }
+
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            _isDisposed = true;
+            if (_ownerPlatformImpl.GotInputWhenDisabled == _replacementCallback)
+            {
+                _ownerPlatformImpl.GotInputWhenDisabled =
+                    ResolveRestoredCallback(_originalCallback);
+            }
+        }
+
+        private void HandleGotInputWhenDisabled()
+        {
+            if (_hostWindow.IsVisible && _hostWindow.IsActive)
+            {
+                return;
+            }
+
+            var originalCallback = _originalCallback;
+            originalCallback?.Invoke();
+        }
+
+        private static Action? ResolveRestoredCallback(Action? callback)
+        {
+            while (callback?.Target is MacOsDisabledOwnerInputActivationScope scope &&
+                   callback == scope._replacementCallback &&
+                   scope._isDisposed)
+            {
+                callback = scope._originalCallback;
+            }
+
+            return callback;
+        }
+    }
 }

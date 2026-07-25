@@ -4,8 +4,10 @@ using System.Linq;
 using System.Runtime.Versioning;
 using System.Xml.Linq;
 using AtomUI.Controls;
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -678,6 +680,81 @@ public class WindowResizeArtifactTests
             .ShouldBe(2);
         relayoutBlock.ShouldContain("Dispatcher.Post");
         relayoutBlock.ShouldContain("Avalonia.Threading.DispatcherPriority.Loaded");
+    }
+
+    [Fact]
+    public void MacOs_NonCsd_Window_Uses_Native_Resize_Region_Without_Internal_Cursor_Layer()
+    {
+        var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
+        var managerSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs"));
+        var macOsManagerSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Chrome/MacOSWindowChromeManager.cs"));
+        XNamespace av   = "https://github.com/avaloniaui";
+        XNamespace atom = "https://atomui.net";
+
+        var macOsTemplateStyle = document.Descendants(av + "Style")
+                                         .Single(element =>
+                                             (string?)element.Attribute("Selector") ==
+                                             "^[OsType=macOS][IsCsdEnabled=False]" &&
+                                             element.Descendants(av + "ControlTemplate").Any());
+        macOsTemplateStyle.Descendants(atom + "WindowResizer").ShouldBeEmpty();
+
+        managerSource.ShouldContain("MacOSWindowChromeManager.Attach(window)");
+        macOsManagerSource.ShouldContain("public bool UsesCustomResizer => false;");
+        macOsManagerSource.ShouldContain("Window.TryTakeOverManagedResizeGrip(");
+        macOsManagerSource.ShouldNotContain("Window.ConfigureManagedResizeGrip(");
+        macOsManagerSource.ShouldContain("_window.SetMacOsResizeIndicatorVisible(false);");
+    }
+
+    [Fact]
+    public void MacOs_Resize_Cursor_Manager_Does_Not_Replace_Other_Platform_Managers()
+    {
+        var managerSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs"));
+
+        var linuxBranchStart = managerSource.IndexOf(
+            "if (OperatingSystem.IsLinux())",
+            StringComparison.Ordinal);
+        var windowsBranchStart = managerSource.IndexOf(
+            "if (OperatingSystem.IsWindows())",
+            linuxBranchStart + 1,
+            StringComparison.Ordinal);
+        var macOsBranchStart = managerSource.IndexOf(
+            "if (OperatingSystem.IsMacOS())",
+            windowsBranchStart + 1,
+            StringComparison.Ordinal);
+
+        linuxBranchStart.ShouldBeGreaterThanOrEqualTo(0);
+        windowsBranchStart.ShouldBeGreaterThan(linuxBranchStart);
+        macOsBranchStart.ShouldBeGreaterThan(windowsBranchStart);
+        managerSource[linuxBranchStart..windowsBranchStart].ShouldContain(
+            "AbstractLinuxWindowChromeManager.Attach(window)");
+        managerSource[windowsBranchStart..macOsBranchStart].ShouldContain(
+            "WindowsWindowChromeManager.Attach(window)");
+        managerSource[macOsBranchStart..].ShouldContain("MacOSWindowChromeManager.Attach(window)");
+    }
+
+    [Fact]
+    public void MacOs_Window_Chrome_Manager_Preserves_Default_Frame_Geometry_Updates()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+        var window = new AtomUI.Desktop.Controls.Window();
+        var manager = MacOSWindowChromeManager.Attach(window);
+        var frameShadow = new BoxShadows(new BoxShadow
+        {
+            OffsetX = 3,
+            OffsetY = 4,
+            Blur    = 10,
+            Spread  = 2
+        });
+
+        manager.HandleFrameShadowChanged(frameShadow);
+        manager.ConfigureTitleBarHeightHint(42);
+
+        manager.UsesCustomResizer.ShouldBeFalse();
+        window.FrameShadowThickness.ShouldBe(frameShadow.Thickness());
+        window.ExtendClientAreaTitleBarHeightHint.ShouldBe(42);
     }
 
     [Fact]

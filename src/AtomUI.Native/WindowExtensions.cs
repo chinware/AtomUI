@@ -79,6 +79,17 @@ internal static class WindowExtensions
 
         WindowUtilsWindows.SetWindowFrameDarkModeWindows(handle.Handle, isDarkMode);
     }
+
+    [SupportedOSPlatform("macos")]
+    public static void SetMacOsResizeIndicatorVisible(this Window window, bool isVisible)
+    {
+        if (!OperatingSystem.IsMacOS())
+        {
+            return;
+        }
+
+        WindowUtilsMacOS.SetResizeIndicatorVisible(window, isVisible);
+    }
     
     /// <summary>
     /// 窗体输入区域 (X11 SHAPE input region) 控制扩展。

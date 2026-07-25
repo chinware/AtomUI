@@ -1179,6 +1179,31 @@ public class WindowDialogPresenterTests
     }
 
     [Fact]
+    public void MacOs_Modal_Disabled_Owner_Input_Suppresses_Only_Redundant_Dialog_Activation()
+    {
+        var source = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Dialog/WindowHost/WindowDialogPresenter.cs"));
+
+        var showDialogBranchStart = source.IndexOf(
+            "HostWindow.ShowDialog(ownerWindow)",
+            StringComparison.Ordinal);
+        var macOsScopeStart = source.IndexOf(
+            "CreateMacOsDisabledOwnerInputActivationScope(ownerWindow)",
+            StringComparison.Ordinal);
+        showDialogBranchStart.ShouldBeGreaterThanOrEqualTo(0);
+        macOsScopeStart.ShouldBeGreaterThanOrEqualTo(0);
+        macOsScopeStart.ShouldBeLessThan(showDialogBranchStart);
+
+        source.ShouldContain("OperatingSystem.IsMacOS()");
+        source.ShouldContain("GotInputWhenDisabled");
+        source.ShouldContain("HostWindow.IsVisible");
+        source.ShouldContain("HostWindow.IsActive");
+        source.ShouldContain("return;");
+        source.ShouldContain("originalCallback?.Invoke();");
+        source.ShouldContain("ReleaseMacOsDisabledOwnerInputActivationScope");
+    }
+
+    [Fact]
     public void Presenter_Uses_The_Shared_Surface_Inside_One_Native_Window()
     {
         var owner = new AtomUI.Desktop.Controls.Window
@@ -1409,6 +1434,23 @@ public class WindowDialogPresenterTests
             }
             owner.Close();
         }
+    }
+
+    private static string GetRepoFile(string relativePath)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, relativePath);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new FileNotFoundException($"Could not find repository file: {relativePath}");
     }
 
     private static void WaitWithDispatcherPump(Task task)
