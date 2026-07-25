@@ -48,39 +48,39 @@ public partial class TabControlShowCase : GalleryReactiveUserControl<TabControlV
         RefreshViewModelData();
     }
 
-    private void HandleTabControlPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    private void HandlePlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is TabControlViewModel viewModel)
         {
-            viewModel.HandleTabControlPlacementOptionCheckedChanged(sender, args);
+            viewModel.HandlePlacementOptionCheckedChanged(sender, args);
         }
     }
 
-    private void HandleCardTabControlPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    private void HandleCardPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is TabControlViewModel viewModel)
         {
-            viewModel.HandleCardTabControlPlacementOptionCheckedChanged(sender, args);
+            viewModel.HandleCardPlacementOptionCheckedChanged(sender, args);
         }
     }
 
-    private void HandleTabControlReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    private void HandleReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is TabControlViewModel viewModel)
         {
-            viewModel.HandleTabControlReorderPlacementOptionCheckedChanged(sender, args);
+            viewModel.HandleReorderPlacementOptionCheckedChanged(sender, args);
         }
     }
 
-    private void HandleTabControlSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    private void HandleSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is TabControlViewModel viewModel)
         {
-            viewModel.HandleTabControlSizeTypeOptionCheckedChanged(sender, args);
+            viewModel.HandleSizeTypeOptionCheckedChanged(sender, args);
         }
     }
 
-    private void HandleTabControlAddTabRequest(object? sender, RoutedEventArgs args)
+    private void HandleAddTabRequest(object? sender, RoutedEventArgs args)
     {
         if (sender is not CardTabControl tabControl)
         {

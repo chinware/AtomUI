@@ -104,7 +104,7 @@
                             <StackPanel Orientation="Horizontal" Spacing="5">
                                 <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
                                 <atom:OptionButtonGroup ButtonStyle="Outline" Name="ReorderPlacementTabControlOptionGroup"
-                                                        OptionCheckedChanged="HandleTabControlReorderPlacementOptionCheckedChanged">
+                                                        OptionCheckedChanged="HandleReorderPlacementOptionCheckedChanged">
                                     <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
                                     <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
                                     <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
@@ -318,7 +318,7 @@
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
                         <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionTabControlOptionGroup"
-                                                OptionCheckedChanged="HandleTabControlPlacementOptionCheckedChanged">
+                                                OptionCheckedChanged="HandlePlacementOptionCheckedChanged">
                             <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
                             <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
                             <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
@@ -355,7 +355,7 @@
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
                         <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionCardTabControlOptionGroup"
-                                                OptionCheckedChanged="HandleCardTabControlPlacementOptionCheckedChanged">
+                                                OptionCheckedChanged="HandleCardPlacementOptionCheckedChanged">
                             <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
                             <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
                             <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
@@ -396,7 +396,7 @@
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
                         <atom:OptionButtonGroup ButtonStyle="Outline" Name="SizeTypeTabControlOptionGroup"
-                                                OptionCheckedChanged="HandleTabControlSizeTypeOptionCheckedChanged">
+                                                OptionCheckedChanged="HandleSizeTypeOptionCheckedChanged">
                             <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentSmall}" />
                             <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentMiddle}" />
                             <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLarge}" />
@@ -429,7 +429,7 @@
                 <gallery:ShowCaseItem.DeferredContentTemplate>
                     <DataTemplate x:DataType="vm:TabControlViewModel">
                 <atom:CardTabControl IsShowAddTabButton="True" Name="AddTabDemoTabControl"
-                                     AddTabRequest="HandleTabControlAddTabRequest">
+                                     AddTabRequest="HandleAddTabRequest">
                     <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
                     <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
                     <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />

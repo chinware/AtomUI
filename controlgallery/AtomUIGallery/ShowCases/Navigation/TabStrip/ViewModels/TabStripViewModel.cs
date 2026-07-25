@@ -59,7 +59,7 @@ public class TabStripViewModel : ReactiveObject, IRoutableViewModel
         HostScreen = screen;
     }
 
-    public void HandleTabStripPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    public void HandlePlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         PositionTabStripPlacement = args.Index switch
         {
@@ -70,7 +70,7 @@ public class TabStripViewModel : ReactiveObject, IRoutableViewModel
         };
     }
 
-    public void HandleCardTabStripPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    public void HandleCardPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         PositionCardTabStripPlacement = args.Index switch
         {
@@ -81,7 +81,7 @@ public class TabStripViewModel : ReactiveObject, IRoutableViewModel
         };
     }
 
-    public void HandleTabStripReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    public void HandleReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         ReorderTabStripPlacement = args.Index switch
         {
@@ -92,7 +92,7 @@ public class TabStripViewModel : ReactiveObject, IRoutableViewModel
         };
     }
 
-    public void HandleTabStripSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    public void HandleSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         SizeTypeTabStrip = args.Index switch
         {

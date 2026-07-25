@@ -108,7 +108,7 @@
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
                         <atom:OptionButtonGroup ButtonStyle="Outline" Name="ReorderPlacementTabStripOptionGroup"
-                                                OptionCheckedChanged="HandleTabStripReorderPlacementOptionCheckedChanged">
+                                                OptionCheckedChanged="HandleReorderPlacementOptionCheckedChanged">
                             <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTop}" />
                             <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentBottom}" />
                             <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLeft}" />
@@ -307,7 +307,7 @@
             <StackPanel Orientation="Horizontal" Spacing="5">
                 <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
                 <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionTabStripOptionGroup"
-                                        OptionCheckedChanged="HandleTabStripPlacementOptionCheckedChanged">
+                                        OptionCheckedChanged="HandlePlacementOptionCheckedChanged">
                     <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTop}" />
                     <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentBottom}" />
                     <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLeft}" />
@@ -355,7 +355,7 @@
             <StackPanel Orientation="Horizontal" Spacing="5">
                 <TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
                 <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionCardTabStripOptionGroup"
-                                        OptionCheckedChanged="HandleCardTabStripPlacementOptionCheckedChanged">
+                                        OptionCheckedChanged="HandleCardPlacementOptionCheckedChanged">
                     <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTop}" />
                     <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentBottom}" />
                     <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLeft}" />
@@ -393,7 +393,7 @@
             <StackPanel Orientation="Horizontal" Spacing="5">
                 <TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
                 <atom:OptionButtonGroup ButtonStyle="Outline" Name="SizeTypeTabStripOptionGroup"
-                                        OptionCheckedChanged="HandleTabStripSizeTypeOptionCheckedChanged">
+                                        OptionCheckedChanged="HandleSizeTypeOptionCheckedChanged">
                     <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentSmall}" />
                     <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentMiddle}" />
                     <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLarge}" />
@@ -427,7 +427,7 @@
             <DataTemplate x:DataType="vm:TabStripViewModel">
         <StackPanel Orientation="Vertical" Spacing="20">
             <atom:CardTabStrip IsShowAddTabButton="True" Name="AddTabDemoStrip"
-                                   AddTabRequest="HandleTabStripAddTabRequest">
+                                   AddTabRequest="HandleAddTabRequest">
                 <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
                 <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
                 <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />

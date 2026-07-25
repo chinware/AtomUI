@@ -35,7 +35,7 @@ internal sealed class X11WindowChromeManager : AbstractLinuxWindowChromeManager
 
     protected override Action? PrepareInitialPlatformShowState()
     {
-        ApplyX11CsdFrameExtents();
+        ApplyCsdFrameExtents();
         var screen     = Window.Screens.ScreenFromPoint(Window.Position) ?? Window.Screens.Primary;
         var clientSize = SynchronizeInitialClientSize(screen);
         if (clientSize is null)
@@ -60,7 +60,7 @@ internal sealed class X11WindowChromeManager : AbstractLinuxWindowChromeManager
 
     protected override void UpdatePlatformFrameGeometry()
     {
-        ApplyX11CsdFrameExtents();
+        ApplyCsdFrameExtents();
     }
 
     private Size? SynchronizeInitialClientSize(Screen? screen)
@@ -253,7 +253,7 @@ internal sealed class X11WindowChromeManager : AbstractLinuxWindowChromeManager
         Window.SetWindowInputRectangle(x, y, w, h);
     }
 
-    private void ApplyX11CsdFrameExtents()
+    private void ApplyCsdFrameExtents()
     {
         var frameExtents = Window.WindowState is WindowState.Normal ? Window.FrameShadowThickness : default;
         Window.SetLinuxX11CsdFrameExtents(frameExtents);
