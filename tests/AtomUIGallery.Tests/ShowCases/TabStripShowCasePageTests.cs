@@ -95,13 +95,13 @@ public class TabStripShowCasePageTests
     {
         var normalized = Regex.Replace(
             source,
-            "\\s*OptionCheckedChanged=\"Handle(?:Card)?TabStrip(?:ReorderPlacement|Placement|SizeType)OptionCheckedChanged\"",
+            "\\s*OptionCheckedChanged=\"Handle(?:Card)?(?:ReorderPlacement|Placement|SizeType)OptionCheckedChanged\"",
             string.Empty,
             RegexOptions.CultureInvariant);
 
         normalized = Regex.Replace(
             normalized,
-            "\\s*AddTabRequest=\"HandleTabStripAddTabRequest\"",
+            "\\s*AddTabRequest=\"HandleAddTabRequest\"",
             string.Empty,
             RegexOptions.CultureInvariant);
 

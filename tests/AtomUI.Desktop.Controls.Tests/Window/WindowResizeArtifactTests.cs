@@ -182,7 +182,7 @@ public class WindowResizeArtifactTests
         double expectedRight,
         double expectedBottom)
     {
-        var normalized = WaylandWindowChromeManager.NormalizeWaylandShadowExtents(
+        var normalized = WaylandWindowChromeManager.NormalizeShadowExtents(
             new Thickness(left, top, right, bottom));
         normalized.ShouldBe(new Thickness(expectedLeft, expectedTop, expectedRight, expectedBottom));
 
@@ -199,18 +199,18 @@ public class WindowResizeArtifactTests
     [SupportedOSPlatform("linux")]
     public void Wayland_Min_Max_Hints_Use_Window_Geometry_Excluding_Shadow()
     {
-        var geometryConstraint = WaylandWindowChromeManager.CalculateWaylandGeometryConstraint(
+        var geometryConstraint = WaylandWindowChromeManager.CalculateGeometryConstraint(
             new Size(594, 474),
             new Thickness(36, 27, 36, 45));
 
         geometryConstraint.ShouldBe(new Size(522, 402));
 
-        WaylandWindowChromeManager.CalculateWaylandGeometryConstraint(
+        WaylandWindowChromeManager.CalculateGeometryConstraint(
                 new Size(double.PositiveInfinity, double.PositiveInfinity),
                 new Thickness(36, 27, 36, 45))
             .ShouldBe(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
-        WaylandWindowChromeManager.CalculateWaylandGeometryConstraint(
+        WaylandWindowChromeManager.CalculateGeometryConstraint(
                 default,
                 new Thickness(36, 27, 36, 45))
             .ShouldBe(default);
@@ -407,7 +407,7 @@ public class WindowResizeArtifactTests
 
         windowSource.ShouldContain("_platformChromeManager = WindowChromeManager.Attach(this);");
         linuxChromeSource.ShouldContain("_window.ScalingChanged += HandleScalingChanged;");
-        chromeSource.ShouldContain("ApplyX11CsdFrameExtents();");
+        chromeSource.ShouldContain("ApplyCsdFrameExtents();");
         chromeSource.ShouldContain("Window.WindowState is WindowState.Normal ? Window.FrameShadowThickness : default");
         chromeSource.ShouldContain("Window.SetLinuxX11CsdFrameExtents(frameExtents);");
         windowSource.ShouldNotContain("EnsureMinSizeForDecorations");

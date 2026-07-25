@@ -27,8 +27,8 @@ internal sealed class WaylandWindowChromeManager : AbstractLinuxWindowChromeMana
 
     protected override void UpdatePlatformFrameGeometry()
     {
-        UpdateWaylandShadowExtents();
-        UpdateWaylandMinMaxSizeHints();
+        UpdateShadowExtents();
+        UpdateMinMaxSizeHints();
 
         _hasManagedResizeGrip = Window.TryTakeOverManagedResizeGrip(
             ManagedResizeGripScale,
@@ -38,31 +38,31 @@ internal sealed class WaylandWindowChromeManager : AbstractLinuxWindowChromeMana
             Window.ConfigureManagedResizeGrip(_managedResizeGripThickness);
         }
 
-        UpdateWaylandInputRegion();
+        UpdateInputRegion();
     }
 
-    private void UpdateWaylandShadowExtents()
+    private void UpdateShadowExtents()
     {
-        Window.PlatformImpl?.SetShadowExtents(ResolveWaylandShadowExtents());
+        Window.PlatformImpl?.SetShadowExtents(ResolveShadowExtents());
     }
 
-    private void UpdateWaylandMinMaxSizeHints()
+    private void UpdateMinMaxSizeHints()
     {
-        var shadowExtents = ResolveWaylandShadowExtents();
-        var minSize = CalculateWaylandGeometryConstraint(
+        var shadowExtents = ResolveShadowExtents();
+        var minSize = CalculateGeometryConstraint(
             new Size(Window.MinWidth, Window.MinHeight),
             shadowExtents);
-        var maxSize = CalculateWaylandGeometryConstraint(
+        var maxSize = CalculateGeometryConstraint(
             new Size(Window.MaxWidth, Window.MaxHeight),
             shadowExtents);
 
         Window.PlatformImpl?.SetMinMaxSize(minSize, maxSize);
     }
 
-    private Thickness ResolveWaylandShadowExtents()
+    private Thickness ResolveShadowExtents()
     {
         return Window.IsCsdEnabled && Window.WindowState == WindowState.Normal
-            ? NormalizeWaylandShadowExtents(Window.FrameShadowThickness)
+            ? NormalizeShadowExtents(Window.FrameShadowThickness)
             : default;
     }
 
@@ -74,7 +74,7 @@ internal sealed class WaylandWindowChromeManager : AbstractLinuxWindowChromeMana
         }
     }
 
-    private void UpdateWaylandInputRegion()
+    private void UpdateInputRegion()
     {
         var region = CalculateInputRegion(
             Window.ClientSize,
@@ -115,34 +115,34 @@ internal sealed class WaylandWindowChromeManager : AbstractLinuxWindowChromeMana
         return new PixelRect(left, top, right - left, bottom - top);
     }
 
-    internal static Thickness NormalizeWaylandShadowExtents(Thickness shadowExtents)
+    internal static Thickness NormalizeShadowExtents(Thickness shadowExtents)
     {
         return new Thickness(
-            NormalizeWaylandShadowExtent(shadowExtents.Left),
-            NormalizeWaylandShadowExtent(shadowExtents.Top),
-            NormalizeWaylandShadowExtent(shadowExtents.Right),
-            NormalizeWaylandShadowExtent(shadowExtents.Bottom));
+            NormalizeShadowExtent(shadowExtents.Left),
+            NormalizeShadowExtent(shadowExtents.Top),
+            NormalizeShadowExtent(shadowExtents.Right),
+            NormalizeShadowExtent(shadowExtents.Bottom));
     }
 
-    internal static Size CalculateWaylandGeometryConstraint(
+    internal static Size CalculateGeometryConstraint(
         Size clientConstraint,
         Thickness shadowExtents)
     {
         return new Size(
-            CalculateWaylandGeometryConstraintAxis(
+            CalculateGeometryConstraintAxis(
                 clientConstraint.Width,
                 shadowExtents.Left + shadowExtents.Right),
-            CalculateWaylandGeometryConstraintAxis(
+            CalculateGeometryConstraintAxis(
                 clientConstraint.Height,
                 shadowExtents.Top + shadowExtents.Bottom));
     }
 
-    private static double NormalizeWaylandShadowExtent(double value)
+    private static double NormalizeShadowExtent(double value)
     {
         return Math.Max(0, Math.Round(value, MidpointRounding.AwayFromZero));
     }
 
-    private static double CalculateWaylandGeometryConstraintAxis(double value, double shadowExtent)
+    private static double CalculateGeometryConstraintAxis(double value, double shadowExtent)
     {
         if (!double.IsFinite(value) || value <= 0)
         {

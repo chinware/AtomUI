@@ -59,7 +59,7 @@ public class TabControlViewModel : ReactiveObject, IRoutableViewModel
         HostScreen = screen;
     }
 
-    public void HandleTabControlPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    public void HandlePlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         PositionTabControlPlacement = args.Index switch
         {
@@ -70,7 +70,7 @@ public class TabControlViewModel : ReactiveObject, IRoutableViewModel
         };
     }
 
-    public void HandleCardTabControlPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    public void HandleCardPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         PositionCardTabControlPlacement = args.Index switch
         {
@@ -81,7 +81,7 @@ public class TabControlViewModel : ReactiveObject, IRoutableViewModel
         };
     }
 
-    public void HandleTabControlReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    public void HandleReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         ReorderTabControlPlacement = args.Index switch
         {
@@ -92,7 +92,7 @@ public class TabControlViewModel : ReactiveObject, IRoutableViewModel
         };
     }
 
-    public void HandleTabControlSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    public void HandleSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         SizeTypeTabControl = args.Index switch
         {
