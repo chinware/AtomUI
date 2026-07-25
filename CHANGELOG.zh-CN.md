@@ -6,6 +6,35 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.1.1
+
+`2026-07-25`
+
+- 破坏性变更
+  - ListView：将选择状态从可替换的 Avalonia `ISelectionModel` 调整为只读 `IListViewSelection` 门面。直接设置 `Selection`、`SelectedItem`、`SelectedItems` 或 `SelectedValue` 的代码，需要迁移到 `SelectedIndex` 或 `Selection.Select` / `Selection.Deselect` / `Selection.Clear` / `Selection.SelectAll`；`SelectionChanged` 事件参数改为 `ListViewSelectionChangedEventArgs`，并移除旧的 `ListCollectionViewChangedEventArgs` 类型。`ListItemData.IsSelected` 已移除，`ListItemData`、`GroupListItemData` 和 `SelectOption` 从 record 调整为 class。迁移示例见 [6.1.1 API 变更示例](docs/release-notes/6.1.1-api-changes.md)。
+- Window 和 Dialog
+  - 修复 macOS modal dialog window 的标题栏和 resize 区域行为，避免窗口内外出现重复 resizer，并稳定点击 owner 外区域时的 modal 闪动。
+  - 修复 Wayland dialog/window resize 过程中尺寸约束丢失、窗口突然变大、fractional scale 边框和 mask 错位的问题。
+  - 修复 Windows CSD dialog/window resize、背景预热、frame dark mode 和最小高度约束，避免原生边界与绘制装饰不同步。
+  - 统一 Window 平台 chrome 管理边界，保持 Windows、macOS、Wayland、X11 和其他 Linux 装饰逻辑分离。
+- WindowTitleBar
+  - 新增 `WindowTitleBar.TitleAlignment` 和 `Window.TitleAlignment`，支持 `Auto`、`Left`、`Center`、`WindowCenter`、`Right` 标题对齐模式。
+  - 修复 Windows/Linux 下 logo 与 left add-on 的排列顺序、Windows caption button 光标和标题栏 padding。
+- ListView、Select 和 Transfer
+  - 修复过滤、分组、分页和重复数据项场景下选择状态与数据视图索引错位的问题。
+  - 新增 `ItemKeySelector` 和 `SelectedIndexes`，让 ListView 可以按稳定业务 key 和 source index 维护选择状态。
+- DataGrid
+  - 修复 DataGrid template 重新应用后分页器没有回放当前页、页大小和总数的问题。
+- ImagePreviewer
+  - 修复预览 dialog 打开时的 resize motion、标题居中和背景稳定性问题。
+- Drawer、ScrollViewer 和基础布局
+  - 修复 Drawer mask 没有覆盖可见窗口 frame 的问题。
+  - 修复 fractional scale 下子像素溢出导致 auto scrollbar 错误显示的问题。
+  - 修复 SplitButton arrange 过程中子元素 bounds 不稳定的问题。
+- Gallery、文档和构建
+  - 移除 Gallery 中内置 API 和 Design Token metadata table sidecar，LLMS 文档不再引用这些 Gallery 表格。
+  - 将可复现的 generated files 从仓库跟踪中移除，并修复生成 theme asset manifest 时的 CRLF 输出问题。
+
 ## 6.1.0
 
 `2026-07-20`

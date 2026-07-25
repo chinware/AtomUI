@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
-[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.0-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.1-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-license-shield]][github-license-link]
 
@@ -64,8 +64,15 @@ Token 和本地化开发的源代码生成器。欢迎提交 Issue、PR 和改�
 #### 运行环境
 
 .NET 8 及其以上（开发期支持 .NET 10）<br>
-Avalonia 12.0.x<br>
+Avalonia 12.1.x<br>
 支持 Windows、macOS、Linux 跨平台<br>
+
+#### 最新版本说明
+
+AtomUI 6.1.1 包含 ListView 选择 API 变更、`WindowTitleBar.TitleAlignment` / `Window.TitleAlignment`，以及
+macOS modal chrome、Wayland resize 约束和 Windows CSD 边界相关的 window/dialog 修复。升级前请查看
+[更新日志](./CHANGELOG.zh-CN.md) 和 [6.1.1 API 变更示例](./docs/release-notes/6.1.1-api-changes.md)，尤其是
+直接设置 ListView 选择状态的代码。
 
 #### 感谢通明湖中心孵化 AtomUI OSS
 
@@ -121,9 +128,9 @@ AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用
 | AtomUI.Generator                    | 面向自定义控件、Token 与本地化开发的源代码生成器   |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.1.0
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.0
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.0
+dotnet add package AtomUI.Desktop.Controls --version 6.1.1
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.1
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.1
 ```
 
 您也可以在 IDE 的 NuGet 包管理器中安装。以 Rider 为例，可以依次点击：
@@ -150,9 +157,9 @@ NuGet -> 软件包
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.0"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.0"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.0"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.1"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.1"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.1"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
@@ -234,7 +241,7 @@ public partial class App : Application
 
 #### 体验所有控件
 
-您可以在本机启动 Gallery 项目，浏览 AtomUI 控件、典型用法、设计 Token 和 API 表格。
+您可以在本机启动 Gallery 项目，浏览 AtomUI 控件、典型用法、示例和生成文档。
 
 ```bash
 git clone https://github.com/AtomUI/AtomUI.git

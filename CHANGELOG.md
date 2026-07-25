@@ -4,6 +4,35 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.1.1
+
+`2026-07-25`
+
+- Breaking Changes
+  - ListView: replace the settable Avalonia `ISelectionModel` contract with a read-only `IListViewSelection` facade. Code that directly set `Selection`, `SelectedItem`, `SelectedItems` or `SelectedValue` should migrate to `SelectedIndex` or `Selection.Select` / `Selection.Deselect` / `Selection.Clear` / `Selection.SelectAll`; `SelectionChanged` now uses `ListViewSelectionChangedEventArgs`, and the old `ListCollectionViewChangedEventArgs` type has been removed. `ListItemData.IsSelected` has been removed, and `ListItemData`, `GroupListItemData` and `SelectOption` are now classes instead of records. See [6.1.1 API change examples](docs/release-notes/6.1.1-api-changes.md).
+- Window and Dialog
+  - Fix macOS modal dialog window title-bar and resize-region behavior so only one outer resizer is shown and owner-outside modal activation no longer causes visible flashing.
+  - Fix Wayland dialog/window resize constraints, sudden resize growth, fractional-scale borders and mask alignment.
+  - Fix Windows CSD dialog/window resize handling, background priming, frame dark mode and minimum-height constraints so native bounds stay aligned with drawn decorations.
+  - Consolidate platform chrome boundaries while keeping Windows, macOS, Wayland, X11 and other Linux decoration behavior separated.
+- WindowTitleBar
+  - Add `WindowTitleBar.TitleAlignment` and `Window.TitleAlignment` with `Auto`, `Left`, `Center`, `WindowCenter` and `Right` modes.
+  - Fix Windows/Linux logo ordering before the left add-on, Windows caption-button cursors and title-bar padding.
+- ListView, Select and Transfer
+  - Fix selection state and data-view index mismatches across filtering, grouping, pagination and duplicate item occurrences.
+  - Add `ItemKeySelector` and `SelectedIndexes` so ListView can preserve selection by stable business keys and source indexes.
+- DataGrid
+  - Fix pagination state replay after the DataGrid template is reapplied.
+- ImagePreviewer
+  - Fix preview dialog resize motion, title centering and background stability.
+- Drawer, ScrollViewer and Base Layout
+  - Fix Drawer masks so they cover the visible window frame.
+  - Fix fractional-scale sub-pixel overflow causing auto scrollbars to appear incorrectly.
+  - Fix SplitButton child bounds across arrange passes.
+- Gallery, Documentation and Build
+  - Remove built-in Gallery API and design-token metadata table sidecars, and stop referencing those Gallery tables from LLMS output.
+  - Stop tracking reproducible generated files and fix CRLF output in generated theme asset manifests.
+
 ## 6.1.0
 
 `2026-07-20`
