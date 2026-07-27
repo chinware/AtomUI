@@ -21,7 +21,10 @@ internal partial class zh_TW
     public const string MenuItemEnableMove = "開啓窗口移動";
     public const string MenuItemEnableResize = "開啓窗口設置大小";
 
+    public const string MenuItemAppearance = "外觀模式";
+    public const string MenuItemLightMode = "明亮模式";
     public const string MenuItemDarkMode = "暗黑模式";
+    public const string MenuItemFollowSystem = "跟隨系統";
     public const string MenuItemCompactMode = "緊湊模式";
     public const string MenuItemEnableMotion = "開啓動效";
     public const string MenuItemEnableWaveSpirit = "開啓波浪動畫";

@@ -52,9 +52,23 @@
                 <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemThemeSettings}"
                                Tag="{x:Static workspaceviews:WindowMenuItemKind.ThemeCatalog}" />
                 <atom:MenuSeparator />
-                <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemDarkMode}"
-                               ToggleType="CheckBox"
-                               Tag="{x:Static workspaceviews:WindowMenuItemKind.DarkMode}" />
+                <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemAppearance}">
+                    <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemLightMode}"
+                                   ToggleType="Radio"
+                                   GroupName="ThemeAppearance"
+                                   IsChecked="{Binding IsLightAppearanceMode}"
+                                   Tag="{x:Static workspaceviews:WindowMenuItemKind.LightMode}" />
+                    <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemDarkMode}"
+                                   ToggleType="Radio"
+                                   GroupName="ThemeAppearance"
+                                   IsChecked="{Binding IsDarkAppearanceMode}"
+                                   Tag="{x:Static workspaceviews:WindowMenuItemKind.DarkMode}" />
+                    <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemFollowSystem}"
+                                   ToggleType="Radio"
+                                   GroupName="ThemeAppearance"
+                                   IsChecked="{Binding IsSystemAppearanceMode}"
+                                   Tag="{x:Static workspaceviews:WindowMenuItemKind.FollowSystem}" />
+                </atom:MenuItem>
                 <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemCompactMode}"
                                ToggleType="CheckBox"
                                Tag="{x:Static workspaceviews:WindowMenuItemKind.Compact}" />
