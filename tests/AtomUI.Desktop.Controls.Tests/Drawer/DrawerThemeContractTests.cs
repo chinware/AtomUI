@@ -52,15 +52,20 @@ public class DrawerThemeContractTests
     }
 
     [Fact]
-    public void Drawn_Decorations_Overlay_Yields_To_Interactive_Window_Overlays()
+    public void Drawn_Decorations_Overlay_Provides_Interactive_Window_Overlay_Hosts()
     {
         var source = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"));
 
         source.ShouldContain("Name=\"PART_OverlayWrapper\"");
         source.ShouldContain("IsDrawnChromeOverlayVisible");
-        source.ShouldNotContain("PART_DrawerOverlayLayerHost");
-        source.ShouldNotContain("PART_DialogOverlayLayerHost");
+        source.ShouldContain("WindowVisualLayerClip");
+        source.ShouldContain("Name=\"PART_DrawerOverlayLayerHost\"");
+        source.ShouldContain("Name=\"PART_DialogOverlayLayerHost\"");
+        source.IndexOf("Name=\"PART_OverlayWrapper\"", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("Name=\"PART_DrawerOverlayLayerHost\"", StringComparison.Ordinal));
+        source.IndexOf("Name=\"PART_DrawerOverlayLayerHost\"", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("Name=\"PART_DialogOverlayLayerHost\"", StringComparison.Ordinal));
     }
 
     [Fact]
