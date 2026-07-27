@@ -9,8 +9,6 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 
 internal sealed class MacOSWindowChromeManager : IWindowChromeManager
 {
-    private const double DisabledManagedResizeGripScale = 0.0;
-
     private readonly Window _window;
     private bool _initialShowStatePrepared;
 
@@ -76,6 +74,5 @@ internal sealed class MacOSWindowChromeManager : IWindowChromeManager
         {
             _window.SetMacOsResizeIndicatorVisible(false);
         }
-        _window.TryTakeOverManagedResizeGrip(DisabledManagedResizeGripScale, out _);
     }
 }
