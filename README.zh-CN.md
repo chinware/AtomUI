@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
-[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.1-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.2-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-license-shield]][github-license-link]
 
@@ -69,10 +69,9 @@ Avalonia 12.1.x<br>
 
 #### 最新版本说明
 
-AtomUI 6.1.1 包含 ListView 选择 API 变更、`WindowTitleBar.TitleAlignment` / `Window.TitleAlignment`，以及
-macOS modal chrome、Wayland resize 约束和 Windows CSD 边界相关的 window/dialog 修复。升级前请查看
-[更新日志](./CHANGELOG.zh-CN.md) 和 [6.1.1 API 变更示例](./docs/release-notes/6.1.1-api-changes.md)，尤其是
-直接设置 ListView 选择状态的代码。
+AtomUI 6.1.2 为 Gallery 新增浅色、深色和跟随系统外观模式，修复 Dialog 和 Drawer 在绘制窗口 chrome 上的
+mask 覆盖问题，并修复 Splitter 在交叉轴无限约束下的测量问题。升级前请查看
+[更新日志](./CHANGELOG.zh-CN.md) 了解发布详情。
 
 #### 感谢通明湖中心孵化 AtomUI OSS
 
@@ -128,9 +127,9 @@ AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用
 | AtomUI.Generator                    | 面向自定义控件、Token 与本地化开发的源代码生成器   |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.1.1
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.1
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.1
+dotnet add package AtomUI.Desktop.Controls --version 6.1.2
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.2
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.2
 ```
 
 您也可以在 IDE 的 NuGet 包管理器中安装。以 Rider 为例，可以依次点击：
@@ -157,9 +156,9 @@ NuGet -> 软件包
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.1"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.1"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.1"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.2"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.2"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.2"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
