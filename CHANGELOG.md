@@ -4,6 +4,18 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.1.2
+
+`2026-07-27`
+
+- Theme and Gallery
+  - Add the shared `ThemePreference` enum with `Light`, `Dark` and `System` values.
+  - Add Light, Dark and Follow System appearance modes to the Gallery. Follow System updates the Gallery theme when the operating system appearance changes.
+- Dialog, Drawer and Window
+  - Fix overlay Dialog and Drawer masks so they cover drawn window chrome without changing the window content geometry.
+- Splitter
+  - Fix measurement when the cross axis is unconstrained so Splitter returns a finite desired size.
+
 ## 6.1.1
 
 `2026-07-25`

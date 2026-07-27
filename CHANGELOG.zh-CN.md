@@ -6,6 +6,18 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.1.2
+
+`2026-07-27`
+
+- Theme 和 Gallery
+  - 新增通用 `ThemePreference` 枚举，支持 `Light`、`Dark` 和 `System`。
+  - Gallery 外观菜单新增浅色、深色和跟随系统模式；跟随系统时会随操作系统浅深色变化自动切换。
+- Dialog、Drawer 和 Window
+  - 修复 overlay Dialog 和 Drawer 的 mask 没有完整覆盖绘制窗口 chrome，或因此改变窗口内容几何的问题。
+- Splitter
+  - 修复交叉轴无限约束时测量结果不为有限尺寸的问题。
+
 ## 6.1.1
 
 `2026-07-25`
