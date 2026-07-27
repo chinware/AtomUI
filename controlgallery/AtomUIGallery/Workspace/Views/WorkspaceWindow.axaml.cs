@@ -24,7 +24,9 @@ internal enum WindowMenuItemKind
     Move,
     Resize,
     ThemeCatalog,
+    LightMode,
     DarkMode,
+    FollowSystem,
     Compact,
     Motion,
     WaveSpirit,
@@ -227,8 +229,16 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
                 case WindowMenuItemKind.Resize:
                     CanResize = menuItem.IsChecked;
                     break;
+                case WindowMenuItemKind.LightMode:
+                    ViewModel.SetAppearanceModeCommand.Execute(ThemePreference.Light)
+                             .Subscribe();
+                    break;
                 case WindowMenuItemKind.DarkMode:
-                    ViewModel.ToggleDarkModeCommand.Execute(menuItem.IsChecked)
+                    ViewModel.SetAppearanceModeCommand.Execute(ThemePreference.Dark)
+                             .Subscribe();
+                    break;
+                case WindowMenuItemKind.FollowSystem:
+                    ViewModel.SetAppearanceModeCommand.Execute(ThemePreference.System)
                              .Subscribe();
                     break;
                 case WindowMenuItemKind.Compact:

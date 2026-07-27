@@ -200,7 +200,19 @@ public class WorkspaceWindowLayoutTests
         children[0].Attribute("Header")!.Value.ShouldContain("MenuItemThemeSettings");
         children[0].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.ThemeCatalog");
         children[1].Name.ShouldBe(atom + "MenuSeparator");
-        children[2].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.DarkMode");
+        children[2].Attribute("Header")!.Value.ShouldContain("MenuItemAppearance");
+        children[2].Attribute("Tag").ShouldBeNull();
+        var appearanceItems = children[2].Elements(atom + "MenuItem").ToArray();
+        appearanceItems.Length.ShouldBe(3);
+        appearanceItems[0].Attribute("Header")!.Value.ShouldContain("MenuItemLightMode");
+        appearanceItems[0].Attribute("ToggleType")!.Value.ShouldBe("Radio");
+        appearanceItems[0].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.LightMode");
+        appearanceItems[1].Attribute("Header")!.Value.ShouldContain("MenuItemDarkMode");
+        appearanceItems[1].Attribute("ToggleType")!.Value.ShouldBe("Radio");
+        appearanceItems[1].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.DarkMode");
+        appearanceItems[2].Attribute("Header")!.Value.ShouldContain("MenuItemFollowSystem");
+        appearanceItems[2].Attribute("ToggleType")!.Value.ShouldBe("Radio");
+        appearanceItems[2].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.FollowSystem");
         children[3].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.Compact");
         children[4].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.Motion");
         children[5].Attribute("Tag")!.Value.ShouldContain("WindowMenuItemKind.WaveSpirit");
@@ -208,8 +220,17 @@ public class WorkspaceWindowLayoutTests
 
     [Theory]
     [InlineData("en_US.cs", "public const string MenuItemThemeSettings = \"Theme Settings\";")]
+    [InlineData("en_US.cs", "public const string MenuItemAppearance = \"Appearance\";")]
+    [InlineData("en_US.cs", "public const string MenuItemLightMode = \"Light Mode\";")]
+    [InlineData("en_US.cs", "public const string MenuItemFollowSystem = \"Follow System\";")]
     [InlineData("zh_CN.cs", "public const string MenuItemThemeSettings = \"主题设置\";")]
+    [InlineData("zh_CN.cs", "public const string MenuItemAppearance = \"外观模式\";")]
+    [InlineData("zh_CN.cs", "public const string MenuItemLightMode = \"明亮模式\";")]
+    [InlineData("zh_CN.cs", "public const string MenuItemFollowSystem = \"跟随系统\";")]
     [InlineData("zh_TW.cs", "public const string MenuItemThemeSettings = \"主題設定\";")]
+    [InlineData("zh_TW.cs", "public const string MenuItemAppearance = \"外觀模式\";")]
+    [InlineData("zh_TW.cs", "public const string MenuItemLightMode = \"明亮模式\";")]
+    [InlineData("zh_TW.cs", "public const string MenuItemFollowSystem = \"跟隨系統\";")]
     public void Workspace_Window_Localizes_The_Theme_Settings_Submenu(
         string fileName,
         string expectedConstant)

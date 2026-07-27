@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Theme;
@@ -15,10 +16,13 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 {
     private readonly IThemeManager? _themeManager;
     private readonly ILanguageManager? _languageManager;
+    private readonly IGallerySystemAppearanceSource _systemAppearanceSource;
     private readonly EventHandler<ThemeChangedEventArgs>? _themeChangedHandler;
     private readonly EventHandler<ThemeCatalogChangedEventArgs>? _themeCatalogChangedHandler;
     private readonly EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
+    private IDisposable? _systemAppearanceSubscription;
     private bool _isDisposed;
+    private bool _hasExplicitAppearanceMode;
     private bool _isDark;
     private bool _isCompact;
     private bool _isMotionEnabled = true;
@@ -26,6 +30,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     private string[] _baseAlgorithms = ["Default"];
     private IReadOnlyList<ThemeInfo> _availableThemes = Array.Empty<ThemeInfo>();
     private string _currentThemeId = IThemeManager.DEFAULT_THEME_ID;
+    private ThemePreference _appearanceMode = ThemePreference.Light;
 
     private bool _isZhCN;
     private bool _isZhTW;
@@ -36,6 +41,8 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     public GalleryNavigationViewModel Navigation { get; }
 
     public ReactiveCommand<bool, Unit> ToggleDarkModeCommand { get; }
+
+    public ReactiveCommand<ThemePreference, Unit> SetAppearanceModeCommand { get; }
 
     public ReactiveCommand<bool, Unit> ToggleCompactModeCommand { get; }
 
@@ -63,6 +70,18 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         private set => this.RaiseAndSetIfChanged(ref _currentThemeId, value);
     }
 
+    public ThemePreference AppearanceMode
+    {
+        get => _appearanceMode;
+        private set => SetAppearanceModeState(value);
+    }
+
+    public bool IsLightAppearanceMode => AppearanceMode == ThemePreference.Light;
+
+    public bool IsDarkAppearanceMode => AppearanceMode == ThemePreference.Dark;
+
+    public bool IsSystemAppearanceMode => AppearanceMode == ThemePreference.System;
+
     public bool IsZhCN
     {
         get => _isZhCN;
@@ -83,7 +102,17 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 
     public GalleryWorkspaceViewModel(GalleryBaseConfiguration configuration,
                                      Func<IScreen, GalleryNavigationViewModel>? navigationFactory = null)
+        : this(configuration, navigationFactory, GallerySystemAppearanceSource.Instance)
     {
+    }
+
+    internal GalleryWorkspaceViewModel(GalleryBaseConfiguration configuration,
+                                       Func<IScreen, GalleryNavigationViewModel>? navigationFactory,
+                                       IGallerySystemAppearanceSource systemAppearanceSource)
+    {
+        ArgumentNullException.ThrowIfNull(systemAppearanceSource);
+
+        _systemAppearanceSource = systemAppearanceSource;
         Navigation = navigationFactory?.Invoke(this) ?? new GalleryNavigationViewModel(this, configuration);
 
         _themeManager = Application.Current?.GetThemeManager();
@@ -93,6 +122,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         SyncLanguageState(_languageManager?.LanguageVariant);
 
         ToggleDarkModeCommand = ReactiveCommand.CreateFromTask<bool>(SetDarkModeAsync);
+        SetAppearanceModeCommand = ReactiveCommand.CreateFromTask<ThemePreference>(SetAppearanceModeAsync);
         ToggleCompactModeCommand = ReactiveCommand.CreateFromTask<bool>(SetCompactModeAsync);
         ToggleMotionCommand = ReactiveCommand.CreateFromTask<bool>(SetMotionEnabledAsync);
         ToggleWaveSpiritCommand = ReactiveCommand.CreateFromTask<bool>(SetWaveSpiritEnabledAsync);
@@ -124,6 +154,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         }
 
         _isDisposed = true;
+        ReleaseSystemAppearanceSubscription();
         if (_languageManager is not null && _languageVariantChangedHandler is not null)
         {
             _languageManager.LanguageVariantChanged -= _languageVariantChangedHandler;
@@ -142,7 +173,28 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 
     private async Task SetDarkModeAsync(bool isDark)
     {
-        _isDark = isDark;
+        await SetAppearanceModeAsync(
+            isDark
+                ? ThemePreference.Dark
+                : ThemePreference.Light);
+    }
+
+    private async Task SetAppearanceModeAsync(ThemePreference appearanceMode)
+    {
+        ValidateAppearanceMode(appearanceMode);
+
+        _hasExplicitAppearanceMode = true;
+        AppearanceMode             = appearanceMode;
+        if (appearanceMode == ThemePreference.System)
+        {
+            SubscribeSystemAppearance();
+            _isDark = _systemAppearanceSource.GetCurrentAppearance() == ThemeAppearance.Dark;
+            await ApplyThemeSettingsAsync(reason: ThemeTransitionReason.FollowSystem);
+            return;
+        }
+
+        ReleaseSystemAppearanceSubscription();
+        _isDark = appearanceMode == ThemePreference.Dark;
         await ApplyThemeSettingsAsync();
     }
 
@@ -182,7 +234,8 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         return ApplyThemeSettingsAsync(themeId);
     }
 
-    private async Task ApplyThemeSettingsAsync(string? requestedThemeId = null)
+    private async Task ApplyThemeSettingsAsync(string? requestedThemeId = null,
+                                               ThemeTransitionReason reason = ThemeTransitionReason.UserRequest)
     {
         if (_themeManager is null)
         {
@@ -211,7 +264,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
                 _themeManager.CurrentTheme?.ThemeId ??
                 IThemeManager.DEFAULT_THEME_ID,
                 config,
-                ThemeTransitionReason.UserRequest));
+                reason));
         if (result.Status == ThemeTransitionStatus.Failed)
         {
             this.RaisePropertyChanged(nameof(CurrentThemeId));
@@ -221,6 +274,42 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         if (result.Status == ThemeTransitionStatus.Superseded)
         {
             this.RaisePropertyChanged(nameof(CurrentThemeId));
+        }
+    }
+
+    private void SubscribeSystemAppearance()
+    {
+        ReleaseSystemAppearanceSubscription();
+        _systemAppearanceSubscription = _systemAppearanceSource.Subscribe(HandleSystemAppearanceChanged);
+    }
+
+    private void ReleaseSystemAppearanceSubscription()
+    {
+        _systemAppearanceSubscription?.Dispose();
+        _systemAppearanceSubscription = null;
+    }
+
+    private async void HandleSystemAppearanceChanged(ThemeAppearance appearance)
+    {
+        if (_isDisposed || AppearanceMode != ThemePreference.System)
+        {
+            return;
+        }
+
+        var isDark = appearance == ThemeAppearance.Dark;
+        if (_isDark == isDark)
+        {
+            return;
+        }
+
+        _isDark = isDark;
+        try
+        {
+            await ApplyThemeSettingsAsync(reason: ThemeTransitionReason.FollowSystem).ConfigureAwait(true);
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine(exception);
         }
     }
 
@@ -269,6 +358,12 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         {
             CurrentThemeId = state.ThemeId;
             _isDark = state.Appearance == ThemeAppearance.Dark;
+            if (!_hasExplicitAppearanceMode)
+            {
+                AppearanceMode = _isDark
+                    ? ThemePreference.Dark
+                    : ThemePreference.Light;
+            }
             _isCompact = state.Algorithms.Contains("Compact", StringComparer.Ordinal);
             _baseAlgorithms = state.Algorithms
                                    .Where(static algorithm =>
@@ -286,6 +381,20 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
                                ReadBooleanToken(config, nameof(SharedTokenKind.EnableWaveSpirit), true);
     }
 
+    private void SetAppearanceModeState(ThemePreference appearanceMode)
+    {
+        if (_appearanceMode == appearanceMode)
+        {
+            return;
+        }
+
+        _appearanceMode = appearanceMode;
+        this.RaisePropertyChanged(nameof(AppearanceMode));
+        this.RaisePropertyChanged(nameof(IsLightAppearanceMode));
+        this.RaisePropertyChanged(nameof(IsDarkAppearanceMode));
+        this.RaisePropertyChanged(nameof(IsSystemAppearanceMode));
+    }
+
     private static IReadOnlyList<ThemeInfo> CaptureThemes(IReadOnlyList<ThemeInfo>? themes)
     {
         return themes is null
@@ -300,6 +409,19 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
                bool.TryParse(value, out var parsed)
             ? parsed
             : defaultValue;
+    }
+
+    private static void ValidateAppearanceMode(ThemePreference appearanceMode)
+    {
+        if (appearanceMode is not ThemePreference.Light and
+            not ThemePreference.Dark and
+            not ThemePreference.System)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(appearanceMode),
+                appearanceMode,
+                "Unsupported gallery theme appearance mode.");
+        }
     }
 
     private void SetLanguageVariant(LanguageVariant variant)

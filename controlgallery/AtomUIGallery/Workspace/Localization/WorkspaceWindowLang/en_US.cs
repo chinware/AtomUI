@@ -21,7 +21,10 @@ internal partial class en_US
     public const string MenuItemEnableMove = "Enable Move";
     public const string MenuItemEnableResize = "Enable Resize";
 
+    public const string MenuItemAppearance = "Appearance";
+    public const string MenuItemLightMode = "Light Mode";
     public const string MenuItemDarkMode = "Dark Mode";
+    public const string MenuItemFollowSystem = "Follow System";
     public const string MenuItemCompactMode = "Compact Mode";
     public const string MenuItemEnableMotion = "Enable Motion";
     public const string MenuItemEnableWaveSpirit = "Enable WaveSpirit";
