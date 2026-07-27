@@ -7,6 +7,7 @@ using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -1327,6 +1328,82 @@ public class OverlayDialogPresenterTests
         });
     }
 
+    [Fact]
+    public void Dialog_Drawn_Host_Does_Not_Grow_From_The_Window_Frame_Size()
+    {
+        RunOnUIThread(() =>
+        {
+            var placementTarget = new Border { Width = 100, Height = 40 };
+            var root = new ScopeAwareOverlayLayerPanel
+            {
+                Children = { placementTarget }
+            };
+            var window = new AtomUI.Desktop.Controls.Window
+            {
+                Width = 640,
+                Height = 480,
+                Content = root
+            };
+            var dialog = new AtomUI.Desktop.Controls.Dialog
+            {
+                Content = "Dialog content",
+                IsModal = true,
+                IsMotionEnabled = false,
+                HostWidth = 320,
+                HostHeight = 180
+            };
+            var presenter = new OverlayDialogPresenter(dialog, placementTarget);
+            var frameSize = new Size(860, 620);
+            Action? restoreDecorations = null;
+
+            try
+            {
+                window.Show();
+                Dispatcher.UIThread.RunJobs();
+                SetFrameSize(window, frameSize);
+                window.SetValue(AtomUI.Desktop.Controls.Window.OsTypeProperty, OsType.Windows);
+                window.IsCsdEnabled = true;
+                Dispatcher.UIThread.RunJobs();
+                var dialogHost = new Panel { Name = "PART_DialogOverlayLayerHost" };
+                var decorationsOverlay = new Panel
+                {
+                    Children = { dialogHost }
+                };
+                var visualOnlyHost = new VisualOnlyHost();
+                visualOnlyHost.Attach(decorationsOverlay);
+                root.Children.Add(visualOnlyHost);
+                restoreDecorations = DrawnDecorationsTestHost.Install(
+                    window,
+                    decorationsOverlay,
+                    wrapOverlayContent: false);
+
+                WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+                Dispatcher.UIThread.RunJobs();
+
+                var dialogLayer = presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
+                dialogLayer.Parent.ShouldBeSameAs(dialogHost);
+                dialogLayer.AvailableSize.ShouldBe(window.ClientSize);
+                dialogLayer.DesiredSize.ShouldBe(default);
+                double.IsNaN(dialogLayer.Width).ShouldBeTrue();
+                double.IsNaN(dialogLayer.Height).ShouldBeTrue();
+                var maskActor = presenter.GetVisualDescendants()
+                                         .OfType<MotionActor>()
+                                         .Single(actor => actor.Name == "PART_MaskMotionActor");
+                maskActor.Width.ShouldBe(window.ClientSize.Width);
+                maskActor.Height.ShouldBe(window.ClientSize.Height);
+
+                WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+                WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+            }
+            finally
+            {
+                WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+                restoreDecorations?.Invoke();
+                window.Close();
+            }
+        });
+    }
+
     [Theory]
     [InlineData(OsType.Windows, true)]
     [InlineData(OsType.Linux, true)]
@@ -1893,6 +1970,18 @@ public class OverlayDialogPresenterTests
         return visibleFrameBounds.Deflate(fixture.Window.VisibleFrameBorderThickness);
     }
 
+    private static void SetFrameSize(TopLevel topLevel, Size frameSize)
+    {
+        var setter = topLevel.GetType()
+                             .GetProperty(
+                                 nameof(TopLevel.FrameSize),
+                                 BindingFlags.Instance | BindingFlags.Public)
+                             .ShouldNotBeNull()
+                             .GetSetMethod(nonPublic: true)
+                             .ShouldNotBeNull();
+        setter.Invoke(topLevel, new object?[] { frameSize });
+    }
+
     private static void Drag(Control source, Visual root, Point start, Point end)
     {
         var pointer = BeginDrag(source, root, start);
@@ -1994,6 +2083,34 @@ public class OverlayDialogPresenterTests
             WaitWithDispatcherPump(Presenter.CloseAsync().AsTask());
             WaitWithDispatcherPump(Presenter.DisposeAsync().AsTask());
             Window.Close();
+        }
+    }
+
+    private sealed class VisualOnlyHost : Control
+    {
+        internal void Attach(Control child)
+        {
+            VisualChildren.Add(child);
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            foreach (var child in VisualChildren.OfType<Layoutable>())
+            {
+                child.Measure(availableSize);
+            }
+
+            return default;
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            foreach (var child in VisualChildren.OfType<Layoutable>())
+            {
+                child.Arrange(new Rect(finalSize));
+            }
+
+            return finalSize;
         }
     }
 

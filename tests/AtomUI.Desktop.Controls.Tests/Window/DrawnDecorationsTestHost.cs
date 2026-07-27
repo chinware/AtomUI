@@ -12,17 +12,17 @@ internal static class DrawnDecorationsTestHost
     internal static Action Install(
         AtomUIWindow window,
         Control overlayContent,
-        Thickness? frameThickness = null)
+        Thickness? frameThickness = null,
+        bool wrapOverlayContent = true)
     {
         var topLevelHost = GetTopLevelHost(window);
         var decorationsField = GetDecorationsField(window);
         var originalDecorations = decorationsField.GetValue(topLevelHost);
         var content = new Avalonia.Controls.Chrome.WindowDrawnDecorationsContent
         {
-            Overlay = new Panel
-            {
-                Children = { overlayContent }
-            }
+            Overlay = wrapOverlayContent
+                ? new Panel { Children = { overlayContent } }
+                : overlayContent
         };
         var decorations = new Avalonia.Controls.Chrome.WindowDrawnDecorations();
         typeof(Avalonia.Controls.Chrome.WindowDrawnDecorations)

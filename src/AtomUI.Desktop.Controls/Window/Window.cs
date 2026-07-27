@@ -398,7 +398,6 @@ public partial class Window : AvaloniaWindow,
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
-    private int _drawnChromeOverlaySuppressionCount;
     private IDisposable? _windowsCsdFrameThemeSubscription;
     private ThemeContextLease? _themeContextLease;
 
@@ -422,27 +421,6 @@ public partial class Window : AvaloniaWindow,
     {
         ConfigureCsdStatus();
         _platformChromeManager = WindowChromeManager.Attach(this);
-    }
-
-    internal IDisposable SuppressDrawnChromeOverlay()
-    {
-        _drawnChromeOverlaySuppressionCount++;
-        IsDrawnChromeOverlayVisible = false;
-        return Disposable.Create(this, static window => window.ReleaseDrawnChromeOverlaySuppression());
-    }
-
-    private void ReleaseDrawnChromeOverlaySuppression()
-    {
-        if (_drawnChromeOverlaySuppressionCount == 0)
-        {
-            return;
-        }
-
-        _drawnChromeOverlaySuppressionCount--;
-        if (_drawnChromeOverlaySuppressionCount == 0)
-        {
-            IsDrawnChromeOverlayVisible = true;
-        }
     }
 
     public override void Show()
