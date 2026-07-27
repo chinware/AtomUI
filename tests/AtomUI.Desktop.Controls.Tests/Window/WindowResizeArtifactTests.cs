@@ -683,7 +683,7 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
-    public void MacOs_NonCsd_Window_Uses_Native_Resize_Region_Without_Internal_Cursor_Layer()
+    public void MacOs_NonCsd_Window_Preserves_The_Native_Resize_Cursor_Hit_Test_Layer()
     {
         var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
         var managerSource = File.ReadAllText(GetRepoFile(
@@ -702,7 +702,7 @@ public class WindowResizeArtifactTests
 
         managerSource.ShouldContain("MacOSWindowChromeManager.Attach(window)");
         macOsManagerSource.ShouldContain("public bool UsesCustomResizer => false;");
-        macOsManagerSource.ShouldContain("Window.TryTakeOverManagedResizeGrip(");
+        macOsManagerSource.ShouldNotContain("Window.TryTakeOverManagedResizeGrip(");
         macOsManagerSource.ShouldNotContain("Window.ConfigureManagedResizeGrip(");
         macOsManagerSource.ShouldContain("_window.SetMacOsResizeIndicatorVisible(false);");
     }
