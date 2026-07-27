@@ -975,6 +975,7 @@ internal class SplitterPanel : Panel
         }
 
         var sizes = ComputePanelSizes(availableLength);
+        var measuredCross = double.IsInfinity(availableCross) ? 0d : availableCross;
         for (var i = 0; i < _panels.Count; i++)
         {
             var panel     = _panels[i];
@@ -983,6 +984,11 @@ internal class SplitterPanel : Panel
                 ? new Size(panelSize, availableCross)
                 : new Size(availableCross, panelSize);
             panel.Measure(panelAvailable);
+
+            if (double.IsInfinity(availableCross))
+            {
+                measuredCross = Math.Max(measuredCross, isVertical ? panel.DesiredSize.Height : panel.DesiredSize.Width);
+            }
         }
 
         foreach (var handle in _handles)
@@ -991,9 +997,16 @@ internal class SplitterPanel : Panel
                 ? new Size(HandleSize, availableCross)
                 : new Size(availableCross, HandleSize);
             handle.Measure(handleAvailable);
+
+            if (double.IsInfinity(availableCross))
+            {
+                measuredCross = Math.Max(measuredCross, isVertical ? handle.DesiredSize.Height : handle.DesiredSize.Width);
+            }
         }
 
-        return availableSize;
+        return isVertical
+            ? new Size(availableLength, double.IsInfinity(availableCross) ? measuredCross : availableCross)
+            : new Size(double.IsInfinity(availableCross) ? measuredCross : availableCross, availableLength);
     }
 
     private Size MeasureWithInfiniteLength(Size availableSize)
