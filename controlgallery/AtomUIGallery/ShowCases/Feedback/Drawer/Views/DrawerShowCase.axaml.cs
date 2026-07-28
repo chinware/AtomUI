@@ -1,9 +1,15 @@
 using AtomUI;
 using AtomUI.Controls;
+using AtomUI.Data;
+using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
+using AtomUIGallery.Localization;
+using System.Reactive.Disposables;
 using AtomDrawer = AtomUI.Desktop.Controls.Drawer;
 using AtomDrawerPlacement = AtomUI.Desktop.Controls.DrawerPlacement;
 
@@ -15,6 +21,21 @@ public partial class DrawerShowCase : GalleryReactiveUserControl<DrawerViewModel
 
     public DrawerShowCase()
     {
+        this.WhenActivated(disposables =>
+        {
+            if (DataContext is DrawerViewModel viewModel)
+            {
+                RefreshLocalizedOptionData(viewModel);
+                var languageManager = Application.Current?.GetLanguageManager();
+                if (languageManager is not null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedOptionData(viewModel);
+                    languageManager.LanguageVariantChanged += handler;
+                    disposables.Add(Disposable.Create(() => languageManager.LanguageVariantChanged -= handler));
+                }
+            }
+        });
+
         InitializeComponent();
     }
 
@@ -59,6 +80,22 @@ public partial class DrawerShowCase : GalleryReactiveUserControl<DrawerViewModel
         {
             drawer.SizeType = CustomizableSizeType.Small;
             drawer.IsOpen   = true;
+        }
+    }
+
+    private void HandleOpenFormDrawer(object? sender, RoutedEventArgs e)
+    {
+        if (TryFindTemplateControl(sender, "FormDrawer", out AtomDrawer drawer))
+        {
+            drawer.IsOpen = true;
+        }
+    }
+
+    private void HandleCloseFormDrawer(object? sender, RoutedEventArgs e)
+    {
+        if (TryFindTemplateControl(sender, "FormDrawer", out AtomDrawer drawer))
+        {
+            drawer.IsOpen = false;
         }
     }
 
@@ -143,5 +180,41 @@ public partial class DrawerShowCase : GalleryReactiveUserControl<DrawerViewModel
 
         return root.GetVisualDescendants().OfType<T>().FirstOrDefault(control => control.Name == name)
                ?? root.GetLogicalDescendants().OfType<T>().FirstOrDefault(control => control.Name == name);
+    }
+
+    private static void RefreshLocalizedOptionData(DrawerViewModel viewModel)
+    {
+        viewModel.AccountOwnerOptions =
+        [
+            SelectOption(DrawerShowCaseLangResourceKind.P2HeaderXiaoxiaoFu, "Xiaoxiao Fu", "xiao"),
+            SelectOption(DrawerShowCaseLangResourceKind.P2HeaderMaomaoZhou, "Maomao Zhou", "mao")
+        ];
+        viewModel.AccountTypeOptions =
+        [
+            SelectOption(DrawerShowCaseLangResourceKind.P2HeaderPrivate, "private", "private"),
+            SelectOption(DrawerShowCaseLangResourceKind.P2HeaderPublic, "public", "public")
+        ];
+        viewModel.AccountApproverOptions =
+        [
+            SelectOption(DrawerShowCaseLangResourceKind.P2HeaderJackMa, "Jack Ma", "jack"),
+            SelectOption(DrawerShowCaseLangResourceKind.P2HeaderTomLiu, "Tom Liu", "tom")
+        ];
+    }
+
+    private static SelectOption SelectOption(DrawerShowCaseLangResourceKind header, string fallback, string content)
+    {
+        return new SelectOption
+        {
+            Header  = DrawerShowCaseLanguage.Get(header, fallback),
+            Content = content
+        };
+    }
+}
+
+internal static class DrawerShowCaseLanguage
+{
+    public static string Get(DrawerShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
     }
 }
