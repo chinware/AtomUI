@@ -184,6 +184,73 @@ public class ImagePreviewerTitleTests
     }
 
     [Fact]
+    public void ImagePreviewerDialog_Handles_TitleBar_Toolbar_Requests_Relayed_From_Csd_Overlay()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var dialog = new TestImagePreviewerDialog
+            {
+                ItemsSource =
+                [
+                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/first.png")),
+                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/second.png"))
+                ],
+                CurrentImage = LoadedImageSource.CreateSvg("<svg />", new Avalonia.Size(10, 10)),
+                ImageScaleX  = 1.0,
+                ImageScaleY  = 1.0
+            };
+            var titleBar = new ImagePreviewerTitleBar();
+
+            dialog.ConfigureTitleBar(titleBar);
+            var toolbar = titleBar.LeftAddOn.ShouldNotBeNull()
+                                  .ShouldBeAssignableTo<ImagePreviewToolbar>();
+
+            var rotateArgs = RelayToolbarRequest(dialog, toolbar, ImagePreviewBaseToolbar.RotateRightRequestEvent);
+            rotateArgs.Handled.ShouldBeTrue();
+            dialog.ImageRotate.ShouldBe(Math.PI / 2, 0.000001);
+
+            var flipArgs = RelayToolbarRequest(dialog, toolbar, ImagePreviewBaseToolbar.HorizontalFlipRequestEvent);
+            flipArgs.Handled.ShouldBeTrue();
+            dialog.ImageScaleX.ShouldBe(-1.0);
+
+            var fitArgs = new ImageFitToWindowEventArgs(false)
+            {
+                RoutedEvent = ImagePreviewBaseToolbar.FitToWindowRequestEvent
+            };
+            dialog.RaiseRoutedEventFromOverlay(toolbar, fitArgs);
+
+            fitArgs.Handled.ShouldBeTrue();
+            dialog.IsImageFitToWindow.ShouldBeFalse();
+
+            var nextArgs = RelayToolbarRequest(dialog, toolbar, ImagePreviewBaseToolbar.NextRequestEvent);
+            nextArgs.Handled.ShouldBeTrue();
+            dialog.CurrentIndex.ShouldBe(1);
+        });
+    }
+
+    [Fact]
+    public void ImagePreviewToolbar_TitleBar_Requests_Use_Host_Window_Route_In_Csd()
+    {
+        var toolbarSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/ImagePreviewer/ImagePreviewBaseToolbar.cs"));
+        var titleBarSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/ImagePreviewer/ImagePreviewerTitleBar.cs"));
+        var dialogSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/ImagePreviewer/ImagePreviewerDialog.cs"));
+
+        toolbarSource.ShouldContain("ResolveCsdTitleBarHostWindow()");
+        toolbarSource.ShouldContain("ToolbarSource != ImagePreviewToolbarSource.TitleBar");
+        toolbarSource.ShouldContain("hostWindow.RaiseRoutedEventFromOverlay(this, args);");
+        toolbarSource.ShouldContain("RaiseEvent(args);");
+        toolbarSource.IndexOf("hostWindow.RaiseRoutedEventFromOverlay(this, args);", StringComparison.Ordinal)
+                     .ShouldBeLessThan(toolbarSource.IndexOf("RaiseEvent(args);", StringComparison.Ordinal));
+
+        titleBarSource.ShouldNotContain("ToolbarHorizontalFlipRequest");
+        dialogSource.ShouldNotContain("_titleBarRequestSource");
+        dialogSource.ShouldContain("ImagePreviewBaseToolbar.NextRequestEvent.AddClassHandler<ImagePreviewerDialog>");
+    }
+
+    [Fact]
     public void ImagePreviewerOverlayHost_ItemsSource_Change_Preserves_CurrentIndex()
     {
         Dispatcher.UIThread.Invoke(() =>
@@ -266,6 +333,19 @@ public class ImagePreviewerTitleTests
         }
 
         throw new FileNotFoundException($"Could not find repository file: {relativePath}");
+    }
+
+    private static ImagePreviewToolbarRequestEventArgs RelayToolbarRequest(
+        ImagePreviewerDialog dialog,
+        ImagePreviewToolbar toolbar,
+        Avalonia.Interactivity.RoutedEvent<ImagePreviewToolbarRequestEventArgs> routedEvent)
+    {
+        var args = new ImagePreviewToolbarRequestEventArgs(ImagePreviewToolbarSource.TitleBar)
+        {
+            RoutedEvent = routedEvent
+        };
+        dialog.RaiseRoutedEventFromOverlay(toolbar, args);
+        return args;
     }
 
     private sealed class PrefixTitleResolver : IImagePreviewTitleResolver

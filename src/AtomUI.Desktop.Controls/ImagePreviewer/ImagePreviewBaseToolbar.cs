@@ -2,6 +2,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -300,7 +302,7 @@ internal class ImagePreviewBaseToolbar : TemplatedControl
         }
         else if (sender == _fitToWindowButton)
         {
-            RaiseEvent(new ImageFitToWindowEventArgs(_fitToWindowButton?.IsChecked == true)
+            RaiseToolbarEvent(new ImageFitToWindowEventArgs(_fitToWindowButton?.IsChecked == true)
             {
                 RoutedEvent = FitToWindowRequestEvent
             });
@@ -309,9 +311,33 @@ internal class ImagePreviewBaseToolbar : TemplatedControl
 
     private void RaiseRequestEvent(RoutedEvent<ImagePreviewToolbarRequestEventArgs> routedEvent)
     {
-        RaiseEvent(new ImagePreviewToolbarRequestEventArgs(ToolbarSource)
+        RaiseToolbarEvent(new ImagePreviewToolbarRequestEventArgs(ToolbarSource)
         {
             RoutedEvent = routedEvent
         });
+    }
+
+    private void RaiseToolbarEvent(RoutedEventArgs args)
+    {
+        if (ResolveCsdTitleBarHostWindow() is { } hostWindow)
+        {
+            hostWindow.RaiseRoutedEventFromOverlay(this, args);
+            return;
+        }
+
+        RaiseEvent(args);
+    }
+
+    private Window? ResolveCsdTitleBarHostWindow()
+    {
+        if (ToolbarSource != ImagePreviewToolbarSource.TitleBar)
+        {
+            return null;
+        }
+
+        var titleBar = this.FindLogicalAncestorOfType<WindowTitleBar>() ??
+                       this.FindAncestorOfType<WindowTitleBar>();
+        var hostWindow = titleBar?.HostWindow;
+        return hostWindow is { IsCsdEnabled: true } ? hostWindow : null;
     }
 }
