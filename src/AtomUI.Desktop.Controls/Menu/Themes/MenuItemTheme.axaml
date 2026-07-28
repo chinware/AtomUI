@@ -93,14 +93,14 @@
                     <Border Name="PopupFrame"
                             MaxHeight="{TemplateBinding MaxPopupHeight}"
                             Padding="{TemplateBinding PopupPadding}">
-                        <atom:ScrollViewer IsScrollChainingEnabled="False"
-                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                           IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
-                                           AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}">
+                        <atom:MenuPopupScrollHost IsScrollEnabled="{TemplateBinding IsScrollEnabled}"
+                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                  atom:ScrollViewer.IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
+                                                  AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}">
                             <ItemsPresenter Name="PART_ItemsPresenter"
                                             ItemsPanel="{TemplateBinding ItemsPanel}"
                                             Grid.IsSharedSizeScope="True" />
-                        </atom:ScrollViewer>
+                        </atom:MenuPopupScrollHost>
                     </Border>
                 </atom:Popup>
             </Panel>

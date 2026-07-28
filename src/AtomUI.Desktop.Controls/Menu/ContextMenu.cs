@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using AtomUI.Controls;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -14,7 +13,8 @@ using AvaloniaContextMenu = Avalonia.Controls.ContextMenu;
 
 public class ContextMenu : AvaloniaContextMenu,
                            ICustomizableSizeTypeAware,
-                           IMotionAwareControl
+                           IMotionAwareControl,
+                           IScrollAwareControl
 {
     #region 公共属性定义
     public static readonly StyledProperty<BoxShadows> PopupRootShadowProperty =
@@ -28,6 +28,9 @@ public class ContextMenu : AvaloniaContextMenu,
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ContextMenu>();
+
+    public static readonly StyledProperty<bool> IsScrollEnabledProperty =
+        ScrollAwareControlProperty.IsScrollEnabledProperty.AddOwner<ContextMenu>();
 
     public static readonly StyledProperty<int> DisplayPageSizeProperty =
         Menu.DisplayPageSizeProperty.AddOwner<ContextMenu>();
@@ -66,6 +69,12 @@ public class ContextMenu : AvaloniaContextMenu,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsScrollEnabled
+    {
+        get => GetValue(IsScrollEnabledProperty);
+        set => SetValue(IsScrollEnabledProperty, value);
     }
 
     public int DisplayPageSize
@@ -315,7 +324,9 @@ public class ContextMenu : AvaloniaContextMenu,
     {
         base.OnPropertyChanged(change);
         if (change.Property == DisplayPageSizeProperty ||
-            change.Property == ItemHeightProperty)
+            change.Property == ItemHeightProperty ||
+            change.Property == PaddingProperty ||
+            change.Property == IsScrollEnabledProperty)
         {
             ConfigureMaxPopupHeight();
         }
@@ -334,8 +345,10 @@ public class ContextMenu : AvaloniaContextMenu,
 
     private void ConfigureMaxPopupHeight()
     {
-        SetCurrentValue(MaxPopupHeightProperty,
-            ItemHeight * DisplayPageSize + Padding.Top + Padding.Bottom);
+        var maxPopupHeight = IsScrollEnabled
+            ? ItemHeight * DisplayPageSize + Padding.Top + Padding.Bottom
+            : double.PositiveInfinity;
+        SetCurrentValue(MaxPopupHeightProperty, maxPopupHeight);
     }
     
     private void ConfigurePlacement()

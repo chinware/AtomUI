@@ -3,6 +3,7 @@
                     xmlns:atom="https://atomui.net"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="../../Menu/Themes/MenuPopupScrollHostTheme.axaml" />
         <ResourceInclude Source="FlyoutHostTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
 

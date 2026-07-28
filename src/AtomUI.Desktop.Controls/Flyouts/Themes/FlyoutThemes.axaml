@@ -5,6 +5,7 @@
     <atom:MenuFlyoutPresenterTheme x:Key="{x:Type atom:MenuFlyoutPresenter}" TargetType="atom:MenuFlyoutPresenter"/>
     <atom:TreeViewFlyoutPresenterTheme x:Key="{x:Type atom:TreeViewFlyoutPresenter}" TargetType="atom:TreeViewFlyoutPresenter"/>
     <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="../../Menu/Themes/MenuPopupScrollHostTheme.axaml"/>
         <ResourceInclude Source="FlyoutHostTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 

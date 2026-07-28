@@ -1,6 +1,6 @@
 # Menu 桌面版实现原理
 
-本文档描述 Menu 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Menu 桌面版架构设计](overview.md)，变化记录见 [Menu Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Menu Token 设计](token.md)。
+本文档描述 Menu 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Menu 桌面版架构设计](overview.md)，弹层滚动模式见 [Menu 弹层滚动模式设计](popup-scroll-design.md)，变化记录见 [Menu Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Menu Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -10,6 +10,10 @@
 
 主要源码文件：
 
+- `src/AtomUI.Controls.Shared/IScrollAware.cs`
+- `src/AtomUI.Desktop.Controls/Flyouts/MenuFlyout.cs`
+- `src/AtomUI.Desktop.Controls/Flyouts/MenuFlyoutPresenter.cs`
+- `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/ContextMenu.cs`
 - `src/AtomUI.Desktop.Controls/Menu/ContextMenuReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Menu/Converters/ToggleItemsLayoutVisibleConverter.cs`
@@ -18,6 +22,7 @@
 - `src/AtomUI.Desktop.Controls/Menu/MenuItem.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuItemData.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuItemPseudoClass.cs`
+- `src/AtomUI.Desktop.Controls/Menu/MenuPopupScrollHost.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuSeparator.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuSeparatorData.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuToken.cs`
@@ -42,8 +47,11 @@
 - `ContextMenu`：维护上下文菜单 public surface、Popup 宿主和关闭生命周期，默认使用与 `Menu` 一致的 AtomUI 交互处理器。
 - `DefaultMenuInteractionHandler`：Menu 家族 pointer、keyboard、focus 和 command 事件的交互 owner；统一维护子菜单 hover intent、延迟调度和 attach/detach 清理。
 - `Menu`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `MenuFlyout`：用户直接配置 flyout 菜单的入口，创建 `MenuFlyoutPresenter` 并中继 presenter 需要的 public 配置。
+- `MenuFlyoutPresenter`：`MenuFlyout` 的菜单项 presenter，维护 item container、弹层内容高度和 Menu 家族交互处理器。
 - `MenuItem`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `MenuItemData`：数据、状态或行为协作类型，维护集合同步和事件路径。
+- `MenuPopupScrollHost`：internal 模板宿主，根据 `IsScrollEnabled` 在 `ScrollViewer` 承载和直接内容承载之间切换。
 - `MenuItemTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `MenuSeparator`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `MenuSeparatorData`：数据、状态或行为协作类型，维护集合同步和事件路径。
@@ -53,6 +61,7 @@
 核心协作规则：
 
 - 控件实例是 public API 和运行时状态 owner。
+- `ScrollAwareControlProperty` 是滚动开关共享 property owner；`Menu`、`ContextMenu`、`MenuItem`、`MenuFlyout` 和 `MenuFlyoutPresenter` 通过 `AddOwner` 接入同一语义。
 - `DefaultMenuInteractionHandler` 是延迟打开和关闭意图的唯一 owner；`MenuItem` 只保存选择、打开和单项视觉状态，不保存 timer 生命周期。
 - Template part 是视觉协作对象，生命周期必须受 `OnApplyTemplate` 或模板加载流程管理。
 - 数据对象、选项对象、任务对象或节点对象只保存业务数据，不应反向持有不可释放的视觉对象。
@@ -73,7 +82,7 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`Items`、`MenuItem`、`MenuItemData` 和 `MenuSeparatorData`。
-- 选择与集合：`DisplayPageSize`。
+- 选择与集合：`DisplayPageSize`、`IsScrollEnabled`。
 - 交互与状态：`IsMotionEnabled`、`ShouldUseOverlayPopup`。
 - 视觉与布局：`LineWidth`、`Orientation`、`OverlayHostShadow`、`PopupRootShadow`、`SizeType`。
 - 动效与异步：`CloseMotion`、`MotionDuration`、`OpenMotion`。
@@ -81,6 +90,7 @@ Public API / ItemsSource / Command / Event
 维护要求：
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
+- `IsScrollEnabled=true` 时，`DisplayPageSize` 参与 popup 最大高度计算并由 `ScrollViewer` 承载溢出内容；`IsScrollEnabled=false` 时，最大高度使用 `double.PositiveInfinity`，弹层内容直接显示全部菜单项。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
@@ -117,6 +127,9 @@ Keyboard / access key / pointer press
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+- `Menu`、`ContextMenu` 和 `MenuItem` 的 `IsScrollEnabled` 传播依赖 inheritable styled property，不需要为每个菜单项增加独立 C# binding。
+- `MenuFlyout` 与 `MenuFlyoutPresenter` 生命周期不同，`MenuFlyout.IsScrollEnabled` 必须与其他 presenter 配置一起中继给 presenter，并由 presenter binding disposable 释放。
+- `MenuPopupScrollHost` 不持有外部事件、timer、subscription 或缓存；模板重套用时由 Avalonia 模板生命周期释放旧分支。
 
 hover intent 生命周期规则：
 
@@ -133,6 +146,32 @@ hover intent 生命周期规则：
 - `PART_Popup`：承载弹层宿主、打开关闭或候选内容。
 - `PART_ToggleCheckbox`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_ToggleRadio`：稳定模板协作入口，重命名前必须同步主题和实现。
+
+弹层滚动组合结构：
+
+```text
+ContextMenu
+  -> Border#Frame
+     -> MenuPopupScrollHost
+        -> ScrollViewer when IsScrollEnabled=true
+           -> ItemsPresenter#PART_ItemsPresenter
+        -> ItemsPresenter#PART_ItemsPresenter when IsScrollEnabled=false
+
+MenuItem / TopLevelMenuItem submenu
+  -> Popup#PART_Popup
+     -> Border#PopupFrame
+        -> MenuPopupScrollHost
+           -> ScrollViewer when IsScrollEnabled=true
+              -> ItemsPresenter#PART_ItemsPresenter
+           -> ItemsPresenter#PART_ItemsPresenter when IsScrollEnabled=false
+
+MenuFlyoutPresenter
+  -> ArrowDecoratedBox#PART_ArrowDecorator
+     -> MenuPopupScrollHost
+        -> ScrollViewer when IsScrollEnabled=true
+           -> ItemsPresenter#PART_ItemsPresenter
+        -> ItemsPresenter#PART_ItemsPresenter when IsScrollEnabled=false
+```
 
 ## 6. 交互与事件处理
 
@@ -153,6 +192,7 @@ Menu 的交互事件应从输入源收敛到控件级语义事件：
 维护者需要重点关注以下流程：
 
 - API 默认值到 effective state 的归一。
+- 弹层最大高度计算：`IsScrollEnabled=true` 时使用 `ItemHeight * DisplayPageSize + verticalPadding`，`IsScrollEnabled=false` 时使用 `double.PositiveInfinity`。
 - Template part 重新应用时的状态回放。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - ItemsSource、selection、checked、expanded、filter、paging 或 upload task 的集合同步。
@@ -180,11 +220,13 @@ Menu 的交互事件应从输入源收敛到控件级语义事件：
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
 - Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
 - hover intent 调度只使用显式类型、委托和 `IDisposable` 生命周期，不依赖反射或运行时类型扫描。
+- 滚动模式使用共享 styled property、AXAML 模板分支和 `TemplateBinding`，不引入运行时反射、字符串 binding、动态注册或生成器变更。
 
 性能边界：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 默认滚动路径允许保留一个轻量 `MenuPopupScrollHost` 节点，以换取四套弹层模板的统一分支；禁用滚动路径必须移除 `ScrollViewer` 子树，但会让全部菜单项直接参与测量和显示。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 - 默认调度路径在 intent 失效时停止实际 timer；兼容的外部 delay runner 至少必须通过原子 callback clearing/release 使 callback 失效，避免过期任务修改状态并保留 owner graph。
 - 交互处理器只保留当前 pending open/close 目标，不维护随 pointer 移动增长的历史队列。
@@ -197,6 +239,8 @@ Menu 的交互事件应从输入源收敛到控件级语义事件：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - `DefaultMenuInteractionHandler` 的公开类型、构造函数和外部注入能力。
+- `IsScrollEnabled` 默认值、继承传播、本地覆盖和 `MenuFlyout` 到 presenter 中继语义。
+- 滚动禁用时不创建 `ScrollViewer`，滚动开启时 `DisplayPageSize` 继续限制弹层最大高度。
 - 选择状态、Popup 状态与 hover intent 的职责分离。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
@@ -221,3 +265,4 @@ Menu 的交互事件应从输入源收敛到控件级语义事件：
 - 外部 delay runner 无法物理取消任务时，dispose 后执行 callback 仍不得提交状态。
 - keyboard、access key 和 pointer press 的即时打开、选择首项、关闭与事件顺序保持不变。
 - `Menu`、`ContextMenu`、默认 `MenuFlyoutPresenter` 和 detached title-bar menu 路径分别覆盖。
+- `IsScrollEnabled` 默认值、继承传播、本地覆盖、`MenuFlyout` presenter 中继、`ScrollViewer` 有无和最大高度算法分别覆盖。

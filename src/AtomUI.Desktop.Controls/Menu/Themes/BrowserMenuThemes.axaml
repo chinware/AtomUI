@@ -4,6 +4,7 @@
                     xmlns:atom="https://atomui.net"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="MenuPopupScrollHostTheme.axaml" />
         <ResourceInclude Source="ContextMenuTheme.axaml" />
         <ResourceInclude Source="MenuSeparatorTheme.axaml" />
         <ResourceInclude Source="TopLevelMenuItemTheme.axaml" />

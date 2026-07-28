@@ -12,7 +12,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
 
-public class MenuFlyout : Flyout
+public class MenuFlyout : Flyout, IScrollAwareControl
 {
     #region 公共属性定义
 
@@ -27,6 +27,9 @@ public class MenuFlyout : Flyout
 
     public static readonly StyledProperty<ControlTheme?> FlyoutPresenterThemeProperty =
         AvaloniaProperty.Register<MenuFlyout, ControlTheme?>(nameof(FlyoutPresenterTheme));
+
+    public static readonly StyledProperty<bool> IsScrollEnabledProperty =
+        ScrollAwareControlProperty.IsScrollEnabledProperty.AddOwner<MenuFlyout>();
 
     public IEnumerable? ItemsSource
     {
@@ -45,6 +48,12 @@ public class MenuFlyout : Flyout
     {
         get => GetValue(FlyoutPresenterThemeProperty);
         set => SetValue(FlyoutPresenterThemeProperty, value);
+    }
+
+    public bool IsScrollEnabled
+    {
+        get => GetValue(IsScrollEnabledProperty);
+        set => SetValue(IsScrollEnabledProperty, value);
     }
 
     [Content]
@@ -76,7 +85,7 @@ public class MenuFlyout : Flyout
     protected override Control CreatePresenter()
     {
         _presenterBindingDisposables?.Dispose();
-        _presenterBindingDisposables = new CompositeDisposable(4);
+        _presenterBindingDisposables = new CompositeDisposable(7);
 
         if (Presenter != null)
         {
@@ -101,6 +110,9 @@ public class MenuFlyout : Flyout
         _presenterBindingDisposables.Add(
             BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter,
                 MenuFlyoutPresenter.IsMotionEnabledProperty));
+        _presenterBindingDisposables.Add(
+            BindUtils.RelayBind(this, IsScrollEnabledProperty, Presenter,
+                MenuFlyoutPresenter.IsScrollEnabledProperty));
         _presenterBindingDisposables.Add(
             BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, Presenter,
                 MenuFlyoutPresenter.ShouldUseOverlayPopupProperty));
