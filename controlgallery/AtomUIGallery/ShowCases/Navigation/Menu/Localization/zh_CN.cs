@@ -70,6 +70,7 @@ internal partial class zh_CN
     public const string P2HeaderDisabled = "禁用";
     public const string P2HeaderMenu = "_菜单";
     public const string P2HeaderMenuItem = "菜单项";
+    public const string P2TextEnablePopupScroll = "开启弹层滚动";
     public const string P2TextRightClickToShowContextMenu = "右键显示上下文菜单";
     public const string P2TitleNormal = "普通";
     public const string P2TextRightClickToShowContextFlyout = "右键显示上下文浮出层";

@@ -122,6 +122,32 @@ public class MenuShowCasePageTests
     }
 
     [Fact]
+    public void Menu_ShowCase_Scrollable_Menu_Can_Toggle_Popup_Scrolling()
+    {
+        var pageSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
+        var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/ViewModels/MenuViewModel.cs");
+        var zhCN            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_CN.cs");
+        var zhTW            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_TW.cs");
+        var enUS            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en_US.cs");
+        var scrollableShowCaseSource = ExtractShowCaseItem(pageSource, "ScrollableTitle");
+
+        scrollableShowCaseSource.ShouldContain("MenuShowCaseLangResource ScrollableTitle");
+        scrollableShowCaseSource.ShouldContain("MenuShowCaseLangResource P2TextEnablePopupScroll");
+        scrollableShowCaseSource.ShouldContain("IsChecked=\"{Binding IsPopupScrollEnabled}\"");
+        scrollableShowCaseSource.ShouldContain("IsScrollEnabled=\"{Binding IsPopupScrollEnabled}\"");
+        scrollableShowCaseSource.ShouldNotContain("IsCheckedChanged=\"");
+        CountOccurrences(scrollableShowCaseSource, "Header=\"{gallery:MenuShowCaseLangResource P2HeaderMenuItem}\"")
+            .ShouldBe(12);
+
+        viewModelSource.ShouldContain("private bool _isPopupScrollEnabled = true;");
+        viewModelSource.ShouldContain("public bool IsPopupScrollEnabled");
+
+        zhCN.ShouldContain("public const string P2TextEnablePopupScroll = \"开启弹层滚动\";");
+        zhTW.ShouldContain("public const string P2TextEnablePopupScroll = \"開啟彈層滾動\";");
+        enUS.ShouldContain("public const string P2TextEnablePopupScroll = \"Enable popup scrolling\";");
+    }
+
+    [Fact]
     public void Menu_ShowCase_Examples_Match_Approved_Control_Demo_Content()
     {
         var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
@@ -162,9 +188,14 @@ public class MenuShowCasePageTests
 
     private static string ExtractNavMenuNodeCommandShowCaseItem(string source)
     {
+        return ExtractShowCaseItem(source, "NavMenuNodeCommandTitle");
+    }
+
+    private static string ExtractShowCaseItem(string source, string titleResourceName)
+    {
         var match = Regex.Match(
             source,
-            @"<gallery:ShowCaseItem\s+Title=""\{gallery:MenuShowCaseLangResource NavMenuNodeCommandTitle\}"".*?</gallery:ShowCaseItem>",
+            $@"<gallery:ShowCaseItem\s+Title=""\{{gallery:MenuShowCaseLangResource {titleResourceName}\}}"".*?</gallery:ShowCaseItem>",
             RegexOptions.CultureInvariant | RegexOptions.Singleline);
 
         match.Success.ShouldBeTrue();

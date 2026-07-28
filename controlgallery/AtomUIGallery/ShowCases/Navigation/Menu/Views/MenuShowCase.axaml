@@ -119,46 +119,29 @@
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="viewModels:MenuViewModel">
-        <atom:Menu>
-            <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenu}">
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
-            </atom:MenuItem>
-        </atom:Menu>
+        <StackPanel Spacing="12">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <atom:ToggleSwitch IsChecked="{Binding IsPopupScrollEnabled}" />
+                <atom:TextBlock VerticalAlignment="Center"
+                                Text="{gallery:MenuShowCaseLangResource P2TextEnablePopupScroll}" />
+            </StackPanel>
+            <atom:Menu IsScrollEnabled="{Binding IsPopupScrollEnabled}">
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenu}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                </atom:MenuItem>
+            </atom:Menu>
+        </StackPanel>
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>

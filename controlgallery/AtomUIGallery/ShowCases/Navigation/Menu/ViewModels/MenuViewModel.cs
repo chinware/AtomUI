@@ -53,6 +53,14 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
         set => this.RaiseAndSetIfChanged(ref _isDark, value);
     }
 
+    private bool _isPopupScrollEnabled = true;
+
+    public bool IsPopupScrollEnabled
+    {
+        get => _isPopupScrollEnabled;
+        set => this.RaiseAndSetIfChanged(ref _isPopupScrollEnabled, value);
+    }
+
     private NavMenuMode _mode = NavMenuMode.Inline;
 
     public NavMenuMode Mode
