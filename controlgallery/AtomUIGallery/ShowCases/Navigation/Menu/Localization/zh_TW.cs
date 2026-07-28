@@ -70,6 +70,7 @@ internal partial class zh_TW
     public const string P2HeaderDisabled = "禁用";
     public const string P2HeaderMenu = "_菜單";
     public const string P2HeaderMenuItem = "菜單項";
+    public const string P2TextEnablePopupScroll = "開啟彈層滾動";
     public const string P2TextRightClickToShowContextMenu = "右鍵顯示上下文菜單";
     public const string P2TitleNormal = "普通";
     public const string P2TextRightClickToShowContextFlyout = "右鍵顯示上下文浮出層";

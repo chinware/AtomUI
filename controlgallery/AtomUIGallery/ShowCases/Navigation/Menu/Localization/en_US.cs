@@ -70,6 +70,7 @@ internal partial class en_US
     public const string P2HeaderDisabled = "Disabled";
     public const string P2HeaderMenu = "_Menu";
     public const string P2HeaderMenuItem = "Menu Item";
+    public const string P2TextEnablePopupScroll = "Enable popup scrolling";
     public const string P2TextRightClickToShowContextMenu = "Right Click to show Context Menu";
     public const string P2TitleNormal = "Normal";
     public const string P2TextRightClickToShowContextFlyout = "Right Click to show Context Flyout";
