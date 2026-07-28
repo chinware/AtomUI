@@ -1,6 +1,6 @@
 # Form
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -435,7 +435,7 @@ Form 不依赖运行时反射扫描控件能力。控件协作通过显式接口
 AOT 边界：
 
 - `FormToken` 通过 token generator 显式注册，生成 token kind 和资源扩展。
-- Gallery API / Token 表使用显式 ViewModel 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - Form 验证器是显式类型和接口调用，不依赖动态成员发现。
 - AXAML 模板、DataTemplate 和 Form validator provider 是显式 XAML 入口，不依赖运行时 API 扫描。
 

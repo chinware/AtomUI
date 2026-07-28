@@ -1,6 +1,6 @@
 # Timeline 桌面版架构设计
 
-本文档定义 `Timeline` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Timeline 桌面版实现原理](implementation.md)，Timeline Token 的专项设计见 [Timeline Token 设计](token.md)，设计和契约变化记录见 [Timeline Changelog](changelog.md)。
+本文档定义 `Timeline` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，方向与布局的完整策略见 [Timeline 方向与布局设计](orientation-layout-design.md)，内部实现原理见 [Timeline 桌面版实现原理](implementation.md)，Timeline Token 的专项设计见 [Timeline Token 设计](token.md)，设计和契约变化记录见 [Timeline Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -12,7 +12,7 @@
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline` |
 | 控件状态 | Stable |
 
-Timeline 是 AtomUI 桌面控件体系中的时间轴控件，用于按顺序展示事件节点、状态和时间信息。
+Timeline 是 AtomUI 桌面控件体系中的时间轴控件，用于沿垂直或水平方向按顺序展示事件节点、状态和时间信息。控件使用同一套 Item、Indicator、Panel 和主题结构表达两种方向，不创建方向专用的平行控件家族。
 
 Timeline 不负责日历、列表排序或流程引擎。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
 
@@ -28,9 +28,10 @@ Timeline 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 维度 | 含义 | Timeline 中的表达 |
 | --- | --- | --- |
 | 产品语义 | 控件在界面中承担的稳定职责。 | Timeline 是 AtomUI 桌面控件体系中的时间轴控件，用于按顺序展示事件节点、状态和时间信息。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `IndicatorIcon`、`PendingIcon`。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Timeline Token + ControlTheme。 |
+| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`Label`、`IndicatorIcon`、`Pending`、`PendingIcon`。 |
+| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | `IsReverse`、Pending 状态、可见项顺序和首尾节点状态。 |
+| 布局语义 | 主轴方向和内容相对轴线的位置如何组合。 | `Orientation` 决定主轴，`Mode` 决定交叉轴上的 `Start`、`End` 或交替布局。 |
+| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Timeline Token、方向 selector、Item 模板和 Indicator renderer。 |
 
 ## 3. API 与契约模型
 
@@ -40,18 +41,38 @@ Timeline 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `IndicatorIcon`、`PendingIcon` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `Mode` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsLabelLayout`、`IsOdd`、`IsReverse` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `IndicatorColor` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 内容与数据 | `Content`、`Label`、`IndicatorIcon`、`Pending`、`PendingIcon` | 定义单项内容、时间标签、节点图标和待处理节点入口。 |
+| 集合顺序 | `Items`、`ItemsSource`、`IsReverse` | 维护源顺序、最终视觉顺序和 Pending 项的相邻关系。 |
+| 方向与模式 | `Orientation`、`Mode` | 决定主轴方向以及内容位于轴线的 Start、End 或交替侧。 |
+| 内部派生状态 | `IsLabelLayout`、`IsOdd`、`IsFirst`、`IsLast`、`NextIsPending` | 由 Timeline 根据可见项视觉顺序单向投影到 Item 和模板。 |
+| 视觉与布局 | `IndicatorColor`、`IndicatorIcon` | 影响节点颜色、形状和轴线渲染。 |
 | 其他稳定入口 | `Label`、`Pending` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
 主要公开类型与枚举：
 
-- 类型：`AbstractTimeline`、`AbstractTimelineItem`、`Timeline`、`TimelineIndicator`、`TimelineItem`、`TimelineItemPanel`、`TimelineStackPanel`。
+- 类型：`AbstractTimeline`、`AbstractTimelineItem`、`Timeline`、`TimelineItem`。
 - 枚举：`TimelineMode`。
+
+`TimelineIndicator`、`TimelineItemPanel` 和 `TimelineStackPanel` 是影响可观察布局与渲染的 internal 协作类型，不属于用户可直接依赖的 public surface。
+
+方向与模式的公共契约为：
+
+```csharp
+public enum TimelineMode
+{
+    Start,
+    End,
+    Alternate
+}
+```
+
+- `Orientation` 使用 `Avalonia.Layout.Orientation`，默认值为 `Vertical`。
+- `Mode` 默认值为 `TimelineMode.Start`。
+- `Start` 和 `End` 是相对 Timeline 轴线的逻辑位置，不是固定的物理 Left/Right。
+- `Alternate` 从最终视觉顺序中的第一个可见项开始按 `Start`、`End` 交替。
+- Timeline 不提供单个 `TimelineItem` 的 placement 覆盖属性；位置策略由 Timeline 统一拥有。
 
 稳定 template part：
 
@@ -66,19 +87,25 @@ Timeline 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 Timeline 的状态流按以下路径收敛：
 
 ```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
+Orientation / Mode / IsReverse / Items / item visibility
+  -> Timeline 计算可见项视觉顺序
+  -> item effective mode / order / first / last / pending adjacency
+  -> internal property / pseudo-class / template property
   -> ControlTheme selector / presenter / renderer
   -> Gallery 可观察行为
 ```
 
-状态维护规则：
+方向与模式的稳定语义：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+| Orientation | Mode | 无 Label | 存在 Label |
+| --- | --- | --- | --- |
+| `Vertical` | `Start` | 轴线位于逻辑起始侧，Content 位于结束侧。 | Label 位于起始侧，Content 位于结束侧。 |
+| `Vertical` | `End` | Content 位于逻辑起始侧，轴线位于结束侧。 | Content 位于起始侧，Label 位于结束侧。 |
+| `Horizontal` | `Start` | 轴线在上，Content 在下。 | Label 在上，Content 在下。 |
+| `Horizontal` | `End` | Content 在上，轴线在下。 | Content 在上，Label 在下。 |
+| 任意方向 | `Alternate` | 第一可见项为 Start，后续按 End、Start 交替。 | 使用同一交替规则，并保持所有节点共用同一轴线。 |
+
+`FlowDirection` 只影响垂直 Timeline 的逻辑起始侧和结束侧；水平 Timeline 的 Start/End 分别映射到下方和上方。`IsReverse` 只反转主轴视觉顺序，不交换 Start/End。隐藏项不占用布局槽位，也不参与交替奇偶、首尾和 Pending 相邻关系计算。
 
 ## 5. 视觉与主题模型
 
@@ -91,7 +118,7 @@ Timeline 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `TimelineTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimelineThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Timeline 使用 `TimelineToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
+Timeline 使用 `TimelineToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载方向、Mode、视觉索引或 Pending 相邻状态。水平布局的内容间距优先使用 SharedToken；方向差异由 ControlTheme selector 和布局 Panel 表达。
 
 主题维护规则：
 
@@ -107,18 +134,18 @@ Timeline 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 主要协作类型：
 
 - `AbstractTimeline`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
-- `AbstractTimelineItem`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
+- `AbstractTimelineItem`：承载单项内容 API，并接收 Timeline 单向投影的方向、Mode 和视觉顺序状态。
 - `Timeline`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `TimelineIndicator`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `TimelineIndicator`：内部轴线与节点 renderer，根据 Orientation、首尾状态和自定义图标边界绘制连接线。
 - `TimelineItem`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `TimelineItemPanel`：布局面板，负责测量、排列、虚拟化或集合内容布局。
-- `TimelineStackPanel`：布局面板，负责测量、排列、虚拟化或集合内容布局。
+- `TimelineItemPanel`：负责 Label、Indicator 和 Content 在垂直或水平模式中的测量与排列。
+- `TimelineStackPanel`：负责主轴方向、可见项顺序、Reverse 排列和水平等宽槽位。
 - `TimelineToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
 
 集成关系：
 
 - 与 ThemeManager、SharedToken、ControlTheme、控件文档和 Gallery ShowCase 示例保持一致。
-- 涉及 ItemsSource、Popup、Flyout、Window、Form 或 CompactSpace 的路径必须保持生命周期释放和数据状态同步。
+- ItemsSource、显式 TimelineItem 和自动生成容器必须进入同一视觉顺序归一流程。
 - 源码目录中的共享基类和内部协作类型形成维护边界，不能只修改桌面包装类而忽略共享状态 owner。
 
 ## 7. 兼容性不变量
@@ -126,7 +153,11 @@ Timeline 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 维护 Timeline 时必须保持以下不变量：
 
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
+- `TimelineMode` 的稳定值为 `Start`、`End`、`Alternate`；不得重新引入 `Left`、`Right` 或重复值兼容别名。
+- `Orientation` 默认值保持 `Vertical`，`Mode` 默认值保持 `Start`。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
+- 不改变 Start/End、Alternate 首项、RTL、Reverse、隐藏项和 Pending 的既定组合语义。
+- 不为单个 TimelineItem 增加与 Timeline 全局 Mode 竞争的位置 owner。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
@@ -135,19 +166,24 @@ Timeline 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 
 ## 8. 专项模型
 
-### 8.1 选择与当前项模型
+### 8.1 方向与布局模型
 
-Timeline 的当前项状态必须由单一 owner 推导。public 选择属性、集合项容器和伪类之间只能做单向同步，集合替换、清空和模板重套用时必须回放当前状态。
+`Orientation` 与 `Mode` 是两个正交维度：Orientation 选择时间轴主轴，Mode 选择内容在交叉轴上的分布策略。完整模式矩阵、等宽规则和轴线算法见 [Timeline 方向与布局设计](orientation-layout-design.md)。
 
-### 8.2 视觉选项模型
+### 8.2 视觉顺序模型
 
-Timeline 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
+Timeline 是视觉顺序的唯一 owner。控件先过滤不可见项，再应用 `IsReverse`，最后按视觉索引计算 Alternate 奇偶、首尾和 Pending 相邻关系。Panel 和 Indicator 只消费这些派生状态，不重新解释源集合索引。
+
+### 8.3 视觉选项模型
+
+Timeline 的视觉选项通过 public API 归一为 internal state、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态、方向、视觉索引或业务色值。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Timeline 桌面版实现原理](implementation.md)
+- [Timeline 方向与布局设计](orientation-layout-design.md)
 - [Timeline Token 设计](token.md)
 - [Timeline Changelog](changelog.md)
 
@@ -155,11 +191,11 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Timeline` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Timeline` | 承载 Items、Orientation、Mode、IsReverse、Pending 和主题入口。 | `Orientation`、`Mode`、`IsReverse`、`Pending` | 见视觉与主题模型 | stable |
+| `item` | `TimelineItem` | 承载单项 Label、Content、Indicator，并接收视觉顺序派生状态。 | `Label`、`Content`、`IndicatorIcon`、`IndicatorColor` | 见视觉与主题模型 | stable |
+| `axis` | `TimelineIndicator` | 绘制垂直或水平轴线、节点和自定义图标。 | `Orientation`、`IndicatorIcon`、`IndicatorColor` | `IndicatorTailColor`、`IndicatorTailWidth`、`IndicatorSize` | internal-observable |
+| `label` | `TextBlock#Label` | 承载可选时间标签，并参与双侧布局。 | `Label`、`Mode`、`Orientation` | 间距类 Token / SharedToken | template-stable |
+| `content` | `ContentPresenter#ContentPresenter` | 承载事件内容并在水平等宽槽位内换行。 | `Content`、`ContentTemplate`、`Mode`、`Orientation` | 间距类 Token / SharedToken | template-stable |
 
 LLMS 导出来源：
 
@@ -178,7 +214,8 @@ LLMS 导出来源：
 | --- | --- |
 | 文档改动 | 运行 `git diff --check`，检查相对链接存在。 |
 | Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
-| 状态模型 | 覆盖 visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
-| AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
+| 状态模型 | 覆盖可见项视觉顺序、Alternate 奇偶、Reverse、RTL、首尾和 Pending 相邻状态。 |
+| 布局算法 | 覆盖垂直/水平、Start/End/Alternate、Label、等宽、换行、零项和无限宽退化。 |
+| AXAML/Theme | 检查 Orientation 传递、方向 selector、template part、伪类、资源 key、Light/Dark 和 Browser 主题。 |
 | Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |

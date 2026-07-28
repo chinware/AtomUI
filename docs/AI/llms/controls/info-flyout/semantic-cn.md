@@ -1,6 +1,6 @@
 # InfoFlyout 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -28,7 +28,7 @@ InfoFlyout
      -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> MenuFlyoutPresenter (presenter control theme, MenuFlyoutPresenterTheme.axaml)
      -> ArrowDecoratedBox#{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart} (template-stable)
-        -> ScrollViewer (template-stable)
+        -> MenuPopupScrollHost (internal-observable)
            -> ItemsPresenter#PART_ItemsPresenter (template-stable)
   -> TreeViewFlyoutPresenter (presenter control theme, TreeViewFlyoutPresenterTheme.axaml)
      -> ArrowDecoratedBox#{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart} (template-stable)
@@ -42,8 +42,9 @@ InfoFlyout
 | `InfoFlyout` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `FlyoutHost` | control theme | `FlyoutHostTheme.axaml` | InfoFlyout | `ClipToBounds`, `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `FlyoutHostTheme.axaml` | FlyoutHost | `ClipToBounds`, `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `MenuFlyoutPresenter` | presenter control theme | `MenuFlyoutPresenterTheme.axaml` | InfoFlyout | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `ItemsPanel`, `MaxPopupHeight`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `ItemsPanel`, `MaxPopupHeight`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuFlyoutPresenter` | presenter control theme | `MenuFlyoutPresenterTheme.axaml` | InfoFlyout | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuPopupScrollHost` | template node (MenuPopupScrollHost) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `atom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TreeViewFlyoutPresenter` | presenter control theme | `TreeViewFlyoutPresenterTheme.axaml` | InfoFlyout | `ArrowPosition`, `Background`, `BackgroundSizing`, `CornerRadius`, `IsArrowVisible`, `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `TreeViewFlyoutPresenterTheme.axaml` | TreeViewFlyoutPresenter | `ArrowPosition`, `Background`, `BackgroundSizing`, `CornerRadius`, `IsArrowVisible`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -135,4 +136,4 @@ InfoFlyout Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

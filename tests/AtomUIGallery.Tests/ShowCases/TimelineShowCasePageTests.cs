@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Shouldly;
 using Xunit;
 
@@ -44,8 +45,16 @@ public class TimelineShowCasePageTests
         source.ShouldContain("TimelineShowCaseLangResource ColorTitle");
         source.ShouldContain("TimelineShowCaseLangResource LastNodeAndReversingTitle");
         source.ShouldContain("TimelineShowCaseLangResource AlternateTitle");
-        source.ShouldContain("TimelineShowCaseLangResource LabelTitle");
-        source.ShouldContain("TimelineShowCaseLangResource RightAlternateTitle");
+        source.ShouldContain("TimelineShowCaseLangResource DynamicModeTitle");
+        source.ShouldContain("TimelineShowCaseLangResource HorizontalTitle");
+        source.ShouldContain("Orientation=\"Horizontal\"");
+        source.ShouldContain("Mode=\"Start\"");
+        source.ShouldContain("Mode=\"End\"");
+        source.ShouldContain("Mode=\"Alternate\"");
+        source.ShouldNotContain("TimelineMode.Left");
+        source.ShouldNotContain("TimelineMode.Right");
+        source.ShouldNotContain("Mode=\"Left\"");
+        source.ShouldNotContain("Mode=\"Right\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
@@ -59,6 +68,21 @@ public class TimelineShowCasePageTests
 
         NormalizeMarkup(ExtractTimelineExampleItems(source))
             .ShouldBe(NormalizeMarkup(approved));
+    }
+
+    [Fact]
+    public void Timeline_Horizontal_ShowCase_Occupies_The_Entire_Row()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml");
+        var document = XDocument.Parse(source);
+        var horizontalItem = document.Descendants()
+                                     .Single(element =>
+                                         element.Name.LocalName == "ShowCaseItem" &&
+                                         element.Attribute("Title")?.Value.Contains("HorizontalTitle", StringComparison.Ordinal) == true);
+
+        var span = horizontalItem.Attribute("Span");
+        span.ShouldNotBeNull();
+        span.Value.ShouldBe("Full");
     }
 
     private static string ExtractTimelineExampleItems(string source)

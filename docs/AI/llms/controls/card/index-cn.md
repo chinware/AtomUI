@@ -1,6 +1,6 @@
 # Card
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -293,7 +293,7 @@ Card 不依赖运行时反射发现模板结构。模板协作通过固定 part 
 AOT 边界：
 
 - 不新增字符串 path binding、`ReflectionBinding`、assembly scan、`Activator.CreateInstance(Type)` 或动态成员访问。
-- Gallery API/Token 表使用显式 ViewModel 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - Card 的动态内容同步只使用 `AvaloniaProperty` 强类型绑定。
 
 ## 源码索引

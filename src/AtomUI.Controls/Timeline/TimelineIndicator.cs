@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace AtomUI.Controls.Commons;
@@ -13,11 +14,20 @@ internal class TimelineIndicator : TemplatedControl
 {
     #region 公共属性定义
 
+    public static readonly StyledProperty<Orientation> OrientationProperty =
+        StackPanel.OrientationProperty.AddOwner<TimelineIndicator>();
+
     public static readonly StyledProperty<PathIcon?> IndicatorIconProperty =
         AvaloniaProperty.Register<TimelineIndicator, PathIcon?>(nameof(IndicatorIcon));
 
     public static readonly StyledProperty<IBrush?> IndicatorColorProperty =
         AvaloniaProperty.Register<TimelineIndicator, IBrush?>(nameof(IndicatorColor));
+
+    public Orientation Orientation
+    {
+        get => GetValue(OrientationProperty);
+        set => SetValue(OrientationProperty, value);
+    }
 
     public PathIcon? IndicatorIcon
     {
@@ -154,9 +164,25 @@ internal class TimelineIndicator : TemplatedControl
     
     static TimelineIndicator()
     {
-        AffectsMeasure<TimelineIndicator>(IsFirstProperty, IsLastProperty, IndicatorIconProperty, IndicatorMinHeightProperty);
-        AffectsRender<TimelineIndicator>(IndicatorColorProperty, IndicatorDotBorderWidthProperty, IndicatorDotSizeProperty,
-            DefaultIndicatorColorProperty, IndicatorTailWidthProperty, IndicatorTailColorProperty);
+        OrientationProperty.OverrideDefaultValue<TimelineIndicator>(Orientation.Vertical);
+        AffectsMeasure<TimelineIndicator>(
+            IsFirstProperty,
+            IsLastProperty,
+            OrientationProperty,
+            IndicatorIconProperty,
+            IndicatorMinHeightProperty);
+        AffectsRender<TimelineIndicator>(
+            IsFirstProperty,
+            IsLastProperty,
+            OrientationProperty,
+            IndicatorIconProperty,
+            IndicatorMinHeightProperty,
+            IndicatorColorProperty,
+            IndicatorDotBorderWidthProperty,
+            IndicatorDotSizeProperty,
+            DefaultIndicatorColorProperty,
+            IndicatorTailWidthProperty,
+            IndicatorTailColorProperty);
         TextElement.FontSizeProperty.Changed.AddClassHandler<TimelineIndicator>((indicator, args) =>
         {
             indicator.IndicatorMinHeight = args.GetNewValue<double>() * indicator.RelativeLineHeight;
@@ -204,7 +230,9 @@ internal class TimelineIndicator : TemplatedControl
             var iconWidth = _iconPresenter.DesiredSize.Width;
             var iconHeight = _iconPresenter.DesiredSize.Height;
             var offsetX   = (finalSize.Width - iconWidth) / 2;
-            var offsetY   = (_indicatorMinHeight - iconHeight) / 2;
+            var offsetY   = Orientation == Orientation.Horizontal
+                ? (finalSize.Height - iconHeight) / 2
+                : (_indicatorMinHeight - iconHeight) / 2;
             _iconPresenter.Arrange(new Rect(offsetX, offsetY, iconWidth, iconHeight));
         }
 
@@ -212,6 +240,18 @@ internal class TimelineIndicator : TemplatedControl
     }
 
     public override void Render(DrawingContext context)
+    {
+        if (Orientation == Orientation.Horizontal)
+        {
+            RenderHorizontal(context);
+        }
+        else
+        {
+            RenderVertical(context);
+        }
+    }
+
+    private void RenderVertical(DrawingContext context)
     {
         var dotBelowLineStartOffsetY = 0d;
         var dotUpLineEndOffsetY      = 0d;
@@ -237,7 +277,7 @@ internal class TimelineIndicator : TemplatedControl
         if (!IsLast)
         {
             var dotBelowLineStartPoint = new Point(lineOffsetX, dotBelowLineStartOffsetY);
-            var dotBelowLineEndPoint   = new Point(lineOffsetX, Bounds.Bottom);
+            var dotBelowLineEndPoint   = new Point(lineOffsetX, Bounds.Height);
             context.DrawLine(linePen, dotBelowLineStartPoint, dotBelowLineEndPoint);
         }
 
@@ -246,6 +286,44 @@ internal class TimelineIndicator : TemplatedControl
             var dotUpLineStartPoint = new Point(lineOffsetX, 0);
             var dotUpLineEndPoint   = new Point(lineOffsetX, dotUpLineEndOffsetY);
             context.DrawLine(linePen, dotUpLineStartPoint, dotUpLineEndPoint);
+        }
+    }
+
+    private void RenderHorizontal(DrawingContext context)
+    {
+        var lineBeforeEndOffsetX = 0d;
+        var lineAfterStartOffsetX = Bounds.Width;
+        var centerY = Bounds.Height / 2;
+        if (IndicatorIcon == null)
+        {
+            var dotPen    = GetOrCreateDotPen();
+            var dotRadius = IndicatorDotSize / 2;
+            var centerX   = Bounds.Width / 2;
+            lineBeforeEndOffsetX = centerX - dotRadius - IndicatorDotBorderWidth / 2;
+            lineAfterStartOffsetX = centerX + dotRadius + IndicatorDotBorderWidth / 2;
+            context.DrawEllipse(null, dotPen, new Point(centerX, centerY), dotRadius, dotRadius);
+        }
+        else if (_iconPresenter is not null)
+        {
+            lineBeforeEndOffsetX  = _iconPresenter.Bounds.Left;
+            lineAfterStartOffsetX = _iconPresenter.Bounds.Right;
+        }
+
+        var linePen = GetOrCreateLinePen();
+        if (!IsLast)
+        {
+            context.DrawLine(
+                linePen,
+                new Point(lineAfterStartOffsetX, centerY),
+                new Point(Bounds.Width, centerY));
+        }
+
+        if (!IsFirst)
+        {
+            context.DrawLine(
+                linePen,
+                new Point(0, centerY),
+                new Point(lineBeforeEndOffsetX, centerY));
         }
     }
 

@@ -19,7 +19,7 @@ internal static partial class Program
             new PerfScenario("Timeline.Pending.Items3", _ => CreatePendingTimeline()),
             new PerfScenario("Timeline.Alternate.Items4", _ => CreateModeTimeline(TimelineMode.Alternate)),
             new PerfScenario("Timeline.Label.Items4", _ => CreateLabelTimeline()),
-            new PerfScenario("Timeline.Right.Items4", _ => CreateModeTimeline(TimelineMode.Right)),
+            new PerfScenario("Timeline.End.Items4", _ => CreateModeTimeline(TimelineMode.End)),
             new PerfScenario("Timeline.Icon.Items4", _ => CreateIconTimeline()),
             new PerfScenario("Timeline.GalleryShape", _ => CreateTimelineGalleryShape())
         ];
@@ -97,7 +97,7 @@ internal static partial class Program
         var timeline = new Timeline
         {
             Width = 760,
-            Mode  = TimelineMode.Left
+            Mode  = TimelineMode.Start
         };
         timeline.Items.Add(new TimelineItem { Label = "2024-01-01", Content = "AtomUI Officially Initiated" });
         timeline.Items.Add(new TimelineItem { Label = "2015-09-01 09:12:11", Content = "Create a services site" });
@@ -162,15 +162,15 @@ internal static partial class Program
                         {
                             Children =
                             {
-                                new AtomRadioButton { Content = "Left", IsChecked = true },
-                                new AtomRadioButton { Content = "Right" },
+                                new AtomRadioButton { Content = "Start", IsChecked = true },
+                                new AtomRadioButton { Content = "End" },
                                 new AtomRadioButton { Content = "Alternate" }
                             }
                         },
                         CreateLabelTimeline()
                     }
                 },
-                CreateModeTimeline(TimelineMode.Right)
+                CreateModeTimeline(TimelineMode.End)
             }
         };
     }

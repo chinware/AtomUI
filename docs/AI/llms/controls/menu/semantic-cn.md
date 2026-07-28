@@ -1,6 +1,6 @@
 # Menu 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10,6 +10,7 @@
 | `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `item` | `导航项区域` | 承载当前项、选中项、禁用项、层级项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `popup-scroll-host` | `MenuPopupScrollHost` | 在弹层内容区域内根据 `IsScrollEnabled` 选择是否创建 `ScrollViewer`。 | `IsScrollEnabled`、`DisplayPageSize` | 不适用 | internal-observable |
 | `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
 ## Abstract AXAML Structure
@@ -30,6 +31,15 @@
 
 ```text
 Menu
+  -> FlyoutHost (control theme, FlyoutHostTheme.axaml)
+     -> ContentPresenter#PART_ContentPresenter (template-stable)
+  -> MenuFlyoutPresenter (presenter control theme, MenuFlyoutPresenterTheme.axaml)
+     -> ArrowDecoratedBox#{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart} (template-stable)
+        -> MenuPopupScrollHost (internal-observable)
+           -> ItemsPresenter#PART_ItemsPresenter (template-stable)
+  -> TreeViewFlyoutPresenter (presenter control theme, TreeViewFlyoutPresenterTheme.axaml)
+     -> ArrowDecoratedBox#{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart} (template-stable)
+        -> ItemsPresenter#ItemsPresenter (internal-observable)
   -> MenuItem (item container control theme, MenuItemTheme.axaml)
      -> Panel (template-stable)
         -> Border#Frame (template-stable)
@@ -43,8 +53,12 @@ Menu
               -> RightOutlined#MenuIndicatorIcon (template-stable)
         -> Popup#PART_Popup (template-stable)
            -> Border#PopupFrame (template-stable)
-              -> ScrollViewer (template-stable)
+              -> MenuPopupScrollHost (internal-observable)
                  -> ItemsPresenter#PART_ItemsPresenter (template-stable)
+  -> MenuPopupScrollHost (control theme, MenuPopupScrollHostTheme.axaml)
+     -> ScrollViewer (template-stable)
+        -> ContentPresenter#PART_ContentPresenter (template-stable)
+     -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> MenuSeparator (control theme, MenuSeparatorTheme.axaml)
   -> Menu (control theme, MenuTheme.axaml)
      -> PixelAlignedBorder (template-stable)
@@ -55,7 +69,7 @@ Menu
            -> ContentPresenter#HeaderPresenter (internal-observable)
         -> Popup#PART_Popup (template-stable)
            -> Border#PopupFrame (template-stable)
-              -> ScrollViewer (template-stable)
+              -> MenuPopupScrollHost (internal-observable)
                  -> ItemsPresenter#PART_ItemsPresenter (template-stable)
 ```
 
@@ -64,6 +78,15 @@ Menu
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Menu` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `FlyoutHost` | control theme | `FlyoutHostTheme.axaml` | Menu | `ClipToBounds`, `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_ContentPresenter` | template node (ContentPresenter) | `FlyoutHostTheme.axaml` | FlyoutHost | `ClipToBounds`, `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuFlyoutPresenter` | presenter control theme | `MenuFlyoutPresenterTheme.axaml` | Menu | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuPopupScrollHost` | template node (MenuPopupScrollHost) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `atom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_ItemsPresenter` | template node (ItemsPresenter) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `TreeViewFlyoutPresenter` | presenter control theme | `TreeViewFlyoutPresenterTheme.axaml` | Menu | `ArrowPosition`, `Background`, `BackgroundSizing`, `CornerRadius`, `IsArrowVisible`, `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `TreeViewFlyoutPresenterTheme.axaml` | TreeViewFlyoutPresenter | `ArrowPosition`, `Background`, `BackgroundSizing`, `CornerRadius`, `IsArrowVisible`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ItemsPresenter` | template node (ItemsPresenter) | `TreeViewFlyoutPresenterTheme.axaml` | TreeViewFlyoutPresenter | `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `MenuItem` | item container control theme | `MenuItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CornerRadius`, `Foreground`, `GroupName`, `Header`, `HeaderTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `MenuItemTheme.axaml` | MenuItem | `Background`, `CornerRadius`, `Foreground`, `GroupName`, `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (Border) | `MenuItemTheme.axaml` | MenuItem | `Background`, `CornerRadius`, `Foreground`, `GroupName`, `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -74,26 +97,29 @@ Menu
 | `ItemTextPresenter` | template node (ContentPresenter) | `MenuItemTheme.axaml` | MenuItem | `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InputGestureText` | template node (TextBlock) | `MenuItemTheme.axaml` | MenuItem | `InputGesture` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `MenuIndicatorIcon` | template node (RightOutlined) | `MenuItemTheme.axaml` | MenuItem | `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Popup` | template node (Popup) | `MenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsSubMenuOpen`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `ShouldUseOverlayPopup` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PopupFrame` | template node (Border) | `MenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Popup` | template node (Popup) | `MenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `IsSubMenuOpen`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PopupFrame` | template node (Border) | `MenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuPopupScrollHost` | template node (MenuPopupScrollHost) | `MenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `atom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `MenuItemTheme.axaml` | MenuItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuPopupScrollHost` | control theme | `MenuPopupScrollHostTheme.axaml` | Menu | `AllowAutoHide`, `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `IsMotionEnabled`, `VerticalContentAlignment` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_ContentPresenter` | template node (ContentPresenter) | `MenuPopupScrollHostTheme.axaml` | MenuPopupScrollHost | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `MenuSeparator` | control theme | `MenuSeparatorTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Menu` | control theme | `MenuTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `MenuTheme.axaml` | Menu | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `MenuItem` | item container control theme | `TopLevelMenuItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `IsMotionEnabled`, `IsSubMenuOpen` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `TopLevelMenuItemTheme.axaml` | MenuItem | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `IsMotionEnabled`, `IsSubMenuOpen` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuItem` | item container control theme | `TopLevelMenuItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `IsMotionEnabled`, `IsScrollEnabled` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `TopLevelMenuItemTheme.axaml` | MenuItem | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `IsMotionEnabled`, `IsScrollEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (Border) | `TopLevelMenuItemTheme.axaml` | MenuItem | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderPresenter` | template node (ContentPresenter) | `TopLevelMenuItemTheme.axaml` | MenuItem | `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_Popup` | template node (Popup) | `TopLevelMenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsSubMenuOpen`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `ShouldUseOverlayPopup` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PopupFrame` | template node (Border) | `TopLevelMenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ItemsPresenter` | template node (ItemsPresenter) | `TopLevelMenuItemTheme.axaml` | MenuItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Popup` | template node (Popup) | `TopLevelMenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `IsSubMenuOpen`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PopupFrame` | template node (Border) | `TopLevelMenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuPopupScrollHost` | template node (MenuPopupScrollHost) | `TopLevelMenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `atom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 
 ## Template Parts
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `Items`、`MenuItem`、`MenuItemData`、`MenuSeparatorData` | 定义菜单项集合、数据驱动菜单项和分割项入口。 |
-| 选择与集合 | `DisplayPageSize` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `DisplayPageSize`、`IsScrollEnabled` | 维护弹层显示页数上限、滚动开关、选择、展开和集合状态。 |
 | 交互与状态 | `IsMotionEnabled`、`ShouldUseOverlayPopup` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `LineWidth`、`Orientation`、`OverlayHostShadow`、`PopupRootShadow`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `CloseMotion`、`MotionDuration`、`OpenMotion` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
@@ -119,6 +145,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `IsScrollEnabled` 控制弹层内容是否创建 `ScrollViewer`。滚动开启时 `DisplayPageSize` 参与最大高度计算；滚动禁用时弹层直接显示全部菜单项，不使用 `DisplayPageSize` 限高。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -144,6 +171,7 @@ Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组
 | `MenuTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `MenuThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TopLevelMenuItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
+| `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml` | 定义 `MenuFlyout` 菜单项 presenter 的弹层内容模板和滚动承载结构。 |
 
 Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
@@ -151,6 +179,7 @@ Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉�
 
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
+- 弹层滚动开关通过内部 `MenuPopupScrollHost` 复用模板分支；禁用滚动时不能保留隐藏或禁用状态的 `ScrollViewer`。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
 
@@ -169,6 +198,7 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
+- `IsScrollEnabled` 默认值必须保持为 `true`；滚动禁用时视觉树中不得创建 `ScrollViewer`，也不得继续按 `DisplayPageSize` 限制弹层高度。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不把 `SelectedItem`、`IsSubMenuOpen` 或一次 callback 内的 pointer 判断当作 hover intent 的替代状态；延迟任务必须有明确 owner、目标身份和失效边界。
@@ -184,6 +214,8 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - `DefaultMenuInteractionHandler` 的公开类型、构造函数和外部注入能力。
+- `IsScrollEnabled` 默认值、继承传播、本地覆盖和 `MenuFlyout` 到 presenter 中继语义。
+- 滚动禁用时不创建 `ScrollViewer`，滚动开启时 `DisplayPageSize` 继续限制弹层最大高度。
 - 选择状态、Popup 状态与 hover intent 的职责分离。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

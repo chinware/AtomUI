@@ -1,6 +1,6 @@
 # ProgressBar
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -121,7 +121,7 @@ ProgressBar 当前不实现 `ICustomizeSizeTypeAware`。自定义尺寸通过 `I
 
 ## 事件与命令
 
-ProgressBar 的事件与命令以公共 API、Avalonia 基类契约和 Gallery API 表为准；生成器不从源码发明额外事件。
+ProgressBar 的事件与命令以控件文档、源码 public surface 和 Avalonia 基类契约为准；生成器不从源码发明额外事件。
 
 ## 使用示例
 
@@ -288,7 +288,7 @@ AOT 边界：
 
 - 不新增反射读取 public API、token 或 template part。
 - 新增 Token 必须走 `ProgressBarToken` 和 generator 支持的 token kind。
-- Gallery API / Token 表应显式维护，不依赖运行时扫描。
+- API 与 Token 契约应在控件文档、源码 public surface、Token 类型或生成数据中维护，不依赖运行时扫描。
 
 ## 源码索引
 
@@ -313,7 +313,7 @@ AOT 边界：
 - `ProgressBarToken.cs`：组件级 Token 默认值计算。
 - `Themes/*.axaml`：共享主题、线形主题、圆形主题和具体控件主题。
 
-Gallery 示例和 API / Token 表位于 `controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/`。
+Gallery 示例位于 `controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/`。
 
 ## 相关文档
 

@@ -1,6 +1,6 @@
 # Splash 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -193,4 +193,4 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - `CloseAsync()` 幂等、最短展示时间、关闭延迟和引用释放路径。
 - Light/Dark、不同 DPI、不同平台窗口系统下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

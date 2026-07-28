@@ -97,7 +97,7 @@
         </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>
 
-    <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource LabelDescription}" Title="{gallery:TimelineShowCaseLangResource LabelTitle}"
+    <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource DynamicModeDescription}" Title="{gallery:TimelineShowCaseLangResource DynamicModeTitle}"
                           IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:TimelineViewModel">
@@ -109,14 +109,14 @@
                     </Style>
                 </WrapPanel.Styles>
                 <atom:RadioButton IsChecked="True"
-                                  x:Name="ModeLeft"
-                                  Tag="{x:Static atom:TimelineMode.Left}"
+                                  x:Name="ModeStart"
+                                  Tag="{x:Static atom:TimelineMode.Start}"
                                   IsCheckedChanged="ModeChecked"
-                                  Content="{gallery:TimelineShowCaseLangResource P2ContentLeft}" />
-                <atom:RadioButton x:Name="ModeRight"
-                                  Tag="{x:Static atom:TimelineMode.Right}"
+                                  Content="{gallery:TimelineShowCaseLangResource P2ContentStart}" />
+                <atom:RadioButton x:Name="ModeEnd"
+                                  Tag="{x:Static atom:TimelineMode.End}"
                                   IsCheckedChanged="ModeChecked"
-                                  Content="{gallery:TimelineShowCaseLangResource P2ContentRight}" />
+                                  Content="{gallery:TimelineShowCaseLangResource P2ContentEnd}" />
                 <atom:RadioButton x:Name="ModeAlternate"
                                   Tag="{x:Static atom:TimelineMode.Alternate}"
                                   IsCheckedChanged="ModeChecked"
@@ -133,16 +133,36 @@
         </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>
 
-    <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource RightAlternateDescription}" Title="{gallery:TimelineShowCaseLangResource RightAlternateTitle}"
+    <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource HorizontalDescription}" Title="{gallery:TimelineShowCaseLangResource HorizontalTitle}" Span="Full"
                           IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:TimelineViewModel">
-        <atom:Timeline Mode="Right">
-            <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
-            <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
-            <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
-            <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
-        </atom:Timeline>
+        <StackPanel Spacing="24">
+            <StackPanel Spacing="8">
+                <atom:TextBlock Text="{gallery:TimelineShowCaseLangResource P2ContentStart}" />
+                <atom:Timeline Orientation="Horizontal" Mode="Start">
+                    <atom:TimelineItem Label="2024-01-01" Content="{gallery:TimelineShowCaseLangResource P2ContentAtomuiOfficiallyInitiated}" />
+                    <atom:TimelineItem Label="2024-08-12" Content="{gallery:TimelineShowCaseLangResource P2ContentCreateAServicesSite}" />
+                    <atom:TimelineItem Label="2024-10-01" Content="{gallery:TimelineShowCaseLangResource P2ContentQinwareWebsiteOnline}" />
+                </atom:Timeline>
+            </StackPanel>
+            <StackPanel Spacing="8">
+                <atom:TextBlock Text="{gallery:TimelineShowCaseLangResource P2ContentEnd}" />
+                <atom:Timeline Orientation="Horizontal" Mode="End">
+                    <atom:TimelineItem Label="2024-01-01" Content="{gallery:TimelineShowCaseLangResource P2ContentAtomuiOfficiallyInitiated}" />
+                    <atom:TimelineItem Label="2024-08-12" Content="{gallery:TimelineShowCaseLangResource P2ContentCreateAServicesSite}" />
+                    <atom:TimelineItem Label="2024-10-01" Content="{gallery:TimelineShowCaseLangResource P2ContentQinwareWebsiteOnline}" />
+                </atom:Timeline>
+            </StackPanel>
+            <StackPanel Spacing="8">
+                <atom:TextBlock Text="{gallery:TimelineShowCaseLangResource P2ContentAlternate}" />
+                <atom:Timeline Orientation="Horizontal" Mode="Alternate">
+                    <atom:TimelineItem Label="2024-01-01" Content="{gallery:TimelineShowCaseLangResource P2ContentAtomuiOfficiallyInitiated}" />
+                    <atom:TimelineItem Label="2024-08-12" Content="{gallery:TimelineShowCaseLangResource P2ContentCreateAServicesSite}" />
+                    <atom:TimelineItem Label="2024-10-01" Content="{gallery:TimelineShowCaseLangResource P2ContentQinwareWebsiteOnline}" />
+                </atom:Timeline>
+            </StackPanel>
+        </StackPanel>
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>

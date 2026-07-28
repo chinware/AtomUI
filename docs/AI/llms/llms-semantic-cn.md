@@ -1,12 +1,12 @@
 # AtomUI Desktop Controls Semantic CN
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 Source: ./controls/button/semantic-cn.md
 
 # Button 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -24,7 +24,7 @@ Source: ./controls/button/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`
 
 ```xml
 <Panel>
@@ -267,7 +267,7 @@ Source: ./controls/float-button/semantic-cn.md
 
 # FloatButton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -435,13 +435,13 @@ FloatButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - Group 子按钮的命令绑定必须能继承 host `DataContext`，同时保留子项本地 `DataContext` 的优先级。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/icon/semantic-cn.md
 
 # Icon 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -454,11 +454,32 @@ Source: ./controls/icon/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-未定位到可生成抽象 AXAML 结构的 ControlTheme 模板。生成器不会根据 semantic parts 发明 AXAML 节点；请以 Template Parts、主题文件和源码索引为准。
+来源：`src/AtomUI.Controls/Icon/Themes/IconTheme.axaml`
+
+```xml
+<Border />
+```
 
 ## Composition Model
 
-该控件主要由 public 控件和 ControlTheme 模板直接表达，没有额外运行时组合层。
+该章节由控件 `Themes/` 文件夹中的真实主题文件生成，用于说明 public 控件与内部协作对象之间的运行时结构。内部节点只用于理解和维护，不应指导用户代码直接依赖。
+
+### 控件角色图
+
+```text
+Icon
+  -> IconPresenter (presenter control theme, IconPresenterTheme.axaml)
+  -> Icon (control theme, IconTheme.axaml)
+     -> Border (template-stable)
+```
+
+### 协作节点
+
+| 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `Icon` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `IconPresenter` | presenter control theme | `IconPresenterTheme.axaml` | Icon | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Icon` | control theme | `IconTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Height`, `Width` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 
 ## Template Parts
 
@@ -538,13 +559,13 @@ Icon Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/separator/semantic-cn.md
 
 # Separator 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -557,7 +578,7 @@ Source: ./controls/separator/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Separator/Themes/SeparatorTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Separator/Themes/SeparatorTheme.axaml`
 
 ```xml
 <TextBlock Name="PART_Title" />
@@ -660,13 +681,13 @@ Separator Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/split-button/semantic-cn.md
 
 # SplitButton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -679,7 +700,7 @@ Source: ./controls/split-button/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
 
 ```xml
 <DockPanel Name="PART_MainLayout">
@@ -789,13 +810,13 @@ Token 边界：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/flex-panel/semantic-cn.md
 
 # FlexPanel 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -885,13 +906,13 @@ Token 边界：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/grid/semantic-cn.md
 
 # Grid 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -982,13 +1003,13 @@ Token 边界：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/masonry/semantic-cn.md
 
 # Masonry 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1001,7 +1022,7 @@ Source: ./controls/masonry/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`
 
 ```xml
 <ItemsPresenter Name="PART_ItemsPresenter" />
@@ -1118,7 +1139,7 @@ Source: ./controls/space/semantic-cn.md
 
 # Space 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1217,13 +1238,13 @@ Space Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/splitter/semantic-cn.md
 
 # Splitter 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1238,7 +1259,7 @@ Source: ./controls/splitter/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -1374,7 +1395,7 @@ Splitter Token 只表达组件级视觉变量，包括分割线尺寸、拖拽�
 - 不删除或重命名 `PART_SplitterPanel`，也不随意重命名 internal handle template part。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - 不通过延迟刷新、吞异常或特殊 Gallery 判断掩盖布局状态问题。
-- 不引入运行时反射扫描作为 API、Token 或 Gallery 表发现机制。
+- 不引入运行时反射扫描作为 API、Token 或 Gallery 示例发现机制。
 - 文档只描述当前稳定设计和维护规则；历史变化记录在 `changelog.md`。
 
 维护不变量：
@@ -1386,7 +1407,7 @@ Splitter Token 只表达组件级视觉变量，包括分割线尺寸、拖拽�
 - `SplitterPanel` 作为尺寸与折叠状态 owner 的语义。
 - internal handle template part 的绑定关系和事件释放路径。
 - Light/Dark、Browser/Desktop 和不同方向下的主题一致性。
-- Gallery API 表、Token 表、ShowCase 示例和控件文档的一致性。
+- API 契约摘要、Token 语义、ShowCase 示例和控件文档的一致性。
 
 新增分割线样式能力时必须遵守：
 
@@ -1394,13 +1415,13 @@ Splitter Token 只表达组件级视觉变量，包括分割线尺寸、拖拽�
 - `LineThickness` 不替代 `HandleSize`。
 - `LineCornerRadius` 同时作用于 `PART_HandleLine` 和 `PART_Grip`。
 - 默认值来自 Splitter Token 或 SharedToken，保证现有视觉不变。
-- Gallery API 表、Token 表、ShowCase 示例和回归测试同步更新。
+- API 契约摘要、Token 语义、ShowCase 示例和回归测试同步更新。
 
 Source: ./controls/breadcrumb/semantic-cn.md
 
 # Breadcrumb 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1414,7 +1435,7 @@ Source: ./controls/breadcrumb/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Breadcrumb/Themes/BreadcrumbTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Breadcrumb/Themes/BreadcrumbTheme.axaml`
 
 ```xml
 <ItemsPresenter />
@@ -1533,13 +1554,13 @@ Breadcrumb Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/button-spinner/semantic-cn.md
 
 # ButtonSpinner 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1553,7 +1574,7 @@ Source: ./controls/button-spinner/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerTheme.axaml`
 
 ```xml
 <ButtonSpinnerDecoratedBox Name="PART_DecoratedBox" />
@@ -1693,13 +1714,13 @@ ButtonSpinner Token 只表达组件级视觉变量，例如尺寸、间距、颜
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/combo-box/semantic-cn.md
 
 # ComboBox 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -1713,7 +1734,7 @@ Source: ./controls/combo-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml`
 
 ```xml
 <Panel>
@@ -1879,13 +1900,13 @@ ComboBox Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/dropdown-button/semantic-cn.md
 
 # DropdownButton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2039,13 +2060,13 @@ Token 边界：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/menu/semantic-cn.md
 
 # Menu 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2055,11 +2076,12 @@ Source: ./controls/menu/semantic-cn.md
 | `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `item` | `导航项区域` | 承载当前项、选中项、禁用项、层级项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `popup-scroll-host` | `MenuPopupScrollHost` | 在弹层内容区域内根据 `IsScrollEnabled` 选择是否创建 `ScrollViewer`。 | `IsScrollEnabled`、`DisplayPageSize` | 不适用 | internal-observable |
 | `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Menu/Themes/MenuTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Menu/Themes/MenuTheme.axaml`
 
 ```xml
 <PixelAlignedBorder>
@@ -2075,6 +2097,15 @@ Source: ./controls/menu/semantic-cn.md
 
 ```text
 Menu
+  -> FlyoutHost (control theme, FlyoutHostTheme.axaml)
+     -> ContentPresenter#PART_ContentPresenter (template-stable)
+  -> MenuFlyoutPresenter (presenter control theme, MenuFlyoutPresenterTheme.axaml)
+     -> ArrowDecoratedBox#{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart} (template-stable)
+        -> MenuPopupScrollHost (internal-observable)
+           -> ItemsPresenter#PART_ItemsPresenter (template-stable)
+  -> TreeViewFlyoutPresenter (presenter control theme, TreeViewFlyoutPresenterTheme.axaml)
+     -> ArrowDecoratedBox#{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart} (template-stable)
+        -> ItemsPresenter#ItemsPresenter (internal-observable)
   -> MenuItem (item container control theme, MenuItemTheme.axaml)
      -> Panel (template-stable)
         -> Border#Frame (template-stable)
@@ -2088,8 +2119,12 @@ Menu
               -> RightOutlined#MenuIndicatorIcon (template-stable)
         -> Popup#PART_Popup (template-stable)
            -> Border#PopupFrame (template-stable)
-              -> ScrollViewer (template-stable)
+              -> MenuPopupScrollHost (internal-observable)
                  -> ItemsPresenter#PART_ItemsPresenter (template-stable)
+  -> MenuPopupScrollHost (control theme, MenuPopupScrollHostTheme.axaml)
+     -> ScrollViewer (template-stable)
+        -> ContentPresenter#PART_ContentPresenter (template-stable)
+     -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> MenuSeparator (control theme, MenuSeparatorTheme.axaml)
   -> Menu (control theme, MenuTheme.axaml)
      -> PixelAlignedBorder (template-stable)
@@ -2100,7 +2135,7 @@ Menu
            -> ContentPresenter#HeaderPresenter (internal-observable)
         -> Popup#PART_Popup (template-stable)
            -> Border#PopupFrame (template-stable)
-              -> ScrollViewer (template-stable)
+              -> MenuPopupScrollHost (internal-observable)
                  -> ItemsPresenter#PART_ItemsPresenter (template-stable)
 ```
 
@@ -2109,6 +2144,15 @@ Menu
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Menu` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `FlyoutHost` | control theme | `FlyoutHostTheme.axaml` | Menu | `ClipToBounds`, `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_ContentPresenter` | template node (ContentPresenter) | `FlyoutHostTheme.axaml` | FlyoutHost | `ClipToBounds`, `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuFlyoutPresenter` | presenter control theme | `MenuFlyoutPresenterTheme.axaml` | Menu | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuPopupScrollHost` | template node (MenuPopupScrollHost) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `atom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_ItemsPresenter` | template node (ItemsPresenter) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `TreeViewFlyoutPresenter` | presenter control theme | `TreeViewFlyoutPresenterTheme.axaml` | Menu | `ArrowPosition`, `Background`, `BackgroundSizing`, `CornerRadius`, `IsArrowVisible`, `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `TreeViewFlyoutPresenterTheme.axaml` | TreeViewFlyoutPresenter | `ArrowPosition`, `Background`, `BackgroundSizing`, `CornerRadius`, `IsArrowVisible`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ItemsPresenter` | template node (ItemsPresenter) | `TreeViewFlyoutPresenterTheme.axaml` | TreeViewFlyoutPresenter | `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `MenuItem` | item container control theme | `MenuItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CornerRadius`, `Foreground`, `GroupName`, `Header`, `HeaderTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `MenuItemTheme.axaml` | MenuItem | `Background`, `CornerRadius`, `Foreground`, `GroupName`, `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (Border) | `MenuItemTheme.axaml` | MenuItem | `Background`, `CornerRadius`, `Foreground`, `GroupName`, `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -2119,26 +2163,29 @@ Menu
 | `ItemTextPresenter` | template node (ContentPresenter) | `MenuItemTheme.axaml` | MenuItem | `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InputGestureText` | template node (TextBlock) | `MenuItemTheme.axaml` | MenuItem | `InputGesture` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `MenuIndicatorIcon` | template node (RightOutlined) | `MenuItemTheme.axaml` | MenuItem | `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Popup` | template node (Popup) | `MenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsSubMenuOpen`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `ShouldUseOverlayPopup` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PopupFrame` | template node (Border) | `MenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Popup` | template node (Popup) | `MenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `IsSubMenuOpen`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PopupFrame` | template node (Border) | `MenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuPopupScrollHost` | template node (MenuPopupScrollHost) | `MenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `atom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `MenuItemTheme.axaml` | MenuItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuPopupScrollHost` | control theme | `MenuPopupScrollHostTheme.axaml` | Menu | `AllowAutoHide`, `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `IsMotionEnabled`, `VerticalContentAlignment` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_ContentPresenter` | template node (ContentPresenter) | `MenuPopupScrollHostTheme.axaml` | MenuPopupScrollHost | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `MenuSeparator` | control theme | `MenuSeparatorTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Menu` | control theme | `MenuTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `MenuTheme.axaml` | Menu | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `MenuItem` | item container control theme | `TopLevelMenuItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `IsMotionEnabled`, `IsSubMenuOpen` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `TopLevelMenuItemTheme.axaml` | MenuItem | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `IsMotionEnabled`, `IsSubMenuOpen` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuItem` | item container control theme | `TopLevelMenuItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `IsMotionEnabled`, `IsScrollEnabled` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `TopLevelMenuItemTheme.axaml` | MenuItem | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `IsMotionEnabled`, `IsScrollEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (Border) | `TopLevelMenuItemTheme.axaml` | MenuItem | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderPresenter` | template node (ContentPresenter) | `TopLevelMenuItemTheme.axaml` | MenuItem | `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_Popup` | template node (Popup) | `TopLevelMenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsSubMenuOpen`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `ShouldUseOverlayPopup` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PopupFrame` | template node (Border) | `TopLevelMenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ItemsPresenter` | template node (ItemsPresenter) | `TopLevelMenuItemTheme.axaml` | MenuItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Popup` | template node (Popup) | `TopLevelMenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `IsSubMenuOpen`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PopupFrame` | template node (Border) | `TopLevelMenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight`, `PopupPadding`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuPopupScrollHost` | template node (MenuPopupScrollHost) | `TopLevelMenuItemTheme.axaml` | MenuItem | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `atom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 
 ## Template Parts
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `Items`、`MenuItem`、`MenuItemData`、`MenuSeparatorData` | 定义菜单项集合、数据驱动菜单项和分割项入口。 |
-| 选择与集合 | `DisplayPageSize` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `DisplayPageSize`、`IsScrollEnabled` | 维护弹层显示页数上限、滚动开关、选择、展开和集合状态。 |
 | 交互与状态 | `IsMotionEnabled`、`ShouldUseOverlayPopup` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `LineWidth`、`Orientation`、`OverlayHostShadow`、`PopupRootShadow`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `CloseMotion`、`MotionDuration`、`OpenMotion` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
@@ -2164,6 +2211,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `IsScrollEnabled` 控制弹层内容是否创建 `ScrollViewer`。滚动开启时 `DisplayPageSize` 参与最大高度计算；滚动禁用时弹层直接显示全部菜单项，不使用 `DisplayPageSize` 限高。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -2189,6 +2237,7 @@ Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组
 | `MenuTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `MenuThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TopLevelMenuItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
+| `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml` | 定义 `MenuFlyout` 菜单项 presenter 的弹层内容模板和滚动承载结构。 |
 
 Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
@@ -2196,6 +2245,7 @@ Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉�
 
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
+- 弹层滚动开关通过内部 `MenuPopupScrollHost` 复用模板分支；禁用滚动时不能保留隐藏或禁用状态的 `ScrollViewer`。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
 
@@ -2214,6 +2264,7 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
+- `IsScrollEnabled` 默认值必须保持为 `true`；滚动禁用时视觉树中不得创建 `ScrollViewer`，也不得继续按 `DisplayPageSize` 限制弹层高度。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不把 `SelectedItem`、`IsSubMenuOpen` 或一次 callback 内的 pointer 判断当作 hover intent 的替代状态；延迟任务必须有明确 owner、目标身份和失效边界。
@@ -2229,15 +2280,17 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - `DefaultMenuInteractionHandler` 的公开类型、构造函数和外部注入能力。
+- `IsScrollEnabled` 默认值、继承传播、本地覆盖和 `MenuFlyout` 到 presenter 中继语义。
+- 滚动禁用时不创建 `ScrollViewer`，滚动开启时 `DisplayPageSize` 继续限制弹层最大高度。
 - 选择状态、Popup 状态与 hover intent 的职责分离。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/nav-menu/semantic-cn.md
 
 # NavMenu 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2251,7 +2304,7 @@ Source: ./controls/nav-menu/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuTheme.axaml`
 
 ```xml
 <ScrollViewer>
@@ -2501,7 +2554,7 @@ Source: ./controls/pagination/semantic-cn.md
 
 # Pagination 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2515,7 +2568,7 @@ Source: ./controls/pagination/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationTheme.axaml`
 
 ```xml
 <StackPanel Name="PART_RootLayout">
@@ -2665,13 +2718,13 @@ Pagination Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/steps/semantic-cn.md
 
 # Steps 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2690,7 +2743,7 @@ Source: ./controls/steps/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`
 
 ```xml
 <ItemsPresenter Name="PART_ItemsPresenter" />
@@ -2757,10 +2810,10 @@ Steps
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/steps/index-cn.md`。 |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/steps/index-cn.md`。 |
 | 单控件语义文档 | `overview.md` + `implementation.md` + Themes 文件夹 | 生成 `controls/steps/semantic-cn.md`。 |
-| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 overview 中维护第二份机械列表。 |
-| Design Token 表 | Gallery DesignTokenDataGrid 或 Token 类型 | Token 文档只解释语义边界。 |
+| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 overview 中维护第二份机械列表。 |
+| Design Token 表 | token.md 或 Token 类型 | Token 文档只解释语义边界。 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只使用稳定示例。 |
 | 源码索引 | `implementation.md` | 用于定位源码、主题和测试。 |
 
@@ -2927,7 +2980,7 @@ Source: ./controls/tab-control/semantic-cn.md
 
 # TabControl 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -2942,7 +2995,7 @@ Source: ./controls/tab-control/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TabControl/Themes/TabControlTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/TabControl/Themes/TabControlTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -3151,13 +3204,13 @@ TabControl Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - 默认 Line Tab 的 `Left` / `Right` spacing / padding 调整不得影响 Card Tab、拖动排序阈值、选中指示条定位或 overflow 计算；选中指示条高度必须继续跟随 Line item 的真实 bounds。
 - 切换 `TabStripPlacement` 后当前选中项必须继续跟随同一个逻辑 item，不能因 container 重新准备或旧 `IsSelected` 状态回流而改变。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/tab-strip/semantic-cn.md
 
 # TabStrip 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -3172,7 +3225,7 @@ Source: ./controls/tab-strip/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TabControl/Themes/TabStrip/TabStripTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/TabControl/Themes/TabStrip/TabStripTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -3283,13 +3336,13 @@ Token 边界：
 - 默认 Line TabStrip 的 `Left` / `Right` spacing / padding 调整不得影响 Card TabStrip、拖动排序阈值、选中指示条定位或 overflow 计算；选中指示条高度必须继续跟随 Line item 的真实 bounds。
 - 切换 `TabStripPlacement` 后当前选中项必须继续跟随同一个逻辑 item，不能因 container 重新准备或旧 `IsSelected` 状态回流而改变。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/auto-complete/semantic-cn.md
 
 # AutoComplete 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -3303,7 +3356,7 @@ Source: ./controls/auto-complete/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTheme.axaml`
 
 ```xml
 <Panel>
@@ -3452,13 +3505,13 @@ AutoComplete Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/cascader/semantic-cn.md
 
 # Cascader 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -3472,7 +3525,7 @@ Source: ./controls/cascader/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Cascader/Themes/CascaderTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Cascader/Themes/CascaderTheme.axaml`
 
 ```xml
 <Panel>
@@ -3720,7 +3773,7 @@ Source: ./controls/check-box/semantic-cn.md
 
 # CheckBox 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -3734,7 +3787,7 @@ Source: ./controls/check-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/CheckBox/Themes/CheckBoxTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/CheckBox/Themes/CheckBoxTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -3877,13 +3930,13 @@ CheckBox Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/color-picker/semantic-cn.md
 
 # ColorPicker 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -3897,7 +3950,7 @@ Source: ./controls/color-picker/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls.ColorPicker/Themes/ColorPickerTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls.ColorPicker/Themes/ColorPickerTheme.axaml`
 
 ```xml
 <Panel>
@@ -4015,13 +4068,13 @@ ColorPicker Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/date-picker/semantic-cn.md
 
 # DatePicker 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -4217,13 +4270,13 @@ DatePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/form/semantic-cn.md
 
 # Form 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -4237,7 +4290,7 @@ Source: ./controls/form/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Form/Themes/FormTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Form/Themes/FormTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -4468,7 +4521,7 @@ Source: ./controls/line-edit/semantic-cn.md
 
 # LineEdit 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -4482,7 +4535,7 @@ Source: ./controls/line-edit/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Input/Themes/LineEditTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Input/Themes/LineEditTheme.axaml`
 
 ```xml
 <AddOnDecoratedBox Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}">
@@ -4688,7 +4741,7 @@ Source: ./controls/mentions/semantic-cn.md
 
 # Mentions 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -4702,7 +4755,7 @@ Source: ./controls/mentions/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml`
 
 ```xml
 <Panel>
@@ -4882,7 +4935,7 @@ Source: ./controls/numeric-up-down/semantic-cn.md
 
 # NumericUpDown 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -4896,7 +4949,7 @@ Source: ./controls/numeric-up-down/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`
 
 ```xml
 <ButtonSpinner Name="PART_Spinner">
@@ -5153,7 +5206,7 @@ Source: ./controls/otp-line-edit/semantic-cn.md
 
 # OtpLineEdit 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -5167,7 +5220,7 @@ Source: ./controls/otp-line-edit/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditTheme.axaml`
 
 ```xml
 <Grid Name="PART_RootPanel">
@@ -5358,7 +5411,7 @@ Source: ./controls/radio-button/semantic-cn.md
 
 # RadioButton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -5372,7 +5425,7 @@ Source: ./controls/radio-button/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -5503,13 +5556,13 @@ RadioButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/rate/semantic-cn.md
 
 # Rate 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -5523,7 +5576,7 @@ Source: ./controls/rate/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Rate/Themes/RateTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Rate/Themes/RateTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -5649,13 +5702,13 @@ Rate Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/search-edit/semantic-cn.md
 
 # SearchEdit 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -5669,7 +5722,7 @@ Source: ./controls/search-edit/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Input/Themes/SearchEditTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Input/Themes/SearchEditTheme.axaml`
 
 ```xml
 <SearchEditDecoratedBox Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}">
@@ -5863,7 +5916,7 @@ Source: ./controls/select/semantic-cn.md
 
 # Select 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -5877,7 +5930,7 @@ Source: ./controls/select/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Select/Themes/SelectTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Select/Themes/SelectTheme.axaml`
 
 ```xml
 <Panel>
@@ -6105,7 +6158,7 @@ Source: ./controls/slider/semantic-cn.md
 
 # Slider 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -6119,7 +6172,7 @@ Source: ./controls/slider/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Slider/Themes/SliderTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Slider/Themes/SliderTheme.axaml`
 
 ```xml
 <SliderTrack Name="PART_Track" />
@@ -6291,7 +6344,7 @@ Source: ./controls/time-picker/semantic-cn.md
 
 # TimePicker 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -6462,13 +6515,13 @@ TimePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/toggle-switch/semantic-cn.md
 
 # ToggleSwitch 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -6482,7 +6535,7 @@ Source: ./controls/toggle-switch/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Switch/Themes/ToggleSwitchTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Switch/Themes/ToggleSwitchTheme.axaml`
 
 ```xml
 <Panel>
@@ -6632,7 +6685,7 @@ Source: ./controls/transfer/semantic-cn.md
 
 # Transfer 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -6833,13 +6886,13 @@ Transfer Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `TargetKeys` / `SelectedKeys` 不能与 `TransferListView.SelectedItems`、`TransferTreeView.CheckedItems` 或容器状态形成多个业务 owner。
 - 对绑定集合的移动、移除和清空不能无条件替换集合实例；可写集合必须原地更新。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/tree-select/semantic-cn.md
 
 # TreeSelect 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -6853,7 +6906,7 @@ Source: ./controls/tree-select/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml`
 
 ```xml
 <Panel>
@@ -7025,7 +7078,7 @@ Source: ./controls/upload/semantic-cn.md
 
 # Upload 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7040,7 +7093,7 @@ Source: ./controls/upload/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Upload/Themes/UploadTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Upload/Themes/UploadTheme.axaml`
 
 ```xml
 <StackPanel Name="RootLayout">
@@ -7196,7 +7249,7 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 不让视觉容器反向持有业务任务状态。
 - 不用延时、强制刷新或 suppression flag 掩盖状态不同步。
 - Template reapply、集合替换、remove、reset、detach 都必须释放旧订阅、取消运行任务和取消 pending auto-remove。
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 文档只描述当前目标设计；历史变化记录在 `changelog.md`。
 
 维护不变量：
@@ -7210,13 +7263,13 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `RemoveFileAsync`、`ResetAsync`、detach 必须释放上传任务、auto-remove delay、集合订阅和 container 绑定。
 - `DataValidationErrors` 是 error 状态来源，Upload 不维护独立 error 机制。
 - AXAML-first binding 是默认选择；C# binding 必须说明 AXAML 不能表达的原因和释放 owner。
-- Gallery 示例、API 表、控件文档和测试必须使用同一套 public contract。
+- Gallery 示例、控件文档和测试必须使用同一套 public contract。
 
 Source: ./controls/avatar/semantic-cn.md
 
 # Avatar 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7230,7 +7283,7 @@ Source: ./controls/avatar/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
 
 ```xml
 <Panel Name="RootLayout">
@@ -7360,13 +7413,13 @@ Avatar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/badge/semantic-cn.md
 
 # Badge 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7513,13 +7566,13 @@ Badge Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/calendar/semantic-cn.md
 
 # Calendar 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7533,7 +7586,7 @@ Source: ./controls/calendar/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="PART_Frame">
@@ -7686,13 +7739,13 @@ Calendar Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/card/semantic-cn.md
 
 # Card 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7706,7 +7759,7 @@ Source: ./controls/card/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Card/Themes/CardTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Card/Themes/CardTheme.axaml`
 
 ```xml
 <Panel>
@@ -7931,7 +7984,7 @@ Source: ./controls/carousel/semantic-cn.md
 
 # Carousel 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -7945,7 +7998,7 @@ Source: ./controls/carousel/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselTheme.axaml`
 
 ```xml
 <Panel>
@@ -8096,13 +8149,13 @@ Carousel Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/collapse/semantic-cn.md
 
 # Collapse 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -8116,7 +8169,7 @@ Source: ./controls/collapse/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="PART_Frame">
@@ -8264,13 +8317,13 @@ Collapse Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - 分隔线只由 item 位置、视觉模式和固定模板结构决定，不能依赖 selection 或 motion 时序。
 - 旧 template part、事件订阅和 content motion cancellation 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/data-grid/semantic-cn.md
 
 # DataGrid 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -8284,7 +8337,7 @@ Source: ./controls/data-grid/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls.DataGrid/Themes/DataGridTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls.DataGrid/Themes/DataGridTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -8356,6 +8409,8 @@ Public API / inherited command / item source / user input
 - 列过滤状态以 `SelectedFilterValues` 为 owner：VM 更新它时重建当前列的 collection view 过滤投影并回放到 flyout checked state；用户在 flyout 中选择过滤项时先更新它，再由同一管线投影到 `FilterDescriptions`。
 - `Filters` 替换、reset 或 clear 时，Header 和 FilterIndicator 必须重新计算过滤入口可见性并重新物化 flyout 内容；已有 `SelectedFilterValues` 只能保留仍能匹配到有效过滤项的值。
 - `ClearFilters()` 和单列清除过滤必须通过清空列级 `SelectedFilterValues` 完成，不能只清空 `FilterDescriptions`，否则 VM 绑定、过滤图标激活态和 flyout 勾选态会分裂。
+- 分页状态以当前 `DataGridCollectionView` 为 owner；顶部和底部分页部件必须从同一份 `ItemCount`、`PageSize`
+  和 `PageIndex` 投影，不能互相覆盖，也不能在模板重建时反向重置 CollectionView。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -8424,13 +8479,13 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - 列过滤只能有一个选中状态 owner；`Filters`、flyout checked state、`SelectedFilterValues` 和 `FilterDescriptions` 之间不得形成互相覆盖的并行状态源。
 - 过滤项解析必须支持业务 DTO 和 `DataGridFilterItem` 两类输入，不得要求 VM 反向依赖内部 flyout、menu item 或 tree item 类型；业务 DTO 必须有生成的 data member accessor，不在 AOT 敏感路径中使用运行时反射兜底。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/descriptions/semantic-cn.md
 
 # Descriptions 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -8444,7 +8499,7 @@ Source: ./controls/descriptions/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Descriptions/Themes/DescriptionsTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Descriptions/Themes/DescriptionsTheme.axaml`
 
 ```xml
 <StackPanel>
@@ -8654,7 +8709,7 @@ Source: ./controls/empty/semantic-cn.md
 
 # Empty 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -8668,7 +8723,7 @@ Source: ./controls/empty/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Empty/Themes/EmptyTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Empty/Themes/EmptyTheme.axaml`
 
 ```xml
 <StackPanel>
@@ -8777,13 +8832,13 @@ Empty Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/expander/semantic-cn.md
 
 # Expander 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -8797,7 +8852,7 @@ Source: ./controls/expander/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Expander/Themes/ExpanderTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Expander/Themes/ExpanderTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="PART_Frame">
@@ -9019,7 +9074,7 @@ Source: ./controls/group-box/semantic-cn.md
 
 # GroupBox 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -9033,7 +9088,7 @@ Source: ./controls/group-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/GroupBox/Themes/GroupBoxTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/GroupBox/Themes/GroupBoxTheme.axaml`
 
 ```xml
 <Border Name="PART_Frame">
@@ -9171,7 +9226,7 @@ Source: ./controls/image-previewer/semantic-cn.md
 
 # ImagePreviewer 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -9186,7 +9241,7 @@ Source: ./controls/image-previewer/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTheme.axaml`
 
 ```xml
 <PixelAlignedBorder>
@@ -9255,7 +9310,7 @@ ImagePreviewer
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
-           -> StackPanel#PART_TitleLayout (template-stable)
+           -> DockPanel#PART_TitleLayout (template-stable)
               -> IconPresenter#PART_IconPresenter (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
@@ -9264,7 +9319,7 @@ ImagePreviewer
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
-           -> StackPanel#PART_TitleLayout (template-stable)
+           -> DockPanel#PART_TitleLayout (template-stable)
               -> IconPresenter#PART_IconPresenter (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
@@ -9273,7 +9328,7 @@ ImagePreviewer
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
-           -> StackPanel#PART_TitleLayout (template-stable)
+           -> DockPanel#PART_TitleLayout (template-stable)
               -> IconPresenter#PART_IconPresenter (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
@@ -9404,7 +9459,9 @@ ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和�
 
 ImagePreviewer 使用 `ImagePreviewerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
 
-预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
+预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。预览 dialog 的 `TitleAlignment` 默认值覆盖为 `WindowCenter`，因此 Windows、Linux 和 macOS 都默认以完整窗口水平中心作为标题基准；显式设置 `TitleAlignment` 时仍通过 `ImagePreviewerTitleBar` 投射，并继续由 `WindowTitleBarLayoutPanel` 处理左右安全区裁剪。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
+
+预览 dialog 的图片查看层必须绘制与 dialog `Background` 一致的实心背景，用于覆盖 Windows CSD maximize/restore 期间可能短暂暴露的通用窗口 underlay 背景。窗口状态或尺寸变化期间，dialog 还会短暂关闭查看层的图片 transform/translate 过渡，避免外层窗口 resize 与内层图片居中动画叠加成闪动；overlay host 的查看层保持透明，由 overlay 模板自身背景承载遮罩语义。
 
 加载视觉遵循以下规则：
 
@@ -9468,13 +9525,13 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 - 预览标题图标的单一路径：`PreviewTitleIcon` 只能进入 `ImagePreviewerDialog.TitleIcon`，再绑定到 `ImagePreviewerTitleBar.Icon` 和 `PART_IconPresenter`；不得转接 `Window.Icon`、`Window.Logo` 或右侧扩展区域来表达标题图标。
 - 加载完成后必须重新计算 `ImageViewer` 的布局、居中、fit-to-window 和交互边界。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/info-flyout/semantic-cn.md
 
 # InfoFlyout 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -9502,7 +9559,7 @@ InfoFlyout
      -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> MenuFlyoutPresenter (presenter control theme, MenuFlyoutPresenterTheme.axaml)
      -> ArrowDecoratedBox#{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart} (template-stable)
-        -> ScrollViewer (template-stable)
+        -> MenuPopupScrollHost (internal-observable)
            -> ItemsPresenter#PART_ItemsPresenter (template-stable)
   -> TreeViewFlyoutPresenter (presenter control theme, TreeViewFlyoutPresenterTheme.axaml)
      -> ArrowDecoratedBox#{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart} (template-stable)
@@ -9516,8 +9573,9 @@ InfoFlyout
 | `InfoFlyout` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `FlyoutHost` | control theme | `FlyoutHostTheme.axaml` | InfoFlyout | `ClipToBounds`, `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `FlyoutHostTheme.axaml` | FlyoutHost | `ClipToBounds`, `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `MenuFlyoutPresenter` | presenter control theme | `MenuFlyoutPresenterTheme.axaml` | InfoFlyout | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `ItemsPanel`, `MaxPopupHeight`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `ItemsPanel`, `MaxPopupHeight`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuFlyoutPresenter` | presenter control theme | `MenuFlyoutPresenterTheme.axaml` | InfoFlyout | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `ArrowPosition`, `IsArrowVisible`, `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `MaxPopupHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MenuPopupScrollHost` | template node (MenuPopupScrollHost) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `IsMotionEnabled`, `IsScrollEnabled`, `ItemsPanel`, `atom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `MenuFlyoutPresenterTheme.axaml` | MenuFlyoutPresenter | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TreeViewFlyoutPresenter` | presenter control theme | `TreeViewFlyoutPresenterTheme.axaml` | InfoFlyout | `ArrowPosition`, `Background`, `BackgroundSizing`, `CornerRadius`, `IsArrowVisible`, `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}` | template node (ArrowDecoratedBox) | `TreeViewFlyoutPresenterTheme.axaml` | TreeViewFlyoutPresenter | `ArrowPosition`, `Background`, `BackgroundSizing`, `CornerRadius`, `IsArrowVisible`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -9609,13 +9667,13 @@ InfoFlyout Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/list-box/semantic-cn.md
 
 # ListBox 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -9629,7 +9687,7 @@ Source: ./controls/list-box/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -9819,13 +9877,13 @@ ListBoxToken 不承载 `SelectedItem`、`SelectedItems`、`IsSelected`、`IsFilt
 - 选中指示器可见性只能由 `IsShowSelectedIndicator && IsSelected` 推导。
 - `ItemClicked` 派发顺序必须允许 CandidateList 在 public event 前执行 `NotifyListBoxItemClicked`。
 - `IsBorderless` 只影响边框厚度，不改变 root padding、corner radius 或 scroll behavior。
-- Token 变更必须同步 `ListBoxTokenKind`、AXAML 引用和 Gallery token 表。
+- Token 变更必须同步 `ListBoxTokenKind`、AXAML 引用和 token.md 语义说明。
 
 Source: ./controls/list-view/semantic-cn.md
 
 # ListView 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -9839,7 +9897,7 @@ Source: ./controls/list-view/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/ListView/Themes/ListViewTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/ListView/Themes/ListViewTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -10079,13 +10137,13 @@ ListViewToken 不承载 `ItemsSource`、`SelectedIndex`、`SelectedItem`、`Sele
 - Add、Remove、Move 和 Replace 必须按 collection change index 更新 entries，不按 item equality 定位变化目标。
 - Reset 和 ItemsSource 替换只通过唯一非空 item key 恢复选择，不按 item equality 或旧索引回退。
 - 分页器替换时必须解除旧 `CurrentPageChanged` 和 relay binding。
-- Token 变更必须同步 `ListViewTokenKind`、AXAML 引用和 Gallery token 表。
+- Token 变更必须同步 `ListViewTokenKind`、AXAML 引用和 token.md 语义说明。
 
 Source: ./controls/qr-code/semantic-cn.md
 
 # QRCode 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10099,7 +10157,7 @@ Source: ./controls/qr-code/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`
 
 ```xml
 <PixelAlignedBorder Name="Frame">
@@ -10254,13 +10312,13 @@ QRCode Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/segmented/semantic-cn.md
 
 # Segmented 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10274,7 +10332,7 @@ Source: ./controls/segmented/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -10451,7 +10509,7 @@ Source: ./controls/statistic/semantic-cn.md
 
 # Statistic 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10554,13 +10612,13 @@ Statistic Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/tag/semantic-cn.md
 
 # Tag 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10574,7 +10632,7 @@ Source: ./controls/tag/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.axaml`
 
 ```xml
 <Panel>
@@ -10695,27 +10753,27 @@ Tag Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/timeline/semantic-cn.md
 
 # Timeline 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Timeline` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Timeline` | 承载 Items、Orientation、Mode、IsReverse、Pending 和主题入口。 | `Orientation`、`Mode`、`IsReverse`、`Pending` | 见视觉与主题模型 | stable |
+| `item` | `TimelineItem` | 承载单项 Label、Content、Indicator，并接收视觉顺序派生状态。 | `Label`、`Content`、`IndicatorIcon`、`IndicatorColor` | 见视觉与主题模型 | stable |
+| `axis` | `TimelineIndicator` | 绘制垂直或水平轴线、节点和自定义图标。 | `Orientation`、`IndicatorIcon`、`IndicatorColor` | `IndicatorTailColor`、`IndicatorTailWidth`、`IndicatorSize` | internal-observable |
+| `label` | `TextBlock#Label` | 承载可选时间标签，并参与双侧布局。 | `Label`、`Mode`、`Orientation` | 间距类 Token / SharedToken | template-stable |
+| `content` | `ContentPresenter#ContentPresenter` | 承载事件内容并在水平等宽槽位内换行。 | `Content`、`ContentTemplate`、`Mode`、`Orientation` | 间距类 Token / SharedToken | template-stable |
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -10756,7 +10814,7 @@ Timeline
 | `TimelineItem` | item container control theme | `TimelineItemTheme.axaml` | 用户代码 / 控件宿主 | `Content`, `ContentTemplate`, `IndicatorColor`, `IndicatorIcon`, `IsFirst`, `IsLabelLayout` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `RootLayout` | template node (TimelineItemPanel) | `TimelineItemTheme.axaml` | TimelineItem | `Content`, `ContentTemplate`, `IndicatorColor`, `IndicatorIcon`, `IsFirst`, `IsLabelLayout` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Label` | template node (TextBlock) | `TimelineItemTheme.axaml` | TimelineItem | `Label` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Indicator` | template node (TimelineIndicator) | `TimelineItemTheme.axaml` | TimelineItem | `IndicatorColor`, `IndicatorIcon`, `IsFirst`, `IsLast`, `NextIsPending` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Indicator` | template node (TimelineIndicator) | `TimelineItemTheme.axaml` | TimelineItem | `IndicatorColor`, `IndicatorIcon`, `IsFirst`, `IsLast`, `NextIsPending`, `Orientation` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentPresenter` | template node (ContentPresenter) | `TimelineItemTheme.axaml` | TimelineItem | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Timeline` | control theme | `TimelineTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `CornerRadius`, `Padding`, `atom` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Frame` | template node (Border) | `TimelineTheme.axaml` | Timeline | `Background`, `BorderBrush`, `CornerRadius`, `Padding`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -10767,35 +10825,43 @@ Timeline
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `IndicatorIcon`、`PendingIcon` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `Mode` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsLabelLayout`、`IsOdd`、`IsReverse` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `IndicatorColor` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 内容与数据 | `Content`、`Label`、`IndicatorIcon`、`Pending`、`PendingIcon` | 定义单项内容、时间标签、节点图标和待处理节点入口。 |
+| 集合顺序 | `Items`、`ItemsSource`、`IsReverse` | 维护源顺序、最终视觉顺序和 Pending 项的相邻关系。 |
+| 方向与模式 | `Orientation`、`Mode` | 决定主轴方向以及内容位于轴线的 Start、End 或交替侧。 |
+| 内部派生状态 | `IsLabelLayout`、`IsOdd`、`IsFirst`、`IsLast`、`NextIsPending` | 由 Timeline 根据可见项视觉顺序单向投影到 Item 和模板。 |
+| 视觉与布局 | `IndicatorColor`、`IndicatorIcon` | 影响节点颜色、形状和轴线渲染。 |
 | 其他稳定入口 | `Label`、`Pending` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 ## Pseudo Classes
 
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Timeline Token + ControlTheme。 |
+| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | `IsReverse`、Pending 状态、可见项顺序和首尾节点状态。 |
+| 布局语义 | 主轴方向和内容相对轴线的位置如何组合。 | `Orientation` 决定主轴，`Mode` 决定交叉轴上的 `Start`、`End` 或交替布局。 |
+| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Timeline Token、方向 selector、Item 模板和 Indicator renderer。 |
 
 ## State Flow
 
 Timeline 的状态流按以下路径收敛：
 
 ```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
+Orientation / Mode / IsReverse / Items / item visibility
+  -> Timeline 计算可见项视觉顺序
+  -> item effective mode / order / first / last / pending adjacency
+  -> internal property / pseudo-class / template property
   -> ControlTheme selector / presenter / renderer
   -> Gallery 可观察行为
 ```
 
-状态维护规则：
+方向与模式的稳定语义：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+| Orientation | Mode | 无 Label | 存在 Label |
+| --- | --- | --- | --- |
+| `Vertical` | `Start` | 轴线位于逻辑起始侧，Content 位于结束侧。 | Label 位于起始侧，Content 位于结束侧。 |
+| `Vertical` | `End` | Content 位于逻辑起始侧，轴线位于结束侧。 | Content 位于起始侧，Label 位于结束侧。 |
+| `Horizontal` | `Start` | 轴线在上，Content 在下。 | Label 在上，Content 在下。 |
+| `Horizontal` | `End` | Content 在上，轴线在下。 | Content 在上，Label 在下。 |
+| 任意方向 | `Alternate` | 第一可见项为 Start，后续按 End、Start 交替。 | 使用同一交替规则，并保持所有节点共用同一轴线。 |
+
+`FlowDirection` 只影响垂直 Timeline 的逻辑起始侧和结束侧；水平 Timeline 的 Start/End 分别映射到下方和上方。`IsReverse` 只反转主轴视觉顺序，不交换 Start/End。隐藏项不占用布局槽位，也不参与交替奇偶、首尾和 Pending 相邻关系计算。
 
 ## Theme and Token Boundaries
 
@@ -10808,7 +10874,7 @@ Timeline 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `TimelineTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimelineThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Timeline 使用 `TimelineToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
+Timeline 使用 `TimelineToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载方向、Mode、视觉索引或 Pending 相邻状态。水平布局的内容间距优先使用 SharedToken；方向差异由 ControlTheme selector 和布局 Panel 表达。
 
 主题维护规则：
 
@@ -10819,7 +10885,7 @@ Timeline 使用 `TimelineToken` 作为组件 Token scope。Token 只表达组件
 
 Token 边界：
 
-Timeline Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
+Timeline Token 只表达节点、连接线和 Item 的组件级尺寸、间距与颜色。Token 不承载 Orientation、Mode、视觉索引、首尾、Reverse、Pending 邻接或其他实例运行时状态。
 
 当前 Token scope：
 
@@ -10830,7 +10896,11 @@ Timeline Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 维护 Timeline 时必须保持以下不变量：
 
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
+- `TimelineMode` 的稳定值为 `Start`、`End`、`Alternate`；不得重新引入 `Left`、`Right` 或重复值兼容别名。
+- `Orientation` 默认值保持 `Vertical`，`Mode` 默认值保持 `Start`。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
+- 不改变 Start/End、Alternate 首项、RTL、Reverse、隐藏项和 Pending 的既定组合语义。
+- 不为单个 TimelineItem 增加与 Timeline 全局 Mode 竞争的位置 owner。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
@@ -10841,17 +10911,22 @@ Timeline Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 
 维护 Timeline 时不得破坏：
 
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
+- `TimelineMode` 精确包含 Start、End、Alternate，不保留 Left/Right 或重复值别名。
+- Orientation 默认 Vertical，Mode 默认 Start。
+- 第一可见 Alternate Item 为 Start，Reverse 后仍按最终视觉顺序重新从 Start 计算。
+- 隐藏项不占水平槽位，不参与奇偶、首尾、Label 布局或 Pending 邻接计算。
+- 水平可见 Item 等宽、节点同轴、长文本项内换行且不创建内部水平滚动。
+- Vertical Start/End 遵循 FlowDirection；Horizontal Start/End 的下方/上方语义不受 RTL 交换。
 - Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- Item、Panel 和 Indicator 只能消费 AbstractTimeline 投影的状态，不能成为第二状态 owner。
+- Light/Dark、Browser/Desktop 和运行时方向切换下的主题一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/tooltip/semantic-cn.md
 
 # Tooltip 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10947,13 +11022,13 @@ Tooltip Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/tour/semantic-cn.md
 
 # Tour 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -10967,7 +11042,7 @@ Source: ./controls/tour/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml`
 
 ```xml
 <Popup Name="PART_Popup">
@@ -11135,13 +11210,13 @@ Tour Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/tree-view/semantic-cn.md
 
 # TreeView 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -11155,7 +11230,7 @@ Source: ./controls/tree-view/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/TreeView/Themes/TreeViewTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/TreeView/Themes/TreeViewTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -11445,7 +11520,7 @@ Source: ./controls/alert/semantic-cn.md
 
 # Alert 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -11459,7 +11534,7 @@ Source: ./controls/alert/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Alert/Themes/AlertTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Alert/Themes/AlertTheme.axaml`
 
 ```xml
 <PixelAlignedBorder>
@@ -11601,13 +11676,13 @@ Alert Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/drawer/semantic-cn.md
 
 # Drawer 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -11650,27 +11725,6 @@ Drawer
            -> Separator (template-stable)
            -> ContentPresenter#InfoFooter (internal-observable)
   -> Drawer (control theme, DrawerThemes.axaml)
-  -> FullscreenPopoverLayer (control theme, FullscreenPopoverLayerTheme.axaml)
-     -> Panel (template-stable)
-        -> Border#PART_PopoverBorder (template-stable)
-           -> WindowTitleBarLayoutPanel (template-stable)
-              -> Panel (template-stable)
-              -> StackPanel (template-stable)
-                 -> ContentPresenter#FullscreenLogoPresenter (internal-observable)
-                 -> TextBlock#FullscreenTitleText (template-stable)
-              -> StackPanel#FullscreenCaptionButtonGroup (template-stable)
-                 -> CaptionButton#PART_PopoverFullScreenButton (template-stable)
-                 -> CaptionButton#PART_PopoverCloseButton (template-stable)
-  -> WindowResizer (control theme, WindowResizerTheme.axaml)
-     -> Panel#PART_RootLayout (template-stable)
-        -> Border (template-stable)
-        -> Border (template-stable)
-        -> Border (template-stable)
-        -> Border (template-stable)
-        -> Border (template-stable)
-        -> Border (template-stable)
-        -> Border (template-stable)
-        -> Border (template-stable)
 ```
 
 ### 协作节点
@@ -11695,18 +11749,6 @@ Drawer
 | `InfoContainer` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InfoFooter` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Footer`, `FooterTemplate`, `HasFooter` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Drawer` | control theme | `DrawerThemes.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `FullscreenPopoverLayer` | control theme | `FullscreenPopoverLayerTheme.axaml` | Drawer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Panel` | template node (Panel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_PopoverBorder` | template node (Border) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `StackPanel` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `FullscreenLogoPresenter` | template node (ContentPresenter) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `FullscreenTitleText` | template node (TextBlock) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `FullscreenCaptionButtonGroup` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_PopoverFullScreenButton` | template node (CaptionButton) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_PopoverCloseButton` | template node (CaptionButton) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `WindowResizer` | control theme | `WindowResizerTheme.axaml` | Drawer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_RootLayout` | template node (Panel) | `WindowResizerTheme.axaml` | WindowResizer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -11792,13 +11834,13 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - Windows、Linux、macOS 以及 CSD/non-CSD 下使用同一 visible-frame 语义；平台差异只存在于 Window 如何发布 frame shadow 和 drawn host 能力。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/message/semantic-cn.md
 
 # Message 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -11922,13 +11964,13 @@ Message Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/modal/semantic-cn.md
 
 # Modal 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -11973,7 +12015,7 @@ Source: ./controls/modal/semantic-cn.md
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
 - 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
 - Overlay 与 Window 都等待 opening/closing motion；`IsMotionEnabled=false` 跳过 motion，但不跳过宿主打开、关闭和释放。
-- `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。
+- `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。Overlay handle 捕获 pointer，release 或 capture lost 都会完整结束当前 resize，不复用上一次拖拽 origin。
 
 ## Theme and Token Boundaries
 
@@ -12032,7 +12074,7 @@ Source: ./controls/notification/semantic-cn.md
 
 # Notification 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12166,13 +12208,13 @@ Notification Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/popup-confirm/semantic-cn.md
 
 # PopupConfirm 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12186,7 +12228,7 @@ Source: ./controls/popup-confirm/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmTheme.axaml`
 
 ```xml
 <ContentPresenter Name="PART_ContentPresenter" />
@@ -12311,13 +12353,13 @@ PopupConfirm Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/progress-bar/semantic-cn.md
 
 # ProgressBar 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12480,7 +12522,7 @@ Source: ./controls/result/semantic-cn.md
 
 # Result 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12494,7 +12536,7 @@ Source: ./controls/result/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Result/Themes/ResultTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Result/Themes/ResultTheme.axaml`
 
 ```xml
 <Border Name="Frame">
@@ -12620,13 +12662,13 @@ Result Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/skeleton/semantic-cn.md
 
 # Skeleton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12640,7 +12682,7 @@ Source: ./controls/skeleton/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonTheme.axaml`
 
 ```xml
 <Panel>
@@ -12810,13 +12852,13 @@ Skeleton Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/spin/semantic-cn.md
 
 # Spin 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12830,7 +12872,7 @@ Source: ./controls/spin/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Spin/Themes/SpinTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Spin/Themes/SpinTheme.axaml`
 
 ```xml
 <Panel Name="RootLayout">
@@ -12970,13 +13012,13 @@ Spin Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/splash/semantic-cn.md
 
 # Splash 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -12991,7 +13033,7 @@ Source: ./controls/splash/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashTheme.axaml`
 
 ```xml
 <Border Name="PART_RootLayout">
@@ -13169,13 +13211,13 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - `CloseAsync()` 幂等、最短展示时间、关闭延迟和引用释放路径。
 - Light/Dark、不同 DPI、不同平台窗口系统下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/watermark/semantic-cn.md
 
 # Watermark 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -13267,13 +13309,13 @@ Token 边界：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/window/semantic-cn.md
 
 # Window 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -13286,7 +13328,7 @@ Source: ./controls/window/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 
 ```xml
 <Panel>
@@ -13331,7 +13373,7 @@ Window
         -> Border#PART_PopoverBorder (template-stable)
            -> WindowTitleBarLayoutPanel (template-stable)
               -> Panel (template-stable)
-              -> StackPanel (template-stable)
+              -> DockPanel (template-stable)
                  -> ContentPresenter#FullscreenLogoPresenter (internal-observable)
                  -> TextBlock#FullscreenTitleText (template-stable)
               -> StackPanel#FullscreenCaptionButtonGroup (template-stable)
@@ -13406,7 +13448,7 @@ Window
 | `Panel` | template node (Panel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_PopoverBorder` | template node (Border) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `StackPanel` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DockPanel` | template node (DockPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FullscreenLogoPresenter` | template node (ContentPresenter) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `FullscreenTitleText` | template node (TextBlock) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FullscreenCaptionButtonGroup` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -13438,7 +13480,7 @@ Window
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 11 项 | 定义控件展示内容、输入数据、模板或业务对象入口；其中 `TitleBarFrameLayer` 是标题栏背景或装饰层，交互按钮、菜单、搜索框应通过自定义 `TitleBar` 承载。 |
+| 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn`、`RightAddOnTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 | 定义控件展示内容、输入数据、模板或业务对象入口；`LeftAddOn` 和 `RightAddOn` 用于默认标题栏中的交互内容，`TitleBarFrameLayer` 仍只表示标题栏背景或装饰层。 |
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
@@ -13467,7 +13509,7 @@ Public API / inherited command / item source / user input
 - open/close 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
-- 标题栏交互内容应由 `TitleBar` / `WindowTitleBar` 承载；`TitleBarFrameLayer` 只表达标题栏背景、遮罩或装饰视觉，不保证内部控件获得 pointer、focus、keyboard 或 command 事件。
+- 默认标题栏的交互内容通过 `LeftAddOn`、`RightAddOn` 及其模板属性承载；`TitleBarFrameLayer` 只表达标题栏背景、遮罩或装饰视觉，不保证内部控件获得 pointer、focus、keyboard 或 command 事件。
 
 ## Theme and Token Boundaries
 
@@ -13475,10 +13517,10 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `FullscreenPopoverLayerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `WindowDrawnDecorationsTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowResizerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
+| `FullscreenPopoverLayerTheme.axaml` | 定义 macOS 全屏标题栏 popover 的固定模板、caption buttons 和标题展示。 |
+| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
+| `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
+| `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
 | `WindowThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
@@ -13497,13 +13539,26 @@ Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定
 | 语义层 | 代表入口 | 职责 | 命中语义 |
 | --- | --- | --- | --- |
 | 标题栏背景/装饰层 | `TitleBarFrameBackground` / `TitleBarFrameLayer` / `TitleBarFrameLayerTemplate` | 提供标题栏背景、遮罩、纹理、圆角、裁剪或装饰视觉。 | 不作为用户交互入口；CSD 下可处于标题栏拖拽 role 中。 |
-| 默认标题栏层 | `TitleBar` / `WindowTitleBar` | 展示标题、Logo、caption buttons，并在空白区域提供窗口拖拽语义。 | 只处理标题栏默认交互和窗口操作。 |
-| 自定义标题栏层 | `TitleBar` | 承载用户自定义标题栏布局、按钮、菜单、搜索框或其他交互控件。 | 用户控件按普通 Avalonia client input 语义命中；空白区域由自定义标题栏自行决定是否保留拖拽。 |
+| 默认标题栏层 | `WindowTitleBar` | 展示标题、Logo、`LeftAddOn`、`RightAddOn` 与 caption buttons，并在空白区域提供窗口拖拽语义。 | add-on 与 caption buttons 按普通 Avalonia client input 语义命中；空白区域保留标题栏交互。 |
+| 自定义标题栏层 | `NotifyCreateTitleBar` / `NotifyConfigureTitleBar` 扩展点 | 承载需要替换默认标题栏组成或行为的派生窗口实现。 | 派生窗口负责其自定义标题栏的 client input 与空白区域拖拽策略。 |
 
-维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要在标题栏放置按钮、菜单或搜索框时，应创建自定义 `WindowTitleBar` 或其他标题栏控件，并设置到 `Window.TitleBar`。
+维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要向默认标题栏加入按钮、菜单或搜索框时，使用 `LeftAddOn` 或 `RightAddOn`；只有需要替换整个标题栏组成或行为时，才在派生 `Window` 中重写标题栏创建与配置扩展点。`Window.TitleBar` 是模板生命周期拥有的 internal 状态，不作为应用 API 公开。
 
 `Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，并把配置单向投影给默认或派生
-`WindowTitleBar`。Window 只提供平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+`WindowTitleBar`。`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 同样 add-owner 对应标题栏属性，并以 `Template` 优先级单向投影。派生标题栏以 local value 提供的内置操作区优先于 Window facade。Window 只提供内容、平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+
+默认标题栏的 add-on 可直接使用 AXAML 属性元素配置：
+
+```xml
+<atom:Window>
+  <atom:Window.LeftAddOn>
+    <Button Content="Back" />
+  </atom:Window.LeftAddOn>
+  <atom:Window.RightAddOn>
+    <Button Content="Settings" />
+  </atom:Window.RightAddOn>
+</atom:Window>
+```
 完整协作模型见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)。
 
 ### 5.2 跨平台首帧主题表面模型
@@ -13538,7 +13593,7 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
-- `TitleBarFrameLayer` 是标题栏背景/装饰入口，不是标题栏用户交互入口；标题栏按钮、菜单、搜索框等交互内容必须通过 `TitleBar` 承载。
+- `TitleBarFrameLayer` 是标题栏背景/装饰入口，不是标题栏用户交互入口；默认标题栏按钮、菜单、搜索框等交互内容必须通过 `LeftAddOn` 或 `RightAddOn` 承载。
 - Windows、macOS 和 Linux 共用同一套首次显示主题表面流程；平台可见前必须同步准备 ThemeContext、variant 和 Window Token 背景，正式显示后由 `WindowTheme` 单独持有长期主题状态。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
@@ -13556,13 +13611,13 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 所有桌面平台共用 Window 首次显示主题表面准备流程，`WindowTheme` 是显示完成后的唯一长期背景所有者。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 Source: ./controls/window-title-bar/semantic-cn.md
 
 # WindowTitleBar 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -13570,21 +13625,23 @@ Source: ./controls/window-title-bar/semantic-cn.md
 | --- | --- | --- | --- | --- | --- |
 | `root` | `WindowTitleBar` | 承载公共内容契约、平台状态和标题栏主题入口。 | `Logo`、`Title`、`TitleAlignment` | `Height`、`TitleBarPadding`、标题字体与颜色 | public |
 | `frame` | `Border#Frame` | 绘制标题栏背景并定义完整可见 frame。 | `Background`、`Padding` | `Height`、`TitleBarPadding` | template-stable |
-| `leading` | `ContentPresenter#PART_LeftAddOn` | 承载起始侧应用操作并占用标题安全空间。 | `LeftAddOn`、`LeftAddOnTemplate` | `HeaderHorizontalSpacing` | template-stable |
-| `title` | `PART_Logo` + `PART_ContentPresenter` | 将 Logo 与 Title 作为连续标题组展示、测量和裁剪。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`TitleTemplate` | `LogoSize`、`LogoAndTitleSpacing`、标题字体与颜色 | template-stable |
+| `leading` | Windows/Linux: `PART_Logo` + `PART_LeftAddOn`；macOS: `PART_LeftAddOn` | 承载起始侧应用操作并占用标题安全空间。Windows/Linux 中 Logo 是物理最左内容。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`LeftAddOn`、`LeftAddOnTemplate` | `LogoSize`、`HeaderHorizontalSpacing` | template-stable |
+| `title` | Windows/Linux: `PART_ContentPresenter`；macOS: `PART_Logo` + `PART_ContentPresenter` | 展示、测量、对齐和裁剪标题内容；macOS 同时保留 Logo/Title 连续标题组。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`TitleTemplate` | `LogoAndTitleSpacing`、标题字体与颜色 | template-stable |
 | `trailing` | `PART_RightAddOn` + `PART_CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 | `RightAddOn`、`RightAddOnTemplate`；Window caption 配置 | `HeaderHorizontalSpacing`、caption button 尺寸、间距与状态颜色 | template-stable |
 | `native-chrome` | 平台原生窗口按钮安全区 | 以逻辑像素 inset 约束标题安全空间，不进入 visual tree。 | 平台、CSD、WindowState | 不适用 | internal-observable |
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml`
 
 ```xml
 <Border Name="Frame">
     <WindowTitleBarLayoutPanel>
-        <ContentPresenter Name="PART_LeftAddOn" />
         <DockPanel>
             <ContentPresenter Name="PART_Logo" />
+            <ContentPresenter Name="PART_LeftAddOn" />
+        </DockPanel>
+        <DockPanel>
             <ContentPresenter Name="PART_ContentPresenter" />
         </DockPanel>
         <StackPanel>
@@ -13626,18 +13683,20 @@ WindowTitleBar
   -> WindowTitleBar (control theme, WindowTitleBarTheme.axaml)
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
-           -> ContentPresenter#PART_LeftAddOn (template-stable)
            -> DockPanel (template-stable)
               -> ContentPresenter#PART_Logo (template-stable)
+              -> ContentPresenter#PART_LeftAddOn (template-stable)
+           -> DockPanel (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
               -> ContentPresenter#PART_RightAddOn (template-stable)
               -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
-           -> ContentPresenter#PART_LeftAddOn (template-stable)
            -> DockPanel (template-stable)
               -> ContentPresenter#PART_Logo (template-stable)
+              -> ContentPresenter#PART_LeftAddOn (template-stable)
+           -> DockPanel (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
               -> ContentPresenter#PART_RightAddOn (template-stable)
@@ -13680,9 +13739,9 @@ WindowTitleBar
 | `WindowTitleBar` | control theme | `WindowTitleBarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Frame` | template node (Border) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Background`, `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate`, `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `LeftAddOn`, `LeftAddOnTemplate`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RightAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -13696,7 +13755,7 @@ WindowTitleBar
 | 节点 | 类型 | 契约 |
 | --- | --- | --- |
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
-| `PART_Logo` | `ContentPresenter` | 展示有效 Logo。 |
+| `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
 | `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
@@ -13775,7 +13834,7 @@ caption button 的公共配置属于宿主 `Window`：
 | 节点 | 类型 | 契约 |
 | --- | --- | --- |
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
-| `PART_Logo` | `ContentPresenter` | 展示有效 Logo。 |
+| `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
 | `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
@@ -13804,17 +13863,17 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 - `Auto` Logo 规则和标题对齐的显式枚举语义保持稳定。
 - `PART_CaptionButtonGroup`、内容 presenter 名称、ControlTheme key 和伪类保持稳定。
 - Title 内容不参与命中测试；add-on 和 caption buttons 保持可交互。
-- Logo 和 Title 始终作为连续 Title 组；add-on 不进入标题中心计算。
+- Windows/Linux 中 Logo 始终位于 Leading 最左侧并参与左侧安全空间；macOS 中 Logo 和 Title 作为连续 Title 组；add-on 不进入标题中心计算。
 - CSD 开关只改变 chrome metrics 来源和可见操作区，不改变显式标题对齐含义。
 - template reapply、逻辑树 detach 和窗口替换时释放旧订阅与 part handler。
 - 平台选择和 Token 发现不依赖运行时反射或程序集扫描。
 
 维护不变量：
 
-- `WindowTitleBar` 与 `Window.NotifyConfigureTitleBar` 的属性投影保持单向且完整。
+- `WindowTitleBar` 与 `Window.NotifyConfigureTitleBar` 的属性投影保持单向且完整；默认标题栏的 `LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 由 `Window` 的同名 public API 以 `Template` 优先级提供，派生标题栏 local add-on 不被覆盖。
 - `WindowTitleBar.OnApplyTemplate`、logical attach/detach 和 `CaptionButtonGroup.Attach/Detach` 始终成对释放。
 - 三个平台 ControlTemplate 保持相同语义角色、稳定 part 名称和平台 caption button 顺序。
-- Logo 与 Title 始终属于连续 Title 组；add-on 和 caption buttons 不进入标题中心计算。
+- Windows/Linux 的 Logo 始终位于 Leading 最左侧；macOS、ImagePreviewer 与全屏标题宿主可将图标与 Title 保持为连续 Title 组。无论图标位于哪个 role，标题对齐公式只读取 Leading、Title、Trailing 三个 direct role child 的实测宽度。
 - Leading/Trailing 为零宽时不产生操作区间距；add-on margin 只通过 `DesiredSize` 计入一次。
 - ImagePreviewer 与两个全屏标题宿主复用同一标题布局模型。
 - Title 不参与命中测试；add-on 与 caption buttons 保持可交互。
@@ -13824,7 +13883,7 @@ Source: ./controls/border-beam/semantic-cn.md
 
 # BorderBeam 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -13837,7 +13896,7 @@ Source: ./controls/border-beam/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-来源：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/src/AtomUI.Desktop.Controls/BorderBeam/Themes/BorderBeamTheme.axaml`
+来源：`src/AtomUI.Desktop.Controls/BorderBeam/Themes/BorderBeamTheme.axaml`
 
 ```xml
 <Grid>

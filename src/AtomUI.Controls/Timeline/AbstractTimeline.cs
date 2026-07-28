@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
+using Avalonia.Layout;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
@@ -11,7 +12,10 @@ public abstract class AbstractTimeline : ItemsControl
     #region 公共属性定义
 
     public static readonly StyledProperty<TimelineMode> ModeProperty =
-        AvaloniaProperty.Register<AbstractTimeline, TimelineMode>(nameof(Mode), TimelineMode.Left);
+        AvaloniaProperty.Register<AbstractTimeline, TimelineMode>(nameof(Mode), TimelineMode.Start);
+
+    public static readonly StyledProperty<Orientation> OrientationProperty =
+        StackPanel.OrientationProperty.AddOwner<AbstractTimeline>();
 
     public static readonly StyledProperty<object?> PendingProperty =
         AvaloniaProperty.Register<AbstractTimeline, object?>(nameof(Pending));
@@ -26,6 +30,12 @@ public abstract class AbstractTimeline : ItemsControl
     {
         get => GetValue(ModeProperty);
         set => SetValue(ModeProperty, value);
+    }
+
+    public Orientation Orientation
+    {
+        get => GetValue(OrientationProperty);
+        set => SetValue(OrientationProperty, value);
     }
 
     public object? Pending
@@ -50,14 +60,14 @@ public abstract class AbstractTimeline : ItemsControl
 
     #region 内部属性定义
 
-    internal WeakReference<AbstractTimelineItem>? PendingItemReference => _pendingItemReference;
     private WeakReference<AbstractTimelineItem>? _pendingItemReference;
 
     #endregion
 
     static AbstractTimeline()
     {
-        AffectsMeasure<AbstractTimeline>(ModeProperty);
+        OrientationProperty.OverrideDefaultValue<AbstractTimeline>(Orientation.Vertical);
+        AffectsMeasure<AbstractTimeline>(ModeProperty, OrientationProperty);
         AffectsArrange<AbstractTimeline>(IsReverseProperty);
     }
     
@@ -68,25 +78,7 @@ public abstract class AbstractTimeline : ItemsControl
 
     private void HandleItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        var isLabelLayout = false;
-        foreach (var item in LogicalChildren)
-        {
-            if (item is AbstractTimelineItem timelineItem)
-            {
-                if (timelineItem.Label is not null)
-                {
-                    isLabelLayout = true;
-                }
-            }
-        }
-
-        foreach (var item in LogicalChildren)
-        {
-            if (item is AbstractTimelineItem timelineItem)
-            {
-                timelineItem.IsLabelLayout = isLabelLayout;
-            }
-        }
+        CalculateItemsPositionInfo();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -128,6 +120,7 @@ public abstract class AbstractTimeline : ItemsControl
         base.PrepareContainerForItemOverride(element, item, index);
         if (element is AbstractTimelineItem timelineItem)
         {
+            timelineItem[!AbstractTimelineItem.OrientationProperty] = this[!OrientationProperty];
             timelineItem[!AbstractTimelineItem.ModeProperty]      = this[!ModeProperty];
             timelineItem[!AbstractTimelineItem.IsReverseProperty] = this[!IsReverseProperty];
         }
@@ -164,69 +157,59 @@ public abstract class AbstractTimeline : ItemsControl
 
     private void CalculateItemsPositionInfo()
     {
-        for (int i = 0, logicalIndex = 0; i < ItemCount; i++)
+        var visibleItems = new List<AbstractTimelineItem>();
+        for (var index = 0; index < ItemCount; index++)
         {
-            if (ContainerFromIndex(i) is AbstractTimelineItem timelineItem && timelineItem.IsVisible)
+            if (ContainerFromIndex(index) is not AbstractTimelineItem timelineItem)
             {
-                var idx = IsReverse ? ItemCount - 1 - logicalIndex : logicalIndex;
-                CalculateItemPositionInfo(timelineItem, idx);
-                logicalIndex++;
+                continue;
+            }
+
+            timelineItem.IsOdd         = false;
+            timelineItem.IsFirst       = false;
+            timelineItem.IsLast        = false;
+            timelineItem.IsLabelLayout = false;
+            timelineItem.NextIsPending = false;
+
+            if (timelineItem.IsVisible)
+            {
+                visibleItems.Add(timelineItem);
             }
         }
+
+        if (IsReverse)
+        {
+            visibleItems.Reverse();
+        }
+
+        var isLabelLayout = false;
+        foreach (var timelineItem in visibleItems)
+        {
+            if (timelineItem.Label is not null)
+            {
+                isLabelLayout = true;
+                break;
+            }
+        }
+
+        for (var index = 0; index < visibleItems.Count; index++)
+        {
+            var timelineItem = visibleItems[index];
+            timelineItem.IsOdd         = index % 2 != 0;
+            timelineItem.IsFirst       = index == 0;
+            timelineItem.IsLast        = index == visibleItems.Count - 1;
+            timelineItem.IsLabelLayout = isLabelLayout;
+        }
+
+        for (var index = 0; index < visibleItems.Count - 1; index++)
+        {
+            visibleItems[index].NextIsPending = visibleItems[index + 1].IsPending;
+        }
     }
-    
-    internal void CalculateItemPositionInfo(AbstractTimelineItem timelineItem, int index)
+
+    internal void NotifyItemLayoutChanged()
     {
-        timelineItem.IsOdd         = index % 2 != 0;
-        timelineItem.IsFirst       = index == 0;
-        timelineItem.IsLast        = index == GetVisibleItemsCount() - 1;
-        timelineItem.NextIsPending = false;
-        if (PendingItemReference != null && PendingItemReference.TryGetTarget(out var pendingItem))
-        {
-            if (timelineItem == pendingItem)
-            {
-                if (!IsReverse)
-                {
-                    var previousItemIndex = index - 1;
-                    while (previousItemIndex >= 0)
-                    {
-                        if (ContainerFromIndex(previousItemIndex) is AbstractTimelineItem previousItem && previousItem.IsVisible)
-                        {
-                            previousItem.NextIsPending = true;
-                            break;
-                        }
-
-                        previousItemIndex--;
-                    }
-                }
-                else
-                {
-                    var previousItemIndex = index + 1;
-                    while (previousItemIndex < ItemCount)
-                    {
-                        if (ContainerFromIndex(previousItemIndex) is AbstractTimelineItem previousItem && previousItem.IsVisible)
-                        {
-                            previousItem.NextIsPending = true;
-                            break;
-                        }
-
-                        previousItemIndex++;
-                    }
-                }
-            }
-        }
+        CalculateItemsPositionInfo();
     }
 
-    private int GetVisibleItemsCount()
-    {
-        var count = 0;
-        for (var i = 0; i < ItemCount; i++)
-        {
-            if (ContainerFromIndex(i) is AbstractTimelineItem previousItem && previousItem.IsVisible)
-            {
-                ++count;
-            }
-        }
-        return count;
-    }
 }

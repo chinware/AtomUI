@@ -1,6 +1,6 @@
 # ImagePreviewer 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -84,7 +84,7 @@ ImagePreviewer
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
-           -> StackPanel#PART_TitleLayout (template-stable)
+           -> DockPanel#PART_TitleLayout (template-stable)
               -> IconPresenter#PART_IconPresenter (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
@@ -93,7 +93,7 @@ ImagePreviewer
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
-           -> StackPanel#PART_TitleLayout (template-stable)
+           -> DockPanel#PART_TitleLayout (template-stable)
               -> IconPresenter#PART_IconPresenter (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
@@ -102,7 +102,7 @@ ImagePreviewer
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
-           -> StackPanel#PART_TitleLayout (template-stable)
+           -> DockPanel#PART_TitleLayout (template-stable)
               -> IconPresenter#PART_IconPresenter (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
            -> StackPanel (template-stable)
@@ -233,7 +233,9 @@ ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和�
 
 ImagePreviewer 使用 `ImagePreviewerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
 
-预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
+预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。预览 dialog 的 `TitleAlignment` 默认值覆盖为 `WindowCenter`，因此 Windows、Linux 和 macOS 都默认以完整窗口水平中心作为标题基准；显式设置 `TitleAlignment` 时仍通过 `ImagePreviewerTitleBar` 投射，并继续由 `WindowTitleBarLayoutPanel` 处理左右安全区裁剪。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
+
+预览 dialog 的图片查看层必须绘制与 dialog `Background` 一致的实心背景，用于覆盖 Windows CSD maximize/restore 期间可能短暂暴露的通用窗口 underlay 背景。窗口状态或尺寸变化期间，dialog 还会短暂关闭查看层的图片 transform/translate 过渡，避免外层窗口 resize 与内层图片居中动画叠加成闪动；overlay host 的查看层保持透明，由 overlay 模板自身背景承载遮罩语义。
 
 加载视觉遵循以下规则：
 
@@ -297,4 +299,4 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 - 预览标题图标的单一路径：`PreviewTitleIcon` 只能进入 `ImagePreviewerDialog.TitleIcon`，再绑定到 `ImagePreviewerTitleBar.Icon` 和 `PART_IconPresenter`；不得转接 `Window.Icon`、`Window.Logo` 或右侧扩展区域来表达标题图标。
 - 加载完成后必须重新计算 `ImageViewer` 的布局、居中、fit-to-window 和交互边界。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

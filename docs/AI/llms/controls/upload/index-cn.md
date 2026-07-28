@@ -1,6 +1,6 @@
 # Upload
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -238,7 +238,7 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 AOT 边界：
 
-- 不通过运行时反射扫描 public API、Token、Gallery API 表或上传模型。
+- 不通过运行时反射扫描 public API、Token、API 契约摘要或上传模型。
 - 新增 public 类型应显式引用并由源码、Gallery 和测试覆盖。
 - Source generator 生成文件不手工编辑；LLMS 产物也不在本次运行时代码任务中手工修改。
 

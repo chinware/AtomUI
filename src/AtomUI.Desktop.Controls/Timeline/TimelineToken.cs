@@ -57,14 +57,14 @@ internal class TimelineToken : AbstractControlDesignToken
     public double IndicatorDotSize { get; set; }
     
     /// <summary>
-    /// 指示器在最左边的外边距
+    /// 指示器在 Start 模式下的外边距
     /// </summary>
-    public Thickness IndicatorLeftModeMargin { get; set; }
+    public Thickness IndicatorStartModeMargin { get; set; }
     
     /// <summary>
-    /// 指示器在最右边的外边距
+    /// 指示器在 End 模式下的外边距
     /// </summary>
-    public Thickness IndicatorRightModeMargin { get; set; }
+    public Thickness IndicatorEndModeMargin { get; set; }
     
     /// <summary>
     /// 指示器在中间的外边距
@@ -87,8 +87,8 @@ internal class TimelineToken : AbstractControlDesignToken
         ItemPaddingBottom       = new Thickness(0, 0, 0, SharedToken.UniformlyPadding * 1.25);
         ItemPaddingBottomLG     = ItemPaddingBottom * 2;
         
-        IndicatorLeftModeMargin   = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
-        IndicatorRightModeMargin  = new Thickness(SharedToken.UniformlyMargin, 0, 0, 0);
+        IndicatorStartModeMargin  = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
+        IndicatorEndModeMargin    = new Thickness(SharedToken.UniformlyMargin, 0, 0, 0);
         IndicatorMiddleModeMargin = new Thickness(SharedToken.UniformlyMargin, 0);
 
         LastItemContentMinHeight = SharedToken.ControlHeightLG * 1.2;

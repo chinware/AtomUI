@@ -1,6 +1,6 @@
 # Splitter
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -235,7 +235,7 @@ Splitter Token 只表达组件级视觉变量，包括分割线尺寸、拖拽�
 
 资源边界：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - handle、drag bar、button 的事件订阅必须在模板重套用或 handle 移除时解绑。
 - `_trackedPanels` 中的面板属性订阅必须在面板离开时解绑。
@@ -249,7 +249,7 @@ Splitter Token 只表达组件级视觉变量，包括分割线尺寸、拖拽�
 
 AOT 边界：
 
-- Gallery API/Token 表不通过运行时反射生成。
+- API 与 Token 契约不通过运行时反射生成。
 - Source generator 生成文件不手工编辑。
 - 文档、Gallery 和源码发生冲突时，应修复源文档或结构化数据，不直接改 `docs/AI/llms` 生成产物。
 

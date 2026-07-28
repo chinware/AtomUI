@@ -1,6 +1,6 @@
 # WindowTitleBar
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -30,12 +30,12 @@
 
 | 语义 | 内容 | 责任 |
 | --- | --- | --- |
-| Leading | `LeftAddOn` | 承载靠近起始侧的应用操作，并占用标题安全空间。 |
-| Title | `Logo + Title` | 作为连续标题组测量、对齐和裁剪。 |
+| Leading | Windows/Linux: `Logo + LeftAddOn`；macOS: `LeftAddOn` | 承载靠近起始侧的应用操作，并占用标题安全空间。Windows/Linux 中可见 Logo 位于物理最左侧，先于 `LeftAddOn`。 |
+| Title | Windows/Linux: `Title`；macOS: `Logo + Title` | 承载标题内容并执行对齐和裁剪。macOS 保留连续 Logo/Title 标题组以配合原生窗口按钮安全区。 |
 | Trailing | `RightAddOn + CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 |
 | Native chrome | 平台原生窗口按钮或 overlay | 不进入 visual tree，通过窗口边缘安全区参与布局。 |
 
-三块 managed 区域与 native chrome 的完整几何关系由本文第 8 节和 [WindowTitleBar 实现原理](implementation.md) 定义。Logo 属于 Title，不属于 Leading；左右 add-on 属于操作区，不参与标题组中心计算。
+三块 managed 区域与 native chrome 的完整几何关系由本文第 8 节和 [WindowTitleBar 实现原理](implementation.md) 定义。Windows/Linux 的 Logo 属于 Leading，占用左侧操作安全空间；macOS 的 Logo 属于 Title，以保持平台标题行为。左右 add-on 属于操作区，不参与标题中心计算。
 
 控件家族的职责边界：
 
@@ -163,7 +163,7 @@ caption button 的公共配置属于宿主 `Window`：
 | 节点 | 类型 | 契约 |
 | --- | --- | --- |
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
-| `PART_Logo` | `ContentPresenter` | 展示有效 Logo。 |
+| `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
 | `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
@@ -202,8 +202,17 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 src/AtomUI.Desktop.Controls/
 ├── Window/
 │   ├── Window.cs
-│   ├── WindowChromeManager.cs
 │   ├── MacStandardWindowButtons.cs
+│   ├── Chrome/
+│   │   ├── WindowChromeManager.cs
+│   │   ├── AbstractLinuxWindowChromeManager.cs
+│   │   ├── GenericLinuxWindowChromeManager.cs
+│   │   ├── X11WindowChromeManager.cs
+│   │   ├── WaylandWindowChromeManager.cs
+│   │   └── WindowsWindowChromeManager.cs
+│   ├── Utils/
+│   │   ├── FullscreenPopoverLayer.cs
+│   │   └── WindowVisualLayerClip.cs
 │   └── Themes/
 │       ├── WindowTheme.axaml
 │       ├── WindowDrawnDecorationsTheme.axaml
@@ -236,8 +245,8 @@ src/AtomUI.Desktop.Controls/
 
 ## 相关文档
 
-- 源设计文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/overview.md`
-- 实现文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/implementation.md`
-- Token 文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/token.md`
-- 变更记录：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window-title-bar/changelog.md`
+- 源设计文档：`docs/controls/desktop/window/window-title-bar/overview.md`
+- 实现文档：`docs/controls/desktop/window/window-title-bar/implementation.md`
+- Token 文档：`docs/controls/desktop/window/window-title-bar/token.md`
+- 变更记录：`docs/controls/desktop/window/window-title-bar/changelog.md`
 - 语义结构：`./semantic-cn.md`

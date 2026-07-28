@@ -1,6 +1,6 @@
 # Upload 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -171,7 +171,7 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 不让视觉容器反向持有业务任务状态。
 - 不用延时、强制刷新或 suppression flag 掩盖状态不同步。
 - Template reapply、集合替换、remove、reset、detach 都必须释放旧订阅、取消运行任务和取消 pending auto-remove。
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 文档只描述当前目标设计；历史变化记录在 `changelog.md`。
 
 维护不变量：
@@ -185,4 +185,4 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `RemoveFileAsync`、`ResetAsync`、detach 必须释放上传任务、auto-remove delay、集合订阅和 container 绑定。
 - `DataValidationErrors` 是 error 状态来源，Upload 不维护独立 error 机制。
 - AXAML-first binding 是默认选择；C# binding 必须说明 AXAML 不能表达的原因和释放 owner。
-- Gallery 示例、API 表、控件文档和测试必须使用同一套 public contract。
+- Gallery 示例、控件文档和测试必须使用同一套 public contract。
