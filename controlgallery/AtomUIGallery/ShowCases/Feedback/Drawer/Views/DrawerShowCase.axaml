@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Drawer.DrawerShowCase"
              xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.Drawer"
              x:DataType="vm:DrawerViewModel">
@@ -137,6 +138,105 @@
                                         <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
                                         <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
                                     </StackPanel>
+                                </atom:Drawer>
+                            </Panel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource FormInDrawerTitle}"
+                                      Description="{gallery:DrawerShowCaseLangResource FormInDrawerDescription}"
+                                      IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:DrawerViewModel">
+                            <Panel>
+                                <atom:Button ButtonType="Primary"
+                                             Icon="{antdicons:AntDesignIconProvider Kind=PlusOutlined}"
+                                             Click="HandleOpenFormDrawer"
+                                             Content="{gallery:DrawerShowCaseLangResource P2ContentNewAccount}" />
+
+                                <atom:Drawer Name="FormDrawer"
+                                             Title="{gallery:DrawerShowCaseLangResource P2TitleCreateNewAccount}"
+                                             DialogSize="720"
+                                             ContentPadding="24,24,24,80">
+                                    <atom:Drawer.Extra>
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <atom:Button Click="HandleCloseFormDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentCancel}" />
+                                            <atom:Button ButtonType="Primary" Click="HandleCloseFormDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentSubmit}" />
+                                        </StackPanel>
+                                    </atom:Drawer.Extra>
+
+                                    <Grid ColumnDefinitions="*,*"
+                                          RowDefinitions="Auto,Auto"
+                                          ColumnSpacing="16">
+                                        <atom:Form FormLayout="Vertical"
+                                                   RequiredMark="Hidden"
+                                                   IsShowColon="False">
+                                            <atom:FormItem LabelText="{gallery:DrawerShowCaseLangResource P2LabelTextName}"
+                                                           FieldName="name"
+                                                           IsRequired="True">
+                                                <atom:LineEdit HorizontalAlignment="Stretch"
+                                                               PlaceholderText="{gallery:DrawerShowCaseLangResource P2PlaceholderTextPleaseEnterUserName}" />
+                                            </atom:FormItem>
+                                            <atom:FormItem LabelText="{gallery:DrawerShowCaseLangResource P2LabelTextOwner}"
+                                                           FieldName="owner"
+                                                           IsRequired="True">
+                                                <atom:Select HorizontalAlignment="Stretch"
+                                                             PlaceholderText="{gallery:DrawerShowCaseLangResource P2PlaceholderTextPleaseSelectOwner}"
+                                                             OptionsSource="{Binding AccountOwnerOptions}" />
+                                            </atom:FormItem>
+                                            <atom:FormItem LabelText="{gallery:DrawerShowCaseLangResource P2LabelTextApprover}"
+                                                           FieldName="approver"
+                                                           IsRequired="True">
+                                                <atom:Select HorizontalAlignment="Stretch"
+                                                             PlaceholderText="{gallery:DrawerShowCaseLangResource P2PlaceholderTextPleaseChooseApprover}"
+                                                             OptionsSource="{Binding AccountApproverOptions}" />
+                                            </atom:FormItem>
+                                        </atom:Form>
+
+                                        <atom:Form Grid.Column="1"
+                                                   FormLayout="Vertical"
+                                                   RequiredMark="Hidden"
+                                                   IsShowColon="False">
+                                            <atom:FormItem LabelText="{gallery:DrawerShowCaseLangResource P2LabelTextUrl}"
+                                                           FieldName="url"
+                                                           IsRequired="True">
+                                                <atom:LineEdit HorizontalAlignment="Stretch"
+                                                               LeftAddOn="http://"
+                                                               RightAddOn=".com"
+                                                               PlaceholderText="{gallery:DrawerShowCaseLangResource P2PlaceholderTextPleaseEnterUrl}" />
+                                            </atom:FormItem>
+                                            <atom:FormItem LabelText="{gallery:DrawerShowCaseLangResource P2LabelTextType}"
+                                                           FieldName="type"
+                                                           IsRequired="True">
+                                                <atom:Select HorizontalAlignment="Stretch"
+                                                             PlaceholderText="{gallery:DrawerShowCaseLangResource P2PlaceholderTextPleaseChooseType}"
+                                                             OptionsSource="{Binding AccountTypeOptions}" />
+                                            </atom:FormItem>
+                                            <atom:FormItem LabelText="{gallery:DrawerShowCaseLangResource P2LabelTextDateTime}"
+                                                           FieldName="dateTime"
+                                                           IsRequired="True">
+                                                <atom:RangeDatePicker HorizontalAlignment="Stretch"
+                                                                      PlaceholderText="{gallery:DrawerShowCaseLangResource P2PlaceholderTextStartDate}"
+                                                                      SecondaryPlaceholderText="{gallery:DrawerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
+                                            </atom:FormItem>
+                                        </atom:Form>
+
+                                        <atom:Form Grid.Row="1"
+                                                   Grid.ColumnSpan="2"
+                                                   Margin="0,12,0,0"
+                                                   FormLayout="Vertical"
+                                                   RequiredMark="Hidden"
+                                                   IsShowColon="False">
+                                            <atom:FormItem LabelText="{gallery:DrawerShowCaseLangResource P2LabelTextDescription}"
+                                                           FieldName="description"
+                                                           IsRequired="True">
+                                                <atom:TextArea Lines="4"
+                                                               HorizontalAlignment="Stretch"
+                                                               PlaceholderText="{gallery:DrawerShowCaseLangResource P2PlaceholderTextPleaseEnterUrlDescription}" />
+                                            </atom:FormItem>
+                                        </atom:Form>
+                                    </Grid>
                                 </atom:Drawer>
                             </Panel>
                         </DataTemplate>

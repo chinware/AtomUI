@@ -41,6 +41,30 @@ public class DrawerViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _customPlacement, value);
     }
 
+    private List<ISelectOption>? _accountOwnerOptions;
+
+    public List<ISelectOption>? AccountOwnerOptions
+    {
+        get => _accountOwnerOptions;
+        set => this.RaiseAndSetIfChanged(ref _accountOwnerOptions, value);
+    }
+
+    private List<ISelectOption>? _accountTypeOptions;
+
+    public List<ISelectOption>? AccountTypeOptions
+    {
+        get => _accountTypeOptions;
+        set => this.RaiseAndSetIfChanged(ref _accountTypeOptions, value);
+    }
+
+    private List<ISelectOption>? _accountApproverOptions;
+
+    public List<ISelectOption>? AccountApproverOptions
+    {
+        get => _accountApproverOptions;
+        set => this.RaiseAndSetIfChanged(ref _accountApproverOptions, value);
+    }
+
     public DrawerViewModel(IScreen screen)
     {
         HostScreen = screen;
