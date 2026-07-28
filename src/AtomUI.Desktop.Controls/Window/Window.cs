@@ -41,6 +41,18 @@ public partial class Window : AvaloniaWindow,
 
     public static readonly StyledProperty<WindowTitleBarTitleAlignment> TitleAlignmentProperty =
         WindowTitleBar.TitleAlignmentProperty.AddOwner<Window>();
+
+    public static readonly StyledProperty<object?> LeftAddOnProperty =
+        WindowTitleBar.LeftAddOnProperty.AddOwner<Window>();
+
+    public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
+        WindowTitleBar.LeftAddOnTemplateProperty.AddOwner<Window>();
+
+    public static readonly StyledProperty<object?> RightAddOnProperty =
+        WindowTitleBar.RightAddOnProperty.AddOwner<Window>();
+
+    public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
+        WindowTitleBar.RightAddOnTemplateProperty.AddOwner<Window>();
     
     public static readonly StyledProperty<bool> IsTitleBarVisibleProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsTitleBarVisible), defaultValue: true);
@@ -128,6 +140,32 @@ public partial class Window : AvaloniaWindow,
     {
         get => GetValue(TitleAlignmentProperty);
         set => SetValue(TitleAlignmentProperty, value);
+    }
+
+    [DependsOn(nameof(LeftAddOnTemplate))]
+    public object? LeftAddOn
+    {
+        get => GetValue(LeftAddOnProperty);
+        set => SetValue(LeftAddOnProperty, value);
+    }
+
+    public IDataTemplate? LeftAddOnTemplate
+    {
+        get => GetValue(LeftAddOnTemplateProperty);
+        set => SetValue(LeftAddOnTemplateProperty, value);
+    }
+
+    [DependsOn(nameof(RightAddOnTemplate))]
+    public object? RightAddOn
+    {
+        get => GetValue(RightAddOnProperty);
+        set => SetValue(RightAddOnProperty, value);
+    }
+
+    public IDataTemplate? RightAddOnTemplate
+    {
+        get => GetValue(RightAddOnTemplateProperty);
+        set => SetValue(RightAddOnTemplateProperty, value);
     }
     
     [DependsOn(nameof(WindowFrameLayerTemplate))]
@@ -398,6 +436,7 @@ public partial class Window : AvaloniaWindow,
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
+    private CompositeDisposable? _titleBarAddOnBindings;
     private IDisposable? _windowsCsdFrameThemeSubscription;
     private ThemeContextLease? _themeContextLease;
 
@@ -730,6 +769,8 @@ public partial class Window : AvaloniaWindow,
 
     private void HandleCreateTitleBar()
     {
+        _titleBarAddOnBindings?.Dispose();
+        _titleBarAddOnBindings = null;
         if (_titleBar != null)
         {
             _titleBar.MaximizeWindowRequested -= HandleTitleDoubleClicked;
@@ -877,9 +918,34 @@ public partial class Window : AvaloniaWindow,
         titleBar[!WindowTitleBar.LogoTemplateProperty]   = this[!LogoTemplateProperty];
         titleBar[!WindowTitleBar.LogoVisibilityProperty] = this[!LogoVisibilityProperty];
         titleBar[!WindowTitleBar.TitleAlignmentProperty] = this[!TitleAlignmentProperty];
+        ConfigureTitleBarAddOnBindings(titleBar);
         titleBar[!WindowTitleBar.NativeChromeInsetsProperty] = this[!NativeChromeInsetsProperty];
         titleBar[!WindowTitleBar.IsCsdEnabledProperty] = this[!IsCsdEnabledProperty];
         titleBar[!WindowTitleBar.HostWindowStateProperty] = this[!WindowStateProperty];
+    }
+
+    private void ConfigureTitleBarAddOnBindings(WindowTitleBar titleBar)
+    {
+        _titleBarAddOnBindings?.Dispose();
+        _titleBarAddOnBindings = new CompositeDisposable
+        {
+            titleBar.Bind(
+                WindowTitleBar.LeftAddOnProperty,
+                this.GetObservable(LeftAddOnProperty),
+                BindingPriority.Template),
+            titleBar.Bind(
+                WindowTitleBar.LeftAddOnTemplateProperty,
+                this.GetObservable(LeftAddOnTemplateProperty),
+                BindingPriority.Template),
+            titleBar.Bind(
+                WindowTitleBar.RightAddOnProperty,
+                this.GetObservable(RightAddOnProperty),
+                BindingPriority.Template),
+            titleBar.Bind(
+                WindowTitleBar.RightAddOnTemplateProperty,
+                this.GetObservable(RightAddOnTemplateProperty),
+                BindingPriority.Template)
+        };
     }
 
     protected virtual WindowTitleBar? NotifyCreateTitleBar(WindowTitleBar? oldTitleBar)

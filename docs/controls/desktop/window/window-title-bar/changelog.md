@@ -2,6 +2,13 @@
 
 本文档记录 WindowTitleBar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-28
+
+- Integration
+  - Project the existing left and right add-on content and template properties from the default `Window` facade.
+- Docs
+  - Clarify default Window ownership and preserve `WindowTitleBar` layout and interaction responsibilities.
+
 ## 2026-07-23
 
 - Theme
