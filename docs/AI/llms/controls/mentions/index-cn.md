@@ -1,6 +1,6 @@
 # Mentions
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -297,7 +297,7 @@ Mentions 不依赖运行时反射发现模板结构。模板协作通过固定 t
 AOT 边界：
 
 - `MentionsToken` 通过 token generator 显式注册，生成 `MentionsTokenKind` 和 `MentionsTokenResourceExtension`。
-- Gallery API / Token 表使用显式 ViewModel 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - `OptionTemplate` 和 `EmptyIndicatorTemplate` 是 XAML 模板入口，不依赖运行时成员扫描。
 
 ## 源码索引

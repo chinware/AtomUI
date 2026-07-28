@@ -1,6 +1,6 @@
 # TreeSelect
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -94,7 +94,7 @@ TreeSelect 继承 `AbstractSelect` 的输入壳体、弹层、清除、状态、
 
 ## 事件与命令
 
-TreeSelect 的事件与命令以公共 API、Avalonia 基类契约和 Gallery API 表为准；生成器不从源码发明额外事件。
+TreeSelect 的事件与命令以控件文档、源码 public surface 和 Avalonia 基类契约为准；生成器不从源码发明额外事件。
 
 ## 使用示例
 
@@ -268,7 +268,7 @@ AOT 边界：
 
 - `TreeSelectToken` 通过 token generator 显式注册，生成 `TreeSelectTokenKind` 和 `TreeSelectTokenResourceExtension`。
 - `ItemTemplate` 是 XAML 模板入口，不依赖运行时成员扫描。
-- Gallery API / Token 表使用显式 ViewModel 数据。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 
 ## 源码索引
 

@@ -1,6 +1,6 @@
 # OtpLineEdit
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -327,7 +327,7 @@ AOT 边界：
 
 - 不通过运行时反射扫描 public API、template part 或 token。
 - Token 类型通过 generator 显式注册。
-- Gallery API / Token 表使用显式 view model 数据或源码生成路径，不依赖 NativeAOT 不友好的运行时成员扫描。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护，不依赖 NativeAOT 不友好的运行时成员扫描。
 - separator template 和 formatter 不依赖运行时动态类型发现。
 
 ## 源码索引

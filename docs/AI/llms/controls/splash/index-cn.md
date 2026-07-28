@@ -1,6 +1,6 @@
 # Splash
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -81,7 +81,7 @@ Splash 的公共契约由视觉控件、启动窗口、实例服务、静态便�
 
 ## 事件与命令
 
-Splash 的事件与命令以公共 API、Avalonia 基类契约和 Gallery API 表为准；生成器不从源码发明额外事件。
+Splash 的事件与命令以控件文档、源码 public surface 和 Avalonia 基类契约为准；生成器不从源码发明额外事件。
 
 ## 使用示例
 
@@ -306,7 +306,7 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 
 资源和 AOT 约束：
 
-- 不通过运行时反射扫描 public API、Token、服务或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token、服务或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 不为模板稳定节点之间的 token 资源关系创建 `TokenResourceBinder` 桥接；`PART_SurfaceHost` 和 `Splash` 内部模板应通过相同的资源树解析 `SplashTokenResource`。
 - 窗口级视觉覆盖写入 `SplashWindow.Resources`，确保 `PART_SurfaceHost` 与 `Splash` 内部模板都能解析；`Splash.Resources` 只用于仅影响 Splash 内部模板的覆盖。
@@ -349,7 +349,7 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 - `SplashService.cs` 是启动编排 owner，负责创建窗口、创建或复用 `Splash` 实例、应用运行时 options、更新状态、关闭窗口和 UI thread 调度。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 
 ## 相关文档
 

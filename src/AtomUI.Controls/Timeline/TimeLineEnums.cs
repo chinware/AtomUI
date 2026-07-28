@@ -2,7 +2,7 @@ namespace AtomUI.Controls;
 
 public enum TimelineMode
 {
-    Left,
-    Right,
+    Start,
+    End,
     Alternate
 }

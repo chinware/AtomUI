@@ -1,6 +1,6 @@
 # LineEdit
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -266,7 +266,7 @@ LineEdit 家族不依赖运行时反射发现模板结构。跨模板协作通�
 AOT 边界：
 
 - Token 类型通过 generator 显式注册。
-- Gallery API / Token 表使用显式 view model 数据，不依赖运行时反射扫描控件成员。
+- API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护，不依赖运行时反射扫描。
 - 文档中描述的 template part 名称应与 AXAML 和 C# 查找代码保持一致。
 
 ## 源码索引

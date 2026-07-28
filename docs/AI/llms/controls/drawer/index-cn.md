@@ -1,6 +1,6 @@
 # Drawer
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -77,7 +77,7 @@ Drawer 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:39`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:40`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -98,7 +98,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 多层抽屉
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:59`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:60`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -144,7 +144,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 额外区域和页脚
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:104`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:105`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -191,9 +191,9 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 无遮罩
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:149`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:249`
 
-Gallery key：`ExamplesContent` / item `3`
+Gallery key：`ExamplesContent` / item `4`
 
 ```axaml
 <Panel>
@@ -228,6 +228,8 @@ Public API / inherited command / item source / user input
 - open/close、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- TopLevel Drawer 使用 Window visible frame：包含 managed/drawn 标题栏，排除透明 frame shadow；该规则不按 OS 或 CSD 模式分叉。
+- drawn decorations 暴露 Drawer host 时按能力优先使用；host 不存在时回退到原 `ScopeAwareAdornerLayer`。
 
 ## 主题与 Design Token
 
@@ -260,7 +262,7 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 资源和 AOT 约束：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
@@ -281,6 +283,9 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerInfoContainer.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerPlacement.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerToken.cs`
+- `src/AtomUI.Desktop.Controls/Primitives/TopLevelMarginBinder.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowVisualLayerClip.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerContainerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerInfoContainerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerThemes.axaml`
@@ -290,7 +295,7 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 
 ## 相关文档
 

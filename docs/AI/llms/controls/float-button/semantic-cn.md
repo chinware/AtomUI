@@ -1,6 +1,6 @@
 # FloatButton 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -168,4 +168,4 @@ FloatButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - Group 子按钮的命令绑定必须能继承 host `DataContext`，同时保留子项本地 `DataContext` 的优先级。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 文档、Gallery API 表、Token 表与源码契约的一致性。
+- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

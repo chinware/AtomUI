@@ -1,6 +1,6 @@
 # Splitter 语义结构
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## Semantic Parts
 
@@ -151,7 +151,7 @@ Splitter Token 只表达组件级视觉变量，包括分割线尺寸、拖拽�
 - 不删除或重命名 `PART_SplitterPanel`，也不随意重命名 internal handle template part。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - 不通过延迟刷新、吞异常或特殊 Gallery 判断掩盖布局状态问题。
-- 不引入运行时反射扫描作为 API、Token 或 Gallery 表发现机制。
+- 不引入运行时反射扫描作为 API、Token 或 Gallery 示例发现机制。
 - 文档只描述当前稳定设计和维护规则；历史变化记录在 `changelog.md`。
 
 维护不变量：
@@ -163,7 +163,7 @@ Splitter Token 只表达组件级视觉变量，包括分割线尺寸、拖拽�
 - `SplitterPanel` 作为尺寸与折叠状态 owner 的语义。
 - internal handle template part 的绑定关系和事件释放路径。
 - Light/Dark、Browser/Desktop 和不同方向下的主题一致性。
-- Gallery API 表、Token 表、ShowCase 示例和控件文档的一致性。
+- API 契约摘要、Token 语义、ShowCase 示例和控件文档的一致性。
 
 新增分割线样式能力时必须遵守：
 
@@ -171,4 +171,4 @@ Splitter Token 只表达组件级视觉变量，包括分割线尺寸、拖拽�
 - `LineThickness` 不替代 `HandleSize`。
 - `LineCornerRadius` 同时作用于 `PART_HandleLine` 和 `PART_Grip`。
 - 默认值来自 Splitter Token 或 SharedToken，保证现有视觉不变。
-- Gallery API 表、Token 表、ShowCase 示例和回归测试同步更新。
+- API 契约摘要、Token 语义、ShowCase 示例和回归测试同步更新。

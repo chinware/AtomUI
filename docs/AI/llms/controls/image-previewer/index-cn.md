@@ -1,6 +1,6 @@
 # ImagePreviewer
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -197,7 +197,9 @@ ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和�
 
 ImagePreviewer 使用 `ImagePreviewerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
 
-预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
+预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。预览 dialog 的 `TitleAlignment` 默认值覆盖为 `WindowCenter`，因此 Windows、Linux 和 macOS 都默认以完整窗口水平中心作为标题基准；显式设置 `TitleAlignment` 时仍通过 `ImagePreviewerTitleBar` 投射，并继续由 `WindowTitleBarLayoutPanel` 处理左右安全区裁剪。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
+
+预览 dialog 的图片查看层必须绘制与 dialog `Background` 一致的实心背景，用于覆盖 Windows CSD maximize/restore 期间可能短暂暴露的通用窗口 underlay 背景。窗口状态或尺寸变化期间，dialog 还会短暂关闭查看层的图片 transform/translate 过渡，避免外层窗口 resize 与内层图片居中动画叠加成闪动；overlay host 的查看层保持透明，由 overlay 模板自身背景承载遮罩语义。
 
 加载视觉遵循以下规则：
 
@@ -227,7 +229,7 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 
 资源和 AOT 约束：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 网络图片必须通过异步加载服务处理，不允许在 UI 线程同步等待网络 I/O。
@@ -263,7 +265,7 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 - 图片源模型文件只表达 `IImagePreviewSource`、`IImagePreviewSourceIdentity`、`UriImagePreviewSource`、`StreamImagePreviewSource`、`ImageSourceUri`、`ImagePreviewItem`、`LoadedImageSource`、加载调度器和加载服务契约，不承载视觉模板逻辑。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 
 ## 相关文档
 

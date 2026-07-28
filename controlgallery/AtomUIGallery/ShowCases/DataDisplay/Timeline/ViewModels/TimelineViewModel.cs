@@ -17,7 +17,7 @@ public class TimelineViewModel : ReactiveObject, IRoutableViewModel
     public string UrlPathSegment { get; } = ID.ToString();
 
     private bool _reverseTimelineIsReverse;
-    private TimelineMode _selectedTimelineMode = TimelineMode.Left;
+    private TimelineMode _selectedTimelineMode = TimelineMode.Start;
 
     public bool ReverseTimelineIsReverse
     {

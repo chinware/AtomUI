@@ -1,6 +1,6 @@
 # Window
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -41,7 +41,7 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 11 项 | 定义控件展示内容、输入数据、模板或业务对象入口；其中 `TitleBarFrameLayer` 是标题栏背景或装饰层，交互按钮、菜单、搜索框应通过自定义 `TitleBar` 承载。 |
+| 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn`、`RightAddOnTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 | 定义控件展示内容、输入数据、模板或业务对象入口；`LeftAddOn` 和 `RightAddOn` 用于默认标题栏中的交互内容，`TitleBarFrameLayer` 仍只表示标题栏背景或装饰层。 |
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
@@ -49,10 +49,13 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
-主要公开类型与枚举：
+主要 public 类型与枚举：
 
-- 类型：`FullscreenPopoverLayer`、`MacStandardWindowButtons`、`ReactiveWindow`、`Window`、`WindowResizer`。
+- 类型：`Window`、`ReactiveWindow<TViewModel>`、`MacStandardWindowButtons`。
 - 枚举：无。
+
+Window 模板还使用 `FullscreenPopoverLayer`、`WindowResizer`、`WindowVisualLayerClip` 等 internal
+协作类型。它们会影响主题和可观察窗口行为，但不是用户可直接依赖的 public API。
 
 稳定 template part：
 
@@ -106,7 +109,7 @@ Public API / inherited command / item source / user input
 - open/close 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
-- 标题栏交互内容应由 `TitleBar` / `WindowTitleBar` 承载；`TitleBarFrameLayer` 只表达标题栏背景、遮罩或装饰视觉，不保证内部控件获得 pointer、focus、keyboard 或 command 事件。
+- 默认标题栏的交互内容通过 `LeftAddOn`、`RightAddOn` 及其模板属性承载；`TitleBarFrameLayer` 只表达标题栏背景、遮罩或装饰视觉，不保证内部控件获得 pointer、focus、keyboard 或 command 事件。
 
 ## 主题与 Design Token
 
@@ -114,10 +117,10 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `FullscreenPopoverLayerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `WindowDrawnDecorationsTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowResizerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `WindowTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
+| `FullscreenPopoverLayerTheme.axaml` | 定义 macOS 全屏标题栏 popover 的固定模板、caption buttons 和标题展示。 |
+| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
+| `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
+| `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
 | `WindowThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
@@ -136,13 +139,26 @@ Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定
 | 语义层 | 代表入口 | 职责 | 命中语义 |
 | --- | --- | --- | --- |
 | 标题栏背景/装饰层 | `TitleBarFrameBackground` / `TitleBarFrameLayer` / `TitleBarFrameLayerTemplate` | 提供标题栏背景、遮罩、纹理、圆角、裁剪或装饰视觉。 | 不作为用户交互入口；CSD 下可处于标题栏拖拽 role 中。 |
-| 默认标题栏层 | `TitleBar` / `WindowTitleBar` | 展示标题、Logo、caption buttons，并在空白区域提供窗口拖拽语义。 | 只处理标题栏默认交互和窗口操作。 |
-| 自定义标题栏层 | `TitleBar` | 承载用户自定义标题栏布局、按钮、菜单、搜索框或其他交互控件。 | 用户控件按普通 Avalonia client input 语义命中；空白区域由自定义标题栏自行决定是否保留拖拽。 |
+| 默认标题栏层 | `WindowTitleBar` | 展示标题、Logo、`LeftAddOn`、`RightAddOn` 与 caption buttons，并在空白区域提供窗口拖拽语义。 | add-on 与 caption buttons 按普通 Avalonia client input 语义命中；空白区域保留标题栏交互。 |
+| 自定义标题栏层 | `NotifyCreateTitleBar` / `NotifyConfigureTitleBar` 扩展点 | 承载需要替换默认标题栏组成或行为的派生窗口实现。 | 派生窗口负责其自定义标题栏的 client input 与空白区域拖拽策略。 |
 
-维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要在标题栏放置按钮、菜单或搜索框时，应创建自定义 `WindowTitleBar` 或其他标题栏控件，并设置到 `Window.TitleBar`。
+维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要向默认标题栏加入按钮、菜单或搜索框时，使用 `LeftAddOn` 或 `RightAddOn`；只有需要替换整个标题栏组成或行为时，才在派生 `Window` 中重写标题栏创建与配置扩展点。`Window.TitleBar` 是模板生命周期拥有的 internal 状态，不作为应用 API 公开。
 
 `Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，并把配置单向投影给默认或派生
-`WindowTitleBar`。Window 只提供平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+`WindowTitleBar`。`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 同样 add-owner 对应标题栏属性，并以 `Template` 优先级单向投影。派生标题栏以 local value 提供的内置操作区优先于 Window facade。Window 只提供内容、平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+
+默认标题栏的 add-on 可直接使用 AXAML 属性元素配置：
+
+```xml
+<atom:Window>
+  <atom:Window.LeftAddOn>
+    <Button Content="Back" />
+  </atom:Window.LeftAddOn>
+  <atom:Window.RightAddOn>
+    <Button Content="Settings" />
+  </atom:Window.RightAddOn>
+</atom:Window>
+```
 完整协作模型见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)。
 
 ### 5.2 跨平台首帧主题表面模型
@@ -174,7 +190,7 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 资源和 AOT 约束：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
@@ -191,8 +207,12 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/Window/FullscreenPopoverLayer.cs`
-- `src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/WindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/AbstractLinuxWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/GenericLinuxWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/X11WindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs`
+- `src/AtomUI.Desktop.Controls/Window/Chrome/WindowsWindowChromeManager.cs`
 - `src/AtomUI.Desktop.Controls/Window/MacStandardWindowButtons.cs`
 - `src/AtomUI.Desktop.Controls/Window/MediaBreakPointThemeBootstrapper.cs`
 - `src/AtomUI.Desktop.Controls/Window/ReactiveWindow.cs`
@@ -202,22 +222,32 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.cs`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowThemes.axaml`
+- `src/AtomUI.Desktop.Controls/Window/Utils/FullscreenPopoverLayer.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowResizer.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowTitleBarShadowBackground.cs`
+- `src/AtomUI.Desktop.Controls/Window/Utils/WindowVisualLayerClip.cs`
 - `src/AtomUI.Desktop.Controls/Window/Window.cs`
-- `src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs`
-- `src/AtomUI.Desktop.Controls/Window/WindowResizer.cs`
 - `src/AtomUI.Desktop.Controls/Window/WindowToken.cs`
+- `src/AtomUI.Native/WindowExtensions.cs`
+- `src/AtomUI.Native/Linux/WaylandWindowReflectionExtensions.cs`
+- `src/AtomUI.Native/Linux/WaylandWindowUtils.cs`
+- `src/AtomUI.Native/Linux/WindowUtils.Linux.cs`
 
 职责边界：
 
 - 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
+- `Window/Chrome` 只承载平台 chrome manager：选择后端、订阅 Window/PlatformImpl 事件、合并 frame geometry 更新，并把 X11、Wayland、Windows 的原生能力投影为 Window 内部状态。
+- `Window/Utils` 承载 Window 模板内部视觉 helper 和 Desktop drawn decorations 反射边界，例如 visible frame clip、managed resize grip、macOS 全屏 popover 与 `DynamicDependency` 标注；这些类型是 internal 协作对象，不是用户 API。
+- `AtomUI.Native` 只执行已经确定后端之后的底层平台调用，例如 XCB input region、Xlib geometry、Wayland `wl_surface.set_input_region`。X11 shadow 输入区订阅策略和 resize band 仍属于 `X11WindowChromeManager`，不下沉到 Native。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 
 ## 相关文档
 
-- 源设计文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/overview.md`
-- 实现文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/implementation.md`
-- Token 文档：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/token.md`
-- 变更记录：`../../../Users/chinboy/Projects/dotnet/AtomUIV6/docs/controls/desktop/window/window/changelog.md`
+- 源设计文档：`docs/controls/desktop/window/window/overview.md`
+- 实现文档：`docs/controls/desktop/window/window/implementation.md`
+- Token 文档：`docs/controls/desktop/window/window/token.md`
+- 变更记录：`docs/controls/desktop/window/window/changelog.md`
 - 语义结构：`./semantic-cn.md`

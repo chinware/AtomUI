@@ -25,6 +25,7 @@
                             <ItemsPresenter.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <atomc:TimelineStackPanel
+                                        Orientation="{Binding Orientation, RelativeSource={RelativeSource AncestorType=atom:Timeline}}"
                                         IsReverse="{Binding IsReverse, RelativeSource={RelativeSource AncestorType=atom:Timeline}}" />
                                 </ItemsPanelTemplate>
                             </ItemsPresenter.ItemsPanel>

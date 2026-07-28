@@ -13,10 +13,10 @@ internal partial class zh_CN
     public const string LastNodeAndReversingDescription = "当时间轴未完成且仍在进行时，可在最后放置一个待处理节点。将 Pending 设置为有效值可显示待处理项；也可以自定义待处理内容和待处理图标。IsReverse 用于反转节点。";
     public const string AlternateTitle = "交替展示";
     public const string AlternateDescription = "交替展示的时间轴。";
-    public const string LabelTitle = "标签";
-    public const string LabelDescription = "使用 label 单独显示时间。";
-    public const string RightAlternateTitle = "右侧交替展示";
-    public const string RightAlternateDescription = "右侧交替展示的时间轴。";
+    public const string DynamicModeTitle = "动态模式";
+    public const string DynamicModeDescription = "运行时切换 Start、End 和 Alternate 布局。";
+    public const string HorizontalTitle = "水平方向";
+    public const string HorizontalDescription = "水平时间轴支持 Start、End 和 Alternate 三种布局。";
     public const string P2ContentN2024N01N01AtomuiOfficiallyInitiated = "2024-01-01 AtomUI 正式启动";
     public const string P2ContentN2024N08N12AfterMoreThanN7Months = "2024-08-12 经过 7 个多月的开发，AtomUI 正式开源。欢迎大家关注我们。";
     public const string P2ContentN2024N10N01ReleaseOfTheN0N0 = "2024-10-01 发布 0.0.1 预览版";
@@ -25,8 +25,8 @@ internal partial class zh_CN
     public const string P2ContentN2024N01N01AtomuiOfficiallyInitiatedN3 = "2024-01-01 AtomUI 正式启动。3";
     public const string P2ContentToggleReverse = "切换反转";
     public const string P2ContentRecording = "记录中...";
-    public const string P2ContentLeft = "左侧";
-    public const string P2ContentRight = "右侧";
+    public const string P2ContentStart = "起始";
+    public const string P2ContentEnd = "结束";
     public const string P2ContentAlternate = "交替";
     public const string P2ContentAtomuiOfficiallyInitiated = "AtomUI 正式启动";
     public const string P2ContentCreateAServicesSite = "创建服务站点";

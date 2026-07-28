@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -45,6 +46,9 @@ public abstract class AbstractTimelineItem : ContentControl
     #endregion
 
     #region 内部属性定义
+
+    internal static readonly StyledProperty<Orientation> OrientationProperty =
+        AbstractTimeline.OrientationProperty.AddOwner<AbstractTimelineItem>();
     
     internal static readonly DirectProperty<AbstractTimelineItem, TimelineMode> ModeProperty = 
         AvaloniaProperty.RegisterDirect<AbstractTimelineItem, TimelineMode>(nameof(Mode), 
@@ -86,7 +90,13 @@ public abstract class AbstractTimelineItem : ContentControl
             o => o.IsLabelLayout,
             (o, v) => o.IsLabelLayout = v);
         
-    private TimelineMode _mode = TimelineMode.Left;
+    internal Orientation Orientation
+    {
+        get => GetValue(OrientationProperty);
+        set => SetValue(OrientationProperty, value);
+    }
+
+    private TimelineMode _mode = TimelineMode.Start;
 
     internal TimelineMode Mode
     {
@@ -154,7 +164,7 @@ public abstract class AbstractTimelineItem : ContentControl
 
     static AbstractTimelineItem()
     {
-        AffectsArrange<AbstractTimelineItem>(ModeProperty);
+        AffectsArrange<AbstractTimelineItem>(ModeProperty, OrientationProperty);
         AffectsMeasure<AbstractTimelineItem>(IsReverseProperty);
     }
 
@@ -173,6 +183,12 @@ public abstract class AbstractTimelineItem : ContentControl
             change.Property == IsPendingProperty)
         {
             UpdatePseudoClasses();
+        }
+
+        if ((change.Property == IsVisibleProperty || change.Property == LabelProperty) &&
+            Parent is AbstractTimeline timeline)
+        {
+            timeline.NotifyItemLayoutChanged();
         }
     }
 

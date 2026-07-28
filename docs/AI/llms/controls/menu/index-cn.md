@@ -1,6 +1,6 @@
 # Menu
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -42,7 +42,7 @@ Menu 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `Items`、`MenuItem`、`MenuItemData`、`MenuSeparatorData` | 定义菜单项集合、数据驱动菜单项和分割项入口。 |
-| 选择与集合 | `DisplayPageSize` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `DisplayPageSize`、`IsScrollEnabled` | 维护弹层显示页数上限、滚动开关、选择、展开和集合状态。 |
 | 交互与状态 | `IsMotionEnabled`、`ShouldUseOverlayPopup` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `LineWidth`、`Orientation`、`OverlayHostShadow`、`PopupRootShadow`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `CloseMotion`、`MotionDuration`、`OpenMotion` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
@@ -51,7 +51,7 @@ Menu 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 主要公开类型与枚举：
 
-- 类型：`ContextMenu`、`DefaultMenuInteractionHandler`、`Menu`、`MenuItem`、`MenuItemData`、`MenuSeparator`、`MenuSeparatorData`、`ToggleItemsLayoutVisibleConverter`。
+- 类型：`ContextMenu`、`DefaultMenuInteractionHandler`、`FlyoutMenuItemClickedEventArgs`、`Menu`、`MenuFlyout`、`MenuFlyoutPresenter`、`MenuItem`、`MenuItemData`、`MenuSeparator`、`MenuSeparatorData`、`ToggleItemsLayoutVisibleConverter`。
 - 枚举：无。
 
 稳定 template part：
@@ -69,6 +69,7 @@ Menu 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 Menu 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
 稳定事件包括 `IsCheckStateChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+- 类型：`ContextMenu`、`DefaultMenuInteractionHandler`、`FlyoutMenuItemClickedEventArgs`、`Menu`、`MenuFlyout`、`MenuFlyoutPresenter`、`MenuItem`、`MenuItemData`、`MenuSeparator`、`MenuSeparatorData`、`ToggleItemsLayoutVisibleConverter`。
 
 ## 使用示例
 
@@ -105,51 +106,34 @@ Gallery key：`ExamplesContent` / item `0`
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<atom:Menu>
-    <atom:MenuItem Header="_菜单">
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-        <atom:MenuItem Header="菜单项" />
-    </atom:MenuItem>
-</atom:Menu>
+<StackPanel Spacing="12">
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:ToggleSwitch IsChecked="{Binding IsPopupScrollEnabled}" />
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="开启弹层滚动" />
+    </StackPanel>
+    <atom:Menu IsScrollEnabled="{Binding IsPopupScrollEnabled}">
+        <atom:MenuItem Header="_菜单">
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+        </atom:MenuItem>
+    </atom:Menu>
+</StackPanel>
 ```
 
 ### 通过 ItemsSource 生成 MenuItem
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:172`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:155`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -167,7 +151,7 @@ Gallery key：`ExamplesContent` / item `4`
 
 ### 通过 ItemsSource 生成内联 NavMenu
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:191`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:174`
 
 Gallery key：`ExamplesContent` / item `5`
 
@@ -199,6 +183,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `IsScrollEnabled` 控制弹层内容是否创建 `ScrollViewer`。滚动开启时 `DisplayPageSize` 参与最大高度计算；滚动禁用时弹层直接显示全部菜单项，不使用 `DisplayPageSize` 限高。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -224,6 +209,7 @@ Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组
 | `MenuTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `MenuThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TopLevelMenuItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
+| `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml` | 定义 `MenuFlyout` 菜单项 presenter 的弹层内容模板和滚动承载结构。 |
 
 Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
@@ -231,6 +217,7 @@ Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉�
 
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
+- 弹层滚动开关通过内部 `MenuPopupScrollHost` 复用模板分支；禁用滚动时不能保留隐藏或禁用状态的 `ScrollViewer`。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
 
@@ -246,17 +233,19 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 
 资源和 AOT 约束：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
+- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
 - Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
 - hover intent 调度只使用显式类型、委托和 `IDisposable` 生命周期，不依赖反射或运行时类型扫描。
+- 滚动模式使用共享 styled property、AXAML 模板分支和 `TemplateBinding`，不引入运行时反射、字符串 binding、动态注册或生成器变更。
 
 性能边界：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 默认滚动路径允许保留一个轻量 `MenuPopupScrollHost` 节点，以换取四套弹层模板的统一分支；禁用滚动路径必须移除 `ScrollViewer` 子树，但会让全部菜单项直接参与测量和显示。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 - 默认调度路径在 intent 失效时停止实际 timer；兼容的外部 delay runner 至少必须通过原子 callback clearing/release 使 callback 失效，避免过期任务修改状态并保留 owner graph。
 - 交互处理器只保留当前 pending open/close 目标，不维护随 pointer 移动增长的历史队列。
@@ -265,6 +254,10 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 
 主要源码文件：
 
+- `src/AtomUI.Controls.Shared/IScrollAware.cs`
+- `src/AtomUI.Desktop.Controls/Flyouts/MenuFlyout.cs`
+- `src/AtomUI.Desktop.Controls/Flyouts/MenuFlyoutPresenter.cs`
+- `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/ContextMenu.cs`
 - `src/AtomUI.Desktop.Controls/Menu/ContextMenuReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Menu/Converters/ToggleItemsLayoutVisibleConverter.cs`
@@ -273,6 +266,7 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - `src/AtomUI.Desktop.Controls/Menu/MenuItem.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuItemData.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuItemPseudoClass.cs`
+- `src/AtomUI.Desktop.Controls/Menu/MenuPopupScrollHost.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuSeparator.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuSeparatorData.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuToken.cs`
@@ -290,7 +284,7 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 
 ## 相关文档
 

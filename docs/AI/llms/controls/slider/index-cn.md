@@ -1,6 +1,6 @@
 # Slider
 
-> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、Gallery API / Token 表、Gallery ShowCase 或源码结构。
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
 
 ## 概述
 
@@ -93,7 +93,7 @@ Form 集成以 `IsRangeMode` 决定值模型：单值模式读取和设置 `Valu
 
 ## 事件与命令
 
-Slider 的事件与命令以公共 API、Avalonia 基类契约和 Gallery API 表为准；生成器不从源码发明额外事件。
+Slider 的事件与命令以控件文档、源码 public surface 和 Avalonia 基类契约为准；生成器不从源码发明额外事件。
 
 ## 使用示例
 
@@ -335,7 +335,7 @@ AOT 边界：
 
 - 不新增反射访问 public API、template part 或 token kind。
 - 新增 Token 必须走 source generator 支持的 `SliderToken` 属性。
-- Gallery API / Token 表应显式维护，不依赖运行时反射扫描。
+- API 与 Token 契约应在控件文档、源码 public surface、Token 类型或生成数据中维护，不依赖运行时反射扫描。
 
 ## 源码索引
 

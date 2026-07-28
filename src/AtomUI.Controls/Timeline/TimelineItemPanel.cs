@@ -14,10 +14,16 @@ internal class TimelineItemPanel : Panel
         AvaloniaProperty.Register<TimelineItemPanel, bool>(nameof(IsOdd));
 
     public static readonly StyledProperty<TimelineMode> ModeProperty =
-        AvaloniaProperty.Register<TimelineItemPanel, TimelineMode>(nameof(Mode), TimelineMode.Left);
+        AvaloniaProperty.Register<TimelineItemPanel, TimelineMode>(nameof(Mode), TimelineMode.Start);
+
+    public static readonly StyledProperty<Orientation> OrientationProperty =
+        StackPanel.OrientationProperty.AddOwner<TimelineItemPanel>();
 
     public static readonly StyledProperty<bool> IsLabelLayoutProperty =
         AvaloniaProperty.Register<TimelineItemPanel, bool>(nameof(IsLabelLayout), false);
+
+    public static readonly StyledProperty<double> IndicatorSpacingProperty =
+        AvaloniaProperty.Register<TimelineItemPanel, double>(nameof(IndicatorSpacing));
 
     public bool IsOdd
     {
@@ -31,103 +37,235 @@ internal class TimelineItemPanel : Panel
         set => SetValue(ModeProperty, value);
     }
 
+    public Orientation Orientation
+    {
+        get => GetValue(OrientationProperty);
+        set => SetValue(OrientationProperty, value);
+    }
+
     public bool IsLabelLayout
     {
         get => GetValue(IsLabelLayoutProperty);
         set => SetValue(IsLabelLayoutProperty, value);
     }
 
+    public double IndicatorSpacing
+    {
+        get => GetValue(IndicatorSpacingProperty);
+        set => SetValue(IndicatorSpacingProperty, value);
+    }
+
     #endregion
 
     static TimelineItemPanel()
     {
-        AffectsMeasure<TimelineItemPanel>(IsOddProperty, ModeProperty, IsLabelLayoutProperty);
+        OrientationProperty.OverrideDefaultValue<TimelineItemPanel>(Orientation.Vertical);
+        AffectsMeasure<TimelineItemPanel>(
+            IsOddProperty,
+            ModeProperty,
+            OrientationProperty,
+            IsLabelLayoutProperty,
+            IndicatorSpacingProperty);
     }
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        var indicator = GetTimelineIndicator();
-        indicator.Measure(availableSize);
+        return Orientation == Orientation.Horizontal
+            ? MeasureHorizontal(availableSize)
+            : MeasureVertical(availableSize);
+    }
+
+    private Size MeasureVertical(Size availableSize)
+    {
+        var indicator        = GetTimelineIndicator();
         var labelTextBlock   = GetLabelTextBlock();
         var contentPresenter = GetContentPresenter();
+        indicator.Measure(availableSize);
         var indicatorWidth   = indicator.DesiredSize.Width;
-        var height           = 0d;
+        var desiredWidth     = 0d;
+        var desiredHeight    = indicator.DesiredSize.Height;
         if (IsLabelLayout || Mode == TimelineMode.Alternate)
         {
-            // 有标签就是平分
-            var labelOrContentWidth = (availableSize.Width - indicatorWidth) / 2;
+            var labelOrContentWidth = double.IsPositiveInfinity(availableSize.Width)
+                ? double.PositiveInfinity
+                : Math.Max(0, availableSize.Width - indicatorWidth) / 2;
             var labelOrContentSize  = new Size(labelOrContentWidth, availableSize.Height);
             labelTextBlock.Measure(labelOrContentSize);
-            height = Math.Max(height, labelTextBlock.DesiredSize.Height);
             contentPresenter.Measure(labelOrContentSize);
-            height = Math.Max(height, contentPresenter.DesiredSize.Height);
+            var sideWidth = Math.Max(labelTextBlock.DesiredSize.Width, contentPresenter.DesiredSize.Width);
+            desiredWidth  = sideWidth * 2 + indicatorWidth;
+            desiredHeight = Math.Max(
+                desiredHeight,
+                Math.Max(labelTextBlock.DesiredSize.Height, contentPresenter.DesiredSize.Height));
         }
-        else if (Mode == TimelineMode.Left || Mode == TimelineMode.Right)
+        else
         {
-            var contentWidth = availableSize.Width - indicatorWidth;
+            var contentWidth = double.IsPositiveInfinity(availableSize.Width)
+                ? double.PositiveInfinity
+                : Math.Max(0, availableSize.Width - indicatorWidth);
             var contentSize  = new Size(contentWidth, availableSize.Height);
             contentPresenter.Measure(contentSize);
-            height = Math.Max(height, contentPresenter.DesiredSize.Height);
+            desiredWidth  = indicatorWidth + contentPresenter.DesiredSize.Width;
+            desiredHeight = Math.Max(desiredHeight, contentPresenter.DesiredSize.Height);
         }
 
-        return new Size(availableSize.Width, height);
+        if (!double.IsPositiveInfinity(availableSize.Width))
+        {
+            desiredWidth = availableSize.Width;
+        }
+
+        return new Size(desiredWidth, desiredHeight);
+    }
+
+    private Size MeasureHorizontal(Size availableSize)
+    {
+        var indicator        = GetTimelineIndicator();
+        var labelTextBlock   = GetLabelTextBlock();
+        var contentPresenter = GetContentPresenter();
+        indicator.Measure(availableSize);
+
+        var childSize = new Size(availableSize.Width, availableSize.Height);
+        var desiredWidth = indicator.DesiredSize.Width;
+        double desiredHeight;
+        if (IsLabelLayout || Mode == TimelineMode.Alternate)
+        {
+            labelTextBlock.Measure(childSize);
+            contentPresenter.Measure(childSize);
+            var sideExtent = Math.Max(labelTextBlock.DesiredSize.Height, contentPresenter.DesiredSize.Height);
+            desiredWidth = Math.Max(
+                desiredWidth,
+                Math.Max(labelTextBlock.DesiredSize.Width, contentPresenter.DesiredSize.Width));
+            desiredHeight = sideExtent * 2 + indicator.DesiredSize.Height + IndicatorSpacing * 2;
+        }
+        else
+        {
+            contentPresenter.Measure(childSize);
+            desiredWidth = Math.Max(desiredWidth, contentPresenter.DesiredSize.Width);
+            desiredHeight = indicator.DesiredSize.Height + contentPresenter.DesiredSize.Height;
+            if (contentPresenter.DesiredSize.Height > 0)
+            {
+                desiredHeight += IndicatorSpacing;
+            }
+        }
+
+        if (!double.IsPositiveInfinity(availableSize.Width))
+        {
+            desiredWidth = availableSize.Width;
+        }
+
+        return new Size(desiredWidth, desiredHeight);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
+    {
+        if (Orientation == Orientation.Horizontal)
+        {
+            ArrangeHorizontal(finalSize);
+        }
+        else
+        {
+            ArrangeVertical(finalSize);
+        }
+
+        return finalSize;
+    }
+
+    private void ArrangeVertical(Size finalSize)
     {
         var indicator        = GetTimelineIndicator();
         var labelTextBlock   = GetLabelTextBlock();
         var contentPresenter = GetContentPresenter();
         var indicatorWidth   = indicator.DesiredSize.Width;
+        var effectiveMode    = GetEffectiveMode();
         if (IsLabelLayout || Mode == TimelineMode.Alternate)
         {
-            var labelOrContentWidth = (finalSize.Width - indicatorWidth) / 2;
+            var labelOrContentWidth = Math.Max(0, finalSize.Width - indicatorWidth) / 2;
             var leftRect = new Rect(0, 0, labelOrContentWidth, finalSize.Height);
             var rightRect = new Rect(labelOrContentWidth + indicatorWidth, 0, labelOrContentWidth, finalSize.Height);
-            if (Mode == TimelineMode.Left)
+            indicator.Arrange(new Rect(labelOrContentWidth, 0, indicatorWidth, finalSize.Height));
+            if (effectiveMode == TimelineMode.Start)
             {
                 labelTextBlock.Arrange(leftRect);
-                indicator.Arrange(new Rect(labelOrContentWidth, 0, indicatorWidth, finalSize.Height));
                 contentPresenter.Arrange(rightRect);
-            }
-            else if (Mode == TimelineMode.Right)
-            {
-                labelTextBlock.Arrange(rightRect);
-                indicator.Arrange(new Rect(labelOrContentWidth, 0, indicatorWidth, finalSize.Height));
-                contentPresenter.Arrange(leftRect);
             }
             else
             {
-                if (IsOdd)
-                {
-                    labelTextBlock.Arrange(leftRect);
-                    indicator.Arrange(new Rect(labelOrContentWidth, 0, indicatorWidth, finalSize.Height));
-                    contentPresenter.Arrange(rightRect);
-                }
-                else
-                {
-                    labelTextBlock.Arrange(rightRect);
-                    indicator.Arrange(new Rect(labelOrContentWidth, 0, indicatorWidth, finalSize.Height));
-                    contentPresenter.Arrange(leftRect);
-                }
+                labelTextBlock.Arrange(rightRect);
+                contentPresenter.Arrange(leftRect);
             }
         }
         else
         {
-            var contentWidth = finalSize.Width - indicatorWidth;
-            if (Mode == TimelineMode.Left)
+            var contentWidth = Math.Max(0, finalSize.Width - indicatorWidth);
+            if (effectiveMode == TimelineMode.Start)
             {
                 indicator.Arrange(new Rect(0, 0, indicatorWidth, finalSize.Height));
                 contentPresenter.Arrange(new Rect(indicatorWidth, 0, contentWidth, finalSize.Height));
             }
-            else if (Mode == TimelineMode.Right)
+            else
             {
                 indicator.Arrange(new Rect(contentWidth, 0, indicatorWidth, finalSize.Height));
                 contentPresenter.Arrange(new Rect(0, 0, contentWidth, finalSize.Height));
             }
         }
+    }
 
-        return finalSize;
+    private void ArrangeHorizontal(Size finalSize)
+    {
+        var indicator        = GetTimelineIndicator();
+        var labelTextBlock   = GetLabelTextBlock();
+        var contentPresenter = GetContentPresenter();
+        var indicatorHeight  = indicator.DesiredSize.Height;
+        var effectiveMode    = GetEffectiveMode();
+        if (IsLabelLayout || Mode == TimelineMode.Alternate)
+        {
+            var sideExtent = Math.Max(0, finalSize.Height - indicatorHeight - IndicatorSpacing * 2) / 2;
+            var topRect = new Rect(0, 0, finalSize.Width, sideExtent);
+            var indicatorRect = new Rect(
+                0,
+                sideExtent + IndicatorSpacing,
+                finalSize.Width,
+                indicatorHeight);
+            var bottomRect = new Rect(
+                0,
+                sideExtent + IndicatorSpacing * 2 + indicatorHeight,
+                finalSize.Width,
+                sideExtent);
+            indicator.Arrange(indicatorRect);
+            if (effectiveMode == TimelineMode.Start)
+            {
+                labelTextBlock.Arrange(topRect);
+                contentPresenter.Arrange(bottomRect);
+            }
+            else
+            {
+                contentPresenter.Arrange(topRect);
+                labelTextBlock.Arrange(bottomRect);
+            }
+        }
+        else
+        {
+            var spacing = contentPresenter.DesiredSize.Height > 0 ? IndicatorSpacing : 0;
+            var contentHeight = Math.Max(0, finalSize.Height - indicatorHeight - spacing);
+            if (effectiveMode == TimelineMode.Start)
+            {
+                indicator.Arrange(new Rect(0, 0, finalSize.Width, indicatorHeight));
+                contentPresenter.Arrange(new Rect(
+                    0,
+                    indicatorHeight + spacing,
+                    finalSize.Width,
+                    contentHeight));
+            }
+            else
+            {
+                contentPresenter.Arrange(new Rect(0, 0, finalSize.Width, contentHeight));
+                indicator.Arrange(new Rect(
+                    0,
+                    contentHeight + spacing,
+                    finalSize.Width,
+                    indicatorHeight));
+            }
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -138,41 +276,41 @@ internal class TimelineItemPanel : Panel
 
     private void SetupItemsHorizontalAlignment()
     {
+        if (LogicalChildren.Count == 0)
+        {
+            return;
+        }
+
         var labelTextBlock   = GetLabelTextBlock();
         var contentPresenter = GetContentPresenter();
+        if (Orientation == Orientation.Horizontal)
+        {
+            labelTextBlock.HorizontalAlignment   = HorizontalAlignment.Stretch;
+            contentPresenter.HorizontalAlignment = HorizontalAlignment.Stretch;
+            return;
+        }
+
+        var effectiveMode = GetEffectiveMode();
         if (IsLabelLayout || Mode == TimelineMode.Alternate)
         {
-            if (Mode == TimelineMode.Left)
+            if (effectiveMode == TimelineMode.Start)
             {
                 labelTextBlock.HorizontalAlignment   = HorizontalAlignment.Right;
                 contentPresenter.HorizontalAlignment = HorizontalAlignment.Left;
             }
-            else if (Mode == TimelineMode.Right)
+            else
             {
                 labelTextBlock.HorizontalAlignment   = HorizontalAlignment.Left;
                 contentPresenter.HorizontalAlignment = HorizontalAlignment.Right;
             }
-            else
-            {
-                if (IsOdd)
-                {
-                    labelTextBlock.HorizontalAlignment   = HorizontalAlignment.Right;
-                    contentPresenter.HorizontalAlignment = HorizontalAlignment.Left;
-                }
-                else
-                {
-                    labelTextBlock.HorizontalAlignment   = HorizontalAlignment.Left;
-                    contentPresenter.HorizontalAlignment = HorizontalAlignment.Right;
-                }
-            }
         }
         else
         {
-            if (Mode == TimelineMode.Left)
+            if (effectiveMode == TimelineMode.Start)
             {
                 contentPresenter.HorizontalAlignment = HorizontalAlignment.Left;
             }
-            else if (Mode == TimelineMode.Right)
+            else
             {
                 contentPresenter.HorizontalAlignment = HorizontalAlignment.Right;
             }
@@ -182,10 +320,23 @@ internal class TimelineItemPanel : Panel
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsOddProperty || change.Property == ModeProperty)
+        if (change.Property == IsOddProperty ||
+            change.Property == ModeProperty ||
+            change.Property == OrientationProperty ||
+            change.Property == IsLabelLayoutProperty)
         {
             SetupItemsHorizontalAlignment();
         }
+    }
+
+    private TimelineMode GetEffectiveMode()
+    {
+        if (Mode != TimelineMode.Alternate)
+        {
+            return Mode;
+        }
+
+        return IsOdd ? TimelineMode.End : TimelineMode.Start;
     }
 
     private TimelineIndicator GetTimelineIndicator()
