@@ -15,7 +15,8 @@ namespace AtomUI.Desktop.Controls;
 public class MenuFlyoutPresenter : MenuBase,
                                    IArrowAwareShadowMaskInfoProvider,
                                    IMotionAwareControl,
-                                   ICustomizableSizeTypeAware
+                                   ICustomizableSizeTypeAware,
+                                   IScrollAwareControl
 {
     #region 公共属性定义
 
@@ -38,6 +39,9 @@ public class MenuFlyoutPresenter : MenuBase,
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuFlyoutPresenter>();
+
+    public static readonly StyledProperty<bool> IsScrollEnabledProperty =
+        ScrollAwareControlProperty.IsScrollEnabledProperty.AddOwner<MenuFlyoutPresenter>();
 
     public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
         Menu.ShouldUseOverlayPopupProperty.AddOwner<MenuFlyoutPresenter>();
@@ -70,6 +74,12 @@ public class MenuFlyoutPresenter : MenuBase,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsScrollEnabled
+    {
+        get => GetValue(IsScrollEnabledProperty);
+        set => SetValue(IsScrollEnabledProperty, value);
     }
 
     public event EventHandler<FlyoutMenuItemClickedEventArgs>? MenuItemClicked
@@ -148,7 +158,9 @@ public class MenuFlyoutPresenter : MenuBase,
     {
         base.OnPropertyChanged(change);
         if (change.Property == DisplayPageSizeProperty ||
-            change.Property == ItemHeightProperty)
+            change.Property == ItemHeightProperty ||
+            change.Property == PaddingProperty ||
+            change.Property == IsScrollEnabledProperty)
         {
             ConfigureMaxPopupHeight();
         }
@@ -340,8 +352,10 @@ public class MenuFlyoutPresenter : MenuBase,
 
     private void ConfigureMaxPopupHeight()
     {
-        SetCurrentValue(MaxPopupHeightProperty,
-            ItemHeight * DisplayPageSize + Padding.Top + Padding.Bottom);
+        var maxPopupHeight = IsScrollEnabled
+            ? ItemHeight * DisplayPageSize + Padding.Top + Padding.Bottom
+            : double.PositiveInfinity;
+        SetCurrentValue(MaxPopupHeightProperty, maxPopupHeight);
     }
 }
 

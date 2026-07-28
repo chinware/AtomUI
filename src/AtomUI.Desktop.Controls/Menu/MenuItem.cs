@@ -14,7 +14,7 @@ namespace AtomUI.Desktop.Controls;
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
 [PseudoClasses(MenuItemPseudoClass.TopLevel)]
-public class MenuItem : AvaloniaMenuItem, IMenuItemData
+public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
 {
     #region 公共属性定义
 
@@ -23,6 +23,9 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<MenuItem>();
+
+    public static readonly StyledProperty<bool> IsScrollEnabledProperty =
+        ScrollAwareControlProperty.IsScrollEnabledProperty.AddOwner<MenuItem>();
 
     public static readonly StyledProperty<int> DisplayPageSizeProperty =
         Menu.DisplayPageSizeProperty.AddOwner<MenuItem>();
@@ -37,6 +40,12 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
+    }
+
+    public bool IsScrollEnabled
+    {
+        get => GetValue(IsScrollEnabledProperty);
+        set => SetValue(IsScrollEnabledProperty, value);
     }
 
     public int DisplayPageSize
@@ -179,7 +188,9 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
             RaiseEvent(new RoutedEventArgs(IsCheckStateChangedEvent, this));
         }
         else if (change.Property == DisplayPageSizeProperty ||
-                 change.Property == ItemHeightProperty)
+                 change.Property == ItemHeightProperty ||
+                 change.Property == PopupPaddingProperty ||
+                 change.Property == IsScrollEnabledProperty)
         {
             ConfigureMaxPopupHeight();
         }
@@ -348,8 +359,10 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     private void ConfigureMaxPopupHeight()
     {
-        SetCurrentValue(MaxPopupHeightProperty,
-            ItemHeight * DisplayPageSize + PopupPadding.Top + PopupPadding.Bottom);
+        var maxPopupHeight = IsScrollEnabled
+            ? ItemHeight * DisplayPageSize + PopupPadding.Top + PopupPadding.Bottom
+            : double.PositiveInfinity;
+        SetCurrentValue(MaxPopupHeightProperty, maxPopupHeight);
     }
 
     private void ConfigureDetachedTitleBarPopupPlacement()

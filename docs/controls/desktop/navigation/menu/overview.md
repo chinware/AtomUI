@@ -1,6 +1,6 @@
 # Menu 桌面版架构设计
 
-本文档定义 `Menu` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Menu 桌面版实现原理](implementation.md)，Menu Token 的专项设计见 [Menu Token 设计](token.md)，设计和契约变化记录见 [Menu Changelog](changelog.md)。
+本文档定义 `Menu` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Menu 桌面版实现原理](implementation.md)，弹层滚动专项设计见 [Menu 弹层滚动模式设计](popup-scroll-design.md)，Menu Token 的专项设计见 [Menu Token 设计](token.md)，设计和契约变化记录见 [Menu Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -40,7 +40,7 @@ Menu 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `Items`、`MenuItem`、`MenuItemData`、`MenuSeparatorData` | 定义菜单项集合、数据驱动菜单项和分割项入口。 |
-| 选择与集合 | `DisplayPageSize` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `DisplayPageSize`、`IsScrollEnabled` | 维护弹层显示页数上限、滚动开关、选择、展开和集合状态。 |
 | 交互与状态 | `IsMotionEnabled`、`ShouldUseOverlayPopup` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `LineWidth`、`Orientation`、`OverlayHostShadow`、`PopupRootShadow`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `CloseMotion`、`MotionDuration`、`OpenMotion` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
@@ -49,7 +49,7 @@ Menu 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 主要公开类型与枚举：
 
-- 类型：`ContextMenu`、`DefaultMenuInteractionHandler`、`Menu`、`MenuItem`、`MenuItemData`、`MenuSeparator`、`MenuSeparatorData`、`ToggleItemsLayoutVisibleConverter`。
+- 类型：`ContextMenu`、`DefaultMenuInteractionHandler`、`FlyoutMenuItemClickedEventArgs`、`Menu`、`MenuFlyout`、`MenuFlyoutPresenter`、`MenuItem`、`MenuItemData`、`MenuSeparator`、`MenuSeparatorData`、`ToggleItemsLayoutVisibleConverter`。
 - 枚举：无。
 
 稳定 template part：
@@ -79,6 +79,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `IsScrollEnabled` 控制弹层内容是否创建 `ScrollViewer`。滚动开启时 `DisplayPageSize` 参与最大高度计算；滚动禁用时弹层直接显示全部菜单项，不使用 `DisplayPageSize` 限高。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -104,6 +105,7 @@ Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组
 | `MenuTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `MenuThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TopLevelMenuItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
+| `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml` | 定义 `MenuFlyout` 菜单项 presenter 的弹层内容模板和滚动承载结构。 |
 
 Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
@@ -111,6 +113,7 @@ Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉�
 
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
+- 弹层滚动开关通过内部 `MenuPopupScrollHost` 复用模板分支；禁用滚动时不能保留隐藏或禁用状态的 `ScrollViewer`。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
 
@@ -123,8 +126,11 @@ Menu 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证�
 - `ContextMenu`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `DefaultMenuInteractionHandler`：数据、状态或行为协作类型，维护集合同步和事件路径。
 - `Menu`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `MenuFlyout`：用户配置 flyout 菜单内容和 presenter 选项的入口。
+- `MenuFlyoutPresenter`：`MenuFlyout` 的实际菜单项 presenter，复用 Menu 家族滚动、动效和 overlay 语义。
 - `MenuItem`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `MenuItemData`：数据、状态或行为协作类型，维护集合同步和事件路径。
+- `MenuPopupScrollHost`：internal 模板宿主，集中表达有滚动和无滚动两种弹层内容分支。
 - `MenuItemTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `MenuSeparator`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `MenuSeparatorData`：数据、状态或行为协作类型，维护集合同步和事件路径。
@@ -147,6 +153,7 @@ Menu 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证�
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
+- `IsScrollEnabled` 默认值必须保持为 `true`；滚动禁用时视觉树中不得创建 `ScrollViewer`，也不得继续按 `DisplayPageSize` 限制弹层高度。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不把 `SelectedItem`、`IsSubMenuOpen` 或一次 callback 内的 pointer 判断当作 hover intent 的替代状态；延迟任务必须有明确 owner、目标身份和失效边界。
@@ -189,11 +196,18 @@ Menu 的动效只表达状态变化反馈，不应改变 public API 语义。初
 
 Menu 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
 
+### 8.5 弹层滚动模式
+
+Menu 家族弹层滚动模式由 `IsScrollEnabled` 和 `DisplayPageSize` 共同表达。`IsScrollEnabled=true` 时，弹层内容使用 `ScrollViewer`，`DisplayPageSize` 按 item height 和 popup padding 计算最大高度；`IsScrollEnabled=false` 时，弹层内容直接承载 `PART_ItemsPresenter`，不创建 `ScrollViewer`，不使用 `DisplayPageSize` 限高。
+
+`Menu`、`ContextMenu`、`MenuItem`、`MenuFlyout` 和 `MenuFlyoutPresenter` 共享同一公共语义。详细 API、模板、算法和验证边界见 [Menu 弹层滚动模式设计](popup-scroll-design.md)。
+
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Menu 桌面版实现原理](implementation.md)
+- [Menu 弹层滚动模式设计](popup-scroll-design.md)
 - [Menu Token 设计](token.md)
 - [Menu Changelog](changelog.md)
 
@@ -205,6 +219,7 @@ LLMS 语义区域：
 | `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `item` | `导航项区域` | 承载当前项、选中项、禁用项、层级项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `popup-scroll-host` | `MenuPopupScrollHost` | 在弹层内容区域内根据 `IsScrollEnabled` 选择是否创建 `ScrollViewer`。 | `IsScrollEnabled`、`DisplayPageSize` | 不适用 | internal-observable |
 | `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
 LLMS 导出来源：

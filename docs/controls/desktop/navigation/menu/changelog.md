@@ -2,6 +2,12 @@
 
 本文档记录 Menu 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-28
+
+- Docs
+  - Add the Menu popup scroll mode design covering `IsScrollEnabled`, `DisplayPageSize`, inherited configuration, `MenuFlyout` presenter relay and the internal `MenuPopupScrollHost` template branch.
+  - Synchronize Menu overview and implementation docs with the popup scroll API, template composition, height algorithm, compatibility boundaries and verification requirements.
+
 ## 2026-07-14
 
 - Docs

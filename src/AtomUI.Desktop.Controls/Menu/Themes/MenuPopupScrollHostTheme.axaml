@@ -1,0 +1,34 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:MenuPopupScrollHost}" TargetType="atom:MenuPopupScrollHost">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:MenuPopupScrollHost">
+                <atom:ScrollViewer IsScrollChainingEnabled="False"
+                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                   IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
+                                   AllowAutoHide="{TemplateBinding AllowAutoHide}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </atom:ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[IsScrollEnabled=False]">
+            <Setter Property="Template">
+                <ControlTemplate TargetType="atom:MenuPopupScrollHost">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </ControlTemplate>
+            </Setter>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

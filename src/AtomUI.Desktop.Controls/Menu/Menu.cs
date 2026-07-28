@@ -11,7 +11,10 @@ namespace AtomUI.Desktop.Controls;
 
 using AvaloniaMenu = Avalonia.Controls.Menu;
 
-public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareControl
+public class Menu : AvaloniaMenu,
+                    ICustomizableSizeTypeAware,
+                    IMotionAwareControl,
+                    IScrollAwareControl
 {
     #region 公共属性定义
 
@@ -20,6 +23,9 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Menu>();
+
+    public static readonly StyledProperty<bool> IsScrollEnabledProperty =
+        ScrollAwareControlProperty.IsScrollEnabledProperty.AddOwner<Menu>();
 
     public static readonly StyledProperty<int> DisplayPageSizeProperty =
         AvaloniaProperty.Register<Menu, int>(nameof(DisplayPageSize), 10);
@@ -37,6 +43,12 @@ public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareContro
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsScrollEnabled
+    {
+        get => GetValue(IsScrollEnabledProperty);
+        set => SetValue(IsScrollEnabledProperty, value);
     }
 
     public int DisplayPageSize

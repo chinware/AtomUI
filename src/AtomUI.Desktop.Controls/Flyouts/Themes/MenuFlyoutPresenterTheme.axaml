@@ -14,15 +14,15 @@
                                     ArrowPosition="{TemplateBinding ArrowPosition}"
                                     Padding="{TemplateBinding Padding}"
                                     MaxHeight="{TemplateBinding MaxPopupHeight}">
-                <atom:ScrollViewer IsScrollChainingEnabled="False"
-                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                   IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
-                                   AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}">
+                <atom:MenuPopupScrollHost IsScrollEnabled="{TemplateBinding IsScrollEnabled}"
+                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                          atom:ScrollViewer.IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
+                                          AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}">
                     <ItemsPresenter Name="PART_ItemsPresenter"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                     KeyboardNavigation.TabNavigation="Continue"
                                     Grid.IsSharedSizeScope="True" />
-                </atom:ScrollViewer>
+                </atom:MenuPopupScrollHost>
             </atom:ArrowDecoratedBox>
         </ControlTemplate>
     </Setter>
