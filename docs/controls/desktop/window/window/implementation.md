@@ -87,7 +87,7 @@ Public API / ItemsSource / Command / Event
 
 源码中的状态入口按以下语义维护：
 
-- 内容与数据：`ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 11 项。
+- 内容与数据：`ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn`、`RightAddOnTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等。
 - 选择与集合：`ViewModel`。
 - 交互与状态：`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible`。
 - 弹层与窗口：`WindowFrameLayer`、`WindowFrameLayerOpacity`。
@@ -99,7 +99,7 @@ Public API / ItemsSource / Command / Event
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
-- `TitleBarFrameLayer` 的数据流终点是标题栏背景/装饰层；它不作为普通 Avalonia 交互控件入口，标题栏按钮、菜单、搜索框等应通过 `TitleBar` 承载。
+- `TitleBarFrameLayer` 的数据流终点是标题栏背景/装饰层；它不作为普通 Avalonia 交互控件入口。默认标题栏按钮、菜单、搜索框等由 `LeftAddOn` 或 `RightAddOn` 通过 `WindowTitleBar` 承载。
 
 ## 5. 生命周期与模板接入
 
@@ -147,16 +147,16 @@ Window 的标题栏存在两套输入模型，维护时必须同时成立：
 
 - 非 CSD 自绘模板使用普通 Avalonia hit test。`TitleBarFrameLayer` 是默认 `TitleBar` 下方的背景/装饰层，不应承担用户输入。
 - Avalonia `WindowDrawnDecorations` CSD 模板使用 `WindowDecorationProperties.ElementRole` 参与平台 chrome hit test。`ElementRole="TitleBar"` 表示拖拽区域；`TitleBarFrameLayer` 属于背景/装饰语义，可以随 `PART_TitleBar` 进入该 role。
-- CSD 路径中承载 `TitleBar` 的 `PART_TitleBarPresenter` 使用 `ElementRole="User"` 或等价 client input 语义；用户需要标题栏按钮、菜单、输入框时，应通过自定义 `TitleBar` 进入该路径。
-- 默认 `TitleBar`、caption buttons、全屏弹出层和背景/装饰层职责不能混用：caption buttons 保持自身窗口操作 role，默认或自定义 `TitleBar` 表达标题栏交互，`TitleBarFrameLayer` 只表达背景、遮罩或装饰视觉。
+- CSD 路径中承载默认 `WindowTitleBar` 的 `PART_TitleBarPresenter` 使用 `ElementRole="User"` 或等价 client input 语义；默认标题栏的按钮、菜单、输入框通过 `LeftAddOn` 或 `RightAddOn` 进入该路径。
+- 默认 `WindowTitleBar`、caption buttons、全屏弹出层和背景/装饰层职责不能混用：caption buttons 保持自身窗口操作 role，`LeftAddOn` 和 `RightAddOn` 表达默认标题栏用户交互，`TitleBarFrameLayer` 只表达背景、遮罩或装饰视觉。
 - 不允许通过捕获异常、转发单个按钮 `Click`、延迟重新命中或给特定 Demo 写特殊判断来让 `TitleBarFrameLayer` 支持交互；这会模糊背景层和标题栏交互层的职责。
 
 目标结构按以下模型维护：
 
 | 路径 | 背景/装饰层 | 拖拽 / 默认标题栏层 | 用户交互层 |
 | --- | --- | --- | --- |
-| 非 CSD `WindowTheme.axaml` | `TitleBarFrameLayer` / `TitleBarFrameBackground` 位于默认 `TitleBar` 下方，表达背景和装饰。 | `TitleBar` / `WindowTitleBar` 负责标题、Logo、caption buttons 和空白区域拖拽。 | 自定义 `TitleBar` 内部控件负责按钮、菜单、搜索框等交互。 |
-| CSD `WindowDrawnDecorationsTheme.axaml` | `PART_TitleBar` 可承载 `TitleBarFrameLayer`，并使用 `ElementRole="TitleBar"` 表达标题栏拖拽区域。 | 默认 `TitleBar` 的展示由 overlay presenter 承载，平台 chrome role 不应吞掉该 presenter 内部交互。 | `PART_TitleBarPresenter` 承载 `TitleBar`，使用 `ElementRole="User"`；用户自定义标题栏控件在此获得 client input。 |
+| 非 CSD `WindowTheme.axaml` | `TitleBarFrameLayer` / `TitleBarFrameBackground` 位于默认 `WindowTitleBar` 下方，表达背景和装饰。 | `WindowTitleBar` 负责标题、Logo、caption buttons 和空白区域拖拽。 | `LeftAddOn` 和 `RightAddOn` 内部控件负责默认标题栏的按钮、菜单、搜索框等交互。 |
+| CSD `WindowDrawnDecorationsTheme.axaml` | `PART_TitleBar` 可承载 `TitleBarFrameLayer`，并使用 `ElementRole="TitleBar"` 表达标题栏拖拽区域。 | 默认 `WindowTitleBar` 的展示由 overlay presenter 承载，平台 chrome role 不应吞掉该 presenter 内部交互。 | `PART_TitleBarPresenter` 承载默认 `WindowTitleBar`，使用 `ElementRole="User"`；`LeftAddOn` 和 `RightAddOn` 在此获得 client input。 |
 
 实现时必须避免以下错误结构：
 

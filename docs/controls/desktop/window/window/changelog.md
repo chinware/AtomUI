@@ -2,6 +2,13 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-28
+
+- API
+  - Add `LeftAddOn`, `LeftAddOnTemplate`, `RightAddOn` and `RightAddOnTemplate` as `Window` owners of the default `WindowTitleBar` content contract.
+- Docs
+  - Define the default title-bar add-on entry points and keep `Window.TitleBar` as template-owned internal state.
+
 ## 2026-07-23
 
 - Implementation

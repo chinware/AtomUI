@@ -95,7 +95,7 @@ Window.WindowState / Window.IsActive
 ### 4.3 标题对齐
 
 ```text
-Window.TitleAlignment + platform/native metrics
+Window.TitleAlignment + add-on content/templates + platform/native metrics
   -> WindowTitleBar layout inputs
   -> WindowTitleBarLayoutPanel
   -> platform Strategy
@@ -188,7 +188,7 @@ LeftAddOn 或 RightAddOn 的内容、可见性、子节点、模板和 margin �
 
 `WindowTitleBar` 在主按钮双击的 `PointerPressed` 阶段只记录 pending 状态，在匹配的 `PointerReleased` 阶段发出 `MaximizeWindowRequested`。pointer capture 丢失、释放按钮不匹配或其他结束路径都会清除 pending。
 
-`Window` 负责标题栏拖动：按下时记录窗口坐标，移动超过 `Constants.DragThreshold` 后清理本地状态并调用 `BeginMoveDrag`。`IsMoveEnabled=False`、FullScreen 或非主按钮输入不进入拖动。
+`Window` 负责标题栏拖动：按下时记录窗口坐标，移动超过 `Constants.DragThreshold` 后清理本地状态并调用 `BeginMoveDrag`。`IsMoveEnabled=False`、FullScreen 或非主按钮输入不进入拖动。add-on 与 caption button 的已处理输入不会进入标题栏拖动或双击最大化路径。
 
 `CaptionButtonGroup` 将按钮事件归一为宿主操作：
 
@@ -229,7 +229,7 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 
 ## 10. 维护不变量
 
-- `WindowTitleBar` 与 `Window.NotifyConfigureTitleBar` 的属性投影保持单向且完整。
+- `WindowTitleBar` 与 `Window.NotifyConfigureTitleBar` 的属性投影保持单向且完整；默认标题栏的 `LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 由 `Window` 的同名 public API 以 `Template` 优先级提供，派生标题栏 local add-on 不被覆盖。
 - `WindowTitleBar.OnApplyTemplate`、logical attach/detach 和 `CaptionButtonGroup.Attach/Detach` 始终成对释放。
 - 三个平台 ControlTemplate 保持相同语义角色、稳定 part 名称和平台 caption button 顺序。
 - Windows/Linux 的 Logo 始终位于 Leading 最左侧；macOS、ImagePreviewer 与全屏标题宿主可将图标与 Title 保持为连续 Title 组。无论图标位于哪个 role，标题对齐公式只读取 Leading、Title、Trailing 三个 direct role child 的实测宽度。
@@ -241,6 +241,7 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 ## 11. 测试与验证
 
 - `WindowTitleBarLogoVisibilityTests` 覆盖 Logo 默认值、平台规则、全屏规则和 Window 投影。
+- `WindowTitleBarAddOnTests` 覆盖 Window add-on API 默认值、模板类型及到默认标题栏的单向实时投影。
 - `WindowTitleBarTokenTests` 覆盖 Token 默认值、三平台 caption 视觉和 Windows edge layout。
 - `ImagePreviewerTitleBarThemeTests` 覆盖派生标题栏的标题组、操作区和平台模板契约。
 - 标题几何测试覆盖所有 alignment、对称与非对称操作区、Padding/native inset、窄窗口和非法 metrics。

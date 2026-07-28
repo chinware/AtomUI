@@ -166,7 +166,7 @@ caption button 的公共配置属于宿主 `Window`：
 
 ### 6.1 Window
 
-`Window` 创建默认 `WindowTitleBar`，并把 `Title`、`Logo`、`LogoTemplate`、`LogoVisibility` 和 `TitleAlignment` 单向投影给标题栏。`NotifyCreateTitleBar` 和 `NotifyConfigureTitleBar` 是派生窗口替换标题栏类型与补充配置的 protected 扩展点。
+`Window` 创建默认 `WindowTitleBar`，并把 `Title`、`Logo`、`LogoTemplate`、`LogoVisibility`、`TitleAlignment`、`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 单向投影给标题栏。应用通过 `Window` 的 add-on 属性配置默认标题栏；`NotifyCreateTitleBar` 和 `NotifyConfigureTitleBar` 是派生窗口替换标题栏类型与补充配置的 protected 扩展点。
 
 `Window` 负责窗口移动、最大化/还原、原生 chrome metrics、CSD 状态和标题栏高度提示。`WindowTitleBar` 负责内容布局，不直接调用平台窗口 API。标题栏必须横跨完整可见窗口 frame；原生窗口按钮安全区作为布局输入传递，不能通过给整个标题栏添加单侧 Padding 或 Margin 来改变窗口中心。
 
