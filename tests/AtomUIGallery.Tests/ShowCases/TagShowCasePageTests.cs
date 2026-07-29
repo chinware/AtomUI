@@ -14,6 +14,7 @@ public class TagShowCasePageTests
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml");
 
         source.ShouldContain("TagShowCaseLangResource PageSubtitle");
+        source.ShouldContain("x:CompileBindings=\"True\"");
         source.ShouldContain("TagShowCaseLangResource PageDescription");
         source.ShouldNotContain("TagShowCaseLangResource InfoNamespaceLabel");
         source.ShouldNotContain("TagShowCaseLangResource InfoPackageLabel");
@@ -42,13 +43,54 @@ public class TagShowCasePageTests
         source.ShouldContain("Description=\"{gallery:TagShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("TagShowCaseLangResource BasicTitle");
+        source.ShouldContain("TagShowCaseLangResource CheckableTagTitle");
         source.ShouldContain("TagShowCaseLangResource ColorfulTagTitle");
+        source.ShouldContain("TagShowCaseLangResource P2TextPresetsFilled");
+        source.ShouldContain("TagShowCaseLangResource P2TextPresetsSolid");
+        source.ShouldContain("TagShowCaseLangResource P2TextPresetsOutlined");
+        source.ShouldContain("TagShowCaseLangResource P2TextCustomFilled");
+        source.ShouldContain("TagShowCaseLangResource P2TextCustomSolid");
+        source.ShouldContain("TagShowCaseLangResource P2TextCustomOutlined");
+        CountOccurrences(source, "TagColor=\"magenta\"").ShouldBe(3);
+        CountOccurrences(source, "TagColor=\"#f50\"").ShouldBe(3);
+        source.ShouldNotContain("TagColor=\"#2db7f5\" IsClosable");
         source.ShouldContain("TagShowCaseLangResource StatusTagTitle");
         source.ShouldContain("TagShowCaseLangResource IconTitle");
-        source.ShouldContain("TagShowCaseLangResource BorderlessTitle");
+        source.ShouldContain("TagShowCaseLangResource VariantTitle");
+        source.ShouldContain("TagShowCaseLangResource P2TextStatusFilled");
+        source.ShouldContain("TagShowCaseLangResource P2TextStatusSolid");
+        source.ShouldContain("TagShowCaseLangResource P2TextStatusOutlined");
+        source.ShouldContain("TitlePosition=\"Left\"");
+        source.ShouldContain("LoadingAnimation=\"Spin\"");
+        CountOccurrences(source, "TagColor=\"processing\"").ShouldBe(3);
+        source.ShouldContain("Variant=\"Filled\"");
+        source.ShouldContain("Variant=\"Solid\"");
+        source.ShouldContain("Variant=\"Outlined\"");
+        source.ShouldNotContain("IsBordered");
+        source.ShouldNotContain("BorderlessTitle");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void Tag_ShowCase_Checkable_Example_Matches_Ant_Design_Demo_State()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml");
+        var viewModelSource = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/ViewModels/TagViewModel.cs");
+
+        CountOccurrences(source, "<atom:CheckableTagGroup").ShouldBe(2);
+        source.ShouldContain("<atom:CheckableTag Content=\"{gallery:TagShowCaseLangResource P2ContentYes}\"");
+        source.ShouldContain("IsChecked=\"{Binding IsCheckableTagChecked, Mode=TwoWay}\"");
+        source.ShouldContain("CheckedItem=\"{Binding SingleCheckedTag, Mode=TwoWay}\"");
+        source.ShouldContain("CheckedItems=\"{Binding MultipleCheckedTags, Mode=TwoWay}\"");
+        source.ShouldContain("IsMultiple=\"True\"");
+
+        viewModelSource.ShouldContain("IsCheckableTagChecked = true");
+        viewModelSource.ShouldContain("SingleCheckedTag = \"Books\"");
+        viewModelSource.ShouldContain("new ObservableCollection<object> { \"Movies\", \"Music\" }");
+        viewModelSource.ShouldContain("\"Movies\", \"Books\", \"Music\", \"Sports\"");
     }
 
     [Fact]

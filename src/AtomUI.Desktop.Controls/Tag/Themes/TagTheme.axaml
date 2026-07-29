@@ -42,14 +42,18 @@
         <Setter Property="Foreground" Value="{atom:TagTokenResource DefaultColor}" />
         <Setter Property="FontSize" Value="{atom:TagTokenResource TagFontSize}" />
         <Setter Property="Padding" Value="{atom:TagTokenResource TagPadding}" />
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="RenderScaleAwareBorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         <Setter Property="TagTextPaddingInline"
                 Value="{atom:TagTokenResource TagTextPaddingInline}" />
 
-        <Style Selector="^:custom-color">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+        <Style Selector="^[Variant=Solid]:not(:preset-color):not(:status-color):not(:custom-color)">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgSolid}" />
+            <Setter Property="Foreground" Value="{atom:TagTokenResource SolidTextColor}" />
+        </Style>
+        <Style Selector="^[Variant=Outlined]:not(:preset-color):not(:status-color):not(:custom-color)">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
@@ -57,18 +61,8 @@
                     Value="{atom:TagTokenResource TagIconSize}" />
             <Setter Property="Height"
                     Value="{atom:TagTokenResource TagIconSize}" />
-        </Style>
-        <Style Selector="^[IsColorSet=True]">
-            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="IconBrush"
-                        Value="{atom:SharedTokenResource ColorTextLightSolid}" />
-            </Style>
-        </Style>
-        <Style Selector="^[IsPresetColorTag=True]">
-            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="IconBrush"
-                        Value="{TemplateBinding Foreground}" />
-            </Style>
+            <Setter Property="IconBrush"
+                    Value="{TemplateBinding Foreground}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
@@ -76,12 +70,8 @@
                     Value="{atom:SharedTokenResource IconSizeXS}" />
             <Setter Property="IconHeight"
                     Value="{atom:SharedTokenResource IconSizeXS}" />
-        </Style>
-        <Style Selector="^[IsColorSet=True][IsPresetColorTag=False]">
-            <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
-                <Setter Property="IconBrush"
-                        Value="{atom:SharedTokenResource ColorTextLightSolid}" />
-            </Style>
+            <Setter Property="IconBrush"
+                    Value="{TemplateBinding Foreground}" />
         </Style>
 
         <Style Selector="^ /template/ atom|TextBlock#TagTextLabel">

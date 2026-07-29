@@ -8,3 +8,10 @@ public enum TagStatus
     Error,
     Warning
 }
+
+public enum TagVariant
+{
+    Filled,
+    Solid,
+    Outlined
+}

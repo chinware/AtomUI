@@ -1,10 +1,10 @@
 # Tag 桌面版实现原理
 
-本文档描述 Tag 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Tag 桌面版架构设计](overview.md)，变化记录见 [Tag Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Tag Token 设计](token.md)。
+本文档描述 Tag 家族桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Tag 桌面版架构设计](overview.md)，CheckableTag 选择与组合机制见 [CheckableTag 与 CheckableTagGroup 选择模型设计](checkable-tag-design.md)，变化记录见 [Tag Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Tag Token 设计](token.md)。
 
 ## 1. 实现定位
 
-本文档覆盖 Tag 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
+本文档覆盖 Tag、CheckableTag 和 CheckableTagGroup 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
 
 ## 2. 源码文件结构
 
@@ -32,6 +32,9 @@
 - `Tag`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TagTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `TagToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `AbstractCheckableTag` / `CheckableTag`：以 ToggleButton 作为输入状态 owner，增加 Icon、动效和 Form 投影。
+- `AbstractCheckableTagGroup` / `CheckableTagGroup`：拥有 Options、模式、公开选择值、Default 初始化、事件和集合生命周期。
+- internal checkable items control：持有 SelectionModel、生成 CheckableTag 容器并同步 IsChecked；其 SelectedItem(s) 不对外暴露。
 
 核心协作规则：
 
@@ -55,8 +58,8 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`CloseIcon`、`Icon`、`Text`。
-- 交互与状态：`IsBordered`、`IsClosable`。
-- 视觉与布局：`TagColor`。
+- 交互与状态：`IsClosable`、`Variant`。
+- 视觉与布局：`TagColor`、颜色分类伪类和三种 Variant 视觉输出。
 
 维护要求：
 
@@ -64,6 +67,21 @@ Public API / ItemsSource / Command / Event
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
+
+CheckableTag 与 Group 使用独立状态流：
+
+```text
+CheckableTag input
+  -> ToggleButton.IsChecked
+  -> checked pseudo-class / ControlTheme / Form
+
+Options + IsMultiple + CheckedItem(s)
+  -> Group normalized values
+  -> internal option wrappers + SelectionModel
+  -> CheckableTag.IsChecked
+```
+
+Group 是业务值 owner。internal wrapper、SelectionModel 和容器状态只能作为实现投影，不能反向成为第二套公开状态。
 
 ## 5. 生命周期与模板接入
 
@@ -78,6 +96,9 @@ Public API / ItemsSource / Command / Event
 稳定 template part 接入点：
 
 - `PART_CloseButton`：承载用户触发入口、导航或关闭动作。
+- `PART_CheckableTagItems`：CheckableTagGroup 的内部选择与容器宿主，part 类型为 `SelectingItemsControl`；默认 internal 派生类型封装受保护的 SelectionModel、`SelectedItems`、`SelectionMode` 和 CheckableTag 容器映射。
+
+Group 模板应用时先解除旧内部 host 的选择事件，再连接新 host 并根据公开值恢复选项、模板和选择状态。Group 不为普通 `ListBox` 提供选择 fallback。容器重新准备或回收时必须覆盖 Content、ContentTemplate、IsChecked 和 IsMotionEnabled，不能保留旧 option 状态。
 
 ## 6. 交互与事件处理
 
@@ -88,17 +109,53 @@ Tag 的交互事件应从输入源收敛到控件级语义事件：
 - 非集合控件不应通过隐藏集合状态模拟业务数据。
 - 输入类路径必须保持 Form、validation、clear、placeholder 和键盘行为一致。
 
-稳定事件路径包括 `Closed`。事件参数和触发时机属于兼容边界。
+稳定事件路径包括 Tag 的 `Closed` 和 CheckableTagGroup 的 `CheckedChanged`。CheckableTag 直接复用 ToggleButton 的 `Click`、`Checked`、`Unchecked` 与 `IsChecked` TwoWay binding，不增加重复状态事件。
 
 ## 7. 内部算法与关键流程
 
 维护者需要重点关注以下流程：
 
-- API 默认值到 effective state 的归一。
-- Template part 重新应用时的状态回放。
-- 主题资源、Token 和 SharedToken 计算后的视觉更新。
-- 内容、命令和视觉状态在模板节点之间的同步。
-- 状态变化时避免创建不必要的视觉对象、订阅或动画对象。
+Tag 的颜色算法由单一视觉状态入口负责：
+
+```text
+TagColor + Variant + ThemeSnapshot
+  -> ColorCategory
+  -> ColorInfo / StatusInfo / CustomColor
+  -> Foreground + Background + BorderBrush
+  -> color pseudo-classes + template properties
+```
+
+颜色类别包括 `Default`、`Preset`、`Status` 和 `Custom`。`TagColor` 只改变颜色类别，`Variant` 只改变视觉形态。
+颜色解析不得通过副作用写回 Variant 或边框状态。
+
+预设颜色读取调色板序列的第 1、3、6、7 号色；状态颜色读取 Success、Info、Warning、Error 的语义 Token；
+`info` 和 `processing` 共享 Info Token；`default` 使用 Tag 基础 Token。
+
+自定义颜色按以下规则计算：Filled 使用亮度为 0.95 的 HSL 背景和原色文字，Solid 使用原色背景和浅色文字，
+Outlined 使用亮度为 0.95 的 HSL 背景、原色边框和原色文字。
+
+Default 颜色由 `TagTheme.axaml` 的 Variant selector 提供；Preset、Status 和 Custom 颜色由控件根据当前主题
+计算。计算结果以 `BindingPriority.Template` 应用，并由 `CompositeDisposable` 管理旧值，保证颜色切换和模板
+重套用不会叠加旧的属性值。用户本地 Brush 值优先于控件模板计算值。
+
+所有 Variant 使用相同的边框厚度。Filled 和默认/自定义 Solid 通过透明 BorderBrush 表达；Preset/Status Solid
+使用与背景相同的主色作为 BorderBrush，因此不会产生额外可见边界；所有 Variant 都不通过零厚度改变控件测量尺寸。
+
+CheckableTagGroup 的选择同步遵循：
+
+```text
+external CheckedItem(s)
+  -> value snapshot
+  -> wrapper selection
+  -> child IsChecked
+
+child IsCheckedChanged
+  -> internal selection
+  -> new public value snapshot via SetCurrentValue
+  -> CheckedChanged + Form ValueChanged
+```
+
+同步过程必须使用事务保护或暂时抑制内部回调，防止公开值、SelectionModel 和 IsChecked 形成循环更新。Options 与 CheckedItems 的集合替换和原地变化、Default 初始化、模式转换及失效值处理统一遵循选择模型专项文档，不能在 Theme 或容器类中再次解释。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
@@ -111,19 +168,27 @@ Tag 的交互事件应从输入源收敛到控件级语义事件：
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
 - Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
+- CheckableTagGroup 的 option 解析和属性同步使用静态类型、AvaloniaProperty 和强类型 getter，不使用 ReflectionBinding、字符串 path 或运行时类型扫描。
 
 性能边界：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- Group 只在 Options、模式或公开选择值变化时执行 O(N) 归一和同步；单项交互不能通过遍历 VisualTree 查找业务值。
+- 外部 CheckedItems 必须复制为内部快照，不能直接作为 internal SelectedItems 持有或原地修改。
 
 ## 9. 维护不变量
 
 维护 Tag 时不得破坏：
 
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
+- Public API、`Variant=Filled` 默认值、事件顺序和 Gallery 可观察行为。
+- `TagColor × Variant` 视觉矩阵、颜色清除后的状态恢复和 Light/Dark 主题响应。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- `IsBordered`、`bordered` 和 `color="xxx-inverse"` 不得重新成为 Tag 的兼容入口。
+- CheckableTag 不继承 TagColor、Variant、IsClosable、CloseIcon 或 Closed；其二态选择由 ToggleButton.IsChecked 唯一表达。
+- CheckableTagGroup 默认可取消单选；CheckedItem(s) 始终表达 option Value，internal wrapper 和 SelectionModel 不得泄漏。
+- PART_CheckableTagItems 重应用、Options/CheckedItems 替换和 detach 必须释放旧订阅，容器回收必须清除旧状态。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
@@ -134,6 +199,11 @@ Tag 的交互事件应从输入源收敛到控件级语义事件：
 
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
+- Tag 行为测试覆盖 Default、Preset、Status、Custom 四类颜色与 Filled、Solid、Outlined 三种 Variant 的完整矩阵。
+- Tag 行为测试覆盖 `info/processing` 映射、`default`、颜色清除、Variant 动态切换和本地 Brush 优先级。
+- Tag 主题测试覆盖默认 Solid 文字对比度、Light/Dark 调色板更新、透明边框保持尺寸和 Icon/CloseIcon 颜色。
+- CheckableTag 测试覆盖 pointer、keyboard、command、disabled、IsChecked TwoWay、Icon、Form 和二态 null 归一。
+- CheckableTagGroup 测试覆盖 option 归一、可取消单选、多选顺序、Default、模式切换、集合通知、事件、Form、模板重应用、detach 和容器回收。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

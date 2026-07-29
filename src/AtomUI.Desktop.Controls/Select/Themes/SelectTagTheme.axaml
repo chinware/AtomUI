@@ -10,7 +10,6 @@
         </ControlTheme.BasedOn>
 
         <Style Selector="^:is(atom|SelectTag)">
-            <Setter Property="IsBordered" Value="False" />
             <Setter Property="Background" Value="{atom:SelectTokenResource MultipleItemBg}" />
             <Setter Property="IsClosable" Value="True" />
             <Setter Property="FontSize" Value="{atom:SelectTokenResource OptionFontSize}" />
