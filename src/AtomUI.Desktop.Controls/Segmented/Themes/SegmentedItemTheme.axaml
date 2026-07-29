@@ -21,6 +21,7 @@
                                           HorizontalContentAlignment="Center"
                                           VerticalContentAlignment="Center"
                                           Content="{TemplateBinding Content}"
+                                          TextTrimming="CharacterEllipsis"
                                           IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}" />
                     </DockPanel>
@@ -111,6 +112,10 @@
                     Value="{atom:SegmentedTokenResource ItemMinHeightSM}" />
             <Setter Property="Padding"
                     Value="{atom:SegmentedTokenResource SegmentedItemPaddingSM}" />
+        </Style>
+
+        <Style Selector="^[Shape=Round]">
+            <Setter Property="CornerRadius" Value="9999" />
         </Style>
 
         <Style Selector="^:has-icon">

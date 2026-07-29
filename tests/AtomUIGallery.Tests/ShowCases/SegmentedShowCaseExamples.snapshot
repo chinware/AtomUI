@@ -13,6 +13,17 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:SegmentedShowCaseLangResource VerticalTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource VerticalDescription}">
+            <atom:Segmented Orientation="Vertical"
+                            HorizontalAlignment="Left"
+                            Margin="20">
+                <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" />
+                <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}" />
+            </atom:Segmented>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:SegmentedShowCaseLangResource BlockSegmentedTitle}"
             Description="{gallery:SegmentedShowCaseLangResource BlockSegmentedDescription}">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
@@ -20,6 +31,26 @@
                     <atom:SegmentedItem>123</atom:SegmentedItem>
                     <atom:SegmentedItem>456</atom:SegmentedItem>
                     <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentLongtextLongtextLongtextLongtext}" />
+                </atom:Segmented>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SegmentedShowCaseLangResource RoundShapeTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource RoundShapeDescription}">
+            <StackPanel HorizontalAlignment="Left"
+                        Orientation="Vertical"
+                        Spacing="8"
+                        Margin="20">
+                <atom:Segmented SelectionChanged="HandleRoundShapeSizeSelectionChanged">
+                    <atom:SegmentedItem Content="small" />
+                    <atom:SegmentedItem Content="medium" IsSelected="True" />
+                    <atom:SegmentedItem Content="large" />
+                </atom:Segmented>
+                <atom:Segmented SizeType="{Binding RoundShapeSizeType}"
+                                Shape="Round">
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=SunOutlined}" />
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=MoonOutlined}" />
                 </atom:Segmented>
             </StackPanel>
         </gallery:ShowCaseItem>

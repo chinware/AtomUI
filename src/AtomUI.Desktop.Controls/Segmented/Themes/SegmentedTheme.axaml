@@ -17,7 +17,9 @@
                     <ItemsPresenter Name="PART_ItemsPresenter">
                         <ItemsPresenter.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <atomc:SegmentedStackPanel IsExpanding="{Binding IsExpanding, RelativeSource={RelativeSource AncestorType=atom:Segmented}}"/>
+                                <atomc:SegmentedStackPanel
+                                    Orientation="{Binding Orientation, RelativeSource={RelativeSource AncestorType=atom:Segmented}}"
+                                    IsExpanding="{Binding IsExpanding, RelativeSource={RelativeSource AncestorType=atom:Segmented}}" />
                             </ItemsPanelTemplate>
                         </ItemsPresenter.ItemsPanel>
                     </ItemsPresenter>
@@ -49,6 +51,11 @@
         <Style Selector="^[SizeType=Small]">
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="SelectedThumbCornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
+        </Style>
+
+        <Style Selector="^[Shape=Round]">
+            <Setter Property="CornerRadius" Value="9999" />
+            <Setter Property="SelectedThumbCornerRadius" Value="9999" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

@@ -11,7 +11,8 @@ SegmentedToken 不承载以下状态：
 - `Items`、`ItemsSource`、`ItemTemplate`、`Content` 等数据状态。
 - `SelectedIndex`、`SelectedItem`、`:selected`、`:pressed`、`:has-icon` 等实例或伪类状态本身。
 - `SelectedThumbPos`、`SelectedThumbSize` 等运行时布局派生状态。
-- `IsExpanding`、可见 item 数量、等分宽度等布局状态。
+- `Orientation`、`IsExpanding`、可见 item 数量、排列轴和等分宽度等布局状态。
+- `Shape` 和 Round 胶囊圆角；它们是实例形状状态和几何覆盖，不是主题尺度。
 - `IsMotionEnabled` 或 transition 时长开关；motion 时长来自 SharedToken。
 
 ## 2. Token 分类
@@ -100,6 +101,9 @@ track + selected thumb + item states + item size
 SizeType
   → choose root radius, thumb radius, item min height, item padding, font size, icon size
 
+Shape=Round
+  → override root radius + thumb radius + item radius with capsule geometry
+
 Icon != null
   → :has-icon
   → SegmentedItemContentMargin
@@ -108,7 +112,9 @@ IsMotionEnabled
   → transitions from SharedToken motion duration
 ```
 
-`SelectedThumbPos`、`SelectedThumbSize`、等分宽度和当前选中项是运行时派生状态，不是 Token。
+`SelectedThumbPos`、`SelectedThumbSize`、排列方向、等分宽度、Shape 和当前选中项是运行时派生或实例状态，不是 Token。
+
+Round 使用足够大的固定 CornerRadius，根据控件实际 Bounds 形成胶囊。该值不进入 SegmentedToken：如果把它设计为普通主题半径，主题覆盖可能破坏 Round 必须始终保持胶囊的形状契约。
 
 ## 4. 控件家族影响
 
@@ -128,7 +134,7 @@ Token 变更要求：
 
 - 不擅自重命名或删除现有 Token。
 - 不把选择状态、hover/pressed 状态、当前 item、滑块坐标或 expanding 等分宽度迁移为 Token。
-- 不把 `SizeType`、`IsExpanding` 或 `IsMotionEnabled` 变成 Token；它们是实例行为属性。
+- 不把 `SizeType`、`Orientation`、`Shape`、`IsExpanding` 或 `IsMotionEnabled` 变成 Token；它们是实例行为或变体属性。
 - 修改 `TrackPadding` 时必须同时验证轨道 padding、item 最小高度和选中滑块边界。
 - 修改 item 状态色时必须同时验证文字和图标颜色。
 - 修改 item 尺寸 Token 时必须验证 Large、Middle、Small、Custom 及图标/文本组合。
@@ -142,6 +148,7 @@ Token 变更要求：
 | 修改文本状态 Token | 验证默认、hover、selected、disabled 下文字和图标颜色。 |
 | 修改背景状态 Token | 验证 hover、pressed、selected item 背景和根选中滑块背景。 |
 | 修改 item 高度 Token | 验证 Large / Middle / Small / Custom 下高度、文字居中、图标居中和滑块尺寸。 |
+| 修改共享圆角映射 | 验证 `Shape=Default` 的各 SizeType 圆角，并确认 `Shape=Round` 仍最终覆盖根、item 和滑块为胶囊。 |
 | 修改内部间距 Token | 验证纯文本、纯图标、图标加文本示例的内容间距。 |
 | 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |

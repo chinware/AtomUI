@@ -10401,7 +10401,9 @@ Segmented
 - `:has-icon`：item 设置了 `Icon`。
 - `:pointerover` 和 `:disabled`：由 Avalonia 标准状态驱动，主题使用这些状态表达 hover 和 disabled 视觉。
 
-`Segmented` 桌面层默认为非 visual 数据项创建 `SegmentedItem` 容器，并把 `SizeType`、`IsMotionEnabled` 传递给容器。`PrepareSegmentedItem(SegmentedItem, object?, int)` 是受保护扩展点，用于派生控件补充容器准备逻辑。
+`SegmentedShape` 包含 `Default` 和 `Round`。该枚举只表达 Segmented 家族的轨道形状，不复用包含 `Circle` 等无效值的其他控件 Shape 枚举。
+
+`Segmented` 桌面层默认为非 visual 数据项创建 `SegmentedItem` 容器，并把 `SizeType`、`Shape`、`IsMotionEnabled` 传递给容器。`PrepareSegmentedItem(SegmentedItem, object?, int)` 是受保护扩展点，用于派生控件补充容器准备逻辑。
 
 ## State Flow
 
@@ -10426,6 +10428,8 @@ selected thumb position + size
 - 已绑定或已显式设置的选择必须在模板应用后保留。
 - 鼠标左键释放在 item 上触发选择，避免按下时立即改变选择造成的交互跳变。
 - `SelectionChanged` 后如果控件仍附加在视觉树，会重新计算选中滑块的位置和尺寸。
+- `Left` / `Up` 选择前一个有效 item，`Right` / `Down` 选择后一个有效 item，并在首尾之间循环。
+- 键盘选择跳过 disabled 和 hidden item，选择完成后焦点进入对应容器。
 
 尺寸语义：
 
@@ -10433,10 +10437,16 @@ selected thumb position + size
 - `Custom` 复用 Middle 作为默认视觉基线；用户可在实例或 item 上显式设置 `Padding`、`MinHeight`、`FontSize`、`CornerRadius` 等 Avalonia 属性形成自定义尺寸。
 - 根 `SizeType` 会同步给生成的 `SegmentedItem`，保证 item 的主题分支和根控件一致。
 
-展开布局语义：
+方向与展开布局语义：
 
-- `IsExpanding=false` 时，item 按自身期望宽度顺序排列，根控件默认左对齐。
-- `IsExpanding=true` 时，可见 item 等分可用宽度，隐藏 item 不参与等分计数。
+| `Orientation` | `IsExpanding` | 布局语义 |
+| --- | --- | --- |
+| `Horizontal` | `false` | item 按自然宽度横向排列，根控件默认左对齐。 |
+| `Horizontal` | `true` | 根控件填满父容器宽度，可见 item 等分可用宽度。 |
+| `Vertical` | `false` | item 按自然高度纵向排列，轨道宽度取可见 item 的最大自然宽度。 |
+| `Vertical` | `true` | 根轨道和 item 填满父容器宽度，item 仍按自然高度纵向排列，不填满父容器高度。 |
+
+隐藏 item 不参与测量累计、排列、expanding 计数或键盘导航。
 
 Form 语义：
 
@@ -10452,8 +10462,8 @@ Segmented 的视觉由根主题、item 主题、专属 Token 和 SharedToken 共
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `SegmentedTheme.axaml` | 根模板、轨道 padding/background、选中滑块资源、SizeType 圆角分支、展开对齐和滑块动画。 |
-| `SegmentedItemTheme.axaml` | item 模板、图标/内容布局、hover/pressed/selected/disabled 状态、SizeType 尺寸分支和图标尺寸。 |
+| `SegmentedTheme.axaml` | 根模板、轨道 padding/background、选中滑块资源、SizeType/Shape 圆角分支、方向/展开对齐和滑块动画。 |
+| `SegmentedItemTheme.axaml` | item 模板、图标/内容布局、hover/pressed/selected/disabled 状态、SizeType/Shape 分支和图标尺寸。 |
 | `SegmentedThemes.axaml` | 汇总 Segmented 相关主题资源。 |
 
 视觉关系：
@@ -10468,7 +10478,9 @@ SegmentedTheme / SegmentedItemTheme
 track + selected thumb + item states
 ```
 
-根控件在 `Render()` 中绘制轨道背景和选中滑块。item 模板绘制每个选项自身的背景、图标、内容和状态颜色。选中滑块位置来自当前选中容器相对根控件的坐标，尺寸来自当前选中容器的 `DesiredSize`。
+根控件在 `Render()` 中绘制轨道背景和选中滑块。item 模板绘制每个选项自身的背景、图标、内容和状态颜色。选中滑块位置来自当前选中容器相对根控件的坐标，尺寸来自当前选中容器最终排列后的 `Bounds.Size`。
+
+`Shape=Default` 时，根、item 和滑块圆角继续由 SizeType 对应的 SharedToken 决定。`Shape=Round` 时，Shape 分支在 SizeType 分支之后统一覆盖根、item 和滑块圆角为胶囊几何；该覆盖不新增 Design Token，也不改变模板结构。
 
 Token 边界：
 
@@ -10479,7 +10491,8 @@ SegmentedToken 不承载以下状态：
 - `Items`、`ItemsSource`、`ItemTemplate`、`Content` 等数据状态。
 - `SelectedIndex`、`SelectedItem`、`:selected`、`:pressed`、`:has-icon` 等实例或伪类状态本身。
 - `SelectedThumbPos`、`SelectedThumbSize` 等运行时布局派生状态。
-- `IsExpanding`、可见 item 数量、等分宽度等布局状态。
+- `Orientation`、`IsExpanding`、可见 item 数量、排列轴和等分宽度等布局状态。
+- `Shape` 和 Round 胶囊圆角；它们是实例形状状态和几何覆盖，不是主题尺度。
 - `IsMotionEnabled` 或 transition 时长开关；motion 时长来自 SharedToken。
 
 ## Customization Boundaries
@@ -10491,9 +10504,11 @@ SegmentedToken 不承载以下状态：
 - 已绑定或显式设置的 `SelectedIndex` / `SelectedItem` 不能被默认选择覆盖。
 - 鼠标左键释放触发 item 选择的语义不能擅自改为按下触发。
 - `Segmented` 必须为非 visual item 创建 `SegmentedItem` 容器。
-- 容器准备时必须把根 `SizeType` 和 `IsMotionEnabled` 同步给 item。
-- `IsExpanding=true` 时只按可见 `SegmentedItem` 等分宽度。
-- 选中滑块必须跟随当前选中容器的位置和尺寸。
+- `Orientation` 默认值必须保持 `Horizontal`，`Shape` 默认值必须保持 `Default`。
+- 容器准备时必须把根 `SizeType`、`Shape` 和 `IsMotionEnabled` 同步给 item。
+- 水平 `IsExpanding=true` 时只按可见 `SegmentedItem` 等分宽度；垂直模式不能因此扩展父容器高度。
+- 选中滑块必须跟随当前选中容器的最终排列位置和 `Bounds.Size`。
+- 四个方向键必须按前后顺序循环选择，并跳过 disabled 和 hidden item。
 - `Frame`、`PART_ItemsPresenter`、`IconPresenter`、`Content` 等模板节点名称和职责不能在未授权情况下改变。
 - `:selected`、`:pressed`、`:has-icon` 伪类语义不能改变。
 - `SegmentedToken` 的名称、语义和资源使用点不能擅自删除或重命名。
@@ -10509,9 +10524,12 @@ SegmentedToken 不承载以下状态：
 - 默认选择第一个 item 的行为只能在没有任何选择输入时触发。
 - `SelectionChanged` 订阅和解除必须配对。
 - item pointer release 选择路径必须避免重复处理 handled 事件。
-- 生成容器必须接收 owner 的 `SizeType` 和 `IsMotionEnabled`。
-- `IsExpanding` 只能按可见 `AbstractSegmentedItem` 计数。
-- 选中滑块矩形必须跟随当前选中容器的实际布局结果。
+- `Orientation` 默认保持 `Horizontal`，`Shape` 默认保持 `Default`。
+- 生成容器必须接收 owner 的 `SizeType`、`Shape` 和 `IsMotionEnabled`。
+- 水平 `IsExpanding` 只能按可见 `AbstractSegmentedItem` 计数；垂直模式不能扩展父容器高度。
+- 选中滑块矩形必须跟随当前选中容器最终的 `Bounds` 布局结果。
+- 键盘导航必须首尾循环并跳过 disabled 和 hidden item。
+- Round 必须覆盖所有 SizeType 圆角，但不能改变其他尺寸、颜色、状态或模板契约。
 - 根 render 绘制和 item 主题状态不能互相替代；轨道/滑块在根，item 状态在 item。
 - `Custom` 尺寸分支默认基线保持 Middle，除非获得 API/主题契约变更授权。
 

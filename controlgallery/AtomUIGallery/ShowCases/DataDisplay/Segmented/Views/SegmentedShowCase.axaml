@@ -47,6 +47,22 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    Title="{gallery:SegmentedShowCaseLangResource VerticalTitle}"
+                    Description="{gallery:SegmentedShowCaseLangResource VerticalDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:SegmentedViewModel">
+                            <atom:Segmented Orientation="Vertical"
+                                            HorizontalAlignment="Left"
+                                            Margin="20">
+                                <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" />
+                                <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}" />
+                            </atom:Segmented>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
                     Title="{gallery:SegmentedShowCaseLangResource BlockSegmentedTitle}"
                     Description="{gallery:SegmentedShowCaseLangResource BlockSegmentedDescription}"
                     IsDeferredContentEnabled="True">
@@ -59,6 +75,31 @@
                             <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentLongtextLongtextLongtextLongtext}" />
                         </atom:Segmented>
                     </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:SegmentedShowCaseLangResource RoundShapeTitle}"
+                    Description="{gallery:SegmentedShowCaseLangResource RoundShapeDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:SegmentedViewModel">
+                            <StackPanel HorizontalAlignment="Left"
+                                        Orientation="Vertical"
+                                        Spacing="8"
+                                        Margin="20">
+                                <atom:Segmented SelectionChanged="HandleRoundShapeSizeSelectionChanged">
+                                    <atom:SegmentedItem Content="small" />
+                                    <atom:SegmentedItem Content="medium" IsSelected="True" />
+                                    <atom:SegmentedItem Content="large" />
+                                </atom:Segmented>
+                                <atom:Segmented SizeType="{Binding RoundShapeSizeType}"
+                                                Shape="Round">
+                                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=SunOutlined}" />
+                                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=MoonOutlined}" />
+                                </atom:Segmented>
+                            </StackPanel>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
