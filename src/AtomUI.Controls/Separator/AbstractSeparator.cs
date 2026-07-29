@@ -14,7 +14,7 @@ namespace AtomUI.Controls.Commons;
 using AvaloniaSeparator = Avalonia.Controls.Separator;
 
 [PseudoClasses(SeparatorPseudoClass.HasTitleText)]
-public abstract class AbstractSeparator : AvaloniaSeparator, ISizeTypeAware
+public abstract class AbstractSeparator : AvaloniaSeparator, ICustomizableSizeTypeAware
 {
     private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
     
@@ -48,8 +48,8 @@ public abstract class AbstractSeparator : AvaloniaSeparator, ISizeTypeAware
     public static readonly StyledProperty<bool> IsPlainProperty =
         AvaloniaProperty.Register<AbstractSeparator, bool>(nameof(IsPlain), false);
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractSeparator>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractSeparator>();
 
     /// <summary>
     /// 分割线的标题
@@ -136,9 +136,9 @@ public abstract class AbstractSeparator : AvaloniaSeparator, ISizeTypeAware
     }
     
     /// <summary>
-    /// The size of divider. Only valid for horizontal layout
+    /// The size of divider. Only valid for horizontal layout. Custom lets the caller own the margin.
     /// </summary>
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

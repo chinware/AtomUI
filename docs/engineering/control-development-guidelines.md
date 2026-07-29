@@ -55,6 +55,49 @@ API 和主题契约包括但不限于：
 
 控件 Token 的分层、命名、计算、Theme Variables 边界、预设色和兼容性规则见 [AtomUI 控件 Token 设计规范](control-token-guidelines.md)。单个控件的 `token.md` 只记录该控件专属的 Token 语义、分类、使用范围和兼容边界，不重复全局 Token 系统规则。
 
+## 可自定义尺寸模式
+
+只支持 `Large`、`Middle`、`Small` 三档预设尺寸的控件实现 `ISizeTypeAware`，其 `SizeType` 使用
+`SizeType`。除预设尺寸外还允许调用方接管实例尺寸的控件实现 `ICustomizableSizeTypeAware`，其
+`SizeType`、`SizeTypeProperty` 和 owner property 必须统一使用 `CustomizableSizeType`，不能只替换接口或只在
+Theme 中增加 `Custom` selector。
+
+`CustomizableSizeType.Custom` 表示退出 Theme 的预设尺寸分支，由调用方通过控件已有的 `Height`、`Width`、
+`Margin`、`Padding`、`FontSize` 等布局或排版属性接管对应尺寸维度。它不是第四套固定 Token，也不应默认要求
+新增 `CustomHeight`、`CustomMargin` 等重复 Public API。
+
+对于允许 `Custom` 接管的尺寸维度，ControlTheme 按以下模式组织：
+
+1. 先在适用的状态或方向作用域内设置一个稳定的基础默认值，保证 `Custom` 未显式覆盖时仍有可用基线。
+2. 只为 `Small`、`Middle`、`Large` 增加预设 selector，并分别映射对应 Token。
+3. 不为该尺寸维度增加 `SizeType=Custom` selector，也不把 `Custom` 合并进 `Middle` selector；否则 Theme 会继续
+   占有本应由调用方接管的值。
+4. 基础 setter 必须限制在实际适用的模式内。例如只有水平布局使用 block margin 时，基础 `Margin` 和三个预设
+   selector 都应放在水平布局 selector 内，不能影响垂直布局。
+
+```xml
+<Style Selector="^[Orientation=Horizontal]">
+    <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlock}" />
+
+    <Style Selector="^[SizeType=Small]">
+        <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlockSM}" />
+    </Style>
+    <Style Selector="^[SizeType=Middle]">
+        <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlock}" />
+    </Style>
+    <Style Selector="^[SizeType=Large]">
+        <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlockLG}" />
+    </Style>
+</Style>
+```
+
+直接使用控件时，调用方通过 `SizeType="Custom"` 和实例属性值接管尺寸。控件作为另一个 ControlTemplate 的
+内部子控件时，模板节点上的属性值可能低于子控件 ControlTheme setter 的优先级；owner 应把子控件设为
+`Custom`，并在 owner 的 ControlTheme 中使用作用域 selector 设置目标尺寸，不依赖模板节点属性碰巧覆盖成功。
+
+测试至少覆盖：三档预设值与 Token 的映射、`Custom` 未覆盖时的基础默认值、实例属性覆盖、owner-scoped Style
+覆盖，以及不适用方向或模式不受该尺寸规则影响。
+
 ## 控件成员排列建议
 
 这是一条推荐规范，不作为强制约定边界。优化控件代码时应优先遵循现有控件的组织习惯，不要按个人偏好重排成员。其中控件类内部不得在公共契约之前放置 internal/private 实现成员，是为了保证契约入口稳定的强约束。

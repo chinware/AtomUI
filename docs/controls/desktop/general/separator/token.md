@@ -30,7 +30,8 @@ Separator 的控件专项模型通过 Theme 消费 Token：
 - C# 控件负责状态归一和伪类同步。
 - AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、padding、尺寸和动效。
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
-- 无标题水平分隔线只承担轻量边界职责，`HorizontalMarginBlockSM`、`HorizontalMarginBlock`、`HorizontalMarginBlockLG` 的默认上下外边距固定为 `1px`；带标题水平分隔线仍通过 `HorizontalWithTextGutterMargin` 使用普通内容分组间距。
+- 水平分隔线的 `HorizontalMarginBlockSM`、`HorizontalMarginBlock`、`HorizontalMarginBlockLG` 分别从 SharedToken 的 `UniformlyMarginXS`、`UniformlyMargin`、`UniformlyMarginLG` 派生；默认对应 `8px`、`16px`、`24px`，并同时适用于带标题和无标题布局。
+- `CustomizableSizeType.Custom` 不引入第四组间距 Token。Theme 使用 `HorizontalMarginBlock` 作为基础回退值，并把最终 `Margin` 的接管权留给实例或 owner-scoped Style。
 - Token 类型、生成数据和 token.md 应显式维护，不依赖运行时反射扫描。
 
 ## 4. 控件家族影响

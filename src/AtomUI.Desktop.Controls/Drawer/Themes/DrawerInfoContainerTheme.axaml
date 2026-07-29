@@ -38,13 +38,15 @@
                                 Content="{TemplateBinding Extra}"
                                 ContentTemplate="{TemplateBinding ExtraTemplate}" />
                         </Grid>
-                        <atom:Separator Grid.Row="1" />
+                        <atom:Separator Grid.Row="1" SizeType="Custom" />
                         <ContentPresenter
                             Name="InfoContainer"
                             Grid.Row="2"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        <atom:Separator Grid.Row="3" IsVisible="{TemplateBinding HasFooter}" />
+                        <atom:Separator Grid.Row="3"
+                                        SizeType="Custom"
+                                        IsVisible="{TemplateBinding HasFooter}" />
                         <ContentPresenter
                             Name="InfoFooter"
                             Grid.Row="4"
@@ -144,6 +146,10 @@
 
         <Style Selector="^ /template/ ContentPresenter#InfoFooter">
             <Setter Property="Padding" Value="{atom:DrawerTokenResource FooterPadding}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|Separator[SizeType=Custom]">
+            <Setter Property="Margin" Value="0" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

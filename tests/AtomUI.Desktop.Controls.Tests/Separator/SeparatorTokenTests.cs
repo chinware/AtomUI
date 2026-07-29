@@ -8,7 +8,7 @@ namespace AtomUI.Desktop.Controls.Tests.Separator;
 public class SeparatorTokenTests
 {
     [Fact]
-    public void Horizontal_Separator_Without_Title_Uses_Minimal_Block_Margin()
+    public void Horizontal_Separator_Uses_Shared_Block_Margins_For_Each_Size()
     {
         var sharedToken = new DesignToken
         {
@@ -21,9 +21,9 @@ public class SeparatorTokenTests
 
         separatorToken.CalculateTokenValues(isDarkMode: false);
 
-        separatorToken.HorizontalMarginBlockSM.ShouldBe(new Thickness(0, 1));
-        separatorToken.HorizontalMarginBlock.ShouldBe(new Thickness(0, 1));
-        separatorToken.HorizontalMarginBlockLG.ShouldBe(new Thickness(0, 1));
+        separatorToken.HorizontalMarginBlockSM.ShouldBe(new Thickness(0, sharedToken.UniformlyMarginXS));
+        separatorToken.HorizontalMarginBlock.ShouldBe(new Thickness(0, sharedToken.UniformlyMargin));
+        separatorToken.HorizontalMarginBlockLG.ShouldBe(new Thickness(0, sharedToken.UniformlyMarginLG));
         separatorToken.HorizontalWithTextGutterMargin.ShouldBe(new Thickness(0, sharedToken.UniformlyMargin));
     }
 }

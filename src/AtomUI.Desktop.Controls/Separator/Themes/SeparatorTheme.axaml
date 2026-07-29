@@ -43,29 +43,22 @@
         <Style Selector="^[Orientation=Horizontal]">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlock}" />
             <Style Selector="^ /template/ atom|TextBlock#PART_Title">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
-            
-            <Style Selector="^:not(:has-title)">
-                <Style Selector="^[SizeType=Small]">
-                    <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlockSM}"/>
-                </Style>
-            
-                <Style Selector="^[SizeType=Middle]">
-                    <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlock}"/>
-                </Style>
-            
-                <Style Selector="^[SizeType=Large]">
-                    <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlockLG}"/>
-                </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlockSM}"/>
             </Style>
-            <Style Selector="^:has-title">
-                <Style Selector="^[SizeType=Small]">
-                    <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalWithTextGutterMargin}"/>
-                </Style>
+
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlock}"/>
             </Style>
-  
+
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="Margin" Value="{atom:SeparatorTokenResource HorizontalMarginBlockLG}"/>
+            </Style>
         </Style>
         
         <Style Selector="^[Orientation=Vertical]">
