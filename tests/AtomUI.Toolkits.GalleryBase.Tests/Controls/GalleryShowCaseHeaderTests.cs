@@ -1,4 +1,5 @@
 using AtomUI.Desktop.Controls;
+using AtomUI.Controls;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -25,7 +26,9 @@ public class GalleryShowCaseHeaderTests
         header.CategoryTagColor.ShouldBe("blue");
         header.StatusTagColor.ShouldBe("success");
         header.IntroducedVersionTagColor.ShouldBe("blue");
-        header.IsIntroducedVersionTagBordered.ShouldBeFalse();
+        typeof(GalleryShowCaseHeader)
+            .GetProperty("IsIntroducedVersionTagBordered")
+            .ShouldBeNull();
     }
 
     [Fact]
@@ -92,7 +95,7 @@ public class GalleryShowCaseHeaderTests
             Find<Tag>(header, "PART_StatusTag").Text.ShouldBe("Preview");
             Find<Tag>(header, "PART_StatusTag").TagColor.ShouldBe("processing");
             Find<Tag>(header, "PART_IntroducedVersionTag").Text.ShouldBe("v6.0.7");
-            Find<Tag>(header, "PART_IntroducedVersionTag").IsBordered.ShouldBeFalse();
+            Find<Tag>(header, "PART_IntroducedVersionTag").Variant.ShouldBe(TagVariant.Filled);
 
             var metadataItems = Find<WrapPanel>(header, "PART_MetadataItems")
                 .Children

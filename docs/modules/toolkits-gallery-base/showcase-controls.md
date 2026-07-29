@@ -160,7 +160,6 @@ public class GalleryShowCaseHeader : TemplatedControl
     public string? StatusTagColor { get; set; }
     public string? IntroducedVersion { get; set; }
     public string? IntroducedVersionTagColor { get; set; }
-    public bool IsIntroducedVersionTagBordered { get; set; }
     public string? Subtitle { get; set; }
     public string? Description { get; set; }
     public string? Namespace { get; set; }
@@ -178,7 +177,6 @@ public class GalleryShowCaseHeader : TemplatedControl
 | `CategoryTagColor` | `blue` | 分类 Tag 默认使用蓝色 |
 | `StatusTagColor` | `success` | 稳定状态默认使用成功色；Preview 页面显式覆盖为 `processing` |
 | `IntroducedVersionTagColor` | `blue` | 引入版本 Tag 使用蓝色，与分类区分靠位置和文本 |
-| `IsIntroducedVersionTagBordered` | `false` | 版本 Tag 默认实底显示，避免和状态 Tag 混淆 |
 | `MetadataLabelWidth` | token 默认值 | label 宽度由主题控制，页面只在确有长文案时覆盖 |
 | `MetadataValueWidth` | token 默认值 | value 宽度由主题控制，页面只在包名较长时覆盖 |
 
@@ -186,6 +184,7 @@ public class GalleryShowCaseHeader : TemplatedControl
 
 - `Category`、`Status`、`IntroducedVersion` 为空或空白时，对应 Tag 不渲染。
 - Tag 顺序固定为 category、status、introduced version。
+- `IntroducedVersion` Tag 使用 Tag 默认的 `Filled` Variant，不提供独立的边框开关。
 - `Subtitle` 或 `Description` 为空或空白时，对应文本行不渲染。
 - `Namespace`、`Package`、`BaseClass` 为空或空白时，对应 metadata 项不渲染。
 - 三个 metadata 值全部为空时，metadata 卡片不渲染。
