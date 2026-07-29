@@ -41,6 +41,7 @@ public class DatePickerShowCasePageTests
         source.ShouldContain("Description=\"{gallery:DatePickerShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("DatePickerShowCaseLangResource BasicTitle");
+        source.ShouldContain("DatePickerShowCaseLangResource SwitchableTitle");
         source.ShouldContain("DatePickerShowCaseLangResource BindingTitle");
         source.ShouldContain("SelectedDateTime=\"{Binding BoundSelectedDateTime}\"");
         source.ShouldContain("RangeStartSelectedDate=\"{Binding BoundRangeStartSelectedDate}\"");
@@ -60,6 +61,11 @@ public class DatePickerShowCasePageTests
             source,
             "DatePickerShowCaseLangResource BindingTitle",
             "DatePickerShowCaseLangResource PickerDisplayDateTitle");
+        AssertResourceOrder(
+            source,
+            "DatePickerShowCaseLangResource BasicTitle",
+            "DatePickerShowCaseLangResource SwitchableTitle",
+            "DatePickerShowCaseLangResource BindingTitle");
         source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("DatePickerShowCaseLangResource PlacementTitle");
         source.ShouldContain("Name=\"PickerSizeTypeOptionGroup\"");
@@ -73,6 +79,25 @@ public class DatePickerShowCasePageTests
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void DatePicker_Switchable_Example_Uses_Select_To_Swap_Pickers()
+    {
+        var source = ExtractShowCaseItemByTitle(
+            ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml"),
+            "DatePickerShowCaseLangResource SwitchableTitle");
+
+        source.ShouldContain("OptionsSource=\"{Binding PickerTypeOptions}\"");
+        source.ShouldContain("SelectedOption=\"{Binding SelectedPickerOption}\"");
+        source.ShouldContain("Text=\"{Binding SelectedPickerPlaceholderText}\"");
+        source.ShouldContain("IsVisible=\"{Binding IsTimePickerVisible}\"");
+        source.ShouldContain("IsVisible=\"{Binding IsDatePickerVisible}\"");
+        source.ShouldContain("PickerMode=\"{Binding SelectedPickerMode}\"");
+        source.ShouldContain("Width=\"240\"");
+        source.ShouldContain("<atom:Select Width=\"104\"");
+        source.ShouldContain("<atom:TimePicker");
+        source.ShouldContain("<atom:DatePicker");
     }
 
     [Fact]

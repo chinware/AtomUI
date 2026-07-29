@@ -1,5 +1,12 @@
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
+using AtomUI.Data;
+using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
+using Avalonia;
 using Avalonia.Controls;
+using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.DatePicker;
 
@@ -11,11 +18,21 @@ public partial class DatePickerShowCase : GalleryReactiveUserControl<DatePickerV
     {
         InitializeComponent();
 
-        this.WhenActivated(_ =>
+        this.WhenActivated(disposables =>
         {
             if (DataContext is DatePickerViewModel viewModel)
             {
                 viewModel.PickerPlacement = PlacementMode.BottomEdgeAlignedLeft;
+                RefreshLocalizedPickerOptions(viewModel);
+
+                var languageManager = Application.Current?.GetLanguageManager();
+                if (languageManager is not null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedPickerOptions(viewModel);
+                    languageManager.LanguageVariantChanged += handler;
+                    Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
+                              .DisposeWith(disposables);
+                }
             }
         });
     }
@@ -72,5 +89,50 @@ public partial class DatePickerShowCase : GalleryReactiveUserControl<DatePickerV
             viewModel.BoundRangeStartSelectedDate = null;
             viewModel.BoundRangeEndSelectedDate   = null;
         }
+    }
+
+    private static void RefreshLocalizedPickerOptions(DatePickerViewModel viewModel)
+    {
+        var selectedContent = viewModel.SelectedPickerOption?.Content?.ToString() ?? DatePickerViewModel.PickerTypeTime;
+        viewModel.PickerTypeOptions =
+        [
+            PickerOption(DatePickerShowCaseLangResourceKind.P2ContentTime, "Time", DatePickerViewModel.PickerTypeTime),
+            PickerOption(DatePickerShowCaseLangResourceKind.P2ContentDate, "Date", DatePickerViewModel.PickerTypeDate),
+            PickerOption(DatePickerShowCaseLangResourceKind.P2ContentWeek, "Week", DatePickerViewModel.PickerTypeWeek),
+            PickerOption(DatePickerShowCaseLangResourceKind.P2ContentMonth, "Month", DatePickerViewModel.PickerTypeMonth),
+            PickerOption(DatePickerShowCaseLangResourceKind.P2ContentQuarter, "Quarter", DatePickerViewModel.PickerTypeQuarter),
+            PickerOption(DatePickerShowCaseLangResourceKind.P2ContentYear, "Year", DatePickerViewModel.PickerTypeYear)
+        ];
+        viewModel.SelectedPickerOption = FindPickerOption(viewModel, selectedContent);
+    }
+
+    private static ISelectOption FindPickerOption(DatePickerViewModel viewModel, string selectedContent)
+    {
+        foreach (var option in viewModel.PickerTypeOptions ?? [])
+        {
+            if (Equals(option.Content?.ToString(), selectedContent))
+            {
+                return option;
+            }
+        }
+
+        return viewModel.PickerTypeOptions![0];
+    }
+
+    private static SelectOption PickerOption(DatePickerShowCaseLangResourceKind resourceKind, string fallback, string content)
+    {
+        return new SelectOption
+        {
+            Header  = DatePickerShowCaseLanguage.Get(resourceKind, fallback),
+            Content = content
+        };
+    }
+}
+
+internal static class DatePickerShowCaseLanguage
+{
+    public static string Get(DatePickerShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
     }
 }
