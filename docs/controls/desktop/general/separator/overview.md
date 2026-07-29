@@ -50,6 +50,7 @@ Separator 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 - 类型：`AbstractSeparator`、`Separator`、`VerticalSeparator`。
 - 枚举：`SeparatorTitlePosition`、`SeparatorVariant`。
+- 尺寸接口：`ICustomizableSizeTypeAware`。
 
 稳定 template part：
 
@@ -77,6 +78,16 @@ Public API / inherited command / item source / user input
 - visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+
+### 4.1 可自定义间距尺寸
+
+`AbstractSeparator` 实现 `ICustomizableSizeTypeAware`，`SizeType` 使用 `CustomizableSizeType`，默认值为
+`Middle`。水平 Separator 的预设尺寸控制上下外间距：`Small`、`Middle`、`Large` 分别映射到组件 Token 的
+小、中、大 block margin；该规则对带标题和无标题的水平 Separator 一致，垂直 Separator 不应用这组间距。
+
+`SizeType=Custom` 表示调用方接管间距。Theme 保留 Middle block margin 作为未指定 `Margin` 时的基础值，但不为
+`Custom` 声明专属 selector；调用方可以通过实例 `Margin` 或 owner-scoped Style 覆盖。组合控件模板中的结构性
+Separator 应使用 `Custom`，并由组合控件自身的 Theme 明确设置间距。
 
 ## 5. 视觉与主题模型
 

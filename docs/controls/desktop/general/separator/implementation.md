@@ -56,6 +56,14 @@ Public API / ItemsSource / Command / Event
 - 交互与状态：`IsPlain`。
 - 视觉与布局：`LineColor`、`LineWidth`、`Orientation`、`OrientationMargin`、`SizeType`、`Variant`。
 
+水平间距由 `SeparatorTheme.axaml` 单向映射：水平作用域先设置 Middle block margin 作为基础值，随后仅由
+`Small`、`Middle`、`Large` selector 覆盖为对应 Token。`Custom` 不进入预设 selector，因此实例 `Margin` 或
+owner-scoped Style 可以接管。该映射不依赖 `:has-title`，标题状态不会改变尺寸语义。
+
+当 Separator 位于其他控件的 ControlTemplate 内且需要紧凑结构间距时，owner 把子控件设为 `Custom`，并在
+owner ControlTheme 中通过模板作用域 selector 设置 `Margin`。不要只在模板节点写 `Margin` 并假定其优先级高于
+Separator 自身主题 setter。
+
 维护要求：
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
