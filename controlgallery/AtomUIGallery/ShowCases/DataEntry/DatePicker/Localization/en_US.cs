@@ -7,6 +7,8 @@ internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Click DatePicker, and then we could select or input a date in panel.";
+    public const string SwitchableTitle = "Switchable picker";
+    public const string SwitchableDescription = "Switch between TimePicker and DatePicker modes from a single selector.";
     public const string BindingTitle = "SelectedDateTime binding";
     public const string BindingDescription = "SelectedDateTime, RangeStartSelectedDate, and RangeEndSelectedDate synchronize with the ViewModel without explicitly setting Binding Mode=TwoWay.";
     public const string PickerDisplayDateTitle = "Popup display date";
@@ -51,6 +53,12 @@ internal partial class en_US
     public const string P2ContentDefault = "Default";
     public const string P2ContentSmall = "Small";
     public const string P2ContentCustom = "Custom";
+    public const string P2ContentTime = "Time";
+    public const string P2ContentDate = "Date";
+    public const string P2ContentWeek = "Week";
+    public const string P2ContentMonth = "Month";
+    public const string P2ContentQuarter = "Quarter";
+    public const string P2ContentYear = "Year";
     public const string P2TextPlacement = "Placement:";
     public const string P2TextSelectedDateTime = "Selected value:";
     public const string P2TextSelectedDateRange = "Selected range:";

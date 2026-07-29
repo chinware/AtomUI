@@ -49,6 +49,31 @@
     </gallery:ShowCaseItem>
 
     <gallery:ShowCaseItem
+        Title="{gallery:DatePickerShowCaseLangResource SwitchableTitle}"
+        Description="{gallery:DatePickerShowCaseLangResource SwitchableDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:DatePickerViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="12">
+            <atom:Select Width="104"
+                         Mode="Single"
+                         OptionsSource="{Binding PickerTypeOptions}"
+                         SelectedOption="{Binding SelectedPickerOption}" />
+            <Grid>
+                <atom:TimePicker Width="240"
+                                 PlaceholderText="{Binding SelectedPickerPlaceholderText}"
+                                 IsVisible="{Binding IsTimePickerVisible}" />
+                <atom:DatePicker Width="240"
+                                 PlaceholderText="{Binding SelectedPickerPlaceholderText}"
+                                 IsVisible="{Binding IsDatePickerVisible}"
+                                 PickerMode="{Binding SelectedPickerMode}" />
+            </Grid>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
         Title="{gallery:DatePickerShowCaseLangResource BindingTitle}"
         Description="{gallery:DatePickerShowCaseLangResource BindingDescription}"
         BadgeText="v6.0.8"

@@ -3,6 +3,7 @@ using System.Globalization;
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -34,6 +35,53 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
         get => _pickerPlacement;
         set => this.RaiseAndSetIfChanged(ref _pickerPlacement, value);
     }
+
+    private List<ISelectOption>? _pickerTypeOptions;
+
+    public List<ISelectOption>? PickerTypeOptions
+    {
+        get => _pickerTypeOptions;
+        set => this.RaiseAndSetIfChanged(ref _pickerTypeOptions, value);
+    }
+
+    private ISelectOption? _selectedPickerOption;
+
+    public ISelectOption? SelectedPickerOption
+    {
+        get => _selectedPickerOption;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _selectedPickerOption, value);
+            this.RaisePropertyChanged(nameof(IsTimePickerVisible));
+            this.RaisePropertyChanged(nameof(IsDatePickerVisible));
+            this.RaisePropertyChanged(nameof(SelectedPickerMode));
+            this.RaisePropertyChanged(nameof(SelectedPickerPlaceholderText));
+        }
+    }
+
+    public bool IsTimePickerVisible => SelectedPickerType == PickerTypeTime;
+
+    public bool IsDatePickerVisible => !IsTimePickerVisible;
+
+    public DatePickerMode SelectedPickerMode => SelectedPickerType switch
+    {
+        PickerTypeWeek => DatePickerMode.Week,
+        PickerTypeMonth => DatePickerMode.Month,
+        PickerTypeQuarter => DatePickerMode.Quarter,
+        PickerTypeYear => DatePickerMode.Year,
+        _ => DatePickerMode.Date
+    };
+
+    public string SelectedPickerPlaceholderText => SelectedPickerType switch
+    {
+        PickerTypeTime => DatePickerShowCaseLanguage.Get(DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectTime, "Select time"),
+        PickerTypeDate => DatePickerShowCaseLanguage.Get(DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectDate, "Select date"),
+        PickerTypeWeek => DatePickerShowCaseLanguage.Get(DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectWeek, "Select week"),
+        PickerTypeMonth => DatePickerShowCaseLanguage.Get(DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectMonth, "Select month"),
+        PickerTypeQuarter => DatePickerShowCaseLanguage.Get(DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectQuarter, "Select quarter"),
+        PickerTypeYear => DatePickerShowCaseLanguage.Get(DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectYear, "Select year"),
+        _ => DatePickerShowCaseLanguage.Get(DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectTime, "Select time")
+    };
 
     private DateTime? _boundSelectedDateTime = new DateTime(2026, 7, 5);
 
@@ -119,4 +167,12 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
         }
     }
 
+    internal const string PickerTypeTime = "time";
+    internal const string PickerTypeDate = "date";
+    internal const string PickerTypeWeek = "week";
+    internal const string PickerTypeMonth = "month";
+    internal const string PickerTypeQuarter = "quarter";
+    internal const string PickerTypeYear = "year";
+
+    private string SelectedPickerType => SelectedPickerOption?.Content?.ToString() ?? PickerTypeTime;
 }
