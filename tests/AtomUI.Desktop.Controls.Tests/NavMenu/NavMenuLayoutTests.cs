@@ -521,7 +521,7 @@ public class NavMenuLayoutTests
             var tag = new AtomUI.Desktop.Controls.Tag
             {
                 TagColor          = "cyan",
-                IsBordered        = false,
+                Variant           = TagVariant.Filled,
                 Padding           = new Thickness(4, 0),
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin            = new Thickness(8, 0, 0, 0),

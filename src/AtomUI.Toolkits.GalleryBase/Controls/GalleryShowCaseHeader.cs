@@ -31,9 +31,6 @@ public class GalleryShowCaseHeader : TemplatedControl
     public static readonly StyledProperty<string?> IntroducedVersionTagColorProperty =
         AvaloniaProperty.Register<GalleryShowCaseHeader, string?>(nameof(IntroducedVersionTagColor), "blue");
 
-    public static readonly StyledProperty<bool> IsIntroducedVersionTagBorderedProperty =
-        AvaloniaProperty.Register<GalleryShowCaseHeader, bool>(nameof(IsIntroducedVersionTagBordered), false);
-
     public static readonly StyledProperty<string?> SubtitleProperty =
         AvaloniaProperty.Register<GalleryShowCaseHeader, string?>(nameof(Subtitle));
 
@@ -95,12 +92,6 @@ public class GalleryShowCaseHeader : TemplatedControl
     {
         get => GetValue(IntroducedVersionTagColorProperty);
         set => SetValue(IntroducedVersionTagColorProperty, value);
-    }
-
-    public bool IsIntroducedVersionTagBordered
-    {
-        get => GetValue(IsIntroducedVersionTagBorderedProperty);
-        set => SetValue(IsIntroducedVersionTagBorderedProperty, value);
     }
 
     public string? Subtitle

@@ -46,7 +46,6 @@
                                 <atom:Tag Name="PART_IntroducedVersionTag"
                                           Text="{TemplateBinding IntroducedVersion}"
                                           TagColor="{TemplateBinding IntroducedVersionTagColor}"
-                                          IsBordered="{TemplateBinding IsIntroducedVersionTagBordered}"
                                           IsVisible="{TemplateBinding IsIntroducedVersionVisible}"
                                           VerticalAlignment="Center" />
                             </WrapPanel>

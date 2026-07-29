@@ -84,7 +84,7 @@ public class ShowCasePanelStructureTests
         headerSource.ShouldContain("CategoryTagColorProperty");
         headerSource.ShouldContain("StatusTagColorProperty");
         headerSource.ShouldContain("IntroducedVersionProperty");
-        headerSource.ShouldContain("IsIntroducedVersionTagBorderedProperty");
+        headerSource.ShouldNotContain("IsIntroducedVersionTagBorderedProperty");
         headerSource.ShouldContain("MetadataLabelWidthProperty");
         headerSource.ShouldContain("MetadataValueWidthProperty");
         headerSource.ShouldContain("MetadataLabelWidthProperty,\n            MetadataValueWidthProperty");
