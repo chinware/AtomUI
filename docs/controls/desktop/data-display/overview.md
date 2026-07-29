@@ -78,6 +78,7 @@
 - [Statistic Changelog](statistic/changelog.md)
 - [Tag 桌面版架构设计](tag/overview.md)
 - [Tag 桌面版实现原理](tag/implementation.md)
+- [CheckableTag 与 CheckableTagGroup 选择模型设计](tag/checkable-tag-design.md)
 - [Tag Token 设计](tag/token.md)
 - [Tag Changelog](tag/changelog.md)
 - [Timeline 桌面版架构设计](timeline/overview.md)

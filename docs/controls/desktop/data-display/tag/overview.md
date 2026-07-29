@@ -1,6 +1,6 @@
 # Tag 桌面版架构设计
 
-本文档定义 `Tag` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Tag 桌面版实现原理](implementation.md)，Tag Token 的专项设计见 [Tag Token 设计](token.md)，设计和契约变化记录见 [Tag Changelog](changelog.md)。
+本文档定义 `Tag`、`CheckableTag` 与 `CheckableTagGroup` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Tag 桌面版实现原理](implementation.md)，选择模型见 [CheckableTag 与 CheckableTagGroup 选择模型设计](checkable-tag-design.md)，Tag Token 的专项设计见 [Tag Token 设计](token.md)，设计和契约变化记录见 [Tag Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -12,7 +12,7 @@
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag` |
 | 控件状态 | Stable |
 
-Tag 是 AtomUI 桌面控件体系中的标签控件，用于展示状态、分类、可关闭标记和预设色语义。
+Tag 家族覆盖展示标签与选择标签。`Tag` 用于展示状态、分类、可关闭标记和预设色语义；`CheckableTag` 用标签视觉表达二态选择；`CheckableTagGroup` 在有限选项集合上提供可取消单选和多选。普通 Tag 的颜色模型由 `TagColor` 和 `TagVariant` 两个正交维度组成，按照当前三种变体规范的 `Color × Variant` 语义生成最终视觉。
 
 Tag 不负责复杂筛选器、按钮或徽标计数。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
 
@@ -27,9 +27,9 @@ Tag 的设计语言围绕控件职责、可观察状态和主题契约组织，�
 
 | 维度 | 含义 | Tag 中的表达 |
 | --- | --- | --- |
-| 产品语义 | 控件在界面中承担的稳定职责。 | Tag 是 AtomUI 桌面控件体系中的标签控件，用于展示状态、分类、可关闭标记和预设色语义。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CloseIcon`、`Icon`、`Text`。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | input/value、visual option。 |
+| 产品语义 | 控件在界面中承担的稳定职责。 | Tag 表达展示语义，CheckableTag 表达二态选择，CheckableTagGroup 表达一组选项的单选或多选。 |
+| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | Tag 使用 `Text`/`Icon`；CheckableTag 使用 `Content`/`Icon`；Group 使用 `Options` 和 `ItemTemplate`。 |
+| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | Tag 使用颜色分类和 `Variant`；CheckableTag 使用 `IsChecked`；Group 使用 `CheckedItem(s)`。 |
 | 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
 
 ## 3. API 与契约模型
@@ -41,15 +41,27 @@ Tag 的公共契约由 public/protected 类型成员、Avalonia 属性、事件�
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `CloseIcon`、`Icon`、`Text` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 交互与状态 | `IsBordered`、`IsClosable` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `TagColor` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 交互与状态 | `IsClosable`、`Variant` | 表达关闭能力和 Filled/Solid/Outlined 视觉形态。 |
+| 视觉与布局 | `TagColor` | 选择 Default、Preset、Status 或 Custom 颜色类别。 |
 
 稳定事件包括 `Closed`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 
 主要公开类型与枚举：
 
 - 类型：`AbstractTag`、`Tag`。
-- 枚举：`TagStatus`。
+- 枚举：`TagStatus`、`TagVariant`。
+
+`Variant` 的默认值为 `TagVariant.Filled`。Tag 不提供全局 Variant 配置，也不把 Variant 写入 `ThemeConfig`；应用需要统一样式时使用 Avalonia Style，控件实例的本地值优先于样式值。
+
+选择标签的 public surface 按以下边界维护：
+
+| 控件 | 主要契约 | 默认与状态 owner |
+| --- | --- | --- |
+| `CheckableTag` | `IsChecked`、`IsEnabled`、`Content`、`ContentTemplate`、`Command`、`Icon`、`IsMotionEnabled` | 复用 ToggleButton 二态状态；不继承普通 Tag 的颜色、Variant 或关闭 API。 |
+| `CheckableTagGroup` | `Options`、`IsMultiple`、`CheckedItem`、`CheckedItems`、Default 值、`ItemTemplate`、布局属性和 `CheckedChanged` | 默认可取消单选；Group 是公开选择值的唯一 owner。 |
+| `ICheckableTagOption` / `CheckableTagOption` | `Value`、`Content` | Value 非空且在同一 Group 中唯一。 |
+
+Group 的 `CheckedItem` 和 `CheckedItems` 默认支持 TwoWay binding；前者只在单选模式生效，后者只在多选模式生效。完整模式转换、Default 初始化和事件契约见选择模型专项文档。
 
 稳定 template part：
 
@@ -64,19 +76,36 @@ Tag 的公共契约由 public/protected 类型成员、Avalonia 属性、事件�
 Tag 的状态流按以下路径收敛：
 
 ```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
+TagColor + Variant + ThemeSnapshot
+  -> ColorCategory(Default / Preset / Status / Custom)
+  -> Foreground / Background / BorderBrush
+  -> effective visual state / pseudo-class
   -> ControlTheme selector / presenter / renderer
   -> Gallery 可观察行为
 ```
 
 状态维护规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- input/value、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `TagColor` 只负责颜色类别，`Variant` 只负责视觉形态；颜色解析不得反向修改 Variant。
+- `default`、`null`、空值和无效颜色必须恢复 Default 颜色状态，不能残留之前的 Brush 或伪类。
+- `info` 和 `processing` 使用同一组 Info 语义 Token；`default` 使用 Tag 基础 Token。
+- 所有 Variant 保持相同边框厚度，Filled 和部分 Solid 通过透明边框表达无可见边界。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+
+CheckableTag 家族的状态流保持独立：
+
+```text
+CheckableTag.IsChecked
+  -> ToggleButton input state
+  -> checked pseudo-class / ControlTheme
+
+Options + IsMultiple + CheckedItem(s)
+  -> Group value normalization
+  -> internal SelectionModel
+  -> CheckableTag.IsChecked
+```
+
+Group 的内部 SelectedItem(s) 只保存归一后的 option wrapper，不是 public state；子项交互必须先回到 Group，再由 Group 通过 `SetCurrentValue` 更新公开值。
 
 ## 5. 视觉与主题模型
 
@@ -85,14 +114,27 @@ Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组�
 | 主题文件 | 职责 |
 | --- | --- |
 | `TagTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `CheckableTagTheme.axaml` | 提供二态标签的内容结构以及 checked、focus、disabled 等状态视觉。 |
+| `CheckableTagGroupTheme.axaml` | 组合内部选择控件、ItemsPresenter 和 WrapPanel。 |
 | `TagThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 Tag 使用 `TagToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
 
+Tag 的视觉组合由以下矩阵表达：
+
+| 颜色类别 | Filled | Solid | Outlined |
+| --- | --- | --- | --- |
+| Default | 浅背景、透明边框、默认文字 | `ColorBgSolid` 背景、对比文字 | 默认背景、默认边框、默认文字 |
+| Preset | palette 1 背景、palette 7 文字 | palette 6 背景、浅色文字、palette 6 边框 | palette 1 背景、palette 3 边框、palette 7 文字 |
+| Status | 状态浅背景、状态主色文字 | 状态主色背景、浅色文字、状态主色边框 | 状态浅背景、状态边框、状态主色文字 |
+| Custom | HSL 亮度 0.95 背景、原色文字 | 原色背景、浅色文字 | HSL 亮度 0.95 背景、原色边框和文字 |
+
 主题维护规则：
 
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
+- `TagVariant`、`Variant=Filled` 默认值、`TagColor` 颜色分类、ControlTheme key、template part 和伪类是稳定契约。
+- `IsBordered` 不属于当前契约，不得重新引入；旧 `bordered` 和 `color="xxx-inverse"` 兼容入口不属于当前设计。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
+- 不在控件中增加全局 Tag 配置或 ThemeConfig 组件配置；全局默认样式由 Avalonia Style 承担。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
 
@@ -106,6 +148,9 @@ Tag 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证规
 - `Tag`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TagTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `TagToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `AbstractCheckableTag` / `CheckableTag`：复用 ToggleButton 输入语义并提供标签选择视觉。
+- `AbstractCheckableTagGroup` / `CheckableTagGroup`：拥有 Options、模式、公开选择值、Form 和集合生命周期。
+- internal checkable items control：拥有 SelectionModel、容器生成和 IsChecked 投影，不进入 public surface。
 
 集成关系：
 
@@ -123,19 +168,26 @@ Tag 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证规
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
+- CheckableTagGroup 的公开值始终是 option Value，不能泄漏 internal wrapper、容器或内部 SelectedItem(s)。
+- Options/CheckedItems 集合替换、模板重应用和 detach 必须释放旧订阅，容器回收不能残留旧 IsChecked。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
 ## 8. 专项模型
 
-### 8.1 视觉选项模型
+### 8.1 颜色与 Variant 模型
 
-Tag 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
+Tag 的视觉选项通过 `TagColor` 和 `Variant` 归一为颜色类别、Brush、伪类或模板绑定。预设颜色从当前 `ThemeSnapshot.PresetColorPalettes` 读取，状态颜色从 SharedToken 读取，自定义颜色使用 HSL 亮背景算法。Token 保存组件语义值，不能保存实例运行时状态或业务色值，也不能展开完整的颜色组合矩阵。
+
+### 8.2 CheckableTag 选择模型
+
+CheckableTag 使用 ToggleButton 的二态状态；CheckableTagGroup 将 `Options`、`IsMultiple` 和 `CheckedItem(s)` 归一为内部 SelectionModel，并把选择状态单向投影到子项。完整 Public API、模式矩阵、Template、同步算法、Form、生命周期与 AOT 边界见 [CheckableTag 与 CheckableTagGroup 选择模型设计](checkable-tag-design.md)。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Tag 桌面版实现原理](implementation.md)
+- [CheckableTag 与 CheckableTagGroup 选择模型设计](checkable-tag-design.md)
 - [Tag Token 设计](token.md)
 - [Tag Changelog](changelog.md)
 
@@ -143,18 +195,18 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Tag` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Tag` | 展示标签根区域，承载颜色、Variant、内容和关闭入口。 | `TagColor`、`Variant`、`Text`、`IsClosable` | TagToken | stable |
+| `checkable` | `CheckableTag` | 二态选择标签根区域，承载输入、内容、Icon 和选择视觉。 | `IsChecked`、`Content`、`Icon`、`IsEnabled` | TagToken + SharedToken | stable |
+| `group` | `CheckableTagGroup` | 选择组根区域，拥有 Options、模式、公开值和 Form 语义。 | `Options`、`IsMultiple`、`CheckedItem(s)` | SharedToken spacing | stable |
+| `item` | `CheckableTag container` | Group 内单个可交互选项，只消费 owner 投影的状态。 | `IsChecked`、`ContentTemplate` | TagToken + SharedToken | stable |
+| `content` | `ContentPresenter` | 承载 Tag 文本或 CheckableTag 的任意内容。 | `Text` 或 `Content` | typography/spacing | stable |
 
 LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/tag/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/tag/semantic-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `checkable-tag-design.md` + `token.md` + Gallery ShowCase | 生成 `controls/tag/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + `checkable-tag-design.md` + theme/template 信息 | 生成 `controls/tag/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
@@ -166,7 +218,7 @@ LLMS 导出来源：
 | --- | --- |
 | 文档改动 | 运行 `git diff --check`，检查相对链接存在。 |
 | Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
-| 状态模型 | 覆盖 input/value、visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
+| 状态模型 | 覆盖 `TagColor × Variant`、CheckableTag 二态、Group 单选/多选、Default、集合变化和主题切换。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
 | Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |

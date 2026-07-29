@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
@@ -10,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -42,8 +44,10 @@ public abstract class AbstractTag : TemplatedControl
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<AbstractTag, bool>(nameof(IsClosable));
 
-    public static readonly StyledProperty<bool> IsBorderedProperty =
-        AvaloniaProperty.Register<AbstractTag, bool>(nameof(IsBordered), true);
+    public static readonly StyledProperty<TagVariant> VariantProperty =
+        AvaloniaProperty.Register<AbstractTag, TagVariant>(
+            nameof(Variant),
+            TagVariant.Filled);
 
     public static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<AbstractTag, PathIcon?>(nameof(Icon));
@@ -67,10 +71,10 @@ public abstract class AbstractTag : TemplatedControl
         set => SetValue(IsClosableProperty, value);
     }
 
-    public bool IsBordered
+    public TagVariant Variant
     {
-        get => GetValue(IsBorderedProperty);
-        set => SetValue(IsBorderedProperty, value);
+        get => GetValue(VariantProperty);
+        set => SetValue(VariantProperty, value);
     }
 
     public PathIcon? Icon
@@ -116,16 +120,6 @@ public abstract class AbstractTag : TemplatedControl
             o => o.RenderScaleAwareBorderThickness,
             (o, v) => o.RenderScaleAwareBorderThickness = v);
 
-    internal static readonly DirectProperty<AbstractTag, bool> IsPresetColorTagProperty =
-        AvaloniaProperty.RegisterDirect<AbstractTag, bool>(nameof(IsPresetColorTag),
-            o => o.IsPresetColorTag,
-            (o, v) => o.IsPresetColorTag = v);
-
-    internal static readonly DirectProperty<AbstractTag, bool> IsColorSetProperty =
-        AvaloniaProperty.RegisterDirect<AbstractTag, bool>(nameof(IsColorSet),
-            o => o.IsColorSet,
-            (o, v) => o.IsColorSet = v);
-
     internal Thickness TagTextPaddingInline
     {
         get => GetValue(TagTextPaddingInlineProperty);
@@ -140,22 +134,6 @@ public abstract class AbstractTag : TemplatedControl
         set => SetAndRaise(RenderScaleAwareBorderThicknessProperty, ref _renderScaleAwareBorderThickness, value);
     }
 
-    private bool _isPresetColorTag;
-
-    internal bool IsPresetColorTag
-    {
-        get => _isPresetColorTag;
-        set => SetAndRaise(IsPresetColorTagProperty, ref _isPresetColorTag, value);
-    }
-
-    private bool _isColorSet;
-
-    internal bool IsColorSet
-    {
-        get => _isColorSet;
-        set => SetAndRaise(IsColorSetProperty, ref _isColorSet, value);
-    }
-    
     #endregion
     
     private static readonly ThemeTokenResolver s_themeTokenResolver = new();
@@ -180,6 +158,7 @@ public abstract class AbstractTag : TemplatedControl
     [
         (nameof(TagStatus.Success), TagStatus.Success),
         (nameof(TagStatus.Info), TagStatus.Info),
+        ("processing", TagStatus.Info),
         (nameof(TagStatus.Warning), TagStatus.Warning),
         (nameof(TagStatus.Error), TagStatus.Error)
     ];
@@ -189,14 +168,16 @@ public abstract class AbstractTag : TemplatedControl
     private IReadOnlyDictionary<TagStatus, TagStatusCalcColor> _statusColorMap =
         new Dictionary<TagStatus, TagStatusCalcColor>();
     private IDisposable? _themeSubscription;
+    private CompositeDisposable? _calculatedVisualValues;
+    private Color _solidTextColor;
     
     static AbstractTag()
     {
-        AffectsMeasure<AbstractTag>(IsBorderedProperty,
-            IconProperty,
+        AffectsMeasure<AbstractTag>(IconProperty,
             IsClosableProperty,
             TextProperty);
         AffectsRender<AbstractTag>(TagColorProperty,
+            VariantProperty,
             ForegroundProperty,
             BackgroundProperty,
             BorderBrushProperty);
@@ -211,12 +192,18 @@ public abstract class AbstractTag : TemplatedControl
         {
             ApplyThemeSnapshot(context.Snapshot);
         }
+        else
+        {
+            UpdateTagColorVisualState();
+        }
     }
     
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         _themeSubscription?.Dispose();
         _themeSubscription = null;
+        _calculatedVisualValues?.Dispose();
+        _calculatedVisualValues = null;
         base.OnDetachedFromVisualTree(e);
     }
     
@@ -224,11 +211,10 @@ public abstract class AbstractTag : TemplatedControl
     {
         SetupStatusColorMap(snapshot);
         SetupPresetColorMap(snapshot);
-        if (TagColor is not null)
-        {
-            SetupTagColorInfo(TagColor);
-        }
-        InvalidateVisual();
+        _solidTextColor = s_themeTokenResolver.GetGlobal<Color>(
+            snapshot,
+            (int)SharedTokenKind.ColorTextLightSolid);
+        UpdateTagColorVisualState();
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -250,9 +236,9 @@ public abstract class AbstractTag : TemplatedControl
         {
             ApplyThemeSnapshot(context.Snapshot);
         }
-        if (TagColor is not null)
+        else
         {
-            SetupTagColorInfo(TagColor);
+            UpdateTagColorVisualState();
         }
         ConfigureBorderThickness();
     }
@@ -268,16 +254,9 @@ public abstract class AbstractTag : TemplatedControl
 
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == TagColorProperty)
+            if (change.Property == TagColorProperty || change.Property == VariantProperty)
             {
-                if (TagColor is not null)
-                {
-                    SetupTagColorInfo(TagColor);
-                }
-            }
-            else if (change.Property == IsBorderedProperty)
-            {
-                ConfigureBorderThickness();
+                UpdateTagColorVisualState();
             }
             else if (change.Property == IsClosableProperty)
             {
@@ -288,14 +267,7 @@ public abstract class AbstractTag : TemplatedControl
 
     private void ConfigureBorderThickness()
     {
-        if (IsBordered)
-        {
-            SetValue(BorderThicknessProperty, RenderScaleAwareBorderThickness, BindingPriority.Template);
-        }
-        else
-        {
-            SetValue(BorderThicknessProperty, new Thickness(), BindingPriority.Template);
-        }
+        SetValue(BorderThicknessProperty, RenderScaleAwareBorderThickness, BindingPriority.Template);
     }
 
     private void SetupPresetColorMap(ThemeSnapshot snapshot)
@@ -355,24 +327,28 @@ public abstract class AbstractTag : TemplatedControl
         };
     }
 
-    private void SetupTagColorInfo(string colorStr)
+    private void UpdateTagColorVisualState()
     {
-        IsPresetColorTag = false;
-        IsColorSet       = false;
-        var colorSpan    = colorStr.AsSpan().Trim();
+        _calculatedVisualValues?.Dispose();
+        _calculatedVisualValues = null;
+        PseudoClasses.Set(TagPseudoClass.PresetColor, false);
+        PseudoClasses.Set(TagPseudoClass.StatusColor, false);
+        PseudoClasses.Set(TagPseudoClass.CustomColor, false);
+
+        var colorSpan = TagColor.AsSpan().Trim();
+        if (colorSpan.IsEmpty || colorSpan.Equals("default".AsSpan(), StringComparison.OrdinalIgnoreCase))
+        {
+            InvalidateVisual();
+            return;
+        }
 
         foreach (var entry in PresetColorEntries)
         {
             if (entry.Name.AsSpan().Equals(colorSpan, StringComparison.OrdinalIgnoreCase) &&
                 _presetColorMap.TryGetValue(entry.Color.Type, out var colorInfo))
             {
-                Foreground       = new SolidColorBrush(colorInfo.TextColor);
-                BorderBrush      = new SolidColorBrush(colorInfo.LightBorderColor);
-                Background       = new SolidColorBrush(colorInfo.LightColor);
-                IsPresetColorTag = true;
+                ApplyPresetColor(colorInfo);
                 PseudoClasses.Set(TagPseudoClass.PresetColor, true);
-                PseudoClasses.Set(TagPseudoClass.StatusColor, false);
-                PseudoClasses.Set(TagPseudoClass.CustomColor, false);
                 return;
             }
         }
@@ -382,25 +358,81 @@ public abstract class AbstractTag : TemplatedControl
             if (entry.Name.AsSpan().Equals(colorSpan, StringComparison.OrdinalIgnoreCase) &&
                 _statusColorMap.TryGetValue(entry.Status, out var colorInfo))
             {
-                Foreground       = new SolidColorBrush(colorInfo.Color);
-                BorderBrush      = new SolidColorBrush(colorInfo.BorderColor);
-                Background       = new SolidColorBrush(colorInfo.Background);
-                IsPresetColorTag = true;
-                PseudoClasses.Set(TagPseudoClass.PresetColor, false);
+                ApplyStatusColor(colorInfo);
                 PseudoClasses.Set(TagPseudoClass.StatusColor, true);
-                PseudoClasses.Set(TagPseudoClass.CustomColor, false);
                 return;
             }
         }
 
         if (Color.TryParse(colorSpan, out var color))
         {
-            IsBordered = false;
-            IsColorSet = true;
-            Background = new SolidColorBrush(color);
-            PseudoClasses.Set(TagPseudoClass.PresetColor, false);
-            PseudoClasses.Set(TagPseudoClass.StatusColor, false);
+            ApplyCustomColor(color);
             PseudoClasses.Set(TagPseudoClass.CustomColor, true);
+            return;
+        }
+
+        InvalidateVisual();
+    }
+
+    private void ApplyPresetColor(TagCalcColor colorInfo)
+    {
+        var background = Variant == TagVariant.Solid ? colorInfo.DarkColor : colorInfo.LightColor;
+        var foreground = Variant == TagVariant.Solid ? _solidTextColor : colorInfo.TextColor;
+        var border = Variant switch
+        {
+            TagVariant.Solid    => colorInfo.DarkColor,
+            TagVariant.Outlined => colorInfo.LightBorderColor,
+            _                   => Colors.Transparent
+        };
+        ApplyCalculatedColors(background, foreground, border);
+    }
+
+    private void ApplyStatusColor(TagStatusCalcColor colorInfo)
+    {
+        var background = Variant == TagVariant.Solid ? colorInfo.Color : colorInfo.Background;
+        var foreground = Variant == TagVariant.Solid ? _solidTextColor : colorInfo.Color;
+        var border = Variant switch
+        {
+            TagVariant.Solid    => colorInfo.Color,
+            TagVariant.Outlined => colorInfo.BorderColor,
+            _                   => Colors.Transparent
+        };
+        ApplyCalculatedColors(background, foreground, border);
+    }
+
+    private void ApplyCustomColor(Color color)
+    {
+        var hsl            = new HslColor(color);
+        var lightBackground = new HslColor(hsl.A, hsl.H, hsl.S, 0.95).ToRgb();
+        var background     = Variant == TagVariant.Solid ? color : lightBackground;
+        var foreground     = Variant == TagVariant.Solid ? _solidTextColor : color;
+        var border         = Variant == TagVariant.Outlined ? color : Colors.Transparent;
+        ApplyCalculatedColors(background, foreground, border);
+    }
+
+    private void ApplyCalculatedColors(Color background, Color foreground, Color border)
+    {
+        var values = new CompositeDisposable(3);
+        try
+        {
+            AddTemplateValue(values, BackgroundProperty, new ImmutableSolidColorBrush(background));
+            AddTemplateValue(values, ForegroundProperty, new ImmutableSolidColorBrush(foreground));
+            AddTemplateValue(values, BorderBrushProperty, new ImmutableSolidColorBrush(border));
+            _calculatedVisualValues = values;
+        }
+        catch
+        {
+            values.Dispose();
+            throw;
+        }
+        InvalidateVisual();
+    }
+
+    private void AddTemplateValue<T>(CompositeDisposable values, StyledProperty<T> property, T value)
+    {
+        if (SetValue(property, value, BindingPriority.Template) is { } disposable)
+        {
+            values.Add(disposable);
         }
     }
 

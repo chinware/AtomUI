@@ -1,0 +1,28 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:TagThemeAsset.Identity}"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:CheckableTagGroup}"
+                  TargetType="atom:CheckableTagGroup">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:CheckableTagGroup">
+                <atom:CheckableTagItemsControl Name="PART_CheckableTagItems"
+                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                               IsMultiple="{TemplateBinding IsMultiple}"
+                                               ItemSpacing="{TemplateBinding ItemSpacing}"
+                                               ItemTemplate="{TemplateBinding ItemTemplate}"
+                                               LineSpacing="{TemplateBinding LineSpacing}"
+                                               Orientation="{TemplateBinding Orientation}" />
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="ItemSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
+        <Setter Property="LineSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
+    </ControlTheme>
+</ResourceDictionary>

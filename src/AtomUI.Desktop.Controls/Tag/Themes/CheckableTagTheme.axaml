@@ -1,0 +1,108 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              xmlns:themeResources="using:AtomUI.Theme.Resources"
+              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+              themeResources:ControlTokenScope.Identity="{x:Static generated:TagThemeAsset.Identity}"
+              x:ClassModifier="internal"
+              x:Class="AtomUI.Desktop.Controls.Themes.CheckableTagTheme"
+              TargetType="atom:CheckableTag">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:CheckableTag">
+            <Panel>
+                <atom:PixelAlignedBorder Name="Frame"
+                                         Background="{TemplateBinding Background}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}">
+                    <DockPanel Margin="{TemplateBinding Padding}"
+                               LastChildFill="True">
+                        <atom:IconPresenter Name="IconPresenter"
+                                            DockPanel.Dock="Left"
+                                            Icon="{TemplateBinding Icon}"
+                                            VerticalAlignment="Center"
+                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <ContentPresenter Name="ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          VerticalAlignment="Center" />
+                    </DockPanel>
+                </atom:PixelAlignedBorder>
+                <Border Name="FocusVisual"
+                        BorderBrush="{atom:SharedTokenResource ColorPrimary}"
+                        BorderThickness="{atom:SharedTokenResource BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        IsHitTestVisible="False"
+                        IsVisible="False" />
+            </Panel>
+        </ControlTemplate>
+    </Setter>
+
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+    <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="FocusAdorner" Value="{x:Null}" />
+    <Setter Property="FontSize" Value="{atom:TagTokenResource TagFontSize}" />
+    <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+    <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+    <Setter Property="MinHeight" Value="{atom:TagTokenResource TagLineHeight}" />
+    <Setter Property="Padding" Value="{atom:TagTokenResource TagPadding}" />
+
+    <Style Selector="^[IsMotionEnabled=True]">
+        <Setter Property="Transitions">
+            <Transitions>
+                <atom:SolidColorBrushTransition Property="Background"
+                                                Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                <atom:SolidColorBrushTransition Property="Foreground"
+                                                Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+        <Setter Property="Width" Value="{atom:TagTokenResource TagIconSize}" />
+        <Setter Property="Height" Value="{atom:TagTokenResource TagIconSize}" />
+        <Setter Property="IconBrush" Value="{TemplateBinding Foreground}" />
+        <Setter Property="Margin" Value="{atom:TagTokenResource TagTextPaddingInline}" />
+    </Style>
+
+    <Style Selector="^:not(:checked):pointerover:not(:disabled)">
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillSecondary}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimary}" />
+    </Style>
+
+    <Style Selector="^:checked:not(:disabled)">
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+    </Style>
+
+    <Style Selector="^:checked:pointerover:not(:disabled)">
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+    </Style>
+
+    <Style Selector="^:pressed:not(:disabled)">
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimaryActive}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+    </Style>
+
+    <Style Selector="^:focus-visible /template/ Border#FocusVisual">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="^:disabled">
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+    </Style>
+
+    <Style Selector="^:checked:disabled">
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+    </Style>
+</ControlTheme>

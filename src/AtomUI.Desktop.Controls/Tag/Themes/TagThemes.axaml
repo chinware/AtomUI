@@ -2,5 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:atom="https://atomui.net"
                     x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="CheckableTagGroupTheme.axaml" />
+        <ResourceInclude Source="CheckableTagItemsControlTheme.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <atom:TagTheme x:Key="{x:Type atom:Tag}" TargetType="atom:Tag"/>
+    <atom:CheckableTagTheme x:Key="{x:Type atom:CheckableTag}" TargetType="atom:CheckableTag" />
 </ResourceDictionary>

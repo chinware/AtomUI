@@ -18,7 +18,7 @@ Token 按控件语义分类维护：
 | --- | --- | --- |
 | 尺寸与密度 | 控件高度、宽度、图标尺寸、内容最小尺寸。 | `TagFontSize`、`TagLineHeight`、`TagIconSize`、`TagCloseIconSize` |
 | 间距与布局 | padding、margin、gap、offset、popup content padding。 | `TagPadding`、`TagTextPaddingInline` |
-| 颜色与状态视觉 | 文本、背景、边框、hover、selected、active、disabled 视觉。 | `DefaultBg`、`DefaultColor`、`TagBorderlessBg` |
+| 颜色与状态视觉 | 文本、背景、边框、Variant 基础视觉和 disabled 视觉。 | `DefaultBg`、`DefaultColor`、`SolidTextColor` |
 | 结构与装饰 | 圆角、阴影、指示器、弹层和装饰线相关变量。 | `TagLineHeight` |
 
 未出现在上表中的 Token 仍按源码中的组件语义维护，不按代码顺序机械分类。
@@ -32,11 +32,29 @@ Tag 的控件专项模型通过 Theme 消费 Token：
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
 - Token 类型、生成数据和 token.md 应显式维护，不依赖运行时反射扫描。
 
+`TagToken` 提供 Default 颜色和 Variant 基础视觉所需的组件语义值。`SolidTextColor` 根据 `ColorBgSolid` 的亮度选择黑色或白色，用于 Default Solid Tag 的文字对比度；Preset、Status 和 Custom 的颜色组合不复制到 Token 中，而由控件状态归一和 Theme selector 组合完成。
+
+`CheckableTag` 复用 Tag 家族的字号、行高、Icon 尺寸、圆角和内容间距语义，并从 SharedToken 读取 primary、text、hover、pressed、focus 和 disabled 颜色。checked 是控件实例状态，不新增 checked Token，也不复用普通 Tag 的 `Color × Variant` 矩阵。
+
+`CheckableTagGroup` 不定义组件 Token。`ItemSpacing` 和 `LineSpacing` 的默认值从 SharedToken 派生；Options、IsMultiple、CheckedItem(s) 和内部 selection 均不进入 Token scope。
+
+颜色组合遵循以下边界：
+
+```text
+TagToken / SharedToken / PresetPalette
+    -> 控件视觉计算或 AXAML selector
+    -> Foreground / Background / BorderBrush
+```
+
+Token 不保存 `TagColor`、`Variant` 或实例颜色值，也不为每个 `Color × Variant` 组合新增独立 Token。
+
 ## 4. 控件家族影响
 
 调整 Tag Token 时必须评估以下范围：
 
 - `Tag`
+- `CheckableTag`
+- `CheckableTagGroup` 及其内部 item container。
 - 对应 Gallery ShowCase 的示例和源码片段。
 - Light/Dark 主题、Browser/Desktop 主题和 Compact/Form/Popup 集成场景。
 
@@ -46,6 +64,9 @@ Tag 的控件专项模型通过 Theme 消费 Token：
 - 不把实例状态、交互状态或 `EffectiveXxx` 状态写成 Token。
 - 不在 Token 中展开颜色、variant 和状态的组合矩阵；组合关系应由 Theme selector 表达。
 - Token 默认值变更必须同步评估 Gallery 示例和截图可观察外观。
+- `Variant=Filled` 是 Tag 的默认视觉契约；Filled、Solid、Outlined 的组合关系不能通过删除边框厚度表达。
+- CheckableTag 只能消费可复用的 Tag/SharedToken 视觉语义，不能把 IsChecked、IsMultiple 或 Group 选择值写入 Token。
+- CheckableTagGroup 保持无专属 Token；只有出现不能由 TagToken 或 SharedToken 表达的稳定组件视觉语义时才允许扩展 Token scope。
 - 如需引入新 Token，必须同步 Token 类型、生成资源、主题引用和本文档。
 
 ## 6. 验证策略
@@ -55,4 +76,4 @@ Tag 的控件专项模型通过 Theme 消费 Token：
 | Token 文档 | `git diff --check`，检查相对链接存在。 |
 | Token 默认值 | 运行对应控件测试，走查 Light/Dark 和 Browser 主题。 |
 | Token 名称或数量 | 检查 generated TokenResource key、AXAML 引用和 token.md。 |
-| 主题映射 | 走查 hover、pressed、selected、disabled、loading 等状态视觉。 |
+| 主题映射 | 走查 `Color × Variant`、CheckableTag 二态、Group 间距、Light/Dark、透明边框、Icon 和 CloseIcon 视觉。 |
