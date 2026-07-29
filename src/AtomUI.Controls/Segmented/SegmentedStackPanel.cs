@@ -1,9 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 
 namespace AtomUI.Controls.Commons;
 
-internal class SegmentedStackPanel : Panel
+internal class SegmentedStackPanel : StackPanel
 {
     #region 公共属性定义
 
@@ -18,33 +19,35 @@ internal class SegmentedStackPanel : Panel
     
     #endregion
 
-    protected override Size MeasureOverride(Size availableSize)
+    static SegmentedStackPanel()
     {
-        if (!IsExpanding)
-        {
-            return MeasureOverrideNoExpanding(availableSize);
-        }
-
-        return MeasureOverrideExpanding(availableSize);
+        AffectsMeasure<SegmentedStackPanel>(IsExpandingProperty);
+        OrientationProperty.OverrideDefaultValue<SegmentedStackPanel>(Orientation.Horizontal);
     }
 
-    private Size MeasureOverrideNoExpanding(Size availableSize)
+    protected override Size MeasureOverride(Size availableSize)
     {
-        var layoutSlotSize = availableSize;
-        layoutSlotSize = layoutSlotSize.WithWidth(double.PositiveInfinity);
+        if (Orientation == Orientation.Vertical)
+        {
+            return MeasureVertical(availableSize);
+        }
+
+        return IsExpanding && !double.IsInfinity(availableSize.Width)
+            ? MeasureHorizontalExpanding(availableSize)
+            : MeasureHorizontalNatural(availableSize);
+    }
+
+    private Size MeasureHorizontalNatural(Size availableSize)
+    {
+        var layoutSlotSize = availableSize.WithWidth(double.PositiveInfinity);
         var targetWidth  = 0d;
         var targetHeight = 0d;
         foreach (var child in Children)
         {
-            if (child is AbstractSegmentedItem box)
+            if (child is AbstractSegmentedItem { IsVisible: true } item)
             {
-                if (!box.IsVisible)
-                {
-                    continue;
-                }
-
-                box.Measure(layoutSlotSize);
-                var childDesiredSize = box.DesiredSize;
+                item.Measure(layoutSlotSize);
+                var childDesiredSize = item.DesiredSize;
                 targetWidth  += childDesiredSize.Width;
                 targetHeight = Math.Max(targetHeight, childDesiredSize.Height);
             }
@@ -53,86 +56,111 @@ internal class SegmentedStackPanel : Panel
         return new Size(targetWidth, targetHeight);
     }
 
-    private Size MeasureOverrideExpanding(Size availableSize)
+    private Size MeasureHorizontalExpanding(Size availableSize)
     {
         var visibleCount = CountVisibleSegmentedItems();
         if (visibleCount == 0)
         {
-            return new Size(double.IsInfinity(availableSize.Width) ? 0 : availableSize.Width, 0);
+            return default;
         }
 
-        var maxHeight          = 0d;
-        var availableWidth     = availableSize.Width;
-        var childAvailableSize = new Size(availableWidth / visibleCount, availableSize.Height);
+        var maxHeight = 0d;
+        var childAvailableSize = new Size(availableSize.Width / visibleCount, availableSize.Height);
         foreach (var child in Children)
         {
-            if (child is AbstractSegmentedItem { IsVisible: true } box)
+            if (child is AbstractSegmentedItem { IsVisible: true } item)
             {
-                box.Measure(childAvailableSize);
-                if (box.DesiredSize.Height > maxHeight)
-                {
-                    maxHeight = box.DesiredSize.Height;
-                }
+                item.Measure(childAvailableSize);
+                maxHeight = Math.Max(maxHeight, item.DesiredSize.Height);
             }
         }
 
         return new Size(availableSize.Width, maxHeight);
     }
 
+    private Size MeasureVertical(Size availableSize)
+    {
+        var expandsWidth = IsExpanding && !double.IsInfinity(availableSize.Width);
+        var availableWidth = expandsWidth ? availableSize.Width : double.PositiveInfinity;
+        var childAvailableSize = new Size(availableWidth, double.PositiveInfinity);
+        var targetWidth = 0d;
+        var targetHeight = 0d;
+
+        foreach (var child in Children)
+        {
+            if (child is AbstractSegmentedItem { IsVisible: true } item)
+            {
+                item.Measure(childAvailableSize);
+                targetWidth   = Math.Max(targetWidth, item.DesiredSize.Width);
+                targetHeight += item.DesiredSize.Height;
+            }
+        }
+
+        return new Size(expandsWidth ? availableSize.Width : targetWidth, targetHeight);
+    }
+
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (!IsExpanding)
+        if (Orientation == Orientation.Vertical)
         {
-            ArrangeOverrideNoExpanding(finalSize);
+            ArrangeVertical(finalSize);
+        }
+        else if (IsExpanding)
+        {
+            ArrangeHorizontalExpanding(finalSize);
         }
         else
         {
-            ArrangeOverrideExpanding(finalSize);
+            ArrangeHorizontalNatural(finalSize);
         }
 
         return finalSize;
     }
 
-    private Size ArrangeOverrideNoExpanding(Size finalSize)
+    private void ArrangeHorizontalNatural(Size finalSize)
     {
         var offsetX = 0d;
         foreach (var child in Children)
         {
-            if (child is AbstractSegmentedItem box)
+            if (child is AbstractSegmentedItem { IsVisible: true } item)
             {
-                if (!box.IsVisible)
-                {
-                    continue;
-                }
-
-                box.Arrange(new Rect(new Point(offsetX, 0), box.DesiredSize));
-                offsetX += box.DesiredSize.Width;
+                item.Arrange(new Rect(new Point(offsetX, 0), item.DesiredSize));
+                offsetX += item.DesiredSize.Width;
             }
         }
-
-        return finalSize;
     }
 
-    private Size ArrangeOverrideExpanding(Size finalSize)
+    private void ArrangeHorizontalExpanding(Size finalSize)
     {
         var visibleCount = CountVisibleSegmentedItems();
         if (visibleCount == 0)
         {
-            return finalSize;
+            return;
         }
 
         var width   = finalSize.Width / visibleCount;
         var offsetX = 0d;
         foreach (var child in Children)
         {
-            if (child is AbstractSegmentedItem { IsVisible: true } box)
+            if (child is AbstractSegmentedItem { IsVisible: true } item)
             {
-                box.Arrange(new Rect(offsetX, 0, width, box.DesiredSize.Height));
+                item.Arrange(new Rect(offsetX, 0, width, item.DesiredSize.Height));
                 offsetX += width;
             }
         }
+    }
 
-        return finalSize;
+    private void ArrangeVertical(Size finalSize)
+    {
+        var offsetY = 0d;
+        foreach (var child in Children)
+        {
+            if (child is AbstractSegmentedItem { IsVisible: true } item)
+            {
+                item.Arrange(new Rect(0, offsetY, finalSize.Width, item.DesiredSize.Height));
+                offsetY += item.DesiredSize.Height;
+            }
+        }
     }
 
     private int CountVisibleSegmentedItems()

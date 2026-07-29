@@ -7,8 +7,12 @@ internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The most basic usage.";
+    public const string VerticalTitle = "Vertical Direction";
+    public const string VerticalDescription = "Make it vertical.";
     public const string BlockSegmentedTitle = "Block Segmented";
     public const string BlockSegmentedDescription = "block property will make the Segmented fit to its parent width.";
+    public const string RoundShapeTitle = "Round Shape";
+    public const string RoundShapeDescription = "Round shape of Segmented.";
     public const string DisabledTitle = "Disabled";
     public const string DisabledDescription = "Disabled Segmented.";
     public const string ThreeSizesTitle = "Sizes of Segmented";
@@ -35,7 +39,7 @@ internal partial class en_US
     public const string ScenarioExamples = "Examples";
     public const string PageSubtitle = "Group mutually exclusive options into a compact segmented selector.";
     public const string PageDescription =
-        "Segmented presents a small set of related options with single selection, optional icons, responsive expansion and token-based sizing.";
+        "Segmented presents a small set of related options with single selection, horizontal or vertical orientation, optional icons, shape variants, responsive expansion and token-based sizing.";
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
     public const string ApiEventSelectionChanged = "Raised when the selected item changes.";

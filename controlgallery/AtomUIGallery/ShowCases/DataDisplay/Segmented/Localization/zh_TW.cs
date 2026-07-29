@@ -7,8 +7,12 @@ internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最基礎的用法。";
+    public const string VerticalTitle = "垂直方向";
+    public const string VerticalDescription = "垂直方向。";
     public const string BlockSegmentedTitle = "塊級分段控制器";
     public const string BlockSegmentedDescription = "block 屬性會讓 Segmented 適配父容器寬度。";
+    public const string RoundShapeTitle = "膠囊形狀";
+    public const string RoundShapeDescription = "膠囊型的 Segmented。";
     public const string DisabledTitle = "禁用";
     public const string DisabledDescription = "禁用狀態的 Segmented。";
     public const string ThreeSizesTitle = "Segmented 尺寸";
@@ -35,7 +39,7 @@ internal partial class zh_TW
     public const string ScenarioExamples = "示例";
     public const string PageSubtitle = "將互斥選項組織成緊湊的分段選擇器。";
     public const string PageDescription =
-        "Segmented 用於展示一組少量相關選項，支持單選、圖標、橫向鋪滿和基於 Token 的尺寸樣式。";
+        "Segmented 用於展示一組少量相關選項，支持單選、橫向或縱向排列、圖標、形狀變體、橫向鋪滿和基於 Token 的尺寸樣式。";
     public const string ComponentCategory = "數據展示";
     public const string ComponentStatusStable = "穩定";
     public const string ApiEventSelectionChanged = "選中項變化時觸發。";

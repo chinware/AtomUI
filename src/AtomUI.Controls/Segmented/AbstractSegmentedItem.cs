@@ -38,6 +38,9 @@ public abstract class AbstractSegmentedItem : ContentControl, ISelectable
 
     internal static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractSegmentedItem>();
+
+    internal static readonly StyledProperty<SegmentedShape> ShapeProperty =
+        AbstractSegmented.ShapeProperty.AddOwner<AbstractSegmentedItem>();
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractSegmentedItem>();
@@ -46,6 +49,12 @@ public abstract class AbstractSegmentedItem : ContentControl, ISelectable
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
+    }
+
+    internal SegmentedShape Shape
+    {
+        get => GetValue(ShapeProperty);
+        set => SetValue(ShapeProperty, value);
     }
 
     internal bool IsMotionEnabled

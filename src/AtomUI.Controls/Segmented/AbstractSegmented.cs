@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -19,6 +20,12 @@ public abstract class AbstractSegmented : SelectingItemsControl,
     public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractSegmented>();
 
+    public static readonly StyledProperty<Orientation> OrientationProperty =
+        StackPanel.OrientationProperty.AddOwner<AbstractSegmented>();
+
+    public static readonly StyledProperty<SegmentedShape> ShapeProperty =
+        AvaloniaProperty.Register<AbstractSegmented, SegmentedShape>(nameof(Shape));
+
     public static readonly StyledProperty<bool> IsExpandingProperty =
         AvaloniaProperty.Register<AbstractSegmented, bool>(nameof(IsExpanding));
 
@@ -29,6 +36,18 @@ public abstract class AbstractSegmented : SelectingItemsControl,
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
+    }
+
+    public Orientation Orientation
+    {
+        get => GetValue(OrientationProperty);
+        set => SetValue(OrientationProperty, value);
+    }
+
+    public SegmentedShape Shape
+    {
+        get => GetValue(ShapeProperty);
+        set => SetValue(ShapeProperty, value);
     }
 
     public bool IsExpanding
@@ -101,7 +120,8 @@ public abstract class AbstractSegmented : SelectingItemsControl,
 
     static AbstractSegmented()
     {
-        AffectsMeasure<AbstractSegmented>(IsExpandingProperty, SizeTypeProperty);
+        OrientationProperty.OverrideDefaultValue<AbstractSegmented>(Orientation.Horizontal);
+        AffectsMeasure<AbstractSegmented>(OrientationProperty, IsExpandingProperty, SizeTypeProperty);
         AffectsRender<AbstractSegmented>(
             SelectedThumbCornerRadiusProperty, 
             SelectedThumbBgProperty,
@@ -157,10 +177,11 @@ public abstract class AbstractSegmented : SelectingItemsControl,
         SetupSelectedThumbRect();
     }
 
-    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    protected override Size ArrangeOverride(Size finalSize)
     {
-        base.OnSizeChanged(e);
+        var result = base.ArrangeOverride(finalSize);
         SetupSelectedThumbRect();
+        return result;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -194,7 +215,8 @@ public abstract class AbstractSegmented : SelectingItemsControl,
                 }
             }
 
-            segmentedItem[!SizeTypeProperty]        = this[!SizeTypeProperty];
+            segmentedItem[!SizeTypeProperty] = this[!SizeTypeProperty];
+            segmentedItem[!AbstractSegmentedItem.ShapeProperty] = this[!ShapeProperty];
             segmentedItem[!IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
 
             if (segmentedItem.IsSelected)
@@ -230,6 +252,23 @@ public abstract class AbstractSegmented : SelectingItemsControl,
         }
 
         return base.ShouldTriggerSelection(selectable, eventArgs);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        var direction = e.Key switch
+        {
+            Key.Left or Key.Up    => NavigationDirection.Previous,
+            Key.Right or Key.Down => NavigationDirection.Next,
+            _                     => (NavigationDirection?)null
+        };
+
+        if (!e.Handled && direction is { } value)
+        {
+            e.Handled = MoveSelection(value, wrap: true);
+        }
+
+        base.OnKeyDown(e);
     }
     
     public sealed override void Render(DrawingContext context)
@@ -298,7 +337,7 @@ public abstract class AbstractSegmented : SelectingItemsControl,
                 var offsetX   = offset.X;
                 var targetPos = new Point(offsetX, offset.Y);
                 SelectedThumbPos  = targetPos;
-                SelectedThumbSize = segmentedItem.DesiredSize;
+                SelectedThumbSize = segmentedItem.Bounds.Size;
             }
         }
     }

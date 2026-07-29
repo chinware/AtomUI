@@ -44,8 +44,16 @@ public class SegmentedShowCasePageTests
         source.ShouldContain("SegmentedShowCaseLangResource BlockSegmentedTitle");
         source.ShouldContain("SegmentedShowCaseLangResource DisabledTitle");
         source.ShouldContain("SegmentedShowCaseLangResource ThreeSizesTitle");
+        source.ShouldContain("SegmentedShowCaseLangResource VerticalTitle");
+        source.ShouldContain("SegmentedShowCaseLangResource RoundShapeTitle");
         source.ShouldContain("SegmentedShowCaseLangResource IconOnlyTitle");
         source.ShouldContain("SegmentedShowCaseLangResource WithIconTitle");
+        source.ShouldContain("Orientation=\"Vertical\"");
+        source.ShouldContain("Shape=\"Round\"");
+        source.ShouldContain("SizeType=\"{Binding RoundShapeSizeType}\"");
+        source.ShouldContain("SelectionChanged=\"HandleRoundShapeSizeSelectionChanged\"");
+        source.ShouldContain("Kind=SunOutlined");
+        source.ShouldContain("Kind=MoonOutlined");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");

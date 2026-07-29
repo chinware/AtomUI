@@ -7,8 +7,12 @@ internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最基础的用法。";
+    public const string VerticalTitle = "垂直方向";
+    public const string VerticalDescription = "垂直方向。";
     public const string BlockSegmentedTitle = "块级分段控制器";
     public const string BlockSegmentedDescription = "block 属性会让 Segmented 适配父容器宽度。";
+    public const string RoundShapeTitle = "胶囊形状";
+    public const string RoundShapeDescription = "胶囊型的 Segmented。";
     public const string DisabledTitle = "禁用";
     public const string DisabledDescription = "禁用状态的 Segmented。";
     public const string ThreeSizesTitle = "Segmented 尺寸";
@@ -35,7 +39,7 @@ internal partial class zh_CN
     public const string ScenarioExamples = "示例";
     public const string PageSubtitle = "将互斥选项组织成紧凑的分段选择器。";
     public const string PageDescription =
-        "Segmented 用于展示一组少量相关选项，支持单选、图标、横向铺满和基于 Token 的尺寸样式。";
+        "Segmented 用于展示一组少量相关选项，支持单选、横向或纵向排列、图标、形状变体、横向铺满和基于 Token 的尺寸样式。";
     public const string ComponentCategory = "数据展示";
     public const string ComponentStatusStable = "稳定";
     public const string ApiEventSelectionChanged = "选中项变化时触发。";
