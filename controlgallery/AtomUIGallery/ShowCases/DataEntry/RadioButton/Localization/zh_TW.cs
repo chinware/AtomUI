@@ -24,6 +24,8 @@ internal partial class zh_TW
     public const string CheckedItemBindingDescription = "CheckedItem 預設使用 TwoWay 綁定，可由使用者選擇或 ViewModel 狀態雙向更新。";
     public const string OptionButtonTitle = "選項按鈕";
     public const string OptionButtonDescription = "選項按鈕組。";
+    public const string VerticalOptionButtonTitle = "垂直選項按鈕";
+    public const string VerticalOptionButtonDescription = "選項按鈕組支援垂直排列，並可使用自然寬度或拉伸寬度。";
     public const string OptionButtonWithIconTitle = "帶圖標的選項按鈕";
     public const string OptionButtonWithIconDescription = "帶圖標的選項按鈕組。";
     public const string OptionStyleTitle = "選項樣式";

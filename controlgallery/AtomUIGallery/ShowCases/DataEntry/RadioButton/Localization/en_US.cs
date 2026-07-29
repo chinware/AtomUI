@@ -24,6 +24,8 @@ internal partial class en_US
     public const string CheckedItemBindingDescription = "CheckedItem uses TwoWay binding by default and can be updated by either user selection or ViewModel state.";
     public const string OptionButtonTitle = "Option Button";
     public const string OptionButtonDescription = "OptionButton Group.";
+    public const string VerticalOptionButtonTitle = "Vertical Option Button";
+    public const string VerticalOptionButtonDescription = "OptionButton groups support vertical natural-width and stretched layouts.";
     public const string OptionButtonWithIconTitle = "Option Button with icon";
     public const string OptionButtonWithIconDescription = "OptionButton Group with icon.";
     public const string OptionStyleTitle = "option style";

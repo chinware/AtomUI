@@ -11,12 +11,13 @@
             <ControlTemplate>
                 <Panel>
                     <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
-                                              CornerRadius="{TemplateBinding CornerRadius}"
+                                              CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                               IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}" />
                     <DockPanel Name="ContentLayout"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
+                               Margin="{TemplateBinding Padding}"
                                LastChildFill="True">
                         <atom:IconPresenter Name="IconPresenter"
                                             DockPanel.Dock="Left"
@@ -33,9 +34,17 @@
 
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="FontSize" Value="{atom:OptionButtonTokenResource ContentFontSize}" />
+        <Setter Property="Padding" Value="{atom:OptionButtonTokenResource Padding}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
 
         <Style Selector="^ /template/ DockPanel#ContentLayout">
             <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXXS}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">
@@ -50,7 +59,7 @@
             </Style>
         </Style>
 
-        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
+        <Style Selector="^[SizeType=Middle]">
             <Setter Property="FontSize" Value="{atom:OptionButtonTokenResource ContentFontSize}" />
             <Setter Property="Padding" Value="{atom:OptionButtonTokenResource Padding}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
@@ -58,6 +67,26 @@
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
                 <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[GroupOrientation=Vertical]">
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+
+            <Style Selector="^ /template/ DockPanel#ContentLayout">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
             </Style>
         </Style>
 

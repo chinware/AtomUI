@@ -22,20 +22,39 @@
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="IsWaveSpiritEnabled" Value="{atom:SharedTokenResource EnableWaveSpirit}" />
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="{CompiledBinding $parent[atom:OptionButtonGroup].Orientation}" />
+            </ItemsPanelTemplate>
+        </Setter>
 
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
         </Style>
         
-        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+        <Style Selector="^[SizeType=Middle]">
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
         </Style>
         
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+        </Style>
+
+        <Style Selector="^[Orientation=Horizontal]">
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            </Style>
         </Style>
         
         <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />

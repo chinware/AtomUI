@@ -2,6 +2,18 @@
 
 本文档记录 RadioButton 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-29
+
+- Design
+  - Define `OptionButtonGroup.Orientation` as the single source of truth for layout direction, connected corners, separators and directional navigation, with `Horizontal` as the default.
+  - Define Avalonia-native vertical width semantics: Stretch fills available width, non-Stretch alignment uses natural width, and explicit Width remains authoritative.
+  - Define OnlyOne/First/Middle/Last corner mapping and group-local rendering rules for Horizontal and Vertical.
+- Theme
+  - Define direction-scoped Group and Item sizing, vertical leading content alignment and `EffectiveCornerRadius` consumption without introducing orientation-specific Token.
+  - Align `CustomizableSizeType.Custom` with the global customization contract by retaining base values without a Custom preset selector.
+- Docs
+  - Add the OptionButtonGroup orientation design and synchronize RadioButton family architecture, implementation and Token ownership.
+
 ## 2026-07-06
 
 - Behavior

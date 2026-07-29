@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -39,6 +40,19 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
             o => o.GroupPositionTrait,
             (o, v) => o.GroupPositionTrait = v,
             OptionButtonPositionTrait.OnlyOne);
+
+    internal static readonly DirectProperty<AbstractOptionButton, Orientation> GroupOrientationProperty =
+        AvaloniaProperty.RegisterDirect<AbstractOptionButton, Orientation>(
+            nameof(GroupOrientation),
+            o => o.GroupOrientation,
+            (o, v) => o.GroupOrientation = v,
+            Orientation.Horizontal);
+
+    internal static readonly DirectProperty<AbstractOptionButton, CornerRadius> EffectiveCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<AbstractOptionButton, CornerRadius>(
+            nameof(EffectiveCornerRadius),
+            o => o.EffectiveCornerRadius,
+            (o, v) => o.EffectiveCornerRadius = v);
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractOptionButton>();
@@ -78,11 +92,26 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
         set => SetAndRaise(GroupPositionTraitProperty, ref _groupPositionTrait, value);
     }
 
+    private Orientation _groupOrientation;
+
+    internal Orientation GroupOrientation
+    {
+        get => _groupOrientation;
+        set => SetAndRaise(GroupOrientationProperty, ref _groupOrientation, value);
+    }
+
+    private CornerRadius _effectiveCornerRadius;
+
+    internal CornerRadius EffectiveCornerRadius
+    {
+        get => _effectiveCornerRadius;
+        private set => SetAndRaise(EffectiveCornerRadiusProperty, ref _effectiveCornerRadius, value);
+    }
+
     internal event EventHandler<OptionButtonPointerEventArgs>? OptionButtonPointerEvent;
 
     #endregion
 
-    private CornerRadius? _originCornerRadius;
     private readonly BorderRenderHelper _borderRenderHelper;
     private WaveSpiritDecorator? _waveSpiritDecorator;
 
@@ -90,7 +119,7 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
     {
         AffectsMeasure<AbstractOptionButton>(SizeTypeProperty, ButtonStyleProperty);
         AffectsRender<AbstractOptionButton>(IsCheckedProperty,
-            CornerRadiusProperty,
+            EffectiveCornerRadiusProperty,
             ForegroundProperty,
             BackgroundProperty,
             BorderBrushProperty,
@@ -103,26 +132,10 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
         _borderRenderHelper = new BorderRenderHelper();
     }
 
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var size         = base.MeasureOverride(availableSize);
-        var targetWidth  = size.Width;
-        var targetHeight = size.Height;
-        targetHeight += Padding.Top + Padding.Bottom;
-        targetWidth  += Padding.Left + Padding.Right;
-        return new Size(targetWidth, targetHeight);
-    }
-
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
         Debug.Assert(Parent is AbstractOptionButtonGroup, "AbstractOptionButton parent must be type of OptionButtonGroup");
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        HandleSizeTypeChanged();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -141,37 +154,34 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
             }
         }
 
-        if (change.Property == GroupPositionTraitProperty)
+        if (change.Property == CornerRadiusProperty ||
+            change.Property == GroupPositionTraitProperty ||
+            change.Property == GroupOrientationProperty)
         {
-            if (_originCornerRadius.HasValue)
-            {
-                CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
-            }
+            EffectiveCornerRadius = BuildEffectiveCornerRadius(
+                GroupPositionTrait,
+                GroupOrientation,
+                CornerRadius);
         }
     }
 
-    private void HandleSizeTypeChanged()
-    {
-        _originCornerRadius = CornerRadius;
-        CornerRadius        = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
-    }
-
-    private CornerRadius BuildCornerRadius(OptionButtonPositionTrait positionTrait, CornerRadius cornerRadius)
+    private static CornerRadius BuildEffectiveCornerRadius(
+        OptionButtonPositionTrait positionTrait,
+        Orientation orientation,
+        CornerRadius cornerRadius)
     {
         if (positionTrait == OptionButtonPositionTrait.First)
         {
-            return new CornerRadius(cornerRadius.TopLeft,
-                0,
-                0,
-                cornerRadius.BottomLeft);
+            return orientation == Orientation.Horizontal
+                ? new CornerRadius(cornerRadius.TopLeft, 0, 0, cornerRadius.BottomLeft)
+                : new CornerRadius(cornerRadius.TopLeft, cornerRadius.TopRight, 0, 0);
         }
 
         if (positionTrait == OptionButtonPositionTrait.Last)
         {
-            return new CornerRadius(0,
-                cornerRadius.TopRight,
-                cornerRadius.BottomRight,
-                0);
+            return orientation == Orientation.Horizontal
+                ? new CornerRadius(0, cornerRadius.TopRight, cornerRadius.BottomRight, 0)
+                : new CornerRadius(0, 0, cornerRadius.BottomRight, cornerRadius.BottomLeft);
         }
 
         if (positionTrait == OptionButtonPositionTrait.Middle)
@@ -227,7 +237,7 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
         _borderRenderHelper.Render(context,
             Bounds.Size,
             BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness),
-            CornerRadius,
+            EffectiveCornerRadius,
             BackgroundSizing.InnerBorderEdge,
             Background,
             BorderBrush);

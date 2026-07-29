@@ -1,6 +1,6 @@
 # RadioButton 桌面版架构设计
 
-本文档定义 `RadioButton` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [RadioButton 桌面版实现原理](implementation.md)，RadioButton Token 的专项设计见 [RadioButton Token 设计](token.md)，设计和契约变化记录见 [RadioButton Changelog](changelog.md)。
+本文档定义 `RadioButton`、`RadioButtonGroup`、`OptionButton` 和 `OptionButtonGroup` 桌面控件家族的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [RadioButton 桌面版实现原理](implementation.md)，OptionButtonGroup 的方向布局见 [OptionButtonGroup 方向布局设计](option-button-group-orientation-design.md)，相关 Token 见 [RadioButton Token 设计](token.md)，设计和契约变化记录见 [RadioButton Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -12,7 +12,7 @@
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton` |
 | 控件状态 | Stable |
 
-RadioButton 是 AtomUI 桌面控件体系中的单选按钮控件，用于在互斥选项集合中选择一个值。
+RadioButton 控件家族用于在互斥选项集合中选择一个值。`RadioButton` 提供标准单选指示器，`RadioButtonGroup` 管理普通选项组，`OptionButton` 将选项呈现为按钮，`OptionButtonGroup` 管理共享边框的按钮组选项。
 
 RadioButton 不负责多选集合、开关语义或复杂导航菜单。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
 
@@ -20,6 +20,8 @@ RadioButton 不负责多选集合、开关语义或复杂导航菜单。这些�
 
 - `src/AtomUI.Desktop.Controls/RadioButton`
 - `src/AtomUI.Controls/RadioButton`
+- `src/AtomUI.Desktop.Controls/OptionButtonGroup`
+- `src/AtomUI.Controls/OptionButtonGroup`
 
 ## 2. 设计语言
 
@@ -27,10 +29,10 @@ RadioButton 的设计语言围绕控件职责、可观察状态和主题契约�
 
 | 维度 | 含义 | RadioButton 中的表达 |
 | --- | --- | --- |
-| 产品语义 | 控件在界面中承担的稳定职责。 | RadioButton 是 AtomUI 桌面控件体系中的单选按钮控件，用于在互斥选项集合中选择一个值。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CheckedItem`、`DotSizeValue`、`ItemSpacing`。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | RadioButton Token + ControlTheme。 |
+| 产品语义 | 控件在界面中承担的稳定职责。 | 普通单选指示器与按钮式单选组共享互斥选择语义。 |
+| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CheckedItem`、`SelectedItem`、`Items`、`ItemsSource`、`ItemTemplate`。 |
+| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | checked/selected、disabled、pointer、motion、ButtonStyle 和方向组合状态。 |
+| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | RadioButtonToken、OptionButtonToken 与对应 ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -40,24 +42,24 @@ RadioButton 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `CheckedItem`、`DotSizeValue`、`ItemSpacing` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `IsChecked` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsMotionEnabled`、`IsWaveSpiritEnabled` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `DotPadding`、`LineSpacing`、`Orientation`、`PaddingInline`、`RadioBackground`、`RadioBorderBrush`、`RadioBorderThickness`、`RadioDotEffectSize`、`RadioInnerBackground`、`RadioSize` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 内容与数据 | `Content`、`Icon`、`Items`、`ItemsSource`、`ItemTemplate` | 定义选项内容、图标、数据和模板入口。 |
+| 选择与集合 | `IsChecked`、`CheckedItem`、`SelectedIndex`、`SelectedItem` | 维护普通单选组和按钮式单选组的当前值。 |
+| 交互与状态 | `IsEnabled`、`IsMotionEnabled`、`IsWaveSpiritEnabled`、`ButtonStyle` | 表达可用性、动效和 Outline/Solid 状态视觉。 |
+| 视觉与布局 | `Orientation`、`ItemSpacing`、`LineSpacing`、`SizeType`、`CornerRadius`、`BorderThickness` | 控制普通组排列、按钮组方向、尺寸和组合几何。 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+`RadioButtonGroup.CheckedChanged` 通知普通组当前项变化；`OptionButtonGroup.OptionCheckedChanged` 通知按钮组选项进入 checked 状态。两者不互相代理，继承的选择和输入事件继续遵循 Avalonia 事件语义。
 
 主要公开类型与枚举：
 
-- 类型：`AbstractRadioButton`、`AbstractRadioButtonGroup`、`RadioButton`、`RadioButtonGroup`、`RadioButtonGroupCheckedChangedEventArgs`、`RadioButtonGroupManager`、`RadioButtonOption`、`RadioIndicator`。
-- 枚举：无。
+- 类型：`AbstractRadioButton`、`AbstractRadioButtonGroup`、`RadioButton`、`RadioButtonGroup`、`RadioButtonGroupCheckedChangedEventArgs`、`RadioButtonOption`、`RadioIndicator`、`AbstractOptionButton`、`AbstractOptionButtonGroup`、`OptionButton`、`OptionButtonGroup`、`OptionButtonData`、`OptionCheckedChangedEventArgs`。
+- 枚举：`OptionButtonStyle`、`OptionButtonPositionTrait`。`OptionButtonPositionTrait` 用于组合位置协作，不作为 Group 的方向配置入口。
 
 稳定 template part：
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_ItemsPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
-| `PART_WaveSpirit` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
+| `PART_ItemsPresenter` | `ItemsPresenter` | 承载 RadioButtonGroup 或 OptionButtonGroup 的集合容器。 |
+| `PART_WaveSpirit` | `WaveSpiritDecorator` | 承载 RadioButton 或 OptionButton 的点击 Wave，使用有效圆角。 |
 
 当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
 
@@ -78,6 +80,8 @@ Public API / inherited command / item source / user input
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - `RadioButtonGroup.CheckedItem` 是单选组的外部值 owner，默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；用户选择和 ViewModel 更新必须收敛到同一份当前项状态。
+- `OptionButtonGroup` 以 SelectingItemsControl 的选择状态作为按钮组选中 source of truth，用户 checked、键盘导航和外部 `SelectedIndex` / `SelectedItem` 必须收敛到同一选择。
+- `OptionButtonGroup.Orientation` 是排列方向、组合圆角、分隔线方向和方向键导航的唯一 owner，默认值为 `Horizontal`。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -91,8 +95,11 @@ RadioButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `RadioButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `RadioButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `RadioIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `OptionButtonGroupTheme.axaml` | 定义按钮组 ItemsPresenter、方向布局入口、尺寸和组级边框资源。 |
+| `OptionButtonTheme.axaml` | 定义按钮内容、Outline/Solid、checked/disabled、方向对齐和 Wave 视觉。 |
+| `OptionButtonBoxThemes.axaml` | 聚合 OptionButtonGroup 与 OptionButton 的主题资源。 |
 
-RadioButton 使用 `RadioButtonToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、input/value、motion、visual option 运行时状态。
+普通单选控件使用 `RadioButtonToken`，按钮式选项使用 `OptionButtonToken`。Token 只表达组件视觉语义，不承载 checked/selected、Orientation、GroupPositionTrait 或 EffectiveCornerRadius 运行时状态。
 
 主题维护规则：
 
@@ -115,6 +122,11 @@ RadioButton 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - `RadioButtonOption`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `RadioButtonToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
 - `RadioIndicator`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `AbstractOptionButtonGroup`：按钮组的方向、选择、容器位置和组级渲染 owner。
+- `OptionButtonGroup`：桌面 public Group，创建 `OptionButton` 容器并应用桌面主题。
+- `AbstractOptionButton`：单项 checked 状态、内容、图标、Wave 和有效圆角 owner。
+- `OptionButton`：桌面 public 按钮式单选项。
+- `OptionButtonToken`：按钮式选项的字体、Padding、背景、前景和状态颜色语义。
 
 集成关系：
 
@@ -129,6 +141,7 @@ RadioButton 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
+- `OptionButtonGroup.Orientation` 默认保持 `Horizontal`；纵向能力不得改变横向尺寸、圆角、边框和选择语义。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
@@ -150,11 +163,18 @@ RadioButton 的动效只表达状态变化反馈，不应改变 public API 语�
 
 RadioButton 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
 
+### 8.4 OptionButtonGroup 方向模型
+
+`OptionButtonGroup` 使用同一个选择和容器模型支持 Horizontal 与 Vertical。Group 将 Orientation 和 First/Middle/Last/OnlyOne 位置投影给 Item，标准 StackPanel 负责测量排列，Group renderer 负责外边框、共享分隔线和选中边框，Item 根据方向和位置计算 `EffectiveCornerRadius`。
+
+纵向模式默认铺满可用宽度；非 Stretch Alignment 使用最宽 Item 的自然宽度；显式 Width 由调用方接管。完整尺寸矩阵、圆角映射、Custom 边界和验证要求见 [OptionButtonGroup 方向布局设计](option-button-group-orientation-design.md)。
+
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [RadioButton 桌面版实现原理](implementation.md)
+- [OptionButtonGroup 方向布局设计](option-button-group-orientation-design.md)
 - [RadioButton Token 设计](token.md)
 - [RadioButton Changelog](changelog.md)
 
@@ -162,18 +182,18 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `RadioButton` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `radio-root` | `RadioButton` | 承载普通单选内容、checked、disabled 和 Wave 状态。 | `Content`、`IsChecked` | RadioButtonToken | stable |
+| `radio-group` | `RadioButtonGroup` | 承载普通单选集合、CheckedItem 和排列方向。 | `CheckedItem`、`Orientation`、`ItemsSource` | SharedToken | stable |
+| `indicator` | `RadioIndicator` | 绘制普通单选圆环、圆点和状态动效。 | `IsChecked`、`IsEnabled` | RadioButtonToken | internal-observable |
+| `option-group` | `OptionButtonGroup` | 承载按钮式单选集合、Orientation、共享边框和选中边框。 | `Orientation`、`ButtonStyle`、`SelectedItem`、`SizeType` | OptionButtonToken + SharedToken | stable |
+| `option-item` | `OptionButton` | 承载按钮式选项内容、图标、checked 状态和有效圆角。 | `Content`、`Icon`、`IsChecked` | OptionButtonToken | stable |
 
 LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/radio-button/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/radio-button/semantic-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 专项设计的稳定摘要同步到主文档后生成 `controls/radio-button/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 专项设计的 owner、状态流和组合结构同步到主文档后生成 `controls/radio-button/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
@@ -185,7 +205,7 @@ LLMS 导出来源：
 | --- | --- |
 | 文档改动 | 运行 `git diff --check`，检查相对链接存在。 |
 | Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
-| 状态模型 | 覆盖 selection/checked/active、input/value、motion、visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
+| 状态模型 | 覆盖 checked/selected、Orientation、ButtonStyle、SizeType、disabled、hover、pressed、focus 和 motion。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
 | Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |

@@ -46,6 +46,7 @@
 - [OtpLineEdit Changelog](otp-line-edit/changelog.md)
 - [RadioButton 桌面版架构设计](radio-button/overview.md)
 - [RadioButton 桌面版实现原理](radio-button/implementation.md)
+- [OptionButtonGroup 方向布局设计](radio-button/option-button-group-orientation-design.md)
 - [RadioButton Token 设计](radio-button/token.md)
 - [RadioButton Changelog](radio-button/changelog.md)
 - [Rate 桌面版架构设计](rate/overview.md)

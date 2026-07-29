@@ -4,7 +4,7 @@
 
 ## 概述
 
-RadioButton 是 AtomUI 桌面控件体系中的单选按钮控件，用于在互斥选项集合中选择一个值。
+RadioButton 控件家族用于在互斥选项集合中选择一个值。`RadioButton` 提供标准单选指示器，`RadioButtonGroup` 管理普通选项组，`OptionButton` 将选项呈现为按钮，`OptionButtonGroup` 管理共享边框的按钮组选项。
 
 RadioButton 不负责多选集合、开关语义或复杂导航菜单。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
 
@@ -12,6 +12,8 @@ RadioButton 不负责多选集合、开关语义或复杂导航菜单。这些�
 
 - `src/AtomUI.Desktop.Controls/RadioButton`
 - `src/AtomUI.Controls/RadioButton`
+- `src/AtomUI.Desktop.Controls/OptionButtonGroup`
+- `src/AtomUI.Controls/OptionButtonGroup`
 
 ## 包与命名空间
 
@@ -29,10 +31,10 @@ RadioButton 的设计语言围绕控件职责、可观察状态和主题契约�
 
 | 维度 | 含义 | RadioButton 中的表达 |
 | --- | --- | --- |
-| 产品语义 | 控件在界面中承担的稳定职责。 | RadioButton 是 AtomUI 桌面控件体系中的单选按钮控件，用于在互斥选项集合中选择一个值。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CheckedItem`、`DotSizeValue`、`ItemSpacing`。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | RadioButton Token + ControlTheme。 |
+| 产品语义 | 控件在界面中承担的稳定职责。 | 普通单选指示器与按钮式单选组共享互斥选择语义。 |
+| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CheckedItem`、`SelectedItem`、`Items`、`ItemsSource`、`ItemTemplate`。 |
+| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | checked/selected、disabled、pointer、motion、ButtonStyle 和方向组合状态。 |
+| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | RadioButtonToken、OptionButtonToken 与对应 ControlTheme。 |
 
 ## 公共 API
 
@@ -42,32 +44,32 @@ RadioButton 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `CheckedItem`、`DotSizeValue`、`ItemSpacing` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `IsChecked` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsMotionEnabled`、`IsWaveSpiritEnabled` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `DotPadding`、`LineSpacing`、`Orientation`、`PaddingInline`、`RadioBackground`、`RadioBorderBrush`、`RadioBorderThickness`、`RadioDotEffectSize`、`RadioInnerBackground`、`RadioSize` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 内容与数据 | `Content`、`Icon`、`Items`、`ItemsSource`、`ItemTemplate` | 定义选项内容、图标、数据和模板入口。 |
+| 选择与集合 | `IsChecked`、`CheckedItem`、`SelectedIndex`、`SelectedItem` | 维护普通单选组和按钮式单选组的当前值。 |
+| 交互与状态 | `IsEnabled`、`IsMotionEnabled`、`IsWaveSpiritEnabled`、`ButtonStyle` | 表达可用性、动效和 Outline/Solid 状态视觉。 |
+| 视觉与布局 | `Orientation`、`ItemSpacing`、`LineSpacing`、`SizeType`、`CornerRadius`、`BorderThickness` | 控制普通组排列、按钮组方向、尺寸和组合几何。 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+`RadioButtonGroup.CheckedChanged` 通知普通组当前项变化；`OptionButtonGroup.OptionCheckedChanged` 通知按钮组选项进入 checked 状态。两者不互相代理，继承的选择和输入事件继续遵循 Avalonia 事件语义。
 
 主要公开类型与枚举：
 
-- 类型：`AbstractRadioButton`、`AbstractRadioButtonGroup`、`RadioButton`、`RadioButtonGroup`、`RadioButtonGroupCheckedChangedEventArgs`、`RadioButtonGroupManager`、`RadioButtonOption`、`RadioIndicator`。
-- 枚举：无。
+- 类型：`AbstractRadioButton`、`AbstractRadioButtonGroup`、`RadioButton`、`RadioButtonGroup`、`RadioButtonGroupCheckedChangedEventArgs`、`RadioButtonOption`、`RadioIndicator`、`AbstractOptionButton`、`AbstractOptionButtonGroup`、`OptionButton`、`OptionButtonGroup`、`OptionButtonData`、`OptionCheckedChangedEventArgs`。
+- 枚举：`OptionButtonStyle`、`OptionButtonPositionTrait`。`OptionButtonPositionTrait` 用于组合位置协作，不作为 Group 的方向配置入口。
 
 稳定 template part：
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_ItemsPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
-| `PART_WaveSpirit` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
+| `PART_ItemsPresenter` | `ItemsPresenter` | 承载 RadioButtonGroup 或 OptionButtonGroup 的集合容器。 |
+| `PART_WaveSpirit` | `WaveSpiritDecorator` | 承载 RadioButton 或 OptionButton 的点击 Wave，使用有效圆角。 |
 
 当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
 
 ## 事件与命令
 
 RadioButton 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
-- 类型：`AbstractRadioButton`、`AbstractRadioButtonGroup`、`RadioButton`、`RadioButtonGroup`、`RadioButtonGroupCheckedChangedEventArgs`、`RadioButtonGroupManager`、`RadioButtonOption`、`RadioIndicator`。
+`RadioButtonGroup.CheckedChanged` 通知普通组当前项变化；`OptionButtonGroup.OptionCheckedChanged` 通知按钮组选项进入 checked 状态。两者不互相代理，继承的选择和输入事件继续遵循 Avalonia 事件语义。
+- 类型：`AbstractRadioButton`、`AbstractRadioButtonGroup`、`RadioButton`、`RadioButtonGroup`、`RadioButtonGroupCheckedChangedEventArgs`、`RadioButtonOption`、`RadioIndicator`、`AbstractOptionButton`、`AbstractOptionButtonGroup`、`OptionButton`、`OptionButtonGroup`、`OptionButtonData`、`OptionCheckedChangedEventArgs`。
 
 ## 使用示例
 
@@ -154,6 +156,8 @@ Public API / inherited command / item source / user input
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - `RadioButtonGroup.CheckedItem` 是单选组的外部值 owner，默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；用户选择和 ViewModel 更新必须收敛到同一份当前项状态。
+- `OptionButtonGroup` 以 SelectingItemsControl 的选择状态作为按钮组选中 source of truth，用户 checked、键盘导航和外部 `SelectedIndex` / `SelectedItem` 必须收敛到同一选择。
+- `OptionButtonGroup.Orientation` 是排列方向、组合圆角、分隔线方向和方向键导航的唯一 owner，默认值为 `Horizontal`。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -167,8 +171,11 @@ RadioButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `RadioButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `RadioButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `RadioIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `OptionButtonGroupTheme.axaml` | 定义按钮组 ItemsPresenter、方向布局入口、尺寸和组级边框资源。 |
+| `OptionButtonTheme.axaml` | 定义按钮内容、Outline/Solid、checked/disabled、方向对齐和 Wave 视觉。 |
+| `OptionButtonBoxThemes.axaml` | 聚合 OptionButtonGroup 与 OptionButton 的主题资源。 |
 
-RadioButton 使用 `RadioButtonToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、input/value、motion、visual option 运行时状态。
+普通单选控件使用 `RadioButtonToken`，按钮式选项使用 `OptionButtonToken`。Token 只表达组件视觉语义，不承载 checked/selected、Orientation、GroupPositionTrait 或 EffectiveCornerRadius 运行时状态。
 
 主题维护规则：
 
@@ -179,11 +186,12 @@ RadioButton 使用 `RadioButtonToken` 作为组件 Token scope。Token 只表达
 
 Token 来源：
 
-RadioButton Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
+RadioButton 和 OptionButton Token 只表达组件级视觉变量，例如指示器尺寸、内容 Padding、字体和交互状态颜色。Token 不承载 checked/selected、Orientation、GroupPositionTrait、EffectiveCornerRadius 或容器 Bounds 等运行时状态。
 
 当前 Token scope：
 
 - `RadioButtonToken`，scope id 为 `RadioButton`，源码位于 `src/AtomUI.Desktop.Controls/RadioButton/RadioButtonToken.cs`。
+- `OptionButtonToken`，scope id 为 `OptionButton`，源码位于 `src/AtomUI.Desktop.Controls/OptionButtonGroup/OptionButtonToken.cs`。
 
 ## AOT 与裁剪注意事项
 
@@ -200,6 +208,9 @@ RadioButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- OptionButtonGroup 的方向和容器位置更新为 O(realized item count)，只在方向或集合结构变化时执行。
+- Group renderer 保持 O(item count)，不得在 Render 热路径创建容器列表、事件订阅或方向策略对象。
+- 标准 StackPanel 负责横向自然宽度与纵向等宽排列，不为方向能力新增 VisualTree 层级。
 
 ## 源码索引
 
@@ -218,6 +229,17 @@ RadioButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - `src/AtomUI.Controls/RadioButton/RadioButtonGroupManager.cs`
 - `src/AtomUI.Controls/RadioButton/RadioButtonOption.cs`
 - `src/AtomUI.Controls/RadioButton/RadioIndicator.cs`
+- `src/AtomUI.Desktop.Controls/OptionButtonGroup/OptionButton.cs`
+- `src/AtomUI.Desktop.Controls/OptionButtonGroup/OptionButtonGroup.cs`
+- `src/AtomUI.Desktop.Controls/OptionButtonGroup/OptionButtonToken.cs`
+- `src/AtomUI.Desktop.Controls/OptionButtonGroup/Themes/OptionButtonGroupTheme.axaml`
+- `src/AtomUI.Desktop.Controls/OptionButtonGroup/Themes/OptionButtonTheme.axaml`
+- `src/AtomUI.Desktop.Controls/OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml`
+- `src/AtomUI.Controls/OptionButtonGroup/AbstractOptionButton.cs`
+- `src/AtomUI.Controls/OptionButtonGroup/AbstractOptionButtonGroup.cs`
+- `src/AtomUI.Controls/OptionButtonGroup/OptionButtonData.cs`
+- `src/AtomUI.Controls/OptionButtonGroup/OptionButtonGroupEnums.cs`
+- `src/AtomUI.Controls/OptionButtonGroup/OptionCheckedChangedEventArgs.cs`
 
 职责边界：
 
