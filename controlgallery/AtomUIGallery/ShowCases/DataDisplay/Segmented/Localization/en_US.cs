@@ -15,6 +15,8 @@ internal partial class en_US
     public const string RoundShapeDescription = "Round shape of Segmented.";
     public const string DisabledTitle = "Disabled";
     public const string DisabledDescription = "Disabled Segmented.";
+    public const string DynamicTitle = "Dynamic";
+    public const string DynamicDescription = "Load options dynamically.";
     public const string ThreeSizesTitle = "Sizes of Segmented";
     public const string ThreeSizesDescription = "Segmented supports large (40px), default (32px), small (24px), and custom size.";
     public const string IconOnlyTitle = "With Icon only";

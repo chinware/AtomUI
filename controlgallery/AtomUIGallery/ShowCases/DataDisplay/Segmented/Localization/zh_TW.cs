@@ -15,6 +15,8 @@ internal partial class zh_TW
     public const string RoundShapeDescription = "膠囊型的 Segmented。";
     public const string DisabledTitle = "禁用";
     public const string DisabledDescription = "禁用狀態的 Segmented。";
+    public const string DynamicTitle = "動態資料";
+    public const string DynamicDescription = "動態載入資料。";
     public const string ThreeSizesTitle = "Segmented 尺寸";
     public const string ThreeSizesDescription = "Segmented 支持大號（40px）、默認（32px）、小號（24px）和自定義尺寸。";
     public const string IconOnlyTitle = "僅圖標";

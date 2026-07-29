@@ -253,7 +253,7 @@ AOT 边界：
 - Segmented 布局测试：横向/纵向自然布局、水平 expanding、无限约束退化、垂直宽度适配、动态方向切换和滑块 Bounds。
 - Segmented 主题测试：Orientation/Shape 属性默认值和传递、Round 对根/item/thumb 的最终圆角覆盖、各 SizeType 与 Custom 组合。
 - `CustomizableSizeTypeContractTests`：`AbstractSegmented`、`Segmented`、`AbstractSegmentedItem`、`SegmentedItem` 支持 `CustomizableSizeType`。
-- `SegmentedShowCasePageTests`：Gallery 页面结构、示例快照和源码片段。
+- `SegmentedShowCasePageTests`：Gallery 页面结构、示例快照、动态选项追加状态和源码片段。
 - 修改布局或选择行为时运行 `tests/AtomUI.Desktop.Controls.Tests` 中 Segmented 相关测试，并按影响范围扩大到完整 Desktop 控件测试。
 - 修改 Gallery 示例时运行 `tests/AtomUIGallery.Tests` 中 Segmented 相关测试。
 - 文档改动运行 `git diff --check`，并检查相对链接存在。
