@@ -188,6 +188,34 @@
     </gallery:ShowCaseItem>
 
     <gallery:ShowCaseItem
+        Title="{gallery:RadioButtonShowCaseLangResource VerticalOptionButtonTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:RadioButtonShowCaseLangResource VerticalOptionButtonDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:RadioButtonViewModel">
+                <StackPanel Orientation="Vertical" Spacing="16">
+                    <atom:OptionButtonGroup Orientation="Vertical"
+                                            ButtonStyle="Outline"
+                                            HorizontalAlignment="Left">
+                        <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentOptionA}" />
+                        <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentOptionB}" />
+                        <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentOptionC}" />
+                    </atom:OptionButtonGroup>
+
+                    <atom:OptionButtonGroup Orientation="Vertical"
+                                            ButtonStyle="Solid"
+                                            HorizontalAlignment="Left"
+                                            Width="240">
+                        <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentOptionA}" />
+                        <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentOptionB}" />
+                        <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentOptionC}" />
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
         Title="{gallery:RadioButtonShowCaseLangResource OptionButtonWithIconTitle}"
         IsDeferredContentEnabled="True"
         Description="{gallery:RadioButtonShowCaseLangResource OptionButtonWithIconDescription}">
