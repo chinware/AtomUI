@@ -17,7 +17,7 @@
   - 选中滑块尺寸以容器最终 `Bounds.Size` 为准，并在 arrange 完成后校准。
   - Round 不新增 Design Token、Visual、template part 或伪类，Shape 覆盖位于 SizeType 圆角分支之后。
 - Gallery
-  - 按参考设计源码新增 Vertical 与 Round Shape 示例；Round 示例支持通过 `small`、`medium`、`large` 动态切换胶囊控件尺寸。
+  - 按参考设计源码新增 Vertical、Round Shape 与 Dynamic 示例；Round 示例支持通过 `small`、`medium`、`large` 动态切换胶囊控件尺寸，Dynamic 示例支持运行时追加选项。
 
 ## 2026-06-26
 

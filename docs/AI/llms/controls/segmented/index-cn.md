@@ -146,64 +146,23 @@ Gallery key：`ExamplesContent` / item `4`
 </StackPanel>
 ```
 
-### Segmented 尺寸
+### 动态数据
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:137`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:138`
 
-Gallery key：`ExamplesContent` / item `5`
+SourceKey：`segmented-dynamic`
 
 ```axaml
-<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
-    <atom:Segmented SizeType="Large" Margin="20">
-        <atom:SegmentedItem Content="每日" />
-        <atom:SegmentedItem Content="每周" />
-        <atom:SegmentedItem Content="每月" />
-        <atom:SegmentedItem Content="每季度" />
-        <atom:SegmentedItem Content="每年" />
-    </atom:Segmented>
-
-    <atom:Segmented Margin="20">
-        <atom:SegmentedItem Content="每日" />
-        <atom:SegmentedItem Content="每周" />
-        <atom:SegmentedItem Content="每月" />
-        <atom:SegmentedItem Content="每季度" />
-        <atom:SegmentedItem Content="每年" />
-    </atom:Segmented>
-
-    <atom:Segmented SizeType="Small" Margin="20">
-        <atom:SegmentedItem Content="每日" />
-        <atom:SegmentedItem Content="每周" />
-        <atom:SegmentedItem Content="每月" />
-        <atom:SegmentedItem Content="每季度" />
-        <atom:SegmentedItem Content="每年" />
-    </atom:Segmented>
-
-    <atom:Segmented SizeType="Custom"
-                    Margin="20"
-                    Padding="3"
-                    CornerRadius="8">
-        <atom:SegmentedItem Content="每日"
-                            MinHeight="36"
-                            Padding="16,0"
-                            FontSize="15"
-                            CornerRadius="6" />
-        <atom:SegmentedItem Content="每周"
-                            IsSelected="True"
-                            MinHeight="36"
-                            Padding="16,0"
-                            FontSize="15"
-                            CornerRadius="6" />
-        <atom:SegmentedItem Content="每月"
-                            MinHeight="36"
-                            Padding="16,0"
-                            FontSize="15"
-                            CornerRadius="6" />
-        <atom:SegmentedItem Content="每季度"
-                            MinHeight="36"
-                            Padding="16,0"
-                            FontSize="15"
-                            CornerRadius="6" />
-    </atom:Segmented>
+<StackPanel HorizontalAlignment="Left"
+            Orientation="Vertical"
+            Spacing="8"
+            Margin="20">
+    <atom:Segmented ItemsSource="{Binding DynamicOptions}" />
+    <atom:Button ButtonType="Primary"
+                 HorizontalAlignment="Left"
+                 IsEnabled="{Binding IsDynamicOptionsLoaded, Converter={x:Static BoolConverters.Not}}"
+                 Command="{Binding LoadMoreOptionsCommand}"
+                 Content="Load more options" />
 </StackPanel>
 ```
 

@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Windows.Input;
+using AtomUIGallery.ShowCases.Segmented;
 using Shouldly;
 using Xunit;
 
@@ -46,6 +48,7 @@ public class SegmentedShowCasePageTests
         source.ShouldContain("SegmentedShowCaseLangResource ThreeSizesTitle");
         source.ShouldContain("SegmentedShowCaseLangResource VerticalTitle");
         source.ShouldContain("SegmentedShowCaseLangResource RoundShapeTitle");
+        source.ShouldContain("SegmentedShowCaseLangResource DynamicTitle");
         source.ShouldContain("SegmentedShowCaseLangResource IconOnlyTitle");
         source.ShouldContain("SegmentedShowCaseLangResource WithIconTitle");
         source.ShouldContain("Orientation=\"Vertical\"");
@@ -54,9 +57,32 @@ public class SegmentedShowCasePageTests
         source.ShouldContain("SelectionChanged=\"HandleRoundShapeSizeSelectionChanged\"");
         source.ShouldContain("Kind=SunOutlined");
         source.ShouldContain("Kind=MoonOutlined");
+        source.ShouldContain("SourceKey=\"segmented-dynamic\"");
+        source.ShouldContain("ItemsSource=\"{Binding DynamicOptions}\"");
+        source.ShouldContain("Command=\"{Binding LoadMoreOptionsCommand}\"");
+        source.ShouldContain("IsEnabled=\"{Binding IsDynamicOptionsLoaded, Converter={x:Static BoolConverters.Not}}\"");
+        source.ShouldContain("Content=\"Load more options\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void Segmented_ShowCase_Dynamic_Demo_Loads_More_Options_Once()
+    {
+        var viewModel = new SegmentedViewModel(null!);
+        var command   = (ICommand)viewModel.LoadMoreOptionsCommand;
+
+        viewModel.DynamicOptions.ShouldBe(new[] { "Daily", "Weekly", "Monthly" });
+        viewModel.IsDynamicOptionsLoaded.ShouldBeFalse();
+
+        command.Execute(null);
+
+        viewModel.DynamicOptions.ShouldBe(new[] { "Daily", "Weekly", "Monthly", "Quarterly", "Yearly" });
+        viewModel.IsDynamicOptionsLoaded.ShouldBeTrue();
+
+        command.Execute(null);
+        viewModel.DynamicOptions.ShouldBe(new[] { "Daily", "Weekly", "Monthly", "Quarterly", "Yearly" });
     }
 
     [Fact]

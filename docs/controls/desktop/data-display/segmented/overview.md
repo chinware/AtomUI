@@ -166,7 +166,7 @@ Segmented 的共享实现位于 `AtomUI.Controls`，桌面实现位于 `AtomUI.D
 - `SegmentedItem`：桌面公开 item，注册 `SegmentedToken.ScopeProvider`。
 - `SegmentedStackPanel`：内部方向感知 items panel，负责横向/纵向排列、expanding 和可导航容器语义。
 - Form：通过 `IFormItemAware` 把 `SelectedItem` 暴露为表单值。
-- Gallery：通过 Segmented ShowCase 展示基础、块级、禁用、尺寸、垂直布局、胶囊形状、纯图标和图标文本示例。
+- Gallery：通过 Segmented ShowCase 展示基础、块级、禁用、动态数据、尺寸、垂直布局、胶囊形状、纯图标和图标文本示例。
 
 ## 7. 兼容性不变量
 
@@ -246,5 +246,5 @@ LLMS 导出来源：
 | 布局与滑块 | 横向/纵向自然布局、水平 expanding、垂直宽度适配、动态方向切换、最终 Bounds 滑块矩形。 |
 | AXAML / Template | 根 `Frame`、`PART_ItemsPresenter`、`SegmentedStackPanel`、item `Frame`、`IconPresenter`、`Content` 和 SizeType/Shape 样式分支。 |
 | Token | 轨道 padding/background、item 文本/背景状态色、item 最小高度、图标和图文间距。 |
-| Gallery | Basic、Block、Disabled、Sizes、Vertical、Round Shape、Icon Only、With Icon 示例，以及 Token 语义和 ShowCase 示例。 |
+| Gallery | Basic、Block、Disabled、Dynamic、Sizes、Vertical、Round Shape、Icon Only、With Icon 示例，以及 Token 语义和 ShowCase 示例。 |
 | 文档 | 运行 `git diff --check`，检查相对链接存在。 |

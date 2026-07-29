@@ -75,6 +75,23 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            SourceKey="segmented-dynamic"
+            Title="{gallery:SegmentedShowCaseLangResource DynamicTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource DynamicDescription}">
+            <StackPanel HorizontalAlignment="Left"
+                        Orientation="Vertical"
+                        Spacing="8"
+                        Margin="20">
+                <atom:Segmented ItemsSource="{Binding DynamicOptions}" />
+                <atom:Button ButtonType="Primary"
+                             HorizontalAlignment="Left"
+                             IsEnabled="{Binding IsDynamicOptionsLoaded, Converter={x:Static BoolConverters.Not}}"
+                             Command="{Binding LoadMoreOptionsCommand}"
+                             Content="Load more options" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:SegmentedShowCaseLangResource ThreeSizesTitle}"
             Description="{gallery:SegmentedShowCaseLangResource ThreeSizesDescription}">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
