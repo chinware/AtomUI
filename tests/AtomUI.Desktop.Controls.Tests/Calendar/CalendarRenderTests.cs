@@ -155,6 +155,30 @@ public class CalendarRenderTests
     }
 
     [Fact]
+    public void Calendar_FullscreenAndMini_TogglePseudoClassesOnView()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15), Fullscreen = true };
+        var window = Show(calendar);
+        try
+        {
+            var view = calendar.GetVisualDescendants()
+                .OfType<AtomUI.Desktop.Controls.Internal.Calendar.CalendarView>()
+                .First();
+            view.Classes.Contains(":fullscreen").ShouldBeTrue();
+            view.Classes.Contains(":mini").ShouldBeFalse();
+
+            calendar.Fullscreen = false;
+            Dispatcher.UIThread.RunJobs();
+            view.Classes.Contains(":mini").ShouldBeTrue();
+            view.Classes.Contains(":fullscreen").ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Calendar_RuntimeModeSwitch_SwapsGrid()
     {
         var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15) };

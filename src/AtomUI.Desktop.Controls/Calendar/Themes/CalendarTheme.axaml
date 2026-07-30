@@ -29,6 +29,7 @@
                     </Panel>
                     <calendar:CalendarView Name="PART_CalendarView"
                                            Value="{TemplateBinding Value}"
+                                           Fullscreen="{TemplateBinding Fullscreen}"
                                            ShowWeek="{TemplateBinding ShowWeek}"
                                            ValidRange="{TemplateBinding ValidRange}"
                                            DisabledDate="{TemplateBinding DisabledDate}"

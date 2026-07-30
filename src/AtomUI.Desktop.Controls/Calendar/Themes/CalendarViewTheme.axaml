@@ -26,4 +26,15 @@
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLabel}" />
     </Style>
+
+    <!-- Fullscreen：完整数据布局，Panel 背景与较高内容区 -->
+    <Style Selector="^:fullscreen /template/ Grid#PART_CellHost">
+        <Setter Property="Background" Value="{atom:CalendarControlTokenResource FullPanelBg}" />
+        <Setter Property="MinHeight" Value="0" />
+    </Style>
+
+    <!-- Mini：紧凑布局，内容区限制到 MiniContentHeight -->
+    <Style Selector="^:mini /template/ Grid#PART_CellHost">
+        <Setter Property="MaxHeight" Value="{atom:CalendarControlTokenResource MiniContentHeight}" />
+    </Style>
 </ControlTheme>

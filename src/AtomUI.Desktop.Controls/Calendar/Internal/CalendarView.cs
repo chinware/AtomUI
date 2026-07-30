@@ -29,6 +29,12 @@ internal sealed class CalendarCellSelectedEventArgs : EventArgs
 /// Calendar 的内部纯面板：按输入状态构建 Cell Model 网格，只向 Calendar 报告用户意图，
 /// 不持有第二份 SelectedValue 或公开 Mode（spec §7.4）。
 /// </summary>
+[Avalonia.Controls.Metadata.PseudoClasses(
+    CalendarRootPseudoClass.Fullscreen,
+    CalendarRootPseudoClass.Mini,
+    CalendarCellPseudoClass.Date,
+    CalendarCellPseudoClass.Month,
+    CalendarRootPseudoClass.ShowWeek)]
 internal sealed class CalendarView : TemplatedControl
 {
     public static readonly StyledProperty<DateTime> ValueProperty =
@@ -42,6 +48,9 @@ internal sealed class CalendarView : TemplatedControl
 
     public static readonly StyledProperty<bool> ShowWeekProperty =
         AvaloniaProperty.Register<CalendarView, bool>(nameof(ShowWeek));
+
+    public static readonly StyledProperty<bool> FullscreenProperty =
+        AvaloniaProperty.Register<CalendarView, bool>(nameof(Fullscreen), true);
 
     public static readonly StyledProperty<CalendarDateRange?> ValidRangeProperty =
         AvaloniaProperty.Register<CalendarView, CalendarDateRange?>(nameof(ValidRange));
@@ -80,6 +89,12 @@ internal sealed class CalendarView : TemplatedControl
     {
         get => GetValue(ShowWeekProperty);
         set => SetValue(ShowWeekProperty, value);
+    }
+
+    public bool Fullscreen
+    {
+        get => GetValue(FullscreenProperty);
+        set => SetValue(FullscreenProperty, value);
     }
 
     public CalendarDateRange? ValidRange
@@ -142,6 +157,22 @@ internal sealed class CalendarView : TemplatedControl
         {
             RealizeContainers();
         }
+
+        if (change.Property == FullscreenProperty ||
+            change.Property == ViewModeProperty ||
+            change.Property == ShowWeekProperty)
+        {
+            UpdateViewPseudoClasses();
+        }
+    }
+
+    private void UpdateViewPseudoClasses()
+    {
+        PseudoClasses.Set(CalendarRootPseudoClass.Fullscreen, Fullscreen);
+        PseudoClasses.Set(CalendarRootPseudoClass.Mini, !Fullscreen);
+        PseudoClasses.Set(CalendarCellPseudoClass.Date, ViewMode == CalendarViewMode.Date);
+        PseudoClasses.Set(CalendarCellPseudoClass.Month, ViewMode == CalendarViewMode.Month);
+        PseudoClasses.Set(CalendarRootPseudoClass.ShowWeek, ShowWeek);
     }
 
     /// <summary>按当前输入重建 Cell Model 网格。仅在失效时调用，不在 Measure/Arrange 热路径执行。</summary>
@@ -354,6 +385,7 @@ internal sealed class CalendarView : TemplatedControl
         _cellHost   = e.NameScope.Find<Grid>(CellHostPart);
         RebuildCells();
         RealizeContainers();
+        UpdateViewPseudoClasses();
     }
 
     /// <summary>按当前 Cell Model 生成/复用容器并填入 CellHost，同时刷新周标题。</summary>
