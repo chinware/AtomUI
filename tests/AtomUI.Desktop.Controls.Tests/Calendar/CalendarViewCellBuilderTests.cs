@@ -88,4 +88,40 @@ public class CalendarViewCellBuilderTests
         // 第一行起点 2026-06-29,ISO 周序号 27
         weeks[0].DisplayText.ShouldBe("27");
     }
+
+    [Fact]
+    public void BuildMonthCells_Returns12Cells_WithDayTruncation()
+    {
+        // anchor 1/31 → February 截断到当年 2 月末
+        var anchor = new DateTime(2028, 1, 31); // 闰年
+        var cells = CalendarViewCellBuilder.BuildMonthCells(
+            anchor, new DateTime(2028, 1, 31), CultureInfo.InvariantCulture, null, null, null);
+
+        cells.Count.ShouldBe(12);
+        cells[1].Value.ShouldBe(new DateTime(2028, 2, 29)); // 闰年 2 月末
+        cells[0].IsSelected.ShouldBeTrue();                 // anchor 所在 1 月
+    }
+
+    [Fact]
+    public void BuildMonthCells_NonLeapFebruaryTruncatesTo28()
+    {
+        var anchor = new DateTime(2027, 1, 31);
+        var cells = CalendarViewCellBuilder.BuildMonthCells(
+            anchor, new DateTime(2027, 1, 31), CultureInfo.InvariantCulture, null, null, null);
+        cells[1].Value.ShouldBe(new DateTime(2027, 2, 28));
+    }
+
+    [Fact]
+    public void BuildMonthCells_DisabledWhenMonthOutsideValidRange()
+    {
+        var anchor = new DateTime(2026, 6, 15);
+        // 有效范围只覆盖 2026 年 5~7 月
+        var cells = CalendarViewCellBuilder.BuildMonthCells(
+            anchor, new DateTime(2026, 6, 15), CultureInfo.InvariantCulture,
+            new DateTime(2026, 5, 1), new DateTime(2026, 7, 31), null);
+
+        cells[0].IsDisabled.ShouldBeTrue();  // 1 月无交集
+        cells[4].IsDisabled.ShouldBeFalse(); // 5 月相交
+        cells[11].IsDisabled.ShouldBeTrue(); // 12 月无交集
+    }
 }

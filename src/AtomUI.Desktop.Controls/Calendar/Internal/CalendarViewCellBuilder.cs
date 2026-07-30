@@ -66,6 +66,45 @@ internal static class CalendarViewCellBuilder
         return weeks;
     }
 
+    public static IReadOnlyList<CalendarViewCellModel> BuildMonthCells(
+        DateTime anchor,
+        DateTime today,
+        CultureInfo culture,
+        DateTime? validRangeStart,
+        DateTime? validRangeEnd,
+        Func<DateTime, bool>? disabledDate)
+    {
+        anchor = anchor.Date;
+        today  = today.Date;
+        var year       = anchor.Year;
+        var monthNames = culture.DateTimeFormat.AbbreviatedMonthNames; // index 0..11 有效
+        var cells      = new List<CalendarViewCellModel>(12);
+
+        for (var month = 1; month <= 12; month++)
+        {
+            var lastDay    = DateTime.DaysInMonth(year, month);
+            var day        = Math.Min(anchor.Day, lastDay);
+            var candidate  = new DateTime(year, month, day);
+            var monthFirst = new DateTime(year, month, 1);
+            var monthLast  = new DateTime(year, month, lastDay);
+
+            var outside    = MonthOutsideRange(monthFirst, monthLast, validRangeStart, validRangeEnd);
+            var isDisabled = outside || (disabledDate?.Invoke(candidate) ?? false);
+
+            cells.Add(new CalendarViewCellModel(
+                Value:       candidate,
+                Kind:        CalendarViewCellKind.Month,
+                DisplayText: monthNames[month - 1],
+                IsToday:     today.Year == year && today.Month == month,
+                IsInView:    true,
+                IsSelected:  anchor.Month == month,
+                IsDisabled:  isDisabled,
+                IsFocusable: !isDisabled));
+        }
+
+        return cells;
+    }
+
     private static bool IsOutsideRange(DateTime date, DateTime? start, DateTime? end)
     {
         if (start is { } s && date < s.Date)
@@ -74,6 +113,21 @@ internal static class CalendarViewCellBuilder
         }
 
         if (end is { } e && date > e.Date)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool MonthOutsideRange(DateTime monthFirst, DateTime monthLast, DateTime? start, DateTime? end)
+    {
+        if (start is { } s && monthLast < s.Date)
+        {
+            return true;
+        }
+
+        if (end is { } e && monthFirst > e.Date)
         {
             return true;
         }
