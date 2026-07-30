@@ -1,222 +1,153 @@
 # Slider 桌面版实现原理
 
-本文档描述 Slider 桌面版的内部轨道渲染、thumb 布局、指针/键盘交互、mark 处理、tooltip 同步、Form 集成和 Token 边界。公共设计与 API 契约见 [Slider 桌面版架构设计](overview.md)，Token 语义见 [Slider Token 设计](token.md)，变化记录见 [Slider Changelog](changelog.md)。
+本文档描述 Slider 桌面版的源码职责、动态 thumb、轨道渲染、交互路径、Tooltip、Form 集成和资源生命周期。公共设计与 API 契约见 [Slider 桌面版架构设计](overview.md)，多 handle 专项模型见 [Slider 多 Handle 设计](multi-handle-design.md)，Token 语义见 [Slider Token 设计](token.md)，变化记录见 [Slider Changelog](changelog.md)。
 
 ## 1. 实现定位
 
-Slider 的实现基于 Avalonia `RangeBase`。AtomUI 负责轨道、thumb、mark、范围模式、tooltip、主题 token、动效和 Form 集成。实现文档聚焦 `Slider`、`SliderTrack` 和 `SliderThumb` 的协作关系，不重新说明 `RangeBase` 的基础数值和自动化行为。
+Slider 基于 Avalonia `RangeBase`。`Slider` 是公共值、交互会话和 Form 状态 owner；`SliderTrack` 是动态 thumb、布局、渲染和输入几何 owner；`SliderThumb` 是单个 handle 的视觉与 pointer capture 节点。当前实现不建立 `HandleState` 数据类型，值、thumb 和渲染几何分别由 `EffectiveRangeValues`、`SliderThumb` 列表和 `RenderContextData` 按索引关联。
+
+本文档只记录需要跨文件维护的稳定职责和流程。私有辅助方法、具体 Token 默认值和自动化协议细节仍以源码、[Slider Token 设计](token.md) 和测试为准。
 
 ## 2. 源码文件结构
 
-主要源码：
-
-- `src/AtomUI.Desktop.Controls/Slider/Slider.cs`：public API、pointer / keyboard 交互、tooltip 同步、tick 吸附、Form 接口和自动化 peer。
-- `src/AtomUI.Desktop.Controls/Slider/SliderTrack.cs`：track / mark 渲染、thumb 布局、范围值裁剪、drag delta 转值、全局 pointer 订阅和内部 render context。
-- `src/AtomUI.Desktop.Controls/Slider/SliderThumb.cs`：thumb pointer capture、drag routed events、focus / pressed 状态和直接绘制。
-- `src/AtomUI.Desktop.Controls/Slider/SliderToken.cs`：Slider Token scope、尺寸、颜色、padding、outline 默认值计算。
+- `src/AtomUI.Desktop.Controls/Slider/Slider.cs`：公共属性、Range 值归一化入口、pointer / keyboard 交互协调、Tooltip、Form、数据校验和自动化 peer 创建。
+- `src/AtomUI.Desktop.Controls/Slider/SliderTrack.cs`：`EffectiveRangeValues` 投影、动态 thumb 生命周期、handle 布局、track / tracks / mark 渲染和几何换算。
+- `src/AtomUI.Desktop.Controls/Slider/SliderThumb.cs`：单个 handle 的 pointer capture、drag routed event、focus / pressed / disabled 状态和绘制。
+- `src/AtomUI.Desktop.Controls/Slider/SliderRangeMath.cs`：Range 值归一化、handle 边界、整体 offset、值与坐标比例及 segment 几何的纯计算。
+- `src/AtomUI.Desktop.Controls/Slider/SliderToken.cs`：Slider Token scope、尺寸、颜色、padding 和 outline 默认值计算。
 - `src/AtomUI.Desktop.Controls/Slider/SliderAutomationPeer.cs`：Slider 自动化 peer。
-- `src/AtomUI.Desktop.Controls/Slider/SliderThumbAutomationPeer.cs`：SliderThumb 自动化 peer。
-- `src/AtomUI.Desktop.Controls/Slider/Themes/SliderTheme.axaml`：Slider 根模板、track / thumb 创建和状态样式。
-- `src/AtomUI.Desktop.Controls/Slider/Themes/SliderTrackTheme.axaml`：track token、mark token 和 transition。
-- `src/AtomUI.Desktop.Controls/Slider/Themes/SliderThumbTheme.axaml`：thumb 尺寸、边框、outline、focus / hover 和 transition。
+- `src/AtomUI.Desktop.Controls/Slider/SliderThumbAutomationPeer.cs`：单个动态 thumb 的自动化 peer。
+- `src/AtomUI.Desktop.Controls/Slider/Themes/SliderTheme.axaml`：根模板、`PART_Track`、属性传递和方向样式。
+- `src/AtomUI.Desktop.Controls/Slider/Themes/SliderTrackTheme.axaml`：track 尺寸、mark Token 和轨道 transition。
+- `src/AtomUI.Desktop.Controls/Slider/Themes/SliderThumbTheme.axaml`：thumb 尺寸、边框、outline、focus、hover、disabled 和布局取整策略。
+- `tests/AtomUI.Desktop.Controls.Tests/Slider/SliderBehaviorTests.cs`：值计算、动态 thumb、pointer、布局和生命周期回归。
+- `controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/`：Slider Gallery 示例、ViewModel 和本地化资源。
 
 ## 3. 核心类职责
 
-`Slider` 是 public 控件入口。它保存 public state，处理键盘和 pointer 隧道路由，选择当前有效 thumb，并把值写入 `Value` 或 `RangeValue`。
-
-`SliderTrack` 是布局和渲染核心。它根据 `Minimum`、`Maximum`、`Value`、`RangeValue`、`Orientation`、`IsDirectionReversed` 和 `Marks` 计算 thumb 中心点、rail rect、active track rect、mark rect 和 mark 文本 rect。
-
-`SliderThumb` 是可拖动视觉元素。它不直接知道 `Minimum`、`Maximum` 或业务值，只把 pointer 位移转换为 `DragDelta` 事件交给 `SliderTrack` 或 `Slider` 解释。
-
-`SliderToken` 提供组件级视觉语义。实例值、当前拖动状态、mark 集合和 tooltip 文本不是 token。
+| 类型 | 职责 | 状态边界 |
+| --- | --- | --- |
+| `Slider` | 暴露公共 API；持有当前拖动目标和整体轨道拖动快照；提交 `Value` 或 `RangeValues`；同步 Tooltip、Form 与校验状态。 | 不持有动态 thumb 集合或渲染矩形。 |
+| `SliderTrack` | 将值集合投影为动态 `SliderThumb`；计算 rail、handle、segment、整体活动范围和 mark 几何；绘制轨道。 | 不拥有 Form 值；`EffectiveRangeValues` 只投影当前 Slider 状态。 |
+| `SliderThumb` | 捕获 pointer、产生 drag routed event、绘制单个 handle 并表达 focus / pressed / disabled。 | `HandleIndex` 仅用于回到值集合索引，不保存业务值。 |
+| `SliderRangeMath` | 提供无 UI 状态的有限性、排序、裁剪、边界和几何计算。 | 不读取控件、主题或 input manager。 |
+| Automation peers | 将 Slider 和 thumb 投影到 Avalonia 自动化层。 | 不参与值归一化或视觉节点管理。 |
 
 ## 4. 状态与数据流
 
-单值模式数据流：
+单值与 Range 模式共享以下投影路径：
 
 ```text
-Value
+Slider.Value / Slider.RangeValues
   ↓
-SliderTrack.Value
+RangeValues coerce -> SliderRangeMath.NormalizeRangeValues()
   ↓
-CalculateThumbValuePivotOffset()
+SliderTheme TemplateBinding
   ↓
-StartThumb arrange
-  ↓
-Render rail / active track / marks
+SliderTrack.EffectiveRangeValues
+  ├── EnsureThumbs() -> SliderThumb[index]
+  ├── ArrangeOverride() -> thumb Bounds
+  ├── PrepareRenderInfo() -> RenderContextData
+  └── Slider.ConfigureTemplateThumbTips() -> Tooltip
 ```
 
-范围模式数据流：
+单值模式的 `EffectiveRangeValues` 为 `[Value]`；Range 模式使用归一化后的 `RangeValues`，空值或少于两个值时回退为 `[Minimum, Minimum]`。`DisabledHandles[index]` 在 `EnsureThumbs()` 中投影为对应 thumb 的 `IsEnabled`，并在 `SliderRangeMath` 中限制移动入口；实现不复制一份独立的 disabled 状态模型。
+
+`RangeValues` 采用快照语义。pointer、keyboard 和 Form 写入都提交新的完整列表，并由同一 coerce 路径执行有限性检查、范围裁剪和升序归一化。连续 pointer 输入保留 `double` 值；只有 `IsSnapToTickEnabled=true` 时，`Slider` 才在提交前调用 tick 吸附逻辑。
+
+## 5. 组合结构模型
+
+默认主题的稳定模板层级为：
 
 ```text
-RangeValue.StartValue / EndValue
-  ↓
-SliderTrack.RangeValue
-  ↓
-CalculateThumbValuePivotOffset()
-  ↓
-StartThumb + EndThumb arrange
-  ↓
-Render selected range track + active marks
+Slider
+└── SliderTrack#PART_Track
+    ├── SliderThumb[0]
+    ├── SliderThumb[1]
+    └── SliderThumb[n]
 ```
 
-Pointer 写值流：
+`SliderTheme.axaml` 只声明 `PART_Track`。`SliderThumb` 由 `SliderTrack` 按 `EffectiveRangeValues.Count` 动态加入 logical tree 和 visual tree，并通过外层 Slider templated parent 使用 `SliderThumbTheme` 及 Slider 的模板 selector 状态。
 
-```text
-PointerPressed on Slider
-  ↓
-GetEffectiveMoveThumb()
-  ↓
-mark hit ? write mark.Value : MoveToPoint()
-  ↓
-Value or RangeValue
-  ↓
-tooltip and render refresh
-```
+| 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Slider | public control | `Slider.cs` / `SliderTheme.axaml` | 调用方与 Avalonia 控件树 | 全部 Slider API | public | 用户可直接创建和绑定。 |
+| `PART_Track` | `SliderTrack` | `SliderTheme.axaml` | Slider template | Template Part、轨道画刷、方向和 Range 状态 | template-stable | 自定义主题必须保留名称与类型。 |
+| 动态 thumb | `SliderThumb` | `SliderTrack.EnsureThumbs()` | `SliderTrack` | handle 数量、disabled、Tooltip 和交互 | internal-observable | 可用于理解行为，不得依赖固定数量或固定名称。 |
+| `RenderContextData` | private geometry cache | `SliderTrack.cs` | `SliderTrack` | 轨道和 mark 的可观察几何 | private | 仅作为实现维护依据，不是扩展 API。 |
 
-Drag 写值流：
+## 6. 生命周期与模板接入
 
-```text
-SliderThumb pointer move
-  ↓
-DragDelta(Vector)
-  ↓
-SliderTrack.ValueFromDistance()
-  ↓
-ValueProperty or deferred drag
-```
+1. `Slider.OnApplyTemplate()` 先释放旧 pointer handler，并从旧 `SliderTrack` 解绑 `ThumbsChanged`。
+2. Slider 查找唯一稳定 Template Part `PART_Track`，设置内部交互所有权并订阅动态 thumb 变化。
+3. `SliderTrack` attach 后订阅全局 input process、创建当前数量的 thumb 并计算 mark 尺寸。
+4. `EnsureThumbs()` 只在 handle 数量变化时创建或移除视觉节点；数量不变时更新 `HandleIndex` 和 `IsEnabled`。
+5. 创建 thumb 时设置外层 Slider 为 templated parent、同步 `IsMotionEnabled`，并订阅 drag 事件；运行时 motion 变化会同步到已有 thumb。
+6. 移除 thumb 时解绑 drag 事件、移出 logical / visual tree 并清除 templated parent。
+7. `SliderTrack` detach 时释放全局 input subscription 并清空动态 thumb；Slider detach 或模板重建时释放 pointer handler、拖动会话和旧 track 订阅。
 
-`SliderTrack.IgnoreThumbDrag=true` 由 `Slider` 在模板接入时设置，避免 `SliderTrack` 自己处理 thumb drag，与 Slider 的轨道拖动模型冲突。维护时不要让 `Slider` 和 `SliderTrack` 同时写同一个拖动值。
+Tooltip 文本和 placement 由 Slider 在模板应用、thumb 数量变化、值、格式或方向变化时同步。动态 thumb 自身不拥有 Tooltip 文本状态。
 
-## 5. 生命周期与模板接入
+## 7. 交互与事件处理
 
-`Slider.OnApplyTemplate` 负责：
+`SliderThumb` 在 pointer press 时记录本地坐标并捕获 pointer，move 时产生 `DragDelta`，release 或 capture lost 时产生 `DragCompleted`。Slider 在 tunnel 阶段监听 pointer press / move / release，以一个 owner 处理轨道点击、handle 拖动和整体活动范围拖动，避免 Slider 与 SliderTrack 同时提交值。
 
-- 释放旧 pointer handler。
-- 获取 `PART_Track`。
-- 设置 `SliderTrack.IgnoreThumbDrag=true`。
-- 通过 tunneling pointer 事件接入轨道按下、移动和释放。
-- 根据当前值设置 thumb tooltip 文本。
-- 设置 tooltip placement。
-- 同步 `:horizontal` / `:vertical` 伪类。
+轨道按下路径：
 
-`SliderTrack.ThumbChanged` 负责把 `StartSliderThumb` 和 `EndSliderThumb` 加入或移出 logical / visual children，并订阅或解绑 `DragDelta`、`DragCompleted`。不要绕过该属性直接操作 `VisualChildren`。
+1. 判断左键和 `PART_Track` 是否可用。
+2. 若命中允许拖动的整体活动范围，保存初始 pointer 值和 `RangeValues` 快照。
+3. 否则选择最近的 enabled thumb；直接命中 thumb 时保留 pointer 与 thumb 值的相对 offset。
+4. mark 命中优先使用 mark 值，否则使用 pointer 映射出的连续 `double` 值。
+5. 仅在启用 tick 吸附时量化，然后提交单值或完整 Range 值快照。
+6. release、capture lost、disabled、detach 或模板重建结束拖动状态。
 
-`SliderTrack.OnAttachedToVisualTree` 订阅全局 `IInputManager.Process`，用于点击轨道外部时取消 thumb focus。`OnDetachedFromVisualTree` 必须释放该订阅。
+键盘根据当前 focused thumb 的 `HandleIndex` 选择 Range 目标。方向键和 Page 键使用 `SmallChange` / `LargeChange`，`Home` / `End` 使用当前 handle 的有效边界；disabled thumb 不进入焦点和键盘修改路径。
 
-`SliderThumb` 通过 pointer capture 生命周期维护 `_lastPoint`。capture lost 和 pointer released 都会结束 drag，并移除 pressed 伪类。
+## 8. 内部算法与关键流程
 
-## 6. 交互与事件处理
+### 值归一化与 handle 移动
 
-### 6.1 指针
+`NormalizeRangeValues()` 对每个值执行有限性检查和 `[Minimum, Maximum]` 裁剪，仅在需要时创建、排序新快照；合法且已排序的快照保持原实例。`MoveHandle()` 只替换目标索引，并以相邻 handle 或全局边界限制目标值，因此 handle 不交叉且重复值合法。
 
-轨道 pointer down 时，Slider 选择当前操作 thumb：
+### 值与坐标映射
 
-- 单值模式固定使用 `StartSliderThumb`。
-- 范围模式比较点击点到两个 thumb 中心的距离，选择更近的 thumb。
+`GetRailRect()` 从可用尺寸中扣除 thumb 尺寸，`ValueToCenterPoint()` 和 `ValueFromPoint()` 在该 rail 局部坐标中互相映射。水平模式使用 X 轴，垂直模式反转 Y 轴，`IsDirectionReversed` 再反转数值方向。坐标和值计算均使用 `double`，默认 thumb 主题关闭布局取整，使 fractional center 不被量化到物理像素阶梯。
 
-点击 mark 文本命中区域时，Slider 直接写入 mark 值；未命中 mark 时，根据轨道坐标计算连续值。拖动期间 `MoveToPoint` 会继续根据当前 pointer 位置更新值。
+### 轨道几何与渲染
 
-### 6.2 键盘
+`PrepareRenderInfo()` 从 `EffectiveRangeValues` 生成 `RenderContextData`：单值模式生成 Minimum 到 Value 的一个 segment；Range 模式为每对相邻值生成 `SegmentRects`，并生成首值到末值的 `TrackRangeRect`。绘制顺序为 rail、整体 `TracksBrush`、局部 `TrackBarBrush` segments、mark 点和文本。
 
-键盘入口在 `Slider.OnKeyDown`。方向键、Page 键、Home 和 End 进入 `RangeBase.Value` 单值路径。范围模式不把键盘操作映射为起始或结束 thumb 的独立编辑状态，维护时不能把范围键盘行为描述为已完整覆盖。
+### 整体活动范围拖动
 
-### 6.3 Thumb Drag
+整体拖动会话由 Slider 保存初始 pointer 值和完整值快照。每次 move 计算共享 offset，并通过 `ApplyTrackOffset()` 把 offset 裁剪到 `Minimum - first` 与 `Maximum - last`。所有 handle 使用同一 offset；存在任意 disabled handle 时不启动该会话。
 
-`SliderThumb` 只发出 drag 事件。`SliderTrack` 根据 `Orientation` 和 `IsDirectionReversed` 把位移转换成 value delta。`DeferThumbDrag=true` 时，拖动位移先保存到 `_deferredThumbDrag`，直到关闭 defer 后再应用。
+## 9. 资源、性能与 AOT 边界
 
-### 6.4 Tooltip
+- 动态 thumb 的创建、事件订阅、templated parent 和释放由 `SliderTrack` 成对管理。
+- Slider 的模板 handler、SliderTrack 的全局 input subscription 和 pointer capture 都有明确释放入口。
+- 外部 `RangeValues` 与 `DisabledHandles` 不建立集合变更订阅，调用方必须替换快照触发更新。
+- pointer move 不创建或替换 thumb；只提交值快照并触发布局、Tooltip 与渲染更新。
+- `RenderContextData`、pen 和 mark 文本度量由 SliderTrack 持有，不进入公共状态。
+- 实现不使用反射、动态类型发现、字符串属性路径或运行时程序集扫描，保持 trimming 和 NativeAOT 友好。
+- `UseLayoutRounding=false` 只应用于默认 `SliderThumbTheme`，用于保留连续拖动得到的 fractional Bounds；自定义主题需要自行保持同一平滑布局契约。
 
-`Slider` 负责设置 tooltip 内容、placement 和 host width。`SliderTrack` 和 `SliderThumb` 不格式化 tooltip 文本。`ValueFormatTemplate` 变更后应重新计算 tooltip 文本和宽度。
+## 10. 维护不变量
 
-## 7. 内部算法与关键流程
+- Slider 是公共值、Form 状态和交互会话 owner；SliderTrack 是动态节点、布局、渲染和输入几何 owner。
+- Range 模式唯一值源是 `RangeValues`，不建立固定 start / end handle 或并行 `HandleState` 模型。
+- `RangeValues` 必须经过有限性检查、范围裁剪和升序归一化，并保留重复值和 handle 数量。
+- 连续 pointer 拖动必须保留 `double` 精度；仅 `IsSnapToTickEnabled=true` 时按 tick 量化。
+- disabled handle 不可被 pointer 或 keyboard 修改，并作为相邻 handle 的移动边界。
+- 任意 disabled handle 存在时，整体活动范围不可拖动。
+- `TracksBrush` 只绘制整体活动范围；`TrackBarBrush` 只绘制相邻 handle segment。
+- `PART_Track` 是唯一固定 Slider Template Part；动态 thumb 不得重新变成固定命名部件。
+- 动态 thumb 必须继承外层 Slider 的模板状态，并实时同步 motion 状态。
+- 模板重建和 detach 必须释放事件、pointer capture、全局 input subscription 和拖动会话。
 
-### 7.1 值到坐标
+## 11. 测试与验证
 
-`SliderTrack.CalculateThumbValuePivotOffset` 使用以下输入计算 thumb 中心点：
-
-- `Minimum`
-- `Maximum`
-- `Value` 或 `RangeValue`
-- 当前 orientation
-- thumb 尺寸
-- 是否垂直布局
-
-水平布局中，值越大通常越靠右；垂直布局中，值越大通常越靠上。`IsDirectionReversed` 会在指针转值路径中反转方向。
-
-### 7.2 坐标到值
-
-`Slider.MoveToPoint` 从 pointer 坐标计算逻辑位置，再映射到 `[Minimum, Maximum]`。计算步骤包括：
-
-1. 扣除 thumb 半径，使 pointer 坐标对应 thumb 中心。
-2. 根据 orientation 选择 X 或 Y 坐标。
-3. 根据 `IsDirectionReversed` 和垂直方向反转关系计算逻辑比例。
-4. 映射到数值范围。
-5. 根据 `IsSnapToTickEnabled` 决定是否吸附。
-
-### 7.3 Tick 吸附
-
-`SnapToTick` 在 `IsSnapToTickEnabled=true` 时生效。`TickFrequency > 0` 时按 tick 间隔寻找最近 tick；否则只在 `Minimum` 和 `Maximum` 之间选择。键盘移动时，如果吸附结果仍等于当前值，会继续寻找下一个 tick，避免方向键停在原地。
-
-### 7.4 Mark 渲染与命中
-
-`SliderTrack.CalculateMaxMarkSize` 根据 `Marks` 和字体属性测量标签尺寸，并缓存到 `SliderMark` 的 internal 字段。渲染前 `PrepareRenderInfo` 计算 mark 点和文本矩形；`GetMarkForPosition` 使用这些矩形判断 pointer 是否命中 mark 文本。
-
-Mark active 状态由 `IsIncluded` 控制：
-
-- 单值模式：`mark.Value <= Value`。
-- 范围模式：`RangeValue.StartValue <= mark.Value <= RangeValue.EndValue`。
-
-### 7.5 渲染
-
-`SliderTrack.Render` 每次绘制前准备 render context，然后按顺序绘制 groove、active track 和 mark。`SliderThumb.Render` 绘制圆形 thumb 和 outline。直接绘制路径必须继续使用 token 传入的 brush、size 和 thickness，不把运行时状态写回 token。
-
-## 8. 资源、性能与 AOT 边界
-
-Slider 不依赖反射扫描或运行时动态发现控件成员。模板协同通过 `TemplateBinding`、稳定 template part 和 Avalonia property 完成。
-
-性能边界：
-
-- `RenderContextData` 是单次渲染准备数据，不应被外部缓存为长期状态。
-- Mark 文本测量只在 mark、字体或 enabled 相关变化时刷新，避免每次 render 重新测量文本。
-- `SliderThumb` 使用 cached pen helper 更新画笔，避免每帧创建多余对象。
-- 全局 input subscription 必须在 detach 时释放。
-
-AOT 边界：
-
-- 不新增反射访问 public API、template part 或 token kind。
-- 新增 Token 必须走 source generator 支持的 `SliderToken` 属性。
-- API 与 Token 契约应在控件文档、源码 public surface、Token 类型或生成数据中维护，不依赖运行时反射扫描。
-
-## 9. 维护不变量
-
-内部重构必须保持以下不变量：
-
-- `Slider` 是 pointer / keyboard 写值入口；`SliderTrack` 不应在 `IgnoreThumbDrag=true` 路径下同时写值。
-- `StartSliderThumb` / `EndSliderThumb` 的 logical / visual children 和 drag 事件由 `ThumbChanged` 成对管理。
-- 模板重新应用时旧 pointer handler 必须释放。
-- `SliderTrack` detach 时释放全局 input subscription。
-- `RangeValue` 必须保持非 NaN、非 Infinity，并裁剪到 `[Minimum, Maximum]`。
-- `RangeValue` 作为范围模式 Form 值必须默认 `TwoWay`，并在绑定验证失败时写入控件自身的 Avalonia `DataValidationErrors`。
-- `SliderRangeValue.Parse` 必须拒绝起始值大于结束值的表达式。
-- `Marks` 改变后必须重新测量 mark 标签。
-- `IsIncluded=false` 只影响 active track / active mark 绘制，不影响值计算和 mark 命中。
-- tooltip 格式化只由 `ValueFormatTemplate` 控制。
-- Thumb focus / hover outline 由 `SliderThumbTheme` 和 token 控制，不在 `Slider` 中手写视觉状态。
-
-## 10. 测试与验证
-
-验证范围：
-
-- 单值模式下 pointer 点击、拖动、方向键、Page 键、Home / End。
-- 范围模式下两个 thumb 可见性、最近 thumb 选择、mark 点击和 `RangeValue` 裁剪。
-- `Orientation=Horizontal/Vertical` 下 thumb 位置、tooltip placement 和 padding。
-- `IsDirectionReversed=true` 下 pointer 和键盘方向。
-- `IsSnapToTickEnabled=true` 与不同 `TickFrequency` 的吸附结果。
-- `Marks` 标签测量、active 状态、点击命中和 disabled 文本色。
-- `IsIncluded=false` 下 active track 不绘制但交互保持。
-- `IsMotionEnabled=false` 下 transition 禁用。
-- 模板重建后 pointer handler 和 tooltip 重新接入。
-- detach 后全局 input subscription 释放。
-- `SliderShowCasePageTests` 保持 Gallery 示例结构和源码片段一致。
-- 文档改动运行 `git diff --check`。
+- `SliderBehaviorTests`：纯值计算、有限性、排序、重复值、disabled boundary、整体 offset、动态 thumb 创建/回收、templated parent、motion 同步、pointer capture 和 fractional pointer 布局。
+- `RemainingFormValueBindingTests`：单值与 Range Form 值和数据验证。
+- `AtomUIGallery.Tests` Slider 页面测试：稳定 Showcase、绑定、禁用指定 handle 和多点组合结构。
+- Gallery 走查：horizontal / vertical、reverse、marks、tick、Light / Dark、多点组合、禁用指定滑块，以及 100% / 125% / 150% 缩放下的 thumb 平滑度与边框清晰度。
+- 文档验证：运行 LLMS generate / verify、目标测试、Gallery build 和 `git diff --check`。

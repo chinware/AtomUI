@@ -17,29 +17,21 @@
                                   Maximum="{TemplateBinding Maximum}"
                                   Orientation="{TemplateBinding Orientation}"
                                   Value="{TemplateBinding Value, Mode=TwoWay}"
-                                  RangeValue="{TemplateBinding RangeValue, Mode=TwoWay}"
+                                  RangeValues="{TemplateBinding RangeValues, Mode=TwoWay}"
+                                  DisabledHandles="{TemplateBinding DisabledHandles}"
+                                  IsDraggableTrack="{TemplateBinding IsDraggableTrack}"
+                                  TrackBarBrush="{TemplateBinding TrackBarBrush}"
+                                  TracksBrush="{TemplateBinding TracksBrush}"
                                   IsRangeMode="{TemplateBinding IsRangeMode}"
                                   MarkLabelFontFamily="{TemplateBinding FontFamily}"
                                   MarkLabelFontSize="{TemplateBinding FontSize}"
                                   Marks="{TemplateBinding Marks}"
-                                  IsIncluded="{TemplateBinding IsIncluded}">
-                    <atom:SliderTrack.StartSliderThumb>
-                        <atom:SliderThumb Name="PART_StartThumb"
-                                          IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Slider}}"
-                                          atom:ToolTip.Placement="Top"
-                                          atom:ToolTip.ShowDelay="20" />
-                    </atom:SliderTrack.StartSliderThumb>
-                    <atom:SliderTrack.EndSliderThumb>
-                        <atom:SliderThumb Name="PART_EndThumb"
-                                          IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Slider}}"
-                                          atom:ToolTip.Placement="Top"
-                                          atom:ToolTip.ShowDelay="20" />
-                    </atom:SliderTrack.EndSliderThumb>
-                </atom:SliderTrack>
+                                  IsIncluded="{TemplateBinding IsIncluded}" />
             </ControlTemplate>
         </Setter>
 
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="TrackBarBrush" Value="{atom:SliderTokenResource TrackBg}" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Focusable" Value="False" />
@@ -51,12 +43,12 @@
         
         <Style Selector="^ /template/ atom|SliderTrack#PART_Track">
             <Setter Property="TrackGrooveBrush" Value="{atom:SliderTokenResource RailBg}" />
-            <Setter Property="TrackBarBrush" Value="{atom:SliderTokenResource TrackBg}" />
             <Setter Property="MarkBorderBrush" Value="{atom:SliderTokenResource MarkBorderColor}" />
             <Setter Property="MarkBorderActiveBrush"
                     Value="{atom:SliderTokenResource MarkBorderColorActive}" />
         </Style>
         <Style Selector="^:pointerover">
+            <Setter Property="TrackBarBrush" Value="{atom:SliderTokenResource TrackHoverBg}" />
             <Style Selector="^ /template/ atom|SliderThumb[IsFocused=False]:not(:pointerover)">
                 <Setter Property="BorderBrush"
                         Value="{atom:SliderTokenResource ThumbCircleBorderHoverColor}" />
@@ -73,15 +65,14 @@
 
         <Style Selector="^ /template/ atom|SliderTrack:pointerover">
             <Setter Property="TrackGrooveBrush" Value="{atom:SliderTokenResource RailHoverBg}" />
-            <Setter Property="TrackBarBrush" Value="{atom:SliderTokenResource TrackHoverBg}" />
             <Setter Property="MarkBorderBrush"
                     Value="{atom:SliderTokenResource MarkBorderColorHover}" />
             <Setter Property="Cursor" Value="Hand" />
         </Style>
 
         <Style Selector="^:disabled">
+            <Setter Property="TrackBarBrush" Value="{atom:SliderTokenResource TrackBgDisabled}" />
             <Style Selector="^ /template/ atom|SliderTrack">
-                <Setter Property="TrackBarBrush" Value="{atom:SliderTokenResource TrackBgDisabled}" />
                 <Setter Property="MarkBorderActiveBrush" Value="{atom:SliderTokenResource ThumbCircleBorderColorDisabled}" />
                 <Setter Property="MarkBorderBrush"
                         Value="{atom:SliderTokenResource ThumbCircleBorderColorDisabled}" />
