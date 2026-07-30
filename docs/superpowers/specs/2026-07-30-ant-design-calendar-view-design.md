@@ -729,3 +729,13 @@ Gallery API 表应只暴露新 Public API；Token 表只展示第 13 节六个 C
 - **DatePicker 接管的类型全部迁入 `AtomUI.Desktop.Controls.CalendarView` 命名空间**（与 DatePicker CalendarView 现有代码一致）。这些类型（`DateTimeHelper`、`CalendarExtensions`、`HeadTextButton`、`CalendarDateRange`（DatePicker 版，含 `ContainsAny`/单日构造/折叠语义）、`CalendarMode`（含 `Decade`）、`CalendarSelectionMode`、`CalendarDateChangedEventArgs`、`CalendarModeChangedEventArgs`）是 DatePicker 内部实现细节，其 `public` 仅为程序集内可见性，不构成对外库 API，迁移命名空间不破坏任何真正对外的公开契约。
 - 引用这些类型但不在 `AtomUI.Desktop.Controls.CalendarView` 命名空间的 DatePicker 文件（如 `DatePickerFormattingHelper.cs`、`RangeDatePicker.cs`、`DualMonthRangeDatePickerPresenter.cs`）添加 `using AtomUI.Desktop.Controls.CalendarView;`。
 - **新 Calendar 不得为 DatePicker 兼容而在公开类型上增加成员**（例如公开 `CalendarMode` 不得含 `Decade`，公开 `CalendarDateRange` 不得含 `ContainsAny`）。两套类型彻底隔离，各自独立演进。
+
+### 19.5 Design Token 隔离
+
+旧 `CalendarToken`（类名 `CalendarToken`，ID `"Calendar"`）当前被 DatePicker 的 CalendarView 主题（`CalendarButtonTheme.axaml`、`CalendarDayButtonTheme.axaml`、`CalendarItemTheme.axaml` 等）通过 `CalendarTokenResource` 引用（`CellHeight`/`CellHoverBg`/`CellActiveWithRangeBg`/`CellWidth`/`CellMargin`/`CellLineHeight`/`CellBgDisabled`/`WithoutTimeCellHeight` 等）。源生成器按 **token 类名** 生成对应的 `XxxTokenResource` / `XxxTokenKind`。
+
+本次重构**不改动 DatePicker 实现**（含其主题与 token 引用），因此：
+
+- **旧 `CalendarToken` 类原封不动保留**，继续归 DatePicker 的 CalendarView 使用。
+- **新 Calendar 使用独立的 Design Token 类 `CalendarControlToken`（ID `"CalendarControl"`）**，只含 spec §13 的六个语义（`FullBg`/`FullPanelBg`/`ItemActiveBg`/`YearControlWidth`/`MonthControlWidth`/`MiniContentHeight`）。新 Calendar 主题通过 `CalendarControlTokenResource` 引用。
+- 两个 token 类彼此独立，互不影响；DatePicker 视觉与行为零变化。
