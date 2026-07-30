@@ -40,11 +40,7 @@ internal static partial class Program
             IsEnabled     = isEnabled,
             IsIncluded    = isIncluded,
             Value         = 20,
-            RangeValue    = new SliderRangeValue
-            {
-                StartValue = 20,
-                EndValue   = 80
-            }
+            RangeValues   = [20, 80]
         };
 
         if (orientation == Orientation.Vertical)

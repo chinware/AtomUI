@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reactive;
 using AtomUI.Controls;
@@ -20,11 +19,11 @@ public class SliderViewModel : ReactiveObject, IRoutableViewModel
     public string? UrlPathSegment => ID.ToString();
 
     private List<SliderMark>? _sliderMarks;
-    private SliderRangeValue _boundRangeValue = new()
-    {
-        StartValue = 20,
-        EndValue   = 60
-    };
+    private IReadOnlyList<double> _boundRangeValues = [20, 60];
+    private IReadOnlyList<bool> _disabledHandles = [false, false, false];
+    private bool _isHandle1Disabled;
+    private bool _isHandle2Disabled;
+    private bool _isHandle3Disabled;
 
     public List<SliderMark>? SliderMarks
     {
@@ -40,50 +39,102 @@ public class SliderViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _normalEnabled, value);
     }
 
-    public SliderRangeValue BoundRangeValue
+    public IReadOnlyList<double> DefaultRangeValues { get; } = [20, 80];
+
+    public IReadOnlyList<double> MultiHandleRangeValues { get; } = [0, 35, 100];
+
+    public IReadOnlyList<double> DisabledHandleRangeValues { get; } = [20, 50, 80];
+
+    public IReadOnlyList<bool> DisabledHandles => _disabledHandles;
+
+    public bool IsHandle1Disabled
     {
-        get => _boundRangeValue;
+        get => _isHandle1Disabled;
         set
         {
-            if (_boundRangeValue == value)
+            if (_isHandle1Disabled == value)
             {
                 return;
             }
 
-            this.RaiseAndSetIfChanged(ref _boundRangeValue, value);
-            this.RaisePropertyChanged(nameof(BoundRangeValueText));
+            this.RaiseAndSetIfChanged(ref _isHandle1Disabled, value);
+            UpdateDisabledHandles();
         }
     }
 
-    public string BoundRangeValueText => string.Format(
-        CultureInfo.CurrentCulture,
-        "{0:0.#} - {1:0.#}",
-        BoundRangeValue.StartValue,
-        BoundRangeValue.EndValue);
+    public bool IsHandle2Disabled
+    {
+        get => _isHandle2Disabled;
+        set
+        {
+            if (_isHandle2Disabled == value)
+            {
+                return;
+            }
 
-    public ReactiveCommand<Unit, Unit> SetBoundRangeValueCommand { get; }
+            this.RaiseAndSetIfChanged(ref _isHandle2Disabled, value);
+            UpdateDisabledHandles();
+        }
+    }
 
-    public ReactiveCommand<Unit, Unit> ClearBoundRangeValueCommand { get; }
+    public bool IsHandle3Disabled
+    {
+        get => _isHandle3Disabled;
+        set
+        {
+            if (_isHandle3Disabled == value)
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _isHandle3Disabled, value);
+            UpdateDisabledHandles();
+        }
+    }
+
+    public IReadOnlyList<double> BoundRangeValues
+    {
+        get => _boundRangeValues;
+        set
+        {
+            if (_boundRangeValues.SequenceEqual(value))
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _boundRangeValues, value);
+            this.RaisePropertyChanged(nameof(BoundRangeValuesText));
+        }
+    }
+
+    public string BoundRangeValuesText => string.Join(
+        " - ",
+        BoundRangeValues.Select(value => value.ToString("0.#", CultureInfo.CurrentCulture)));
+
+    public ReactiveCommand<Unit, Unit> SetBoundRangeValuesCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ClearBoundRangeValuesCommand { get; }
 
     public SliderViewModel(IScreen screen)
     {
         HostScreen                   = screen;
-        SetBoundRangeValueCommand    = ReactiveCommand.Create(SetBoundRangeValue);
-        ClearBoundRangeValueCommand  = ReactiveCommand.Create(ClearBoundRangeValue);
+        SetBoundRangeValuesCommand   = ReactiveCommand.Create(SetBoundRangeValues);
+        ClearBoundRangeValuesCommand = ReactiveCommand.Create(ClearBoundRangeValues);
     }
 
-    private void SetBoundRangeValue()
+    private void SetBoundRangeValues()
     {
-        BoundRangeValue = new SliderRangeValue
-        {
-            StartValue = 35,
-            EndValue   = 85
-        };
+        BoundRangeValues = [35, 85];
     }
 
-    private void ClearBoundRangeValue()
+    private void ClearBoundRangeValues()
     {
-        BoundRangeValue = default;
+        BoundRangeValues = [0, 0];
     }
 
+    private void UpdateDisabledHandles()
+    {
+        _disabledHandles = [IsHandle1Disabled, IsHandle2Disabled, IsHandle3Disabled];
+        this.RaisePropertyChanged(nameof(DisabledHandles));
+    }
 }

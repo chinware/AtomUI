@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using AtomUIGallery.ShowCases.Slider;
 using Shouldly;
 using Xunit;
 
@@ -41,7 +42,10 @@ public class SliderShowCasePageTests
         source.ShouldContain("Description=\"{gallery:SliderShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("SliderShowCaseLangResource BasicTitle");
-        source.ShouldContain("SliderShowCaseLangResource RangeValueBindingTitle");
+        source.ShouldContain("SliderShowCaseLangResource RangeValuesBindingTitle");
+        source.ShouldContain("SliderShowCaseLangResource MultiHandleTitle");
+        source.ShouldContain("RangeValues=\"");
+        source.ShouldNotContain("RangeValue=\"");
         source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("SliderShowCaseLangResource CustomizeTooltipTitle");
         source.ShouldContain("SliderShowCaseLangResource VerticalTitle");
@@ -61,6 +65,92 @@ public class SliderShowCasePageTests
             .ShouldBe(NormalizeMarkup(approved));
     }
 
+    [Fact]
+    public void Multi_Handle_Example_Matches_Ant_Design_Composition()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml");
+        var item = ExtractShowCaseItem(source, "MultiHandleTitle");
+
+        CountOccurrences(item, "RangeValues=\"").ShouldBe(1);
+        item.ShouldContain("RangeValues=\"{Binding MultiHandleRangeValues, Mode=OneWay}\"");
+        item.ShouldContain("<atom:Slider.TracksBrush>");
+        item.ShouldContain("<LinearGradientBrush StartPoint=\"0%,50%\" EndPoint=\"100%,50%\">");
+        item.ShouldContain("Color=\"#52C41A\"");
+        item.ShouldContain("Color=\"#FAAD14\"");
+        item.ShouldContain("Color=\"#FF4D4F\"");
+        item.ShouldContain("TrackBarBrush=\"{x:Null}\"");
+        item.ShouldNotContain("BadgeText=");
+        item.ShouldNotContain("IsSnapToTickEnabled=");
+        item.ShouldNotContain("TickFrequency=");
+        item.ShouldNotContain("IsDraggableTrack=");
+        item.ShouldNotContain("DisabledHandles=");
+    }
+
+    [Fact]
+    public void Multi_Handle_Localization_Uses_Approved_Copy()
+    {
+        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh_CN.cs");
+        zhCn.ShouldContain("MultiHandleTitle = \"多点组合\"");
+        zhCn.ShouldContain("MultiHandleDescription = \"范围多个点组合。\"");
+
+        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh_TW.cs");
+        zhTw.ShouldContain("MultiHandleTitle = \"多點組合\"");
+        zhTw.ShouldContain("MultiHandleDescription = \"範圍多個點組合。\"");
+
+        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/en_US.cs");
+        enUs.ShouldContain("MultiHandleTitle = \"Multiple points\"");
+        enUs.ShouldContain("MultiHandleDescription = \"Combine multiple points in a range.\"");
+    }
+
+    [Fact]
+    public void Disabled_Handle_Example_Matches_Ant_Design_Composition()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml");
+        var item = ExtractShowCaseItem(source, "DisabledHandleTitle");
+
+        CountOccurrences(item, "RangeValues=\"").ShouldBe(1);
+        CountOccurrences(item, "<atom:CheckBox").ShouldBe(3);
+        item.ShouldContain("RangeValues=\"{Binding DisabledHandleRangeValues, Mode=OneWay}\"");
+        item.ShouldContain("DisabledHandles=\"{Binding DisabledHandles}\"");
+        item.ShouldContain("IsChecked=\"{Binding IsHandle1Disabled, Mode=TwoWay}\"");
+        item.ShouldContain("IsChecked=\"{Binding IsHandle2Disabled, Mode=TwoWay}\"");
+        item.ShouldContain("IsChecked=\"{Binding IsHandle3Disabled, Mode=TwoWay}\"");
+        item.ShouldNotContain("BadgeText=");
+        item.ShouldNotContain("IsSnapToTickEnabled=");
+        item.ShouldNotContain("TickFrequency=");
+    }
+
+    [Fact]
+    public void Disabled_Handle_ViewModel_Replaces_DisabledHandles_Snapshot()
+    {
+        var viewModel = new SliderViewModel(null!);
+        var original = viewModel.DisabledHandles;
+        var changedProperties = new List<string?>();
+        viewModel.PropertyChanged += (_, args) => changedProperties.Add(args.PropertyName);
+
+        viewModel.IsHandle2Disabled = true;
+
+        viewModel.DisabledHandleRangeValues.ShouldBe([20, 50, 80]);
+        viewModel.DisabledHandles.ShouldBe([false, true, false]);
+        viewModel.DisabledHandles.ShouldNotBeSameAs(original);
+        changedProperties.ShouldContain(nameof(SliderViewModel.IsHandle2Disabled));
+        changedProperties.ShouldContain(nameof(SliderViewModel.DisabledHandles));
+    }
+
+    [Fact]
+    public void Disabled_Handle_Localization_Uses_Approved_Copy()
+    {
+        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh_CN.cs");
+        zhCn.ShouldContain("DisabledHandleTitle = \"禁用指定滑块\"");
+        zhCn.ShouldContain("DisabledHandleDescription = \"设置 disabled 为数组，可以单独禁用 range 模式下特定的 handle。禁用后该 handle 作为移动边界，其他 handle 无法越过。\"");
+
+        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh_TW.cs");
+        zhTw.ShouldContain("DisabledHandleTitle = \"禁用指定滑塊\"");
+
+        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/en_US.cs");
+        enUs.ShouldContain("DisabledHandleTitle = \"Disabled handles\"");
+    }
+
     private static string ExtractSliderExampleItems(string source)
     {
         const string firstItemMarker  = "<gallery:ShowCaseItem";
@@ -73,6 +163,21 @@ public class SliderShowCasePageTests
         panelCloseStart.ShouldBeGreaterThan(firstItemStart);
 
         return source[firstItemStart..panelCloseStart];
+    }
+
+    private static string ExtractShowCaseItem(string source, string titleResource)
+    {
+        var titleMarker = $"Title=\"{{gallery:SliderShowCaseLangResource {titleResource}}}\"";
+        var titleIndex = source.IndexOf(titleMarker, StringComparison.Ordinal);
+        titleIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemStart = source.LastIndexOf("<gallery:ShowCaseItem", titleIndex, StringComparison.Ordinal);
+        itemStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        const string itemCloseMarker = "</gallery:ShowCaseItem>";
+        var itemClose = source.IndexOf(itemCloseMarker, titleIndex, StringComparison.Ordinal);
+        itemClose.ShouldBeGreaterThan(titleIndex);
+        return source[itemStart..(itemClose + itemCloseMarker.Length)];
     }
 
     private static string NormalizeMarkup(string source)

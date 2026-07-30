@@ -19,7 +19,6 @@
                     BaseClass="RangeBase" />
             </gallery:GalleryStickyTabsHost.Header>
 
-
             <gallery:ShowCasePanel Name="ExamplesContent"
                                    IsScrollEnabled="False"
                                    IsDeferredLoadingEnabled="True"
@@ -32,71 +31,131 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:SliderViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:Slider
-                            Maximum="100"
-                            Minimum="0"
-                            TickFrequency="5"
-                            IsEnabled="{Binding NormalEnabled}"
-                            Value="50" />
+                            <StackPanel Orientation="Vertical" Spacing="20">
+                                <atom:Slider
+                                    Maximum="100"
+                                    Minimum="0"
+                                    TickFrequency="5"
+                                    IsEnabled="{Binding NormalEnabled}"
+                                    Value="50" />
 
-                        <atom:Slider
-                            Maximum="100"
-                            Minimum="0"
-                            IsRangeMode="True"
-                            TickFrequency="5"
-                            IsEnabled="{Binding NormalEnabled}"
-                            RangeValue="20, 80" />
-                        <atom:Slider
-                            Name="Slider1"
-                            Marks="{Binding SliderMarks}"
-                            Maximum="100"
-                            Minimum="0"
-                            IsEnabled="{Binding NormalEnabled}"
-                            IsRangeMode="True"
-                            TickFrequency="5"
-                            RangeValue="20, 80" />
+                                <atom:Slider
+                                    Maximum="100"
+                                    Minimum="0"
+                                    IsRangeMode="True"
+                                    TickFrequency="5"
+                                    IsEnabled="{Binding NormalEnabled}"
+                                    RangeValues="{Binding DefaultRangeValues, Mode=OneWay}" />
+                                <atom:Slider
+                                    Name="Slider1"
+                                    Marks="{Binding SliderMarks}"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    IsEnabled="{Binding NormalEnabled}"
+                                    IsRangeMode="True"
+                                    TickFrequency="5"
+                                    RangeValues="{Binding DefaultRangeValues, Mode=OneWay}" />
 
-                        <StackPanel Orientation="Horizontal" Spacing="2">
-                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SliderShowCaseLangResource P2TextEnabled}" />
-                            <atom:ToggleSwitch VerticalAlignment="Center" SizeType="Small" IsChecked="{Binding NormalEnabled, Mode=TwoWay}" />
-                        </StackPanel>
-                    </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="2">
+                                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SliderShowCaseLangResource P2TextEnabled}" />
+                                    <atom:ToggleSwitch VerticalAlignment="Center" SizeType="Small" IsChecked="{Binding NormalEnabled, Mode=TwoWay}" />
+                                </StackPanel>
+                            </StackPanel>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="{gallery:SliderShowCaseLangResource RangeValueBindingTitle}"
-                    Description="{gallery:SliderShowCaseLangResource RangeValueBindingDescription}"
+                    Title="{gallery:SliderShowCaseLangResource MultiHandleTitle}"
+                    Description="{gallery:SliderShowCaseLangResource MultiHandleDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:SliderViewModel">
+                            <Grid MinHeight="160">
+                                <atom:Slider
+                                    VerticalAlignment="Center"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    IsRangeMode="True"
+                                    TrackBarBrush="{x:Null}"
+                                    RangeValues="{Binding MultiHandleRangeValues, Mode=OneWay}">
+                                    <atom:Slider.TracksBrush>
+                                        <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+                                            <GradientStop Color="#52C41A" Offset="0" />
+                                            <GradientStop Color="#FAAD14" Offset="0.5" />
+                                            <GradientStop Color="#FF4D4F" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </atom:Slider.TracksBrush>
+                                </atom:Slider>
+                            </Grid>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:SliderShowCaseLangResource DisabledHandleTitle}"
+                    Description="{gallery:SliderShowCaseLangResource DisabledHandleDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:SliderViewModel">
+                            <StackPanel MinHeight="160"
+                                        VerticalAlignment="Center"
+                                        Spacing="24">
+                                <atom:Slider
+                                    Maximum="100"
+                                    Minimum="0"
+                                    IsRangeMode="True"
+                                    RangeValues="{Binding DisabledHandleRangeValues, Mode=OneWay}"
+                                    DisabledHandles="{Binding DisabledHandles}" />
+                                <WrapPanel Orientation="Horizontal"
+                                           ItemSpacing="20"
+                                           LineSpacing="12">
+                                    <atom:CheckBox
+                                        Content="{gallery:SliderShowCaseLangResource P2ContentDisabledHandle1}"
+                                        IsChecked="{Binding IsHandle1Disabled, Mode=TwoWay}" />
+                                    <atom:CheckBox
+                                        Content="{gallery:SliderShowCaseLangResource P2ContentDisabledHandle2}"
+                                        IsChecked="{Binding IsHandle2Disabled, Mode=TwoWay}" />
+                                    <atom:CheckBox
+                                        Content="{gallery:SliderShowCaseLangResource P2ContentDisabledHandle3}"
+                                        IsChecked="{Binding IsHandle3Disabled, Mode=TwoWay}" />
+                                </WrapPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:SliderShowCaseLangResource RangeValuesBindingTitle}"
+                    Description="{gallery:SliderShowCaseLangResource RangeValuesBindingDescription}"
                     BadgeText="v6.0.8"
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:SliderViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="12">
-                        <atom:Slider
-                            Width="260"
-                            Maximum="100"
-                            Minimum="0"
-                            IsRangeMode="True"
-                            IsSnapToTickEnabled="True"
-                            TickFrequency="5"
-                            RangeValue="{Binding BoundRangeValue}" />
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <atom:TextBlock VerticalAlignment="Center"
-                                            Text="{gallery:SliderShowCaseLangResource P2TextBoundRangeValue}" />
-                            <atom:TextBlock VerticalAlignment="Center"
-                                            Text="{Binding BoundRangeValueText}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <atom:Button SizeType="Small"
-                                         Command="{Binding SetBoundRangeValueCommand}"
-                                         Content="{gallery:SliderShowCaseLangResource P2ContentSetRange}" />
-                            <atom:Button SizeType="Small"
-                                         Command="{Binding ClearBoundRangeValueCommand}"
-                                         Content="{gallery:SliderShowCaseLangResource P2ContentClear}" />
-                        </StackPanel>
-                    </StackPanel>
+                            <StackPanel Orientation="Vertical" Spacing="12">
+                                <atom:Slider
+                                    Width="260"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    IsRangeMode="True"
+                                    IsSnapToTickEnabled="True"
+                                    TickFrequency="5"
+                                    RangeValues="{Binding BoundRangeValues}" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <atom:TextBlock VerticalAlignment="Center"
+                                                    Text="{gallery:SliderShowCaseLangResource P2TextBoundRangeValues}" />
+                                    <atom:TextBlock VerticalAlignment="Center"
+                                                    Text="{Binding BoundRangeValuesText}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <atom:Button SizeType="Small"
+                                                 Command="{Binding SetBoundRangeValuesCommand}"
+                                                 Content="{gallery:SliderShowCaseLangResource P2ContentSetRange}" />
+                                    <atom:Button SizeType="Small"
+                                                 Command="{Binding ClearBoundRangeValuesCommand}"
+                                                 Content="{gallery:SliderShowCaseLangResource P2ContentClear}" />
+                                </StackPanel>
+                            </StackPanel>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -107,15 +166,15 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:SliderViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:Slider
-                            Maximum="100"
-                            Minimum="0"
-                            TickFrequency="1"
-                            IsSnapToTickEnabled="True"
-                            ValueFormatTemplate="\{0\}%"
-                            Value="20" />
-                    </StackPanel>
+                            <StackPanel Orientation="Vertical" Spacing="20">
+                                <atom:Slider
+                                    Maximum="100"
+                                    Minimum="0"
+                                    TickFrequency="1"
+                                    IsSnapToTickEnabled="True"
+                                    ValueFormatTemplate="\{0\}%"
+                                    Value="20" />
+                            </StackPanel>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -126,43 +185,42 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:SliderViewModel">
-                    <StackPanel Orientation="Horizontal" Spacing="20" Height="300">
-                        <atom:Slider
-                            Maximum="100"
-                            Minimum="0"
-                            Orientation="Vertical"
-                            TickFrequency="1"
-                            Value="20" />
-                        <atom:Slider
-                            Maximum="100"
-                            Minimum="0"
-                            Orientation="Vertical"
-                            TickFrequency="5"
-                            IsRangeMode="True"
-                            RangeValue="20, 80"
-                            IsSnapToTickEnabled="True"
-                            Value="20" />
+                            <StackPanel Orientation="Horizontal" Spacing="20" Height="300">
+                                <atom:Slider
+                                    Maximum="100"
+                                    Minimum="0"
+                                    Orientation="Vertical"
+                                    TickFrequency="1"
+                                    Value="20" />
+                                <atom:Slider
+                                    Maximum="100"
+                                    Minimum="0"
+                                    Orientation="Vertical"
+                                    TickFrequency="5"
+                                    IsRangeMode="True"
+                                    RangeValues="{Binding DefaultRangeValues, Mode=OneWay}"
+                                    IsSnapToTickEnabled="True"
+                                    Value="20" />
 
-                        <atom:Slider
-                            Name="Slider2"
-                            Marks="{Binding SliderMarks}"
-                            Maximum="100"
-                            Minimum="0"
-                            Orientation="Vertical"
-                            TickFrequency="1"
-                            Value="20" />
+                                <atom:Slider
+                                    Name="Slider2"
+                                    Marks="{Binding SliderMarks}"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    Orientation="Vertical"
+                                    TickFrequency="1"
+                                    Value="20" />
 
-                        <atom:Slider
-                            Name="Slider3"
-                            Marks="{Binding SliderMarks}"
-                            Maximum="100"
-                            Minimum="0"
-                            IsRangeMode="True"
-                            Orientation="Vertical"
-                            TickFrequency="5"
-                            RangeValue="20, 80" />
-
-                    </StackPanel>
+                                <atom:Slider
+                                    Name="Slider3"
+                                    Marks="{Binding SliderMarks}"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    IsRangeMode="True"
+                                    Orientation="Vertical"
+                                    TickFrequency="5"
+                                    RangeValues="{Binding DefaultRangeValues, Mode=OneWay}" />
+                            </StackPanel>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -173,46 +231,45 @@
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:SliderViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedTrue}" />
-                        <atom:Slider
-                            Name="Slider4"
-                            Marks="{Binding SliderMarks}"
-                            Maximum="100"
-                            Minimum="0"
-                            TickFrequency="1"
-                            Value="20" />
+                            <StackPanel Orientation="Vertical" Spacing="20">
+                                <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedTrue}" />
+                                <atom:Slider
+                                    Name="Slider4"
+                                    Marks="{Binding SliderMarks}"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    TickFrequency="1"
+                                    Value="20" />
 
-                        <atom:Slider
-                            Name="Slider5"
-                            Marks="{Binding SliderMarks}"
-                            Maximum="100"
-                            Minimum="0"
-                            IsRangeMode="True"
-                            TickFrequency="5"
-                            RangeValue="20, 80" />
+                                <atom:Slider
+                                    Name="Slider5"
+                                    Marks="{Binding SliderMarks}"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    IsRangeMode="True"
+                                    TickFrequency="5"
+                                    RangeValues="{Binding DefaultRangeValues, Mode=OneWay}" />
 
-                        <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedFalse}" />
-                        <atom:Slider
-                            Name="Slider6"
-                            Marks="{Binding SliderMarks}"
-                            Maximum="100"
-                            Minimum="0"
-                            TickFrequency="1"
-                            IsIncluded="False"
-                            Value="20" />
+                                <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedFalse}" />
+                                <atom:Slider
+                                    Name="Slider6"
+                                    Marks="{Binding SliderMarks}"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    TickFrequency="1"
+                                    IsIncluded="False"
+                                    Value="20" />
 
-                        <atom:Slider
-                            Name="Slider7"
-                            Marks="{Binding SliderMarks}"
-                            Maximum="100"
-                            Minimum="0"
-                            IsRangeMode="True"
-                            TickFrequency="5"
-                            IsIncluded="False"
-                            RangeValue="20, 80" />
-
-                    </StackPanel>
+                                <atom:Slider
+                                    Name="Slider7"
+                                    Marks="{Binding SliderMarks}"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    IsRangeMode="True"
+                                    TickFrequency="5"
+                                    IsIncluded="False"
+                                    RangeValues="{Binding DefaultRangeValues, Mode=OneWay}" />
+                            </StackPanel>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>

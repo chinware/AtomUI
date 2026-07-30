@@ -18,6 +18,7 @@
         <Setter Property="ThumbCircleSize" Value="{atom:SliderTokenResource ThumbCircleSize}" />
         <Setter Property="Width" Value="{atom:SliderTokenResource ThumbSize}" />
         <Setter Property="Height" Value="{atom:SliderTokenResource ThumbSize}" />
+        <Setter Property="UseLayoutRounding" Value="False" />
         <Setter Property="ZIndex" Value="100" />
 
         <Style Selector="^:pointerover">
@@ -41,6 +42,12 @@
             <Setter Property="OutlineThickness"
                     Value="{atom:SliderTokenResource ThumbOutlineThickness}" />
             <Setter Property="ZIndex" Value="1000" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="BorderBrush" Value="{atom:SliderTokenResource ThumbCircleBorderColorDisabled}" />
+            <Setter Property="OutlineThickness" Value="0" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

@@ -63,10 +63,22 @@ public class SliderThumb : TemplatedControl
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderThumb>();
 
+    internal static readonly DirectProperty<SliderThumb, int> HandleIndexProperty =
+        AvaloniaProperty.RegisterDirect<SliderThumb, int>(
+            nameof(HandleIndex),
+            o => o.HandleIndex,
+            (o, v) => o.HandleIndex = v);
+
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    internal int HandleIndex
+    {
+        get => _handleIndex;
+        set => SetAndRaise(HandleIndexProperty, ref _handleIndex, value);
     }
 
     internal IBrush? OutlineBrush
@@ -89,6 +101,7 @@ public class SliderThumb : TemplatedControl
 
     #endregion
 
+    private int _handleIndex;
     private Point? _lastPoint;
     private IPen? _circlePen;
     private IPen? _outlinePen;
@@ -152,7 +165,7 @@ public class SliderThumb : TemplatedControl
 
     protected override void OnPointerMoved(PointerEventArgs e)
     {
-        if (_lastPoint.HasValue)
+        if (IsEnabled && _lastPoint.HasValue)
         {
             var ev = new VectorEventArgs
             {
@@ -166,8 +179,14 @@ public class SliderThumb : TemplatedControl
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
+        if (!IsEnabled)
+        {
+            return;
+        }
+
         e.Handled  = true;
         _lastPoint = e.GetPosition(this);
+        e.Pointer.Capture(this);
 
         var ev = new VectorEventArgs
         {
@@ -188,6 +207,11 @@ public class SliderThumb : TemplatedControl
         {
             e.Handled  = true;
             _lastPoint = null;
+
+            if (e.Pointer.Captured == this)
+            {
+                e.Pointer.Capture(null);
+            }
 
             var ev = new VectorEventArgs
             {

@@ -1,8 +1,5 @@
-﻿using System.Globalization;
 using AtomUI.Controls;
-using AtomUI.Input;
 using AtomUI.Media;
-using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
@@ -20,60 +17,6 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-public record struct SliderRangeValue
-{
-    public double StartValue { get; set; }
-    public double EndValue { get; set; }
-
-    public static SliderRangeValue Parse(string expr)
-    {
-        // 这里只负责解析到 double
-        const string exceptionMessage = "Parse value expression for SliderRangeValue failed";
-        using (var tokenizer = new SpanStringTokenizer(expr, CultureInfo.InvariantCulture, exceptionMessage))
-        {
-            try
-            {
-                var startValue = 0d;
-                var endValue   = 0d;
-                if (tokenizer.TryReadString(out var startValueStr))
-                {
-                    startValue = double.Parse(startValueStr);
-                    if (tokenizer.TryReadString(out var endValueStr))
-                    {
-                        endValue = double.Parse(endValueStr);
-                    }
-                    else
-                    {
-                        // 至少要两个
-                        throw new FormatException($"{exceptionMessage}, must have two value.");
-                    }
-                }
-
-                // 检查顺序
-                if (MathUtils.GreaterThan(startValue, endValue))
-                {
-                    throw new ArgumentException($"{exceptionMessage}, start value must less or equal to end value.");
-                }
-
-                return new SliderRangeValue
-                {
-                    StartValue = startValue,
-                    EndValue   = endValue
-                };
-            }
-            catch (Exception e)
-            {
-                if (e is not FormatException)
-                {
-                    throw new FormatException(exceptionMessage, e);
-                }
-
-                throw;
-            }
-        }
-    }
-}
-
 public record SliderMark(string Label, double Value)
 {
     public IBrush? LabelBrush { get; set; }
@@ -89,20 +32,36 @@ public class Slider : RangeBase,
                       IFormItemAware
 {
     #region 公共属性定义
+
     public static readonly StyledProperty<Orientation> OrientationProperty =
         StackPanel.OrientationProperty.AddOwner<Slider>();
-    
+
     public static readonly StyledProperty<bool> IsDirectionReversedProperty =
         SliderTrack.IsDirectionReversedProperty.AddOwner<Slider>();
-    
+
     public static readonly StyledProperty<bool> IsSnapToTickEnabledProperty =
         AvaloniaProperty.Register<Slider, bool>(nameof(IsSnapToTickEnabled));
 
     public static readonly StyledProperty<double> TickFrequencyProperty =
         AvaloniaProperty.Register<Slider, double>(nameof(TickFrequency));
 
-    public static readonly StyledProperty<SliderRangeValue> RangeValueProperty =
-        SliderTrack.RangeValueProperty.AddOwner<Slider>();
+    public static readonly StyledProperty<IReadOnlyList<double>?> RangeValuesProperty =
+        SliderTrack.RangeValuesProperty.AddOwner<Slider>(
+            new StyledPropertyMetadata<IReadOnlyList<double>?>(defaultBindingMode: BindingMode.TwoWay,
+                coerce: CoerceRangeValues,
+                enableDataValidation: true));
+
+    public static readonly StyledProperty<IReadOnlyList<bool>?> DisabledHandlesProperty =
+        SliderTrack.DisabledHandlesProperty.AddOwner<Slider>();
+
+    public static readonly StyledProperty<bool> IsDraggableTrackProperty =
+        SliderTrack.IsDraggableTrackProperty.AddOwner<Slider>();
+
+    public static readonly StyledProperty<IBrush?> TrackBarBrushProperty =
+        SliderTrack.TrackBarBrushProperty.AddOwner<Slider>();
+
+    public static readonly StyledProperty<IBrush?> TracksBrushProperty =
+        SliderTrack.TracksBrushProperty.AddOwner<Slider>();
 
     public static readonly StyledProperty<bool> IsRangeModeProperty =
         SliderTrack.IsRangeModeProperty.AddOwner<Slider>();
@@ -121,7 +80,7 @@ public class Slider : RangeBase,
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
         WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Slider>();
-    
+
     public Orientation Orientation
     {
         get => GetValue(OrientationProperty);
@@ -133,26 +92,47 @@ public class Slider : RangeBase,
         get => GetValue(IsDirectionReversedProperty);
         set => SetValue(IsDirectionReversedProperty, value);
     }
-    
+
     public bool IsSnapToTickEnabled
     {
         get => GetValue(IsSnapToTickEnabledProperty);
         set => SetValue(IsSnapToTickEnabledProperty, value);
     }
 
-    /// <summary>
-    /// Gets or sets the interval between tick marks.
-    /// </summary>
     public double TickFrequency
     {
         get => GetValue(TickFrequencyProperty);
         set => SetValue(TickFrequencyProperty, value);
     }
 
-    public SliderRangeValue RangeValue
+    public IReadOnlyList<double>? RangeValues
     {
-        get => GetValue(RangeValueProperty);
-        set => SetValue(RangeValueProperty, value);
+        get => GetValue(RangeValuesProperty);
+        set => SetValue(RangeValuesProperty, value);
+    }
+
+    public IReadOnlyList<bool>? DisabledHandles
+    {
+        get => GetValue(DisabledHandlesProperty);
+        set => SetValue(DisabledHandlesProperty, value);
+    }
+
+    public bool IsDraggableTrack
+    {
+        get => GetValue(IsDraggableTrackProperty);
+        set => SetValue(IsDraggableTrackProperty, value);
+    }
+
+    public IBrush? TrackBarBrush
+    {
+        get => GetValue(TrackBarBrushProperty);
+        set => SetValue(TrackBarBrushProperty, value);
+    }
+
+    public IBrush? TracksBrush
+    {
+        get => GetValue(TracksBrushProperty);
+        set => SetValue(TracksBrushProperty, value);
     }
 
     public bool IsRangeMode
@@ -192,13 +172,16 @@ public class Slider : RangeBase,
     }
 
     #endregion
-    
+
     protected bool IsDragging { get; private set; }
-    
+
     protected SliderTrack? SliderTrack { get; private set; }
-    
-    private bool _isFocusEngaged;
+
     private SliderThumb? _graspedThumb;
+    private double _thumbDragValueOffset;
+    private bool _isRangeTrackDragging;
+    private double _rangeTrackDragStartValue;
+    private IReadOnlyList<double>? _rangeTrackDragStartValues;
     private IDisposable? _pointerMovedDispose;
     private IDisposable? _pointerPressDispose;
     private IDisposable? _pointerReleaseDispose;
@@ -206,7 +189,7 @@ public class Slider : RangeBase,
     private EventHandler? _formValueChanged;
 
     private const double Tolerance = 0.0001;
-    
+
     static Slider()
     {
         PressedMixin.Attach<Slider>();
@@ -221,8 +204,9 @@ public class Slider : RangeBase,
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<Slider>(AutomationControlType.Slider);
 
         ValueProperty.Changed.AddClassHandler<Slider>((slider, args) => slider.NotifyFormValueChanged(args.NewValue));
-        RangeValueProperty.Changed.AddClassHandler<Slider>((slider, args) => slider.NotifyFormValueChanged(args.NewValue));
+        RangeValuesProperty.Changed.AddClassHandler<Slider>((slider, args) => slider.NotifyFormValueChanged(args.NewValue));
     }
+
     public Slider()
     {
     }
@@ -231,21 +215,23 @@ public class Slider : RangeBase,
     {
         base.OnApplyTemplate(e);
         DisposePointerHandlers();
+        if (SliderTrack is not null)
+        {
+            SliderTrack.ThumbsChanged -= HandleTrackThumbsChanged;
+        }
 
         SliderTrack = e.NameScope.Find<SliderTrack>("PART_Track");
-
-        if (SliderTrack != null)
+        if (SliderTrack is not null)
         {
             SliderTrack.IgnoreThumbDrag = true;
+            SliderTrack.ThumbsChanged += HandleTrackThumbsChanged;
         }
 
         _pointerPressDispose = this.AddDisposableHandler(PointerPressedEvent, TrackPressed, RoutingStrategies.Tunnel);
-        _pointerReleaseDispose =
-            this.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
+        _pointerReleaseDispose = this.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
         _pointerMovedDispose = this.AddDisposableHandler(PointerMovedEvent, TrackMoved, RoutingStrategies.Tunnel);
         ConfigureTipHostWidth();
         ConfigureTemplateThumbTips();
-    
         SetupSliderThumbPlacement();
         UpdatePseudoClasses(Orientation);
     }
@@ -254,66 +240,46 @@ public class Slider : RangeBase,
     {
         base.OnDetachedFromVisualTree(e);
         DisposePointerHandlers();
+        if (SliderTrack is not null)
+        {
+            SliderTrack.ThumbsChanged -= HandleTrackThumbsChanged;
+        }
     }
 
-    // TODO 在 rangemode 下可能没有用
     protected override void OnKeyDown(KeyEventArgs e)
     {
-        base.OnKeyDown(e);
-
-        if (e.Handled || e.KeyModifiers != KeyModifiers.None)
+        if (!IsEnabled)
         {
             return;
         }
 
-        var usingXyNavigation = this.IsAllowedXYNavigationMode(e.KeyDeviceType);
-        var allowArrowKeys    = _isFocusEngaged || !usingXyNavigation;
-
-        var handled = true;
-
-        switch (e.Key)
+        var direction = e.Key switch
         {
-            case Key.Enter when usingXyNavigation:
-                _isFocusEngaged = !_isFocusEngaged;
-                handled         = true;
-                break;
-            case Key.Escape when usingXyNavigation:
-                _isFocusEngaged = false;
-                handled         = true;
-                break;
+            Key.Left or Key.Down  => -SmallChange,
+            Key.Right or Key.Up   => SmallChange,
+            Key.PageDown          => -LargeChange,
+            Key.PageUp            => LargeChange,
+            Key.Home              => Minimum - Value,
+            Key.End               => Maximum - Value,
+            _                     => 0
+        };
 
-            case Key.Down when allowArrowKeys:
-            case Key.Left when allowArrowKeys:
-                MoveToNextTick(IsDirectionReversed ? SmallChange : -SmallChange);
-                break;
-
-            case Key.Up when allowArrowKeys:
-            case Key.Right when allowArrowKeys:
-                MoveToNextTick(IsDirectionReversed ? -SmallChange : SmallChange);
-                break;
-
-            case Key.PageUp:
-                MoveToNextTick(IsDirectionReversed ? -LargeChange : LargeChange);
-                break;
-
-            case Key.PageDown:
-                MoveToNextTick(IsDirectionReversed ? LargeChange : -LargeChange);
-                break;
-
-            case Key.Home:
-                SetCurrentValue(ValueProperty, Minimum);
-                break;
-
-            case Key.End:
-                SetCurrentValue(ValueProperty, Maximum);
-                break;
-
-            default:
-                handled = false;
-                break;
+        if (direction == 0)
+        {
+            base.OnKeyDown(e);
+            return;
         }
 
-        e.Handled = handled;
+        if (!IsRangeMode || SliderTrack?.FocusedThumb is null)
+        {
+            MoveToNextTick(direction);
+        }
+        else
+        {
+            MoveRangeHandle(SliderTrack.FocusedThumb.HandleIndex, SliderTrack.FocusedThumbValue + direction);
+        }
+
+        e.Handled = true;
     }
 
     protected override void UpdateDataValidation(
@@ -321,8 +287,7 @@ public class Slider : RangeBase,
         BindingValueType state,
         Exception? error)
     {
-        if (property == ValueProperty ||
-            property == RangeValueProperty)
+        if (property == ValueProperty || property == RangeValuesProperty)
         {
             DataValidationErrors.SetError(this, error);
         }
@@ -348,22 +313,15 @@ public class Slider : RangeBase,
             ConfigureTemplateThumbTips();
             SetupSliderThumbPlacement();
         }
-        else if (change.Property == ValueProperty)
+        else if (change.Property == ValueProperty || change.Property == RangeValuesProperty)
         {
-            UpdateValueThumbTip();
-        }
-        else if (change.Property == RangeValueProperty)
-        {
-            UpdateRangeThumbTips();
+            ConfigureTemplateThumbTips();
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (this.IsAttachedToVisualTree() &&
+            (change.Property == MaximumProperty || change.Property == ValueFormatTemplateProperty))
         {
-            if (change.Property == MaximumProperty ||
-                change.Property == ValueFormatTemplateProperty)
-            {
-                ConfigureTipHostWidth();
-            }
+            ConfigureTipHostWidth();
         }
     }
 
@@ -375,6 +333,7 @@ public class Slider : RangeBase,
     protected virtual void OnThumbDragCompleted(VectorEventArgs e)
     {
         IsDragging = false;
+        _thumbDragValueOffset = 0;
     }
 
     #region 实现 FormItem 接口
@@ -400,14 +359,7 @@ public class Slider : RangeBase,
     {
         if (IsRangeMode)
         {
-            if (value is SliderRangeValue rangeValue)
-            {
-                RangeValue = rangeValue;
-            }
-            else
-            {
-                RangeValue = default;
-            }
+            RangeValues = value as IReadOnlyList<double>;
         }
         else
         {
@@ -417,18 +369,35 @@ public class Slider : RangeBase,
 
     protected virtual object? NotifyGetFormValue()
     {
-        return IsRangeMode ? RangeValue : Value;
+        return IsRangeMode ? RangeValues : Value;
     }
 
     protected virtual void NotifyClearFormValue()
     {
-        RangeValue = default;
+        if (IsRangeMode)
+        {
+            RangeValues = null;
+        }
+        else
+        {
+            Value = 0.0;
+        }
     }
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)
     {
     }
+
     #endregion
+
+    private static IReadOnlyList<double>? CoerceRangeValues(AvaloniaObject sender, IReadOnlyList<double>? values)
+    {
+        var normalized = SliderRangeMath.NormalizeRangeValues(
+            values,
+            sender.GetValue(MinimumProperty),
+            sender.GetValue(MaximumProperty));
+        return normalized.Count == 0 ? sender.GetValue(RangeValuesProperty) : normalized;
+    }
 
     private void DisposePointerHandlers()
     {
@@ -447,14 +416,18 @@ public class Slider : RangeBase,
             return;
         }
 
-        if (IsRangeMode)
+        for (var i = 0; i < SliderTrack.Thumbs.Count; i++)
         {
-            UpdateRangeThumbTips();
+            var thumb = SliderTrack.Thumbs[i];
+            ToolTip.SetTip(thumb, FormatValue(SliderTrack.GetThumbValue(i)));
+            ToolTip.SetTipHostWidth(thumb, _tipHostWidth);
         }
-        else
-        {
-            UpdateValueThumbTip();
-        }
+    }
+
+    private void HandleTrackThumbsChanged(object? sender, EventArgs e)
+    {
+        ConfigureTemplateThumbTips();
+        SetupSliderThumbPlacement();
     }
 
     private void MoveToNextTick(double direction)
@@ -465,40 +438,81 @@ public class Slider : RangeBase,
         }
 
         var value = Value;
-
-        // Find the next value by snapping
         var next = SnapToTick(Math.Max(Minimum, Math.Min(Maximum, value + direction)));
+        var greaterThan = MathUtils.GreaterThan(direction, 0);
 
-        var greaterThan = MathUtils.GreaterThan(direction, 0); //search for the next tick greater than value?
-
-        // If the snapping brought us back to value, find the next tick point
-        if (Math.Abs(next - value) < Tolerance
-            && !(greaterThan && Math.Abs(value - Maximum) < Tolerance) // Stop if searching up if already at Max
-            && !(!greaterThan && Math.Abs(value - Minimum) < Tolerance)) // Stop if searching down if already at Min
+        if (Math.Abs(next - value) < Tolerance &&
+            !(greaterThan && Math.Abs(value - Maximum) < Tolerance) &&
+            !(!greaterThan && Math.Abs(value - Minimum) < Tolerance))
         {
             if (MathUtils.GreaterThan(TickFrequency, 0.0))
             {
-                // Find the current tick we are at
                 var tickNumber = Math.Round((value - Minimum) / TickFrequency);
-
-                if (greaterThan)
-                {
-                    tickNumber += 1.0;
-                }
-                else
-                {
-                    tickNumber -= 1.0;
-                }
-
+                tickNumber += greaterThan ? 1.0 : -1.0;
                 next = CalculateTickValue(tickNumber);
             }
         }
 
-        // Update if we've found a better value
         if (Math.Abs(next - value) > Tolerance)
         {
             SetCurrentValue(ValueProperty, next);
         }
+    }
+
+    private void MoveRangeHandle(int handleIndex, double value)
+    {
+        var values = SliderTrack?.EffectiveRangeValues ?? RangeValues ?? [Minimum, Minimum];
+        var next = IsSnapToTickEnabled ? SnapToTick(value) : value;
+        SetCurrentValue(RangeValuesProperty,
+            SliderRangeMath.MoveHandle(values, DisabledHandles, handleIndex, next, Minimum, Maximum));
+    }
+
+    private void MoveRangeTrack(double offset)
+    {
+        if (!IsRangeMode || !IsDraggableTrack)
+        {
+            return;
+        }
+
+        var values = _rangeTrackDragStartValues ?? SliderTrack?.EffectiveRangeValues ?? RangeValues ?? [Minimum, Minimum];
+        SetCurrentValue(RangeValuesProperty,
+            SliderRangeMath.ApplyTrackOffset(values, DisabledHandles, offset, Minimum, Maximum));
+    }
+
+    private bool TryStartRangeTrackDrag(Point point)
+    {
+        if (SliderTrack is null || !SliderTrack.CanDragRangeTrackAt(point))
+        {
+            return false;
+        }
+
+        _isRangeTrackDragging      = true;
+        _rangeTrackDragStartValue  = SliderTrack.ValueFromPoint(point);
+        _rangeTrackDragStartValues = SliderTrack.EffectiveRangeValues.ToArray();
+        return true;
+    }
+
+    private void MoveRangeTrackToPoint(Point point)
+    {
+        if (SliderTrack is null)
+        {
+            return;
+        }
+
+        var value = SliderTrack.ValueFromPoint(point);
+        if (IsSnapToTickEnabled)
+        {
+            value = SnapToTick(value);
+        }
+
+        MoveRangeTrack(value - _rangeTrackDragStartValue);
+    }
+
+    private void ClearRangeTrackDragSession()
+    {
+        _isRangeTrackDragging      = false;
+        _rangeTrackDragStartValue  = 0;
+        _rangeTrackDragStartValues = null;
     }
 
     private void TrackMoved(object? sender, PointerEventArgs e)
@@ -509,9 +523,13 @@ public class Slider : RangeBase,
             return;
         }
 
-        if (IsDragging)
+        if (IsDragging && _graspedThumb is not null)
         {
             MoveToPoint(e.GetCurrentPoint(SliderTrack));
+        }
+        else if (IsDragging && _isRangeTrackDragging && SliderTrack is not null)
+        {
+            MoveRangeTrackToPoint(e.GetCurrentPoint(SliderTrack).Position);
         }
     }
 
@@ -528,104 +546,78 @@ public class Slider : RangeBase,
 
         IsDragging    = false;
         _graspedThumb = null;
+        _thumbDragValueOffset = 0;
+        ClearRangeTrackDragSession();
     }
 
     private void TrackPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-        {
-            var posOnTrack = e.GetCurrentPoint(SliderTrack);
-
-            _graspedThumb = GetEffectiveMoveThumb(posOnTrack.Position);
-
-            var mark = SliderTrack?.GetMarkForPosition(posOnTrack.Position);
-            if (mark is not null)
-            {
-                // 修正坐标
-                if (!IsRangeMode)
-                {
-                    Value = mark.Value;
-                }
-                else
-                {
-                    if (_graspedThumb == SliderTrack?.StartSliderThumb)
-                    {
-                        var endValue = RangeValue.EndValue;
-                        RangeValue = new SliderRangeValue
-                        {
-                            StartValue = mark.Value,
-                            EndValue   = endValue
-                        };
-                    }
-                    else
-                    {
-                        var startValue = RangeValue.StartValue;
-                        RangeValue = new SliderRangeValue
-                        {
-                            StartValue = startValue,
-                            EndValue   = mark.Value
-                        };
-                    }
-                }
-
-                return;
-            }
-
-            MoveToPoint(posOnTrack);
-            if (_graspedThumb is not null)
-            {
-                ToolTip.SetIsCustomShowAndHide(_graspedThumb, true);
-            }
-
-            IsDragging = true;
-        }
-    }
-
-    private void MoveToPoint(PointerPoint posOnTrack)
-    {
-        if (SliderTrack is null)
+        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed || SliderTrack is null)
         {
             return;
         }
 
-        var orient      = Orientation == Orientation.Horizontal;
-        var sliderThumb = _graspedThumb;
-        var thumbLength = (orient
-            ? sliderThumb?.Bounds.Width ?? 0.0
-            : sliderThumb?.Bounds.Height ?? 0.0) + double.Epsilon;
-        var trackLength = (orient
-            ? SliderTrack.Bounds.Width
-            : SliderTrack.Bounds.Height) - thumbLength;
-        var trackPos   = orient ? posOnTrack.Position.X : posOnTrack.Position.Y;
-        var logicalPos = Math.Clamp((trackPos - thumbLength * 0.5) / trackLength, 0.0d, 1.0d);
-        var invert = orient ? IsDirectionReversed ? 1 : 0 :
-            IsDirectionReversed ? 0 : 1;
-        var calcVal    = Math.Abs(invert - logicalPos);
-        var range      = Maximum - Minimum;
-        var finalValue = calcVal * range + Minimum;
-        finalValue = IsSnapToTickEnabled ? SnapToTick(finalValue) : finalValue;
+        var posOnTrack = e.GetCurrentPoint(SliderTrack);
+        _thumbDragValueOffset = 0;
+        if (TryStartRangeTrackDrag(posOnTrack.Position))
+        {
+            IsDragging = true;
+            return;
+        }
+
+        _graspedThumb = GetEffectiveMoveThumb(posOnTrack.Position);
+        if (_graspedThumb is null)
+        {
+            return;
+        }
+
+        if (_graspedThumb.Bounds.Contains(posOnTrack.Position))
+        {
+            _thumbDragValueOffset = SliderTrack.ValueFromPoint(posOnTrack.Position) -
+                                    SliderTrack.GetThumbValue(_graspedThumb.HandleIndex);
+        }
+
+        var mark = SliderTrack.GetMarkForPosition(posOnTrack.Position);
+        if (mark is not null)
+        {
+            MoveCurrentThumbToValue(mark.Value);
+            return;
+        }
+
+        MoveToPoint(posOnTrack);
+        ToolTip.SetIsCustomShowAndHide(_graspedThumb, true);
+        IsDragging = true;
+    }
+
+    private void MoveToPoint(PointerPoint posOnTrack)
+    {
+        if (SliderTrack is null || _graspedThumb is null)
+        {
+            return;
+        }
+
+        MoveCurrentThumbToValue(SliderTrack.ValueFromPoint(posOnTrack.Position) - _thumbDragValueOffset);
+        if (!_graspedThumb.IsFocused)
+        {
+            _graspedThumb.Focus();
+        }
+    }
+
+    private void MoveCurrentThumbToValue(double value)
+    {
+        if (_graspedThumb is null)
+        {
+            return;
+        }
+
+        var finalValue = IsSnapToTickEnabled ? SnapToTick(value) : value;
         if (!IsRangeMode)
         {
             SetCurrentValue(ValueProperty, finalValue);
         }
         else
         {
-            var currentRangeValue = RangeValue;
-            if (sliderThumb == SliderTrack.StartSliderThumb)
-            {
-                currentRangeValue.StartValue = finalValue;
-            }
-            else
-            {
-                currentRangeValue.EndValue = finalValue;
-            }
-
-            SetCurrentValue(RangeValueProperty, currentRangeValue);
-        }
-
-        if (sliderThumb is not null && !sliderThumb.IsFocused)
-        {
-            sliderThumb.Focus();
+            MoveRangeHandle(_graspedThumb.HandleIndex, finalValue);
         }
     }
 
@@ -638,87 +630,28 @@ public class Slider : RangeBase,
 
         if (!IsRangeMode)
         {
-            return SliderTrack.StartSliderThumb;
+            return SliderTrack.Thumbs.Count > 0 ? SliderTrack.Thumbs[0] : null;
         }
 
-        // 看谁离的近
-        var startThumbCenter = SliderTrack.StartSliderThumb!.Bounds.Center;
-        var endThumbCenter   = SliderTrack.EndSliderThumb!.Bounds.Center;
-        var startThumbDelta  = 0d;
-        var endThumbDelta    = 0d;
-        if (Orientation == Orientation.Horizontal)
-        {
-            startThumbDelta = Math.Abs(startThumbCenter.X - point.X);
-            endThumbDelta   = Math.Abs(endThumbCenter.X - point.X);
-        }
-        else
-        {
-            startThumbDelta = Math.Abs(startThumbCenter.Y - point.Y);
-            endThumbDelta   = Math.Abs(endThumbCenter.Y - point.Y);
-        }
-
-        if (startThumbDelta < endThumbDelta)
-        {
-            return SliderTrack.StartSliderThumb;
-        }
-
-        return SliderTrack.EndSliderThumb;
+        var value = SliderTrack.ValueFromPoint(point);
+        var index = SliderRangeMath.FindNearestEnabledHandleIndex(
+            SliderTrack.EffectiveRangeValues,
+            DisabledHandles,
+            value);
+        return index >= 0 && index < SliderTrack.Thumbs.Count ? SliderTrack.Thumbs[index] : null;
     }
 
     private void SetupSliderThumbPlacement()
-    {
-        if (SliderTrack is not null)
-        {
-            if (Orientation == Orientation.Horizontal)
-            {
-                if (SliderTrack.StartSliderThumb is not null)
-                {
-                    ToolTip.SetPlacement(SliderTrack.StartSliderThumb, PlacementMode.Top);
-                }
-
-                if (SliderTrack.EndSliderThumb is not null)
-                {
-                    ToolTip.SetPlacement(SliderTrack.EndSliderThumb, PlacementMode.Top);
-                }
-            }
-            else
-            {
-                if (SliderTrack.StartSliderThumb is not null)
-                {
-                    ToolTip.SetPlacement(SliderTrack.StartSliderThumb, PlacementMode.Right);
-                }
-
-                if (SliderTrack.EndSliderThumb is not null)
-                {
-                    ToolTip.SetPlacement(SliderTrack.EndSliderThumb, PlacementMode.Right);
-                }
-            }
-        }
-    }
-
-    private void UpdateValueThumbTip()
-    {
-        if (SliderTrack?.StartSliderThumb is not null)
-        {
-            ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(Value));
-        }
-    }
-
-    private void UpdateRangeThumbTips()
     {
         if (SliderTrack is null)
         {
             return;
         }
 
-        if (SliderTrack.StartSliderThumb is not null)
+        var placement = Orientation == Orientation.Horizontal ? PlacementMode.Top : PlacementMode.Right;
+        foreach (var thumb in SliderTrack.Thumbs)
         {
-            ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(RangeValue.StartValue));
-        }
-
-        if (SliderTrack.EndSliderThumb is not null)
-        {
-            ToolTip.SetTip(SliderTrack.EndSliderThumb, FormatValue(RangeValue.EndValue));
+            ToolTip.SetPlacement(thumb, placement);
         }
     }
 
@@ -741,7 +674,6 @@ public class Slider : RangeBase,
                 next     = CalculateTickValue(tickNumber + 1.0);
             }
 
-            // Choose the closest value between previous and next. If tie, snap to 'next'.
             value = MathUtils.GreaterThanOrClose(value, (previous + next) * 0.5) ? next : previous;
         }
 
@@ -796,27 +728,6 @@ public class Slider : RangeBase,
         var maxValueText = FormatValue(Maximum);
         var size = TextUtils.CalculateTextSize(maxValueText, FontSize, FontFamily);
         _tipHostWidth = size.Width * 1.1;
-        if (SliderTrack is not null)
-        {
-            if (!IsRangeMode)
-            {
-                if (SliderTrack.StartSliderThumb is not null)
-                {
-                    ToolTip.SetTipHostWidth(SliderTrack.StartSliderThumb, _tipHostWidth);
-                }
-            }
-            else
-            {
-                if (SliderTrack.StartSliderThumb is not null)
-                {
-                    ToolTip.SetTipHostWidth(SliderTrack.StartSliderThumb, _tipHostWidth);
-                }
-
-                if (SliderTrack.EndSliderThumb is not null)
-                {
-                    ToolTip.SetTipHostWidth(SliderTrack.EndSliderThumb, _tipHostWidth);
-                }
-            }
-        }
+        ConfigureTemplateThumbTips();
     }
 }

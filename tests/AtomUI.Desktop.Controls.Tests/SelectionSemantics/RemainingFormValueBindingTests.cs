@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using AtomUI.Controls;
@@ -26,44 +27,44 @@ public class RemainingFormValueBindingTests
     [Fact]
     public void Remaining_Form_Value_Properties_Are_TwoWay_And_DataValidation_Enabled()
     {
-        AssertTwoWayAndDataValidation(AtomSlider.RangeValueProperty, typeof(AtomSlider));
+        AssertTwoWayAndDataValidation(AtomSlider.RangeValuesProperty, typeof(AtomSlider));
         AssertTwoWayAndDataValidation(AtomColorPicker.ValueProperty, typeof(AtomColorPicker));
         AssertTwoWayAndDataValidation(AtomGradientColorPicker.ValueProperty, typeof(AtomGradientColorPicker));
         AssertTwoWayAndDataValidation(AtomMentions.ValueProperty, typeof(AtomMentions));
     }
 
     [Fact]
-    public void Slider_RangeValue_DefaultBindingMode_Updates_ViewModel()
+    public void Slider_RangeValues_DefaultBindingMode_Updates_ViewModel()
     {
         var viewModel = new RemainingFormValueBindingViewModel
         {
-            RangeValue = new SliderRangeValue { StartValue = 10, EndValue = 30 }
+            RangeValues = [10, 30]
         };
         var slider = new AtomSlider
         {
             IsRangeMode = true
         };
         slider.Bind(
-            AtomSlider.RangeValueProperty,
-            new Binding(nameof(RemainingFormValueBindingViewModel.RangeValue))
+            AtomSlider.RangeValuesProperty,
+            new Binding(nameof(RemainingFormValueBindingViewModel.RangeValues))
             {
                 Source = viewModel
             });
 
         ShowInWindow(slider, () =>
         {
-            slider.RangeValue.ShouldBe(viewModel.RangeValue);
+            slider.RangeValues.ShouldBe(viewModel.RangeValues);
 
-            var updated = new SliderRangeValue { StartValue = 20, EndValue = 80 };
-            slider.RangeValue = updated;
+            IReadOnlyList<double> updated = [20, 80];
+            slider.RangeValues = updated;
             Dispatcher.UIThread.RunJobs();
 
-            viewModel.RangeValue.ShouldBe(updated);
+            viewModel.RangeValues.ShouldBe(updated);
         });
     }
 
     [Fact]
-    public void Slider_RangeValue_DataValidationError_Is_Written_To_DataValidationErrors()
+    public void Slider_RangeValues_DataValidationError_Is_Written_To_DataValidationErrors()
     {
         var slider = new DataValidationProbeSlider
         {
@@ -71,12 +72,12 @@ public class RemainingFormValueBindingTests
         };
         var validationError = new InvalidOperationException("Range is required");
 
-        slider.ApplyDataValidation(AtomSlider.RangeValueProperty, validationError);
+        slider.ApplyDataValidation(AtomSlider.RangeValuesProperty, validationError);
 
         DataValidationErrors.GetHasErrors(slider).ShouldBeTrue();
         DataValidationErrors.GetErrors(slider).ShouldBe([validationError]);
 
-        slider.ApplyDataValidation(AtomSlider.RangeValueProperty, null);
+        slider.ApplyDataValidation(AtomSlider.RangeValuesProperty, null);
 
         DataValidationErrors.GetHasErrors(slider).ShouldBeFalse();
     }
@@ -251,23 +252,23 @@ public class RemainingFormValueBindingTests
 
     private sealed class RemainingFormValueBindingViewModel : INotifyPropertyChanged
     {
-        private SliderRangeValue _rangeValue;
+        private IReadOnlyList<double>? _rangeValues;
         private Color? _colorValue;
         private LinearGradientBrush? _gradientValue;
         private string? _mentionValue;
 
-        public SliderRangeValue RangeValue
+        public IReadOnlyList<double>? RangeValues
         {
-            get => _rangeValue;
+            get => _rangeValues;
             set
             {
-                if (_rangeValue == value)
+                if (ReferenceEquals(_rangeValues, value))
                 {
                     return;
                 }
 
-                _rangeValue = value;
-                RaisePropertyChanged(nameof(RangeValue));
+                _rangeValues = value;
+                RaisePropertyChanged(nameof(RangeValues));
             }
         }
 
