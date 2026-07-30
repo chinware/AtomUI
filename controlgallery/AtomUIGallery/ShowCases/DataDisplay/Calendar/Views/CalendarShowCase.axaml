@@ -30,7 +30,8 @@
                                       IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CalendarViewModel">
-                    <atom:Calendar />
+                    <!-- Calendar 控件重构中,示例待阶段六重写 -->
+                    <Border />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>

@@ -4,7 +4,7 @@
     xmlns:atom="https://atomui.net"
     xmlns:themeResources="using:AtomUI.Theme.Resources"
     xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:CalendarThemeAsset.Identity}"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:DatePickerThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:HeadTextButton}" TargetType="atom:HeadTextButton">
         <Setter Property="Template">
@@ -22,14 +22,14 @@
                     />
             </ControlTemplate>
         </Setter>
-        
+
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}"/>
         <Setter Property="Cursor" Value="Hand"/>
-        
+
         <Style Selector="^:pointerover">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimary}"/>
         </Style>

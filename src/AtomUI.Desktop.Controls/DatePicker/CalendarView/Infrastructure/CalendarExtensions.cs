@@ -1,4 +1,4 @@
-﻿using Avalonia.Input;
+using Avalonia.Input;
 
 namespace AtomUI.Desktop.Controls;
 

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Globalization;
 using AtomUI.Controls;
 using Avalonia;
@@ -50,7 +50,7 @@ internal static class DateTimeHelper
     {
         return DateTime.Compare(DiscardTime(dt1), DiscardTime(dt2));
     }
-    
+
     public static int CompareDateTime(DateTime dt1, DateTime dt2)
     {
         return DateTime.Compare(dt1, dt2);
@@ -103,7 +103,7 @@ internal static class DateTimeHelper
                 }
             }
         }
-        
+
         // if there are no GregorianCalendars in the OptionalCalendars
         // list, use the invariant dtfi
         var dt = new CultureInfo(CultureInfo.InvariantCulture.Name).DateTimeFormat;
