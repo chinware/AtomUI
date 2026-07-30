@@ -31,6 +31,7 @@ DatePicker 的控件专项模型通过 Theme 消费 Token：
 - AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、padding、尺寸和动效。
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
 - Token 类型、生成数据和 token.md 应显式维护，不依赖运行时反射扫描。
+- `MinDate` / `MaxDate` 范围外但仍可见的 Calendar cell 复用 `DatePickerToken.CellBgDisabled` 作为禁用背景，并使用 SharedToken 的 `ColorTextDisabled` 表达禁用前景；该状态不新增日期边界专属 Token，也不与 hidden、blackout、selected 或 range 状态混用。
 
 ## 4. 控件家族影响
 

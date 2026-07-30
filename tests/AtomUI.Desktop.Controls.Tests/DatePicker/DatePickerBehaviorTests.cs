@@ -26,6 +26,22 @@ public class DatePickerBehaviorTests
     }
 
     [Fact]
+    public void Date_Boundary_Properties_Default_To_Null_And_Are_Shared_With_RangeDatePicker()
+    {
+        var datePicker  = new Desktop.Controls.DatePicker();
+        var rangePicker = new Desktop.Controls.RangeDatePicker();
+
+        datePicker.MinDate.ShouldBeNull();
+        datePicker.MaxDate.ShouldBeNull();
+        rangePicker.MinDate.ShouldBeNull();
+        rangePicker.MaxDate.ShouldBeNull();
+        Desktop.Controls.RangeDatePicker.MinDateProperty.ShouldBeSameAs(
+            Desktop.Controls.DatePicker.MinDateProperty);
+        Desktop.Controls.RangeDatePicker.MaxDateProperty.ShouldBeSameAs(
+            Desktop.Controls.DatePicker.MaxDateProperty);
+    }
+
+    [Fact]
     public void SelectedDateTime_DefaultBindingMode_Updates_ViewModel()
     {
         var initialDate = new DateTime(2026, 7, 5);

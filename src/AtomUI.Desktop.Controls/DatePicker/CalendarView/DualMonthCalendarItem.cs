@@ -347,6 +347,11 @@ internal class DualMonthCalendarItem : RangeCalendarItem
             _nextMonth = DateTime.Today;
         }
         base.UpdateMonthMode();
+
+        if (SecondaryNextMonthButton is not null && NextMonthButton is not null)
+        {
+            SecondaryNextMonthButton.IsEnabled = NextMonthButton.IsEnabled;
+        }
     }
 
     protected override void SetCalendarDayButtons()
@@ -380,9 +385,9 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         }
 
         SetSecondaryYearModeHeaderButton(secondaryYear);
-        if (SecondaryNextButton is not null)
+        if (SecondaryNextButton is not null && NextButton is not null)
         {
-            SecondaryNextButton.IsEnabled = Owner.DisplayDateRangeEnd.Year != secondaryYear.Year;
+            SecondaryNextButton.IsEnabled = NextButton.IsEnabled;
         }
     }
 
@@ -402,9 +407,9 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         var decade    = DateTimeHelper.DecadeOfDate(secondaryYear);
         var decadeEnd = DateTimeHelper.EndOfDecade(secondaryYear);
         SetSecondaryDecadeModeHeaderButton(decade, decadeEnd);
-        if (SecondaryNextButton is not null)
+        if (SecondaryNextButton is not null && NextButton is not null)
         {
-            SecondaryNextButton.IsEnabled = decadeEnd < Owner.DisplayDateRangeEnd.Year;
+            SecondaryNextButton.IsEnabled = NextButton.IsEnabled;
         }
     }
 

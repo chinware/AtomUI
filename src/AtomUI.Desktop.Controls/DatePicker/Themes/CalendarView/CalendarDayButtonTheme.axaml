@@ -14,6 +14,11 @@
             <ControlTemplate>
                 <Grid ColumnDefinitions="*,*"
                       Background="Transparent">
+                    <Border Name="DisabledBackground"
+                            Grid.ColumnSpan="2"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            IsVisible="False"/>
                     <Border Name="WeekRangeIndicator"
                             Grid.ColumnSpan="2"
                             HorizontalAlignment="Stretch"
@@ -86,6 +91,10 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
         
+        <Style Selector="^ /template/ Border#DisabledBackground">
+            <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
+        </Style>
+
         <Style Selector="^ /template/ Border#RangeIndicator">
             <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
         </Style>
@@ -112,6 +121,15 @@
 
         <Style Selector="^:pointerover:not(:range-start):not(:range-middle):not(:range-end):not(:range-preview-start):not(:range-preview-middle):not(:range-preview-end):not(:week-range-start):not(:week-range-middle):not(:week-range-end):not(:week-hover-start):not(:week-hover-middle):not(:week-hover-end)">
             <Setter Property="Background" Value="{atom:CalendarTokenResource CellHoverBg}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Style Selector="^ /template/ Border#DisabledBackground">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="Background" Value="{atom:CalendarTokenResource CellBgDisabled}" />
+            </Style>
         </Style>
 
         <Style Selector="^:inactive">

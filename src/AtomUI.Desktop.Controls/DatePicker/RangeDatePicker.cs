@@ -46,6 +46,12 @@ public class RangeDatePicker : RangeInfoPickerInput
 
     public static readonly StyledProperty<DateTime?> PickerDisplayDateProperty =
         DatePicker.PickerDisplayDateProperty.AddOwner<RangeDatePicker>();
+
+    public static readonly StyledProperty<DateTime?> MinDateProperty =
+        DatePicker.MinDateProperty.AddOwner<RangeDatePicker>();
+
+    public static readonly StyledProperty<DateTime?> MaxDateProperty =
+        DatePicker.MaxDateProperty.AddOwner<RangeDatePicker>();
     
     public DateTime? RangeStartSelectedDate
     {
@@ -103,6 +109,18 @@ public class RangeDatePicker : RangeInfoPickerInput
     {
         get => GetValue(PickerDisplayDateProperty);
         set => SetValue(PickerDisplayDateProperty, value);
+    }
+
+    public DateTime? MinDate
+    {
+        get => GetValue(MinDateProperty);
+        set => SetValue(MinDateProperty, value);
+    }
+
+    public DateTime? MaxDate
+    {
+        get => GetValue(MaxDateProperty);
+        set => SetValue(MaxDateProperty, value);
     }
     
     #endregion
@@ -222,6 +240,8 @@ public class RangeDatePicker : RangeInfoPickerInput
         presenter[!RangeDatePickerPresenter.IsShowTimeProperty]                = this[!IsShowTimeProperty];
         presenter[!RangeDatePickerPresenter.PickerModeProperty]                = this[!PickerModeProperty];
         presenter[!RangeDatePickerPresenter.PickerDisplayDateProperty]         = this[!PickerDisplayDateProperty];
+        presenter[!RangeDatePickerPresenter.MinDateProperty]                   = this[!MinDateProperty];
+        presenter[!RangeDatePickerPresenter.MaxDateProperty]                   = this[!MaxDateProperty];
 
         return presenter;
     }

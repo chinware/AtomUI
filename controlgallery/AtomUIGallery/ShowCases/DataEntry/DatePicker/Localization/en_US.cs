@@ -13,6 +13,8 @@ internal partial class en_US
     public const string BindingDescription = "SelectedDateTime, RangeStartSelectedDate, and RangeEndSelectedDate synchronize with the ViewModel without explicitly setting Binding Mode=TwoWay.";
     public const string PickerDisplayDateTitle = "Popup display date";
     public const string PickerDisplayDateDescription = "Open the popup panel at a specific display date without committing a selected value.";
+    public const string MinMaxTitle = "Date range limits";
+    public const string MinMaxDescription = "Use MinDate and MaxDate to limit the selectable date range. Boundary dates are included.";
     public const string RangePickerTitle = "Range Picker";
     public const string RangePickerDescription = "Set range picker type by picker prop.";
     public const string NeedConfirmTitle = "Need Confirm";

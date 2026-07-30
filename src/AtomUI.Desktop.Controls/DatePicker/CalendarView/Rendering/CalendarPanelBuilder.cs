@@ -52,7 +52,7 @@ internal static class CalendarPanelBuilder
                 IsRangeEnd: rangeState.IsRangeEnd,
                 IsRangeMiddle: rangeState.IsRangeMiddle,
                 IsFocused: DateTimeHelper.CompareYearMonth(date, state.SelectedMonth) == 0,
-                IsHidden: isDisabled,
+                IsHidden: false,
                 IsRangePreviewStart: rangeState.IsRangePreviewStart,
                 IsRangePreviewEnd: rangeState.IsRangePreviewEnd,
                 IsRangePreviewMiddle: rangeState.IsRangePreviewMiddle));
@@ -90,7 +90,7 @@ internal static class CalendarPanelBuilder
                 IsRangeEnd: rangeState.IsRangeEnd,
                 IsRangeMiddle: rangeState.IsRangeMiddle,
                 IsFocused: IsSamePickerUnit(date, state.SelectedMonth, DatePickerMode.Quarter),
-                IsHidden: isDisabled,
+                IsHidden: false,
                 IsRangePreviewStart: rangeState.IsRangePreviewStart,
                 IsRangePreviewEnd: rangeState.IsRangePreviewEnd,
                 IsRangePreviewMiddle: rangeState.IsRangePreviewMiddle));
@@ -133,7 +133,7 @@ internal static class CalendarPanelBuilder
                 IsRangeEnd: rangeState.IsRangeEnd,
                 IsRangeMiddle: rangeState.IsRangeMiddle,
                 IsFocused: isValid && state.SelectedYear.Year == year,
-                IsHidden: isDisabled,
+                IsHidden: !isValid,
                 IsRangePreviewStart: rangeState.IsRangePreviewStart,
                 IsRangePreviewEnd: rangeState.IsRangePreviewEnd,
                 IsRangePreviewMiddle: rangeState.IsRangePreviewMiddle));
@@ -198,7 +198,7 @@ internal static class CalendarPanelBuilder
                 IsRangeMiddle: false,
                 IsFocused: state.FocusedDate is not null &&
                            IsSamePickerUnit(state.FocusedDate.Value, weekStart, DatePickerMode.Week),
-                IsHidden: isOutOfRange,
+                IsHidden: false,
                 IsWeekNumber: true,
                 IsWeekSelectionStart: isWeekSelection,
                 IsWeekRangeStart: isWeekRange,
@@ -274,7 +274,7 @@ internal static class CalendarPanelBuilder
             IsRangeEnd: isRangeEnd,
             IsRangeMiddle: isRangeMiddle,
             IsFocused: isFocused,
-            IsHidden: isOutOfRange,
+            IsHidden: false,
             IsRangePreviewStart: isRangePreviewStart,
             IsRangePreviewEnd: isRangePreviewEnd,
             IsRangePreviewMiddle: isRangePreviewMiddle,

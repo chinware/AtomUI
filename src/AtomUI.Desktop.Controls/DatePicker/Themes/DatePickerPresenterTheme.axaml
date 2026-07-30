@@ -40,7 +40,6 @@
                 <StackPanel Orientation="Horizontal">
                     <calendarview:Calendar
                         Name="PART_CalendarView"
-                        SelectedDate="{TemplateBinding SelectedDateTime}"
                         PickerMode="{TemplateBinding PickerMode}"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
                     <atom:TimeView Name="PART_TimeView"

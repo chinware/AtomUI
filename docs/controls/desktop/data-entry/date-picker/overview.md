@@ -12,7 +12,7 @@
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker` |
 | 控件状态 | Stable |
 
-DatePicker 是 AtomUI 桌面控件体系中的日期选择控件，用于单日期、周、月份、季度、年份以及日期范围的日历面板选择。
+DatePicker 是 AtomUI 桌面控件体系中的日期选择控件，用于单日期、周、月份、季度、年份以及日期范围的日历面板选择，并通过可选的包含式日期边界约束面板导航和用户选择。
 
 DatePicker 不负责业务日程系统、时间选择或完整日期时间解析服务。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
 
@@ -41,10 +41,20 @@ DatePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 | --- | --- | --- |
 | 内容与数据 | `HeaderBackground` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `PickerMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SelectedDateTime` | 维护提交值、范围端点和选择颗粒度；`SelectedDateTime`、`RangeStartSelectedDate`、`RangeEndSelectedDate` 默认 `TwoWay` 绑定并启用 Avalonia data validation。 |
+| 日期边界 | `MinDate`、`MaxDate` | 以包含边界限制可选 picker unit 和面板导航范围；默认值均为 `null`，表示对应方向无边界。 |
 | 弹层显示游标 | `PickerDisplayDate`；内部 `Calendar.DisplayDate`、`DisplayDateStart`、`DisplayDateEnd` | 维护弹出面板打开时显示到哪个日期区域，不代表已选值。 |
 | 交互与状态 | `IsFloatingArrowPosition`、`IsHorizontalFlipped`、`IsNeedConfirm`、`IsShowNow`、`IsShowTime`、`IsTodayHighlighted` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `RangePickerIndicatorOffsetEnd`、`RangePickerIndicatorOffsetStart` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `ClockIdentifier`、`DefaultDateTime`、`Format` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+
+日期边界 public API：
+
+| 属性 | 类型 | 默认值 | 契约 |
+| --- | --- | --- | --- |
+| `MinDate` | `DateTime?` | `null` | 最小可选日期，边界包含在有效范围内；忽略时间部分并按 `PickerMode` 归一化。 |
+| `MaxDate` | `DateTime?` | `null` | 最大可选日期，边界包含在有效范围内；忽略时间部分并按 `PickerMode` 归一化。 |
+
+`RangeDatePicker` 通过 `AddOwner` 复用 `DatePicker.MinDateProperty` 和 `DatePicker.MaxDateProperty`，单值与范围选择使用同一日期边界契约。日期边界只限制可选值和面板导航，不公开内部 `Calendar.BlackoutDates`，也不承担动态业务禁用规则。
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
@@ -104,6 +114,9 @@ Public API / inherited command / item source / user input
 - `PickerMode` 决定选择颗粒度和初始面板：`Date`、`Week` 使用月视图，`Month`、`Quarter` 使用年视图，`Year` 使用十年视图。目标颗粒度不能继续降级到更细面板。
 - `SelectedDateTime`、`DefaultDateTime` 和 `PickerDisplayDate` 必须保持语义分离：`SelectedDateTime` 是已提交值，`DefaultDateTime` 是默认选中值/reset 值，`PickerDisplayDate` 只作为弹出面板打开时的显示锚点。
 - `SelectedDateTime` 是单值 DatePicker 的受控 Form 值入口，默认 `BindingMode.TwoWay`，并通过 Avalonia `DataValidationErrors` 参与原生数据校验。
+- `MinDate` 和 `MaxDate` 是包含式 picker unit 边界。两者先忽略时间部分，再按当前 `PickerMode` 归一化；`null` 表示对应方向不受限制。
+- 当归一化后的 `MinDate` 晚于 `MaxDate` 时，有效范围收敛为 `MinDate` 所在的一个 picker unit，但控件不得修改或回写调用方设置的原始属性值。
+- 外部受控值越界时，`SelectedDateTime`、`RangeStartSelectedDate` 和 `RangeEndSelectedDate` 保持不变，输入框继续显示外部值；Calendar 不标记越界值为选中，确认操作不可提交该值。用户选择有效日期后，才按既有 TwoWay 契约更新受控值。
 - 设置 `PickerDisplayDate` 后不得写入 `SelectedDateTime`，不得改变输入框文本、Form value 或清除按钮状态；当已有已选值时，弹出面板仍优先围绕已选值展示。
 - DatePicker / RangeDatePicker 输入壳体必须把 `DataValidationErrors` 同步转发到外层 AddOn 和内部文本框；range indicator 等附属视觉读取 effective status，native error 优先于手动 warning/error 状态。
 - `PickerMode=Week` 的月视图是带周序号列的 8 列 week panel，不是普通日期面板的 7 个日期按钮逐个选中；选中视觉和 hover 视觉都必须按整周连续行渲染，不能退回单个日期按钮的普通 pointerover 背景。
@@ -141,6 +154,7 @@ DatePicker 使用 `DatePickerToken` 作为组件 Token scope。Token 只表达�
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
+- 日期边界外的 Calendar cell 保持可见并使用 disabled 状态视觉，不通过隐藏 cell 表达不可选择状态。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
 
 ## 6. 控件家族或集成关系
@@ -177,6 +191,7 @@ DatePicker 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - 与 ThemeManager、SharedToken、ControlTheme、控件文档和 Gallery ShowCase 示例保持一致。
 - 涉及 ItemsSource、Popup、Flyout、Window、Form 或 CompactSpace 的路径必须保持生命周期释放和数据状态同步。
 - 源码目录中的共享基类和内部协作类型形成维护边界，不能只修改桌面包装类而忽略共享状态 owner。
+- `DatePicker` 与 `RangeDatePicker` 的日期边界必须通过 presenter 投影到内部 CalendarView；内部 `DisplayDateStart`、`DisplayDateEnd` 和 `BlackoutDates` 不是外层控件的替代 public API。
 
 ## 7. 兼容性不变量
 
@@ -207,6 +222,22 @@ DatePicker 的视觉选项通过 public API 归一为 theme variables、伪类�
 `Format` 为空时，控件按颗粒度选择默认显示格式：日期 `yyyy-MM-dd`，周 `yyyy-ww周`，月份 `yyyy-MM`，季度 `yyyy-Qn`，年份 `yyyy`。自定义 `Format` 优先级高于默认格式。
 
 CalendarView 必须把目标颗粒度作为状态模型的一部分处理。用户从更粗面板返回时，只能回到目标颗粒度面板；例如月份选择可以从年面板进入十年面板选择年份，但选完年份后回到月份面板，不继续进入日期面板。
+
+### 8.4 日期边界约束模型
+
+日期边界按当前 `PickerMode` 归一为可比较的 picker unit：
+
+| `PickerMode` | 边界归一化单位 |
+| --- | --- |
+| `Date` | 当天 |
+| `Week` | ISO 周起始日 |
+| `Month` | 当月第一天 |
+| `Quarter` | 当季度第一天 |
+| `Year` | 当年第一天 |
+
+有效边界同时约束日期 cell、周行、月份、季度、年份和面板导航。范围外单元保持可见但不可通过 pointer、keyboard 或提交动作选中；`Today` / `Now` 在目标 picker unit 越界时不可用。`RangeDatePicker` 的两个端点共享同一组边界，各端点按自身 active 状态独立校验，双面板显示锚点也必须落在有效范围内。
+
+日期边界与受控值是两个独立状态域。边界变化可以使已有受控值失效，但不能隐式改写 ViewModel；Calendar 只投影当前有效的选中状态，输入和数据校验层继续拥有外部值的显示与校验责任。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 

@@ -2,6 +2,13 @@
 
 本文档记录 DatePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-30
+
+- Docs
+  - Define the inclusive `MinDate` / `MaxDate` contract shared by DatePicker and RangeDatePicker, including PickerMode normalization and invalid-boundary convergence.
+  - Define presenter-owned range synchronization so Calendar bounds are applied before valid selected values and out-of-range controlled values are not written back.
+  - Specify visible disabled cells, bounded panel navigation, Today/Now/Confirm guards, dual-panel range behavior, and reuse of existing disabled-state tokens.
+
 ## 2026-07-16
 
 - Changed
