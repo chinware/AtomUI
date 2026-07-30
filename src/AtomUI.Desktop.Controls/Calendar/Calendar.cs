@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Input;
 using AtomUI.Desktop.Controls.Internal.Calendar;
 using Avalonia;
 using Avalonia.Controls;
@@ -176,5 +177,23 @@ public class Calendar : TemplatedControl
         _isCommitting = false;
 
         PanelChanged?.Invoke(this, new CalendarPanelChangedEventArgs(Value.Date, mode));
+    }
+
+    /// <summary>
+    /// 为自定义 Header 模板构建强类型上下文（spec §5.4）。命令的 CanExecute 校验参数类型；
+    /// ChangeValueCommand 以 <see cref="CalendarSelectSource.Customize"/> 提交，且不自动应用
+    /// ValidRange 或 DisabledDate（约束由自定义 Header 负责）。
+    /// </summary>
+    internal CalendarHeaderContext BuildHeaderContext()
+    {
+        var changeValue = new CalendarRelayCommand(
+            execute: p => CommitUserSelection((DateTime)p!, CalendarSelectSource.Customize),
+            canExecute: p => p is DateTime);
+
+        var changeMode = new CalendarRelayCommand(
+            execute: p => CommitModeChange((CalendarMode)p!),
+            canExecute: p => p is CalendarMode mode && (mode == CalendarMode.Month || mode == CalendarMode.Year));
+
+        return new CalendarHeaderContext(Value.Date, Mode, changeValue, changeMode);
     }
 }
