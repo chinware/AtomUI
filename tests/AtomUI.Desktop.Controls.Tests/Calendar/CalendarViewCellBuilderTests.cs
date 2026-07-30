@@ -124,4 +124,38 @@ public class CalendarViewCellBuilderTests
         cells[4].IsDisabled.ShouldBeFalse(); // 5 月相交
         cells[11].IsDisabled.ShouldBeTrue(); // 12 月无交集
     }
+
+    [Fact]
+    public void BuildDateCells_JanuaryAnchor_IncludesPreviousDecemberCells()
+    {
+        // 锚点 2026-01-05,周日为首:2026-01-01 是周四,网格起点回退到 2025-12-28(周日)
+        var anchor = new DateTime(2026, 1, 5);
+        var cells = CalendarViewCellBuilder.BuildDateCells(
+            anchor, new DateTime(2026, 1, 5), DayOfWeek.Sunday, null, null, null);
+
+        cells.Count.ShouldBe(42);
+        cells[0].Value.ShouldBe(new DateTime(2025, 12, 28));
+        cells[0].IsInView.ShouldBeFalse();                              // 上年 12 月补位
+        cells.First(c => c.Value == new DateTime(2026, 1, 1)).IsInView.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void BuildDateCells_NullValidRange_DoesNotDisableFarDates()
+    {
+        var anchor = new DateTime(2026, 7, 15);
+        var cells = CalendarViewCellBuilder.BuildDateCells(
+            anchor, new DateTime(2026, 7, 30), DayOfWeek.Sunday, null, null, null);
+
+        cells.ShouldAllBe(c => !c.IsDisabled); // ValidRange=null 且无 DisabledDate 时全部可用
+    }
+
+    [Fact]
+    public void BuildDateCells_DisabledDateException_Propagates()
+    {
+        var anchor = new DateTime(2026, 7, 15);
+        Should.Throw<InvalidOperationException>(() =>
+            CalendarViewCellBuilder.BuildDateCells(
+                anchor, new DateTime(2026, 7, 30), DayOfWeek.Sunday, null, null,
+                _ => throw new InvalidOperationException("boom")));
+    }
 }
