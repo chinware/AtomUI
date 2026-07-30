@@ -33,7 +33,7 @@ AtomUI `Calendar` 是按日期组织业务展示内容的桌面日历控件。�
 - Month 模式下的 6×7 日期网格。
 - Year 模式下的 3×4 月份网格。
 - Fullscreen 和 Mini 两种视觉密度。
-- 可选周序号列。
+- 可选周序号列，并与 Ant Design 一致支持通过周序号选择该周首日。
 - Year Select、Month Select 和 Month/Year 模式切换。
 - 有效日期范围与业务禁用规则。
 - 日期、月份、完整单元格和 Header 定制。
@@ -143,7 +143,7 @@ public class Calendar : TemplatedControl
 
 Calendar 使用 `DateTime` 与 AtomUI 日期控件体系保持一致，不引入 `DateOnly` 或泛型 DateType。Calendar 的比较、选择和范围判断均采用日期部分；用户选择写回的 Value 规范化到 `.Date`。
 
-外部为 `Value` 提供带时间值时，Calendar 以其日期部分构建面板和选中状态。Calendar 不提供时间编辑能力。
+外部为 `Value` 提供带时间值时，Calendar 在属性入口将其规范化到 `.Date`，使公开属性、Header Context、Cell Model 与事件参数始终观察到同一个日期值。该规范化属于属性约束，不触发 `ValueChanged`、`Selected` 或 `PanelChanged`，也不得以二次 `SetCurrentValue` 破坏调用方绑定。Calendar 不提供时间编辑能力。
 
 ### 5.2 ValidRange
 
@@ -184,7 +184,7 @@ public sealed record CalendarCellContext(
     bool IsDisabled);
 ```
 
-- `CellTemplate` 对应 Ant Design `cellRender`，替换默认 Cell 的业务内容区域。
+- `CellTemplate` 对应 Ant Design `cellRender`，只填充默认日期/月值下方的业务内容区域；日期/月值始终保留。
 - `FullCellTemplate` 对应 Ant Design `fullCellRender`，替换 Cell 的完整 inner 内容。
 - 两者同时存在时，`FullCellTemplate` 优先。
 - 周标题和周序号不进入这两个模板。
@@ -335,7 +335,8 @@ Calendar 不生成日期网格，不维护 Cell 容器，也不在 Pointer handl
 - Month Select 只在 `Mode=Month` 时显示。
 - 当前年份处于 ValidRange 边界年份时，Month Select 只提供与范围相交的月份。
 - 切换到边界年份时，当前月份超出范围则收敛到边界月份。
-- Fullscreen 使用默认 Select/Radio 尺寸；Mini 使用 Small 尺寸。
+- Fullscreen 使用默认 ComboBox/Segmented 尺寸；Mini 使用 Small 尺寸。
+- Month/Year 模式标签、周标题的可访问名称以及中文年份后缀来自 Calendar 语言资源，不在 C# 或 AXAML 中硬编码英文文本。
 
 ### 7.4 CalendarView
 
@@ -382,7 +383,12 @@ src/AtomUI.Desktop.Controls/Calendar/
 ├── CalendarCellContext.cs              # Public Cell 模板上下文
 ├── CalendarHeaderContext.cs            # Public Header 模板上下文
 ├── CalendarEventArgs.cs                # Public 事件模型
-├── CalendarToken.cs                    # 组件 Token
+├── CalendarControlToken.cs             # 新 Calendar 的六语义组件 Token
+├── CalendarToken.cs                    # DatePicker CalendarView 继续使用的旧 Token
+├── Localization/                       # Month/Year/YearSuffix/Week 语言资源
+│   ├── en_US.cs
+│   ├── zh_CN.cs
+│   └── zh_TW.cs
 ├── Internal/
 │   ├── CalendarHeader.cs               # 默认 Header
 │   ├── CalendarView.cs                 # 面板与容器 owner
@@ -445,6 +451,9 @@ CalendarViewCell / PART_Item
 - FullCellTemplate 替换 `PART_CellInner` 的默认内容。
 - CellTemplate 只进入 `PART_ItemContent`。
 - `PART_Item` 保留状态、焦点、Automation 和命中测试。
+- `CellTemplate` 存在时 `PART_Value` 仍然显示，模板内容只进入 `PART_ItemContent`。
+- `FullCellTemplate` 存在时隐藏默认 inner 结构并只显示完整模板；它与 `CellTemplate` 同时存在时具有确定的优先级。
+- 周序号 Cell 始终使用默认周序号内容，不接收 `CellTemplate` 或 `FullCellTemplate`。
 
 ### 9.4 Ant Design 6 Semantic 映射
 
@@ -484,7 +493,9 @@ CalendarViewCell / PART_Item
 - ShowWeek=false 时只显示 7 个星期标题和 42 个日期 Cell。
 - ShowWeek=true 时增加一个周序号标题槽和每行一个周序号 Cell。
 - 周序号使用 Culture.Calendar、CalendarWeekRule 和 FirstDayOfWeek 计算。
-- 周序号 Cell 不可选择，不触发 CellTemplate 或公开事件。
+- 周序号 Cell 不触发 CellTemplate 或 FullCellTemplate。
+- 与 Ant Design 面板一致，激活周序号 Cell 选择该行的周首日，以 `CalendarSelectSource.Date` 进入标准提交和事件流程。
+- 周序号 Cell 的禁用状态使用该行周首日执行 Calendar 合并后的禁用谓词；禁用时不提交选择。
 - ShowWeek 在 Month 面板中忽略，不改变 3×4 月份网格。
 
 ### 10.3 Month 网格
@@ -498,7 +509,7 @@ CalendarViewCell / PART_Item
 2027-01-31 -> February -> 2027-02-28
 ```
 
-月份显示使用本地化短月份名称。月份与 ValidRange 完全无交集时禁用；DisabledDate 使用该月份候选值进行评估。选择月份后保持 CalendarMode.Year。
+月份显示使用本地化短月份名称。月份禁用逻辑与 Ant Design MonthPanel 一致：分别对月首和月末执行 Calendar 合并后的禁用谓词，只有两端都禁用时才禁用整月。该规则使 ValidRange 与月份部分相交时仍可选择该月，也避免仅因保留日命中 DisabledDate 就错误禁用整月。选择月份后保持 CalendarMode.Year。
 
 ### 10.4 禁用组合
 
@@ -525,15 +536,26 @@ CalendarView 使用 roving focus：
 - Enter 和 Space 激活当前 Focused Cell，并进入与 Pointer 相同的选择流程。
 - 焦点移动到当前已生成网格之外时停止，不隐式引入 Previous/Next 导航语义。
 - Disabled Cell 不可成为提交目标；方向键跳过不可聚焦 Cell。
+- 周序号不进入日期/月 roving focus 序列；它通过 Pointer 和 Automation 激活周首日。
 
-CalendarView 对 Automation 暴露 Grid 语义；CalendarViewCell 暴露 GridItem 和 SelectionItem 语义。选中、禁用和名称必须来自同一 Cell Model。FullCellTemplate 不得移除外层 Automation Peer。
+CalendarView 的方向键导航属于 AtomUI 桌面增强，不以降低 Ant Design 的公开功能为代价。目标 Cell 禁用时，导航沿相同步长继续搜索当前已生成网格中的下一个可聚焦 Cell，直到找到目标或越出网格。
+
+Avalonia 12 的跨平台 Automation Provider 未公开 `IGridProvider`/`IGridItemProvider`。因此 CalendarView 使用平台可实现的契约：
+
+- CalendarView 暴露 `AutomationControlType.Table` 和单选 `ISelectionProvider`。
+- 日期/月 Cell 暴露 `AutomationControlType.ListItem` 和 `ISelectionItemProvider`。
+- `SelectionContainer` 返回所属 CalendarView 的 Selection Provider，`GetSelection` 返回当前选中 Cell。
+- 周序号保留可访问名称和激活能力，但不冒充当前选中日期。
+
+选中、禁用、名称和激活结果必须来自同一 Cell Model。FullCellTemplate 不得移除外层 Automation Peer。文档不得再宣称当前 Avalonia 未提供的 GridItem Provider 能力。
 
 ## 12. 语言与方向
 
 - Calendar 使用 AtomUI 语言服务和当前 Culture，不引入 React Locale 对象。
 - 语言变化使 Header 选项、月份名称、星期标题和周序号规则失效并重建。
 - Calendar 继承 FlowDirection；RTL 只改变布局方向和视觉对齐，不改变 Value、事件顺序或日期计算。
-- 默认 Header 的中文年份标签遵循本地化资源，不在 CalendarHeader 中硬编码后缀。
+- 默认 Header 的 Month/Year 模式标签、周序号可访问名称和中文年份后缀遵循 Calendar 语言资源，不在 CalendarHeader 或 AXAML 中硬编码。
+- Calendar 新增 `Month`、`Year`、`YearSuffix`、`Week` 四个语言资源键；这是完整对齐所需的唯一增量公开资源面，不增加 Calendar 属性、事件或模板入口。
 
 ## 13. 主题与 Token
 
@@ -575,15 +597,22 @@ Cell 伪类：
 
 Fullscreen 和 Mini 使用同一 CalendarView 与 Cell Model。Fullscreen/Mini 切换只由 selector 和布局资源改变视觉，不创建第二套控件逻辑。
 
+视觉结构遵循 Ant Design 的两种密度语义：
+
+- Fullscreen Cell 将日期/月值与业务内容纵向分区，值区靠面板末端对齐，内容区独立布局并允许溢出滚动；Cell 顶部分隔线、Today、Selected、Hover 和 Disabled 状态由外层主题表达。
+- Mini Cell 使用紧凑居中值布局，内容区和 FullCellTemplate 仍遵循相同的渲染优先级，不改变用户模板语义。
+- WeekHeader 使用与 CellHost 相同的 Grid 列定义，ShowWeek 开关前后标题与 Cell 始终对齐。
+- Mini Header 的 Year Select、Month Select 和模式 Segmented 全部使用 Small；Fullscreen 使用 Middle/default。
+
 ## 14. 生命周期、性能与 AOT
 
 ### 14.1 生命周期
 
 - Calendar 每次 OnApplyTemplate 前解绑旧 CalendarHeader、CalendarView 和 Header Context command 协作。
 - 新 part 接入后立即回放当前 Value、Mode、Range、Template、Culture 和 FlowDirection。
-- CalendarView 在 template reapply、detach 和 owner 替换时释放旧 Cell 事件、清空模板内容引用并解除父级关系。
+- CalendarView 在 template reapply、detach 和 owner 替换时先清空旧 WeekHeader/CellHost，再对所有池化 Cell 执行显式 Unbind，释放 owner、model、context、CellTemplate、FullCellTemplate 与焦点状态。
 - CalendarViewCell 只订阅 owner 范围内事件；容器回收时恢复完整伪类和 DataContext 状态。
-- 不使用全局事件、timer、Dispatcher 延迟刷新或状态抑制标记维持一致性。
+- Calendar 的提交流不使用全局事件、timer、Dispatcher 延迟刷新或 commit 抑制标记维持一致性。CalendarHeader 仅可在向模板 part 回放状态的同步窗口内保护 SelectionChanged，并必须用确定的进入/退出边界保证真实用户输入不被吞掉。
 
 ### 14.2 性能边界
 
@@ -592,7 +621,7 @@ Fullscreen 和 Mini 使用同一 CalendarView 与 Cell Model。Fullscreen/Mini �
 - CalendarView 使用一个有界容器池复用 CalendarViewCell，Mode、Value、Range 和语言变化不无限增加容器。
 - Fullscreen/Mini 切换只更新样式，不重建 Cell Model 或模板内容。
 - Cell Model 只在 Value、ViewMode、ShowWeek、ValidRange、DisabledDate、Culture 或 Today 失效时重建，不在 Measure/Arrange 热路径计算。
-- DisabledDate 对每个候选值每次重建最多调用一次。
+- Date Cell 和周序号 Cell 对各自日期每次重建最多调用一次 DisabledDate；Month Cell 按月首、月末短路判断，每月最多调用两次。
 - 没有 CellTemplate/FullCellTemplate 时不创建业务 ContentPresenter 内容。
 
 性能验收必须记录默认实例的 Visual 数量、实例化分配、Mode 重复切换后的容器数量和可回收性；设计不预设未经测量的性能提升结论。
@@ -619,6 +648,7 @@ Fullscreen 和 Mini 使用同一 CalendarView 与 Cell Model。Fullscreen/Mini �
 - Value、Mode、Fullscreen、ShowWeek、ValidRange、DisabledDate。
 - CellTemplate、FullCellTemplate、HeaderTemplate 及其强类型上下文。
 - 三个公开事件及其触发顺序。
+- `Month`、`Year`、`YearSuffix`、`Week` 四个 Calendar 语言资源键。
 - 第 9 节 Template Part、第 13 节 Token 和伪类。
 
 应用负责模板内部业务内容的视觉与业务数据；AtomUI 负责外层交互、选择、禁用、焦点、Automation、主题和生命周期。
@@ -633,11 +663,11 @@ Calendar Gallery 必须覆盖以下稳定示例：
 4. ShowWeek。
 5. ValidRange 与 DisabledDate 组合。
 6. CellTemplate 业务内容。
-7. FullCellTemplate。
-8. 自定义 HeaderTemplate。
+7. FullCellTemplate，并证明其优先于 CellTemplate。
+8. 使用 `CalendarHeaderContext` 强类型绑定和命令的自定义 HeaderTemplate。
 9. ValueChanged、Selected 和 PanelChanged 事件来源展示。
 
-Gallery API 表应只暴露新 Public API；Token 表只展示第 13 节六个 Calendar Token。控件实现落地时同步重写 Calendar 的 overview.md、implementation.md、token.md 和 changelog.md，并使 LLMS 输入来源与 Gallery 示例一致。
+Gallery API 表应只暴露新 Public API；Token 表只展示第 13 节六个 Calendar Token。控件实现落地时同步重写 Calendar 的 overview.md、implementation.md、token.md 和 changelog.md，并使 LLMS 输入来源与 Gallery 示例一致。`overview.md` 必须满足控制文档标准章节要求；LLMS 文件只能通过生成/同步流程更新，不手工维护过期的旧 Calendar 契约。
 
 ## 17. 验证要求
 
@@ -648,10 +678,13 @@ Gallery API 表应只暴露新 Public API；Token 表只展示第 13 节六个 C
 - 闰年、跨年、不同 FirstDayOfWeek 和 CalendarWeekRule。
 - ValidRange 首尾包含与非法 Range 构造。
 - ValidRange 与 DisabledDate 合并。
+- Month Cell 使用月首/月末合并禁用谓词，而不是候选保留日。
+- ShowWeek 周序号使用周首日的禁用与选择语义。
 
 ### 17.2 控件行为测试
 
 - 每个 Public 属性的默认值和模板应用前后状态回放。
+- 程序设置带时间的 Value 在属性入口规范化为 `.Date`，且不触发用户事件、不破坏绑定。
 - Month/Year 与 Date/Month 内部模式映射。
 - 四种 CalendarSelectSource。
 - PanelChanged、ValueChanged、Selected 的条件和顺序。
@@ -659,12 +692,15 @@ Gallery API 表应只暴露新 Public API；Token 表只展示第 13 节六个 C
 - 禁用 Cell、相邻月份 Cell 和重复选择当前值。
 - Header 边界年份/月选项和自定义 Header command。
 - Pointer、Keyboard、Focus 和 Automation 状态一致。
+- 方向键连续跳过禁用 Cell，直到当前网格内的下一可用 Cell。
+- CalendarView Selection Provider、Cell SelectionContainer 与当前选中 Cell 一致。
 
 ### 17.3 Template 与主题测试
 
 - 稳定 Template Part 类型和组合关系。
-- CellTemplate、FullCellTemplate 和 HeaderTemplate 优先级。
+- CellTemplate 保留默认日期/月值，FullCellTemplate 完整替换 inner 且优先，周序号不消费两类模板。
 - Fullscreen/Mini、Month/Year、ShowWeek 和 Cell 伪类。
+- WeekHeader 与 CellHost 列对齐，Mini Header 使用 Small 控件尺寸，本地化模式标签和中文年份后缀正确。
 - Light/Dark 和运行时主题切换。
 - 六个 Calendar Token 的默认派生与资源消费。
 
