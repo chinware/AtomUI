@@ -718,3 +718,14 @@ Gallery API 表应只暴露新 Public API；Token 表只展示第 13 节六个 C
 - 测试 `CalendarShowCaseExamples.snapshot` 与 `CalendarShowCasePageTests` 按新契约更新。
 
 生成文件（`GeneratedControlThemeAssetManifest.g.cs`、`GeneratedThemeSchema.g.cs`）由代码生成器随源码重建，不手工编辑。
+
+### 19.4 命名空间隔离（彻底重构，不兼容）
+
+阶段一迁移时，DatePicker 接管的共享类型暂时保留在 `AtomUI.Desktop.Controls` 顶层命名空间。这与新 Calendar 公开类型（`CalendarDateRange`、`CalendarMode` 等，spec §5，同样要求 `AtomUI.Desktop.Controls`）直接同名冲突。
+
+本设计彻底重构、不考虑兼容，因此：
+
+- **顶层公开命名空间 `AtomUI.Desktop.Controls` 归新 Calendar 独占。** 新 Calendar 的公开类型（`CalendarMode{Month,Year}`、`CalendarSelectSource`、`CalendarCellType`、`CalendarDateRange`、`CalendarCellContext`、`CalendarHeaderContext`、三个事件参数）在此命名空间定义。
+- **DatePicker 接管的类型全部迁入 `AtomUI.Desktop.Controls.CalendarView` 命名空间**（与 DatePicker CalendarView 现有代码一致）。这些类型（`DateTimeHelper`、`CalendarExtensions`、`HeadTextButton`、`CalendarDateRange`（DatePicker 版，含 `ContainsAny`/单日构造/折叠语义）、`CalendarMode`（含 `Decade`）、`CalendarSelectionMode`、`CalendarDateChangedEventArgs`、`CalendarModeChangedEventArgs`）是 DatePicker 内部实现细节，其 `public` 仅为程序集内可见性，不构成对外库 API，迁移命名空间不破坏任何真正对外的公开契约。
+- 引用这些类型但不在 `AtomUI.Desktop.Controls.CalendarView` 命名空间的 DatePicker 文件（如 `DatePickerFormattingHelper.cs`、`RangeDatePicker.cs`、`DualMonthRangeDatePickerPresenter.cs`）添加 `using AtomUI.Desktop.Controls.CalendarView;`。
+- **新 Calendar 不得为 DatePicker 兼容而在公开类型上增加成员**（例如公开 `CalendarMode` 不得含 `Decade`，公开 `CalendarDateRange` 不得含 `ContainsAny`）。两套类型彻底隔离，各自独立演进。
