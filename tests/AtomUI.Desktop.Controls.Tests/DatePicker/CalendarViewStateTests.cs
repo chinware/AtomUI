@@ -19,7 +19,7 @@ using Xunit;
 using AvaloniaGrid = Avalonia.Controls.Grid;
 using AvaloniaWindow = Avalonia.Controls.Window;
 using PickerCalendar = AtomUI.Desktop.Controls.CalendarView.Calendar;
-using CalendarMode = AtomUI.Desktop.Controls.CalendarView.CalendarMode;
+using PickerCalendarMode = AtomUI.Desktop.Controls.CalendarView.CalendarMode;
 using PickerCalendarButton = AtomUI.Desktop.Controls.CalendarView.CalendarButton;
 using PickerCalendarItem = AtomUI.Desktop.Controls.CalendarView.CalendarItem;
 using PickerCalendarDayButton = AtomUI.Desktop.Controls.CalendarView.CalendarDayButton;
@@ -217,7 +217,7 @@ public class CalendarViewStateTests
             var selectedMonth = new DateTime(2026, 8, 1);
             var calendar = new PickerCalendar
             {
-                DisplayMode = CalendarMode.Year
+                DisplayMode = PickerCalendarMode.Year
             };
             var item = new TestCalendarItem
             {
@@ -236,12 +236,12 @@ public class CalendarViewStateTests
     }
 
     [Theory]
-    [InlineData(DatePickerMode.Month, CalendarMode.Year, 2026, 5, 1, 2027, 8, 1)]
-    [InlineData(DatePickerMode.Quarter, CalendarMode.Year, 2026, 4, 1, 2027, 7, 1)]
-    [InlineData(DatePickerMode.Year, CalendarMode.Decade, 2026, 1, 1, 2032, 1, 1)]
+    [InlineData(DatePickerMode.Month, PickerCalendarMode.Year, 2026, 5, 1, 2027, 8, 1)]
+    [InlineData(DatePickerMode.Quarter, PickerCalendarMode.Year, 2026, 4, 1, 2027, 7, 1)]
+    [InlineData(DatePickerMode.Year, PickerCalendarMode.Decade, 2026, 1, 1, 2032, 1, 1)]
     public void RangeCalendarItem_CalendarButton_Hover_Updates_Range_Preview_Date(
         DatePickerMode pickerMode,
-        CalendarMode displayMode,
+        PickerCalendarMode displayMode,
         int startYear,
         int startMonth,
         int startDay,
@@ -281,12 +281,12 @@ public class CalendarViewStateTests
     }
 
     [Theory]
-    [InlineData(DatePickerMode.Date, CalendarMode.Month)]
-    [InlineData(DatePickerMode.Week, CalendarMode.Month)]
-    [InlineData(DatePickerMode.Month, CalendarMode.Year)]
-    [InlineData(DatePickerMode.Quarter, CalendarMode.Year)]
-    [InlineData(DatePickerMode.Year, CalendarMode.Decade)]
-    public void Calendar_PickerMode_Change_Uses_Target_DisplayMode(DatePickerMode pickerMode, CalendarMode expectedDisplayMode)
+    [InlineData(DatePickerMode.Date, PickerCalendarMode.Month)]
+    [InlineData(DatePickerMode.Week, PickerCalendarMode.Month)]
+    [InlineData(DatePickerMode.Month, PickerCalendarMode.Year)]
+    [InlineData(DatePickerMode.Quarter, PickerCalendarMode.Year)]
+    [InlineData(DatePickerMode.Year, PickerCalendarMode.Decade)]
+    public void Calendar_PickerMode_Change_Uses_Target_DisplayMode(DatePickerMode pickerMode, PickerCalendarMode expectedDisplayMode)
     {
         RunOnUIThread(() =>
         {
@@ -314,7 +314,7 @@ public class CalendarViewStateTests
             var calendar = new PickerCalendar
             {
                 PickerMode  = pickerMode,
-                DisplayMode = CalendarMode.Year
+                DisplayMode = PickerCalendarMode.Year
             };
             var item = new TestCalendarItem
             {
@@ -332,7 +332,7 @@ public class CalendarViewStateTests
             var expectedDate = new DateTime(expectedYear, expectedMonth, expectedDay);
             calendar.SelectedDate.ShouldBe(expectedDate);
             emittedDate.ShouldBe(expectedDate);
-            calendar.DisplayMode.ShouldBe(CalendarMode.Year);
+            calendar.DisplayMode.ShouldBe(PickerCalendarMode.Year);
         });
     }
 
@@ -344,7 +344,7 @@ public class CalendarViewStateTests
             var calendar = new PickerCalendar
             {
                 PickerMode  = DatePickerMode.Year,
-                DisplayMode = CalendarMode.Decade
+                DisplayMode = PickerCalendarMode.Decade
             };
             var item = new TestCalendarItem
             {
@@ -362,17 +362,17 @@ public class CalendarViewStateTests
             var expectedDate = new DateTime(2028, 1, 1);
             calendar.SelectedDate.ShouldBe(expectedDate);
             emittedDate.ShouldBe(expectedDate);
-            calendar.DisplayMode.ShouldBe(CalendarMode.Decade);
+            calendar.DisplayMode.ShouldBe(PickerCalendarMode.Decade);
         });
     }
 
     [Theory]
-    [InlineData(DatePickerMode.Month, CalendarMode.Year, 2026, 8, 1, 2026, 8, 1)]
-    [InlineData(DatePickerMode.Quarter, CalendarMode.Year, 2026, 8, 1, 2026, 7, 1)]
-    [InlineData(DatePickerMode.Year, CalendarMode.Decade, 2028, 1, 1, 2028, 1, 1)]
+    [InlineData(DatePickerMode.Month, PickerCalendarMode.Year, 2026, 8, 1, 2026, 8, 1)]
+    [InlineData(DatePickerMode.Quarter, PickerCalendarMode.Year, 2026, 8, 1, 2026, 7, 1)]
+    [InlineData(DatePickerMode.Year, PickerCalendarMode.Decade, 2028, 1, 1, 2028, 1, 1)]
     public void Calendar_Enter_Key_Selects_Target_Picker_Unit_Without_Drilling_Down(
         DatePickerMode pickerMode,
-        CalendarMode displayMode,
+        PickerCalendarMode displayMode,
         int sourceYear,
         int sourceMonth,
         int sourceDay,
@@ -388,7 +388,7 @@ public class CalendarViewStateTests
                 PickerMode  = pickerMode,
                 DisplayMode = displayMode
             };
-            if (displayMode == CalendarMode.Year)
+            if (displayMode == PickerCalendarMode.Year)
             {
                 calendar.SelectedMonth = sourceDate;
             }
@@ -428,7 +428,7 @@ public class CalendarViewStateTests
             var calendar = new PickerCalendar
             {
                 PickerMode  = DatePickerMode.Month,
-                DisplayMode = CalendarMode.Year
+                DisplayMode = PickerCalendarMode.Year
             };
             calendar.SelectedMonth = new DateTime(2026, sourceMonth, 1);
 
@@ -1121,7 +1121,7 @@ public class CalendarViewStateTests
 
             ShowInWindow(calendar, () =>
             {
-                calendar.SetCurrentValue(PickerCalendar.DisplayModeProperty, CalendarMode.Year);
+                calendar.SetCurrentValue(PickerCalendar.DisplayModeProperty, PickerCalendarMode.Year);
                 calendar.SelectedMonth.ShouldBe(new DateTime(2026, 7, 1));
                 calendar.CalendarItem.ShouldNotBeNull().PreviousButton.ShouldNotBeNull().IsEnabled.ShouldBeFalse();
                 calendar.CalendarItem.NextButton.ShouldNotBeNull().IsEnabled.ShouldBeFalse();
@@ -1134,7 +1134,7 @@ public class CalendarViewStateTests
 
                 calendar.SelectedMonth.ShouldBe(selectedMonth);
 
-                calendar.SetCurrentValue(PickerCalendar.DisplayModeProperty, CalendarMode.Decade);
+                calendar.SetCurrentValue(PickerCalendar.DisplayModeProperty, PickerCalendarMode.Decade);
                 var calendarItem = calendar.CalendarItem.ShouldNotBeNull();
                 calendarItem.PreviousButton.ShouldNotBeNull().IsEnabled.ShouldBeFalse();
                 calendarItem.NextButton.ShouldNotBeNull().IsEnabled.ShouldBeFalse();
@@ -1467,7 +1467,7 @@ public class CalendarViewStateTests
                 var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
                 var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
 
-                calendar.DisplayMode.ShouldBe(CalendarMode.Year);
+                calendar.DisplayMode.ShouldBe(PickerCalendarMode.Year);
                 item.MonthViewLayout.ShouldNotBeNull().IsVisible.ShouldBeFalse();
                 item.YearViewLayout.ShouldNotBeNull().IsVisible.ShouldBeTrue();
                 item.YearView.ShouldNotBeNull().IsVisible.ShouldBeTrue();
@@ -1536,7 +1536,7 @@ public class CalendarViewStateTests
                 var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
                 var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
 
-                calendar.DisplayMode.ShouldBe(CalendarMode.Year);
+                calendar.DisplayMode.ShouldBe(PickerCalendarMode.Year);
                 item.YearView.ShouldNotBeNull().IsVisible.ShouldBeTrue();
                 secondaryYearView.IsVisible.ShouldBeTrue();
                 item.YearView.RowDefinitions.Count.ShouldBe(1);
@@ -1604,7 +1604,7 @@ public class CalendarViewStateTests
                 var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
                 var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
 
-                calendar.DisplayMode.ShouldBe(CalendarMode.Decade);
+                calendar.DisplayMode.ShouldBe(PickerCalendarMode.Decade);
                 item.YearView.ShouldNotBeNull().IsVisible.ShouldBeTrue();
                 secondaryYearView.IsVisible.ShouldBeTrue();
                 GetCalendarButtonDates(item.YearView).Any(date => date.Year == 2020).ShouldBeTrue();
@@ -1653,12 +1653,12 @@ public class CalendarViewStateTests
     }
 
     [Theory]
-    [InlineData(DatePickerMode.Month, CalendarMode.Year)]
-    [InlineData(DatePickerMode.Quarter, CalendarMode.Year)]
-    [InlineData(DatePickerMode.Year, CalendarMode.Decade)]
+    [InlineData(DatePickerMode.Month, PickerCalendarMode.Year)]
+    [InlineData(DatePickerMode.Quarter, PickerCalendarMode.Year)]
+    [InlineData(DatePickerMode.Year, PickerCalendarMode.Decade)]
     public void DualMonthRangeCalendar_PickerMode_Runtime_Change_Uses_Only_Target_Dual_Panel(
         DatePickerMode pickerMode,
-        CalendarMode expectedDisplayMode)
+        PickerCalendarMode expectedDisplayMode)
     {
         RunOnUIThread(() =>
         {
@@ -1681,19 +1681,19 @@ public class CalendarViewStateTests
                 calendar.PickerMode = DatePickerMode.Week;
                 Dispatcher.UIThread.RunJobs();
 
-                calendar.DisplayMode.ShouldBe(CalendarMode.Month);
+                calendar.DisplayMode.ShouldBe(PickerCalendarMode.Month);
                 AssertDualMonthPanelVisibility(item, monthVisible: true);
             });
         });
     }
 
     [Theory]
-    [InlineData(DatePickerMode.Month, CalendarMode.Year)]
-    [InlineData(DatePickerMode.Quarter, CalendarMode.Year)]
-    [InlineData(DatePickerMode.Year, CalendarMode.Decade)]
+    [InlineData(DatePickerMode.Month, PickerCalendarMode.Year)]
+    [InlineData(DatePickerMode.Quarter, PickerCalendarMode.Year)]
+    [InlineData(DatePickerMode.Year, PickerCalendarMode.Decade)]
     public void Calendar_PickerMode_Runtime_Change_Uses_Only_Target_Panel(
         DatePickerMode pickerMode,
-        CalendarMode expectedDisplayMode)
+        PickerCalendarMode expectedDisplayMode)
     {
         RunOnUIThread(() =>
         {
@@ -1716,7 +1716,7 @@ public class CalendarViewStateTests
                 calendar.PickerMode = DatePickerMode.Week;
                 Dispatcher.UIThread.RunJobs();
 
-                calendar.DisplayMode.ShouldBe(CalendarMode.Month);
+                calendar.DisplayMode.ShouldBe(PickerCalendarMode.Month);
                 AssertCalendarPanelVisibility(item, monthVisible: true);
             });
         });

@@ -7,7 +7,7 @@ using AtomUI.Desktop.Controls.CalendarView.Rendering;
 using AtomUI.Desktop.Controls.CalendarView.State;
 using Shouldly;
 using Xunit;
-using CalendarDateRange = AtomUI.Desktop.Controls.CalendarView.CalendarDateRange;
+using PickerCalendarDateRange = AtomUI.Desktop.Controls.CalendarView.CalendarDateRange;
 
 namespace AtomUI.Desktop.Controls.Tests.DatePickers;
 
@@ -271,7 +271,7 @@ public class CalendarPanelBuilderTests
             CultureInfo.InvariantCulture.DateTimeFormat)
                                      .WithBlackoutDates(new[]
                                      {
-                                         new CalendarDateRange(new DateTime(2026, 6, 12))
+                                         new PickerCalendarDateRange(new DateTime(2026, 6, 12))
                                      });
 
         var panel = CalendarPanelBuilder.BuildMonthPanel(state, state.DisplayDate);

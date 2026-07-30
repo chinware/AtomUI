@@ -18,7 +18,7 @@ using PickerCalendarButton = AtomUI.Desktop.Controls.CalendarView.CalendarButton
 using PickerCalendarDayButton = AtomUI.Desktop.Controls.CalendarView.CalendarDayButton;
 using PickerDualMonthCalendarItem = AtomUI.Desktop.Controls.CalendarView.DualMonthCalendarItem;
 using PickerDualMonthRangeCalendar = AtomUI.Desktop.Controls.CalendarView.DualMonthRangeCalendar;
-using CalendarMode = AtomUI.Desktop.Controls.CalendarView.CalendarMode;
+using PickerCalendarMode = AtomUI.Desktop.Controls.CalendarView.CalendarMode;
 
 namespace AtomUI.Desktop.Controls.Tests.DatePickers;
 
@@ -613,7 +613,7 @@ public class CalendarViewLifecycleTests
                 var item     = calendar.CalendarItem.ShouldNotBeNull();
                 var yearView = item.YearView.ShouldNotBeNull();
 
-                calendar.DisplayMode.ShouldBe(CalendarMode.Year);
+                calendar.DisplayMode.ShouldBe(PickerCalendarMode.Year);
                 yearView.IsVisible.ShouldBeTrue();
                 yearView.RowDefinitions.Count.ShouldBe(1);
                 yearView.ColumnDefinitions.Count.ShouldBe(4);
@@ -668,7 +668,7 @@ public class CalendarViewLifecycleTests
                 var yearView = item.YearView.ShouldNotBeNull();
                 yearView.RowDefinitions.Count.ShouldBe(1);
 
-                calendar.DisplayMode = CalendarMode.Decade;
+                calendar.DisplayMode = PickerCalendarMode.Decade;
                 Dispatcher.UIThread.RunJobs();
 
                 yearView.RowDefinitions.Count.ShouldBe(3);
@@ -714,7 +714,7 @@ public class CalendarViewLifecycleTests
                 var item     = calendar.CalendarItem.ShouldNotBeNull();
                 var yearView = item.YearView.ShouldNotBeNull();
 
-                calendar.DisplayMode.ShouldBe(CalendarMode.Year);
+                calendar.DisplayMode.ShouldBe(PickerCalendarMode.Year);
                 yearView.IsVisible.ShouldBeTrue();
                 yearView.RowDefinitions.Count.ShouldBe(4);
                 yearView.ColumnDefinitions.Count.ShouldBe(3);
