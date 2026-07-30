@@ -70,4 +70,22 @@ public class CalendarViewCellBuilderTests
             anchor, new DateTime(2026, 7, 30), DayOfWeek.Monday, null, null, null);
         cells[0].Value.ShouldBe(new DateTime(2026, 6, 29));
     }
+
+    [Fact]
+    public void BuildWeekNumberCells_ReturnsSixNonFocusableCells()
+    {
+        var anchor = new DateTime(2026, 7, 15);
+        var dateCells = CalendarViewCellBuilder.BuildDateCells(
+            anchor, new DateTime(2026, 7, 30), DayOfWeek.Monday, null, null, null);
+
+        var weeks = CalendarViewCellBuilder.BuildWeekNumberCells(
+            dateCells, CultureInfo.InvariantCulture,
+            CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+
+        weeks.Count.ShouldBe(6);
+        weeks.ShouldAllBe(w => w.Kind == CalendarViewCellKind.Week);
+        weeks.ShouldAllBe(w => !w.IsFocusable && !w.IsSelected && !w.IsDisabled);
+        // 第一行起点 2026-06-29,ISO 周序号 27
+        weeks[0].DisplayText.ShouldBe("27");
+    }
 }

@@ -41,6 +41,31 @@ internal static class CalendarViewCellBuilder
         return cells;
     }
 
+    public static IReadOnlyList<CalendarViewCellModel> BuildWeekNumberCells(
+        IReadOnlyList<CalendarViewCellModel> dateCells,
+        CultureInfo culture,
+        CalendarWeekRule weekRule,
+        DayOfWeek firstDayOfWeek)
+    {
+        var weeks = new List<CalendarViewCellModel>(6);
+        for (var row = 0; row < 6; row++)
+        {
+            var rowStart = dateCells[row * 7].Value;
+            var weekNum  = culture.Calendar.GetWeekOfYear(rowStart, weekRule, firstDayOfWeek);
+            weeks.Add(new CalendarViewCellModel(
+                Value:       rowStart,
+                Kind:        CalendarViewCellKind.Week,
+                DisplayText: weekNum.ToString(CultureInfo.InvariantCulture),
+                IsToday:     false,
+                IsInView:    true,
+                IsSelected:  false,
+                IsDisabled:  false,
+                IsFocusable: false));
+        }
+
+        return weeks;
+    }
+
     private static bool IsOutsideRange(DateTime date, DateTime? start, DateTime? end)
     {
         if (start is { } s && date < s.Date)
