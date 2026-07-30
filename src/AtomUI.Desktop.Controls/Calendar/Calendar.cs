@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Windows.Input;
 using AtomUI.Desktop.Controls.Internal.Calendar;
 using Avalonia;
@@ -144,8 +145,10 @@ public class Calendar : TemplatedControl
         Mode == CalendarMode.Year ? CalendarViewMode.Month : CalendarViewMode.Date;
 
     internal const string CalendarViewPart = "PART_CalendarView";
+    internal const string DefaultHeaderPart = "PART_DefaultHeader";
 
     private CalendarViewControl? _calendarView;
+    private CalendarHeader? _defaultHeader;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -163,8 +166,34 @@ public class Calendar : TemplatedControl
             _calendarView.CellSelected += OnCellSelected;
         }
 
+        if (_defaultHeader is not null)
+        {
+            _defaultHeader.YearSelected  -= OnHeaderYearSelected;
+            _defaultHeader.MonthSelected -= OnHeaderMonthSelected;
+            _defaultHeader.ModeSwitched  -= OnHeaderModeSwitched;
+        }
+
+        _defaultHeader = e.NameScope.Find<CalendarHeader>(DefaultHeaderPart);
+        if (_defaultHeader is not null)
+        {
+            _defaultHeader.Culture        = CultureInfo.CurrentCulture;
+            _defaultHeader.IsVisible      = HeaderTemplate is null;
+            _defaultHeader.YearSelected  += OnHeaderYearSelected;
+            _defaultHeader.MonthSelected += OnHeaderMonthSelected;
+            _defaultHeader.ModeSwitched  += OnHeaderModeSwitched;
+        }
+
         UpdateRootPseudoClasses();
     }
+
+    private void OnHeaderYearSelected(object? sender, DateTime target) =>
+        CommitUserSelection(target, CalendarSelectSource.Year);
+
+    private void OnHeaderMonthSelected(object? sender, DateTime target) =>
+        CommitUserSelection(target, CalendarSelectSource.Month);
+
+    private void OnHeaderModeSwitched(object? sender, CalendarMode mode) =>
+        CommitModeChange(mode);
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -174,6 +203,10 @@ public class Calendar : TemplatedControl
             change.Property == ShowWeekProperty)
         {
             UpdateRootPseudoClasses();
+        }
+        else if (change.Property == HeaderTemplateProperty && _defaultHeader is not null)
+        {
+            _defaultHeader.IsVisible = HeaderTemplate is null;
         }
     }
 

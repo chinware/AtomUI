@@ -18,10 +18,16 @@
                     CornerRadius="{atom:SharedTokenResource BorderRadiusLG}"
                     Padding="{atom:SharedTokenResource PaddingSM}">
                 <DockPanel LastChildFill="True">
-                    <ContentControl Name="PART_HeaderPresenter"
-                                    DockPanel.Dock="Top"
-                                    Content="{TemplateBinding Value}"
-                                    ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                    <Panel Name="PART_HeaderPresenter" DockPanel.Dock="Top">
+                        <calendar:CalendarHeader Name="PART_DefaultHeader"
+                                                 Value="{TemplateBinding Value}"
+                                                 Mode="{TemplateBinding Mode}"
+                                                 ValidRange="{TemplateBinding ValidRange}" />
+                        <ContentControl Name="PART_CustomHeader"
+                                        Content="{TemplateBinding Value}"
+                                        ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                        IsVisible="{Binding HeaderTemplate, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    </Panel>
                     <calendar:CalendarView Name="PART_CalendarView"
                                            Value="{TemplateBinding Value}"
                                            ViewMode="{Binding ViewMode, RelativeSource={RelativeSource TemplatedParent}}"

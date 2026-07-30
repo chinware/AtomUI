@@ -82,6 +82,50 @@ public class CalendarRenderTests
         }
     }
 
+    [Fact]
+    public void Calendar_RendersDefaultHeader_WhenNoHeaderTemplate()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15) };
+        var window = Show(calendar);
+        try
+        {
+            var header = calendar.GetVisualDescendants()
+                .OfType<AtomUI.Desktop.Controls.Internal.Calendar.CalendarHeader>()
+                .FirstOrDefault();
+            header.ShouldNotBeNull();
+            header!.IsVisible.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Calendar_CellActivation_CommitsSelection()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15) };
+        DateTime? selected = null;
+        calendar.Selected += (_, e) => selected = e.Value;
+
+        var window = Show(calendar);
+        try
+        {
+            var cell = calendar.GetVisualDescendants()
+                .OfType<CalendarCellControl>()
+                .First(c => c.Model is { IsInView: true, IsDisabled: false, Value.Day: 20 });
+            cell.Activate();
+            Dispatcher.UIThread.RunJobs();
+
+            selected.ShouldBe(new DateTime(2026, 7, 20));
+            calendar.Value.ShouldBe(new DateTime(2026, 7, 20));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static Avalonia.Controls.Window Show(Control content)
     {
         var window = new Avalonia.Controls.Window

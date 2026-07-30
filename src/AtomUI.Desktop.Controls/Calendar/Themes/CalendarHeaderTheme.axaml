@@ -1,0 +1,30 @@
+<ControlTheme
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themeResources="using:AtomUI.Theme.Resources"
+    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
+    xmlns:calendar="clr-namespace:AtomUI.Desktop.Controls.Internal.Calendar"
+    themeResources:ControlTokenScope.Identity="{x:Static generated:CalendarControlThemeAsset.Identity}"
+    x:Class="AtomUI.Desktop.Controls.Themes.CalendarHeaderTheme"
+    TargetType="calendar:CalendarHeader"
+    x:ClassModifier="internal">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="calendar:CalendarHeader">
+            <Border Padding="{atom:SharedTokenResource PaddingXS}">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Spacing="{atom:SharedTokenResource UniformlyMarginXS}">
+                    <atom:ComboBox Name="PART_YearSelect"
+                                   MinWidth="{atom:CalendarControlTokenResource YearControlWidth}" />
+                    <atom:ComboBox Name="PART_MonthSelect"
+                                   MinWidth="{atom:CalendarControlTokenResource MonthControlWidth}" />
+                    <atom:Segmented Name="PART_ModeSwitch">
+                        <atom:SegmentedItem Content="Month" />
+                        <atom:SegmentedItem Content="Year" />
+                    </atom:Segmented>
+                </StackPanel>
+            </Border>
+        </ControlTemplate>
+    </Setter>
+</ControlTheme>

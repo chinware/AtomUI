@@ -6,5 +6,6 @@
                     x:ClassModifier="internal">
     <themes:CalendarViewCellTheme x:Key="{x:Type calendar:CalendarViewCell}" TargetType="calendar:CalendarViewCell" />
     <themes:CalendarViewTheme x:Key="{x:Type calendar:CalendarView}" TargetType="calendar:CalendarView" />
+    <themes:CalendarHeaderTheme x:Key="{x:Type calendar:CalendarHeader}" TargetType="calendar:CalendarHeader" />
     <themes:CalendarControlTheme x:Key="{x:Type atom:Calendar}" TargetType="atom:Calendar" />
 </ResourceDictionary>
