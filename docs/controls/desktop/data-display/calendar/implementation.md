@@ -1,167 +1,75 @@
 # Calendar 桌面版实现原理
 
-本文档描述 Calendar 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Calendar 桌面版架构设计](overview.md)，变化记录见 [Calendar Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Calendar Token 设计](token.md)。
+本文档描述 Calendar 桌面版的内部实现范围、源码职责、状态流、生命周期与维护规则。公共设计与 API 契约见 [Calendar 桌面版架构设计](overview.md)，Token 见 [Calendar Token 设计](token.md)，变化记录见 [Calendar Changelog](changelog.md)。
 
 ## 1. 实现定位
 
-本文档覆盖 Calendar 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
+本文档覆盖 Calendar 的控件实现、主题接入与状态同步。具体属性注册、默认值和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
 
 ## 2. 源码文件结构
 
-主要源码文件：
-
-- `src/AtomUI.Desktop.Controls/Calendar/BaseCalendarButton.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/BaseCalendarDayButton.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/Calendar.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/CalendarBlackoutDatesCollection.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/CalendarButton.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/CalendarDateRange.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/CalendarDayButton.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/CalendarExtensions.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/CalendarItem.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/CalendarToken.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/DateTimeHelper.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/HeadTextButton.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/SelectedDatesCollection.cs`
-- `src/AtomUI.Desktop.Controls/Calendar/Themes/BaseCalendarButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Calendar/Themes/BaseCalendarDayButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarItemTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarThemes.axaml`
-- `src/AtomUI.Desktop.Controls/Calendar/Themes/HeadTextButtonTheme.axaml`
+```text
+src/AtomUI.Desktop.Controls/Calendar/
+├── Calendar.cs                       # Public API、状态转换、生命周期、伪类、Header/View 接线
+├── CalendarDateRange.cs              # ValidRange 值对象（public）
+├── CalendarEnums.cs                  # CalendarMode / CalendarSelectSource / CalendarCellType
+├── CalendarCellContext.cs            # Public Cell 模板上下文
+├── CalendarHeaderContext.cs          # Public Header 模板上下文
+├── CalendarEventArgs.cs              # 三个 Public 事件参数
+├── CalendarControlToken.cs           # 六语义组件 Token（scope id CalendarControl）
+├── Internal/
+│   ├── CalendarViewMode.cs           # 内部面板模式 Date/Month
+│   ├── CalendarViewCellModel.cs      # 不可变 Cell 模型
+│   ├── CalendarViewCellBuilder.cs    # 纯日期/周/月网格构建
+│   ├── CalendarView.cs               # 面板与容器 owner、焦点导航
+│   ├── CalendarViewCell.cs           # Cell 交互外壳、伪类、激活
+│   ├── CalendarViewAutomationPeer.cs # Table 语义
+│   ├── CalendarViewCellAutomationPeer.cs # GridItem + SelectionItem 语义
+│   ├── CalendarHeader.cs             # 默认 Header 控件
+│   ├── CalendarHeaderOptions.cs      # 年/月选项与月份收敛（纯逻辑）
+│   ├── CalendarRelayCommand.cs       # Header Context 命令
+│   └── CalendarPseudoClass.cs        # 根/Cell 伪类常量
+└── Themes/
+    ├── CalendarTheme.axaml(.cs)       # CalendarControlTheme
+    ├── CalendarHeaderTheme.axaml(.cs)
+    ├── CalendarViewTheme.axaml(.cs)
+    ├── CalendarViewCellTheme.axaml(.cs)
+    └── CalendarThemes.axaml           # 聚合并实例化四个 ControlTheme
+```
 
 职责边界：
 
-- 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
-- Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
+- `Calendar` 是唯一业务状态 owner，负责 Public API、`CommitUserSelection`/`CommitModeChange`、事件顺序、模板生命周期、根伪类、Culture 分发。
+- `CalendarView` 是纯面板，按输入重建 Cell Model、管理有界容器池、roving focus 与键盘导航，只通过 `CellSelected` 报告用户意图。
+- `CalendarViewCell` 应用一个不可变 Cell Model，投影模板，管理伪类与 Pointer 激活。
+- `CalendarViewCellBuilder`、`CalendarHeaderOptions` 是纯逻辑（无 Control 依赖），承载全部网格与选项算法，可独立单测。
 
-## 3. 核心类职责
+## 3. 状态流
 
-- `BaseCalendarButton`：动作触发类型，负责点击、导航或局部操作状态。
-- `BaseCalendarDayButton`：动作触发类型，负责点击、导航或局部操作状态。
-- `Calendar`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `CalendarButton`：动作触发类型，负责点击、导航或局部操作状态。
-- `CalendarItem`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `CalendarToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
-- `HeadTextButton`：动作触发类型，负责点击、导航或局部操作状态。
+单向数据流：`Calendar` 向 `CalendarHeader` 与 `CalendarView` 投影不可变状态。
 
-核心协作规则：
+- 用户 Pointer/键盘激活 Cell → `CalendarView.CellSelected` → `Calendar.CommitUserSelection(target, source)`。
+- 默认 Header 选年/月/切模式 → `CalendarHeader.YearSelected/MonthSelected/ModeSwitched` → `Calendar.CommitUserSelection`/`CommitModeChange`。
+- 自定义 Header 通过 `CalendarHeaderContext.ChangeValueCommand`（source=Customize）/`ChangeModeCommand` 提交。
+- `CommitUserSelection` 用内部 `_isCommitting` flag 写 `Value`，阻止属性路径重复触发，然后按 `PanelChanged -> ValueChanged -> Selected` 顺序触发。
 
-- 控件实例是 public API 和运行时状态 owner。
-- Template part 是视觉协作对象，生命周期必须受 `OnApplyTemplate` 或模板加载流程管理。
-- 数据对象、选项对象、任务对象或节点对象只保存业务数据，不应反向持有不可释放的视觉对象。
-- 弹层、窗口、计时器、异步 loader 和全局管理器必须有明确关闭、解绑或释放路径。
+## 4. Cell Model 失效与容器池
 
-## 4. 状态与数据流
+- Cell Model 仅在 `Value`/`ViewMode`/`ShowWeek`/`ValidRange`/`DisabledDate`/`Culture`/`Today` 变化时重建，不在 Measure/Arrange 热路径计算。
+- Date 模式最多 42 日期容器（ShowWeek 增 6 周序号），Month 模式 12 容器；容器池复用，重复切换 Mode/Value 不无限增长。
+- `DisabledDate` 对每个候选值每次重建最多调用一次，异常不被吞掉。
 
-Calendar 的状态流遵循下面路径：
+## 5. 生命周期
 
-```text
-Public API / ItemsSource / Command / Event
-  -> 控件实例状态
-  -> internal state / effective state / pseudo-class
-  -> template part property / AXAML selector
-  -> renderer / popup / adorner / Gallery observable behavior
-```
+- `Calendar.OnApplyTemplate` 前解绑旧 `CalendarView`/`CalendarHeader` 事件，接入新 part 后回放 Value/Mode/Range/Culture 并刷新伪类。
+- `Calendar.OnAttachedToVisualTree` 订阅语言服务，`OnDetachedFromVisualTree` 解绑；语言变化把新 Culture 推给 View/Header 触发重建。
+- FlowDirection/RTL 只改布局方向，不改 Value、事件顺序或日期计算。
 
-源码中的状态入口按以下语义维护：
+## 6. Automation 与 AOT
 
-- 内容与数据：`HeaderBackground`。
-- 选择与集合：`DisplayMode`、`SelectedDate`、`SelectionMode`。
-- 交互与状态：`IsMotionEnabled`、`IsTodayHighlighted`。
-- 其他稳定入口：`DisplayDate`、`DisplayDateEnd`、`DisplayDateStart`、`FirstDayOfWeek`。
+- `CalendarView` 暴露 Table 语义，`CalendarViewCell` 暴露 ListItem + SelectionItem 语义；选中/名称来自同一 Cell Model。
+- 所有 Avalonia 属性静态注册，模板关系用 TemplateBinding/AXAML selector/强类型 binding，Gallery DataTemplate 用 `x:DataType`，无反射日期适配。
 
-维护要求：
+## 7. 与 DatePicker 的隔离
 
-- 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
-- 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
-- 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
-- overview.md 的 API 契约说明应与源码实际状态流一致。
-
-## 5. 生命周期与模板接入
-
-生命周期规则：
-
-- 构造阶段只注册必要状态，不依赖 template part。
-- 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
-- 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
-- DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
-- Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
-
-稳定 template part 接入点：
-
-- `PART_CalendarItem`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_Content`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_Frame`：承载根视觉、边框、背景或尺寸基线。
-- `PART_HeaderButton`：承载用户触发入口、导航或关闭动作。
-- `PART_HeaderLayout`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_ItemFrame`：承载根视觉、边框、背景或尺寸基线。
-- `PART_ItemRootLayout`：承载根视觉、边框、背景或尺寸基线。
-- `PART_MonthView`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_NextButton`：承载用户触发入口、导航或关闭动作。
-- `PART_NextMonthButton`：承载用户触发入口、导航或关闭动作。
-- `PART_PreviousButton`：承载用户触发入口、导航或关闭动作。
-- `PART_PreviousMonthButton`：承载用户触发入口、导航或关闭动作。
-- `PART_Root`：承载根视觉、边框、背景或尺寸基线。
-- `PART_YearView`：稳定模板协作入口，重命名前必须同步主题和实现。
-
-## 6. 交互与事件处理
-
-Calendar 的交互事件应从输入源收敛到控件级语义事件：
-
-- Pointer、keyboard、focus 和 command 事件不应绕过 Avalonia 基础控件语义。
-- 没有弹层职责的路径不应引入额外 popup 或全局输入捕获。
-- 非集合控件不应通过隐藏集合状态模拟业务数据。
-- 值提交或命令触发必须保持继承控件的事件顺序。
-
-当前没有抽取到控件专属 public 事件；交互语义主要通过继承事件、命令、属性变化和 Gallery 可观察行为体现。
-
-## 7. 内部算法与关键流程
-
-维护者需要重点关注以下流程：
-
-- API 默认值到 effective state 的归一。
-- Template part 重新应用时的状态回放。
-- 主题资源、Token 和 SharedToken 计算后的视觉更新。
-- 内容、命令和视觉状态在模板节点之间的同步。
-- 动效启停、初始加载阶段 transition 抑制和卸载取消。
-
-实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
-
-## 8. 资源、性能与 AOT 边界
-
-资源和 AOT 约束：
-
-- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
-- 不把可静态声明的模板结构迁移到 C# 动态创建。
-- 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
-- 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
-- Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
-
-性能边界：
-
-- 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
-- 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
-
-## 9. 维护不变量
-
-维护 Calendar 时不得破坏：
-
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
-
-## 10. 测试与验证
-
-推荐验证：
-
-- 纯文档改动运行 `git diff --check` 并检查相对链接。
-- 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
-- DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
-- Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
-- AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
+新 Calendar 与 DatePicker 的 CalendarView 子系统完全独立：不同命名空间（`Internal.Calendar` vs `CalendarView`）、不同 Token（`CalendarControlToken` vs `CalendarToken`）、不共享类型。本次重构不改动 DatePicker 实现。

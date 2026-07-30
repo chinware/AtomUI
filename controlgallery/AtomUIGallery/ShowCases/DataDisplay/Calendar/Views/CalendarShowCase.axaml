@@ -19,21 +19,85 @@
                     BaseClass="TemplatedControl" />
             </gallery:GalleryStickyTabsHost.Header>
 
+            <gallery:ShowCasePanel Name="ExamplesContent" IsScrollEnabled="False" ContentMargin="28,10,28,28">
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource BasicTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource BasicDescription}">
+                    <atom:Calendar Value="{Binding SampleDate}" Width="360" />
+                </gallery:ShowCaseItem>
 
-            <gallery:ShowCasePanel Name="ExamplesContent"
-                                   IsScrollEnabled="False"
-                                   IsDeferredLoadingEnabled="True"
-                                   InitialDeferredLoadItemCount="4"
-                                   DeferredLoadBatchSize="2"
-                                   ContentMargin="28,10,28,28">
-                <gallery:ShowCaseItem Description="{gallery:CalendarShowCaseLangResource BasicDescription}" Title="{gallery:CalendarShowCaseLangResource BasicTitle}"
-                                      IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:CalendarViewModel">
-                    <!-- Calendar 控件重构中,示例待阶段六重写 -->
-                    <Border />
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource MiniTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource MiniDescription}">
+                    <atom:Calendar Value="{Binding SampleDate}" Fullscreen="False" Width="300" />
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource YearModeTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource YearModeDescription}">
+                    <atom:Calendar Value="{Binding SampleDate}" Mode="Year" Width="360" />
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource ShowWeekTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource ShowWeekDescription}">
+                    <atom:Calendar Value="{Binding SampleDate}" ShowWeek="True" Width="400" />
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource RangeTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource RangeDescription}">
+                    <atom:Calendar Name="RangeCalendar" Value="{Binding SampleDate}" Width="360" />
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource CellTemplateTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource CellTemplateDescription}">
+                    <atom:Calendar Value="{Binding SampleDate}" Width="360">
+                        <atom:Calendar.CellTemplate>
+                            <DataTemplate x:DataType="atom:CalendarCellContext">
+                                <Border IsVisible="{Binding IsInView}"
+                                        Background="{atom:SharedTokenResource ColorInfoBg}"
+                                        CornerRadius="2"
+                                        Margin="0,2,0,0"
+                                        Height="4" />
+                            </DataTemplate>
+                        </atom:Calendar.CellTemplate>
+                    </atom:Calendar>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource FullCellTemplateTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource FullCellTemplateDescription}">
+                    <atom:Calendar Value="{Binding SampleDate}" Width="360">
+                        <atom:Calendar.FullCellTemplate>
+                            <DataTemplate x:DataType="atom:CalendarCellContext">
+                                <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        CornerRadius="4" Padding="6,2">
+                                    <TextBlock Text="{Binding DisplayValue}" HorizontalAlignment="Center" />
+                                </Border>
+                            </DataTemplate>
+                        </atom:Calendar.FullCellTemplate>
+                    </atom:Calendar>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource HeaderTemplateTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource HeaderTemplateDescription}">
+                    <atom:Calendar Value="{Binding SampleDate}" Width="360">
+                        <atom:Calendar.HeaderTemplate>
+                            <DataTemplate x:DataType="x:Object">
+                                <Border Padding="8"
+                                        Background="{atom:SharedTokenResource ColorFillQuaternary}"
+                                        CornerRadius="4">
+                                    <TextBlock Text="{Binding StringFormat='{}{0:yyyy MMMM}'}"
+                                               HorizontalAlignment="Center" />
+                                </Border>
+                            </DataTemplate>
+                        </atom:Calendar.HeaderTemplate>
+                    </atom:Calendar>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource EventsTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource EventsDescription}">
+                    <StackPanel Orientation="Vertical" Spacing="12">
+                        <atom:Calendar Name="EventsCalendar" Value="{Binding SampleDate}" Width="360" />
+                        <atom:TextBlock Name="EventsLog"
+                                        Text="{gallery:CalendarShowCaseLangResource EventsLogHint}"
+                                        TextWrapping="Wrap" />
+                    </StackPanel>
                 </gallery:ShowCaseItem>
             </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>

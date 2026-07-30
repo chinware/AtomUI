@@ -1,6 +1,6 @@
 # Calendar 桌面版架构设计
 
-本文档定义 `Calendar` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Calendar 桌面版实现原理](implementation.md)，Calendar Token 的专项设计见 [Calendar Token 设计](token.md)，设计和契约变化记录见 [Calendar Changelog](changelog.md)。
+本文档定义 `Calendar` 桌面版的设计定位、公共契约、状态模型与主题关系。内部实现原理见 [Calendar 桌面版实现原理](implementation.md)，Token 专项设计见 [Calendar Token 设计](token.md)，变更记录见 [Calendar Changelog](changelog.md)。完整设计规格见 `docs/superpowers/specs/2026-07-30-ant-design-calendar-view-design.md`。
 
 ## 1. 控件定位
 
@@ -12,185 +12,74 @@
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar` |
 | 控件状态 | Stable |
 
-Calendar 是 AtomUI 桌面控件体系中的日历展示控件，用于显示月份、日期选择和禁用日期。
+`Calendar` 是按日期组织业务展示内容的桌面日历控件，遵循 Ant Design 6 Calendar 语义。它提供月日期面板、年月份面板、默认年月头部、有效范围、禁用日期、单元格定制与选择事件。
 
-Calendar 不负责输入弹层、日期范围选择器或业务日程系统。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
+Calendar **不**承担日期输入弹层、范围选择、多日期选择或日程排布职责——这些由 DatePicker 或业务层承担。Calendar 也不复用旧 WPF/Avalonia Calendar 移植体系，其内部 `CalendarView` 面板独立实现，与 DatePicker 的 CalendarView 子系统无耦合。
 
-主要源码入口：
+## 2. 公共 API
 
-- `src/AtomUI.Desktop.Controls/Calendar`
+```csharp
+public class Calendar : TemplatedControl
+{
+    public DateTime Value { get; set; }                 // 选中日期与面板锚点，默认 DateTime.Today
+    public CalendarMode Mode { get; set; }              // Month | Year，默认 Month
+    public bool Fullscreen { get; set; }                // 默认 true
+    public bool ShowWeek { get; set; }                  // 默认 false
+    public CalendarDateRange? ValidRange { get; set; }  // 有效范围（首尾包含）
+    public Func<DateTime, bool>? DisabledDate { get; set; }
+    public IDataTemplate? CellTemplate { get; set; }        // 对应 Ant Design cellRender
+    public IDataTemplate? FullCellTemplate { get; set; }    // 对应 fullCellRender，优先于 CellTemplate
+    public IDataTemplate? HeaderTemplate { get; set; }      // 自定义头部
 
-## 2. 设计语言
-
-Calendar 的设计语言围绕控件职责、可观察状态和主题契约组织，而不是围绕模板节点组织。
-
-| 维度 | 含义 | Calendar 中的表达 |
-| --- | --- | --- |
-| 产品语义 | 控件在界面中承担的稳定职责。 | Calendar 是 AtomUI 桌面控件体系中的日历展示控件，用于显示月份、日期选择和禁用日期。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `HeaderBackground`。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Calendar Token + ControlTheme。 |
-
-## 3. API 与契约模型
-
-Calendar 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-
-核心 public surface 按语义分组维护：
-
-| 契约组 | 代表成员 | 维护含义 |
-| --- | --- | --- |
-| 内容与数据 | `HeaderBackground` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `DisplayMode`、`SelectedDate`、`SelectionMode` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsMotionEnabled`、`IsTodayHighlighted` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 其他稳定入口 | `DisplayDate`、`DisplayDateEnd`、`DisplayDateStart`、`FirstDayOfWeek` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
-
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
-
-主要公开类型与枚举：
-
-- 类型：`BaseCalendarButton`、`BaseCalendarDayButton`、`Calendar`、`CalendarButton`、`CalendarDateChangedEventArgs`、`CalendarItem`、`CalendarModeChangedEventArgs`、`HeadTextButton`。
-- 枚举：`CalendarMode`、`CalendarSelectionMode`。
-
-稳定 template part：
-
-| Template Part | 类型 | 职责 |
-| --- | --- | --- |
-| `PART_CalendarItem` | `CalendarItem` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_Content` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_Frame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
-| `PART_HeaderButton` | `AvaloniaButton` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_HeaderLayout` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_ItemFrame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
-| `PART_ItemRootLayout` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
-| `PART_MonthView` | `Grid` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_NextButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_NextMonthButton` | `AvaloniaButton` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_PreviousButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_PreviousMonthButton` | `AvaloniaButton` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_Root` | `Panel` | 承载根视觉、边框、背景或尺寸基线。 |
-| `PART_YearView` | `Grid` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-
-控件专属或内部伪类包括 `BlackoutPC`、`BtnFocusedPC`、`CalendarDisabledPC`、`DayfocusedPC`、`TodayPC`。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
-
-## 4. 行为与状态模型
-
-Calendar 的状态流按以下路径收敛：
-
-```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
-  -> Gallery 可观察行为
+    public event EventHandler<CalendarValueChangedEventArgs>? ValueChanged;
+    public event EventHandler<CalendarSelectedEventArgs>? Selected;
+    public event EventHandler<CalendarPanelChangedEventArgs>? PanelChanged;
+}
 ```
 
-状态维护规则：
+- `Value` 规范化到 `.Date`；Calendar 不提供时间编辑。
+- `CalendarMode.Month` 使用 6×7 日期网格，`CalendarMode.Year` 使用 3×4 月份网格。
+- 三个事件表达用户交互回调。程序直接设置 `Value`/`Mode` 只更新属性和渲染，不触发这三个事件。
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- selection/checked/active、motion 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+### 值类型
 
-## 5. 视觉与主题模型
+- `CalendarDateRange(DateTime start, DateTime end)`：首尾包含，`Start`/`End` 规范化到 `.Date`，`end < start` 抛 `ArgumentOutOfRangeException`。仅服务 `ValidRange`。
+- `CalendarCellContext`：Cell 模板上下文（`Value`/`Today`/`CellType`/`DisplayValue`/`IsToday`/`IsInView`/`IsSelected`/`IsDisabled`）。
+- `CalendarHeaderContext`：自定义 Header 上下文（`Value`/`Mode` + `ChangeValueCommand`/`ChangeModeCommand`）。
 
-Calendar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+## 3. 事件顺序
 
-| 主题文件 | 职责 |
-| --- | --- |
-| `BaseCalendarButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `BaseCalendarDayButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `CalendarItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
-| `CalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `CalendarThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
-| `HeadTextButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
+一次有效用户选择按固定顺序触发：`PanelChanged -> ValueChanged -> Selected`，不存在的事件从序列中省略。触发时 `Value` 与渲染输入已提交新状态。
 
-Calendar 使用 `CalendarToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion 运行时状态。
+| 操作 | PanelChanged | ValueChanged | Selected |
+| --- | --- | --- | --- |
+| 选择当前日期 | 否 | 否 | Date |
+| 选择同月其他日期 | 否 | 是 | Date |
+| 选择相邻月份补位日期 | 是 | 是 | Date |
+| 默认 Header 改月份 | 跨月时是 | 日期变化时是 | Month |
+| 默认 Header 改年份 | 跨面板时是 | 日期变化时是 | Year |
+| Year 模式选月份 | 跨年时是 | 日期变化时是 | Month |
+| 自定义 Header 改日期 | 按面板边界 | 日期变化时是 | Customize |
 
-主题维护规则：
+用户切换 Mode 触发一次 `PanelChanged(Value, newMode)`，不触发 ValueChanged/Selected。
 
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+## 4. 组合结构
 
-## 6. 控件家族或集成关系
+```text
+Calendar
+├── CalendarHeader 或 HeaderTemplate
+└── CalendarView（内部，AtomUI.Desktop.Controls.Internal.Calendar）
+    ├── WeekHeader
+    └── CellHost
+        └── CalendarViewCell × N
+```
 
-Calendar 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证规则。组合或派生控件应显式说明哪些 API 被继承、覆盖或不支持。
+Calendar 是唯一业务状态 owner；CalendarView 是纯面板，只报告用户意图；CalendarViewCell 是有界数据容器。单向数据流：Calendar 向 Header 和 CalendarView 投影不可变状态。
 
-主要协作类型：
+## 5. Gallery 示例
 
-- `BaseCalendarButton`：动作触发类型，负责点击、导航或局部操作状态。
-- `BaseCalendarDayButton`：动作触发类型，负责点击、导航或局部操作状态。
-- `Calendar`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `CalendarButton`：动作触发类型，负责点击、导航或局部操作状态。
-- `CalendarItem`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `CalendarToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
-- `HeadTextButton`：动作触发类型，负责点击、导航或局部操作状态。
+Gallery 覆盖：基础 Fullscreen、Mini、Year 模式、ShowWeek、ValidRange+DisabledDate、CellTemplate、FullCellTemplate、自定义 HeaderTemplate、事件来源展示。
 
-集成关系：
+## 6. 兼容边界
 
-- 与 ThemeManager、SharedToken、ControlTheme、控件文档和 Gallery ShowCase 示例保持一致。
-- 涉及 ItemsSource、Popup、Flyout、Window、Form 或 CompactSpace 的路径必须保持生命周期释放和数据状态同步。
-- 源码目录中的共享基类和内部协作类型形成维护边界，不能只修改桌面包装类而忽略共享状态 owner。
-
-## 7. 兼容性不变量
-
-维护 Calendar 时必须保持以下不变量：
-
-- 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
-- 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
-- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
-- Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
-- 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
-- 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
-
-## 8. 专项模型
-
-### 8.1 选择与当前项模型
-
-Calendar 的当前项状态必须由单一 owner 推导。public 选择属性、集合项容器和伪类之间只能做单向同步，集合替换、清空和模板重套用时必须回放当前状态。
-
-### 8.2 动效模型
-
-Calendar 的动效只表达状态变化反馈，不应改变 public API 语义。初始加载、禁用态和卸载路径应能抑制或取消动效，避免保留旧控件实例。
-
-## 9. 文档导航、LLMS 导出与验证策略
-
-关联文档：
-
-- [Calendar 桌面版实现原理](implementation.md)
-- [Calendar Token 设计](token.md)
-- [Calendar Changelog](changelog.md)
-
-LLMS 语义区域：
-
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Calendar` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-
-LLMS 导出来源：
-
-| LLMS 内容 | 来源 | 说明 |
-| --- | --- | --- |
-| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/calendar/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/calendar/semantic-cn.md` |
-| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
-| Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
-| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
-| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
-
-验证策略：
-
-| 改动类型 | 验证要求 |
-| --- | --- |
-| 文档改动 | 运行 `git diff --check`，检查相对链接存在。 |
-| Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
-| 状态模型 | 覆盖 selection/checked/active、motion、disabled、hover、pressed、focus 以及控件特有状态。 |
-| AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
-| Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
-| Gallery | 走查对应 ShowCase 示例和源码片段入口。 |
+本设计不兼容旧 Calendar 的 Public API、Template Part、ControlTheme key 或伪类。旧 `SelectedDate`/`SelectedDates`/`SelectionMode`/`DisplayDate*`/`BlackoutDates`/Decade 面板等语义不提供迁移映射。
