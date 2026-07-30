@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.CalendarView;
 using AtomUI.Desktop.Controls.CalendarView.State;
@@ -83,6 +84,51 @@ public class CalendarViewStateTests
         source.ShouldNotContain("<atom:CalendarItemTheme TargetType=\"calendarView:DualMonthRangeCalendar\" />");
     }
 
+    [Theory]
+    [InlineData("src/AtomUI.Desktop.Controls/DatePicker/Themes/CalendarView/CalendarDayButtonTheme.axaml")]
+    [InlineData("src/AtomUI.Desktop.Controls/DatePicker/Themes/CalendarView/CalendarButtonTheme.axaml")]
+    public void Calendar_Cell_Themes_Define_Explicit_Disabled_Visuals(string relativePath)
+    {
+        var source = ReadRepoFile(relativePath);
+        var document = XDocument.Parse(source);
+        var avaloniaNamespace = XNamespace.Get("https://github.com/avaloniaui");
+        var disabledStyle = document.Descendants(avaloniaNamespace + "Style")
+                                    .Single(style => (string?)style.Attribute("Selector") == "^:disabled");
+        var disabledBackgroundStyle = disabledStyle.Elements(avaloniaNamespace + "Style")
+                                                     .Single(style => (string?)style.Attribute("Selector") ==
+                                                                      "^ /template/ Border#DisabledBackground");
+
+        source.ShouldContain("<Style Selector=\"^:disabled\">");
+        source.ShouldContain("<Border Name=\"DisabledBackground\"");
+        source.ShouldContain("CellBgDisabled");
+        source.ShouldContain("ColorTextDisabled");
+        var disabledBackground = document.Descendants(avaloniaNamespace + "Border")
+                                         .Single(border => (string?)border.Attribute("Name") == "DisabledBackground");
+        disabledBackground.Attribute("CornerRadius").ShouldBeNull();
+        disabledBackground.Attribute("Margin").ShouldBeNull();
+        disabledBackground.Attribute("Grid.ColumnSpan")?.Value.ShouldBe("2");
+        disabledStyle.Elements(avaloniaNamespace + "Setter")
+                     .Any(setter => (string?)setter.Attribute("Property") == "Background" &&
+                                    ((string?)setter.Attribute("Value"))?.Contains("CellBgDisabled", StringComparison.Ordinal) == true)
+                     .ShouldBeFalse();
+        disabledBackgroundStyle.Elements(avaloniaNamespace + "Setter")
+                               .Any(setter => (string?)setter.Attribute("Property") == "Background" &&
+                                              ((string?)setter.Attribute("Value"))?.Contains("CellBgDisabled", StringComparison.Ordinal) == true)
+                               .ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData("src/AtomUI.Desktop.Controls/DatePicker/Themes/DatePickerPresenterTheme.axaml")]
+    [InlineData("src/AtomUI.Desktop.Controls/DatePicker/Themes/DualMonthRangeDatePickerPresenterTheme.axaml")]
+    [InlineData("src/AtomUI.Desktop.Controls/DatePicker/Themes/TimedRangeDatePickerPresenterTheme.axaml")]
+    public void DatePicker_Presenter_Themes_Do_Not_Bind_Raw_Selected_Values_To_Calendar(string relativePath)
+    {
+        var source = ReadRepoFile(relativePath);
+
+        source.ShouldNotContain("SelectedDate=\"{TemplateBinding SelectedDateTime}\"");
+        source.ShouldNotContain("SecondarySelectedDate=\"{TemplateBinding SecondarySelectedDateTime}\"");
+    }
+
     [Fact]
     public void RangeDatePickerPresenter_Now_With_Confirm_Confirms_Active_Range_Part()
     {
@@ -98,6 +144,25 @@ public class CalendarViewStateTests
 
         presenter.SelectedDateTime.ShouldNotBeNull();
         rangePartConfirmedCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public void RangeDatePickerPresenter_Today_And_Now_Do_Not_Select_Out_Of_Range_Values()
+    {
+        var presenter = new TestRangeDatePickerPresenter
+        {
+            MinDate = DateTime.Today.AddDays(1),
+            MaxDate = DateTime.Today.AddDays(10)
+        };
+        var rangePartConfirmedCount = 0;
+        presenter.RangePartConfirmed += (_, _) => rangePartConfirmedCount++;
+
+        presenter.NotifyTodayButtonClickedForTest();
+        presenter.NotifyNowButtonClickedForTest();
+
+        presenter.SelectedDateTime.ShouldBeNull();
+        presenter.SecondarySelectedDateTime.ShouldBeNull();
+        rangePartConfirmedCount.ShouldBe(0);
     }
 
     [Fact]
@@ -769,6 +834,132 @@ public class CalendarViewStateTests
     }
 
     [Fact]
+    public void DatePicker_Date_Bounds_Are_Applied_Before_Valid_Calendar_Selection()
+    {
+        RunOnUIThread(() =>
+        {
+            var selectedDate = new DateTime(2026, 7, 16, 12, 30, 0);
+            var picker = new TestDatePicker
+            {
+                MinDate          = new DateTime(2026, 7, 15, 18, 0, 0),
+                MaxDate          = new DateTime(2026, 7, 20, 6, 0, 0),
+                SelectedDateTime = selectedDate
+            };
+
+            var presenter = picker.CreatePickerPresenterForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<PickerCalendar>()
+                                        .Single();
+
+                presenter.MinDate.ShouldBe(picker.MinDate);
+                presenter.MaxDate.ShouldBe(picker.MaxDate);
+                calendar.DisplayDateStart.ShouldBe(new DateTime(2026, 7, 15));
+                calendar.DisplayDateEnd.ShouldBe(new DateTime(2026, 7, 20));
+                calendar.SelectedDate.ShouldBe(selectedDate.Date);
+                picker.SelectedDateTime.ShouldBe(selectedDate);
+            });
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Out_Of_Range_Controlled_Value_Remains_External_And_Is_Not_Selected()
+    {
+        RunOnUIThread(() =>
+        {
+            var selectedDate = new DateTime(2026, 7, 10);
+            var picker = new TestDatePicker
+            {
+                MinDate          = new DateTime(2026, 7, 15),
+                MaxDate          = new DateTime(2026, 7, 20),
+                SelectedDateTime = selectedDate
+            };
+
+            var presenter = picker.CreatePickerPresenterForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<PickerCalendar>()
+                                        .Single();
+
+                calendar.SelectedDate.ShouldBeNull();
+                presenter.SelectedDateTime.ShouldBe(selectedDate);
+                picker.SelectedDateTime.ShouldBe(selectedDate);
+                presenter.GetVisualDescendants()
+                         .OfType<AtomUI.Desktop.Controls.Button>()
+                         .Single(button => button.Name == "PART_ConfirmButton")
+                         .IsEnabled.ShouldBeFalse();
+            });
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Runtime_Boundary_Change_Clears_Only_Calendar_Selection()
+    {
+        RunOnUIThread(() =>
+        {
+            var selectedDate = new DateTime(2026, 7, 16);
+            var picker = new TestDatePicker
+            {
+                MinDate          = new DateTime(2026, 7, 15),
+                SelectedDateTime = selectedDate
+            };
+            var presenter = picker.CreatePickerPresenterForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<PickerCalendar>()
+                                        .Single();
+                calendar.SelectedDate.ShouldBe(selectedDate);
+
+                picker.MinDate = new DateTime(2026, 7, 18);
+                Dispatcher.UIThread.RunJobs();
+
+                calendar.DisplayDateStart.ShouldBe(new DateTime(2026, 7, 18));
+                calendar.SelectedDate.ShouldBeNull();
+                presenter.SelectedDateTime.ShouldBe(selectedDate);
+                picker.SelectedDateTime.ShouldBe(selectedDate);
+                presenter.GetVisualDescendants()
+                         .OfType<AtomUI.Desktop.Controls.Button>()
+                         .Single(button => button.Name == "PART_ConfirmButton")
+                         .IsEnabled.ShouldBeFalse();
+            });
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Open_Clamps_Display_Anchor_To_Effective_Bounds()
+    {
+        RunOnUIThread(() =>
+        {
+            var picker = new TestDatePicker
+            {
+                PickerMode        = DatePickerMode.Month,
+                PickerDisplayDate = new DateTime(2026, 5, 20),
+                MinDate           = new DateTime(2026, 7, 15),
+                MaxDate           = new DateTime(2026, 10, 31)
+            };
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<PickerCalendar>()
+                                        .Single();
+
+                calendar.DisplayDate.ShouldBe(new DateTime(2026, 7, 1));
+                calendar.SelectedDate.ShouldBeNull();
+                picker.SelectedDateTime.ShouldBeNull();
+            });
+        });
+    }
+
+    [Fact]
     public void RangeDatePicker_Open_Start_Part_With_PickerDisplayDate_Anchors_Empty_Active_Part()
     {
         RunOnUIThread(() =>
@@ -798,6 +989,161 @@ public class CalendarViewStateTests
                 calendar.SecondarySelectedDate.ShouldBeNull();
                 picker.RangeStartSelectedDate.ShouldBeNull();
                 picker.RangeEndSelectedDate.ShouldBeNull();
+            });
+        });
+    }
+
+    [Fact]
+    public void RangeDatePicker_Projects_Only_Valid_Endpoints_Into_Calendar()
+    {
+        RunOnUIThread(() =>
+        {
+            var invalidStart = new DateTime(2026, 7, 10);
+            var validEnd     = new DateTime(2026, 7, 18);
+            var picker = new TestRangeDatePicker
+            {
+                MinDate                = new DateTime(2026, 7, 15),
+                MaxDate                = new DateTime(2026, 7, 20),
+                RangeStartSelectedDate = invalidStart,
+                RangeEndSelectedDate   = validEnd
+            };
+            picker.RangeActivatedPart = RangeActivatedPart.End;
+
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<DualMonthRangeCalendar>()
+                                        .Single();
+
+                calendar.DisplayDateStart.ShouldBe(new DateTime(2026, 7, 15));
+                calendar.DisplayDateEnd.ShouldBe(new DateTime(2026, 7, 20));
+                calendar.SelectedDate.ShouldBeNull();
+                calendar.SecondarySelectedDate.ShouldBe(validEnd);
+                picker.RangeStartSelectedDate.ShouldBe(invalidStart);
+                picker.RangeEndSelectedDate.ShouldBe(validEnd);
+            });
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Today_And_Now_Do_Not_Select_Out_Of_Range_Values()
+    {
+        RunOnUIThread(() =>
+        {
+            var presenter = new TestDatePickerPresenter
+            {
+                MinDate = DateTime.Today.AddDays(1),
+                MaxDate = DateTime.Today.AddDays(10)
+            };
+
+            presenter.NotifyTodayButtonClickedForTest();
+            presenter.SelectedDateTime.ShouldBeNull();
+
+            presenter.NotifyNowButtonClickedForTest();
+            presenter.SelectedDateTime.ShouldBeNull();
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Today_And_Now_Buttons_Are_Disabled_Out_Of_Range()
+    {
+        RunOnUIThread(() =>
+        {
+            var picker = new TestDatePicker
+            {
+                MinDate = DateTime.Today.AddDays(1),
+                MaxDate = DateTime.Today.AddDays(10)
+            };
+            var presenter = picker.CreatePickerPresenterForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                presenter.GetVisualDescendants()
+                         .OfType<AtomUI.Desktop.Controls.Button>()
+                         .Single(button => button.Name == "PART_TodayButton")
+                         .IsEnabled.ShouldBeFalse();
+
+                picker.IsShowTime = true;
+                Dispatcher.UIThread.RunJobs();
+
+                presenter.GetVisualDescendants()
+                         .OfType<AtomUI.Desktop.Controls.Button>()
+                         .Single(button => button.Name == "PART_NowButton")
+                         .IsEnabled.ShouldBeFalse();
+            });
+        });
+    }
+
+    [Fact]
+    public void Calendar_Navigation_Cannot_Move_Past_Date_Boundaries()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                DisplayDate    = new DateTime(2026, 7, 1),
+                DisplayDateStart = new DateTime(2026, 7, 15),
+                DisplayDateEnd   = new DateTime(2026, 7, 20)
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                calendar.CalendarItem.ShouldNotBeNull().PreviousMonthButton.ShouldNotBeNull().IsEnabled.ShouldBeFalse();
+                calendar.CalendarItem.NextMonthButton.ShouldNotBeNull().IsEnabled.ShouldBeFalse();
+                var displayDate = calendar.DisplayDate;
+
+                calendar.OnPreviousMonthClick();
+                calendar.OnNextMonthClick();
+                calendar.ProcessPageUpKey(false);
+                calendar.ProcessPageDownKey(false);
+
+                calendar.DisplayDate.ShouldBe(displayDate);
+            });
+        });
+    }
+
+    [Fact]
+    public void Calendar_Year_And_Decade_Navigation_Cannot_Move_Past_Date_Boundaries()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                DisplayDate      = new DateTime(2026, 7, 1),
+                DisplayDateStart = new DateTime(2026, 7, 15),
+                DisplayDateEnd   = new DateTime(2026, 7, 20)
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                calendar.SetCurrentValue(PickerCalendar.DisplayModeProperty, CalendarMode.Year);
+                calendar.SelectedMonth.ShouldBe(new DateTime(2026, 7, 1));
+                calendar.CalendarItem.ShouldNotBeNull().PreviousButton.ShouldNotBeNull().IsEnabled.ShouldBeFalse();
+                calendar.CalendarItem.NextButton.ShouldNotBeNull().IsEnabled.ShouldBeFalse();
+                var selectedMonth = calendar.SelectedMonth;
+
+                calendar.OnPreviousClick();
+                calendar.OnNextClick();
+                calendar.ProcessPageUpKey(true);
+                calendar.ProcessPageDownKey(true);
+
+                calendar.SelectedMonth.ShouldBe(selectedMonth);
+
+                calendar.SetCurrentValue(PickerCalendar.DisplayModeProperty, CalendarMode.Decade);
+                var calendarItem = calendar.CalendarItem.ShouldNotBeNull();
+                calendarItem.PreviousButton.ShouldNotBeNull().IsEnabled.ShouldBeFalse();
+                calendarItem.NextButton.ShouldNotBeNull().IsEnabled.ShouldBeFalse();
+                var selectedYear = calendar.SelectedYear;
+
+                calendar.OnPreviousClick();
+                calendar.OnNextClick();
+                calendar.ProcessPageUpKey(true);
+                calendar.ProcessPageDownKey(true);
+
+                calendar.SelectedYear.ShouldBe(selectedYear);
             });
         });
     }
@@ -1710,6 +2056,20 @@ public class CalendarViewStateTests
         {
             NotifyPickerOpened();
         }
+
+    }
+
+    private sealed class TestDatePickerPresenter : DatePickerPresenter
+    {
+        public void NotifyTodayButtonClickedForTest()
+        {
+            NotifyTodayButtonClicked();
+        }
+
+        public void NotifyNowButtonClickedForTest()
+        {
+            NotifyNowButtonClicked();
+        }
     }
 
     private sealed class TestRangeDatePicker : RangeDatePicker
@@ -1732,6 +2092,11 @@ public class CalendarViewStateTests
         public void NotifyNowButtonClickedForTest()
         {
             NotifyNowButtonClicked();
+        }
+
+        public void NotifyTodayButtonClickedForTest()
+        {
+            NotifyTodayButtonClicked();
         }
     }
 

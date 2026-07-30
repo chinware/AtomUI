@@ -1,7 +1,6 @@
 ﻿using AtomUI.Desktop.Controls.CalendarView;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -34,6 +33,12 @@ public class DatePicker : InfoPickerInput
 
     public static readonly StyledProperty<DateTime?> PickerDisplayDateProperty =
         AvaloniaProperty.Register<DatePicker, DateTime?>(nameof(PickerDisplayDate));
+
+    public static readonly StyledProperty<DateTime?> MinDateProperty =
+        AvaloniaProperty.Register<DatePicker, DateTime?>(nameof(MinDate));
+
+    public static readonly StyledProperty<DateTime?> MaxDateProperty =
+        AvaloniaProperty.Register<DatePicker, DateTime?>(nameof(MaxDate));
 
     public static readonly StyledProperty<string?> FormatProperty =
         AvaloniaProperty.Register<DatePicker, string?>(nameof(Format));
@@ -69,6 +74,18 @@ public class DatePicker : InfoPickerInput
     {
         get => GetValue(PickerDisplayDateProperty);
         set => SetValue(PickerDisplayDateProperty, value);
+    }
+
+    public DateTime? MinDate
+    {
+        get => GetValue(MinDateProperty);
+        set => SetValue(MinDateProperty, value);
+    }
+
+    public DateTime? MaxDate
+    {
+        get => GetValue(MaxDateProperty);
+        set => SetValue(MaxDateProperty, value);
     }
 
     public string? Format
@@ -184,6 +201,8 @@ public class DatePicker : InfoPickerInput
         presenter[!DatePickerPresenter.IsMotionEnabledProperty]  = this[!IsMotionEnabledProperty];
         presenter[!DatePickerPresenter.SelectedDateTimeProperty] = this[!SelectedDateTimeProperty];
         presenter[!DatePickerPresenter.PickerDisplayDateProperty] = this[!PickerDisplayDateProperty];
+        presenter[!DatePickerPresenter.MinDateProperty]          = this[!MinDateProperty];
+        presenter[!DatePickerPresenter.MaxDateProperty]          = this[!MaxDateProperty];
         presenter[!DatePickerPresenter.IsNeedConfirmProperty]    = this[!IsNeedConfirmProperty];
         presenter[!DatePickerPresenter.IsShowNowProperty]        = this[!IsShowNowProperty];
         presenter[!DatePickerPresenter.IsShowTimeProperty]       = this[!IsShowTimeProperty];

@@ -10,7 +10,7 @@
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/DatePicker`：DatePicker 控件家族根目录，代表文件 `DatePicker.cs`、`RangeDatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerFormattingHelper.cs`、`DatePickerToken.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
+- `src/AtomUI.Desktop.Controls/DatePicker`：DatePicker 控件家族根目录，代表文件 `DatePicker.cs`、`RangeDatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerFormattingHelper.cs`、`DatePickerDateRangeConstraint.cs`、`DatePickerToken.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
 - `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：CalendarView runtime。`State` 保存归一化状态和 action，`Models` 保存纯 panel model，`Rendering` 将 model 应用到 generated buttons，`Infrastructure` 封装 culture 和 pointer tracking。
 - `src/AtomUI.Desktop.Controls/DatePicker/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
 - `src/AtomUI.Desktop.Controls/DatePicker/Themes`：19 个文件，代表文件 `CalendarButtonTheme.axaml`、`CalendarButtonTheme.cs`、`CalendarDayButtonTheme.axaml`、`CalendarItemTheme.axaml`、`CalendarItemTheme.cs` 等。
@@ -32,6 +32,7 @@
 - `CalendarTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `DatePicker`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `DatePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
+- `DatePickerDateRangeConstraint`：internal 纯值约束模型，按 `PickerMode` 归一 `MinDate`、`MaxDate`，提供 picker unit 有效性判断和显示锚点收敛，不持有控件或视觉对象。
 - `DatePickerPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `DatePickerToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
 - `DualMonthArrowDecoratedBox`：模板协作类型，承载内容展示、宿主或视觉边界。
@@ -71,6 +72,7 @@ Public API / ItemsSource / Command / Event
 
 - 内容与数据：`HeaderBackground`。
 - 选择与集合：`PickerMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SelectedDateTime`。其中 `SelectedDateTime` 是单值 DatePicker 的受控提交值，默认 `TwoWay` 绑定并启用 Avalonia data validation。
+- 日期边界：`MinDate`、`MaxDate`。外层控件拥有原始 public 属性值，presenter 拥有按 `PickerMode` 计算的有效范围，CalendarView 只接收投影后的 `DisplayDateStart`、`DisplayDateEnd` 和有效选中状态。
 - 弹层显示游标：`PickerDisplayDate`，以及 presenter 内部转发到 CalendarView 的 `DisplayDate`、`SelectedMonth`、`SelectedYear`、`LastSelectedDate`。
 - 交互与状态：`IsFloatingArrowPosition`、`IsHorizontalFlipped`、`IsNeedConfirm`、`IsShowNow`、`IsShowTime`、`IsTodayHighlighted`。
 - 视觉与布局：`RangePickerIndicatorOffsetEnd`、`RangePickerIndicatorOffsetStart`。
@@ -83,6 +85,18 @@ Public API / ItemsSource / Command / Event
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
 
+日期边界数据流固定为：
+
+```text
+DatePicker / RangeDatePicker MinDate, MaxDate, PickerMode
+  -> presenter DatePickerDateRangeConstraint
+  -> Calendar.DisplayDateStart / Calendar.DisplayDateEnd
+  -> CalendarViewState and panel navigation bounds
+  -> visible disabled cells / valid Calendar selection / button availability
+```
+
+`DatePickerPresenter` 及其范围派生类型是日期边界同步的单一 owner。AXAML 不得通过多条 binding 独立维护有效范围、Calendar 选中值或确认状态。
+
 ## 5. 生命周期与模板接入
 
 生命周期规则：
@@ -92,6 +106,8 @@ Public API / ItemsSource / Command / Event
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+- presenter 应在 Calendar part 可用后按 `PickerMode -> effective range -> active range endpoint -> valid selection -> display anchor -> button state` 的顺序回放状态。模板重套用、运行时切换 `PickerMode`、边界变化和受控值变化都必须进入同一同步入口。
+- `DatePickerPresenterTheme.axaml`、`TimedRangeDatePickerPresenterTheme.axaml` 和 `DualMonthRangeDatePickerPresenterTheme.axaml` 不直接 `TemplateBinding` 原始 `SelectedDateTime` / `SecondarySelectedDateTime` 到 Calendar；presenter 在有效范围就绪后写入经过校验的 Calendar 选中状态，避免模板应用顺序使越界受控值进入 Calendar。
 
 稳定 template part 接入点：
 
@@ -161,6 +177,20 @@ DatePicker 的交互事件应从输入源收敛到控件级语义事件：
 - 应用锚点前必须按当前 `PickerMode` 通过 `DatePickerFormattingHelper.NormalizeDateTime` 归一化。周为 ISO 周起始日，月份为当月 1 日，季度为季度首月 1 日，年份为当年 1 月 1 日。
 - 应用锚点时只同步内部 CalendarView 的 `DisplayDate`、`SelectedMonth`、`SelectedYear`、`LastSelectedDate` 和高亮刷新；不得设置 `SelectedDate`，不得修改 `SelectedDateTime`、输入框文本、Form value 或清除按钮状态。
 
+日期边界约束维护规则：
+
+- `DatePicker` 注册 `MinDateProperty` 和 `MaxDateProperty`，默认值为 `null`；`RangeDatePicker` 使用 `AddOwner` 复用同一属性实例和语义，不复制独立边界实现。
+- `DatePickerDateRangeConstraint` 只接收 `MinDate`、`MaxDate` 和 `PickerMode`。它忽略时间部分，并通过与提交值相同的 picker unit 归一化规则输出 effective start/end；无边界方向映射到 Calendar 支持的开放范围。
+- `Date` 按天、`Week` 按 ISO 周起始日、`Month` 按月首日、`Quarter` 按季度首日、`Year` 按年首日比较。归一化逻辑必须与 `DatePickerFormattingHelper.NormalizeDateTime` 保持单一语义，不能在 presenter、Calendar 和 renderer 中分别实现。
+- 当 effective start 晚于 effective end 时，内部范围收敛为 effective start 所在 picker unit。收敛只影响 internal constraint，不通过 `SetCurrentValue` 修改 public `MinDate` 或 `MaxDate`。
+- presenter 将 effective start/end 写入 `Calendar.DisplayDateStart` / `DisplayDateEnd` 后，才允许同步 Calendar 选中状态。单值或范围端点越界时，Calendar 对应 `SelectedDate` / `SecondarySelectedDate` 设为 `null`，外层 `SelectedDateTime` / range endpoint 和输入文本保持原值。
+- `RangeDatePickerPresenter` 先同步 `IsRangeStartActive`，再分别验证 active/inactive endpoint。两个端点共享同一约束；保留既有反向范围修复行为，但修复结果仍必须处于 effective range 内。
+- 打开弹层时，先按既有优先级解析候选锚点，再归一化并收敛到 effective range。单值面板、范围 active endpoint 和双面板 secondary anchor 都不得越过导航边界。
+- `CalendarPanelBuilder` 对范围外的 day、week、month、quarter、year cell 输出 `IsDisabled=true`、`IsHidden=false`。renderer 只映射状态，不能重新判断边界，也不能用隐藏 cell 代替 disabled 语义。
+- pointer 选择、keyboard/Enter、PageUp/PageDown、header 导航以及双面板前后翻页必须在 Calendar 层使用同一 effective range 防线；禁用视觉不能作为唯一阻止提交的机制。
+- `Today` / `Now` 先按当前 `PickerMode` 归一化并验证。越界时按钮禁用，点击处理仍必须再次校验；Confirm 只有在待提交值非空且处于 effective range 时可用。
+- 边界变化只重算纯值约束、CalendarView state、现有 generated cell 状态和按钮可用性，不重建 popup、Calendar 或 cell 视觉树。
+
 范围日历视觉状态维护规则：
 
 - `CalendarRangeSelectionState` 同时保存真实端点和 hover 日期，但必须通过 committed range 与 preview range 两条路径输出。
@@ -209,12 +239,14 @@ PickerMode 颗粒度维护规则：
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
 - Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
+- 日期边界模型使用静态注册的 Avalonia 属性和 internal 纯值计算，不引入反射、动态类型发现、运行时代码生成或 trimming 注解。
 
 性能边界：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- effective range 计算和单值/端点校验保持 O(1)；面板刷新复用现有 `CalendarViewState`、panel model 和 generated button，不为每个 cell 创建日期约束对象或额外订阅。
 
 ## 9. 维护不变量
 
@@ -225,6 +257,7 @@ PickerMode 颗粒度维护规则：
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- `MinDate` / `MaxDate` 的包含边界、PickerMode 归一化、越界受控值不回写以及可见 disabled cell 语义。
 
 ## 10. 测试与验证
 
@@ -235,3 +268,12 @@ PickerMode 颗粒度维护规则：
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
+
+日期边界行为至少覆盖：
+
+- `null`、仅最小值、仅最大值、双边界、边界相等以及 `MinDate > MaxDate` 的纯约束计算。
+- Date、Week、Month、Quarter、Year 的包含边界和 picker unit 归一化。
+- 单值、范围端点、运行时边界变化和越界受控值不回写。
+- pointer、keyboard、Enter、PageUp/PageDown、header 导航、双面板导航和 display anchor 收敛。
+- 范围外 cell 可见且 disabled，以及 `Today` / `Now` / Confirm 的视觉状态与点击防线。
+- 三条 presenter 模板路径在首次应用和模板重套用时都先应用范围再同步有效选中值。

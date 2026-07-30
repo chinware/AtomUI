@@ -157,7 +157,7 @@ public class CalendarPanelBuilderTests
     }
 
     [Fact]
-    public void BuildMonthPanel_Marks_Cells_Outside_Display_Range_Disabled_And_Hidden()
+    public void BuildMonthPanel_Keeps_Cells_Outside_Display_Range_Visible_And_Disabled()
     {
         var state = CalendarViewState.CreateDefault(new DateTime(2026, 6, 1),
             CultureInfo.InvariantCulture.DateTimeFormat)
@@ -168,9 +168,9 @@ public class CalendarPanelBuilderTests
         var beforeStart = panel.Cells.Single(cell => cell.Date == new DateTime(2026, 6, 4));
         var afterEnd    = panel.Cells.Single(cell => cell.Date == new DateTime(2026, 6, 21));
         beforeStart.IsDisabled.ShouldBeTrue();
-        beforeStart.IsHidden.ShouldBeTrue();
+        beforeStart.IsHidden.ShouldBeFalse();
         afterEnd.IsDisabled.ShouldBeTrue();
-        afterEnd.IsHidden.ShouldBeTrue();
+        afterEnd.IsHidden.ShouldBeFalse();
     }
 
     [Fact]
@@ -291,9 +291,61 @@ public class CalendarPanelBuilderTests
         var panel = CalendarPanelBuilder.BuildYearPanel(state, new DateTime(2026, 1, 1));
 
         panel.Months.Count.ShouldBe(12);
-        panel.Months.Single(cell => cell.Date == new DateTime(2026, 2, 1)).IsDisabled.ShouldBeTrue();
+        panel.Months.Single(cell => cell.Date == new DateTime(2026, 2, 1))
+             .ShouldSatisfyAllConditions(
+                 cell => cell.IsDisabled.ShouldBeTrue(),
+                 cell => cell.IsHidden.ShouldBeFalse());
         panel.Months.Single(cell => cell.Date == new DateTime(2026, 6, 1)).IsSelected.ShouldBeTrue();
         panel.Months.Single(cell => cell.Date == new DateTime(2026, 8, 1)).IsFocused.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void BuildQuarterPanel_Keeps_Out_Of_Range_Quarters_Visible_And_Disabled()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 7, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Quarter)
+                                     .WithDisplayRange(new DateTime(2026, 4, 1), new DateTime(2026, 9, 30));
+
+        var panel = CalendarPanelBuilder.BuildQuarterPanel(state, state.DisplayDate);
+
+        panel.Quarters[0].ShouldSatisfyAllConditions(
+            cell => cell.IsDisabled.ShouldBeTrue(),
+            cell => cell.IsHidden.ShouldBeFalse());
+        panel.Quarters[3].ShouldSatisfyAllConditions(
+            cell => cell.IsDisabled.ShouldBeTrue(),
+            cell => cell.IsHidden.ShouldBeFalse());
+    }
+
+    [Fact]
+    public void BuildDecadePanel_Keeps_Out_Of_Range_Years_Visible_And_Disabled()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 1, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Year)
+                                     .WithDisplayRange(new DateTime(2025, 1, 1), new DateTime(2028, 1, 1));
+
+        var panel = CalendarPanelBuilder.BuildDecadePanel(state, state.DisplayDate);
+        var year  = panel.Years.Single(cell => cell.Date == new DateTime(2029, 1, 1));
+
+        year.IsDisabled.ShouldBeTrue();
+        year.IsHidden.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void BuildMonthPanel_Keeps_Out_Of_Range_Week_Number_Visible_And_Disabled()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 7, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Week)
+                                     .WithFirstDayOfWeek(DayOfWeek.Monday)
+                                     .WithDisplayRange(new DateTime(2026, 7, 13), new DateTime(2026, 7, 19));
+
+        var panel    = CalendarPanelBuilder.BuildMonthPanel(state, state.DisplayDate);
+        var weekCell = panel.WeekCells.Single(cell => cell.Date == new DateTime(2026, 7, 6));
+
+        weekCell.IsDisabled.ShouldBeTrue();
+        weekCell.IsHidden.ShouldBeFalse();
     }
 
     [Fact]

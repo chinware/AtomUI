@@ -13,6 +13,8 @@ internal partial class zh_TW
     public const string BindingDescription = "SelectedDateTime、RangeStartSelectedDate 與 RangeEndSelectedDate 默認與 ViewModel 雙向同步，無需顯式設置 Binding Mode=TwoWay。";
     public const string PickerDisplayDateTitle = "彈出面板顯示日期";
     public const string PickerDisplayDateDescription = "打開彈出面板時定位到指定日期，但不提交選中值。";
+    public const string MinMaxTitle = "限制日期範圍";
+    public const string MinMaxDescription = "透過 MinDate 和 MaxDate 限制可選日期範圍，邊界日期包含在可選範圍內。";
     public const string RangePickerTitle = "範圍選擇器";
     public const string RangePickerDescription = "通過 picker 屬性設置範圍選擇器類型。";
     public const string NeedConfirmTitle = "需要確認";

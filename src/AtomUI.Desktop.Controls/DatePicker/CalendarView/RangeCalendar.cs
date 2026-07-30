@@ -184,6 +184,11 @@ internal class RangeCalendar : Calendar
     internal override void SelectPickerDate(DateTime date)
     {
         var normalizedDate = NormalizePickerDate(date);
+        if (!IsValidDateSelection(this, normalizedDate))
+        {
+            return;
+        }
+
         if (IsSelectRangeStart)
         {
             SetCurrentValue(SelectedDateProperty, normalizedDate);

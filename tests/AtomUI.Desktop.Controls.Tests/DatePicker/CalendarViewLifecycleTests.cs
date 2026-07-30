@@ -980,6 +980,42 @@ public class CalendarViewLifecycleTests
     }
 
     [Fact]
+    public void CalendarDayButton_Disabled_Uses_Full_Cell_Background_Layer()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var button = new PickerCalendarDayButton
+            {
+                Content = "18"
+            };
+
+            ShowInWindow(button, () =>
+            {
+                button.IsEnabled = false;
+                Dispatcher.UIThread.RunJobs();
+
+                var disabledBackground = FindTemplateBorder(button, "DisabledBackground");
+                var contentFrame      = FindTemplatePixelAlignedBorder(button);
+
+                disabledBackground.IsVisible.ShouldBeTrue();
+                disabledBackground.Bounds.Width.ShouldBe(button.Bounds.Width, 0.5);
+                disabledBackground.Bounds.Height.ShouldBe(
+                    GetThemeResource<double>(CalendarTokenKind.CellHeight),
+                    0.5);
+                BrushShouldHaveSameColor(
+                    disabledBackground.Background,
+                    GetThemeResource<IBrush>(CalendarTokenKind.CellBgDisabled));
+                BrushShouldHaveSameColor(
+                    contentFrame.Background,
+                    Brushes.Transparent);
+                BrushShouldHaveSameColor(
+                    button.Foreground,
+                    GetThemeResource<IBrush>(SharedTokenKind.ColorTextDisabled));
+            });
+        });
+    }
+
+    [Fact]
     public void CalendarDayButton_Week_Selection_Uses_Row_Indicator()
     {
         Dispatcher.UIThread.Invoke(() =>

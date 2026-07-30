@@ -13,6 +13,8 @@ internal partial class zh_CN
     public const string BindingDescription = "SelectedDateTime、RangeStartSelectedDate 与 RangeEndSelectedDate 默认与 ViewModel 双向同步，无需显式设置 Binding Mode=TwoWay。";
     public const string PickerDisplayDateTitle = "弹出面板显示日期";
     public const string PickerDisplayDateDescription = "打开弹出面板时定位到指定日期，但不提交选中值。";
+    public const string MinMaxTitle = "限制日期范围";
+    public const string MinMaxDescription = "通过 MinDate 和 MaxDate 限制可选日期范围，边界日期包含在可选范围内。";
     public const string RangePickerTitle = "范围选择器";
     public const string RangePickerDescription = "通过 picker 属性设置范围选择器类型。";
     public const string NeedConfirmTitle = "需要确认";

@@ -89,6 +89,14 @@ BadgeText="v6.0.8">
 PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
+Title="{gallery:DatePickerShowCaseLangResource MinMaxTitle}"
+Description="{gallery:DatePickerShowCaseLangResource MinMaxDescription}">
+<atom:DatePicker SelectedDateTime="2019-09-03"
+MinDate="2019-08-01"
+MaxDate="2020-10-31"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
 Title="{gallery:DatePickerShowCaseLangResource RangePickerTitle}"
 Description="{gallery:DatePickerShowCaseLangResource RangePickerDescription}"
 BadgeText="v6.0.7">

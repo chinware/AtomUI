@@ -44,8 +44,6 @@
                                                     VerticalAlignment="Top"
                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                     IsSelectRangeStart="{TemplateBinding IsRangeStartActive}"
-                                                    SelectedDate="{TemplateBinding SelectedDateTime}"
-                                                    SecondarySelectedDate="{TemplateBinding SecondarySelectedDateTime}"
                                                     PickerMode="{TemplateBinding PickerMode}"/>
                         <atom:TimeView
                             Name="PART_TimeView"

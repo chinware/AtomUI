@@ -1,7 +1,4 @@
-﻿using AtomUI.Desktop.Controls.CalendarView;
-using Avalonia;
-
-namespace AtomUI.Desktop.Controls;
+﻿namespace AtomUI.Desktop.Controls;
 
 internal class DualMonthRangeDatePickerPresenter : RangeDatePickerPresenter
 {
@@ -14,19 +11,6 @@ internal class DualMonthRangeDatePickerPresenter : RangeDatePickerPresenter
             DatePickerMode.Year => ResolvePreviousDecadeAnchor(activeEnd),
             _                   => DateTimeHelper.AddMonths(activeEnd, -1) ?? activeEnd
         };
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == SecondarySelectedDateTimeProperty ||
-            change.Property == SelectedDateTimeProperty)
-        {
-            if (CalendarView is DualMonthRangeCalendar rangeCalendar)
-            {
-                rangeCalendar.SetCurrentValue(DualMonthRangeCalendar.SecondarySelectedDateProperty, SecondarySelectedDateTime);
-            }
-        }
     }
 
     private static DateTime ResolvePreviousDecadeAnchor(DateTime activeEnd)

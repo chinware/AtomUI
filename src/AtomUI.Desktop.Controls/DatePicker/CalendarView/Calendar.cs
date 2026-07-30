@@ -760,7 +760,7 @@ internal class Calendar : TemplatedControl
 
     private void OnSelectedMonthChanged(DateTime? selectedMonth)
     {
-        if (selectedMonth.HasValue)
+        if (selectedMonth.HasValue && IsMonthWithinDisplayRange(selectedMonth.Value))
         {
             Debug.Assert(DisplayMode == CalendarMode.Year, "DisplayMode should be Year!");
             SelectedMonth = selectedMonth.Value;
@@ -770,7 +770,7 @@ internal class Calendar : TemplatedControl
 
     private void OnSelectedYearChanged(DateTime? selectedYear)
     {
-        if (selectedYear.HasValue)
+        if (selectedYear.HasValue && IsYearWithinDisplayRange(selectedYear.Value))
         {
             Debug.Assert(DisplayMode == CalendarMode.Decade, "DisplayMode should be Decade!");
             SelectedYear = selectedYear.Value;
@@ -847,12 +847,32 @@ internal class Calendar : TemplatedControl
                DateTime.Compare(value.Value, cal.DisplayDateRangeEnd) <= 0;
     }
 
+    private bool IsMonthWithinDisplayRange(DateTime firstDayOfMonth)
+    {
+        return DateTimeHelper.CompareYearMonth(firstDayOfMonth, DisplayDateRangeStart) >= 0 &&
+               DateTimeHelper.CompareYearMonth(firstDayOfMonth, DisplayDateRangeEnd) <= 0;
+    }
+
+    private bool IsYearWithinDisplayRange(DateTime date)
+    {
+        return date.Year >= DisplayDateRangeStart.Year &&
+               date.Year <= DisplayDateRangeEnd.Year;
+    }
+
+    private bool IsDecadeWithinDisplayRange(DateTime date)
+    {
+        var decadeStart = DateTimeHelper.DecadeOfDate(date);
+        var decadeEnd   = DateTimeHelper.EndOfDecade(date);
+        return decadeEnd >= DisplayDateRangeStart.Year &&
+               decadeStart <= DisplayDateRangeEnd.Year;
+    }
+
     internal void OnPreviousMonthClick()
     {
         if (DisplayMode == CalendarMode.Month)
         {
             var d = DateTimeHelper.AddMonths(DateTimeHelper.DiscardDayTime(DisplayDate), -1);
-            if (d.HasValue)
+            if (d.HasValue && IsMonthWithinDisplayRange(d.Value))
             {
                 if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0)
                 {
@@ -869,7 +889,7 @@ internal class Calendar : TemplatedControl
         if (DisplayMode == CalendarMode.Month)
         {
             var d = DateTimeHelper.AddYears(DateTimeHelper.DiscardDayTime(DisplayDate), -1);
-            if (d.HasValue)
+            if (d.HasValue && IsMonthWithinDisplayRange(d.Value))
             {
                 if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0)
                 {
@@ -883,13 +903,13 @@ internal class Calendar : TemplatedControl
         {
             var d = DateTimeHelper.AddYears(new DateTime(SelectedMonth.Year, 1, 1), -1);
 
-            if (d.HasValue)
-            {
-                SelectedMonth = d.Value;
-            }
-            else
+            if (!d.HasValue)
             {
                 SelectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
+            }
+            else if (IsYearWithinDisplayRange(d.Value))
+            {
+                SelectedMonth = d.Value;
             }
         }
         else if (DisplayMode == CalendarMode.Decade)
@@ -898,14 +918,14 @@ internal class Calendar : TemplatedControl
 
             var d = DateTimeHelper.AddYears(new DateTime(SelectedYear.Year, 1, 1), -10);
 
-            if (d.HasValue)
+            if (!d.HasValue)
+            {
+                SelectedYear = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
+            }
+            else if (IsDecadeWithinDisplayRange(d.Value))
             {
                 var decade = Math.Max(1, DateTimeHelper.DecadeOfDate(d.Value));
                 SelectedYear = new DateTime(decade, 1, 1);
-            }
-            else
-            {
-                SelectedYear = DateTimeHelper.DiscardDayTime(DisplayDateRangeStart);
             }
         }
 
@@ -917,7 +937,7 @@ internal class Calendar : TemplatedControl
         if (DisplayMode == CalendarMode.Month)
         {
             var d = DateTimeHelper.AddMonths(DateTimeHelper.DiscardDayTime(DisplayDate), 1);
-            if (d.HasValue)
+            if (d.HasValue && IsMonthWithinDisplayRange(d.Value))
             {
                 if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0)
                 {
@@ -934,7 +954,7 @@ internal class Calendar : TemplatedControl
         if (DisplayMode == CalendarMode.Month)
         {
             var d = DateTimeHelper.AddYears(DateTimeHelper.DiscardDayTime(DisplayDate), 1);
-            if (d.HasValue)
+            if (d.HasValue && IsMonthWithinDisplayRange(d.Value))
             {
                 if (!LastSelectedDate.HasValue || DateTimeHelper.CompareYearMonth(LastSelectedDate.Value, d.Value) != 0)
                 {
@@ -948,13 +968,13 @@ internal class Calendar : TemplatedControl
         {
             var d = DateTimeHelper.AddYears(new DateTime(SelectedMonth.Year, 1, 1), 1);
 
-            if (d.HasValue)
-            {
-                SelectedMonth = d.Value;
-            }
-            else
+            if (!d.HasValue)
             {
                 SelectedMonth = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
+            }
+            else if (IsYearWithinDisplayRange(d.Value))
+            {
+                SelectedMonth = d.Value;
             }
         }
         else if (DisplayMode == CalendarMode.Decade)
@@ -963,14 +983,14 @@ internal class Calendar : TemplatedControl
 
             var d = DateTimeHelper.AddYears(new DateTime(SelectedYear.Year, 1, 1), 10);
 
-            if (d.HasValue)
+            if (!d.HasValue)
+            {
+                SelectedYear = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
+            }
+            else if (IsDecadeWithinDisplayRange(d.Value))
             {
                 var decade = Math.Max(1, DateTimeHelper.DecadeOfDate(d.Value));
                 SelectedYear = new DateTime(decade, 1, 1);
-            }
-            else
-            {
-                SelectedYear = DateTimeHelper.DiscardDayTime(DisplayDateRangeEnd);
             }
         }
 
@@ -1014,6 +1034,11 @@ internal class Calendar : TemplatedControl
     internal virtual void SelectPickerDate(DateTime date)
     {
         var normalizedDate = NormalizePickerDate(date);
+        if (!IsValidDateSelection(this, normalizedDate))
+        {
+            return;
+        }
+
         SetCurrentValue(SelectedDateProperty, normalizedDate);
         NotifyDateSelected(normalizedDate);
         UpdateHighlightDays();

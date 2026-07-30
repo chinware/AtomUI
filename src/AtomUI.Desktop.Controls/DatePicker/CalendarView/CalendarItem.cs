@@ -668,19 +668,19 @@ internal class CalendarItem : TemplatedControl
 
     protected void SetMonthModeNextButton(DateTime firstDayOfMonth)
     {
-        if (Owner != null && NextButton != null)
+        if (Owner != null && NextMonthButton != null)
         {
             // DisplayDate is equal to DateTime.MaxValue
             if (DateTimeHelper.CompareYearMonth(firstDayOfMonth, DateTime.MaxValue) == 0)
             {
-                NextButton.IsEnabled = false;
+                NextMonthButton.IsEnabled = false;
             }
             else
             {
                 // Since we are sure DisplayDate is not equal to
                 // DateTime.MaxValue, it is safe to use AddMonths  
                 var firstDayOfNextMonth = _calendar.AddMonths(firstDayOfMonth, 1);
-                NextButton.IsEnabled =
+                NextMonthButton.IsEnabled =
                     DateTimeHelper.CompareDays(Owner.DisplayDateRangeEnd, firstDayOfNextMonth) > -1;
             }
         }
@@ -688,9 +688,9 @@ internal class CalendarItem : TemplatedControl
 
     protected void SetMonthModePreviousButton(DateTime firstDayOfMonth)
     {
-        if (Owner != null && PreviousButton != null)
+        if (Owner != null && PreviousMonthButton != null)
         {
-            PreviousButton.IsEnabled =
+            PreviousMonthButton.IsEnabled =
                 DateTimeHelper.CompareDays(Owner.DisplayDateRangeStart, firstDayOfMonth) < 0;
         }
     }

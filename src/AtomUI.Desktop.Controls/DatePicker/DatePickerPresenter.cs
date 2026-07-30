@@ -44,6 +44,12 @@ internal class DatePickerPresenter : PickerPresenterBase
     public static readonly StyledProperty<DateTime?> PickerDisplayDateProperty =
         DatePicker.PickerDisplayDateProperty.AddOwner<DatePickerPresenter>();
 
+    public static readonly StyledProperty<DateTime?> MinDateProperty =
+        DatePicker.MinDateProperty.AddOwner<DatePickerPresenter>();
+
+    public static readonly StyledProperty<DateTime?> MaxDateProperty =
+        DatePicker.MaxDateProperty.AddOwner<DatePickerPresenter>();
+
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         TimePicker.ClockIdentifierProperty.AddOwner<DatePickerPresenter>();
 
@@ -81,6 +87,18 @@ internal class DatePickerPresenter : PickerPresenterBase
     {
         get => GetValue(PickerDisplayDateProperty);
         set => SetValue(PickerDisplayDateProperty, value);
+    }
+
+    public DateTime? MinDate
+    {
+        get => GetValue(MinDateProperty);
+        set => SetValue(MinDateProperty, value);
+    }
+
+    public DateTime? MaxDate
+    {
+        get => GetValue(MaxDateProperty);
+        set => SetValue(MaxDateProperty, value);
     }
 
     public ClockIdentifierType ClockIdentifier
@@ -159,6 +177,9 @@ internal class DatePickerPresenter : PickerPresenterBase
     protected TimeView? TimeView;
     private CompositeDisposable? _pointerDisposables;
     private DateTime? _pendingOpenDisplayAnchor;
+    private DatePickerDateRangeConstraint _effectiveDateRange;
+
+    protected DatePickerDateRangeConstraint EffectiveDateRange => _effectiveDateRange;
 
     internal void ResetOpenPanelState()
     {
@@ -203,15 +224,16 @@ internal class DatePickerPresenter : PickerPresenterBase
         if (change.Property == IsNeedConfirmProperty ||
             change.Property == IsShowNowProperty ||
             change.Property == IsShowTimeProperty ||
-            change.Property == PickerModeProperty)
+            change.Property == PickerModeProperty ||
+            change.Property == MinDateProperty ||
+            change.Property == MaxDateProperty)
         {
+            SynchronizeCalendarState();
             SetupButtonStatus();
-            CalendarView?.SetCurrentValue(PickerCalendar.PickerModeProperty, PickerMode);
         }
         else if (change.Property == SelectedDateTimeProperty)
         {
-            SetupConfirmButtonEnableStatus();
-            CalendarView?.SetCurrentValue(PickerCalendar.SelectedDateProperty, SelectedDateTime);
+            SynchronizeCalendarState();
         }
     }
 
@@ -219,7 +241,7 @@ internal class DatePickerPresenter : PickerPresenterBase
     {
         if (ConfirmButton is not null)
         {
-            ConfirmButton.IsEnabled = SelectedDateTime is not null;
+            ConfirmButton.IsEnabled = EffectiveDateRange.Contains(SelectedDateTime);
         }
     }
 
@@ -228,6 +250,7 @@ internal class DatePickerPresenter : PickerPresenterBase
         DetachTemplateEventHandlers();
         base.OnApplyTemplate(e);
         ResolveTemplateParts(e);
+        SynchronizeCalendarState();
         SetupButtonStatus();
         AttachTemplateEventHandlers();
         SetupConfirmButtonEnableStatus();
@@ -373,11 +396,6 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected virtual DateTime? ResolveOpenDisplayAnchor()
     {
-        if (PickerDisplayDate is null)
-        {
-            return null;
-        }
-
         var anchor = SelectedDateTime ?? PickerDisplayDate;
         return anchor.HasValue
             ? DatePickerFormattingHelper.NormalizeDateTime(anchor.Value, PickerMode)
@@ -386,6 +404,7 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected void ApplyCalendarDisplayAnchor(PickerCalendar calendar, DateTime anchor)
     {
+        anchor = EffectiveDateRange.Clamp(anchor);
         calendar.SetCurrentValue(PickerCalendar.DisplayDateProperty, anchor);
         calendar.SelectedMonth    = anchor;
         calendar.SelectedYear     = anchor;
@@ -400,9 +419,33 @@ internal class DatePickerPresenter : PickerPresenterBase
             return;
         }
 
-        var anchor = CalendarView.NormalizePickerDate(_pendingOpenDisplayAnchor.Value);
-        ApplyCalendarDisplayAnchor(CalendarView, anchor);
+        ApplyCalendarDisplayAnchor(CalendarView, _pendingOpenDisplayAnchor.Value);
         _pendingOpenDisplayAnchor = null;
+    }
+
+    protected virtual void SynchronizeCalendarState()
+    {
+        _effectiveDateRange = DatePickerDateRangeConstraint.Create(MinDate, MaxDate, PickerMode);
+        if (CalendarView is null)
+        {
+            SetupConfirmButtonEnableStatus();
+            return;
+        }
+
+        CalendarView.SetCurrentValue(PickerCalendar.PickerModeProperty, PickerMode);
+        CalendarView.SetCurrentValue(PickerCalendar.DisplayDateStartProperty, _effectiveDateRange.Start);
+        CalendarView.SetCurrentValue(PickerCalendar.DisplayDateEndProperty, _effectiveDateRange.End);
+        CalendarView.SetCurrentValue(
+            PickerCalendar.SelectedDateProperty,
+            GetValidCalendarDate(SelectedDateTime));
+        SetupConfirmButtonEnableStatus();
+    }
+
+    protected DateTime? GetValidCalendarDate(DateTime? dateTime)
+    {
+        return dateTime.HasValue && EffectiveDateRange.Contains(dateTime)
+            ? EffectiveDateRange.Normalize(dateTime.Value)
+            : null;
     }
 
     private void HandleTodayButtonClicked(object? sender, RoutedEventArgs args)
@@ -422,6 +465,11 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected virtual void NotifyTodayButtonClicked()
     {
+        if (!EffectiveDateRange.Contains(DateTime.Today))
+        {
+            return;
+        }
+
         SetCurrentValue(SelectedDateTimeProperty, DateTime.Today);
         
         CalendarView?.SetCurrentValue(PickerCalendar.DisplayDateProperty, DateTime.Today);
@@ -449,6 +497,11 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected virtual void NotifyNowButtonClicked()
     {
+        if (!EffectiveDateRange.Contains(DateTime.Now))
+        {
+            return;
+        }
+
         if (CalendarView is not null)
         {
             CalendarView?.SetCurrentValue(PickerCalendar.SelectedDateProperty, DateTime.Now);
@@ -482,7 +535,7 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected virtual void NotifyConfirmButtonClicked()
     {
-        if (SelectedDateTime is not null)
+        if (EffectiveDateRange.Contains(SelectedDateTime))
         {
             OnConfirmed();
         }
@@ -548,6 +601,8 @@ internal class DatePickerPresenter : PickerPresenterBase
         }
 
         ConfirmButton.IsVisible = IsNeedConfirm;
+        TodayButton.IsEnabled   = EffectiveDateRange.Contains(DateTime.Today);
+        NowButton.IsEnabled     = EffectiveDateRange.Contains(DateTime.Now);
 
         NowButton.IsVisible             = false;
         TodayButton.IsVisible           = false;

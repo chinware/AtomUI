@@ -119,7 +119,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     protected override void NotifyConfirmButtonClicked()
     {
-        if (SelectedDateTime is not null || SecondarySelectedDateTime is not null)
+        if (EffectiveDateRange.Contains(GetActiveSelectedDateTime()))
         {
             OnConfirmed();
         }
@@ -168,12 +168,22 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     
     protected override void NotifyTodayButtonClicked()
     {
+        if (!EffectiveDateRange.Contains(DateTime.Today))
+        {
+            return;
+        }
+
         SetActiveSelectedDateTime(DateTime.Today);
         OnConfirmed();
     }
     
     protected override void NotifyNowButtonClicked()
     {
+        if (!EffectiveDateRange.Contains(DateTime.Now))
+        {
+            return;
+        }
+
         SelectNowForActiveRangePart();
         OnConfirmed();
     }
@@ -214,7 +224,18 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             return;
         }
 
-        ConfirmButton.IsEnabled = GetActiveSelectedDateTime() is not null;
+        ConfirmButton.IsEnabled = EffectiveDateRange.Contains(GetActiveSelectedDateTime());
+    }
+
+    protected override void SynchronizeCalendarState()
+    {
+        base.SynchronizeCalendarState();
+        if (CalendarView is RangeCalendar rangeCalendar)
+        {
+            rangeCalendar.SetCurrentValue(
+                RangeCalendar.SecondarySelectedDateProperty,
+                GetValidCalendarDate(SecondarySelectedDateTime));
+        }
     }
 
     private DateTime? GetActiveSelectedDateTime()
@@ -278,6 +299,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
         if (change.Property == SecondarySelectedDateTimeProperty ||
             change.Property == SelectedDateTimeProperty)
         {
+            SynchronizeCalendarState();
             SetupConfirmButtonEnableStatus();
         }
     }
