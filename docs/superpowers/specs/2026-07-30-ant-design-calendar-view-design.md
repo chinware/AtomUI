@@ -687,3 +687,34 @@ Gallery API 表应只暴露新 Public API；Token 表只展示第 13 节六个 C
 本设计的实现边界止于 Calendar 目录。CalendarView、Cell Model、网格构建和容器生命周期均归 Calendar 所有，DatePicker 不参与该状态流。
 
 任何跨 Calendar 与 DatePicker 的共享抽取必须由独立设计证明已有实现具有相同输入、输出、日期语义、失效条件和生命周期。该抽取不得作为本设计实施的前置步骤，也不得改变这里定义的 Calendar Public API、事件顺序、Template 或主题契约。
+
+## 19. 旧代码清理与共享类型迁移
+
+本设计要求彻底删除旧 `Calendar/` 目录的 WPF/Avalonia 移植体系并重写。但当前部分定义在旧 `Calendar/` 目录、被 `DatePicker/CalendarView/` 复用的类型不能直接删除，否则 DatePicker 无法编译。本次重构不改动 DatePicker 的 CalendarView 行为，因此这些被复用类型迁移而非删除。
+
+### 19.1 迁移原则
+
+- DatePicker 仍需要、当前定义在旧 `Calendar/` 目录的类型，迁移到 `DatePicker/CalendarView/` 目录并归 DatePicker 所有（保持或收敛为 `internal`）。
+- 迁移只改变类型归属和 `namespace`/可见性，不改变 DatePicker 的运行时行为、日期语义或视觉。
+- 迁移完成后，旧 `Calendar/` 目录整体删除，由新 Calendar 实现重建。
+- 新 Calendar 按第 5.2 节重新定义自己的 `CalendarDateRange`（只服务 ValidRange，`end < start` 抛异常，不再承载 BlackoutDates）；该类型与 DatePicker 迁移走的同名类型彼此独立，不共享定义。
+
+### 19.2 迁移候选
+
+以下类型在实现阶段逐一甄别：凡 DatePicker 真实依赖且当前仅由旧 `Calendar/` 目录提供的，迁移到 DatePicker；DatePicker 自身已有的同名 `internal` 类型不受影响。
+
+- `DateTimeHelper`（DatePicker 大量依赖，迁移到 DatePicker 内部）。
+- `CalendarDateRange`（DatePicker 用作范围/黑名单区间值对象，迁移；新 Calendar 另立同名类型）。
+- `CalendarMode`、`CalendarSelectionMode`、`CalendarExtensions`、`CalendarDateChangedEventArgs`、`CalendarModeChangedEventArgs` 等若被 DatePicker 引用且无 DatePicker 自有定义，一并迁移。
+
+甄别标准：对每个候选类型确认 (1) DatePicker 是否引用它，(2) DatePicker 是否已自带同名定义。只有「被引用且无自有定义」的类型需要迁移。
+
+### 19.3 消费点更新
+
+旧 Calendar 只有三处外部消费点，全部在删除旧实现后指向新 Calendar：
+
+- 主题注册 `DesktopControlThemesProvider.axaml` 与 `BrowserDesktopControlThemesProvider.axaml` 的 `Calendar/Themes/CalendarThemes.axaml`。
+- Gallery `CalendarShowCase`（axaml、ViewModel、本地化资源）按第 16 节九个示例重写。
+- 测试 `CalendarShowCaseExamples.snapshot` 与 `CalendarShowCasePageTests` 按新契约更新。
+
+生成文件（`GeneratedControlThemeAssetManifest.g.cs`、`GeneratedThemeSchema.g.cs`）由代码生成器随源码重建，不手工编辑。
