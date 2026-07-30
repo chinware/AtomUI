@@ -1,0 +1,97 @@
+using System;
+using System.Linq;
+using Avalonia.Controls;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using Shouldly;
+using Xunit;
+using AtomUICalendar = AtomUI.Desktop.Controls.Calendar;
+using CalendarViewControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarView;
+using CalendarCellControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarViewCell;
+
+namespace AtomUI.Desktop.Controls.Tests.Calendar;
+
+public class CalendarRenderTests
+{
+    static CalendarRenderTests()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+    }
+
+    [Fact]
+    public void Calendar_AppliesTemplate_And_ResolvesCalendarView()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15) };
+        var window = Show(calendar);
+        try
+        {
+            var view = calendar.GetVisualDescendants().OfType<CalendarViewControl>().FirstOrDefault();
+            view.ShouldNotBeNull();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Calendar_MonthMode_Generates42CellContainers()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15) };
+        var window = Show(calendar);
+        try
+        {
+            var cells = calendar.GetVisualDescendants().OfType<CalendarCellControl>().ToList();
+            cells.Count.ShouldBe(42);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Calendar_YearMode_Generates12CellContainers()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15), Mode = CalendarMode.Year };
+        var window = Show(calendar);
+        try
+        {
+            var cells = calendar.GetVisualDescendants().OfType<CalendarCellControl>().ToList();
+            cells.Count.ShouldBe(12);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Calendar_ShowWeek_Generates48CellContainers()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15), ShowWeek = true };
+        var window = Show(calendar);
+        try
+        {
+            var cells = calendar.GetVisualDescendants().OfType<CalendarCellControl>().ToList();
+            cells.Count.ShouldBe(48);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    private static Avalonia.Controls.Window Show(Control content)
+    {
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 400,
+            Height  = 400,
+            Content = content
+        };
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+        return window;
+    }
+}
