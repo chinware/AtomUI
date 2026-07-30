@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls.Internal.Calendar;
 
@@ -133,6 +136,11 @@ internal sealed class CalendarView : TemplatedControl
         if (RebuildTriggers.Contains(change.Property))
         {
             RebuildCells();
+            RealizeContainers();
+        }
+        else if (change.Property == CellTemplateProperty || change.Property == FullCellTemplateProperty)
+        {
+            RealizeContainers();
         }
     }
 
@@ -182,4 +190,158 @@ internal sealed class CalendarView : TemplatedControl
 
         CellSelected?.Invoke(this, new CalendarCellSelectedEventArgs(model.Value, model.Kind));
     }
+
+    #region Template parts and container generation
+
+    internal const string WeekHeaderPart = "PART_WeekHeader";
+    internal const string CellHostPart = "PART_CellHost";
+
+    private Panel? _weekHeader;
+    private Grid? _cellHost;
+
+    /// <summary>有界容器池：复用 CalendarViewCell 实例，避免 Mode/Value 变化无限增加容器（spec §14.2）。</summary>
+    private readonly List<CalendarViewCell> _cellPool = new();
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _weekHeader = e.NameScope.Find<Panel>(WeekHeaderPart);
+        _cellHost   = e.NameScope.Find<Grid>(CellHostPart);
+        RebuildCells();
+        RealizeContainers();
+    }
+
+    /// <summary>按当前 Cell Model 生成/复用容器并填入 CellHost，同时刷新周标题。</summary>
+    private void RealizeContainers()
+    {
+        if (_cellHost is null)
+        {
+            return;
+        }
+
+        var culture = Culture ?? CultureInfo.CurrentCulture;
+        var isDate  = ViewMode == CalendarViewMode.Date;
+        var columns = isDate ? (ShowWeek ? 8 : 7) : 4;
+
+        ConfigureGrid(_cellHost, columns, isDate ? RowCount(_cellModels.Count, columns) : 3);
+        BuildWeekHeader(culture, isDate);
+
+        _cellHost.Children.Clear();
+
+        if (isDate)
+        {
+            RealizeDateGrid(columns);
+        }
+        else
+        {
+            RealizeMonthGrid();
+        }
+    }
+
+    private void RealizeDateGrid(int columns)
+    {
+        // _cellModels: 42 date cells (row-major) + optional 6 week cells appended.
+        var hasWeek   = ShowWeek && _cellModels.Count == 48;
+        var poolIndex = 0;
+
+        for (var row = 0; row < 6; row++)
+        {
+            var col = 0;
+            if (hasWeek)
+            {
+                var weekModel = _cellModels[42 + row];
+                PlaceCell(GetPooledCell(poolIndex++), weekModel, row, col);
+                col++;
+            }
+
+            for (var d = 0; d < 7; d++)
+            {
+                var dateModel = _cellModels[row * 7 + d];
+                PlaceCell(GetPooledCell(poolIndex++), dateModel, row, col);
+                col++;
+            }
+        }
+    }
+
+    private void RealizeMonthGrid()
+    {
+        for (var i = 0; i < _cellModels.Count; i++)
+        {
+            var row = i / 4;
+            var col = i % 4;
+            PlaceCell(GetPooledCell(i), _cellModels[i], row, col);
+        }
+    }
+
+    private void PlaceCell(CalendarViewCell cell, CalendarViewCellModel model, int row, int col)
+    {
+        cell.CellTemplate     = CellTemplate;
+        cell.FullCellTemplate = FullCellTemplate;
+        cell.Bind(this, model);
+        Grid.SetRow(cell, row);
+        Grid.SetColumn(cell, col);
+        _cellHost!.Children.Add(cell);
+    }
+
+    private CalendarViewCell GetPooledCell(int index)
+    {
+        while (_cellPool.Count <= index)
+        {
+            _cellPool.Add(new CalendarViewCell());
+        }
+
+        return _cellPool[index];
+    }
+
+    private void BuildWeekHeader(CultureInfo culture, bool isDate)
+    {
+        if (_weekHeader is null)
+        {
+            return;
+        }
+
+        _weekHeader.IsVisible = isDate;
+        _weekHeader.Children.Clear();
+        if (!isDate)
+        {
+            return;
+        }
+
+        var first = culture.DateTimeFormat.FirstDayOfWeek;
+        var names = culture.DateTimeFormat.AbbreviatedDayNames;
+
+        if (ShowWeek)
+        {
+            _weekHeader.Children.Add(new TextBlock { Text = string.Empty });
+        }
+
+        for (var i = 0; i < 7; i++)
+        {
+            var day = (DayOfWeek)(((int)first + i) % 7);
+            _weekHeader.Children.Add(new TextBlock
+            {
+                Text                = names[(int)day],
+                HorizontalAlignment = HorizontalAlignment.Center
+            });
+        }
+    }
+
+    private static int RowCount(int cellCount, int columns) => 6;
+
+    private static void ConfigureGrid(Grid grid, int columns, int rows)
+    {
+        grid.ColumnDefinitions.Clear();
+        grid.RowDefinitions.Clear();
+        for (var c = 0; c < columns; c++)
+        {
+            grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        }
+
+        for (var r = 0; r < rows; r++)
+        {
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+        }
+    }
+
+    #endregion
 }
