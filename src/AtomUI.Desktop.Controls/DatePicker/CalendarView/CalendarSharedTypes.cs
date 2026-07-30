@@ -1,6 +1,6 @@
 using Avalonia.Interactivity;
 
-namespace AtomUI.Desktop.Controls;
+namespace AtomUI.Desktop.Controls.CalendarView;
 
 /// <summary>
 /// Specifies values for the different modes of operation of a

@@ -1,6 +1,6 @@
 using Avalonia.Input;
 
-namespace AtomUI.Desktop.Controls;
+namespace AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 
 internal static class CalendarExtensions
 {

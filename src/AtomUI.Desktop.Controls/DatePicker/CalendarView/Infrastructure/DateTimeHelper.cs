@@ -3,7 +3,7 @@ using System.Globalization;
 using AtomUI.Controls;
 using Avalonia;
 
-namespace AtomUI.Desktop.Controls;
+namespace AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 
 internal static class DateTimeHelper
 {

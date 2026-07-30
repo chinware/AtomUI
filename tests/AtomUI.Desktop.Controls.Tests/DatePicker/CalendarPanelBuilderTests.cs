@@ -7,6 +7,7 @@ using AtomUI.Desktop.Controls.CalendarView.Rendering;
 using AtomUI.Desktop.Controls.CalendarView.State;
 using Shouldly;
 using Xunit;
+using CalendarDateRange = AtomUI.Desktop.Controls.CalendarView.CalendarDateRange;
 
 namespace AtomUI.Desktop.Controls.Tests.DatePickers;
 

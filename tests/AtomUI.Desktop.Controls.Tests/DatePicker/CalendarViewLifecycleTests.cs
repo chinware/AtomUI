@@ -18,6 +18,7 @@ using PickerCalendarButton = AtomUI.Desktop.Controls.CalendarView.CalendarButton
 using PickerCalendarDayButton = AtomUI.Desktop.Controls.CalendarView.CalendarDayButton;
 using PickerDualMonthCalendarItem = AtomUI.Desktop.Controls.CalendarView.DualMonthCalendarItem;
 using PickerDualMonthRangeCalendar = AtomUI.Desktop.Controls.CalendarView.DualMonthRangeCalendar;
+using CalendarMode = AtomUI.Desktop.Controls.CalendarView.CalendarMode;
 
 namespace AtomUI.Desktop.Controls.Tests.DatePickers;
 

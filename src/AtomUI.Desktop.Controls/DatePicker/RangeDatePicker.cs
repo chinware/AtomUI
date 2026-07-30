@@ -9,6 +9,7 @@ using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
+using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 
 namespace AtomUI.Desktop.Controls;
 

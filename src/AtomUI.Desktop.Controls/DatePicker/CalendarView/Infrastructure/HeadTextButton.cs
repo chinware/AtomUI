@@ -3,7 +3,7 @@ using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Desktop.Controls;
+namespace AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 
 using AvaloniaButton = Avalonia.Controls.Button;
 

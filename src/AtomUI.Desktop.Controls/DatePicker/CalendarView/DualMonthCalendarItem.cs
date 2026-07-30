@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 using AtomUI.Desktop.Controls.CalendarView.Rendering;
 
 namespace AtomUI.Desktop.Controls.CalendarView;

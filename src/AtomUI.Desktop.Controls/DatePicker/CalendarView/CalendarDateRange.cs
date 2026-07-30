@@ -1,4 +1,4 @@
-namespace AtomUI.Desktop.Controls;
+namespace AtomUI.Desktop.Controls.CalendarView;
 
 public sealed class CalendarDateRange
 {

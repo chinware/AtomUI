@@ -11,6 +11,8 @@ using Avalonia.Metadata;
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Desktop.Controls.Primitives.Themes")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Desktop.Controls.Themes")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Desktop.Controls.Utils")]
+[assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Desktop.Controls.CalendarView")]
+[assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Desktop.Controls.CalendarView.Infrastructure")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Resources")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Language")]

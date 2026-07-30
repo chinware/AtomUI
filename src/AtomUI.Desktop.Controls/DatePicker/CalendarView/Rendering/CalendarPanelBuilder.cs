@@ -1,6 +1,7 @@
 using System.Globalization;
 using AtomUI.Desktop.Controls.CalendarView.Models;
 using AtomUI.Desktop.Controls.CalendarView.State;
+using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 
 namespace AtomUI.Desktop.Controls.CalendarView.Rendering;
 
