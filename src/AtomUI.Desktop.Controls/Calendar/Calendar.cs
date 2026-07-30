@@ -150,9 +150,11 @@ public class Calendar : TemplatedControl
 
     internal const string CalendarViewPart = "PART_CalendarView";
     internal const string DefaultHeaderPart = "PART_DefaultHeader";
+    internal const string CustomHeaderPart = "PART_CustomHeader";
 
     private CalendarViewControl? _calendarView;
     private CalendarHeader? _defaultHeader;
+    private ContentControl? _customHeader;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -186,8 +188,36 @@ public class Calendar : TemplatedControl
             _defaultHeader.ModeSwitched  += OnHeaderModeSwitched;
         }
 
+        _customHeader = e.NameScope.Find<ContentControl>(CustomHeaderPart);
+
+        SyncViewMode();
+        RefreshCustomHeaderContent();
         ApplyCulture();
         UpdateRootPseudoClasses();
+    }
+
+    /// <summary>
+    /// 为自定义 HeaderTemplate 提供强类型 <see cref="CalendarHeaderContext"/> 作为 DataContext，
+    /// 使模板能通过命令提交 Value/Mode（spec §5.4）。Value/Mode 变化时重建 context。
+    /// </summary>
+    private void RefreshCustomHeaderContent()
+    {
+        if (_customHeader is not null && HeaderTemplate is not null)
+        {
+            _customHeader.Content = BuildHeaderContext();
+        }
+    }
+
+    /// <summary>
+    /// 命令式把公开 Mode 投影到内部面板的 ViewMode。
+    /// 不用 XAML binding，因为 <see cref="ViewMode"/> 是无变更通知的计算属性，绑定不会随 Mode 变化重新求值。
+    /// </summary>
+    private void SyncViewMode()
+    {
+        if (_calendarView is not null)
+        {
+            _calendarView.ViewMode = ViewMode;
+        }
     }
 
     private ILanguageManager? _subscribedLanguageManager;
@@ -262,15 +292,29 @@ public class Calendar : TemplatedControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ModeProperty ||
-            change.Property == FullscreenProperty ||
-            change.Property == ShowWeekProperty)
+        if (change.Property == ModeProperty)
+        {
+            SyncViewMode();
+            RefreshCustomHeaderContent();
+            UpdateRootPseudoClasses();
+        }
+        else if (change.Property == ValueProperty)
+        {
+            RefreshCustomHeaderContent();
+        }
+        else if (change.Property == FullscreenProperty ||
+                 change.Property == ShowWeekProperty)
         {
             UpdateRootPseudoClasses();
         }
-        else if (change.Property == HeaderTemplateProperty && _defaultHeader is not null)
+        else if (change.Property == HeaderTemplateProperty)
         {
-            _defaultHeader.IsVisible = HeaderTemplate is null;
+            if (_defaultHeader is not null)
+            {
+                _defaultHeader.IsVisible = HeaderTemplate is null;
+            }
+
+            RefreshCustomHeaderContent();
         }
     }
 

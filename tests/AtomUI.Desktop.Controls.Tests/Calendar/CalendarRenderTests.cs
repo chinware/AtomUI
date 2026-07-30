@@ -154,6 +154,32 @@ public class CalendarRenderTests
         }
     }
 
+    [Fact]
+    public void Calendar_RuntimeModeSwitch_SwapsGrid()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15) };
+        var window = Show(calendar);
+        try
+        {
+            // 初始 Month 模式:42 个日期容器
+            calendar.GetVisualDescendants().OfType<CalendarCellControl>().Count().ShouldBe(42);
+
+            // 运行时切到 Year:应换成 12 个月份容器
+            calendar.Mode = CalendarMode.Year;
+            Dispatcher.UIThread.RunJobs();
+            calendar.GetVisualDescendants().OfType<CalendarCellControl>().Count().ShouldBe(12);
+
+            // 切回 Month:回到 42
+            calendar.Mode = CalendarMode.Month;
+            Dispatcher.UIThread.RunJobs();
+            calendar.GetVisualDescendants().OfType<CalendarCellControl>().Count().ShouldBe(42);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static Avalonia.Controls.Window Show(Control content)
     {
         var window = new Avalonia.Controls.Window
