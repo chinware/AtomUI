@@ -6,7 +6,7 @@ namespace AtomUI.Desktop.Controls;
 /// Specifies values for the different modes of operation of a
 /// <see cref="T:Avalonia.Controls.Calendar" />.
 /// </summary>
-internal enum CalendarMode
+public enum CalendarMode
 {
    /// <summary>
    /// The <see cref="T:Avalonia.Controls.Calendar" /> displays a
