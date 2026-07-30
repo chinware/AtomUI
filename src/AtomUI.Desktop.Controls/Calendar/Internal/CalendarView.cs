@@ -277,7 +277,7 @@ internal sealed class CalendarView : TemplatedControl
         }
 
         var candidate = ViewMode == CalendarViewMode.Month
-            ? AddMonthsClamped(current, step)
+            ? current.AddMonths(step)
             : current.AddDays(step);
 
         if (IsFocusable(candidate))
@@ -380,12 +380,6 @@ internal sealed class CalendarView : TemplatedControl
         _                    => 0
     };
 
-    private static DateTime AddMonthsClamped(DateTime value, int months)
-    {
-        var target = value.AddMonths(months);
-        return target;
-    }
-
     /// <summary>目标值是否落在当前网格内且对应一个可聚焦 Cell。</summary>
     private bool IsFocusable(DateTime value)
     {
@@ -444,7 +438,7 @@ internal sealed class CalendarView : TemplatedControl
         var isDate  = ViewMode == CalendarViewMode.Date;
         var columns = isDate ? (ShowWeek ? 8 : 7) : 4;
 
-        ConfigureGrid(_cellHost, columns, isDate ? RowCount(_cellModels.Count, columns) : 3);
+        ConfigureGrid(_cellHost, columns, isDate ? 6 : 3);
         BuildWeekHeader(culture, isDate);
 
         _cellHost.Children.Clear();
@@ -546,8 +540,6 @@ internal sealed class CalendarView : TemplatedControl
             });
         }
     }
-
-    private static int RowCount(int cellCount, int columns) => 6;
 
     private static void ConfigureGrid(Grid grid, int columns, int rows)
     {

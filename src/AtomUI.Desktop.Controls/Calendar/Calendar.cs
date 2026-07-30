@@ -136,9 +136,6 @@ public class Calendar : TemplatedControl
 
     #endregion
 
-    /// <summary>true 期间通过属性系统写入的 Value/Mode 来自内部提交，不重复触发用户事件。</summary>
-    private bool _isCommitting;
-
     public Calendar()
     {
         SetCurrentValue(ValueProperty, DateTime.Today);
@@ -346,9 +343,7 @@ public class Calendar : TemplatedControl
             ? oldValue.Year != target.Year
             : oldValue.Year != target.Year || oldValue.Month != target.Month;
 
-        _isCommitting = true;
         SetCurrentValue(ValueProperty, target);
-        _isCommitting = false;
 
         if (panelChanged)
         {
@@ -374,9 +369,7 @@ public class Calendar : TemplatedControl
             return;
         }
 
-        _isCommitting = true;
         SetCurrentValue(ModeProperty, mode);
-        _isCommitting = false;
 
         PanelChanged?.Invoke(this, new CalendarPanelChangedEventArgs(Value.Date, mode));
     }
