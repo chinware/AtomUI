@@ -3,10 +3,20 @@ using System.Windows.Input;
 using AtomUI.Desktop.Controls.Internal.Calendar;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using CalendarViewControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarView;
 
 namespace AtomUI.Desktop.Controls;
+
+[PseudoClasses(
+    CalendarRootPseudoClass.Fullscreen,
+    CalendarRootPseudoClass.Mini,
+    CalendarRootPseudoClass.Month,
+    CalendarRootPseudoClass.Year,
+    CalendarRootPseudoClass.ShowWeek)]
+[TemplatePart(CalendarViewPart, typeof(CalendarViewControl))]
 
 /// <summary>
 /// 按 Ant Design 6 语义组织的桌面日历控件。Calendar 是唯一业务状态 owner，
@@ -132,6 +142,57 @@ public class Calendar : TemplatedControl
     /// <summary>公开 <see cref="Mode"/> 到内部面板模式的映射（spec §4.2）。</summary>
     internal CalendarViewMode ViewMode =>
         Mode == CalendarMode.Year ? CalendarViewMode.Month : CalendarViewMode.Date;
+
+    internal const string CalendarViewPart = "PART_CalendarView";
+
+    private CalendarViewControl? _calendarView;
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+
+        if (_calendarView is not null)
+        {
+            _calendarView.CellSelected -= OnCellSelected;
+        }
+
+        _calendarView = e.NameScope.Find<CalendarViewControl>(CalendarViewPart);
+        if (_calendarView is not null)
+        {
+            _calendarView.Today = DateTime.Today;
+            _calendarView.CellSelected += OnCellSelected;
+        }
+
+        UpdateRootPseudoClasses();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == ModeProperty ||
+            change.Property == FullscreenProperty ||
+            change.Property == ShowWeekProperty)
+        {
+            UpdateRootPseudoClasses();
+        }
+    }
+
+    private void UpdateRootPseudoClasses()
+    {
+        PseudoClasses.Set(CalendarRootPseudoClass.Fullscreen, Fullscreen);
+        PseudoClasses.Set(CalendarRootPseudoClass.Mini, !Fullscreen);
+        PseudoClasses.Set(CalendarRootPseudoClass.Month, Mode == CalendarMode.Month);
+        PseudoClasses.Set(CalendarRootPseudoClass.Year, Mode == CalendarMode.Year);
+        PseudoClasses.Set(CalendarRootPseudoClass.ShowWeek, ShowWeek);
+    }
+
+    private void OnCellSelected(object? sender, CalendarCellSelectedEventArgs e)
+    {
+        var source = e.Kind == CalendarViewCellKind.Month
+            ? CalendarSelectSource.Month
+            : CalendarSelectSource.Date;
+        CommitUserSelection(e.Value, source);
+    }
 
     /// <summary>
     /// 处理一次有效用户选择：写入 Value 并按固定顺序 PanelChanged -> ValueChanged -> Selected 触发事件（spec §6.1）。
