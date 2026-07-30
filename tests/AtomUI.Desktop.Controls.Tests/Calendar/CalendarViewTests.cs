@@ -62,6 +62,21 @@ public class CalendarViewTests
     }
 
     [Fact]
+    public void CultureChange_RebuildsCellModels()
+    {
+        var view = NewView(new DateTime(2026, 7, 15), CalendarViewMode.Month, showWeek: false);
+        Rebuild(view);
+        var enJan = view.CellModels[0].DisplayText;
+
+        SetProp(view, "Culture", new System.Globalization.CultureInfo("zh-CN"));
+        // 属性变更会触发 RebuildCells
+        var zhJan = view.CellModels[0].DisplayText;
+
+        // 中文与英文的一月短名不同(Jan vs 1月),验证重建生效
+        zhJan.ShouldNotBe(enJan);
+    }
+
+    [Fact]
     public void ComputeFocusTarget_DateMode_LeftRightMoveOneDay()
     {
         var view = NewView(new DateTime(2026, 7, 15), CalendarViewMode.Date, showWeek: false);

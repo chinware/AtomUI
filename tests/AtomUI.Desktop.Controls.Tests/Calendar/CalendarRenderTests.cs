@@ -102,6 +102,34 @@ public class CalendarRenderTests
     }
 
     [Fact]
+    public void Calendar_ReapplyTemplate_DoesNotDoubleFireSelection()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15) };
+        var window = Show(calendar);
+        try
+        {
+            // 强制重新应用模板：旧 CalendarView/Header 订阅应被解绑
+            calendar.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            var fired = 0;
+            calendar.Selected += (_, _) => fired++;
+
+            var cell = calendar.GetVisualDescendants()
+                .OfType<CalendarCellControl>()
+                .First(c => c.Model is { IsInView: true, IsDisabled: false, Value.Day: 10 });
+            cell.Activate();
+            Dispatcher.UIThread.RunJobs();
+
+            fired.ShouldBe(1); // 一次激活只触发一次,证明旧订阅未泄漏
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Calendar_CellActivation_CommitsSelection()
     {
         var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15) };

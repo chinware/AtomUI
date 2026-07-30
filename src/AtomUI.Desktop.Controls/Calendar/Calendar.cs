@@ -1,12 +1,16 @@
 using System;
 using System.Globalization;
 using System.Windows.Input;
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Internal.Calendar;
+using AtomUI.Theme;
+using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.VisualTree;
 using CalendarViewControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarView;
 
 namespace AtomUI.Desktop.Controls;
@@ -176,14 +180,74 @@ public class Calendar : TemplatedControl
         _defaultHeader = e.NameScope.Find<CalendarHeader>(DefaultHeaderPart);
         if (_defaultHeader is not null)
         {
-            _defaultHeader.Culture        = CultureInfo.CurrentCulture;
             _defaultHeader.IsVisible      = HeaderTemplate is null;
             _defaultHeader.YearSelected  += OnHeaderYearSelected;
             _defaultHeader.MonthSelected += OnHeaderMonthSelected;
             _defaultHeader.ModeSwitched  += OnHeaderModeSwitched;
         }
 
+        ApplyCulture();
         UpdateRootPseudoClasses();
+    }
+
+    private ILanguageManager? _subscribedLanguageManager;
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        AttachLanguageListener();
+        ApplyCulture();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        DetachLanguageListener();
+    }
+
+    private void AttachLanguageListener()
+    {
+        if (_subscribedLanguageManager is not null)
+        {
+            return;
+        }
+
+        var languageManager = Application.Current?.GetLanguageManager();
+        if (languageManager is null)
+        {
+            return;
+        }
+
+        languageManager.LanguageVariantChanged += OnLanguageVariantChanged;
+        _subscribedLanguageManager = languageManager;
+    }
+
+    private void DetachLanguageListener()
+    {
+        if (_subscribedLanguageManager is null)
+        {
+            return;
+        }
+
+        _subscribedLanguageManager.LanguageVariantChanged -= OnLanguageVariantChanged;
+        _subscribedLanguageManager = null;
+    }
+
+    private void OnLanguageVariantChanged(object? sender, LanguageVariantChangedEventArgs e) => ApplyCulture();
+
+    /// <summary>解析当前语言的 Culture 并推给 CalendarView / 默认 Header，触发它们重建（spec §12）。</summary>
+    private void ApplyCulture()
+    {
+        var culture = Application.Current?.GetLanguageVariant()?.ToCultureInfo() ?? CultureInfo.CurrentCulture;
+        if (_calendarView is not null)
+        {
+            _calendarView.Culture = culture;
+        }
+
+        if (_defaultHeader is not null)
+        {
+            _defaultHeader.Culture = culture;
+        }
     }
 
     private void OnHeaderYearSelected(object? sender, DateTime target) =>
