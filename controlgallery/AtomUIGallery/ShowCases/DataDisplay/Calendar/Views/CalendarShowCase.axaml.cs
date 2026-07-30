@@ -1,4 +1,3 @@
-using System;
 using AtomUI.Desktop.Controls;
 using Avalonia.Interactivity;
 
@@ -8,39 +7,23 @@ public partial class CalendarShowCase : GalleryReactiveUserControl<CalendarViewM
 {
     public const string LanguageId = nameof(CalendarShowCase);
 
-    private bool _wired;
-
     public CalendarShowCase()
     {
         InitializeComponent();
     }
 
-    protected override void OnLoaded(RoutedEventArgs e)
+    private void OnEventsCalendarLoaded(object? sender, RoutedEventArgs e)
     {
-        base.OnLoaded(e);
-        if (_wired)
+        if (sender is not AtomUI.Desktop.Controls.Calendar calendar || DataContext is not CalendarViewModel vm)
         {
             return;
         }
 
-        _wired = true;
-
-        if (DataContext is CalendarViewModel vm)
-        {
-            RangeCalendar.ValidRange   = new CalendarDateRange(vm.ValidRangeStart, vm.ValidRangeEnd);
-            RangeCalendar.DisabledDate = vm.DisableWeekends;
-        }
-
-        EventsCalendar.ValueChanged += (_, args) =>
-            AppendLog($"ValueChanged: {args.OldValue:yyyy-MM-dd} -> {args.NewValue:yyyy-MM-dd}");
-        EventsCalendar.Selected += (_, args) =>
-            AppendLog($"Selected: {args.Value:yyyy-MM-dd} ({args.Source})");
-        EventsCalendar.PanelChanged += (_, args) =>
-            AppendLog($"PanelChanged: {args.Value:yyyy-MM} ({args.Mode})");
-    }
-
-    private void AppendLog(string line)
-    {
-        EventsLog.Text = line;
+        calendar.ValueChanged += (_, args) =>
+            vm.EventLog = $"ValueChanged: {args.OldValue:yyyy-MM-dd} -> {args.NewValue:yyyy-MM-dd}";
+        calendar.Selected += (_, args) =>
+            vm.EventLog = $"Selected: {args.Value:yyyy-MM-dd} ({args.Source})";
+        calendar.PanelChanged += (_, args) =>
+            vm.EventLog = $"PanelChanged: {args.Value:yyyy-MM} ({args.Mode})";
     }
 }
