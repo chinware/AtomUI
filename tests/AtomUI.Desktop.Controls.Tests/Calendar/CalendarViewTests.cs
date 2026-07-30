@@ -61,6 +61,55 @@ public class CalendarViewTests
         CellModelCount(view).ShouldBe(42);
     }
 
+    [Fact]
+    public void ComputeFocusTarget_DateMode_LeftRightMoveOneDay()
+    {
+        var view = NewView(new DateTime(2026, 7, 15), CalendarViewMode.Date, showWeek: false);
+        Rebuild(view);
+        ComputeFocus(view, new DateTime(2026, 7, 15), "Right").ShouldBe(new DateTime(2026, 7, 16));
+        ComputeFocus(view, new DateTime(2026, 7, 15), "Left").ShouldBe(new DateTime(2026, 7, 14));
+    }
+
+    [Fact]
+    public void ComputeFocusTarget_DateMode_UpDownMoveOneWeek()
+    {
+        var view = NewView(new DateTime(2026, 7, 15), CalendarViewMode.Date, showWeek: false);
+        Rebuild(view);
+        ComputeFocus(view, new DateTime(2026, 7, 15), "Down").ShouldBe(new DateTime(2026, 7, 22));
+        ComputeFocus(view, new DateTime(2026, 7, 15), "Up").ShouldBe(new DateTime(2026, 7, 8));
+    }
+
+    [Fact]
+    public void ComputeFocusTarget_MonthMode_LeftRightMoveOneMonth_UpDownFour()
+    {
+        var view = NewView(new DateTime(2026, 6, 15), CalendarViewMode.Month, showWeek: false);
+        Rebuild(view);
+        ComputeFocus(view, new DateTime(2026, 6, 15), "Right").Month.ShouldBe(7);
+        ComputeFocus(view, new DateTime(2026, 6, 15), "Left").Month.ShouldBe(5);
+        ComputeFocus(view, new DateTime(2026, 6, 15), "Down").Month.ShouldBe(10);
+        ComputeFocus(view, new DateTime(2026, 6, 15), "Up").Month.ShouldBe(2);
+    }
+
+    [Fact]
+    public void ComputeFocusTarget_StopsOutsideRealizedGrid()
+    {
+        var view = NewView(new DateTime(2026, 7, 15), CalendarViewMode.Date, showWeek: false);
+        Rebuild(view);
+        // 网格首日 2026-06-28,再往上一周越界 → 保持原值
+        var gridStart = new DateTime(2026, 6, 28);
+        ComputeFocus(view, gridStart, "Up").ShouldBe(gridStart);
+    }
+
+    private static DateTime ComputeFocus(CalendarViewControl view, DateTime current, string dir)
+    {
+        var dirType = typeof(CalendarViewControl).GetNestedType("FocusDirection",
+            System.Reflection.BindingFlags.NonPublic)!;
+        var dirVal = Enum.Parse(dirType, dir);
+        var m = typeof(CalendarViewControl).GetMethod("ComputeFocusTarget",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        return (DateTime)m.Invoke(view, new object[] { current, dirVal })!;
+    }
+
     private static CalendarViewControl NewView(DateTime value, CalendarViewMode mode, bool showWeek)
     {
         var view = new CalendarViewControl();

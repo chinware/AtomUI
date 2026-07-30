@@ -98,6 +98,9 @@ internal sealed class CalendarViewCell : TemplatedControl
         PseudoClasses.Set(CalendarCellPseudoClass.Focused, focused);
     }
 
+    protected override Avalonia.Automation.Peers.AutomationPeer OnCreateAutomationPeer() =>
+        new CalendarViewCellAutomationPeer(this);
+
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);

@@ -191,6 +191,151 @@ internal sealed class CalendarView : TemplatedControl
         CellSelected?.Invoke(this, new CalendarCellSelectedEventArgs(model.Value, model.Kind));
     }
 
+    #region Focus navigation (spec §11)
+
+    protected override Avalonia.Automation.Peers.AutomationPeer OnCreateAutomationPeer() =>
+        new CalendarViewAutomationPeer(this);
+
+    protected override void OnKeyDown(Avalonia.Input.KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        switch (e.Key)
+        {
+            case Avalonia.Input.Key.Left:
+                e.Handled = MoveFocus(FocusDirection.Left);
+                break;
+            case Avalonia.Input.Key.Right:
+                e.Handled = MoveFocus(FocusDirection.Right);
+                break;
+            case Avalonia.Input.Key.Up:
+                e.Handled = MoveFocus(FocusDirection.Up);
+                break;
+            case Avalonia.Input.Key.Down:
+                e.Handled = MoveFocus(FocusDirection.Down);
+                break;
+            case Avalonia.Input.Key.Enter:
+            case Avalonia.Input.Key.Space:
+                ActivateFocused();
+                e.Handled = true;
+                break;
+        }
+    }
+
+    internal enum FocusDirection { Left, Right, Up, Down }
+
+    /// <summary>
+    /// 计算方向键移动后的目标 focus 值。Date 模式左右±1 天、上下±1 周；Month 模式左右±1 月、上下±4 月。
+    /// 只在当前已生成网格范围内移动，跳过不可聚焦（禁用/周序号）Cell；无合法目标时返回原值。
+    /// 纯计算，不改状态、不触发事件。
+    /// </summary>
+    internal DateTime ComputeFocusTarget(DateTime current, FocusDirection direction)
+    {
+        current = current.Date;
+        var step = ViewMode == CalendarViewMode.Month
+            ? MonthStep(direction)
+            : DateStep(direction);
+
+        if (step == 0)
+        {
+            return current;
+        }
+
+        var candidate = ViewMode == CalendarViewMode.Month
+            ? AddMonthsClamped(current, step)
+            : current.AddDays(step);
+
+        if (IsFocusable(candidate))
+        {
+            return candidate;
+        }
+
+        return current;
+    }
+
+    /// <summary>移动 roving focus（只改 FocusedValue 与伪类，不选择、不触发公开事件）。返回是否移动成功。</summary>
+    internal bool MoveFocus(FocusDirection direction)
+    {
+        var target = ComputeFocusTarget(FocusedValue, direction);
+        if (target == FocusedValue.Date)
+        {
+            return false;
+        }
+
+        SetFocusedValue(target);
+        return true;
+    }
+
+    /// <summary>激活当前 focused cell，进入与 Pointer 相同的选择流程。</summary>
+    internal void ActivateFocused()
+    {
+        foreach (var model in _cellModels)
+        {
+            if (model.Kind != CalendarViewCellKind.Week && model.Value.Date == FocusedValue.Date && model.IsFocusable)
+            {
+                ReportCellActivated(model);
+                return;
+            }
+        }
+    }
+
+    private void SetFocusedValue(DateTime value)
+    {
+        FocusedValue = value.Date;
+        foreach (var cell in _cellPool)
+        {
+            cell.SetFocused(cell.Model is { } m && m.Kind != CalendarViewCellKind.Week && m.Value.Date == FocusedValue);
+        }
+    }
+
+    private static int DateStep(FocusDirection d) => d switch
+    {
+        FocusDirection.Left  => -1,
+        FocusDirection.Right => 1,
+        FocusDirection.Up    => -7,
+        FocusDirection.Down  => 7,
+        _                    => 0
+    };
+
+    private static int MonthStep(FocusDirection d) => d switch
+    {
+        FocusDirection.Left  => -1,
+        FocusDirection.Right => 1,
+        FocusDirection.Up    => -4,
+        FocusDirection.Down  => 4,
+        _                    => 0
+    };
+
+    private static DateTime AddMonthsClamped(DateTime value, int months)
+    {
+        var target = value.AddMonths(months);
+        return target;
+    }
+
+    /// <summary>目标值是否落在当前网格内且对应一个可聚焦 Cell。</summary>
+    private bool IsFocusable(DateTime value)
+    {
+        foreach (var model in _cellModels)
+        {
+            if (model.Kind == CalendarViewCellKind.Week)
+            {
+                continue;
+            }
+
+            var match = ViewMode == CalendarViewMode.Month
+                ? model.Value.Year == value.Year && model.Value.Month == value.Month
+                : model.Value.Date == value.Date;
+
+            if (match)
+            {
+                return model.IsFocusable;
+            }
+        }
+
+        return false;
+    }
+
+    #endregion
+
     #region Template parts and container generation
 
     internal const string WeekHeaderPart = "PART_WeekHeader";
