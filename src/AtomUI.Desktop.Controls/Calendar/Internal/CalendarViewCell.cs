@@ -54,11 +54,17 @@ internal sealed class CalendarViewCell : TemplatedControl
     private CalendarViewCellModel? _model;
     private CalendarView? _owner;
 
+    public CalendarViewCell()
+    {
+        Focusable = true;
+    }
+
     /// <summary>绑定容器到面板 owner 与一个不可变 Cell Model，并刷新伪类与内容。</summary>
     public void Bind(CalendarView owner, CalendarViewCellModel model)
     {
         _owner = owner;
         _model = model;
+        Focusable = model.IsFocusable;
         DisplayText = model.DisplayText;
         Context = model.Kind == CalendarViewCellKind.Week
             ? null

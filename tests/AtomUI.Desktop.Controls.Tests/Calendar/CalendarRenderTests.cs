@@ -155,6 +155,60 @@ public class CalendarRenderTests
     }
 
     [Fact]
+    public void Calendar_FocusView_FocusesSelectedCell()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15) };
+        var window = Show(calendar);
+        try
+        {
+            var view = calendar.GetVisualDescendants()
+                .OfType<AtomUI.Desktop.Controls.Internal.Calendar.CalendarView>()
+                .First();
+            view.Focus();
+            Dispatcher.UIThread.RunJobs();
+
+            // 选中日期 7/15 的 cell 应带 :focused 伪类
+            var focusedCell = calendar.GetVisualDescendants()
+                .OfType<CalendarCellControl>()
+                .FirstOrDefault(c => c.Classes.Contains(":focused"));
+            focusedCell.ShouldNotBeNull();
+            focusedCell!.Model!.Value.ShouldBe(new DateTime(2026, 7, 15));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Calendar_ArrowKey_MovesFocusedValue()
+    {
+        var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15) };
+        var window = Show(calendar);
+        try
+        {
+            var view = calendar.GetVisualDescendants()
+                .OfType<AtomUI.Desktop.Controls.Internal.Calendar.CalendarView>()
+                .First();
+            view.Focus();
+            Dispatcher.UIThread.RunJobs();
+
+            view.RaiseEvent(new Avalonia.Input.KeyEventArgs
+            {
+                RoutedEvent = Avalonia.Input.InputElement.KeyDownEvent,
+                Key         = Avalonia.Input.Key.Right
+            });
+            Dispatcher.UIThread.RunJobs();
+
+            view.FocusedValue.ShouldBe(new DateTime(2026, 7, 16));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Calendar_FullscreenAndMini_TogglePseudoClassesOnView()
     {
         var calendar = new AtomUICalendar { Value = new DateTime(2026, 7, 15), Fullscreen = true };

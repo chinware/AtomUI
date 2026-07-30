@@ -127,6 +127,11 @@ internal sealed class CalendarView : TemplatedControl
         set => SetValue(FullCellTemplateProperty, value);
     }
 
+    public CalendarView()
+    {
+        Focusable = true;
+    }
+
     /// <summary>面板内当前聚焦的日期（roving focus 锚点）。仅面板内部状态，不代表选中。</summary>
     public DateTime FocusedValue { get; private set; }
 
@@ -309,12 +314,51 @@ internal sealed class CalendarView : TemplatedControl
         }
     }
 
-    private void SetFocusedValue(DateTime value)
+    private void SetFocusedValue(DateTime value, bool moveInputFocus = true)
     {
         FocusedValue = value.Date;
+        CalendarViewCell? focusTarget = null;
         foreach (var cell in _cellPool)
         {
-            cell.SetFocused(cell.Model is { } m && m.Kind != CalendarViewCellKind.Week && m.Value.Date == FocusedValue);
+            var isFocused = cell.Model is { } m && m.Kind != CalendarViewCellKind.Week && m.Value.Date == FocusedValue;
+            cell.SetFocused(isFocused);
+            if (isFocused)
+            {
+                focusTarget = cell;
+            }
+        }
+
+        if (moveInputFocus)
+        {
+            focusTarget?.Focus();
+        }
+    }
+
+    /// <summary>进入面板时优先聚焦选中且可用的 Cell，否则第一个可用 Cell（spec §11）。</summary>
+    protected override void OnGotFocus(Avalonia.Input.FocusChangedEventArgs e)
+    {
+        base.OnGotFocus(e);
+        if (!ReferenceEquals(e.Source, this))
+        {
+            return;
+        }
+
+        foreach (var model in _cellModels)
+        {
+            if (model.Kind != CalendarViewCellKind.Week && model.Value.Date == FocusedValue && model.IsFocusable)
+            {
+                SetFocusedValue(FocusedValue);
+                return;
+            }
+        }
+
+        foreach (var model in _cellModels)
+        {
+            if (model.Kind != CalendarViewCellKind.Week && model.IsFocusable)
+            {
+                SetFocusedValue(model.Value);
+                return;
+            }
         }
     }
 
