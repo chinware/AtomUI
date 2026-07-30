@@ -56,10 +56,23 @@ Replace the current three-row multi-handle example with one horizontal Slider ma
 
 The normal focus and hover visuals provide the active thumb outline. The example will not force a permanent focus state.
 
+### Disabled Handle Example
+
+Add a separate `ShowCaseItem` after the multiple-points example to demonstrate the existing indexed `DisabledHandles` contract:
+
+- Three handles initialized at `20`, `50`, and `80`.
+- Three checkboxes toggle the disabled state of handles 1, 2, and 3 independently.
+- The ViewModel exposes three Boolean properties and derives a fresh `IReadOnlyList<bool>` snapshot whenever one changes.
+- A disabled handle remains fixed and acts as the movement boundary for its adjacent handles.
+- The example has no version badge and does not enable tick snapping.
+- Simplified Chinese title `禁用指定滑块` and description `设置 disabled 为数组，可以单独禁用 range 模式下特定的 handle。禁用后该 handle 作为移动边界，其他 handle 无法越过。`.
+- English and Traditional Chinese resources provide equivalent copy, while checkbox labels remain concise localized commands.
+
 ## Testing and Validation
 
 - Add or update targeted Slider behavior tests for continuous and snapped dragging.
 - Update Slider Gallery page assertions and example snapshot.
+- Verify checkbox changes replace the `DisabledHandles` snapshot and preserve the three range values.
 - Run the targeted Slider test set.
 - Run the targeted AtomUIGallery test set.
 - Build the Gallery Debug target.
