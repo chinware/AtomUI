@@ -10,10 +10,10 @@ public sealed class CalendarHeaderContext
 {
     public CalendarHeaderContext(DateTime value, CalendarMode mode, ICommand changeValueCommand, ICommand changeModeCommand)
     {
-        Value              = value;
-        Mode               = mode;
+        Value = value;
+        Mode = mode;
         ChangeValueCommand = changeValueCommand;
-        ChangeModeCommand  = changeModeCommand;
+        ChangeModeCommand = changeModeCommand;
     }
 
     /// <summary>当前 Value。</summary>

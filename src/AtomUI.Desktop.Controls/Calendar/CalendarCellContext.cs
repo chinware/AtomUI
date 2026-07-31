@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUI.Desktop.Controls;
 
 /// <summary>

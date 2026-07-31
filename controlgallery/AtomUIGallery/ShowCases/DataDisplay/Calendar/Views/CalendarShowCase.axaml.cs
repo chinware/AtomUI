@@ -1,5 +1,4 @@
 using AtomUI.Desktop.Controls;
-using Avalonia.Interactivity;
 
 namespace AtomUIGallery.ShowCases.Calendar;
 
@@ -12,18 +11,27 @@ public partial class CalendarShowCase : GalleryReactiveUserControl<CalendarViewM
         InitializeComponent();
     }
 
-    private void OnEventsCalendarLoaded(object? sender, RoutedEventArgs e)
+    private void OnCalendarValueChanged(object? sender, CalendarValueChangedEventArgs e)
     {
-        if (sender is not AtomUI.Desktop.Controls.Calendar calendar || DataContext is not CalendarViewModel vm)
+        if (DataContext is CalendarViewModel vm)
         {
-            return;
+            vm.EventLog = $"ValueChanged: {e.OldValue:yyyy-MM-dd} -> {e.NewValue:yyyy-MM-dd}";
         }
+    }
 
-        calendar.ValueChanged += (_, args) =>
-            vm.EventLog = $"ValueChanged: {args.OldValue:yyyy-MM-dd} -> {args.NewValue:yyyy-MM-dd}";
-        calendar.Selected += (_, args) =>
-            vm.EventLog = $"Selected: {args.Value:yyyy-MM-dd} ({args.Source})";
-        calendar.PanelChanged += (_, args) =>
-            vm.EventLog = $"PanelChanged: {args.Value:yyyy-MM} ({args.Mode})";
+    private void OnCalendarSelected(object? sender, CalendarSelectedEventArgs e)
+    {
+        if (DataContext is CalendarViewModel vm)
+        {
+            vm.EventLog = $"Selected: {e.Value:yyyy-MM-dd} ({e.Source})";
+        }
+    }
+
+    private void OnCalendarPanelChanged(object? sender, CalendarPanelChangedEventArgs e)
+    {
+        if (DataContext is CalendarViewModel vm)
+        {
+            vm.EventLog = $"PanelChanged: {e.Value:yyyy-MM} ({e.Mode})";
+        }
     }
 }

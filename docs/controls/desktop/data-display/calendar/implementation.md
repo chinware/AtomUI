@@ -1,75 +1,178 @@
 # Calendar 桌面版实现原理
 
-本文档描述 Calendar 桌面版的内部实现范围、源码职责、状态流、生命周期与维护规则。公共设计与 API 契约见 [Calendar 桌面版架构设计](overview.md)，Token 见 [Calendar Token 设计](token.md)，变化记录见 [Calendar Changelog](changelog.md)。
+本文档记录 Calendar 的当前源码 ownership、主题组合、状态流、生命周期、内部算法、资源边界和维护不变量。公共契约见 [Calendar 桌面版架构设计](overview.md)，行为规则见 [Calendar 行为设计](behavior-design.md)，Token 见 [Calendar Token 设计](token.md)，变化记录见 [Calendar Changelog](changelog.md)。
 
 ## 1. 实现定位
 
-本文档覆盖 Calendar 的控件实现、主题接入与状态同步。具体属性注册、默认值和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
+Calendar 是一个 `TemplatedControl` 根控件，内部组合默认 Header、可选自定义 Header 和纯面板 `CalendarView`。`Calendar` 持有 public API 和事件提交逻辑；`CalendarView` 根据输入构建不可变 Cell model 并管理有限容器池；`CalendarViewCell` 只负责一个 Cell 的状态投影、模板内容和激活转发。具体属性注册、selector 和默认资源仍以源码为准，本文只描述稳定维护边界。
 
 ## 2. 源码文件结构
 
 ```text
 src/AtomUI.Desktop.Controls/Calendar/
-├── Calendar.cs                       # Public API、状态转换、生命周期、伪类、Header/View 接线
-├── CalendarDateRange.cs              # ValidRange 值对象（public）
-├── CalendarEnums.cs                  # CalendarMode / CalendarSelectSource / CalendarCellType
-├── CalendarCellContext.cs            # Public Cell 模板上下文
-├── CalendarHeaderContext.cs          # Public Header 模板上下文
-├── CalendarEventArgs.cs              # 三个 Public 事件参数
-├── CalendarControlToken.cs           # 六语义组件 Token（scope id CalendarControl）
+├── Calendar.cs
+├── CalendarCellContext.cs
+├── CalendarControlToken.cs
+├── CalendarDateRange.cs
+├── CalendarEnums.cs
+├── CalendarEventArgs.cs
+├── CalendarHeaderContext.cs
+├── CalendarToken.cs                 # DatePicker 旧 CalendarView 的遗留 Token，不属于新 Calendar
 ├── Internal/
-│   ├── CalendarViewMode.cs           # 内部面板模式 Date/Month
-│   ├── CalendarViewCellModel.cs      # 不可变 Cell 模型
-│   ├── CalendarViewCellBuilder.cs    # 纯日期/周/月网格构建
-│   ├── CalendarView.cs               # 面板与容器 owner、焦点导航
-│   ├── CalendarViewCell.cs           # Cell 交互外壳、伪类、激活
-│   ├── CalendarViewAutomationPeer.cs # Table 语义
-│   ├── CalendarViewCellAutomationPeer.cs # GridItem + SelectionItem 语义
-│   ├── CalendarHeader.cs             # 默认 Header 控件
-│   ├── CalendarHeaderOptions.cs      # 年/月选项与月份收敛（纯逻辑）
-│   ├── CalendarRelayCommand.cs       # Header Context 命令
-│   └── CalendarPseudoClass.cs        # 根/Cell 伪类常量
+│   ├── CalendarHeader.cs
+│   ├── CalendarHeaderOptions.cs
+│   ├── CalendarPseudoClass.cs
+│   ├── CalendarRelayCommand.cs
+│   ├── CalendarView.cs
+│   ├── CalendarViewAutomationPeer.cs
+│   ├── CalendarViewCell.cs
+│   ├── CalendarViewCellAutomationPeer.cs
+│   ├── CalendarViewCellBuilder.cs
+│   ├── CalendarViewCellModel.cs
+│   └── CalendarViewMode.cs
+├── Localization/
+│   ├── en_US.cs
+│   ├── zh_CN.cs
+│   └── zh_TW.cs
 └── Themes/
-    ├── CalendarTheme.axaml(.cs)       # CalendarControlTheme
+    ├── CalendarTheme.axaml(.cs)
     ├── CalendarHeaderTheme.axaml(.cs)
     ├── CalendarViewTheme.axaml(.cs)
     ├── CalendarViewCellTheme.axaml(.cs)
-    └── CalendarThemes.axaml           # 聚合并实例化四个 ControlTheme
+    └── CalendarThemes.axaml
 ```
 
-职责边界：
+`CalendarToken.cs` 属于 DatePicker 的旧 CalendarView 兼容边界；新 Calendar 的专属 Token 是 `CalendarControlToken.cs`。两者不得在实现或文档中混用。
 
-- `Calendar` 是唯一业务状态 owner，负责 Public API、`CommitUserSelection`/`CommitModeChange`、事件顺序、模板生命周期、根伪类、Culture 分发。
-- `CalendarView` 是纯面板，按输入重建 Cell Model、管理有界容器池、roving focus 与键盘导航，只通过 `CellSelected` 报告用户意图。
-- `CalendarViewCell` 应用一个不可变 Cell Model，投影模板，管理伪类与 Pointer 激活。
-- `CalendarViewCellBuilder`、`CalendarHeaderOptions` 是纯逻辑（无 Control 依赖），承载全部网格与选项算法，可独立单测。
+## 3. 核心类职责
 
-## 3. 状态流
+| 类型 | ownership 与稳定职责 |
+| --- | --- |
+| `Calendar` | Public Avalonia 属性、事件、用户选择提交、Mode 到内部 ViewMode 的映射、语言订阅和根伪类。 |
+| `CalendarHeader` | 默认 Year/Month Select 与 Month/Year 模式切换；只报告意图，不拥有 `Value`/`Mode`。 |
+| `CalendarHeaderOptions` | 年份/月选项生成、ValidRange 下的年份和月份收敛；无视觉依赖的纯逻辑。 |
+| `CalendarView` | 根据 Value/Mode/Culture/Range/DisabledDate 构建 Cell model、维护容器池、roving focus、键盘导航和 Table Automation。 |
+| `CalendarViewCellBuilder` | 生成日期、月份和周序号 model；集中日期/月边界与禁用算法。 |
+| `CalendarViewCellModel` | 单个 Cell 的不可变值、类型、显示文本、状态和可聚焦性。 |
+| `CalendarViewCell` | 将 model 绑定到 `CalendarCellContext`、伪类和模板，处理 Pointer/Automation 激活。 |
+| `CalendarViewAutomationPeer` | 暴露 `AutomationControlType.Table` 与单选 `ISelectionProvider`。 |
+| `CalendarViewCellAutomationPeer` | 暴露 `AutomationControlType.ListItem` 与 `ISelectionItemProvider`；完整本地化名称、选中状态和 SelectionContainer 来自当前 owner/model。 |
+| `CalendarControlToken` | 从 SharedToken 派生七个 Calendar 视觉 Token；不保存运行时状态。 |
 
-单向数据流：`Calendar` 向 `CalendarHeader` 与 `CalendarView` 投影不可变状态。
+## 4. 状态与数据流
 
-- 用户 Pointer/键盘激活 Cell → `CalendarView.CellSelected` → `Calendar.CommitUserSelection(target, source)`。
-- 默认 Header 选年/月/切模式 → `CalendarHeader.YearSelected/MonthSelected/ModeSwitched` → `Calendar.CommitUserSelection`/`CommitModeChange`。
-- 自定义 Header 通过 `CalendarHeaderContext.ChangeValueCommand`（source=Customize）/`ChangeModeCommand` 提交。
-- `CommitUserSelection` 用内部 `_isCommitting` flag 写 `Value`，阻止属性路径重复触发，然后按 `PanelChanged -> ValueChanged -> Selected` 顺序触发。
+```text
+Calendar.Value/Mode/Range/Culture
+  -> CalendarHeader 与 CalendarView 的属性投影
+  -> CalendarViewCellBuilder 生成 IReadOnlyList<CalendarViewCellModel>
+  -> CalendarViewCell.Bind(owner, model)
+  -> 伪类、模板内容、Automation 与输入
+  -> Calendar.CommitUserSelection / CommitModeChange
+```
 
-## 4. Cell Model 失效与容器池
+用户 Pointer、键盘或 Automation 激活 Cell 后，View 只发出 `CellSelected`，由 `Calendar.CommitUserSelection` 规范化目标日期、判断面板变化、写入 Value，并按 `PanelChanged -> ValueChanged -> Selected` 顺序通知。默认 Header 的年/月选择复用同一提交路径；模式切换只写 Mode 并触发 `PanelChanged`。
 
-- Cell Model 仅在 `Value`/`ViewMode`/`ShowWeek`/`ValidRange`/`DisabledDate`/`Culture`/`Today` 变化时重建，不在 Measure/Arrange 热路径计算。
-- Date 模式最多 42 日期容器（ShowWeek 增 6 周序号），Month 模式 12 容器；容器池复用，重复切换 Mode/Value 不无限增长。
-- `DisabledDate` 对每个候选值每次重建最多调用一次，异常不被吞掉。
+程序直接设置 `Value`/`Mode` 不应伪造用户事件。属性改变后，模板投影、伪类和 Cell model 必须更新；如果模板尚未应用，状态暂存于根控件并在 `OnApplyTemplate` 回放。
 
-## 5. 生命周期
+## 5. 组合结构模型
 
-- `Calendar.OnApplyTemplate` 前解绑旧 `CalendarView`/`CalendarHeader` 事件，接入新 part 后回放 Value/Mode/Range/Culture 并刷新伪类。
-- `Calendar.OnAttachedToVisualTree` 订阅语言服务，`OnDetachedFromVisualTree` 解绑；语言变化把新 Culture 推给 View/Header 触发重建。
-- FlowDirection/RTL 只改布局方向，不改 Value、事件顺序或日期计算。
+实际组合结构来自 `Themes/`：
 
-## 6. Automation 与 AOT
+```text
+Calendar (CalendarTheme)
+├── PART_HeaderPresenter
+│   ├── PART_DefaultHeader (CalendarHeaderTheme)
+│   │   ├── PART_YearSelect
+│   │   ├── PART_MonthSelect
+│   │   └── PART_ModeSwitch
+│   └── PART_CustomHeader (ContentControl + HeaderTemplate)
+└── PART_CalendarView (CalendarViewTheme)
+    ├── PART_WeekHeader
+    └── PART_CellHost
+        └── CalendarViewCell × 42/48/12
+            ├── PART_Item
+            └── PART_CellInner
+                ├── PART_ItemContent
+                └── PART_Value
+```
 
-- `CalendarView` 暴露 Table 语义，`CalendarViewCell` 暴露 ListItem + SelectionItem 语义；选中/名称来自同一 Cell Model。
-- 所有 Avalonia 属性静态注册，模板关系用 TemplateBinding/AXAML selector/强类型 binding，Gallery DataTemplate 用 `x:DataType`，无反射日期适配。
+Date 模式默认生成 42 个日期 Cell；启用 `ShowWeek` 时另加 6 个周序号 Cell。Year 模式生成 12 个月份 Cell。当前主题通过 `CalendarView` 的 `Grid`/`Panel` 组合实现布局，容器池负责有限复用，不把业务数据 owner 交给模板。
 
-## 7. 与 DatePicker 的隔离
+## 6. 生命周期与模板接入
 
-新 Calendar 与 DatePicker 的 CalendarView 子系统完全独立：不同命名空间（`Internal.Calendar` vs `CalendarView`）、不同 Token（`CalendarControlToken` vs `CalendarToken`）、不共享类型。本次重构不改动 DatePicker 实现。
+- 构造阶段只设置默认 Value，不读取模板 part。
+- `Calendar.OnApplyTemplate` 先解除旧 View/Header 的事件订阅，再查找新 part、建立订阅、同步 ViewMode、Header 内容、语言 Culture 和根伪类。
+- `CalendarView.OnApplyTemplate` 先解绑旧 WeekHeader/CellHost 和容器关系，再接入新模板并重建/实现 Cell。
+- `CalendarViewCell.Bind` 每次复用都覆盖 owner、model、DisplayText、Context、Focusable 和伪类；Unbind 或回收时必须清空 owner/model、模板上下文和状态，避免旧 Cell 继续命中或保留旧订阅。
+- Calendar attach 到 visual tree 时订阅 LanguageManager，detach 时解除订阅；语言变化会把全局 Culture 推给 Header/View，并通过 AtomUI 语言资源刷新 Calendar 文案。CalendarView detach 会释放容器，reattach 会从当前属性恢复网格。
+- 模板重应用、Mode 切换、ShowWeek 切换和容器数量变化不能残留旧容器、旧输入焦点或旧 CellTemplate。
+
+## 7. 交互与事件处理
+
+### 7.1 Header
+
+默认 Header 使用 Year Select、Month Select 和 Month/Year Segmented。ValidRange 限制年份选项；月份选项按年份和范围收敛；跨年时保留可用月份并把日期日收敛到目标月有效天数。Month/Year 显示文本和年份后缀必须来自当前语言资源，Mini 模式的 Header 控件使用 Small 尺寸。
+
+### 7.2 Cell 与模板
+
+`CellTemplate` 的内容上下文是 `CalendarCellContext`，默认 `PART_Value` 仍显示日期值；`FullCellTemplate` 直接替代完整 `PART_CellInner` 内容并优先于 `CellTemplate`。Week Cell 不产生日期/月上下文，周序号显示由 View 生成；周序号激活以该行首日提交选择。
+
+模板只替换内容，不能绕过容器的 disabled hit-test、selected/today/outside/focused 状态、Automation 或事件提交路径。
+
+### 7.3 键盘与 Automation
+
+View 维护 roving focus：Date 模式左右移动一天、上下移动一周；Month 模式左右移动一个月、上下移动三个月，以匹配 3×4 月份网格。目标超出当前网格、落在禁用 Cell 或落在周序号 Cell 时继续寻找同方向的下一个可聚焦 Cell；没有合法目标则保持原焦点。Enter/Space 激活当前可用日期/月 Cell。
+
+Automation 语义使用当前 Avalonia 可移植契约：View 是 `Table` 并实现单选 `ISelectionProvider`，Cell 是 `ListItem` 并实现 `ISelectionItemProvider`。Cell 返回 View 作为 `SelectionContainer`，日期/月名称使用当前 Culture 的完整格式；不宣称 GridItem provider 或不可移植的 Grid 结构接口。
+
+## 8. 内部算法与关键流程
+
+### 8.1 日期网格
+
+以 `Value.Date` 所在自然月为锚点，根据当前 Culture 的 `FirstDayOfWeek` 计算网格首日，固定生成 42 个连续日期。靠近 `DateTime.MinValue/MaxValue` 时会平移网格起点，避免日期运算溢出并保持 42 个不同日期。每个日期 model 同时保存 `IsInView`、`IsToday`、`IsSelected`、`IsDisabled` 和 `IsFocusable`。`DisabledDate` 对候选日期使用日期值调用，不携带时间部分。
+
+### 8.2 月份网格
+
+以锚定年份生成 1 至 12 月。每月的选择值保留当前日并收敛到该月最后一天；月份是否超出 `ValidRange` 必须同时检查月首和月末，只有整月没有任何有效日期时才禁用。业务禁用策略若不能以整月判定，必须按最终组件契约明确其候选日期语义，不得错误地只检查一个代表日而禁用仍有可用日期的月份。
+
+### 8.3 周序号
+
+从日期网格每行首日按 Culture 的 `CalendarWeekRule` 和 `FirstDayOfWeek` 计算周号。周序号 Cell 的选择值是该行首日；它是可见的辅助 Cell，不进入日期/月 Cell 模板上下文。
+
+### 8.4 失效与容器复用
+
+Value、Today、ViewMode、ShowWeek、ValidRange、DisabledDate 或 Culture 改变时重建 model；CellTemplate/FullCellTemplate 改变时只需重新应用内容。容器池上限由当前模式和 ShowWeek 决定，切换模式、模板重应用和 detach 时都必须回收多余容器并解除 owner 关系。
+
+## 9. 资源、性能与 AOT 边界
+
+- 日期/月/周计算在 model 失效时完成，不在 Measure/Arrange 热路径重复执行。
+- `DisabledDate` 对同一次 model 构建的每个候选值最多调用一次；异常不得被静默吞掉。
+- Container pool 只复用无业务所有权的视觉容器；模板、Context、Focus 和 Automation 必须随 Bind/Unbind 完整更新。
+- Token 通过 `CalendarControlTokenResource` 和 SharedToken 进入 AXAML；运行时状态由伪类 selector 表达。
+- 不使用运行时反射扫描 API、Token、日期类型或 Gallery 数据；属性静态注册、强类型上下文和生成资源保持 NativeAOT 兼容。
+- LanguageManager、VisualTree、Template part 等外部订阅必须有成对释放路径，避免 detach 后保留 Calendar。
+
+## 10. 维护不变量
+
+- Calendar 是唯一 public 状态 owner；View/Cell 不得引入第二份可写 Value。
+- `Value` 永远是日期值；所有提交和上下文值均不携带时间部分。
+- `FullCellTemplate` 优先于 `CellTemplate`，但两者都保留 Cell 状态和交互语义。
+- Month 禁用使用月首/月末范围判断；方向键跳过禁用和周序号 Cell。
+- 默认 Header、自定义 Header、Cell Pointer、键盘和 Automation 使用同一提交与事件顺序。
+- 新 Calendar 与 DatePicker 旧 CalendarView 的类型、Token、Theme key 和生命周期互不越界。
+- 改动 ControlTheme、伪类、Token、Template part 或 Automation 时，必须同步 Gallery、测试和本目录文档。
+
+## 11. 测试与验证
+
+至少覆盖：
+
+- `Value` 默认值和时间规范化，程序设值不触发用户事件。
+- Month/Year 面板、跨月/跨年选择和固定事件顺序。
+- ValidRange 首尾包含、Month 两端禁用、DisabledDate 调用次数与异常传播。
+- ShowWeek 的周号、周首日选择和 CellTemplate 不遮蔽周序号。
+- CellTemplate/FullCellTemplate 优先级、默认日期值保留、HeaderTemplate 命令提交。
+- 方向键跳过禁用 Cell，Enter/Space 选择，Automation 控件类型和选择状态。
+- 模板重应用、Mode/ShowWeek 切换、语言切换、容器回收和 detach 释放。
+- Light/Dark、Fullscreen/Mini、Gallery API/Token/ShowCase 和 NativeAOT 生成边界。
+
+纯文档改动运行 `git diff --check` 和相对链接检查；行为或主题改动运行对应 `tests/AtomUI.Desktop.Controls.Tests` 与 Gallery 验证。LLMS 生成文件只由仓库生成/verify 流程更新。

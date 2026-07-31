@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace AtomUI.Desktop.Controls.Internal.Calendar;
@@ -15,26 +13,32 @@ internal static class CalendarViewCellBuilder
         Func<DateTime, bool>? disabledDate)
     {
         anchor = anchor.Date;
-        today  = today.Date;
+        today = today.Date;
         var monthStart = new DateTime(anchor.Year, anchor.Month, 1);
-        var offset     = ((int)monthStart.DayOfWeek - (int)firstDayOfWeek + 7) % 7;
-        var gridStart  = monthStart.AddDays(-offset);
+        var offset = ((int)monthStart.DayOfWeek - (int)firstDayOfWeek + 7) % 7;
+        var gridStartTicks = Math.Max(DateTime.MinValue.Ticks, monthStart.Ticks - offset * TimeSpan.TicksPerDay);
+        var gridStart = new DateTime(gridStartTicks);
+        var latestGridStart = DateTime.MaxValue.Date.AddDays(-41);
+        if (gridStart > latestGridStart)
+        {
+            gridStart = latestGridStart;
+        }
 
         var cells = new List<CalendarViewCellModel>(42);
         for (var i = 0; i < 42; i++)
         {
-            var date       = gridStart.AddDays(i);
-            var isInView   = date.Year == anchor.Year && date.Month == anchor.Month;
+            var date = gridStart.AddDays(i);
+            var isInView = date.Year == anchor.Year && date.Month == anchor.Month;
             var isDisabled = IsOutsideRange(date, validRangeStart, validRangeEnd)
                              || (disabledDate?.Invoke(date) ?? false);
             cells.Add(new CalendarViewCellModel(
-                Value:       date,
-                Kind:        CalendarViewCellKind.Date,
+                Value: date,
+                Kind: CalendarViewCellKind.Date,
                 DisplayText: date.Day.ToString("D2", CultureInfo.InvariantCulture),
-                IsToday:     date == today,
-                IsInView:    isInView,
-                IsSelected:  date == anchor,
-                IsDisabled:  isDisabled,
+                IsToday: date == today,
+                IsInView: isInView,
+                IsSelected: date == anchor,
+                IsDisabled: isDisabled,
                 IsFocusable: !isDisabled));
         }
 
@@ -51,15 +55,15 @@ internal static class CalendarViewCellBuilder
         for (var row = 0; row < 6; row++)
         {
             var rowStart = dateCells[row * 7].Value;
-            var weekNum  = culture.Calendar.GetWeekOfYear(rowStart, weekRule, firstDayOfWeek);
+            var weekNum = culture.Calendar.GetWeekOfYear(rowStart, weekRule, firstDayOfWeek);
             weeks.Add(new CalendarViewCellModel(
-                Value:       rowStart,
-                Kind:        CalendarViewCellKind.Week,
+                Value: rowStart,
+                Kind: CalendarViewCellKind.Week,
                 DisplayText: weekNum.ToString(CultureInfo.InvariantCulture),
-                IsToday:     false,
-                IsInView:    true,
-                IsSelected:  false,
-                IsDisabled:  false,
+                IsToday: false,
+                IsInView: true,
+                IsSelected: false,
+                IsDisabled: dateCells[row * 7].IsDisabled,
                 IsFocusable: false));
         }
 
@@ -75,30 +79,29 @@ internal static class CalendarViewCellBuilder
         Func<DateTime, bool>? disabledDate)
     {
         anchor = anchor.Date;
-        today  = today.Date;
-        var year       = anchor.Year;
+        today = today.Date;
+        var year = anchor.Year;
         var monthNames = culture.DateTimeFormat.AbbreviatedMonthNames; // index 0..11 有效
-        var cells      = new List<CalendarViewCellModel>(12);
+        var cells = new List<CalendarViewCellModel>(12);
 
         for (var month = 1; month <= 12; month++)
         {
-            var lastDay    = DateTime.DaysInMonth(year, month);
-            var day        = Math.Min(anchor.Day, lastDay);
-            var candidate  = new DateTime(year, month, day);
+            var lastDay = DateTime.DaysInMonth(year, month);
+            var day = Math.Min(anchor.Day, lastDay);
+            var candidate = new DateTime(year, month, day);
             var monthFirst = new DateTime(year, month, 1);
-            var monthLast  = new DateTime(year, month, lastDay);
+            var monthLast = new DateTime(year, month, lastDay);
 
-            var outside    = MonthOutsideRange(monthFirst, monthLast, validRangeStart, validRangeEnd);
-            var isDisabled = outside || (disabledDate?.Invoke(candidate) ?? false);
+            var isDisabled = IsDisabledAtMonthBoundary(monthFirst, monthLast, validRangeStart, validRangeEnd, disabledDate);
 
             cells.Add(new CalendarViewCellModel(
-                Value:       candidate,
-                Kind:        CalendarViewCellKind.Month,
+                Value: candidate,
+                Kind: CalendarViewCellKind.Month,
                 DisplayText: monthNames[month - 1],
-                IsToday:     today.Year == year && today.Month == month,
-                IsInView:    true,
-                IsSelected:  anchor.Month == month,
-                IsDisabled:  isDisabled,
+                IsToday: today.Year == year && today.Month == month,
+                IsInView: true,
+                IsSelected: anchor.Month == month,
+                IsDisabled: isDisabled,
                 IsFocusable: !isDisabled));
         }
 
@@ -133,5 +136,17 @@ internal static class CalendarViewCellBuilder
         }
 
         return false;
+    }
+
+    private static bool IsDisabledAtMonthBoundary(
+        DateTime monthFirst,
+        DateTime monthLast,
+        DateTime? start,
+        DateTime? end,
+        Func<DateTime, bool>? disabledDate)
+    {
+        var firstDisabled = IsOutsideRange(monthFirst, start, end) || (disabledDate?.Invoke(monthFirst) ?? false);
+        var lastDisabled = IsOutsideRange(monthLast, start, end) || (disabledDate?.Invoke(monthLast) ?? false);
+        return firstDisabled && lastDisabled;
     }
 }

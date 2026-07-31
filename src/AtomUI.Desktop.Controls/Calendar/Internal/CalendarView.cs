@@ -1,6 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
+using AtomUI.Data;
+using AtomUI.Desktop.Controls.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -18,7 +18,7 @@ internal sealed class CalendarCellSelectedEventArgs : EventArgs
     public CalendarCellSelectedEventArgs(DateTime value, CalendarViewCellKind kind)
     {
         Value = value;
-        Kind  = kind;
+        Kind = kind;
     }
 
     public DateTime Value { get; }
@@ -27,7 +27,7 @@ internal sealed class CalendarCellSelectedEventArgs : EventArgs
 
 /// <summary>
 /// Calendar 的内部纯面板：按输入状态构建 Cell Model 网格，只向 Calendar 报告用户意图，
-/// 不持有第二份 SelectedValue 或公开 Mode（spec §7.4）。
+/// 不持有第二份 SelectedValue 或公开 Mode。
 /// </summary>
 [Avalonia.Controls.Metadata.PseudoClasses(
     CalendarRootPseudoClass.Fullscreen,
@@ -138,7 +138,7 @@ internal sealed class CalendarView : TemplatedControl
     /// <summary>当前网格的不可变 Cell Model 列表。</summary>
     private IReadOnlyList<CalendarViewCellModel> _cellModels = Array.Empty<CalendarViewCellModel>();
 
-    /// <summary>Cell 模型失效需要重建的属性集合（spec §14.2）。</summary>
+    /// <summary>Cell 模型失效需要重建的属性集合。</summary>
     private static readonly HashSet<AvaloniaProperty> RebuildTriggers = new()
     {
         ValueProperty, TodayProperty, ViewModeProperty, ShowWeekProperty,
@@ -162,6 +162,16 @@ internal sealed class CalendarView : TemplatedControl
         {
             RealizeContainers();
         }
+        else if (change.Property == FullscreenProperty)
+        {
+            foreach (var cell in _cellPool)
+            {
+                if (cell.Model is not null)
+                {
+                    cell.SetFullscreen(Fullscreen);
+                }
+            }
+        }
 
         if (change.Property == FullscreenProperty ||
             change.Property == ViewModeProperty ||
@@ -184,10 +194,10 @@ internal sealed class CalendarView : TemplatedControl
     private void RebuildCells()
     {
         var culture = Culture ?? CultureInfo.CurrentCulture;
-        var value   = Value.Date;
-        var today   = Today == default ? DateTime.Today : Today.Date;
-        var start   = ValidRange?.Start;
-        var end     = ValidRange?.End;
+        var value = Value.Date;
+        var today = Today == default ? DateTime.Today : Today.Date;
+        var start = ValidRange?.Start;
+        var end = ValidRange?.End;
 
         if (ViewMode == CalendarViewMode.Month)
         {
@@ -219,7 +229,7 @@ internal sealed class CalendarView : TemplatedControl
     /// <summary>由 Cell 容器在有效激活时调用，转发用户意图给 Calendar。</summary>
     internal void ReportCellActivated(CalendarViewCellModel model)
     {
-        if (model.IsDisabled || model.Kind == CalendarViewCellKind.Week)
+        if (model.IsDisabled)
         {
             return;
         }
@@ -227,7 +237,7 @@ internal sealed class CalendarView : TemplatedControl
         CellSelected?.Invoke(this, new CalendarCellSelectedEventArgs(model.Value, model.Kind));
     }
 
-    #region Focus navigation (spec §11)
+    #region Focus navigation
 
     protected override Avalonia.Automation.Peers.AutomationPeer OnCreateAutomationPeer() =>
         new CalendarViewAutomationPeer(this);
@@ -260,7 +270,7 @@ internal sealed class CalendarView : TemplatedControl
     internal enum FocusDirection { Left, Right, Up, Down }
 
     /// <summary>
-    /// 计算方向键移动后的目标 focus 值。Date 模式左右±1 天、上下±1 周；Month 模式左右±1 月、上下±4 月。
+    /// 计算方向键移动后的目标 focus 值。Date 模式左右±1 天、上下±1 周；Month 模式左右±1 月、上下±3 月。
     /// 只在当前已生成网格范围内移动，跳过不可聚焦（禁用/周序号）Cell；无合法目标时返回原值。
     /// 纯计算，不改状态、不触发事件。
     /// </summary>
@@ -276,16 +286,24 @@ internal sealed class CalendarView : TemplatedControl
             return current;
         }
 
-        var candidate = ViewMode == CalendarViewMode.Month
-            ? current.AddMonths(step)
-            : current.AddDays(step);
-
-        if (IsFocusable(candidate))
+        var candidate = current;
+        while (true)
         {
-            return candidate;
-        }
+            if (!TryAdvance(candidate, step, out candidate))
+            {
+                return current;
+            }
 
-        return current;
+            if (!TryGetMatchingCell(candidate, out var model))
+            {
+                return current;
+            }
+
+            if (model.IsFocusable)
+            {
+                return candidate.Date;
+            }
+        }
     }
 
     /// <summary>移动 roving focus（只改 FocusedValue 与伪类，不选择、不触发公开事件）。返回是否移动成功。</summary>
@@ -304,13 +322,9 @@ internal sealed class CalendarView : TemplatedControl
     /// <summary>激活当前 focused cell，进入与 Pointer 相同的选择流程。</summary>
     internal void ActivateFocused()
     {
-        foreach (var model in _cellModels)
+        if (TryGetMatchingCell(FocusedValue, out var model) && model.IsFocusable)
         {
-            if (model.Kind != CalendarViewCellKind.Week && model.Value.Date == FocusedValue.Date && model.IsFocusable)
-            {
-                ReportCellActivated(model);
-                return;
-            }
+            ReportCellActivated(model);
         }
     }
 
@@ -334,7 +348,7 @@ internal sealed class CalendarView : TemplatedControl
         }
     }
 
-    /// <summary>进入面板时优先聚焦选中且可用的 Cell，否则第一个可用 Cell（spec §11）。</summary>
+    /// <summary>进入面板时优先聚焦选中且可用的 Cell，否则第一个可用 Cell。</summary>
     protected override void OnGotFocus(Avalonia.Input.FocusChangedEventArgs e)
     {
         base.OnGotFocus(e);
@@ -364,42 +378,65 @@ internal sealed class CalendarView : TemplatedControl
 
     private static int DateStep(FocusDirection d) => d switch
     {
-        FocusDirection.Left  => -1,
+        FocusDirection.Left => -1,
         FocusDirection.Right => 1,
-        FocusDirection.Up    => -7,
-        FocusDirection.Down  => 7,
-        _                    => 0
+        FocusDirection.Up => -7,
+        FocusDirection.Down => 7,
+        _ => 0
     };
 
     private static int MonthStep(FocusDirection d) => d switch
     {
-        FocusDirection.Left  => -1,
+        FocusDirection.Left => -1,
         FocusDirection.Right => 1,
-        FocusDirection.Up    => -4,
-        FocusDirection.Down  => 4,
-        _                    => 0
+        FocusDirection.Up => -3,
+        FocusDirection.Down => 3,
+        _ => 0
     };
+
+    private bool TryAdvance(DateTime value, int step, out DateTime result)
+    {
+        try
+        {
+            result = ViewMode == CalendarViewMode.Month
+                ? value.AddMonths(step)
+                : value.AddDays(step);
+            return true;
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            result = value;
+            return false;
+        }
+    }
 
     /// <summary>目标值是否落在当前网格内且对应一个可聚焦 Cell。</summary>
     private bool IsFocusable(DateTime value)
     {
-        foreach (var model in _cellModels)
+        return TryGetMatchingCell(value, out var model) && model.IsFocusable;
+    }
+
+    private bool TryGetMatchingCell(DateTime value, out CalendarViewCellModel model)
+    {
+        foreach (var item in _cellModels)
         {
-            if (model.Kind == CalendarViewCellKind.Week)
+            if (item.Kind == CalendarViewCellKind.Week)
             {
                 continue;
             }
 
             var match = ViewMode == CalendarViewMode.Month
-                ? model.Value.Year == value.Year && model.Value.Month == value.Month
-                : model.Value.Date == value.Date;
+                ? item.Value.Year == value.Year && item.Value.Month == value.Month
+                : item.Value.Date == value.Date;
 
             if (match)
             {
-                return model.IsFocusable;
+                model = item;
+                return true;
             }
         }
 
+        model = default!;
         return false;
     }
 
@@ -413,17 +450,34 @@ internal sealed class CalendarView : TemplatedControl
     private Panel? _weekHeader;
     private Grid? _cellHost;
 
-    /// <summary>有界容器池：复用 CalendarViewCell 实例，避免 Mode/Value 变化无限增加容器（spec §14.2）。</summary>
+    /// <summary>有界容器池：复用 CalendarViewCell 实例，避免 Mode/Value 变化无限增加容器。</summary>
     private readonly List<CalendarViewCell> _cellPool = new();
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        ReleaseContainers();
         _weekHeader = e.NameScope.Find<Panel>(WeekHeaderPart);
-        _cellHost   = e.NameScope.Find<Grid>(CellHostPart);
+        _cellHost = e.NameScope.Find<Grid>(CellHostPart);
         RebuildCells();
         RealizeContainers();
         UpdateViewPseudoClasses();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (_cellHost is not null && _cellHost.Children.Count == 0)
+        {
+            RebuildCells();
+            RealizeContainers();
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ReleaseContainers();
     }
 
     /// <summary>按当前 Cell Model 生成/复用容器并填入 CellHost，同时刷新周标题。</summary>
@@ -435,13 +489,16 @@ internal sealed class CalendarView : TemplatedControl
         }
 
         var culture = Culture ?? CultureInfo.CurrentCulture;
-        var isDate  = ViewMode == CalendarViewMode.Date;
-        var columns = isDate ? (ShowWeek ? 8 : 7) : 4;
+        var isDate = ViewMode == CalendarViewMode.Date;
+        var columns = isDate ? (ShowWeek ? 8 : 7) : 3;
+        var requiredCellCount = isDate
+            ? (ShowWeek ? 48 : 42)
+            : 12;
 
-        ConfigureGrid(_cellHost, columns, isDate ? 6 : 3);
+        ConfigureGrid(_cellHost, columns, isDate ? 6 : 4);
+        ConfigureWeekHeader(columns);
         BuildWeekHeader(culture, isDate);
-
-        _cellHost.Children.Clear();
+        TrimRealizedCells(requiredCellCount);
 
         if (isDate)
         {
@@ -456,7 +513,7 @@ internal sealed class CalendarView : TemplatedControl
     private void RealizeDateGrid(int columns)
     {
         // _cellModels: 42 date cells (row-major) + optional 6 week cells appended.
-        var hasWeek   = ShowWeek && _cellModels.Count == 48;
+        var hasWeek = ShowWeek && _cellModels.Count == 48;
         var poolIndex = 0;
 
         for (var row = 0; row < 6; row++)
@@ -482,20 +539,23 @@ internal sealed class CalendarView : TemplatedControl
     {
         for (var i = 0; i < _cellModels.Count; i++)
         {
-            var row = i / 4;
-            var col = i % 4;
+            var row = i / 3;
+            var col = i % 3;
             PlaceCell(GetPooledCell(i), _cellModels[i], row, col);
         }
     }
 
     private void PlaceCell(CalendarViewCell cell, CalendarViewCellModel model, int row, int col)
     {
-        cell.CellTemplate     = CellTemplate;
+        cell.CellTemplate = CellTemplate;
         cell.FullCellTemplate = FullCellTemplate;
         cell.Bind(this, model);
         Grid.SetRow(cell, row);
         Grid.SetColumn(cell, col);
-        _cellHost!.Children.Add(cell);
+        if (!_cellHost!.Children.Contains(cell))
+        {
+            _cellHost.Children.Add(cell);
+        }
     }
 
     private CalendarViewCell GetPooledCell(int index)
@@ -506,6 +566,45 @@ internal sealed class CalendarView : TemplatedControl
         }
 
         return _cellPool[index];
+    }
+
+    private void TrimRealizedCells(int requiredCount)
+    {
+        if (_cellHost is null)
+        {
+            return;
+        }
+
+        for (var i = _cellHost.Children.Count - 1; i >= requiredCount; i--)
+        {
+            if (_cellHost.Children[i] is CalendarViewCell cell)
+            {
+                cell.Unbind();
+            }
+
+            _cellHost.Children.RemoveAt(i);
+        }
+    }
+
+    private void ReleaseContainers()
+    {
+        _cellHost?.Children.Clear();
+        _weekHeader?.Children.Clear();
+        foreach (var cell in _cellPool)
+        {
+            cell.Unbind();
+        }
+    }
+
+    internal IEnumerable<CalendarViewCell> GetRealizedCells()
+    {
+        foreach (var cell in _cellPool)
+        {
+            if (cell.Model is not null)
+            {
+                yield return cell;
+            }
+        }
     }
 
     private void BuildWeekHeader(CultureInfo culture, bool isDate)
@@ -527,17 +626,42 @@ internal sealed class CalendarView : TemplatedControl
 
         if (ShowWeek)
         {
-            _weekHeader.Children.Add(new TextBlock { Text = string.Empty });
+            var weekLabel = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Week)
+                            ?? CalendarControlLangResourceKind.Week.ToString();
+            AddWeekHeaderText(weekLabel, 0);
         }
 
+        var columnOffset = ShowWeek ? 1 : 0;
         for (var i = 0; i < 7; i++)
         {
             var day = (DayOfWeek)(((int)first + i) % 7);
-            _weekHeader.Children.Add(new TextBlock
-            {
-                Text                = names[(int)day],
-                HorizontalAlignment = HorizontalAlignment.Center
-            });
+            AddWeekHeaderText(names[(int)day], i + columnOffset);
+        }
+    }
+
+    private void AddWeekHeaderText(string text, int column)
+    {
+        var label = new TextBlock
+        {
+            Text = text,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            TextAlignment = TextAlignment.Center
+        };
+        Grid.SetColumn(label, column);
+        _weekHeader!.Children.Add(label);
+    }
+
+    private void ConfigureWeekHeader(int columns)
+    {
+        if (_weekHeader is not Grid headerGrid)
+        {
+            return;
+        }
+
+        headerGrid.ColumnDefinitions.Clear();
+        for (var column = 0; column < columns; column++)
+        {
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
         }
     }
 

@@ -6,7 +6,7 @@ namespace AtomUIGallery.ShowCases.Calendar;
 internal partial class en_US
 {
     public const string PageSubtitle = "Organize business content by date in a desktop calendar panel.";
-    public const string PageDescription = "Calendar presents a month date grid or a year month grid following Ant Design 6 semantics, with valid range, disabled dates, cell customization, and selection events.";
+    public const string PageDescription = "Calendar presents a month date grid or a year month grid with valid range, disabled dates, cell customization, and selection events.";
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
     public const string ScenarioExamples = "Examples";

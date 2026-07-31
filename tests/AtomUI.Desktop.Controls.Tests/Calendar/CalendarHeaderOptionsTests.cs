@@ -24,6 +24,21 @@ public class CalendarHeaderOptionsTests
         years.ShouldBe(new[] { 2024, 2025, 2026, 2027, 2028 });
     }
 
+    [Theory]
+    [InlineData(1, 1, 10)]
+    [InlineData(9999, 9989, 9999)]
+    public void BuildYearOptions_DateTimeBoundary_OnlyReturnsValidYears(
+        int currentYear,
+        int expectedFirst,
+        int expectedLast)
+    {
+        var years = CalendarHeaderOptions.BuildYearOptions(currentYear, null, null);
+
+        years[0].ShouldBe(expectedFirst);
+        years[^1].ShouldBe(expectedLast);
+        years.ShouldAllBe(year => year >= 1 && year <= 9999);
+    }
+
     [Fact]
     public void BuildMonthOptions_NoRange_ReturnsAll12()
     {

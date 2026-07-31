@@ -32,6 +32,7 @@ public class CalendarShowCasePageTests
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
+        source.ShouldContain("MaxColumns=\"1\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
         source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
         source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
@@ -49,7 +50,7 @@ public class CalendarShowCasePageTests
     [Fact]
     public void Calendar_ShowCase_Examples_Match_Approved_Control_Demo_Content()
     {
-        var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
         var approved = ReadRepoFile("tests/AtomUIGallery.Tests/ShowCases/CalendarShowCaseExamples.snapshot");
 
         NormalizeMarkup(ExtractCalendarExampleItems(source))
@@ -58,7 +59,7 @@ public class CalendarShowCasePageTests
 
     private static string ExtractCalendarExampleItems(string source)
     {
-        const string firstItemMarker  = "<gallery:ShowCaseItem";
+        const string firstItemMarker = "<gallery:ShowCaseItem";
         const string panelCloseMarker = "</gallery:ShowCasePanel>";
 
         var firstItemStart = source.IndexOf(firstItemMarker, StringComparison.Ordinal);
@@ -77,7 +78,7 @@ public class CalendarShowCasePageTests
 
     private static int CountOccurrences(string source, string value)
     {
-        var count      = 0;
+        var count = 0;
         var startIndex = 0;
         while (true)
         {

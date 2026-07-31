@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUI.Desktop.Controls;
 
 /// <summary>
@@ -17,7 +15,7 @@ public sealed class CalendarDateRange
         }
 
         Start = s;
-        End   = e;
+        End = e;
     }
 
     /// <summary>

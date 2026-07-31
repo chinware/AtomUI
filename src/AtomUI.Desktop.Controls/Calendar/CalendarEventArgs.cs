@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUI.Desktop.Controls;
 
 /// <summary>
@@ -24,7 +22,7 @@ public sealed class CalendarSelectedEventArgs : EventArgs
 {
     public CalendarSelectedEventArgs(DateTime value, CalendarSelectSource source)
     {
-        Value  = value;
+        Value = value;
         Source = source;
     }
 
@@ -40,7 +38,7 @@ public sealed class CalendarPanelChangedEventArgs : EventArgs
     public CalendarPanelChangedEventArgs(DateTime value, CalendarMode mode)
     {
         Value = value;
-        Mode  = mode;
+        Mode = mode;
     }
 
     public DateTime Value { get; }

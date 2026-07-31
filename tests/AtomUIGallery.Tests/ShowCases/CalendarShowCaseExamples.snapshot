@@ -3,7 +3,9 @@
                                       IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CalendarViewModel">
-                            <atom:Calendar Value="{Binding SampleDate}" Width="360" />
+                            <atom:Calendar Value="{Binding SampleDate}"
+                                           MinWidth="640"
+                                           HorizontalAlignment="Stretch" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -23,7 +25,10 @@
                                       IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CalendarViewModel">
-                            <atom:Calendar Value="{Binding SampleDate}" Mode="Year" Width="360" />
+                            <atom:Calendar Value="{Binding SampleDate}"
+                                           Mode="Year"
+                                           MinWidth="640"
+                                           HorizontalAlignment="Stretch" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -33,7 +38,10 @@
                                       IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CalendarViewModel">
-                            <atom:Calendar Value="{Binding SampleDate}" ShowWeek="True" Width="400" />
+                            <atom:Calendar Value="{Binding SampleDate}"
+                                           ShowWeek="True"
+                                           MinWidth="640"
+                                           HorizontalAlignment="Stretch" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -46,7 +54,8 @@
                             <atom:Calendar Value="{Binding SampleDate}"
                                            ValidRange="{Binding SampleValidRange}"
                                            DisabledDate="{Binding DisableWeekends}"
-                                           Width="360" />
+                                           MinWidth="640"
+                                           HorizontalAlignment="Stretch" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -56,7 +65,9 @@
                                       IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CalendarViewModel">
-                            <atom:Calendar Value="{Binding SampleDate}" Width="360">
+                            <atom:Calendar Value="{Binding SampleDate}"
+                                           MinWidth="640"
+                                           HorizontalAlignment="Stretch">
                                 <atom:Calendar.CellTemplate>
                                     <DataTemplate x:DataType="atom:CalendarCellContext">
                                         <Border IsVisible="{Binding IsInView}"
@@ -76,7 +87,9 @@
                                       IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CalendarViewModel">
-                            <atom:Calendar Value="{Binding SampleDate}" Width="360">
+                            <atom:Calendar Value="{Binding SampleDate}"
+                                           MinWidth="640"
+                                           HorizontalAlignment="Stretch">
                                 <atom:Calendar.FullCellTemplate>
                                     <DataTemplate x:DataType="atom:CalendarCellContext">
                                         <Border HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -95,13 +108,15 @@
                                       IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CalendarViewModel">
-                            <atom:Calendar Value="{Binding SampleDate}" Width="360">
+                            <atom:Calendar Value="{Binding SampleDate}"
+                                           MinWidth="640"
+                                           HorizontalAlignment="Stretch">
                                 <atom:Calendar.HeaderTemplate>
-                                    <DataTemplate x:DataType="x:Object">
+                                    <DataTemplate x:DataType="atom:CalendarHeaderContext">
                                         <Border Padding="8"
                                                 Background="{atom:SharedTokenResource ColorFillQuaternary}"
                                                 CornerRadius="4">
-                                            <TextBlock Text="{Binding StringFormat='{}{0:yyyy MMMM}'}"
+                                            <TextBlock Text="{Binding Value, StringFormat='{}{0:yyyy MMMM}'}"
                                                        HorizontalAlignment="Center" />
                                         </Border>
                                     </DataTemplate>
@@ -118,8 +133,11 @@
                         <DataTemplate x:DataType="vm:CalendarViewModel">
                             <StackPanel Orientation="Vertical" Spacing="12">
                                 <atom:Calendar Value="{Binding SampleDate}"
-                                               Width="360"
-                                               Loaded="OnEventsCalendarLoaded" />
+                                               MinWidth="640"
+                                               HorizontalAlignment="Stretch"
+                                               ValueChanged="OnCalendarValueChanged"
+                                               Selected="OnCalendarSelected"
+                                               PanelChanged="OnCalendarPanelChanged" />
                                 <atom:TextBlock Text="{Binding EventLog}" TextWrapping="Wrap" />
                             </StackPanel>
                         </DataTemplate>

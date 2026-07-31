@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:calendarView="clr-namespace:AtomUI.Desktop.Controls.CalendarView"
+    xmlns:calendarViewInfrastructure="clr-namespace:AtomUI.Desktop.Controls.CalendarView.Infrastructure"
     xmlns:atom="https://atomui.net"
     xmlns:themeResources="using:AtomUI.Theme.Resources"
     xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
@@ -28,7 +29,7 @@
                                          ColumnSpacing="{atom:DatePickerTokenResource RangeCalendarSpacing}">
                                 <Grid MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
                                       MinHeight="{atom:SharedTokenResource ControlHeight}">
-                                    <atom:HeadTextButton
+                                    <calendarViewInfrastructure:HeadTextButton
                                         Name="PART_HeaderButton"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
@@ -62,7 +63,7 @@
 
                                 <Grid MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
                                       MinHeight="{atom:SharedTokenResource ControlHeight}">
-                                    <atom:HeadTextButton
+                                    <calendarViewInfrastructure:HeadTextButton
                                         Name="PART_SecondaryHeaderButton"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"

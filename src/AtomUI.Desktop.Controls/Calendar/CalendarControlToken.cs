@@ -4,7 +4,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 /// <summary>
-/// 新 Calendar 控件的 Design Token，收敛为 Ant Design 6 Calendar 的六个公开视觉语义（spec §13）。
+/// 新 Calendar 控件的 Design Token，收敛为七个公开视觉语义。
 /// 与 DatePicker CalendarView 使用的旧 <see cref="CalendarToken"/> 完全独立。
 /// </summary>
 [ControlDesignToken]
@@ -47,15 +47,27 @@ internal class CalendarControlToken : AbstractControlDesignToken
     /// </summary>
     public double MiniContentHeight { get; set; }
 
+    /// <summary>
+    /// Fullscreen 日期/月单元最小高度。
+    /// </summary>
+    public double FullCellMinHeight { get; set; }
+
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
 
-        FullBg            = SharedToken.ColorBgContainer;
-        FullPanelBg       = SharedToken.ColorBgContainer;
-        ItemActiveBg      = SharedToken.ControlItemBgActive;
-        YearControlWidth  = 80;
+        var dateContentHeight = (SharedToken.FontHeightSM + SharedToken.UniformlyMarginXS) * 3 +
+                                SharedToken.LineWidth * 2;
+
+        FullBg = SharedToken.ColorBgContainer;
+        FullPanelBg = SharedToken.ColorBgContainer;
+        ItemActiveBg = SharedToken.ControlItemBgActive;
+        YearControlWidth = 80;
         MonthControlWidth = 70;
         MiniContentHeight = 256;
+        FullCellMinHeight = SharedToken.ControlHeightSM +
+                            dateContentHeight +
+                            SharedToken.UniformlyPaddingXS / 2 +
+                            SharedToken.LineWidthBold;
     }
 }

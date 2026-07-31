@@ -90,6 +90,22 @@ public class CalendarViewCellBuilderTests
     }
 
     [Fact]
+    public void BuildWeekNumberCells_CopiesRowStartDisabledState()
+    {
+        var dateCells = CalendarViewCellBuilder.BuildDateCells(
+            new DateTime(2026, 7, 15), new DateTime(2026, 7, 30), DayOfWeek.Monday,
+            new DateTime(2026, 6, 30), null, null);
+
+        var weeks = CalendarViewCellBuilder.BuildWeekNumberCells(
+            dateCells, CultureInfo.InvariantCulture,
+            CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+
+        weeks[0].Value.ShouldBe(new DateTime(2026, 6, 29));
+        weeks[0].IsDisabled.ShouldBeTrue();
+        weeks[1].IsDisabled.ShouldBeFalse();
+    }
+
+    [Fact]
     public void BuildMonthCells_Returns12Cells_WithDayTruncation()
     {
         // anchor 1/31 → February 截断到当年 2 月末
@@ -126,6 +142,17 @@ public class CalendarViewCellBuilderTests
     }
 
     [Fact]
+    public void BuildMonthCells_DisabledDateOnAnchorDay_DoesNotDisableEntireMonth()
+    {
+        var anchor = new DateTime(2026, 6, 15);
+        var cells = CalendarViewCellBuilder.BuildMonthCells(
+            anchor, new DateTime(2026, 6, 15), CultureInfo.InvariantCulture,
+            null, null, d => d.Day == 15);
+
+        cells.ShouldAllBe(cell => !cell.IsDisabled);
+    }
+
+    [Fact]
     public void BuildDateCells_JanuaryAnchor_IncludesPreviousDecemberCells()
     {
         // 锚点 2026-01-05,周日为首:2026-01-01 是周四,网格起点回退到 2025-12-28(周日)
@@ -157,5 +184,20 @@ public class CalendarViewCellBuilderTests
             CalendarViewCellBuilder.BuildDateCells(
                 anchor, new DateTime(2026, 7, 30), DayOfWeek.Sunday, null, null,
                 _ => throw new InvalidOperationException("boom")));
+    }
+
+    [Theory]
+    [InlineData(1, 1, 1)]
+    [InlineData(9999, 12, 31)]
+    public void BuildDateCells_DateTimeBoundary_Returns42ValidCells(int year, int month, int day)
+    {
+        var anchor = new DateTime(year, month, day);
+
+        var cells = CalendarViewCellBuilder.BuildDateCells(
+            anchor, anchor, DayOfWeek.Sunday, null, null, null);
+
+        cells.Count.ShouldBe(42);
+        cells.Select(cell => cell.Value).Distinct().Count().ShouldBe(42);
+        cells.Any(cell => cell.Value == anchor).ShouldBeTrue();
     }
 }

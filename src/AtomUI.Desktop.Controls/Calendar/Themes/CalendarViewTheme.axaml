@@ -12,18 +12,18 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="calendar:CalendarView">
             <DockPanel Name="PART_Body" LastChildFill="True">
-                <StackPanel Name="PART_WeekHeader"
-                            DockPanel.Dock="Top"
-                            Orientation="Horizontal" />
+                <Grid Name="PART_WeekHeader"
+                      DockPanel.Dock="Top" />
                 <Grid Name="PART_CellHost" />
             </DockPanel>
         </ControlTemplate>
     </Setter>
 
     <!-- WeekHeader 的每个星期标题等分 -->
-    <Style Selector="^ /template/ StackPanel#PART_WeekHeader > TextBlock">
-        <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeightSM}" />
+    <Style Selector="^ /template/ Grid#PART_WeekHeader > TextBlock">
+        <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
         <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLabel}" />
     </Style>
 
@@ -35,6 +35,7 @@
 
     <!-- Mini：紧凑布局，内容区限制到 MiniContentHeight -->
     <Style Selector="^:mini /template/ Grid#PART_CellHost">
+        <Setter Property="Height" Value="{atom:CalendarControlTokenResource MiniContentHeight}" />
         <Setter Property="MaxHeight" Value="{atom:CalendarControlTokenResource MiniContentHeight}" />
     </Style>
 </ControlTheme>

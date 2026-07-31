@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using System.Windows.Input;
 using AtomUI.Controls;
@@ -10,11 +9,16 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.VisualTree;
 using CalendarViewControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarView;
 
 namespace AtomUI.Desktop.Controls;
 
+/// <summary>
+/// 桌面日历控件。Calendar 是唯一业务状态 owner，
+/// 管理 <see cref="Value"/>、<see cref="Mode"/> 与三个公开事件。
+/// </summary>
 [PseudoClasses(
     CalendarRootPseudoClass.Fullscreen,
     CalendarRootPseudoClass.Mini,
@@ -22,20 +26,16 @@ namespace AtomUI.Desktop.Controls;
     CalendarRootPseudoClass.Year,
     CalendarRootPseudoClass.ShowWeek)]
 [TemplatePart(CalendarViewPart, typeof(CalendarViewControl))]
-
-/// <summary>
-/// 按 Ant Design 6 语义组织的桌面日历控件。Calendar 是唯一业务状态 owner，
-/// 管理 <see cref="Value"/>、<see cref="Mode"/> 与三个公开事件。
-/// </summary>
 public class Calendar : TemplatedControl
 {
     #region Avalonia Properties
 
     public static readonly StyledProperty<DateTime> ValueProperty =
-        AvaloniaProperty.Register<Calendar, DateTime>(nameof(Value));
+        AvaloniaProperty.Register<Calendar, DateTime>(nameof(Value), defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly StyledProperty<CalendarMode> ModeProperty =
-        AvaloniaProperty.Register<Calendar, CalendarMode>(nameof(Mode), CalendarMode.Month);
+        AvaloniaProperty.Register<Calendar, CalendarMode>(
+            nameof(Mode), CalendarMode.Month, defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly StyledProperty<bool> FullscreenProperty =
         AvaloniaProperty.Register<Calendar, bool>(nameof(Fullscreen), true);
@@ -100,14 +100,14 @@ public class Calendar : TemplatedControl
         set => SetValue(DisabledDateProperty, value);
     }
 
-    /// <summary>对应 Ant Design <c>cellRender</c>，替换默认 Cell 的业务内容区域。</summary>
+    /// <summary>替换默认 Cell 的业务内容区域，但保留默认日期/月值和 Cell 状态。</summary>
     public IDataTemplate? CellTemplate
     {
         get => GetValue(CellTemplateProperty);
         set => SetValue(CellTemplateProperty, value);
     }
 
-    /// <summary>对应 Ant Design <c>fullCellRender</c>，替换 Cell 的完整 inner 内容。优先于 <see cref="CellTemplate"/>。</summary>
+    /// <summary>替换 Cell 的完整内部内容。优先于 <see cref="CellTemplate"/>。</summary>
     public IDataTemplate? FullCellTemplate
     {
         get => GetValue(FullCellTemplateProperty);
@@ -141,7 +141,7 @@ public class Calendar : TemplatedControl
         SetCurrentValue(ValueProperty, DateTime.Today);
     }
 
-    /// <summary>公开 <see cref="Mode"/> 到内部面板模式的映射（spec §4.2）。</summary>
+    /// <summary>公开 <see cref="Mode"/> 到内部面板模式的映射：Month 显示日期，Year 显示月份。</summary>
     internal CalendarViewMode ViewMode =>
         Mode == CalendarMode.Year ? CalendarViewMode.Month : CalendarViewMode.Date;
 
@@ -171,18 +171,18 @@ public class Calendar : TemplatedControl
 
         if (_defaultHeader is not null)
         {
-            _defaultHeader.YearSelected  -= OnHeaderYearSelected;
+            _defaultHeader.YearSelected -= OnHeaderYearSelected;
             _defaultHeader.MonthSelected -= OnHeaderMonthSelected;
-            _defaultHeader.ModeSwitched  -= OnHeaderModeSwitched;
+            _defaultHeader.ModeSwitched -= OnHeaderModeSwitched;
         }
 
         _defaultHeader = e.NameScope.Find<CalendarHeader>(DefaultHeaderPart);
         if (_defaultHeader is not null)
         {
-            _defaultHeader.IsVisible      = HeaderTemplate is null;
-            _defaultHeader.YearSelected  += OnHeaderYearSelected;
+            _defaultHeader.IsVisible = HeaderTemplate is null;
+            _defaultHeader.YearSelected += OnHeaderYearSelected;
             _defaultHeader.MonthSelected += OnHeaderMonthSelected;
-            _defaultHeader.ModeSwitched  += OnHeaderModeSwitched;
+            _defaultHeader.ModeSwitched += OnHeaderModeSwitched;
         }
 
         _customHeader = e.NameScope.Find<ContentControl>(CustomHeaderPart);
@@ -195,7 +195,7 @@ public class Calendar : TemplatedControl
 
     /// <summary>
     /// 为自定义 HeaderTemplate 提供强类型 <see cref="CalendarHeaderContext"/> 作为 DataContext，
-    /// 使模板能通过命令提交 Value/Mode（spec §5.4）。Value/Mode 变化时重建 context。
+    /// 使模板能通过命令提交 Value/Mode。Value/Mode 变化时重建 context。
     /// </summary>
     private void RefreshCustomHeaderContent()
     {
@@ -262,7 +262,7 @@ public class Calendar : TemplatedControl
 
     private void OnLanguageVariantChanged(object? sender, LanguageVariantChangedEventArgs e) => ApplyCulture();
 
-    /// <summary>解析当前语言的 Culture 并推给 CalendarView / 默认 Header，触发它们重建（spec §12）。</summary>
+    /// <summary>解析当前语言的 Culture 并推给 CalendarView / 默认 Header，触发它们重建。</summary>
     private void ApplyCulture()
     {
         var culture = Application.Current?.GetLanguageVariant()?.ToCultureInfo() ?? CultureInfo.CurrentCulture;
@@ -297,6 +297,13 @@ public class Calendar : TemplatedControl
         }
         else if (change.Property == ValueProperty)
         {
+            var value = (DateTime)change.NewValue!;
+            if (value != value.Date)
+            {
+                SetCurrentValue(ValueProperty, value.Date);
+                return;
+            }
+
             RefreshCustomHeaderContent();
         }
         else if (change.Property == FullscreenProperty ||
@@ -333,7 +340,7 @@ public class Calendar : TemplatedControl
     }
 
     /// <summary>
-    /// 处理一次有效用户选择：写入 Value 并按固定顺序 PanelChanged -> ValueChanged -> Selected 触发事件（spec §6.1）。
+    /// 处理一次有效用户选择：写入 Value，并按 PanelChanged -> ValueChanged -> Selected 的顺序触发事件。
     /// </summary>
     internal void CommitUserSelection(DateTime target, CalendarSelectSource source)
     {
@@ -359,7 +366,7 @@ public class Calendar : TemplatedControl
     }
 
     /// <summary>
-    /// 处理一次用户 Mode 切换：写入 Mode 并触发一次 <see cref="PanelChanged"/>（spec §6.2）。
+    /// 处理一次用户 Mode 切换：写入 Mode 并触发一次 <see cref="PanelChanged"/>。
     /// 不触发 ValueChanged / Selected。
     /// </summary>
     internal void CommitModeChange(CalendarMode mode)
@@ -375,7 +382,7 @@ public class Calendar : TemplatedControl
     }
 
     /// <summary>
-    /// 为自定义 Header 模板构建强类型上下文（spec §5.4）。命令的 CanExecute 校验参数类型；
+    /// 为自定义 Header 模板构建强类型上下文。命令的 CanExecute 校验参数类型；
     /// ChangeValueCommand 以 <see cref="CalendarSelectSource.Customize"/> 提交，且不自动应用
     /// ValidRange 或 DisabledDate（约束由自定义 Header 负责）。
     /// </summary>

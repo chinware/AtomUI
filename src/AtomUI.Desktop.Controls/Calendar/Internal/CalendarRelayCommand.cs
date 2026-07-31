@@ -1,4 +1,3 @@
-using System;
 using System.Windows.Input;
 
 namespace AtomUI.Desktop.Controls.Internal.Calendar;
@@ -14,7 +13,7 @@ internal sealed class CalendarRelayCommand : ICommand
 
     public CalendarRelayCommand(Action<object?> execute, Func<object?, bool> canExecute)
     {
-        _execute    = execute ?? throw new ArgumentNullException(nameof(execute));
+        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
         _canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
     }
 

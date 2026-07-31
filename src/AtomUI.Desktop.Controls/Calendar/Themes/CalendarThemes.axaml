@@ -1,11 +1,11 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:atom="https://atomui.net"
+                    xmlns:controls="clr-namespace:AtomUI.Desktop.Controls"
                     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
                     xmlns:calendar="clr-namespace:AtomUI.Desktop.Controls.Internal.Calendar"
                     x:ClassModifier="internal">
     <themes:CalendarViewCellTheme x:Key="{x:Type calendar:CalendarViewCell}" TargetType="calendar:CalendarViewCell" />
     <themes:CalendarViewTheme x:Key="{x:Type calendar:CalendarView}" TargetType="calendar:CalendarView" />
     <themes:CalendarHeaderTheme x:Key="{x:Type calendar:CalendarHeader}" TargetType="calendar:CalendarHeader" />
-    <themes:CalendarControlTheme x:Key="{x:Type atom:Calendar}" TargetType="atom:Calendar" />
+    <themes:CalendarControlTheme x:Key="{x:Type controls:Calendar}" TargetType="controls:Calendar" />
 </ResourceDictionary>

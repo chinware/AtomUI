@@ -7607,22 +7607,27 @@ Source: ./controls/calendar/semantic-cn.md
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Calendar` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Calendar` | 桌面日历控件根语义区域，承载 public API、状态投影和主题入口。 | `Value`、`Mode`、`Fullscreen`、`ShowWeek`、`ValidRange`、`DisabledDate`、`CellTemplate`、`FullCellTemplate`、`HeaderTemplate` | `CalendarControlToken` | stable |
+| `header` | `PART_HeaderPresenter` / `CalendarHeader` | 年份、月份和模式切换区域。 | `Value`、`Mode`、`Fullscreen`、`ValidRange` | `YearControlWidth`、`MonthControlWidth` | stable |
+| `body` | `PART_CalendarView` / `CalendarView` | 日期/月网格与周标题区域。 | `Value`、`Mode`、`Fullscreen`、`ShowWeek`、`ValidRange`、`DisabledDate` | `FullBg`、`FullPanelBg`、`MiniContentHeight`、`FullCellMinHeight` | stable |
+| `content` | `PART_CellHost` | 日期、月份和周序号容器区域。 | `Value`、`Mode`、`ShowWeek`、`ValidRange`、`DisabledDate` | `ItemActiveBg` | stable |
+| `item` | `CalendarViewCell` / `PART_Item` | 单个日期、月份或周序号单元。 | `CellTemplate`、`FullCellTemplate`、`Value`、`Mode`、`ShowWeek` | `ItemActiveBg` | stable |
+| `itemContent` | `PART_ItemContent` | CellTemplate / FullCellTemplate 的业务内容区域。 | `CellTemplate`、`FullCellTemplate`、`CalendarCellContext` | `ItemActiveBg` | stable |
 
 ## Abstract AXAML Structure
 
 来源：`src/AtomUI.Desktop.Controls/Calendar/Themes/CalendarTheme.axaml`
 
 ```xml
-<PixelAlignedBorder Name="PART_Frame">
-    <Panel Name="PART_Root">
-        <CalendarItem Name="PART_CalendarItem" />
-    </Panel>
-</PixelAlignedBorder>
+<Border Name="PART_Root">
+    <DockPanel>
+        <Panel Name="PART_HeaderPresenter">
+            <CalendarHeader Name="PART_DefaultHeader" />
+            <ContentControl Name="PART_CustomHeader" />
+        </Panel>
+        <CalendarView Name="PART_CalendarView" />
+    </DockPanel>
+</Border>
 ```
 
 ## Composition Model
@@ -7633,29 +7638,31 @@ Source: ./controls/calendar/semantic-cn.md
 
 ```text
 Calendar
-  -> BaseCalendarButton (control theme, BaseCalendarButtonTheme.axaml)
-     -> PixelAlignedBorder (template-stable)
-        -> ContentPresenter#PART_Content (template-stable)
-  -> BaseCalendarDayButton (control theme, BaseCalendarDayButtonTheme.axaml)
-     -> PixelAlignedBorder (template-stable)
-        -> ContentPresenter#PART_Content (template-stable)
-  -> CalendarItem (item container control theme, CalendarItemTheme.axaml)
-     -> Border#PART_ItemFrame (template-stable)
-        -> DockPanel#PART_ItemRootLayout (template-stable)
-           -> Grid#PART_HeaderLayout (template-stable)
-              -> IconButton#PART_PreviousButton (template-stable)
-              -> IconButton#PART_PreviousMonthButton (template-stable)
-              -> HeadTextButton#PART_HeaderButton (template-stable)
-              -> IconButton#PART_NextMonthButton (template-stable)
-              -> IconButton#PART_NextButton (template-stable)
-           -> Grid#PART_MonthView (template-stable)
-           -> Grid#PART_YearView (template-stable)
+  -> CalendarHeader (control theme, CalendarHeaderTheme.axaml)
+     -> Border (template-stable)
+        -> StackPanel (template-stable)
+           -> ComboBox#PART_YearSelect (template-stable)
+           -> ComboBox#PART_MonthSelect (template-stable)
+           -> Segmented#PART_ModeSwitch (template-stable)
+              -> SegmentedItem (template-stable)
+              -> SegmentedItem (template-stable)
   -> Calendar (control theme, CalendarTheme.axaml)
-     -> PixelAlignedBorder#PART_Frame (template-stable)
-        -> Panel#PART_Root (template-stable)
-           -> CalendarItem#PART_CalendarItem (template-stable)
-  -> HeadTextButton (control theme, HeadTextButtonTheme.axaml)
-     -> ContentPresenter#PART_Content (template-stable)
+     -> Border#PART_Root (template-stable)
+        -> DockPanel (template-stable)
+           -> Panel#PART_HeaderPresenter (template-stable)
+              -> CalendarHeader#PART_DefaultHeader (template-stable)
+              -> ContentControl#PART_CustomHeader (template-stable)
+           -> CalendarView#PART_CalendarView (template-stable)
+  -> CalendarViewCell (control theme, CalendarViewCellTheme.axaml)
+     -> Border#PART_Item (template-stable)
+        -> Border#PART_CellInner (template-stable)
+           -> Grid (template-stable)
+              -> ContentControl#PART_ItemContent (template-stable)
+              -> TextBlock#PART_Value (template-stable)
+  -> CalendarView (control theme, CalendarViewTheme.axaml)
+     -> DockPanel#PART_Body (template-stable)
+        -> Grid#PART_WeekHeader (template-stable)
+        -> Grid#PART_CellHost (template-stable)
 ```
 
 ### 协作节点
@@ -7663,112 +7670,102 @@ Calendar
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Calendar` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `BaseCalendarButton` | control theme | `BaseCalendarButtonTheme.axaml` | Calendar | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_Content` | template node (ContentPresenter) | `BaseCalendarButtonTheme.axaml` | BaseCalendarButton | `Content`, `ContentTemplate`, `FontSize`, `Foreground`, `HorizontalContentAlignment`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `BaseCalendarDayButton` | control theme | `BaseCalendarDayButtonTheme.axaml` | Calendar | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_Content` | template node (ContentPresenter) | `BaseCalendarDayButtonTheme.axaml` | BaseCalendarDayButton | `Content`, `ContentTemplate`, `FontSize`, `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `CalendarItem` | item container control theme | `CalendarItemTheme.axaml` | Calendar | `DayTitleHeight`, `IsMonthViewMode`, `IsMotionEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_ItemFrame` | template node (Border) | `CalendarItemTheme.axaml` | CalendarItem | `DayTitleHeight`, `IsMonthViewMode`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ItemRootLayout` | template node (DockPanel) | `CalendarItemTheme.axaml` | CalendarItem | `DayTitleHeight`, `IsMonthViewMode`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_HeaderLayout` | template node (Grid) | `CalendarItemTheme.axaml` | CalendarItem | `IsMonthViewMode`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_PreviousButton` | template node (IconButton) | `CalendarItemTheme.axaml` | CalendarItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_PreviousMonthButton` | template node (IconButton) | `CalendarItemTheme.axaml` | CalendarItem | `IsMonthViewMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_HeaderButton` | template node (HeadTextButton) | `CalendarItemTheme.axaml` | CalendarItem | `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_NextMonthButton` | template node (IconButton) | `CalendarItemTheme.axaml` | CalendarItem | `IsMonthViewMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_NextButton` | template node (IconButton) | `CalendarItemTheme.axaml` | CalendarItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_MonthView` | template node (Grid) | `CalendarItemTheme.axaml` | CalendarItem | `DayTitleHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_YearView` | template node (Grid) | `CalendarItemTheme.axaml` | CalendarItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Calendar` | control theme | `CalendarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsMotionEnabled`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_Frame` | template node (PixelAlignedBorder) | `CalendarTheme.axaml` | Calendar | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsMotionEnabled`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Root` | template node (Panel) | `CalendarTheme.axaml` | Calendar | `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_CalendarItem` | template node (CalendarItem) | `CalendarTheme.axaml` | Calendar | `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `HeadTextButton` | control theme | `HeadTextButtonTheme.axaml` | Calendar | `Background`, `Content`, `ContentTemplate`, `FontSize`, `FontWeight`, `Foreground` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_Content` | template node (ContentPresenter) | `HeadTextButtonTheme.axaml` | HeadTextButton | `Background`, `Content`, `ContentTemplate`, `FontSize`, `FontWeight`, `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `CalendarHeader` | control theme | `CalendarHeaderTheme.axaml` | Calendar | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StackPanel` | template node (StackPanel) | `CalendarHeaderTheme.axaml` | CalendarHeader | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_YearSelect` | template node (ComboBox) | `CalendarHeaderTheme.axaml` | CalendarHeader | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_MonthSelect` | template node (ComboBox) | `CalendarHeaderTheme.axaml` | CalendarHeader | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ModeSwitch` | template node (Segmented) | `CalendarHeaderTheme.axaml` | CalendarHeader | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `SegmentedItem` | template node (SegmentedItem) | `CalendarHeaderTheme.axaml` | CalendarHeader | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Calendar` | control theme | `CalendarTheme.axaml` | 用户代码 / 控件宿主 | `CellTemplate`, `DisabledDate`, `FullCellTemplate`, `Fullscreen`, `HeaderTemplate`, `Mode` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_Root` | template node (Border) | `CalendarTheme.axaml` | Calendar | `CellTemplate`, `DisabledDate`, `FullCellTemplate`, `Fullscreen`, `HeaderTemplate`, `Mode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DockPanel` | template node (DockPanel) | `CalendarTheme.axaml` | Calendar | `CellTemplate`, `DisabledDate`, `FullCellTemplate`, `Fullscreen`, `HeaderTemplate`, `Mode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_HeaderPresenter` | template node (Panel) | `CalendarTheme.axaml` | Calendar | `Fullscreen`, `HeaderTemplate`, `Mode`, `ValidRange`, `Value` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_DefaultHeader` | template node (CalendarHeader) | `CalendarTheme.axaml` | Calendar | `Fullscreen`, `Mode`, `ValidRange`, `Value` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_CustomHeader` | template node (ContentControl) | `CalendarTheme.axaml` | Calendar | `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_CalendarView` | template node (CalendarView) | `CalendarTheme.axaml` | Calendar | `CellTemplate`, `DisabledDate`, `FullCellTemplate`, `Fullscreen`, `ShowWeek`, `ValidRange` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `CalendarViewCell` | control theme | `CalendarViewCellTheme.axaml` | Calendar | `CellTemplate`, `Context`, `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Item` | template node (Border) | `CalendarViewCellTheme.axaml` | CalendarViewCell | `CellTemplate`, `Context`, `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_CellInner` | template node (Border) | `CalendarViewCellTheme.axaml` | CalendarViewCell | `CellTemplate`, `Context`, `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ItemContent` | template node (ContentControl) | `CalendarViewCellTheme.axaml` | CalendarViewCell | `CellTemplate`, `Context` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Value` | template node (TextBlock) | `CalendarViewCellTheme.axaml` | CalendarViewCell | `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `CalendarView` | control theme | `CalendarViewTheme.axaml` | Calendar | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Body` | template node (DockPanel) | `CalendarViewTheme.axaml` | CalendarView | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_WeekHeader` | template node (Grid) | `CalendarViewTheme.axaml` | CalendarView | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_CellHost` | template node (Grid) | `CalendarViewTheme.axaml` | CalendarView | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
-| 契约组 | 代表成员 | 维护含义 |
-| --- | --- | --- |
-| 内容与数据 | `HeaderBackground` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `DisplayMode`、`SelectedDate`、`SelectionMode` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsMotionEnabled`、`IsTodayHighlighted` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 其他稳定入口 | `DisplayDate`、`DisplayDateEnd`、`DisplayDateStart`、`FirstDayOfWeek` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+源文档未声明稳定 Template Part。维护模板时应以源码和主题文件中的实际声明为准。
 
 ## Pseudo Classes
 
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Calendar Token + ControlTheme。 |
+| 状态反馈 | API、内部状态与伪类如何形成反馈。 | `today`、`selected`、`outside`、`disabled`、`focused`、`fullscreen`、`mini`、`show-week`。 |
+| 主题语义 | SharedToken、CalendarControlToken、ControlTheme 与模板如何表达视觉。 | 四个 Calendar ControlTheme 消费共享 Token 与七个 Calendar 专属 Token。 |
+
+设计上的首要不变量是：Cell 定制不能夺走日期值、选中、禁用、焦点和命中测试语义；这些语义由 Cell 容器保留，模板只改变内容呈现方式。
 
 ## State Flow
 
-Calendar 的状态流按以下路径收敛：
+状态流按单一 owner 收敛：
 
 ```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
-  -> Gallery 可观察行为
+Public API / Header / Cell input
+  -> Calendar（Value、Mode、事件顺序）
+  -> CalendarHeader + CalendarView（不可变投影）
+  -> CalendarViewCell（状态、模板、命中测试）
+  -> ControlTheme selector / Gallery 可观察行为
 ```
 
-状态维护规则：
-
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- selection/checked/active、motion 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- `Calendar` 是唯一业务状态 owner；`CalendarView` 不保存第二份公开选中值。
+- Month 模式按当前月生成 42 个日期 Cell；Year 模式按当前年生成 12 个月 Cell。
+- `ShowWeek` 只作用于 Month 日期网格，增加每行一个周序号 Cell。周序号 Cell 可被点击并提交该行周首日，但不作为 `CalendarCellContext` 的日期/月模板项。
+- 日期禁用由 `ValidRange` 与 `DisabledDate` 的并集决定；月份禁用按“月份首日和末日都在范围外”或业务规则判定，不能只检查当前日。
+- 方向键只移动面板内的 roving focus；应跳过禁用 Cell 和周序号 Cell，无合法目标时保留当前焦点。Enter/Space 才提交选择。
+- `Fullscreen`/Mini 只改变布局密度和 Header 控件尺寸，不改变值、事件顺序、禁用和模板优先级。
+- AtomUI 语言服务改变会同步更新日期格式、周标题、月份名称、Header 的 Month/Year 文本与年份后缀。
 
 ## Theme and Token Boundaries
 
-Calendar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Calendar 使用 `CalendarControlToken`（scope id `CalendarControl`）以及 SharedToken。专属 Token 只表达七个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`MiniContentHeight`、`FullCellMinHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
 
-| 主题文件 | 职责 |
+| Theme 文件 | 稳定职责 |
 | --- | --- |
-| `BaseCalendarButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `BaseCalendarDayButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `CalendarItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
-| `CalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `CalendarThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
-| `HeadTextButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
+| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择和 CalendarView 接线；Fullscreen 拉伸且无紧凑边框，Mini 使用圆角边框。 |
+| `CalendarHeaderTheme.axaml` | Year Select、Month Select、Month/Year 模式切换。Mini 时 Header 交互控件应使用 Small 尺寸。 |
+| `CalendarViewTheme.axaml` | WeekHeader、CellHost，以及 Fullscreen/Mini 的布局差异。 |
+| `CalendarViewCellTheme.axaml` | 默认日期值、Cell/FullCell 模板消费、状态 selector 和命中测试视觉。 |
+| `CalendarThemes.axaml` | 四个内部 Theme 的资源聚合。 |
 
-Calendar 使用 `CalendarToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion 运行时状态。
-
-主题维护规则：
-
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+`CellTemplate` 必须保留默认值显示；`FullCellTemplate` 覆盖完整 Cell 内部内容且优先级最高。两者都不能删除禁用、选中、焦点和 outside 的容器状态。
 
 Token 边界：
 
-Calendar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
+新 Calendar 的 Token 收敛为七个公开视觉语义。日期值、周标题、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则。
 
 当前 Token scope：
 
-- `CalendarToken`，scope id 为 `Calendar`，源码位于 `src/AtomUI.Desktop.Controls/Calendar/CalendarToken.cs`。
+- `CalendarControlToken`，scope id 为 `CalendarControl`，源码位于 `src/AtomUI.Desktop.Controls/Calendar/CalendarControlToken.cs`。
+
+> 注意：旧 `CalendarToken`（scope id `Calendar`）现归 DatePicker 的 CalendarView 使用，与新 Calendar 无关。新 Calendar 通过 `CalendarControlTokenResource` 引用自己的 Token，两者完全独立。
 
 ## Customization Boundaries
 
-维护 Calendar 时必须保持以下不变量：
-
-- 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
-- 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
-- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
-- Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
-- 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
-- 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
+- 不擅自新增、删除或重命名 public 属性、事件、上下文类型、枚举成员、模板 part、伪类、ControlTheme key 或 Token。
+- `Value` 的日期规范化、用户事件顺序、`FullCellTemplate` 优先级和月份两端禁用规则属于行为兼容契约。
+- 模板重应用、模式切换、语言切换和控件 detach 必须释放旧事件订阅、清理旧容器 owner，并把当前状态回放到新模板。
+- 不把 DatePicker 的旧 Calendar API（`SelectedDate`、`BlackoutDates`、范围选择、Decade 等）映射进新 Calendar。
+- 不用运行时反射发现 API、Token 或模板；AXAML 绑定、静态注册和生成资源必须保持 NativeAOT 友好。
+- Automation 的跨平台契约以 `CalendarView` 的 `Table` + `ISelectionProvider` 和 Cell 的 `ListItem` + `ISelectionItemProvider` 为准；Cell 的 `SelectionContainer` 返回 View provider，不宣称 Avalonia 当前未公开的跨平台 GridItem provider。
 
 维护不变量：
 
-维护 Calendar 时不得破坏：
-
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- Calendar 是唯一 public 状态 owner；View/Cell 不得引入第二份可写 Value。
+- `Value` 永远是日期值；所有提交和上下文值均不携带时间部分。
+- `FullCellTemplate` 优先于 `CellTemplate`，但两者都保留 Cell 状态和交互语义。
+- Month 禁用使用月首/月末范围判断；方向键跳过禁用和周序号 Cell。
+- 默认 Header、自定义 Header、Cell Pointer、键盘和 Automation 使用同一提交与事件顺序。
+- 新 Calendar 与 DatePicker 旧 CalendarView 的类型、Token、Theme key 和生命周期互不越界。
+- 改动 ControlTheme、伪类、Token、Template part 或 Automation 时，必须同步 Gallery、测试和本目录文档。
 
 Source: ./controls/card/semantic-cn.md
 

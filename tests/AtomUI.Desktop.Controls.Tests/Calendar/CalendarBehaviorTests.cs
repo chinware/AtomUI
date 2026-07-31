@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Avalonia.Data;
 using Shouldly;
 using Xunit;
 using AtomUICalendar = AtomUI.Desktop.Controls.Calendar;
@@ -26,16 +27,26 @@ public class CalendarBehaviorTests
     }
 
     [Fact]
-    public void SettingValueProgrammatically_DoesNotRaiseUserEvents()
+    public void ValueAndMode_DefaultBindingMode_IsTwoWay()
+    {
+        AtomUICalendar.ValueProperty.GetMetadata(typeof(AtomUICalendar))
+            .DefaultBindingMode.ShouldBe(BindingMode.TwoWay);
+        AtomUICalendar.ModeProperty.GetMetadata(typeof(AtomUICalendar))
+            .DefaultBindingMode.ShouldBe(BindingMode.TwoWay);
+    }
+
+    [Fact]
+    public void SettingValueProgrammatically_NormalizesTimeToDate_AndDoesNotRaiseUserEvents()
     {
         var c = new AtomUICalendar { Value = new DateTime(2026, 7, 1) };
         var fired = new List<string>();
         c.ValueChanged += (_, _) => fired.Add("value");
-        c.Selected     += (_, _) => fired.Add("selected");
+        c.Selected += (_, _) => fired.Add("selected");
         c.PanelChanged += (_, _) => fired.Add("panel");
 
-        c.Value = new DateTime(2026, 8, 15);
+        c.Value = new DateTime(2026, 8, 15, 9, 30, 0);
 
+        c.Value.ShouldBe(new DateTime(2026, 8, 15));
         fired.ShouldBeEmpty();
     }
 
@@ -46,7 +57,7 @@ public class CalendarBehaviorTests
         var fired = new List<string>();
         c.PanelChanged += (_, _) => fired.Add("panel");
         c.ValueChanged += (_, _) => fired.Add("value");
-        c.Selected     += (_, _) => fired.Add("selected");
+        c.Selected += (_, _) => fired.Add("selected");
 
         c.Mode = CalendarMode.Year;
 
@@ -60,7 +71,7 @@ public class CalendarBehaviorTests
         var order = new List<string>();
         c.PanelChanged += (_, _) => order.Add("panel");
         c.ValueChanged += (_, _) => order.Add("value");
-        c.Selected     += (_, _) => order.Add("selected");
+        c.Selected += (_, _) => order.Add("selected");
 
         Commit(c, new DateTime(2026, 7, 20), CalendarSelectSource.Date);
 
@@ -75,7 +86,7 @@ public class CalendarBehaviorTests
         var order = new List<string>();
         c.PanelChanged += (_, _) => order.Add("panel");
         c.ValueChanged += (_, _) => order.Add("value");
-        c.Selected     += (_, _) => order.Add("selected");
+        c.Selected += (_, _) => order.Add("selected");
 
         Commit(c, new DateTime(2026, 8, 2), CalendarSelectSource.Date);
 
@@ -89,7 +100,7 @@ public class CalendarBehaviorTests
         var order = new List<string>();
         c.PanelChanged += (_, _) => order.Add("panel");
         c.ValueChanged += (_, _) => order.Add("value");
-        c.Selected     += (_, _) => order.Add("selected");
+        c.Selected += (_, _) => order.Add("selected");
 
         Commit(c, new DateTime(2026, 7, 20), CalendarSelectSource.Date);
 
@@ -103,7 +114,7 @@ public class CalendarBehaviorTests
         var order = new List<string>();
         c.PanelChanged += (_, _) => order.Add("panel");
         c.ValueChanged += (_, _) => order.Add("value");
-        c.Selected     += (_, _) => order.Add("selected");
+        c.Selected += (_, _) => order.Add("selected");
 
         // Year 模式下同年跨月不触发 PanelChanged
         Commit(c, new DateTime(2026, 9, 15), CalendarSelectSource.Month);
@@ -118,7 +129,7 @@ public class CalendarBehaviorTests
         var order = new List<string>();
         c.PanelChanged += (_, _) => order.Add("panel");
         c.ValueChanged += (_, _) => order.Add("value");
-        c.Selected     += (_, _) => order.Add("selected");
+        c.Selected += (_, _) => order.Add("selected");
 
         Commit(c, new DateTime(2027, 3, 15), CalendarSelectSource.Year);
 
@@ -132,7 +143,7 @@ public class CalendarBehaviorTests
         var order = new List<string>();
         c.PanelChanged += (_, _) => order.Add("panel");
         c.ValueChanged += (_, _) => order.Add("value");
-        c.Selected     += (_, _) => order.Add("selected");
+        c.Selected += (_, _) => order.Add("selected");
 
         CommitMode(c, CalendarMode.Year);
 

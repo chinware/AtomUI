@@ -6,7 +6,7 @@ namespace AtomUIGallery.ShowCases.Calendar;
 internal partial class zh_TW
 {
     public const string PageSubtitle = "在桌面日曆面板中依日期組織業務內容。";
-    public const string PageDescription = "Calendar 遵循 Ant Design 6 語意，以月日期網格或年月份網格呈現日期，支援有效範圍、停用日期、儲存格定製與選擇事件。";
+    public const string PageDescription = "Calendar 以月日期網格或年月份網格呈現日期，支援有效範圍、停用日期、儲存格定製與選擇事件。";
     public const string ComponentCategory = "資料展示";
     public const string ComponentStatusStable = "穩定";
     public const string ScenarioExamples = "範例";

@@ -7,6 +7,7 @@
     themeResources:ControlTokenScope.Identity="{x:Static generated:DatePickerThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:calendarView="clr-namespace:AtomUI.Desktop.Controls.CalendarView"
+    xmlns:calendarViewInfrastructure="clr-namespace:AtomUI.Desktop.Controls.CalendarView.Infrastructure"
     x:Class="AtomUI.Desktop.Controls.Themes.CalendarItemTheme"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     TargetType="calendarView:CalendarItem"
@@ -26,7 +27,7 @@
                         <Grid Name="PART_HeaderLayout"
                               MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
                               MinHeight="{atom:SharedTokenResource ControlHeight}">
-                            <atom:HeadTextButton
+                            <calendarViewInfrastructure:HeadTextButton
                                 Name="PART_HeaderButton"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"

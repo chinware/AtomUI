@@ -1,5 +1,4 @@
-﻿using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Media;
+﻿using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.DesignTokens;
 using Avalonia;
@@ -11,7 +10,7 @@ namespace AtomUI.Desktop.Controls;
 internal class CalendarToken : AbstractControlDesignToken
 {
     public const string ID = "Calendar";
-    
+
     public CalendarToken()
         : base(ID)
     {
@@ -108,23 +107,23 @@ internal class CalendarToken : AbstractControlDesignToken
 
         var colorPrimary = SharedToken.ColorPrimary;
 
-        CellHoverBg           = SharedToken.ControlItemBgHover;
+        CellHoverBg = SharedToken.ControlItemBgHover;
         CellActiveWithRangeBg = SharedToken.ControlItemBgActive;
-        CellHoverWithRangeBg  = colorPrimary.Lighten(35);
-        CellRangeBorderColor  = colorPrimary.Lighten(20);
-        CellBgDisabled        = SharedToken.ColorBgContainerDisabled;
-        CellWidth             = SharedToken.ControlHeightSM;
-        CellHeight            = SharedToken.ControlHeightSM;
-        TextHeight            = SharedToken.ControlHeightLG;
+        CellHoverWithRangeBg = colorPrimary.Lighten(35);
+        CellRangeBorderColor = colorPrimary.Lighten(20);
+        CellBgDisabled = SharedToken.ColorBgContainerDisabled;
+        CellWidth = SharedToken.ControlHeightSM;
+        CellHeight = SharedToken.ControlHeightSM;
+        TextHeight = SharedToken.ControlHeightLG;
         WithoutTimeCellHeight = SharedToken.ControlHeightLG * 1.65;
-        CellMargin            = SharedToken.MarginXXS;
-        PanelContentPadding   = SharedToken.PaddingSM;
-        ItemPanelMinWidth     = 260;
-        ItemPanelMinHeight    = 290;
-        DayTitleHeight        = SharedToken.ControlHeightSM;
-        HeaderMargin          = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
-        CellLineHeight        = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
-        RangeCalendarSpacing  = 20;
+        CellMargin = SharedToken.MarginXXS;
+        PanelContentPadding = SharedToken.PaddingSM;
+        ItemPanelMinWidth = 260;
+        ItemPanelMinHeight = 290;
+        DayTitleHeight = SharedToken.ControlHeightSM;
+        HeaderMargin = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
+        CellLineHeight = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
+        RangeCalendarSpacing = 20;
     }
-    
+
 }

@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-
 namespace AtomUI.Desktop.Controls.Internal.Calendar;
 
 /// <summary>
-/// 默认 CalendarHeader 的年/月选项计算（spec §7.3）。纯逻辑，无控件依赖，可独立单测。
+/// 默认 CalendarHeader 的年/月选项计算。纯逻辑，无控件依赖，可独立单测。
 /// </summary>
 internal static class CalendarHeaderOptions
 {
@@ -18,12 +15,12 @@ internal static class CalendarHeaderOptions
         if (rangeStartYear is { } s && rangeEndYear is { } e)
         {
             first = s;
-            last  = e;
+            last = e;
         }
         else
         {
-            first = currentYear - 10;
-            last  = currentYear + 9;
+            first = Math.Max(DateTime.MinValue.Year, currentYear - 10);
+            last = Math.Min(DateTime.MaxValue.Year, currentYear + 9);
         }
 
         var years = new List<int>(Math.Max(0, last - first + 1));
@@ -42,7 +39,7 @@ internal static class CalendarHeaderOptions
     public static IReadOnlyList<int> BuildMonthOptions(int year, DateTime? rangeStart, DateTime? rangeEnd)
     {
         var firstMonth = 1;
-        var lastMonth  = 12;
+        var lastMonth = 12;
 
         if (rangeStart is { } s && s.Year == year)
         {
@@ -79,7 +76,7 @@ internal static class CalendarHeaderOptions
     }
 
     /// <summary>
-    /// 切换到某年时，把当前月份收敛到该年可选月份范围内（spec §7.3）。
+    /// 切换到某年时，把当前月份收敛到该年可选月份范围内。
     /// </summary>
     public static int ClampMonthToYear(int desiredMonth, int year, DateTime? rangeStart, DateTime? rangeEnd)
     {

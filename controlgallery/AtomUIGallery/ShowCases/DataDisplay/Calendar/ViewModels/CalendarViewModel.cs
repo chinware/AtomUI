@@ -14,12 +14,12 @@ public class CalendarViewModel : ReactiveObject, IRoutableViewModel
 
     public string UrlPathSegment { get; } = ID.ToString();
 
-    /// <summary>示例锚点日期，固定值避免示例随当天漂移。</summary>
-    public DateTime SampleDate { get; } = new(2026, 7, 15);
+    /// <summary>示例锚点日期，跟随 Calendar 默认值。</summary>
+    public DateTime SampleDate { get; } = DateTime.Today;
 
-    /// <summary>ValidRange 示例：2026 年 7 月 5 日至 7 月 25 日。</summary>
+    /// <summary>ValidRange 示例：围绕初始日期展示前后边界。</summary>
     public CalendarDateRange SampleValidRange { get; } =
-        new(new DateTime(2026, 7, 5), new DateTime(2026, 7, 25));
+        new(DateTime.Today.AddDays(-10), DateTime.Today.AddDays(10));
 
     /// <summary>DisabledDate 示例：禁用周末。</summary>
     public Func<DateTime, bool> DisableWeekends { get; } =

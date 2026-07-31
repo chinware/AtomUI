@@ -1,7 +1,7 @@
 namespace AtomUI.Desktop.Controls.Internal.Calendar;
 
 /// <summary>
-/// Calendar 根控件伪类（spec §13）。
+/// Calendar 根控件伪类。
 /// </summary>
 internal static class CalendarRootPseudoClass
 {
@@ -13,7 +13,7 @@ internal static class CalendarRootPseudoClass
 }
 
 /// <summary>
-/// CalendarViewCell 伪类（spec §13）。
+/// CalendarViewCell 伪类。
 /// </summary>
 internal static class CalendarCellPseudoClass
 {
