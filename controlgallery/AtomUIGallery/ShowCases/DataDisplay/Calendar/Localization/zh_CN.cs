@@ -32,6 +32,18 @@ internal partial class zh_CN
     public const string FullCellTemplateTitle = "自定义完整单元格";
     public const string FullCellTemplateDescription = "用 FullCellTemplate 替换整个单元格 inner 内容。";
 
+    public const string NoticeCalendarTitle = "通知事项日历";
+    public const string NoticeCalendarDescription = "在日期单元格内展示通知事项，在月份单元格内展示待办数量。";
+    public const string NoticeCalendarWarningEventText = "这是警告事项。";
+    public const string NoticeCalendarUsualEventText = "这是普通事项。";
+    public const string NoticeCalendarErrorEventText = "这是错误事项。";
+    public const string NoticeCalendarLongUsualEventText = "这是很长的普通事项......";
+    public const string NoticeCalendarErrorEvent1Text = "这是错误事项 1。";
+    public const string NoticeCalendarErrorEvent2Text = "这是错误事项 2。";
+    public const string NoticeCalendarErrorEvent3Text = "这是错误事项 3。";
+    public const string NoticeCalendarErrorEvent4Text = "这是错误事项 4。";
+    public const string NoticeCalendarBacklogText = "待办数量";
+
     public const string HeaderTemplateTitle = "自定义头部";
     public const string HeaderTemplateDescription = "用 HeaderTemplate 替换默认头部。";
 

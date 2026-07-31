@@ -32,6 +32,18 @@ internal partial class zh_TW
     public const string FullCellTemplateTitle = "自訂完整儲存格";
     public const string FullCellTemplateDescription = "用 FullCellTemplate 替換整個儲存格 inner 內容。";
 
+    public const string NoticeCalendarTitle = "通知事項日曆";
+    public const string NoticeCalendarDescription = "在日期儲存格內展示通知事項，在月份儲存格內展示待辦數量。";
+    public const string NoticeCalendarWarningEventText = "這是警告事項。";
+    public const string NoticeCalendarUsualEventText = "這是一般事項。";
+    public const string NoticeCalendarErrorEventText = "這是錯誤事項。";
+    public const string NoticeCalendarLongUsualEventText = "這是很長的一般事項......";
+    public const string NoticeCalendarErrorEvent1Text = "這是錯誤事項 1。";
+    public const string NoticeCalendarErrorEvent2Text = "這是錯誤事項 2。";
+    public const string NoticeCalendarErrorEvent3Text = "這是錯誤事項 3。";
+    public const string NoticeCalendarErrorEvent4Text = "這是錯誤事項 4。";
+    public const string NoticeCalendarBacklogText = "待辦數量";
+
     public const string HeaderTemplateTitle = "自訂頭部";
     public const string HeaderTemplateDescription = "用 HeaderTemplate 替換預設頭部。";
 

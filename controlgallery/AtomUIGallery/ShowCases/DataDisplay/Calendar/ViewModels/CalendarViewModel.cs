@@ -1,7 +1,9 @@
 using System;
+using System.Globalization;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using Avalonia.Data.Converters;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Calendar;
@@ -37,5 +39,61 @@ public class CalendarViewModel : ReactiveObject, IRoutableViewModel
     public CalendarViewModel(IScreen screen)
     {
         HostScreen = screen;
+    }
+}
+
+public sealed class NoticeCalendarDateEventVisibilityConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is not CalendarCellContext { CellType: CalendarCellType.Date } context ||
+            parameter is not string days)
+        {
+            return false;
+        }
+
+        foreach (var dayText in days.Split(
+                     new[] { ',', '|' },
+                     StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            if (int.TryParse(dayText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var day) &&
+                day == context.Value.Day)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotSupportedException();
+    }
+}
+
+public sealed class NoticeCalendarDateCellVisibilityConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return value is CalendarCellContext { CellType: CalendarCellType.Date };
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotSupportedException();
+    }
+}
+
+public sealed class NoticeCalendarMonthBacklogVisibilityConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return value is CalendarCellContext { CellType: CalendarCellType.Month, Value.Month: 9 };
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotSupportedException();
     }
 }

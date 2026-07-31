@@ -10,6 +10,120 @@
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource NoticeCalendarTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource NoticeCalendarDescription}"
+                                      IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CalendarViewModel">
+                            <atom:Calendar Value="{Binding SampleDate}"
+                                           MinWidth="640"
+                                           HorizontalAlignment="Stretch">
+                                <atom:Calendar.CellTemplate>
+                                    <DataTemplate x:DataType="atom:CalendarCellContext">
+                                        <Grid>
+                                            <atom:ScrollViewer IsLiteMode="True"
+                                                               AllowAutoHide="True"
+                                                               MaxHeight="74"
+                                                               VerticalScrollBarVisibility="Auto"
+                                                               HorizontalScrollBarVisibility="Disabled"
+                                                               IsScrollChainingEnabled="False"
+                                                               ClipToBounds="True"
+                                                               IsVisible="{Binding ., Converter={StaticResource NoticeCalendarDateCellVisibilityConverter}}">
+                                                <StackPanel Margin="0,4,0,0" Spacing="4">
+                                                    <Grid ColumnDefinitions="14,*"
+                                                          MinHeight="22"
+                                                          ClipToBounds="True"
+                                                          IsVisible="{Binding ., Converter={StaticResource NoticeCalendarDateEventVisibilityConverter}, ConverterParameter=8|10|15}">
+                                                        <atom:DotBadge Status="Warning" VerticalAlignment="Center" />
+                                                        <atom:TextBlock Grid.Column="1"
+                                                                        Text="{gallery:CalendarShowCaseLangResource NoticeCalendarWarningEventText}"
+                                                                        TextTrimming="CharacterEllipsis" />
+                                                    </Grid>
+                                                    <Grid ColumnDefinitions="14,*"
+                                                          MinHeight="22"
+                                                          ClipToBounds="True"
+                                                          IsVisible="{Binding ., Converter={StaticResource NoticeCalendarDateEventVisibilityConverter}, ConverterParameter=8|10}">
+                                                        <atom:DotBadge Status="Success" VerticalAlignment="Center" />
+                                                        <atom:TextBlock Grid.Column="1"
+                                                                        Text="{gallery:CalendarShowCaseLangResource NoticeCalendarUsualEventText}"
+                                                                        TextTrimming="CharacterEllipsis" />
+                                                    </Grid>
+                                                    <Grid ColumnDefinitions="14,*"
+                                                          MinHeight="22"
+                                                          ClipToBounds="True"
+                                                          IsVisible="{Binding ., Converter={StaticResource NoticeCalendarDateEventVisibilityConverter}, ConverterParameter=10}">
+                                                        <atom:DotBadge Status="Error" VerticalAlignment="Center" />
+                                                        <atom:TextBlock Grid.Column="1"
+                                                                        Text="{gallery:CalendarShowCaseLangResource NoticeCalendarErrorEventText}"
+                                                                        TextTrimming="CharacterEllipsis" />
+                                                    </Grid>
+                                                    <Grid ColumnDefinitions="14,*"
+                                                          MinHeight="22"
+                                                          ClipToBounds="True"
+                                                          IsVisible="{Binding ., Converter={StaticResource NoticeCalendarDateEventVisibilityConverter}, ConverterParameter=15}">
+                                                        <atom:DotBadge Status="Success" VerticalAlignment="Center" />
+                                                        <atom:TextBlock Grid.Column="1"
+                                                                        Text="{gallery:CalendarShowCaseLangResource NoticeCalendarLongUsualEventText}"
+                                                                        TextTrimming="CharacterEllipsis" />
+                                                    </Grid>
+                                                    <Grid ColumnDefinitions="14,*"
+                                                          MinHeight="22"
+                                                          ClipToBounds="True"
+                                                          IsVisible="{Binding ., Converter={StaticResource NoticeCalendarDateEventVisibilityConverter}, ConverterParameter=15}">
+                                                        <atom:DotBadge Status="Error" VerticalAlignment="Center" />
+                                                        <atom:TextBlock Grid.Column="1"
+                                                                        Text="{gallery:CalendarShowCaseLangResource NoticeCalendarErrorEvent1Text}"
+                                                                        TextTrimming="CharacterEllipsis" />
+                                                    </Grid>
+                                                    <Grid ColumnDefinitions="14,*"
+                                                          MinHeight="22"
+                                                          ClipToBounds="True"
+                                                          IsVisible="{Binding ., Converter={StaticResource NoticeCalendarDateEventVisibilityConverter}, ConverterParameter=15}">
+                                                        <atom:DotBadge Status="Error" VerticalAlignment="Center" />
+                                                        <atom:TextBlock Grid.Column="1"
+                                                                        Text="{gallery:CalendarShowCaseLangResource NoticeCalendarErrorEvent2Text}"
+                                                                        TextTrimming="CharacterEllipsis" />
+                                                    </Grid>
+                                                    <Grid ColumnDefinitions="14,*"
+                                                          MinHeight="22"
+                                                          ClipToBounds="True"
+                                                          IsVisible="{Binding ., Converter={StaticResource NoticeCalendarDateEventVisibilityConverter}, ConverterParameter=15}">
+                                                        <atom:DotBadge Status="Error" VerticalAlignment="Center" />
+                                                        <atom:TextBlock Grid.Column="1"
+                                                                        Text="{gallery:CalendarShowCaseLangResource NoticeCalendarErrorEvent3Text}"
+                                                                        TextTrimming="CharacterEllipsis" />
+                                                    </Grid>
+                                                    <Grid ColumnDefinitions="14,*"
+                                                          MinHeight="22"
+                                                          ClipToBounds="True"
+                                                          IsVisible="{Binding ., Converter={StaticResource NoticeCalendarDateEventVisibilityConverter}, ConverterParameter=15}">
+                                                        <atom:DotBadge Status="Error" VerticalAlignment="Center" />
+                                                        <atom:TextBlock Grid.Column="1"
+                                                                        Text="{gallery:CalendarShowCaseLangResource NoticeCalendarErrorEvent4Text}"
+                                                                        TextTrimming="CharacterEllipsis" />
+                                                    </Grid>
+                                                </StackPanel>
+                                            </atom:ScrollViewer>
+                                            <StackPanel HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Spacing="2"
+                                                        IsVisible="{Binding ., Converter={StaticResource NoticeCalendarMonthBacklogVisibilityConverter}}">
+                                                <atom:TextBlock Text="1394"
+                                                                FontSize="{atom:SharedTokenResource FontSizeXL}"
+                                                                FontWeight="SemiBold"
+                                                                HorizontalAlignment="Center" />
+                                                <atom:TextBlock Text="{gallery:CalendarShowCaseLangResource NoticeCalendarBacklogText}"
+                                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                                HorizontalAlignment="Center" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </atom:Calendar.CellTemplate>
+                            </atom:Calendar>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
                 <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource MiniTitle}"
                                       Description="{gallery:CalendarShowCaseLangResource MiniDescription}"
                                       IsDeferredContentEnabled="True">
