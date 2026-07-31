@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using AtomUIGallery.Localization;
+using System.Collections.ObjectModel;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
@@ -7,7 +8,6 @@ using AtomUI.Data;
 using Avalonia.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Theme.Language;
-using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;

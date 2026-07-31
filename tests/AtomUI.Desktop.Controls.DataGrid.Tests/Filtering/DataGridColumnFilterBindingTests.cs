@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using AtomUI.Controls.Data;
 using AtomUI.Desktop.Controls.Data;
-using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Threading;
 using Shouldly;

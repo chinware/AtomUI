@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
 using AtomUIGallery.ShowCases.Slider;
 using Shouldly;
 using Xunit;

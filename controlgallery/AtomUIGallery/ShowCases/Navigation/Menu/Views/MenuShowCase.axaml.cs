@@ -1,3 +1,4 @@
+using AtomUIGallery.Localization;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
@@ -9,7 +10,6 @@ using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.Menu;
 

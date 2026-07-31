@@ -1,3 +1,4 @@
+using AtomUIGallery.Localization;
 using System.Reactive.Disposables;
 using AtomUI;
 using AtomUI.Controls;
@@ -9,7 +10,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
-using AtomUIGallery.Localization;
 using AtomUISlider = AtomUI.Desktop.Controls.Slider;
 using Avalonia.Controls.Primitives;
 

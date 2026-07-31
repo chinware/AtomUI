@@ -1,3 +1,4 @@
+using AtomUIGallery.Localization;
 using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
@@ -10,7 +11,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.Transfer;
 

@@ -1,5 +1,4 @@
 using System.Text;
-using AtomUI.Icons;
 using Shouldly;
 using Xunit;
 

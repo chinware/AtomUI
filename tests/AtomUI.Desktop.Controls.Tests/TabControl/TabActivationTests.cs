@@ -4,7 +4,6 @@ using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Threading;
 using Shouldly;
-using System.Threading;
 using Xunit;
 using AtomTabControl = AtomUI.Desktop.Controls.TabControl;
 using AtomTabItem = AtomUI.Desktop.Controls.TabItem;

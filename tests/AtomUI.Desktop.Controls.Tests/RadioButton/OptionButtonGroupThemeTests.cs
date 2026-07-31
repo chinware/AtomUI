@@ -1,5 +1,4 @@
 using System.Reflection;
-using AtomUI.Controls;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;

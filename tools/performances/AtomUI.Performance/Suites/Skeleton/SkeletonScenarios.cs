@@ -1,4 +1,3 @@
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using AvaTextBlock = Avalonia.Controls.TextBlock;

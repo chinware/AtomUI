@@ -1,4 +1,3 @@
-using System;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUIGallery.Workspace.ViewModels;
 using ReactiveUI;

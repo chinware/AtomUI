@@ -1,4 +1,3 @@
-using System.Threading;
 using System.ComponentModel;
 using System.Windows.Input;
 using AtomUI.Controls;

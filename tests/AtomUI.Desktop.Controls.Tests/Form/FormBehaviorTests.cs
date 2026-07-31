@@ -1,5 +1,3 @@
-using System.IO;
-using System.Linq;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;

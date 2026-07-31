@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using AtomUI.Desktop.Controls.Internal.Calendar;
 using Avalonia.Controls;

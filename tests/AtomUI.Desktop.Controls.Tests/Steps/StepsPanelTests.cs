@@ -1,4 +1,3 @@
-using System.Linq;
 using Avalonia;
 using Avalonia.Layout;
 using Shouldly;

@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using AtomUI.Toolkits.GalleryBase.Localization;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using Shouldly;

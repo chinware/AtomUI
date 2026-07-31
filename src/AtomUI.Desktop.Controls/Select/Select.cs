@@ -3,7 +3,6 @@ using System.Collections.Specialized;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Reflection;
-using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Collections;

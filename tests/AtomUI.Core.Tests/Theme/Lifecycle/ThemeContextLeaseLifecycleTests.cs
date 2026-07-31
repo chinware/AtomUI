@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using AtomUI.Core.Tests.Theme;
 using AtomUI.Theme;
 using AtomUI.Theme.Resources;
 using Avalonia.Controls;

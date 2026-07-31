@@ -1,7 +1,6 @@
 ﻿using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;

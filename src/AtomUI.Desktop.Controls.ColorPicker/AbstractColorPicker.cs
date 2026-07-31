@@ -2,7 +2,6 @@ using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Media;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;

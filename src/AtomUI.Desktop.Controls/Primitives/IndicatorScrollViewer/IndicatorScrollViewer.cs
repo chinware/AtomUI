@@ -1,5 +1,4 @@
 using AtomUI.Animations;
-using AtomUI.Theme;
 using Avalonia.Interactivity;
 
 namespace AtomUI.Desktop.Controls.Primitives;

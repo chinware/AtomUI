@@ -1,8 +1,5 @@
-using System;
-using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
-using Avalonia.Headless;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;

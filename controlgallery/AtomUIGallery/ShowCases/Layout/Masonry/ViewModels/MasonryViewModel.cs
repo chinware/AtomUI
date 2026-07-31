@@ -1,11 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Reactive;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUIGallery.Localization;
-using Avalonia;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Masonry;

@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using AtomUI.Utils;
-using Avalonia;
 using AtomSwitch = AtomUI.Desktop.Controls.ToggleSwitch;
 
 namespace AtomUI.Performance;

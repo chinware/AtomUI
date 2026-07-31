@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using AtomUI.Controls.Data;
-using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Shouldly;
 using Xunit;

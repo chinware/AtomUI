@@ -1,8 +1,5 @@
 using AtomUI.Theme;
-using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Resources;
-using AtomUI.Theme.Schema;
-using AtomUI.Theme.DesignTokens;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.XamlIl.Runtime;

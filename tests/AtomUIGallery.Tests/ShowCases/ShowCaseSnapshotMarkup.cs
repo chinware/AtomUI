@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace AtomUIGallery.Tests.ShowCases;

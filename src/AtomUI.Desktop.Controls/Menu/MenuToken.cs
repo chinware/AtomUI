@@ -1,5 +1,3 @@
-using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Theme;
 using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.DesignTokens;
 using Avalonia;

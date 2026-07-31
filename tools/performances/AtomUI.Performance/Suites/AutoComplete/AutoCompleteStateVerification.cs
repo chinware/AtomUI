@@ -1,7 +1,6 @@
 using System.Reflection;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.Primitives;
-using Avalonia.Controls;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;

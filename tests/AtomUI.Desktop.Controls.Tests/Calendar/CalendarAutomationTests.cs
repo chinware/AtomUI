@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using AtomUI.Desktop.Controls.Internal.Calendar;
 using Avalonia.Automation.Peers;
 using Avalonia.Automation.Provider;

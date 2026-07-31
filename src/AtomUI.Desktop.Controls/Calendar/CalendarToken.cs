@@ -1,5 +1,4 @@
 ﻿using AtomUI.Media;
-using AtomUI.Theme;
 using AtomUI.Theme.DesignTokens;
 using Avalonia;
 using Avalonia.Media;

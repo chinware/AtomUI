@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Windows.Input;
 using AtomUIGallery.ShowCases.Segmented;
 using Shouldly;

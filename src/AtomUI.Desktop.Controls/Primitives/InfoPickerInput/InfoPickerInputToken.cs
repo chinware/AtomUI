@@ -1,6 +1,4 @@
-﻿using AtomUI.Desktop.Controls.Primitives.DesignTokens;
-using AtomUI.Theme;
-using AtomUI.Theme.DesignTokens;
+﻿using AtomUI.Theme.DesignTokens;
 using Avalonia;
 
 namespace AtomUI.Desktop.Controls.Primitives;

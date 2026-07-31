@@ -1,13 +1,9 @@
-using System.Collections.ObjectModel;
+using AtomUIGallery.Localization;
 using System.Globalization;
 using AtomUI;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Threading;
-using AtomUIGallery.Localization;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.DatePicker;

@@ -3,7 +3,6 @@ using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Schema;
 using AtomUI.Theme.DesignTokens;
-using Avalonia.Media;
 using Shouldly;
 using Xunit;
 

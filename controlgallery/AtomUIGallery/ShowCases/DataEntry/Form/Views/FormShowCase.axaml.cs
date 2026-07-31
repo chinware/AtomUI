@@ -1,3 +1,4 @@
+using AtomUIGallery.Localization;
 using System.Globalization;
 using System.Reactive.Disposables;
 using AtomUI;
@@ -11,7 +12,6 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.Form;
 

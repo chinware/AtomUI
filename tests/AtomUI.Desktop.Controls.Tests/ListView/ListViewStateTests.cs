@@ -1,11 +1,8 @@
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reflection;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
-using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
-using Avalonia.Controls.Selection;
 using Shouldly;
 using Xunit;
 using AtomListView = AtomUI.Desktop.Controls.ListView;

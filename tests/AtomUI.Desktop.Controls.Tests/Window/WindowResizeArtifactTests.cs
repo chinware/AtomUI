@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Runtime.Versioning;
 using System.Xml.Linq;
 using AtomUI.Controls;

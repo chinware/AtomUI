@@ -1,12 +1,8 @@
 using System.Collections.ObjectModel;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUIGallery.Localization;
-using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Media;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.BorderBeam;

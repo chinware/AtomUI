@@ -2,7 +2,6 @@
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Reflection;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;

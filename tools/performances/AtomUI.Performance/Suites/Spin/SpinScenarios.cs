@@ -1,5 +1,3 @@
-using AtomUI;
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using Avalonia.Controls;

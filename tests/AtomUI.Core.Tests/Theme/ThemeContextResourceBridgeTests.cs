@@ -1,7 +1,6 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Resources;
 using Avalonia.Controls;
-using Avalonia.Styling;
 using Shouldly;
 using Xunit;
 

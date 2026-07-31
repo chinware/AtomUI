@@ -1,11 +1,9 @@
-using System.Linq;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;

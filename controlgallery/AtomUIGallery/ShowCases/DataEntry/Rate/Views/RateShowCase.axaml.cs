@@ -1,10 +1,10 @@
+using AtomUIGallery.Localization;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Theme.Language;
 using Avalonia;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.Rate;
 

@@ -1,11 +1,8 @@
-using System;
 using System.Reflection;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
-using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;

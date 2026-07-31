@@ -1,5 +1,3 @@
-using AtomUI.Theme;
-
 namespace AtomUI.Desktop.Controls;
 
 public class SkeletonTitle : SkeletonLine

@@ -1,12 +1,10 @@
 using System.Reflection;
-using System.Threading;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Headless;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;

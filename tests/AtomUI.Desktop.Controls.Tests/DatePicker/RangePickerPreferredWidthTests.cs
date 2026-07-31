@@ -1,8 +1,5 @@
-using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using AtomUI;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Media;
 using Avalonia;

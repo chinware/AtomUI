@@ -1,6 +1,6 @@
+using AtomUI.Generated.AtomUI_Controls;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
-using AtomUI.Generated.AtomUI_Controls;
 
 namespace AtomUI.Controls;
 

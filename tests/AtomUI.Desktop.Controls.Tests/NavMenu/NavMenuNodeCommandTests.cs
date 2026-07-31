@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AtomUI.Controls;

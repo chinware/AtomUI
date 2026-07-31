@@ -1,6 +1,5 @@
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Algorithms;
-using AtomUI.Theme.Schema;
 using Avalonia;
 
 namespace AtomUI.Theme.Resources;

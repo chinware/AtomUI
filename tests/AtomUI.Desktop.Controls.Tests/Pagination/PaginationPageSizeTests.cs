@@ -1,9 +1,6 @@
-using System;
-using System.Linq;
 using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;

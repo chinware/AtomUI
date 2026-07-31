@@ -1,3 +1,4 @@
+using AtomUIGallery.Localization;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
@@ -6,7 +7,6 @@ using AtomUI.Desktop.Controls;
 using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.DatePicker;
 

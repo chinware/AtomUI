@@ -1,9 +1,4 @@
-using System.Collections.ObjectModel;
 using AtomUI.Controls;
-using AtomUI.Data;
-using AtomUIGallery.Localization;
-using Avalonia;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Empty;

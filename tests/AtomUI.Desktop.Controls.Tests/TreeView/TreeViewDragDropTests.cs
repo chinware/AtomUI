@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using AtomUI.Controls;

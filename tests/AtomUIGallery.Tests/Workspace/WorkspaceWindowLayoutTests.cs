@@ -1,8 +1,7 @@
-using System;
-using System.IO;
 using System.Reflection;
 using System.Windows.Input;
 using System.Xml.Linq;
+using AtomUI.Theme.Resources;
 using AtomUIGallery.Workspace.Views;
 using Shouldly;
 using Xunit;

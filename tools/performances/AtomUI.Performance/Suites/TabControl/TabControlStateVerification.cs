@@ -1,7 +1,6 @@
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using AvaloniaButton = Avalonia.Controls.Button;

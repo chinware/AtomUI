@@ -5,7 +5,6 @@ using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;

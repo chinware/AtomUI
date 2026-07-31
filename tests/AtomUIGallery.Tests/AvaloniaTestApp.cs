@@ -1,4 +1,3 @@
-using System.Threading;
 using Avalonia;
 using Avalonia.Headless;
 using AtomUI;

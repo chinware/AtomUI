@@ -7,7 +7,6 @@ using AtomUI.Desktop.Controls.Data;
 using AtomUI.Desktop.Controls.Utils;
 using Avalonia.Data;
 using Avalonia.Data.Core;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Shouldly;
 using Xunit;

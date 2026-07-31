@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using AtomCalendar = AtomUI.Desktop.Controls.Calendar;
 using AtomCalendarDateRange = AtomUI.Desktop.Controls.CalendarDateRange;

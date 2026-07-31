@@ -1,6 +1,6 @@
+using AtomUI.Generated.AtomUI_Desktop_Controls_ColorPicker;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
-using AtomUI.Generated.AtomUI_Desktop_Controls_ColorPicker;
 
 namespace AtomUI.Desktop.Controls;
 

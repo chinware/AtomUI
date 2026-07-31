@@ -1,4 +1,3 @@
-using System.Text;
 using AtomUI.Theme;
 using AtomUI.Theme.Definitions;
 using Avalonia;

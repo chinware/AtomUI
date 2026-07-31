@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
-using System.Windows.Input;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Internal.Calendar;
-using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;

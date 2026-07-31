@@ -5,7 +5,6 @@ using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
 using AtomUI.Toolkits.GalleryBase.Configuration;
-using AtomUI.Toolkits.GalleryBase.Navigation;
 using AtomUI.Toolkits.GalleryBase.Shell;
 using Avalonia;
 using Avalonia.Controls;

@@ -1,4 +1,3 @@
-using System.IO;
 using Avalonia.Input;
 using Shouldly;
 using Xunit;

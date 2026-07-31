@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls;
 using Avalonia.Media;
 using Shouldly;
 using Xunit;

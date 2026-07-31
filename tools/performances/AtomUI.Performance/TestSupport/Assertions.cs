@@ -1,9 +1,6 @@
-using AtomUI.Controls;
-using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
-using Avalonia.Input;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;

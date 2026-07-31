@@ -5,7 +5,6 @@ using AtomUI.Controls;
 using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 using AtomUI.Desktop.Controls.CalendarView.Rendering;
 using AtomUI.Desktop.Controls.CalendarView.State;
-using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;

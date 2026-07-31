@@ -1,10 +1,7 @@
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.Media;
 using AtomButton = AtomUI.Desktop.Controls.Button;
 using AtomTextBlock = AtomUI.Desktop.Controls.TextBlock;
 

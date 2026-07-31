@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;

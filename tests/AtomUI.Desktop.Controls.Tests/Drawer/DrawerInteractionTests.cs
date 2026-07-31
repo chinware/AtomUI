@@ -1,11 +1,9 @@
-using System.Linq;
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.Tests.Window;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.Input.Raw;
 using Avalonia.Media.Transformation;
 using Avalonia.Threading;
 using Avalonia.VisualTree;

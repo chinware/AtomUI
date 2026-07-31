@@ -1,4 +1,3 @@
-using System.IO;
 using AtomUI.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
 using Avalonia.Controls;

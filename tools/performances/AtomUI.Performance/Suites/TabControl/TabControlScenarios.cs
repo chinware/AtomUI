@@ -1,8 +1,6 @@
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using Avalonia.Controls;
-using Avalonia.Layout;
 using AtomTabControl = AtomUI.Desktop.Controls.TabControl;
 using AtomTabItem = AtomUI.Desktop.Controls.TabItem;
 using AtomTabStrip = AtomUI.Desktop.Controls.TabStrip;

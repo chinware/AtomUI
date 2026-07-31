@@ -1,5 +1,4 @@
 using System.Reflection;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Shouldly;

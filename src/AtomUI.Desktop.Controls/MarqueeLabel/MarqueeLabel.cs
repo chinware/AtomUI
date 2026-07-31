@@ -1,7 +1,6 @@
 using AtomUI.Controls.Commons;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Theme;
 
 namespace AtomUI.Desktop.Controls;
 

@@ -1,10 +1,5 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Runtime.Versioning;
 using System.Xml.Linq;
-using AtomUI;
-using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Shouldly;
 using Xunit;

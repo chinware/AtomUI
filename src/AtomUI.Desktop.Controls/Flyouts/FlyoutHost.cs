@@ -2,7 +2,6 @@
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;

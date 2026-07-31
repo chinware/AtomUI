@@ -1,6 +1,5 @@
-using System;
-using System.IO;
 using AtomUI.Controls;
+using AtomUI.Theme.Resources;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using Shouldly;
 using Xunit;

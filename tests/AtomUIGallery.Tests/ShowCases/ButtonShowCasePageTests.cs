@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUIGallery.ShowCases.Button;
 using Avalonia;

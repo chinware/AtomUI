@@ -1,7 +1,5 @@
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using Avalonia.Controls;
-using Avalonia.VisualTree;
 using SvgControl = Avalonia.Svg.Svg;
 
 namespace AtomUI.Performance;

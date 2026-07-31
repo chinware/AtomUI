@@ -1,9 +1,8 @@
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Generated.AtomUI_Desktop_Controls;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
-using AtomUI.Generated.AtomUI_Desktop_Controls;
 using AtomUI.Theme.Schema;
 using Avalonia;
 using Avalonia.Animation;

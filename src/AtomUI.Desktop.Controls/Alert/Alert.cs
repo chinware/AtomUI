@@ -1,5 +1,4 @@
 ﻿using AtomUI.Icons.AntDesign;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;

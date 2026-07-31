@@ -1,10 +1,10 @@
+using AtomUIGallery.Localization;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls;
-using AtomUIGallery.Localization;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.TreeView;

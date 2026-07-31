@@ -1,13 +1,8 @@
-using System.Collections.ObjectModel;
 using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUIGallery.Localization;
-using Avalonia;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Menu;

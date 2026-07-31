@@ -5,7 +5,6 @@ using Avalonia.Controls.Templates;
 using Shouldly;
 using Xunit;
 using AtomUIWindow = AtomUI.Desktop.Controls.Window;
-using WindowTitleBar = AtomUI.Desktop.Controls.WindowTitleBar;
 
 namespace AtomUI.Desktop.Controls.Tests.Window;
 

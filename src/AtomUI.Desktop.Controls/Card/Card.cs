@@ -3,7 +3,6 @@ using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;

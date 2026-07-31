@@ -1,9 +1,5 @@
-using System;
-using System.Linq;
-using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Internal.Calendar;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;

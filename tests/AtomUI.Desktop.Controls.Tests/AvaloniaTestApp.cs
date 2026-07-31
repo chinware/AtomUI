@@ -1,8 +1,5 @@
-using System.Threading;
 using Avalonia;
 using Avalonia.Headless;
-using AtomUI;
-using AtomUI.Desktop.Controls;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUI.Desktop.Controls.Tests.TestAppBuilder))]
 

@@ -1,12 +1,8 @@
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reactive;
 using AtomUI.Controls;
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.Threading;
-using AtomUIGallery.Localization;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.ColorPicker;

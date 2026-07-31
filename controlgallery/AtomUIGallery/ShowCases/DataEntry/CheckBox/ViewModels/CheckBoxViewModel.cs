@@ -1,13 +1,10 @@
-﻿using System.Collections;
+﻿using AtomUIGallery.Localization;
+using System.Collections;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reactive;
 using AtomUI.Controls;
-using AtomUI.Data;
-using Avalonia;
-using Avalonia.Threading;
-using AtomUIGallery.Localization;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.CheckBox;

@@ -1,8 +1,6 @@
 using AtomUI.Controls.Data;
 using Shouldly;
 using Xunit;
-using System.Collections;
-using System.Collections.Specialized;
 
 namespace AtomUI.Controls.Shared.Tests.ListCollectionViews;
 

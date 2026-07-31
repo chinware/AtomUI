@@ -1,9 +1,8 @@
-using System.Collections.ObjectModel;
+using AtomUIGallery.Localization;
 using System.Globalization;
 using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Media;

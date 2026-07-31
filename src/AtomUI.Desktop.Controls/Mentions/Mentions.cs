@@ -12,7 +12,6 @@ using AtomUI.Desktop.Controls.DataLoad;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Input;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;

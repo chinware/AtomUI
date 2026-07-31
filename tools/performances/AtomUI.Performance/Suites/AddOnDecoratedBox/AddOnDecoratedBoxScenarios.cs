@@ -1,6 +1,5 @@
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using Avalonia.Controls;
 using Avalonia.Layout;
 
 namespace AtomUI.Performance;

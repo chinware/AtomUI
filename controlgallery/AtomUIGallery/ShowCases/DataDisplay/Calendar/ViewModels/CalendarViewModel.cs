@@ -1,7 +1,5 @@
-using System;
 using System.Globalization;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using Avalonia.Data.Converters;
 using ReactiveUI;

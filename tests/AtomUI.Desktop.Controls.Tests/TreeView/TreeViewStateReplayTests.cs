@@ -3,7 +3,6 @@ using System.ComponentModel;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Threading;
 using Avalonia.VisualTree;

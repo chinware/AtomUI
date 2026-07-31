@@ -8,7 +8,6 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
-using System.Threading;
 using Xunit;
 using AtomCardTabControl = AtomUI.Desktop.Controls.CardTabControl;
 using AtomCardTabStrip = AtomUI.Desktop.Controls.CardTabStrip;

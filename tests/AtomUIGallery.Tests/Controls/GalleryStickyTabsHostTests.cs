@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using AtomUI.Desktop.Controls;
 using AtomUI.Controls.Primitives;

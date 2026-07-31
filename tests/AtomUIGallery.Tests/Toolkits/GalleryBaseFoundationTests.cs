@@ -1,4 +1,3 @@
-using System;
 using System.Reflection;
 using System.Reactive.Threading.Tasks;
 using AtomUI.Toolkits.GalleryBase.Controls;

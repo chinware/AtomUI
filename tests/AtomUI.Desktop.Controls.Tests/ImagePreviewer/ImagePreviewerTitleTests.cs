@@ -1,5 +1,3 @@
-using AtomUI;
-using AtomUI.Desktop.Controls;
 using Avalonia.Threading;
 using Shouldly;
 using Xunit;

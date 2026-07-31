@@ -1,6 +1,3 @@
-using System.Threading;
-using AtomUI;
-using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Headless;
 using Xunit;

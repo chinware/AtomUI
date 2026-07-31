@@ -1,7 +1,6 @@
 using System.Collections;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
-using Avalonia.Controls;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;

@@ -1,7 +1,5 @@
 using System.Net;
-using System.Net.Http;
 using System.Text;
-using AtomUI.Desktop.Controls;
 using Avalonia.Threading;
 using Shouldly;
 using Xunit;

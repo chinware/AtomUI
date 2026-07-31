@@ -2,11 +2,7 @@ using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUIGallery.Localization;
-using Avalonia;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Transfer;

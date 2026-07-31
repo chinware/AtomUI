@@ -1,6 +1,4 @@
-using System;
 using System.Globalization;
-using System.Linq;
 using AtomUI.Desktop.Controls.Internal.Calendar;
 using Shouldly;
 using Xunit;

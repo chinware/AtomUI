@@ -1,6 +1,6 @@
+using AtomUI.Generated.AtomUI_Toolkits_GalleryBase;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
-using AtomUI.Generated.AtomUI_Toolkits_GalleryBase;
 using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.Controls;
 

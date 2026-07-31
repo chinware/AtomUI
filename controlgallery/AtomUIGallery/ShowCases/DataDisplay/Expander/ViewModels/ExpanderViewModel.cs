@@ -1,11 +1,6 @@
-using System.Collections.ObjectModel;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUIGallery.Localization;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Expander;

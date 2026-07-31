@@ -2,7 +2,6 @@ using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
-using AtomUI.Theme.Schema;
 using AtomUI.Theme.DesignTokens;
 using Avalonia;
 using Avalonia.Controls;

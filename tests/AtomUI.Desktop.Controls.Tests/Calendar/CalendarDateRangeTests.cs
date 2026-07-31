@@ -1,5 +1,3 @@
-using System;
-using AtomUI.Desktop.Controls;
 using Shouldly;
 using Xunit;
 

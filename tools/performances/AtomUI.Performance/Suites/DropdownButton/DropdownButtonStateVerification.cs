@@ -1,5 +1,4 @@
 using System.Reflection;
-using Avalonia.Interactivity;
 
 namespace AtomUI.Performance;
 

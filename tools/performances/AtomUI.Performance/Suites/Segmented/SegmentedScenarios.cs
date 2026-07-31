@@ -1,5 +1,4 @@
 using AtomUI.Icons.AntDesign;
-using AtomUI.Controls;
 using Avalonia.Controls;
 using AtomSegmented = AtomUI.Desktop.Controls.Segmented;
 using AtomSegmentedItem = AtomUI.Desktop.Controls.SegmentedItem;

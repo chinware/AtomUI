@@ -1,7 +1,4 @@
-using System;
-using System.Linq;
 using System.Reflection;
-using AtomUI;
 using AtomUI.Controls.Commons;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;

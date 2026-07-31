@@ -1,11 +1,6 @@
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reactive;
 using AtomUI.Controls;
-using AtomUI.Data;
-using AtomUIGallery.Localization;
-using Avalonia;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Pagination;

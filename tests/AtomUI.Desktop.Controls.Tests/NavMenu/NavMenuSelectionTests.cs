@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Threading;
 using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
 using Avalonia;
@@ -8,7 +7,6 @@ using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 

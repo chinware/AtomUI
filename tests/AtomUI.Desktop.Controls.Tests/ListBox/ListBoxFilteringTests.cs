@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading;
 using AtomUI.Controls.Data;
 using Avalonia.Layout;
 using Avalonia.Threading;

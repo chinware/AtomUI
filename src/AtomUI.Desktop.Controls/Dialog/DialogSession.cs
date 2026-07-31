@@ -2,7 +2,6 @@ using System.Runtime.ExceptionServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 using AvaloniaWindow = Avalonia.Controls.Window;

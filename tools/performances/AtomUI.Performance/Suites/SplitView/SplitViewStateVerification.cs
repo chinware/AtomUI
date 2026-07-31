@@ -1,6 +1,5 @@
 using System.Reflection;
 using AtomUI.Utils;
-using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;

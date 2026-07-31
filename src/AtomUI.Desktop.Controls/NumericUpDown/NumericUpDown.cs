@@ -4,7 +4,6 @@ using AtomUI.Controls;
 using AtomUI.Controls.Commons;
 using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;

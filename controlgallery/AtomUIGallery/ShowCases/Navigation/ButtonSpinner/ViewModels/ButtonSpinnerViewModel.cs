@@ -1,10 +1,5 @@
-using System.Collections.ObjectModel;
 using AtomUI.Controls;
-using AtomUI.Data;
-using AtomUIGallery.Localization;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Threading;
 using ReactiveUI;
 using TextBlock = AtomUI.Desktop.Controls.TextBlock;
 

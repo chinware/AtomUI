@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Reflection;
-using Avalonia.Controls;
 using Avalonia.Threading;
 using AtomImagePreviewer = AtomUI.Desktop.Controls.ImagePreviewer;
 using AtomImageGroupPreviewer = AtomUI.Desktop.Controls.ImageGroupPreviewer;

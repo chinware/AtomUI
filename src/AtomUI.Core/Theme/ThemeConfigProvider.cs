@@ -3,7 +3,6 @@ using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
-using Avalonia.Styling;
 
 namespace AtomUI.Theme;
 

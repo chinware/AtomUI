@@ -2,12 +2,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.DataLoad;
-using AtomUIGallery.Localization;
-using Avalonia;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Cascader;

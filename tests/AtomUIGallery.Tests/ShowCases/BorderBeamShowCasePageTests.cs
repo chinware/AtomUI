@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
 using AtomUI.Toolkits.GalleryBase.Localization;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using AtomUIGallery.ShowCases.BorderBeam;

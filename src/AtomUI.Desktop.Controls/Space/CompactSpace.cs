@@ -2,7 +2,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using AtomUI.Controls;
 using AtomUI.Reflection;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;

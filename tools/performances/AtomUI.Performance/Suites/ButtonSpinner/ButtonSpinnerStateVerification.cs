@@ -1,5 +1,4 @@
 using AtomUI.Animations;
-using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Input;

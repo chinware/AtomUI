@@ -1,13 +1,12 @@
+using AtomUIGallery.Localization;
 using System.Diagnostics;
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using AtomUIGallery.Localization;
 using NumericUpDown = AtomUI.Desktop.Controls.NumericUpDown;
 
 namespace AtomUIGallery.ShowCases.Form;

@@ -1,10 +1,10 @@
+using AtomUIGallery.Localization;
 using System.Globalization;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme.Language;
-using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Interactivity;
 using AtomTabItem = AtomUI.Desktop.Controls.TabItem;
