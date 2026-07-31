@@ -4,6 +4,10 @@ namespace AtomUI.Desktop.Controls.Internal.Calendar;
 
 internal static class CalendarViewCellBuilder
 {
+    internal const int DateGridCellCount = 42;
+    internal const int DateGridRows = 6;
+    internal const int DateGridColumns = 7;
+
     public static IReadOnlyList<CalendarViewCellModel> BuildDateCells(
         DateTime anchor,
         DateTime today,
@@ -14,18 +18,10 @@ internal static class CalendarViewCellBuilder
     {
         anchor = anchor.Date;
         today = today.Date;
-        var monthStart = new DateTime(anchor.Year, anchor.Month, 1);
-        var offset = ((int)monthStart.DayOfWeek - (int)firstDayOfWeek + 7) % 7;
-        var gridStartTicks = Math.Max(DateTime.MinValue.Ticks, monthStart.Ticks - offset * TimeSpan.TicksPerDay);
-        var gridStart = new DateTime(gridStartTicks);
-        var latestGridStart = DateTime.MaxValue.Date.AddDays(-41);
-        if (gridStart > latestGridStart)
-        {
-            gridStart = latestGridStart;
-        }
+        var gridStart = GetDateGridStart(anchor, firstDayOfWeek);
 
-        var cells = new List<CalendarViewCellModel>(42);
-        for (var i = 0; i < 42; i++)
+        var cells = new List<CalendarViewCellModel>(DateGridCellCount);
+        for (var i = 0; i < DateGridCellCount; i++)
         {
             var date = gridStart.AddDays(i);
             var isInView = date.Year == anchor.Year && date.Month == anchor.Month;
@@ -43,6 +39,22 @@ internal static class CalendarViewCellBuilder
         }
 
         return cells;
+    }
+
+    internal static DateTime GetDateGridStart(DateTime anchor, DayOfWeek firstDayOfWeek)
+    {
+        anchor = anchor.Date;
+        var monthStart = new DateTime(anchor.Year, anchor.Month, 1);
+        var offset = ((int)monthStart.DayOfWeek - (int)firstDayOfWeek + 7) % 7;
+        var gridStartTicks = Math.Max(DateTime.MinValue.Ticks, monthStart.Ticks - offset * TimeSpan.TicksPerDay);
+        var gridStart = new DateTime(gridStartTicks);
+        var latestGridStart = DateTime.MaxValue.Date.AddDays(-(DateGridCellCount - 1));
+        if (gridStart > latestGridStart)
+        {
+            gridStart = latestGridStart;
+        }
+
+        return gridStart;
     }
 
     public static IReadOnlyList<CalendarViewCellModel> BuildWeekNumberCells(

@@ -57,10 +57,11 @@ public override void Initialize()
 
 构建后的主题运行流见 [AtomUI.Core 主题系统](../modules/core/theme-system.md)。简化顺序是：
 
-1. Builder 解析 Application Id，收集生成式 Control descriptor、ControlTheme asset manifest、
+1. Builder 解析 Application Id，收集生成式 Control descriptor、ControlTheme asset/token dependency manifest、
    `IThemeDefinitionResolver`、算法 descriptor、语言和不可变初始 `ThemeRequest` 模板。
-2. `ThemeSchemaRegistry` 在读取主题文件前完成构建并冻结；无效 descriptor、重复 identity、资产 URI/identity
-   冲突在此失败。
+2. Builder 合并内置、第三方包和应用在构建期生成的 ControlTheme Global Token dependency manifest；
+   `ThemeSchemaRegistry` 随后构建并冻结。
+   无效 descriptor、重复 identity、未支持 Token、资产 URI/identity 或 Semantic Part Theme 冲突在此失败。
 3. `ThemeCatalog` 执行内置、应用资源及可选用户目录 Resolver，并通过统一 Reader 和 Binder 生成 typed theme
    definition。静态来源失败终止启动；用户来源失败时使用静态 Catalog 启动并保留 diagnostics。
 4. FollowSystem 在编译前解析初始系统 appearance，并选择完整的 Light/Dark request 模板。
@@ -116,8 +117,10 @@ Popup/Flyout 通过逻辑树自然继承，独立 Window/Dialog/Notification Top
 
 `ThemeManagerBuilder` 在构建前收集以下内容：
 
-- `ControlTokenDescriptors`：生成式 Control identity、Token schema、强类型构造和资源投影。
-- `ControlThemeAssetManifests`：生成式资产 URI、单一 Control identity、资源 key schema 摘要和构建期校验结果。
+- `ControlTokenDescriptors`：每个对外可主题化 Control 的生成式 identity、可选 Own Token schema、计算依赖、
+  强类型构造和资源投影；没有 Own Token 的 Control 也必须注册 descriptor。
+- `ControlThemeAssetManifests`：生成式资产 URI、owner identity、Semantic Part Theme 契约和构建期校验结果。
+- `ControlThemeTokenDependencyManifests`：内置、第三方和应用主题通过 `XxxTokenResource` 消费的 Global Token。
 - `ControlThemesProviders`：AXAML 主题 Provider。
 - `ThemeDefinitionResolvers`：内置资源、应用 `avares://` 资源和可选用户配置目录的统一主题来源解析器。
 - `LanguageProviders`：本地化资源 Provider。
@@ -141,13 +144,17 @@ DataGrid 和 ColorPicker 独立包通过 `UseDesktopDataGrid()`、`UseDesktopCol
 
 ## 源生成池
 
-控件包不手工维护完整 Token/Language 列表，而是依赖 `AtomUI.Generator` 生成：
+Control 包不手工维护完整 Token、主题资产或 Language 列表，而是依赖 `AtomUI.Generator` 生成：
 
-- `ControlTokenDescriptorPool.GetDescriptors()`：返回当前项目内完整的 Control Token descriptor。
-- `ControlThemeAssetManifest.GetDescriptors()`：返回当前项目内通过构建校验的 ControlTheme asset descriptor。
+- `ControlTokenDescriptorPool.GetDescriptors()`：返回当前项目内全部对外可主题化 Control 的 descriptor，包括零
+  Own Token 的 Control。
+- `ControlThemeAssetManifest.GetDescriptors()`：返回通过构建校验的 ControlTheme asset 和 Token 依赖 descriptor。
 - `LanguageProviderPool.GetLanguageProviders()`：返回当前项目内的语言 Provider。
-- Token 资源键、`ControlTokenScope.Identity` 和资产 identity 引用：供 AXAML 和 C# 使用。
+- `XxxTokens.Identity`、强类型 `XxxTokenKey` 和 `XxxTokenResourceExtension`：供 AXAML 和 C# 使用。
+- 包级 `UseXxxControls()` 注册入口：一次注册当前包的 descriptor、manifest、主题 Provider 和语言 Provider。
 
 Builder 必须原样注册 descriptor 和 manifest，不能退化成只传递 `Type` 或运行时扫描 AXAML。因此新增控件
-Token、ControlTheme 资产或语言 Provider 时，需要确认对应 Attribute/资产元数据正确，并检查生成 descriptor、
-资源键、单一 identity 和注册池是否一致。
+时只需遵循 Control、无参数 `[ControlDesignToken]` 标记的可选 Own Token 类型和 `Themes/**/*.axaml` 约定；不编写
+泛型 Token Attribute、Theme Asset glob、
+手工 manifest 或逐 Theme 注册代码。生成器负责检查 descriptor、Supported Global Token、强类型资源键、owner
+identity 和注册池是否一致。

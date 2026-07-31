@@ -76,9 +76,12 @@ dotnet_diagnostic.ATOMUIAOT001.severity = error
 | `ATOMUIGEN002` | Generator | Warning | `[GenerateScopedResourceHost]` 标记的类型未继承 `AvaloniaObject` | 只在非 Visual `AvaloniaObject` 描述对象上使用该 attribute | ScopedResourceHost |
 | `ATOMUIGEN003` | Generator | Warning | `[GenerateScopedResourceHost]` 标记的类型继承了 `Control`、`StyledElement` 或 `Visual` | Visual 控件应使用视觉树资源宿主，不使用该 attribute | ScopedResourceHost |
 | `ATOMUIGEN004` | Generator | Warning | `[GenerateScopedResourceHost]` 标记的类型已经实现 `IResourceHost` 或 `IThemeVariantHost` | 删除手写实现后再使用该 attribute，或移除该 attribute | ScopedResourceHost |
-| `ATOMUIGEN005` | Generator | Warning | `[ControlDesignToken]` 标记的类型缺少 `public const string ID` | 给 ControlToken 类型声明稳定的 `public const string ID`，并让构造函数使用该 ID | TokenResourceKeyGenerator |
-| `ATOMUIGEN006` | Generator | Warning | `[ControlDesignToken]` 标记的类型存在非公开、非常量、非 string 或空值的 `ID` | 将 `ID` 改为非空 `public const string`，不要用运行时字段或属性提供组件身份 | TokenResourceKeyGenerator |
 | `ATOMUIGEN101` | Generator | Warning | Gallery source code display generator 发现参与默认源码匹配的 `ShowCasePanel` 缺少 `Name` | 给 `ShowCasePanel` 设置稳定 `Name`，或使用显式源码 key 规则 | GallerySourceCodeDisplay |
+
+`ATOMUIGEN005` 和 `ATOMUIGEN006` 原本约束 `[ControlDesignToken]` 类型上的 `public const ID`，该手工 ID 契约已
+删除，因此这两个诊断不在新主题架构中复用。无参数 `[ControlDesignToken]` 本身继续保留，只负责标记 Own Token
+类型，不携带 Control 类型或 identity。Control identity 由可主题化 Control 和主题资产约定生成；相关歧义、Token
+继承、Global/Own 重名、资产依赖和注册错误应使用新的独立诊断 ID。
 
 ## Severity 规则
 

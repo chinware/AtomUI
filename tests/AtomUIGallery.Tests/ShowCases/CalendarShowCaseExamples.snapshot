@@ -124,6 +124,37 @@
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource CrossDateEventsTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource CrossDateEventsDescription}"
+                                      IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CalendarViewModel">
+                            <atom:Calendar Value="{Binding CrossDateEventsSampleDate}"
+                                           MinWidth="640"
+                                           HorizontalAlignment="Stretch">
+                                <atom:Calendar.RangeBars>
+                                    <atom:CalendarRangeBar StartDate="2026-01-08"
+                                                           EndDate="2026-01-10"
+                                                           Label="{gallery:CalendarShowCaseLangResource CrossDateEventsReleaseText}"
+                                                           Background="{atom:SharedTokenResource ColorPrimary}" />
+                                    <atom:CalendarRangeBar StartDate="2026-01-14"
+                                                           EndDate="2026-01-14"
+                                                           Label="{gallery:CalendarShowCaseLangResource CrossDateEventsDesignReviewText}"
+                                                           Background="{atom:SharedTokenResource ColorSuccess}" />
+                                    <atom:CalendarRangeBar StartDate="2026-01-21"
+                                                           EndDate="2026-01-24"
+                                                           Label="{gallery:CalendarShowCaseLangResource CrossDateEventsMaintenanceText}"
+                                                           Background="{atom:SharedTokenResource ColorWarning}" />
+                                    <atom:CalendarRangeBar StartDate="2026-01-30"
+                                                           EndDate="2026-01-31"
+                                                           Label="{gallery:CalendarShowCaseLangResource CrossDateEventsBugFixText}"
+                                                           Background="{atom:SharedTokenResource ColorError}" />
+                                </atom:Calendar.RangeBars>
+                            </atom:Calendar>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
                 <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource MiniTitle}"
                                       Description="{gallery:CalendarShowCaseLangResource MiniDescription}"
                                       IsDeferredContentEnabled="True">

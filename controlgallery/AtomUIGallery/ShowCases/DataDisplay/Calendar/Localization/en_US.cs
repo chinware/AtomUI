@@ -44,6 +44,13 @@ internal partial class en_US
     public const string NoticeCalendarErrorEvent4Text = "This is error event 4.";
     public const string NoticeCalendarBacklogText = "Backlog number";
 
+    public const string CrossDateEventsTitle = "Event Range";
+    public const string CrossDateEventsDescription = "Declare RangeBars and let Calendar draw continuous event bars across dates.";
+    public const string CrossDateEventsReleaseText = "Release window";
+    public const string CrossDateEventsDesignReviewText = "Design review";
+    public const string CrossDateEventsMaintenanceText = "Maintenance";
+    public const string CrossDateEventsBugFixText = "Bug fix";
+
     public const string HeaderTemplateTitle = "Custom header";
     public const string HeaderTemplateDescription = "Replace the default header with HeaderTemplate.";
 

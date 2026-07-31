@@ -4,7 +4,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 /// <summary>
-/// 新 Calendar 控件的 Design Token，收敛为七个公开视觉语义。
+/// 新 Calendar 控件的 Design Token，收敛为八个公开视觉语义。
 /// 与 DatePicker CalendarView 使用的旧 <see cref="CalendarToken"/> 完全独立。
 /// </summary>
 [ControlDesignToken]
@@ -52,6 +52,11 @@ internal class CalendarControlToken : AbstractControlDesignToken
     /// </summary>
     public double FullCellMinHeight { get; set; }
 
+    /// <summary>
+    /// Fullscreen 日期范围条默认高度。
+    /// </summary>
+    public double RangeBarHeight { get; set; }
+
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
@@ -69,5 +74,6 @@ internal class CalendarControlToken : AbstractControlDesignToken
                             dateContentHeight +
                             SharedToken.UniformlyPaddingXS / 2 +
                             SharedToken.LineWidthBold;
+        RangeBarHeight = SharedToken.ControlHeightSM - SharedToken.UniformlyMarginXXS;
     }
 }

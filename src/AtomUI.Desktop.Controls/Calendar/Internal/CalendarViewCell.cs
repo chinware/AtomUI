@@ -69,6 +69,7 @@ internal sealed class CalendarViewCell : TemplatedControl
     private ContentControl? _itemContent;
     private TextBlock? _valueText;
     private bool _fullscreen;
+    private bool _fullscreenStateApplied;
 
     public CalendarViewCell()
     {
@@ -89,8 +90,7 @@ internal sealed class CalendarViewCell : TemplatedControl
         base.OnPropertyChanged(change);
 
         if (change.Property == CellTemplateProperty ||
-            change.Property == FullCellTemplateProperty ||
-            change.Property == ContextProperty)
+            change.Property == FullCellTemplateProperty)
         {
             UpdateTemplatePresentation();
         }
@@ -102,11 +102,26 @@ internal sealed class CalendarViewCell : TemplatedControl
         _owner = owner;
         _model = model;
         SetFullscreen(owner.Fullscreen);
-        Focusable = model.IsFocusable;
-        DisplayText = model.DisplayText;
-        Context = model.Kind == CalendarViewCellKind.Week
-            ? null
-            : new CalendarCellContext(
+        if (Focusable != model.IsFocusable)
+        {
+            Focusable = model.IsFocusable;
+        }
+
+        if (DisplayText != model.DisplayText)
+        {
+            DisplayText = model.DisplayText;
+        }
+
+        if (model.Kind == CalendarViewCellKind.Week || !HasCustomTemplate)
+        {
+            if (Context is not null)
+            {
+                Context = null;
+            }
+        }
+        else
+        {
+            Context = new CalendarCellContext(
                 Value: model.Value,
                 Today: owner.Today == default ? DateTime.Today : owner.Today.Date,
                 CellType: model.Kind == CalendarViewCellKind.Month ? CalendarCellType.Month : CalendarCellType.Date,
@@ -115,6 +130,7 @@ internal sealed class CalendarViewCell : TemplatedControl
                 IsInView: model.IsInView,
                 IsSelected: model.IsSelected,
                 IsDisabled: model.IsDisabled);
+        }
         UpdatePseudoClasses();
         UpdateTemplatePresentation();
     }
@@ -166,31 +182,78 @@ internal sealed class CalendarViewCell : TemplatedControl
 
         if (_itemContent is not null)
         {
-            _itemContent.ContentTemplate = useFullTemplate
+            var contentTemplate = useFullTemplate
                 ? FullCellTemplate
                 : useCellTemplate
                     ? CellTemplate
                     : null;
-            _itemContent.IsVisible = useFullTemplate || useCellTemplate;
-            Grid.SetRow(_itemContent, useFullTemplate ? 0 : 1);
-            Grid.SetRowSpan(_itemContent, useFullTemplate ? 2 : 1);
+            var hasTemplate = contentTemplate is not null;
+            var content = hasTemplate ? Context : null;
+
+            if (!ReferenceEquals(_itemContent.Content, content))
+            {
+                _itemContent.Content = content;
+            }
+
+            if (!ReferenceEquals(_itemContent.ContentTemplate, contentTemplate))
+            {
+                _itemContent.ContentTemplate = contentTemplate;
+            }
+
+            if (_itemContent.IsVisible != hasTemplate)
+            {
+                _itemContent.IsVisible = hasTemplate;
+            }
+
+            var itemContentRow = useFullTemplate ? 0 : 1;
+            if (Grid.GetRow(_itemContent) != itemContentRow)
+            {
+                Grid.SetRow(_itemContent, itemContentRow);
+            }
+
+            var itemContentRowSpan = useFullTemplate ? 2 : 1;
+            if (Grid.GetRowSpan(_itemContent) != itemContentRowSpan)
+            {
+                Grid.SetRowSpan(_itemContent, itemContentRowSpan);
+            }
         }
 
         if (_valueText is not null)
         {
-            _valueText.IsVisible = isWeek || !useFullTemplate;
-            Grid.SetRow(_valueText, 0);
-            Grid.SetRowSpan(_valueText, !_fullscreen && !useCellTemplate && !useFullTemplate ? 2 : 1);
+            var valueVisible = isWeek || !useFullTemplate;
+            if (_valueText.IsVisible != valueVisible)
+            {
+                _valueText.IsVisible = valueVisible;
+            }
+
+            if (Grid.GetRow(_valueText) != 0)
+            {
+                Grid.SetRow(_valueText, 0);
+            }
+
+            var valueRowSpan = !_fullscreen && !useCellTemplate && !useFullTemplate ? 2 : 1;
+            if (Grid.GetRowSpan(_valueText) != valueRowSpan)
+            {
+                Grid.SetRowSpan(_valueText, valueRowSpan);
+            }
         }
     }
 
     internal void SetFullscreen(bool fullscreen)
     {
+        if (_fullscreenStateApplied && _fullscreen == fullscreen)
+        {
+            return;
+        }
+
         _fullscreen = fullscreen;
+        _fullscreenStateApplied = true;
         PseudoClasses.Set(CalendarRootPseudoClass.Fullscreen, fullscreen);
         PseudoClasses.Set(CalendarRootPseudoClass.Mini, !fullscreen);
         UpdateTemplatePresentation();
     }
+
+    private bool HasCustomTemplate => CellTemplate is not null || FullCellTemplate is not null;
 
     private void UpdatePseudoClasses()
     {

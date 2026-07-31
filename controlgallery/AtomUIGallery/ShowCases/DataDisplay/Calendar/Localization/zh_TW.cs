@@ -44,6 +44,13 @@ internal partial class zh_TW
     public const string NoticeCalendarErrorEvent4Text = "這是錯誤事項 4。";
     public const string NoticeCalendarBacklogText = "待辦數量";
 
+    public const string CrossDateEventsTitle = "跨日期事件";
+    public const string CrossDateEventsDescription = "宣告 RangeBars，由 Calendar 自動繪製跨日期連續事件條。";
+    public const string CrossDateEventsReleaseText = "發布窗口";
+    public const string CrossDateEventsDesignReviewText = "設計評審";
+    public const string CrossDateEventsMaintenanceText = "維護窗口";
+    public const string CrossDateEventsBugFixText = "缺陷修復";
+
     public const string HeaderTemplateTitle = "自訂頭部";
     public const string HeaderTemplateDescription = "用 HeaderTemplate 替換預設頭部。";
 

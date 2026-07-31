@@ -199,10 +199,15 @@ AtomUI 内置 Control 使用 `Catalog="AtomUI"`。第三方包必须使用自身
 Control 内部的 `Tokens` 使用一个集合表达两类覆盖：
 
 - Control 自身 Token。
-- 该 Control 消费的全局 Token。
+- 当前 registry revision 中该 Control 的 `SupportedGlobalTokens`。
 
-Binder 使用 Control descriptor 分类。同名 Token 同时存在于两类 schema 时，同一个值同时应用于两类输入。
-Control Token 不形成 Content 子树资源作用域。
+Binder 使用 Control descriptor 分类。Own Token 与 Global Token 禁止同名；Token 不在 `OwnTokens` 或
+`SupportedGlobalTokens` 中时，整个 definition 绑定失败。Control Token 不形成 Content 子树资源作用域。
+
+`SupportedGlobalTokens` 由 Control Own Token 计算依赖、内置 ControlTheme 依赖，以及第三方包和应用在构建期生成、
+并在构建 ThemeManager 前通过包级入口注册的 dependency manifest 合并产生。主题 XML 不声明或扩展这份清单，
+也不能把任意 Global Token 强行写入某个 Control 配置。具体发现和注册规则见
+[Control Token 设计规范](../../engineering/control-token-guidelines.md)。
 
 Control 配置必须至少声明 `Algorithm`、自定义 `Algorithms` 或 `Tokens` 中的一项。空 Control 是语义错误。
 
@@ -303,7 +308,8 @@ internal enum ControlAlgorithmMode : byte
 | enum | descriptor 生成的区分大小写名称 | `Round` |
 
 Brush、FontFamily、BoxShadows、Easing 和其他复合值必须由对应 descriptor 明确声明 parser 和规范 formatter。
-第三方 Token descriptor 不得退回 `TypeConverter` 反射发现或 `Convert.ChangeType`。
+第三方 Token parser/formatter 必须由 AtomUI generator 写入 descriptor，不得手工注册，也不得退回
+`TypeConverter` 反射发现或 `Convert.ChangeType`。
 
 规范 writer 必须输出 formatter 的 canonical value。Reader 可以接受 descriptor 明确声明的等价词法，
 但 fingerprint 必须基于转换后的 typed value，而不是原始字符串。

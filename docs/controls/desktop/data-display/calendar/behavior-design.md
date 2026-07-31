@@ -1,12 +1,12 @@
 # Calendar 行为设计
 
-本文档定义 Calendar 的日期/月面板组合、定制模板、禁用规则、键盘与 Automation 契约。控件定位、公共契约入口见 [Calendar 桌面版架构设计](overview.md)，源码 ownership 与维护边界见 [Calendar 桌面版实现原理](implementation.md)，专属 Token 见 [Calendar Token 设计](token.md)。
+本文档定义 Calendar 的日期/月面板组合、定制模板、禁用规则、键盘与 Automation 契约。控件定位、公共契约入口见 [Calendar 桌面版架构设计](overview.md)，源码 ownership 与维护边界见 [Calendar 桌面版实现原理](implementation.md)，范围条模型见 [Calendar 范围条设计](range-bar-design.md)，专属 Token 见 [Calendar Token 设计](token.md)。
 
 ## 1. 设计定位
 
 Calendar 是按日期组织业务展示内容的桌面日历控件。公开 `Month` 模式显示 6×7 日期面板，公开 `Year` 模式显示 3×4 月份面板；默认 Header 提供年份、月份和模式选择，应用可以通过 Cell、FullCell 和 Header 模板扩展业务内容。
 
-Calendar 的设计规则是：年面板使用 3 列 4 行，日期面板的周序号 Cell 先执行禁用判断，再以行首日期调用选择回调。
+Calendar 的设计规则是：年面板使用 3 列 4 行，日期面板的周序号 Cell 先执行禁用判断，再以行首日期调用选择回调；连续日期业务标记使用内置范围条模型，不依赖应用在 `CellTemplate` 中手写横向连接算法。
 
 该设计覆盖 Calendar 与内部 `CalendarView`、`CalendarHeader`、`CalendarViewCell` 的组合，不覆盖 DatePicker 的输入弹层、范围选择、时间选择或旧 WPF/Avalonia Calendar 体系。CalendarView 与 DatePicker 的 CalendarView 子系统保持独立。
 
@@ -62,6 +62,8 @@ Calendar 的年月名称、星期标题、周规则和 Calendar 专用文案跟�
 
 `CellTemplate` 替换默认值下方的业务内容区域：默认日期/月值保持显示，模板内容进入值下方的 `itemContent` 区域。`FullCellTemplate` 替换完整内部内容；两者同时存在时 FullCell 优先。周标题和周序号不消费这两类模板。
 
+`RangeBars` 是连续日期业务标记的内置模型。它在 Fullscreen Month 日期网格上方通过独立 overlay 绘制跨日期横条，并与 `CellTemplate`、`FullCellTemplate` 的 Cell 内部内容共存。
+
 `CalendarCellContext` 提供 `Value`、`Today`、`CellType`、`DisplayValue`、`IsToday`、`IsInView`、`IsSelected` 和 `IsDisabled`。
 
 `HeaderTemplate` 为 `null` 时使用默认 Header。非空时，模板的 DataContext 是 `CalendarHeaderContext`，通过 `ChangeValueCommand`（参数 `DateTime`）和 `ChangeModeCommand`（参数 `CalendarMode`）提交用户意图。自定义 Header 命令不自动套用 ValidRange 或 DisabledDate，由模板自身负责约束。
@@ -115,15 +117,18 @@ Calendar 使用 AtomUI 语言服务。语言变化会使 Header 选项、月份�
 ```text
 Calendar
 ├── CalendarHeader 或 HeaderTemplate
-└── CalendarView
-    ├── WeekHeader
-    └── CellHost
-        └── CalendarViewCell × N
+└── BodyPresenter
+    ├── CalendarView
+    │   ├── WeekHeader
+    │   └── CellHost
+    │       └── CalendarViewCell × N
+    └── CalendarRangeBarPanel
 ```
 
 - `Calendar`：公开属性、用户事件、状态归一、Header/View 接线和模板生命周期。
 - `CalendarHeader`：默认 Year Select、Month Select、模式 Segmented；只报告 Year/Month/Mode 用户操作。
 - `CalendarView`：按输入构建不可变 Cell Model，管理有界容器池、焦点和键盘；只通过 `CellSelected` 报告意图。
+- `CalendarRangeBarPanel`：按月份网格和 body bounds 统一排布范围条 overlay；不参与命中测试。
 - `CalendarViewCell`：保留外层交互和 Automation，应用 Cell Model，并承载 Cell/FullCell 内容。
 - `CalendarViewCellBuilder`：无 Control 依赖的日期、月份和周序号纯算法。
 - `CalendarHeaderOptions`：年份选项、月份选项和 ValidRange 边界收敛纯算法。
@@ -134,20 +139,22 @@ Calendar 不生成日期网格，不在 Pointer handler 中计算日期，也不
 
 ### 6.1 稳定语义区域
 
-| Ant Semantic | AtomUI 区域 | 责任 |
+| 语义区域 | AtomUI 区域 | 责任 |
 | --- | --- | --- |
 | `root` | Calendar / `PART_Root` | 背景、边框、密度和根状态 |
 | `header` | `PART_HeaderPresenter` / CalendarHeader | 年月选项、模式切换或 HeaderTemplate |
-| `body` | CalendarView / `PART_Body` | WeekHeader 与 CellHost 容器 |
+| `body` | `PART_BodyPresenter` | CalendarView 与范围条 overlay 的叠放容器 |
+| `view` | CalendarView / `PART_Body` | WeekHeader 与 CellHost 容器 |
 | `content` | CalendarView / `PART_CellHost` | 日期/月/周序号网格 |
 | `item` | CalendarViewCell / `PART_Item` | 命中测试、状态、焦点和 Automation |
+| `rangeBar` | `PART_RangeBarPanel` / CalendarRangeBarPanel | Fullscreen Month 日期网格上方的连续范围条 overlay |
 | `itemContent` | CalendarViewCell / `PART_ItemContent` | CellTemplate 业务内容 |
 
 ### 6.2 Template Part
 
-Calendar 使用 `PART_DefaultHeader`、`PART_CustomHeader` 和 `PART_CalendarView`；CalendarView 使用 `PART_Body`、`PART_WeekHeader` 和 `PART_CellHost`；CalendarViewCell 使用 `PART_Item`、`PART_CellInner`、`PART_Value` 和 `PART_ItemContent`。
+Calendar 使用 `PART_HeaderPresenter`、`PART_BodyPresenter`、`PART_DefaultHeader`、`PART_CustomHeader`、`PART_CalendarView` 和 `PART_RangeBarPanel`；CalendarView 使用 `PART_Body`、`PART_WeekHeader` 和 `PART_CellHost`；CalendarViewCell 使用 `PART_Item`、`PART_CellInner`、`PART_Value` 和 `PART_ItemContent`。
 
-`CellTemplate` 不隐藏 `PART_Value`。`FullCellTemplate` 隐藏默认 inner 结构并显示完整模板，但不替换 `PART_Item`。周序号 Cell 使用默认周序号内容，且不把空的 Week Context 传给业务模板。
+`CellTemplate` 不隐藏 `PART_Value`，也不替换内置范围条 overlay。`FullCellTemplate` 隐藏默认 inner 结构并显示完整模板，但不替换 `PART_Item` 或 Calendar body overlay。周序号 Cell 使用默认周序号内容，且不把空的 Week Context 传给业务模板。
 
 WeekHeader 使用与 CellHost 相同的 Grid 列定义，ShowWeek 切换时周标题、周序号列和日期列保持对齐。Mini Header 的 ComboBox 和 Segmented 使用 Small，Fullscreen 使用默认尺寸。
 
@@ -173,6 +180,7 @@ Calendar 向 Header 和 View 单向投影状态。Template reapply 前解绑旧 
 
 - Date 模式最多 42 个日期容器，ShowWeek 增加 6 个周序号容器；Month 模式最多 12 个容器。
 - 容器池有界，Mode、Value、语言和模板变化不无限创建容器。
+- RangeBars overlay 只在日期网格、范围条输入、bounds 或主题 metrics 变化时计算，不在 pointer move 热路径中计算。
 - Date/Week Cell 每个日期每次重建最多调用一次 DisabledDate；Month Cell 每月按月首/月末最多调用两次。
 - Cell Model 不在 Measure/Arrange 热路径构建；Fullscreen/Mini 切换只更新主题状态。
 - 事件订阅、模板 part、池化容器和语言服务均有对称释放路径。
@@ -181,7 +189,7 @@ Calendar 向 Header 和 View 单向投影状态。Template reapply 前解绑旧 
 
 ## 9. 兼容性与定制边界
 
-稳定契约包括 Calendar 的现有公共属性、三个事件、Template Part、七个 CalendarControl Token、根/Cell 伪类和四个 Calendar 语言资源键。FullCellTemplate 不得移除外层交互和 Automation；CellTemplate 不得替换默认日期/月值。应用负责模板内部业务视觉和业务数据，AtomUI 负责外层选择、禁用、焦点、Automation、主题和生命周期。
+稳定契约包括 Calendar 的现有公共属性、三个事件、Template Part、八个 CalendarControl Token、根/Cell 伪类和四个 Calendar 语言资源键。FullCellTemplate 不得移除外层交互和 Automation；CellTemplate 不得替换默认日期/月值或内置范围条 overlay。应用负责模板内部业务视觉和业务数据，AtomUI 负责外层选择、禁用、焦点、Automation、主题、范围条投影和生命周期。
 
 旧 `SelectedDate`、`SelectedDates`、`SelectionMode`、`DisplayDate*`、`BlackoutDates`、Decade 面板、Previous/Next Header 和旧 CalendarButton 体系不属于本控件契约。DatePicker 继续使用独立的旧 CalendarToken 和 CalendarView 类型。
 
@@ -190,6 +198,6 @@ Calendar 向 Header 和 View 单向投影状态。Template reapply 前解绑旧 
 - 纯逻辑：42 日期 Cell 起点与顺序、12 月份候选值、闰年/月末截断、周序号规则、ValidRange 首尾包含、月份月首/月末禁用和周首日禁用。
 - 控件行为：Value 日期归一、模式映射、四种选择来源、事件顺序、Header 边界选项、自定义 Header 命令、周序号选择、重复选择和程序设值不触发用户事件。
 - 输入与 Automation：禁用 Cell 跳过、焦点伪类、Enter/Space、SelectionProvider、SelectionContainer 和 FullCellTemplate 外层 Peer 保留。
-- Template/主题：CellTemplate 保留值、FullCell 优先、WeekHeader 列对齐、Fullscreen/Mini 尺寸、本地化标签、Light/Dark 和运行时主题切换。
+- Template/主题：CellTemplate 保留值、范围条 overlay 共存、FullCell 优先、WeekHeader 列对齐、Fullscreen/Mini 尺寸、本地化标签、Light/Dark 和运行时主题切换。
 - 生命周期/性能：Template reapply、Detach、owner 替换、池化容器数量和池中 Cell 可回收性。
-- Gallery/LLMS/AOT：Gallery 九类稳定示例、API/Token 表、LLMS 生成校验、Calendar 定向测试和 NativeAOT Gallery publish。
+- Gallery/LLMS/AOT：Gallery 稳定示例、API/Token 表、范围条示例、LLMS 生成校验、Calendar 定向测试和 NativeAOT Gallery publish。

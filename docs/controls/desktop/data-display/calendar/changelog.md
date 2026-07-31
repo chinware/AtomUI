@@ -21,6 +21,8 @@
   - 将 Calendar 行为设计归档到 `docs/controls/desktop/data-display/calendar/`，并同步 overview、implementation、Token 与分类入口的导航。
   - 明确 CellTemplate/FullCellTemplate 优先级、月份首尾禁用、周序号选择、方向键跳过禁用 Cell、语言资源和 Template 生命周期契约。
   - 将 Automation 文档修正为 Avalonia 可移植的 `Table`/`ListItem` 与 SelectionItem 契约，不再宣称跨平台 Grid/GridItem provider。
+  - 新增范围条专项设计，定义 `RangeBars` / `CalendarRangeBar` 契约、Calendar body overlay 绘制层、可见行坐标算法、非 Visual 资源宿主生命周期和验证边界。
+  - Calendar 专属 Token 增加 `RangeBarHeight`，作为范围条 overlay 的默认条高；单条范围条仍通过实例属性覆盖颜色和高度。
 
 ## 2026-07-30
 
@@ -29,7 +31,7 @@
   - 全新 Public API：`Value`/`Mode`/`Fullscreen`/`ShowWeek`/`ValidRange`/`DisabledDate`/`CellTemplate`/`FullCellTemplate`/`HeaderTemplate` + `ValueChanged`/`Selected`/`PanelChanged` 事件。
   - `CalendarMode` 收敛为 `Month`/`Year`；`CalendarDateRange` 收敛为只服务 ValidRange（`end<start` 抛异常）。
   - 内部新增纯面板 `CalendarView`（命名空间 `AtomUI.Desktop.Controls.Internal.Calendar`），与 DatePicker 的 CalendarView 子系统完全隔离。
-  - Token 收敛为七个语义（`FullBg`/`FullPanelBg`/`ItemActiveBg`/`YearControlWidth`/`MonthControlWidth`/`MiniContentHeight`/`FullCellMinHeight`），使用独立的 `CalendarControlToken`（scope id `CalendarControl`）；旧 `CalendarToken` 保留给 DatePicker。
+  - Token 收敛为独立的 `CalendarControlToken` 语义（`FullBg`/`FullPanelBg`/`ItemActiveBg`/`YearControlWidth`/`MonthControlWidth`/`MiniContentHeight`/`FullCellMinHeight`），旧 `CalendarToken` 保留给 DatePicker。
   - 事件顺序固定为 `PanelChanged -> ValueChanged -> Selected`；程序设值不触发用户事件。
   - 新增 roving focus、方向键导航和基于 Avalonia `Table`/`ListItem`/`ISelectionItemProvider` 的 Automation 契约。
   - Gallery 重写为九个示例，控件文档与 Token 文档同步更新。

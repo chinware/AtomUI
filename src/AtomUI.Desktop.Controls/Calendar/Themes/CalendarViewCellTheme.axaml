@@ -10,6 +10,7 @@
     TargetType="calendar:CalendarViewCell"
     x:ClassModifier="internal">
     <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="ClipToBounds" Value="False" />
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
     <Setter Property="Template">
@@ -19,14 +20,16 @@
                     Cursor="Hand"
                     Focusable="True"
                     Padding="0"
+                    ClipToBounds="False"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch">
                 <Border Name="PART_CellInner"
                         Background="Transparent"
                         Cursor="Hand"
+                        ClipToBounds="False"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch">
-                    <Grid>
+                    <Grid ClipToBounds="False">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -34,18 +37,16 @@
                         <ContentControl Name="PART_ItemContent"
                                         Cursor="Hand"
                                         Grid.Row="1"
-                                        Content="{TemplateBinding Context}"
-                                        ContentTemplate="{TemplateBinding CellTemplate}"
                                         HorizontalContentAlignment="Stretch"
                                         VerticalContentAlignment="Stretch"
-                                        IsVisible="{Binding CellTemplate, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                        ClipToBounds="False"
+                                        IsVisible="False" />
                         <atom:TextBlock Name="PART_Value"
                                         Cursor="Hand"
                                         Grid.Row="0"
                                         Text="{TemplateBinding DisplayText}"
                                         HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        IsVisible="{Binding CellTemplate, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNull}}" />
+                                        VerticalAlignment="Center" />
                     </Grid>
                 </Border>
             </Border>

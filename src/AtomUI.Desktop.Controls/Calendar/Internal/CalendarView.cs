@@ -522,14 +522,16 @@ internal sealed class CalendarView : TemplatedControl
             if (hasWeek)
             {
                 var weekModel = _cellModels[42 + row];
-                PlaceCell(GetPooledCell(poolIndex++), weekModel, row, col);
+                var cellIndex = poolIndex++;
+                PlaceCell(GetPooledCell(cellIndex), weekModel, row, col, cellIndex);
                 col++;
             }
 
             for (var d = 0; d < 7; d++)
             {
                 var dateModel = _cellModels[row * 7 + d];
-                PlaceCell(GetPooledCell(poolIndex++), dateModel, row, col);
+                var cellIndex = poolIndex++;
+                PlaceCell(GetPooledCell(cellIndex), dateModel, row, col, cellIndex);
                 col++;
             }
         }
@@ -541,20 +543,46 @@ internal sealed class CalendarView : TemplatedControl
         {
             var row = i / 3;
             var col = i % 3;
-            PlaceCell(GetPooledCell(i), _cellModels[i], row, col);
+            PlaceCell(GetPooledCell(i), _cellModels[i], row, col, i);
         }
     }
 
-    private void PlaceCell(CalendarViewCell cell, CalendarViewCellModel model, int row, int col)
+    private void PlaceCell(CalendarViewCell cell, CalendarViewCellModel model, int row, int col, int index)
     {
-        cell.CellTemplate = CellTemplate;
-        cell.FullCellTemplate = FullCellTemplate;
+        var cellTemplate = CellTemplate;
+        if (!ReferenceEquals(cell.CellTemplate, cellTemplate))
+        {
+            cell.CellTemplate = cellTemplate;
+        }
+
+        var fullCellTemplate = FullCellTemplate;
+        if (!ReferenceEquals(cell.FullCellTemplate, fullCellTemplate))
+        {
+            cell.FullCellTemplate = fullCellTemplate;
+        }
+
         cell.Bind(this, model);
-        Grid.SetRow(cell, row);
-        Grid.SetColumn(cell, col);
-        if (!_cellHost!.Children.Contains(cell))
+        if (Grid.GetRow(cell) != row)
+        {
+            Grid.SetRow(cell, row);
+        }
+
+        if (Grid.GetColumn(cell) != col)
+        {
+            Grid.SetColumn(cell, col);
+        }
+
+        if (_cellHost!.Children.Count == index)
         {
             _cellHost.Children.Add(cell);
+        }
+        else if (_cellHost.Children.Count < index || !ReferenceEquals(_cellHost.Children[index], cell))
+        {
+            // Fallback for unexpected external child mutation; normal realization stays O(n).
+            if (!_cellHost.Children.Contains(cell))
+            {
+                _cellHost.Children.Add(cell);
+            }
         }
     }
 
@@ -614,8 +642,11 @@ internal sealed class CalendarView : TemplatedControl
             return;
         }
 
-        _weekHeader.IsVisible = isDate;
-        _weekHeader.Children.Clear();
+        if (_weekHeader.IsVisible != isDate)
+        {
+            _weekHeader.IsVisible = isDate;
+        }
+
         if (!isDate)
         {
             return;
@@ -623,37 +654,82 @@ internal sealed class CalendarView : TemplatedControl
 
         var first = culture.DateTimeFormat.FirstDayOfWeek;
         var names = culture.DateTimeFormat.AbbreviatedDayNames;
+        var requiredCount = ShowWeek ? 8 : 7;
+        SyncWeekHeaderChildren(requiredCount);
 
+        var index = 0;
         if (ShowWeek)
         {
             var weekLabel = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Week)
                             ?? CalendarControlLangResourceKind.Week.ToString();
-            AddWeekHeaderText(weekLabel, 0);
+            UpdateWeekHeaderText(index++, weekLabel, 0);
         }
 
         var columnOffset = ShowWeek ? 1 : 0;
         for (var i = 0; i < 7; i++)
         {
             var day = (DayOfWeek)(((int)first + i) % 7);
-            AddWeekHeaderText(names[(int)day], i + columnOffset);
+            UpdateWeekHeaderText(index++, names[(int)day], i + columnOffset);
         }
     }
 
-    private void AddWeekHeaderText(string text, int column)
+    private void SyncWeekHeaderChildren(int requiredCount)
     {
-        var label = new TextBlock
+        while (_weekHeader!.Children.Count > requiredCount)
         {
-            Text = text,
+            _weekHeader.Children.RemoveAt(_weekHeader.Children.Count - 1);
+        }
+
+        while (_weekHeader.Children.Count < requiredCount)
+        {
+            _weekHeader.Children.Add(CreateWeekHeaderText());
+        }
+    }
+
+    private void UpdateWeekHeaderText(int index, string text, int column)
+    {
+        var label = GetWeekHeaderText(index);
+        if (label.Text != text)
+        {
+            label.Text = text;
+        }
+
+        if (Grid.GetColumn(label) != column)
+        {
+            Grid.SetColumn(label, column);
+        }
+    }
+
+    private TextBlock GetWeekHeaderText(int index)
+    {
+        if (_weekHeader!.Children[index] is TextBlock label)
+        {
+            return label;
+        }
+
+        label = CreateWeekHeaderText();
+        _weekHeader.Children.RemoveAt(index);
+        _weekHeader.Children.Insert(index, label);
+        return label;
+    }
+
+    private static TextBlock CreateWeekHeaderText()
+    {
+        return new TextBlock
+        {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             TextAlignment = TextAlignment.Center
         };
-        Grid.SetColumn(label, column);
-        _weekHeader!.Children.Add(label);
     }
 
     private void ConfigureWeekHeader(int columns)
     {
         if (_weekHeader is not Grid headerGrid)
+        {
+            return;
+        }
+
+        if (headerGrid.ColumnDefinitions.Count == columns)
         {
             return;
         }
@@ -667,6 +743,12 @@ internal sealed class CalendarView : TemplatedControl
 
     private static void ConfigureGrid(Grid grid, int columns, int rows)
     {
+        if (grid.ColumnDefinitions.Count == columns &&
+            grid.RowDefinitions.Count == rows)
+        {
+            return;
+        }
+
         grid.ColumnDefinitions.Clear();
         grid.RowDefinitions.Clear();
         for (var c = 0; c < columns; c++)

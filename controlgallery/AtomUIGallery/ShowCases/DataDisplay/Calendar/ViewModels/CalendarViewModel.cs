@@ -19,6 +19,9 @@ public class CalendarViewModel : ReactiveObject, IRoutableViewModel
     /// <summary>示例锚点日期，跟随 Calendar 默认值。</summary>
     public DateTime SampleDate { get; } = DateTime.Today;
 
+    /// <summary>跨日期事件示例固定展示 2026 年 1 月。</summary>
+    public DateTime CrossDateEventsSampleDate { get; } = new(2026, 1, 1);
+
     /// <summary>ValidRange 示例：围绕初始日期展示前后边界。</summary>
     public CalendarDateRange SampleValidRange { get; } =
         new(DateTime.Today.AddDays(-10), DateTime.Today.AddDays(10));

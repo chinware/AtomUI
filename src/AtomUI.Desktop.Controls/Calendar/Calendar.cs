@@ -1,6 +1,9 @@
+using System.Collections;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Windows.Input;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls.Internal.Calendar;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
@@ -11,6 +14,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.VisualTree;
+using CalendarRangeBarPanelControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarRangeBarPanel;
 using CalendarViewControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarView;
 
 namespace AtomUI.Desktop.Controls;
@@ -26,6 +30,7 @@ namespace AtomUI.Desktop.Controls;
     CalendarRootPseudoClass.Year,
     CalendarRootPseudoClass.ShowWeek)]
 [TemplatePart(CalendarViewPart, typeof(CalendarViewControl))]
+[TemplatePart(RangeBarPanelPart, typeof(CalendarRangeBarPanelControl))]
 public class Calendar : TemplatedControl
 {
     #region Avalonia Properties
@@ -57,6 +62,12 @@ public class Calendar : TemplatedControl
 
     public static readonly StyledProperty<IDataTemplate?> HeaderTemplateProperty =
         AvaloniaProperty.Register<Calendar, IDataTemplate?>(nameof(HeaderTemplate));
+
+    public static readonly DirectProperty<Calendar, CalendarRangeBarCollection> RangeBarsProperty =
+        AvaloniaProperty.RegisterDirect<Calendar, CalendarRangeBarCollection>(
+            nameof(RangeBars),
+            o => o.RangeBars,
+            (o, v) => o.RangeBars = v);
 
     /// <summary>当前选中日期，同时作为默认面板锚点。默认为实例创建时的 <see cref="DateTime.Today"/>。</summary>
     public DateTime Value
@@ -121,6 +132,35 @@ public class Calendar : TemplatedControl
         set => SetValue(HeaderTemplateProperty, value);
     }
 
+    private CalendarRangeBarCollection _rangeBars = new();
+
+    /// <summary>连续日期范围条集合。仅 Fullscreen Month 日期网格 overlay 使用。</summary>
+    public CalendarRangeBarCollection RangeBars
+    {
+        get => _rangeBars;
+        set
+        {
+            value ??= new CalendarRangeBarCollection();
+            if (ReferenceEquals(_rangeBars, value))
+            {
+                return;
+            }
+
+            _rangeBars.CollectionChanged -= OnRangeBarsCollectionChanged;
+            DetachAllRangeBars();
+            var oldValue = _rangeBars;
+            _rangeBars = value;
+            _rangeBars.CollectionChanged += OnRangeBarsCollectionChanged;
+            if (this.IsAttachedToVisualTree())
+            {
+                AttachRangeBars(_rangeBars);
+            }
+
+            RaisePropertyChanged(RangeBarsProperty, oldValue, value);
+            InvalidateRangeBars();
+        }
+    }
+
     #endregion
 
     #region Public Events
@@ -139,6 +179,7 @@ public class Calendar : TemplatedControl
     public Calendar()
     {
         SetCurrentValue(ValueProperty, DateTime.Today);
+        _rangeBars.CollectionChanged += OnRangeBarsCollectionChanged;
     }
 
     /// <summary>公开 <see cref="Mode"/> 到内部面板模式的映射：Month 显示日期，Year 显示月份。</summary>
@@ -146,12 +187,16 @@ public class Calendar : TemplatedControl
         Mode == CalendarMode.Year ? CalendarViewMode.Month : CalendarViewMode.Date;
 
     internal const string CalendarViewPart = "PART_CalendarView";
+    internal const string RangeBarPanelPart = "PART_RangeBarPanel";
     internal const string DefaultHeaderPart = "PART_DefaultHeader";
     internal const string CustomHeaderPart = "PART_CustomHeader";
 
     private CalendarViewControl? _calendarView;
+    private CalendarRangeBarPanelControl? _rangeBarPanel;
     private CalendarHeader? _defaultHeader;
     private ContentControl? _customHeader;
+    private readonly Dictionary<CalendarRangeBar, CalendarRangeBarAttachment> _rangeBarAttachments =
+        new(ReferenceEqualityComparer.Instance);
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -168,6 +213,9 @@ public class Calendar : TemplatedControl
             _calendarView.Today = DateTime.Today;
             _calendarView.CellSelected += OnCellSelected;
         }
+
+        _rangeBarPanel = e.NameScope.Find<CalendarRangeBarPanelControl>(RangeBarPanelPart);
+        UpdateRangeBarPanelVisibility();
 
         if (_defaultHeader is not null)
         {
@@ -190,6 +238,7 @@ public class Calendar : TemplatedControl
         SyncViewMode();
         RefreshCustomHeaderContent();
         ApplyCulture();
+        InvalidateRangeBars();
         UpdateRootPseudoClasses();
     }
 
@@ -223,13 +272,155 @@ public class Calendar : TemplatedControl
     {
         base.OnAttachedToVisualTree(e);
         AttachLanguageListener();
+        AttachRangeBars(RangeBars);
         ApplyCulture();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        DetachAllRangeBars();
         DetachLanguageListener();
+    }
+
+    private void AttachRangeBars(IEnumerable<CalendarRangeBar> rangeBars)
+    {
+        foreach (var rangeBar in rangeBars)
+        {
+            AttachRangeBar(rangeBar);
+        }
+    }
+
+    private void AttachRangeBarsFromList(IList rangeBars)
+    {
+        for (var i = 0; i < rangeBars.Count; i++)
+        {
+            if (rangeBars[i] is CalendarRangeBar rangeBar)
+            {
+                AttachRangeBar(rangeBar);
+            }
+        }
+    }
+
+    private void DetachRangeBarsFromList(IList rangeBars)
+    {
+        for (var i = 0; i < rangeBars.Count; i++)
+        {
+            if (rangeBars[i] is CalendarRangeBar rangeBar)
+            {
+                DetachRangeBar(rangeBar);
+            }
+        }
+    }
+
+    private void AttachRangeBar(CalendarRangeBar rangeBar)
+    {
+        if (_rangeBarAttachments.TryGetValue(rangeBar, out var attachment))
+        {
+            attachment.ReferenceCount++;
+            return;
+        }
+
+        rangeBar.PropertyChanged += OnRangeBarPropertyChanged;
+        _rangeBarAttachments.Add(rangeBar, new CalendarRangeBarAttachment(rangeBar.AttachResourceHost(this)));
+    }
+
+    private void DetachRangeBar(CalendarRangeBar rangeBar)
+    {
+        if (!_rangeBarAttachments.TryGetValue(rangeBar, out var attachment))
+        {
+            return;
+        }
+
+        attachment.ReferenceCount--;
+        if (attachment.ReferenceCount > 0)
+        {
+            return;
+        }
+
+        rangeBar.PropertyChanged -= OnRangeBarPropertyChanged;
+        attachment.Dispose();
+        _rangeBarAttachments.Remove(rangeBar);
+    }
+
+    private void DetachAllRangeBars()
+    {
+        foreach (var (rangeBar, attachment) in _rangeBarAttachments)
+        {
+            rangeBar.PropertyChanged -= OnRangeBarPropertyChanged;
+            attachment.Dispose();
+        }
+
+        _rangeBarAttachments.Clear();
+    }
+
+    private void ResetRangeBarAttachments()
+    {
+        DetachAllRangeBars();
+        if (this.IsAttachedToVisualTree())
+        {
+            AttachRangeBars(RangeBars);
+        }
+    }
+
+    private void OnRangeBarsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (this.IsAttachedToVisualTree())
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    if (e.NewItems is not null)
+                    {
+                        AttachRangeBarsFromList(e.NewItems);
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    if (e.OldItems is not null)
+                    {
+                        DetachRangeBarsFromList(e.OldItems);
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    if (e.OldItems is not null)
+                    {
+                        DetachRangeBarsFromList(e.OldItems);
+                    }
+
+                    if (e.NewItems is not null)
+                    {
+                        AttachRangeBarsFromList(e.NewItems);
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    ResetRangeBarAttachments();
+                    break;
+            }
+        }
+
+        InvalidateRangeBars();
+    }
+
+    private void OnRangeBarPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        InvalidateRangeBars();
+    }
+
+    private void InvalidateRangeBars()
+    {
+        UpdateRangeBarPanelVisibility();
+        _rangeBarPanel?.InvalidateRangeBars();
+    }
+
+    private void UpdateRangeBarPanelVisibility()
+    {
+        if (_rangeBarPanel is not null)
+        {
+            _rangeBarPanel.IsVisible = Mode == CalendarMode.Month && Fullscreen && RangeBars.Count > 0;
+        }
     }
 
     private void AttachLanguageListener()
@@ -271,6 +462,11 @@ public class Calendar : TemplatedControl
             _calendarView.Culture = culture;
         }
 
+        if (_rangeBarPanel is not null)
+        {
+            _rangeBarPanel.Culture = culture;
+        }
+
         if (_defaultHeader is not null)
         {
             _defaultHeader.Culture = culture;
@@ -293,6 +489,7 @@ public class Calendar : TemplatedControl
         {
             SyncViewMode();
             RefreshCustomHeaderContent();
+            UpdateRangeBarPanelVisibility();
             UpdateRootPseudoClasses();
         }
         else if (change.Property == ValueProperty)
@@ -309,6 +506,7 @@ public class Calendar : TemplatedControl
         else if (change.Property == FullscreenProperty ||
                  change.Property == ShowWeekProperty)
         {
+            UpdateRangeBarPanelVisibility();
             UpdateRootPseudoClasses();
         }
         else if (change.Property == HeaderTemplateProperty)
@@ -397,5 +595,22 @@ public class Calendar : TemplatedControl
             canExecute: p => p is CalendarMode mode && (mode == CalendarMode.Month || mode == CalendarMode.Year));
 
         return new CalendarHeaderContext(Value.Date, Mode, changeValue, changeMode);
+    }
+
+    private sealed class CalendarRangeBarAttachment : IDisposable
+    {
+        private readonly IDisposable _resourceHostAttachment;
+
+        public int ReferenceCount { get; set; } = 1;
+
+        public CalendarRangeBarAttachment(IDisposable resourceHostAttachment)
+        {
+            _resourceHostAttachment = resourceHostAttachment;
+        }
+
+        public void Dispose()
+        {
+            _resourceHostAttachment.Dispose();
+        }
     }
 }

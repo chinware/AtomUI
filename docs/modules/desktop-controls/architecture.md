@@ -9,9 +9,9 @@
 | 部分 | 说明 |
 |---|---|
 | 控件类 | 继承 Avalonia 控件或 AtomUI 抽象控件，声明 StyledProperty、事件和行为 |
-| Token 类 | 继承 `AbstractControlDesignToken`，声明控件级设计 Token |
+| Token 类 | 可选；仅在 Control 存在 Own Token 时使用无参数 `[ControlDesignToken]` 并继承 `AbstractControlDesignToken`，不得继承另一个 Control Token |
 | AXAML 主题 | 位于 `Themes/`，定义 ControlTheme、模板和样式 |
-| 主题聚合 | 通过 `DesktopControlThemesProvider.axaml` 汇总控件主题 |
+| 主题注册 | 生成器从 `Themes/**/*.axaml` 产生 asset/dependency manifest，包级 Provider 按平台接入主题 |
 | 语言 Provider | 位于 `Localization/`，由源生成器收集 |
 | 辅助类型 | Converters、DataLoad、EventArgs、PseudoClass、ReflectionExtensions 等 |
 

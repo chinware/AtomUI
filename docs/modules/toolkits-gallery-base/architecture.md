@@ -301,10 +301,13 @@ public static IThemeManagerBuilder UseGalleryBase(
 
 该入口负责：
 
-- 注册 GalleryBase Control Token。
-- 注册 GalleryBase ControlThemesProvider。
+- 一次注册 GalleryBase 生成的 Control descriptor、可选 Own Token schema 和强类型 Token 资源扩展。
+- 注册从 `Themes/**/*.axaml` 生成的 ControlTheme asset/token dependency manifest 和平台主题 Provider。
 - 注册 GalleryBase Shell 语言 Provider。
 - 保存或合并 `GalleryBaseOptions`，供 Shell 构造时读取。
+
+GalleryBase 不维护逐 Control/逐 Theme 注册代码、聚合 AXAML、手工 manifest 或 Token identity。没有 Own Token 的
+public 可主题化 Control 仍由生成器提供独立 identity 和 descriptor。
 
 具体产品自己的语言 Provider 和主题仍由产品项目注册。
 

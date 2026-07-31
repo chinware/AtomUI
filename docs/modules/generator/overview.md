@@ -4,16 +4,19 @@
 
 ## 职责
 
-- 根据 Design Token Attribute 生成 Token 资源键常量。
-- 根据 Control Token Attribute 生成控件 Token 类型池。
+- 根据 Global Token 定义生成强类型 schema、资源键和投影代码。
+- 根据 public 可主题化 Control、无参数 `[ControlDesignToken]` 标记的可选 Own Token 类型和命名/目录约定生成独立
+  Control identity 与 descriptor；Attribute 只负责 Token 发现，不携带 Control 类型、identity 或 ID。
+- 分析构建系统提供的 `Themes/**/*.axaml`，生成 ControlTheme asset/token dependency manifest。
+- 为每个 Control 包生成一次包级注册入口；不要求逐 Control 或逐 Theme 手工注册。
 - 根据 Language Provider Attribute 生成语言资源键和 Provider 池。
-- 降低控件包手工维护 Token/语言注册列表的成本。
+- 消除 Control 包对 Token、主题资产和语言手工清单及运行时程序集扫描的依赖。
 
 ## 生成器
 
 | 生成器 | 说明 |
 |---|---|
-| `TokenResourceKeyGenerator` | 扫描全局 Token 与 Control Token，生成资源键和 Token 类型池 |
+| `TokenResourceKeyGenerator` | 分析 Global Token、可主题化 Control、`[ControlDesignToken]` Own Token 和主题资产输入，生成 identity、强类型资源键、descriptor、asset/dependency manifest 与包级注册代码 |
 | `LanguageGenerator` | 扫描语言 Provider，生成语言资源键和 Provider 池 |
 | `DataMemberAccessorGenerator` | 根据数据模型 Attribute 生成 AOT 友好的数据成员访问器注册 |
 | `ScopedResourceHostGenerator` | 根据 `[GenerateScopedResourceHost]` 为非 Visual `AvaloniaObject` 生成 scoped 资源宿主生命周期样板代码 |
@@ -34,6 +37,10 @@
 
 ## 维护注意
 
-新增控件 Token 或语言 Provider 后，应检查对应项目的 `GeneratedFiles/AtomUI.Generator/` 输出，确认生成器已识别目标类型。由于生成目录被 `<Compile Remove=...>` 排除且默认被 `.gitignore` 忽略，不应把生成文件当成普通源码维护；只有被结构测试明确读取的 GalleryBase 快照才需要同步提交。
+新增可主题化 Control、带 `[ControlDesignToken]` 的可选 Own Token、`Themes/**/*.axaml` 资产或语言 Provider 后，应检查对应项目的
+`GeneratedFiles/AtomUI.Generator/` 输出，确认 identity、强类型 Token key、descriptor、依赖 manifest 和包级注册
+结果完整。Control 没有 Own Token 时仍必须生成 identity、`XxxTokenResource` 和零 Own Token descriptor。由于生成
+目录被 `<Compile Remove=...>` 排除且默认被 `.gitignore` 忽略，不应把生成文件当成普通源码维护；只有被结构测试
+明确读取的 GalleryBase 快照才需要同步提交。
 
 新增或修改 Generator 时，应同时检查 writer 代码、诊断规则和生成物稳定性。对于非 Visual `AvaloniaObject` 资源宿主类需求，不要在控件对象中复制手写资源宿主代码，应优先按 [Scoped Resource Host Source Generator 范式](scoped-resource-host-generator.md) 落地。

@@ -7,7 +7,8 @@
 - GalleryBase 拥有自己的 Token 和主题，不借用 `AtomUIGallery` 命名空间。
 - 产品页面继续使用产品自己的语言资源，不进入 GalleryBase。
 - Shell 文案由 GalleryBase 提供，产品品牌和页面文案由产品提供。
-- 主题注册入口与现有 AtomUI 模块保持一致。
+- Control、可选 Own Token 和主题资产遵循 AtomUI 约定，并由生成器建立 descriptor 与 manifest。
+- 整个 GalleryBase 包只使用一次生成的注册入口，不逐 Control 或逐 Theme 手工注册。
 - 支持 Browser 和 Desktop 共用同一套主题 Provider。
 
 ## XAML namespace
@@ -44,10 +45,11 @@ public static class ThemeManagerBuilderExtensions
 
 入口职责：
 
-- 注册 GalleryBase Control Token。
-- 注册 `GalleryControlThemesProvider`。
-- 注册 GalleryBase 语言 Provider。
+- 注册 GalleryBase 生成的 Control descriptor、ControlTheme asset/token dependency manifest 和主题 Provider。
+- 注册 GalleryBase 语言 Provider 池。
 - 构建并保存 `GalleryBaseConfiguration`。
+
+入口不维护逐 Control Token 列表、主题 URI 列表或聚合 AXAML；这些内容由构建期生成结果提供。
 
 推荐启动顺序：
 
@@ -85,15 +87,15 @@ AtomUIGallery 将这些 Radio 项放在本地化的 Theme Settings 子菜单中�
 显示 `12 × 12`、`2px` 圆角的实心正方形色块，未声明时不创建占位色块。Dark、Compact、Motion 和 Wave Spirit
 仍是外层 Theme 菜单中的正交开关。
 
-## ControlThemesProvider
+## 主题资产与生成注册
 
 ```text
-Controls/
-  GalleryControlThemesProvider.axaml
-  GalleryControlThemesProvider.cs
+<ControlFolder>/Themes/**/*.axaml
+    -> ControlTheme asset/token dependency manifest
+    -> package-level UseGalleryBase() registration
 ```
 
-Provider 汇总：
+GalleryBase 当前主题资产包括：
 
 - `ShowCaseItemTheme.axaml`
 - `ShowCasePanelTheme.axaml`
@@ -104,6 +106,10 @@ Provider 汇总：
 - `IconGalleryTheme.axaml`
 - `IconInfoItemTheme.axaml`
 - `GalleryWindowTitleBarTheme.axaml`
+
+构建集成按 `Themes/**/*.axaml` 约定收集这些资产。平台 Provider 只把生成 manifest 中适用的资产接入 Avalonia
+Styles；开发者不维护 `GalleryControlThemesProvider.axaml` 聚合字典、Theme Module、glob Attribute 或手工
+manifest。单个 Control 只有一个 ControlTheme 时只保留对应主题文件，不增加包装层。
 
 `GalleryShellView` 当前主要通过 C# 组合 AtomUI 现有控件和 Shared Token 完成 sidebar、footer、分隔线与内容区背景；后续如果 sidebar/navigation 有独立主题状态，再补对应 GalleryBase 控件主题和 token。
 
@@ -121,14 +127,18 @@ GalleryBase Token 清单：
 | `GallerySidebarToken` | 侧边栏宽度、brand/footer padding、分隔线 |
 | `GalleryNavigationToken` | 导航 margin、默认缩进、滚动条间距 |
 
-Token 类仍使用 AtomUI generator：
+Own Token 类只在 Control 存在独有设计值时创建，并由 AtomUI generator 按约定识别：
 
 ```csharp
 [ControlDesignToken]
-internal class ShowCaseItemToken : AbstractControlDesignToken
+internal sealed class ShowCaseItemToken : AbstractControlDesignToken
 {
 }
 ```
+
+`[ControlDesignToken]` 只标记 Own Token 类型，不携带 Control 类型、identity 或 ID。禁止泛型
+`[ControlDesignToken<TControl>]` 和手写 ID。即使某个 GalleryBase Control 没有 Own Token，生成器仍为它生成独立
+identity、零 Own Token descriptor 和 `XxxTokenResource`。
 
 生成资源扩展后，主题使用：
 
@@ -138,9 +148,9 @@ Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
 
 `GalleryShowCaseHeaderToken` 只承载 Gallery 文档页头的结构性视觉值，例如 margin、间距、字号、metadata 卡片边框和默认宽度。分类、状态、引入版本 Tag 的颜色仍通过 `GalleryShowCaseHeader` 属性传给 AtomUI `Tag`，不在 token 中写死具体业务状态。
 
-## Shared Token 使用规则
+## Global Token 使用规则
 
-GalleryBase 可以使用 AtomUI Shared Token：
+GalleryBase 可以使用以下 AtomUI Global Token：
 
 - `ColorBgContainer`
 - `ColorBgLayout`
@@ -150,7 +160,10 @@ GalleryBase 可以使用 AtomUI Shared Token：
 - `SizeUnit`
 - `BorderRadius`
 
-但不允许在 GalleryBase 主题中写入产品色值，例如固定品牌蓝、AtomUI logo 色或产品状态色。产品色应通过产品页面或产品品牌配置表达。
+ControlTheme 希望允许 GalleryBase Control 级覆盖时，必须通过对应的 `XxxTokenResource` 读取并形成
+`SupportedGlobalTokens` 依赖；只有要求该值永远跟随当前 ThemeContext 全局结果时才使用
+`SharedTokenResource`。不允许在 GalleryBase 主题中写入产品色值，例如固定品牌蓝、AtomUI logo 色或产品状态色。
+产品色应通过产品页面或产品品牌配置表达。
 
 ## Shell 本地化
 

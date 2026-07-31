@@ -198,10 +198,11 @@ TreatAsLocalProperty="IsAotCompatible;EnableAotAnalyzer;EnableTrimAnalyzer;Enabl
 
 ## Theme / Token
 
-### Control token 注册
+### Control 与 Token 注册
 
-运行时不要扫描 assembly 查找 Control Token。应由 generator 生成 `ControlTokenDescriptorPool`，返回完整的
-生成式 descriptor：
+运行时不要扫描 assembly 查找可主题化 Control 或 Control Token。应由 generator 生成
+`ControlTokenDescriptorPool`，为每个对外可主题化 Control 返回完整 descriptor；没有 Own Token 的 Control 也必须
+拥有 identity 和 descriptor：
 
 ```csharp
 descriptors.Add(MyControlTokenDescriptor.Instance);
@@ -210,16 +211,20 @@ descriptors.Add(MyControlTokenDescriptor.Instance);
 descriptor 必须直接提供以下静态已知信息：
 
 - `ControlTokenIdentity` 和 registry slot。
-- 直接构造 Token builder 的委托。
-- Token name、value type、stage 和 slot。
+- 无参数 `[ControlDesignToken]` 标记的可选 Own Token 类型；Attribute 不携带 Control 类型或 identity。
+- 可选的 Own Token builder 直接构造委托。
+- Own Token name、value type、stage 和 slot。
 - 强类型 parse、set、get 和 resource projection 委托。
-- Control 自身和继承 Token schema。
+- `OwnTokens` 与生成式 `SupportedGlobalTokens` schema。
+- ControlTheme asset/token dependency manifest 和包级注册信息。
 
 这里有三个关键点：
 
 - Builder 必须原样传递 descriptor，不能丢弃 identity 后退化为 `Type` 注册。
 - 内置正常路径不调用 `Activator.CreateInstance`、`Type.GetProperties` 或 `PropertyInfo.GetValue/SetValue`。
-- 第三方 Control Token 必须使用 AtomUI generator，或者显式提供同等完整的 descriptor；不提供反射 fallback。
+- 第三方 Control 包必须使用 AtomUI generator，并只通过一次生成的包级入口注册 Control、可选 Own Token、主题资产
+  和依赖 manifest；不提供手写 descriptor、手工 manifest 或反射 fallback 旁路。
+- Own Token 可以放在包内正常源码位置并使用 `[ControlDesignToken]` 标记；禁止泛型 Control 参数和手写 ID。
 
 ### Token value converter 注册
 

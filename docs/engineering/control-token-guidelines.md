@@ -1,162 +1,254 @@
-# AtomUI 控件 Token 设计规范
+# AtomUI Control Token 设计规范
 
-本文档定义控件级 Token 的设计规则，适用于 `AtomUI.Controls`、`AtomUI.Desktop.Controls`、DataGrid、ColorPicker 以及后续新增控件包。单个控件的 `token.md` 只应记录该控件的专属 Token 语义、分类和兼容边界，通用规则保留在本文档。
+本文档定义 `AtomUI.Controls`、`AtomUI.Desktop.Controls`、DataGrid、ColorPicker 和第三方 AtomUI Control 包的
+Control Token、ControlTheme Asset 与组合主题规则。完整编译、snapshot 和资源发布模型见
+[AtomUI 主题系统架构](../modules/core/theme-system.md)。单个 Control 的 `token.md` 只记录 Own Token 语义和该
+Control 支持覆盖的 Global Token，不重复本文的通用机制。面向主题作者的完整定制流程见
+[主题系统架构与主题定制指南](../modules/core/theme-architecture-and-customization.md)。
 
 ## Token 分层
 
-AtomUI 的控件 Token 位于全局设计体系与控件主题之间。
-
 ```text
-DesignToken / SharedToken / Palette
-        ↓
-Control Token
-        ↓
-ControlTheme / BrowserTheme / family themes
-        ↓
-Template / Runtime visual state
+Global Token
+    -> Control-specific Global Override
+Effective Global Token
+    -> calculate Control Own Token defaults
+    -> Control Own Token Override
+Effective Control Token
+    -> ControlTheme
+    -> Semantic Part Theme
+    -> Template / Runtime visual state
 ```
-
-各层职责：
 
 | 层 | 职责 |
 | --- | --- |
-| `DesignToken` | 定义全局设计体系、种子 token、派生 token 和 palette。 |
-| `SharedToken` | 提供跨控件共享的尺寸、颜色、动效、排版和交互值。 |
-| Control Token | 将全局值转换为某个控件可消费的组件语义值。 |
-| Theme Variables | 保存某个控件实例在当前状态下的最终视觉变量。 |
-| Template | 消费最终视觉变量并完成渲染。 |
+| Global Token | 定义全局颜色、尺寸、排版、动效、交互值和算法输入。 |
+| Effective Global Token | 保存 Global Token 在某个 Control identity 下的有效值。 |
+| Control Own Token | 定义只属于一个 Control 的稳定设计语义。 |
+| Effective Control Token | 合并该 Control 的 Effective Global Token 与 Own Token。 |
+| Theme Variables | 保存 Control 实例在当前状态下的最终视觉变量。 |
+| ControlTheme / Template | 消费 Token 和 Theme Variables，完成状态映射与渲染。 |
 
-控件 Token 不替代全局设计 token。它只在控件范围内定义从全局 token 到组件语义的映射。
+## Control identity
 
-## 适用边界
+每个对外可主题化的 Control 都拥有独立 `ControlTokenIdentity`。identity 不由以下信息推断：
 
-控件 Token 应表达组件级设计值，例如：
+- `ControlTheme.TargetType`。
+- Control CLR 继承关系。
+- ControlTheme `BasedOn` 关系。
+- internal Part、Presenter、Decorator 或 Host 类型。
+- 运行时资源位置或 Visual/Logical parent。
 
-- 控件默认、主色、危险、弱强调等语义色值。
-- 控件尺寸、间距、字体、行高、阴影和状态背景。
-- 控件家族共享的结构性设计值。
+生成器按 Control、可选 Token 类型和主题资产的命名及目录约定生成 `XxxTokens.Identity`。C# 配置和 imperative
+查询使用该强类型入口，不能手写 Catalog/Id 字符串或 `new ControlTokenIdentity(...)`。
 
-控件 Token 不应表达：
+## Own Token 定义
 
-- 单个控件实例的运行时状态。
-- `IsPressed`、`IsPointerOver`、`IsLoading` 等交互状态。
-- `EffectiveColor`、`EffectiveVariant` 等由 API 解析得到的实例状态。
-- 模板节点是否可见。
-- 业务自定义颜色值。
+```csharp
+public sealed class Rating : TemplatedControl
+{
+}
 
-## 与 Theme Variables 的关系
+[ControlDesignToken]
+internal sealed class RatingToken : AbstractControlDesignToken
+{
+    public double StarSize { get; set; }
+    public double StarGap { get; set; }
 
-Control Token 和 internal theme variables 是不同层级。
-
-```text
-Control Token
-  提供组件语义设计值
-
-AXAML Selector
-  根据控件状态选择 Token 或 Palette 值
-
-Internal StyledProperty Theme Variables
-  保存当前实例的有效视觉变量
-
-Template
-  将视觉变量应用到 Foreground / Background / BorderBrush / BoxShadow
+    public override void CalculateTokenValues(bool isDarkMode)
+    {
+        StarSize = EffectiveGlobalToken.ControlHeight;
+        StarGap  = EffectiveGlobalToken.UniformlyMarginXS;
+    }
+}
 ```
 
-需要通过 AXAML `Setter`、selector、动态资源和主题切换参与状态映射的变量，应定义为 internal `StyledProperty`。普通 CLR 属性不适合作为主题变量，`DirectProperty` 仅适用于不参与 Style 系统的内部运行时状态。
+约束：
 
-## 命名原则
+- `RatingToken.cs` 只在 Rating 存在 Own Token 时创建。
+- Own Token 类型使用无参数 `[ControlDesignToken]` 标记，供生成器稳定发现。
+- `[ControlDesignToken]` 不携带 Control 类型、identity、ID 或主题资产路径；Control 关联继续由命名和目录约定建立。
+- Token 类型只继承统一基础类型，禁止继承另一个 Control Token。
+- Own Token 禁止与任一 Global Token 同名。
+- 禁止泛型 `[ControlDesignToken<TControl>]`、手写 ID 或 Theme Asset glob。
+- Control 没有 Own Token 时仍然拥有 identity，并可通过主题依赖获得 Supported Global Token。
 
-控件 Token 命名应表达组件语义，而不是模板实现细节。
+多个 Control 需要相同值时，先判断它是否属于全局设计语言。属于时提升为 Global Token；不属于时分别定义语义
+清晰的 Own Token。不能通过 Control Token 继承共享实现，纯计算复用可以使用无 identity 的 internal helper。
 
-符合命名原则：
+## 可配置 Token 契约
 
-- `DefaultHoverColor`
-- `PrimaryShadow`
-- `TextHoverBg`
-- `ContentFontSizeLG`
-
-不符合命名原则：
-
-- `BlueSolidHoverBackground`
-- `FrameBorderPointerOverBrush`
-- `Panel1Padding`
-- `PrimaryButtonMouseOverColor`
-
-Token 名称应稳定表达“控件语义 + 状态或规格”。如果名称需要描述模板节点、selector 条件或具体布局容器，通常说明该值更适合作为 theme variable，而不是控件 Token。
-
-## 计算原则
-
-控件 Token 的计算应集中在 `CalculateTokenValues` 中完成。
-
-- 从 `SharedToken`、`DesignToken`、Palette 和控件默认值派生组件语义值。
-- 允许用户预设值覆盖时，应先保留预设值，再计算缺省值。
-- 尺寸、间距、字体、行高和阴影应基于全局 token 的稳定规则计算。
-- 计算逻辑不应依赖单个控件实例属性，例如 `IsPressed`、`IsPointerOver`、`Shape` 或 `IsLoading`。
-- 明暗主题差异应通过全局 token、palette 或 theme calculator 进入控件 Token，不应在控件主题中复制计算逻辑。
-
-## 组合 Token 约束
-
-控件 Token 不应展开所有颜色、variant、状态的笛卡尔积。
-
-避免定义：
+每个 `ControlTokenDescriptor` 包含两个互斥集合：
 
 ```text
-BlueSolidHoverBg
-BlueSolidPressedBg
-BlueOutlinedHoverBorder
-PurpleFilledActiveBg
+SupportedGlobalTokens
+OwnTokens
 ```
 
-推荐结构：
+Control 配置允许使用的 Token 为：
 
 ```text
-Control Token
-  保存控件常用语义值
-
-Palette / Preset Resource
-  提供 preset color 的 base / hover / active / light / shadow
-
-Theme Selector
-  根据 Effective State 选择 Token 或 Palette 值
-
-Theme Variables
-  承载当前实例最终文字、背景、边框、阴影变量
+Configurable Control Tokens = SupportedGlobalTokens + OwnTokens
 ```
 
-如果需要增加 Token，应优先增加语义 token，而不是组合 token。例如可以定义“filled variant 的默认弱背景策略”一类语义值，而不是为每个 preset color 增加一组 Token。
+不在这两个集合中的 Global Token 即使全局存在，也不能配置在该 Control 的 `Tokens` 下。这样配置列表、IDE、
+Gallery 和运行时校验展示的每个 Token 都会真实影响当前注册的 Token 计算或主题资产。
 
-## 预设色规则
+## Supported Global Token 发现
 
-预设色应来源于 AtomUI 现有 palette 和 token 系统，例如：
+开发者不维护 Global Token 白名单。生成器从以下来源自动产生依赖：
 
-- `PresetPrimaryColor`
-- `PresetColorType`
-- `DesignToken.ColorPalettes`
-- 主题计算器生成的 light / dark palette
+```csharp
+StarSize = EffectiveGlobalToken.ControlHeight;
+```
 
-控件不应私有复制 preset 色十六进制表。多个控件共享 preset 色能力时，应优先设计通用 preset palette resource，而不是在单个控件 Token 中复制颜色常量。
+该访问把 `ControlHeight` 加入 Rating 的计算依赖。
 
-## 兼容性要求
+```xml
+<Setter Property="Foreground" Value="{atom:RatingTokenResource ColorPrimary}" />
+```
 
-控件 Token 属于主题契约的一部分。即使 Token 类型是 internal，生成的 `TokenKind` 和 AXAML resource 使用点也形成稳定依赖。
+该引用把 `ColorPrimary` 加入 Rating 的主题依赖。`SharedTokenResource ColorPrimary` 不产生 Rating 依赖。
 
-Token 变更要求：
+当前 registry revision 的最终集合为：
 
-- 不擅自重命名既有 Token。
-- 不擅自删除既有 Token。
-- 不改变既有 Token 的语义含义。
-- 不把实例状态迁移到 Token。
-- 不在 Token 中硬编码控件私有 preset 色表。
-- 需要破坏性变更时，必须先说明影响范围并获得授权。
+```text
+SupportedGlobalTokens
+    = Control Own Token calculation dependencies
+    + built-in ControlTheme dependencies
+    + generated third-party theme dependency manifests
+    + generated application theme dependency manifests
+```
+
+生成器必须静态分析 `EffectiveGlobalToken.X` 和 `XxxTokenResource X`。字符串、反射或无法证明归属的不透明间接
+访问不允许进入正常路径。所有依赖 manifest 在 ThemeManager 构建和 ThemeConfig 解析前注册，随后 schema 冻结。
+
+## 用户配置
+
+```csharp
+theme.ControlTokens
+    .For(RatingTokens.Identity)
+    .Set(GlobalTokens.ControlHeight, 36)
+    .Set(GlobalTokens.ColorPrimary, Colors.Red)
+    .Set(RatingTokens.StarGap, 8);
+```
+
+前两个值只覆盖 Rating 的 Effective Global Token，最后一个值覆盖 Rating Own Token。其他 Control 和真正的
+Global Token snapshot 不受影响。配置未出现在 `SupportedGlobalTokens` 或 `OwnTokens` 时必须产生明确错误，不能
+接受后静默无效。
+
+## AXAML 访问契约
+
+```xml
+<!-- 永远读取全局值。 -->
+<Setter Property="FontFamily" Value="{atom:SharedTokenResource FontFamily}" />
+
+<!-- 读取 Rating 的 Effective Global Token。 -->
+<Setter Property="MinHeight" Value="{atom:RatingTokenResource ControlHeight}" />
+<Setter Property="Foreground" Value="{atom:RatingTokenResource ColorPrimary}" />
+
+<!-- 读取 Rating Own Token。 -->
+<Setter Property="Margin" Value="{atom:RatingTokenResource StarGap}" />
+```
+
+`RatingTokenResource` 同时读取两类 Token，消费语法不写 `Global=` 或 `Own=`。生成器产生强类型
+`RatingTokenKey` 和 MarkupExtension 构造参数。主题作者可以选择 Rating Own Token 和 Global Token schema 中的
+候选；引用新的 Global Token 会把它加入 Rating 的主题依赖。IDE 优先显示 Own Token 和已经支持的 Global Token，
+并标注来源文档；错误名称在 AXAML 编译期失败，运行时不解析字符串。
+
+选择规则：
+
+- 希望某值永远跟随当前 ThemeContext 的全局结果时使用 `SharedTokenResource`。
+- 希望用户能够在 Rating 配置下局部覆盖时使用 `RatingTokenResource`。
+- ControlTheme 不声明 `ControlTokenScope.Identity`，也不存在 ambient fallback。
+
+## ControlTheme Asset
+
+标准 Control 的最小结构：
+
+```text
+Rating/
++-- Rating.cs
++-- RatingToken.cs            optional
+\-- Themes/
+    \-- RatingTheme.axaml
+```
+
+多个主题资产直接增加文件：
+
+```text
+Themes/
++-- DatePickerTheme.axaml
++-- DatePickerPresenterTheme.axaml
+\-- RangeDatePickerTheme.axaml
+```
+
+构建集成把 `Themes/**/*.axaml` 提供给生成器。生成器产生 asset manifest、owner identity、Token 依赖和注册代码。
+开发者不编写 `ControlThemeAssets` Attribute、Theme Module、手工 manifest、逐主题 identity 或只用于聚合的额外
+AXAML。只有一个 ControlTheme 时就只有一个主题文件。
+
+## Semantic Part Theme
+
+稳定且允许用户替换的内部位置通过强类型 `ControlTheme?` 属性开放：
+
+```csharp
+public ControlTheme? SearchButtonTheme { get; set; }
+```
+
+Semantic Part Theme 不创建 Token identity，不使用字符串 Part 名称或 `Dictionary<string, ControlTheme>`。Part 是
+真实 public Control 时继续使用自己的 identity；Part Theme 可以显式读取 owner 和 Part 的 TokenResource。
+
+SearchEdit 模板直接组合 public Button：
+
+```text
+SearchEditTokenResource -> 输入区域、拼接边框、圆角、状态投射和搜索语义
+ButtonTokenResource     -> Button 基础尺寸、字体、颜色和交互视觉
+SearchButtonTheme       -> 稳定的搜索按钮定制入口
+```
+
+不能创建一个 TargetType 属于 SearchButton、基础视觉属于 Button、Token scope 又属于 LineEdit 的 internal
+Control。组合关系不能通过借用 Token identity 表达。
+
+## Theme Variables 与命名
+
+Own Token 表达稳定 Control 语义，例如 `DefaultHoverColor`、`PrimaryShadow`、`ContentFontSizeLG`。不要使用
+`Panel1Padding`、`FrameBorderPointerOverBrush` 等模板节点名称，也不要展开颜色、variant 和状态的笛卡尔积。
+
+`IsPressed`、`IsPointerOver`、`IsLoading`、模板节点可见性和实例 API 解析结果属于运行时状态。需要通过 Selector
+参与状态映射的最终变量使用 internal StyledProperty Theme Variables，不进入 Control Token。
+
+## 第三方 Control 包
+
+第三方按相同约定提供 Control、可选 Own Token 和主题资产，并只调用一次生成的包级注册入口：
+
+```csharp
+builder.UseAcmeControls();
+```
+
+该入口直接注册 descriptor、Token schema、依赖 manifest 和主题资产，不运行时扫描程序集或 AXAML。第三方包不
+需要每 Theme 注册代码、泛型 Token Attribute、glob Attribute 或反射 fallback。
+
+## 构建期诊断
+
+以下情况必须构建失败：
+
+- Own Token 与 Global Token 同名。
+- Control Token 继承另一个 Control Token。
+- TokenResource 引用了不存在或归属错误的 Token。
+- Control 配置覆盖未支持的 Global Token。
+- Control、Token、主题资产和 identity 约定存在歧义。
+- 重复 identity、重复资产 URI 或未注册 manifest。
+- Semantic Part Theme 的 TargetType 与属性契约不兼容。
+- internal 实现类型被错误声明为独立 Token owner。
+- Global Token 依赖使用字符串、反射或不可分析路径。
 
 ## 验证要求
 
-不同 Token 改动对应不同验证范围。
-
 | 改动类型 | 验证要求 |
 | --- | --- |
-| 新增 Token | 检查生成的 `TokenKind`、AXAML 引用和默认值计算。 |
-| 修改 Token 计算 | 覆盖 light / dark 主题，检查控件和相关控件家族视觉。 |
-| 删除或重命名 Token | 默认不允许；如获授权，需同步所有 AXAML 引用和生成文件。 |
-| 引入 preset colors | 验证 default、primary、danger、preset color 与各 variant 的状态映射。 |
-
+| 新增 Control | 验证 identity、可选 Own Token、主题 manifest、包级注册和无反射路径。 |
+| 修改 Own Token | 验证强类型 key、默认计算、override 和 AXAML 消费。 |
+| 修改 Global Token 依赖 | 验证 `SupportedGlobalTokens`、配置校验和 dependency manifest。 |
+| 修改 Semantic Part Theme | 验证 owner/Part Token 分工、TargetType 和默认/实例替换。 |
+| 修改生成器 | 验证确定性输出、增量构建、NativeAOT 注册和错误诊断。 |
+| 修改主题视觉 | 验证 Light/Dark、Control 算法和相关 Control 家族。 |

@@ -15,6 +15,7 @@
 - [Calendar 桌面版架构设计](calendar/overview.md)
 - [Calendar 桌面版实现原理](calendar/implementation.md)
 - [Calendar 行为设计](calendar/behavior-design.md)
+- [Calendar 范围条设计](calendar/range-bar-design.md)
 - [Calendar Token 设计](calendar/token.md)
 - [Calendar Changelog](calendar/changelog.md)
 - [Card 桌面版架构设计](card/overview.md)

@@ -26,14 +26,35 @@
                                         ContentTemplate="{TemplateBinding HeaderTemplate}"
                                         IsVisible="{Binding HeaderTemplate, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}" />
                     </Panel>
-                    <calendar:CalendarView Name="PART_CalendarView"
-                                           Value="{TemplateBinding Value}"
-                                           Fullscreen="{TemplateBinding Fullscreen}"
-                                           ShowWeek="{TemplateBinding ShowWeek}"
-                                           ValidRange="{TemplateBinding ValidRange}"
-                                           DisabledDate="{TemplateBinding DisabledDate}"
-                                           CellTemplate="{TemplateBinding CellTemplate}"
-                                           FullCellTemplate="{TemplateBinding FullCellTemplate}" />
+                    <Panel Name="PART_BodyPresenter"
+                           ClipToBounds="True">
+                        <calendar:CalendarView Name="PART_CalendarView"
+                                               Value="{TemplateBinding Value}"
+                                               Fullscreen="{TemplateBinding Fullscreen}"
+                                               ShowWeek="{TemplateBinding ShowWeek}"
+                                               ValidRange="{TemplateBinding ValidRange}"
+                                               DisabledDate="{TemplateBinding DisabledDate}"
+                                               CellTemplate="{TemplateBinding CellTemplate}"
+                                               FullCellTemplate="{TemplateBinding FullCellTemplate}"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"
+                                               ZIndex="0" />
+                        <calendar:CalendarRangeBarPanel Name="PART_RangeBarPanel"
+                                                        Value="{TemplateBinding Value}"
+                                                        Mode="{TemplateBinding Mode}"
+                                                        Fullscreen="{TemplateBinding Fullscreen}"
+                                                        ShowWeek="{TemplateBinding ShowWeek}"
+                                                        RangeBars="{TemplateBinding RangeBars}"
+                                                        RangeBarHeight="{atom:CalendarControlTokenResource RangeBarHeight}"
+                                                        WeekHeaderHeight="{atom:SharedTokenResource ControlHeightSM}"
+                                                        RangeBarTopOffset="{atom:SharedTokenResource ControlHeightSM}"
+                                                        RangeBarHorizontalInset="{atom:SharedTokenResource UniformlyMarginXXS}"
+                                                        HorizontalAlignment="Stretch"
+                                                        VerticalAlignment="Stretch"
+                                                        IsVisible="False"
+                                                        IsHitTestVisible="False"
+                                                        ZIndex="1" />
+                    </Panel>
                 </DockPanel>
             </Border>
         </ControlTemplate>
