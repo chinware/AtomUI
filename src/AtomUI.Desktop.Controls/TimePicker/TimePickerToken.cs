@@ -6,10 +6,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class TimePickerToken : AbstractControlDesignToken
 {
-    public const string ID = "TimePicker";
     
     public TimePickerToken()
-        : base(ID)
+
     {
     }
 
@@ -58,11 +57,11 @@ internal class TimePickerToken : AbstractControlDesignToken
         base.CalculateTokenValues(isDarkMode);
         ItemWidth                     = 40;
         PeriodHostWidth               = 50;
-        ItemHeight                    = SharedToken.ControlHeight - 4;
-        ItemPadding                   = new Thickness(0, SharedToken.UniformlyPaddingXXS);
-        ButtonsMargin                 = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
-        RangePickerArrowMargin        = new Thickness(SharedToken.UniformlyMarginXS, 0);
-        RangePickerIndicatorThickness = SharedToken.LineWidthFocus;
+        ItemHeight                    = EffectiveGlobalToken.ControlHeight - 4;
+        ItemPadding                   = new Thickness(0, EffectiveGlobalToken.UniformlyPaddingXXS);
+        ButtonsMargin                 = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS, 0, 0);
+        RangePickerArrowMargin        = new Thickness(EffectiveGlobalToken.UniformlyMarginXS, 0);
+        RangePickerIndicatorThickness = EffectiveGlobalToken.LineWidthFocus;
         HeaderMargin                  = new Thickness(0, 0, 0, 3);
     }
     

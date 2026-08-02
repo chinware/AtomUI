@@ -5,12 +5,11 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ComboBoxToken : ButtonSpinnerToken
+internal class ComboBoxToken : AbstractControlDesignToken
 {
-    public new const string ID = "ComboBox";
 
     public ComboBoxToken()
-        : base(ID)
+
     {
     }
 
@@ -64,26 +63,32 @@ internal class ComboBoxToken : ButtonSpinnerToken
     /// </summary>
     public Thickness ItemMargin { get; set; }
 
+    /// <summary>
+    /// 下拉手柄悬浮颜色。
+    /// </summary>
+    public Color HandleHoverColor { get; set; }
+
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        PopupContentPadding  = new Thickness(SharedToken.UniformlyPaddingXXS, SharedToken.BorderRadiusLG.TopLeft / 2);
+        PopupContentPadding  = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS, EffectiveGlobalToken.BorderRadiusLG.TopLeft / 2);
         
-        var colorTextDisabled  = SharedToken.ColorTextDisabled;
-        var colorTextSecondary = SharedToken.ColorTextSecondary;
-        var colorBgContainer   = SharedToken.ColorBgElevated;
-        var colorBgTextHover   = SharedToken.ColorBgTextHover;
+        var colorTextDisabled  = EffectiveGlobalToken.ColorTextDisabled;
+        var colorTextSecondary = EffectiveGlobalToken.ColorTextSecondary;
+        var colorBgContainer   = EffectiveGlobalToken.ColorBgElevated;
+        var colorBgTextHover   = EffectiveGlobalToken.ColorBgTextHover;
 
         ItemColor         = colorTextSecondary;
         ItemHoverColor    = colorTextSecondary;
-        ItemSelectedColor = SharedToken.ColorText;
+        ItemSelectedColor = EffectiveGlobalToken.ColorText;
 
         ItemBgColor         = colorBgContainer;
         ItemHoverBgColor    = colorBgTextHover;
-        ItemSelectedBgColor = SharedToken.ControlItemBgActive;
+        ItemSelectedBgColor = EffectiveGlobalToken.ControlItemBgActive;
         ItemDisabledColor = colorTextDisabled;
+        HandleHoverColor = EffectiveGlobalToken.ColorPrimary;
 
-        ItemPadding = new Thickness(SharedToken.UniformlyPaddingSM, 0);
+        ItemPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM, 0);
         ItemMargin  = new Thickness(0, 0.5);
     }
     

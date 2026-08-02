@@ -2,7 +2,7 @@
 
 namespace AtomUI.Desktop.Controls.TransferLang;
 
-[LanguageProvider(LanguageCode.zh_CN, TransferToken.ID)]
+[LanguageProvider(LanguageCode.zh_CN, "Transfer")]
 internal class zh_CN
 {
     public const string Item = "项";

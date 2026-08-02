@@ -618,9 +618,7 @@ public class CalendarViewLifecycleTests
                 yearView.RowDefinitions.Count.ShouldBe(1);
                 yearView.ColumnDefinitions.Count.ShouldBe(4);
                 item.Bounds.Height.ShouldBeLessThan(200);
-                var quarterCellHeight = GetThemeResource<double>(CalendarTokenKind.CellHeight);
-                var originalQuarterPanelHeight = GetThemeResource<double>(CalendarTokenKind.WithoutTimeCellHeight);
-                var compactQuarterPanelHeight = quarterCellHeight + (originalQuarterPanelHeight - quarterCellHeight) / 2;
+                var compactQuarterPanelHeight = GetThemeResource<double>(DatePickerTokenKind.WithoutTimeCellHeight);
                 Math.Abs(yearView.Bounds.Height - compactQuarterPanelHeight).ShouldBeLessThan(0.5);
 
                 var quarterButtons = yearView.Children
@@ -771,7 +769,7 @@ public class CalendarViewLifecycleTests
 
                 var item        = calendar.CalendarItem.ShouldNotBeNull();
                 var headerFrame = FindTemplatePixelAlignedBorder(item, "PART_HeaderFrame");
-                var calendarHeaderMargin = GetThemeResource<Thickness>(CalendarTokenKind.HeaderMargin);
+                var calendarHeaderMargin = GetThemeResource<Thickness>(DatePickerTokenKind.HeaderMargin);
 
                 headerFrame.Padding.ShouldBe(new Thickness(0));
                 headerFrame.Margin.ShouldBe(calendarHeaderMargin);
@@ -1001,11 +999,11 @@ public class CalendarViewLifecycleTests
                 disabledBackground.IsVisible.ShouldBeTrue();
                 disabledBackground.Bounds.Width.ShouldBe(button.Bounds.Width, 0.5);
                 disabledBackground.Bounds.Height.ShouldBe(
-                    GetThemeResource<double>(CalendarTokenKind.CellHeight),
+                    GetThemeResource<double>(DatePickerTokenKind.CellHeight),
                     0.5);
                 BrushShouldHaveSameColor(
                     disabledBackground.Background,
-                    GetThemeResource<IBrush>(CalendarTokenKind.CellBgDisabled));
+                    GetThemeResource<IBrush>(DatePickerTokenKind.CellBgDisabled));
                 BrushShouldHaveSameColor(
                     contentFrame.Background,
                     Brushes.Transparent);
@@ -1061,7 +1059,7 @@ public class CalendarViewLifecycleTests
 
                 var indicator = FindTemplateBorder(button, "WeekHoverIndicator");
                 indicator.IsVisible.ShouldBeTrue();
-                BrushShouldHaveSameColor(indicator.Background, GetThemeResource<IBrush>(CalendarTokenKind.CellHoverBg));
+                BrushShouldHaveSameColor(indicator.Background, GetThemeResource<IBrush>(DatePickerTokenKind.CellHoverBg));
             });
         });
     }
@@ -1085,7 +1083,7 @@ public class CalendarViewLifecycleTests
 
                 var indicator = FindTemplateBorder(button, "WeekRangeIndicator");
                 indicator.IsVisible.ShouldBeTrue();
-                BrushShouldHaveSameColor(indicator.Background, GetThemeResource<IBrush>(CalendarTokenKind.CellActiveWithRangeBg));
+                BrushShouldHaveSameColor(indicator.Background, GetThemeResource<IBrush>(DatePickerTokenKind.CellActiveWithRangeBg));
             });
         });
     }

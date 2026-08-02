@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:MessageThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:MessageCard}" TargetType="atom:MessageCard">
         <Setter Property="Template">
@@ -29,8 +26,8 @@
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         
         <Style Selector="^ /template/ atom|IconPresenter">
-            <Setter Property="Width" Value="{atom:MessageTokenResource MessageIconSize}" />
-            <Setter Property="Height" Value="{atom:MessageTokenResource MessageIconSize}" />
+            <Setter Property="Width" Value="{atom:MessageCardTokenResource MessageIconSize}" />
+            <Setter Property="Height" Value="{atom:MessageCardTokenResource MessageIconSize}" />
         </Style>
 
         <Style Selector="^[MessageType=Information]">
@@ -74,10 +71,10 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
 
         <Style Selector="^ /template/ Border#PART_Frame">
-            <Setter Property="Margin" Value="{atom:MessageTokenResource MessageTopMargin}" />
-            <Setter Property="Padding" Value="{atom:MessageTokenResource ContentPadding}" />
+            <Setter Property="Margin" Value="{atom:MessageCardTokenResource MessageTopMargin}" />
+            <Setter Property="Padding" Value="{atom:MessageCardTokenResource ContentPadding}" />
             <Setter Property="BoxShadow" Value="{atom:SharedTokenResource BoxShadows}" />
-            <Setter Property="Background" Value="{atom:MessageTokenResource ContentBg}" />
+            <Setter Property="Background" Value="{atom:MessageCardTokenResource ContentBg}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
         </Style>
 
@@ -94,7 +91,7 @@
         </Style>
         
         <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
-            <Setter Property="Margin" Value="{atom:MessageTokenResource MessageIconMargin}" />
+            <Setter Property="Margin" Value="{atom:MessageCardTokenResource MessageIconMargin}" />
         </Style>
 
     </ControlTheme>

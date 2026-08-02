@@ -22,10 +22,9 @@ Segmented 的实现重点是把 Avalonia `SelectingItemsControl` 的单选状态
 
 - `src/AtomUI.Desktop.Controls/Segmented/Segmented.cs`：桌面公开根控件，注册 Token scope，创建 `SegmentedItem` 容器。
 - `src/AtomUI.Desktop.Controls/Segmented/SegmentedItem.cs`：桌面公开 item，注册 Token scope。
-- `src/AtomUI.Desktop.Controls/Segmented/SegmentedToken.cs`：Segmented 组件 Token。
+- `src/AtomUI.Desktop.Controls/Segmented/SegmentedToken.cs`：Segmented 控件 Token。
 - `src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedTheme.axaml`：根模板、轨道、滑块、方向/expanding、SizeType/Shape 和 motion 样式。
 - `src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedItemTheme.axaml`：item 模板、状态样式、SizeType/Shape 和图标样式。
-- `src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedThemes.axaml`：主题资源聚合入口。
 
 Gallery 和测试：
 

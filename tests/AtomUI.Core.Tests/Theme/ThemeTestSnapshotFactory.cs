@@ -94,7 +94,8 @@ internal static class ThemeCompilerTests
             static (token, value) => ((CompilerButtonToken)token).Height = (double)value!,
             static token => ((CompilerButtonToken)token).Height);
         return new ControlTokenDescriptor(
-            new ControlTokenIdentity(ControlDesignTokenAttribute.DefaultCatalog, CompilerButtonToken.ID),
+            ThemeTestControlTypes.For("AtomUI", CompilerButtonToken.ID),
+            new ControlTokenIdentity("AtomUI", CompilerButtonToken.ID),
             [height],
             static () => new CompilerButtonToken(),
             static (token, appearance) =>
@@ -111,15 +112,10 @@ internal sealed class CompilerButtonToken : AbstractControlDesignToken
 {
     internal const string ID = "Button";
 
-    public CompilerButtonToken()
-        : base(ID)
-    {
-    }
-
     public double Height { get; set; }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
-        Height = SharedToken.ControlHeight;
+        Height = EffectiveGlobalToken.ControlHeight;
     }
 }

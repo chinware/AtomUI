@@ -2,9 +2,6 @@
               xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:themeResources="using:AtomUI.Theme.Resources"
-              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-              themeResources:ControlTokenScope.Identity="{x:Static generated:TransferThemeAsset.Identity}"
               xmlns:antdicons="https://atomui.net/icons/antdesign"
               xmlns:system="using:System"
               x:Class="AtomUI.Desktop.Controls.Themes.AbstractTransferTheme">
@@ -30,15 +27,6 @@
                 <antdicons:DownOutlined />
             </atom:IconTemplate>
         </Setter>
-
-        <Setter Property="ListHeight" Value="{atom:TransferTokenResource ListHeight}" />
-
-        <Style Selector="^[IsStretchView=False]">
-            <Setter Property="ListWidth" Value="{atom:TransferTokenResource ListWidth}" />
-            <Style Selector="^[IsPaginationEnabled=True]">
-                <Setter Property="ListWidth" Value="{atom:TransferTokenResource ListWidthLG}" />
-            </Style>
-        </Style>
 
         <Style Selector="^[IsStretchView=True]">
             <Setter Property="ListWidth" Value="{x:Static system:Double.NaN}" />

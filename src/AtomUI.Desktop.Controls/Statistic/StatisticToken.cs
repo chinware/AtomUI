@@ -5,7 +5,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class StatisticToken : AbstractControlDesignToken
 {
-    public const string ID = "Statistic";
     
     /// <summary>
     /// 标题字体大小
@@ -20,15 +19,15 @@ internal class StatisticToken : AbstractControlDesignToken
     public double ContentFontSize { get; set; }
     
     public StatisticToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        TitleFontSize = SharedToken.FontSize;
-        ContentFontSize = SharedToken.FontSizeHeading3;
+        TitleFontSize = EffectiveGlobalToken.FontSize;
+        ContentFontSize = EffectiveGlobalToken.FontSizeHeading3;
     }
     
 }

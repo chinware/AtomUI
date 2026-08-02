@@ -117,6 +117,7 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
     private Avatar? _foldCountAvatar;
     private FlyoutHost? _foldCountFlyout;
     private StackPanel? _foldCountStackPanel;
+    private IDisposable? _motionBinding;
 
     static AvatarGroup()
     {
@@ -126,7 +127,6 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
     public AvatarGroup()
     {
         Children.CollectionChanged += ChildrenChanged;
-        this.ConfigureMotionBindingStyle();
     }
 
     protected virtual void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -143,12 +143,16 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _motionBinding?.Dispose();
+        _motionBinding = this.ConfigureMotionBindingStyle();
         RebuildChildrenPresentation();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _motionBinding?.Dispose();
+        _motionBinding = null;
         ReleaseFoldInfo();
     }
 

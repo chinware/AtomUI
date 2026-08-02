@@ -7,7 +7,7 @@ namespace AtomUI.Desktop.Controls;
 internal class SearchEditPanel : Panel
 {
     private Control? _contentFrame;
-    private SearchButton? _searchButton;
+    private Button? _searchButton;
     private Control? _leftAddOn;
 
     protected override void OnInitialized()
@@ -21,7 +21,7 @@ internal class SearchEditPanel : Panel
             }
             else if (child.Name == "PART_RightAddOn")
             {
-                _searchButton = child as SearchButton;
+                _searchButton = child as Button;
             }
             else if (child.Name == "PART_ContentFrame")
             {

@@ -20,7 +20,7 @@ Card 的实现重点是把 Header/Extra/Cover/Content/Actions 组合成一个稳
 - `src/AtomUI.Desktop.Controls/Card/CardGridItem.cs`：Grid item 容器，负责 content、row/column/span 和 hover/size/motion 状态。
 - `src/AtomUI.Desktop.Controls/Card/CardTabsContent.cs`：Card tabs 内容桥接控件，负责把 Items 集合复制到内部 TabControl。
 - `src/AtomUI.Desktop.Controls/Card/CardPseudoClass.cs`：Card 稳定伪类常量。
-- `src/AtomUI.Desktop.Controls/Card/CardToken.cs`：Card 组件 Token。
+- `src/AtomUI.Desktop.Controls/Card/CardToken.cs`：Card 控件 Token。
 - `src/AtomUI.Desktop.Controls/Card/Themes/*.axaml`：根主题、操作区、操作按钮、Meta、Grid、Tabs 等主题资源。
 
 ## 3. 核心类职责

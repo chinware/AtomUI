@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class SpaceToken : AbstractControlDesignToken
 {
-    public const string ID = "Space";
 
     /// <summary>
     /// 小间距尺寸
@@ -44,21 +43,21 @@ internal class SpaceToken : AbstractControlDesignToken
     public Thickness AddOnPaddingLG { get; set; }
     
     public SpaceToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        GapSmallSize  = SharedToken.SpacingXS;
-        GapMiddleSize = SharedToken.Spacing;
-        GapLargeSize  = SharedToken.SpacingLG;
-        AddonBg       = SharedToken.ColorFillAlter;
+        GapSmallSize  = EffectiveGlobalToken.SpacingXS;
+        GapMiddleSize = EffectiveGlobalToken.Spacing;
+        GapLargeSize  = EffectiveGlobalToken.SpacingLG;
+        AddonBg       = EffectiveGlobalToken.ColorFillAlter;
         
-        AddOnPadding   = new Thickness(SharedToken.UniformlyPaddingSM, 0);
-        AddOnPaddingSM = new Thickness(SharedToken.ControlPaddingHorizontalSM, 0);
-        AddOnPaddingLG = new Thickness(SharedToken.ControlPaddingHorizontal, 0);
+        AddOnPadding   = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM, 0);
+        AddOnPaddingSM = new Thickness(EffectiveGlobalToken.ControlPaddingHorizontalSM, 0);
+        AddOnPaddingLG = new Thickness(EffectiveGlobalToken.ControlPaddingHorizontal, 0);
     }
     
 }

@@ -1,6 +1,6 @@
 # InfoFlyout 桌面版实现原理
 
-本文档描述 InfoFlyout 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [InfoFlyout 桌面版架构设计](overview.md)，变化记录见 [InfoFlyout Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [InfoFlyout Token 设计](token.md)。
+本文档描述 InfoFlyout 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [InfoFlyout 桌面版架构设计](overview.md)，变化记录见 [InfoFlyout Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [InfoFlyout Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -18,9 +18,7 @@
 - `src/AtomUI.Desktop.Controls/Flyouts/MenuFlyout.cs`
 - `src/AtomUI.Desktop.Controls/Flyouts/MenuFlyoutPresenter.cs`
 - `src/AtomUI.Desktop.Controls/Flyouts/PopupFlyoutBaseReflectionExtensions.cs`
-- `src/AtomUI.Desktop.Controls/Flyouts/Themes/BrowserFlyoutThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/FlyoutHostTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Flyouts/Themes/FlyoutThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.cs`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/TreeViewFlyoutPresenterTheme.axaml`
@@ -40,13 +38,13 @@
 
 - `Flyout`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `FlyoutHost`：模板协作类型，承载内容展示、宿主或视觉边界。
-- `FlyoutHostToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `FlyoutHostToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `FlyoutPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `FlyoutStateHelper`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `MenuFlyout`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `MenuFlyoutPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `MenuFlyoutPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `TreeFlyoutToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `TreeFlyoutToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `TreeViewFlyout`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TreeViewFlyoutPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `TreeViewFlyoutPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。

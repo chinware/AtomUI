@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:ButtonSpinnerThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ButtonSpinnerDecoratedBox}"
                   TargetType="atom:ButtonSpinnerDecoratedBox">
@@ -154,17 +151,17 @@
 
             <Style Selector="^[SizeType=Large]">
                 <Setter Property="ContentPadding"
-                        Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
+                        Value="{atom:ButtonSpinnerTokenResource InputPaddingLG}" />
                 <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
             </Style>
             <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Setter Property="ContentPadding"
-                        Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
+                        Value="{atom:ButtonSpinnerTokenResource InputPadding}" />
                 <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
             </Style>
             <Style Selector="^[SizeType=Small]">
                 <Setter Property="ContentPadding"
-                        Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
+                        Value="{atom:ButtonSpinnerTokenResource InputPaddingSM}" />
                 <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
             </Style>
             <Style Selector="^[SizeType=Large], ^[SizeType=Middle], ^[SizeType=Custom], ^[SizeType=Small]">

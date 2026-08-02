@@ -17,7 +17,7 @@ public class ThemeDefinitionBinderTests
     [Fact]
     public void Bind_Produces_Typed_Immutable_Definition_And_Classifies_Control_Tokens()
     {
-        var registry = CreateRegistry(includeControlColorPrimary: true);
+        var registry = CreateRegistry();
         var document = Read($$"""
                              <Theme xmlns="{{Namespace}}"
                                     Id="T"
@@ -58,12 +58,8 @@ public class ThemeDefinitionBinderTests
         button.Descriptor.Identity.ShouldBe(new ControlTokenIdentity("AtomUI", "Button"));
         button.AlgorithmMode.ShouldBe(ControlAlgorithmMode.Global);
         button.GlobalTokens.ShouldHaveSingleItem().Value.ShouldBe(20.5);
-        button.OwnTokens.Select(static token => token.Descriptor.Name).ShouldBe([
-            "ColorPrimary",
-            "ContentFontSize"
-        ]);
-        button.OwnTokens[0].Value.ShouldBe(20.5);
-        button.OwnTokens[1].Value.ShouldBe(14);
+        button.OwnTokens.ShouldHaveSingleItem().Descriptor.Name.ShouldBe("ContentFontSize");
+        button.OwnTokens[0].Value.ShouldBe(14);
         Should.Throw<NotSupportedException>(() =>
             ((IList<BoundTokenValue>)definition.Tokens).Add(definition.Tokens[0]));
     }
@@ -204,7 +200,7 @@ public class ThemeDefinitionBinderTests
         diagnostic.Message.ShouldBe("Token 'ColorPrimary' cannot be converted to 'Double'.");
     }
 
-    private static ThemeSchemaRegistry CreateRegistry(bool includeControlColorPrimary = false)
+    private static ThemeSchemaRegistry CreateRegistry()
     {
         var colorPrimary = Token(
             "ColorPrimary",
@@ -218,26 +214,20 @@ public class ThemeDefinitionBinderTests
             TokenStage.Map,
             typeof(int),
             static value => int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture));
-        var ownTokens = new List<TokenDescriptor>();
-        if (includeControlColorPrimary)
+        var ownTokens = new List<TokenDescriptor>
         {
-            ownTokens.Add(Token(
-                "ColorPrimary",
-                0,
-                TokenStage.Control,
-                typeof(double),
-                static value => double.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture)));
-        }
-        ownTokens.Add(Token(
+            Token(
             "ContentFontSize",
-            ownTokens.Count,
+            0,
             TokenStage.Control,
             typeof(int),
-            static value => int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture)));
+            static value => int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture))
+        };
 
         return new ThemeSchemaRegistry(
             [colorPrimary, borderRadius],
             [new ControlTokenDescriptor(
+                ThemeTestControlTypes.For("AtomUI", "Button"),
                 new ControlTokenIdentity("AtomUI", "Button"),
                 ownTokens,
                 static () => throw new InvalidOperationException("The Binder must not create Token builders."),

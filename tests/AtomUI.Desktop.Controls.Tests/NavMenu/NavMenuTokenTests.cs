@@ -16,7 +16,7 @@ public class NavMenuTokenTests
             ControlHeightLG = 40
         };
         var navMenuToken = new NavMenuToken();
-        navMenuToken.AssignSharedToken(sharedToken);
+        navMenuToken.AssignEffectiveGlobalToken(sharedToken);
 
         navMenuToken.CalculateTokenValues(isDarkMode: false);
 
@@ -31,7 +31,7 @@ public class NavMenuTokenTests
             UniformlyMarginXXS = 4
         };
         var navMenuToken = new NavMenuToken();
-        navMenuToken.AssignSharedToken(sharedToken);
+        navMenuToken.AssignEffectiveGlobalToken(sharedToken);
 
         navMenuToken.CalculateTokenValues(isDarkMode: false);
 
@@ -49,7 +49,7 @@ public class NavMenuTokenTests
             ControlHeight = 32
         };
         var navMenuToken = new NavMenuToken();
-        navMenuToken.AssignSharedToken(sharedToken);
+        navMenuToken.AssignEffectiveGlobalToken(sharedToken);
 
         navMenuToken.CalculateTokenValues(isDarkMode: false);
 

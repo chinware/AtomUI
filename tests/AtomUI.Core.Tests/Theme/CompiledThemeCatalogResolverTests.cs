@@ -55,6 +55,68 @@ public class CompiledThemeCatalogResolverTests
     }
 
     [Fact]
+    public async Task Reload_Reuses_A_Successfully_Read_Definition_Revision()
+    {
+        await HeadlessTestApp.RunAsync(async () =>
+        {
+            var source = new MemorySource(
+                "memory://reload-cache",
+                "1",
+                ThemeXml("ReloadCache", "Reload Cache", "#52C41A"));
+            var builder = new ThemeManagerBuilder(Application.Current!);
+            builder.AddThemeDefinitionResolver(new ReloadableMemoryResolver(source));
+            var manager = builder.Build();
+            manager.InitializeApplication(Application.Current!);
+
+            source.OpenCount.ShouldBe(1);
+            var result = await manager.ReloadThemesAsync(TestContext.Current.CancellationToken);
+
+            result.Status.ShouldBe(ThemeCatalogReloadStatus.NoOp);
+            source.OpenCount.ShouldBe(1);
+        });
+    }
+
+    [Fact]
+    public void Definition_Cache_Reuses_Reads_And_Keys_Bindings_By_Registry_Revision()
+    {
+        var source = new MemorySource(
+            "memory://registry-cache",
+            "1",
+            ThemeXml("RegistryCache", "Registry Cache", "#52C41A", isDefault: true));
+        var resolver = new MemoryResolver("RegistryCache", source);
+        var context = new ThemeDefinitionResolveContext("Tests", string.Empty, false, 0);
+        var firstRegistry = TypedThemeSnapshotCacheTests.CreateRegistry();
+        var secondRegistry = TypedThemeSnapshotCacheTests.CreateRegistry(
+            [ThemeCompilerTests.CreateCompilerButtonDescriptor()]);
+        using var cache = new ThemeDefinitionLoadCache();
+
+        var first = CompiledThemeCatalog.LoadInitial(
+            firstRegistry,
+            [resolver],
+            context,
+            cache);
+        var sameRegistry = CompiledThemeCatalog.LoadInitial(
+            firstRegistry,
+            [resolver],
+            context,
+            cache);
+        var nextRegistry = CompiledThemeCatalog.LoadInitial(
+            secondRegistry,
+            [resolver],
+            context,
+            cache);
+
+        first.Success.ShouldBeTrue();
+        sameRegistry.Success.ShouldBeTrue();
+        nextRegistry.Success.ShouldBeTrue();
+        source.OpenCount.ShouldBe(1);
+        sameRegistry.Catalog!.Get("RegistryCache").Definition
+                    .ShouldBeSameAs(first.Catalog!.Get("RegistryCache").Definition);
+        nextRegistry.Catalog!.Get("RegistryCache").Definition
+                    .ShouldNotBeSameAs(first.Catalog.Get("RegistryCache").Definition);
+    }
+
+    [Fact]
     public void Duplicate_Theme_Id_Across_Static_Resolvers_Fails_Startup()
     {
         HeadlessTestApp.Run(() =>
@@ -220,6 +282,17 @@ public class CompiledThemeCatalogResolverTests
                     Id,
                     "$",
                     "warning")]);
+        }
+    }
+
+    private sealed class ReloadableMemoryResolver(MemorySource source) : IThemeDefinitionResolver
+    {
+        public string Id => "ReloadableMemory";
+        public bool SupportsReload => true;
+
+        public ThemeDefinitionResolveResult Resolve(ThemeDefinitionResolveContext context)
+        {
+            return new ThemeDefinitionResolveResult([source], []);
         }
     }
 

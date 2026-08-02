@@ -338,7 +338,7 @@ public class NumericUpDownHandleTests
 
         ShowInWindow(numericUpDown, () =>
         {
-            var actionPadding = GetThemeResource<Thickness>(AddOnDecoratedBoxTokenKind.Padding);
+            var actionPadding = GetThemeResource<Thickness>(SharedTokenKind.InputPadding);
             var iconSize      = GetThemeResource<double>(SharedTokenKind.IconSize);
             var lineWidth     = GetThemeResource<double>(SharedTokenKind.LineWidth);
             var expectedWidth = actionPadding.Left + iconSize + actionPadding.Right + lineWidth;
@@ -409,7 +409,7 @@ public class NumericUpDownHandleTests
         ShowInWindow(numericUpDown, () =>
         {
             var controlHeight  = GetThemeResource<double>(SharedTokenKind.ControlHeight);
-            var actionPadding  = GetThemeResource<Thickness>(AddOnDecoratedBoxTokenKind.Padding);
+            var actionPadding  = GetThemeResource<Thickness>(SharedTokenKind.InputPadding);
             var iconSize       = GetThemeResource<double>(SharedTokenKind.IconSize);
             var lineWidth      = GetThemeResource<double>(SharedTokenKind.LineWidth);
             var expectedWidth  = actionPadding.Left + iconSize + actionPadding.Right;

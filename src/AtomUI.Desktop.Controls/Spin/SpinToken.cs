@@ -5,10 +5,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class SpinToken : AbstractControlDesignToken
 {
-    public const string ID = "Spin";
     
     public SpinToken()
-        : base(ID)
+
     {
     }
 
@@ -50,15 +49,15 @@ internal class SpinToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        var controlHeightLG = SharedToken.ControlHeightLG;
-        var controlHeight   = SharedToken.ControlHeight;
+        var controlHeightLG = EffectiveGlobalToken.ControlHeightLG;
+        var controlHeight   = EffectiveGlobalToken.ControlHeight;
         var indicatorSize     = controlHeightLG / 2;
         var indicatorSizeSM   = controlHeightLG * 0.35;
         var indicatorSizeLG   = controlHeight;
-        IndicatorDuration = SharedToken.MotionDurationSlow * 4;
-        DotSize           = ((indicatorSize - SharedToken.UniformlyMarginXXS / 2) / 2) * 0.75;
-        DotSizeLG         = ((indicatorSizeLG - SharedToken.UniformlyMarginXXS) / 2) * 0.75;
-        DotSizeSM         = ((indicatorSizeSM - SharedToken.UniformlyMarginXXS / 2) / 2) * 0.75;
+        IndicatorDuration = EffectiveGlobalToken.MotionDurationSlow * 4;
+        DotSize           = ((indicatorSize - EffectiveGlobalToken.UniformlyMarginXXS / 2) / 2) * 0.75;
+        DotSizeLG         = ((indicatorSizeLG - EffectiveGlobalToken.UniformlyMarginXXS) / 2) * 0.75;
+        DotSizeSM         = ((indicatorSizeSM - EffectiveGlobalToken.UniformlyMarginXXS / 2) / 2) * 0.75;
         IndicatorSize     = indicatorSize + 2;
         IndicatorSizeSM   = indicatorSizeSM + 1;
         IndicatorSizeLG   = indicatorSizeLG + 4;

@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class SelectToken : AbstractControlDesignToken
 {
-    public const string ID = "Select";
 
     /// <summary>
     /// 多选标签背景色
@@ -114,20 +113,20 @@ internal class SelectToken : AbstractControlDesignToken
     /// <summary>
     /// 输入框内边距
     /// </summary>
-    public Thickness Padding { get; set; }
+    public Thickness SingleModePadding { get; set; }
 
     /// <summary>
     /// 小号输入框内边距
     /// </summary>
-    public Thickness PaddingSM { get; set; }
+    public Thickness SingleModePaddingSM { get; set; }
 
     /// <summary>
     /// 多选模式下的大号输入框内边距
     /// </summary>
-    public Thickness PaddingLG { get; set; }
+    public Thickness SingleModePaddingLG { get; set; }
 
     public SelectToken()
-        : base(ID)
+
     {
     }
 
@@ -138,49 +137,49 @@ internal class SelectToken : AbstractControlDesignToken
         // Item height default use `controlHeight - 2 * paddingXXS`,
         // but some case `paddingXXS=0`.
         // Let's fallback it.
-        double dblPaddingXXS      = SharedToken.UniformlyPaddingXXS * 2;
-        double dblLineWidth       = SharedToken.LineWidth * 2;
-        double multipleItemHeight = Math.Min(SharedToken.ControlHeight - dblPaddingXXS, SharedToken.ControlHeight - dblLineWidth);
-        double multipleItemHeightSM = Math.Min(SharedToken.ControlHeightSM - dblPaddingXXS, SharedToken.ControlHeightSM - dblLineWidth);
-        double multipleItemHeightLG = Math.Min(SharedToken.ControlHeightLG - dblPaddingXXS, SharedToken.ControlHeightLG - dblLineWidth);
-        FixedItemMargin = new Thickness(Math.Floor(SharedToken.UniformlyPaddingXXS / 2));
+        double dblPaddingXXS      = EffectiveGlobalToken.UniformlyPaddingXXS * 2;
+        double dblLineWidth       = EffectiveGlobalToken.LineWidth * 2;
+        double multipleItemHeight = Math.Min(EffectiveGlobalToken.ControlHeight - dblPaddingXXS, EffectiveGlobalToken.ControlHeight - dblLineWidth);
+        double multipleItemHeightSM = Math.Min(EffectiveGlobalToken.ControlHeightSM - dblPaddingXXS, EffectiveGlobalToken.ControlHeightSM - dblLineWidth);
+        double multipleItemHeightLG = Math.Min(EffectiveGlobalToken.ControlHeightLG - dblPaddingXXS, EffectiveGlobalToken.ControlHeightLG - dblLineWidth);
+        FixedItemMargin = new Thickness(Math.Floor(EffectiveGlobalToken.UniformlyPaddingXXS / 2));
 
-        OptionSelectedColor      = SharedToken.ColorText;
-        OptionSelectedFontWeight = SharedToken.FontWeightStrong;
-        OptionSelectedBg         = SharedToken.ControlItemBgActive;
-        OptionActiveBg           = SharedToken.ControlItemBgHover;
-        OptionPadding            = new Thickness(SharedToken.ControlPaddingHorizontal, (SharedToken.ControlHeight - SharedToken.FontHeight) / 2);
-        OptionFontSize =  SharedToken.FontSize;
-        OptionHeight = SharedToken.ControlHeight;
-        MultipleItemBg = SharedToken.ColorFillSecondary;
+        OptionSelectedColor      = EffectiveGlobalToken.ColorText;
+        OptionSelectedFontWeight = EffectiveGlobalToken.FontWeightStrong;
+        OptionSelectedBg         = EffectiveGlobalToken.ControlItemBgActive;
+        OptionActiveBg           = EffectiveGlobalToken.ControlItemBgHover;
+        OptionPadding            = new Thickness(EffectiveGlobalToken.ControlPaddingHorizontal, (EffectiveGlobalToken.ControlHeight - EffectiveGlobalToken.FontHeight) / 2);
+        OptionFontSize =  EffectiveGlobalToken.FontSize;
+        OptionHeight = EffectiveGlobalToken.ControlHeight;
+        MultipleItemBg = EffectiveGlobalToken.ColorFillSecondary;
         MultipleItemHeight = multipleItemHeight - 2;
         MultipleItemHeightSM = multipleItemHeightSM + 4;
         MultipleItemHeightLG = multipleItemHeightLG;
-        MultipleSelectorBgDisabled = SharedToken.ColorBgContainerDisabled;
-        MultipleItemColorDisabled = SharedToken.ColorTextDisabled;
-        SelectAffixPadding = SharedToken.PaddingXXS;
+        MultipleSelectorBgDisabled = EffectiveGlobalToken.ColorBgContainerDisabled;
+        MultipleItemColorDisabled = EffectiveGlobalToken.ColorTextDisabled;
+        SelectAffixPadding = EffectiveGlobalToken.PaddingXXS;
 
-        PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
+        PopupContentPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS / 2);
 
-        var lineWidth    = SharedToken.LineWidth;
+        var lineWidth    = EffectiveGlobalToken.LineWidth;
 
-        var multiPaddingVertical = Math.Round((SharedToken.ControlHeight - SharedToken.FontHeight) / 2 * 10) / 10 - lineWidth;
-        var multiPaddingVerticalSM = Math.Round((SharedToken.ControlHeightSM - SharedToken.FontHeight) / 2 * 10) / 10 - lineWidth;
-        var multiPaddingVerticalLG = Math.Ceiling((SharedToken.ControlHeightLG - SharedToken.FontHeightLG) / 2 * 10) / 10 -
+        var multiPaddingVertical = Math.Round((EffectiveGlobalToken.ControlHeight - EffectiveGlobalToken.FontHeight) / 2 * 10) / 10 - lineWidth;
+        var multiPaddingVerticalSM = Math.Round((EffectiveGlobalToken.ControlHeightSM - EffectiveGlobalToken.FontHeight) / 2 * 10) / 10 - lineWidth;
+        var multiPaddingVerticalLG = Math.Ceiling((EffectiveGlobalToken.ControlHeightLG - EffectiveGlobalToken.FontHeightLG) / 2 * 10) / 10 -
                                      lineWidth;
 
-        var multiPaddingRight = SharedToken.UniformlyPaddingSM - lineWidth;
+        var multiPaddingRight = EffectiveGlobalToken.UniformlyPaddingSM - lineWidth;
         MultiModePadding = new Thickness(multiPaddingVertical, multiPaddingVertical, multiPaddingRight, multiPaddingVertical);
 
-        var multiPaddingRightSM = SharedToken.ControlPaddingHorizontalSM - lineWidth;
+        var multiPaddingRightSM = EffectiveGlobalToken.ControlPaddingHorizontalSM - lineWidth;
         MultiModePaddingSM = new Thickness(multiPaddingVerticalSM, multiPaddingVerticalSM, multiPaddingRightSM, multiPaddingVerticalSM);
 
-        var multiPaddingRightLG = SharedToken.ControlPaddingHorizontal - lineWidth;
+        var multiPaddingRightLG = EffectiveGlobalToken.ControlPaddingHorizontal - lineWidth;
         MultiModePaddingLG = new Thickness(multiPaddingVerticalLG, multiPaddingVerticalLG, multiPaddingRightLG, multiPaddingVerticalLG);
 
-        Padding   = new Thickness(multiPaddingRight, multiPaddingVertical);
-        PaddingSM = new Thickness(multiPaddingRightSM, multiPaddingVerticalSM);
-        PaddingLG = new Thickness(multiPaddingRightLG,  multiPaddingVerticalLG);
+        SingleModePadding   = new Thickness(multiPaddingRight, multiPaddingVertical);
+        SingleModePaddingSM = new Thickness(multiPaddingRightSM, multiPaddingVerticalSM);
+        SingleModePaddingLG = new Thickness(multiPaddingRightLG,  multiPaddingVerticalLG);
     }
 
 }

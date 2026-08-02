@@ -187,7 +187,7 @@ internal static NormalizedThemeConfig CreateDefinitionDefaults(
         {
             var descriptor = input.Registry.Controls[slot];
             var config = FindControlConfig(input.EffectiveConfig.Controls, descriptor.Identity);
-            if (reuseGlobal && CanReuseControl(input.ReusableParent!, descriptor, config))
+            if (CanReuseControl(input.ReusableParent, descriptor, config))
             {
                 controls[slot] = input.ReusableParent!.Controls[slot];
                 continue;
@@ -220,16 +220,25 @@ internal static NormalizedThemeConfig CreateDefinitionDefaults(
     }
 
     private static bool CanReuseControl(
-        ThemeSnapshot parent,
+        ThemeSnapshot? parent,
         ControlTokenDescriptor descriptor,
         NormalizedControlThemeConfig? config)
     {
+        if (parent is null)
+        {
+            return false;
+        }
         if ((uint)descriptor.Slot >= (uint)parent.Controls.Count)
         {
             return false;
         }
 
         var parentConfig = FindControlConfig(parent.EffectiveConfig.Controls, descriptor.Identity);
+        if (config is null && parentConfig is null && !descriptor.HasOwnTokens)
+        {
+            return true;
+        }
+
         return config is null ? parentConfig is null : config.Equals(parentConfig);
     }
 
@@ -285,11 +294,20 @@ internal static NormalizedThemeConfig CreateDefinitionDefaults(
         var globalResourceDelta = BuildDenseResourceDelta(globalResources, effectiveGlobalResources);
 
         var controlBuilder = descriptor.CreateBuilder();
-        controlBuilder.AssignSharedToken(effectiveGlobalBuilder);
-        descriptor.Evaluate(controlBuilder, appearance);
-        if (config is not null)
+        var controlTokenValues = TokenValueTable.Empty;
+        IReadOnlyDictionary<object, object?> controlResources =
+            FrozenDictionary<object, object?>.Empty;
+        if (controlBuilder is not null)
         {
-            ApplyAllValues(controlBuilder, config.OwnTokens);
+            controlBuilder.AssignEffectiveGlobalToken(effectiveGlobalBuilder);
+            descriptor.Evaluate(controlBuilder, appearance);
+            if (config is not null)
+            {
+                ApplyAllValues(controlBuilder, config.OwnTokens);
+            }
+
+            controlTokenValues = TokenValueTable.Freeze(controlBuilder, descriptor.OwnTokens);
+            controlResources = BuildResourceMap(controlBuilder, descriptor.OwnTokens);
         }
 
         return new ControlThemeSnapshot(
@@ -297,8 +315,8 @@ internal static NormalizedThemeConfig CreateDefinitionDefaults(
             appearance,
             globalDelta,
             globalResourceDelta,
-            TokenValueTable.Freeze(controlBuilder, descriptor.OwnTokens),
-            BuildResourceMap(controlBuilder, descriptor.OwnTokens));
+            controlTokenValues,
+            controlResources);
     }
 
     private static DesignToken ReevaluateControlGlobal(

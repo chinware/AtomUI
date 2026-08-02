@@ -40,8 +40,7 @@ src/AtomUI.Desktop.Controls/Calendar/
     ├── CalendarTheme.axaml(.cs)
     ├── CalendarHeaderTheme.axaml(.cs)
     ├── CalendarViewTheme.axaml(.cs)
-    ├── CalendarViewCellTheme.axaml(.cs)
-    └── CalendarThemes.axaml
+    └── CalendarViewCellTheme.axaml(.cs)
 ```
 
 `CalendarToken.cs` 属于 DatePicker 的旧 CalendarView 兼容边界；新 Calendar 的专属 Token 是 `CalendarControlToken.cs`。两者不得在实现或文档中混用。

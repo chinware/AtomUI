@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class SkeletonToken : AbstractControlDesignToken
 {
-    public const string ID = "Skeleton";
     
     /// <summary>
     /// 渐变色起点颜色
@@ -70,27 +69,27 @@ internal class SkeletonToken : AbstractControlDesignToken
     public double ImageContainerMaxSize { get; set; }
 
     public SkeletonToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        GradientFromColor     = SharedToken.ColorFillContent;
-        GradientToColor       = SharedToken.ColorFill;
-        TitleHeight           = SharedToken.ControlHeight / 2;
-        BlockRadius           = SharedToken.BorderRadiusSM;
-        ParagraphMarginTop    = new Thickness(0, SharedToken.UniformlyMarginLG + SharedToken.UniformlyMarginXXS, 0, 0);
-        AvatarMarginRight = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
-        ParagraphLineHeight   = SharedToken.ControlHeight / 2;
+        GradientFromColor     = EffectiveGlobalToken.ColorFillContent;
+        GradientToColor       = EffectiveGlobalToken.ColorFill;
+        TitleHeight           = EffectiveGlobalToken.ControlHeight / 2;
+        BlockRadius           = EffectiveGlobalToken.BorderRadiusSM;
+        ParagraphMarginTop    = new Thickness(0, EffectiveGlobalToken.UniformlyMarginLG + EffectiveGlobalToken.UniformlyMarginXXS, 0, 0);
+        AvatarMarginRight = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMargin, 0);
+        ParagraphLineHeight   = EffectiveGlobalToken.ControlHeight / 2;
         ParagraphLineRoundCornerRadius = new CornerRadius(ParagraphLineHeight / 2);
         LoadingMotionDuration = TimeSpan.FromSeconds(1.4);
         LoadingBackgroundStart  = CreateLoadingBackground(-3.0, 1.0);
         LoadingBackgroundMiddle = CreateLoadingBackground(-1.5, 2.5);
         LoadingBackgroundEnd    = CreateLoadingBackground(0.0, 4.0);
 
-        var imageSizeBase = SharedToken.ControlHeight * 1.5;
+        var imageSizeBase = EffectiveGlobalToken.ControlHeight * 1.5;
         ImageSize             = imageSizeBase;
         ImageContainerSize    = imageSizeBase * 2;
         ImageContainerMaxSize = imageSizeBase * 4;

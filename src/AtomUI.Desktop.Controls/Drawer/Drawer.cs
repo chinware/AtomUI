@@ -214,6 +214,8 @@ public class Drawer : Control,
 
     private DrawerContainer? _container;
     private CompositeDisposable? _relayBindingDisposables;
+    private IDisposable? _motionBinding;
+    private IDisposable? _pushOffsetBinding;
     private IDisposable? _dialogSizeBinding;
     private Control? _openOnSizeChangedTarget;
     private int _visualTreeVersion;
@@ -223,13 +225,6 @@ public class Drawer : Control,
         SizeTypeProperty.OverrideDefaultValue<Drawer>(CustomizableSizeType.Small);
     }
 
-    public Drawer()
-    {
-        this.ConfigureMotionBindingStyle();
-        TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty, DrawerTokenKind.PushOffsetPercent);
-        ApplyDialogSizeTokenBinding();
-    }
-    
     public static Drawer? GetDrawer(Visual element)
     {
         var container = element.FindAncestorOfType<DrawerContainer>();
@@ -244,6 +239,14 @@ public class Drawer : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _motionBinding?.Dispose();
+        _motionBinding = this.ConfigureMotionBindingStyle();
+        _pushOffsetBinding?.Dispose();
+        _pushOffsetBinding = TokenResourceBinder.CreateControlTokenBinding(
+            this,
+            PushOffsetPercentProperty,
+            DrawerTokenKind.PushOffsetPercent);
+        ApplyDialogSizeTokenBinding();
         _visualTreeVersion++;
         var parentDrawer = FindParentDrawer();
         _relayBindingDisposables?.Dispose();
@@ -274,6 +277,12 @@ public class Drawer : Control,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _motionBinding?.Dispose();
+        _motionBinding = null;
+        _pushOffsetBinding?.Dispose();
+        _pushOffsetBinding = null;
+        _dialogSizeBinding?.Dispose();
+        _dialogSizeBinding = null;
         var visualTreeVersion = ++_visualTreeVersion;
         _relayBindingDisposables?.Dispose();
         _relayBindingDisposables = null;
@@ -525,6 +534,12 @@ public class Drawer : Control,
     private void ApplyDialogSizeTokenBinding()
     {
         _dialogSizeBinding?.Dispose();
+        _dialogSizeBinding = null;
+        if (!this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
         var tokenKind = SizeType switch
         {
             CustomizableSizeType.Small  => DrawerTokenKind.SmallSize,
@@ -532,7 +547,7 @@ public class Drawer : Control,
             CustomizableSizeType.Large  => DrawerTokenKind.LargeSize,
             _                           => DrawerTokenKind.SmallSize
         };
-        _dialogSizeBinding = TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, tokenKind);
+        _dialogSizeBinding = TokenResourceBinder.CreateControlTokenBinding(this, DialogSizeProperty, tokenKind);
     }
 
     private void ConfigureEffectiveDialogSize()

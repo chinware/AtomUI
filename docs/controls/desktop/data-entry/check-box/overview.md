@@ -30,7 +30,7 @@ CheckBox 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | CheckBox 是 AtomUI 桌面控件体系中的复选框控件，用于表达二元选择、多选集合和中间态。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CheckedItems`、`ItemSpacing`、`ItemTemplate`、`ItemsSource`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | CheckBox Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | CheckBox Token + ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -84,7 +84,7 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-CheckBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+CheckBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -92,9 +92,8 @@ CheckBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `CheckBoxIndicatorTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `CheckBoxItemsControlTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `CheckBoxTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
-| `CheckBoxThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-CheckBox 使用 `CheckBoxToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、motion、visual option 运行时状态。
+CheckBox 使用 `CheckBoxToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -118,7 +117,7 @@ CheckBox 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 - `CheckBoxIndicatorStateConverter`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `CheckBoxItemsControl`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `CheckBoxOption`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `CheckBoxToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `CheckBoxToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 集成关系：
 

@@ -1,6 +1,6 @@
 # Tour 桌面版实现原理
 
-本文档描述 Tour 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Tour 桌面版架构设计](overview.md)，变化记录见 [Tour Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Tour Token 设计](token.md)。
+本文档描述 Tour 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Tour 桌面版架构设计](overview.md)，变化记录见 [Tour Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Tour Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -21,7 +21,6 @@
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TourStepTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TourStepsViewTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Tour/Themes/TourThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Tour.cs`
 - `src/AtomUI.Desktop.Controls/Tour/TourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/TourLayer.cs`
@@ -49,7 +48,7 @@
 - `TourStep`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TourStepOption`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `TourStepsView`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `TourToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `TourToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。

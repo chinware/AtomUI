@@ -11,8 +11,6 @@ internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
     public const string BaseControlTokenClass = "global::AtomUI.Theme.DesignTokens.AbstractControlDesignToken";
     public ControlTokenInfo ControlTokenInfo { get; }
     private readonly SemanticModel _semanticModel;
-    public string? TokenResourceCatalog { get; set; }
-
     public ControlTokenPropertyWalker(SemanticModel semanticModel)
     {
         _semanticModel   = semanticModel;
@@ -27,110 +25,83 @@ internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
 
     public override void VisitClassDeclaration(ClassDeclarationSyntax node)
     {
-        ControlTokenInfo.ControlName = node.Identifier.Text;
+        ControlTokenInfo.TokenName = node.Identifier.Text;
+        ControlTokenInfo.DeclarationLocation = node.Identifier.GetLocation();
         if (node.Parent is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDecl)
         {
-            ControlTokenInfo.ControlNamespace = fileScopedNamespaceDecl.Name.ToString();
+            ControlTokenInfo.TokenNamespace = fileScopedNamespaceDecl.Name.ToString();
         }
         else if (node.Parent is NamespaceDeclarationSyntax namespaceDecl)
         {
-            ControlTokenInfo.ControlNamespace = namespaceDecl.Name.ToString();
+            ControlTokenInfo.TokenNamespace = namespaceDecl.Name.ToString();
         }
 
         var classDeclaredSymbol = _semanticModel.GetDeclaredSymbol(node);
         if (classDeclaredSymbol is not null)
         {
-            foreach (var attribute in classDeclaredSymbol.GetAttributes())
-            {
-                if (attribute.ConstructorArguments.Any() && attribute.ConstructorArguments[0].Value is string catalog)
-                {
-                    TokenResourceCatalog = catalog;
-                }
-            }
+            ReadControlIdentity(node, classDeclaredSymbol);
+            ValidateInheritance(node, classDeclaredSymbol);
+            AddTokenProperties(classDeclaredSymbol);
+        }
 
-            ControlTokenInfo.ResourceCatalog = TokenResourceCatalog;
-            ReadControlId(node, classDeclaredSymbol);
-        }
-        
-        if (classDeclaredSymbol is not null)
-        {
-            AddTokenProperties(classDeclaredSymbol, includeCurrentType: true);
-        }
+        base.VisitClassDeclaration(node);
     }
 
-    private void ReadControlId(ClassDeclarationSyntax node, INamedTypeSymbol classSymbol)
+    private void ReadControlIdentity(ClassDeclarationSyntax node, INamedTypeSymbol classSymbol)
     {
-        var idMember = classSymbol.GetMembers("ID")
-                                  .OfType<IFieldSymbol>()
-                                  .FirstOrDefault();
-        if (idMember is null)
+        const string suffix = "Token";
+        if (!classSymbol.Name.EndsWith(suffix, StringComparison.Ordinal) ||
+            classSymbol.Name.Length == suffix.Length)
         {
             ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
-                AtomUIDiagnosticDescriptors.ControlTokenMissingId,
+                AtomUIDiagnosticDescriptors.ControlTokenInvalidName,
                 node.Identifier.GetLocation(),
                 classSymbol.Name));
             return;
         }
 
-        if (idMember.DeclaredAccessibility != Accessibility.Public ||
-            !idMember.IsConst ||
-            idMember.Type.SpecialType != SpecialType.System_String ||
-            idMember.ConstantValue is not string id ||
-            string.IsNullOrWhiteSpace(id))
+        ControlTokenInfo.ControlName = classSymbol.Name.Substring(0, classSymbol.Name.Length - suffix.Length);
+    }
+
+    private void ValidateInheritance(ClassDeclarationSyntax node, INamedTypeSymbol classSymbol)
+    {
+        if (classSymbol.BaseType is not { } baseType)
         {
-            ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
-                AtomUIDiagnosticDescriptors.ControlTokenInvalidId,
-                idMember.Locations.FirstOrDefault() ?? node.Identifier.GetLocation(),
-                classSymbol.Name));
             return;
         }
 
-        ControlTokenInfo.ControlId = id;
+        var baseTypeName = baseType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        if (!string.Equals(baseTypeName, BaseControlTokenClass, StringComparison.Ordinal))
+        {
+            ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
+                AtomUIDiagnosticDescriptors.ControlTokenInheritance,
+                node.Identifier.GetLocation(),
+                classSymbol.Name,
+                baseType.Name));
+        }
     }
     
-    private void AddTokenProperties(ITypeSymbol classSymbol, bool includeCurrentType)
+    private void AddTokenProperties(ITypeSymbol classSymbol)
     {
-        var current = includeCurrentType ? classSymbol : classSymbol.BaseType;
-        while (current != null && current.SpecialType != SpecialType.System_Object)
+        foreach (var property in classSymbol.GetMembers().OfType<IPropertySymbol>())
         {
-            var typeName = current.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            if (typeName == BaseControlTokenClass)
+            if (property.IsStatic ||
+                property.GetMethod is null ||
+                property.SetMethod is null ||
+                property.DeclaredAccessibility == Accessibility.Private ||
+                HasNotTokenDefinition(property))
             {
-                break;
+                continue;
             }
 
-            string? propertyCatalog = null;
-            foreach (var attr in current.GetAttributes())
-            {
-                if (attr.ConstructorArguments.Any() && attr.ConstructorArguments[0].Value is string declaredCatalog)
-                {
-                    propertyCatalog = declaredCatalog;
-                    break;
-                }
-            }
-
-            foreach (var property in current.GetMembers().OfType<IPropertySymbol>())
-            {
-                if (property.IsStatic ||
-                    property.GetMethod is null ||
-                    property.SetMethod is null ||
-                    property.DeclaredAccessibility == Accessibility.Private ||
-                    HasNotTokenDefinition(property))
-                {
-                    continue;
-                }
-
-                ControlTokenInfo.Tokens.Add(new TokenName(property.Name, propertyCatalog!));
-                ControlTokenInfo.SchemaTokens.Add(new SchemaTokenInfo(
-                    property.Name,
-                    property.Type.ToDisplayString(GeneratorSymbolDisplay.FullyQualifiedType),
-                    ControlTokenInfo.GetFullyQualifiedTypeName().StartsWith("global::", StringComparison.Ordinal)
-                        ? ControlTokenInfo.GetFullyQualifiedTypeName()
-                        : $"global::{ControlTokenInfo.GetFullyQualifiedTypeName()}",
-                    SchemaTokenStage.Control));
-            }
-
-            current = current.BaseType;
+            ControlTokenInfo.Tokens.Add(new TokenName(property.Name, string.Empty));
+            ControlTokenInfo.SchemaTokens.Add(new SchemaTokenInfo(
+                property.Name,
+                property.Type.ToDisplayString(GeneratorSymbolDisplay.FullyQualifiedType),
+                ControlTokenInfo.GetFullyQualifiedTokenTypeName().StartsWith("global::", StringComparison.Ordinal)
+                    ? ControlTokenInfo.GetFullyQualifiedTokenTypeName()
+                    : $"global::{ControlTokenInfo.GetFullyQualifiedTokenTypeName()}",
+                SchemaTokenStage.Control));
         }
     }
 
@@ -146,4 +117,5 @@ internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
 
         return false;
     }
+
 }

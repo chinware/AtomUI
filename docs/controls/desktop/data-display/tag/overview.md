@@ -30,7 +30,7 @@ Tag 的设计语言围绕控件职责、可观察状态和主题契约组织，�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Tag 表达展示语义，CheckableTag 表达二态选择，CheckableTagGroup 表达一组选项的单选或多选。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | Tag 使用 `Text`/`Icon`；CheckableTag 使用 `Content`/`Icon`；Group 使用 `Options` 和 `ItemTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | Tag 使用颜色分类和 `Variant`；CheckableTag 使用 `IsChecked`；Group 使用 `CheckedItem(s)`。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -109,16 +109,15 @@ Group 的内部 SelectedItem(s) 只保存归一后的 option wrapper，不是 pu
 
 ## 5. 视觉与主题模型
 
-Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `TagTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CheckableTagTheme.axaml` | 提供二态标签的内容结构以及 checked、focus、disabled 等状态视觉。 |
 | `CheckableTagGroupTheme.axaml` | 组合内部选择控件、ItemsPresenter 和 WrapPanel。 |
-| `TagThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Tag 使用 `TagToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
+Tag 使用 `TagToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
 
 Tag 的视觉组合由以下矩阵表达：
 
@@ -147,7 +146,7 @@ Tag 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证规
 - `AbstractTag`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
 - `Tag`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TagTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `TagToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `TagToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `AbstractCheckableTag` / `CheckableTag`：复用 ToggleButton 输入语义并提供标签选择视觉。
 - `AbstractCheckableTagGroup` / `CheckableTagGroup`：拥有 Options、模式、公开选择值、Form 和集合生命周期。
 - internal checkable items control：拥有 SelectionModel、容器生成和 IsChecked 投影，不进入 public surface。

@@ -1,13 +1,10 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:themeResources="using:AtomUI.Theme.Resources"
-              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-              themeResources:ControlTokenScope.Identity="{x:Static generated:ButtonThemeAsset.Identity}"
               TargetType="{x:Type atom:DropdownButton}"
               x:Class="AtomUI.Desktop.Controls.Themes.DropdownButtonTheme">
     <ControlTheme.BasedOn>
-        <atom:ButtonTheme TargetType="{x:Type atom:DropdownButton}" />
+        <atom:DropdownButtonBaseTheme TargetType="{x:Type atom:DropdownButton}" />
     </ControlTheme.BasedOn>
 
     <Style Selector="^:is(atom|DropdownButton)">
@@ -73,7 +70,7 @@
         </Style>
 
         <Setter Property="MarginToAnchor"
-                Value="{atom:PopupHostTokenResource MarginToAnchor}" />
+                Value="{atom:DropdownButtonTokenResource MarginToAnchor}" />
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_DropdownIndicator">
             <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeSM}" />
@@ -83,28 +80,28 @@
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_DropdownIndicator">
                 <Setter Property="Margin"
-                        Value="{atom:ButtonTokenResource ExtraContentMarginLG}" />
+                        Value="{atom:DropdownButtonTokenResource ExtraContentMarginLG}" />
             </Style>
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_DropdownIndicator">
                 <Setter Property="Margin"
-                        Value="{atom:ButtonTokenResource ExtraContentMargin}" />
+                        Value="{atom:DropdownButtonTokenResource ExtraContentMargin}" />
             </Style>
         </Style>
 
         <Style Selector="^[SizeType=Custom]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_DropdownIndicator">
                 <Setter Property="Margin"
-                        Value="{atom:ButtonTokenResource ExtraContentMargin}" />
+                        Value="{atom:DropdownButtonTokenResource ExtraContentMargin}" />
             </Style>
         </Style>
 
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_DropdownIndicator">
                 <Setter Property="Margin"
-                        Value="{atom:ButtonTokenResource ExtraContentMarginSM}" />
+                        Value="{atom:DropdownButtonTokenResource ExtraContentMarginSM}" />
             </Style>
         </Style>
     </Style>

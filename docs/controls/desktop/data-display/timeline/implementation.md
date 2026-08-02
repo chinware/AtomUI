@@ -1,6 +1,6 @@
 # Timeline 桌面版实现原理
 
-本文档描述 Timeline 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Timeline 桌面版架构设计](overview.md)，方向布局矩阵和算法边界见 [Timeline 方向与布局设计](orientation-layout-design.md)，变化记录见 [Timeline Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Timeline Token 设计](token.md)。
+本文档描述 Timeline 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Timeline 桌面版架构设计](overview.md)，方向布局矩阵和算法边界见 [Timeline 方向与布局设计](orientation-layout-design.md)，变化记录见 [Timeline Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Timeline Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -19,7 +19,6 @@
 - `src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineIndicatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Timeline/Timeline.cs`
 - `src/AtomUI.Desktop.Controls/Timeline/TimelineItem.cs`
 - `src/AtomUI.Desktop.Controls/Timeline/TimelineToken.cs`
@@ -40,7 +39,7 @@
 - `TimelineItem`：桌面公开 Item 容器，复用 AbstractTimelineItem 的内容和内部状态契约。
 - `TimelineItemPanel`：负责 Label、Indicator 和 Content 的方向化 Measure/Arrange，并把 Alternate 解析为 Start 或 End。
 - `TimelineStackPanel`：负责主轴排列、Reverse、可见项过滤、Spacing 和水平等宽槽位。
-- `TimelineToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `TimelineToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 核心协作规则：
 

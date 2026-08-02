@@ -7,12 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class BreadcrumbToken : AbstractControlDesignToken
 {
-    public const string ID = "Breadcrumb";
-
-    /// <summary>
-    /// 图标大小
-    /// </summary>
-    public double IconSize { get; set; }
 
     /// <summary>
     /// 面包屑项文字颜色
@@ -55,23 +49,22 @@ internal class BreadcrumbToken : AbstractControlDesignToken
     public Thickness SeparatorMargin { get; set; }
 
     public BreadcrumbToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        IconSize                    = SharedToken.IconSize;
-        ItemColor                   = SharedToken.ColorTextDescription;
-        LastItemColor               = SharedToken.ColorText;
-        LinkColor                   = SharedToken.ColorTextDescription;
-        LinkHoverColor              = SharedToken.ColorText;
-        LinkHoverBgColor            = SharedToken.ColorBgTextHover;
-        SeparatorColor              = SharedToken.ColorTextDescription;
-        SeparatorMargin             = new Thickness(SharedToken.UniformlyMarginXXS, 0);
-        BreadcrumbItemContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS, SharedToken.UniformlyPaddingXXS,
-            SharedToken.UniformlyPaddingXXS, SharedToken.UniformlyPaddingXXS);
+        ItemColor                   = EffectiveGlobalToken.ColorTextDescription;
+        LastItemColor               = EffectiveGlobalToken.ColorText;
+        LinkColor                   = EffectiveGlobalToken.ColorTextDescription;
+        LinkHoverColor              = EffectiveGlobalToken.ColorText;
+        LinkHoverBgColor            = EffectiveGlobalToken.ColorBgTextHover;
+        SeparatorColor              = EffectiveGlobalToken.ColorTextDescription;
+        SeparatorMargin             = new Thickness(EffectiveGlobalToken.UniformlyMarginXXS, 0);
+        BreadcrumbItemContentPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS, EffectiveGlobalToken.UniformlyPaddingXXS,
+            EffectiveGlobalToken.UniformlyPaddingXXS, EffectiveGlobalToken.UniformlyPaddingXXS);
     }
     
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AtomUI.Theme.Configuration;
 
 namespace AtomUI.Theme;
@@ -189,6 +190,38 @@ internal sealed class ThemeScopeGraph
         TopologyRevision++;
     }
 
+    internal void DisposeAll()
+    {
+        var ordered = new List<ThemeScopeNode>(_nodes.Count);
+        foreach (var root in _nodes.Values
+                                   .Where(static node => node.ParentRegistrationId == 0)
+                                   .OrderBy(static node => node.RegistrationId))
+        {
+            CaptureForDisposal(root.RegistrationId, ordered);
+        }
+
+        try
+        {
+            foreach (var node in ordered)
+            {
+                try
+                {
+                    node.Provider.ReleaseManagerRegistration(node.Context);
+                }
+                catch (Exception exception)
+                {
+                    Debug.WriteLine(exception);
+                }
+            }
+        }
+        finally
+        {
+            _nodes.Clear();
+            _providerRegistrations.Clear();
+            TopologyRevision++;
+        }
+    }
+
     private ThemeScopeNode GetNode(long registrationId)
     {
         return _nodes.TryGetValue(registrationId, out var node)
@@ -208,6 +241,16 @@ internal sealed class ThemeScopeGraph
         {
             Capture(child, captures);
         }
+    }
+
+    private void CaptureForDisposal(long registrationId, List<ThemeScopeNode> ordered)
+    {
+        var node = _nodes[registrationId];
+        foreach (var child in node.Children)
+        {
+            CaptureForDisposal(child, ordered);
+        }
+        ordered.Add(node);
     }
 
     private bool IsDescendant(long candidateId, long ancestorId)

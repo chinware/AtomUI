@@ -2,7 +2,7 @@
 
 namespace AtomUI.Desktop.Controls.QRCodeLang;
 
-[LanguageProvider(LanguageCode.en_US, QRCodeToken.ID)]
+[LanguageProvider(LanguageCode.en_US, "QRCode")]
 internal class en_US
 {
     public const string Refresh = "Refresh";

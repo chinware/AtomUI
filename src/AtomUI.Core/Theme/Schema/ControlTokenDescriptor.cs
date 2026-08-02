@@ -1,60 +1,107 @@
 using System.Diagnostics.CodeAnalysis;
 using AtomUI.Theme.DesignTokens;
+using Avalonia.Controls;
 
 namespace AtomUI.Theme.Schema;
 
 public sealed class ControlTokenDescriptor
 {
-    private readonly Func<AbstractControlDesignToken> _factory;
-    private readonly Action<AbstractControlDesignToken, ThemeAppearance> _evaluator;
+    private readonly Func<AbstractControlDesignToken>? _factory;
+    private readonly Action<AbstractControlDesignToken, ThemeAppearance>? _evaluator;
 
     public ControlTokenDescriptor(
+        Type controlType,
+        ControlTokenIdentity identity)
+        : this(
+            controlType,
+            identity,
+            -1,
+            Array.Empty<TokenDescriptor>(),
+            null,
+            null)
+    {
+    }
+
+    public ControlTokenDescriptor(
+        Type controlType,
         ControlTokenIdentity identity,
         IEnumerable<TokenDescriptor> ownTokens,
         Func<AbstractControlDesignToken> factory,
         Action<AbstractControlDesignToken, ThemeAppearance> evaluator)
-        : this(identity, -1, ownTokens, Array.Empty<TokenDescriptor>(), factory, evaluator)
+        : this(controlType, identity, -1, ownTokens, factory, evaluator)
     {
     }
 
     private ControlTokenDescriptor(
+        Type controlType,
         ControlTokenIdentity identity,
         int slot,
         IEnumerable<TokenDescriptor> ownTokens,
-        IReadOnlyList<TokenDescriptor> inheritedTokens,
-        Func<AbstractControlDesignToken> factory,
-        Action<AbstractControlDesignToken, ThemeAppearance> evaluator)
+        Func<AbstractControlDesignToken>? factory,
+        Action<AbstractControlDesignToken, ThemeAppearance>? evaluator)
     {
+        ArgumentNullException.ThrowIfNull(controlType);
         ArgumentNullException.ThrowIfNull(ownTokens);
-        ArgumentNullException.ThrowIfNull(inheritedTokens);
-        ArgumentNullException.ThrowIfNull(factory);
-        ArgumentNullException.ThrowIfNull(evaluator);
+        if (!typeof(Control).IsAssignableFrom(controlType))
+        {
+            throw new ArgumentException(
+                $"Control Token type '{controlType.FullName}' must derive from Avalonia.Controls.Control.",
+                nameof(controlType));
+        }
 
-        Identity        = identity;
-        Slot            = slot;
-        OwnTokens       = Array.AsReadOnly(ownTokens.OrderBy(static token => token.Slot).ToArray());
-        InheritedTokens = inheritedTokens;
-        _factory        = factory;
-        _evaluator      = evaluator;
+        var ownTokenArray = ownTokens.OrderBy(static token => token.Slot).ToArray();
+        if (ownTokenArray.Length == 0)
+        {
+            if (factory is not null || evaluator is not null)
+            {
+                throw new ArgumentException(
+                    "A Control without Own Tokens cannot define a Token factory or evaluator.",
+                    nameof(factory));
+            }
+        }
+        else if (factory is null || evaluator is null)
+        {
+            throw new ArgumentException(
+                "A Control with Own Tokens requires a Token factory and evaluator.",
+                nameof(factory));
+        }
+
+        ControlType = controlType;
+        Identity    = identity;
+        Slot        = slot;
+        OwnTokens   = Array.AsReadOnly(ownTokenArray);
+        _factory    = factory;
+        _evaluator  = evaluator;
     }
 
+    public Type ControlType { get; }
     public ControlTokenIdentity Identity { get; }
     public int Slot { get; }
     public IReadOnlyList<TokenDescriptor> OwnTokens { get; }
-    public IReadOnlyList<TokenDescriptor> InheritedTokens { get; }
+    public bool HasOwnTokens => _factory is not null;
 
-    public AbstractControlDesignToken CreateBuilder() => _factory();
+    public AbstractControlDesignToken? CreateBuilder() => _factory?.Invoke();
 
     public void Evaluate(AbstractControlDesignToken token, ThemeAppearance appearance)
     {
         ArgumentNullException.ThrowIfNull(token);
+        if (_evaluator is null)
+        {
+            throw new InvalidOperationException($"Control '{Identity}' does not define Own Tokens.");
+        }
         _evaluator(token, appearance);
     }
 
-    internal ControlTokenDescriptor Bind(int slot, IReadOnlyList<TokenDescriptor> inheritedTokens)
+    internal ControlTokenDescriptor Bind(int slot)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(slot);
-        return new ControlTokenDescriptor(Identity, slot, OwnTokens, inheritedTokens, _factory, _evaluator);
+        return new ControlTokenDescriptor(
+            ControlType,
+            Identity,
+            slot,
+            OwnTokens,
+            _factory,
+            _evaluator);
     }
 
     internal bool TryGetOwnToken(
@@ -62,23 +109,6 @@ public sealed class ControlTokenDescriptor
         [NotNullWhen(true)] out TokenDescriptor? descriptor)
     {
         foreach (var candidate in OwnTokens)
-        {
-            if (string.Equals(candidate.Name, name, StringComparison.Ordinal))
-            {
-                descriptor = candidate;
-                return true;
-            }
-        }
-
-        descriptor = null;
-        return false;
-    }
-
-    internal bool TryGetInheritedToken(
-        string name,
-        [NotNullWhen(true)] out TokenDescriptor? descriptor)
-    {
-        foreach (var candidate in InheritedTokens)
         {
             if (string.Equals(candidate.Name, name, StringComparison.Ordinal))
             {

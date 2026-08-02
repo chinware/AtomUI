@@ -129,7 +129,6 @@ Descriptions 的默认视觉由根主题、默认项主题和边框 cell 主题�
 | `DescriptionDefaultItemTheme.axaml` | 普通项 horizontal/vertical/vertical bordered 三种模板和冒号、label、content 视觉。 |
 | `DescriptionBorderedItemLabelTheme.axaml` | 水平边框模式 label cell 视觉。 |
 | `DescriptionBorderedItemContentTheme.axaml` | 水平边框模式 content cell 视觉。 |
-| `DescriptionsThemes.axaml` | 汇总 Descriptions 相关主题资源。 |
 
 Token 关系：
 

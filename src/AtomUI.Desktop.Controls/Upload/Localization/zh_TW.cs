@@ -2,7 +2,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.UploadLang;
 
-[LanguageProvider(LanguageCode.zh_TW, UploadToken.ID)]
+[LanguageProvider(LanguageCode.zh_TW, "Upload")]
 internal class zh_TW
 {
     public const string Uploading = "上傳中...";

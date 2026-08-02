@@ -1,6 +1,6 @@
 # Badge 桌面版实现原理
 
-本文档描述 Badge 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Badge 桌面版架构设计](overview.md)，变化记录见 [Badge Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Badge Token 设计](token.md)。
+本文档描述 Badge 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Badge 桌面版架构设计](overview.md)，变化记录见 [Badge Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Badge Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -26,7 +26,6 @@
 - `src/AtomUI.Desktop.Controls/Badge/DotBadgeAdorner.cs`
 - `src/AtomUI.Desktop.Controls/Badge/RibbonBadge.cs`
 - `src/AtomUI.Desktop.Controls/Badge/RibbonBadgeAdorner.cs`
-- `src/AtomUI.Desktop.Controls/Badge/Themes/BadgeThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Badge/Themes/CountBadgeAdornerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Badge/Themes/DotBadgeAdornerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Badge/Themes/DotBadgeIndicatorTheme.axaml`
@@ -47,7 +46,7 @@
 - `AbstractDotBadgeAdorner`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
 - `AbstractRibbonBadge`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
 - `AbstractRibbonBadgeAdorner`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
-- `BadgeToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `BadgeToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `BadgeZoomBadgeInMotion`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `BadgeZoomBadgeOutMotion`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `CountBadge`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。

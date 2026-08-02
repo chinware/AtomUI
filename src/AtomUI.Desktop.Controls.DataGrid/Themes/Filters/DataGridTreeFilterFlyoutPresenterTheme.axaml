@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:DataGridThemeAsset.Identity}"
     x:ClassModifier="internal"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes">
     <ControlTheme x:Key="{x:Type atom:DataGridTreeFilterFlyoutPresenter}"

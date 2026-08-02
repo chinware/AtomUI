@@ -8,10 +8,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ToggleSwitchToken : AbstractControlDesignToken
 {
-    public const string ID = "ToggleSwitch";
     
     public ToggleSwitchToken()
-        : base(ID)
+
     {
     }
 
@@ -83,12 +82,12 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
     /// <summary>
     /// 正常状态的图标大小
     /// </summary>
-    public double IconSize { get; set; }
+    public double ContentIconSize { get; set; }
 
     /// <summary>
     /// 小号状态的图标大小
     /// </summary>
-    public double IconSizeSM { get; set; }
+    public double ContentIconSizeSM { get; set; }
 
     /// <summary>
     /// 开关的颜色
@@ -123,9 +122,9 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        var fontSize      = SharedToken.FontSize;
-        var lineHeight    = SharedToken.RelativeLineHeight;
-        var controlHeight = SharedToken.ControlHeight;
+        var fontSize      = EffectiveGlobalToken.FontSize;
+        var lineHeight    = EffectiveGlobalToken.RelativeLineHeight;
+        var controlHeight = EffectiveGlobalToken.ControlHeight;
 
         var    height       = fontSize * lineHeight;
         var    heightSM     = controlHeight / 2;
@@ -138,7 +137,7 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
         TrackMinWidth   = handleSize * 2 + padding * 4;
         TrackMinWidthSM = handleSizeSM * 2 + padding * 2;
         TrackPadding    = padding; // Fixed value
-        HandleBg        = SharedToken.ColorWhite;
+        HandleBg        = EffectiveGlobalToken.ColorWhite;
         HandleSize      = new Size(handleSize, handleSize);
         HandleSizeSM    = new Size(handleSizeSM, handleSizeSM);
 
@@ -147,10 +146,10 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
         InnerMinMarginSM = handleSizeSM / 2 - padding;
         InnerMaxMarginSM = handleSizeSM + padding * 3;
         
-        SwitchColor            = SharedToken.ColorPrimary;
-        SwitchDisabledOpacity  = SharedToken.OpacityLoading;
+        SwitchColor            = EffectiveGlobalToken.ColorPrimary;
+        SwitchDisabledOpacity  = EffectiveGlobalToken.OpacityLoading;
 
-        ExtraInfoFontSize   = SharedToken.FontSizeSM;
+        ExtraInfoFontSize   = EffectiveGlobalToken.FontSizeSM;
         ExtraInfoFontSizeSM = ExtraInfoFontSize - 1;
 
         HandleShadow = new BoxShadow
@@ -161,8 +160,8 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
             Color   = Color.FromArgb((int)(255 * 0.2), 0, 35, 11)
         };
 
-        IconSize                   = TrackHeightSM;
-        IconSizeSM                 = TrackHeightSM - SharedToken.UniformlyPaddingXXS;
+        ContentIconSize            = TrackHeightSM;
+        ContentIconSizeSM          = TrackHeightSM - EffectiveGlobalToken.UniformlyPaddingXXS;
         LoadingAnimationDuration   = TimeSpan.FromMilliseconds(1200); // 毫秒
         OffStateLoadIndicatorColor = ColorUtils.FromRgbF(0.4,0.0, 0.0, 0.0);
     }

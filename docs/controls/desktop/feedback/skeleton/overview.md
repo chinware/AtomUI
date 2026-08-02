@@ -29,7 +29,7 @@ Skeleton 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Skeleton 是 AtomUI 桌面控件体系中的骨架屏控件，用于在内容加载前展示结构占位。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `AvatarShape`、`AvatarSize`、`AvatarSizeType`、`Content`、`ContentTemplate`、`HorizontalContentAlignment`、`IsShowAvatar`、`IsShowTitle` 等 12 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、loading/async、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Skeleton Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Skeleton Token + ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -88,7 +88,7 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-Skeleton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Skeleton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -102,9 +102,8 @@ Skeleton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `SkeletonNodeTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `SkeletonParagraphTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `SkeletonTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `SkeletonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Skeleton 使用 `SkeletonToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、motion、visual option 运行时状态。
+Skeleton 使用 `SkeletonToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -133,7 +132,7 @@ Skeleton 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 - `SkeletonNode`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `SkeletonParagraph`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `SkeletonTitle`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `SkeletonToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `SkeletonToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 集成关系：
 

@@ -18,7 +18,7 @@ Descriptions 的实现重点是把 `DescriptionItem` 集合转换为一组内部
 - `src/AtomUI.Desktop.Controls/Descriptions/DescriptionBorderedCell.cs`：水平边框模式 label/content cell 的共享内部基类。
 - `src/AtomUI.Desktop.Controls/Descriptions/DescriptionBorderedItemLabel.cs`：水平边框模式 label cell 类型。
 - `src/AtomUI.Desktop.Controls/Descriptions/DescriptionBorderedItemContent.cs`：水平边框模式 content cell 类型。
-- `src/AtomUI.Desktop.Controls/Descriptions/DescriptionsToken.cs`：Descriptions 组件 Token。
+- `src/AtomUI.Desktop.Controls/Descriptions/DescriptionsToken.cs`：Descriptions 控件 Token。
 - `src/AtomUI.Desktop.Controls/Descriptions/Themes/*.axaml`：根模板、普通项模板、边框 cell 模板和 token 样式。
 
 ## 3. 核心类职责

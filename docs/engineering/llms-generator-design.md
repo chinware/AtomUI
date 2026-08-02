@@ -190,7 +190,7 @@ docs/controls/<platform>/<category>/<control>/
 
 复杂控件还必须提供 `Composition Model`。`Composition Model` 描述 public 控件、内部协作控件、item container、adorner、popup host、motion actor、presenter、数据对象和模板 part 之间的运行时组合关系。它不是 AXAML 模板结构，不要求每个节点都出现在同一个 `ControlTemplate` 中；它用于帮助 AI 编程工具理解控件如何由多个内部对象协同完成 public API 行为。
 
-`Composition Model` 的第一信息源是控件源码目录下的 `Themes/` 文件夹。生成器应优先扫描同一控件家族的 `*Theme.axaml` 和 `*Themes.axaml`，识别 public control、internal control、item container、adorner、presenter、popup host、motion actor、template part 和主题聚合关系。`implementation.md`、源码索引、`new Xxx()`、`CreateContainerForItemOverride()`、`OnApplyTemplate`、`PART_` 和 item container 类型用于解释与静态校验；不得仅凭控件分类或名称发明内部协作结构。若控件没有额外内部组合结构，该章节应明确说明“该控件主要由 public 控件和 ControlTheme 模板直接表达，没有额外运行时组合层”。
+`Composition Model` 的第一信息源是控件源码目录下的 `Themes/` 文件夹。生成器应扫描同一控件家族的独立 `*Theme.axaml` 叶子，并结合生成的 ControlTheme asset manifest 中的 owner、引用 Control identity 和 Semantic Part Theme 元数据识别 public control、internal control、item container、adorner、presenter、popup host、motion actor、template part 和跨主题组合关系；不得依赖只用于聚合的 `*Themes.axaml`。`implementation.md`、源码索引、`new Xxx()`、`CreateContainerForItemOverride()`、`OnApplyTemplate`、`PART_` 和 item container 类型用于解释与静态校验；不得仅凭控件分类或名称发明内部协作结构。若控件没有额外内部组合结构，该章节应明确说明“该控件主要由 public 控件和 ControlTheme 模板直接表达，没有额外运行时组合层”。
 
 ### 7.2 implementation.md
 

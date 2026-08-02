@@ -1,6 +1,6 @@
 # Message 桌面版实现原理
 
-本文档描述 Message 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Message 桌面版架构设计](overview.md)，变化记录见 [Message Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Message Token 设计](token.md)。
+本文档描述 Message 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Message 桌面版架构设计](overview.md)，变化记录见 [Message Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Message Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -18,7 +18,6 @@
 - `src/AtomUI.Desktop.Controls/Message/MessageToken.cs`
 - `src/AtomUI.Desktop.Controls/Message/MessageType.cs`
 - `src/AtomUI.Desktop.Controls/Message/Themes/MessageCardTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Message/Themes/MessageThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Message/Themes/WindowMessageManagerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Message/WindowMessageManager.cs`
 
@@ -33,7 +32,7 @@
 
 - `Message`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `MessageCard`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `MessageToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `MessageToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `WindowMessageManager`：数据、状态或行为协作类型，维护集合同步和事件路径。
 
 核心协作规则：

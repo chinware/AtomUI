@@ -11,9 +11,8 @@ namespace AtomUI.Theme;
 public interface IThemeManagerBuilder
 {
     void AddThemeDefinitionResolver(IThemeDefinitionResolver resolver);
-    void AddControlToken(ControlTokenDescriptor descriptor);
-    void AddControlThemesProvider(IControlThemesProvider controlThemesProvider);
-    void AddLanguageProviders(LanguageProvider languageProvider);
+    void AddControlPackage(ControlPackageRegistration package);
+    void AddLanguageProvider(LanguageProvider languageProvider);
     void AddInitializer(Action<IThemeManager> initializer);
     void WithInitialTheme(string themeId, ThemeConfig? config = null);
     void WithFollowSystemThemes(ThemeRequest light, ThemeRequest dark);

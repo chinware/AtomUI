@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ButtonToken : AbstractControlDesignToken
 {
-    public const string ID = "Button";
     
     /// <summary>
     /// 文字字重
@@ -141,17 +140,17 @@ internal class ButtonToken : AbstractControlDesignToken
     /// <summary>
     /// 按钮内间距
     /// </summary>
-    public Thickness Padding { get; set; }
+    public Thickness ContentPadding { get; set; }
 
     /// <summary>
     /// 大号按钮内间距
     /// </summary>
-    public Thickness PaddingLG { get; set; }
+    public Thickness ContentPaddingLG { get; set; }
 
     /// <summary>
     /// 小号按钮内间距
     /// </summary>
-    public Thickness PaddingSM { get; set; }
+    public Thickness ContentPaddingSM { get; set; }
 
     /// <summary>
     /// 按钮右边一个额外的区域内容控件间的间隔
@@ -192,21 +191,6 @@ internal class ButtonToken : AbstractControlDesignToken
     /// 小号只有图标的按钮图标尺寸
     /// </summary>
     public double OnlyIconSizeSM { get; set; }
-
-    /// <summary>
-    /// 图标的按钮图标尺寸
-    /// </summary>
-    public double IconSize { get; set; }
-
-    /// <summary>
-    /// 只有图标的按钮图标尺寸
-    /// </summary>
-    public double IconSizeLG { get; set; }
-
-    /// <summary>
-    /// 只有图标的按钮图标尺寸
-    /// </summary>
-    public double IconSizeSM { get; set; }
 
     /// <summary>
     /// 完成 Icon 外边距
@@ -288,15 +272,15 @@ internal class ButtonToken : AbstractControlDesignToken
     #endregion
 
     public ButtonToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        var fontSize   = SharedToken.FontSize;
-        var fontSizeLG = SharedToken.FontSizeLG;
+        var fontSize   = EffectiveGlobalToken.FontSize;
+        var fontSizeLG = EffectiveGlobalToken.FontSizeLG;
 
         ContentFontSize   = !double.IsNaN(ContentFontSize) ? ContentFontSize : fontSize;
         ContentFontSizeSM = !double.IsNaN(ContentFontSizeSM) ? ContentFontSizeSM : fontSize;
@@ -311,7 +295,7 @@ internal class ButtonToken : AbstractControlDesignToken
             ? ContentLineHeightLG
             : CalculatorUtils.CalculateLineHeight(ContentFontSizeLG) * ContentFontSizeLG;
 
-        var controlOutlineWidth = SharedToken.ControlOutlineWidth;
+        var controlOutlineWidth = EffectiveGlobalToken.ControlOutlineWidth;
         FontWeight = 400;
         DefaultShadow = new BoxShadows(new BoxShadow
         {
@@ -319,7 +303,7 @@ internal class ButtonToken : AbstractControlDesignToken
             OffsetY = controlOutlineWidth,
             Blur    = 3,
             Spread  = 0,
-            Color   = SharedToken.ColorControlOutline
+            Color   = EffectiveGlobalToken.ColorControlOutline
         });
 
         PrimaryShadow = new BoxShadows(new BoxShadow
@@ -328,7 +312,7 @@ internal class ButtonToken : AbstractControlDesignToken
             OffsetY = controlOutlineWidth,
             Blur    = 3,
             Spread  = 0,
-            Color   = SharedToken.ColorControlOutline
+            Color   = EffectiveGlobalToken.ColorControlOutline
         });
 
         DangerShadow = new BoxShadows(new BoxShadow
@@ -337,33 +321,33 @@ internal class ButtonToken : AbstractControlDesignToken
             OffsetY = controlOutlineWidth,
             Blur    = 3,
             Spread  = 0,
-            Color   = SharedToken.ColorErrorOutline
+            Color   = EffectiveGlobalToken.ColorErrorOutline
         });
         
-        var lineWidth         = SharedToken.LineWidth;
+        var lineWidth         = EffectiveGlobalToken.LineWidth;
 
-        PrimaryColor            = SharedToken.ColorTextLightSolid;
-        DangerColor             = SharedToken.ColorTextLightSolid;
-        BorderColorDisabled     = SharedToken.ColorBorder;
-        DefaultGhostColor       = SharedToken.ColorBgContainer;
+        PrimaryColor            = EffectiveGlobalToken.ColorTextLightSolid;
+        DangerColor             = EffectiveGlobalToken.ColorTextLightSolid;
+        BorderColorDisabled     = EffectiveGlobalToken.ColorBorder;
+        DefaultGhostColor       = EffectiveGlobalToken.ColorBgContainer;
         GhostBg                 = Colors.Transparent;
-        DefaultGhostBorderColor = SharedToken.ColorBgContainer;
+        DefaultGhostBorderColor = EffectiveGlobalToken.ColorBgContainer;
 
-        GroupBorderColor           = SharedToken.ColorPrimaryHover;
+        GroupBorderColor           = EffectiveGlobalToken.ColorPrimaryHover;
         LinkHoverBg                = Colors.Transparent;
-        TextHoverBg                = SharedToken.ColorFillTertiary;
-        DefaultColor               = SharedToken.ColorText;
-        DefaultBg                  = SharedToken.ColorBgContainer;
-        DefaultBorderColor         = SharedToken.ColorBorder;
-        DefaultBorderColorDisabled = SharedToken.ColorBorder;
-        DefaultHoverBg             = SharedToken.ColorBgContainer;
-        DefaultHoverColor          = SharedToken.ColorPrimaryHover;
-        DefaultHoverBorderColor    = SharedToken.ColorPrimaryHover;
-        DefaultActiveBg            = SharedToken.ColorBgContainer;
-        DefaultActiveColor         = SharedToken.ColorPrimaryActive;
-        DefaultActiveBorderColor   = SharedToken.ColorPrimaryActive;
+        TextHoverBg                = EffectiveGlobalToken.ColorFillTertiary;
+        DefaultColor               = EffectiveGlobalToken.ColorText;
+        DefaultBg                  = EffectiveGlobalToken.ColorBgContainer;
+        DefaultBorderColor         = EffectiveGlobalToken.ColorBorder;
+        DefaultBorderColorDisabled = EffectiveGlobalToken.ColorBorder;
+        DefaultHoverBg             = EffectiveGlobalToken.ColorBgContainer;
+        DefaultHoverColor          = EffectiveGlobalToken.ColorPrimaryHover;
+        DefaultHoverBorderColor    = EffectiveGlobalToken.ColorPrimaryHover;
+        DefaultActiveBg            = EffectiveGlobalToken.ColorBgContainer;
+        DefaultActiveColor         = EffectiveGlobalToken.ColorPrimaryActive;
+        DefaultActiveBorderColor   = EffectiveGlobalToken.ColorPrimaryActive;
 
-        var isBright = ColorUtils.IsBright(SharedToken.ColorBgSolid, Colors.White);
+        var isBright = ColorUtils.IsBright(EffectiveGlobalToken.ColorBgSolid, Colors.White);
         if (isBright)
         {
             SolidTextColor = Colors.Black;
@@ -373,43 +357,39 @@ internal class ButtonToken : AbstractControlDesignToken
             SolidTextColor = Colors.White;
         }
 
-        TextTextColor       = SharedToken.ColorText;
-        TextTextHoverColor  = SharedToken.ColorText;
-        TextTextActiveColor = SharedToken.ColorText;
+        TextTextColor       = EffectiveGlobalToken.ColorText;
+        TextTextHoverColor  = EffectiveGlobalToken.ColorText;
+        TextTextActiveColor = EffectiveGlobalToken.ColorText;
 
-        var controlHeightSM = SharedToken.ControlHeightSM;
-        var controlHeight   = SharedToken.ControlHeight;
-        var controlHeightLG = SharedToken.ControlHeightLG;
+        var controlHeightSM = EffectiveGlobalToken.ControlHeightSM;
+        var controlHeight   = EffectiveGlobalToken.ControlHeight;
+        var controlHeightLG = EffectiveGlobalToken.ControlHeightLG;
 
-        PaddingSM = new Thickness(8 - SharedToken.LineWidth,
+        ContentPaddingSM = new Thickness(8 - EffectiveGlobalToken.LineWidth,
             Math.Max((controlHeightSM - ContentLineHeightSM) / 2 - lineWidth, 0));
-        Padding = new Thickness(SharedToken.PaddingContentHorizontal - lineWidth,
+        ContentPadding = new Thickness(EffectiveGlobalToken.PaddingContentHorizontal - lineWidth,
             Math.Max((controlHeight - ContentLineHeight) / 2 - lineWidth, 0));
-        PaddingLG = new Thickness(SharedToken.PaddingContentHorizontal - lineWidth,
+        ContentPaddingLG = new Thickness(EffectiveGlobalToken.PaddingContentHorizontal - lineWidth,
             Math.Max((controlHeightLG - ContentLineHeightLG) / 2 - lineWidth, 0));
 
-        ExtraContentMarginSM    = new Thickness(PaddingSM.Left / 2, 0, 0, 0);
-        ExtraContentMargin      = new Thickness(Padding.Left / 2, 0, 0, 0);
-        ExtraContentMarginLG    = new Thickness(PaddingLG.Left / 2, 0, 0, 0);
-        ExtraContentItemSpacing = SharedToken.UniformlyMarginXXS / 2;
+        ExtraContentMarginSM    = new Thickness(ContentPaddingSM.Left / 2, 0, 0, 0);
+        ExtraContentMargin      = new Thickness(ContentPadding.Left / 2, 0, 0, 0);
+        ExtraContentMarginLG    = new Thickness(ContentPaddingLG.Left / 2, 0, 0, 0);
+        ExtraContentItemSpacing = EffectiveGlobalToken.UniformlyMarginXXS / 2;
 
-        CirclePadding  = new Thickness(PaddingSM.Left / 2);
-        OnlyIconSizeSM = SharedToken.IconSize;
-        OnlyIconSize   = SharedToken.IconSizeLG;
-        OnlyIconSizeLG = SharedToken.IconSizeLG;
+        CirclePadding  = new Thickness(ContentPaddingSM.Left / 2);
+        OnlyIconSizeSM = EffectiveGlobalToken.IconSize;
+        OnlyIconSize   = EffectiveGlobalToken.IconSizeLG;
+        OnlyIconSizeLG = EffectiveGlobalToken.IconSizeLG;
 
-        IconSizeSM = SharedToken.IconSizeSM;
-        IconSize   = SharedToken.IconSize;
-        IconSizeLG = SharedToken.IconSize;
-
-        IconMargin    = new Thickness(0, 0, SharedToken.UniformlyPaddingXXS, 0);
-        IconEndMargin = new Thickness(SharedToken.UniformlyPaddingXXS, 0, 0, 0);
+        IconMargin    = new Thickness(0, 0, EffectiveGlobalToken.UniformlyPaddingXXS, 0);
+        IconEndMargin = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS, 0, 0, 0);
 
         IconOnyPadding   = new Thickness(Math.Max((controlHeight - ContentLineHeight) / 2 - lineWidth, 0));
         IconOnyPaddingLG = new Thickness(Math.Max((controlHeightLG - ContentLineHeightLG) / 2 - lineWidth, 0));
         IconOnyPaddingSM = new Thickness(Math.Max((controlHeightSM - ContentLineHeightSM) / 2 - lineWidth, 0));
         
-        GutterToFlyout = SharedToken.UniformlyMarginXXS;
+        GutterToFlyout = EffectiveGlobalToken.UniformlyMarginXXS;
     }
     
 }

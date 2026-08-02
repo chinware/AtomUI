@@ -29,7 +29,7 @@ ButtonSpinner 的设计语言围绕控件职责、可观察状态和主题契约
 | 产品语义 | 控件在界面中承担的稳定职责。 | ButtonSpinner 是 AtomUI 桌面控件体系中的带步进按钮的输入基座，用于承载增减、选择或候选切换类输入。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ContentLeftShift`、`ContentPadding`、`ContentRightShift`、`InnerLeftContent`、`InnerLeftContentTemplate`、`InnerRightContent`、`InnerRightContentTemplate`、`LeftAddOnTemplate` 等 10 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ButtonSpinner Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ButtonSpinner Token + ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -84,16 +84,15 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-ButtonSpinner 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ButtonSpinner 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ButtonSpinnerDecoratedBoxTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `ButtonSpinnerHandleTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `ButtonSpinnerTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `ButtonSpinnerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-ButtonSpinner 使用 `ButtonSpinnerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 motion、visual option 运行时状态。
+ButtonSpinner 使用 `ButtonSpinnerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -112,7 +111,7 @@ ButtonSpinner 与同分类控件共享尺寸、状态、Token、Gallery 展示�
 - `ButtonSpinnerContentPanel`：布局面板，负责测量、排列、虚拟化或集合内容布局。
 - `ButtonSpinnerDecoratedBox`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `ButtonSpinnerHandle`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `ButtonSpinnerToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `ButtonSpinnerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 集成关系：
 

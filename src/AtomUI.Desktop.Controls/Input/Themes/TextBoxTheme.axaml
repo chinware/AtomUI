@@ -1,9 +1,6 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:themeResources="using:AtomUI.Theme.Resources"
-              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-              themeResources:ControlTokenScope.Identity="{x:Static generated:TextBoxThemeAsset.Identity}"
               x:Class="AtomUI.Desktop.Controls.Themes.TextBoxTheme"
               x:ClassModifier="internal"
               TargetType="atom:TextBox">
@@ -105,24 +102,24 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:TextBoxTokenResource EnableMotion}" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
         <Setter Property="ClipToBounds" Value="False" />
     
         <Style Selector="^[SizeType=Large]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightLG}" />
             <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadiusLG}" />
-            <Setter Property="Padding" Value="{atom:TextBoxTokenResource PaddingLG}" />
+            <Setter Property="Padding" Value="{atom:TextBoxTokenResource ContentPaddingLG}" />
         </Style>
         <Style Selector="^[SizeType=Middle]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
             <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadius}" />
-            <Setter Property="Padding" Value="{atom:TextBoxTokenResource Padding}" />
+            <Setter Property="Padding" Value="{atom:TextBoxTokenResource ContentPadding}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightSM}" />
             <Setter Property="CornerRadius" Value="{atom:TextBoxTokenResource BorderRadiusSM}" />
-            <Setter Property="Padding" Value="{atom:TextBoxTokenResource PaddingSM}" />
+            <Setter Property="Padding" Value="{atom:TextBoxTokenResource ContentPaddingSM}" />
         </Style>
         <Style Selector="^[SizeType=Custom]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeight}" />

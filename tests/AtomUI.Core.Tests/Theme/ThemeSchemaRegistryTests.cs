@@ -14,6 +14,7 @@ public class ThemeSchemaRegistryTests
         var contentFontSize = Token("ContentFontSize", 0, TokenStage.Control);
         var buttonIdentity = new ControlTokenIdentity("AtomUI", "Button");
         var button = new ControlTokenDescriptor(
+            typeof(ButtonThemeTestControl),
             buttonIdentity,
             [contentFontSize],
             static () => throw new InvalidOperationException(),
@@ -32,6 +33,7 @@ public class ThemeSchemaRegistryTests
         foundGlobal.ShouldBeSameAs(colorPrimary);
         registry.TryGetControl(buttonIdentity, out var foundControl).ShouldBeTrue();
         foundControl.ShouldBeSameAs(registry.Controls[0]);
+        foundControl.OwnTokens.ShouldBe([contentFontSize]);
         registry.TryGetAlgorithm("Default", out var foundAlgorithm).ShouldBeTrue();
         foundAlgorithm.ShouldBeSameAs(defaultAlgorithm);
         registry.TryGetGlobalToken("colorprimary", out _).ShouldBeFalse();
@@ -67,6 +69,29 @@ public class ThemeSchemaRegistryTests
     }
 
     [Fact]
+    public void Registry_Indexes_Exact_Control_Type_And_Rejects_Duplicate_Type()
+    {
+        var button = Control("AtomUI", "Button");
+        var input = Control("AtomUI", "Input");
+        var registry = new ThemeSchemaRegistry(
+            Array.Empty<TokenDescriptor>(),
+            [button, input],
+            Array.Empty<ThemeAlgorithmDescriptor>());
+
+        registry.TryGetControl(typeof(ButtonThemeTestControl), out var found).ShouldBeTrue();
+        found!.Identity.ShouldBe(button.Identity);
+        registry.TryGetControl(typeof(DerivedButtonThemeTestControl), out _).ShouldBeFalse();
+
+        var duplicateType = new ControlTokenDescriptor(
+            typeof(ButtonThemeTestControl),
+            new ControlTokenIdentity("AtomUI", "Other"));
+        Should.Throw<ThemeSchemaException>(() => new ThemeSchemaRegistry(
+            Array.Empty<TokenDescriptor>(),
+            [button, duplicateType],
+            Array.Empty<ThemeAlgorithmDescriptor>()));
+    }
+
+    [Fact]
     public void Registry_Requires_Contiguous_Global_And_Control_Own_Slots()
     {
         Should.Throw<ThemeSchemaException>(() => new ThemeSchemaRegistry(
@@ -75,6 +100,7 @@ public class ThemeSchemaRegistryTests
             [Algorithm("Default", ThemeAppearanceEffect.Preserve)]));
 
         var invalidControl = new ControlTokenDescriptor(
+            typeof(ButtonThemeTestControl),
             new ControlTokenIdentity("AtomUI", "Button"),
             [Token("ContentFontSize", 1, TokenStage.Control)],
             static () => throw new InvalidOperationException(),
@@ -83,6 +109,30 @@ public class ThemeSchemaRegistryTests
             [Token("ColorPrimary", 0, TokenStage.Seed)],
             [invalidControl],
             [Algorithm("Default", ThemeAppearanceEffect.Preserve)]));
+    }
+
+    [Fact]
+    public void Registry_Allows_Unused_Global_Tokens_And_Rejects_Global_Own_Name_Collisions()
+    {
+        var global = Token("ColorPrimary", 0, TokenStage.Seed);
+        var unusedGlobal = new ControlTokenDescriptor(
+            typeof(ButtonThemeTestControl),
+            new ControlTokenIdentity("AtomUI", "Button"));
+        var collidingOwnToken = new ControlTokenDescriptor(
+            typeof(ButtonThemeTestControl),
+            new ControlTokenIdentity("AtomUI", "Button"),
+            [Token("ColorPrimary", 0, TokenStage.Control)],
+            static () => throw new InvalidOperationException(),
+            static (_, _) => throw new InvalidOperationException());
+
+        new ThemeSchemaRegistry(
+            [global],
+            [unusedGlobal],
+            Array.Empty<ThemeAlgorithmDescriptor>());
+        Should.Throw<ThemeSchemaException>(() => new ThemeSchemaRegistry(
+            [global],
+            [collidingOwnToken],
+            Array.Empty<ThemeAlgorithmDescriptor>()));
     }
 
     [Theory]
@@ -135,10 +185,8 @@ public class ThemeSchemaRegistryTests
     private static ControlTokenDescriptor Control(string catalog, string id)
     {
         return new ControlTokenDescriptor(
-            new ControlTokenIdentity(catalog, id),
-            Array.Empty<TokenDescriptor>(),
-            static () => throw new InvalidOperationException(),
-            static (_, _) => throw new InvalidOperationException());
+            ThemeTestControlTypes.For(catalog, id),
+            new ControlTokenIdentity(catalog, id));
     }
 
     private static ThemeAlgorithmDescriptor Algorithm(

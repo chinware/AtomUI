@@ -2,7 +2,7 @@
 
 namespace AtomUI.Desktop.Controls.TimePickerLang;
 
-[LanguageProvider(LanguageCode.en_US, TimePickerToken.ID)]
+[LanguageProvider(LanguageCode.en_US, "TimePicker")]
 internal class en_US
 {
     public const string AMText = "AM";

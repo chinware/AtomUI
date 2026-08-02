@@ -194,6 +194,48 @@ public partial class DesignToken
     public double ControlOutlineWidth { get; set; }
 
     /// <summary>
+    /// 输入类控件中号内容内边距。
+    /// </summary>
+    [DesignTokenKind(DesignTokenKind.Alias)]
+    public Thickness InputPadding { get; set; }
+
+    /// <summary>
+    /// 输入类控件小号内容内边距。
+    /// </summary>
+    [DesignTokenKind(DesignTokenKind.Alias)]
+    public Thickness InputPaddingSM { get; set; }
+
+    /// <summary>
+    /// 输入类控件大号内容内边距。
+    /// </summary>
+    [DesignTokenKind(DesignTokenKind.Alias)]
+    public Thickness InputPaddingLG { get; set; }
+
+    /// <summary>
+    /// 输入类控件内容相对边框的补偿边距。
+    /// </summary>
+    [DesignTokenKind(DesignTokenKind.Alias)]
+    public Thickness InputContentMargin { get; set; }
+
+    /// <summary>
+    /// 输入类控件激活态外轮廓阴影。
+    /// </summary>
+    [DesignTokenKind(DesignTokenKind.Alias)]
+    public BoxShadows InputActiveShadow { get; set; }
+
+    /// <summary>
+    /// 输入类控件错误激活态外轮廓阴影。
+    /// </summary>
+    [DesignTokenKind(DesignTokenKind.Alias)]
+    public BoxShadows InputErrorActiveShadow { get; set; }
+
+    /// <summary>
+    /// 输入类控件警告激活态外轮廓阴影。
+    /// </summary>
+    [DesignTokenKind(DesignTokenKind.Alias)]
+    public BoxShadows InputWarningActiveShadow { get; set; }
+
+    /// <summary>
     /// 控制组件项在鼠标悬浮时的背景颜色
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Alias)]

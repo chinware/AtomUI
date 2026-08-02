@@ -1,5 +1,9 @@
 using AtomUI.Theme;
+using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Resources;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Shouldly;
 using Xunit;
@@ -48,5 +52,90 @@ public class ThemeManagerTests
                     Color.Parse("#1677FF"))
             ]);
         });
+    }
+
+    [Fact]
+    public void Dispose_Releases_Application_Resources_And_Registered_Scopes()
+    {
+        HeadlessTestApp.Run(() =>
+        {
+            var application = Application.Current!;
+            var manager = new ThemeManagerBuilder().Build();
+            manager.InitializeApplication(application);
+            var provider = new ThemeConfigProvider
+            {
+                Config = new ThemeConfigBuilder().Build(),
+                Child = new Border()
+            };
+            var root = new LogicalRoot();
+            root.SetValue(ThemeScope.ContextProperty, manager.RootContext);
+            root.Child = provider;
+            manager.ScopeGraph.TryGetNode(provider, out _).ShouldBeTrue();
+
+            manager.Dispose();
+
+            application.Styles.ShouldNotContain(manager);
+            manager.Resources.MergedDictionaries
+                   .OfType<ThemeTokenResourceProvider>()
+                   .ShouldBeEmpty();
+            manager.ScopeGraph.TryGetNode(provider, out _).ShouldBeFalse();
+            provider.Resources.MergedDictionaries
+                    .OfType<ThemeTokenResourceProvider>()
+                    .ShouldBeEmpty();
+            Should.Throw<ObjectDisposedException>(() => manager.ApplyThemeAsync(
+                new ThemeRequest(
+                    IThemeManager.DEFAULT_THEME_ID,
+                    null,
+                    ThemeTransitionReason.UserRequest)));
+            root.Child = null;
+        });
+    }
+
+    [Fact]
+    public void Dispose_Releases_The_Complete_Scope_Graph_When_A_Provider_Callback_Throws()
+    {
+        HeadlessTestApp.Run(() =>
+        {
+            var application = Application.Current!;
+            var manager = new ThemeManagerBuilder().Build();
+            manager.InitializeApplication(application);
+            var provider = new ThrowingThemeConfigProvider
+            {
+                Child = new Border()
+            };
+            var root = new LogicalRoot();
+            root.SetValue(ThemeScope.ContextProperty, manager.RootContext);
+            root.Child = provider;
+            manager.ScopeGraph.TryGetNode(provider, out _).ShouldBeTrue();
+            provider.ThrowOnNextContextChange = true;
+
+            manager.Dispose();
+
+            manager.ScopeGraph.TryGetNode(provider, out _).ShouldBeFalse();
+            provider.Resources.MergedDictionaries
+                    .OfType<ThemeTokenResourceProvider>()
+                    .ShouldBeEmpty();
+            provider.IsSet(ThemeConfigProvider.RequestedThemeVariantProperty).ShouldBeFalse();
+            root.Child = null;
+        });
+    }
+
+    private sealed class LogicalRoot : Decorator, ILogicalRoot
+    {
+    }
+
+    private sealed class ThrowingThemeConfigProvider : ThemeConfigProvider
+    {
+        internal bool ThrowOnNextContextChange { get; set; }
+
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        {
+            base.OnPropertyChanged(change);
+            if (ThrowOnNextContextChange && change.Property == ThemeScope.ContextProperty)
+            {
+                ThrowOnNextContextChange = false;
+                throw new InvalidOperationException("context update failed");
+            }
+        }
     }
 }

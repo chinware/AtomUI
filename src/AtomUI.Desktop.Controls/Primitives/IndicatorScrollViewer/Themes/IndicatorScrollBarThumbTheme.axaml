@@ -3,9 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:primitives="using:AtomUI.Desktop.Controls.Primitives"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:IndicatorScrollViewerThemeAsset.Identity}">
+    >
     <ControlTheme x:Key="{x:Type primitives:IndicatorScrollBarThumb}"
                   TargetType="primitives:IndicatorScrollBarThumb">
         <Setter Property="Template">
@@ -22,10 +20,10 @@
             </ControlTemplate>
         </Setter>
                 
-        <Setter Property="Background" Value="{atom:IndicatorScrollViewerTokenResource ThumbBg}"/>
-        <Setter Property="CornerRadius" Value="{atom:IndicatorScrollViewerTokenResource ThumbCornerRadius}"/>
+        <Setter Property="Background" Value="{atom:ScrollViewerTokenResource ThumbBg}"/>
+        <Setter Property="CornerRadius" Value="{atom:ScrollViewerTokenResource IndicatorThumbCornerRadius}"/>
         <Setter Property="MinHeight"
-                Value="{atom:IndicatorScrollViewerTokenResource ScrollBarThickness}" />
-        <Setter Property="Width" Value="{atom:IndicatorScrollViewerTokenResource ThumbThickness}" />
+                Value="{atom:ScrollViewerTokenResource LiteModeThumbThickness}" />
+        <Setter Property="Width" Value="{atom:ScrollViewerTokenResource NormalModeThumbThickness}" />
     </ControlTheme>
 </ResourceDictionary>

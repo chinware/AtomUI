@@ -9,7 +9,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class OptionButtonToken : AbstractControlDesignToken
 {
-    public const string ID = "OptionButton";
     
     /// <summary>
     /// 单选框按钮背景色
@@ -94,39 +93,39 @@ internal class OptionButtonToken : AbstractControlDesignToken
     /// <summary>
     /// 按钮内间距
     /// </summary>
-    public Thickness Padding { get; set; }
+    public Thickness ContentPadding { get; set; }
 
     /// <summary>
     /// 大号按钮内间距
     /// </summary>
-    public Thickness PaddingLG { get; set; }
+    public Thickness ContentPaddingLG { get; set; }
 
     /// <summary>
     /// 小号按钮内间距
     /// </summary>
-    public Thickness PaddingSM { get; set; }
+    public Thickness ContentPaddingSM { get; set; }
 
     public OptionButtonToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        ButtonSolidCheckedColor            = SharedToken.ColorTextLightSolid;
-        ButtonSolidCheckedBackground       = SharedToken.ColorPrimary;
-        ButtonSolidCheckedHoverBackground  = SharedToken.ColorPrimaryHover;
-        ButtonSolidCheckedActiveBackground = SharedToken.ColorPrimaryActive;
-        ButtonBackground                   = SharedToken.ColorBgContainer;
-        ButtonCheckedBackground            = SharedToken.ColorBgContainer;
-        ButtonColor                        = SharedToken.ColorText;
-        ButtonCheckedBgDisabled            = SharedToken.ControlItemBgActiveDisabled;
-        ButtonCheckedColorDisabled         = SharedToken.ColorTextDisabled;
-        ButtonPadding                      = new Thickness(SharedToken.UniformlyPadding, 0);
+        ButtonSolidCheckedColor            = EffectiveGlobalToken.ColorTextLightSolid;
+        ButtonSolidCheckedBackground       = EffectiveGlobalToken.ColorPrimary;
+        ButtonSolidCheckedHoverBackground  = EffectiveGlobalToken.ColorPrimaryHover;
+        ButtonSolidCheckedActiveBackground = EffectiveGlobalToken.ColorPrimaryActive;
+        ButtonBackground                   = EffectiveGlobalToken.ColorBgContainer;
+        ButtonCheckedBackground            = EffectiveGlobalToken.ColorBgContainer;
+        ButtonColor                        = EffectiveGlobalToken.ColorText;
+        ButtonCheckedBgDisabled            = EffectiveGlobalToken.ControlItemBgActiveDisabled;
+        ButtonCheckedColorDisabled         = EffectiveGlobalToken.ColorTextDisabled;
+        ButtonPadding                      = new Thickness(EffectiveGlobalToken.UniformlyPadding, 0);
 
-        var fontSize   = SharedToken.FontSize;
-        var fontSizeLG = SharedToken.FontSizeLG;
+        var fontSize   = EffectiveGlobalToken.FontSize;
+        var fontSizeLG = EffectiveGlobalToken.FontSizeLG;
 
         ContentFontSize   = !MathUtils.AreClose(ContentFontSize, -1) ? ContentFontSize : fontSize;
         ContentFontSizeSM = !MathUtils.AreClose(ContentFontSizeSM, -1) ? ContentFontSizeSM : fontSize;
@@ -141,16 +140,16 @@ internal class OptionButtonToken : AbstractControlDesignToken
             ? ContentLineHeightLG
             : CalculatorUtils.CalculateLineHeight(ContentFontSizeLG);
 
-        var controlHeight   = SharedToken.ControlHeight;
-        var controlHeightSM = SharedToken.ControlHeightSM;
-        var controlHeightLG = SharedToken.ControlHeightLG;
-        var lineWidth       = SharedToken.LineWidth;
+        var controlHeight   = EffectiveGlobalToken.ControlHeight;
+        var controlHeightSM = EffectiveGlobalToken.ControlHeightSM;
+        var controlHeightLG = EffectiveGlobalToken.ControlHeightLG;
+        var lineWidth       = EffectiveGlobalToken.LineWidth;
 
-        Padding = new Thickness(SharedToken.PaddingContentHorizontal - lineWidth,
+        ContentPadding = new Thickness(EffectiveGlobalToken.PaddingContentHorizontal - lineWidth,
             Math.Max((controlHeight - ContentFontSize * ContentLineHeight) / 2 - lineWidth, 0));
-        PaddingLG = new Thickness(SharedToken.PaddingContentHorizontal - lineWidth,
+        ContentPaddingLG = new Thickness(EffectiveGlobalToken.PaddingContentHorizontal - lineWidth,
             Math.Max((controlHeightSM - ContentFontSizeSM * ContentLineHeightSM) / 2 - lineWidth, 0));
-        PaddingSM = new Thickness(8 - SharedToken.LineWidth,
+        ContentPaddingSM = new Thickness(8 - EffectiveGlobalToken.LineWidth,
             Math.Max((controlHeightLG - controlHeightLG * controlHeightLG) / 2 - lineWidth, 0));
     }
     

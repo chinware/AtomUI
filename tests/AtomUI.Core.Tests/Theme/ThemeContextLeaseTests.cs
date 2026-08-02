@@ -71,6 +71,85 @@ public class ThemeContextLeaseTests
         });
     }
 
+    [Fact]
+    public void Failed_Owner_Replacement_Restores_The_Previous_Lease_State()
+    {
+        HeadlessTestApp.Run(() =>
+        {
+            var first = CreateContext();
+            var second = CreateContext(globalPrimary: "#00b96b", registrationId: 1);
+            var host = new ThrowingWindow();
+            using var firstLease = ThemeContextLease.Attach(host, first);
+            host.ThrowOnNextContextChange = true;
+
+            Should.Throw<InvalidOperationException>(() => ThemeContextLease.Attach(host, second));
+
+            host.GetValue(ThemeScope.ContextProperty).ShouldBeSameAs(first);
+            host.Resources.MergedDictionaries
+                .OfType<ThemeContextResourceBridge>()
+                .ShouldHaveSingleItem()
+                .OwnerContext.ShouldBeSameAs(first);
+
+            firstLease.Dispose();
+
+            host.IsSet(ThemeScope.ContextProperty).ShouldBeFalse();
+            host.Resources.MergedDictionaries
+                .OfType<ThemeContextResourceBridge>()
+                .ShouldBeEmpty();
+            host.Close();
+        });
+    }
+
+    [Fact]
+    public void Manager_Dispose_Releases_Active_Context_Leases()
+    {
+        HeadlessTestApp.Run(() =>
+        {
+            var manager = new ThemeManager(static () => true);
+            var context = new ThemeContext(
+                manager,
+                ThemeTokenResourceProviderTests.Compile(),
+                0);
+            var host = new Window();
+            var lease = ThemeContextLease.Attach(host, context);
+
+            manager.Dispose();
+
+            host.IsSet(ThemeScope.ContextProperty).ShouldBeFalse();
+            host.IsSet(TopLevel.RequestedThemeVariantProperty).ShouldBeFalse();
+            host.Resources.MergedDictionaries
+                .OfType<ThemeContextResourceBridge>()
+                .ShouldBeEmpty();
+            lease.Dispose();
+            host.Close();
+        });
+    }
+
+    [Fact]
+    public void Dispose_Continues_Cleanup_When_A_Host_Property_Observer_Throws()
+    {
+        HeadlessTestApp.Run(() =>
+        {
+            var manager = new ThemeManager(static () => true);
+            var context = new ThemeContext(
+                manager,
+                ThemeTokenResourceProviderTests.Compile(),
+                0);
+            var host = new ThrowingWindow();
+            var lease = ThemeContextLease.Attach(host, context);
+            host.ThrowOnNextContextChange = true;
+
+            lease.Dispose();
+
+            host.IsSet(TopLevel.RequestedThemeVariantProperty).ShouldBeFalse();
+            host.Resources.MergedDictionaries
+                .OfType<ThemeContextResourceBridge>()
+                .ShouldBeEmpty();
+            manager.Dispose();
+            host.Close();
+        });
+    }
+
     private static ThemeContext CreateContext(
         string? globalPrimary = null,
         long registrationId = 0)
@@ -79,5 +158,20 @@ public class ThemeContextLeaseTests
             new ThemeManager(static () => true),
             ThemeTokenResourceProviderTests.Compile(globalPrimary),
             registrationId);
+    }
+
+    private sealed class ThrowingWindow : Window
+    {
+        internal bool ThrowOnNextContextChange { get; set; }
+
+        protected override void OnPropertyChanged(Avalonia.AvaloniaPropertyChangedEventArgs change)
+        {
+            base.OnPropertyChanged(change);
+            if (ThrowOnNextContextChange && change.Property == ThemeScope.ContextProperty)
+            {
+                ThrowOnNextContextChange = false;
+                throw new InvalidOperationException("context update failed");
+            }
+        }
     }
 }

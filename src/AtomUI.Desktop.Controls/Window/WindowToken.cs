@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class WindowToken : AbstractControlDesignToken
 {
-    public const string ID = "Window";
 
     /// <summary>
     /// 窗口默认的背景色
@@ -46,23 +45,18 @@ internal class WindowToken : AbstractControlDesignToken
     /// </summary>
     public Thickness FullscreenHeaderFramePadding { get; set; }
     
-    public WindowToken()
-        : base("Window")
-    {
-    }
-
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        DefaultBackground        = SharedToken.ColorBgContainer;
-        DefaultForeground        = SharedToken.ColorText;
+        DefaultBackground        = EffectiveGlobalToken.ColorBgContainer;
+        DefaultForeground        = EffectiveGlobalToken.ColorText;
         CornerRadius             = new CornerRadius(12);
-        SystemBarColor           = new SolidColorBrush(SharedToken.ColorBgContainer);
+        SystemBarColor           = new SolidColorBrush(EffectiveGlobalToken.ColorBgContainer);
         // 窗口装饰语义不属于密度算法作用域：紧凑算法会把 ControlHeightLG / SizeLG 拉小，
         // 连带 TitleBarHeight 和全屏弹层 padding 一起缩，因此使用跨平台稳定值切开 compact 链路。
         TitleBarHeight               = 40;
         FullscreenHeaderFramePadding = new Thickness(24, 0);
-        FrameShadows             = SharedToken.BoxShadowsSecondary;
+        FrameShadows             = EffectiveGlobalToken.BoxShadowsSecondary;
         FullscreenPopoverShadows = new BoxShadows(
             new BoxShadow
             {

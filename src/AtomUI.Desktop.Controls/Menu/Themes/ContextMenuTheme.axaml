@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:MenuThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ContextMenu}" TargetType="atom:ContextMenu">
         <Setter Property="Template">
@@ -31,7 +28,7 @@
         <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
         <Setter Property="HorizontalOffset" Value="{atom:MenuTokenResource ContextMenuOffsetX}" />
         <Setter Property="VerticalOffset" Value="{atom:MenuTokenResource ContextMenuOffsetY}" />
-        <Setter Property="CornerRadius" Value="{atom:PopupHostTokenResource BorderRadius}" />
+        <Setter Property="CornerRadius" Value="{atom:PopupTokenResource PopupCornerRadius}" />
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="Padding" Value="{atom:MenuTokenResource MenuPopupContentPadding}" />
         <Setter Property="Background" Value="{atom:MenuTokenResource MenuPopupBgColor}" />
@@ -42,9 +39,9 @@
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
         <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationMid}"/>
         <Setter Property="PopupRootShadow"
-                Value="{atom:PopupHostTokenResource PopupRootShadow}" />
+                Value="{atom:PopupTokenResource PopupRootShadow}" />
         <Setter Property="OverlayHostShadow"
-                Value="{atom:PopupHostTokenResource OverlayHostShadow}" />
+                Value="{atom:PopupTokenResource OverlayHostShadow}" />
 
     </ControlTheme>
 </ResourceDictionary>

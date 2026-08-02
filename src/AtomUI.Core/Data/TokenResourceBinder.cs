@@ -3,64 +3,106 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
+using AtomUI.Theme.Resources;
 
 namespace AtomUI.Data;
 
 public static class TokenResourceBinder
 {
-    public static IDisposable CreateTokenBinding<TTokenKind>(AvaloniaObject target,
-                                                             AvaloniaProperty targetProperty,
-                                                             TTokenKind resourceKey)
-        where TTokenKind : Enum
+    public static IDisposable CreateGlobalTokenBinding(
+        AvaloniaObject target,
+        AvaloniaProperty targetProperty,
+        SharedTokenKind resourceKey,
+        BindingPriority priority = BindingPriority.Template,
+        Func<object?, object?>? converter = null)
     {
-        return target.Bind(targetProperty, new DynamicResourceExtension(resourceKey));
+        return BindResource(target, targetProperty, resourceKey, priority, converter);
     }
 
-    public static IDisposable CreateTokenBinding(AvaloniaObject target,
-                                                 AvaloniaProperty targetProperty,
-                                                 string resourceKey)
+    internal static IDisposable CreateGlobalTokenBinding(
+        Control context,
+        AvaloniaObject target,
+        AvaloniaProperty targetProperty,
+        SharedTokenKind resourceKey,
+        BindingPriority priority = BindingPriority.Template,
+        Func<object?, object?>? converter = null)
     {
-        return target.Bind(targetProperty, new DynamicResourceExtension(resourceKey));
-    }
-    
-    public static IDisposable CreateTokenBinding<TTokenKind>(AvaloniaObject target,
-                                                             AvaloniaProperty targetProperty,
-                                                             Control context,
-                                                             TTokenKind resourceKey,
-                                                             BindingPriority priority = BindingPriority.Template,
-                                                             Func<object?, object?>? converter = null)
-        where TTokenKind : Enum
-    {
-        return target.Bind(targetProperty, context.GetResourceObservable(resourceKey, converter), priority);
+        return BindResource(target, targetProperty, resourceKey, priority, converter, context);
     }
 
-    public static IDisposable CreateTokenBinding<TTokenKind>(Control target,
-                                                             AvaloniaProperty targetProperty,
-                                                             TTokenKind resourceKey,
-                                                             BindingPriority priority = BindingPriority.Template,
-                                                             Func<object?, object?>? converter = null)
-        where TTokenKind : Enum
+    internal static IDisposable CreateControlTokenBinding(
+        Type controlType,
+        Control context,
+        AvaloniaObject target,
+        AvaloniaProperty targetProperty,
+        SharedTokenKind resourceKey,
+        BindingPriority priority = BindingPriority.Template,
+        Func<object?, object?>? converter = null)
     {
-        return target.Bind(targetProperty, target.GetResourceObservable(resourceKey, converter), priority);
+        ArgumentNullException.ThrowIfNull(controlType);
+        ArgumentNullException.ThrowIfNull(context);
+        var resourceKeyObject = ControlTokenResourceKey.Global(controlType, resourceKey);
+        return BindResource(target, targetProperty, resourceKeyObject, priority, converter, context);
     }
 
-    public static IDisposable CreateTokenBinding(Control target,
-                                                 AvaloniaProperty targetProperty,
-                                                 object resourceKey,
-                                                 BindingPriority priority = BindingPriority.Template,
-                                                 Func<object?, object?>? converter = null)
+    public static IDisposable CreateControlTokenBinding(
+        Control target,
+        AvaloniaProperty targetProperty,
+        SharedTokenKind resourceKey,
+        BindingPriority priority = BindingPriority.Template,
+        Func<object?, object?>? converter = null)
     {
-        return target.Bind(targetProperty, target.GetResourceObservable(resourceKey, converter), priority);
+        return CreateControlTokenBinding(target, target, targetProperty, resourceKey, priority, converter);
     }
 
-    public static IDisposable CreateGlobalTokenBinding<TTokenKind>(AvaloniaObject target,
-                                                                   AvaloniaProperty targetProperty,
-                                                                   TTokenKind resourceKey,
-                                                                   BindingPriority priority = BindingPriority.Template,
-                                                                   Func<object?, object?>? converter = null)
+    public static IDisposable CreateControlTokenBinding(
+        Control owner,
+        AvaloniaObject target,
+        AvaloniaProperty targetProperty,
+        SharedTokenKind resourceKey,
+        BindingPriority priority = BindingPriority.Template,
+        Func<object?, object?>? converter = null)
+    {
+        var resourceKeyObject = ControlTokenResourceKey.Global(owner.GetType(), resourceKey);
+        return BindResource(target, targetProperty, resourceKeyObject, priority, converter, owner);
+    }
+
+    public static IDisposable CreateControlTokenBinding<TTokenKind>(
+        Control target,
+        AvaloniaProperty targetProperty,
+        TTokenKind resourceKey,
+        BindingPriority priority = BindingPriority.Template,
+        Func<object?, object?>? converter = null)
         where TTokenKind : Enum
     {
-        return target.Bind(targetProperty, GetGlobalTokenResourceObservable(resourceKey, null, converter), priority);
+        return CreateControlTokenBinding(target, target, targetProperty, resourceKey, priority, converter);
+    }
+
+    public static IDisposable CreateControlTokenBinding<TTokenKind>(
+        Control owner,
+        AvaloniaObject target,
+        AvaloniaProperty targetProperty,
+        TTokenKind resourceKey,
+        BindingPriority priority = BindingPriority.Template,
+        Func<object?, object?>? converter = null)
+        where TTokenKind : Enum
+    {
+        var resourceKeyObject = ControlTokenResourceKey.Own(owner.GetType(), resourceKey);
+        return BindResource(target, targetProperty, resourceKeyObject, priority, converter, owner);
+    }
+
+    internal static IDisposable CreateControlTokenBinding<TTokenKind>(
+        Type controlType,
+        Control context,
+        AvaloniaObject target,
+        AvaloniaProperty targetProperty,
+        TTokenKind resourceKey,
+        BindingPriority priority = BindingPriority.Template,
+        Func<object?, object?>? converter = null)
+        where TTokenKind : Enum
+    {
+        var resourceKeyObject = ControlTokenResourceKey.Own(controlType, resourceKey);
+        return BindResource(target, targetProperty, resourceKeyObject, priority, converter, context);
     }
 
     public static IDisposable CreateGlobalResourceBinding(AvaloniaObject target,
@@ -72,15 +114,25 @@ public static class TokenResourceBinder
         return target.Bind(targetProperty, GetGlobalResourceObservable(resourceKey, null, converter), priority);
     }
 
-    /// <summary>
-    /// 直接在 resource dictionary 中查找，忽略本地覆盖的值
-    /// </summary>
-    public static IObservable<object?> GetGlobalTokenResourceObservable<TTokenKind>(TTokenKind resourceKey,
-                                                                        ThemeVariant? themeVariant = null,
-                                                                        Func<object?, object?>? converter = null)
-        where TTokenKind : Enum
+    private static IDisposable BindResource(
+        AvaloniaObject target,
+        AvaloniaProperty targetProperty,
+        object resourceKey,
+        BindingPriority priority,
+        Func<object?, object?>? converter,
+        Control? owner = null)
     {
-        return GetGlobalResourceObservable(resourceKey, themeVariant, converter);
+        if (owner is not null)
+        {
+            return target.Bind(targetProperty, owner.GetResourceObservable(resourceKey, converter), priority);
+        }
+
+        if (target is Control control)
+        {
+            return target.Bind(targetProperty, control.GetResourceObservable(resourceKey, converter), priority);
+        }
+
+        return target.Bind(targetProperty, new DynamicResourceExtension(resourceKey));
     }
 
     public static IObservable<object?> GetGlobalResourceObservable(object resourceKey,

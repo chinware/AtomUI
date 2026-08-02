@@ -4,9 +4,7 @@
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:DataGridThemeAsset.Identity}">
+    >
     <ControlTheme x:Key="{x:Type atom:DataGridSortIndicator}" TargetType="atom:DataGridSortIndicator">
         <Setter Property="Template">
             <ControlTemplate>

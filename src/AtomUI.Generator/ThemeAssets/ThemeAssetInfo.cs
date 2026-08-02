@@ -1,5 +1,4 @@
-using System.Text.RegularExpressions;
-using AtomUI.Generator.Diagnostics;
+using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
@@ -7,67 +6,217 @@ namespace AtomUI.Generator;
 
 internal sealed class ThemeAssetInfo
 {
-    private static readonly Regex s_identityPattern = new(
-        @"ControlTokenScope\.Identity\s*=\s*""\{x:Static\s+[^:]+:(?<id>[A-Za-z_][A-Za-z0-9_]*)ThemeAsset\.Identity\}""",
-        RegexOptions.CultureInvariant);
-
-    private static readonly Regex s_controlTokenPattern = new(
-        @"\{[^:{}]+:(?<id>[A-Za-z_][A-Za-z0-9_]*)TokenResource(?:\s|\})",
-        RegexOptions.CultureInvariant);
-
-    private static readonly Regex s_sharedTokenPattern = new(
-        @"\{[^:{}]+:SharedTokenResource(?:\s|\})",
-        RegexOptions.CultureInvariant);
-
     private ThemeAssetInfo(
         string path,
         string assetPath,
         SourceText source,
-        bool usesTokens,
-        bool usesSharedTokenResource,
-        IReadOnlyList<string> identities,
-        IReadOnlyList<string> ownControlTokenFamilies,
-        IReadOnlyList<string> controlTokenFamilies)
+        string fileName,
+        string? controlCandidate,
+        IReadOnlyList<string> directoryCandidates,
+        IReadOnlyList<ThemeAssetTargetTypeReference> targetTypes,
+        IReadOnlyList<string> controlTokenFamilies,
+        bool isResourceDictionary,
+        string? controlThemeClassName,
+        string? controlThemeTargetTypeName)
     {
-        Path                 = path;
-        AssetPath            = assetPath;
-        Source               = source;
-        UsesTokens           = usesTokens;
-        UsesSharedTokenResource = usesSharedTokenResource;
-        Identities           = identities;
-        OwnControlTokenFamilies = ownControlTokenFamilies;
+        Path = path;
+        AssetPath = assetPath;
+        Source = source;
+        FileName = fileName;
+        ControlCandidate = controlCandidate;
+        DirectoryCandidates = directoryCandidates;
+        TargetTypes = targetTypes;
         ControlTokenFamilies = controlTokenFamilies;
+        IsResourceDictionary = isResourceDictionary;
+        ControlThemeClassName = controlThemeClassName;
+        ControlThemeTargetTypeName = controlThemeTargetTypeName;
     }
 
     internal string Path { get; }
     internal string AssetPath { get; }
     internal SourceText Source { get; }
-    internal bool UsesTokens { get; }
-    internal bool UsesSharedTokenResource { get; }
-    internal IReadOnlyList<string> Identities { get; }
-    internal IReadOnlyList<string> OwnControlTokenFamilies { get; }
+    internal string FileName { get; }
+    internal string? ControlCandidate { get; }
+    internal IReadOnlyList<string> DirectoryCandidates { get; }
+    internal IReadOnlyList<ThemeAssetTargetTypeReference> TargetTypes { get; }
     internal IReadOnlyList<string> ControlTokenFamilies { get; }
+    internal bool IsResourceDictionary { get; }
+    internal string? ControlThemeClassName { get; }
+    internal string? ControlThemeTargetTypeName { get; }
+    internal bool IsDefaultTypedControlTheme =>
+        ControlThemeClassName is not null &&
+        ControlThemeTargetTypeName is not null &&
+        !ControlThemeTargetTypeName.StartsWith("Abstract", StringComparison.Ordinal) &&
+        !ControlThemeTargetTypeName.StartsWith("Base", StringComparison.Ordinal) &&
+        string.Equals(FileName, ControlThemeTargetTypeName + "Theme", StringComparison.Ordinal);
 
-    internal static ThemeAssetInfo Create(AdditionalText text, CancellationToken cancellationToken)
+    internal static ThemeAssetInfo Create(
+        AdditionalText text,
+        string? projectDirectory,
+        string? link,
+        CancellationToken cancellationToken)
     {
         var source = text.GetText(cancellationToken) ?? SourceText.From(string.Empty);
-        var content = source.ToString();
-        var identities = Matches(s_identityPattern, content, "id");
-        var ownFamilies = Matches(s_controlTokenPattern, content, "id")
-                          .Where(static id => !string.Equals(id, "Shared", StringComparison.Ordinal))
-                          .Distinct(StringComparer.Ordinal)
-                          .OrderBy(static id => id, StringComparer.Ordinal)
-                          .ToArray();
-        var usesTokens = content.IndexOf("TokenResource", StringComparison.Ordinal) >= 0;
+        var assetPath = NormalizeAssetPath(text.Path, projectDirectory, link);
+        var fileName = System.IO.Path.GetFileNameWithoutExtension(assetPath);
+        var targetTypes = new List<ThemeAssetTargetTypeReference>();
+        var controlTokenFamilies = new HashSet<string>(StringComparer.Ordinal);
+        var isResourceDictionary = false;
+        string? controlThemeClassName = null;
+        string? controlThemeTargetTypeName = null;
+
+        try
+        {
+            var document = XDocument.Parse(source.ToString(), LoadOptions.PreserveWhitespace);
+            var root = document.Root;
+            isResourceDictionary = string.Equals(
+                root?.Name.LocalName,
+                "ResourceDictionary",
+                StringComparison.Ordinal);
+            if (root is not null &&
+                string.Equals(root.Name.LocalName, "ControlTheme", StringComparison.Ordinal))
+            {
+                XNamespace xamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
+                controlThemeClassName = root.Attribute(xamlNamespace + "Class")?.Value;
+                controlThemeTargetTypeName = GetTypeName(
+                    root.Attributes()
+                        .FirstOrDefault(static attribute =>
+                            string.Equals(attribute.Name.LocalName, "TargetType", StringComparison.Ordinal))
+                        ?.Value);
+            }
+            foreach (var element in document.Descendants())
+            {
+                if (!string.Equals(element.Name.LocalName, "ControlTheme", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                foreach (var targetType in element.Attributes().Where(static attribute =>
+                             string.Equals(attribute.Name.LocalName, "TargetType", StringComparison.Ordinal)))
+                {
+                    targetTypes.Add(ThemeAssetTargetTypeReference.Create(element, targetType.Value));
+                }
+            }
+            foreach (var attribute in document.Descendants().Attributes())
+            {
+                AddControlTokenFamilies(attribute.Value, controlTokenFamilies);
+            }
+            foreach (var textNode in document.DescendantNodes().OfType<XText>())
+            {
+                AddControlTokenFamilies(textNode.Value, controlTokenFamilies);
+            }
+        }
+        catch
+        {
+            // Avalonia reports malformed AXAML. This generator consumes only successfully parsed structure.
+        }
+
         return new ThemeAssetInfo(
             text.Path,
-            NormalizeAssetPath(text.Path),
+            assetPath,
             source,
-            usesTokens,
-            s_sharedTokenPattern.IsMatch(content),
-            identities,
-            ownFamilies,
-            ownFamilies);
+            fileName,
+            GetControlCandidate(fileName),
+            GetDirectoryCandidates(assetPath),
+            targetTypes,
+            controlTokenFamilies.OrderBy(static family => family, StringComparer.Ordinal).ToArray(),
+            isResourceDictionary,
+            controlThemeClassName,
+            controlThemeTargetTypeName);
+    }
+
+    internal static bool IsAggregatePath(string path)
+    {
+        return System.IO.Path.GetFileNameWithoutExtension(path)
+                             .EndsWith("Themes", StringComparison.OrdinalIgnoreCase);
+    }
+
+    internal static bool IsThemeAssetPath(string path)
+    {
+        if (!path.EndsWith(".axaml", StringComparison.OrdinalIgnoreCase) || IsAggregatePath(path))
+        {
+            return false;
+        }
+
+        var normalized = path.Replace('\\', '/').TrimStart('/');
+        return normalized.StartsWith("Themes/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.IndexOf("/Themes/", StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
+    internal static string GetGeneratedResourceClassName(string assetPath)
+    {
+        var hash = 14695981039346656037UL;
+        foreach (var character in assetPath.Replace('\\', '/'))
+        {
+            hash ^= character;
+            hash *= 1099511628211UL;
+        }
+        return $"GeneratedThemeAssetResource_{hash:X16}";
+    }
+
+    private static string? GetTypeName(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+        var typeName = value!.Trim();
+        if (typeName.StartsWith("{x:Type", StringComparison.Ordinal) &&
+            typeName.EndsWith("}", StringComparison.Ordinal))
+        {
+            typeName = typeName.Substring("{x:Type".Length, typeName.Length - "{x:Type".Length - 1).Trim();
+        }
+        var separator = typeName.LastIndexOf(':');
+        return separator >= 0 ? typeName.Substring(separator + 1) : typeName;
+    }
+
+    private static void AddControlTokenFamilies(string value, ISet<string> families)
+    {
+        const string suffix = "TokenResource";
+        var searchIndex = 0;
+        while (searchIndex < value.Length)
+        {
+            var openingBrace = value.IndexOf('{', searchIndex);
+            if (openingBrace < 0)
+            {
+                return;
+            }
+
+            var nameStart = openingBrace + 1;
+            while (nameStart < value.Length && char.IsWhiteSpace(value[nameStart]))
+            {
+                nameStart++;
+            }
+
+            var nameEnd = nameStart;
+            while (nameEnd < value.Length &&
+                   !char.IsWhiteSpace(value[nameEnd]) &&
+                   value[nameEnd] != ',' &&
+                   value[nameEnd] != '}')
+            {
+                nameEnd++;
+            }
+
+            if (nameEnd > nameStart)
+            {
+                var extensionName = value.Substring(nameStart, nameEnd - nameStart);
+                var namespaceSeparator = extensionName.LastIndexOf(':');
+                var localName = namespaceSeparator >= 0
+                    ? extensionName.Substring(namespaceSeparator + 1)
+                    : extensionName;
+                if (localName.EndsWith(suffix, StringComparison.Ordinal) &&
+                    localName.Length > suffix.Length)
+                {
+                    var family = localName.Substring(0, localName.Length - suffix.Length);
+                    if (!string.Equals(family, "Shared", StringComparison.Ordinal))
+                    {
+                        families.Add(family);
+                    }
+                }
+            }
+
+            searchIndex = openingBrace + 1;
+        }
     }
 
     internal Location CreateLocation()
@@ -76,83 +225,77 @@ internal sealed class ThemeAssetInfo
         return Location.Create(Path, span, Source.Lines.GetLinePositionSpan(span));
     }
 
-    internal IEnumerable<Diagnostic> Validate(ISet<string> controls)
+    private static string? GetControlCandidate(string fileName)
     {
-        if (!UsesTokens)
+        const string suffix = "Theme";
+        if (!fileName.EndsWith(suffix, StringComparison.Ordinal) ||
+            fileName.EndsWith("Themes", StringComparison.Ordinal) ||
+            fileName.Length == suffix.Length)
         {
-            yield break;
-        }
-        if (Identities.Count == 0)
-        {
-            if (!UsesSharedTokenResource || OwnControlTokenFamilies.Count == 0)
-            {
-                yield break;
-            }
-            yield return Diagnostic.Create(
-                AtomUIDiagnosticDescriptors.ThemeAssetMissingIdentity,
-                CreateLocation(),
-                AssetPath);
-            yield break;
-        }
-        if (Identities.Count != 1)
-        {
-            yield return Diagnostic.Create(
-                AtomUIDiagnosticDescriptors.ThemeAssetConflictingIdentity,
-                CreateLocation(),
-                AssetPath);
-            yield break;
+            return null;
         }
 
-        var identity = Identities[0];
-        if (!controls.Contains(identity))
-        {
-            yield return Diagnostic.Create(
-                AtomUIDiagnosticDescriptors.ThemeAssetUnknownIdentity,
-                CreateLocation(),
-                AssetPath,
-                identity);
-            yield break;
-        }
-
-        if (UsesSharedTokenResource)
-        {
-            yield break;
-        }
-
-        foreach (var family in ControlTokenFamilies)
-        {
-            if (!string.Equals(family, identity, StringComparison.Ordinal))
-            {
-                yield return Diagnostic.Create(
-                    AtomUIDiagnosticDescriptors.ThemeAssetControlTokenMismatch,
-                    CreateLocation(),
-                    AssetPath,
-                    identity,
-                    family);
-                yield break;
-            }
-        }
+        return fileName.Substring(0, fileName.Length - suffix.Length);
     }
 
-    private static IReadOnlyList<string> Matches(Regex regex, string content, string group)
+    private static IReadOnlyList<string> GetDirectoryCandidates(string assetPath)
     {
-        return regex.Matches(content)
-                    .Cast<Match>()
-                    .Select(match => match.Groups[group].Value)
-                    .Distinct(StringComparer.Ordinal)
-                    .OrderBy(static value => value, StringComparer.Ordinal)
-                    .ToArray();
+        var segments = assetPath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+        var themesIndex = Array.FindIndex(
+            segments,
+            static segment => string.Equals(segment, "Themes", StringComparison.OrdinalIgnoreCase));
+        if (themesIndex <= 0)
+        {
+            return Array.Empty<string>();
+        }
+
+        return segments.Take(themesIndex)
+                       .Reverse()
+                       .Where(static segment => IsIdentifier(segment))
+                       .Distinct(StringComparer.Ordinal)
+                       .ToArray();
     }
 
-    private static string NormalizeAssetPath(string path)
+    private static bool IsIdentifier(string value)
     {
+        if (value.Length == 0 || !(char.IsLetter(value[0]) || value[0] == '_'))
+        {
+            return false;
+        }
+
+        return value.Skip(1).All(static character => char.IsLetterOrDigit(character) || character == '_');
+    }
+
+    private static string NormalizeAssetPath(
+        string path,
+        string? projectDirectory,
+        string? link)
+    {
+        if (!string.IsNullOrWhiteSpace(link))
+        {
+            return link!.Replace('\\', '/').TrimStart('/');
+        }
+
         var normalized = path.Replace('\\', '/');
         if (!System.IO.Path.IsPathRooted(path))
         {
             return normalized.TrimStart('/');
         }
 
-        var sourceMarker = normalized.IndexOf("/src/", StringComparison.Ordinal);
+        if (!string.IsNullOrWhiteSpace(projectDirectory))
+        {
+            var normalizedProjectDirectory = projectDirectory!
+                                             .Replace('\\', '/')
+                                             .TrimEnd('/') + "/";
+            if (normalized.StartsWith(
+                    normalizedProjectDirectory,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return normalized.Substring(normalizedProjectDirectory.Length);
+            }
+        }
+
+        var sourceMarker = normalized.IndexOf("/src/", StringComparison.OrdinalIgnoreCase);
         if (sourceMarker >= 0)
         {
             var projectStart = sourceMarker + 5;
@@ -162,6 +305,96 @@ internal sealed class ThemeAssetInfo
                 return normalized.Substring(relativeStart + 1);
             }
         }
+
         return System.IO.Path.GetFileName(path);
+    }
+}
+
+internal sealed class ThemeAssetTargetTypeReference
+{
+    private ThemeAssetTargetTypeReference(
+        string value,
+        IReadOnlyDictionary<string, string> namespaces)
+    {
+        Value = value;
+        Namespaces = namespaces;
+    }
+
+    internal string Value { get; }
+    internal IReadOnlyDictionary<string, string> Namespaces { get; }
+
+    internal static ThemeAssetTargetTypeReference Create(XElement element, string value)
+    {
+        var namespaces = element.AncestorsAndSelf()
+                                .Reverse()
+                                .SelectMany(static current => current.Attributes().Where(static attribute =>
+                                    attribute.IsNamespaceDeclaration))
+                                .ToDictionary(
+                                    static attribute => attribute.Name.LocalName == "xmlns"
+                                        ? string.Empty
+                                        : attribute.Name.LocalName,
+                                    static attribute => attribute.Value,
+                                    StringComparer.Ordinal);
+        return new ThemeAssetTargetTypeReference(value, namespaces);
+    }
+}
+
+internal sealed class ThemeAssetSemanticPartInfo
+{
+    internal ThemeAssetSemanticPartInfo(string propertyName, string targetTypeName)
+    {
+        PropertyName = propertyName;
+        TargetTypeName = targetTypeName;
+    }
+
+    internal string PropertyName { get; }
+    internal string TargetTypeName { get; }
+}
+
+internal sealed class ResolvedThemeAssetInfo
+{
+    internal ResolvedThemeAssetInfo(
+        ThemeAssetInfo asset,
+        ThemeAssetControlIdentityInfo ownerIdentity,
+        IReadOnlyList<ThemeAssetControlIdentityInfo> referencedControlIdentities,
+        ThemeAssetSemanticPartInfo? semanticPart)
+    {
+        Asset = asset;
+        OwnerIdentity = ownerIdentity;
+        ReferencedControlIdentities = referencedControlIdentities;
+        SemanticPart = semanticPart;
+    }
+
+    internal ThemeAssetInfo Asset { get; }
+    internal ThemeAssetControlIdentityInfo OwnerIdentity { get; }
+    internal IReadOnlyList<ThemeAssetControlIdentityInfo> ReferencedControlIdentities { get; }
+    internal ThemeAssetSemanticPartInfo? SemanticPart { get; }
+}
+
+internal sealed class ThemeAssetControlIdentityInfo : IEquatable<ThemeAssetControlIdentityInfo>
+{
+    internal ThemeAssetControlIdentityInfo(string catalog, string id)
+    {
+        Catalog = catalog;
+        Id = id;
+    }
+
+    internal string Catalog { get; }
+    internal string Id { get; }
+
+    public bool Equals(ThemeAssetControlIdentityInfo? other)
+    {
+        return other is not null && Catalog == other.Catalog && Id == other.Id;
+    }
+
+    public override bool Equals(object? obj) => Equals(obj as ThemeAssetControlIdentityInfo);
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (StringComparer.Ordinal.GetHashCode(Catalog) * 397) ^
+                   StringComparer.Ordinal.GetHashCode(Id);
+        }
     }
 }

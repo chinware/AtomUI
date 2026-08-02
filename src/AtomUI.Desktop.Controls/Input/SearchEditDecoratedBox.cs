@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -17,6 +18,9 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
 
     public static readonly StyledProperty<bool> IsSearchButtonLoadingProperty = AvaloniaProperty.Register<SearchEditDecoratedBox, bool>(
         nameof(IsSearchButtonLoading));
+
+    public static readonly StyledProperty<ControlTheme?> SearchButtonThemeProperty =
+        SearchEdit.SearchButtonThemeProperty.AddOwner<SearchEditDecoratedBox>();
     
     public SearchEditButtonStyle SearchButtonStyle
     {
@@ -34,6 +38,12 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
     {
         get => GetValue(IsSearchButtonLoadingProperty);
         set => SetValue(IsSearchButtonLoadingProperty, value);
+    }
+
+    public ControlTheme? SearchButtonTheme
+    {
+        get => GetValue(SearchButtonThemeProperty);
+        set => SetValue(SearchButtonThemeProperty, value);
     }
 
     #endregion

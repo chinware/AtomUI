@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -25,6 +26,9 @@ public class SearchEdit : LineEdit
     public static readonly StyledProperty<bool> IsOperatingProperty =
         AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsOperating));
 
+    public static readonly StyledProperty<ControlTheme?> SearchButtonThemeProperty =
+        AvaloniaProperty.Register<SearchEdit, ControlTheme?>(nameof(SearchButtonTheme));
+
     public SearchEditButtonStyle SearchButtonStyle
     {
         get => GetValue(SearchButtonStyleProperty);
@@ -41,6 +45,12 @@ public class SearchEdit : LineEdit
     {
         get => GetValue(IsOperatingProperty);
         set => SetValue(IsOperatingProperty, value);
+    }
+
+    public ControlTheme? SearchButtonTheme
+    {
+        get => GetValue(SearchButtonThemeProperty);
+        set => SetValue(SearchButtonThemeProperty, value);
     }
 
     #endregion

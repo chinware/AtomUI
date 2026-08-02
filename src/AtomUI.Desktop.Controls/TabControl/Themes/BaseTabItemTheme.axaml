@@ -1,9 +1,6 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:themeResources="using:AtomUI.Theme.Resources"
-              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-              themeResources:ControlTokenScope.Identity="{x:Static generated:TabControlThemeAsset.Identity}"
               x:Class="AtomUI.Desktop.Controls.Themes.BaseTabItemTheme"
               TargetType="atom:TabItem"
               x:ClassModifier="internal">

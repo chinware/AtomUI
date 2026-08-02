@@ -2,7 +2,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.DialogLang;
 
-[LanguageProvider(LanguageCode.zh_TW, DialogToken.ID)]
+[LanguageProvider(LanguageCode.zh_TW, "Dialog")]
 internal class zh_TW
 {
     public const string Ok = "確定";

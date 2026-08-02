@@ -20,7 +20,7 @@ public class ShowCasePanelStructureTests
     public void ShowCasePanel_Uses_Masonry_Panel_Instead_Of_Manual_Grid_Placement()
     {
         var source = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanel.axaml.cs");
-        var theme  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanelTheme.axaml");
+        var theme  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/Themes/ShowCasePanelTheme.axaml");
 
         theme.ShouldContain("gallery:ShowCaseMasonryPanel");
         theme.ShouldNotContain("<Grid Margin=\"5\" Name=\"PART_MainPanel\"");
@@ -35,8 +35,8 @@ public class ShowCasePanelStructureTests
     [Fact]
     public void ShowCasePanel_And_Item_Use_Gallery_Tokens_For_Layout_And_Cards()
     {
-        var panelTheme = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanelTheme.axaml");
-        var itemTheme  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml");
+        var panelTheme = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/Themes/ShowCasePanelTheme.axaml");
+        var itemTheme  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/Themes/ShowCaseItemTheme.axaml");
         var panelToken = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanelToken.cs");
         var itemToken  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemToken.cs");
 
@@ -51,7 +51,7 @@ public class ShowCasePanelStructureTests
         panelTheme.ShouldContain("Selector=\"^[IsScrollEnabled=False]\"");
         itemTheme.ShouldContain("ShowCaseItemTokenResource");
         itemTheme.ShouldContain("{atom:SharedTokenResource ");
-        itemTheme.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        itemTheme.ShouldNotContain("ControlTokenScope.Identity");
         itemTheme.ShouldNotContain("TokenSharedTokenResource");
         itemTheme.ShouldContain("ShowCaseItemTokenResource BadgePreviewMargin");
         var panelSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanel.axaml.cs");
@@ -69,9 +69,10 @@ public class ShowCasePanelStructureTests
     public void GalleryShowCaseHeader_Uses_Gallery_Token_Theme_And_Localization_Conventions()
     {
         var headerSource      = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeader.cs");
-        var headerTheme       = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeaderTheme.axaml");
+        var headerTheme       = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/Themes/GalleryShowCaseHeaderTheme.axaml");
         var headerToken       = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeaderToken.cs");
-        var provider          = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryControlThemesProvider.axaml");
+        var assetManifest     = ReadRepoFile(
+            "src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator/GeneratedControlThemeAssetManifest.g.cs");
         var assemblyInfo      = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Properties/AssemblyInfo.cs");
         var tokenResources    = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator/TokenResourceConst.g.cs");
         var languageResources = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator/LanguageResourceConst.g.cs");
@@ -89,14 +90,14 @@ public class ShowCasePanelStructureTests
         headerSource.ShouldContain("IsMetadataVisibleProperty");
 
         headerToken.ShouldContain("[ControlDesignToken]");
-        headerToken.ShouldContain("public const string ID = \"GalleryShowCaseHeader\"");
+        headerToken.ShouldNotContain("public const string ID");
         headerToken.ShouldNotContain("ScopeProvider");
         headerToken.ShouldContain("MetadataLabelWidth");
         headerToken.ShouldContain("MetadataValueWidth");
 
         headerTheme.ShouldContain("GalleryShowCaseHeaderTokenResource");
         headerTheme.ShouldContain("{atom:SharedTokenResource ");
-        headerTheme.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        headerTheme.ShouldNotContain("ControlTokenScope.Identity");
         headerTheme.ShouldNotContain("TokenSharedTokenResource");
         headerTheme.ShouldContain("GalleryShowCaseHeaderLangResource");
         headerTheme.ShouldContain("PART_IntroducedVersionTag");
@@ -105,9 +106,10 @@ public class ShowCasePanelStructureTests
         headerTheme.ShouldContain("Text=\"{gallery:GalleryShowCaseHeaderLangResource PackageLabel}\"");
         headerTheme.ShouldContain("Text=\"{gallery:GalleryShowCaseHeaderLangResource BaseClassLabel}\"");
 
-        provider.ShouldContain("<ResourceInclude Source=\"GalleryShowCaseHeaderTheme.axaml\" />");
+        assetManifest.ShouldContain("Controls/Themes/GalleryShowCaseHeaderTheme.axaml");
         assemblyInfo.ShouldContain("AtomUI.Toolkits.GalleryBase.Localization");
         tokenResources.ShouldContain("enum GalleryShowCaseHeaderTokenKind");
+        tokenResources.ShouldContain("ControlTokenIdentity(\"AtomUI\", \"GalleryShowCaseHeader\")");
         tokenResources.ShouldContain("GalleryShowCaseHeaderTokenResourceExtension");
         languageResources.ShouldContain("enum GalleryShowCaseHeaderLangResourceKind");
         languageResources.ShouldContain("NamespaceLabel");
@@ -156,7 +158,7 @@ public class ShowCasePanelStructureTests
     public void ShowCaseItem_Integrates_RibbonBadge_For_Feature_Version_Marker()
     {
         var itemSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItem.axaml.cs");
-        var itemTheme  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml");
+        var itemTheme  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/Themes/ShowCaseItemTheme.axaml");
 
         itemSource.ShouldContain("BadgeTextProperty");
         itemSource.ShouldContain("BadgeColorProperty");
@@ -459,7 +461,7 @@ public class ShowCasePanelStructureTests
     {
         var panelSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanel.axaml.cs");
         var itemSource  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItem.axaml.cs");
-        var itemTheme   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml");
+        var itemTheme   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/Themes/ShowCaseItemTheme.axaml");
         var itemToken   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemToken.cs");
 
         panelSource.ShouldContain("IsDeferredLoadingEnabledProperty");

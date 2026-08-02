@@ -6,10 +6,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class AlertToken : AbstractControlDesignToken
 {
-    public const string ID = "Alert";
 
     public AlertToken()
-        : base(ID)
+
     {
     }
 
@@ -41,7 +40,7 @@ internal class AlertToken : AbstractControlDesignToken
     /// <summary>
     /// 没有描述时的图标尺寸
     /// </summary>
-    public double IconSize { get; set; }
+    public double DefaultIconSize { get; set; }
 
     /// <summary>
     /// 带有描述时的图标尺寸
@@ -67,18 +66,18 @@ internal class AlertToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
         const double paddingHorizontal = 12; // Fixed value here.
-        WithDescriptionIconSize = SharedToken.FontSizeHeading3;
-        DefaultPadding          = new Thickness(paddingHorizontal, SharedToken.PaddingContentVerticalSM);
-        WithDescriptionPadding  = new Thickness(SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingMD);
+        WithDescriptionIconSize = EffectiveGlobalToken.FontSizeHeading3;
+        DefaultPadding          = new Thickness(paddingHorizontal, EffectiveGlobalToken.PaddingContentVerticalSM);
+        WithDescriptionPadding  = new Thickness(EffectiveGlobalToken.PaddingContentHorizontalLG, EffectiveGlobalToken.UniformlyPaddingMD);
 
-        MessageWithDescriptionMargin = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
-        IconDefaultMargin            = new Thickness(0, 0, SharedToken.UniformlyMarginXS, 0);
-        IconWithDescriptionMargin    = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
-        ExtraElementMargin           = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);
-        DescriptionLabelMargin       = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
+        MessageWithDescriptionMargin = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyMarginXS);
+        IconDefaultMargin            = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginXS, 0);
+        IconWithDescriptionMargin    = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginSM, 0);
+        ExtraElementMargin           = new Thickness(EffectiveGlobalToken.UniformlyMarginXS, 0, 0, 0);
+        DescriptionLabelMargin       = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS, 0, 0);
 
-        CloseIconSize = SharedToken.FontSizeIcon + 2;
-        IconSize      = SharedToken.FontSizeLG;
+        CloseIconSize = EffectiveGlobalToken.FontSizeIcon + 2;
+        DefaultIconSize = EffectiveGlobalToken.FontSizeLG;
     }
     
 }

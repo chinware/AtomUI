@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 public class ColorPickerToken : AbstractControlDesignToken
 {
-    public const string ID = "ColorPicker";
 
     /// <summary>
     /// ColorPicker 宽度
@@ -141,7 +140,7 @@ public class ColorPickerToken : AbstractControlDesignToken
     public double ColorBlockDisabledOpacity { get; set; }
 
     public ColorPickerToken()
-        : base(ID)
+
     {
     }
 
@@ -159,8 +158,8 @@ public class ColorPickerToken : AbstractControlDesignToken
         ColorPickerPresetPanelWidth = 220;
         ColorPickerSliderSize = ColorPickerHandlerSizeSM;
         ColorPickerSliderTrackSize = 8;
-        ColorPickerSliderThumbSize = ColorPickerHandlerSizeSM + SharedToken.LineWidth * 2;
-        ColorPickerPreviewSize = ColorPickerSliderTrackSize * 2 + SharedToken.UniformlyMarginSM;
+        ColorPickerSliderThumbSize = ColorPickerHandlerSizeSM + EffectiveGlobalToken.LineWidth * 2;
+        ColorPickerPreviewSize = ColorPickerSliderTrackSize * 2 + EffectiveGlobalToken.UniformlyMarginSM;
         ColorPickerInsetShadow = new BoxShadows(new BoxShadow()
         {
             IsInset = true,
@@ -168,7 +167,7 @@ public class ColorPickerToken : AbstractControlDesignToken
             OffsetY = 0,
             Blur = 1,
             Spread = 0,
-            Color = SharedToken.ColorTextQuaternary
+            Color = EffectiveGlobalToken.ColorTextQuaternary
         });
 
         ColorBlockInnerShadows = new BoxShadows(new BoxShadow()
@@ -177,20 +176,20 @@ public class ColorPickerToken : AbstractControlDesignToken
             OffsetX = 0,
             OffsetY = 0,
             Blur = 0,
-            Spread = SharedToken.LineWidth,
-            Color = SharedToken.ColorFillSecondary
+            Spread = EffectiveGlobalToken.LineWidth,
+            Color = EffectiveGlobalToken.ColorFillSecondary
         });
-        TriggerPadding = new Thickness(SharedToken.UniformlyPaddingXXS - SharedToken.LineWidth);
-        TriggerTextMargin = new Thickness(SharedToken.UniformlyMarginXS, 0,
-            SharedToken.UniformlyMarginXS - SharedToken.UniformlyPaddingXXS + SharedToken.LineWidth, 0);
+        TriggerPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS - EffectiveGlobalToken.LineWidth);
+        TriggerTextMargin = new Thickness(EffectiveGlobalToken.UniformlyMarginXS, 0,
+            EffectiveGlobalToken.UniformlyMarginXS - EffectiveGlobalToken.UniformlyPaddingXXS + EffectiveGlobalToken.LineWidth, 0);
 
-        ColorSpectrumHeight = SharedToken.ControlHeightLG * 4;
-        ColorPickerHandlerLightColor = SharedToken.ColorBgElevated;
+        ColorSpectrumHeight = EffectiveGlobalToken.ControlHeightLG * 4;
+        ColorPickerHandlerLightColor = EffectiveGlobalToken.ColorBgElevated;
         ColorPickerHandlerDarkColor = Color.Parse("#22075e");
-        SliderContainerMargin = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
-        TransparentBgSize = SharedToken.SizeXS;
+        SliderContainerMargin = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginSM, 0);
+        TransparentBgSize = EffectiveGlobalToken.SizeXS;
         ColorBlockDisabledOpacity = 0.4;
-        ColorPickerPresetColorGroupPadding = new Thickness(0, SharedToken.UniformlyPaddingXXS);
+        ColorPickerPresetColorGroupPadding = new Thickness(0, EffectiveGlobalToken.UniformlyPaddingXXS);
     }
 
 }

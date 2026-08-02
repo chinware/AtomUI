@@ -45,7 +45,7 @@ public static class ThemeManagerBuilderExtensions
 
 入口职责：
 
-- 注册 GalleryBase 生成的 Control descriptor、ControlTheme asset/token dependency manifest 和主题 Provider。
+- 注册 GalleryBase 生成的 exact CLR type/identity Control descriptor、ControlTheme asset manifest 和主题 Provider。
 - 注册 GalleryBase 语言 Provider 池。
 - 构建并保存 `GalleryBaseConfiguration`。
 
@@ -91,7 +91,7 @@ AtomUIGallery 将这些 Radio 项放在本地化的 Theme Settings 子菜单中�
 
 ```text
 <ControlFolder>/Themes/**/*.axaml
-    -> ControlTheme asset/token dependency manifest
+    -> ControlTheme asset owner/reference manifest
     -> package-level UseGalleryBase() registration
 ```
 
@@ -160,9 +160,10 @@ GalleryBase 可以使用以下 AtomUI Global Token：
 - `SizeUnit`
 - `BorderRadius`
 
-ControlTheme 希望允许 GalleryBase Control 级覆盖时，必须通过对应的 `XxxTokenResource` 读取并形成
-`SupportedGlobalTokens` 依赖；只有要求该值永远跟随当前 ThemeContext 全局结果时才使用
-`SharedTokenResource`。不允许在 GalleryBase 主题中写入产品色值，例如固定品牌蓝、AtomUI logo 色或产品状态色。
+每个 GalleryBase Control 天然可以覆盖完整 Global Token schema。ControlTheme 希望读取当前 Control 的 Effective
+Global Token 时使用对应的 `XxxTokenResource`；只有要求该值永远跟随当前 ThemeContext 全局结果时才使用
+`SharedTokenResource`。两者都不产生 Global Token 消费清单。不允许在 GalleryBase 主题中写入产品色值，例如固定
+品牌蓝、AtomUI logo 色或产品状态色。
 产品色应通过产品页面或产品品牌配置表达。
 
 ## Shell 本地化

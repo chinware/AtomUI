@@ -1,9 +1,6 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:themeResources="using:AtomUI.Theme.Resources"
-              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-              themeResources:ControlTokenScope.Identity="{x:Static generated:MenuThemeAsset.Identity}"
               xmlns:antdicons="https://atomui.net/icons/antdesign"
               x:Class="AtomUI.Desktop.Controls.Themes.MenuItemTheme"
               TargetType="atom:MenuItem"
@@ -195,12 +192,12 @@
         <Style Selector="^ /template/ Border#PopupFrame">
             <Setter Property="Background" Value="{atom:MenuTokenResource MenuPopupBgColor}" />
             <Setter Property="CornerRadius"
-                    Value="{atom:PopupHostTokenResource BorderRadius}" />
+                    Value="{atom:PopupTokenResource PopupCornerRadius}" />
         </Style>
 
         <Style Selector="^ /template/ atom|Popup#PART_Popup">
-            <Setter Property="PopupRootShadow" Value="{atom:PopupHostTokenResource PopupRootShadow}" />
-            <Setter Property="OverlayHostShadow" Value="{atom:PopupHostTokenResource OverlayHostShadow}" />
+            <Setter Property="PopupRootShadow" Value="{atom:PopupTokenResource PopupRootShadow}" />
+            <Setter Property="OverlayHostShadow" Value="{atom:PopupTokenResource OverlayHostShadow}" />
             <Setter Property="MinWidth" Value="{atom:MenuTokenResource MenuPopupMinWidth}" />
             <Setter Property="MaxWidth" Value="{atom:MenuTokenResource MenuPopupMaxWidth}" />
         </Style>

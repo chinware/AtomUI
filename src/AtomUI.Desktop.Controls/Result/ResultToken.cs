@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ResultToken : AbstractControlDesignToken
 {
-    public const string ID = "Result";
 
     /// <summary>
     /// 标题字体大小
@@ -22,7 +21,7 @@ internal class ResultToken : AbstractControlDesignToken
     /// <summary>
     /// 图标大小
     /// </summary>
-    public double IconSize { get; set; }
+    public double StatusIconSize { get; set; }
 
     /// <summary>
     /// 额外区域外间距
@@ -43,31 +42,31 @@ internal class ResultToken : AbstractControlDesignToken
     public Thickness StatusImageMargin { get; set; }
 
     public ResultToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        HeaderFontSize    = SharedToken.FontSizeHeading3;
-        SubHeaderFontSize = SharedToken.FontSize;
-        IconSize          = SharedToken.FontSizeHeading3 * 3;
-        ExtraMargin       = new Thickness(0, SharedToken.UniformlyMargin, 0, 0);
+        HeaderFontSize    = EffectiveGlobalToken.FontSizeHeading3;
+        SubHeaderFontSize = EffectiveGlobalToken.FontSize;
+        StatusIconSize    = EffectiveGlobalToken.FontSizeHeading3 * 3;
+        ExtraMargin       = new Thickness(0, EffectiveGlobalToken.UniformlyMargin, 0, 0);
 
         ImageWidth  = 250;
         ImageHeight = 295;
 
-        ResultInfoIconColor    = SharedToken.ColorInfo;
-        ResultSuccessIconColor = SharedToken.ColorSuccess;
-        ResultWarningIconColor = SharedToken.ColorWarning;
-        ResultErrorIconColor   = SharedToken.ColorError;
+        ResultInfoIconColor    = EffectiveGlobalToken.ColorInfo;
+        ResultSuccessIconColor = EffectiveGlobalToken.ColorSuccess;
+        ResultWarningIconColor = EffectiveGlobalToken.ColorWarning;
+        ResultErrorIconColor   = EffectiveGlobalToken.ColorError;
 
-        ContentPadding    = new Thickness(SharedToken.UniformlyPadding * 2.5, SharedToken.UniformlyPaddingLG);
-        ContentMargin     = new Thickness(0, SharedToken.UniformlyPaddingLG, 0, 0); 
-        StatusImageMargin = new Thickness(0, 0, 0, SharedToken.UniformlyMargin);
-        HeaderMargin      = new Thickness(0, SharedToken.UniformlyMarginXS);
-        FramePadding      = new Thickness(SharedToken.UniformlyPaddingLG * 2, SharedToken.UniformlyMarginXL);
+        ContentPadding    = new Thickness(EffectiveGlobalToken.UniformlyPadding * 2.5, EffectiveGlobalToken.UniformlyPaddingLG);
+        ContentMargin     = new Thickness(0, EffectiveGlobalToken.UniformlyPaddingLG, 0, 0);
+        StatusImageMargin = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyMargin);
+        HeaderMargin      = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS);
+        FramePadding      = new Thickness(EffectiveGlobalToken.UniformlyPaddingLG * 2, EffectiveGlobalToken.UniformlyMarginXL);
     }
     
 }

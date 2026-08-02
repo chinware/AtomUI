@@ -32,7 +32,7 @@ RadioButton 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | 普通单选指示器与按钮式单选组共享互斥选择语义。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CheckedItem`、`SelectedItem`、`Items`、`ItemsSource`、`ItemTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | checked/selected、disabled、pointer、motion、ButtonStyle 和方向组合状态。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | RadioButtonToken、OptionButtonToken 与对应 ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | RadioButtonToken、OptionButtonToken 与对应 ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -87,17 +87,15 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-RadioButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+RadioButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RadioButtonGroupTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `RadioButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `RadioButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `RadioIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `OptionButtonGroupTheme.axaml` | 定义按钮组 ItemsPresenter、方向布局入口、尺寸和组级边框资源。 |
 | `OptionButtonTheme.axaml` | 定义按钮内容、Outline/Solid、checked/disabled、方向对齐和 Wave 视觉。 |
-| `OptionButtonBoxThemes.axaml` | 聚合 OptionButtonGroup 与 OptionButton 的主题资源。 |
 
 普通单选控件使用 `RadioButtonToken`，按钮式选项使用 `OptionButtonToken`。Token 只表达组件视觉语义，不承载 checked/selected、Orientation、GroupPositionTrait 或 EffectiveCornerRadius 运行时状态。
 
@@ -120,7 +118,7 @@ RadioButton 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - `RadioButtonGroup`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `RadioButtonGroupManager`：数据、状态或行为协作类型，维护集合同步和事件路径。
 - `RadioButtonOption`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `RadioButtonToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `RadioButtonToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `RadioIndicator`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `AbstractOptionButtonGroup`：按钮组的方向、选择、容器位置和组级渲染 owner。
 - `OptionButtonGroup`：桌面 public Group，创建 `OptionButton` 容器并应用桌面主题。

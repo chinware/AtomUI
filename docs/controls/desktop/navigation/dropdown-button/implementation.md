@@ -12,8 +12,7 @@
 
 - `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/BrowserButtonThemes.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonThemes.axaml`
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`
 
 职责边界：
 

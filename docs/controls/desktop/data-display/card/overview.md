@@ -129,7 +129,6 @@ Card 的默认视觉由根 Card 主题和多个子控件主题组成。
 | `CardGridItemTheme.axaml` | 栅格项内容承载、padding、阴影和 hover 状态。 |
 | `CardTabsContentTheme.axaml` | 内部 TabControl、ContentPadding 和 header edge padding。 |
 | `CardMetaContentTheme.axaml` | Avatar、标题和描述的元信息布局。 |
-| `CardThemes.axaml` | 汇总 Card 相关主题资源。 |
 
 Token 关系：
 
@@ -149,7 +148,7 @@ Card 属于 Data Display 分类，常与 Grid、Image、Avatar、TabControl、Sk
 
 集成关系：
 
-- Token 系统：根 Card 通过 `CardToken.ScopeProvider` 注册组件 Token 资源作用域。
+- Token 系统：根 Card 通过 `CardToken.ScopeProvider` 注册控件 Token 资源作用域。
 - Skeleton：`IsLoading` 通过模板内 Skeleton 表达加载占位。
 - TabControl：`CardTabsContent` 将 Card 的 `SizeType` 和 `IsMotionEnabled` 传递给内部 TabControl。
 - ItemsControl：`CardGridContent` 通过 ItemsControl 生成 `CardGridItem` 容器。

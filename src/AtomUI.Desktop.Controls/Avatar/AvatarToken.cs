@@ -6,7 +6,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class AvatarToken : AbstractControlDesignToken
 {
-    public const string ID = "Avatar";
 
     /// <summary>
     /// 头像尺寸
@@ -58,25 +57,25 @@ internal class AvatarToken : AbstractControlDesignToken
     public Color AvatarColor { get; set; }
 
     public AvatarToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        ContainerSize   = SharedToken.ControlHeight;
-        ContainerSizeLG = SharedToken.ControlHeightLG;
-        ContainerSizeSM = SharedToken.ControlHeightSM;
-        TextFontSize    = Math.Round((SharedToken.FontSizeLG + SharedToken.FontSizeXL) / 2);
-        TextFontSizeLG  = SharedToken.FontSizeHeading3;
-        TextFontSizeSM  = SharedToken.FontSize;
-        GroupSpace      = SharedToken.UniformlyMarginXXS;
-        GroupOverlapping  = SharedToken.UniformlyMarginXS;
-        GroupBorderColor  = SharedToken.ColorBorderBg;
+        ContainerSize   = EffectiveGlobalToken.ControlHeight;
+        ContainerSizeLG = EffectiveGlobalToken.ControlHeightLG;
+        ContainerSizeSM = EffectiveGlobalToken.ControlHeightSM;
+        TextFontSize    = Math.Round((EffectiveGlobalToken.FontSizeLG + EffectiveGlobalToken.FontSizeXL) / 2);
+        TextFontSizeLG  = EffectiveGlobalToken.FontSizeHeading3;
+        TextFontSizeSM  = EffectiveGlobalToken.FontSize;
+        GroupSpace      = EffectiveGlobalToken.UniformlyMarginXXS;
+        GroupOverlapping  = EffectiveGlobalToken.UniformlyMarginXS;
+        GroupBorderColor  = EffectiveGlobalToken.ColorBorderBg;
 
-        AvatarBg    = SharedToken.ColorTextPlaceholder;
-        AvatarColor = SharedToken.ColorTextLightSolid;
+        AvatarBg    = EffectiveGlobalToken.ColorTextPlaceholder;
+        AvatarColor = EffectiveGlobalToken.ColorTextLightSolid;
     }
     
 }

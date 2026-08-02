@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:MenuThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="TopLevelMenuItemTheme" TargetType="atom:MenuItem">
         <Setter Property="Template">
@@ -115,7 +112,7 @@
                 <Setter Property="Background"
                         Value="{atom:SharedTokenResource ColorBgElevated}" />
                 <Setter Property="CornerRadius"
-                        Value="{atom:PopupHostTokenResource BorderRadius}" />
+                        Value="{atom:PopupTokenResource PopupCornerRadius}" />
                 <Setter Property="MinWidth"
                         Value="{atom:MenuTokenResource MenuPopupMinWidth}" />
                 <Setter Property="MaxWidth"
@@ -126,9 +123,9 @@
                 <Setter Property="MarginToAnchor"
                         Value="{atom:MenuTokenResource TopLevelItemPopupMarginToAnchor}" />
                 <Setter Property="PopupRootShadow"
-                        Value="{atom:PopupHostTokenResource PopupRootShadow}" />
+                        Value="{atom:PopupTokenResource PopupRootShadow}" />
                 <Setter Property="OverlayHostShadow"
-                        Value="{atom:PopupHostTokenResource OverlayHostShadow}" />
+                        Value="{atom:PopupTokenResource OverlayHostShadow}" />
             </Style>
             
             <Style Selector="^[ShouldUseOverlayPopup=False] /template/ atom|Popup#PART_Popup">

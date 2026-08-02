@@ -8,7 +8,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class CardToken : AbstractControlDesignToken
 {
-    public const string ID = "Card";
     
     /// <summary>
     /// 卡片头部背景色
@@ -142,7 +141,7 @@ internal class CardToken : AbstractControlDesignToken
     public BoxShadows CardGridItemShadows { get; set; }
     
     public CardToken()
-        : base(ID)
+
     {
     }
 
@@ -150,25 +149,25 @@ internal class CardToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
         HeaderBg         = Colors.Transparent;
-        HeaderFontSizeLG = SharedToken.FontSizeLG;
-        HeaderFontSize   = SharedToken.FontSize;
-        HeaderFontSizeSM = SharedToken.FontSize;
+        HeaderFontSizeLG = EffectiveGlobalToken.FontSizeLG;
+        HeaderFontSize   = EffectiveGlobalToken.FontSize;
+        HeaderFontSizeSM = EffectiveGlobalToken.FontSize;
 
-        HeaderHeightLG   = SharedToken.FontHeightLG + SharedToken.UniformlyPadding * 2;
-        HeaderHeight     = SharedToken.FontHeight + SharedToken.UniformlyPaddingXS * 2;
-        HeaderHeightSM   = SharedToken.FontHeightSM;
-        ActionsBg        = SharedToken.ColorBgContainer;
-        ActionsSpacing   = SharedToken.SpacingSM;
-        TabsMarginBottom = new Thickness(0, 0, 0, -SharedToken.UniformlyPadding - SharedToken.LineWidth);
-        ExtraColor       = SharedToken.ColorText;
+        HeaderHeightLG   = EffectiveGlobalToken.FontHeightLG + EffectiveGlobalToken.UniformlyPadding * 2;
+        HeaderHeight     = EffectiveGlobalToken.FontHeight + EffectiveGlobalToken.UniformlyPaddingXS * 2;
+        HeaderHeightSM   = EffectiveGlobalToken.FontHeightSM;
+        ActionsBg        = EffectiveGlobalToken.ColorBgContainer;
+        ActionsSpacing   = EffectiveGlobalToken.SpacingSM;
+        TabsMarginBottom = new Thickness(0, 0, 0, -EffectiveGlobalToken.UniformlyPadding - EffectiveGlobalToken.LineWidth);
+        ExtraColor       = EffectiveGlobalToken.ColorText;
         
-        BodyPaddingLG = SharedToken.PaddingLG;
-        BodyPadding   = SharedToken.PaddingSM;
-        BodyPaddingSM = SharedToken.PaddingXS;
+        BodyPaddingLG = EffectiveGlobalToken.PaddingLG;
+        BodyPadding   = EffectiveGlobalToken.PaddingSM;
+        BodyPaddingSM = EffectiveGlobalToken.PaddingXS;
         
-        HeaderPaddingLG  = new Thickness(SharedToken.UniformlyPaddingLG, 0);
-        HeaderPadding    = new Thickness(SharedToken.UniformlyPaddingSM, 0);
-        HeaderPaddingSM  = new Thickness(SharedToken.UniformlyPaddingXS, 0);
+        HeaderPaddingLG  = new Thickness(EffectiveGlobalToken.UniformlyPaddingLG, 0);
+        HeaderPadding    = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM, 0);
+        HeaderPaddingSM  = new Thickness(EffectiveGlobalToken.UniformlyPaddingXS, 0);
 
         CardShadows         = new BoxShadows(new BoxShadow()
         {
@@ -195,14 +194,14 @@ internal class CardToken : AbstractControlDesignToken
                 Color   = ColorUtils.FromRgbF(0.09, 0, 0, 0)
             }
         ]);
-        var lineWidth = SharedToken.LineWidth;
+        var lineWidth = EffectiveGlobalToken.LineWidth;
         CardGridItemShadows = new BoxShadows(new BoxShadow()
         {
             OffsetX = lineWidth,
             OffsetY = 0,
             Blur    = 0,
             Spread  = 0,
-            Color   = SharedToken.ColorBorderSecondary
+            Color   = EffectiveGlobalToken.ColorBorderSecondary
         }, [
             new BoxShadow
             {
@@ -210,7 +209,7 @@ internal class CardToken : AbstractControlDesignToken
                 OffsetY = lineWidth,
                 Blur    = 0,
                 Spread  = 0,
-                Color   = SharedToken.ColorBorderSecondary
+                Color   = EffectiveGlobalToken.ColorBorderSecondary
             },
             new BoxShadow
             {
@@ -218,7 +217,7 @@ internal class CardToken : AbstractControlDesignToken
                 OffsetY = lineWidth,
                 Blur    = 0,
                 Spread  = 0,
-                Color   = SharedToken.ColorBorderSecondary
+                Color   = EffectiveGlobalToken.ColorBorderSecondary
             },
             new BoxShadow
             {
@@ -227,7 +226,7 @@ internal class CardToken : AbstractControlDesignToken
                 OffsetY = 0,
                 Blur    = 0,
                 Spread  = 0,
-                Color   = SharedToken.ColorBorderSecondary
+                Color   = EffectiveGlobalToken.ColorBorderSecondary
             },
             new BoxShadow
             {
@@ -236,12 +235,12 @@ internal class CardToken : AbstractControlDesignToken
                 OffsetY = lineWidth,
                 Blur    = 0,
                 Spread  = 0,
-                Color   = SharedToken.ColorBorderSecondary
+                Color   = EffectiveGlobalToken.ColorBorderSecondary
             },
         ]);
-        CardHeadPadding     = SharedToken.Padding;
-        CardPaddingBase     = SharedToken.PaddingLG;
-        CardActionsIconSize = SharedToken.FontSize;
+        CardHeadPadding     = EffectiveGlobalToken.Padding;
+        CardPaddingBase     = EffectiveGlobalToken.PaddingLG;
+        CardActionsIconSize = EffectiveGlobalToken.FontSize;
     }
     
 }

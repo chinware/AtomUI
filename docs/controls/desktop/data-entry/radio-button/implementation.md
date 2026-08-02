@@ -1,6 +1,6 @@
 # RadioButton 桌面版实现原理
 
-本文档描述 RadioButton、RadioButtonGroup、OptionButton 和 OptionButtonGroup 桌面控件家族的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [RadioButton 桌面版架构设计](overview.md)，OptionButtonGroup 的方向与组合几何见 [OptionButtonGroup 方向布局设计](option-button-group-orientation-design.md)，变化记录见 [RadioButton Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [RadioButton Token 设计](token.md)。
+本文档描述 RadioButton、RadioButtonGroup、OptionButton 和 OptionButtonGroup 桌面控件家族的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [RadioButton 桌面版架构设计](overview.md)，OptionButtonGroup 的方向与组合几何见 [OptionButtonGroup 方向布局设计](option-button-group-orientation-design.md)，变化记录见 [RadioButton Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [RadioButton Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -15,7 +15,6 @@
 - `src/AtomUI.Desktop.Controls/RadioButton/RadioButtonToken.cs`
 - `src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonGroupTheme.axaml`
 - `src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonThemes.axaml`
 - `src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioIndicatorTheme.axaml`
 - `src/AtomUI.Controls/RadioButton/AbstractRadioButton.cs`
 - `src/AtomUI.Controls/RadioButton/AbstractRadioButtonGroup.cs`
@@ -28,7 +27,6 @@
 - `src/AtomUI.Desktop.Controls/OptionButtonGroup/OptionButtonToken.cs`
 - `src/AtomUI.Desktop.Controls/OptionButtonGroup/Themes/OptionButtonGroupTheme.axaml`
 - `src/AtomUI.Desktop.Controls/OptionButtonGroup/Themes/OptionButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml`
 - `src/AtomUI.Controls/OptionButtonGroup/AbstractOptionButton.cs`
 - `src/AtomUI.Controls/OptionButtonGroup/AbstractOptionButtonGroup.cs`
 - `src/AtomUI.Controls/OptionButtonGroup/OptionButtonData.cs`
@@ -50,7 +48,7 @@
 - `RadioButtonGroup`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `RadioButtonGroupManager`：数据、状态或行为协作类型，维护集合同步和事件路径。
 - `RadioButtonOption`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `RadioButtonToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `RadioButtonToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `RadioIndicator`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `AbstractOptionButtonGroup`：持有按钮组选择、Orientation 和容器组合位置，绘制外边框、共享分隔线和选中边框。
 - `OptionButtonGroup`：创建桌面 `OptionButton` 容器并接入桌面 ControlTheme。

@@ -66,14 +66,14 @@
             <Setter Property="ResizeIndicatorLineBrush"
                     Value="{atom:TextAreaTokenResource ResizeIndicatorLineColor}" />
             <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentLeftAddOn">
-                <Setter Property="Margin" Value="{atom:AddOnDecoratedBoxTokenResource LeftInnerAddOnMargin}" />
+                <Setter Property="Margin" Value="{atom:TextAreaTokenResource LeftInnerAddOnMargin}" />
             </Style>
             <Style Selector="^[SizeType=Large]">
                 <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                     <Setter Property="Padding" Value="0" />
                 </Style>
                 <Setter Property="TextAreaFramePadding"
-                        Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
+                        Value="{atom:TextAreaTokenResource InputPaddingLG}" />
                 <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentRightAddOn">
                     <Setter Property="Padding" Value="{atom:TextAreaTokenResource RightAddOnPaddingLG}" />
                 </Style>
@@ -83,7 +83,7 @@
                     <Setter Property="Padding" Value="0" />
                 </Style>
                 <Setter Property="TextAreaFramePadding"
-                        Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
+                        Value="{atom:TextAreaTokenResource InputPadding}" />
                 <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentRightAddOn">
                     <Setter Property="Padding" Value="{atom:TextAreaTokenResource RightAddOnPadding}" />
                 </Style>
@@ -96,7 +96,7 @@
                     <Setter Property="Padding" Value="{atom:TextAreaTokenResource RightAddOnPaddingSM}" />
                 </Style>
                 <Setter Property="TextAreaFramePadding"
-                        Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
+                        Value="{atom:TextAreaTokenResource InputPaddingSM}" />
             </Style>
 
         </Style>

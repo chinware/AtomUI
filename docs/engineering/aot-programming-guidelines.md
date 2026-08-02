@@ -210,20 +210,20 @@ descriptors.Add(MyControlTokenDescriptor.Instance);
 
 descriptor 必须直接提供以下静态已知信息：
 
-- `ControlTokenIdentity` 和 registry slot。
+- exact Control CLR type、`ControlTokenIdentity` 和 registry slot。
 - 无参数 `[ControlDesignToken]` 标记的可选 Own Token 类型；Attribute 不携带 Control 类型或 identity。
 - 可选的 Own Token builder 直接构造委托。
 - Own Token name、value type、stage 和 slot。
 - 强类型 parse、set、get 和 resource projection 委托。
-- `OwnTokens` 与生成式 `SupportedGlobalTokens` schema。
-- ControlTheme asset/token dependency manifest 和包级注册信息。
+- `OwnTokens` schema；Control 的可配置 Global Token 集合始终是完整 Global Token schema，不生成消费白名单。
+- ControlTheme asset owner、引用的 Control identities、Semantic Part 契约和包级注册信息。
 
 这里有三个关键点：
 
 - Builder 必须原样传递 descriptor，不能丢弃 identity 后退化为 `Type` 注册。
 - 内置正常路径不调用 `Activator.CreateInstance`、`Type.GetProperties` 或 `PropertyInfo.GetValue/SetValue`。
-- 第三方 Control 包必须使用 AtomUI generator，并只通过一次生成的包级入口注册 Control、可选 Own Token、主题资产
-  和依赖 manifest；不提供手写 descriptor、手工 manifest 或反射 fallback 旁路。
+- 第三方 Control 包必须使用 AtomUI generator，并只通过一次生成的包级入口注册 Control、可选 Own Token 和主题
+  资产；不提供手写 descriptor、手工 manifest 或反射 fallback 旁路。
 - Own Token 可以放在包内正常源码位置并使用 `[ControlDesignToken]` 标记；禁止泛型 Control 参数和手写 ID。
 
 ### Token value converter 注册

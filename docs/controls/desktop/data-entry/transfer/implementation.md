@@ -1,6 +1,6 @@
 # Transfer 桌面版实现原理
 
-本文档描述 Transfer 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Transfer 桌面版架构设计](overview.md)，变化记录见 [Transfer Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Transfer Token 设计](token.md)。
+本文档描述 Transfer 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Transfer 桌面版架构设计](overview.md)，变化记录见 [Transfer Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Transfer Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -31,7 +31,7 @@
 - `TransferListView`：列表面板协作类型，负责将面板级 `SelectedKeys` 投影到 `SelectedItems`，并把列表选择变化回写为 key 集合。
 - `TransferRemoveItemButton`：动作触发类型，负责点击、导航或局部操作状态。
 - `TransferSelectDropdown`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `TransferToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `TransferToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `TransferTreeView`：树面板协作类型，负责将面板级 `SelectedKeys` 投影到 `CheckedItems`，并在目标 key mask 后过滤不可选节点。
 - `TransferTreeViewItem`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `TransferTreeViewItemHeader`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。

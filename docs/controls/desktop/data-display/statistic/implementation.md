@@ -1,6 +1,6 @@
 # Statistic 桌面版实现原理
 
-本文档描述 Statistic 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Statistic 桌面版架构设计](overview.md)，变化记录见 [Statistic Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Statistic Token 设计](token.md)。
+本文档描述 Statistic 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Statistic 桌面版架构设计](overview.md)，变化记录见 [Statistic Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Statistic Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -19,7 +19,6 @@
 - `src/AtomUI.Desktop.Controls/Statistic/Themes/AbstractStatisticTheme.cs`
 - `src/AtomUI.Desktop.Controls/Statistic/Themes/StatisticCountUpTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Statistic/Themes/StatisticTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Statistic/Themes/StatisticThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Statistic/Themes/TimerStatisticTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Statistic/TimerStatistic.cs`
 
@@ -36,7 +35,7 @@
 - `AbstractStatisticTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `Statistic`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `StatisticCountUp`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `StatisticToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `StatisticToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `TimerStatistic`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 
 核心协作规则：

@@ -29,7 +29,7 @@ Transfer 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Transfer 是 AtomUI 桌面控件体系中的穿梭框控件，用于在源列表和目标列表之间移动、搜索和选择数据项。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`ContentTemplate`、`FilterPlaceholderText`、`FilterValueSelector`、`FooterTemplate`、`ItemTemplate`、`SelectionsIcon`、`SelectionsIconTemplate` 等 22 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Transfer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Transfer Token + ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -84,7 +84,7 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -94,13 +94,12 @@ Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `TransferListItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferListViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TransferSelectDropdownTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TransferThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TransferTreeViewItemHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferTreeViewItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferTreeViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TreeTransferTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Transfer 使用 `TransferToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
+Transfer 使用 `TransferToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -123,7 +122,7 @@ Transfer 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 - `TransferListView`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TransferRemoveItemButton`：动作触发类型，负责点击、导航或局部操作状态。
 - `TransferSelectDropdown`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `TransferToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `TransferToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `TransferTreeView`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TransferTreeViewItem`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `TransferTreeViewItemHeader`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。

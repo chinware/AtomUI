@@ -53,47 +53,88 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             .Select(static (info, token) => info!)
             .Collect();
 
-        var tokensProvider = globalTokensProvider.Combine(controlTokensProvider).Combine(algorithmsProvider);
-        var generationProvider = tokensProvider.Combine(
-            initContext.CompilationProvider.Select(static (compilation, token) => compilation.AssemblyName));
+        var themeAssetsProvider = initContext.AdditionalTextsProvider
+            .Where(static text => ThemeAssetInfo.IsThemeAssetPath(text.Path))
+            .Select(static (text, token) => ControlThemeSourceInfo.Create(text, token))
+            .Collect();
+
+        var tokensProvider = globalTokensProvider.Combine(controlTokensProvider)
+                                               .Combine(algorithmsProvider)
+                                               .Combine(themeAssetsProvider);
+        var compilationProvider = initContext.CompilationProvider
+                                             .Combine(initContext.AnalyzerConfigOptionsProvider)
+                                             .Select(static (input, token) =>
+                                                 CreateCompilationInfo(
+                                                     input.Left,
+                                                     ThemeGeneratorOptions.GetControlCatalog(input.Right)));
+        var generationProvider = tokensProvider.Combine(compilationProvider);
 
         initContext.RegisterImplementationSourceOutput(generationProvider, (context, generationInfo) =>
         {
             var combinedInfos = generationInfo.Left;
+            ThemeControlCatalogMetadataWriter.Write(
+                context,
+                generationInfo.Right.ControlCatalog);
             var tokenInfo = new TokenInfo();
-            tokenInfo.Tokens.UnionWith(combinedInfos.Left.Left.Tokens);
-            tokenInfo.SchemaTokens.UnionWith(combinedInfos.Left.Left.SchemaTokens);
-            foreach (var controlToken in combinedInfos.Left.Right)
-            {
-                foreach (var diagnostic in controlToken.Diagnostics)
-                {
-                    context.ReportDiagnostic(diagnostic);
-                }
-
-                if (controlToken.IsValid)
-                {
-                    tokenInfo.ControlTokenInfos.Add(controlToken);
-                }
-            }
+            tokenInfo.Tokens.UnionWith(combinedInfos.Left.Left.Left.Tokens);
+            tokenInfo.AvailableGlobalTokenNames.UnionWith(
+                combinedInfos.Left.Left.Left.Tokens.Select(static token => token.Name));
+            tokenInfo.AvailableGlobalTokenNames.UnionWith(generationInfo.Right.GlobalTokenNames);
+            tokenInfo.SchemaTokens.UnionWith(combinedInfos.Left.Left.Left.SchemaTokens);
+            tokenInfo.ControlThemeInfos.AddRange(ControlThemeModelBuilder.Build(
+                generationInfo.Right.Compilation,
+                combinedInfos.Left.Left.Right,
+                combinedInfos.Right,
+                tokenInfo.AvailableGlobalTokenNames,
+                context.ReportDiagnostic));
 
             if (tokenInfo.SchemaTokens.Count != 0 ||
-                tokenInfo.ControlTokenInfos.Count != 0 ||
-                combinedInfos.Right.Length != 0)
+                tokenInfo.ControlThemeInfos.Count != 0 ||
+                combinedInfos.Left.Right.Length != 0)
             {
                 var schemaWriter = new GeneratedThemeSchemaWriter(
                     context,
-                    generationInfo.Right,
+                    generationInfo.Right.AssemblyName,
+                    generationInfo.Right.ControlCatalog,
                     tokenInfo.SchemaTokens,
-                    tokenInfo.ControlTokenInfos,
-                    combinedInfos.Right);
+                    tokenInfo.ControlThemeInfos,
+                    combinedInfos.Left.Right);
                 schemaWriter.Write();
             }
 
+            if (tokenInfo.ControlThemeInfos.Count != 0 && combinedInfos.Right.Length != 0)
             {
-                var classWriter = new ResourceKeyClassWriter(context, tokenInfo);
+                new ControlPackageRegistrationWriter(
+                    context,
+                    generationInfo.Right.AssemblyName).Write();
+            }
+
+            {
+                var classWriter = new ResourceKeyClassWriter(
+                    context,
+                    tokenInfo,
+                    generationInfo.Right.ControlCatalog);
                 classWriter.Write();
             }
 
         });
+    }
+
+    private static ThemeCompilationInfo CreateCompilationInfo(
+        Compilation compilation,
+        string controlCatalog)
+    {
+        var names = compilation.GetTypeByMetadataName("AtomUI.Theme.Resources.SharedTokenKind")?
+                               .GetMembers()
+                               .OfType<IFieldSymbol>()
+                               .Where(static field => field.HasConstantValue && field.Name != "value__")
+                               .Select(static field => field.Name)
+                               .OrderBy(static name => name, StringComparer.Ordinal)
+                               .ToArray() ?? Array.Empty<string>();
+        return new ThemeCompilationInfo(
+            compilation,
+            compilation.AssemblyName ?? "AtomUI",
+            controlCatalog,
+            names);
     }
 }

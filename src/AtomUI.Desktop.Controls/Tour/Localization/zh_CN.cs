@@ -2,7 +2,7 @@
 
 namespace AtomUI.Desktop.Controls.TourLang;
 
-[LanguageProvider(LanguageCode.zh_CN, TourToken.ID)]
+[LanguageProvider(LanguageCode.zh_CN, "Tour")]
 internal class zh_CN
 {
     public const string Previous = "上一步";

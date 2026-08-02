@@ -136,7 +136,7 @@ public class TextAreaResizeTests
         try
         {
             var leftAddOn      = FindTemplatePart<ContentPresenter>(textArea, "PART_ContentLeftAddOn");
-            var expectedMargin = GetThemeResource<Thickness>(AddOnDecoratedBoxTokenKind.LeftInnerAddOnMargin);
+            var expectedMargin = GetThemeResource<Thickness>(TextAreaTokenKind.LeftInnerAddOnMargin);
 
             leftAddOn.Margin.ShouldBe(expectedMargin);
             leftAddOn.Margin.Right.ShouldBeGreaterThan(0);

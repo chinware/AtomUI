@@ -29,7 +29,7 @@ InfoFlyout 的设计语言围绕控件职责、可观察状态和主题契约组
 | 产品语义 | 控件在界面中承担的稳定职责。 | InfoFlyout 是 AtomUI 桌面控件体系中的信息浮出层家族，用于从目标元素弹出普通内容、菜单内容或树形内容。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`ItemContainerTheme`、`ItemTemplate`、`ItemsSource`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | InfoFlyout Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | InfoFlyout Token + ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -85,17 +85,15 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-InfoFlyout 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+InfoFlyout 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserFlyoutThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `FlyoutHostTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `FlyoutThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `MenuFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `TreeViewFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-InfoFlyout 使用 `FlyoutHostToken`、`TreeFlyoutToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
+InfoFlyout 使用 `FlyoutHostToken`、`TreeFlyoutToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -112,13 +110,13 @@ InfoFlyout 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 
 - `Flyout`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `FlyoutHost`：模板协作类型，承载内容展示、宿主或视觉边界。
-- `FlyoutHostToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `FlyoutHostToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `FlyoutPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `FlyoutStateHelper`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `MenuFlyout`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `MenuFlyoutPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `MenuFlyoutPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `TreeFlyoutToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `TreeFlyoutToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `TreeViewFlyout`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TreeViewFlyoutPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `TreeViewFlyoutPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。

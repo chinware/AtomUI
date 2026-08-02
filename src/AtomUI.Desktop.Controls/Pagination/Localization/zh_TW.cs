@@ -2,7 +2,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.PaginationLang;
 
-[LanguageProvider(LanguageCode.zh_TW, PaginationToken.ID)]
+[LanguageProvider(LanguageCode.zh_TW, "Pagination")]
 internal class zh_TW
 {
     public const string JumpToText = "跳至";

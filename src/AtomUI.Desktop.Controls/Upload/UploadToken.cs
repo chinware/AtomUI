@@ -7,18 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class UploadToken : AbstractControlDesignToken
 {
-    public const string ID = "Upload";
-    
-    public UploadToken()
-        : this(ID)
-    {
-    }
-
-    protected UploadToken(string id)
-        : base(id)
-    {
-    }
-
     /// <summary>
     /// 操作按扭颜色
     /// Action button color
@@ -79,17 +67,17 @@ internal class UploadToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        ActionsColor             = SharedToken.ColorIcon;
-        PictureCardSize          = SharedToken.ControlHeightLG * 2.55;
-        TextListItemMargin       = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
-        TextListNamePadding      = new Thickness(SharedToken.UniformlyPaddingXS, 0);
-        TextListProgressPadding  = new Thickness(SharedToken.FontSize + SharedToken.UniformlyPaddingXS, 0, 0, 0);
-        UploadThumbnailSize      = SharedToken.FontSizeHeading2;
-        DragIconSize             = SharedToken.FontSizeHeading3 * 2;
-        DragIconMargin           = new Thickness(0, 0, 0, SharedToken.UniformlyMargin);
-        DragHeaderMargin         = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXXS);
-        PictureListItemMargin    = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
-        PictureListPreviewerSize = SharedToken.SizeXXL;
+        ActionsColor             = EffectiveGlobalToken.ColorIcon;
+        PictureCardSize          = EffectiveGlobalToken.ControlHeightLG * 2.55;
+        TextListItemMargin       = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS, 0, 0);
+        TextListNamePadding      = new Thickness(EffectiveGlobalToken.UniformlyPaddingXS, 0);
+        TextListProgressPadding  = new Thickness(EffectiveGlobalToken.FontSize + EffectiveGlobalToken.UniformlyPaddingXS, 0, 0, 0);
+        UploadThumbnailSize      = EffectiveGlobalToken.FontSizeHeading2;
+        DragIconSize             = EffectiveGlobalToken.FontSizeHeading3 * 2;
+        DragIconMargin           = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyMargin);
+        DragHeaderMargin         = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyMarginXXS);
+        PictureListItemMargin    = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS, 0, 0);
+        PictureListPreviewerSize = EffectiveGlobalToken.SizeXXL;
     }
     
 }

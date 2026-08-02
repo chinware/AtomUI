@@ -38,12 +38,23 @@ internal sealed class ThemeContext
         _appearance = snapshot.Appearance;
     }
 
-    internal void Publish(bool notifyResources = true)
+    internal IReadOnlyList<ThemeDiagnostic> Publish(bool notifyResources = true)
     {
+        var diagnostics = new List<ThemeDiagnostic>();
         if (notifyResources)
         {
-            ResourceProvider.PublishSnapshotChanged();
+            ThemePublishBoundary.Dispatch(
+                ResourceProvider.PublishSnapshotChanged,
+                this,
+                diagnostics,
+                $"ThemeContext[{RegistrationId}].Resources");
         }
-        Published?.Invoke(this, EventArgs.Empty);
+        ThemeEventDispatcher.Dispatch(
+            Published,
+            this,
+            EventArgs.Empty,
+            diagnostics,
+            $"ThemeContext[{RegistrationId}]");
+        return diagnostics.AsReadOnly();
     }
 }

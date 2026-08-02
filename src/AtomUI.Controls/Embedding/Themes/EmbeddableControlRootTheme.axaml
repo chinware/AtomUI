@@ -22,7 +22,9 @@
         
         <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
         <Setter Property="TransparencyBackgroundFallback" Value="{atom:SharedTokenResource ColorBgContainer}" />
-        <Setter Property="TopLevel.SystemBarColor" Value="{atom:SharedTokenResource ColorBgContainer}" />
+        <Setter Property="TopLevel.SystemBarColor">
+            <SolidColorBrush Color="{atom:SharedTokenResource ColorBgContainer}" />
+        </Setter>
         <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
         <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
         <Setter Property="FontFamily" Value="{atom:SharedTokenResource FontFamily}" />

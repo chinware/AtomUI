@@ -1,5 +1,6 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Resources;
+using AtomUI.Theme.Schema;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
@@ -11,6 +12,38 @@ namespace AtomUI.Core.Tests.Theme;
 [Collection(ThemeConfigProviderTestCollection.Name)]
 public class ThemeStartupTests
 {
+    [Fact]
+    public void Control_Package_Registration_Adds_Descriptors_Assets_Themes_And_Languages_Atomically()
+    {
+        HeadlessTestApp.Run(() =>
+        {
+            var descriptor = ThemeCompilerTests.CreateCompilerButtonDescriptor();
+            var asset = new ControlThemeAssetDescriptor(
+                new Uri("avares://Tests/Themes/Button.axaml"),
+                descriptor.Identity,
+                [descriptor.Identity],
+                null,
+                1);
+            var provider = new TestControlThemesProvider("Tests.Controls");
+            var package = new ControlPackageRegistration(
+                provider.Id,
+                [descriptor],
+                [asset],
+                provider,
+                Array.Empty<AtomUI.Theme.Language.LanguageProvider>());
+            var builder = new ThemeManagerBuilder();
+
+            builder.AddControlPackage(package);
+            var manager = builder.Build();
+            manager.InitializeApplication(Application.Current!);
+
+            manager.CurrentSnapshot!.Registry.Controls
+                   .ShouldContain(control => control.Identity == descriptor.Identity);
+            manager.Resources.MergedDictionaries.ShouldContain(provider.ControlThemes.Single());
+            Should.Throw<ThemeResourceRegisterException>(() => builder.AddControlPackage(package));
+        });
+    }
+
     [Fact]
     public void InitializeApplication_Mounts_A_Fully_Populated_Manager_On_The_First_Frame()
     {
@@ -93,5 +126,14 @@ public class ThemeStartupTests
             window.Content = null;
             window.Close();
         });
+    }
+
+    private sealed class TestControlThemesProvider : ControlThemesProvider
+    {
+        internal TestControlThemesProvider(string id)
+        {
+            Id = id;
+            ControlThemes.Add(new ResourceDictionary());
+        }
     }
 }

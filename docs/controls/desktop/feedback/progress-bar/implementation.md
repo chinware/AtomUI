@@ -28,7 +28,7 @@ ProgressBar 的实现基于 Avalonia `RangeBase`。AtomUI 负责把 `Minimum`、
 - `StepsProgressBar.cs`：注册 token scope 的步骤线形控件入口。
 - `CircleProgress.cs`：注册 token scope 的圆形控件入口。
 - `DashboardProgress.cs`：注册 token scope 的仪表盘控件入口。
-- `ProgressBarToken.cs`：组件级 Token 默认值计算。
+- `ProgressBarToken.cs`：控件级 Token 默认值计算。
 - `Themes/*.axaml`：共享主题、线形主题、圆形主题和具体控件主题。
 
 Gallery 示例位于 `controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/`。

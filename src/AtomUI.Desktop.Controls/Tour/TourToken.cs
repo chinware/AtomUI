@@ -8,7 +8,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class TourToken : AbstractControlDesignToken
 {
-    public const string ID = "Tour";
     
     /// <summary>
     /// 关闭按钮尺寸
@@ -53,22 +52,22 @@ internal class TourToken : AbstractControlDesignToken
     #endregion
     
     public TourToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        CloseBtnSize          = SharedToken.FontSize * SharedToken.RelativeLineHeight;
-        PrimaryPrevBtnBg      = SharedToken.ColorTextLightSolid.SetAlphaF(0.15);
-        PrimaryNextBtnHoverBg = ColorUtils.OnBackground(SharedToken.ColorBgTextHover, SharedToken.ColorWhite);
+        CloseBtnSize          = EffectiveGlobalToken.FontSize * EffectiveGlobalToken.RelativeLineHeight;
+        PrimaryPrevBtnBg      = EffectiveGlobalToken.ColorTextLightSolid.SetAlphaF(0.15);
+        PrimaryNextBtnHoverBg = ColorUtils.OnBackground(EffectiveGlobalToken.ColorBgTextHover, EffectiveGlobalToken.ColorWhite);
         IndicatorSize         = 6;
-        TourBorderRadius      = SharedToken.BorderRadiusLG;
+        TourBorderRadius      = EffectiveGlobalToken.BorderRadiusLG;
         TourViewMinWidth      = 200;
         TourViewMinHeight     = 120;
-        HeaderColor           = SharedToken.ColorTextHeading;
-        PopupMarginToAnchor   = SharedToken.SpacingXXS;
+        HeaderColor           = EffectiveGlobalToken.ColorTextHeading;
+        PopupMarginToAnchor   = EffectiveGlobalToken.SpacingXXS;
     }
     
 }

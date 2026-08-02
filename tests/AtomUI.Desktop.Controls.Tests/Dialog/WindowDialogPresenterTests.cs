@@ -6,6 +6,7 @@ using Avalonia.VisualTree;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Generated.AtomUI_Desktop_Controls;
 using AtomUI.Native;
+using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme.Resources;
 using Shouldly;
 using Xunit;
@@ -1557,8 +1558,8 @@ public class WindowDialogPresenterTests
             HostWidth = 360,
             HostHeight = 220
         };
-        dialog.Resources[ControlSharedTokenResourceKey.Unbound(
-            DialogThemeAsset.Identity,
+        dialog.Resources[ControlTokenResourceKey.Global(
+            DialogTokens.Identity,
             SharedTokenKind.MotionDurationMid)] = TimeSpan.FromMilliseconds(120);
         return dialog;
     }

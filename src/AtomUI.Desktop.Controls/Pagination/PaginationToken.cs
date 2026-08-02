@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class PaginationToken : AbstractControlDesignToken
 {
-    public const string ID = "Pagination";
 
     /// <summary>
     /// 页码选项背景色
@@ -94,29 +93,29 @@ internal class PaginationToken : AbstractControlDesignToken
     public Thickness PaginationItemPaddingInline { get; set; }
     
     public PaginationToken()
-        : base(ID)
+
     {
     }
     
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        ItemBg                    = SharedToken.ColorBgContainer;
-        ItemSize                  = SharedToken.ControlHeight;
-        ItemSizeSM                = SharedToken.ControlHeightSM;
-        ItemActiveBg              = SharedToken.ColorBgContainer;
-        ItemLinkBg                = SharedToken.ColorBgContainer;
-        ItemActiveColorDisabled   = SharedToken.ColorTextDisabled;
-        ItemActiveBgDisabled      = SharedToken.ControlItemBgActiveDisabled;
-        ItemInputBg               = SharedToken.ColorBgContainer;
+        ItemBg                    = EffectiveGlobalToken.ColorBgContainer;
+        ItemSize                  = EffectiveGlobalToken.ControlHeight;
+        ItemSizeSM                = EffectiveGlobalToken.ControlHeightSM;
+        ItemActiveBg              = EffectiveGlobalToken.ColorBgContainer;
+        ItemLinkBg                = EffectiveGlobalToken.ColorBgContainer;
+        ItemActiveColorDisabled   = EffectiveGlobalToken.ColorTextDisabled;
+        ItemActiveBgDisabled      = EffectiveGlobalToken.ControlItemBgActiveDisabled;
+        ItemInputBg               = EffectiveGlobalToken.ColorBgContainer;
 
         InputOutlineOffset                  = new Thickness(0);
-        PaginationLayoutSpacing             = SharedToken.UniformlyMarginXS;
-        PaginationLayoutMiniSpacing         = SharedToken.UniformlyMarginXXS / 2;
+        PaginationLayoutSpacing             = EffectiveGlobalToken.UniformlyMarginXS;
+        PaginationLayoutMiniSpacing         = EffectiveGlobalToken.UniformlyMarginXXS / 2;
         
-        PaginationQuickJumperInputWidth     = SharedToken.ControlHeightLG * 1.25;
-        PaginationMiniQuickJumperInputWidth = SharedToken.ControlHeightLG * 1.1;
-        PaginationItemPaddingInline         = new Thickness(SharedToken.UniformlyMarginXXS * 1.5);
+        PaginationQuickJumperInputWidth     = EffectiveGlobalToken.ControlHeightLG * 1.25;
+        PaginationMiniQuickJumperInputWidth = EffectiveGlobalToken.ControlHeightLG * 1.1;
+        PaginationItemPaddingInline         = new Thickness(EffectiveGlobalToken.UniformlyMarginXXS * 1.5);
     }
     
 }

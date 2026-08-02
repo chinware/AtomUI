@@ -5,18 +5,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class LineEditToken : AbstractControlDesignToken
 {
-    public const string ID = "LineEdit";
-    
-    public LineEditToken()
-        : this(ID)
-    {
-    }
-
-    protected LineEditToken(string id)
-        : base(id)
-    {
-    }
-
     /// <summary>
     /// 字体大小
     /// </summary>
@@ -35,9 +23,9 @@ internal class LineEditToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        InputFontSize   = SharedToken.FontSize;
-        InputFontSizeLG = SharedToken.FontSizeLG;
-        InputFontSizeSM = SharedToken.FontSizeSM;
+        InputFontSize   = EffectiveGlobalToken.FontSize;
+        InputFontSizeLG = EffectiveGlobalToken.FontSizeLG;
+        InputFontSizeSM = EffectiveGlobalToken.FontSizeSM;
     }
 
 }

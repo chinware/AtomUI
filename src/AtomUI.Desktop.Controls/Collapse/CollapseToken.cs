@@ -7,10 +7,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class CollapseToken : AbstractControlDesignToken
 {
-    public const string ID = "Collapse";
     
     public CollapseToken()
-        : base(ID)
+
     {
     }
 
@@ -53,21 +52,21 @@ internal class CollapseToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        HeaderPadding             = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingSM);
-        HeaderBg                  = SharedToken.ColorFillAlter;
-        ContentPadding            = new Thickness(16, SharedToken.UniformlyPadding);
-        CollapseContentPaddingSM  = SharedToken.PaddingSM;
-        CollapseContentPaddingLG  = SharedToken.PaddingLG;
-        ContentBg                 = SharedToken.ColorBgContainer;
-        CollapseHeaderPaddingSM   = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPaddingXS);
-        CollapseHeaderPaddingLG   = new Thickness(SharedToken.UniformlyPaddingLG, SharedToken.UniformlyPadding);
-        CollapsePanelBorderRadius = SharedToken.BorderRadiusLG;
-        LeftExpandButtonMarginSM  = new Thickness(0, 0, SharedToken.UniformlyMarginXXS, 0);
-        LeftExpandButtonMargin    = new Thickness(0, 0, SharedToken.UniformlyMarginXS, 0);
-        LeftExpandButtonMarginLG  = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
-        RightExpandButtonMarginSM = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
-        RightExpandButtonMargin   = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);
-        RightExpandButtonMarginLG   = new Thickness(SharedToken.UniformlyMarginSM, 0, 0, 0);
+        HeaderPadding             = new Thickness(EffectiveGlobalToken.UniformlyPadding, EffectiveGlobalToken.UniformlyPaddingSM);
+        HeaderBg                  = EffectiveGlobalToken.ColorFillAlter;
+        ContentPadding            = new Thickness(16, EffectiveGlobalToken.UniformlyPadding);
+        CollapseContentPaddingSM  = EffectiveGlobalToken.PaddingSM;
+        CollapseContentPaddingLG  = EffectiveGlobalToken.PaddingLG;
+        ContentBg                 = EffectiveGlobalToken.ColorBgContainer;
+        CollapseHeaderPaddingSM   = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM, EffectiveGlobalToken.UniformlyPaddingXS);
+        CollapseHeaderPaddingLG   = new Thickness(EffectiveGlobalToken.UniformlyPaddingLG, EffectiveGlobalToken.UniformlyPadding);
+        CollapsePanelBorderRadius = EffectiveGlobalToken.BorderRadiusLG;
+        LeftExpandButtonMarginSM  = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginXXS, 0);
+        LeftExpandButtonMargin    = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginXS, 0);
+        LeftExpandButtonMarginLG  = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginSM, 0);
+        RightExpandButtonMarginSM = new Thickness(EffectiveGlobalToken.UniformlyMarginXXS, 0, 0, 0);
+        RightExpandButtonMargin   = new Thickness(EffectiveGlobalToken.UniformlyMarginXS, 0, 0, 0);
+        RightExpandButtonMarginLG   = new Thickness(EffectiveGlobalToken.UniformlyMarginSM, 0, 0, 0);
     }
     
 }

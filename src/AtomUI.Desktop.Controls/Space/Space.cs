@@ -138,8 +138,20 @@ public class Space : Control,
     
     public Space()
     {
-        ApplySpacingTokenBinding();
         Children.CollectionChanged += HandleChildrenChanged;
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ApplySpacingTokenBinding();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _spacingBindings?.Dispose();
+        _spacingBindings = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -487,6 +499,12 @@ public class Space : Control,
     private void ApplySpacingTokenBinding()
     {
         _spacingBindings?.Dispose();
+        _spacingBindings = null;
+        if (!this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
         var tokenKind = SizeType switch
         {
             CustomizableSizeType.Small  => SpaceTokenKind.GapSmallSize,
@@ -496,8 +514,8 @@ public class Space : Control,
         };
         _spacingBindings = new CompositeDisposable
         {
-            TokenResourceBinder.CreateTokenBinding(this, ItemSpacingProperty, tokenKind),
-            TokenResourceBinder.CreateTokenBinding(this, LineSpacingProperty, tokenKind)
+            TokenResourceBinder.CreateControlTokenBinding(this, ItemSpacingProperty, tokenKind),
+            TokenResourceBinder.CreateControlTokenBinding(this, LineSpacingProperty, tokenKind)
         };
     }
 

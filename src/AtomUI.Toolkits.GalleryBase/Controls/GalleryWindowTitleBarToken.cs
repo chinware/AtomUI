@@ -7,13 +7,12 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 [ControlDesignToken]
 internal class GalleryWindowTitleBarToken : AbstractControlDesignToken
 {
-    public const string ID = "GalleryWindowTitleBar";
 
     public FontWeight MenuFontWeight { get; set; }
     public Thickness MenuMargin { get; set; }
 
     public GalleryWindowTitleBarToken()
-        : base(ID)
+
     {
     }
 
@@ -21,7 +20,7 @@ internal class GalleryWindowTitleBarToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
         MenuFontWeight = FontWeight.Normal;
-        MenuMargin     = new Thickness(0, 0, SharedToken.SizeUnit * 2, 0);
+        MenuMargin     = new Thickness(0, 0, EffectiveGlobalToken.SizeUnit * 2, 0);
     }
 
 }

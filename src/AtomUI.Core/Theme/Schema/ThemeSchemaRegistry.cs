@@ -9,6 +9,7 @@ internal sealed class ThemeSchemaRegistry
 {
     private readonly FrozenDictionary<string, TokenDescriptor> _globalTokensByName;
     private readonly FrozenDictionary<ControlTokenIdentity, ControlTokenDescriptor> _controlsByIdentity;
+    private readonly FrozenDictionary<Type, ControlTokenDescriptor> _controlsByType;
     private readonly FrozenDictionary<string, ThemeAlgorithmDescriptor> _algorithmsById;
     private readonly FrozenDictionary<object, int> _controlResourceSlotsByKey;
     private readonly object?[] _sharedResourceKeys;
@@ -17,17 +18,22 @@ internal sealed class ThemeSchemaRegistry
     internal ThemeSchemaRegistry(
         IEnumerable<TokenDescriptor> globalTokens,
         IEnumerable<ControlTokenDescriptor> controls,
-        IEnumerable<ThemeAlgorithmDescriptor> algorithms)
+        IEnumerable<ThemeAlgorithmDescriptor> algorithms,
+        IEnumerable<ControlThemeAssetDescriptor>? themeAssets = null)
     {
         ArgumentNullException.ThrowIfNull(globalTokens);
         ArgumentNullException.ThrowIfNull(controls);
         ArgumentNullException.ThrowIfNull(algorithms);
+        themeAssets ??= Array.Empty<ControlThemeAssetDescriptor>();
 
         var globalArray = globalTokens.OrderBy(static descriptor => descriptor.Slot).ToArray();
         var controlInputs = controls.OrderBy(static descriptor => descriptor.Identity.Catalog, StringComparer.Ordinal)
                                     .ThenBy(static descriptor => descriptor.Identity.Id, StringComparer.Ordinal)
                                     .ToArray();
         var algorithmArray = algorithms.OrderBy(static descriptor => descriptor.Id, StringComparer.Ordinal).ToArray();
+        var assetArray = themeAssets.OrderBy(
+            static descriptor => descriptor.AssetUri.ToString(),
+            StringComparer.Ordinal).ToArray();
 
         ValidateDenseSlots(globalArray, static descriptor => descriptor.Slot, "global Token");
 
@@ -45,21 +51,22 @@ internal sealed class ThemeSchemaRegistry
             }
         }
 
-        BuildUniqueMap(
+        var controlInputMap = BuildUniqueMap(
             controlInputs,
             static descriptor => descriptor.Identity,
             EqualityComparer<ControlTokenIdentity>.Default,
             "Control");
         foreach (var descriptor in controlInputs)
         {
-            ValidateControlDescriptor(descriptor);
+            ValidateControlDescriptor(descriptor, globalMap);
         }
+        ValidateThemeAssets(controlInputMap, assetArray);
 
         var globalTokensView = Array.AsReadOnly(globalArray);
         var controlArray = new ControlTokenDescriptor[controlInputs.Length];
         for (var slot = 0; slot < controlInputs.Length; slot++)
         {
-            controlArray[slot] = controlInputs[slot].Bind(slot, globalTokensView);
+            controlArray[slot] = controlInputs[slot].Bind(slot);
         }
         var controlMap = BuildUniqueMap(
             controlArray,
@@ -76,9 +83,15 @@ internal sealed class ThemeSchemaRegistry
         GlobalTokens          = globalTokensView;
         Controls              = Array.AsReadOnly(controlArray);
         Algorithms            = Array.AsReadOnly(algorithmArray);
-        Revision              = ComputeRevision(globalArray, controlArray, algorithmArray);
+        Revision              = ComputeRevision(globalArray, controlArray, algorithmArray, assetArray);
         _globalTokensByName   = globalMap.ToFrozenDictionary(StringComparer.Ordinal);
         _controlsByIdentity   = controlMap.ToFrozenDictionary();
+        _controlsByType       = BuildUniqueMap(
+                                    controlArray,
+                                    static descriptor => descriptor.ControlType,
+                                    EqualityComparer<Type>.Default,
+                                    "Control CLR type")
+                                .ToFrozenDictionary();
         _algorithmsById       = algorithmMap.ToFrozenDictionary(StringComparer.Ordinal);
         _controlResourceSlotsByKey = CreateControlResourceSlotMap(controlArray);
         _sharedResourceKeys = CreateSharedResourceKeys(globalArray);
@@ -102,6 +115,14 @@ internal sealed class ThemeSchemaRegistry
         [NotNullWhen(true)] out ControlTokenDescriptor? descriptor)
     {
         return _controlsByIdentity.TryGetValue(identity, out descriptor);
+    }
+
+    internal bool TryGetControl(
+        Type controlType,
+        [NotNullWhen(true)] out ControlTokenDescriptor? descriptor)
+    {
+        ArgumentNullException.ThrowIfNull(controlType);
+        return _controlsByType.TryGetValue(controlType, out descriptor);
     }
 
     internal bool TryGetAlgorithm(
@@ -165,7 +186,7 @@ internal sealed class ThemeSchemaRegistry
             var keys = new object?[length];
             foreach (var kind in kinds)
             {
-                keys[(int)kind] = new ControlSharedTokenResourceKey(controlSlot, kind);
+                keys[(int)kind] = new ControlTokenResourceKey(controlSlot, kind);
             }
             result[controlSlot] = keys;
         }
@@ -207,7 +228,35 @@ internal sealed class ThemeSchemaRegistry
         return result.ToFrozenDictionary();
     }
 
-    private static void ValidateControlDescriptor(ControlTokenDescriptor descriptor)
+    private static void ValidateThemeAssets(
+        IReadOnlyDictionary<ControlTokenIdentity, ControlTokenDescriptor> controlsByIdentity,
+        IReadOnlyList<ControlThemeAssetDescriptor> themeAssets)
+    {
+        foreach (var asset in themeAssets)
+        {
+            ArgumentNullException.ThrowIfNull(asset);
+            if (!controlsByIdentity.ContainsKey(asset.OwnerIdentity))
+            {
+                throw new ThemeSchemaException(
+                    $"Control theme asset '{asset.AssetUri}' uses unregistered owner identity " +
+                    $"'{asset.OwnerIdentity}'.");
+            }
+
+            foreach (var identity in asset.ReferencedControlIdentities)
+            {
+                if (!controlsByIdentity.ContainsKey(identity))
+                {
+                    throw new ThemeSchemaException(
+                        $"Control theme asset '{asset.AssetUri}' references unregistered identity " +
+                        $"'{identity}'.");
+                }
+            }
+        }
+    }
+
+    private static void ValidateControlDescriptor(
+        ControlTokenDescriptor descriptor,
+        IReadOnlyDictionary<string, TokenDescriptor> globalTokens)
     {
         ValidateDenseSlots(descriptor.OwnTokens, static token => token.Slot, $"{descriptor.Identity} own Token");
         var ownNames = new HashSet<string>(StringComparer.Ordinal);
@@ -223,6 +272,11 @@ internal sealed class ThemeSchemaRegistry
             {
                 throw new ThemeSchemaException(
                     $"Control '{descriptor.Identity}' contains duplicate own Token '{token.Name}'.");
+            }
+            if (globalTokens.ContainsKey(token.Name))
+            {
+                throw new ThemeSchemaException(
+                    $"Control '{descriptor.Identity}' Own Token '{token.Name}' conflicts with a Global Token.");
             }
         }
     }
@@ -267,7 +321,8 @@ internal sealed class ThemeSchemaRegistry
     private static ThemeSchemaRevision ComputeRevision(
         IReadOnlyList<TokenDescriptor> globalTokens,
         IReadOnlyList<ControlTokenDescriptor> controls,
-        IReadOnlyList<ThemeAlgorithmDescriptor> algorithms)
+        IReadOnlyList<ThemeAlgorithmDescriptor> algorithms,
+        IReadOnlyList<ControlThemeAssetDescriptor> themeAssets)
     {
         var fingerprint = new SchemaFingerprintBuilder();
         fingerprint.Add(globalTokens.Count);
@@ -281,6 +336,8 @@ internal sealed class ThemeSchemaRegistry
         {
             fingerprint.Add(control.Identity.Catalog);
             fingerprint.Add(control.Identity.Id);
+            fingerprint.Add(control.ControlType.Assembly.GetName().Name ?? string.Empty);
+            fingerprint.Add(control.ControlType.FullName ?? control.ControlType.Name);
             fingerprint.Add(control.Slot);
             fingerprint.Add(control.OwnTokens.Count);
             foreach (var token in control.OwnTokens)
@@ -295,6 +352,32 @@ internal sealed class ThemeSchemaRegistry
             fingerprint.Add(algorithm.Id);
             fingerprint.Add(algorithm.Revision);
             fingerprint.Add((byte)algorithm.AppearanceEffect);
+        }
+
+        fingerprint.Add(themeAssets.Count);
+        foreach (var asset in themeAssets)
+        {
+            fingerprint.Add(asset.AssetUri.ToString());
+            fingerprint.Add(asset.OwnerIdentity.Catalog);
+            fingerprint.Add(asset.OwnerIdentity.Id);
+            fingerprint.Add(asset.ResourceKeySchemaFingerprint);
+            fingerprint.Add(asset.ReferencedControlIdentities.Count);
+            foreach (var identity in asset.ReferencedControlIdentities)
+            {
+                fingerprint.Add(identity.Catalog);
+                fingerprint.Add(identity.Id);
+            }
+
+            if (asset.SemanticPart is { } semanticPart)
+            {
+                fingerprint.Add((byte)1);
+                fingerprint.Add(semanticPart.PropertyName);
+                fingerprint.Add(semanticPart.TargetTypeName);
+            }
+            else
+            {
+                fingerprint.Add((byte)0);
+            }
         }
 
         return new ThemeSchemaRevision(fingerprint.Value);
@@ -318,7 +401,7 @@ internal sealed class ThemeSchemaRegistry
         switch (resourceKey)
         {
             case Enum enumValue:
-                fingerprint.Add(Convert.ToUInt64(enumValue, CultureInfo.InvariantCulture));
+                fingerprint.Add(unchecked((ulong)Convert.ToInt64(enumValue, CultureInfo.InvariantCulture)));
                 break;
             case string stringValue:
                 fingerprint.Add(stringValue);

@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class DescriptionsToken : AbstractControlDesignToken
 {
-    public const string ID = "Descriptions";
     
     /// <summary>
     /// 标签背景色
@@ -70,23 +69,23 @@ internal class DescriptionsToken : AbstractControlDesignToken
     public Color ExtraColor { get; set; }
 
     public DescriptionsToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        LabelBg      = SharedToken.ColorFillAlter;
-        LabelColor   = SharedToken.ColorTextTertiary;
-        TitleColor   = SharedToken.ColorText;
-        HeaderMargin = new Thickness(0, 0, 0, SharedToken.FontSizeSM * SharedToken.RelativeLineHeightSM);
-        ItemPaddingLG  = new Thickness(SharedToken.UniformlyPaddingLG, SharedToken.UniformlyPadding);
-        ItemPadding  = new Thickness(SharedToken.UniformlyPaddingLG, SharedToken.UniformlyPaddingSM);
-        ItemPaddingSM  = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingXS);
-        ColonMargin  = new Thickness(SharedToken.UniformlyMarginXXS / 2, 0, SharedToken.UniformlyMarginXS, 0);
-        ContentColor = SharedToken.ColorText;
-        ExtraColor   = SharedToken.ColorText;
+        LabelBg      = EffectiveGlobalToken.ColorFillAlter;
+        LabelColor   = EffectiveGlobalToken.ColorTextTertiary;
+        TitleColor   = EffectiveGlobalToken.ColorText;
+        HeaderMargin = new Thickness(0, 0, 0, EffectiveGlobalToken.FontSizeSM * EffectiveGlobalToken.RelativeLineHeightSM);
+        ItemPaddingLG  = new Thickness(EffectiveGlobalToken.UniformlyPaddingLG, EffectiveGlobalToken.UniformlyPadding);
+        ItemPadding  = new Thickness(EffectiveGlobalToken.UniformlyPaddingLG, EffectiveGlobalToken.UniformlyPaddingSM);
+        ItemPaddingSM  = new Thickness(EffectiveGlobalToken.UniformlyPadding, EffectiveGlobalToken.UniformlyPaddingXS);
+        ColonMargin  = new Thickness(EffectiveGlobalToken.UniformlyMarginXXS / 2, 0, EffectiveGlobalToken.UniformlyMarginXS, 0);
+        ContentColor = EffectiveGlobalToken.ColorText;
+        ExtraColor   = EffectiveGlobalToken.ColorText;
     }
     
 }

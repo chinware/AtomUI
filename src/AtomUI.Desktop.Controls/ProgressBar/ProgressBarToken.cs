@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ProgressBarToken : AbstractControlDesignToken
 {
-    public const string ID = "ProgressBar";
     
     /// <summary>
     /// 进度条默认颜色
@@ -49,7 +48,7 @@ internal class ProgressBarToken : AbstractControlDesignToken
     public double LineInfoIconSizeSM { get; set; }
 
     public ProgressBarToken()
-        : base(ID)
+
     {
     }
 
@@ -57,17 +56,17 @@ internal class ProgressBarToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
 
-        CircleTextColor  = SharedToken.ColorText;
-        DefaultColor     = SharedToken.ColorInfo;
-        RemainingColor   = SharedToken.ColorFillSecondary;
+        CircleTextColor  = EffectiveGlobalToken.ColorText;
+        DefaultColor     = EffectiveGlobalToken.ColorInfo;
+        RemainingColor   = EffectiveGlobalToken.ColorFillSecondary;
         LineBorderRadius = new CornerRadius(100); // magic for capsule shape, should be a very large number
         // 这两个要通过计算
-        CircleMinimumIconSize     = SharedToken.SizeXS;
-        CircleMinimumTextFontSize = SharedToken.FontSizeSM - 2;
-        LineInfoIconSize          = SharedToken.IconSize;
-        LineInfoIconSizeSM        = SharedToken.IconSizeSM;
-        LineExtraInfoMargin       = SharedToken.ControlPaddingHorizontalSM;
-        LineProgressPadding       = SharedToken.UniformlyPaddingXXS / 2;
+        CircleMinimumIconSize     = EffectiveGlobalToken.SizeXS;
+        CircleMinimumTextFontSize = EffectiveGlobalToken.FontSizeSM - 2;
+        LineInfoIconSize          = EffectiveGlobalToken.IconSize;
+        LineInfoIconSizeSM        = EffectiveGlobalToken.IconSizeSM;
+        LineExtraInfoMargin       = EffectiveGlobalToken.ControlPaddingHorizontalSM;
+        LineProgressPadding       = EffectiveGlobalToken.UniformlyPaddingXXS / 2;
     }
     
 }

@@ -22,7 +22,7 @@ Tags 模式的动态选项必须作为 Select 自身运行时状态维护。用�
 - `src/AtomUI.Desktop.Controls/Select/SelectHandle.cs`：右侧展开、loading、清除和 Form feedback 图标。
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
 - `src/AtomUI.Desktop.Controls/Select/DataLoad/*`：异步候选加载接口、结果和事件参数。
-- `src/AtomUI.Desktop.Controls/Select/SelectToken.cs`：Select 组件 Token。
+- `src/AtomUI.Desktop.Controls/Select/SelectToken.cs`：Select 控件 Token。
 - `src/AtomUI.Desktop.Controls/Select/Themes/*.axaml`：Select 根模板、候选列表、结果标签、handle、输入壳体和 token 样式。
 
 ## 3. 核心类职责

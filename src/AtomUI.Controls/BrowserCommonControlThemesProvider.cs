@@ -4,4 +4,8 @@ namespace AtomUI.Controls;
 
 internal class BrowserCommonControlThemesProvider : ControlThemesProvider
 {
+    public BrowserCommonControlThemesProvider()
+    {
+        Id = "AtomUI.Controls.Common";
+    }
 }

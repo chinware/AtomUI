@@ -3,6 +3,7 @@ using AtomUI.Desktop.Controls.DesignTokens;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
@@ -46,6 +47,7 @@ internal class DragPreviewAdorner : Decorator
 
 internal class DragPreview : Decorator
 {
+    private readonly TreeViewItemHeader _previewControl;
     public static readonly StyledProperty<IBrush?> BackgroundProperty =
         Border.BackgroundProperty.AddOwner<DragPreviewAdorner>();
 
@@ -60,6 +62,7 @@ internal class DragPreview : Decorator
     
     public DragPreview(TreeViewItemHeader previewControl)
     {
+        _previewControl      = previewControl;
         Width               = previewControl.Bounds.Width;
         Height              = previewControl.Bounds.Height;
         HorizontalAlignment = HorizontalAlignment.Left;
@@ -75,8 +78,18 @@ internal class DragPreview : Decorator
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        var owner = _previewControl.FindLogicalAncestorOfType<TreeView>();
+        if (owner is null)
+        {
+            throw new InvalidOperationException(
+                "A TreeView drag preview must remain attached to a registered TreeView.");
+        }
         _backgroundBindingDisposable =
-            TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, TreeViewTokenKind.NodeHoverBg);
+            TokenResourceBinder.CreateControlTokenBinding(
+                owner,
+                this,
+                BackgroundProperty,
+                TreeViewTokenKind.NodeHoverBg);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

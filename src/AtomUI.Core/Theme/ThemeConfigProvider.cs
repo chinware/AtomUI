@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
 using Avalonia;
@@ -47,10 +48,21 @@ public class ThemeConfigProvider : ThemeVariantScope
             out var result);
         _registration = registration;
         _context      = registration.Context;
-        Resources.MergedDictionaries.Add(registration.Context.ResourceProvider);
-        SetValue(ThemeScope.ContextProperty, registration.Context);
-        PublishCommittedContext(registration.Context, notifyResources: false);
-        DispatchResult(result);
+        var publishDiagnostics = new List<ThemeDiagnostic>();
+        ThemePublishBoundary.Dispatch(
+            () => Resources.MergedDictionaries.Add(registration.Context.ResourceProvider),
+            this,
+            publishDiagnostics,
+            $"ThemeScope[{registration.RegistrationId}].Resources");
+        ThemePublishBoundary.Dispatch(
+            () => SetValue(ThemeScope.ContextProperty, registration.Context),
+            this,
+            publishDiagnostics,
+            $"ThemeScope[{registration.RegistrationId}].Context");
+        publishDiagnostics.AddRange(PublishCommittedContext(
+            registration.Context,
+            notifyResources: false));
+        DispatchResult(result.WithPublishDiagnostics(publishDiagnostics));
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -59,13 +71,7 @@ public class ThemeConfigProvider : ThemeVariantScope
         var context = _context;
         _registration = null;
         _context      = null;
-        if (context is not null)
-        {
-            Resources.MergedDictionaries.Remove(context.ResourceProvider);
-        }
-        ClearValue(ThemeScope.ContextProperty);
-        ClearValue(RequestedThemeVariantProperty);
-        registration?.Dispose();
+        ReleaseRegistration(registration, context);
         base.OnDetachedFromLogicalTree(e);
     }
 
@@ -82,25 +88,50 @@ public class ThemeConfigProvider : ThemeVariantScope
             change.GetNewValue<ThemeConfig?>() ?? s_defaultConfig);
     }
 
-    internal void PublishCommittedContext(ThemeContext context, bool notifyResources)
+    internal IReadOnlyList<ThemeDiagnostic> PublishCommittedContext(
+        ThemeContext context,
+        bool notifyResources)
+    {
+        if (!ReferenceEquals(_context, context))
+        {
+            return Array.Empty<ThemeDiagnostic>();
+        }
+
+        var diagnostics = new List<ThemeDiagnostic>();
+        ThemePublishBoundary.Dispatch(
+            () => SetCurrentValue(
+                RequestedThemeVariantProperty,
+                context.Appearance == ThemeAppearance.Dark
+                    ? Avalonia.Styling.ThemeVariant.Dark
+                    : Avalonia.Styling.ThemeVariant.Light),
+            this,
+            diagnostics,
+            $"ThemeScope[{context.RegistrationId}].ThemeVariant");
+        ThemePublishBoundary.Dispatch(
+            () => diagnostics.AddRange(context.Publish(notifyResources)),
+            this,
+            diagnostics,
+            $"ThemeScope[{context.RegistrationId}].ContextPublish");
+        return diagnostics.AsReadOnly();
+    }
+
+    internal void ReleaseManagerRegistration(ThemeContext context)
     {
         if (!ReferenceEquals(_context, context))
         {
             return;
         }
 
-        SetCurrentValue(
-            RequestedThemeVariantProperty,
-            context.Appearance == ThemeAppearance.Dark
-                ? Avalonia.Styling.ThemeVariant.Dark
-                : Avalonia.Styling.ThemeVariant.Light);
-        context.Publish(notifyResources);
+        var registration = _registration;
+        _registration = null;
+        _context = null;
+        ReleaseRegistration(registration, context);
     }
 
     internal void DispatchResult(ThemeScopeUpdateResult result)
     {
         var publishDiagnostics = new List<ThemeDiagnostic>();
-        if (result.Success)
+        if (result.Status == ThemeTransitionStatus.Committed)
         {
             ThemeEventDispatcher.Dispatch(
                 ThemeChanged,
@@ -114,6 +145,11 @@ public class ThemeConfigProvider : ThemeVariantScope
             return;
         }
 
+        if (result.Status != ThemeTransitionStatus.Failed)
+        {
+            return;
+        }
+
         ThemeEventDispatcher.Dispatch(
             ThemeChangeFailed,
             this,
@@ -123,5 +159,33 @@ public class ThemeConfigProvider : ThemeVariantScope
                 result.Exception),
             publishDiagnostics,
             nameof(ThemeChangeFailed));
+    }
+
+    private void ReleaseRegistration(
+        ThemeScopeRegistration? registration,
+        ThemeContext? context)
+    {
+        if (context is not null)
+        {
+            CleanupBoundary(() => Resources.MergedDictionaries.Remove(context.ResourceProvider));
+        }
+        CleanupBoundary(() => ClearValue(ThemeScope.ContextProperty));
+        CleanupBoundary(() => ClearValue(RequestedThemeVariantProperty));
+        if (registration is not null)
+        {
+            CleanupBoundary(registration.Dispose);
+        }
+    }
+
+    private static void CleanupBoundary(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine(exception);
+        }
     }
 }

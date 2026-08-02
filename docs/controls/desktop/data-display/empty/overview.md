@@ -30,7 +30,7 @@ Empty 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Empty 是 AtomUI 桌面控件体系中的空状态控件，用于表达无数据、无结果或占位状态。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Description`、`ImagePath`、`ImageSource`、`IsDescriptionVisible`、`PresetImage`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Empty Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Empty Token + ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -79,13 +79,13 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-Empty 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Empty 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `EmptyTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Empty 使用 `EmptyToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
+Empty 使用 `EmptyToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
 
 主题维护规则：
 
@@ -102,7 +102,7 @@ Empty 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证�
 
 - `AbstractEmpty`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
 - `Empty`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `EmptyToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `EmptyToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 集成关系：
 

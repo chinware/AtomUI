@@ -4,7 +4,7 @@
 
 ## 1. 定位
 
-DescriptionsToken 是 Descriptions 的组件级 Token scope，描述描述列表的 label 背景、文本颜色、标题颜色、Header 间距、item padding、冒号间距、内容颜色和 Extra 颜色。
+DescriptionsToken 是 Descriptions 的控件级 Token scope，描述描述列表的 label 背景、文本颜色、标题颜色、Header 间距、item padding、冒号间距、内容颜色和 Extra 颜色。
 
 DescriptionsToken 不承载以下状态：
 

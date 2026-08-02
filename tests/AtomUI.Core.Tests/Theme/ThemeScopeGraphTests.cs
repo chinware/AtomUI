@@ -103,6 +103,20 @@ public class ThemeScopeGraphTests
         published.ShouldBe(1);
     }
 
+    [Fact]
+    public void Context_Publish_Continues_After_An_Observer_Fails()
+    {
+        var snapshot = ThemeTestSnapshotFactory.Compile();
+        var context = new ThemeContext(new ThemeManager(static () => true), snapshot, 1);
+        var laterObserverRan = false;
+        context.Published += (_, _) => throw new InvalidOperationException("observer failure");
+        context.Published += (_, _) => laterObserverRan = true;
+
+        context.Publish(notifyResources: false);
+
+        laterObserverRan.ShouldBeTrue();
+    }
+
     private static ThemeContext CreateRootContext(ThemeManager manager)
     {
         return new ThemeContext(manager, CreateSnapshot(), 0);

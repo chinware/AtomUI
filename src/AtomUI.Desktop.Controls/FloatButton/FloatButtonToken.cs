@@ -6,10 +6,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class FloatButtonToken : AbstractControlDesignToken
 {
-    public const string ID = "FloatButton";
 
     public FloatButtonToken()
-        : base(ID)
+
     {
     }
     
@@ -58,16 +57,16 @@ internal class FloatButtonToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        PrimaryColor          = SharedToken.ColorTextLightSolid;
-        FloatButtonIconSize   = SharedToken.FontSizeIcon * 1.5;
-        FloatButtonSize       = SharedToken.ControlHeightLG;
-        DescriptionLineHeight = SharedToken.FontSizeSM * 1.2;
-        FloatOffsetX          = SharedToken.UniformlyMargin;
-        FloatOffsetY          = SharedToken.UniformlyMargin;
+        PrimaryColor          = EffectiveGlobalToken.ColorTextLightSolid;
+        FloatButtonIconSize   = EffectiveGlobalToken.FontSizeIcon * 1.5;
+        FloatButtonSize       = EffectiveGlobalToken.ControlHeightLG;
+        DescriptionLineHeight = EffectiveGlobalToken.FontSizeSM * 1.2;
+        FloatOffsetX          = EffectiveGlobalToken.UniformlyMargin;
+        FloatOffsetY          = EffectiveGlobalToken.UniformlyMargin;
         var r       = Math.Sqrt(2);
         var offsetR = (r - 1) / r;
-        SquareBadgeOffset = SharedToken.BorderRadius.BottomLeft * offsetR;
-        CircleBadgeOffset = SharedToken.ControlHeight / 2 * offsetR;
+        SquareBadgeOffset = EffectiveGlobalToken.BorderRadius.BottomLeft * offsetR;
+        CircleBadgeOffset = EffectiveGlobalToken.ControlHeight / 2 * offsetR;
     }
     
 }

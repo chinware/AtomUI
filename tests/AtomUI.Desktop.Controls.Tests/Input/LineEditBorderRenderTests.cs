@@ -55,7 +55,7 @@ public class LineEditBorderRenderTests
             var content = frames["PART_ContentFrame"];
             var right   = frames["PART_RightAddOn"];
             var expectedBorderBrush = GetThemeResource<IBrush>(SharedTokenKind.ColorBorder);
-            var expectedPadding = GetThemeResource<Thickness>(AddOnDecoratedBoxTokenKind.Padding);
+            var expectedPadding = GetThemeResource<Thickness>(SharedTokenKind.InputPadding);
 
             left.StyleKey.ShouldBe(left.GetType());
             content.StyleKey.ShouldBe(content.GetType());

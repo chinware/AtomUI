@@ -494,8 +494,8 @@ AtomUI 的 semantic 文档描述 AXAML、ControlTemplate、运行时组合结构
 
 `Composition Model` 必须描述 public 控件与内部协作对象之间的运行时组合关系。它的第一信息源是控件源码目录下的 `Themes/` 文件夹：
 
-- 优先阅读同一控件家族的 `*Theme.axaml` 和 `*Themes.axaml`。
-- 从多个 `ControlTheme` 中识别 public control、internal control、item container、adorner、presenter、popup host、motion actor、template part 和主题聚合关系。
+- 优先阅读同一控件家族的独立 `*Theme.axaml` 叶子，并使用生成的 ControlTheme asset manifest 校验 owner、引用的 Control identity 和 Semantic Part Theme 关系。
+- 从多个 `ControlTheme` 中识别 public control、internal control、item container、adorner、presenter、popup host、motion actor、template part 和跨主题组合关系；不得依赖只用于聚合的 `*Themes.axaml`。
 - `implementation.md`、源码索引、C# 创建逻辑、`CreateContainerForItemOverride()`、`OnApplyTemplate` 和 `PART_` 只作为解释与校验补充。
 - 不允许仅凭控件名称、控件分类或通用模式发明内部协作节点。
 

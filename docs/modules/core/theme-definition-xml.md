@@ -198,15 +198,13 @@ AtomUI 内置 Control 使用 `Catalog="AtomUI"`。第三方包必须使用自身
 
 Control 内部的 `Tokens` 使用一个集合表达两类覆盖：
 
-- Control 自身 Token。
-- 当前 registry revision 中该 Control 的 `SupportedGlobalTokens`。
+- 当前 Control 的 Own Token。
+- 当前 registry revision 中的任意 Global Token。
 
-Binder 使用 Control descriptor 分类。Own Token 与 Global Token 禁止同名；Token 不在 `OwnTokens` 或
-`SupportedGlobalTokens` 中时，整个 definition 绑定失败。Control Token 不形成 Content 子树资源作用域。
-
-`SupportedGlobalTokens` 由 Control Own Token 计算依赖、内置 ControlTheme 依赖，以及第三方包和应用在构建期生成、
-并在构建 ThemeManager 前通过包级入口注册的 dependency manifest 合并产生。主题 XML 不声明或扩展这份清单，
-也不能把任意 Global Token 强行写入某个 Control 配置。具体发现和注册规则见
+Binder 先使用 Control descriptor 匹配 Own Token，未命中时使用完整 Global Token schema 分类。Own Token 与
+Global Token 禁止同名；名称在两处都不存在时，整个 definition 绑定失败。合法但未被该 Control 消费的 Global
+Token 允许配置并可能没有实际效果。Control Token 不形成 Content 子树资源作用域，局部 Global 覆盖也不会改变
+其他 Control 或真正的 Global Token snapshot。具体规则见
 [Control Token 设计规范](../../engineering/control-token-guidelines.md)。
 
 Control 配置必须至少声明 `Algorithm`、自定义 `Algorithms` 或 `Tokens` 中的一项。空 Control 是语义错误。

@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:OptionButtonThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:OptionButton}" TargetType="atom:OptionButton">
         <Setter Property="Template">
@@ -35,7 +32,7 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="FontSize" Value="{atom:OptionButtonTokenResource ContentFontSize}" />
-        <Setter Property="Padding" Value="{atom:OptionButtonTokenResource Padding}" />
+        <Setter Property="Padding" Value="{atom:OptionButtonTokenResource ContentPadding}" />
         <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
 
         <Style Selector="^ /template/ DockPanel#ContentLayout">
@@ -50,7 +47,7 @@
         <Style Selector="^[SizeType=Large]">
             <Setter Property="FontSize"
                     Value="{atom:OptionButtonTokenResource ContentFontSizeLG}" />
-            <Setter Property="Padding" Value="{atom:OptionButtonTokenResource PaddingLG}" />
+            <Setter Property="Padding" Value="{atom:OptionButtonTokenResource ContentPaddingLG}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
             
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
@@ -61,7 +58,7 @@
 
         <Style Selector="^[SizeType=Middle]">
             <Setter Property="FontSize" Value="{atom:OptionButtonTokenResource ContentFontSize}" />
-            <Setter Property="Padding" Value="{atom:OptionButtonTokenResource Padding}" />
+            <Setter Property="Padding" Value="{atom:OptionButtonTokenResource ContentPadding}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
             
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
@@ -93,7 +90,7 @@
         <Style Selector="^[SizeType=Small]">
             <Setter Property="FontSize"
                     Value="{atom:OptionButtonTokenResource ContentFontSizeSM}" />
-            <Setter Property="Padding" Value="{atom:OptionButtonTokenResource PaddingSM}" />
+            <Setter Property="Padding" Value="{atom:OptionButtonTokenResource ContentPaddingSM}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
                     
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">

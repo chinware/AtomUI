@@ -6,9 +6,8 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class SplitterToken : AbstractControlDesignToken
 {
-    public const string ID = "Splitter";
     
-    public SplitterToken() : base(ID)
+    public SplitterToken()
     {
     }
 
@@ -47,19 +46,19 @@ internal class SplitterToken : AbstractControlDesignToken
         SplitBarDraggableSize = 20;
         SplitBarSize          = 2;
         SplitTriggerSize      = 6;
-        SplitBarHandleSize    = SplitTriggerSize + SharedToken.FontSizeSM * 2;
+        SplitBarHandleSize    = SplitTriggerSize + EffectiveGlobalToken.FontSizeSM * 2;
         var collapseOffset = SplitBarSize / 2d + 1d;
         SplitBarCollapseOffset         = collapseOffset;
-        SplitBarCollapseOffsetNegative = -(SharedToken.FontSizeSM + collapseOffset);
+        SplitBarCollapseOffsetNegative = -(EffectiveGlobalToken.FontSizeSM + collapseOffset);
         SplitBarCollapseCrossOffset    = -SplitBarDraggableSize / 2d;
-        HandleLineColor                = SharedToken.ControlItemBgHover;
-        HandleLineHoverColor           = SharedToken.ControlItemBgActive;
-        HandleLineDragColor            = SharedToken.ControlItemBgActiveHover;
-        HandleIconColor                = SharedToken.ColorText;
+        HandleLineColor                = EffectiveGlobalToken.ControlItemBgHover;
+        HandleLineHoverColor           = EffectiveGlobalToken.ControlItemBgActive;
+        HandleLineDragColor            = EffectiveGlobalToken.ControlItemBgActiveHover;
+        HandleIconColor                = EffectiveGlobalToken.ColorText;
         HandleIconHoverColor           = HandleIconColor;
         HandleIconPressedColor         = HandleIconColor;
         HandleLineThickness            = SplitBarSize;
-        HandleIconSize                 = SharedToken.FontSizeSM;
+        HandleIconSize                 = EffectiveGlobalToken.FontSizeSM;
     }
     
 }

@@ -23,7 +23,7 @@ NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航�
 - `src/AtomUI.Desktop.Controls/NavMenu/InlineNavMenuInteractionHandler.cs`：Inline 展开收起交互策略。
 - `src/AtomUI.Desktop.Controls/NavMenu/Header/`：三种 header 控件。
 - `src/AtomUI.Desktop.Controls/NavMenu/Themes/`：root、item、header 和 popup 主题。
-- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuToken.cs`：组件 Token。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuToken.cs`：控件 Token。
 
 ## 3. 核心类职责
 

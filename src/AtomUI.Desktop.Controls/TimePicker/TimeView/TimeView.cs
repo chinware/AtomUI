@@ -251,7 +251,11 @@ internal class TimeView : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _spacerWidthDisposable =  TokenResourceBinder.CreateTokenBinding(this, SpacerWidthProperty,
+        _spacerWidthDisposable = TokenResourceBinder.CreateControlTokenBinding(
+            typeof(TimePicker),
+            this,
+            this,
+            SpacerWidthProperty,
             SharedTokenKind.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this));

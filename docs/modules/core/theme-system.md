@@ -26,7 +26,7 @@
 - 每个对外可主题化的 Control 都拥有独立 `ControlTokenIdentity`；TargetType、Control 继承和 ControlTheme
   `BasedOn` 都不能替代或推断该 identity。
 - AXAML 中 `{atom:SharedTokenResource TokenName}` 永远读取全局 Token；需要响应 Control 级覆盖时统一使用生成的
-  `{atom:XxxTokenResource TokenName}`，它同时读取该 Control 支持的全局 Token 和 Own Token。
+  `{atom:XxxTokenResource TokenName}`，它同时读取该 Control 的 Effective Global Token 和 Own Token。
 - ControlTheme 不携带 ambient Token scope；Token 所属 Control 必须由资源扩展名显式表达。
 - Token 资源查询热路径不分配对象，不执行字符串解析、反射或 LINQ。
 - 局部主题只复制发生变化的数据，不能按作用域复制完整全局 Token 和全部 Control Token 值。
@@ -50,7 +50,7 @@ AtomUI 主题系统以本项目的公开配置契约、Token 模型和运行时�
 
 - `ThemeConfig` 对 Token 按 key 合并，对 Control 配置先按 identity、再按字段合并；`Algorithms` 整体替换。
 - `Inherit=false` 只切断父 `ThemeContext`，仍从 AtomUI 默认主题基线开始计算。
-- Token 按 Seed、Map、Alias、Control 四层派生，Control 可以覆盖自身消费的全局 Token。
+- Token 按 Seed、Map、Alias、Control 四层派生；每个 Control 都可以覆盖当前 registry 中的任意 Global Token。
 - 算法是有序 derivative 链；每个算法接收同一份 Seed 和前一算法的 Map 结果。
 - 主题计算和 Control 计算按完整内容缓存，缓存身份包含算法链和所有会改变结果的配置。
 - 嵌套主题依赖上下文隔离；脱离上下文的新渲染根不能自动获得调用点主题。
@@ -75,7 +75,7 @@ AtomUI 使用统一的 `ThemeConfig` 描述全局主题和局部主题输入：
 | 配置项 | 设计结论 |
 |---|---|
 | `ThemeConfig.Tokens` | 覆盖当前作用域的全局 Token |
-| `ThemeConfig.Controls[ControlTokenIdentity]` | 覆盖目标 Control 自身 Token 和其消费的全局 Token |
+| `ThemeConfig.Controls[ControlTokenIdentity]` | 覆盖目标 Control 的 Own Token 和当前 registry 中的任意 Global Token |
 | `ThemeConfig.Algorithms` | 定义 Seed 到 Map、Alias 的有序算法链 |
 | `ThemeConfig.Inherit` | 决定是否继承父作用域有效配置，默认 `true` |
 | `ControlThemeConfig.Algorithm` | 定义目标 Control 的局部算法策略 |
@@ -261,13 +261,16 @@ appearance 为基线。全局算法 descriptor 的 appearance effect 按顺序�
 决定结果。Control 自定义算法只影响该 Control 的 Token 和 Control appearance，不改变所在 ThemeContext 的
 Avalonia ThemeVariant。
 
-Control 的 `Tokens` 使用一个集合表达 Own Token 和该 Control 支持覆盖的全局 Token。`ControlTokenDescriptor`
-必须分别公开 `OwnTokens` 与 `SupportedGlobalTokens`，Schema Binder 依据 descriptor 完成分类。Own Token 与
-Global Token 禁止同名；不在这两个集合中的 Token 不能出现在该 Control 配置下。
+Control 的 `Tokens` 使用一个扁平集合表达 Own Token 和 Control 级 Global Token 覆盖。每个 Control 天然可以
+覆盖当前 registry 中的任意 Global Token，不维护或推导 Global Token 白名单。Schema Binder 先在当前
+`ControlTokenDescriptor.OwnTokens` 中查找名称，未命中时再在完整 Global Token schema 中查找；两处都未命中
+才产生未知 Token 错误。Own Token 与任意 Global Token 禁止同名，因此分类没有歧义。一个合法 Global Token
+即使未被当前 Control 的计算或主题资产消费也允许配置，结果可能没有视觉效果，但不能影响其他 Control 或真正的
+Global Token snapshot。
 
 ## 5. Theme Schema 与注册
 
-`ThemeSchemaRegistry` 在应用主题初始化前一次性构建。Control、Token、主题资产和依赖内容只来自源生成结果；
+`ThemeSchemaRegistry` 在应用主题初始化前一次性构建。Control、Token 和主题资产只来自源生成结果；
 主题算法可以通过显式 `ThemeAlgorithmDescriptor` 注册：
 
 ```text
@@ -275,9 +278,9 @@ ThemeSchemaRegistry
 +-- GlobalTokenSchema
 |   \-- token name, kind, stage, value type, parser, setter, getter, resource key
 +-- ControlTokenDescriptor[ControlTokenIdentity]
-|   \-- factory, own token schema, supported global token schema, evaluator, resource projector
-+-- ControlThemeTokenDependencyManifest
-|   \-- theme asset, owner identity, consumed global token keys, semantic part contract
+|   \-- exact CLR type, factory, own token schema, evaluator, resource projector
++-- ControlThemeAssetManifest
+|   \-- theme asset, owner identity, referenced Control identities, semantic part contract
 \-- ThemeAlgorithmDescriptor[algorithm id]
     \-- revision, evaluator, AOT factory, appearance effect
 ```
@@ -296,10 +299,11 @@ Evaluate(effectiveSeed, previousMap?) -> nextMap
 目标 builder。Dark、Compact 在没有 previous Map 时可以内部调用 Default，但这种 fallback 属于算法实现，
 不能改变通用链契约。
 
-`ThemeSchemaRegistry.Revision` 根据排序后的完整 descriptor schema 确定性计算，输入至少包含 Control
-identity、Own Token、Supported Global Token、Token name/kind/stage/value type/resource key schema、主题依赖
-manifest、算法 id/revision 及其外观声明。注册顺序不影响 revision；任何会改变绑定、编译或资源投影结果的
-descriptor 变化都必须改变 revision。
+`ThemeSchemaRegistry.Revision` 根据排序后的完整 descriptor schema 确定性计算，输入至少包含 Global Token
+schema、Control identity、Control CLR type、Own Token name/kind/stage/value type/resource key schema、主题资产
+结构、算法 id/revision 及其外观声明。ControlTheme 或 C# 实现消费了哪些 Global Token 不属于 schema，也不进入
+revision。注册顺序不影响 revision；任何会改变配置绑定、Token 类型或资源投影结构的 descriptor 变化都必须
+改变 revision。
 
 Registry 在首个 snapshot 编译前冻结。Manager 构建完成后不能追加 Token、Control、算法或主题资产
 descriptor；可选控件包必须在 `UseAtomUI` Builder 阶段完成显式注册。
@@ -316,20 +320,22 @@ descriptor 和资源扩展，只省略 Own Token builder/schema：
 - Own Token name 对应的强类型赋值委托查找表；没有 Own Token 时为空。
 - Own Token value 到 Avalonia resource value 的投影；没有 Own Token 时为空。
 - 可选 Own Token builder 的直接构造委托。
-- Control Own Token schema，以及根据 C# Token 计算和 AXAML 消费自动产生的 `SupportedGlobalTokens`。
+- Control CLR type 和 Own Token schema；descriptor 不包含 Global Token 消费白名单。
 - 生成式 `XxxTokens.Identity`、`XxxTokenKey` 和 `XxxTokenResourceExtension`；Token key 必须强类型化，不能在
   ProvideValue 热路径解析字符串。
-- 每个主题资产的 URI、owner Control identity、Semantic Part Theme 契约和 Token 依赖 manifest。
+- 每个主题资产的 URI、owner Control identity、引用的 Control identities 和 Semantic Part Theme 契约。
 - 每个包的生成式注册入口；一次注册完整 descriptor 和资产 manifest，不要求逐 Control 手工注册。
 
 `XxxTokenResource` 是 Control identity 的显式 AXAML 边界。它使用同一种语法读取 Effective Global Token 和
 Own Token；两者的分类只存在于 schema、配置和编译层，不泄漏到 Setter 调用语法。
 
-包注册直接传递完整描述符，不得把生成器提供的 identity 丢弃后只注册 `Type`。内置路径删除
+包注册直接传递包含 exact CLR type 与 identity 的完整描述符。Registry 同时建立 exact `Type -> descriptor/slot`
+和 `ControlTokenIdentity -> descriptor/slot` 两张不可变映射，不允许从基类、`TargetType` 或 `BasedOn` 回退推断。
+内置路径删除
 `Activator.CreateInstance`、`Type.GetProperties`、`PropertyInfo.GetValue/SetValue` 和枚举反射。
 
 第三方 Control 包必须使用 AtomUI 源生成器，并且只通过一次生成的包级入口注册 Control descriptor、可选 Own
-Token、主题资产和依赖 manifest。Own Token 使用无参数 `[ControlDesignToken]` 供生成器发现，但不声明 Control
+Token 和主题资产。Own Token 使用无参数 `[ControlDesignToken]` 供生成器发现，但不声明 Control
 类型、identity 或 ID。不存在手写 descriptor/manifest、运行时程序集扫描或 AXAML 文本扫描 fallback。
 
 ## 6. 主题文件
@@ -553,7 +559,7 @@ snapshot，也不能通过公开 API 返回。
 
 每个 Control 的计算顺序为：
 
-1. 以全局最终 Alias Token 为基线，只叠加 descriptor 中 `SupportedGlobalTokens` 允许的 Control 级全局覆盖。
+1. 以全局最终 Token 为基线，接受并叠加该 Control 配置中的任意已注册 Global Token 覆盖。
 2. `Disabled` 时只保留直接覆盖，不重新派生；`Global` 或 `Custom` 时，从 Control effective Seed 按相应算法链
    重新生成 Map 和 Alias。
 3. 在重新派生后应用该 Control 的 Map、Alias override 和 Motion 最终规范化。
@@ -917,7 +923,7 @@ ThemeDictionary 查询。
 SharedTokenResource(X)
     -> GlobalResources[X]
 
-XxxTokenResource(X), X is Supported Global Token
+XxxTokenResource(X), X is any registered Global Token
     -> ControlEffectiveGlobalDelta[X]
     -> miss: GlobalResources[X]
 
@@ -936,7 +942,7 @@ Token 资源的公开 AXAML 语法固定为：
 <!-- 永远读取全局 Token。 -->
 <Setter Property="Background" Value="{atom:SharedTokenResource ColorErrorBg}" />
 
-<!-- 读取 Alert 支持的全局 Token。 -->
+<!-- 读取 Alert 的 Effective Global Token。 -->
 <Setter Property="Foreground" Value="{atom:AlertTokenResource ColorText}" />
 
 <!-- 读取 Alert Own Token。 -->
@@ -944,32 +950,54 @@ Token 资源的公开 AXAML 语法固定为：
 ```
 
 `XxxTokenResource` 的位置参数是生成的强类型 `XxxTokenKey`，不是字符串。主题作者可选择 Xxx Own Token 和当前
-Global Token schema 中的候选；一次 Global Token 引用本身就是对 Xxx 支持该 Token 的声明。IDE 优先显示 Own
-Token 和已经支持的 Global Token，并标注来源文档。Global Token 与 Own Token 禁止同名，因此
+Global Token schema 中的全部候选。Global Token 与 Own Token 禁止同名，因此
 `{atom:AlertTokenResource ColorText}` 不需要额外写 `Global=` 或 `Own=`。
 
 `SharedTokenResource` 永远映射全局 key，不读取 ambient identity。`XxxTokenResource` 在构造时已经绑定生成的
 `XxxTokens.Identity`，并按 Token key 的 schema 分类为 Effective Global Token 或 Own Token。ProvideValue 和
 资源查询热路径都不解析字符串、不遍历 Visual、不查找 templated parent，也不推断 TargetType。
 
-ControlTheme 不声明 `ControlTokenScope.Identity`。生成器扫描所有参与编译的 AXAML，并为每次
-`XxxTokenResource` 使用产生依赖记录：
+ControlTheme 不声明 `ControlTokenScope.Identity`。强类型 Token key 在 AXAML 编译期验证 Global/Own Token 名称；
+资产生成器只分析 owner、引用的 Control identity、URI、资源结构和 Semantic Part Theme 契约，不收集 Global
+Token 消费关系。`EffectiveGlobalToken.X`、`XxxTokenResource X` 和 C# Binding 都不会扩展 schema。
 
-- 引用 Own Token 时验证它属于 Xxx Control。
-- 引用 Global Token 时把它加入 Xxx Control 的主题依赖 manifest。
-- `SharedTokenResource` 不产生 Control 依赖。
+- 引用 Own Token 时必须属于显式 Xxx Control。
+- 引用任意已注册 Global Token 都合法，不产生 dependency manifest。
 - Semantic Part Theme 可以显式引用 owner Control 和真实 Part Control 的 TokenResource。
 - 不存在的 Token、重复资产 URI、未注册 identity 或不兼容的 Part `TargetType` 在构建期失败。
 
-Control Token 计算中的 `EffectiveGlobalToken.X` 访问由 C# 生成器静态收集；主题资产中的
-`XxxTokenResource X` 由 AXAML 构建分析收集。两者与应用/第三方包生成并在包级入口注册的 dependency manifest
-合并为当前 registry revision 的 `SupportedGlobalTokens`。生成器不能证明的字符串、反射或不透明间接访问不允许
-进入正常路径。
-
 运行时只加载生成结果并再次对照当前 RegistryRevision，不重新扫描程序集或 AXAML 文本。ThemeManager 必须在
-解析 ThemeConfig 前完成所有 descriptor 和依赖 manifest 注册并冻结 schema。
+解析 ThemeConfig 前完成所有 descriptor 和资产 manifest 注册并冻结 schema。
 
-### 13.2 ControlTheme Asset 与 Semantic Part Theme
+### 13.2 C# 访问契约
+
+C# 必须显式区分普通 Global Token 与当前 Control 的 Effective Global Token：
+
+```csharp
+TokenResourceBinder.CreateGlobalTokenBinding(
+    this, ForegroundProperty, SharedTokenKind.ColorPrimary);
+
+TokenResourceBinder.CreateControlTokenBinding(
+    this, ForegroundProperty, SharedTokenKind.ColorPrimary);
+```
+
+内部对象使用 `owner` 重载，由公开、已注册的 Control 提供 identity 和 ThemeContext。命令式读取通过
+`ControlTokenAccessor.Capture(owner)` 获取同一 snapshot 中的 `GetEffectiveGlobal<T>()` 与经过 owner 校验的
+`GetOwn<T>()`。Binding 跟随 ThemeContext 发布自动更新；命令式路径在通知后重新 capture。实现不得创建只用于
+转运 Token 的隐藏 StyledProperty，也不得在运行时观察资源访问来推导 schema。
+
+基类代码读取 Effective Global Token 时按实例 exact CLR type 解析，因此注册的派生 Control 使用自己的 identity。
+Own Token 始终显式属于某一 Control，不随 CLR 继承动态替换。未注册 exact type 使用 Control Effective API 时
+必须明确失败，不能退回基类 identity。internal part 不创建公开 identity，由公开 owner 负责绑定。
+
+### 13.3 强类型 Token key 编码
+
+`XxxTokenKey` 继续同时提供全部 Global Token 和 Xxx Own Token 的 AXAML 提示，但生成代码不得为每个 Control
+重复一套完整 Global Token switch。Global key 使用与 `SharedTokenKind` 对应的非负 slot，Own key 使用
+`-1 - OwnTokenSlot`；`XxxTokenResourceExtension` 通过一次整数分支映射到 Effective Global resource key 或 Own
+resource key。数值 slot 只在当前生成 schema 内有效，不能持久化或作为跨版本协议。
+
+### 13.4 ControlTheme Asset 与 Semantic Part Theme
 
 一个标准 Control 使用约定式文件结构：
 
@@ -984,6 +1012,18 @@ Rating/
 `Themes/**/*.axaml` 由构建集成自动作为输入；生成器按 Control、可选 Token 类型和主题资产约定建立 identity、
 descriptor 与 manifest。只有一个 ControlTheme 时不增加 Theme Module、聚合 AXAML 或包装 ResourceDictionary；
 多个主题资产直接放在同一 `Themes/` 目录并进入同一个生成 manifest。
+
+这里的“不增加包装层”约束针对 Control 开发者维护的源码。构建系统仍负责把每个叶子资产转换为可由包级
+Provider 确定性加载的生成资源：
+
+- 根节点是 `ResourceDictionary` 的叶子使用生成的外层 ResourceDictionary，通过固定 `avares://` URI 包含原资产。
+- 根节点是默认 typed `ControlTheme` 的叶子先生成一个 deferred ResourceDictionary，在其中按 `TargetType` key
+  实例化 typed theme；再生成可由 C# Provider 构造的外层 ResourceDictionary 引用该 deferred dictionary。
+- Semantic Part typed theme 不进入包级默认资源集合，由 owner 的强类型 `ControlTheme?` 属性实例化或替换。
+
+typed theme 的两层生成包装是 Avalonia 资源加载边界，不是 Control 作者需要创建或维护的 Theme Module。生成代码、
+deferred AXAML 和 manifest 必须由同一资产输入确定性产生；运行时只构造生成资源，不解析 AXAML 目录或反射 theme
+类型。
 
 稳定且允许用户替换的内部位置通过强类型 `ControlTheme?` 属性公开，例如
 `SearchEdit.SearchButtonTheme`。这类 Semantic Part Theme 不创建 Token identity，也不使用字符串 Part 字典。
@@ -1002,16 +1042,19 @@ Token，也不由某个控件实例创建私有子作用域。当前 `ThemeConte
 
 ## 14. Imperative Token 消费
 
-少数控件需要在 C# 中计算 palette、断点或运行时绘制值。它们使用 `ThemeTokenResolver`：
+少数控件需要在 C# 中计算 palette、断点或运行时绘制值。它们通过
+`ControlTokenAccessor.Capture(owner)` 原子捕获一次读取视图；Core 内部由 `ThemeTokenResolver` 实现：
 
-- Resolver 必须以明确的 `AvaloniaObject` owner 或 `ThemeContext` 为入口；不能通过
+- Accessor 必须以明确且已注册 exact CLR type 的 Control owner 为入口；不能通过
   `ThemeManager.Current`、当前焦点、调用栈或 Visual 全局扫描猜测作用域。
-- Resolver 从 owner 继承的稳定 `ThemeContext` 原子读取一次 snapshot；同一次布局、绘制或计算必须只使用该
+- Accessor 从 owner 继承的稳定 `ThemeContext` 原子读取一次 snapshot；同一次布局、绘制或计算必须只使用该
   snapshot，不能在多个 Token 查询之间重新读取 context 而混合两个事务的值。
-- 全局 Token 使用 `SharedTokenKind` 强类型查询。
-- Control Token 使用生成的 `XxxTokens.Identity` 和强类型 `XxxTokenKey` 查询；调用方不手写 identity 字符串。
+- 普通 Global Token 走明确的 global API；Control Effective Global Token 使用 `SharedTokenKind` 调用
+  `GetEffectiveGlobal<T>()`。
+- Own Token 使用生成的 `XxxTokenKind` 调用 `GetOwn<T>()`；Registry 必须验证资源 key 属于 accessor 的 exact
+  Control slot，不能读取其他 Control 的 Own Token。
 - palette 读取 snapshot 中不可变的 `PresetColorPalettes`。
-- Resolver 不缓存第二份 Token 对象图，也不把 snapshot、Provider 或 owner 放入静态缓存。
+- Accessor/Resolver 不缓存第二份 Token 对象图，也不把 snapshot、Provider 或 owner 放入静态缓存。
 - 需要动态更新时订阅当前 `ThemeContext` 的内部 Publish 通知，并在 detach、re-template 或 owner 变化时释放
   subscription；控件不订阅 `ThemeManager.ThemeChanged`。
 - 独立 TopLevel 中的 imperative 查询使用 lease 注入的同一个 owner ThemeContext。无 owner 的静态 API 只能
@@ -1133,7 +1176,8 @@ runtime       = O(active scopes + bounded cache + one in-flight transaction)
 
 `ThemeConfigMerger` 除有效配置外还输出确定的 change set：
 
-- 算法或全局 Token 改变时，重新计算全局表和所有依赖全局值的 Control。
+- 算法或全局 Token 改变时，重新计算全局表，并重新计算拥有 Own Token 或有效 Control 配置的 Control；没有
+  Own Token 且没有配置的 Control 可以继续复用只执行 Global fallback 的空差量 snapshot。这里不使用消费白名单。
 - 只修改某个 Control 配置时，仅重新计算该 Control。
 - 只修改局部作用域 Button 时，复用父 snapshot 的全局表、palette、资源表和其他 Control snapshot。
 - 配置规范化后与当前有效配置相等时直接 no-op，不创建 snapshot，不通知资源。
@@ -1191,11 +1235,13 @@ Child snapshot C (Button override only)
 - global、Control Effective Global 和 Control Own 命中查询均为零托管分配。
 - `SharedTokenResourceExtension` 只使用预生成的全局 key；`XxxTokenResourceExtension` 使用预生成 identity 和
   强类型 Token key。资源查询时不创建 key、不拼接字符串，也不解析 Control identity。
-- Control Effective Token key 直接包含 registry control slot 和 token slot，不在每次查询时重新构造身份。
+- AXAML Control Effective Token key 包含稳定 identity 和 `SharedTokenKind`；C# owner Binding key 包含 exact CLR
+  type 和 `SharedTokenKind`。Provider 通过冻结的 identity/type map 解析当前 registry slot，不使用继承回退。
 - `SharedTokenKind` 对应的全局资源 key 在 `ThemeSchemaRegistry` 冻结时预装箱并按 slot 保存；Control global 查询
-  必须复用该对象，禁止把枚举传给 `object` 参数造成每次查询装箱。
-- 查询只执行类型分支、slot 索引和最多一次稀疏差量 fallback。
-- miss 不创建 diagnostics、异常或临时集合。
+  和 C# Binding key 在扩展或 Binding 建立时只创建一次，禁止在每次查询时重新装箱枚举。
+- 查询只执行类型分支、冻结 map 查询、slot 索引和最多一次稀疏差量 fallback。
+- 已注册合法 key 的资源 miss 不创建 diagnostics、异常或临时集合；未注册 exact Control type 属于契约错误并在
+  首次解析时明确失败，不作为正常 miss 处理。
 - 一次事务对每个受影响 Provider 最多调用一次 `RaiseResourcesChanged()`。
 
 资源通知使用最小通知前沿：
@@ -1271,8 +1317,8 @@ ThemeScopeGraph 在注册有效期间强持有 ScopeNode 和对应 ThemeConfigPr
 - 手动刷新不使用 `FileSystemWatcher`、动态代码生成或运行时类型构造。
 - 第三方 Control 的 identity、Token descriptor 和资源投影必须由 AtomUI generator 生成并通过包级入口注册；
   自定义算法 descriptor 必须提供稳定 id 和显式 revision/version。
-- 生成器测试必须验证 identity、Supported Global Token 依赖、Own Token、强类型 key、资源投影、资产 manifest
-  和输出稳定性。
+- 生成器测试必须验证 exact CLR type/identity、Own Token、统一强类型 key、常量时间 key 映射、资源投影、资产
+  manifest 和输出稳定性，并限制生成源码体积回归。
 - 主题系统完成后必须执行真实 Gallery NativeAOT publish，不能只依赖 analyzer。
 
 ## 20. 模块组织
@@ -1352,7 +1398,7 @@ Theme/
 |   \-- Token value converters
 ```
 
-`AtomUI.Generator` 根据 Control、Token 定义和 AXAML 资产生成 `ControlThemeAssetDescriptor`、Token 依赖
+`AtomUI.Generator` 根据 Control、Token 定义和 AXAML 资产生成 `ControlThemeAssetDescriptor`、引用 identity
 manifest、`XxxTokens.Identity`、`XxxTokenKey` 与 `XxxTokenResourceExtension`，并通过构建 analyzer 校验
 ResourceInclude、ThemeDictionary、ControlTheme 和 Semantic Part Theme。运行时 `Theme/Schema` 只消费生成结果，
 不解析 AXAML 文本，也不通过反射补全缺失 identity。
@@ -1415,7 +1461,7 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
 - `ControlTokenRegistration(Type)`、反射 schema、Activator fallback 和对应 AOT suppress。
 - `ControlTokenScope.Identity` 及其旧 Catalog/Id 形式、ControlTheme ambient scope，以及按 TargetType、Control
   继承、ControlTheme `BasedOn` 或运行时反射推断 Control identity 的逻辑。
-- Control Token 跨 Control 继承、Own Token 与 Global Token 同名，以及对所有 Global Token 无差别开放 Control
+- Control Token 跨 Control 继承、Own Token 与 Global Token 同名，以及按 Global Token 消费白名单限制 Control
   配置的 schema。
 - `ControlThemeAssets` glob Attribute、逐 Theme Module、手工 asset manifest 和只为聚合主题创建的额外 AXAML。
 - cache pin、父 snapshot Version cache key 和字符串拼接 cache key。
@@ -1484,11 +1530,11 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
   Effective Global Token 和 Own Token，两者没有 ambient 行为。
 - global、Control delta hit、global fallback 和 Own Token 均返回正确值；不同 Control identity 的同名 Global
   Token 覆盖不串值。
-- 每个 Control 的 `SupportedGlobalTokens` 等于 Token 计算依赖、内置主题依赖和已注册扩展主题依赖的并集；在
-  Control 配置下覆盖未支持 Global Token 必须失败。
+- 每个 Control 都能覆盖 registry 中任意 Global Token；未知名称失败，合法但未消费的 Global Token 允许存在且
+  不得泄漏到其他 Control 或真正的 Global snapshot。
 - Token key 具有 AXAML 智能提示和编译期校验；不存在 `Global=`、`Own=` 或字符串 Token 名参数。
-- AtomUI ControlTheme 资产都具有可静态验证的 owner、Token 依赖和 Semantic Part Theme 契约；identity、依赖或
-  TargetType 不一致时在主题注册前失败。
+- AtomUI ControlTheme 资产都具有可静态验证的 owner、引用 Control identities 和 Semantic Part Theme 契约；
+  identity、引用或 TargetType 不一致时在主题注册前失败。
 - Popup、Flyout、Dialog 和窗口覆盖层继承 owner ThemeContext。
 - 独立 `TopLevel` 在平台 `Show` 前已获得目标 ThemeContext、显式 Light/Dark variant 和作用域窗口背景，暗色初始
   主题不会暴露 Avalonia 的白色默认客户区；临时首帧值不覆盖用户 local value、不建立资源订阅，并在样式接管后释放。

@@ -302,7 +302,7 @@ public static IThemeManagerBuilder UseGalleryBase(
 该入口负责：
 
 - 一次注册 GalleryBase 生成的 Control descriptor、可选 Own Token schema 和强类型 Token 资源扩展。
-- 注册从 `Themes/**/*.axaml` 生成的 ControlTheme asset/token dependency manifest 和平台主题 Provider。
+- 注册从 `Themes/**/*.axaml` 生成的 ControlTheme asset owner/reference manifest 和平台主题 Provider。
 - 注册 GalleryBase Shell 语言 Provider。
 - 保存或合并 `GalleryBaseOptions`，供 Shell 构造时读取。
 

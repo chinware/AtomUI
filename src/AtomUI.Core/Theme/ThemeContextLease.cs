@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
@@ -37,8 +38,14 @@ internal sealed class ThemeContextLease : IDisposable
         ArgumentNullException.ThrowIfNull(ownerContext);
 
         var previous = host.GetValue(LeaseProperty);
+        var hadPreviousLeaseValue = host.IsSet(LeaseProperty);
+        var previousContext = host.GetValue(ThemeScope.ContextProperty);
+        var hadPreviousContextValue = host.IsSet(ThemeScope.ContextProperty);
+        var previousVariant = host.GetValue(TopLevel.RequestedThemeVariantProperty);
+        var hadPreviousVariantValue = host.IsSet(TopLevel.RequestedThemeVariantProperty);
         var bridge = new ThemeContextResourceBridge(ownerContext);
         ThemeContextLease? lease = null;
+        var registeredWithManager = false;
         try
         {
             host.Resources.MergedDictionaries.Add(bridge);
@@ -48,14 +55,45 @@ internal sealed class ThemeContextLease : IDisposable
                 ToAvaloniaVariant(ownerContext.Appearance));
             lease = new ThemeContextLease(host, ownerContext, bridge);
             host.SetValue(LeaseProperty, lease);
+            ownerContext.Manager.RegisterContextLease(lease);
+            registeredWithManager = true;
         }
         catch
         {
-            host.Resources.MergedDictionaries.Remove(bridge);
-            bridge.Dispose();
+            if (hadPreviousLeaseValue)
+            {
+                CleanupBoundary(() => host.SetValue(LeaseProperty, previous));
+            }
+            else
+            {
+                CleanupBoundary(() => host.ClearValue(LeaseProperty));
+            }
+            if (hadPreviousContextValue)
+            {
+                CleanupBoundary(() => host.SetValue(ThemeScope.ContextProperty, previousContext));
+            }
+            else
+            {
+                CleanupBoundary(() => host.ClearValue(ThemeScope.ContextProperty));
+            }
+            if (hadPreviousVariantValue)
+            {
+                CleanupBoundary(() =>
+                    host.SetValue(TopLevel.RequestedThemeVariantProperty, previousVariant));
+            }
+            else
+            {
+                CleanupBoundary(() => host.ClearValue(TopLevel.RequestedThemeVariantProperty));
+            }
+            CleanupBoundary(() => host.Resources.MergedDictionaries.Remove(bridge));
+            CleanupBoundary(bridge.Dispose);
             if (lease is not null)
             {
-                lease.ReleaseSubscriptions();
+                CleanupBoundary(lease.ReleaseSubscriptions);
+                if (registeredWithManager)
+                {
+                    CleanupBoundary(() => ownerContext.Manager.UnregisterContextLease(lease));
+                }
             }
             throw;
         }
@@ -81,23 +119,26 @@ internal sealed class ThemeContextLease : IDisposable
 
         if (context is not null)
         {
-            context.Published -= HandleContextPublished;
+            CleanupBoundary(() => context.Published -= HandleContextPublished);
+            CleanupBoundary(() => context.Manager.UnregisterContextLease(this));
         }
         if (host is Window window)
         {
-            window.Closed -= HandleWindowClosed;
+            CleanupBoundary(() => window.Closed -= HandleWindowClosed);
         }
         if (bridge is not null)
         {
-            host.Resources.MergedDictionaries.Remove(bridge);
-            bridge.Dispose();
+            CleanupBoundary(() => host.Resources.MergedDictionaries.Remove(bridge));
+            CleanupBoundary(bridge.Dispose);
         }
 
-        if (ReferenceEquals(host.GetValue(LeaseProperty), this))
+        var ownsHostState = false;
+        CleanupBoundary(() => ownsHostState = ReferenceEquals(host.GetValue(LeaseProperty), this));
+        if (ownsHostState)
         {
-            host.ClearValue(LeaseProperty);
-            host.ClearValue(ThemeScope.ContextProperty);
-            host.ClearValue(TopLevel.RequestedThemeVariantProperty);
+            CleanupBoundary(() => host.ClearValue(LeaseProperty));
+            CleanupBoundary(() => host.ClearValue(ThemeScope.ContextProperty));
+            CleanupBoundary(() => host.ClearValue(TopLevel.RequestedThemeVariantProperty));
         }
     }
 
@@ -122,11 +163,23 @@ internal sealed class ThemeContextLease : IDisposable
     {
         if (_ownerContext is not null)
         {
-            _ownerContext.Published -= HandleContextPublished;
+            CleanupBoundary(() => _ownerContext.Published -= HandleContextPublished);
         }
         if (_host is Window window)
         {
-            window.Closed -= HandleWindowClosed;
+            CleanupBoundary(() => window.Closed -= HandleWindowClosed);
+        }
+    }
+
+    private static void CleanupBoundary(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine(exception);
         }
     }
 

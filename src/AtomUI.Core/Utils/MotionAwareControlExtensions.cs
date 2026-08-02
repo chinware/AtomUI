@@ -2,16 +2,27 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Theme.Resources;
 using Avalonia;
+using Avalonia.Controls;
 
 namespace AtomUI.Utils;
 
 public static class MotionAwareControlExtensions
 {
-    public static void ConfigureMotionBindingStyle(this IMotionAwareControl motionAwareControl)
+    public static IDisposable? ConfigureMotionBindingStyle(this IMotionAwareControl motionAwareControl)
     {
-        if (motionAwareControl is StyledElement styledElement)
+        if (motionAwareControl is Control control)
         {
-            TokenResourceBinder.CreateTokenBinding(styledElement, MotionAwareControlProperty.IsMotionEnabledProperty, SharedTokenKind.EnableMotion);
+            return TokenResourceBinder.CreateControlTokenBinding(
+                control,
+                MotionAwareControlProperty.IsMotionEnabledProperty,
+                SharedTokenKind.EnableMotion);
         }
+
+        return motionAwareControl is StyledElement styledElement
+            ? TokenResourceBinder.CreateGlobalTokenBinding(
+                styledElement,
+                MotionAwareControlProperty.IsMotionEnabledProperty,
+                SharedTokenKind.EnableMotion)
+            : null;
     }
 }

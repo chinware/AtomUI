@@ -20,7 +20,6 @@ Mentions 的实现以 `MentionTextArea` 为输入内核，`Popup` 和 `Candidate
 - `src/AtomUI.Desktop.Controls/Mentions/MentionPseudoClass.cs`：`:candidateopen` 伪类常量。
 - `src/AtomUI.Desktop.Controls/Mentions/MentionsToken.cs`：候选弹层尺寸 Token。
 - `src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml`：Mentions 模板、popup、loading 和候选列表视觉。
-- `src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsThemes.axaml`：Mentions 主题聚合入口。
 
 ## 3. 核心类职责
 

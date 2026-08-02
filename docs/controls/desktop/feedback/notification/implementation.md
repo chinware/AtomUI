@@ -1,6 +1,6 @@
 # Notification 桌面版实现原理
 
-本文档描述 Notification 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Notification 桌面版架构设计](overview.md)，变化记录见 [Notification Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Notification Token 设计](token.md)。
+本文档描述 Notification 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Notification 桌面版架构设计](overview.md)，变化记录见 [Notification Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Notification Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -22,7 +22,6 @@
 - `src/AtomUI.Desktop.Controls/Notifications/NotificationType.cs`
 - `src/AtomUI.Desktop.Controls/Notifications/Themes/NotificationCardTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Notifications/Themes/NotificationProgressBarTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Notifications/Themes/NotificationsThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Notifications/Themes/WindowNotificationManagerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Notifications/Utils/NotificationProgressBarVisibleConverter.cs`
 - `src/AtomUI.Desktop.Controls/Notifications/WindowNotificationManager.cs`
@@ -48,7 +47,7 @@
 - `NotificationMoveUpOutMotion`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `NotificationProgressBar`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `NotificationProgressBarVisibleConverter`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `NotificationToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `NotificationToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `WindowNotificationManager`：数据、状态或行为协作类型，维护集合同步和事件路径。
 
 核心协作规则：

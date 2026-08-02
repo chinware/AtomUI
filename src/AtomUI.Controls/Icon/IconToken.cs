@@ -6,7 +6,6 @@ namespace AtomUI.Controls;
 [ControlDesignToken]
 internal class IconToken : AbstractControlDesignToken
 {
-    public const string ID = "Icon";
     
     /// <summary>
     /// 次要的描边颜色
@@ -39,7 +38,7 @@ internal class IconToken : AbstractControlDesignToken
     public PenLineJoin StrokeLineJoin { get; set; }
     
     public IconToken()
-        : base(ID)
+
     {
         SecondaryStrokeColor = Colors.White;
         SecondaryFillColor   = Color.Parse("#43CCF8");

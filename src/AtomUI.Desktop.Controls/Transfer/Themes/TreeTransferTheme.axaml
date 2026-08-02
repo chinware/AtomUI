@@ -8,11 +8,21 @@
             <atom:AbstractTransferTheme TargetType="atom:TreeTransfer" />
         </ControlTheme.BasedOn>
 
+        <Setter Property="ListHeight" Value="{atom:TreeTransferTokenResource ListHeight}" />
+        <Style Selector="^[IsStretchView=False]">
+            <Setter Property="ListWidth" Value="{atom:TreeTransferTokenResource ListWidth}" />
+            <Style Selector="^[IsPaginationEnabled=True]">
+                <Setter Property="ListWidth" Value="{atom:TreeTransferTokenResource ListWidthLG}" />
+            </Style>
+        </Style>
+
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:TreeTransfer">
                 <Grid Name="RootLayout"
                       RowDefinitions="Auto">
                     <atom:TransferItemDecorator x:Name="SourceDecoratorView"
+                                                HeaderHeight="{atom:TreeTransferTokenResource HeaderHeight}"
+                                                HeaderPadding="{atom:TreeTransferTokenResource HeaderPadding}"
                                                 Content="{TemplateBinding SourceView}"
                                                 HorizontalAlignment="Left"
                                                 Grid.Row="0"
@@ -35,6 +45,8 @@
                                                 FooterTemplate="{TemplateBinding SourceViewFooterTemplate}"
                                                 ItemTemplate="{TemplateBinding ItemTemplate}" />
                     <atom:TransferItemDecorator x:Name="TargetDecoratorView"
+                                                HeaderHeight="{atom:TreeTransferTokenResource HeaderHeight}"
+                                                HeaderPadding="{atom:TreeTransferTokenResource HeaderPadding}"
                                                 HorizontalAlignment="Left"
                                                 Grid.Row="0"
                                                 Grid.Column="2"

@@ -22,5 +22,9 @@
     <!-- This ensures the library will be packaged as a source generator when we use `dotnet pack` -->
     <ItemGroup>
         <None Include="$(OutputPath)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="../../build/AtomUI.ThemeAssets.targets"
+              Pack="true"
+              PackagePath="buildTransitive/AtomUI.Generator.targets"
+              Visible="false" />
     </ItemGroup>
 </Project>

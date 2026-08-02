@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:NumericUpDownThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <Thickness x:Key="NumericUpDownSpinnerContentPadding">0</Thickness>
@@ -142,7 +139,7 @@
                                                 Icon="{antdicons:AntDesignIconProvider MinusOutlined}"
                                                 CornerRadius="0"
                                                 BorderThickness="0"
-                                                Padding="{atom:AddOnDecoratedBoxTokenResource Padding}"
+                                                Padding="{atom:NumericUpDownTokenResource InputPadding}"
                                                 BackgroundSizing="InnerBorderEdge"
                                                 IconWidth="{atom:SharedTokenResource IconSize}"
                                                 IconHeight="{atom:SharedTokenResource IconSize}"
@@ -159,7 +156,7 @@
                                                 Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
                                                 CornerRadius="0"
                                                 BorderThickness="0"
-                                                Padding="{atom:AddOnDecoratedBoxTokenResource Padding}"
+                                                Padding="{atom:NumericUpDownTokenResource InputPadding}"
                                                 BackgroundSizing="InnerBorderEdge"
                                                 IconWidth="{atom:SharedTokenResource IconSize}"
                                                 IconHeight="{atom:SharedTokenResource IconSize}"

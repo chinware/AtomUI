@@ -18,7 +18,6 @@ OtpLineEdit 的实现以控件根节点作为值、焦点位置、验证状态�
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditToken.cs`：cell 宽度、cell 间距和 separator 间距 Token。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditTheme.axaml`：根模板、cell host、清除按钮和 feedback 区。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditCellTheme.axaml`：cell 的字符显示、mask、placeholder、active/focus/error 状态。
-- `src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditThemes.axaml`：控件主题聚合入口。
 
 测试与 Gallery：
 

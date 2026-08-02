@@ -5,7 +5,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class BorderBeamToken : AbstractControlDesignToken
 {
-    public const string ID = "BorderBeam";
 
     public double BeamSize { get; set; }
 
@@ -16,7 +15,7 @@ internal class BorderBeamToken : AbstractControlDesignToken
     public double MaxVisibleStopPercent { get; set; }
 
     public BorderBeamToken()
-        : base(ID)
+
     {
     }
 

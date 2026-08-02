@@ -7,18 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ListViewToken : AbstractControlDesignToken
 {
-    public const string ID = "ListView";
-    
-    public ListViewToken()
-        : this(ID)
-    {
-    }
-
-    protected ListViewToken(string id)
-        : base(id)
-    {
-    }
-
     /// <summary>
     /// List 内边距
     /// </summary>
@@ -97,29 +85,29 @@ internal class ListViewToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        var colorTextDisabled  = SharedToken.ColorTextDisabled;
-        var colorTextSecondary = SharedToken.ColorTextSecondary;
-        var colorBgTextHover   = SharedToken.ColorBgTextHover;
+        var colorTextDisabled  = EffectiveGlobalToken.ColorTextDisabled;
+        var colorTextSecondary = EffectiveGlobalToken.ColorTextSecondary;
+        var colorBgTextHover   = EffectiveGlobalToken.ColorBgTextHover;
 
         ItemColor         = colorTextSecondary;
         ItemHoverColor    = colorTextSecondary;
-        ItemSelectedColor = SharedToken.ColorText;
+        ItemSelectedColor = EffectiveGlobalToken.ColorText;
 
-        ItemBgColor         = SharedToken.ColorTransparent;
+        ItemBgColor         = EffectiveGlobalToken.ColorTransparent;
         ItemHoverBgColor    = colorBgTextHover;
-        ItemSelectedBgColor = SharedToken.ControlItemBgActive;
+        ItemSelectedBgColor = EffectiveGlobalToken.ControlItemBgActive;
 
         ItemDisabledColor = colorTextDisabled;
 
-        ItemPaddingLG = new Thickness(SharedToken.UniformlyPadding, 0);
-        ItemPaddingSM = new Thickness(SharedToken.UniformlyPaddingXS, 0);
-        ItemPadding   = new Thickness(SharedToken.UniformlyPaddingSM, 0);
+        ItemPaddingLG = new Thickness(EffectiveGlobalToken.UniformlyPadding, 0);
+        ItemPaddingSM = new Thickness(EffectiveGlobalToken.UniformlyPaddingXS, 0);
+        ItemPadding   = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM, 0);
 
-        ContentPadding          = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
+        ContentPadding          = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS / 2);
         ItemMargin              = new Thickness(0, 0.5);
-        PaginationMargin        = new Thickness(0, SharedToken.UniformlyMarginXS);
-        GroupHeaderColor        = SharedToken.ColorTextDescription;
-        SelectedIndicatorMargin = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
+        PaginationMargin        = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS);
+        GroupHeaderColor        = EffectiveGlobalToken.ColorTextDescription;
+        SelectedIndicatorMargin = new Thickness(EffectiveGlobalToken.UniformlyMarginXXS, 0, 0, 0);
     }
     
 }

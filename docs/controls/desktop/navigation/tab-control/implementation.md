@@ -1,6 +1,6 @@
 # TabControl 桌面版实现原理
 
-本文档描述 TabControl 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [TabControl 桌面版架构设计](overview.md)，变化记录见 [TabControl Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [TabControl Token 设计](token.md)。
+本文档描述 TabControl 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [TabControl 桌面版架构设计](overview.md)，变化记录见 [TabControl Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [TabControl Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -39,7 +39,7 @@
 - `TabControl`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TabControlOverflowMenuItem`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `TabControlScrollViewer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `TabControlToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `TabControlToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `TabItem`：集合项、节点或容器类型，承载单项选择、关闭、拖动源和插入目标状态。
 - `TabItemData`：数据、状态或行为协作类型，维护集合同步和事件路径。
 - `TabScrollContentPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。

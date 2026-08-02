@@ -4,7 +4,7 @@
 
 ## 1. 定位
 
-ProgressBarToken 是 ProgressBar 家族的组件级 Token scope。它定义默认进度色、剩余轨道色、圆形文本和图标最小尺寸、线形状态图标尺寸、线形额外信息间距和线形内部 padding。
+ProgressBarToken 是 ProgressBar 家族的控件级 Token scope。它定义默认进度色、剩余轨道色、圆形文本和图标最小尺寸、线形状态图标尺寸、线形额外信息间距和线形内部 padding。
 
 ProgressBarToken 不承载以下状态：
 

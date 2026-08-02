@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class RadioButtonToken : AbstractControlDesignToken
 {
-    public const string ID = "RadioButton";
     
     /// <summary>
     /// 单选框大小，除去文字部分的
@@ -34,17 +33,17 @@ internal class RadioButtonToken : AbstractControlDesignToken
     public Thickness TextMargin { get; set; }
 
     public RadioButtonToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        var lineWidth        = SharedToken.LineWidth;
-        var fontSizeLG       = SharedToken.FontSizeLG;
-        var colorPrimary     = SharedToken.ColorPrimary;
-        var colorWhite       = SharedToken.ColorWhite;
+        var lineWidth        = EffectiveGlobalToken.LineWidth;
+        var fontSizeLG       = EffectiveGlobalToken.FontSizeLG;
+        var colorPrimary     = EffectiveGlobalToken.ColorPrimary;
+        var colorWhite       = EffectiveGlobalToken.ColorWhite;
 
         var dotPadding = 4; // 魔术值，需要看有没有好办法消除
         var radioSize  = fontSizeLG;
@@ -54,12 +53,12 @@ internal class RadioButtonToken : AbstractControlDesignToken
         DotPadding       = dotPadding;
         RadioSize        = radioSize;
         DotSize          = radioDotSize;
-        DotColorDisabled = SharedToken.ColorTextDisabled;
+        DotColorDisabled = EffectiveGlobalToken.ColorTextDisabled;
 
         // internal
         RadioColor   = colorWhite;
         RadioBgColor = colorPrimary;
-        TextMargin   = new Thickness(SharedToken.UniformlyMarginXS, 0, SharedToken.UniformlyMarginXS, 0);
+        TextMargin   = new Thickness(EffectiveGlobalToken.UniformlyMarginXS, 0, EffectiveGlobalToken.UniformlyMarginXS, 0);
     }
     
 }

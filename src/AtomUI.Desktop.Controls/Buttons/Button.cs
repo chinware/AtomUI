@@ -5,7 +5,6 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Resources;
 using Avalonia;
@@ -84,7 +83,7 @@ public enum ButtonVariant
     ButtonPseudoClass.PrimaryType,
     ButtonPseudoClass.LinkType,
     ButtonPseudoClass.TextType)]
-public class Button : AvaloniaButton,
+public partial class Button : AvaloniaButton,
                       ICustomizableSizeTypeAware,
                       IWaveSpiritAwareControl,
                       ICompactSpaceAware,
@@ -453,8 +452,6 @@ public class Button : AvaloniaButton,
     
     private static readonly IBrush TransparentBrush = new ImmutableSolidColorBrush(Colors.Transparent);
     private static readonly ThemeTokenResolver s_themeTokenResolver = new();
-    private static readonly AtomUI.Theme.Schema.ControlTokenIdentity s_buttonTokenIdentity =
-        new("AtomUI", ButtonToken.ID);
     private WaveSpiritDecorator? _waveSpiritDecorator;
     private IDisposable? _themeScopeSubscription;
 
@@ -1158,49 +1155,33 @@ public class Button : AvaloniaButton,
 
     private readonly struct ButtonThemeTokenReader
     {
-        private readonly ThemeSnapshot _snapshot;
-        private readonly int _controlSlot;
+        private readonly ControlTokenAccessor _accessor;
 
-        private ButtonThemeTokenReader(ThemeSnapshot snapshot, int controlSlot)
+        private ButtonThemeTokenReader(ControlTokenAccessor accessor)
         {
-            _snapshot = snapshot;
-            _controlSlot = controlSlot;
+            _accessor = accessor;
         }
 
         internal static bool TryCreate(Button owner, out ButtonThemeTokenReader reader)
         {
-            if (owner.GetValue(ThemeScope.ContextProperty) is not { } context)
+            try
+            {
+                reader = new ButtonThemeTokenReader(ControlTokenAccessor.Capture<Button>(owner));
+                return true;
+            }
+            catch (InvalidOperationException)
             {
                 reader = default;
                 return false;
             }
-
-            var snapshot = context.Snapshot;
-            var controlSlot = s_themeTokenResolver.GetControlSlot(snapshot, s_buttonTokenIdentity);
-            reader = new ButtonThemeTokenReader(snapshot, controlSlot);
-            return true;
         }
 
-        internal T Global<T>(SharedTokenKind token)
-        {
-            return s_themeTokenResolver.GetEffectiveGlobal<T>(
-                _snapshot,
-                _controlSlot,
-                (int)token);
-        }
+        internal T Global<T>(SharedTokenKind token) => _accessor.GetEffectiveGlobal<T>(token);
 
-        internal T Control<T>(ButtonTokenKind token)
-        {
-            return s_themeTokenResolver.GetControl<T>(
-                _snapshot,
-                _controlSlot,
-                (int)token);
-        }
+        internal T Control<T>(ButtonTokenKind token) => _accessor.GetOwn<T>(token);
 
-        internal PaletteInfo PresetPalette(PresetPrimaryColor primaryColor)
-        {
-            return s_themeTokenResolver.GetPresetPalette(_snapshot, primaryColor);
-        }
+        internal PaletteInfo PresetPalette(PresetPrimaryColor primaryColor) =>
+            _accessor.GetPresetPalette(primaryColor);
     }
 
     private static bool TryGetPresetPrimaryColor(ButtonColor color, out PresetPrimaryColor presetColor)

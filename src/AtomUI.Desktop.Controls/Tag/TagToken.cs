@@ -8,7 +8,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class TagToken : AbstractControlDesignToken
 {
-    public const string ID = "Tag";
     /// <summary>
     /// 默认背景色
     /// </summary>
@@ -28,22 +27,22 @@ internal class TagToken : AbstractControlDesignToken
     public Color SolidTextColor { get; set; }
 
     public TagToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        TagFontSize      = SharedToken.FontSizeSM;
-        TagLineHeight    = SharedToken.FontHeightSM;
-        TagCloseIconSize = SharedToken.IconSizeXS;
-        TagIconSize      = SharedToken.FontSizeIcon;
-        TagPadding       = new Thickness(SharedToken.SizeXS - 1, 0);
-        DefaultBg            = ColorUtils.OnBackground(SharedToken.ColorFillQuaternary, SharedToken.ColorBgContainer);
-        DefaultColor         = SharedToken.ColorText;
-        TagTextPaddingInline = new Thickness(SharedToken.UniformlyPaddingXXS, 0);
-        SolidTextColor       = ColorUtils.IsBright(SharedToken.ColorBgSolid, Colors.White)
+        TagFontSize      = EffectiveGlobalToken.FontSizeSM;
+        TagLineHeight    = EffectiveGlobalToken.FontHeightSM;
+        TagCloseIconSize = EffectiveGlobalToken.IconSizeXS;
+        TagIconSize      = EffectiveGlobalToken.FontSizeIcon;
+        TagPadding       = new Thickness(EffectiveGlobalToken.SizeXS - 1, 0);
+        DefaultBg            = ColorUtils.OnBackground(EffectiveGlobalToken.ColorFillQuaternary, EffectiveGlobalToken.ColorBgContainer);
+        DefaultColor         = EffectiveGlobalToken.ColorText;
+        TagTextPaddingInline = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS, 0);
+        SolidTextColor       = ColorUtils.IsBright(EffectiveGlobalToken.ColorBgSolid, Colors.White)
             ? Colors.Black
             : Colors.White;
     }

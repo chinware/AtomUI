@@ -1,6 +1,6 @@
 # Tag Token 设计
 
-本文档定义 Tag 相关组件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Tag 整体架构见 [Tag 桌面版架构设计](overview.md)，内部实现原理见 [Tag 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Tag Changelog](changelog.md)。
+本文档定义 Tag 相关控件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Tag 整体架构见 [Tag 桌面版架构设计](overview.md)，内部实现原理见 [Tag 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Tag Changelog](changelog.md)。
 
 ## 1. 定位
 
@@ -36,7 +36,7 @@ Tag 的控件专项模型通过 Theme 消费 Token：
 
 `CheckableTag` 复用 Tag 家族的字号、行高、Icon 尺寸、圆角和内容间距语义，并从 SharedToken 读取 primary、text、hover、pressed、focus 和 disabled 颜色。checked 是控件实例状态，不新增 checked Token，也不复用普通 Tag 的 `Color × Variant` 矩阵。
 
-`CheckableTagGroup` 不定义组件 Token。`ItemSpacing` 和 `LineSpacing` 的默认值从 SharedToken 派生；Options、IsMultiple、CheckedItem(s) 和内部 selection 均不进入 Token scope。
+`CheckableTagGroup` 不定义控件 Token。`ItemSpacing` 和 `LineSpacing` 的默认值从 SharedToken 派生；Options、IsMultiple、CheckedItem(s) 和内部 selection 均不进入 Token scope。
 
 颜色组合遵循以下边界：
 

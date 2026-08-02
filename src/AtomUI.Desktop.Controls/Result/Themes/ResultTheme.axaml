@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:ResultThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Result}" TargetType="atom:Result">
         <Setter Property="Template">
@@ -90,7 +87,7 @@
             <Setter Property="Margin" Value="{atom:ResultTokenResource ExtraMargin}" />
         </Style>
 
-        <Setter Property="StatusIconSize" Value="{atom:ResultTokenResource IconSize}" />
+        <Setter Property="StatusIconSize" Value="{atom:ResultTokenResource StatusIconSize}" />
 
         <Style Selector="^[Status=Info]">
             <Setter Property="StatusIconBrush" Value="{atom:ResultTokenResource ResultInfoIconColor}" />

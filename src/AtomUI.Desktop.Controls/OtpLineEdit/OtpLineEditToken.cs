@@ -5,10 +5,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class OtpLineEditToken : AbstractControlDesignToken
 {
-    public const string ID = "OtpLineEdit";
 
     public OtpLineEditToken()
-        : base(ID)
+
     {
     }
 
@@ -34,15 +33,15 @@ internal class OtpLineEditToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
 
-        CellWidth               = SharedToken.ControlHeight;
-        CellWidthLG             = SharedToken.ControlHeightLG;
-        CellWidthSM             = SharedToken.ControlHeightSM;
-        CellGap                 = SharedToken.UniformlyPaddingXXS;
-        CellGapLG               = SharedToken.UniformlyPaddingXS;
-        CellGapSM               = SharedToken.UniformlyPaddingXXS;
-        SeparatorMarginInline   = SharedToken.UniformlyPaddingXXS;
-        SeparatorMarginInlineLG = SharedToken.UniformlyPaddingXS;
-        SeparatorMarginInlineSM = SharedToken.UniformlyPaddingXXS;
+        CellWidth               = EffectiveGlobalToken.ControlHeight;
+        CellWidthLG             = EffectiveGlobalToken.ControlHeightLG;
+        CellWidthSM             = EffectiveGlobalToken.ControlHeightSM;
+        CellGap                 = EffectiveGlobalToken.UniformlyPaddingXXS;
+        CellGapLG               = EffectiveGlobalToken.UniformlyPaddingXS;
+        CellGapSM               = EffectiveGlobalToken.UniformlyPaddingXXS;
+        SeparatorMarginInline   = EffectiveGlobalToken.UniformlyPaddingXXS;
+        SeparatorMarginInlineLG = EffectiveGlobalToken.UniformlyPaddingXS;
+        SeparatorMarginInlineSM = EffectiveGlobalToken.UniformlyPaddingXXS;
     }
 
 }

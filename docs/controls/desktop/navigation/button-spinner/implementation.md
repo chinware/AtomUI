@@ -1,6 +1,6 @@
 # ButtonSpinner 桌面版实现原理
 
-本文档描述 ButtonSpinner 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [ButtonSpinner 桌面版架构设计](overview.md)，变化记录见 [ButtonSpinner Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [ButtonSpinner Token 设计](token.md)。
+本文档描述 ButtonSpinner 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [ButtonSpinner 桌面版架构设计](overview.md)，变化记录见 [ButtonSpinner Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [ButtonSpinner Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -19,7 +19,6 @@
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerDecoratedBoxTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerHandleTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerTheme.axaml`
-- `src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerThemes.axaml`
 
 职责边界：
 
@@ -34,7 +33,7 @@
 - `ButtonSpinnerContentPanel`：布局面板，负责测量、排列、虚拟化或集合内容布局。
 - `ButtonSpinnerDecoratedBox`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `ButtonSpinnerHandle`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `ButtonSpinnerToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `ButtonSpinnerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 核心协作规则：
 

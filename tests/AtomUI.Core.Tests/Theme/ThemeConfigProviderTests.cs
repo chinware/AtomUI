@@ -36,6 +36,27 @@ public class ThemeConfigProviderTests
     }
 
     [Fact]
+    public void First_Attach_Continues_Context_Publish_When_Variant_Observer_Fails()
+    {
+        var manager = CreateInitializedManager();
+        var provider = new ThrowingVariantThemeConfigProvider
+        {
+            Config = ConfigWithToken(nameof(DesignToken.ColorPrimary), "#ff0000"),
+            Child = new Border()
+        };
+        ThemeChangedEventArgs? observed = null;
+        provider.ThemeChanged += (_, args) => observed = args;
+
+        using var root = Attach(manager, provider);
+
+        provider.ContextPublished.ShouldBeTrue();
+        observed.ShouldNotBeNull();
+        observed!.PublishDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Severity == ThemeDiagnosticSeverity.Warning &&
+            diagnostic.Message.Contains("variant update failed", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Config_Replacement_Updates_The_Stable_Context_And_Resource_Provider()
     {
         var manager = CreateInitializedManager();
@@ -53,6 +74,27 @@ public class ThemeConfigProviderTests
         provider.GetValue(ThemeScope.ContextProperty).ShouldBeSameAs(context);
         GetTokenResourceProvider(provider).ShouldBeSameAs(resourceProvider);
         context.Snapshot.Global<Color>(nameof(DesignToken.ColorPrimary)).ShouldBe(Color.Parse("#00b96b"));
+    }
+
+    [Fact]
+    public void Local_ThemeChanged_Uses_A_Local_Transition_State()
+    {
+        var manager = CreateInitializedManager();
+        var provider = new ThemeConfigProvider
+        {
+            Config = ConfigWithToken(nameof(DesignToken.ColorPrimary), "#ff0000"),
+            Child = new Border()
+        };
+        using var root = Attach(manager, provider);
+        var rootTransitionId = manager.CurrentTheme!.TransitionId;
+        ThemeChangedEventArgs? observed = null;
+        provider.ThemeChanged += (_, args) => observed = args;
+
+        provider.Config = ConfigWithToken(nameof(DesignToken.ColorPrimary), "#00b96b");
+
+        observed.ShouldNotBeNull();
+        observed!.Request.Reason.ShouldBe(ThemeTransitionReason.LocalConfigChanged);
+        observed.State.TransitionId.ShouldBeGreaterThan(rootTransitionId);
     }
 
     [Fact]
@@ -75,6 +117,39 @@ public class ThemeConfigProviderTests
         var snapshot = child.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull().Snapshot;
         snapshot.Global<Color>(nameof(DesignToken.ColorPrimary)).ShouldBe(Color.Parse("#00b96b"));
         snapshot.Global<CornerRadius>(nameof(DesignToken.BorderRadius)).ShouldBe(new CornerRadius(12));
+    }
+
+    [Fact]
+    public async Task Root_Transition_Does_Not_Notify_A_Local_Resource_Provider_Directly()
+    {
+        await HeadlessTestApp.RunAsync(async () =>
+        {
+            var prepared = CreatePrepared();
+            var changedPrepared = CreatePrepared(nameof(DesignToken.ColorPrimary), "#00b96b");
+            var manager = new ThemeManager(
+                static () => true,
+                (request, _, _) => ValueTask.FromResult(
+                    request.ThemeId == "Changed" ? changedPrepared : prepared));
+            manager.ConfigureStartup(
+                new ThemeRequest("Test", null, ThemeTransitionReason.Startup),
+                null,
+                null);
+            manager.InitializeApplication(Application.Current!);
+            var provider = new ThemeConfigProvider
+            {
+                Config = new ThemeConfigBuilder().Build(),
+                Child = new Border()
+            };
+            using var root = Attach(manager, provider);
+            var notifications = 0;
+            ((Avalonia.Controls.IResourceHost)provider).ResourcesChanged += (_, _) => notifications++;
+
+            await manager.ApplyThemeAsync(
+                new ThemeRequest("Changed", null, ThemeTransitionReason.UserRequest),
+                TestContext.Current.CancellationToken);
+
+            notifications.ShouldBe(0);
+        });
     }
 
     [Fact]
@@ -198,6 +273,17 @@ public class ThemeConfigProviderTests
         return ThemeTransactionPreparation.Succeeded(snapshot, ThemeSnapshotCacheKey.Create(input));
     }
 
+    private static ThemeTransactionPreparation CreatePrepared(string tokenName, string tokenValue)
+    {
+        var registry = TypedThemeSnapshotCacheTests.CreateRegistry();
+        registry.TryGetGlobalToken(tokenName, out var descriptor).ShouldBeTrue();
+        var parsed = descriptor!.Parse(tokenValue);
+        var token = new NormalizedTokenValue(descriptor, parsed, descriptor.Format(parsed));
+        var input = TypedThemeSnapshotCacheTests.CreateInput(registry, globalTokens: [token]);
+        var snapshot = new ThemeCompiler().Compile(input).Snapshot!;
+        return ThemeTransactionPreparation.Succeeded(snapshot, ThemeSnapshotCacheKey.Create(input));
+    }
+
     private static ThemeConfig ConfigWithToken(string name, string value)
     {
         return new ThemeConfigBuilder().WithToken(name, value).Build();
@@ -263,6 +349,30 @@ public class ThemeConfigProviderTests
         {
             Child = null;
             ClearValue(ThemeScope.ContextProperty);
+        }
+    }
+
+    private sealed class ThrowingVariantThemeConfigProvider : ThemeConfigProvider
+    {
+        private bool _throwOnNextVariantChange;
+
+        internal bool ContextPublished { get; private set; }
+
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        {
+            base.OnPropertyChanged(change);
+            if (change.Property == ThemeScope.ContextProperty &&
+                change.GetNewValue<ThemeContext?>() is { } context)
+            {
+                context.Published += (_, _) => ContextPublished = true;
+                _throwOnNextVariantChange = true;
+            }
+            else if (change.Property == RequestedThemeVariantProperty &&
+                     _throwOnNextVariantChange)
+            {
+                _throwOnNextVariantChange = false;
+                throw new InvalidOperationException("variant update failed");
+            }
         }
     }
 

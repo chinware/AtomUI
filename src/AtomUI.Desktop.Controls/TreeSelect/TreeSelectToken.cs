@@ -5,7 +5,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class TreeSelectToken : AbstractControlDesignToken
 {
-    public const string ID = "TreeSelect";
     
     /// <summary>
     /// 最小的弹窗的宽度
@@ -13,7 +12,7 @@ internal class TreeSelectToken : AbstractControlDesignToken
     public double MinPopupWidth { get; set; }
 
     public TreeSelectToken()
-        : base(ID)
+
     {
     }
 

@@ -4,7 +4,7 @@
 
 ## 1. 定位
 
-ExpanderToken 是 Expander 的组件级 Token scope，描述 Header/Content 的默认 padding、背景、整体圆角和展开图标默认外边距。
+ExpanderToken 是 Expander 的控件级 Token scope，描述 Header/Content 的默认 padding、背景、整体圆角和展开图标默认外边距。
 
 ExpanderToken 不承载以下状态：
 
@@ -102,7 +102,7 @@ IsBorderless / IsGhostStyle
 
 ExpanderToken 只直接影响 `AtomUI.Desktop.Controls.Expander` 主题和 Expander token.md 语义说明。
 
-Collapse 拥有独立的 CollapseToken 和多面板布局模型。Expander 不复用 CollapseToken，Collapse 也不应直接依赖 ExpanderToken。若两个控件需要共享某个 spacing 语义，应评估是否上升到 SharedToken，而不是跨控件引用组件 Token。
+Collapse 拥有独立的 CollapseToken 和多面板布局模型。Expander 不复用 CollapseToken，Collapse 也不应直接依赖 ExpanderToken。若两个控件需要共享某个 spacing 语义，应评估是否上升到 SharedToken，而不是跨控件引用控件 Token。
 
 ## 5. 兼容性要求
 

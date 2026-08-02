@@ -1,6 +1,5 @@
 using AtomUI.Generated.AtomUI_Toolkits_GalleryBase;
 using AtomUI.Theme;
-using AtomUI.Theme.Language;
 using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.Controls;
 
@@ -18,18 +17,9 @@ public static class ThemeManagerBuilderExtensions
             GalleryBaseConfigurationProvider.SetCurrent(options.BuildConfiguration());
         }
 
-        foreach (var descriptor in GeneratedThemeSchema.GetControls())
-        {
-            themeManagerBuilder.AddControlToken(descriptor);
-        }
-
-        themeManagerBuilder.AddControlThemesProvider(new GalleryControlThemesProvider());
-
-        var languageProviders = LanguageProviderPool.GetLanguageProviders();
-        foreach (var languageProvider in languageProviders)
-        {
-            themeManagerBuilder.AddLanguageProviders(languageProvider);
-        }
+        GeneratedControlPackageRegistration.Register(
+            themeManagerBuilder,
+            new GalleryControlThemesProvider());
 
         return themeManagerBuilder;
     }

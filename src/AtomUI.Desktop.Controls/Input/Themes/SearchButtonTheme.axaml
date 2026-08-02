@@ -1,60 +1,26 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:themeResources="using:AtomUI.Theme.Resources"
-              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-              themeResources:ControlTokenScope.Identity="{x:Static generated:LineEditThemeAsset.Identity}"
               xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
               x:Class="AtomUI.Desktop.Controls.Themes.SearchButtonTheme"
-              TargetType="{x:Type atom:SearchButton}"
+              TargetType="{x:Type atom:Button}"
               x:ClassModifier="internal">
     <ControlTheme.BasedOn>
-        <themes:ButtonTheme TargetType="{x:Type atom:SearchButton}" />
+        <themes:ButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>
     
-    <Style Selector="^:is(atom|SearchButton)[ButtonType=Text]">
-        <Style Selector="^[StyleVariant=Filled]">
-            <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ColorFillTertiary}" />
-        </Style>
-
+    <Style Selector="^:is(atom|Button)[ButtonType=Text]">
         <Style Selector="^:pointerover">
             <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ColorBgTextHover}" />
+                    Value="{atom:SearchEditTokenResource ColorBgTextHover}" />
         </Style>
 
         <Style Selector="^:pressed">
             <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ColorBgTextActive}" />
+                    Value="{atom:SearchEditTokenResource ColorBgTextActive}" />
         </Style>
 
-        <Style Selector="^[Status=Error]">
-            <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ColorErrorBg}" />
-            <Style Selector="^:pointerover">
-                <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorErrorBgHover}" />
-            </Style>
-            <Style Selector="^:pressed">
-                <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorErrorBgActive}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[Status=Warning]">
-            <Setter Property="Background"
-                    Value="{atom:SharedTokenResource ColorWarningBg}" />
-            <Style Selector="^:pointerover">
-                <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorWarningHover}" />
-            </Style>
-            <Style Selector="^:pressed">
-                <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorWarningActive}" />
-            </Style>
-        </Style>
-
-        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}" />
+        <Setter Property="Foreground" Value="{atom:SearchEditTokenResource ColorTextDescription}" />
 
         <Style Selector="^:pointerover">
             <Setter Property="Foreground" Value="{atom:ButtonTokenResource DefaultHoverColor}" />
@@ -65,7 +31,7 @@
         </Style>
         
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:SearchEditTokenResource ColorTextDisabled}" />
         </Style>
     </Style>
 

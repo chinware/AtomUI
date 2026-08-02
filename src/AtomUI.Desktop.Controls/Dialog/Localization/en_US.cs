@@ -2,7 +2,7 @@
 
 namespace AtomUI.Desktop.Controls.DialogLang;
 
-[LanguageProvider(LanguageCode.en_US, DialogToken.ID)]
+[LanguageProvider(LanguageCode.en_US, "Dialog")]
 internal class en_US
 {
     public const string Ok = "OK";

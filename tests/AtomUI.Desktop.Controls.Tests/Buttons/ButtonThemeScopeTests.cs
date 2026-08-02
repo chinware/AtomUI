@@ -1,4 +1,5 @@
 using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Schema;
@@ -32,7 +33,7 @@ public class ButtonThemeScopeTests
     }
 
     [Fact]
-    public void Button_Component_ColorPrimary_Does_Not_Leak_To_Content()
+    public void Button_Control_ColorPrimary_Does_Not_Leak_To_Content()
     {
         var content = new Border
         {
@@ -46,7 +47,7 @@ public class ButtonThemeScopeTests
         var button = CreatePrimaryButton(content);
         var provider = Provider(
             button,
-            ComponentSharedToken(ButtonToken.ID, nameof(DesignToken.ColorPrimary), "#00b96b"));
+            ControlSharedToken(ButtonTokens.Identity, nameof(DesignToken.ColorPrimary), "#00b96b"));
 
         ShowInWindow(provider, () =>
         {
@@ -58,20 +59,20 @@ public class ButtonThemeScopeTests
     }
 
     [Fact]
-    public void Button_Component_ColorPrimary_Update_Refreshes_Without_Reattach()
+    public void Button_Control_ColorPrimary_Update_Refreshes_Without_Reattach()
     {
         var button = CreatePrimaryButton("Save");
         var provider = Provider(
             button,
-            ComponentSharedToken(ButtonToken.ID, nameof(DesignToken.ColorPrimary), "#00b96b"));
+            ControlSharedToken(ButtonTokens.Identity, nameof(DesignToken.ColorPrimary), "#00b96b"));
 
         ShowInWindow(provider, () =>
         {
             SetPrimary(button);
             BrushColor(button.Background).ShouldBe(ButtonPrimary);
 
-            provider.Config = BuildComponentConfig(
-                ComponentSharedToken(ButtonToken.ID, nameof(DesignToken.ColorPrimary), "#ff4d4f"));
+            provider.Config = BuildControlConfig(
+                ControlSharedToken(ButtonTokens.Identity, nameof(DesignToken.ColorPrimary), "#ff4d4f"));
             FlushThemeUpdates();
 
             BrushColor(button.Background).ShouldBe(UpdatedButtonPrimary);
@@ -79,7 +80,7 @@ public class ButtonThemeScopeTests
     }
 
     [Fact]
-    public void Button_Primary_Text_Color_Follows_Component_ColorPrimary_Update()
+    public void Button_Primary_Text_Color_Follows_Control_ColorPrimary_Update()
     {
         var button = new AtomUIButton
         {
@@ -90,14 +91,14 @@ public class ButtonThemeScopeTests
         };
         var provider = Provider(
             button,
-            ComponentSharedToken(ButtonToken.ID, nameof(DesignToken.ColorPrimary), "#00b96b"));
+            ControlSharedToken(ButtonTokens.Identity, nameof(DesignToken.ColorPrimary), "#00b96b"));
 
         ShowInWindow(provider, () =>
         {
             BrushColor(button.Foreground).ShouldBe(ButtonPrimary);
 
-            provider.Config = BuildComponentConfig(
-                ComponentSharedToken(ButtonToken.ID, nameof(DesignToken.ColorPrimary), "#ff4d4f"));
+            provider.Config = BuildControlConfig(
+                ControlSharedToken(ButtonTokens.Identity, nameof(DesignToken.ColorPrimary), "#ff4d4f"));
             FlushThemeUpdates();
 
             BrushColor(button.Foreground).ShouldBe(UpdatedButtonPrimary);
@@ -134,7 +135,7 @@ public class ButtonThemeScopeTests
     }
 
     [Fact]
-    public void Nested_TextBox_Uses_TextBox_Component_Config_Inside_Button()
+    public void Nested_TextBox_Uses_TextBox_Control_Config_Inside_Button()
     {
         var textBox = new AtomUITextBox
         {
@@ -144,8 +145,8 @@ public class ButtonThemeScopeTests
         var button = CreatePrimaryButton(textBox);
         var provider = Provider(
             button,
-            ComponentSharedToken(ButtonToken.ID, nameof(DesignToken.ColorPrimary), "#00b96b"),
-            ComponentSharedToken(TextBoxToken.ID, nameof(DesignToken.ColorPrimary), "#722ed1"));
+            ControlSharedToken(ButtonTokens.Identity, nameof(DesignToken.ColorPrimary), "#00b96b"),
+            ControlSharedToken(TextBoxTokens.Identity, nameof(DesignToken.ColorPrimary), "#722ed1"));
 
         ShowInWindow(provider, () =>
         {
@@ -162,7 +163,7 @@ public class ButtonThemeScopeTests
     }
 
     [Fact]
-    public void Button_Component_Shared_Resource_Falls_Back_To_Updated_Global_Token()
+    public void Button_Control_Shared_Resource_Falls_Back_To_Updated_Global_Token()
     {
         var button = CreatePrimaryButton("Save");
         var provider = new ThemeConfigProvider
@@ -205,12 +206,12 @@ public class ButtonThemeScopeTests
 
     private static ThemeConfigProvider Provider(
         Control content,
-        params ComponentTokenConfig[] componentConfigs)
+        params ControlTokenConfig[] controlConfigs)
     {
         var provider = new ThemeConfigProvider
         {
             Child   = content,
-            Config  = BuildComponentConfig(componentConfigs)
+            Config  = BuildControlConfig(controlConfigs)
         };
         ThrowOnCompileFailure(provider);
         return provider;
@@ -227,24 +228,24 @@ public class ButtonThemeScopeTests
         };
     }
 
-    private static ComponentTokenConfig ComponentSharedToken(
-        string tokenId,
+    private static ControlTokenConfig ControlSharedToken(
+        ControlTokenIdentity identity,
         string key,
         string value)
     {
-        return new ComponentTokenConfig(tokenId, key, value);
+        return new ControlTokenConfig(identity, key, value);
     }
 
-    private static ThemeConfig BuildComponentConfig(params ComponentTokenConfig[] componentConfigs)
+    private static ThemeConfig BuildControlConfig(params ControlTokenConfig[] controlConfigs)
     {
         var builder = new ThemeConfigBuilder();
-        foreach (var component in componentConfigs)
+        foreach (var control in controlConfigs)
         {
             builder.WithControl(
-                new ControlTokenIdentity("AtomUI", component.TokenId),
+                control.Identity,
                 new ControlThemeConfigBuilder()
                     .WithAlgorithm(ControlAlgorithmMode.Disabled)
-                    .WithToken(component.Key, component.Value)
+                    .WithToken(control.Key, control.Value)
                     .Build());
         }
 
@@ -290,7 +291,7 @@ public class ButtonThemeScopeTests
         }
     }
 
-    private sealed record ComponentTokenConfig(string TokenId, string Key, string Value);
+    private sealed record ControlTokenConfig(ControlTokenIdentity Identity, string Key, string Value);
 }
 
 [CollectionDefinition(Name, DisableParallelization = true)]

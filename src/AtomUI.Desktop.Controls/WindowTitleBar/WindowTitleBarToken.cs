@@ -8,7 +8,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class WindowTitleBarToken : AbstractControlDesignToken
 {
-    public const string ID = "WindowTitleBar";
     
     /// <summary>
     /// Hover 的背景色
@@ -136,46 +135,46 @@ internal class WindowTitleBarToken : AbstractControlDesignToken
     public double Height { get; set; }
 
     /// <summary>
-    /// 全屏状态下 Caption 按钮的尺寸（与密度算法解耦，取代直引 SharedToken.SizeLG）
+    /// 全屏状态下 Caption 按钮的尺寸（与密度算法解耦，取代直引 EffectiveGlobalToken.SizeLG）
     /// </summary>
     public double FullscreenCaptionButtonSize { get; set; }
 
     /// <summary>
-    /// 标题栏水平布局分隔（Linux 模板 DockPanel 用，取代直引 SharedToken.SpacingXS）
+    /// 标题栏水平布局分隔（Linux 模板 DockPanel 用，取代直引 EffectiveGlobalToken.SpacingXS）
     /// </summary>
     public double HeaderHorizontalSpacing { get; set; }
     
     public WindowTitleBarToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        CloseHoverBackgroundColor   = SharedToken.ColorErrorTextActive;
-        ClosePressedBackgroundColor = SharedToken.ColorErrorTextHover;
-        ForegroundColor             = SharedToken.ColorTextSecondary;
-        HoverBackgroundColor        = SharedToken.ColorBgTextHover;
-        PressedBackgroundColor      = SharedToken.ColorBgTextActive;
-        LogoAndTitleSpacing         = SharedToken.SizeUnit * 2;
+        CloseHoverBackgroundColor   = EffectiveGlobalToken.ColorErrorTextActive;
+        ClosePressedBackgroundColor = EffectiveGlobalToken.ColorErrorTextHover;
+        ForegroundColor             = EffectiveGlobalToken.ColorTextSecondary;
+        HoverBackgroundColor        = EffectiveGlobalToken.ColorBgTextHover;
+        PressedBackgroundColor      = EffectiveGlobalToken.ColorBgTextActive;
+        LogoAndTitleSpacing         = EffectiveGlobalToken.SizeUnit * 2;
         TitleBarPadding             = new Thickness(LogoAndTitleSpacing * 1.8, 0);
-        CaptionButtonIconSize       = SharedToken.IconSize;
+        CaptionButtonIconSize       = EffectiveGlobalToken.IconSize;
         WindowsCaptionIconSize      = 11;
-        LogoSize                    = SharedToken.SizeUnit * 4;
+        LogoSize                    = EffectiveGlobalToken.SizeUnit * 4;
         
-        ActiveColor   = SharedToken.ColorTextSecondary;
-        InactiveColor = SharedToken.ColorTextQuaternary;
+        ActiveColor   = EffectiveGlobalToken.ColorTextSecondary;
+        InactiveColor = EffectiveGlobalToken.ColorTextQuaternary;
 
-        ActiveBgColor        = SharedToken.ColorFillTertiary;
-        ActiveHoverBgColor   = SharedToken.ColorFillSecondary;
-        ActivePressedBgColor = SharedToken.ColorFill;
+        ActiveBgColor        = EffectiveGlobalToken.ColorFillTertiary;
+        ActiveHoverBgColor   = EffectiveGlobalToken.ColorFillSecondary;
+        ActivePressedBgColor = EffectiveGlobalToken.ColorFill;
 
-        InactiveBgColor      = SharedToken.ColorFillQuaternary;
-        InactiveHoverBgColor = SharedToken.ColorFillTertiary;
+        InactiveBgColor      = EffectiveGlobalToken.ColorFillQuaternary;
+        InactiveHoverBgColor = EffectiveGlobalToken.ColorFillTertiary;
         
-        CaptionButtonPadding = new Thickness(SharedToken.SizeUnit * 2);
-        CaptionGroupSpacing  = SharedToken.SizeUnit * 2;
+        CaptionButtonPadding = new Thickness(EffectiveGlobalToken.SizeUnit * 2);
+        CaptionGroupSpacing  = EffectiveGlobalToken.SizeUnit * 2;
 
         // 窗口装饰语义不走密度算法：紧凑模式下 ControlHeightLG / SizeLG / SpacingXS 都会被拉小，
         // 标题栏 / 全屏按钮 / DockPanel 间距不应跟着缩，因此使用跨平台稳定值。

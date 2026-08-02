@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:ToolTipThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ToolTip}" TargetType="atom:ToolTip">
         <Setter Property="Template">
@@ -30,8 +27,8 @@
             <Setter Property="MaxWidth" Value="{atom:ToolTipTokenResource ToolTipMaxWidth}" />
             <Setter Property="Foreground" Value="{atom:ToolTipTokenResource ToolTipColor}" />
             <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
-            <Setter Property="Padding" Value="{atom:ToolTipTokenResource Padding}" />
-            <Setter Property="CornerRadius" Value="{atom:ToolTipTokenResource BorderRadiusOuter}" />
+            <Setter Property="Padding" Value="{atom:ToolTipTokenResource ContentPadding}" />
+            <Setter Property="CornerRadius" Value="{atom:ToolTipTokenResource ToolTipCornerRadius}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

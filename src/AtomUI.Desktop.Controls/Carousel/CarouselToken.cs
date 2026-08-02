@@ -5,10 +5,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class CarouselToken : AbstractControlDesignToken
 {
-    public const string ID = "Carousel";
 
     public CarouselToken()
-        : base(ID)
+
     {
     }
     
@@ -59,10 +58,10 @@ internal class CarouselToken : AbstractControlDesignToken
         base.CalculateTokenValues(isDarkMode);
         IndicatorActiveWidth = 24;
         ArrowSize            = 16;
-        ArrowOffset          = SharedToken.SpacingXS;
+        ArrowOffset          = EffectiveGlobalToken.SpacingXS;
         IndicatorWidth       = 16;
         IndicatorHeight      = 3;
-        IndicatorGap         = SharedToken.UniformlyMarginXS;
+        IndicatorGap         = EffectiveGlobalToken.UniformlyMarginXS;
         PaginationOffset     = 12;
     }
     

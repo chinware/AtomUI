@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:ToggleSwitchThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ToggleSwitch}" TargetType="atom:ToggleSwitch">
         <Setter Property="Template">
@@ -97,7 +94,7 @@
             <Setter Property="TrackHeight" Value="{atom:ToggleSwitchTokenResource TrackHeightSM}" />
             <Setter Property="TrackMinWidth"
                     Value="{atom:ToggleSwitchTokenResource TrackMinWidthSM}" />
-            <Setter Property="IconSize" Value="{atom:ToggleSwitchTokenResource IconSizeSM}" />
+            <Setter Property="IconSize" Value="{atom:ToggleSwitchTokenResource ContentIconSizeSM}" />
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom], ^[SizeType=Large]">
             <Setter Property="FontSize"
@@ -110,7 +107,7 @@
             <Setter Property="TrackHeight" Value="{atom:ToggleSwitchTokenResource TrackHeight}" />
             <Setter Property="TrackMinWidth"
                     Value="{atom:ToggleSwitchTokenResource TrackMinWidth}" />
-            <Setter Property="IconSize" Value="{atom:ToggleSwitchTokenResource IconSize}" />
+            <Setter Property="IconSize" Value="{atom:ToggleSwitchTokenResource ContentIconSize}" />
         </Style>
 
         <Style Selector="^ /template/ atom|SwitchKnob#PART_SwitchKnob">

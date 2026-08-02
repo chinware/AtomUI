@@ -53,7 +53,7 @@ AtomUI 应用通常分两步接入：
 2. 在 `Application.Initialize()` 内调用 `UseAtomUI(builder => ...)`，注册主题、字体、控件包和可选包。
 
 主题注册链路由 `IThemeManagerBuilder` 收集生成式 Control descriptor、主题 Provider、算法 descriptor、
-ControlTheme asset/token dependency manifest、语言 Provider 和不可变初始 ThemeRequest。构建过程先创建并冻结
+ControlTheme asset manifest、语言 Provider 和不可变初始 ThemeRequest。构建过程先创建并冻结
 ThemeSchemaRegistry、绑定 ThemeCatalog，再同步编译首个 ThemeSnapshot；已经持有有效根 ThemeContext、稳定
 ResourceProvider 和全局 TopLevel context style 的唯一 ThemeManager 随后挂载到 Application Styles，并以同一
 实例提供 `IThemeManager` 服务。运行期全局与局部主题都经过同一个五阶段事务发布。
@@ -72,13 +72,13 @@ ResourceProvider 和全局 TopLevel context style 的唯一 ThemeManager 随后�
 - `AtomUI.Desktop.Controls.Extras` 承载 Ant Design 标准之外、准备作为稳定 API 发布的补充桌面控件。
 - `AtomUI.Toolkits.GalleryBase` 是 Gallery 应用底座库，提供产品中立的 ShowCase 控件、Gallery 主题和运行时辅助能力。
 - `AtomUI.Generator` 以 Analyzer 方式接入多个项目，生成 Token schema/资源键、每个对外可主题化 Control 的独立
-  identity/descriptor、ControlTheme asset/token dependency manifest、包级注册入口、语言资源键和语言 Provider 池。
+  exact CLR type/identity descriptor、ControlTheme asset manifest、包级注册入口、语言资源键和语言 Provider 池。
 
 ## 横切系统
 
 - 主题与 Token：`ThemeSnapshot` 是唯一 Token 真源；`ThemeManager` 统一提交根/局部事务，稳定
   `ThemeContext` 和 snapshot-backed ResourceProvider 负责作用域资源，源生成器提供 Token schema、Control
-  identity、ControlTheme asset/token dependency manifest 与强类型资源投影。
+  exact CLR type/identity、ControlTheme asset manifest 与强类型资源投影。
 - 本地化：控件包声明 `LanguageProvider`，源生成器生成 `LanguageProviderPool`，注册时统一交给 `ThemeManager`。
 - 平台适配：`RuntimePlatform.Features.SupportsNativeWindow` 决定桌面/浏览器主题 Provider 和部分 Token 注册。
 - 控件资源：每个对外可主题化 Control 都有独立 identity 和 AXAML 主题；只有存在 Own Token 时才增加 Token 类。

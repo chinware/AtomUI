@@ -1,6 +1,6 @@
 # Calendar Token 设计
 
-本文档定义 Calendar 组件 Token 的专属语义、分类与兼容边界。控件 Token 的通用规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Calendar 整体架构见 [Calendar 桌面版架构设计](overview.md)，实现原理见 [Calendar 桌面版实现原理](implementation.md)，行为规则见 [Calendar 行为设计](behavior-design.md)，范围条见 [Calendar 范围条设计](range-bar-design.md)，变更记录见 [Calendar Changelog](changelog.md)。
+本文档定义 Calendar 控件 Token 的专属语义、分类与兼容边界。控件 Token 的通用规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Calendar 整体架构见 [Calendar 桌面版架构设计](overview.md)，实现原理见 [Calendar 桌面版实现原理](implementation.md)，行为规则见 [Calendar 行为设计](behavior-design.md)，范围条见 [Calendar 范围条设计](range-bar-design.md)，变更记录见 [Calendar Changelog](changelog.md)。
 
 ## 1. 定位
 
@@ -43,7 +43,7 @@ Cell 伪类：`:date`、`:month`、`:week`、`:today`、`:selected`、`:outside`
 
 - 新 Calendar 不复用旧 `CalendarToken` 的 range 选择、固定 Cell 尺寸和旧 Header 导航 Token。
 - 不把实例状态或交互状态写成 Token。
-- 不为了单个范围条样式新增组件 Token；范围条公共样式使用 `RangeBarHeight`、SharedToken 内部 metrics 和实例属性。
+- 不为了单个范围条样式新增控件 Token；范围条公共样式使用 `RangeBarHeight`、SharedToken 内部 metrics 和实例属性。
 - 如需引入新 Token，必须同步 Token 类型、生成资源、主题引用和本文档。
 
 ## 6. 验证策略

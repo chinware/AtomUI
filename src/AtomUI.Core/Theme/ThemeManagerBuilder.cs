@@ -12,11 +12,13 @@ namespace AtomUI.Theme;
 internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
 {
     private readonly List<ControlTokenDescriptor> _controlTokenDescriptors = new();
+    private readonly List<ControlThemeAssetDescriptor> _controlThemeAssetDescriptors = new();
     private readonly List<IControlThemesProvider> _controlThemesProviders = new();
     private readonly List<LanguageProvider> _languageProviders = new();
     private readonly List<IThemeDefinitionResolver> _themeDefinitionResolvers = new();
     private readonly List<Action<IThemeManager>> _initializers = new();
     private readonly HashSet<ControlTokenIdentity> _registeredControlTokenIdentities = new();
+    private readonly HashSet<string> _registeredControlPackageIds = new(StringComparer.Ordinal);
     private readonly HashSet<string> _registeredControlThemeProviders = new(StringComparer.Ordinal);
     private readonly HashSet<string> _registeredLanguageProviders = new(StringComparer.Ordinal);
     private readonly HashSet<string> _registeredThemeDefinitionResolvers = new(StringComparer.Ordinal);
@@ -62,35 +64,55 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
         _themeDefinitionResolvers.Add(resolver);
     }
 
-    public void AddControlToken(ControlTokenDescriptor descriptor)
+    public void AddControlPackage(ControlPackageRegistration package)
     {
-        ArgumentNullException.ThrowIfNull(descriptor);
-        if (!_registeredControlTokenIdentities.Add(descriptor.Identity))
+        ArgumentNullException.ThrowIfNull(package);
+        if (_registeredControlPackageIds.Contains(package.Id))
         {
             throw new ThemeResourceRegisterException(
-                $"Control Token descriptor '{descriptor.Identity}' is already registered.");
+                $"Control package '{package.Id}' is already registered.");
         }
-
-        _controlTokenDescriptors.Add(descriptor);
-    }
-
-    public void AddControlThemesProvider(IControlThemesProvider controlThemesProvider)
-    {
-        ArgumentNullException.ThrowIfNull(controlThemesProvider);
-        if (string.IsNullOrWhiteSpace(controlThemesProvider.Id))
+        foreach (var descriptor in package.Controls)
         {
-            throw new ThemeResourceRegisterException("Control theme provider id cannot be empty.");
+            if (_registeredControlTokenIdentities.Contains(descriptor.Identity))
+            {
+                throw new ThemeResourceRegisterException(
+                    $"Control Token descriptor '{descriptor.Identity}' is already registered.");
+            }
         }
-        if (!_registeredControlThemeProviders.Add(controlThemesProvider.Id))
+        if (_registeredControlThemeProviders.Contains(package.ControlThemesProvider.Id))
         {
             throw new ThemeResourceRegisterException(
-                $"Control theme provider '{controlThemesProvider.Id}' is already registered.");
+                $"Control theme provider '{package.ControlThemesProvider.Id}' is already registered.");
+        }
+        foreach (var languageProvider in package.LanguageProviders)
+        {
+            var id = languageProvider.GetType().FullName ?? languageProvider.GetType().Name;
+            if (_registeredLanguageProviders.Contains(id))
+            {
+                throw new ThemeResourceRegisterException(
+                    $"Language provider '{id}' is already registered.");
+            }
         }
 
-        _controlThemesProviders.Add(controlThemesProvider);
+        _registeredControlPackageIds.Add(package.Id);
+        foreach (var descriptor in package.Controls)
+        {
+            _registeredControlTokenIdentities.Add(descriptor.Identity);
+            _controlTokenDescriptors.Add(descriptor);
+        }
+        _controlThemeAssetDescriptors.AddRange(package.ThemeAssets);
+        _registeredControlThemeProviders.Add(package.ControlThemesProvider.Id);
+        _controlThemesProviders.Add(package.ControlThemesProvider);
+        foreach (var languageProvider in package.LanguageProviders)
+        {
+            var id = languageProvider.GetType().FullName ?? languageProvider.GetType().Name;
+            _registeredLanguageProviders.Add(id);
+            _languageProviders.Add(languageProvider);
+        }
     }
 
-    public void AddLanguageProviders(LanguageProvider languageProvider)
+    public void AddLanguageProvider(LanguageProvider languageProvider)
     {
         ArgumentNullException.ThrowIfNull(languageProvider);
         var id = languageProvider.GetType().FullName ?? languageProvider.GetType().Name;
@@ -197,6 +219,7 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
         themeManager.EnsureRegistrationCapacity(
             _controlTokenDescriptors.Count,
+            _controlThemeAssetDescriptors.Count,
             _controlThemesProviders.Count,
             _languageProviders.Count);
 
@@ -207,6 +230,10 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
         foreach (var descriptor in _controlTokenDescriptors)
         {
             themeManager.RegisterControlTokenDescriptor(descriptor);
+        }
+        foreach (var descriptor in _controlThemeAssetDescriptors)
+        {
+            themeManager.RegisterControlThemeAssetDescriptor(descriptor);
         }
         foreach (var provider in _languageProviders)
         {

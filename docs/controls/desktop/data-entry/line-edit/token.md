@@ -4,7 +4,7 @@
 
 ## 1. 定位
 
-LineEdit 输入家族使用三个组件级 Token scope：
+LineEdit 输入家族使用三个控件级 Token scope：
 
 | Token | Scope | 职责 |
 | --- | --- | --- |

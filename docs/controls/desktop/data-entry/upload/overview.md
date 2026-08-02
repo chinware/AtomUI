@@ -33,7 +33,7 @@ Upload 的设计语言围绕“单一文件状态 owner + 可组合操作入口 
 | 产品语义 | 控件在界面中承担的稳定职责。 | `Upload` 是上传状态协调器，统一管理文件、队列、选择入口、拖拽入口和列表视图。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Files` 保存真实文件项；`TriggerContent`、`UploadTrigger`、`UploadDropZone` 和 `UploadList` 负责组合展示。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | `UploadFileItem.Status`、`Progress`、`ErrorMessage`、`Result` 是任务状态来源；Form 错误走 `DataValidationErrors`。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Upload Token + ControlTheme；滚动边界在 `UploadList` 内部，并使用 AtomUI 自动隐藏滚动条。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Upload Token + ControlTheme；滚动边界在 `UploadList` 内部，并使用 AtomUI 自动隐藏滚动条。 |
 
 ## 3. API 与契约模型
 
@@ -153,7 +153,7 @@ Public API / UploadTrigger / UploadDropZone
 
 ## 5. 视觉与主题模型
 
-Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Token 共同构成。
+Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -174,7 +174,6 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Tok
 | `UploadPictureShapePreviewContentTheme.axaml` | Shape preview 内容。 |
 | `UploadPictureShapeUploadingContentTheme.axaml` | Shape uploading 内容。 |
 | `UploadPictureShapeDefaultContentTheme.axaml` | Shape fallback 内容。 |
-| `UploadThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 主题维护规则：
 

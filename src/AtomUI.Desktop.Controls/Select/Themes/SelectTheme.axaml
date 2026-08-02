@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:SelectThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Select}" TargetType="atom:Select">
         <Setter Property="Template">
@@ -138,13 +135,13 @@
 
         <Style Selector="^ /template/ atom|Popup#PART_Popup">
             <Setter Property="MarginToAnchor"
-                    Value="{atom:PopupHostTokenResource MarginToAnchor}" />
-            <Setter Property="PopupRootShadow" Value="{atom:PopupHostTokenResource PopupRootShadow}" />
+                    Value="{atom:PopupTokenResource MarginToAnchor}" />
+            <Setter Property="PopupRootShadow" Value="{atom:PopupTokenResource PopupRootShadow}" />
         </Style>
         <Style Selector="^ /template/ Border#PopupFrame">
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
             <Setter Property="CornerRadius"
-                    Value="{atom:PopupHostTokenResource BorderRadius}" />
+                    Value="{atom:PopupTokenResource PopupCornerRadius}" />
         </Style>
 
         <Style Selector="^[Mode=Single]">

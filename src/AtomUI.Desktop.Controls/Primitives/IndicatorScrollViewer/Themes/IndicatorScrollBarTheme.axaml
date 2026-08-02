@@ -28,7 +28,7 @@
         </Setter>
 
         <Setter Property="Width"
-                Value="{atom:IndicatorScrollViewerTokenResource ScrollBarThickness}" />
+                Value="{atom:ScrollViewerTokenResource LiteModeThumbThickness}" />
 
     </ControlTheme>
 </ResourceDictionary>

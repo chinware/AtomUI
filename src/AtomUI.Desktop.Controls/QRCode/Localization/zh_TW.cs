@@ -2,7 +2,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.QRCodeLang;
 
-[LanguageProvider(LanguageCode.zh_TW, QRCodeToken.ID)]
+[LanguageProvider(LanguageCode.zh_TW, "QRCode")]
 internal class zh_TW
 {
     public const string Refresh = "點擊刷新";

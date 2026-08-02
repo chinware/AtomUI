@@ -1,6 +1,6 @@
 # Collapse 桌面版实现原理
 
-本文档描述 Collapse 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Collapse 桌面版架构设计](overview.md)，变化记录见 [Collapse Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Collapse Token 设计](token.md)。
+本文档描述 Collapse 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Collapse 桌面版架构设计](overview.md)，变化记录见 [Collapse Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Collapse Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -16,7 +16,6 @@
 - `src/AtomUI.Desktop.Controls/Collapse/ICollapseItemData.cs`
 - `src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseThemes.axaml`
 
 职责边界：
 
@@ -29,7 +28,7 @@
 
 - `Collapse`：维护 items、Avalonia selection model、selection mode、输入路由、容器生成、模式切换归一和 item 位置投影。
 - `CollapseItem`：承载单项 public 内容与 `IsSelected` 投影，处理 header 命中、展开按钮和 content motion 生命周期。
-- `CollapseToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `CollapseToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 核心协作规则：
 

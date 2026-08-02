@@ -205,6 +205,24 @@ internal class TransferItemDecorator : TemplatedControl,
 
     #region 内部属性定义
 
+    internal static readonly StyledProperty<double> HeaderHeightProperty =
+        AvaloniaProperty.Register<TransferItemDecorator, double>(nameof(HeaderHeight));
+
+    internal static readonly StyledProperty<Thickness> HeaderPaddingProperty =
+        AvaloniaProperty.Register<TransferItemDecorator, Thickness>(nameof(HeaderPadding));
+
+    internal double HeaderHeight
+    {
+        get => GetValue(HeaderHeightProperty);
+        set => SetValue(HeaderHeightProperty, value);
+    }
+
+    internal Thickness HeaderPadding
+    {
+        get => GetValue(HeaderPaddingProperty);
+        set => SetValue(HeaderPaddingProperty, value);
+    }
+
     internal static readonly DirectProperty<TransferItemDecorator, string?> SelectedMessageProperty =
         AvaloniaProperty.RegisterDirect<TransferItemDecorator, string?>(nameof(SelectedMessage),
             o => o.SelectedMessage,

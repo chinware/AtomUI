@@ -1,9 +1,6 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:themeResources="using:AtomUI.Theme.Resources"
-              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-              themeResources:ControlTokenScope.Identity="{x:Static generated:ButtonThemeAsset.Identity}"
               xmlns:antdicons="https://atomui.net/icons/antdesign"
               x:Class="AtomUI.Desktop.Controls.Themes.ButtonTheme"
               TargetType="atom:Button">
@@ -223,7 +220,7 @@
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeLG}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
             <Style Selector="^:not(^[Shape=Circle])">
-                <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingLG}" />
+                <Setter Property="Padding" Value="{atom:ButtonTokenResource ContentPaddingLG}" />
             </Style>
             <Style Selector="^:icononly">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPaddingLG}" />
@@ -235,7 +232,7 @@
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
             <Style Selector="^:not(^[Shape=Circle])">
-                <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
+                <Setter Property="Padding" Value="{atom:ButtonTokenResource ContentPadding}" />
             </Style>
             <Style Selector="^:icononly">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPadding}" />
@@ -247,7 +244,7 @@
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeSM}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Style Selector="^:not(^[Shape=Circle])">
-                <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingSM}" />
+                <Setter Property="Padding" Value="{atom:ButtonTokenResource ContentPaddingSM}" />
             </Style>
             <Style Selector="^:icononly">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPaddingSM}" />
@@ -259,7 +256,7 @@
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
             <Style Selector="^:not(^[Shape=Circle])">
-                <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
+                <Setter Property="Padding" Value="{atom:ButtonTokenResource ContentPadding}" />
             </Style>
             <Style Selector="^:icononly">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPadding}" />

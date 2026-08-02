@@ -4,9 +4,6 @@
     x:ClassModifier="internal"
     x:Class="AtomUI.Desktop.Controls.Themes.WindowTheme"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:WindowThemeAsset.Identity}"
     xmlns:converters="using:Avalonia.Controls.Converters"
     TargetType="atom:Window">
     <ControlTheme.Resources>

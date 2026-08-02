@@ -1,6 +1,6 @@
 # ImagePreviewer 桌面版实现原理
 
-本文档描述 ImagePreviewer 桌面版的内部实现范围、源码职责、图片源懒加载管线、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [ImagePreviewer 桌面版架构设计](overview.md)，变化记录见 [ImagePreviewer Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [ImagePreviewer Token 设计](token.md)。
+本文档描述 ImagePreviewer 桌面版的内部实现范围、源码职责、图片源懒加载管线、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [ImagePreviewer 桌面版架构设计](overview.md)，变化记录见 [ImagePreviewer Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [ImagePreviewer Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -38,7 +38,7 @@
 - `ImagePreviewerOverlayHost`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `ImagePreviewerTitleBar`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `ImagePreviewerTitleBarTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `ImagePreviewerToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `ImagePreviewerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `ImageViewer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `IImagePreviewSource`：图片来源主契约，负责提供可选显示名、可选内容类型和按需打开数据流的异步入口，不强制暴露身份字段。
 - `IImagePreviewSourceIdentity`：可选高级身份扩展，供需要跨 source 实例复用 item / loaded result 的来源实现显式提供稳定 identity。
@@ -201,14 +201,14 @@ ImagePreviewerDialog (ImagePreviewerDialogTheme.axaml + WindowTheme)
         -> IconButton#PART_ScaleUpButton
         -> ToggleIconButton#PART_FitToWindowButton
         -> IconButton#PART_HorizontalFlipButton
-        -> IconButton#PART_VerticalFlipButton
-        -> IconButton#PART_RotateLeftButton
-        -> IconButton#PART_RotateRightButton
+	     -> IconButton#PART_VerticalFlipButton
+	     -> IconButton#PART_RotateLeftButton
+	     -> IconButton#PART_RotateRightButton
 
-ImagePreviewerOverlayHost (ImagePreviewerThemes.axaml + runtime host)
-  -> IconButton#PART_CloseButton
-  -> ImageViewer
-  -> ImagePreviewToolbar
+ImagePreviewerOverlayHost (ImagePreviewerOverlayHostTheme.axaml + runtime host)
+	  -> IconButton#PART_CloseButton
+	  -> ImageViewer
+	  -> ImagePreviewToolbar
 ```
 
 ### 协作节点

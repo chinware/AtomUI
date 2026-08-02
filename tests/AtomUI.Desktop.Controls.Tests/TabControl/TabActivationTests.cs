@@ -136,7 +136,7 @@ public class TabActivationTests
 
         source.ShouldContain("<Style Selector=\"^:pressed\">");
         source.ShouldContain("<Setter Property=\"Foreground\" Value=\"{atom:SharedTokenResource ColorPrimaryActive}\" />");
-        source.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        source.ShouldNotContain("ControlTokenScope.Identity");
     }
 
     [Fact]
@@ -267,7 +267,7 @@ public class TabActivationTests
 
         source.ShouldContain("<Style Selector=\"^:pressed\">");
         source.ShouldContain("<Setter Property=\"Foreground\" Value=\"{atom:SharedTokenResource ColorPrimaryActive}\" />");
-        source.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        source.ShouldNotContain("ControlTokenScope.Identity");
     }
 
     [Fact]
@@ -341,6 +341,8 @@ public class TabActivationTests
         }
         finally
         {
+            window.MouseUp(new Point(0, 0), MouseButton.Left);
+            Dispatcher.UIThread.RunJobs();
             window.Close();
         }
     }

@@ -1,6 +1,6 @@
 # Splash 桌面版实现原理
 
-本文档描述 Splash 桌面版的内部实现范围、源码职责、状态流、生命周期、服务编排和维护规则。公共设计与 API 契约见 [Splash 桌面版架构设计](overview.md)，变化记录见 [Splash Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Splash Token 设计](token.md)。
+本文档描述 Splash 桌面版的内部实现范围、源码职责、状态流、生命周期、服务编排和维护规则。公共设计与 API 契约见 [Splash 桌面版架构设计](overview.md)，变化记录见 [Splash Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Splash Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -21,8 +21,6 @@
 - `src/AtomUI.Desktop.Controls.Extras/Splash/SplashPseudoClass.cs`
 - `src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashTheme.axaml`
 - `src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashWindowTheme.axaml`
-- `src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashThemes.axaml`
-- `src/AtomUI.Desktop.Controls.Extras/AtomUIExtrasThemesProvider.axaml`
 - `src/AtomUI.Desktop.Controls.Extras/AtomUIExtrasThemesProvider.cs`
 - `src/AtomUI.Desktop.Controls.Extras/ThemeManagerBuilderExtensions.cs`
 
@@ -44,7 +42,7 @@
 - `SplashService`：默认服务实现，一次管理一个 `CurrentWindow`，通过 `CurrentWindow.Splash` 写入状态。
 - `SplashOptions`：启动窗口、初始内容和关闭节奏配置对象。
 - `SplashStatus`：视觉状态枚举，不表达业务启动结果对象。
-- `SplashToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `SplashToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `AtomUIExtrasThemesProvider`：Extras 包主题聚合入口。
 
 核心协作规则：

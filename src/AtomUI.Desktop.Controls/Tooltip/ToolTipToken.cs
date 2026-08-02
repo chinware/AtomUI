@@ -7,10 +7,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ToolTipToken : AbstractControlDesignToken
 {
-    public const string ID = "ToolTip";
     
     public ToolTipToken()
-        : base(ID)
+
     {
     }
 
@@ -32,12 +31,12 @@ internal class ToolTipToken : AbstractControlDesignToken
     /// <summary>
     /// ToolTip 默认的圆角
     /// </summary>
-    public CornerRadius BorderRadiusOuter { get; set; }
+    public CornerRadius ToolTipCornerRadius { get; set; }
 
     /// <summary>
     /// ToolTip 默认的内间距
     /// </summary>
-    public Thickness Padding { get; set; }
+    public Thickness ContentPadding { get; set; }
     
     /// <summary>
     /// 动画时长
@@ -49,14 +48,11 @@ internal class ToolTipToken : AbstractControlDesignToken
         base.CalculateTokenValues(isDarkMode);
 
         ToolTipMaxWidth   = 250;
-        ToolTipColor      = SharedToken.ColorTextLightSolid;
-        ToolTipBackground = SharedToken.ColorBgSpotlight;
-        BorderRadiusOuter = new CornerRadius(Math.Max(BorderRadiusOuter.TopLeft, 4),
-            Math.Max(BorderRadiusOuter.TopRight, 4),
-            Math.Max(BorderRadiusOuter.BottomLeft, 4),
-            Math.Max(BorderRadiusOuter.BottomRight, 4));
-        Padding        = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPaddingSM / 2 + 2);
-        MotionDuration = SharedToken.MotionDurationMid;
+        ToolTipColor      = EffectiveGlobalToken.ColorTextLightSolid;
+        ToolTipBackground = EffectiveGlobalToken.ColorBgSpotlight;
+        ToolTipCornerRadius = new CornerRadius(4);
+        ContentPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM, EffectiveGlobalToken.UniformlyPaddingSM / 2 + 2);
+        MotionDuration = EffectiveGlobalToken.MotionDurationMid;
     }
     
 }

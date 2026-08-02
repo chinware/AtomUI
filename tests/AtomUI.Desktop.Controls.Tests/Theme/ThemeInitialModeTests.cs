@@ -3,8 +3,6 @@ using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Language;
-using AtomUI.Theme.Resources;
-using AtomUI.Theme.Schema;
 using Avalonia.Media;
 using Shouldly;
 using Xunit;
@@ -50,8 +48,7 @@ public class ThemeInitialModeTests
 
     private sealed class TestThemeManagerBuilder : IThemeManagerBuilder
     {
-        public IList<IControlThemesProvider> ControlThemesProviders { get; } = new List<IControlThemesProvider>();
-        public IList<LanguageProvider> LanguageProviders { get; } = new List<LanguageProvider>();
+        public IList<ControlPackageRegistration> ControlPackages { get; } = new List<ControlPackageRegistration>();
         public IList<Action<IThemeManager>> Initializers { get; } = new List<Action<IThemeManager>>();
         public LanguageVariant LanguageVariant { get; private set; } = LanguageVariant.en_US;
         public string ThemeId { get; private set; } = IThemeManager.DEFAULT_THEME_ID;
@@ -63,18 +60,13 @@ public class ThemeInitialModeTests
         {
         }
 
-        public void AddControlToken(ControlTokenDescriptor descriptor)
+        public void AddControlPackage(ControlPackageRegistration package)
         {
+            ControlPackages.Add(package);
         }
 
-        public void AddControlThemesProvider(IControlThemesProvider controlThemesProvider)
+        public void AddLanguageProvider(LanguageProvider languageProvider)
         {
-            ControlThemesProviders.Add(controlThemesProvider);
-        }
-
-        public void AddLanguageProviders(LanguageProvider languageProvider)
-        {
-            LanguageProviders.Add(languageProvider);
         }
 
         public void AddInitializer(Action<IThemeManager> initializer)

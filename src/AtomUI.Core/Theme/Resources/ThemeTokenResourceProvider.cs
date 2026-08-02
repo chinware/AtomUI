@@ -1,4 +1,5 @@
 using AtomUI.Theme.Compilation;
+using AtomUI.Theme.Schema;
 using Avalonia.Controls;
 using Avalonia.Styling;
 
@@ -27,15 +28,24 @@ internal sealed class ThemeTokenResourceProvider : ResourceProvider
     public override bool TryGetResource(object key, ThemeVariant? theme, out object? value)
     {
         var snapshot = Snapshot;
-        if (key is ControlSharedTokenResourceKey controlKey)
+        if (key is ControlTokenResourceKey controlKey)
         {
             var controlSlot = controlKey.ControlSlot;
             if (!controlKey.IsBound)
             {
-                if (!snapshot.Registry.TryGetControl(controlKey.Identity, out var descriptor))
+                ControlTokenDescriptor? descriptor;
+                if (controlKey.ControlType is { } controlType)
                 {
-                    value = null;
-                    return false;
+                    if (!snapshot.Registry.TryGetControl(controlType, out descriptor))
+                    {
+                        throw new InvalidOperationException(
+                            $"Control type '{controlType.FullName}' is not registered in the active theme schema.");
+                    }
+                }
+                else if (!snapshot.Registry.TryGetControl(controlKey.Identity, out descriptor))
+                {
+                    throw new InvalidOperationException(
+                        $"Control Token identity '{controlKey.Identity}' is not registered in the active theme schema.");
                 }
                 controlSlot = descriptor.Slot;
             }
@@ -51,6 +61,26 @@ internal sealed class ThemeTokenResourceProvider : ResourceProvider
                 snapshot.Registry.GetSharedResourceKey(controlKey.Kind),
                 snapshot.GlobalResources,
                 out value);
+        }
+
+        if (key is ControlOwnTokenResourceKey ownKey)
+        {
+            if (!snapshot.Registry.TryGetControl(ownKey.ControlType, out var descriptor))
+            {
+                throw new InvalidOperationException(
+                    $"Control type '{ownKey.ControlType.FullName}' is not registered in the active theme schema.");
+            }
+            if (!snapshot.Registry.TryGetControlResourceSlot(ownKey.ResourceKey, out var ownControlSlot) ||
+                ownControlSlot != descriptor.Slot)
+            {
+                throw new InvalidOperationException(
+                    $"Own Token resource key '{ownKey.ResourceKey}' does not belong to Control type " +
+                    $"'{ownKey.ControlType.FullName}'.");
+            }
+
+            return snapshot.Controls[descriptor.Slot]
+                           .ControlResources
+                           .TryGetValue(ownKey.ResourceKey, out value);
         }
 
         if (snapshot.GlobalResources.TryGetValue(key, out value))

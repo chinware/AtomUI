@@ -29,21 +29,21 @@ public class DesktopControlsNavigationThemeScopeMigrationTests
     }
 
     [Fact]
-    public void Navigation_Control_Themes_Use_Ambient_Shared_Token_Scopes()
+    public void Navigation_Control_Themes_Use_Explicit_Token_Resources()
     {
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/Breadcrumb/Themes");
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/Menu/Themes");
-        ThemeAssetScopeAssertions.AssertFileUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertFileUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml");
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/NavMenu/Themes");
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/Pagination/Themes");
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/Steps/Themes");
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/TabControl/Themes");
     }
 

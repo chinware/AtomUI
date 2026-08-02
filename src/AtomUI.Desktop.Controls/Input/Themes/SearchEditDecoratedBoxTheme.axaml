@@ -29,20 +29,22 @@
                             ContentTemplate="{TemplateBinding LeftAddOnTemplate}" />
                     </atom:PixelAlignedBorder>
 
-                    <atom:SearchButton
+                    <atom:Button
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
                         Focusable="False"
                         IsEnabled="{TemplateBinding IsEnabled}"
-                        Icon="{antdicons:AntDesignIconProvider SearchOutlined}"
                         BackgroundSizing="OuterBorderEdge"
                         IsLoading="{TemplateBinding IsSearchButtonLoading}"
                         Content="{TemplateBinding SearchButtonText}"
                         Height="{Binding Bounds.Height, RelativeSource={RelativeSource TemplatedParent}}"
                         SizeType="{TemplateBinding SizeType}"
-                        Status="{TemplateBinding EffectiveStatus}"
-                        StyleVariant="{TemplateBinding StyleVariant}"
+                        Theme="{TemplateBinding SearchButtonTheme}"
                         BorderThickness="{Binding RightAddOnBorderThickness, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"
-                        CornerRadius="{Binding RightAddOnCornerRadius, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"/>
+                        CornerRadius="{Binding RightAddOnCornerRadius, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}">
+                        <atom:Button.Icon>
+                            <antdicons:SearchOutlined Classes="skip-status" />
+                        </atom:Button.Icon>
+                    </atom:Button>
 
                     <atom:AddOnDecoratedBoxContentFrame Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
                                                         BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
@@ -97,7 +99,7 @@
                 <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
             </Style>
 
-            <Style Selector="^ /template/ atom|SearchButton#PART_RightAddOn">
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn">
                 <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.NormalZIndex}" />
                 <Setter Property="IsIconVisible" Value="True" />
                 <Setter Property="ButtonType" Value="Default" />
@@ -105,12 +107,12 @@
 
             <Style Selector="^[StyleVariant=Outlined]">
                 <Style
-                    Selector="^ /template/ atom|SearchButton#PART_RightAddOn:pressed">
+                    Selector="^ /template/ atom|Button#PART_RightAddOn:pressed">
                     <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
                 </Style>
 
                 <Style
-                    Selector="^ /template/ atom|SearchButton#PART_RightAddOn:pointerover">
+                    Selector="^ /template/ atom|Button#PART_RightAddOn:pointerover">
                     <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
                 </Style>
             </Style>
@@ -118,20 +120,50 @@
         </Style>
 
         <Style Selector="^[SearchButtonStyle=Primary]">
-            <Style Selector="^ /template/ atom|SearchButton#PART_RightAddOn">
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn">
                 <Setter Property="IsIconVisible" Value="True" />
                 <Setter Property="ButtonType" Value="Primary" />
             </Style>
             <Style Selector="^[StyleVariant=Outlined]">
-                <Style Selector="^ /template/ atom|SearchButton#PART_RightAddOn">
+                <Style Selector="^ /template/ atom|Button#PART_RightAddOn">
                     <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
                 </Style>
             </Style>
         </Style>
 
         <Style Selector="^:not(^[StyleVariant=Outlined])">
-            <Style Selector="^ /template/ atom|SearchButton#PART_RightAddOn">
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn">
                 <Setter Property="ButtonType" Value="Text" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[StyleVariant=Filled]">
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn[ButtonType=Text]">
+                <Setter Property="Background" Value="{atom:SearchEditTokenResource ColorFillTertiary}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[EffectiveStatus=Error]">
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn[ButtonType=Text]">
+                <Setter Property="Background" Value="{atom:SearchEditTokenResource ColorErrorBg}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn[ButtonType=Text]:pointerover">
+                <Setter Property="Background" Value="{atom:SearchEditTokenResource ColorErrorBgHover}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn[ButtonType=Text]:pressed">
+                <Setter Property="Background" Value="{atom:SearchEditTokenResource ColorErrorBgActive}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[EffectiveStatus=Warning]">
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn[ButtonType=Text]">
+                <Setter Property="Background" Value="{atom:SearchEditTokenResource ColorWarningBg}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn[ButtonType=Text]:pointerover">
+                <Setter Property="Background" Value="{atom:SearchEditTokenResource ColorWarningHover}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn[ButtonType=Text]:pressed">
+                <Setter Property="Background" Value="{atom:SearchEditTokenResource ColorWarningActive}" />
             </Style>
         </Style>
 

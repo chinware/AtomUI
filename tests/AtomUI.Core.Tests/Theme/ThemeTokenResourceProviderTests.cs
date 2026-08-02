@@ -105,19 +105,18 @@ public class ThemeTokenResourceProviderTests
     }
 
     [Fact]
-    public void Provider_Returns_False_For_Unknown_Resource_And_Control_Ids()
+    public void Provider_Returns_False_For_Unknown_Resources_And_Throws_For_Unknown_Control_Ids()
     {
         var provider = new ThemeTokenResourceProvider(Compile());
 
         provider.TryGetResource("Missing", null, out var unknownResource).ShouldBeFalse();
         unknownResource.ShouldBeNull();
-        provider.TryGetResource(
-            ControlSharedTokenResourceKey.Unbound(
+        Should.Throw<InvalidOperationException>(() => provider.TryGetResource(
+            ControlTokenResourceKey.Global(
                 new AtomUI.Theme.Schema.ControlTokenIdentity("AtomUI", "Missing"),
                 SharedTokenKind.ColorPrimary),
             null,
-            out var unknownControl).ShouldBeFalse();
-        unknownControl.ShouldBeNull();
+            out _));
     }
 
     [Fact]
@@ -128,6 +127,34 @@ public class ThemeTokenResourceProviderTests
         provider.TryGetResource(CompilerButtonTokenKind.Height, null, out var value).ShouldBeTrue();
 
         value.ShouldBe(32d);
+    }
+
+    [Fact]
+    public void Provider_Resolves_Csharp_Keys_By_Exact_Control_Type()
+    {
+        var provider = new ThemeTokenResourceProvider(Compile(controlPrimary: "#00b96b"));
+
+        provider.TryGetResource(
+            ControlTokenResourceKey.Global(
+                typeof(ButtonThemeTestControl),
+                SharedTokenKind.ColorPrimary),
+            null,
+            out var effectiveGlobal).ShouldBeTrue();
+        provider.TryGetResource(
+            ControlTokenResourceKey.Own(
+                typeof(ButtonThemeTestControl),
+                CompilerButtonTokenKind.Height),
+            null,
+            out var own).ShouldBeTrue();
+
+        effectiveGlobal.ShouldNotBeNull();
+        own.ShouldBe(32d);
+        Should.Throw<InvalidOperationException>(() => provider.TryGetResource(
+            ControlTokenResourceKey.Global(
+                typeof(DerivedButtonThemeTestControl),
+                SharedTokenKind.ColorPrimary),
+            null,
+            out _));
     }
 
     [Fact]
@@ -172,12 +199,23 @@ public class ThemeTokenResourceProviderTests
         notifications.ShouldBe(1);
     }
 
-    internal static ThemeSnapshot Compile(string? globalPrimary = null)
+    internal static ThemeSnapshot Compile(
+        string? globalPrimary = null,
+        string? controlPrimary = null)
     {
         var builder = new ThemeConfigBuilder();
         if (globalPrimary is not null)
         {
             builder.WithToken(nameof(DesignToken.ColorPrimary), globalPrimary);
+        }
+        if (controlPrimary is not null)
+        {
+            builder.WithControl(
+                new AtomUI.Theme.Schema.ControlTokenIdentity("AtomUI", CompilerButtonToken.ID),
+                new ControlThemeConfigBuilder()
+                    .WithAlgorithm(ControlAlgorithmMode.Disabled)
+                    .WithToken(nameof(DesignToken.ColorPrimary), controlPrimary)
+                    .Build());
         }
         return ThemeTestSnapshotFactory.Compile(
             builder.Build(),
@@ -186,18 +224,7 @@ public class ThemeTokenResourceProviderTests
 
     private static ThemeSnapshot CompileButtonPrimary(string primary)
     {
-        var identity = new AtomUI.Theme.Schema.ControlTokenIdentity("AtomUI", CompilerButtonToken.ID);
-        var config = new ThemeConfigBuilder()
-                     .WithControl(
-                         identity,
-                         new ControlThemeConfigBuilder()
-                             .WithAlgorithm(ControlAlgorithmMode.Disabled)
-                             .WithToken(nameof(DesignToken.ColorPrimary), primary)
-                             .Build())
-                     .Build();
-        return ThemeTestSnapshotFactory.Compile(
-            config,
-            ThemeCompilerTests.CreateCompilerButtonDescriptor());
+        return Compile(controlPrimary: primary);
     }
 
     private static ThemeSnapshot CompileCrossControlSnapshot()
@@ -268,13 +295,11 @@ public class ThemeTokenResourceProviderTests
     private static AtomUI.Theme.Schema.ControlTokenDescriptor CreateCrossControlDescriptor(
         string id,
         Func<AbstractControlDesignToken> factory,
-        string catalog = ControlDesignTokenAttribute.DefaultCatalog)
+        string catalog = "AtomUI")
     {
         return new AtomUI.Theme.Schema.ControlTokenDescriptor(
-            new AtomUI.Theme.Schema.ControlTokenIdentity(catalog, id),
-            Array.Empty<AtomUI.Theme.Schema.TokenDescriptor>(),
-            factory,
-            static (token, appearance) => token.CalculateTokenValues(appearance == ThemeAppearance.Dark));
+            ThemeTestControlTypes.For(catalog, id),
+            new AtomUI.Theme.Schema.ControlTokenIdentity(catalog, id));
     }
 
     private static readonly (string ParentControl, string ChildControl)[] CrossControlPairs =
@@ -303,83 +328,43 @@ internal abstract class CrossControlCompilerToken : AbstractControlDesignToken
 {
     public double Height { get; set; }
 
-    protected CrossControlCompilerToken(string id)
-        : base(id)
-    {
-    }
-
     public override void CalculateTokenValues(bool isDarkMode)
     {
-        Height = SharedToken.ControlHeight;
+        Height = EffectiveGlobalToken.ControlHeight;
     }
 }
 
 internal sealed class CompilerIconToken : CrossControlCompilerToken
 {
     internal const string ID = "Icon";
-
-    public CompilerIconToken()
-        : base(ID)
-    {
-    }
 }
 
 internal sealed class CompilerLineEditToken : CrossControlCompilerToken
 {
     internal const string ID = "LineEdit";
-
-    public CompilerLineEditToken()
-        : base(ID)
-    {
-    }
 }
 
 internal sealed class CompilerAddOnDecoratedBoxToken : CrossControlCompilerToken
 {
     internal const string ID = "AddOnDecoratedBox";
-
-    public CompilerAddOnDecoratedBoxToken()
-        : base(ID)
-    {
-    }
 }
 
 internal sealed class CompilerSelectToken : CrossControlCompilerToken
 {
     internal const string ID = "Select";
-
-    public CompilerSelectToken()
-        : base(ID)
-    {
-    }
 }
 
 internal sealed class CompilerDatePickerToken : CrossControlCompilerToken
 {
     internal const string ID = "DatePicker";
-
-    public CompilerDatePickerToken()
-        : base(ID)
-    {
-    }
 }
 
 internal sealed class CompilerDialogToken : CrossControlCompilerToken
 {
     internal const string ID = "Dialog";
-
-    public CompilerDialogToken()
-        : base(ID)
-    {
-    }
 }
 
 internal sealed class CompilerDataGridToken : CrossControlCompilerToken
 {
     internal const string ID = "DataGrid";
-
-    public CompilerDataGridToken()
-        : base(ID)
-    {
-    }
 }

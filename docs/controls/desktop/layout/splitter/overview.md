@@ -47,7 +47,7 @@ Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、�
 | 面板尺寸 | `Splitter.Size`、`Splitter.DefaultSize`、`Splitter.MinSize`、`Splitter.MaxSize` | 定义子面板初始尺寸、默认尺寸和尺寸约束。 |
 | 面板交互 | `Splitter.IsResizable` | 控制相邻边界是否允许拖拽调整。 |
 | 事件 | `ResizeStarted`、`ResizeDelta`、`ResizeCompleted` | 把 internal drag 流转换为控件级 resize 事件。 |
-| 主题入口 | `HandleSize`、组件 Token、根模板外观入口 | 区分命中区域、可见分割线和根框架外观。 |
+| 主题入口 | `HandleSize`、控件 Token、根模板外观入口 | 区分命中区域、可见分割线和根框架外观。 |
 
 样式能力边界：
 
@@ -67,7 +67,7 @@ Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、�
 | `PART_CollapsePrevButton` | `IconButton` | internal handle template part | 触发前侧面板折叠或展开。 |
 | `PART_CollapseNextButton` | `IconButton` | internal handle template part | 触发后侧面板折叠或展开。 |
 
-`PART_HandleLine`、`PART_DragBar`、`PART_Grip` 和折叠按钮虽然是稳定 internal theme part，但不应作为用户自定义入口暴露。用户级定制应通过 `Splitter` public API、组件 Token、ControlTheme 和 Gallery 展示的稳定用法进入。
+`PART_HandleLine`、`PART_DragBar`、`PART_Grip` 和折叠按钮虽然是稳定 internal theme part，但不应作为用户自定义入口暴露。用户级定制应通过 `Splitter` public API、控件 Token、ControlTheme 和 Gallery 展示的稳定用法进入。
 
 伪类模型：
 
@@ -101,14 +101,13 @@ Public API / attached panel properties / pointer drag / collapse button
 
 ## 5. 视觉与主题模型
 
-Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、组件 Token 共同构成。
+Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `SplitterTheme.axaml` | 定义 `Splitter` 根模板、外层 Frame 和 `PART_SplitterPanel`。 |
 | `SplitterHandleTheme.axaml` | 定义可见分割线、拖拽命中区和折叠按钮的组合结构。 |
 | `SplitterDragBarTheme.axaml` | 定义拖拽命中区、grip 尺寸、grip 圆角和方向 cursor。 |
-| `SplitterThemes.axaml` | 聚合 Splitter 主题资源，保证包级引入顺序稳定。 |
 
 视觉语义拆分：
 
@@ -186,7 +185,7 @@ Splitter 的样式能力划分为三层：
 | 层级 | 职责 | 推荐入口 |
 | --- | --- | --- |
 | 根框架 | Splitter 整体背景、边框、圆角和裁剪。 | `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 的模板绑定。 |
-| 可见分割线 | 分割线厚度、圆角、普通/hover/dragging 颜色。 | `LineThickness`、`LineCornerRadius`、组件 Token。 |
+| 可见分割线 | 分割线厚度、圆角、普通/hover/dragging 颜色。 | `LineThickness`、`LineCornerRadius`、控件 Token。 |
 | 子面板内容 | 面板背景、面板圆角、内容 padding。 | 用户自己的子控件，例如 `Border`、`Card` 或业务布局容器。 |
 
 新增实例级分割线样式能力时，必须把 API 定义在 `Splitter` 上，并通过 `SplitterPanel` 传递到 internal handle。不要要求用户引用 `SplitterHandle` 或 `SplitterDragBar`，也不要把 `HandleSize` 复用为线条厚度。

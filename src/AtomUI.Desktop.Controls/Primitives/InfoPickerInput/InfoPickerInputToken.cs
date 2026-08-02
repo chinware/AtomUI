@@ -6,10 +6,9 @@ namespace AtomUI.Desktop.Controls.Primitives;
 [ControlDesignToken]
 internal class InfoPickerInputToken : AbstractControlDesignToken
 {
-    public const string ID = "InfoPickerInput";
     
     public InfoPickerInputToken()
-        : base(ID)
+
     {
     }
     
@@ -31,9 +30,9 @@ internal class InfoPickerInputToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        RangePickerArrowMargin        = new Thickness(SharedToken.UniformlyMarginXS, 0);
-        RangePickerIndicatorThickness = SharedToken.LineWidthFocus;
-        RangeMarginToAnchor           = SharedToken.UniformlyMarginXS;
+        RangePickerArrowMargin        = new Thickness(EffectiveGlobalToken.UniformlyMarginXS, 0);
+        RangePickerIndicatorThickness = EffectiveGlobalToken.LineWidthFocus;
+        RangeMarginToAnchor           = EffectiveGlobalToken.UniformlyMarginXS;
     }
     
 }

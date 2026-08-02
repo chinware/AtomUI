@@ -5,6 +5,7 @@ using AtomUI.Theme.Resources;
 using AtomUI.Theme.DesignTokens;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Logging;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
 using Shouldly;
@@ -276,6 +277,9 @@ public class ThemeManagerTransactionTests
         var prepared = CreatePrepared("First", "#1677ff");
         var manager = CreateManager((_, _, _) => ValueTask.FromResult(prepared));
         var laterObserverRan = false;
+        var previousSink = Logger.Sink;
+        var sink = new RecordingLogSink();
+        Logger.Sink = sink;
         manager.ThemeChanged += (_, _) => throw new InvalidOperationException("observer failure");
         manager.ThemeChanged += (_, args) =>
         {
@@ -284,13 +288,24 @@ public class ThemeManagerTransactionTests
             manager.CurrentSnapshot.ShouldBeSameAs(prepared.Snapshot);
         };
 
-        var result = await ApplyAsync(manager, Request("First"));
+        ThemeTransitionResult result;
+        try
+        {
+            result = await ApplyAsync(manager, Request("First"));
+        }
+        finally
+        {
+            Logger.Sink = previousSink;
+        }
 
         result.Status.ShouldBe(ThemeTransitionStatus.Committed);
         laterObserverRan.ShouldBeTrue();
         result.PublishDiagnostics.ShouldContain(diagnostic =>
             diagnostic.Severity == ThemeDiagnosticSeverity.Warning &&
             diagnostic.Message.Contains("observer failure", StringComparison.Ordinal));
+        sink.Messages.ShouldContain(message =>
+            message.Contains(nameof(ThemeManager.ThemeChanged), StringComparison.Ordinal) &&
+            message.Contains("observer failure", StringComparison.Ordinal));
         manager.CurrentSnapshot.ShouldBeSameAs(prepared.Snapshot);
     }
 
@@ -318,6 +333,38 @@ public class ThemeManagerTransactionTests
 
             observed.ShouldBeTrue();
             application.RequestedThemeVariant.ShouldBe(ThemeVariant.Light);
+        });
+    }
+
+    [Fact]
+    public void First_Root_Publish_Reports_Context_Observer_Failure()
+    {
+        HeadlessTestApp.Run(() =>
+        {
+            var prepared = CreatePrepared("First", "#1677ff");
+            var manager = CreateManager((_, _, _) => ValueTask.FromResult(prepared));
+            manager.ConfigureStartup(Request("First"), null, null);
+            var application = Application.Current!;
+            application.RequestedThemeVariant = ThemeVariant.Dark;
+            ThemeChangedEventArgs? observed = null;
+            using var subscription = application
+                                     .GetObservable(Application.RequestedThemeVariantProperty)
+                                     .Subscribe(_ =>
+                                     {
+                                         if (manager.CurrentSnapshot is not null)
+                                         {
+                                             manager.RootContext.Published += (_, _) =>
+                                                 throw new InvalidOperationException("context observer failure");
+                                         }
+                                     });
+            manager.ThemeChanged += (_, args) => observed = args;
+
+            manager.InitializeApplication(application);
+
+            observed.ShouldNotBeNull();
+            observed!.PublishDiagnostics.ShouldContain(diagnostic =>
+                diagnostic.Severity == ThemeDiagnosticSeverity.Warning &&
+                diagnostic.Message.Contains("context observer failure", StringComparison.Ordinal));
         });
     }
 
@@ -397,6 +444,87 @@ public class ThemeManagerTransactionTests
                .ShouldBe(Avalonia.Media.Color.Parse("#00b96b"));
     }
 
+    [Fact]
+    public async Task Root_Transaction_Replays_The_Latest_Local_Config_Queued_During_Local_Publish()
+    {
+        var initial = CreatePrepared("Initial", "#1677ff");
+        var next = CreatePrepared("Next", "#52c41a");
+        var manager = CreateManager((request, _, _) => ValueTask.FromResult(
+            request.ThemeId == "Next" ? next : initial));
+        (await ApplyAsync(manager, Request("Initial"))).Status.ShouldBe(ThemeTransitionStatus.Committed);
+        var provider = new ThemeConfigProvider
+        {
+            Config = new ThemeConfigBuilder()
+                     .WithToken(nameof(DesignToken.ColorPrimary), "#ff0000")
+                     .Build(),
+            Child = new Border()
+        };
+        var root = new LogicalRoot();
+        root.SetValue(ThemeScope.ContextProperty, manager.RootContext);
+        root.Child = provider;
+        var context = provider.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull();
+        var finalConfig = new ThemeConfigBuilder()
+                          .WithToken(nameof(DesignToken.ColorPrimary), "#00b96b")
+                          .Build();
+        var finalLocalCommit = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task<ThemeTransitionResult>? rootTransition = null;
+        var localCommits = 0;
+        provider.ThemeChanged += (_, _) =>
+        {
+            localCommits++;
+            if (localCommits == 1)
+            {
+                provider.Config = finalConfig;
+                rootTransition = ApplyAsync(manager, Request("Next"));
+            }
+            else
+            {
+                finalLocalCommit.TrySetResult();
+            }
+        };
+
+        provider.Config = new ThemeConfigBuilder()
+                         .WithToken(nameof(DesignToken.ColorPrimary), "#fa8c16")
+                         .Build();
+
+        (await rootTransition!).Status.ShouldBe(ThemeTransitionStatus.Committed);
+        await finalLocalCommit.Task.WaitAsync(TestContext.Current.CancellationToken);
+        context.Snapshot.Global<Avalonia.Media.Color>(nameof(DesignToken.ColorPrimary))
+               .ShouldBe(Avalonia.Media.Color.Parse("#00b96b"));
+        manager.ScopeGraph.TryGetNode(provider, out var node).ShouldBeTrue();
+        node!.LastValidConfig.ShouldBeSameAs(finalConfig);
+    }
+
+    [Fact]
+    public async Task Dispose_Supersedes_Active_And_Queued_Root_Transactions()
+    {
+        var prepared = CreatePrepared("First", "#1677ff");
+        var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var manager = CreateManager(async (_, _, _) =>
+        {
+            started.TrySetResult();
+            await release.Task;
+            return prepared;
+        });
+
+        var active = ApplyAsync(manager, Request("First"));
+        await started.Task;
+        var queued = ApplyAsync(manager, Request("Second"));
+
+        manager.Dispose();
+
+        (await queued.WaitAsync(TestContext.Current.CancellationToken))
+            .Status.ShouldBe(ThemeTransitionStatus.Superseded);
+        Should.Throw<ObjectDisposedException>(() => manager.ApplyThemeAsync(Request("Third")));
+
+        release.TrySetResult();
+        (await active.WaitAsync(TestContext.Current.CancellationToken))
+            .Status.ShouldBe(ThemeTransitionStatus.Superseded);
+        manager.CurrentTheme.ShouldBeNull();
+        manager.CurrentSnapshot.ShouldBeNull();
+    }
+
     private static ThemeManager CreateManager(ThemePrepareDelegate prepare)
     {
         return new ThemeManager(static () => true, prepare);
@@ -429,5 +557,31 @@ public class ThemeManagerTransactionTests
 
     private sealed class LogicalRoot : Decorator, ILogicalRoot
     {
+    }
+
+    private sealed class RecordingLogSink : ILogSink
+    {
+        internal List<string> Messages { get; } = new();
+
+        public bool IsEnabled(LogEventLevel level, string area) => true;
+
+        public void Log(
+            LogEventLevel level,
+            string area,
+            object? source,
+            string messageTemplate)
+        {
+            Messages.Add(messageTemplate);
+        }
+
+        public void Log(
+            LogEventLevel level,
+            string area,
+            object? source,
+            string messageTemplate,
+            params object?[] propertyValues)
+        {
+            Messages.Add(string.Format(messageTemplate, propertyValues));
+        }
     }
 }

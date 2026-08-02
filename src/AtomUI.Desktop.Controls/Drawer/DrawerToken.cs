@@ -8,10 +8,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class DrawerToken : AbstractControlDesignToken
 {
-    public const string ID = "Drawer";
     
     public DrawerToken()
-        : base(ID)
+
     {
     }
 
@@ -191,11 +190,11 @@ internal class DrawerToken : AbstractControlDesignToken
         SmallSize         = new Dimension(378);
         MiddleSize        = new Dimension(520);
         LargeSize         = new Dimension(736);
-        HeaderMargin      = new Thickness(SharedToken.UniformlyMarginLG, SharedToken.UniformlyMargin);
-        FooterPadding     = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingXS);
-        CloseIconPadding  = SharedToken.PaddingXXS;
-        CloseIconMargin   = new Thickness(0, 0, SharedToken.UniformlyMarginXS, 0);
-        ContentPadding    = SharedToken.PaddingLG;
+        HeaderMargin      = new Thickness(EffectiveGlobalToken.UniformlyMarginLG, EffectiveGlobalToken.UniformlyMargin);
+        FooterPadding     = new Thickness(EffectiveGlobalToken.UniformlyPadding, EffectiveGlobalToken.UniformlyPaddingXS);
+        CloseIconPadding  = EffectiveGlobalToken.PaddingXXS;
+        CloseIconMargin   = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginXS, 0);
+        ContentPadding    = EffectiveGlobalToken.PaddingLG;
         PushOffsetPercent = 0.4;
     }
     

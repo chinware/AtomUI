@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:NavMenuThemeAsset.Identity}"
     xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal">
     <converters:NavMenuIsSubMenuOpenConverter x:Key="IsSubMenuOpenConverter" />
@@ -150,7 +147,7 @@
                 <Setter Property="Background"
                         Value="{atom:NavMenuTokenResource MenuPopupBg}" />
                 <Setter Property="CornerRadius"
-                        Value="{atom:PopupHostTokenResource BorderRadius}" />
+                        Value="{atom:PopupTokenResource PopupCornerRadius}" />
                 <Setter Property="MinWidth"
                         Value="{atom:NavMenuTokenResource MenuPopupMinWidth}" />
                 <Setter Property="PopupMaxWidth"

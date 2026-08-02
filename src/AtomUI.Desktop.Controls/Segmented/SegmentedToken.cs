@@ -7,10 +7,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class SegmentedToken : AbstractControlDesignToken
 {
-    public const string ID = "Segmented";
 
     public SegmentedToken()
-        : base(ID)
+
     {
     }
 
@@ -77,30 +76,30 @@ internal class SegmentedToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        TrackPadding      = new Thickness(SharedToken.LineWidthBold);
-        TrackBg           = SharedToken.ColorBgLayout;
-        ItemColor         = SharedToken.ColorTextLabel;
-        ItemHoverColor    = SharedToken.ColorText;
-        ItemHoverBg       = SharedToken.ColorFillSecondary;
-        ItemSelectedBg    = SharedToken.ColorBgElevated;
-        ItemActiveBg      = SharedToken.ColorFill;
-        ItemSelectedColor = SharedToken.ColorText;
-        var lineWidth = SharedToken.LineWidth;
+        TrackPadding      = new Thickness(EffectiveGlobalToken.LineWidthBold);
+        TrackBg           = EffectiveGlobalToken.ColorBgLayout;
+        ItemColor         = EffectiveGlobalToken.ColorTextLabel;
+        ItemHoverColor    = EffectiveGlobalToken.ColorText;
+        ItemHoverBg       = EffectiveGlobalToken.ColorFillSecondary;
+        ItemSelectedBg    = EffectiveGlobalToken.ColorBgElevated;
+        ItemActiveBg      = EffectiveGlobalToken.ColorFill;
+        ItemSelectedColor = EffectiveGlobalToken.ColorText;
+        var lineWidth = EffectiveGlobalToken.LineWidth;
         SegmentedItemPadding = new Thickness(
-            Math.Max(SharedToken.ControlPaddingHorizontal - lineWidth, 0),
+            Math.Max(EffectiveGlobalToken.ControlPaddingHorizontal - lineWidth, 0),
             0,
-            Math.Max(SharedToken.ControlPaddingHorizontal - lineWidth, 0),
+            Math.Max(EffectiveGlobalToken.ControlPaddingHorizontal - lineWidth, 0),
             0);
         SegmentedItemPaddingSM = new Thickness(
-            Math.Max(SharedToken.ControlPaddingHorizontalSM - lineWidth, 0),
+            Math.Max(EffectiveGlobalToken.ControlPaddingHorizontalSM - lineWidth, 0),
             0,
-            Math.Max(SharedToken.ControlPaddingHorizontalSM - lineWidth, 0),
+            Math.Max(EffectiveGlobalToken.ControlPaddingHorizontalSM - lineWidth, 0),
             0);
-        SegmentedItemContentMargin = new Thickness(SharedToken.UniformlyPaddingXXS, 0, 0, 0);
+        SegmentedItemContentMargin = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS, 0, 0, 0);
 
-        ItemMinHeightLG = SharedToken.ControlHeightLG - TrackPadding.Top - TrackPadding.Bottom;
-        ItemMinHeight   = SharedToken.ControlHeight - TrackPadding.Top - TrackPadding.Bottom;
-        ItemMinHeightSM = SharedToken.ControlHeightSM - TrackPadding.Top - TrackPadding.Bottom;
+        ItemMinHeightLG = EffectiveGlobalToken.ControlHeightLG - TrackPadding.Top - TrackPadding.Bottom;
+        ItemMinHeight   = EffectiveGlobalToken.ControlHeight - TrackPadding.Top - TrackPadding.Bottom;
+        ItemMinHeightSM = EffectiveGlobalToken.ControlHeightSM - TrackPadding.Top - TrackPadding.Bottom;
     }
     
 }

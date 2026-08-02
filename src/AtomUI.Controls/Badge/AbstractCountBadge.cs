@@ -111,6 +111,7 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
     private const int MaxAdornerLayerRetryCount = 30;
     private bool _adornerLayerRetryScheduled;
     private int _adornerLayerRetryCount;
+    private IDisposable? _motionBinding;
 
     static AbstractCountBadge()
     {
@@ -119,11 +120,6 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
             OverflowCountProperty,
             SizeProperty);
         AffectsRender<AbstractCountBadge>(BadgeColorProperty, OffsetProperty);
-    }
-
-    public AbstractCountBadge()
-    {
-        this.ConfigureMotionBindingStyle();
     }
 
     private protected abstract AbstractCountBadgeAdorner CreateBadgeAdorner();
@@ -238,6 +234,8 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _motionBinding?.Dispose();
+        _motionBinding = this.ConfigureMotionBindingStyle();
         _adornerLayerRetryCount = 0;
         SetupShowZero();
         if (BadgeIsVisible)
@@ -249,6 +247,8 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _motionBinding?.Dispose();
+        _motionBinding = null;
         Loaded -= HandleAdornerLayerRetryLoaded;
         _adornerLayerRetryScheduled = false;
         _adornerLayerRetryCount     = 0;

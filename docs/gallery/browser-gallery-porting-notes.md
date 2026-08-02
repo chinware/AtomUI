@@ -1,228 +1,191 @@
-# AtomUI Gallery Browser 改造问题记录
+# AtomUI Gallery Browser 主题与宿主架构
 
-本文档记录 2026-06-07 进行 `AtomUIGallery.Browser` 初步改造时遇到的问题、根因和处理结论。当前目标是让 Browser Gallery 以薄封装方式复用共享 `AtomUIGallery` 的 ShowCase，并允许 Browser 项目引用 `AtomUI.Desktop.Controls`，由控件库内部自动降级。
+本文档记录 AtomUI Gallery Browser 的当前宿主、Control 包注册、平台主题选择和验证边界。它描述最新实现，
+不再把迁移期的手工 Token 白名单、聚合主题或最小主题清单作为维护方案。
 
-> **【已更新】** 2026-06-19 起，Browser Gallery 的 Shell 布局已经迁入 `AtomUI.Toolkits.GalleryBase`。`BrowserGalleryView` 只保留 Browser 字体、`WorkspaceWindowViewModel` 工厂和 `CaseNavigation` 工厂；侧边栏、品牌区、footer、`RoutedViewHost`、OverlayLayer 和 media breakpoint 由 `GalleryBrowserShellView` / `GalleryShellView` 提供。
+## 1. 设计结论
 
-## 本轮目标
-
-- 新增 Browser Gallery 项目并跑通空壳应用。
-- Browser 启动阶段使用 AtomUI 红色 SVG logo。
-- Browser Gallery 不复制 Desktop `WorkspaceWindow`，而是通过 `GalleryBrowserShellView` 复用 GalleryBase Shell、共享 `CaseNavigation`、`CaseNavigationViewModel` 和显式路由注册。
-- Browser 可以引用 `AtomUI.Desktop.Controls`，用户侧继续调用 `UseDesktopControls()`，控件库内部按平台自动降级。
-- 不改变公开 API，不影响 Desktop Gallery 原有行为。
-
-## 遇到的问题
-
-| 问题 | 现象 | 根因 | 处理结论 |
-| --- | --- | --- | --- |
-| Browser 直接引用 `AtomUI.Desktop.Controls` 后启动失败 | 页面 splash 显示 `AggregateException_ctor_DefaultMessage (Arg_InvalidCastException)` | `UseDesktopControls()` 注册完整 Desktop 主题资源时包含 Browser 不支持的 Window/TopLevel 相关资源和初始化逻辑 | `UseDesktopControls()` 保持公开 API 不变，内部根据 `RuntimePlatform.Features.SupportsNativeWindow` 切换 Browser 降级 provider |
-| 缩小 Desktop provider 后仍启动失败 | 只保留 `HyperLinkButton`、`GroupBox`、`ScrollViewer` 后仍报同类异常 | `UseDesktopControls()` 会先调用 `UseCommonControls()`；失败点不在 Desktop provider，而在 Common provider | 先二分跳过 `UseCommonControls()` 验证，确认 root cause 后再改造 Common provider |
-| Common provider 在 Browser 下不兼容 | 跳过 `UseCommonControls()` 后 Browser 能启动；恢复后失败 | `CommonControlThemesProvider` 包含 `Embedding/Themes/EmbeddableControlRootTheme.axaml`，该资源对 Browser 单视图场景不安全 | 新增 `BrowserCommonControlThemesProvider`，Browser 下排除 `EmbeddableControlRootTheme.axaml`；Desktop 仍使用原 `CommonControlThemesProvider` |
-| `AboutUsPage` 复用后再次启动失败 | splash error: `Don't know how to detect when ... AboutUsPage is activated/deactivated` | Browser `AppBuilder` 没有注册 ReactiveUI Avalonia 集成，`AboutUsPage.WhenActivated(...)` 无法找到 activation fetcher | Browser `Program` 和 Desktop 对齐，调用 `UseReactiveUI(...)` 并通过 `AtomUIGalleryModule.RegisterViews(...)` 注册 ViewLocator |
-| 页面 DOM 看不到 AboutUs 文本 | `document.body.innerText` 为空，但没有启动错误 | Avalonia Browser 主要渲染在 canvas 中，DOM 文本不是可靠验证信号 | Browser 验证要看 splash error、canvas 是否存在，并用截图确认实际渲染 |
-| 控制台日志容易混入旧端口错误 | Console 中出现历史端口的 `libSkiaSharp` 或旧 wasm 异常 | 多次运行 Browser dev server 后，浏览器日志会保留旧页面/旧端口记录 | 每次验证前停止旧宿主，重新 build/run，并以当前端口页面的 splash error 和截图为准 |
-| Browser static web assets 有重复项风险 | Browser 构建/运行阶段可能遇到重复 wasm static asset | Browser 项目引用共享 Gallery 和控件库后，静态资源解析链路更复杂 | Browser 项目保留 `DeduplicateBrowserWasmStaticWebAssets` target，去重 `WasmStaticWebAsset` |
-| Icons 迁移需要输入控件链路 | `IconGallery` 使用 `SearchEdit`、`SearchButton`、`InputClearIconButton`、`RevealButton` 和 Desktop `ScrollViewer` | Browser desktop provider 原先只覆盖 AboutUs / Palette 所需主题，缺少 SearchEdit 相关主题和输入 token | 新增 `Input/Themes/BrowserInputThemes.axaml`，只纳入 Icons 实际需要的 SearchEdit 链路；Browser token 白名单补 `AddOnDecoratedBoxToken` 和 `LineEditToken` |
-| Button 迁移后 Browser 白屏 | 临时把 Browser 默认页切到 `ButtonShowCase` 时，页面无 `.splash-error` 但 canvas 持续白屏 | `ButtonShowCase` 首次引入 `ShowCasePanel` / `ShowCaseItem` / `Separator` / `OptionButtonGroup`，并且完整 Desktop `ButtonTheme` 在 Browser 首帧下过重且不稳定 | Browser provider 补 `Separator`、`OptionButtonGroup` 主题和 token；`BrowserButtonThemes.axaml` 使用轻量 `atom:Button` 降级主题，但保留 hover/pressed/loading/wave/icon/dashed/ghost 等交互表达，Desktop 仍走完整 `ButtonTheme` |
-| Browser Button 视觉降级过头 | Button ShowCase 中 dashed、icon-only、Search、Ghost 等区域与 Desktop 正常效果差异明显 | 首版 Browser Button 主题只保留基础状态，缺少 Desktop 的 Frame 高度、icon-only padding/尺寸、DashedBorder 和 Ghost/Danger 组合样式 | 在不恢复完整 Desktop `ButtonTheme` 的前提下，补齐 Browser Button 的关键可见样式；Release host 中验证 Button 和 Ghost 区域正常渲染 |
-| Link Button 在 Ghost 区域出现白底 | Desktop Gallery 的 Ghost Button 示例里，Link 类型按钮在灰色背景上出现白色背景块 | Desktop `ButtonTheme` 的 `ButtonType=Link` 分支直接给 template `Border#Frame` 设置了 `DefaultBg`，覆盖了按钮自身的透明背景 | 删除 Link 类型对 `Frame.Background` 的白底设置，改为 Link 按钮自身 `Background=Transparent`，让 template binding 正常透传 |
-| FloatButton 迁移需要 OverlayLayer | Browser 加入 `FloatButtonShowCase` 后需要让悬浮按钮挂载到正确的局部 overlay | `FloatButtonHost` / `FloatButtonGroupHost` 不依赖 Window，依赖 `ScopeAwareOverlayLayer`；ShowCase 内的 `atom:ScrollViewer` 模板已经提供 `ScopeAwareOverlayLayerPanel` | Browser provider 补 `FloatButton`、`Badge`、`ToggleSwitch` 主题和 token，继续复用共享 ShowCase，不新增 Browser 专用页面 |
-| FloatButtonGroup 存在重复父级风险 | 页面缓存、隐藏/显示或重新套模板后，同一批子按钮可能被再次加入内部 `FloatButtonItemsControl` | `FloatButtonGroupHost` 把 Host `Children` 转移到 overlay 内的 `FloatButtonGroup`，旧 group / items control 没有在 detach 或 re-template 时清理子项；click trigger 在 detach 时也可能重新订阅输入事件 | 内部补齐 group children、items control children 和 items layout children 的成对清理；click trigger 只在已附着视觉树时订阅，detach 时释放 |
-| Browser FloatButton Placement 展开缺子按钮 | Placement 示例中点击左侧展开组后，trigger 变为 X，但 X 左侧两个子按钮没有显示 | Browser 分支此前完全跳过 Desktop initialized handler，导致 `MotionTransformOptionsAnimator` 没有注册；`MoveRightInMotion` / `MoveLeftInMotion` 的 `TransformOperations` keyframe 动画停留在隐藏起始态 | initialized handler 所有平台都注册 `TransformOperations` animator；`ToolTipService` 和 `MediaBreakPointThemeBootstrapper` 继续只在 native window 下启用 |
-| FloatButton Tooltip 暂未打开 Browser 完整链路 | Tooltip 属性在 Browser 下不会导致页面崩溃，但本轮不验证 tooltip 弹层 | AtomUI Tooltip 会继续牵出 `Popup`、`PopupRoot`、`OverlayPopupHost`、`ArrowDecoratedBox`、`PopupHostToken`、`ToolTipService` 等一组资源，超出 FloatButton ShowCase 首轮接入范围 | 本轮先保证 FloatButton 主体、Badge、BackTop、Group 可用；Tooltip/Popup Browser 降级后续单独拆分验证 |
-| Browser shell 字体未继承 AtomUI 字体 | Browser Gallery 外壳文字看起来没有使用 AtomUI 的 AlibabaSans | Browser 根是 `UserControl`，没有 Desktop `atom:Window` theme 里的 `FontFamily="{atom:SharedTokenResource FontFamily}"` 继承入口 | `BrowserGalleryView` 根设置 `fonts:AlibabaSans#Alibaba Sans, $Default`，由 Avalonia 可继承 `FontFamily` 向导航外壳和共享 ShowCase 传递 |
-| Browser 宿主和 Desktop 信息架构分叉 | Browser 旧宿主有独立标题栏、独立导航分组、手写 `CreatePage` switch、页面缓存和 idle 预热 | Browser 自己维护一套页面创建和导航结构，容易和 Desktop 最新 Showcase 规范、默认 Overview/Community、Components 分组以及延迟创建策略脱节 | `BrowserGalleryView` 改为继承 `GalleryBrowserShellView`，删除手写页面工厂、主动预热、sidebar/footer/routing host 和 OverlayLayer 反射代码；页面创建交给 `AtomUIGalleryModule` 的显式路由注册，默认页和导航结构跟 Desktop 同源 |
-
-## 当前实现要点
-
-### Browser Gallery 宿主
-
-Browser Gallery 项目位于：
-
-```text
-controlgallery/AtomUIGallery.Browser/
-```
-
-关键入口：
-
-```csharp
-AppBuilder.Configure<BrowserGalleryApplication>()
-    .UseReactiveUI(build =>
-        build.ConfigureViewLocator(locator => AtomUIGalleryModule.RegisterViews(locator)));
-```
-
-`BrowserGalleryApplication.Initialize()` 中继续使用和 Desktop 相同的 AtomUI 配置主线：
+Browser Gallery 继续复用 Desktop Gallery 的产品模块、导航、路由和 ShowCase。应用侧使用与 Desktop 相同的
+Control 包入口：
 
 ```csharp
 this.UseAtomUI(builder =>
 {
     builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
-    builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
+    builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
     builder.UseAlibabaSansFont();
     builder.UseAlibabaPuHuiTiFont();
-    builder.WithDefaultFontFamily(FontFamily.Parse(
-        $"fonts:AlibabaSans#Alibaba Sans, {AlibabaPuHuiTiFontConstants.FontFamily}, $Default"));
     builder.UseDesktopControls();
+    builder.UseDesktopExtras();
     builder.UseDesktopColorPicker();
     builder.UseDesktopDataGrid();
     builder.UseGalleryControls();
 });
 ```
 
-`BrowserGalleryView` 是 `GalleryBrowserShellView` 的产品薄适配：
+平台差异由 Control 包内部处理。Browser 项目不维护 Control Token 类型列表、主题 ResourceInclude 清单或逐
+Control 注册调用。
+
+## 2. Browser 宿主
+
+`BrowserGalleryView` 继承 `GalleryBrowserShellView`，只提供产品配置、`WorkspaceWindowViewModel` 工厂、
+`CaseNavigation` 工厂和 Browser 字体。导航分组、默认页面、路由、OverlayLayer、media breakpoint、footer 和
+ShowCase 生命周期由 `AtomUI.Toolkits.GalleryBase` 与 `AtomUIGalleryModule` 统一维护。
+
+Browser 启动通过 ReactiveUI Avalonia 集成注册同一份 ViewLocator：
 
 ```csharp
-internal sealed class BrowserGalleryView : GalleryBrowserShellView
-{
-    public BrowserGalleryView()
-        : base(AtomUIGalleryModule.GetConfiguration(),
-               _ => new WorkspaceWindowViewModel(),
-               CreateNavigationView)
-    {
-        FontFamily = s_appFontFamily;
-    }
-
-    private static Control CreateNavigationView(GalleryWorkspaceViewModel workspaceViewModel)
-    {
-        var viewModel = (WorkspaceWindowViewModel)workspaceViewModel;
-        return new CaseNavigation
-        {
-            Name      = "ShowCaseNavigation",
-            ViewModel = viewModel.CaseNavigation
-        };
-    }
-}
+AppBuilder.Configure<BrowserGalleryApplication>()
+    .UseReactiveUI(build =>
+        build.ConfigureViewLocator(locator => AtomUIGalleryModule.RegisterViews(locator)))
+    .StartBrowserAppAsync("out");
 ```
 
-Browser 左侧外壳和 Desktop `WorkspaceWindow` 通过 `GalleryShellView` 对齐：导航列宽、顶部品牌、产品导航视图、底部官网 / Gitee / GitHub 链接、绿色版本 `Tag`、内容区 `RoutedViewHost` 和背景 token 都来自 `GalleryBaseConfiguration`。具体 Showcase 页面继续遵守 Desktop 的 `GalleryStickyTabsHost`、`ShowCasePanel`、延迟 `ShowCaseItem` 和 API / Design Token 延迟加载规范。
+Browser 不缓存、预热或手工创建 ShowCase 页面，也不维护独立页面枚举和 `switch` 工厂。
 
-Browser 宿主不再缓存、预热或手动创建各个 Showcase 页面。默认页、导航合法性和页面创建由 `GalleryNavigationViewModel`、ReactiveUI 路由和 `AtomUIGalleryModule` 的 `GalleryRouteRegistry` 统一承担。这样 Browser 不会绕开 Desktop 最新 Showcase 规范，也不会因为后台预热提前创建大量 `ShowCaseItem`。
+## 3. 生成式 Control 包注册
 
-### Common 控件降级
+主题注册主线：
 
-`UseCommonControls()` 不改变调用方式。内部按平台选择 provider：
-
-```csharp
-themeManagerBuilder.AddControlThemesProvider(RuntimePlatform.Features.SupportsNativeWindow
-    ? new CommonControlThemesProvider()
-    : new BrowserCommonControlThemesProvider());
+```mermaid
+flowchart LR
+    App["BrowserGalleryApplication"] --> Entry["UseDesktopControls / optional packages"]
+    Entry --> Generated["GeneratedControlPackageRegistration"]
+    Generated --> Controls["exact Control descriptors"]
+    Generated --> Assets["ControlTheme asset manifest"]
+    Assets --> Filter["platform identity / asset selector"]
+    Filter --> Provider["Browser ControlThemesProvider"]
+    Provider --> Styles["Avalonia Styles"]
 ```
 
-Browser common provider 当前包含：
+每个包的生成入口一次性注册：
+
+- 每个 public、可主题化 Control 的 exact CLR type、identity 和可选 Own Token descriptor。
+- 每个独立 `*Theme.axaml` 叶子的 owner、引用 Control identity、Semantic Part Theme 契约和资产 URI。
+- 生成的强类型 `XxxTokenResource`、资源加载包装和语言 Provider。
+
+运行时不扫描程序集或 AXAML，不根据 `TargetType`、继承或 `BasedOn` 推断 identity。
+
+### 3.1 Common Controls
+
+`UseCommonControls()` 在 native window 与 Browser 下分别使用 `CommonControlThemesProvider` 和
+`BrowserCommonControlThemesProvider`，两者都接收同一份生成 descriptor 和资产 manifest。Common Browser 路径
+不再排除 `EmbeddableControlRootTheme.axaml`。
+
+`EmbeddableControlRootTheme.axaml` 曾在 Browser 启动时把 Token 返回的不可变 Brush 直接赋给要求具体
+`SolidColorBrush` 的 `TopLevel.SystemBarColorProperty`。当前在 API 边界显式创建 `SolidColorBrush`，因此该主题可由
+Common generated resources 正常加载：
+
+```xml
+<Setter Property="TopLevel.SystemBarColor">
+    <SolidColorBrush Color="{atom:SharedTokenResource ColorBgContainer}" />
+</Setter>
+```
+
+这个修复保留主题资产完整性，不需要为 Browser 维护 Common 主题例外清单。
+
+### 3.2 Desktop Controls
+
+`UseDesktopControls()` 先注册 Common 包，再按 `RuntimePlatform.Features.SupportsNativeWindow` 选择生成式注册参数：
+
+- Native：注册全部 Control descriptor，排除 `Themes/Browser/` 下的替代资产。
+- Browser：按 exact identity 排除确认不支持的 Control，再由 manifest 自动排除引用这些 identity 的资产；最后以
+  `Themes/Browser/` 中的同路径资产替换普通资产。
+
+当前 Browser 排除的 identity 是：
 
 ```text
-Icon/Themes/IconThemes.axaml
-ItemsControl/Themes/ItemsControlTheme.axaml
-TextSelectionHandle/Themes/TextSelectionHandleTheme.axaml
-TransitioningContentControl/Themes/TransitioningContentControlTheme.axaml
+AdornerLayer
+OtpLineEdit
+OtpLineEditCell
+SplitView
+TreeViewFlyoutPresenter
+Window
+WindowTitleBar
 ```
 
-明确排除：
+这是平台能力筛选，不是 Token 白名单。其余被选择 Control 仍拥有完整 identity、可选 Own Token 和全部可配置
+Global Token。
+
+Button 家族的 Browser 替代资产是三个独立叶子：
 
 ```text
-Embedding/Themes/EmbeddableControlRootTheme.axaml
+Buttons/Themes/Browser/ButtonTheme.axaml
+Buttons/Themes/Browser/DropdownButtonTheme.axaml
+Buttons/Themes/Browser/IconButtonTheme.axaml
 ```
 
-### Desktop 控件降级
+Browser selector 通过相对资产路径替换对应普通主题；Native selector 不加载这些 Browser 叶子。不存在
+`BrowserButtonThemes.axaml` 或逐 Control 聚合主题。
 
-`UseDesktopControls()` 不改变调用方式。内部按平台选择 token 和 provider：
+### 3.3 Optional Packages
 
-```csharp
-var controlTokenTypes = RuntimePlatform.Features.SupportsNativeWindow
-    ? ControlTokenTypePool.GetTokenTypes()
-    : GetBrowserControlTokenTypes();
+Extras、ColorPicker 和 DataGrid 也通过各自的 `GeneratedControlPackageRegistration` 一次性注册 descriptor、主题
+叶子和 Provider。Browser Gallery 使用正常的 `UseDesktopExtras()`、`UseDesktopColorPicker()` 和
+`UseDesktopDataGrid()`，不维护额外 Token 类型列表。
 
-themeManagerBuilder.AddControlThemesProvider(RuntimePlatform.Features.SupportsNativeWindow
-    ? new DesktopControlThemesProvider()
-    : new BrowserDesktopControlThemesProvider());
-```
+## 4. Token 边界
 
-Browser desktop provider 当前只承载 Browser Gallery 已接入 ShowCase 需要的最小集合：
+Browser 与 Desktop 使用同一 ThemeSchemaRegistry 规则：
 
 ```text
-Badge/Themes/BadgeThemes.axaml
-Buttons/Themes/BrowserButtonThemes.axaml
-FloatButton/Themes/FloatButtonThemes.axaml
-GroupBox/Themes/GroupBoxTheme.axaml
-Input/Themes/BrowserInputThemes.axaml
-OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml
-ScrollViewer/Themes/ScrollViewerThemes.axaml
-Separator/Themes/SeparatorTheme.axaml
-Switch/Themes/ToggleSwitchThemes.axaml
-TabControl/Themes/TabControlThemes.axaml
+Configurable Control Tokens = All registered Global Tokens + Current Control Own Tokens
 ```
 
-Browser token 当前只注册：
+Control 级配置可以覆盖任意已注册 Global Token；合法但没有被当前 Control 消费的 Token 可以没有视觉效果。
+Own Token 与 Global Token 禁止同名，未知名称报错。Browser 不维护“这个页面或主题用了哪些 Token”的依赖或
+白名单。
 
-```text
-AddOnDecoratedBoxToken
-BadgeToken
-ButtonToken
-FloatButtonToken
-GroupBoxToken
-LineEditToken
-MenuToken
-OptionButtonToken
-ScrollViewerToken
-SeparatorToken
-TabControlToken
-ToggleSwitchToken
-```
+AXAML 继续使用统一资源语义：
 
-Desktop 下仍然使用完整 `ControlTokenTypePool` 和 `DesktopControlThemesProvider`，并继续注册原有 initialized handler。Browser 下跳过该 handler，避免注册 Window/Tooltip/媒体断点等 native window 相关逻辑。
+- `SharedTokenResource` 读取真正的 Global Token。
+- `XxxTokenResource` 读取 Xxx Control 的 Effective Global Token 或 Own Token。
+- Semantic Part Theme 显式引用 owner 与真实 Part Control 的 TokenResource。
 
-## 调试过程记录
+## 5. Runtime 初始化
 
-本轮采用二分定位：
+Desktop Control 包的初始化回调在所有平台注册 `MotionTransformOptionsAnimator`，使 Browser 中 FloatButton 等依赖
+`TransformOperations` 的动效不会停留在隐藏起始态。存在 `IInputManager` 时安装 `ToolTipService`；
+`MediaBreakPointThemeBootstrapper` 只在 native window 平台挂载。
 
-1. 验证 bare Browser app 可以启动。
-2. 验证 `UseAtomUI()` 可以启动。
-3. 验证 culture/theme/font 可以启动。
-4. 加入 `UseDesktopControls()` 后复现 `Arg_InvalidCastException`。
-5. 缩小 `DesktopControlThemesProvider` 和 Desktop token 后仍失败。
-6. 临时跳过 `UseCommonControls()` 后启动成功，定位到 Common provider。
-7. Browser common provider 排除 `EmbeddableControlRootTheme` 后启动成功。
-8. 切回共享 `AboutUsPage` 后出现 ReactiveUI activation 错误。
-9. Browser `Program` 补齐 `UseReactiveUI(...)` 后 AboutUs 正常渲染。
+Window、WindowTitleBar 和其他 native host 能力由 exact identity 筛选与运行时 feature 判断隔离，不能通过减少
+全局 Token schema 或手工删主题来规避。
 
-## 验证结果
+## 6. 调试结论
 
-已执行：
+| 现象 | 根因 | 当前处理 |
+| --- | --- | --- |
+| Browser 启动出现 `ImmutableSolidColorBrush -> SolidColorBrush` 转换异常 | `TopLevel.SystemBarColorProperty` 是具体类型 API 边界 | 在 `EmbeddableControlRootTheme` 显式构造 `SolidColorBrush`，并保留回归测试。 |
+| 新 Control 或主题在 Browser 中容易遗漏 | 迁移期维护了独立 Token/主题清单 | 使用 generated package registration；只维护少量确有平台差异的 identity 和替代资产。 |
+| Button Browser 替代主题覆盖不完整或加载到 Native | 多个按钮主题曾通过单个聚合入口选择 | 使用三个独立 Browser 叶子，并测试 Native 排除与 Browser 同路径替换。 |
+| FloatButton 展开后子按钮保持隐藏 | Browser 未注册 `TransformOperations` animator | 所有平台注册 Motion animator，native-only 服务继续受 feature 判断保护。 |
+| ReactiveUI 页面无法激活 | Browser AppBuilder 未注册 Avalonia activation 和共享 ViewLocator | `UseReactiveUI(...)` 与 `AtomUIGalleryModule.RegisterViews(...)` 统一注册。 |
+| DOM 文本为空但页面实际已渲染 | Avalonia Browser 主要绘制到 canvas | 结合 splash error、当前端口 console、canvas 像素和截图验证。 |
+| console 出现旧 wasm/端口错误 | 浏览器保留旧页面日志 | 每次 smoke 停止旧宿主并只判断当前 URL 的 console 与画面。 |
+
+## 7. 验证基线
+
+涉及 Browser 主题、包注册或平台筛选时至少执行：
 
 ```bash
 dotnet build controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj -c Debug
-dotnet build controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj -c Release
-dotnet build controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj -c Debug
-dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --filter BrowserGalleryConventionsTests
+dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore
+dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --framework net10.0 --no-restore
+git diff --check
 ```
 
-结果：
+还必须实际启动 Browser，确认当前端口没有 splash error 或 console error/warn，并检查 canvas 非空、默认 Gallery
+页面和受影响 ShowCase 可见。涉及共享主题注册时同时验证 Desktop build；涉及 descriptor、资源包装或裁剪边界时
+执行 Gallery NativeAOT publish。
 
-- Browser Debug build 通过。
-- Browser Release build 通过。
-- Desktop Gallery Debug build 通过。
-- Browser 规范测试覆盖：宿主必须继承 `GalleryBrowserShellView`，不得保留旧标题栏、手写页面工厂、主动预热、产品链接硬编码、OverlayLayer 反射代码和 `AboutUsPage` 默认入口。
-- Browser 宿主改为共享导航 / 路由后，Debug build 通过；默认入口改为 Desktop 同源的 `Overview`。
-- 旧宿主阶段曾实跑 `ButtonShowCase`、`FloatButtonShowCase`、`PaletteShowCase`、`IconShowCase` 等页面 smoke；共享导航改造后，后续视觉验收应以 `Overview` 默认入口和 Components 分组为准重新走 Browser smoke。
+## 8. 扩展规则
 
-Browser 运行验证时不要只依赖 DOM 文本，因为 Avalonia Browser 页面内容主要在 canvas 中绘制；需要结合 splash error 和截图。
-
-本轮使用 Browser 自动化尝试向 `SearchEdit` 输入过滤文本时，键盘事件没有可靠送入 Avalonia canvas；因此搜索过滤不作为本轮自动化验证结论。当前已确认 `SearchEdit` 视觉渲染、焦点态和搜索按钮存在，后续如需严格验证文本输入，应结合手工操作或专门的 Avalonia Browser 输入测试能力。
-
-## 后续扩展规则
-
-1. Browser 支持继续以“自动降级、用户无感知”为目标，不新增公开 API。
-2. 先让用户继续调用现有 `UseDesktopControls()`，由内部 provider/token 根据平台选择。
-3. 每新增一个 Browser 可用控件，优先只把该控件需要的 token/theme 加到 Browser provider，不直接放开完整 Desktop provider。
-4. 涉及 Window、WindowTitleBar、Dialog window host、Notifications native host、ImagePreviewer window host、文件系统枚举等能力时，必须走 `RuntimePlatform.Features` 能力判断。
-5. Browser 验证必须同时跑 Browser build、Browser 实跑 smoke 和 Desktop build，防止降级分支影响 Desktop。
-6. 如果 Browser 页面启动失败，先看当前端口 splash error；不要被旧端口 console 日志误导。
-
-## 待继续处理
-
-- `UseDesktopColorPicker()` 和 `UseDesktopDataGrid()` 尚未接入 Browser 降级路径。
-- Browser Gallery 当前已通过 `AtomUIGalleryModule` 和 `GalleryBaseConfiguration` 暴露全量 Showcase 入口；后续新增导航和 ShowCase 页面必须先进入产品模块的共享导航 / 路由注册，Browser 不再维护独立页面列表。
-- Tooltip / Popup 的 Browser 降级链路尚未打开；`FloatButtonShowCase` 中 Tooltip 属性本轮只保证不阻塞页面渲染。
-- `BrowserDesktopControlThemesProvider` 的范围后续应随着 ShowCase 迁移逐步扩大，并保持最小可用集合。
-- `EmbeddableControlRootTheme` 在 Browser 下的精确不兼容点后续可以进一步拆解；当前先通过 Browser provider 排除该资源，保证启动路径稳定。
+1. 新 Control 按标准目录提供 public Control、可选 `[ControlDesignToken]` Own Token 和独立 `*Theme.axaml` 叶子，
+   不修改 Browser Token/主题清单。
+2. 只有确认 Control 依赖 Browser 不支持的平台能力时，才把 exact identity 加入 Browser 排除集合，并增加 selector
+   与运行时测试。
+3. 需要 Browser 专用视觉时，在 `Themes/Browser/` 下提供与普通资产相同的相对文件名；Native 和 Browser selector
+   必须分别验证排除与替换。
+4. Window、Dialog native host、Notification native host、文件系统和平台协议能力必须通过 feature 判断或独立
+   host 边界处理，不能污染共享 Token schema。
+5. Browser 启动异常优先定位完整异常类型和 API 属性边界；不要先删除主题资产或缩小 Global Token schema。

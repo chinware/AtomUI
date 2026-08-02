@@ -79,14 +79,14 @@ public class CustomizeThemeShowCasePageTests
         CountOccurrences(source, "DataTemplate x:DataType=\"vm:CustomizeThemeViewModel\"").ShouldBe(5);
         source.ShouldContain("CustomizeThemeShowCaseLangResource CustomizeDesignTokenTitle");
         source.ShouldContain("CustomizeThemeShowCaseLangResource PresetAlgorithmsTitle");
-        source.ShouldContain("CustomizeThemeShowCaseLangResource CustomizeComponentTokenTitle");
+        source.ShouldContain("CustomizeThemeShowCaseLangResource CustomizeControlTokenTitle");
         source.ShouldContain("CustomizeThemeShowCaseLangResource NestedThemeTitle");
         source.ShouldContain("CustomizeThemeShowCaseLangResource RuntimeTokenUpdatesTitle");
         source.ShouldNotContain("Inherit=\"False\"");
         viewModelSource.ShouldContain(".WithInherit(false)");
         source.ShouldContain("Config=\"{Binding RuntimeThemeConfig}\"");
         source.ShouldContain("Command=\"{Binding UseRuntimePrimaryGreen}\"");
-        source.ShouldContain("Name=\"ComponentTokenContentIsolationProbe\"");
+        source.ShouldContain("Name=\"ControlTokenContentIsolationProbe\"");
         source.ShouldContain("Text=\"{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}\"");
         source.ShouldNotContain("P2ContentIsolationText");
         source.ShouldNotContain("<atom:TabControl");

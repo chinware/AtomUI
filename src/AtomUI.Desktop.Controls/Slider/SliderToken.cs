@@ -10,10 +10,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class SliderToken : AbstractControlDesignToken
 {
-    public const string ID = "Slider";
     
     public SliderToken()
-        : base(ID)
+
     {
     }
 
@@ -136,10 +135,10 @@ internal class SliderToken : AbstractControlDesignToken
         base.CalculateTokenValues(isDarkMode);
         // Thumb line width is always width-er 1px
         var increaseThumbWidth   = 1d;
-        var controlSize          = SharedToken.ControlHeightLG / 4;
-        var controlSizeHover     = SharedToken.ControlHeightSM / 2;
-        var handleLineWidth      = SharedToken.LineWidth + increaseThumbWidth;
-        var handleLineWidthHover = SharedToken.LineWidth + increaseThumbWidth * 1.5;
+        var controlSize          = EffectiveGlobalToken.ControlHeightLG / 4;
+        var controlSizeHover     = EffectiveGlobalToken.ControlHeightSM / 2;
+        var handleLineWidth      = EffectiveGlobalToken.LineWidth + increaseThumbWidth;
+        var handleLineWidthHover = EffectiveGlobalToken.LineWidth + increaseThumbWidth * 1.5;
 
         SliderTrackSize                 = controlSizeHover;
         RailSize                        = 4;
@@ -149,32 +148,32 @@ internal class SliderToken : AbstractControlDesignToken
         ThumbCircleBorderThickness      = new Thickness(handleLineWidth);
         ThumbCircleBorderThicknessHover = new Thickness(handleLineWidthHover);
 
-        RailBg       = SharedToken.ColorFillTertiary;
-        RailHoverBg  = SharedToken.ColorFillSecondary;
-        TrackBg      = SharedToken.ColorPrimaryBorder;
-        TrackHoverBg = SharedToken.ColorPrimaryBorderHover;
+        RailBg       = EffectiveGlobalToken.ColorFillTertiary;
+        RailHoverBg  = EffectiveGlobalToken.ColorFillSecondary;
+        TrackBg      = EffectiveGlobalToken.ColorPrimaryBorder;
+        TrackHoverBg = EffectiveGlobalToken.ColorPrimaryBorderHover;
 
-        MarkBorderColor       = SharedToken.ColorBorderSecondary;
-        MarkBorderColorHover  = SharedToken.ColorFillContentHover;
-        MarkBorderColorActive = SharedToken.ColorPrimaryBorder;
+        MarkBorderColor       = EffectiveGlobalToken.ColorBorderSecondary;
+        MarkBorderColorHover  = EffectiveGlobalToken.ColorFillContentHover;
+        MarkBorderColorActive = EffectiveGlobalToken.ColorPrimaryBorder;
 
-        ThumbCircleBorderColor       = SharedToken.ColorPrimaryBorder;
-        ThumbCircleBorderHoverColor  = SharedToken.ColorPrimaryBorderHover;
-        ThumbCircleBorderActiveColor = SharedToken.ColorPrimary;
+        ThumbCircleBorderColor       = EffectiveGlobalToken.ColorPrimaryBorder;
+        ThumbCircleBorderHoverColor  = EffectiveGlobalToken.ColorPrimaryBorderHover;
+        ThumbCircleBorderActiveColor = EffectiveGlobalToken.ColorPrimary;
         ThumbCircleBorderColorDisabled =
-            ColorUtils.OnBackground(SharedToken.ColorTextDisabled, SharedToken.ColorBgContainer);
-        TrackBgDisabled = SharedToken.ColorBgContainerDisabled;
+            ColorUtils.OnBackground(EffectiveGlobalToken.ColorTextDisabled, EffectiveGlobalToken.ColorBgContainer);
+        TrackBgDisabled = EffectiveGlobalToken.ColorBgContainerDisabled;
 
         SliderPaddingHorizontal =
-            new Thickness(SliderTrackSize / 2, (SharedToken.ControlHeight - SliderTrackSize) / 2);
-        SliderPaddingVertical = new Thickness((SharedToken.ControlHeight - SliderTrackSize) / 2,
+            new Thickness(SliderTrackSize / 2, (EffectiveGlobalToken.ControlHeight - SliderTrackSize) / 2);
+        SliderPaddingVertical = new Thickness((EffectiveGlobalToken.ControlHeight - SliderTrackSize) / 2,
             SliderTrackSize / 2);
-        MarginPartWithMark = new Thickness(0, 0, 0, SharedToken.ControlHeightLG - SliderTrackSize);
+        MarginPartWithMark = new Thickness(0, 0, 0, EffectiveGlobalToken.ControlHeightLG - SliderTrackSize);
 
         ThumbOutlineColor = ColorUtils.FromRgbF(0.2, ThumbCircleBorderActiveColor.GetRedF(),
             ThumbCircleBorderActiveColor.GetGreenF(),
             ThumbCircleBorderActiveColor.GetBlueF());
-        ThumbOutlineThickness = new Thickness(SharedToken.WaveAnimationRange);
+        ThumbOutlineThickness = new Thickness(EffectiveGlobalToken.WaveAnimationRange);
         ThumbSize = ThumbCircleSizeHover + ThumbCircleBorderThicknessHover.Left * 2 + ThumbOutlineThickness.Left * 2;
     }
     

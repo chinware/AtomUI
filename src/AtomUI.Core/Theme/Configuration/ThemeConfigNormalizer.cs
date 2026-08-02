@@ -21,6 +21,14 @@ internal static class ThemeConfigNormalizer
 
         var diagnostics = new List<ThemeDefinitionDiagnostic>();
         var algorithmsSpecified = config.Algorithms is not null;
+        if (algorithmsSpecified && config.Algorithms!.Count == 0)
+        {
+            AddError(
+                diagnostics,
+                InvalidInputCode,
+                "$.Algorithms",
+                "Algorithms cannot be empty when explicitly specified.");
+        }
         var algorithms = BindAlgorithms(config.Algorithms, registry, diagnostics, "$.Algorithms");
         var globalTokens = BindGlobalTokens(config.Tokens, registry, diagnostics);
         var controls = BindControls(config.Controls, registry, diagnostics);
@@ -174,6 +182,7 @@ internal static class ThemeConfigNormalizer
             BindControlTokens(
                 config.Tokens,
                 descriptor,
+                registry,
                 diagnostics,
                 path,
                 out var globalTokens,
@@ -192,6 +201,7 @@ internal static class ThemeConfigNormalizer
     private static void BindControlTokens(
         IReadOnlyDictionary<string, string>? values,
         ControlTokenDescriptor control,
+        ThemeSchemaRegistry registry,
         List<ThemeDefinitionDiagnostic> diagnostics,
         string controlPath,
         out IReadOnlyList<NormalizedTokenValue> globalTokens,
@@ -213,21 +223,21 @@ internal static class ThemeConfigNormalizer
         {
             var path = $"{controlPath}.Tokens['{entry.Key}']";
             var matched = false;
-            if (control.TryGetInheritedToken(entry.Key, out var globalDescriptor))
-            {
-                matched = true;
-                if (TryParseToken(entry.Value, globalDescriptor, diagnostics, path, out var value))
-                {
-                    globalResult.Add(value);
-                }
-            }
-
             if (control.TryGetOwnToken(entry.Key, out var ownDescriptor))
             {
                 matched = true;
                 if (TryParseToken(entry.Value, ownDescriptor, diagnostics, path, out var value))
                 {
                     ownResult.Add(value);
+                }
+            }
+
+            if (!matched && registry.TryGetGlobalToken(entry.Key, out var globalDescriptor))
+            {
+                matched = true;
+                if (TryParseToken(entry.Value, globalDescriptor, diagnostics, path, out var value))
+                {
+                    globalResult.Add(value);
                 }
             }
 

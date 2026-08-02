@@ -12,20 +12,19 @@ internal static class GeneratorSymbolDisplay
 
 internal class ControlTokenInfo
 {
-    public string ControlNamespace { get; set; }
-    public string ControlName { get; set; }
-    public string? ControlId { get; set; }
-    public string? ResourceCatalog { get; set; }
-    public string TokenKindType => $"{ControlName}Kind";
+    public string TokenNamespace { get; set; }
+    public string TokenName { get; set; }
+    public string? ControlName { get; set; }
     public HashSet<TokenName> Tokens { get; }
     public HashSet<SchemaTokenInfo> SchemaTokens { get; }
     public List<Diagnostic> Diagnostics { get; }
-    public bool IsValid => Diagnostics.Count == 0 && !string.IsNullOrWhiteSpace(ControlId);
+    public Location? DeclarationLocation { get; set; }
+    public bool IsValid => Diagnostics.Count == 0 && !string.IsNullOrWhiteSpace(ControlName);
 
-    public ControlTokenInfo(string ns, string controlName, HashSet<TokenName> tokens)
+    public ControlTokenInfo(string ns, string tokenName, HashSet<TokenName> tokens)
     {
-        ControlNamespace = ns;
-        ControlName = controlName;
+        TokenNamespace = ns;
+        TokenName = tokenName;
         Tokens      = tokens;
         SchemaTokens = new HashSet<SchemaTokenInfo>();
         Diagnostics = new List<Diagnostic>();
@@ -41,11 +40,11 @@ internal class ControlTokenInfo
         Tokens.Add(tokenName);
     }
 
-    public string GetFullyQualifiedTypeName()
+    public string GetFullyQualifiedTokenTypeName()
     {
-        return string.IsNullOrWhiteSpace(ControlNamespace)
-            ? ControlName
-            : $"{ControlNamespace}.{ControlName}";
+        return string.IsNullOrWhiteSpace(TokenNamespace)
+            ? TokenName
+            : $"{TokenNamespace}.{TokenName}";
     }
 }
 
@@ -58,15 +57,37 @@ internal sealed class GlobalTokenGenerationInfo
 internal class TokenInfo
 {
     public HashSet<TokenName> Tokens { get; private set; }
+    public HashSet<string> AvailableGlobalTokenNames { get; }
     public HashSet<SchemaTokenInfo> SchemaTokens { get; private set; }
-    public List<ControlTokenInfo> ControlTokenInfos { get; private set; }
+    public List<ControlThemeInfo> ControlThemeInfos { get; private set; }
 
     public TokenInfo()
     {
         Tokens            = new HashSet<TokenName>();
+        AvailableGlobalTokenNames = new HashSet<string>(StringComparer.Ordinal);
         SchemaTokens      = new HashSet<SchemaTokenInfo>();
-        ControlTokenInfos = new List<ControlTokenInfo>();
+        ControlThemeInfos = new List<ControlThemeInfo>();
     }
+}
+
+internal sealed class ThemeCompilationInfo
+{
+    internal ThemeCompilationInfo(
+        Compilation compilation,
+        string assemblyName,
+        string controlCatalog,
+        IReadOnlyList<string> globalTokenNames)
+    {
+        Compilation = compilation;
+        AssemblyName = assemblyName;
+        ControlCatalog = controlCatalog;
+        GlobalTokenNames = globalTokenNames;
+    }
+
+    internal Compilation Compilation { get; }
+    internal string AssemblyName { get; }
+    internal string ControlCatalog { get; }
+    internal IReadOnlyList<string> GlobalTokenNames { get; }
 }
 
 internal enum SchemaTokenStage

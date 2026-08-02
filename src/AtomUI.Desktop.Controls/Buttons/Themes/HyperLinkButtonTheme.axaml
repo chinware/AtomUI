@@ -1,13 +1,9 @@
-<ResourceDictionary
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:ButtonThemeAsset.Identity}"
-    xmlns:antdicons="https://atomui.net/icons/antdesign"
-    x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:HyperLinkButton}" TargetType="atom:HyperLinkButton">
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:antdicons="https://atomui.net/icons/antdesign"
+                    x:ClassModifier="internal">
+<ControlTheme x:Key="{x:Type atom:HyperLinkButton}" TargetType="atom:HyperLinkButton">
 
         <Setter Property="Template">
             <ControlTemplate>
@@ -60,37 +56,37 @@
 
         <Style Selector="^[SizeType=Large]">
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
-            <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeLG}" />
-            <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingLG}" />
+            <Setter Property="FontSize" Value="{atom:HyperLinkButtonTokenResource ContentFontSizeLG}" />
+            <Setter Property="Padding" Value="{atom:HyperLinkButtonTokenResource ContentPaddingLG}" />
             <Style Selector="^:icononly">
-                <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPaddingLG}" />
+                <Setter Property="Padding" Value="{atom:HyperLinkButtonTokenResource IconOnyPaddingLG}" />
             </Style>
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
-            <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
-            <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
+            <Setter Property="Padding" Value="{atom:HyperLinkButtonTokenResource ContentPadding}" />
+            <Setter Property="FontSize" Value="{atom:HyperLinkButtonTokenResource ContentFontSize}" />
             <Style Selector="^:icononly">
-                <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPadding}" />
+                <Setter Property="Padding" Value="{atom:HyperLinkButtonTokenResource IconOnyPadding}" />
             </Style>
         </Style>
 
         <Style Selector="^[SizeType=Small]">
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
-            <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingSM}" />
-            <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeSM}" />
+            <Setter Property="Padding" Value="{atom:HyperLinkButtonTokenResource ContentPaddingSM}" />
+            <Setter Property="FontSize" Value="{atom:HyperLinkButtonTokenResource ContentFontSizeSM}" />
             <Style Selector="^:icononly">
-                <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPaddingSM}" />
+                <Setter Property="Padding" Value="{atom:HyperLinkButtonTokenResource IconOnyPaddingSM}" />
             </Style>
         </Style>
 
         <Style Selector="^[SizeType=Custom]">
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
-            <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
-            <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
+            <Setter Property="Padding" Value="{atom:HyperLinkButtonTokenResource ContentPadding}" />
+            <Setter Property="FontSize" Value="{atom:HyperLinkButtonTokenResource ContentFontSize}" />
             <Style Selector="^:icononly">
-                <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPadding}" />
+                <Setter Property="Padding" Value="{atom:HyperLinkButtonTokenResource IconOnyPadding}" />
             </Style>
         </Style>
 
@@ -118,33 +114,33 @@
             </Style>
             <Style Selector="^[SizeType=Large]">
                 <Setter Property="IconWidth"
-                        Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
+                        Value="{atom:HyperLinkButtonTokenResource OnlyIconSizeLG}" />
                 <Setter Property="IconHeight"
-                        Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
+                        Value="{atom:HyperLinkButtonTokenResource OnlyIconSizeLG}" />
             </Style>
             <Style Selector="^[SizeType=Middle]">
                 <Setter Property="IconWidth"
-                        Value="{atom:ButtonTokenResource OnlyIconSize}" />
+                        Value="{atom:HyperLinkButtonTokenResource OnlyIconSize}" />
                 <Setter Property="IconHeight"
-                        Value="{atom:ButtonTokenResource OnlyIconSize}" />
+                        Value="{atom:HyperLinkButtonTokenResource OnlyIconSize}" />
             </Style>
             <Style Selector="^[SizeType=Custom]">
                 <Setter Property="IconWidth"
-                        Value="{atom:ButtonTokenResource OnlyIconSize}" />
+                        Value="{atom:HyperLinkButtonTokenResource OnlyIconSize}" />
                 <Setter Property="IconHeight"
-                        Value="{atom:ButtonTokenResource OnlyIconSize}" />
+                        Value="{atom:HyperLinkButtonTokenResource OnlyIconSize}" />
             </Style>
             <Style Selector="^[SizeType=Small]">
                 <Setter Property="IconWidth"
-                        Value="{atom:ButtonTokenResource OnlyIconSizeSM}" />
+                        Value="{atom:HyperLinkButtonTokenResource OnlyIconSizeSM}" />
                 <Setter Property="IconHeight"
-                        Value="{atom:ButtonTokenResource OnlyIconSizeSM}" />
+                        Value="{atom:HyperLinkButtonTokenResource OnlyIconSizeSM}" />
             </Style>
         </Style>
 
         <Style Selector="^:not(:icononly)">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Margin" Value="{atom:ButtonTokenResource IconMargin}" />
+                <Setter Property="Margin" Value="{atom:HyperLinkButtonTokenResource IconMargin}" />
             </Style>
         </Style>
 
@@ -205,12 +201,12 @@
             <Setter Property="Foreground"
                     Value="{atom:SharedTokenResource ColorTextDisabled}" />
             <Setter Property="BorderBrush"
-                    Value="{atom:ButtonTokenResource BorderColorDisabled}" />
+                    Value="{atom:HyperLinkButtonTokenResource BorderColorDisabled}" />
 
             <Style Selector="^/template/ Border#Frame">
                 <Setter Property="Background" Value="Transparent" />
             </Style>
         </Style>
 
-    </ControlTheme>
+</ControlTheme>
 </ResourceDictionary>

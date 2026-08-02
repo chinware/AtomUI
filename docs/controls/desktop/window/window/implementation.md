@@ -1,6 +1,6 @@
 # Window 桌面版实现原理
 
-本文档描述 Window 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Window 桌面版架构设计](overview.md)，Window 与标题栏的对齐协作见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)，变化记录见 [Window Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Window Token 设计](token.md)。
+本文档描述 Window 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Window 桌面版架构设计](overview.md)，Window 与标题栏的对齐协作见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)，变化记录见 [Window Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Window Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -24,7 +24,6 @@
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowResizerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.cs`
-- `src/AtomUI.Desktop.Controls/Window/Themes/WindowThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Utils/FullscreenPopoverLayer.cs`
 - `src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Window/Utils/WindowResizer.cs`
@@ -64,7 +63,7 @@
 - `WindowTitleBarShadowBackground`：internal drawn decorations 标题栏背景绘制 helper，按 visible frame 和圆角裁剪 Linux 标题栏背景。
 - `WindowDrawnDecorationsReflectionExtensions`：Desktop Window 内部反射边界，集中访问 Avalonia drawn decorations、resize grip layer 和 drawn overlay host。
 - `WindowTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `WindowToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `WindowToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 核心协作规则：
 

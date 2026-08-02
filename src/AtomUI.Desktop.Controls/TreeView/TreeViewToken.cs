@@ -7,10 +7,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class TreeViewToken : AbstractControlDesignToken
 {
-    public const string ID = "TreeView";
     
     public TreeViewToken()
-        : base(ID)
+
     {
     }
 
@@ -77,20 +76,20 @@ internal class TreeViewToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        HeaderHeight   = SharedToken.ControlHeightSM;
-        NodeHoverBg    = SharedToken.ControlItemBgHover;
-        NodeSelectedBg = SharedToken.ControlItemBgActive;
+        HeaderHeight   = EffectiveGlobalToken.ControlHeightSM;
+        NodeHoverBg    = EffectiveGlobalToken.ControlItemBgHover;
+        NodeSelectedBg = EffectiveGlobalToken.ControlItemBgActive;
 
-        DirectoryNodeSelectedColor = SharedToken.ColorTextLightSolid;
-        DirectoryNodeSelectedBg = SharedToken.ColorPrimary;
+        DirectoryNodeSelectedColor = EffectiveGlobalToken.ColorTextLightSolid;
+        DirectoryNodeSelectedBg = EffectiveGlobalToken.ColorPrimary;
 
-        TreeItemMargin         = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingXXS / 2);
-        TreeItemHeaderPadding  = new Thickness(SharedToken.UniformlyPaddingXS, 0);
-        TreeItemHeaderMargin   = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
-        TreeNodeSwitcherMargin = new Thickness(0, 0, SharedToken.UniformlyPaddingXS / 2, 0);
-        TreeNodeIconMargin     = new Thickness(SharedToken.UniformlyPaddingXS / 2, 0, 0, 0);
-        FilterHighlightColor   = SharedToken.ColorError;
-        DragIndicatorLineWidth = SharedToken.LineWidthFocus;
+        TreeItemMargin         = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyPaddingXXS / 2);
+        TreeItemHeaderPadding  = new Thickness(EffectiveGlobalToken.UniformlyPaddingXS, 0);
+        TreeItemHeaderMargin   = new Thickness(EffectiveGlobalToken.UniformlyMarginXXS, 0, 0, 0);
+        TreeNodeSwitcherMargin = new Thickness(0, 0, EffectiveGlobalToken.UniformlyPaddingXS / 2, 0);
+        TreeNodeIconMargin     = new Thickness(EffectiveGlobalToken.UniformlyPaddingXS / 2, 0, 0, 0);
+        FilterHighlightColor   = EffectiveGlobalToken.ColorError;
+        DragIndicatorLineWidth = EffectiveGlobalToken.LineWidthFocus;
     }
     
 }

@@ -9,7 +9,6 @@ ButtonToken 是 Button 的组件级设计变量层。它把全局设计体系中
 ButtonToken 服务以下主题和控件：
 
 - `ButtonTheme.axaml`
-- `BrowserButtonThemes.axaml`
 - `DropdownButtonTheme.axaml`
 - `SplitButtonTheme.axaml`
 - `HyperLinkButtonTheme.axaml`

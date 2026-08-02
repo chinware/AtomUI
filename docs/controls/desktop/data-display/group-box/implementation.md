@@ -13,7 +13,7 @@ GroupBox 不实现交互状态，不管理子项集合，不承担折叠或 Form
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/GroupBox/GroupBox.cs`：公共 API、template part 获取、测量 bounds、渲染和失效逻辑。
-- `src/AtomUI.Desktop.Controls/GroupBox/GroupBoxToken.cs`：GroupBox 组件 Token。
+- `src/AtomUI.Desktop.Controls/GroupBox/GroupBoxToken.cs`：GroupBox 控件 Token。
 - `src/AtomUI.Desktop.Controls/GroupBox/Themes/GroupBoxTheme.axaml`：模板结构、Header 对齐、TokenResource 引用和默认视觉属性。
 
 ## 3. 核心类职责

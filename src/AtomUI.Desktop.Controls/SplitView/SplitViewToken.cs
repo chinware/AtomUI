@@ -6,10 +6,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class SplitViewToken : AbstractControlDesignToken
 {
-    public const string ID = "SplitView";
 
     public SplitViewToken()
-        : base(ID)
+
     {
     }
     

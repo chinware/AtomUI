@@ -1,6 +1,6 @@
 # Splitter 桌面版实现原理
 
-本文档描述 Splitter 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Splitter 桌面版架构设计](overview.md)，变化记录见 [Splitter Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Splitter Token 设计](token.md)。
+本文档描述 Splitter 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Splitter 桌面版架构设计](overview.md)，变化记录见 [Splitter Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Splitter Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -32,7 +32,6 @@ Splitter
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterHandleTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterDragBarTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterThemes.axaml`
 
 Gallery 与文档结构：
 

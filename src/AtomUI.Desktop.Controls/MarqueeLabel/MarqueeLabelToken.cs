@@ -5,7 +5,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class MarqueeLabelToken : AbstractControlDesignToken
 {
-    public const string ID = "MarqueeLabel";
     
     /// <summary>
     /// 周期这件的间隔
@@ -18,7 +17,7 @@ internal class MarqueeLabelToken : AbstractControlDesignToken
     public double DefaultSpeed { get; set; }
 
     public MarqueeLabelToken()
-        : base(ID)
+
     {
     }
 

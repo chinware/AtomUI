@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:OtpLineEditThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:OtpLineEditCell}" TargetType="atom:OtpLineEditCell">
         <Setter Property="Width" Value="{atom:OtpLineEditTokenResource CellWidth}" />
@@ -114,7 +111,7 @@
         <!-- Variant interactive surface -->
         <Style Selector="^:pointerover[StyleVariant=Outlined],
                          ^:pointerover[StyleVariant=Underlined]">
-            <Setter Property="BorderBrush" Value="{atom:AddOnDecoratedBoxTokenResource HoverBorderColor}" />
+            <Setter Property="BorderBrush" Value="{atom:OtpLineEditTokenResource ColorPrimaryHover}" />
         </Style>
 
         <Style Selector="^:pointerover[EffectiveStatus=Default][StyleVariant=Filled]">
@@ -127,7 +124,7 @@
                          ^[IsActive=True][StyleVariant=Outlined],
                          ^[IsActive=True][StyleVariant=Filled],
                          ^[IsActive=True][StyleVariant=Underlined]">
-            <Setter Property="BorderBrush" Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+            <Setter Property="BorderBrush" Value="{atom:OtpLineEditTokenResource ColorPrimary}" />
         </Style>
 
         <Style Selector="^[IsActive=True][EffectiveStatus=Default][StyleVariant=Filled]">
@@ -140,7 +137,7 @@
                          ^[IsActive=True][StyleVariant=Outlined] /template/ atom|PixelAlignedBorder#PART_Frame,
                          ^[IsActive=True][StyleVariant=Filled] /template/ atom|PixelAlignedBorder#PART_Frame,
                          ^[IsActive=True][StyleVariant=Underlined] /template/ atom|PixelAlignedBorder#PART_Frame">
-            <Setter Property="BoxShadow" Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
+            <Setter Property="BoxShadow" Value="{atom:OtpLineEditTokenResource InputActiveShadow}" />
         </Style>
 
         <!-- Error status -->
@@ -187,7 +184,7 @@
                          ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Outlined] /template/ atom|PixelAlignedBorder#PART_Frame,
                          ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Filled] /template/ atom|PixelAlignedBorder#PART_Frame,
                          ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Underlined] /template/ atom|PixelAlignedBorder#PART_Frame">
-            <Setter Property="BoxShadow" Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
+            <Setter Property="BoxShadow" Value="{atom:OtpLineEditTokenResource InputErrorActiveShadow}" />
         </Style>
 
         <!-- Warning status -->
@@ -234,7 +231,7 @@
                          ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Outlined] /template/ atom|PixelAlignedBorder#PART_Frame,
                          ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Filled] /template/ atom|PixelAlignedBorder#PART_Frame,
                          ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Underlined] /template/ atom|PixelAlignedBorder#PART_Frame">
-            <Setter Property="BoxShadow" Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
+            <Setter Property="BoxShadow" Value="{atom:OtpLineEditTokenResource InputWarningActiveShadow}" />
         </Style>
 
         <!-- Disabled status -->

@@ -4,9 +4,7 @@
     x:ClassModifier="internal"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:DataGridThemeAsset.Identity}">
+    >
     <ControlTheme x:Key="{x:Type atom:DataGridRowReorderHandle}" TargetType="atom:DataGridRowReorderHandle">
         <Setter Property="Template">
             <ControlTemplate>

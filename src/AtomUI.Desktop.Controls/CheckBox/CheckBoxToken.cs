@@ -6,10 +6,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class CheckBoxToken : AbstractControlDesignToken
 {
-    public const string ID = "CheckBox";
     
     public CheckBoxToken()
-        : base(ID)
+
     {
     }
     
@@ -23,10 +22,10 @@ internal class CheckBoxToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        CheckIndicatorSize        = SharedToken.ControlInteractiveSize;
+        CheckIndicatorSize        = EffectiveGlobalToken.ControlInteractiveSize;
         CheckedMarkSize           = CheckIndicatorSize * 0.6;
-        IndicatorTristateMarkSize = SharedToken.FontSizeLG / 2;
-        TextMargin                = new Thickness(SharedToken.UniformlyMarginXS, 0, SharedToken.UniformlyMarginXS, 0);
+        IndicatorTristateMarkSize = EffectiveGlobalToken.FontSizeLG / 2;
+        TextMargin                = new Thickness(EffectiveGlobalToken.UniformlyMarginXS, 0, EffectiveGlobalToken.UniformlyMarginXS, 0);
     }
     
 }

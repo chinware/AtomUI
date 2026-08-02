@@ -3,6 +3,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Schema;
 using AtomUI.Theme.DesignTokens;
+using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using Shouldly;
@@ -13,6 +14,18 @@ namespace AtomUI.Core.Tests.Theme;
 public class ThemeGeneratedDescriptorContractTests
 {
     [Fact]
+    public void Control_Descriptor_Uses_Exact_Control_Type_And_Has_No_Global_Whitelist()
+    {
+        var descriptorType = typeof(ControlTokenDescriptor);
+
+        descriptorType.GetProperty("ControlType").ShouldNotBeNull();
+        descriptorType.GetProperty("SupportedGlobalTokens").ShouldBeNull();
+        descriptorType.GetConstructors().ShouldContain(constructor =>
+            constructor.GetParameters().Length != 0 &&
+            constructor.GetParameters()[0].ParameterType == typeof(Type));
+    }
+
+    [Fact]
     public void Descriptor_Preserves_Identity_And_Uses_Direct_Factory()
     {
         var descriptor = Control("Button", "Height");
@@ -22,12 +35,15 @@ public class ThemeGeneratedDescriptorContractTests
     }
 
     [Fact]
-    public void Control_Token_Attribute_Exposes_An_Explicit_Catalog()
+    public void Control_Token_Attribute_Is_A_Zero_Argument_Discovery_Marker()
     {
-        var attribute = new ControlDesignTokenAttribute("Acme");
+        var attribute = new ControlDesignTokenAttribute();
 
-        attribute.Catalog.ShouldBe("Acme");
-        new ControlDesignTokenAttribute().Catalog.ShouldBe("AtomUI");
+        attribute.GetType().GetConstructors().ShouldHaveSingleItem()
+                 .GetParameters().ShouldBeEmpty();
+        attribute.GetType().GetProperties()
+                 .Where(static property => property.DeclaringType == typeof(ControlDesignTokenAttribute))
+                 .ShouldBeEmpty();
     }
 
     [Fact]
@@ -59,7 +75,8 @@ public class ThemeGeneratedDescriptorContractTests
 
         registry.Controls.Select(static descriptor => descriptor.Identity.Id).ShouldBe(["Button", "Input"]);
         registry.Controls.Select(static descriptor => descriptor.Slot).ShouldBe([0, 1]);
-        registry.Controls.ShouldAllBe(descriptor => ReferenceEquals(descriptor.InheritedTokens, registry.GlobalTokens));
+        registry.Controls.ShouldAllBe(descriptor =>
+            descriptor.ControlType == ThemeTestControlTypes.For("AtomUI", descriptor.Identity.Id));
         registry.TryGetControl(new ControlTokenIdentity("AtomUI", "Button"), out var boundButton).ShouldBeTrue();
         boundButton.ShouldNotBeSameAs(button);
 
@@ -144,6 +161,7 @@ public class ThemeGeneratedDescriptorContractTests
             static (token, value) => ((SchemaControlToken)token).Value = (double)value!,
             static token => ThemeResourceValue.Project(((SchemaControlToken)token).Value));
         return new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", id),
             new ControlTokenIdentity("AtomUI", id),
             [ownToken],
             static () => new SchemaControlToken(),
@@ -162,13 +180,12 @@ public class ThemeGeneratedDescriptorContractTests
 
     private sealed class SchemaControlToken : AbstractControlDesignToken
     {
-        public SchemaControlToken()
-            : base("Schema")
-        {
-        }
-
         public double Value { get; set; }
         public ThemeAppearance EvaluatedAppearance { get; set; }
+    }
+
+    private sealed class SchemaControl : Control
+    {
     }
 
     private sealed class SchemaAlgorithm : IThemeAlgorithm

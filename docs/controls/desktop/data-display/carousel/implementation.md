@@ -1,6 +1,6 @@
 # Carousel 桌面版实现原理
 
-本文档描述 Carousel 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Carousel 桌面版架构设计](overview.md)，变化记录见 [Carousel Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Carousel Token 设计](token.md)。
+本文档描述 Carousel 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Carousel 桌面版架构设计](overview.md)，变化记录见 [Carousel Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Carousel Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -22,7 +22,6 @@
 - `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselPageTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselPaginationTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Carousel/VirtualizingCarouselPanel.cs`
 
 职责边界：
@@ -39,7 +38,7 @@
 - `CarouselPage`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `CarouselPageIndicator`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `CarouselPagination`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `CarouselToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `CarouselToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `VirtualizingCarouselPanel`：布局面板，负责测量、排列、虚拟化或集合内容布局。
 
 核心协作规则：

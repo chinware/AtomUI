@@ -4,9 +4,7 @@
               x:Class="AtomUI.Desktop.Controls.Themes.DataGridColumnHeaderTheme"
               x:ClassModifier="internal"
               xmlns:atom="https://atomui.net"
-              xmlns:themeResources="using:AtomUI.Theme.Resources"
-              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid"
-              themeResources:ControlTokenScope.Identity="{x:Static generated:DataGridThemeAsset.Identity}">
+              >
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:DataGridColumnHeader">
             <Border Name="PART_Frame" Background="{TemplateBinding Background}">

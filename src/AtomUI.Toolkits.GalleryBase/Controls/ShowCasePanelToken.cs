@@ -6,7 +6,6 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 [ControlDesignToken]
 internal class ShowCasePanelToken : AbstractControlDesignToken
 {
-    public const string ID = "ShowCasePanel";
 
     public Thickness ContentMargin { get; set; }
     public double MinItemWidth { get; set; }
@@ -15,18 +14,18 @@ internal class ShowCasePanelToken : AbstractControlDesignToken
     public double RowGap { get; set; }
 
     public ShowCasePanelToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        ContentMargin = new Thickness(SharedToken.SizeUnit * 6);
-        MinItemWidth  = SharedToken.SizeUnit * 90;
+        ContentMargin = new Thickness(EffectiveGlobalToken.SizeUnit * 6);
+        MinItemWidth  = EffectiveGlobalToken.SizeUnit * 90;
         MaxColumns    = 2;
-        ColumnGap     = SharedToken.SizeUnit * 4;
-        RowGap        = SharedToken.SizeUnit * 4;
+        ColumnGap     = EffectiveGlobalToken.SizeUnit * 4;
+        RowGap        = EffectiveGlobalToken.SizeUnit * 4;
     }
 
 }

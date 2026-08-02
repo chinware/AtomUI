@@ -1,14 +1,35 @@
 using AtomUI.Controls.Commons;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
+using Avalonia;
 
 namespace AtomUI.Desktop.Controls;
 
 public class MarqueeLabel : AbstractMarqueeLabel
 {
-    public MarqueeLabel()
+    private IDisposable? _tokenBindings;
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenKind.CycleSpace);
-        TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenKind.DefaultSpeed);
+        base.OnAttachedToVisualTree(e);
+        _tokenBindings?.Dispose();
+        _tokenBindings = new System.Reactive.Disposables.CompositeDisposable
+        {
+            TokenResourceBinder.CreateControlTokenBinding(
+                this,
+                CycleSpaceProperty,
+                MarqueeLabelTokenKind.CycleSpace),
+            TokenResourceBinder.CreateControlTokenBinding(
+                this,
+                MoveSpeedProperty,
+                MarqueeLabelTokenKind.DefaultSpeed)
+        };
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _tokenBindings?.Dispose();
+        _tokenBindings = null;
+        base.OnDetachedFromVisualTree(e);
     }
 }

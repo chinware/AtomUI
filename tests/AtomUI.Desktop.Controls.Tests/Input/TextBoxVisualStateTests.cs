@@ -67,7 +67,8 @@ public class TextBoxVisualStateTests
         ShowInWindow(textBox, () =>
         {
             var border = FindTemplatePart<PixelAlignedBorder>(textBox, "InnerBoxDecorator");
-            var expectedThickness = GetTextBoxTokenResource<Thickness>("BorderThickness");
+            var expectedThickness = GetThemeResource<Thickness>(
+                ControlTokenResourceKey.Global(TextBoxTokens.Identity, SharedTokenKind.BorderThickness));
             var defaultBorder     = GetTextBoxTokenResource<IBrush>("BorderColor");
             var hoverBorder       = GetTextBoxTokenResource<IBrush>("HoverBorderColor");
             var activeBorder      = GetTextBoxTokenResource<IBrush>("ActiveBorderColor");
@@ -110,15 +111,11 @@ public class TextBoxVisualStateTests
         field.ShouldNotBeNull();
         field!.FieldType.ShouldBe(typeof(StyledProperty<CustomizableSizeType>));
 
-        var textBoxTokenType = typeof(AtomUITextBox).Assembly.GetType("AtomUI.Desktop.Controls.TextBoxToken");
-        textBoxTokenType.ShouldNotBeNull();
-        textBoxTokenType!
-            .GetField("ScopeProvider", BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy)
-            .ShouldBeNull();
+        TextBoxTokens.Identity.Id.ShouldBe(nameof(AtomUI.Desktop.Controls.TextBox));
 
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Input/Themes/TextBoxTheme.axaml");
         source.ShouldContain("SharedTokenResource FontSize");
-        source.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        source.ShouldNotContain("ControlTokenScope.Identity");
         source.ShouldNotContain("TokenSharedTokenResource");
     }
 
@@ -207,9 +204,10 @@ public class TextBoxVisualStateTests
         source.ShouldContain("TextBoxTokenResource HoverBorderColor");
         source.ShouldContain("TextBoxTokenResource ActiveBorderColor");
         source.ShouldContain("TextBoxTokenResource ActiveShadow");
-        source.ShouldContain("TextBoxTokenResource PaddingLG");
-        source.ShouldContain("TextBoxTokenResource Padding");
-        source.ShouldContain("TextBoxTokenResource PaddingSM");
+        source.ShouldContain("TextBoxTokenResource ContentPaddingLG");
+        source.ShouldContain("TextBoxTokenResource ContentPadding");
+        source.ShouldContain("TextBoxTokenResource ContentPaddingSM");
+        source.ShouldContain("TextBoxTokenResource EnableMotion");
         source.ShouldNotContain("IsCustomPadding");
         source.ShouldContain("SharedTokenResource UniformlyPaddingXXS");
         source.ShouldContain("SharedTokenResource FontHeightLG");
@@ -220,7 +218,7 @@ public class TextBoxVisualStateTests
         source.ShouldContain("SharedTokenResource FontSizeSM");
         source.ShouldContain("SharedTokenResource ColorTextPlaceholder");
         source.ShouldContain("SharedTokenResource ColorTextDisabled");
-        source.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        source.ShouldNotContain("ControlTokenScope.Identity");
         source.ShouldNotContain("LineEditTokenResource");
         source.ShouldNotContain("AddOnDecoratedBoxTokenResource");
         source.ShouldNotContain("AddOn");
@@ -254,21 +252,17 @@ public class TextBoxVisualStateTests
                 "ActiveBorderColor",
                 "ActiveShadow",
                 "BorderColor",
-                "BorderRadius",
-                "BorderRadiusLG",
-                "BorderRadiusSM",
-                "BorderThickness",
+                "ContentPadding",
+                "ContentPaddingLG",
+                "ContentPaddingSM",
                 "HoverBorderColor",
-                "Padding",
-                "PaddingLG",
-                "PaddingSM"
             });
     }
 
     [Theory]
-    [InlineData(CustomizableSizeType.Large, "PaddingLG")]
-    [InlineData(CustomizableSizeType.Middle, "Padding")]
-    [InlineData(CustomizableSizeType.Small, "PaddingSM")]
+    [InlineData(CustomizableSizeType.Large, "ContentPaddingLG")]
+    [InlineData(CustomizableSizeType.Middle, "ContentPadding")]
+    [InlineData(CustomizableSizeType.Small, "ContentPaddingSM")]
     public void TextBox_Padding_Follows_TextBox_Size_Tokens(CustomizableSizeType sizeType, string tokenKind)
     {
         var textBox = new AtomUITextBox
@@ -311,7 +305,7 @@ public class TextBoxVisualStateTests
         {
             Config = new ThemeConfigBuilder()
                      .WithControl(
-                         new ControlTokenIdentity("AtomUI", TextBoxToken.ID),
+                         TextBoxTokens.Identity,
                          new ControlThemeConfigBuilder()
                              .WithAlgorithm(ControlAlgorithmMode.Disabled)
                              .WithToken(nameof(SharedTokenKind.EnableMotion), "false")

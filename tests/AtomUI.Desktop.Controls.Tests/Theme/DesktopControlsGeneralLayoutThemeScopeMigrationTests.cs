@@ -38,19 +38,19 @@ public class DesktopControlsGeneralLayoutThemeScopeMigrationTests
     }
 
     [Fact]
-    public void General_And_Layout_Control_Themes_Use_Ambient_Shared_Token_Scopes()
+    public void General_And_Layout_Control_Themes_Use_Explicit_Token_Resources()
     {
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/Buttons/Themes");
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/FloatButton/Themes");
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/Space/Themes");
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/Splitter/Themes");
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/SplitView/Themes");
-        ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(
+        ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(
             "src/AtomUI.Desktop.Controls/Separator/Themes");
     }
 

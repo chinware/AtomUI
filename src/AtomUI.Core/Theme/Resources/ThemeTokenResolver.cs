@@ -1,6 +1,7 @@
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Algorithms;
 using Avalonia;
+using Avalonia.Controls;
 
 namespace AtomUI.Theme.Resources;
 
@@ -9,6 +10,28 @@ internal sealed class ThemeTokenResolver
     internal ThemeSnapshot Capture(AvaloniaObject owner)
     {
         return GetContext(owner).Snapshot;
+    }
+
+    internal (ThemeSnapshot Snapshot, int ControlSlot) CaptureControl(Control owner)
+    {
+        ArgumentNullException.ThrowIfNull(owner);
+        return CaptureControl(owner, owner.GetType());
+    }
+
+    internal (ThemeSnapshot Snapshot, int ControlSlot) CaptureControl(
+        Control owner,
+        Type controlType)
+    {
+        ArgumentNullException.ThrowIfNull(owner);
+        ArgumentNullException.ThrowIfNull(controlType);
+        var snapshot = GetContext(owner).Snapshot;
+        if (!snapshot.Registry.TryGetControl(controlType, out var descriptor))
+        {
+            throw new InvalidOperationException(
+                $"Control type '{controlType.FullName}' is not registered in the captured theme schema.");
+        }
+
+        return (snapshot, descriptor.Slot);
     }
 
     internal T GetGlobal<T>(ThemeSnapshot snapshot, int slot)
@@ -29,6 +52,37 @@ internal sealed class ThemeTokenResolver
             throw new ArgumentOutOfRangeException(nameof(controlSlot));
         }
         return snapshot.Controls[controlSlot].ControlTokenValues.Get<T>(tokenSlot);
+    }
+
+    internal T GetOwn<T>(
+        ThemeSnapshot snapshot,
+        int controlSlot,
+        object resourceKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        ArgumentNullException.ThrowIfNull(resourceKey);
+        ArgumentOutOfRangeException.ThrowIfNegative(controlSlot);
+        if ((uint)controlSlot >= (uint)snapshot.Controls.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(controlSlot));
+        }
+        if (!snapshot.Registry.TryGetControlResourceSlot(resourceKey, out var resourceControlSlot) ||
+            resourceControlSlot != controlSlot)
+        {
+            throw new InvalidOperationException(
+                $"Own Token resource key '{resourceKey}' does not belong to the captured Control.");
+        }
+
+        foreach (var token in snapshot.Registry.Controls[controlSlot].OwnTokens)
+        {
+            if (Equals(token.ResourceKey, resourceKey))
+            {
+                return snapshot.Controls[controlSlot].ControlTokenValues.Get<T>(token.Slot);
+            }
+        }
+
+        throw new InvalidOperationException(
+            $"Own Token resource key '{resourceKey}' is not registered in the captured Control schema.");
     }
 
     internal int GetControlSlot(ThemeSnapshot snapshot, Schema.ControlTokenIdentity identity)

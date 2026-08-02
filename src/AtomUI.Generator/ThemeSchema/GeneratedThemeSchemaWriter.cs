@@ -6,25 +6,26 @@ namespace AtomUI.Generator;
 
 internal sealed class GeneratedThemeSchemaWriter
 {
-    private const string DefaultControlCatalog = "AtomUI";
     private readonly SourceProductionContext _context;
     private readonly string _generatedNamespace;
+    private readonly string _controlCatalog;
     private readonly IReadOnlyList<SchemaTokenInfo> _globalTokens;
-    private readonly IReadOnlyList<ControlTokenInfo> _controls;
+    private readonly IReadOnlyList<ControlThemeInfo> _controls;
     private readonly IReadOnlyList<ThemeAlgorithmInfo> _algorithms;
 
     internal GeneratedThemeSchemaWriter(
         SourceProductionContext context,
         string? assemblyName,
+        string controlCatalog,
         IEnumerable<SchemaTokenInfo> globalTokens,
-        IEnumerable<ControlTokenInfo> controls,
+        IEnumerable<ControlThemeInfo> controls,
         IEnumerable<ThemeAlgorithmInfo> algorithms)
     {
         _context = context;
         _generatedNamespace = GetGeneratedNamespace(assemblyName);
+        _controlCatalog = controlCatalog;
         _globalTokens = globalTokens.OrderBy(static token => token.Name, StringComparer.Ordinal).ToArray();
-        _controls = controls.OrderBy(static control => control.ResourceCatalog ?? DefaultControlCatalog, StringComparer.Ordinal)
-                            .ThenBy(static control => control.ControlId, StringComparer.Ordinal)
+        _controls = controls.OrderBy(static control => control.ControlName, StringComparer.Ordinal)
                             .ToArray();
         _algorithms = algorithms.OrderBy(static algorithm => algorithm.Id, StringComparer.Ordinal)
                                 .ThenBy(static algorithm => algorithm.TypeName, StringComparer.Ordinal)
@@ -61,7 +62,7 @@ internal sealed class GeneratedThemeSchemaWriter
         return source.ToString();
     }
 
-    private static string GetGeneratedNamespace(string? assemblyName)
+    internal static string GetGeneratedNamespace(string? assemblyName)
     {
         if (string.IsNullOrWhiteSpace(assemblyName))
         {
@@ -114,14 +115,24 @@ internal sealed class GeneratedThemeSchemaWriter
         source.AppendLine("    {");
         foreach (var control in _controls)
         {
-            var catalog = SymbolDisplay.FormatLiteral(control.ResourceCatalog ?? DefaultControlCatalog, quote: true);
-            var id = SymbolDisplay.FormatLiteral(control.ControlId!, quote: true);
-            var typeName = FullyQualify(control.GetFullyQualifiedTypeName());
+            var catalog = SymbolDisplay.FormatLiteral(_controlCatalog, quote: true);
+            var id = SymbolDisplay.FormatLiteral(control.ControlName, quote: true);
+            var controlType = FullyQualify(control.ControlTypeName);
             source.AppendLine("        new ControlTokenDescriptor(");
+            source.Append("            typeof(").Append(controlType).AppendLine("),");
+            if (!control.HasOwnToken)
+            {
+                source.Append("            new ControlTokenIdentity(").Append(catalog).Append(", ").Append(id).AppendLine(")");
+                source.AppendLine("        ),");
+                continue;
+            }
+
             source.Append("            new ControlTokenIdentity(").Append(catalog).Append(", ").Append(id).AppendLine("),");
+
+            var typeName = FullyQualify(control.OwnToken!.GetFullyQualifiedTokenTypeName());
             source.AppendLine("            new TokenDescriptor[]");
             source.AppendLine("            {");
-            var tokens = control.SchemaTokens.OrderBy(static token => token.Name, StringComparer.Ordinal).ToArray();
+            var tokens = control.OwnSchemaTokens.OrderBy(static token => token.Name, StringComparer.Ordinal).ToArray();
             for (var slot = 0; slot < tokens.Length; slot++)
             {
                 var resourceKey = $"global::{control.ControlNamespace}.DesignTokens.{control.TokenKindType}.{tokens[slot].Name}";

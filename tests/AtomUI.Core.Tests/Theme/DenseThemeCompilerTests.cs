@@ -128,6 +128,36 @@ public class DenseThemeCompilerTests
     }
 
     [Fact]
+    public void Compile_Control_Without_Own_Tokens_Produces_Effective_Global_Delta_And_Empty_Own_State()
+    {
+        var control = new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", "Rating"),
+            new ControlTokenIdentity("AtomUI", "Rating"));
+        var registry = CreateRegistry([control]);
+        registry.TryGetControl(control.Identity, out control).ShouldBeTrue();
+        var config = new NormalizedControlThemeConfig(
+            control.Identity,
+            ControlAlgorithmMode.Disabled,
+            Array.Empty<ThemeAlgorithmDescriptor>(),
+            [Token(registry, nameof(DesignToken.ColorPrimary), "#00b96b")],
+            Array.Empty<NormalizedTokenValue>());
+
+        var result = new ThemeCompiler().Compile(CreateInput(registry, controls: [config]));
+
+        result.Success.ShouldBeTrue();
+        var snapshot = result.Snapshot!;
+        var controlSnapshot = snapshot.Controls[control.Slot];
+        GetControlGlobal<Color>(
+                controlSnapshot,
+                snapshot,
+                registry,
+                nameof(DesignToken.ColorPrimary))
+            .ShouldBe(Color.Parse("#00b96b"));
+        controlSnapshot.ControlTokenValues.ShouldBeSameAs(TokenValueTable.Empty);
+        controlSnapshot.ControlResources.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Compile_Control_Global_Rederives_Map_And_Freezes_Own_Tokens_With_Appearance()
     {
         var control = Control("Button");
@@ -181,6 +211,23 @@ public class DenseThemeCompilerTests
         child.PresetColorPalettes.ShouldBeSameAs(parent.PresetColorPalettes);
         child.Controls[button.Slot].ShouldNotBeSameAs(parent.Controls[button.Slot]);
         child.Controls[input.Slot].ShouldBeSameAs(parent.Controls[input.Slot]);
+    }
+
+    [Fact]
+    public void Compile_Reuses_A_WithoutOwnToken_Control_When_Global_Content_Changes()
+    {
+        var control = new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", "Rating"),
+            new ControlTokenIdentity("AtomUI", "Rating"));
+        var registry = CreateRegistry([control]);
+        registry.TryGetControl(control.Identity, out control).ShouldBeTrue();
+        var parent = new ThemeCompiler().Compile(CreateInput(registry)).Snapshot!;
+        var changed = new ThemeCompiler().Compile(CreateInput(
+            registry,
+            globalTokens: [Token(registry, nameof(DesignToken.ColorPrimary), "#00b96b")],
+            reusableParent: parent)).Snapshot!;
+
+        changed.Controls[control.Slot].ShouldBeSameAs(parent.Controls[control.Slot]);
     }
 
     [Fact]
@@ -335,9 +382,10 @@ public class DenseThemeCompilerTests
             static (builder, value) => ((DenseControlToken)builder).Height = (double)value!,
             static builder => ((DenseControlToken)builder).Height);
         return new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", id),
             new ControlTokenIdentity("AtomUI", id),
             [token],
-            () => new DenseControlToken(id),
+            static () => new DenseControlToken(),
             static (builder, appearance) => ((DenseControlToken)builder).Evaluate(appearance));
     }
 
@@ -358,9 +406,10 @@ public class DenseThemeCompilerTests
                 ((DenseTransformControlToken)builder).Transform = (ImmutableTransform)value!,
             static builder => ((DenseTransformControlToken)builder).Transform);
         return new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", id),
             new ControlTokenIdentity("AtomUI", id),
             [token],
-            () => new DenseTransformControlToken(id, transform),
+            () => new DenseTransformControlToken(transform),
             static (builder, appearance) => ((DenseTransformControlToken)builder).Evaluate(appearance));
     }
 
@@ -378,9 +427,10 @@ public class DenseThemeCompilerTests
             static (builder, value) => ((DenseEasingControlToken)builder).Easing = (Easing)value!,
             static builder => ((DenseEasingControlToken)builder).Easing);
         return new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", id),
             new ControlTokenIdentity("AtomUI", id),
             [token],
-            () => new DenseEasingControlToken(id, easing),
+            () => new DenseEasingControlToken(easing),
             static (builder, appearance) => ((DenseEasingControlToken)builder).Evaluate(appearance));
     }
 
@@ -402,9 +452,10 @@ public class DenseThemeCompilerTests
             static builder => ThemeResourceValue.Project(
                 ((DenseSolidColorBrushControlToken)builder).Brush));
         return new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", id),
             new ControlTokenIdentity("AtomUI", id),
             [token],
-            () => new DenseSolidColorBrushControlToken(id, brush),
+            () => new DenseSolidColorBrushControlToken(brush),
             static (builder, appearance) =>
                 ((DenseSolidColorBrushControlToken)builder).Evaluate(appearance));
     }
@@ -431,7 +482,7 @@ public class DenseThemeCompilerTests
         DesignToken? PreviousMap,
         DesignToken NextMap);
 
-    private sealed class DenseControlToken(string id) : AbstractControlDesignToken(id)
+    private sealed class DenseControlToken : AbstractControlDesignToken
     {
         public double Height { get; set; }
         public ThemeAppearance Appearance { get; set; }
@@ -439,13 +490,12 @@ public class DenseThemeCompilerTests
         internal void Evaluate(ThemeAppearance appearance)
         {
             Appearance = appearance;
-            Height     = SharedToken.ControlHeight;
+            Height     = EffectiveGlobalToken.ControlHeight;
         }
     }
 
     private sealed class DenseTransformControlToken(
-        string id,
-        ImmutableTransform transform) : AbstractControlDesignToken(id)
+        ImmutableTransform transform) : AbstractControlDesignToken
     {
         public ImmutableTransform? Transform { get; set; }
 
@@ -456,8 +506,7 @@ public class DenseThemeCompilerTests
     }
 
     private sealed class DenseEasingControlToken(
-        string id,
-        Easing easing) : AbstractControlDesignToken(id)
+        Easing easing) : AbstractControlDesignToken
     {
         public Easing? Easing { get; set; }
 
@@ -468,8 +517,7 @@ public class DenseThemeCompilerTests
     }
 
     private sealed class DenseSolidColorBrushControlToken(
-        string id,
-        SolidColorBrush brush) : AbstractControlDesignToken(id)
+        SolidColorBrush brush) : AbstractControlDesignToken
     {
         public SolidColorBrush? Brush { get; set; }
 

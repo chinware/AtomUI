@@ -1,9 +1,0 @@
-<ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    x:ClassModifier="internal">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="NotificationCardTheme.axaml"/>
-        <ResourceInclude Source="WindowNotificationManagerTheme.axaml"/>
-        <ResourceInclude Source="NotificationProgressBarTheme.axaml"/>
-    </ResourceDictionary.MergedDictionaries>
-</ResourceDictionary>

@@ -4,9 +4,7 @@
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:DataGridThemeAsset.Identity}">
+    >
     <ControlTheme x:Key="{x:Type atom:DataGridTopLeftColumnHeader}" TargetType="atom:DataGridTopLeftColumnHeader">
         <ControlTheme.BasedOn>
             <themes:DataGridColumnHeaderTheme TargetType="atom:DataGridTopLeftColumnHeader" />

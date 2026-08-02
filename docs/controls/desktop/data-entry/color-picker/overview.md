@@ -29,7 +29,7 @@ ColorPicker 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | ColorPicker 是 AtomUI 桌面控件体系中的颜色选择控件，用于选择纯色、透明度、预设色和渐变色。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ColorValue`、`ColorValueBrush`、`DefaultValue`、`EmptyColorText`、`GradientValue`、`IsTextVisible`、`MaxValue`、`MinValue` 等 10 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ColorPicker Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、Control Own Token 和模板绑定如何表达视觉。 | ColorPicker Token + ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -109,11 +109,10 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和 ColorPicker Own Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `AtomUIColorPickerThemesProvider.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AbstractColorPickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ColorBlockTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ColorPickerPaletteGroupTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -132,7 +131,7 @@ ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `GradientColorPickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `PaletteColorItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 
-ColorPicker 使用 `ColorPickerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
+ColorPicker 拥有独立 Control identity；`ColorPickerToken` 只表达 ColorPicker Own Token 语义，不承载 open/close、collection/filter、input/value、motion 或 visual option 运行时状态。Control 级 Global Token 覆盖与 Own Token 通过 `ColorPickerTokenResource` 统一读取。
 
 主题维护规则：
 
@@ -165,7 +164,7 @@ ColorPicker 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - `ColorPickerPaletteGroup`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `ColorPickerPseudoClass`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `ColorPickerSliderTrack`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `ColorPickerToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `ColorPickerToken`：ColorPicker Own Token builder，使用该 Control 的 Effective Global Token 计算默认值。
 - `ColorPickerTokenResourceExtension`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `ColorPickerView`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `ColorSlider`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。

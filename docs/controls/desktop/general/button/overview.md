@@ -39,7 +39,7 @@ Button 的当前设计模型以 `Color + Variant` 表达语义颜色和视觉强
 
 颜色不应被视为装饰属性。`Danger` 表达破坏性或高风险动作，预设色表达业务分类或语义扩展。视觉强度不应改变语义颜色，只改变同一语义的呈现强度。
 
-Button 的兼容类型映射、`Color + Variant` 状态矩阵、组件 Token 派生以及 normal、hover、pressed、disabled
+Button 的兼容类型映射、`Color + Variant` 状态矩阵、控件 Token 派生以及 normal、hover、pressed、disabled
 状态语义应与 Ant Design Button 保持一致。维护时必须把对齐结论固化为 AtomUI 的公开契约、Token 规则和回归测试，
 不得在单个 ControlTheme 或 Gallery 示例中增加特殊颜色分支。
 

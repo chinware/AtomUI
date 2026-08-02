@@ -25,9 +25,10 @@
 
 `ThemeManagerBuilderExtensions.UseDesktopDataGrid()` 会注册：
 
-- `ControlTokenTypePool.GetTokenTypes()`
-- `AtomUIDataGridThemesProvider`
-- `LanguageProviderPool.GetLanguageProviders()`
+- `GeneratedControlPackageRegistration` 产生的 exact Control descriptor、可选 Own Token schema 和强类型 TokenResource。
+- `GeneratedControlThemeAssetManifest` 中的独立 DataGrid 主题叶子，并通过 `AtomUIDataGridThemesProvider` 接入 Styles。
+- 该包生成的 Language Provider。
+
+注册入口不维护 Token 类型列表、主题聚合 AXAML 或逐 Control 清单。
 
 具体 DataGrid 使用/API 文档应放在 `docs/controls/desktop/data-display/datagrid.md`。
-

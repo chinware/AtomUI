@@ -221,7 +221,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         this.SetPopupLazy(new Lazy<AvaloniaPopup>(CreatePopup));
     }
 
-    internal void EnsureGlobalResourceBindings()
+    private void EnsureGlobalResourceBindings(Control context)
     {
         if (_globalResourceBindingDisposables is not null)
         {
@@ -230,9 +230,24 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
 
         _globalResourceBindingDisposables = new CompositeDisposable(3)
         {
-            TokenResourceBinder.CreateGlobalTokenBinding(this, PopupRootShadowProperty, FlyoutHostTokenKind.PopupRootShadow),
-            TokenResourceBinder.CreateGlobalTokenBinding(this, OverlayHostShadowProperty, FlyoutHostTokenKind.OverlayHostShadow),
-            TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationProperty, SharedTokenKind.MotionDurationMid)
+            TokenResourceBinder.CreateControlTokenBinding(
+                typeof(FlyoutHost),
+                context,
+                this,
+                PopupRootShadowProperty,
+                FlyoutHostTokenKind.PopupRootShadow),
+            TokenResourceBinder.CreateControlTokenBinding(
+                typeof(FlyoutHost),
+                context,
+                this,
+                OverlayHostShadowProperty,
+                FlyoutHostTokenKind.OverlayHostShadow),
+            TokenResourceBinder.CreateControlTokenBinding(
+                typeof(FlyoutHost),
+                context,
+                this,
+                MotionDurationProperty,
+                SharedTokenKind.MotionDurationMid)
         };
         ConfigurePointerPlacementOffsets();
     }
@@ -328,7 +343,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
 
     protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
     {
-        EnsureGlobalResourceBindings();
+        EnsureGlobalResourceBindings(placementTarget);
         return base.ShowAtCore(placementTarget, showAtPointer);
     }
 

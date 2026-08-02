@@ -8,6 +8,16 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-01
+
+- Theme
+  - Give SearchEdit an independent Control identity while keeping it free of Own Tokens.
+  - Replace the former LineEdit/Button Token ownership overlap with explicit `SearchEditTokenResource` and `ButtonTokenResource` references.
+  - Use public `Button` as `PART_RightAddOn`; keep `SearchButtonTheme` as the typed Semantic Part Theme customization entry.
+  - Register `SearchEditTheme.axaml`, `SearchEditDecoratedBoxTheme.axaml` and `SearchButtonTheme.axaml` as independent generated theme assets.
+- Docs
+  - Align the architecture and implementation documents with exact Control identity, Effective Global Token and generated asset registration.
+
 ## 2026-06-26
 
 - Docs
@@ -19,5 +29,5 @@
 - Docs
   - Establish SearchEdit desktop architecture documentation under `docs/controls/desktop/data-entry/search-edit/overview.md`.
   - Add SearchEdit implementation documentation covering search button event flow, SearchEditDecoratedBox, SearchButton, SearchEditPanel layout and maintenance invariants.
-  - Document that SearchEdit does not own a dedicated Token scope and instead reuses LineEditToken, AddOnDecoratedBoxToken, ButtonToken and SharedToken.
+  - Document the former shared Token ownership model, superseded by the independent SearchEdit identity design on 2026-08-01.
   - Add SearchEdit changelog and link the document set from the Data Entry category entry.

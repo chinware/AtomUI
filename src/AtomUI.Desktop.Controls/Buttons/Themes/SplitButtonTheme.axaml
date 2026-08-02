@@ -1,12 +1,8 @@
-<ResourceDictionary
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:ButtonThemeAsset.Identity}"
-    x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:SplitButton}" TargetType="atom:SplitButton">
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    x:ClassModifier="internal">
+<ControlTheme x:Key="{x:Type atom:SplitButton}" TargetType="atom:SplitButton">
         <Setter Property="Template">
             <ControlTemplate>
                 <DockPanel Name="PART_MainLayout"
@@ -44,7 +40,7 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
-        <Setter Property="GutterToFlyout" Value="{atom:ButtonTokenResource GutterToFlyout}"/>
+        <Setter Property="GutterToFlyout" Value="{atom:SplitButtonTokenResource GutterToFlyout}"/>
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="IsWaveSpiritEnabled" Value="{atom:SharedTokenResource EnableWaveSpirit}" />
         <Setter Property="ClipToBounds" Value="False" />
@@ -77,5 +73,5 @@
         <Style Selector="^ /template/ #PART_MainLayout > atom|Button:pointerover">
             <Setter Property="ZIndex" Value="2000"/>
         </Style>
-    </ControlTheme>
+</ControlTheme>
 </ResourceDictionary>

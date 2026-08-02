@@ -4,7 +4,7 @@ namespace AtomUI.Desktop.Controls.Tests.Theme;
 
 internal static class ThemeAssetScopeAssertions
 {
-    internal static void AssertDirectoryUsesSharedTokenScope(string relativeDirectory)
+    internal static void AssertDirectoryUsesExplicitTokenResources(string relativeDirectory)
     {
         var themeFiles = Directory.GetFiles(
             GetRepoFile(relativeDirectory),
@@ -17,9 +17,9 @@ internal static class ThemeAssetScopeAssertions
         {
             var text = File.ReadAllText(themeFile);
             text.ShouldNotContain("TokenSharedTokenResource");
+            text.ShouldNotContain("ControlTokenScope.Identity");
             if (text.Contains("{atom:SharedTokenResource ", StringComparison.Ordinal))
             {
-                text.ShouldContain("themeResources:ControlTokenScope.Identity=");
                 sharedTokenFiles.Add(themeFile);
             }
         }
@@ -27,11 +27,11 @@ internal static class ThemeAssetScopeAssertions
         sharedTokenFiles.ShouldNotBeEmpty();
     }
 
-    internal static void AssertFileUsesSharedTokenScope(string relativePath)
+    internal static void AssertFileUsesExplicitTokenResources(string relativePath)
     {
         var text = File.ReadAllText(GetRepoFile(relativePath));
         text.ShouldContain("{atom:SharedTokenResource ");
-        text.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        text.ShouldNotContain("ControlTokenScope.Identity");
         text.ShouldNotContain("TokenSharedTokenResource");
     }
 

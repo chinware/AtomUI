@@ -2,7 +2,7 @@
 
 namespace AtomUI.Desktop.Controls.UploadLang;
 
-[LanguageProvider(LanguageCode.en_US, UploadToken.ID)]
+[LanguageProvider(LanguageCode.en_US, "Upload")]
 internal class en_US
 {
     public const string Uploading = "Uploading...";

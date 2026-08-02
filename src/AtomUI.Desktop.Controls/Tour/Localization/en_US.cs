@@ -2,7 +2,7 @@
 
 namespace AtomUI.Desktop.Controls.TourLang;
 
-[LanguageProvider(LanguageCode.en_US, TourToken.ID)]
+[LanguageProvider(LanguageCode.en_US, "Tour")]
 internal class en_US
 {
     public const string Previous = "Previous";

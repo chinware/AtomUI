@@ -17,7 +17,7 @@ public class SeparatorTokenTests
             UniformlyMarginLG = 24
         };
         var separatorToken = new SeparatorToken();
-        separatorToken.AssignSharedToken(sharedToken);
+        separatorToken.AssignEffectiveGlobalToken(sharedToken);
 
         separatorToken.CalculateTokenValues(isDarkMode: false);
 

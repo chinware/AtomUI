@@ -2,7 +2,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.ImagePreviewerLang;
 
-[LanguageProvider(LanguageCode.zh_TW, ImagePreviewerToken.ID)]
+[LanguageProvider(LanguageCode.zh_TW, "ImagePreviewer")]
 internal class zh_TW
 {
     public const string ImageLoadFailed = "圖片載入失敗";

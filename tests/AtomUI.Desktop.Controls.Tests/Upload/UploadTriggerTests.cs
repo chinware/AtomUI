@@ -78,7 +78,7 @@ public class UploadTriggerTests
         rootTheme.ShouldContain("StackPanel Name=\"RootLayout\"");
         rootTheme.ShouldContain("Orientation=\"Vertical\"");
         rootTheme.ShouldContain("Spacing=\"{atom:SharedTokenResource SpacingXS}\"");
-        rootTheme.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        rootTheme.ShouldNotContain("ControlTokenScope.Identity");
         rootTheme.ShouldNotContain("<DockPanel Name=\"RootLayout\"");
         rootTheme.ShouldNotContain("DockPanel.Dock=\"Top\"");
     }
@@ -90,7 +90,7 @@ public class UploadTriggerTests
         var token = ReadRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadToken.cs");
 
         token.ShouldContain("TextListProgressPadding");
-        token.ShouldContain("SharedToken.FontSize + SharedToken.UniformlyPaddingXS");
+        token.ShouldContain("EffectiveGlobalToken.FontSize + EffectiveGlobalToken.UniformlyPaddingXS");
         theme.ShouldContain("Border Name=\"ProgressBarFrame\"");
         theme.ShouldContain("Padding=\"{atom:UploadTokenResource TextListProgressPadding}\"");
         theme.ShouldContain("<atom:ProgressBar Name=\"ProgressBar\"");

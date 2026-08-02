@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class SplashToken : AbstractControlDesignToken
 {
-    public const string ID = "Splash";
 
     public double WindowWidth { get; set; }
     public double WindowMinHeight { get; set; }
@@ -32,7 +31,7 @@ internal class SplashToken : AbstractControlDesignToken
     public Color AccentColor { get; set; }
 
     public SplashToken()
-        : base(ID)
+
     {
     }
 
@@ -42,25 +41,25 @@ internal class SplashToken : AbstractControlDesignToken
 
         WindowWidth          = 420;
         WindowMinHeight      = 280;
-        SurfaceCornerRadius  = SharedToken.BorderRadiusLG;
-        SurfaceBoxShadow     = SharedToken.BoxShadowsSecondary;
-        SurfaceBackground    = SharedToken.ColorBgContainer;
-        ContentPadding       = new Thickness(SharedToken.SizeLG, SharedToken.SizeLG + SharedToken.SizeSM);
-        ContentGap           = SharedToken.UniformlyMarginSM;
-        ProgressMarginTop    = new Thickness(0, SharedToken.UniformlyMarginSM, 0, 0);
-        FooterMarginTop      = new Thickness(0, SharedToken.UniformlyMargin, 0, 0);
-        LogoSize             = SharedToken.ControlHeightLG + SharedToken.SizeXS;
-        TitleFontSize        = SharedToken.FontSizeHeading4;
-        TitleLineHeight      = SharedToken.FontSizeHeading4 * SharedToken.RelativeLineHeightHeading4;
-        SubtitleFontSize     = SharedToken.FontSize;
-        MessageFontSize      = SharedToken.FontSize;
-        DetailFontSize       = SharedToken.FontSizeSM;
-        SubtleForeground     = SharedToken.ColorTextDescription;
-        IndicatorSize        = SharedToken.ControlHeight;
-        ProgressBarHeight    = Math.Max(4, SharedToken.LineWidth * 4);
-        SuccessColor         = SharedToken.ColorSuccess;
-        ErrorColor           = SharedToken.ColorError;
-        AccentColor          = SharedToken.ColorPrimary;
+        SurfaceCornerRadius  = EffectiveGlobalToken.BorderRadiusLG;
+        SurfaceBoxShadow     = EffectiveGlobalToken.BoxShadowsSecondary;
+        SurfaceBackground    = EffectiveGlobalToken.ColorBgContainer;
+        ContentPadding       = new Thickness(EffectiveGlobalToken.SizeLG, EffectiveGlobalToken.SizeLG + EffectiveGlobalToken.SizeSM);
+        ContentGap           = EffectiveGlobalToken.UniformlyMarginSM;
+        ProgressMarginTop    = new Thickness(0, EffectiveGlobalToken.UniformlyMarginSM, 0, 0);
+        FooterMarginTop      = new Thickness(0, EffectiveGlobalToken.UniformlyMargin, 0, 0);
+        LogoSize             = EffectiveGlobalToken.ControlHeightLG + EffectiveGlobalToken.SizeXS;
+        TitleFontSize        = EffectiveGlobalToken.FontSizeHeading4;
+        TitleLineHeight      = EffectiveGlobalToken.FontSizeHeading4 * EffectiveGlobalToken.RelativeLineHeightHeading4;
+        SubtitleFontSize     = EffectiveGlobalToken.FontSize;
+        MessageFontSize      = EffectiveGlobalToken.FontSize;
+        DetailFontSize       = EffectiveGlobalToken.FontSizeSM;
+        SubtleForeground     = EffectiveGlobalToken.ColorTextDescription;
+        IndicatorSize        = EffectiveGlobalToken.ControlHeight;
+        ProgressBarHeight    = Math.Max(4, EffectiveGlobalToken.LineWidth * 4);
+        SuccessColor         = EffectiveGlobalToken.ColorSuccess;
+        ErrorColor           = EffectiveGlobalToken.ColorError;
+        AccentColor          = EffectiveGlobalToken.ColorPrimary;
     }
 
 }

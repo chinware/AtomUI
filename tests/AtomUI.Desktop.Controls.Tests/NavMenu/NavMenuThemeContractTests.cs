@@ -128,7 +128,7 @@ public class NavMenuThemeContractTests
         var tokenSource = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/NavMenuToken.cs");
         var headerSource = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/BaseNavMenuItemHeaderTheme.axaml");
 
-        tokenSource.ShouldContain("ItemBg                      = SharedToken.ColorBgContainer;");
+        tokenSource.ShouldContain("ItemBg                      = EffectiveGlobalToken.ColorBgContainer;");
         headerSource.ShouldContain("<Setter Property=\"Background\" Value=\"Transparent\" />");
     }
 

@@ -37,10 +37,10 @@ public class HyperLinkButtonIconSizeTests
         source.ShouldContain("Height=\"{TemplateBinding IconHeight}\"");
         source.ShouldContain("<Setter Property=\"IconWidth\" Value=\"{atom:SharedTokenResource IconSize}\" />");
         source.ShouldContain("<Setter Property=\"IconHeight\" Value=\"{atom:SharedTokenResource IconSize}\" />");
-        source.ShouldContain("themeResources:ControlTokenScope.Identity=");
+        source.ShouldNotContain("ControlTokenScope.Identity");
         source.ShouldContain("Property=\"IconWidth\"");
         source.ShouldContain("Property=\"IconHeight\"");
-        source.ShouldContain("Value=\"{atom:ButtonTokenResource OnlyIconSize}\"");
+        source.ShouldContain("Value=\"{atom:HyperLinkButtonTokenResource OnlyIconSize}\"");
     }
 
     [Fact]

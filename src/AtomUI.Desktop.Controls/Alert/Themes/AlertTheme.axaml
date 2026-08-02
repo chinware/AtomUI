@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:AlertThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Alert}" TargetType="atom:Alert">
@@ -192,8 +189,8 @@
 
         <Style Selector="^:not(:has-description)">
             <Style Selector="^ /template/ atom|Icon">
-                <Setter Property="Width" Value="{atom:AlertTokenResource IconSize}" />
-                <Setter Property="Height" Value="{atom:AlertTokenResource IconSize}" />
+                <Setter Property="Width" Value="{atom:AlertTokenResource DefaultIconSize}" />
+                <Setter Property="Height" Value="{atom:AlertTokenResource DefaultIconSize}" />
                 <Setter Property="Margin" Value="{atom:AlertTokenResource IconDefaultMargin}" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>

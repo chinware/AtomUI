@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:TransferThemeAsset.Identity}"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <atom:CornerRadiusFilterConverter x:Key="HeaderCornerRadiusFilterConverter"
@@ -34,6 +31,8 @@
                     <DockPanel LastChildFill="True" Name="RootLayout">
                         <atom:PixelAlignedBorder Name="HeaderFrame"
                                                  DockPanel.Dock="Top"
+                                                 Height="{TemplateBinding HeaderHeight}"
+                                                 Padding="{TemplateBinding HeaderPadding}"
                                                  CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource HeaderCornerRadiusFilterConverter}}"
                                                  BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource HeaderBorderThickness}}">
                             <DockPanel Name="HeaderLayout" LastChildFill="True">
@@ -77,6 +76,7 @@
                         </atom:LineEdit>
                         <atom:PixelAlignedBorder Name="FooterFrame"
                                                  DockPanel.Dock="Bottom"
+                                                 Padding="{TemplateBinding HeaderPadding}"
                                                  IsVisible="{TemplateBinding Footer, Converter={x:Static ObjectConverters.IsNotNull}}"
                                                  CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource FooterCornerRadiusFilterConverter}}"
                                                  BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource FooterBorderThickness}}">
@@ -107,8 +107,6 @@
                 Value="{atom:TransferLangResource Items}" />
 
         <Style Selector="^/template/ atom|PixelAlignedBorder#HeaderFrame">
-            <Setter Property="Height" Value="{atom:TransferTokenResource HeaderHeight}" />
-            <Setter Property="Padding" Value="{atom:TransferTokenResource HeaderPadding}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
         </Style>
@@ -139,7 +137,6 @@
         </Style>
 
         <Style Selector="^/template/ atom|PixelAlignedBorder#FooterFrame">
-            <Setter Property="Padding" Value="{atom:TransferTokenResource HeaderPadding}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
         </Style>
         

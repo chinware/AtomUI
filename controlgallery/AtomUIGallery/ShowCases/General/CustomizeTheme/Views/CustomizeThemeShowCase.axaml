@@ -151,8 +151,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="{gallery:CustomizeThemeShowCaseLangResource CustomizeComponentTokenTitle}"
-                    Description="{gallery:CustomizeThemeShowCaseLangResource CustomizeComponentTokenDescription}"
+                    Title="{gallery:CustomizeThemeShowCaseLangResource CustomizeControlTokenTitle}"
+                    Description="{gallery:CustomizeThemeShowCaseLangResource CustomizeControlTokenDescription}"
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CustomizeThemeViewModel">
@@ -164,7 +164,7 @@
                         <atom:TextBlock VerticalAlignment="Center" Width="120" Text="{gallery:CustomizeThemeShowCaseLangResource P2TextEnableAlgorithm}" />
                         <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}" Width="200" VerticalAlignment="Center" />
                         <atom:Button ButtonType="Primary" VerticalAlignment="Center">
-                            <atom:TextBlock Name="ComponentTokenContentIsolationProbe"
+                            <atom:TextBlock Name="ControlTokenContentIsolationProbe"
                                             Text="{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}" />
                         </atom:Button>
                     </StackPanel>

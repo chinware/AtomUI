@@ -2,9 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:LineEditThemeAsset.Identity}"
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SearchEdit}" TargetType="atom:SearchEdit">
         <Setter Property="Template">
@@ -23,6 +21,7 @@
                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                     SearchButtonStyle="{TemplateBinding SearchButtonStyle}"
                     SearchButtonText="{TemplateBinding SearchButtonText}"
+                    SearchButtonTheme="{TemplateBinding SearchButtonTheme}"
                     IsSearchButtonLoading="{TemplateBinding IsOperating}"
                     IsEnabled="{TemplateBinding IsEnabled}"
                     HorizontalAlignment="Stretch"
@@ -103,6 +102,9 @@
         <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
 
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="SearchButtonTheme">
+            <themes:SearchButtonTheme TargetType="{x:Type atom:Button}" />
+        </Setter>
 
         <Style Selector="^[StyleVariant=Borderless]">
             <Style Selector="^[Status=Error]">
@@ -148,46 +150,46 @@
         <Style Selector="^:focus[StyleVariant=Outlined] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox,
                          ^:focus[StyleVariant=Underlined] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox">
             <Setter Property="BorderBrush"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+                    Value="{atom:SearchEditTokenResource ColorPrimary}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
+                    Value="{atom:SearchEditTokenResource InputActiveShadow}" />
         </Style>
         <Style Selector="^:focus[StyleVariant=Filled] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox">
             <Setter Property="BorderBrush"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+                    Value="{atom:SearchEditTokenResource ColorPrimary}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
+                    Value="{atom:SearchEditTokenResource InputActiveShadow}" />
         </Style>
         <Style Selector="^:focus[StyleVariant=Outlined] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error],
                          ^:focus[StyleVariant=Underlined] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
+                    Value="{atom:SearchEditTokenResource InputErrorActiveShadow}" />
         </Style>
         <Style Selector="^:focus[StyleVariant=Filled] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
             <Setter Property="Background"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBg}" />
+                    Value="{atom:SearchEditTokenResource ColorTransparent}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
+                    Value="{atom:SearchEditTokenResource InputErrorActiveShadow}" />
         </Style>
         <Style Selector="^:focus[StyleVariant=Outlined] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning],
                          ^:focus[StyleVariant=Underlined] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
+                    Value="{atom:SearchEditTokenResource InputWarningActiveShadow}" />
         </Style>
         <Style Selector="^:focus[StyleVariant=Filled] /template/ atom|SearchEditDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
             <Setter Property="Background"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBg}" />
+                    Value="{atom:SearchEditTokenResource ColorTransparent}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
+                    Value="{atom:SearchEditTokenResource InputWarningActiveShadow}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -199,7 +199,6 @@ Steps 使用统一语义模板，而不是按 Type、Orientation 和 TitlePlacem
 | `StepsTheme.axaml` | 根模板、ItemsPresenter、StepsPanel 和根展示输入映射。 |
 | `StepsItemTheme.axaml` | 统一 item 语义模板、状态颜色、Connector、内容和交互视觉。 |
 | `StepsItemIndicatorTheme.axaml` | 统一 Indicator 模板、Dot、Icon、状态图标、Progress 和 Wave。 |
-| `StepsThemes.axaml` | Steps 主题资源聚合入口。 |
 
 运行时组合：
 

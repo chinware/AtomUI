@@ -1,0 +1,292 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <AtomUIGenerateControlThemeAssetResources
+            Condition="'$(AtomUIGenerateControlThemeAssetResources)' == ''">true</AtomUIGenerateControlThemeAssetResources>
+        <AtomUIThemeAssetProjectDirectory>$(MSBuildProjectDirectory)</AtomUIThemeAssetProjectDirectory>
+        <AtomUIThemeControlCatalog
+            Condition="'$(AtomUIThemeControlCatalog)' == ''">$(AssemblyName)</AtomUIThemeControlCatalog>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <CompilerVisibleProperty Include="AtomUIThemeAssetProjectDirectory" />
+        <CompilerVisibleProperty Include="AtomUIThemeControlCatalog" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
+    </ItemGroup>
+
+    <UsingTask TaskName="GenerateAtomUIThemeAssetWrappers"
+               TaskFactory="RoslynCodeTaskFactory"
+               AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+        <ParameterGroup>
+            <ThemeAssets ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+            <OutputDirectory ParameterType="System.String" Required="true" />
+            <AssemblyName ParameterType="System.String" Required="true" />
+            <GeneratedCodePath ParameterType="System.String" Required="true" />
+            <GeneratedAssets ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System" />
+            <Using Namespace="System.Collections.Generic" />
+            <Using Namespace="System.IO" />
+            <Using Namespace="System.Linq" />
+            <Using Namespace="System.Security" />
+            <Using Namespace="System.Text" />
+            <Using Namespace="System.Xml.Linq" />
+            <Using Namespace="Microsoft.Build.Framework" />
+            <Using Namespace="Microsoft.Build.Utilities" />
+            <Code Type="Fragment" Language="cs"><![CDATA[
+                var generated = new List<ITaskItem>();
+                var generatedClassNames = new List<string>();
+                Directory.CreateDirectory(OutputDirectory);
+
+                string ToIdentifier(string value)
+                {
+                    var result = new StringBuilder(value.Length);
+                    foreach (var character in value)
+                    {
+                        result.Append(char.IsLetterOrDigit(character) || character == '_' ? character : '_');
+                    }
+                    if (result.Length == 0 || char.IsDigit(result[0]))
+                    {
+                        result.Insert(0, '_');
+                    }
+                    return result.ToString();
+                }
+
+                string GetClassName(string assetPath)
+                {
+                    var hash = 14695981039346656037UL;
+                    foreach (var character in assetPath.Replace('\\', '/'))
+                    {
+                        hash ^= character;
+                        hash *= 1099511628211UL;
+                    }
+                    return $"GeneratedThemeAssetResource_{hash:X16}";
+                }
+
+                string GetTypeName(string value)
+                {
+                    var typeName = value.Trim();
+                    if (typeName.StartsWith("{x:Type", StringComparison.Ordinal) &&
+                        typeName.EndsWith("}", StringComparison.Ordinal))
+                    {
+                        typeName = typeName.Substring(
+                            "{x:Type".Length,
+                            typeName.Length - "{x:Type".Length - 1).Trim();
+                    }
+                    var separator = typeName.LastIndexOf(':');
+                    return separator >= 0 ? typeName.Substring(separator + 1) : typeName;
+                }
+
+                foreach (var item in ThemeAssets)
+                {
+                    var logicalPath = item.GetMetadata("Link");
+                    if (string.IsNullOrWhiteSpace(logicalPath))
+                    {
+                        logicalPath = item.ItemSpec;
+                    }
+                    logicalPath = logicalPath.Replace('\\', '/').TrimStart('/');
+                    if (!logicalPath.EndsWith(".axaml", StringComparison.OrdinalIgnoreCase) ||
+                        (!logicalPath.StartsWith("Themes/", StringComparison.OrdinalIgnoreCase) &&
+                         logicalPath.IndexOf("/Themes/", StringComparison.OrdinalIgnoreCase) < 0) ||
+                        Path.GetFileNameWithoutExtension(logicalPath)
+                            .EndsWith("Themes", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    XDocument document;
+                    try
+                    {
+                        document = XDocument.Load(item.GetMetadata("FullPath"), LoadOptions.None);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    var root = document.Root;
+                    if (root == null)
+                    {
+                        continue;
+                    }
+
+                    var isResourceDictionary = string.Equals(
+                        root.Name.LocalName,
+                        "ResourceDictionary",
+                        StringComparison.Ordinal);
+                    var isDefaultTypedControlTheme = false;
+                    string typedThemeClassName = null;
+                    string typedThemeTargetType = null;
+                    if (string.Equals(root.Name.LocalName, "ControlTheme", StringComparison.Ordinal))
+                    {
+                        XNamespace xamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
+                        typedThemeClassName = root.Attribute(xamlNamespace + "Class")?.Value;
+                        typedThemeTargetType = root.Attributes()
+                            .FirstOrDefault(attribute => string.Equals(
+                                attribute.Name.LocalName,
+                                "TargetType",
+                                StringComparison.Ordinal))?.Value;
+                        if (!string.IsNullOrWhiteSpace(typedThemeClassName) &&
+                            !string.IsNullOrWhiteSpace(typedThemeTargetType))
+                        {
+                            var targetTypeName = GetTypeName(typedThemeTargetType);
+                            isDefaultTypedControlTheme =
+                                !targetTypeName.StartsWith("Abstract", StringComparison.Ordinal) &&
+                                !targetTypeName.StartsWith("Base", StringComparison.Ordinal) &&
+                                string.Equals(
+                                    Path.GetFileNameWithoutExtension(logicalPath),
+                                    targetTypeName + "Theme",
+                                    StringComparison.Ordinal);
+                        }
+                    }
+                    if (!isResourceDictionary && !isDefaultTypedControlTheme)
+                    {
+                        continue;
+                    }
+
+                    var className = GetClassName(logicalPath);
+                    var generatedPath = Path.Combine(OutputDirectory, className + ".axaml");
+                    var generatedNamespace = "AtomUI.Generated." + ToIdentifier(AssemblyName);
+                    string content;
+                    if (isResourceDictionary)
+                    {
+                        var sourceUri = "avares://" + AssemblyName + "/" + logicalPath;
+                        content =
+                            "<ResourceDictionary xmlns=\"https://github.com/avaloniaui\"\n" +
+                            "                    xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\n" +
+                            "                    x:Class=\"" + generatedNamespace + "." + className + "\"\n" +
+                            "                    x:ClassModifier=\"internal\">\n" +
+                            "    <ResourceDictionary.MergedDictionaries>\n" +
+                            "        <ResourceInclude Source=\"" + SecurityElement.Escape(sourceUri) + "\" />\n" +
+                            "    </ResourceDictionary.MergedDictionaries>\n" +
+                            "</ResourceDictionary>\n";
+                    }
+                    else
+                    {
+                        XNamespace xamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
+                        var deferredClassName = className + "_Deferred";
+                        var deferredPath = Path.Combine(OutputDirectory, deferredClassName + ".axaml");
+                        var deferredWrapper = new XElement(root.Name.Namespace + "ResourceDictionary");
+                        foreach (var namespaceAttribute in root.Attributes().Where(attribute => attribute.IsNamespaceDeclaration))
+                        {
+                            deferredWrapper.Add(new XAttribute(namespaceAttribute));
+                        }
+
+                        var classSeparator = typedThemeClassName.LastIndexOf('.');
+                        var typedThemeNamespace = classSeparator >= 0
+                            ? typedThemeClassName.Substring(0, classSeparator)
+                            : string.Empty;
+                        var typedThemeTypeName = classSeparator >= 0
+                            ? typedThemeClassName.Substring(classSeparator + 1)
+                            : typedThemeClassName;
+                        var themePrefix = "generatedThemeAsset";
+                        while (deferredWrapper.GetNamespaceOfPrefix(themePrefix) != null)
+                        {
+                            themePrefix += "_";
+                        }
+                        XNamespace typedThemeNamespaceUri = "using:" + typedThemeNamespace;
+                        deferredWrapper.SetAttributeValue(
+                            XNamespace.Xmlns + themePrefix,
+                            typedThemeNamespaceUri.NamespaceName);
+
+                        var targetTypeReference = typedThemeTargetType.Trim();
+                        if (!targetTypeReference.StartsWith("{x:Type", StringComparison.Ordinal))
+                        {
+                            targetTypeReference = "{x:Type " + targetTypeReference + "}";
+                        }
+                        var theme = new XElement(
+                            typedThemeNamespaceUri + typedThemeTypeName,
+                            new XAttribute(xamlNamespace + "Key", targetTypeReference),
+                            new XAttribute("TargetType", typedThemeTargetType));
+                        deferredWrapper.Add(theme);
+                        var deferredContent = new XDocument(deferredWrapper).ToString() + Environment.NewLine;
+                        if (!File.Exists(deferredPath) ||
+                            !string.Equals(
+                                File.ReadAllText(deferredPath),
+                                deferredContent,
+                                StringComparison.Ordinal))
+                        {
+                            File.WriteAllText(deferredPath, deferredContent, new UTF8Encoding(false));
+                        }
+
+                        var deferredOutput = new TaskItem(deferredPath);
+                        deferredOutput.SetMetadata(
+                            "Link",
+                            "AtomUI.Generated/" + deferredClassName + ".axaml");
+                        generated.Add(deferredOutput);
+
+                        var deferredSourceUri =
+                            "avares://" + AssemblyName + "/AtomUI.Generated/" +
+                            deferredClassName + ".axaml";
+                        content =
+                            "<ResourceDictionary xmlns=\"https://github.com/avaloniaui\"\n" +
+                            "                    xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\n" +
+                            "                    x:Class=\"" + generatedNamespace + "." + className + "\"\n" +
+                            "                    x:ClassModifier=\"internal\">\n" +
+                            "    <ResourceDictionary.MergedDictionaries>\n" +
+                            "        <ResourceInclude Source=\"" +
+                            SecurityElement.Escape(deferredSourceUri) + "\" />\n" +
+                            "    </ResourceDictionary.MergedDictionaries>\n" +
+                            "</ResourceDictionary>\n";
+                    }
+
+                    if (!File.Exists(generatedPath) ||
+                        !string.Equals(File.ReadAllText(generatedPath), content, StringComparison.Ordinal))
+                    {
+                        File.WriteAllText(generatedPath, content, new UTF8Encoding(false));
+                    }
+
+                    var output = new TaskItem(generatedPath);
+                    output.SetMetadata("Link", "AtomUI.Generated/" + className + ".axaml");
+                    generated.Add(output);
+                    generatedClassNames.Add(className);
+                }
+
+                var code = new StringBuilder();
+                code.AppendLine("// <auto-generated />");
+                code.Append("namespace AtomUI.Generated.").Append(ToIdentifier(AssemblyName)).AppendLine(";");
+                code.AppendLine();
+                foreach (var className in generatedClassNames.OrderBy(name => name, StringComparer.Ordinal))
+                {
+                    code.Append("internal sealed class ").Append(className)
+                        .AppendLine(" : global::Avalonia.Controls.ResourceDictionary");
+                    code.AppendLine("{");
+                    code.Append("    internal ").Append(className).AppendLine("()");
+                    code.AppendLine("    {");
+                    code.AppendLine("        global::Avalonia.Markup.Xaml.AvaloniaXamlLoader.Load(this);");
+                    code.AppendLine("    }");
+                    code.AppendLine("}");
+                    code.AppendLine();
+                }
+                var codeContent = code.ToString();
+                if (!File.Exists(GeneratedCodePath) ||
+                    !string.Equals(File.ReadAllText(GeneratedCodePath), codeContent, StringComparison.Ordinal))
+                {
+                    File.WriteAllText(GeneratedCodePath, codeContent, new UTF8Encoding(false));
+                }
+
+                GeneratedAssets = generated.ToArray();
+            ]]></Code>
+        </Task>
+    </UsingTask>
+
+    <Target Name="GenerateAtomUIThemeAssetWrappers"
+            BeforeTargets="GenerateAvaloniaResources"
+            Condition="'$(AtomUIGenerateControlThemeAssetResources)' == 'true'">
+        <PropertyGroup>
+            <_AtomUIThemeAssetOutputDirectory>$(IntermediateOutputPath)AtomUIThemeAssets</_AtomUIThemeAssetOutputDirectory>
+            <_AtomUIThemeAssetGeneratedCode>$(_AtomUIThemeAssetOutputDirectory)/GeneratedThemeAssetResources.g.cs</_AtomUIThemeAssetGeneratedCode>
+        </PropertyGroup>
+        <GenerateAtomUIThemeAssetWrappers ThemeAssets="@(AvaloniaXaml)"
+                                          OutputDirectory="$(_AtomUIThemeAssetOutputDirectory)"
+                                          AssemblyName="$(AssemblyName)"
+                                          GeneratedCodePath="$(_AtomUIThemeAssetGeneratedCode)">
+            <Output TaskParameter="GeneratedAssets" ItemName="_AtomUIGeneratedThemeAsset" />
+        </GenerateAtomUIThemeAssetWrappers>
+        <ItemGroup>
+            <AvaloniaXaml Include="@(_AtomUIGeneratedThemeAsset)" />
+            <Compile Include="$(_AtomUIThemeAssetGeneratedCode)" />
+            <FileWrites Include="@(_AtomUIGeneratedThemeAsset)" />
+            <FileWrites Include="$(_AtomUIThemeAssetGeneratedCode)" />
+        </ItemGroup>
+    </Target>
+</Project>

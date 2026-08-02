@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:CascaderThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:CascaderAddOnDecoratedBox}" TargetType="atom:CascaderAddOnDecoratedBox">
         <ControlTheme.BasedOn>
@@ -48,20 +45,20 @@
                     <Style Selector="^[SizeType=Large]">
                         <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                             <Setter Property="Padding"
-                                    Value="{atom:SelectTokenResource PaddingLG}" />
+                                    Value="{atom:SelectTokenResource SingleModePaddingLG}" />
                         </Style>
                     </Style>
                     <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                         <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                             <Setter Property="Padding"
-                                    Value="{atom:SelectTokenResource Padding}" />
+                                    Value="{atom:SelectTokenResource SingleModePadding}" />
                         </Style>
 
                     </Style>
                     <Style Selector="^[SizeType=Small]">
                         <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                             <Setter Property="Padding"
-                                    Value="{atom:SelectTokenResource Padding}" />
+                                    Value="{atom:SelectTokenResource SingleModePadding}" />
                         </Style>
                     </Style>
                 </Style>
@@ -72,22 +69,22 @@
 
                 <Style Selector="^[IsInnerBoxHover=True]">
                     <Setter Property="BorderBrush"
-                            Value="{atom:AddOnDecoratedBoxTokenResource HoverBorderColor}" />
+                            Value="{atom:CascaderTokenResource ColorPrimaryHover}" />
                 </Style>
 
                 <Style Selector="^:focus-within">
                     <Setter Property="BorderBrush"
-                            Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+                            Value="{atom:CascaderTokenResource ColorPrimary}" />
                 </Style>
 
                 <Style Selector="^:pressed">
                     <Setter Property="BorderBrush"
-                            Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+                            Value="{atom:CascaderTokenResource ColorPrimary}" />
                 </Style>
                 
                 <Style Selector="^[IsDropDownOpen=True]">
                     <Setter Property="BorderBrush"
-                            Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+                            Value="{atom:CascaderTokenResource ColorPrimary}" />
                 </Style>
 
                 <Style Selector="^[EffectiveStatus=Error]">
@@ -152,18 +149,18 @@
 
                 <Style Selector="^:focus-within">
                     <Setter Property="BorderBrush"
-                            Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+                            Value="{atom:CascaderTokenResource ColorPrimary}" />
                     <Setter Property="Background" Value="Transparent" />
                 </Style>
 
                 <Style Selector="^:pressed">
                     <Setter Property="BorderBrush"
-                            Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+                            Value="{atom:CascaderTokenResource ColorPrimary}" />
                 </Style>
                 
                 <Style Selector="^[IsDropDownOpen=True]">
                     <Setter Property="BorderBrush"
-                            Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+                            Value="{atom:CascaderTokenResource ColorPrimary}" />
                 </Style>
 
                 <Style Selector="^[EffectiveStatus=Error]">
@@ -181,7 +178,7 @@
                         <Setter Property="BorderBrush"
                                 Value="{atom:SharedTokenResource ColorError}" />
                         <Setter Property="Background"
-                                Value="{atom:AddOnDecoratedBoxTokenResource ActiveBg}" />
+                                Value="{atom:CascaderTokenResource ColorTransparent}" />
                     </Style>
 
                     <Style Selector="^:pressed">
@@ -209,7 +206,7 @@
                         <Setter Property="BorderBrush"
                                 Value="{atom:SharedTokenResource ColorWarning}" />
                         <Setter Property="Background"
-                                Value="{atom:AddOnDecoratedBoxTokenResource ActiveBg}" />
+                                Value="{atom:CascaderTokenResource ColorTransparent}" />
                     </Style>
 
                     <Style Selector="^:pressed">

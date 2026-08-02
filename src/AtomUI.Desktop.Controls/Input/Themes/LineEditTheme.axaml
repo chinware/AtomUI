@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:LineEditThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:LineEdit}" TargetType="atom:LineEdit">
         <Setter Property="Template">
@@ -157,46 +154,46 @@
         <Style Selector="^:focus[StyleVariant=Outlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox,
                          ^:focus[StyleVariant=Underlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox">
             <Setter Property="BorderBrush"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+                    Value="{atom:LineEditTokenResource ColorPrimary}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
+                    Value="{atom:LineEditTokenResource InputActiveShadow}" />
         </Style>
         <Style Selector="^:focus[StyleVariant=Filled] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox">
             <Setter Property="BorderBrush"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+                    Value="{atom:LineEditTokenResource ColorPrimary}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
+                    Value="{atom:LineEditTokenResource InputActiveShadow}" />
         </Style>
         <Style Selector="^:focus[StyleVariant=Outlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error],
                          ^:focus[StyleVariant=Underlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
+                    Value="{atom:LineEditTokenResource InputErrorActiveShadow}" />
         </Style>
         <Style Selector="^:focus[StyleVariant=Filled] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
             <Setter Property="Background"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBg}" />
+                    Value="{atom:LineEditTokenResource ColorTransparent}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
+                    Value="{atom:LineEditTokenResource InputErrorActiveShadow}" />
         </Style>
         <Style Selector="^:focus[StyleVariant=Outlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning],
                          ^:focus[StyleVariant=Underlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
+                    Value="{atom:LineEditTokenResource InputWarningActiveShadow}" />
         </Style>
         <Style Selector="^:focus[StyleVariant=Filled] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
             <Setter Property="Background"
-                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBg}" />
+                    Value="{atom:LineEditTokenResource ColorTransparent}" />
             <Setter Property="BoxShadow"
-                    Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
+                    Value="{atom:LineEditTokenResource InputWarningActiveShadow}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

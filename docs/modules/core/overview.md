@@ -7,8 +7,8 @@
 - 提供 `AppBuilder.WithAtomUIDefaultOptions()` 和 `Application.UseAtomUI()` 两个主要入口。
 - 管理唯一运行时 `ThemeManager`、五阶段主题事务、稳定 ThemeContext、局部作用域图以及独立 TopLevel 的
   context lease/resource bridge。
-- 定义生成式全局/Control Token schema、`SupportedGlobalTokens`、不可变 `ThemeSnapshot`、稳定资源键，以及
-  `SharedTokenResource`/`XxxTokenResource` 强类型资源扩展。
+- 定义生成式全局/Control Own Token schema、所有 Control 可覆盖完整 Global Token 的规则、不可变
+  `ThemeSnapshot`、稳定资源键，以及 `SharedTokenResource`/`XxxTokenResource` 强类型资源扩展。
 - 定义语言系统：`LanguageVariant`、`LanguageProvider`、`LanguageResourceExtension`。
 - 提供动画 Transition、MotionScene、颜色与几何工具。
 - 依赖 `AtomUI.Native` 支撑窗口级底层能力。
@@ -35,7 +35,11 @@
 
 ## 对外关系
 
-`AtomUI.Core` 被 `AtomUI.Controls.Shared`、`AtomUI.Controls`、`AtomUI.Icons.*`、`AtomUI.Fonts.*`、`AtomUI.Desktop.Controls` 等项目引用。各 Control 包通过源生成器为每个对外可主题化 Control 提供独立 identity、允许零 Own Token 的 descriptor、ControlTheme asset/token dependency manifest 和一次包级注册入口；Core 冻结 registry 后不扫描上层程序集或 AXAML。它对多个上层项目开放 `InternalsVisibleTo`，因此修改内部 API 时需要同时检查上层 Control 包。
+`AtomUI.Core` 被 `AtomUI.Controls.Shared`、`AtomUI.Controls`、`AtomUI.Icons.*`、`AtomUI.Fonts.*`、
+`AtomUI.Desktop.Controls` 等项目引用。各 Control 包通过源生成器为每个对外可主题化 Control 提供独立 exact CLR
+type/identity、允许零 Own Token 的 descriptor、ControlTheme asset manifest 和一次包级注册入口；Core 冻结
+registry 后不扫描上层程序集或 AXAML。它对多个上层项目开放 `InternalsVisibleTo`，因此修改内部 API 时需要同时
+检查上层 Control 包。
 
 ## 相关文档
 

@@ -12,7 +12,6 @@
 
 - `src/AtomUI.Desktop.Controls/Buttons/SplitButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonThemes.axaml`
 
 职责边界：
 

@@ -8,10 +8,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class DataGridToken : AbstractControlDesignToken
 {
-    public const string ID = "DataGrid";
     
     public DataGridToken()
-        : base(ID)
+
     {
     }
     
@@ -256,68 +255,68 @@ internal class DataGridToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        var colorFillSecondarySolid = ColorUtils.OnBackground(SharedToken.ColorFillSecondary, SharedToken.ColorBgContainer);
-        var colorFillContentSolid = ColorUtils.OnBackground(SharedToken.ColorFillContent, SharedToken.ColorBgContainer);
-        var colorFillAlterSolid = ColorUtils.OnBackground(SharedToken.ColorFillAlter, SharedToken.ColorBgContainer);
+        var colorFillSecondarySolid = ColorUtils.OnBackground(EffectiveGlobalToken.ColorFillSecondary, EffectiveGlobalToken.ColorBgContainer);
+        var colorFillContentSolid = ColorUtils.OnBackground(EffectiveGlobalToken.ColorFillContent, EffectiveGlobalToken.ColorBgContainer);
+        var colorFillAlterSolid = ColorUtils.OnBackground(EffectiveGlobalToken.ColorFillAlter, EffectiveGlobalToken.ColorBgContainer);
 
-        var baseColorAction      = SharedToken.ColorIcon;
-        var baseColorActionHover = SharedToken.ColorIconHover;
+        var baseColorAction      = EffectiveGlobalToken.ColorIcon;
+        var baseColorActionHover = EffectiveGlobalToken.ColorIconHover;
         
-        var expandIconHalfInner = SharedToken.ControlInteractiveSize / 2 - SharedToken.LineWidth;
-        var expandIconSize      = expandIconHalfInner * 2 + SharedToken.LineWidth * 3;
+        var expandIconHalfInner = EffectiveGlobalToken.ControlInteractiveSize / 2 - EffectiveGlobalToken.LineWidth;
+        var expandIconSize      = expandIconHalfInner * 2 + EffectiveGlobalToken.LineWidth * 3;
 
         HeaderBg                    = colorFillAlterSolid;
-        HeaderColor                 = SharedToken.ColorTextHeading;
+        HeaderColor                 = EffectiveGlobalToken.ColorTextHeading;
         HeaderSortActiveBg          = colorFillSecondarySolid;
         HeaderSortHoverBg           = colorFillContentSolid;
         BodySortBg                  = colorFillAlterSolid;
         RowHoverBg                  = colorFillAlterSolid;
-        RowSelectedBg               = SharedToken.ControlItemBgActive;
-        RowSelectedHoverBg          = SharedToken.ControlItemBgActiveHover;
-        RowExpandedBg               = SharedToken.ColorFillAlter;
-        CellPadding                 = SharedToken.Padding;
-        CellPaddingMD               = SharedToken.PaddingSM;
-        CellPaddingSM               = SharedToken.PaddingXS;
-        BorderColor                 = SharedToken.ColorBorderSecondary;
-        HeaderBorderRadius          = SharedToken.BorderRadiusLG;
+        RowSelectedBg               = EffectiveGlobalToken.ControlItemBgActive;
+        RowSelectedHoverBg          = EffectiveGlobalToken.ControlItemBgActiveHover;
+        RowExpandedBg               = EffectiveGlobalToken.ColorFillAlter;
+        CellPadding                 = EffectiveGlobalToken.Padding;
+        CellPaddingMD               = EffectiveGlobalToken.PaddingSM;
+        CellPaddingSM               = EffectiveGlobalToken.PaddingXS;
+        BorderColor                 = EffectiveGlobalToken.ColorBorderSecondary;
+        HeaderBorderRadius          = EffectiveGlobalToken.BorderRadiusLG;
         FooterBg                    = colorFillAlterSolid;
-        FooterColor                 = SharedToken.ColorTextHeading;
-        CellFontSize                = SharedToken.FontSize;
-        CellFontSizeMD              = SharedToken.FontSize;
-        CellFontSizeSM              = SharedToken.FontSize;
-        HeaderSplitColor            = SharedToken.ColorSplit;
+        FooterColor                 = EffectiveGlobalToken.ColorTextHeading;
+        CellFontSize                = EffectiveGlobalToken.FontSize;
+        CellFontSizeMD              = EffectiveGlobalToken.FontSize;
+        CellFontSizeSM              = EffectiveGlobalToken.FontSize;
+        HeaderSplitColor            = EffectiveGlobalToken.ColorSplit;
         FixedHeaderSortActiveBg     = colorFillSecondarySolid;
-        HeaderFilterHoverBg         = SharedToken.ColorFillContent;
-        FilterDropdownMenuBg        = SharedToken.ColorBgContainer;
-        FilterDropdownBg            = SharedToken.ColorBgElevated;
-        ExpandIconBg                = SharedToken.ColorBgContainer;
-        SelectionColumnWidth        = SharedToken.ControlHeight;
+        HeaderFilterHoverBg         = EffectiveGlobalToken.ColorFillContent;
+        FilterDropdownMenuBg        = EffectiveGlobalToken.ColorBgContainer;
+        FilterDropdownBg            = EffectiveGlobalToken.ColorBgElevated;
+        ExpandIconBg                = EffectiveGlobalToken.ColorBgContainer;
+        SelectionColumnWidth        = EffectiveGlobalToken.ControlHeight;
         ExpandIconMargin            = new Thickness(0, 
-            (SharedToken.FontSize * SharedToken.FontHeight - SharedToken.LineWidth * 3) / 2 -
-            Math.Ceiling((SharedToken.FontSizeSM * 1.4 - SharedToken.LineWidth * 3) / 2), 
+            (EffectiveGlobalToken.FontSize * EffectiveGlobalToken.FontHeight - EffectiveGlobalToken.LineWidth * 3) / 2 -
+            Math.Ceiling((EffectiveGlobalToken.FontSizeSM * 1.4 - EffectiveGlobalToken.LineWidth * 3) / 2),
             0, 
             0);
         HeaderIconColor = ColorUtils.FromRgbF(
-            baseColorAction.GetAlphaF() * SharedToken.OpacityLoading,
+            baseColorAction.GetAlphaF() * EffectiveGlobalToken.OpacityLoading,
             baseColorAction.GetRedF(),
             baseColorAction.GetGreenF(),
             baseColorAction.GetBlueF());
         HeaderIconHoverColor = ColorUtils.FromRgbF(
-            baseColorActionHover.GetAlphaF() * SharedToken.OpacityLoading,
+            baseColorActionHover.GetAlphaF() * EffectiveGlobalToken.OpacityLoading,
             baseColorAction.GetRedF(),
             baseColorAction.GetGreenF(),
             baseColorAction.GetBlueF());
         ExpandIconHalfInner       = expandIconHalfInner;
         ExpandIconSize            = expandIconSize;
-        RowReorderIndicatorSize   = SharedToken.SizeMD; // TODO 需要根据 SizeType 做一定的调整
-        ExpandIconScale           = SharedToken.ControlInteractiveSize / expandIconSize;
-        SortIconSize              = SharedToken.FontHeight / 2.5;
-        SortIndicatorLayoutMargin = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);
-        FilterIndicatorPadding    = new Thickness(SharedToken.UniformlyPaddingXXS, SharedToken.UniformlyPaddingXS);
+        RowReorderIndicatorSize   = EffectiveGlobalToken.SizeMD; // TODO 需要根据 SizeType 做一定的调整
+        ExpandIconScale           = EffectiveGlobalToken.ControlInteractiveSize / expandIconSize;
+        SortIconSize              = EffectiveGlobalToken.FontHeight / 2.5;
+        SortIndicatorLayoutMargin = new Thickness(EffectiveGlobalToken.UniformlyMarginXS, 0, 0, 0);
+        FilterIndicatorPadding    = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS, EffectiveGlobalToken.UniformlyPaddingXS);
         
         // 别名控件初始化
         TableFontSize = CellFontSize;
-        TableBg       = SharedToken.ColorBgContainer;
+        TableBg       = EffectiveGlobalToken.ColorBgContainer;
         TableRadius   = HeaderBorderRadius;
         
         TablePadding                   = CellPadding;
@@ -338,13 +337,13 @@ internal class DataGridToken : AbstractControlDesignToken
         TableRowHoverBg                = RowHoverBg;
         TableSelectedRowBg             = RowSelectedBg;
         TableSelectedRowHoverBg        = RowSelectedHoverBg;
-        TableTopLeftColumnCornerRadius = new CornerRadius(SharedToken.BorderRadiusLG.TopLeft, 0, 0, 0);
+        TableTopLeftColumnCornerRadius = new CornerRadius(EffectiveGlobalToken.BorderRadiusLG.TopLeft, 0, 0, 0);
 
         TableFontSizeMiddle       = CellFontSizeMD;
         TableFontSizeSmall        = CellFontSizeSM;
         TableSelectionColumnWidth = SelectionColumnWidth;
         TableExpandIconBg         = ExpandIconBg;
-        TableExpandColumnWidth    = SharedToken.ControlInteractiveSize + SharedToken.UniformlyPadding * 2;
+        TableExpandColumnWidth    = EffectiveGlobalToken.ControlInteractiveSize + EffectiveGlobalToken.UniformlyPadding * 2;
         TableExpandedRowBg        = RowExpandedBg;
         
         // Dropdown
@@ -352,17 +351,17 @@ internal class DataGridToken : AbstractControlDesignToken
         TableFilterDropdownWidth               = 120;
         TableFilterDropdownHeight              = 264;
         TableFilterDropdownSearchWidth         = 140;
-        TableFilterButtonSpacing               = SharedToken.UniformlyMarginXS;
-        TableFilterButtonContainerMargin       = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
-        TableFilterButtonLayoutSeparatorMargin = new Thickness(0, SharedToken.UniformlyMarginXXS, 0, 0);
-        TableFilterDropdownPadding             = SharedToken.PaddingXS;
+        TableFilterButtonSpacing               = EffectiveGlobalToken.UniformlyMarginXS;
+        TableFilterButtonContainerMargin       = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS, 0, 0);
+        TableFilterButtonLayoutSeparatorMargin = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXXS, 0, 0);
+        TableFilterDropdownPadding             = EffectiveGlobalToken.PaddingXS;
         LeftFrozenShadows = new BoxShadows(new BoxShadow
         {
             OffsetX = -10,
             OffsetY = 0,
             Blur    = 8,
             Spread  = 0,
-            Color   = SharedToken.ColorSplit
+            Color   = EffectiveGlobalToken.ColorSplit
         });
         RightFrozenShadows = new BoxShadows(new BoxShadow
         {
@@ -370,12 +369,12 @@ internal class DataGridToken : AbstractControlDesignToken
             OffsetY = 0,
             Blur    = 8,
             Spread  = 0,
-            Color   = SharedToken.ColorSplit
+            Color   = EffectiveGlobalToken.ColorSplit
         });
         ColumnReorderActiveBg = colorFillContentSolid;
 
-        PaginationMargin   = new Thickness(0, SharedToken.UniformlyMargin);
-        PaginationMarginSM = new Thickness(0, SharedToken.UniformlyMarginXS);
+        PaginationMargin   = new Thickness(0, EffectiveGlobalToken.UniformlyMargin);
+        PaginationMarginSM = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS);
     }
     
 }

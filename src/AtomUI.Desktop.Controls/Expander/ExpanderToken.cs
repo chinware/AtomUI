@@ -7,10 +7,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ExpanderToken : AbstractControlDesignToken
 {
-    public const string ID = "Expander";
     
     public ExpanderToken()
-        : base(ID)
+
     {
     }
 
@@ -67,19 +66,19 @@ internal class ExpanderToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        HeaderPadding            = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingSM);
-        HeaderBg                 = SharedToken.ColorFillAlter;
-        ContentPadding           = new Thickness(16, SharedToken.UniformlyPadding);
-        ContentPaddingSM         = SharedToken.PaddingSM;
-        ContentPaddingLG         = SharedToken.PaddingLG;
-        ContentBg                = SharedToken.ColorBgContainer;
-        HeaderPaddingSM          = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPaddingXS);
-        HeaderPaddingLG          = new Thickness(SharedToken.UniformlyPaddingLG, SharedToken.UniformlyPadding);
-        ExpanderBorderRadius     = SharedToken.BorderRadiusLG;
-        LeftExpandButtonHMargin  = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
-        RightExpandButtonHMargin = new Thickness(SharedToken.UniformlyMarginSM, 0, 0, 0);
-        LeftExpandButtonVMargin  = new Thickness(0, 0, 0, SharedToken.UniformlyMarginSM);
-        RightExpandButtonVMargin = new Thickness(0, SharedToken.UniformlyMarginSM, 0, 0);
+        HeaderPadding            = new Thickness(EffectiveGlobalToken.UniformlyPadding, EffectiveGlobalToken.UniformlyPaddingSM);
+        HeaderBg                 = EffectiveGlobalToken.ColorFillAlter;
+        ContentPadding           = new Thickness(16, EffectiveGlobalToken.UniformlyPadding);
+        ContentPaddingSM         = EffectiveGlobalToken.PaddingSM;
+        ContentPaddingLG         = EffectiveGlobalToken.PaddingLG;
+        ContentBg                = EffectiveGlobalToken.ColorBgContainer;
+        HeaderPaddingSM          = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM, EffectiveGlobalToken.UniformlyPaddingXS);
+        HeaderPaddingLG          = new Thickness(EffectiveGlobalToken.UniformlyPaddingLG, EffectiveGlobalToken.UniformlyPadding);
+        ExpanderBorderRadius     = EffectiveGlobalToken.BorderRadiusLG;
+        LeftExpandButtonHMargin  = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginSM, 0);
+        RightExpandButtonHMargin = new Thickness(EffectiveGlobalToken.UniformlyMarginSM, 0, 0, 0);
+        LeftExpandButtonVMargin  = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyMarginSM);
+        RightExpandButtonVMargin = new Thickness(0, EffectiveGlobalToken.UniformlyMarginSM, 0, 0);
     }
     
 }

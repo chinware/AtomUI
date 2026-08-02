@@ -2,9 +2,6 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               x:Class="AtomUI.Desktop.Controls.Primitives.Themes.ArrowDecoratedBoxTheme"
               xmlns:atom="https://atomui.net"
-              xmlns:themeResources="using:AtomUI.Theme.Resources"
-              xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-              themeResources:ControlTokenScope.Identity="{x:Static generated:ArrowDecoratedBoxThemeAsset.Identity}"
               TargetType="atom:ArrowDecoratedBox">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:ArrowDecoratedBox">
@@ -46,7 +43,7 @@
         <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
         <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
         <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
-        <Setter Property="Padding" Value="{atom:ArrowDecoratedBoxTokenResource Padding}" />
+        <Setter Property="Padding" Value="{atom:ArrowDecoratedBoxTokenResource ContentPadding}" />
         <Setter Property="ArrowSize" Value="{atom:ArrowDecoratedBoxTokenResource ArrowSize}" />
         <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
 

@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class RateToken : AbstractControlDesignToken
 {
-    public const string ID = "Rate";
     
     /// <summary>
     /// 星星颜色
@@ -46,19 +45,19 @@ internal class RateToken : AbstractControlDesignToken
     public Color StarBg { get; set; }
     
     public RateToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        StarColor      = SharedToken.ColorPalettes[PresetPrimaryColor.Yellow].Color6;
-        StarSize       = SharedToken.ControlHeight * 0.625;
-        StarSizeSM     = SharedToken.ControlHeightSM * 0.625;
-        StarSizeLG     = SharedToken.ControlHeightLG * 0.625;
+        StarColor      = EffectiveGlobalToken.ColorPalettes[PresetPrimaryColor.Yellow].Color6;
+        StarSize       = EffectiveGlobalToken.ControlHeight * 0.625;
+        StarSizeSM     = EffectiveGlobalToken.ControlHeightSM * 0.625;
+        StarSizeLG     = EffectiveGlobalToken.ControlHeightLG * 0.625;
         StarHoverScale = 1.2;
-        StarBg         = SharedToken.ColorFillContent;
+        StarBg         = EffectiveGlobalToken.ColorFillContent;
     }
     
 }

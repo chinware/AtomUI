@@ -21,10 +21,11 @@ internal sealed class ControlThemeAssetManifest
                 throw new ThemeSchemaException(
                     $"Control theme asset URI '{descriptor.AssetUri}' must be absolute.");
             }
-            if (!registry.TryGetControl(descriptor.Identity, out _))
+            if (!registry.TryGetControl(descriptor.OwnerIdentity, out _))
             {
                 throw new ThemeSchemaException(
-                    $"Control theme asset '{descriptor.AssetUri}' uses unregistered identity '{descriptor.Identity}'.");
+                    $"Control theme asset '{descriptor.AssetUri}' uses unregistered owner identity " +
+                    $"'{descriptor.OwnerIdentity}'.");
             }
             if (descriptor.ResourceKeySchemaFingerprint == 0)
             {
@@ -35,6 +36,23 @@ internal sealed class ControlThemeAssetManifest
             {
                 throw new ThemeSchemaException(
                     $"Control theme asset URI '{descriptor.AssetUri}' is registered more than once.");
+            }
+
+            var identities = new HashSet<ControlTokenIdentity>();
+            foreach (var identity in descriptor.ReferencedControlIdentities)
+            {
+                if (!identities.Add(identity))
+                {
+                    throw new ThemeSchemaException(
+                        $"Control theme asset '{descriptor.AssetUri}' declares duplicate Control identity " +
+                        $"'{identity}'.");
+                }
+                if (!registry.TryGetControl(identity, out _))
+                {
+                    throw new ThemeSchemaException(
+                        $"Control theme asset '{descriptor.AssetUri}' references unregistered identity " +
+                        $"'{identity}'.");
+                }
             }
         }
 

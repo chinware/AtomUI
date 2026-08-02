@@ -2,7 +2,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.TimePickerLang;
 
-[LanguageProvider(LanguageCode.zh_TW, TimePickerToken.ID)]
+[LanguageProvider(LanguageCode.zh_TW, "TimePicker")]
 internal class zh_TW
 {
     public const string AMText = "上午";

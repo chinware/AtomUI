@@ -2,7 +2,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.TransferLang;
 
-[LanguageProvider(LanguageCode.zh_TW, TransferToken.ID)]
+[LanguageProvider(LanguageCode.zh_TW, "Transfer")]
 internal class zh_TW
 {
     public const string Item = "項";

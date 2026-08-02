@@ -31,7 +31,7 @@ Timeline 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`Label`、`IndicatorIcon`、`Pending`、`PendingIcon`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | `IsReverse`、Pending 状态、可见项顺序和首尾节点状态。 |
 | 布局语义 | 主轴方向和内容相对轴线的位置如何组合。 | `Orientation` 决定主轴，`Mode` 决定交叉轴上的 `Start`、`End` 或交替布局。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Timeline Token、方向 selector、Item 模板和 Indicator renderer。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Timeline Token、方向 selector、Item 模板和 Indicator renderer。 |
 
 ## 3. API 与契约模型
 
@@ -109,16 +109,15 @@ Orientation / Mode / IsReverse / Items / item visibility
 
 ## 5. 视觉与主题模型
 
-Timeline 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Timeline 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `TimelineIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimelineItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TimelineTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TimelineThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Timeline 使用 `TimelineToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载方向、Mode、视觉索引或 Pending 相邻状态。水平布局的内容间距优先使用 SharedToken；方向差异由 ControlTheme selector 和布局 Panel 表达。
+Timeline 使用 `TimelineToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载方向、Mode、视觉索引或 Pending 相邻状态。水平布局的内容间距优先使用 SharedToken；方向差异由 ControlTheme selector 和布局 Panel 表达。
 
 主题维护规则：
 
@@ -140,7 +139,7 @@ Timeline 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 - `TimelineItem`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `TimelineItemPanel`：负责 Label、Indicator 和 Content 在垂直或水平模式中的测量与排列。
 - `TimelineStackPanel`：负责主轴方向、可见项顺序、Reverse 排列和水平等宽槽位。
-- `TimelineToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `TimelineToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 集成关系：
 

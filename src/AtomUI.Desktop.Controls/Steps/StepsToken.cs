@@ -7,10 +7,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class StepsToken : AbstractControlDesignToken
 {
-    public const string ID = "Steps";
 
     public StepsToken()
-        : base(ID)
+
     {
     }
     
@@ -36,7 +35,7 @@ internal class StepsToken : AbstractControlDesignToken
     /// 图标容器尺寸
     /// Size of icon container
     /// </summary>
-    public double IconSize { get; set; }
+    public double IconContainerSize { get; set; }
     
     /// <summary>
     /// 图标大小
@@ -66,7 +65,7 @@ internal class StepsToken : AbstractControlDesignToken
     /// 小号步骤条图标大小
     /// Size of small steps icon
     /// </summary>
-    public double IconSizeSM { get; set; }
+    public double IconContainerSizeSM { get; set; }
     
     /// <summary>
     /// Label 水平排列的时候的外间距
@@ -166,77 +165,77 @@ internal class StepsToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
         
-        CustomIconSize      = SharedToken.ControlHeight;
-        CustomIconFontSize  = SharedToken.ControlHeightSM;
-        IconSize            = SharedToken.ControlHeight;
-        IconFontSize        = SharedToken.FontSize;
-        IconSizeSM          = SharedToken.FontSizeHeading3;
-        DotSize             = SharedToken.ControlHeight / 4;
-        DotCurrentSize      = SharedToken.ControlHeightLG / 4;
-        NavArrowColor       = SharedToken.ColorTextDisabled;
+        CustomIconSize      = EffectiveGlobalToken.ControlHeight;
+        CustomIconFontSize  = EffectiveGlobalToken.ControlHeightSM;
+        IconContainerSize   = EffectiveGlobalToken.ControlHeight;
+        IconFontSize        = EffectiveGlobalToken.FontSize;
+        IconContainerSizeSM = EffectiveGlobalToken.FontSizeHeading3;
+        DotSize             = EffectiveGlobalToken.ControlHeight / 4;
+        DotCurrentSize      = EffectiveGlobalToken.ControlHeightLG / 4;
+        NavArrowColor       = EffectiveGlobalToken.ColorTextDisabled;
         DescriptionMaxWidth = 140;
 
-        WaitIconColor         = SharedToken.ColorTextLabel;
-        WaitIconBgColor       = SharedToken.ColorFillContent;
+        WaitIconColor         = EffectiveGlobalToken.ColorTextLabel;
+        WaitIconBgColor       = EffectiveGlobalToken.ColorFillContent;
         WaitIconBorderColor   = Colors.Transparent;
-        WaitTitleColor        = SharedToken.ColorTextDescription;
-        WaitDescriptionColor  = SharedToken.ColorTextDescription;
-        WaitTailColor         = SharedToken.ColorTextDisabled;
-        WaitDotColor          = SharedToken.ColorTextDisabled;
+        WaitTitleColor        = EffectiveGlobalToken.ColorTextDescription;
+        WaitDescriptionColor  = EffectiveGlobalToken.ColorTextDescription;
+        WaitTailColor         = EffectiveGlobalToken.ColorTextDisabled;
+        WaitDotColor          = EffectiveGlobalToken.ColorTextDisabled;
         
-        ProcessIconColor        = SharedToken.ColorTextLightSolid;
-        ProcessTitleColor       = SharedToken.ColorText;
-        ProcessDescriptionColor = SharedToken.ColorText;
-        ProcessIconBgColor      = SharedToken.ColorPrimary;
-        ProcessIconBorderColor  = SharedToken.ColorPrimary;
-        ProcessDotColor         = SharedToken.ColorPrimary;
-        ProcessTailColor        = SharedToken.ColorPrimary;
+        ProcessIconColor        = EffectiveGlobalToken.ColorTextLightSolid;
+        ProcessTitleColor       = EffectiveGlobalToken.ColorText;
+        ProcessDescriptionColor = EffectiveGlobalToken.ColorText;
+        ProcessIconBgColor      = EffectiveGlobalToken.ColorPrimary;
+        ProcessIconBorderColor  = EffectiveGlobalToken.ColorPrimary;
+        ProcessDotColor         = EffectiveGlobalToken.ColorPrimary;
+        ProcessTailColor        = EffectiveGlobalToken.ColorPrimary;
 
-        ProgressGrooveColor = SharedToken.ColorSplit;
-        ProgressColor       = SharedToken.ColorPrimary;
+        ProgressGrooveColor = EffectiveGlobalToken.ColorSplit;
+        ProgressColor       = EffectiveGlobalToken.ColorPrimary;
         
-        FinishIconBgColor       = SharedToken.ControlItemBgActive;
-        FinishIconBorderColor   = SharedToken.ControlItemBgActive;
-        FinishIconColor         = SharedToken.ColorPrimary;
-        FinishTitleColor        = SharedToken.ColorText;
-        FinishDescriptionColor  = SharedToken.ColorTextDescription;
-        FinishTailColor         = SharedToken.ColorPrimary;
-        FinishDotColor          = SharedToken.ColorPrimary;
+        FinishIconBgColor       = EffectiveGlobalToken.ControlItemBgActive;
+        FinishIconBorderColor   = EffectiveGlobalToken.ControlItemBgActive;
+        FinishIconColor         = EffectiveGlobalToken.ColorPrimary;
+        FinishTitleColor        = EffectiveGlobalToken.ColorText;
+        FinishDescriptionColor  = EffectiveGlobalToken.ColorTextDescription;
+        FinishTailColor         = EffectiveGlobalToken.ColorPrimary;
+        FinishDotColor          = EffectiveGlobalToken.ColorPrimary;
         
-        ErrorIconColor          = SharedToken.ColorTextLightSolid;
-        ErrorTitleColor         = SharedToken.ColorError;
-        ErrorDescriptionColor   = SharedToken.ColorError;
-        ErrorTailColor          = SharedToken.ColorError;
-        ErrorIconBgColor        = SharedToken.ColorError;
-        ErrorIconBorderColor    = SharedToken.ColorError;
-        ErrorDotColor           = SharedToken.ColorError;
-        StepsNavActiveColor     = SharedToken.ColorPrimary;
+        ErrorIconColor          = EffectiveGlobalToken.ColorTextLightSolid;
+        ErrorTitleColor         = EffectiveGlobalToken.ColorError;
+        ErrorDescriptionColor   = EffectiveGlobalToken.ColorError;
+        ErrorTailColor          = EffectiveGlobalToken.ColorError;
+        ErrorIconBgColor        = EffectiveGlobalToken.ColorError;
+        ErrorIconBorderColor    = EffectiveGlobalToken.ColorError;
+        ErrorDotColor           = EffectiveGlobalToken.ColorError;
+        StepsNavActiveColor     = EffectiveGlobalToken.ColorPrimary;
         // Steps inline variable
         InlineDotSize       = 6;
         InlineHeaderMargin  = new Thickness();
         InlineHeaderPadding = new Thickness();
-        InlineTitleColor    = SharedToken.ColorTextSecondary;
-        InlineTailColor     = SharedToken.ColorTextDisabled;
-        var inlineItemHorizontalPadding = SharedToken.UniformlyPaddingXXS + SharedToken.UniformlyMarginXXS / 2;
+        InlineTitleColor    = EffectiveGlobalToken.ColorTextSecondary;
+        InlineTailColor     = EffectiveGlobalToken.ColorTextDisabled;
+        var inlineItemHorizontalPadding = EffectiveGlobalToken.UniformlyPaddingXXS + EffectiveGlobalToken.UniformlyMarginXXS / 2;
         InlineItemPadding   = new Thickness(
             inlineItemHorizontalPadding,
-            SharedToken.UniformlyPaddingXS + SharedToken.LineWidth,
+            EffectiveGlobalToken.UniformlyPaddingXS + EffectiveGlobalToken.LineWidth,
             inlineItemHorizontalPadding,
             0);
         
-        HorizontalHeaderMargin     = new Thickness(SharedToken.UniformlyMargin, 0);
-        SubHeaderMargin            = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);
-        VerticalItemSpacing        = SharedToken.UniformlyMarginXXS;
+        HorizontalHeaderMargin     = new Thickness(EffectiveGlobalToken.UniformlyMargin, 0);
+        SubHeaderMargin            = new Thickness(EffectiveGlobalToken.UniformlyMarginXS, 0, 0, 0);
+        VerticalItemSpacing        = EffectiveGlobalToken.UniformlyMarginXXS;
         VerticalDescriptionPadding = new Thickness();
-        DotLineThickness           = SharedToken.LineWidth * 3;
+        DotLineThickness           = EffectiveGlobalToken.LineWidth * 3;
 
-        VerticalLabelContentMargin = new Thickness(0, SharedToken.UniformlyMarginSM, 0, 0);
+        VerticalLabelContentMargin = new Thickness(0, EffectiveGlobalToken.UniformlyMarginSM, 0, 0);
         VerticalNavArrowMargin     = new Thickness();
         VerticalNavArrowMarginSM   = new Thickness();
-        VerticalNavItemPadding     = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPadding);
-        NavItemGutter              = SharedToken.Spacing;
-        ProgressFramePadding       = new Thickness(SharedToken.LineWidthBold * 2);
-        ProgressFramePaddingSM     = new Thickness(SharedToken.LineWidthBold * 2);
+        VerticalNavItemPadding     = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM, EffectiveGlobalToken.UniformlyPadding);
+        NavItemGutter              = EffectiveGlobalToken.Spacing;
+        ProgressFramePadding       = new Thickness(EffectiveGlobalToken.LineWidthBold * 2);
+        ProgressFramePaddingSM     = new Thickness(EffectiveGlobalToken.LineWidthBold * 2);
     }
     
 }

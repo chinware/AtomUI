@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:DatePickerThemeAsset.Identity}"
     xmlns:calendarView="using:AtomUI.Desktop.Controls.CalendarView"
     x:ClassModifier="internal">
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
@@ -71,32 +68,32 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
-        <Setter Property="MinHeight" Value="{atom:CalendarTokenResource CellHeight}" />
+        <Setter Property="MinHeight" Value="{atom:DatePickerTokenResource CellHeight}" />
 
         <Style Selector="^ /template/ Border#DisabledBackground">
-            <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
+            <Setter Property="Height" Value="{atom:DatePickerTokenResource CellHeight}" />
         </Style>
 
         <Style Selector="^ /template/ Border#RangeIndicator">
-            <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
+            <Setter Property="Height" Value="{atom:DatePickerTokenResource CellHeight}" />
         </Style>
 
         <Style Selector="^ /template/ Border#RangeStartIndicator">
-            <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
+            <Setter Property="Height" Value="{atom:DatePickerTokenResource CellHeight}" />
         </Style>
 
         <Style Selector="^ /template/ Border#RangeEndIndicator">
-            <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
+            <Setter Property="Height" Value="{atom:DatePickerTokenResource CellHeight}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#Content">
             <Setter Property="Width" Value="{atom:DatePickerTokenResource YearMonthCellWidth}" />
-            <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
-            <Setter Property="LineHeight" Value="{atom:CalendarTokenResource CellLineHeight}" />
+            <Setter Property="Height" Value="{atom:DatePickerTokenResource CellHeight}" />
+            <Setter Property="LineHeight" Value="{atom:DatePickerTokenResource CellLineHeight}" />
         </Style>
 
         <Style Selector="^:pointerover:not(:selected):not(:range-start):not(:range-end):not(:range-middle):not(:range-preview-start):not(:range-preview-end):not(:range-preview-middle)">
-            <Setter Property="Background" Value="{atom:CalendarTokenResource CellHoverBg}" />
+            <Setter Property="Background" Value="{atom:DatePickerTokenResource CellHoverBg}" />
         </Style>
 
         <Style Selector="^:disabled">
@@ -104,7 +101,7 @@
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
             <Style Selector="^ /template/ Border#DisabledBackground">
                 <Setter Property="IsVisible" Value="True" />
-                <Setter Property="Background" Value="{atom:CalendarTokenResource CellBgDisabled}" />
+                <Setter Property="Background" Value="{atom:DatePickerTokenResource CellBgDisabled}" />
             </Style>
         </Style>
 
@@ -127,21 +124,21 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Style Selector="^ /template/ Border#RangeIndicator">
                 <Setter Property="IsVisible" Value="True" />
-                <Setter Property="Background" Value="{atom:CalendarTokenResource CellActiveWithRangeBg}" />
+                <Setter Property="Background" Value="{atom:DatePickerTokenResource CellActiveWithRangeBg}" />
             </Style>
         </Style>
 
         <Style Selector="^:range-start:not(:inactive), ^:range-preview-start:not(:inactive)">
             <Style Selector="^ /template/ Border#RangeStartIndicator">
                 <Setter Property="IsVisible" Value="True" />
-                <Setter Property="Background" Value="{atom:CalendarTokenResource CellActiveWithRangeBg}" />
+                <Setter Property="Background" Value="{atom:DatePickerTokenResource CellActiveWithRangeBg}" />
             </Style>
         </Style>
 
         <Style Selector="^:range-end:not(:inactive), ^:range-preview-end:not(:inactive)">
             <Style Selector="^ /template/ Border#RangeEndIndicator">
                 <Setter Property="IsVisible" Value="True" />
-                <Setter Property="Background" Value="{atom:CalendarTokenResource CellActiveWithRangeBg}" />
+                <Setter Property="Background" Value="{atom:DatePickerTokenResource CellActiveWithRangeBg}" />
             </Style>
         </Style>
 

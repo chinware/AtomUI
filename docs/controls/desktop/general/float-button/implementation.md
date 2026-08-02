@@ -1,6 +1,6 @@
 # FloatButton 桌面版实现原理
 
-本文档描述 FloatButton 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [FloatButton 桌面版架构设计](overview.md)，变化记录见 [FloatButton Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [FloatButton Token 设计](token.md)。
+本文档描述 FloatButton 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [FloatButton 桌面版架构设计](overview.md)，变化记录见 [FloatButton Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [FloatButton Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -27,7 +27,6 @@
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonHostTheme.axaml`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonItemsControlTheme.axaml`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonThemes.axaml`
 - `src/AtomUI.Controls/FloatButton/AbstractBackTopFloatButton.cs`
 - `src/AtomUI.Controls/FloatButton/AbstractBackTopFloatButtonHost.cs`
 - `src/AtomUI.Controls/FloatButton/AbstractFloatButton.cs`
@@ -57,7 +56,7 @@
 - `FloatButtonHost`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `FloatButtonItemsControl`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `FloatButtonSeparatorLayer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `FloatButtonToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `FloatButtonToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 核心协作规则：
 

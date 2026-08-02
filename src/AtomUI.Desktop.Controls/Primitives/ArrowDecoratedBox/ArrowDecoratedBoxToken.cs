@@ -8,7 +8,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ArrowDecoratedBoxToken : AbstractControlDesignToken
 {
-    public const string ID = "ArrowDecoratedBox";
 
     /// <summary>
     /// 箭头三角形大小
@@ -18,7 +17,7 @@ internal class ArrowDecoratedBoxToken : AbstractControlDesignToken
     /// <summary>
     /// 默认的内边距
     /// </summary>
-    public Thickness Padding { get; set; }
+    public Thickness ContentPadding { get; set; }
 
     /// <summary>
     /// 箭头描边颜色
@@ -31,15 +30,15 @@ internal class ArrowDecoratedBoxToken : AbstractControlDesignToken
     public double ArrowStrokeThickness { get; set; }
 
     public ArrowDecoratedBoxToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        ArrowSize            = SharedToken.SizePopupArrow / 1.3;
-        Padding              = SharedToken.PaddingXS;
+        ArrowSize            = EffectiveGlobalToken.SizePopupArrow / 1.3;
+        ContentPadding       = EffectiveGlobalToken.PaddingXS;
         ArrowStrokeColor     = ColorUtils.FromRgbF(0.07, 0, 0, 0);
         ArrowStrokeThickness = 1;
     }

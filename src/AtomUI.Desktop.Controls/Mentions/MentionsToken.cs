@@ -6,7 +6,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class MentionsToken : AbstractControlDesignToken
 {
-    public const string ID = "Mentions";
     
     /// <summary>
     /// 菜单内容边距
@@ -25,15 +24,15 @@ internal class MentionsToken : AbstractControlDesignToken
     public double MinPopupWidth { get; set; }
     
     public MentionsToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        OptionHeight        = SharedToken.ControlHeight;
-        PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
+        OptionHeight        = EffectiveGlobalToken.ControlHeight;
+        PopupContentPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS / 2);
         MinPopupWidth       = 120;
     }
     

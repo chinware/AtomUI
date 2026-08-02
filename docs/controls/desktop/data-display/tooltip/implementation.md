@@ -1,6 +1,6 @@
 # Tooltip 桌面版实现原理
 
-本文档描述 Tooltip 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Tooltip 桌面版架构设计](overview.md)，变化记录见 [Tooltip Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Tooltip Token 设计](token.md)。
+本文档描述 Tooltip 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Tooltip 桌面版架构设计](overview.md)，变化记录见 [Tooltip Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Tooltip Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -27,7 +27,7 @@
 
 - `ToolTip`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `ToolTipPseudoClass`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `ToolTipToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `ToolTipToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 核心协作规则：
 

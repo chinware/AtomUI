@@ -29,7 +29,7 @@ ImagePreviewer 的设计语言围绕控件职责、可观察状态和主题契�
 | 产品语义 | 控件在界面中承担的稳定职责。 | ImagePreviewer 是 AtomUI 桌面控件体系中的图片预览控件，用于查看、缩放、旋转、切换和窗口化预览图片。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Source`、`Sources`、`FallbackSource`、`CoverIndex`、`CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | current item、open/close、image loading、loaded/failed、fallback、motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ImagePreviewer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ImagePreviewer Token + ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -114,7 +114,7 @@ Public API / IImagePreviewSource / ImageSourceUri / inherited command / user inp
 
 ## 5. 视觉与主题模型
 
-ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -125,11 +125,10 @@ ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和�
 | `ImagePreviewerCoverTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ImagePreviewerDialogTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `ImagePreviewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `ImagePreviewerTitleBarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ImageViewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-ImagePreviewer 使用 `ImagePreviewerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
+ImagePreviewer 使用 `ImagePreviewerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
 
 预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。预览 dialog 的 `TitleAlignment` 默认值覆盖为 `WindowCenter`，因此 Windows、Linux 和 macOS 都默认以完整窗口水平中心作为标题基准；显式设置 `TitleAlignment` 时仍通过 `ImagePreviewerTitleBar` 投射，并继续由 `WindowTitleBarLayoutPanel` 处理左右安全区裁剪。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
 
@@ -171,7 +170,7 @@ ImagePreviewer 与同分类控件共享尺寸、状态、Token、Gallery 展示�
 - `ImagePreviewerOverlayHost`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `ImagePreviewerTitleBar`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `ImagePreviewerTitleBarTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `ImagePreviewerToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `ImagePreviewerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `ImageViewer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `IImagePreviewSource`：图片来源主契约，统一表达 URI 来源和按需打开的数据流来源。
 - `UriImagePreviewSource`：URI 来源默认实现，支持 `string`、`Uri` 和 `ImageSourceUri` 构造，统一表达 `avares://`、本地路径、`file://` 和 `http(s)://`。

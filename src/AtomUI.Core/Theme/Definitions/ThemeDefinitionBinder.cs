@@ -140,21 +140,21 @@ internal static class ThemeDefinitionBinder
             foreach (var token in document.Tokens)
             {
                 var matched = false;
-                if (descriptor.TryGetInheritedToken(token.Name, out var globalDescriptor))
-                {
-                    matched = true;
-                    if (TryBindToken(token, globalDescriptor, diagnostics, out var value))
-                    {
-                        globalTokens.Add(value);
-                    }
-                }
-
                 if (descriptor.TryGetOwnToken(token.Name, out var ownDescriptor))
                 {
                     matched = true;
                     if (TryBindToken(token, ownDescriptor, diagnostics, out var value))
                     {
                         ownTokens.Add(value);
+                    }
+                }
+
+                if (!matched && registry.TryGetGlobalToken(token.Name, out var globalDescriptor))
+                {
+                    matched = true;
+                    if (TryBindToken(token, globalDescriptor, diagnostics, out var value))
+                    {
+                        globalTokens.Add(value);
                     }
                 }
 

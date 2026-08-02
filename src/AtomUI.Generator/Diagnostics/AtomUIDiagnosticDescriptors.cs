@@ -68,28 +68,10 @@ internal static class AtomUIDiagnosticDescriptors
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
 
-    public static readonly DiagnosticDescriptor ControlTokenMissingId = new(
-        AtomUIDiagnosticIds.ControlTokenMissingId,
-        "Control design token requires an ID constant",
-        "Control design token '{0}' must declare public const string ID",
-        AtomUIDiagnosticCategories.Generator,
-        DiagnosticSeverity.Warning,
-        isEnabledByDefault: true,
-        customTags: [WellKnownDiagnosticTags.Telemetry]);
-
-    public static readonly DiagnosticDescriptor ControlTokenInvalidId = new(
-        AtomUIDiagnosticIds.ControlTokenInvalidId,
-        "Control design token ID must be constant",
-        "Control design token '{0}' must declare ID as public const string with a non-empty value",
-        AtomUIDiagnosticCategories.Generator,
-        DiagnosticSeverity.Warning,
-        isEnabledByDefault: true,
-        customTags: [WellKnownDiagnosticTags.Telemetry]);
-
     public static readonly DiagnosticDescriptor ThemeAssetMissingIdentity = new(
         AtomUIDiagnosticIds.ThemeAssetMissingIdentity,
-        "Theme asset requires a Control Token identity",
-        "Theme asset '{0}' uses Token resources but does not declare ControlTokenScope.Identity",
+        "Theme asset requires a convention-owned Control",
+        "Theme asset '{0}' uses Control Token resources but no public owner Control can be determined from its file, directory, Semantic Part property, or Token family",
         AtomUIDiagnosticCategories.Generator,
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -126,6 +108,78 @@ internal static class AtomUIDiagnosticDescriptors
         AtomUIDiagnosticIds.ThemeAssetDuplicateUri,
         "Theme asset URI is duplicated",
         "Theme asset URI '{0}' is produced by more than one AdditionalFile",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenInvalidName = new(
+        AtomUIDiagnosticIds.ControlTokenInvalidName,
+        "Control design token name does not follow convention",
+        "Control design token type '{0}' must end with 'Token' and have a non-empty Control name",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenInheritance = new(
+        AtomUIDiagnosticIds.ControlTokenInheritance,
+        "Control design token cannot inherit another Control Token",
+        "Control design token type '{0}' cannot inherit Control Token type '{1}'; inherit AbstractControlDesignToken directly",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenMissingControl = new(
+        AtomUIDiagnosticIds.ControlTokenMissingControl,
+        "Control design token has no matching Control",
+        "Control design token type '{0}' requires a matching public Control named '{1}'",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenAmbiguousControl = new(
+        AtomUIDiagnosticIds.ControlTokenAmbiguousControl,
+        "Control design token matches more than one Control",
+        "Control design token type '{0}' matches more than one public Control named '{1}'",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ThemeAssetAmbiguousControl = new(
+        AtomUIDiagnosticIds.ThemeAssetAmbiguousControl,
+        "Theme asset matches more than one Control",
+        "Theme asset '{0}' matches more than one public Control named '{1}'",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ThemeAssetSemanticPartTargetMismatch = new(
+        AtomUIDiagnosticIds.ThemeAssetSemanticPartTargetMismatch,
+        "Semantic Part Theme target must be a Control",
+        "Semantic Part Theme asset '{0}' targets '{1}', which is not a public Control",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ThemeAssetUnknownTokenResource = new(
+        AtomUIDiagnosticIds.ThemeAssetUnknownTokenResource,
+        "Theme asset uses an unknown Control Token resource",
+        "Theme asset '{0}' uses unknown Token '{2}' from Control Token family '{1}'",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenGlobalNameConflict = new(
+        AtomUIDiagnosticIds.ControlTokenGlobalNameConflict,
+        "Control Own Token conflicts with a Global Token",
+        "Control '{0}' Own Token '{1}' conflicts with a Global Token",
         AtomUIDiagnosticCategories.Generator,
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,

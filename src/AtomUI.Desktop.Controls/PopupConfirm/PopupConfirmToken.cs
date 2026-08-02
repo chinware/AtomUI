@@ -6,10 +6,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class PopupConfirmToken : AbstractControlDesignToken
 {
-    public const string ID = "PopupConfirm";
     
     public PopupConfirmToken()
-        : base(ID)
+
     {
     }
 
@@ -53,11 +52,11 @@ internal class PopupConfirmToken : AbstractControlDesignToken
         base.CalculateTokenValues(isDarkMode);
         PopupMinWidth          = 240;
         PopupMinHeight         = 80;
-        ButtonSpacing          = SharedToken.UniformlyMarginXS;
-        IconMargin             = new Thickness(0, SharedToken.UniformlyMarginXS / 2, SharedToken.UniformlyMarginXS, 0);
-        ContentContainerMargin = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
-        TitleMargin            = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
-        ButtonContainerMargin  = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
+        ButtonSpacing          = EffectiveGlobalToken.UniformlyMarginXS;
+        IconMargin             = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS / 2, EffectiveGlobalToken.UniformlyMarginXS, 0);
+        ContentContainerMargin = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyMarginXS);
+        TitleMargin            = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyMarginXS);
+        ButtonContainerMargin  = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS, 0, 0);
     }
     
 }

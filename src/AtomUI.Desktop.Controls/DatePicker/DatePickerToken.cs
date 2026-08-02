@@ -8,10 +8,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class DatePickerToken : AbstractControlDesignToken
 {
-    public const string ID = "DatePicker";
     
     public DatePickerToken()
-        : base(ID)
+
     {
     }
     
@@ -49,6 +48,11 @@ internal class DatePickerToken : AbstractControlDesignToken
     /// 单元格宽度
     /// </summary>
     public double CellWidth { get; set; }
+
+    /// <summary>
+    /// 单元格文本行高
+    /// </summary>
+    public double CellLineHeight { get; set; }
 
     /// <summary>
     /// 单元格外边距
@@ -119,28 +123,29 @@ internal class DatePickerToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
 
-        var colorPrimary = SharedToken.ColorPrimary;
+        var colorPrimary = EffectiveGlobalToken.ColorPrimary;
 
-        CellHoverBg            = SharedToken.ControlItemBgHover;
-        CellActiveWithRangeBg  = SharedToken.ControlItemBgActive;
+        CellHoverBg            = EffectiveGlobalToken.ControlItemBgHover;
+        CellActiveWithRangeBg  = EffectiveGlobalToken.ControlItemBgActive;
         CellHoverWithRangeBg   = colorPrimary.Lighten(35);
         CellRangeBorderColor   = colorPrimary.Lighten(20);
-        CellBgDisabled         = SharedToken.ColorBgContainerDisabled;
-        CellWidth              = SharedToken.ControlHeightSM;
-        CellHeight             = SharedToken.ControlHeightSM;
-        TextHeight             = SharedToken.ControlHeightLG;
-        YearMonthCellWidth     = SharedToken.ControlHeightLG * 1.5;
-        WithoutTimeCellHeight  = (SharedToken.ControlHeightLG * 1.65 + SharedToken.ControlHeightSM) / 2;
-        CellMargin             = SharedToken.MarginXXS;
-        PanelContentPadding    = SharedToken.PaddingSM;
+        CellBgDisabled         = EffectiveGlobalToken.ColorBgContainerDisabled;
+        CellWidth              = EffectiveGlobalToken.ControlHeightSM;
+        CellHeight             = EffectiveGlobalToken.ControlHeightSM;
+        CellLineHeight         = CellHeight - 2;
+        TextHeight             = EffectiveGlobalToken.ControlHeightLG;
+        YearMonthCellWidth     = EffectiveGlobalToken.ControlHeightLG * 1.5;
+        WithoutTimeCellHeight  = (EffectiveGlobalToken.ControlHeightLG * 1.65 + EffectiveGlobalToken.ControlHeightSM) / 2;
+        CellMargin             = EffectiveGlobalToken.MarginXXS;
+        PanelContentPadding    = EffectiveGlobalToken.PaddingSM;
         ItemPanelMinWidth      = 225;
         ItemPanelMinHeight     = 270;
         MonthViewMinWidth      = 260;
-        DayTitleHeight         = SharedToken.ControlHeightSM;
-        HeaderMargin           = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
+        DayTitleHeight         = EffectiveGlobalToken.ControlHeightSM;
+        HeaderMargin           = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyMarginXS);
         HeaderPadding          = new Thickness(0);
         RangeCalendarSpacing   = 20;
-        ButtonsPanelMargin     = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
+        ButtonsPanelMargin     = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS, 0, 0);
     }
     
 }

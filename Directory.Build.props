@@ -4,6 +4,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
+        <AtomUIThemeControlCatalog>AtomUI</AtomUIThemeControlCatalog>
     </PropertyGroup>
 
     <Import Project="$(MSBuildThisFileDirectory)/build/Version.props"/>

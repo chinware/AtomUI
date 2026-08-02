@@ -168,7 +168,7 @@ public class NotificationCardThemeTests
 
         ShowInWindow(card, () =>
         {
-            var expectedSize = GetThemeResource<double>(NotificationTokenKind.NotificationCloseButtonSize);
+            var expectedSize = GetThemeResource<double>(NotificationCardTokenKind.NotificationCloseButtonSize);
             var closeButton  = card.GetVisualDescendants()
                                    .OfType<IconButton>()
                                    .Single(item => item.Name == "PART_CloseButton");
@@ -196,7 +196,7 @@ public class NotificationCardThemeTests
     [Fact]
     public void Progress_Bar_Gradient_Uses_Primary_Border_Hover_To_Primary()
     {
-        var progressBrush = GetThemeResource<IBrush>(NotificationTokenKind.NotificationProgressBg);
+        var progressBrush = GetThemeResource<IBrush>(NotificationCardTokenKind.NotificationProgressBg);
         var gradient      = progressBrush.ShouldBeAssignableTo<IGradientBrush>();
 
         gradient.GradientStops.Count.ShouldBe(2);
@@ -216,18 +216,18 @@ public class NotificationCardThemeTests
         var compactTitleGap          = GetThemeResource<double>(SharedTokenKind.UniformlyMarginXS) * ratio;
         var compactIconGap           = GetThemeResource<double>(SharedTokenKind.UniformlyMarginSM) * ratio;
 
-        var notificationPadding = GetThemeResource<Thickness>(NotificationTokenKind.NotificationPadding);
+        var notificationPadding = GetThemeResource<Thickness>(NotificationCardTokenKind.NotificationPadding);
         ThicknessShouldBe(
             notificationPadding,
             new Thickness(compactHorizontalPadding, compactVerticalPadding, compactHorizontalPadding, 0));
 
-        var contentMargin = GetThemeResource<Thickness>(NotificationTokenKind.NotificationContentMargin);
+        var contentMargin = GetThemeResource<Thickness>(NotificationCardTokenKind.NotificationContentMargin);
         ThicknessShouldBe(contentMargin, new Thickness(0, 0, 0, compactVerticalPadding));
 
-        var headerMargin = GetThemeResource<Thickness>(NotificationTokenKind.HeaderMargin);
+        var headerMargin = GetThemeResource<Thickness>(NotificationCardTokenKind.HeaderMargin);
         ThicknessShouldBe(headerMargin, new Thickness(0, 0, 0, compactTitleGap));
 
-        var iconMargin = GetThemeResource<Thickness>(NotificationTokenKind.NotificationIconMargin);
+        var iconMargin = GetThemeResource<Thickness>(NotificationCardTokenKind.NotificationIconMargin);
         ThicknessShouldBe(iconMargin, new Thickness(0, 0, compactIconGap, 0));
     }
 

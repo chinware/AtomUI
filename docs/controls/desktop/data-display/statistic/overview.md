@@ -29,7 +29,7 @@ Statistic 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Statistic 是 AtomUI 桌面控件体系中的统计数值控件，用于展示标题、数值、前后缀、计时或动态计数。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `AnimatingValue`、`ContentFontSize`、`ContentForeground`、`EndValue`、`Value`、`ValuePrefixAddOn`、`ValuePrefixAddOnTemplate`、`ValueSuffixAddOn` 等 9 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | loading/async、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Statistic Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Statistic Token + ControlTheme。 |
 
 ## 3. API 与契约模型
 
@@ -79,17 +79,16 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-Statistic 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Statistic 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `AbstractStatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `StatisticCountUpTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `StatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `StatisticThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TimerStatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Statistic 使用 `StatisticToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、collection/filter、input/value、motion、visual option 运行时状态。
+Statistic 使用 `StatisticToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -108,7 +107,7 @@ Statistic 与同分类控件共享尺寸、状态、Token、Gallery 展示和验
 - `AbstractStatisticTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `Statistic`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `StatisticCountUp`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `StatisticToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `StatisticToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `TimerStatistic`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 
 集成关系：

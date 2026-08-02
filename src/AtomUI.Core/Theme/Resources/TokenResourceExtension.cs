@@ -21,6 +21,12 @@ public abstract class TokenResourceExtension<TTokenKind> : MarkupExtension
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
         Debug.Assert(Kind != null);
-        return new DynamicResourceExtension(Kind);
+        if (Kind is not { } kind)
+        {
+            throw new InvalidOperationException("A Token resource key is required.");
+        }
+        return new DynamicResourceExtension(GetResourceKey(kind));
     }
+
+    protected virtual object GetResourceKey(TTokenKind kind) => kind;
 }

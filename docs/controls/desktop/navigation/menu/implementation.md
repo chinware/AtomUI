@@ -1,6 +1,6 @@
 # Menu 桌面版实现原理
 
-本文档描述 Menu 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Menu 桌面版架构设计](overview.md)，弹层滚动模式见 [Menu 弹层滚动模式设计](popup-scroll-design.md)，变化记录见 [Menu Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Menu Token 设计](token.md)。
+本文档描述 Menu 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Menu 桌面版架构设计](overview.md)，弹层滚动模式见 [Menu 弹层滚动模式设计](popup-scroll-design.md)，变化记录见 [Menu Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Menu Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -26,13 +26,11 @@
 - `src/AtomUI.Desktop.Controls/Menu/MenuSeparator.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuSeparatorData.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuToken.cs`
-- `src/AtomUI.Desktop.Controls/Menu/Themes/BrowserMenuThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/ContextMenuTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuItemTheme.cs`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuSeparatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Menu/Themes/MenuThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/TopLevelMenuItemTheme.axaml`
 
 职责边界：
@@ -55,7 +53,7 @@
 - `MenuItemTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `MenuSeparator`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `MenuSeparatorData`：数据、状态或行为协作类型，维护集合同步和事件路径。
-- `MenuToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `MenuToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `ToggleItemsLayoutVisibleConverter`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 
 核心协作规则：

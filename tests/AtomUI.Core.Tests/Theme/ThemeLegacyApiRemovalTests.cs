@@ -58,10 +58,9 @@ public class ThemeLegacyApiRemovalTests
                              .ToArray();
 
         builderMethods.ShouldBe([
-            nameof(IThemeManagerBuilder.AddControlThemesProvider),
-            nameof(IThemeManagerBuilder.AddControlToken),
+            nameof(IThemeManagerBuilder.AddControlPackage),
             nameof(IThemeManagerBuilder.AddInitializer),
-            nameof(IThemeManagerBuilder.AddLanguageProviders),
+            nameof(IThemeManagerBuilder.AddLanguageProvider),
             nameof(IThemeManagerBuilder.AddThemeDefinitionResolver),
             nameof(IThemeManagerBuilder.UseUserThemeDirectory),
             nameof(IThemeManagerBuilder.UseUserThemeDirectory),
@@ -209,5 +208,39 @@ public class ThemeLegacyApiRemovalTests
                                .ToArray();
 
         remainingMethods.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Control_Token_Base_Exposes_Only_Effective_Global_Token_To_Derived_Tokens()
+    {
+        var type = typeof(AbstractControlDesignToken);
+
+        type.GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .ShouldBeNull();
+        type.GetField("SharedToken", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .ShouldBeNull();
+        type.GetConstructor(
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                binder: null,
+                [typeof(string)],
+                modifiers: null)
+            .ShouldBeNull();
+
+        var effectiveGlobalToken = type.GetProperty(
+            "EffectiveGlobalToken",
+            BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        effectiveGlobalToken.ShouldNotBeNull();
+        effectiveGlobalToken.PropertyType.ShouldBe(typeof(DesignToken));
+        effectiveGlobalToken.GetMethod.ShouldNotBeNull();
+        effectiveGlobalToken.GetMethod.IsFamily.ShouldBeTrue();
+
+        type.GetMethod(
+                "AssignEffectiveGlobalToken",
+                BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .ShouldNotBeNull();
+        type.GetMethod(
+                "AssignSharedToken",
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .ShouldBeNull();
     }
 }

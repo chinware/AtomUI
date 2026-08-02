@@ -113,14 +113,16 @@ internal sealed record ThemeScopeStagedSnapshot(
 internal sealed class ThemeScopeUpdateResult
 {
     private ThemeScopeUpdateResult(
-        bool success,
+        long transitionId,
+        ThemeTransitionStatus status,
         ThemeRequest request,
         ThemeState state,
         IReadOnlyList<ThemeDiagnostic> diagnostics,
         IReadOnlyList<ThemeDiagnostic> publishDiagnostics,
         Exception? exception)
     {
-        Success            = success;
+        TransitionId       = transitionId;
+        Status             = status;
         Request            = request;
         State              = state;
         Diagnostics        = diagnostics;
@@ -128,20 +130,43 @@ internal sealed class ThemeScopeUpdateResult
         Exception          = exception;
     }
 
-    internal bool Success { get; }
+    internal long TransitionId { get; }
+    internal ThemeTransitionStatus Status { get; }
+    internal bool Success => Status == ThemeTransitionStatus.Committed;
     internal ThemeRequest Request { get; }
     internal ThemeState State { get; }
     internal IReadOnlyList<ThemeDiagnostic> Diagnostics { get; }
     internal IReadOnlyList<ThemeDiagnostic> PublishDiagnostics { get; }
     internal Exception? Exception { get; }
 
+    internal ThemeScopeUpdateResult WithPublishDiagnostics(
+        IReadOnlyList<ThemeDiagnostic> publishDiagnostics)
+    {
+        ArgumentNullException.ThrowIfNull(publishDiagnostics);
+        if (publishDiagnostics.Count == 0)
+        {
+            return this;
+        }
+
+        return new ThemeScopeUpdateResult(
+            TransitionId,
+            Status,
+            Request,
+            State,
+            Diagnostics,
+            PublishDiagnostics.Concat(publishDiagnostics).ToArray(),
+            Exception);
+    }
+
     internal static ThemeScopeUpdateResult Succeeded(
+        long transitionId,
         ThemeRequest request,
         ThemeState state,
         IReadOnlyList<ThemeDiagnostic>? publishDiagnostics = null)
     {
         return new ThemeScopeUpdateResult(
-            true,
+            transitionId,
+            ThemeTransitionStatus.Committed,
             request,
             state,
             Array.Empty<ThemeDiagnostic>(),
@@ -150,20 +175,58 @@ internal sealed class ThemeScopeUpdateResult
     }
 
     internal static ThemeScopeUpdateResult Failed(
+        long transitionId,
         ThemeRequest request,
         ThemeState state,
         IReadOnlyList<ThemeDiagnostic> diagnostics,
         Exception? exception)
     {
         return new ThemeScopeUpdateResult(
-            false,
+            transitionId,
+            ThemeTransitionStatus.Failed,
             request,
             state,
             diagnostics,
             Array.Empty<ThemeDiagnostic>(),
             exception);
     }
+
+    internal static ThemeScopeUpdateResult NoOp(
+        long transitionId,
+        ThemeRequest request,
+        ThemeState state)
+    {
+        return new ThemeScopeUpdateResult(
+            transitionId,
+            ThemeTransitionStatus.NoOp,
+            request,
+            state,
+            Array.Empty<ThemeDiagnostic>(),
+            Array.Empty<ThemeDiagnostic>(),
+            null);
+    }
+
+    internal static ThemeScopeUpdateResult Superseded(
+        long transitionId,
+        ThemeRequest request,
+        ThemeState state)
+    {
+        return new ThemeScopeUpdateResult(
+            transitionId,
+            ThemeTransitionStatus.Superseded,
+            request,
+            state,
+            Array.Empty<ThemeDiagnostic>(),
+            Array.Empty<ThemeDiagnostic>(),
+            null);
+    }
 }
+
+internal sealed record PendingThemeScopeUpdate(
+    ThemeConfigProvider Provider,
+    long RegistrationId,
+    long ConfigRevision,
+    Configuration.ThemeConfig Config);
 
 internal sealed class ThemeRequestCacheKey : IEquatable<ThemeRequestCacheKey>
 {

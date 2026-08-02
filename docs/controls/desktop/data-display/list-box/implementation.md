@@ -18,7 +18,6 @@ ListBox 的实现目标是在 Avalonia `ListBox` 基类上增加 AtomUI 的视�
 - `src/AtomUI.Desktop.Controls/ListBox/ListBoxToken.cs`：ListBox 专属 Token 定义。
 - `src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`：root 模板、ScrollViewer、ItemsPresenter、EmptyIndicator、默认 ItemTemplate 和 root 样式。
 - `src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxItemTheme.axaml`：条目模板、选中指示器、普通内容、过滤高亮文本和条目状态样式。
-- `src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxThemes.axaml`：ListBox 和 ListBoxItem theme 注册。
 - `src/AtomUI.Desktop.Controls/Primitives/CandidateList/CandidateList.cs`：基于 ListBox 的候选项列表扩展。
 - `src/AtomUI.Controls.Shared/IListVirtualizingContextAware.cs`：虚拟化上下文保存、恢复和清理接口。
 

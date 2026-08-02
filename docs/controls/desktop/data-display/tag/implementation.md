@@ -1,6 +1,6 @@
 # Tag 桌面版实现原理
 
-本文档描述 Tag 家族桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Tag 桌面版架构设计](overview.md)，CheckableTag 选择与组合机制见 [CheckableTag 与 CheckableTagGroup 选择模型设计](checkable-tag-design.md)，变化记录见 [Tag Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Tag Token 设计](token.md)。
+本文档描述 Tag 家族桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Tag 桌面版架构设计](overview.md)，CheckableTag 选择与组合机制见 [CheckableTag 与 CheckableTagGroup 选择模型设计](checkable-tag-design.md)，变化记录见 [Tag Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Tag Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -17,7 +17,6 @@
 - `src/AtomUI.Desktop.Controls/Tag/TagToken.cs`
 - `src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.cs`
-- `src/AtomUI.Desktop.Controls/Tag/Themes/TagThemes.axaml`
 
 职责边界：
 
@@ -31,7 +30,7 @@
 - `AbstractTag`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
 - `Tag`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TagTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `TagToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `TagToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `AbstractCheckableTag` / `CheckableTag`：以 ToggleButton 作为输入状态 owner，增加 Icon、动效和 Form 投影。
 - `AbstractCheckableTagGroup` / `CheckableTagGroup`：拥有 Options、模式、公开选择值、Default 初始化、事件和集合生命周期。
 - internal checkable items control：持有 SelectionModel、生成 CheckableTag 容器并同步 IsChecked；其 SelectedItem(s) 不对外暴露。

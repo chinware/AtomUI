@@ -2,7 +2,7 @@
 
 namespace AtomUI.Desktop.Controls.DialogLang;
 
-[LanguageProvider(LanguageCode.zh_CN, DialogToken.ID)]
+[LanguageProvider(LanguageCode.zh_CN, "Dialog")]
 internal class zh_CN
 {
     public const string Ok = "确定";

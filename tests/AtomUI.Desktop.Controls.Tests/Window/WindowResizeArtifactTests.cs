@@ -122,7 +122,7 @@ public class WindowResizeArtifactTests
         var waylandSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/Chrome/WaylandWindowChromeManager.cs"));
 
-        tokenSource.ShouldContain("FrameShadows             = SharedToken.BoxShadowsSecondary;");
+        tokenSource.ShouldContain("FrameShadows             = EffectiveGlobalToken.BoxShadowsSecondary;");
         tokenSource.ShouldNotContain("ScaleFrameShadows");
         waylandSource.ShouldContain("private const double ManagedResizeGripScale = 1.0 / 3.0;");
         waylandSource.ShouldContain("Window.TryTakeOverManagedResizeGrip(");

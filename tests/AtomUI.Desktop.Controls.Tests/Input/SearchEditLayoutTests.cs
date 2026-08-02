@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -15,6 +16,50 @@ public class SearchEditLayoutTests
     static SearchEditLayoutTests()
     {
         AvaloniaTestApp.EnsureInitialized();
+    }
+
+    [Fact]
+    public void Search_Button_Is_A_Public_Button_With_A_Replaceable_Semantic_Part_Theme()
+    {
+        var customTheme = new ControlTheme(typeof(global::AtomUI.Desktop.Controls.Button));
+        var searchEdit = new AtomUISearchEdit
+        {
+            Width = 360,
+            SearchButtonText = "Search",
+            SearchButtonTheme = customTheme
+        };
+
+        ShowInWindow(searchEdit, () =>
+        {
+            var searchButton = FindTemplatePart<global::AtomUI.Desktop.Controls.Button>(
+                searchEdit,
+                "PART_RightAddOn");
+
+            searchButton.GetType().ShouldBe(typeof(global::AtomUI.Desktop.Controls.Button));
+            searchButton.Theme.ShouldBeSameAs(customTheme);
+        });
+    }
+
+    [Fact]
+    public void Search_Button_Theme_Contract_Has_No_Internal_Control_Or_Borrowed_LineEdit_Identity()
+    {
+        var searchEditSource = ReadRepoFile("src/AtomUI.Desktop.Controls/Input/SearchEdit.cs");
+        var decoratedBoxTheme = ReadRepoFile(
+            "src/AtomUI.Desktop.Controls/Input/Themes/SearchEditDecoratedBoxTheme.axaml");
+        var searchButtonTheme = ReadRepoFile(
+            "src/AtomUI.Desktop.Controls/Input/Themes/SearchButtonTheme.axaml");
+
+        searchEditSource.ShouldContain("StyledProperty<ControlTheme?> SearchButtonThemeProperty");
+        searchEditSource.ShouldContain("public ControlTheme? SearchButtonTheme");
+        File.Exists(GetRepoFile("src/AtomUI.Desktop.Controls/Input/SearchButton.cs")).ShouldBeFalse();
+        decoratedBoxTheme.ShouldContain("<atom:Button");
+        decoratedBoxTheme.ShouldContain("Theme=\"{TemplateBinding SearchButtonTheme}\"");
+        decoratedBoxTheme.ShouldNotContain("atom:SearchButton");
+        searchButtonTheme.ShouldContain("TargetType=\"{x:Type atom:Button}\"");
+        searchButtonTheme.ShouldContain("ButtonTokenResource");
+        searchButtonTheme.ShouldContain("SearchEditTokenResource");
+        searchButtonTheme.ShouldNotContain("LineEditTokenResource");
+        searchButtonTheme.ShouldNotContain("atom:SearchButton");
     }
 
     [Fact]
@@ -173,6 +218,28 @@ public class SearchEditLayoutTests
                           .SingleOrDefault(item => item.Name == name);
         part.ShouldNotBeNull();
         return part!;
+    }
+
+    private static string ReadRepoFile(string relativePath)
+    {
+        return File.ReadAllText(GetRepoFile(relativePath));
+    }
+
+    private static string GetRepoFile(string relativePath)
+    {
+        var directory = AppContext.BaseDirectory;
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory, relativePath);
+            if (File.Exists(candidate) || Directory.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = Directory.GetParent(directory)?.FullName;
+        }
+
+        return Path.Combine(AppContext.BaseDirectory, relativePath);
     }
 
     private static void ShowInWindow(Control content, Action assertion)

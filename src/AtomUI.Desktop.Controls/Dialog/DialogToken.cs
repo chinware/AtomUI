@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class DialogToken : AbstractControlDesignToken
 {
-    public const string ID = "Dialog";
     
     /// <summary>
     /// 顶部背景色
@@ -95,7 +94,7 @@ internal class DialogToken : AbstractControlDesignToken
     public Thickness LoadingIndicatorMargin { get; set; }
     
     public DialogToken()
-        : base(ID)
+
     {
     }
 
@@ -103,25 +102,25 @@ internal class DialogToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
         HeaderBg       = Colors.Transparent;
-        HeaderFontSize = SharedToken.FontSizeHeading5;
-        ContentBg      = SharedToken.ColorBgElevated;
-        HeaderColor    = SharedToken.ColorTextHeading;
-        ContentPadding = new Thickness(SharedToken.PaddingContentHorizontalLG, 0,
-            SharedToken.PaddingContentHorizontalLG, 0);
-        HeaderPadding = new Thickness(SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingSM,
-            SharedToken.PaddingContentHorizontalSM, 0);
-        HeaderMarginBottom = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
-        LogoSize           = SharedToken.SizeLG;
-        MinHeight = SharedToken.ControlHeightLG + HeaderPadding.Top + HeaderPadding.Bottom +
-                    SharedToken.UniformlyMarginXS;
+        HeaderFontSize = EffectiveGlobalToken.FontSizeHeading5;
+        ContentBg      = EffectiveGlobalToken.ColorBgElevated;
+        HeaderColor    = EffectiveGlobalToken.ColorTextHeading;
+        ContentPadding = new Thickness(EffectiveGlobalToken.PaddingContentHorizontalLG, 0,
+            EffectiveGlobalToken.PaddingContentHorizontalLG, 0);
+        HeaderPadding = new Thickness(EffectiveGlobalToken.PaddingContentHorizontalLG, EffectiveGlobalToken.UniformlyPaddingSM,
+            EffectiveGlobalToken.PaddingContentHorizontalSM, 0);
+        HeaderMarginBottom = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyMarginXS);
+        LogoSize           = EffectiveGlobalToken.SizeLG;
+        MinHeight = EffectiveGlobalToken.ControlHeightLG + HeaderPadding.Top + HeaderPadding.Bottom +
+                    EffectiveGlobalToken.UniformlyMarginXS;
         MinWidth     = 200;
-        CloseBtnSize = SharedToken.ControlHeight;
-        FooterPadding = new Thickness(SharedToken.PaddingContentHorizontalLG, 0,
-            SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingMD);
-        FooterMarginTop    = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
+        CloseBtnSize = EffectiveGlobalToken.ControlHeight;
+        FooterPadding = new Thickness(EffectiveGlobalToken.PaddingContentHorizontalLG, 0,
+            EffectiveGlobalToken.PaddingContentHorizontalLG, EffectiveGlobalToken.UniformlyPaddingMD);
+        FooterMarginTop    = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS, 0, 0);
         FooterBg           = Colors.Transparent;
-        ButtonGroupSpacing = SharedToken.SpacingXS;
-        LoadingIndicatorMargin = new Thickness(0, 0, 0, SharedToken.UniformlyMargin);
+        ButtonGroupSpacing = EffectiveGlobalToken.SpacingXS;
+        LoadingIndicatorMargin = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyMargin);
     }
     
 }

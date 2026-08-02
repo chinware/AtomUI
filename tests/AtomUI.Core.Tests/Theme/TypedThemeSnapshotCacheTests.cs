@@ -84,12 +84,14 @@ public class TypedThemeSnapshotCacheTests
 
     internal static ThemeSchemaRegistry CreateRegistry(
         IReadOnlyList<ControlTokenDescriptor>? controls = null,
-        IReadOnlyList<ThemeAlgorithmDescriptor>? algorithms = null)
+        IReadOnlyList<ThemeAlgorithmDescriptor>? algorithms = null,
+        IReadOnlyList<ControlThemeAssetDescriptor>? themeAssets = null)
     {
         return new ThemeSchemaRegistry(
             GeneratedThemeSchema.GetGlobalTokens(),
             controls ?? Array.Empty<ControlTokenDescriptor>(),
-            algorithms ?? GeneratedThemeSchema.GetAlgorithms());
+            algorithms ?? GeneratedThemeSchema.GetAlgorithms(),
+            themeAssets ?? Array.Empty<ControlThemeAssetDescriptor>());
     }
 
     internal static ThemeCompileInput CreateInput(

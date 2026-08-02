@@ -101,4 +101,40 @@ public class ThemeTokenResolverTests
         effectivePrimary.ShouldBe(Color.Parse("#00b96b"));
         palette.ColorSequence.Count.ShouldBe(10);
     }
+
+    [Fact]
+    public void Control_Accessor_Uses_Exact_Owner_Type_And_One_Captured_Snapshot()
+    {
+        var snapshot = ThemeTokenResourceProviderTests.Compile(controlPrimary: "#00b96b");
+        var manager = new ThemeManager(static () => true);
+        var context = new ThemeContext(manager, snapshot, 0);
+        var owner = new ButtonThemeTestControl();
+        owner.SetValue(ThemeScope.ContextProperty, context);
+
+        var accessor = ControlTokenAccessor.Capture(owner);
+
+        accessor.GetEffectiveGlobal<Color>(SharedTokenKind.ColorPrimary)
+                .ShouldBe(Color.Parse("#00b96b"));
+        accessor.GetOwn<double>(CompilerButtonTokenKind.Height).ShouldBe(32d);
+
+        var derived = new DerivedButtonThemeTestControl();
+        derived.SetValue(ThemeScope.ContextProperty, context);
+        Should.Throw<InvalidOperationException>(() => ControlTokenAccessor.Capture(derived));
+    }
+
+    [Fact]
+    public void Control_Accessor_Can_Explicitly_Capture_A_Registered_Base_Control_Type()
+    {
+        var snapshot = ThemeTokenResourceProviderTests.Compile(controlPrimary: "#00b96b");
+        var manager = new ThemeManager(static () => true);
+        var context = new ThemeContext(manager, snapshot, 0);
+        var owner = new DerivedButtonThemeTestControl();
+        owner.SetValue(ThemeScope.ContextProperty, context);
+
+        var accessor = ControlTokenAccessor.Capture<ButtonThemeTestControl>(owner);
+
+        accessor.GetEffectiveGlobal<Color>(SharedTokenKind.ColorPrimary)
+                .ShouldBe(Color.Parse("#00b96b"));
+        accessor.GetOwn<double>(CompilerButtonTokenKind.Height).ShouldBe(32d);
+    }
 }

@@ -2,7 +2,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.CalendarControlLang;
 
-[LanguageProvider(LanguageCode.zh_TW, CalendarControlToken.ID)]
+[LanguageProvider(LanguageCode.zh_TW, "CalendarControl")]
 internal class zh_TW
 {
     public const string Month = "月";

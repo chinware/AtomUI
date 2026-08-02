@@ -18,30 +18,35 @@ sequenceDiagram
     App->>Builder: 创建 ThemeManagerBuilder
     App->>Desktop: builder.UseDesktopControls()
     Desktop->>Common: 注册公共 Control 包
-    Common->>Builder: 注册生成 descriptor / asset / dependency manifest
+    Common->>Builder: 注册生成 descriptor / asset manifest
     Desktop->>Builder: 注册 Desktop 生成 manifest
     Desktop->>Builder: 注册 Desktop 或 Browser Theme Provider
     Desktop->>Builder: 注册语言 Provider 和初始化回调
-    Builder->>Registry: 合并依赖并冻结 schema
+    Builder->>Registry: 校验 type / identity / asset 并冻结 schema
     App->>Theme: Build + Configure + NotifyInitialized
 ```
 
-冻结顺序不可交换。内置、第三方包和应用在构建期生成的 ControlTheme Token dependency manifest 必须先合并，
-ThemeConfig 才能根据每个 Control 的 `SupportedGlobalTokens + OwnTokens` 完成校验和规范化。
+冻结顺序不可交换。内置、第三方包和应用必须先注册完整 Global Token schema、带 exact CLR type/identity 的
+Control descriptor 和 ControlTheme asset manifest。ThemeConfig 随后按“全部 Global Token + 当前 Control Own
+Token”完成校验和规范化，不依赖主题消费清单。
 
 ## 生成注册内容
 
 Control 包注册以下生成结果：
 
-- `ControlTokenDescriptor`：每个对外可主题化 Control 的 identity、可选 Own Token、计算依赖、强类型构造和资源
-  投影；没有 Own Token 的 Control 也拥有 descriptor。
-- `ControlThemeAssetManifest`：资产 URI、owner identity、Semantic Part Theme 契约和静态校验结果。
-- `ControlThemeTokenDependencyManifest`：AXAML 中 `XxxTokenResource` 消费的 Global Token。
+- `ControlTokenDescriptor`：每个对外可主题化 Control 的 exact CLR type、identity、可选 Own Token、强类型构造和
+  资源投影；没有 Own Token 的 Control 也拥有 descriptor。
+- `ControlThemeAssetManifest`：资产 URI、owner identity、引用的 Control identities、Semantic Part Theme 契约和
+  静态校验结果。
 - `XxxTokens.Identity`、`XxxTokenKey` 和 `XxxTokenResourceExtension`。
 - Language Provider 和其他包级静态注册项。
 
 运行时不扫描程序集、不解析 AXAML 文本，也不通过 TargetType、Control 继承或 ControlTheme `BasedOn` 推断 Token
 identity。
+
+Catalog 是包级 identity 边界：内置 AtomUI 包固定使用 `AtomUI`，第三方包由生成 target 默认使用项目
+`AssemblyName`。主题资产的 owner identity 始终来自声明资产的包，即使其 `TargetType` 指向 Avalonia 或其他
+外部 Control。
 
 ## Desktop 与 Browser Provider
 
@@ -66,8 +71,9 @@ Rating/
     \-- RatingTheme.axaml
 ```
 
-只有一个 ControlTheme 时不增加包装层。多个主题资产直接加入 `Themes/`，由同一 manifest 注册。开发者不添加
-`ControlThemeAssets` Attribute、Theme Module、聚合 AXAML、手工 identity 或逐 Theme 注册调用。
+只有一个 ControlTheme 时不增加源码包装层。多个主题资产直接加入 `Themes/`，由同一 manifest 注册。开发者不添加
+`ControlThemeAssets` Attribute、Theme Module、聚合 AXAML、手工 identity 或逐 Theme 注册调用。构建系统可为
+ResourceDictionary 和 typed ControlTheme 生成加载包装；这些生成资产不是 Control 作者需要维护的额外层级。
 
 第三方包遵循同一规则，并只公开一次包级入口，例如 `UseAcmeControls()`。
 

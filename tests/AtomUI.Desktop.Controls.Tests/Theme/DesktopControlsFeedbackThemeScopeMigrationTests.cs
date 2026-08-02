@@ -46,11 +46,11 @@ public class DesktopControlsFeedbackThemeScopeMigrationTests
     }
 
     [Fact]
-    public void Feedback_Control_Themes_Use_Ambient_Shared_Token_Scopes()
+    public void Feedback_Control_Themes_Use_Explicit_Token_Resources()
     {
         foreach (var relativeDirectory in ThemeDirectories)
         {
-            ThemeAssetScopeAssertions.AssertDirectoryUsesSharedTokenScope(relativeDirectory);
+            ThemeAssetScopeAssertions.AssertDirectoryUsesExplicitTokenResources(relativeDirectory);
         }
     }
 

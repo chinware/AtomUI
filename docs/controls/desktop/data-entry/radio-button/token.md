@@ -1,6 +1,6 @@
 # RadioButton Token 设计
 
-本文档定义 RadioButton 与 OptionButton 控件家族相关组件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。控件家族整体架构见 [RadioButton 桌面版架构设计](overview.md)，内部实现原理见 [RadioButton 桌面版实现原理](implementation.md)，OptionButtonGroup 的方向布局见 [OptionButtonGroup 方向布局设计](option-button-group-orientation-design.md)，设计和契约变化记录见 [RadioButton Changelog](changelog.md)。
+本文档定义 RadioButton 与 OptionButton 控件家族相关控件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。控件家族整体架构见 [RadioButton 桌面版架构设计](overview.md)，内部实现原理见 [RadioButton 桌面版实现原理](implementation.md)，OptionButtonGroup 的方向布局见 [OptionButtonGroup 方向布局设计](option-button-group-orientation-design.md)，设计和契约变化记录见 [RadioButton Changelog](changelog.md)。
 
 ## 1. 定位
 

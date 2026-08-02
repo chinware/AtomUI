@@ -13,11 +13,11 @@
         <Setter Property="BottomPaginationAlign" Value="Start" />
         <Setter Property="IsHideOnSinglePage" Value="False" />
         <Style Selector="^ /template/ ContentPresenter#TopPaginationPresenter">
-            <Setter Property="Margin" Value="{atom:TransferTokenResource PaginationMargin}"/>
+            <Setter Property="Margin" Value="{atom:TransferListViewTokenResource PaginationMargin}"/>
         </Style>
         
         <Style Selector="^ /template/ ContentPresenter#BottomPaginationPresenter">
-            <Setter Property="Margin" Value="{atom:TransferTokenResource PaginationMargin}"/>
+            <Setter Property="Margin" Value="{atom:TransferListViewTokenResource PaginationMargin}"/>
         </Style>
         
         <Style Selector="^[IsPaginationEnabled=False]">

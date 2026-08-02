@@ -354,7 +354,7 @@ public class OtpLineEditBehaviorTests
             otpLineEdit.Focus();
             Dispatcher.UIThread.RunJobs();
 
-            var activeBorder = GetThemeResource<IBrush>(AddOnDecoratedBoxTokenKind.ActiveBorderColor);
+            var activeBorder = GetThemeResource<IBrush>(SharedTokenKind.ColorPrimary);
             var activeBg     = GetThemeResource<IBrush>(SharedTokenKind.ColorBgContainer);
             var activeCell   = otpLineEdit.GetVisualDescendants()
                                           .OfType<OtpLineEditCell>()
@@ -426,8 +426,8 @@ public class OtpLineEditBehaviorTests
         ShowInWindow(otpLineEdit, () =>
         {
             var normalBorder = GetThemeResource<IBrush>(SharedTokenKind.ColorBorder);
-            var hoverBorder  = GetThemeResource<IBrush>(AddOnDecoratedBoxTokenKind.HoverBorderColor);
-            var activeBorder = GetThemeResource<IBrush>(AddOnDecoratedBoxTokenKind.ActiveBorderColor);
+            var hoverBorder  = GetThemeResource<IBrush>(SharedTokenKind.ColorPrimaryHover);
+            var activeBorder = GetThemeResource<IBrush>(SharedTokenKind.ColorPrimary);
             var cell         = otpLineEdit.GetVisualDescendants()
                                           .OfType<OtpLineEditCell>()
                                           .First();

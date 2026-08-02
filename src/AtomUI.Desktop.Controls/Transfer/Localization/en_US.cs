@@ -2,7 +2,7 @@
 
 namespace AtomUI.Desktop.Controls.TransferLang;
 
-[LanguageProvider(LanguageCode.en_US, TransferToken.ID)]
+[LanguageProvider(LanguageCode.en_US, "Transfer")]
 internal class en_US
 {
     public const string Item = "item";

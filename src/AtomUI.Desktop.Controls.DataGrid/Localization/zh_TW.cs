@@ -2,7 +2,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.DataGridLocalization;
 
-[LanguageProvider(LanguageCode.zh_TW, DataGridToken.ID)]
+[LanguageProvider(LanguageCode.zh_TW, "DataGrid")]
 internal class zh_TW
 {
     public const string SelectAllFilterItems = "選擇所有";

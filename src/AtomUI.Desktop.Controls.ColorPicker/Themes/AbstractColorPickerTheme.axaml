@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls_ColorPicker"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:ColorPickerThemeAsset.Identity}"
     x:Class="AtomUI.Desktop.Controls.Themes.AbstractColorPickerTheme"
     TargetType="atom:AbstractColorPicker"
     x:ClassModifier="internal">
@@ -22,7 +19,7 @@
         <Setter Property="EmptyColorText" Value="{atom:ColorPickerLangResource EmptyColorText}" />
         <Setter Property="IsArrowVisible" Value="True" />
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
-        <Setter Property="MarginToAnchor" Value="{atom:PopupHostTokenResource MarginToAnchor}" />
+        <Setter Property="MarginToAnchor" Value="{atom:ColorPickerTokenResource UniformlyMarginXXS}" />
 
         <Style Selector="^:pointerover, ^:flyout-open">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryHover}" />

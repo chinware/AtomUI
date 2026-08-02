@@ -5,9 +5,6 @@
     xmlns:calendarView="clr-namespace:AtomUI.Desktop.Controls.CalendarView"
     xmlns:calendarViewInfrastructure="clr-namespace:AtomUI.Desktop.Controls.CalendarView.Infrastructure"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:DatePickerThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type calendarView:DualMonthCalendarItem}" TargetType="calendarView:DualMonthCalendarItem">
         <ControlTheme.BasedOn>
@@ -208,7 +205,7 @@
         </Style>
 
         <Style Selector="^[IsQuarterViewMode=True] /template/ Grid#PART_SecondaryYearView">
-            <Setter Property="MinHeight" Value="{atom:CalendarTokenResource WithoutTimeCellHeight}" />
+            <Setter Property="MinHeight" Value="{atom:DatePickerTokenResource WithoutTimeCellHeight}" />
         </Style>
 
     </ControlTheme>

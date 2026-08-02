@@ -1,6 +1,6 @@
 # Space 桌面版实现原理
 
-本文档描述 Space 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Space 桌面版架构设计](overview.md)，变化记录见 [Space Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [Space Token 设计](token.md)。
+本文档描述 Space 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Space 桌面版架构设计](overview.md)，变化记录见 [Space Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Space Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -21,7 +21,6 @@
 - `src/AtomUI.Desktop.Controls/Space/SpaceToken.cs`
 - `src/AtomUI.Desktop.Controls/Space/Themes/CompactSpaceAddOnTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Space/Themes/CompactSpaceTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Space/Themes/SpaceThemes.axaml`
 
 职责边界：
 
@@ -39,7 +38,7 @@
 - `CompactSpaceItem`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `InvalidSpaceFillerUsageException`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `Space`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `SpaceToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `SpaceToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 核心协作规则：
 

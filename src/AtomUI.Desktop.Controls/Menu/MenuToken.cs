@@ -8,10 +8,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class MenuToken : AbstractControlDesignToken
 {
-    public const string ID = "Menu";
 
     public MenuToken()
-        : base(ID)
+
     {
     }
 
@@ -224,27 +223,27 @@ internal class MenuToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
 
-        var colorTextDisabled  = SharedToken.ColorTextDisabled;
-        var colorError         = SharedToken.ColorError;
-        var colorTextSecondary = SharedToken.ColorTextQuaternary;
-        var colorBgContainer   = SharedToken.ColorBgContainer;
-        var colorBgElevated    = SharedToken.ColorBgElevated;
-        var colorBgTextHover   = SharedToken.ColorBgTextHover;
-        var padding            = SharedToken.UniformlyPadding;
-        var controlHeight      = SharedToken.ControlHeight;
-        var controlHeightSM    = SharedToken.ControlHeightSM;
-        var controlHeightLG    = SharedToken.ControlHeightLG;
+        var colorTextDisabled  = EffectiveGlobalToken.ColorTextDisabled;
+        var colorError         = EffectiveGlobalToken.ColorError;
+        var colorTextSecondary = EffectiveGlobalToken.ColorTextQuaternary;
+        var colorBgContainer   = EffectiveGlobalToken.ColorBgContainer;
+        var colorBgElevated    = EffectiveGlobalToken.ColorBgElevated;
+        var colorBgTextHover   = EffectiveGlobalToken.ColorBgTextHover;
+        var padding            = EffectiveGlobalToken.UniformlyPadding;
+        var controlHeight      = EffectiveGlobalToken.ControlHeight;
+        var controlHeightSM    = EffectiveGlobalToken.ControlHeightSM;
+        var controlHeightLG    = EffectiveGlobalToken.ControlHeightLG;
 
-        var fontSize   = SharedToken.FontSize;
-        var fontSizeLG = SharedToken.FontSizeLG;
+        var fontSize   = EffectiveGlobalToken.FontSize;
+        var fontSizeLG = EffectiveGlobalToken.FontSizeLG;
 
         KeyGestureColor  = colorTextSecondary;
-        ItemBorderRadius = SharedToken.BorderRadius;
-        ItemColor        = SharedToken.ColorText;
+        ItemBorderRadius = EffectiveGlobalToken.BorderRadius;
+        ItemColor        = EffectiveGlobalToken.ColorText;
         ItemHoverColor   = ItemColor;
         ItemBg           = colorBgElevated;
         ItemHoverBg      = colorBgTextHover;
-        ItemMargin       = new Thickness(0, 0, SharedToken.UniformlyMarginXXS, 0);
+        ItemMargin       = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginXXS, 0);
 
         ItemDisabledColor = colorTextDisabled;
 
@@ -252,23 +251,23 @@ internal class MenuToken : AbstractControlDesignToken
         DangerItemHoverColor = colorError;
 
         ItemHeight       = controlHeight;
-        MenuPopupBgColor = SharedToken.ColorBgElevated;
+        MenuPopupBgColor = EffectiveGlobalToken.ColorBgElevated;
 
-        ItemPaddingInline       = new Thickness(padding, SharedToken.UniformlyPaddingXXS);
-        ItemIconSize            = SharedToken.IconSize;
+        ItemPaddingInline       = new Thickness(padding, EffectiveGlobalToken.UniformlyPaddingXXS);
+        ItemIconSize            = EffectiveGlobalToken.IconSize;
         ItemIconMarginInlineEnd = controlHeight - fontSize;
 
-        TopLevelItemColor         = SharedToken.ColorText;
-        TopLevelItemSelectedColor = SharedToken.ColorTextSecondary;
-        TopLevelItemHoverColor    = SharedToken.ColorTextSecondary;
+        TopLevelItemColor         = EffectiveGlobalToken.ColorText;
+        TopLevelItemSelectedColor = EffectiveGlobalToken.ColorTextSecondary;
+        TopLevelItemHoverColor    = EffectiveGlobalToken.ColorTextSecondary;
 
         TopLevelItemBg         = colorBgContainer;
         TopLevelItemHoverBg    = colorBgTextHover;
         TopLevelItemSelectedBg = colorBgTextHover;
 
-        TopLevelItemBorderRadiusSM = SharedToken.BorderRadiusSM;
-        TopLevelItemBorderRadius   = SharedToken.BorderRadius;
-        TopLevelItemBorderRadiusLG = SharedToken.BorderRadiusLG;
+        TopLevelItemBorderRadiusSM = EffectiveGlobalToken.BorderRadiusSM;
+        TopLevelItemBorderRadius   = EffectiveGlobalToken.BorderRadius;
+        TopLevelItemBorderRadiusLG = EffectiveGlobalToken.BorderRadiusLG;
 
         TopLevelItemFontSize   = !double.IsNaN(TopLevelItemFontSize) ? TopLevelItemFontSize : fontSize;
         TopLevelItemFontSizeSM = !double.IsNaN(TopLevelItemFontSizeSM) ? TopLevelItemFontSizeSM : fontSize;
@@ -284,26 +283,26 @@ internal class MenuToken : AbstractControlDesignToken
             ? TopLevelItemLineHeightLG
             : CalculatorUtils.CalculateLineHeight(TopLevelItemFontSizeLG) * TopLevelItemFontSizeLG;
 
-        TopLevelItemPaddingSM = new Thickness(SharedToken.PaddingContentHorizontalXS * 0.7,
+        TopLevelItemPaddingSM = new Thickness(EffectiveGlobalToken.PaddingContentHorizontalXS * 0.7,
             Math.Max((controlHeightSM - TopLevelItemLineHeightSM) / 2, 0));
-        TopLevelItemPadding = new Thickness(SharedToken.PaddingContentHorizontalXS,
+        TopLevelItemPadding = new Thickness(EffectiveGlobalToken.PaddingContentHorizontalXS,
             Math.Max((controlHeight - TopLevelItemLineHeight) / 2, 0));
-        TopLevelItemPaddingLG = new Thickness(SharedToken.PaddingContentHorizontalSM,
+        TopLevelItemPaddingLG = new Thickness(EffectiveGlobalToken.PaddingContentHorizontalSM,
             Math.Max((controlHeightLG - TopLevelItemLineHeightLG) / 2, 0));
 
-        TopLevelItemPopupMarginToAnchor = SharedToken.UniformlyMarginXXS;
+        TopLevelItemPopupMarginToAnchor = EffectiveGlobalToken.UniformlyMarginXXS;
 
         MenuPopupMinWidth = 120;
         MenuPopupMaxWidth = 800;
 
-        SeparatorItemHeight = SharedToken.LineWidth * 5;
+        SeparatorItemHeight = EffectiveGlobalToken.LineWidth * 5;
         MenuTearOffHeight   = ItemHeight * 1.2;
 
         MenuPopupContentPadding =
-            new Thickness(SharedToken.UniformlyPaddingXXS, SharedToken.BorderRadiusLG.TopLeft / 2);
+            new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS, EffectiveGlobalToken.BorderRadiusLG.TopLeft / 2);
 
-        ContextMenuOffsetX = SharedToken.SpacingXXS;
-        ContextMenuOffsetY = SharedToken.SpacingXXS;
+        ContextMenuOffsetX = EffectiveGlobalToken.SpacingXXS;
+        ContextMenuOffsetY = EffectiveGlobalToken.SpacingXXS;
     }
 
 }

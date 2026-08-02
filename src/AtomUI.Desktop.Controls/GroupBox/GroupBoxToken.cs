@@ -6,10 +6,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class GroupBoxToken : AbstractControlDesignToken
 {
-    public const string ID = "GroupBox";
     
     public GroupBoxToken()
-        : base(ID)
+
     {
     }
 
@@ -53,12 +52,12 @@ internal class GroupBoxToken : AbstractControlDesignToken
         base.CalculateTokenValues(isDarkMode);
         TextPaddingInline        = 1.0;
         OrientationMarginPercent = 0.05;
-        VerticalMarginInline     = SharedToken.UniformlyMarginXS;
-        ContentPadding           = SharedToken.PaddingXS;
-        HeaderContainerMargin = new Thickness(SharedToken.UniformlyMargin, SharedToken.UniformlyMarginXS,
-            SharedToken.UniformlyMargin, 0);
-        HeaderContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS, 0);
-        HeaderIconMargin     = new Thickness(0, 0, SharedToken.UniformlyMarginXXS, 0);
+        VerticalMarginInline     = EffectiveGlobalToken.UniformlyMarginXS;
+        ContentPadding           = EffectiveGlobalToken.PaddingXS;
+        HeaderContainerMargin = new Thickness(EffectiveGlobalToken.UniformlyMargin, EffectiveGlobalToken.UniformlyMarginXS,
+            EffectiveGlobalToken.UniformlyMargin, 0);
+        HeaderContentPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS, 0);
+        HeaderIconMargin     = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginXXS, 0);
     }
     
 }

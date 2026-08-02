@@ -136,7 +136,6 @@ Segmented 的视觉由根主题、item 主题、专属 Token 和 SharedToken 共
 | --- | --- |
 | `SegmentedTheme.axaml` | 根模板、轨道 padding/background、选中滑块资源、SizeType/Shape 圆角分支、方向/展开对齐和滑块动画。 |
 | `SegmentedItemTheme.axaml` | item 模板、图标/内容布局、hover/pressed/selected/disabled 状态、SizeType/Shape 分支和图标尺寸。 |
-| `SegmentedThemes.axaml` | 汇总 Segmented 相关主题资源。 |
 
 视觉关系：
 

@@ -1,6 +1,6 @@
 # PopupConfirm 桌面版实现原理
 
-本文档描述 PopupConfirm 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [PopupConfirm 桌面版架构设计](overview.md)，变化记录见 [PopupConfirm Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [PopupConfirm Token 设计](token.md)。
+本文档描述 PopupConfirm 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [PopupConfirm 桌面版架构设计](overview.md)，变化记录见 [PopupConfirm Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [PopupConfirm Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -17,7 +17,6 @@
 - `src/AtomUI.Desktop.Controls/PopupConfirm/PopupConfirmToken.cs`
 - `src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmContainerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmTheme.axaml`
-- `src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmThemes.axaml`
 
 职责边界：
 
@@ -32,7 +31,7 @@
 - `PopupConfirmContainer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `PopupConfirmFlyout`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `PopupConfirmPseudoClass`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `PopupConfirmToken`：组件 Token scope，负责从全局 token 派生控件语义变量。
+- `PopupConfirmToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
 核心协作规则：
 

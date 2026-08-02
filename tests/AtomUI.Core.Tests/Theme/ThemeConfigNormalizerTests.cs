@@ -35,8 +35,27 @@ public class ThemeConfigNormalizerTests
         var button = normalized.Controls.Single();
         button.AlgorithmMode.ShouldBe(ControlAlgorithmMode.Global);
         button.GlobalTokens.Single().Value.ShouldBe(2.5d);
-        button.OwnTokens.Single(item => item.Descriptor.Name == "Alpha").Value.ShouldBe(2.5d);
-        button.OwnTokens.Single(item => item.Descriptor.Name == "Height").Value.ShouldBe(32d);
+        button.OwnTokens.ShouldHaveSingleItem().Value.ShouldBe(32d);
+    }
+
+    [Fact]
+    public void Normalize_Accepts_Any_Registered_Global_Token_For_The_Control()
+    {
+        var input = new ThemeConfigBuilder()
+                    .WithControl(
+                        ThemeConfigTestSchema.ButtonIdentity,
+                        new ControlThemeConfigBuilder()
+                            .WithToken("Beta", "2")
+                            .Build())
+                    .Build();
+
+        var result = ThemeConfigNormalizer.Normalize(input, ThemeConfigTestSchema.Create());
+
+        result.Success.ShouldBeTrue();
+        result.Diagnostics.ShouldBeEmpty();
+        var control = result.Config.ShouldNotBeNull().Controls.ShouldHaveSingleItem();
+        control.GlobalTokens.ShouldHaveSingleItem().Descriptor.Name.ShouldBe("Beta");
+        control.OwnTokens.ShouldBeEmpty();
     }
 
     [Fact]
@@ -63,6 +82,22 @@ public class ThemeConfigNormalizerTests
         var secondNormalized = ThemeConfigNormalizer.Normalize(second, schema).Config.ShouldNotBeNull();
         firstNormalized.ShouldBe(secondNormalized);
         firstNormalized.Fingerprint.ShouldBe(secondNormalized.Fingerprint);
+    }
+
+    [Fact]
+    public void Normalize_Rejects_An_Empty_Global_Algorithm_List()
+    {
+        var input = new ThemeConfigBuilder()
+                    .WithAlgorithms()
+                    .Build();
+
+        var result = ThemeConfigNormalizer.Normalize(input, ThemeConfigTestSchema.Create());
+
+        result.Success.ShouldBeFalse();
+        result.Config.ShouldBeNull();
+        result.Diagnostics.ShouldContain(static diagnostic =>
+            diagnostic.Code == "ATMTHM4007" &&
+            diagnostic.Path == "$.Algorithms");
     }
 
     [Fact]
@@ -141,10 +176,10 @@ internal static class ThemeConfigTestSchema
         };
         var ownTokens = new[]
         {
-            Token("Height", 0, TokenStage.Control),
-            Token("Alpha", 1, TokenStage.Control)
+            Token("Height", 0, TokenStage.Control)
         };
         var control = new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", "Button"),
             ButtonIdentity,
             ownTokens,
             static () => new TestControlToken(),
@@ -187,10 +222,6 @@ internal static class ThemeConfigTestSchema
 
     private sealed class TestControlToken : AbstractControlDesignToken
     {
-        internal TestControlToken()
-            : base("Button")
-        {
-        }
     }
 
     private sealed class TestAlgorithm : IThemeAlgorithm

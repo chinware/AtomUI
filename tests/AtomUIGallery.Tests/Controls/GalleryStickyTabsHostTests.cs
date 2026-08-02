@@ -82,9 +82,10 @@ public class GalleryStickyTabsHostTests
     {
         var hostSource    = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryStickyTabsHost.cs");
         var panelSource   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryStickyTabsPanel.cs");
-        var themeSource   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryStickyTabsHostTheme.axaml");
+        var themeSource   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/Themes/GalleryStickyTabsHostTheme.axaml");
         var tokenSource   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryStickyTabsHostToken.cs");
-        var provider      = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryControlThemesProvider.axaml");
+        var assetManifest = ReadRepoFile(
+            "src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator/GeneratedControlThemeAssetManifest.g.cs");
 
         hostSource.ShouldContain("HeaderProperty");
         hostSource.ShouldContain("StickyContentProperty");
@@ -129,7 +130,7 @@ public class GalleryStickyTabsHostTests
         themeSource.ShouldContain("ZIndex=\"1\"");
         themeSource.ShouldNotContain("<VisualLayerManager>");
         themeSource.ShouldContain("<ContentPresenter Content=\"{TemplateBinding Content}\" />");
-        provider.ShouldContain("<ResourceInclude Source=\"GalleryStickyTabsHostTheme.axaml\" />");
+        assetManifest.ShouldContain("Controls/Themes/GalleryStickyTabsHostTheme.axaml");
     }
 
     [Fact]

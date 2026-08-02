@@ -25,7 +25,7 @@ public static class ThemeManagerBuilderExtensions
         var languageProviders = LanguageProviderPool.GetLanguageProviders();
         foreach (var languageProvider in languageProviders)
         {
-            themeManagerBuilder.AddLanguageProviders(languageProvider);
+            themeManagerBuilder.AddLanguageProvider(languageProvider);
         }
         return themeManagerBuilder;
     }

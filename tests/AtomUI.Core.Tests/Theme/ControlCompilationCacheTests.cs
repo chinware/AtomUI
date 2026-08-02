@@ -66,13 +66,14 @@ public class ControlCompilationCacheTests
             static (builder, value) => ((CacheControlToken)builder).Height = (double)value!,
             static builder => ((CacheControlToken)builder).Height);
         return new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", id),
             new ControlTokenIdentity("AtomUI", id),
             [token],
-            () => new CacheControlToken(id),
+            static () => new CacheControlToken(),
             static (builder, _) => ((CacheControlToken)builder).Height = 40);
     }
 
-    private sealed class CacheControlToken(string id) : AbstractControlDesignToken(id)
+    private sealed class CacheControlToken : AbstractControlDesignToken
     {
         public double Height { get; set; }
     }

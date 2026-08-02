@@ -8,11 +8,21 @@
             <atom:AbstractTransferTheme TargetType="atom:ListTransfer" />
         </ControlTheme.BasedOn>
 
+        <Setter Property="ListHeight" Value="{atom:ListTransferTokenResource ListHeight}" />
+        <Style Selector="^[IsStretchView=False]">
+            <Setter Property="ListWidth" Value="{atom:ListTransferTokenResource ListWidth}" />
+            <Style Selector="^[IsPaginationEnabled=True]">
+                <Setter Property="ListWidth" Value="{atom:ListTransferTokenResource ListWidthLG}" />
+            </Style>
+        </Style>
+
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:ListTransfer">
                 <Grid Name="RootLayout"
                       RowDefinitions="Auto">
                     <atom:TransferItemDecorator x:Name="SourceDecoratorView"
+                                                HeaderHeight="{atom:ListTransferTokenResource HeaderHeight}"
+                                                HeaderPadding="{atom:ListTransferTokenResource HeaderPadding}"
                                                 Content="{TemplateBinding SourceView}"
                                                 HorizontalAlignment="Left"
                                                 Grid.Row="0"
@@ -36,6 +46,8 @@
                                                 FooterTemplate="{TemplateBinding SourceViewFooterTemplate}"
                                                 ItemTemplate="{TemplateBinding ItemTemplate}" />
                     <atom:TransferItemDecorator x:Name="TargetDecoratorView"
+                                                HeaderHeight="{atom:ListTransferTokenResource HeaderHeight}"
+                                                HeaderPadding="{atom:ListTransferTokenResource HeaderPadding}"
                                                 Content="{TemplateBinding TargetView}"
                                                 HorizontalAlignment="Left"
                                                 Grid.Row="0"

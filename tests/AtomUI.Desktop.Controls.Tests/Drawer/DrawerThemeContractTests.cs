@@ -31,7 +31,7 @@ public class DrawerThemeContractTests
     public void Drawer_ContentPadding_Uses_Public_Property_And_Default_Token_Style()
     {
         var drawerSource        = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Drawer/Drawer.cs"));
-        var drawerThemes        = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerThemes.axaml"));
+        var drawerTheme         = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerTheme.axaml"));
         var containerSource     = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Drawer/DrawerContainer.cs"));
         var containerTheme      = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerContainerTheme.axaml"));
         var infoContainerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Drawer/DrawerInfoContainer.cs"));
@@ -39,8 +39,8 @@ public class DrawerThemeContractTests
 
         drawerSource.ShouldContain("public static readonly StyledProperty<Thickness> ContentPaddingProperty");
         drawerSource.ShouldContain("public Thickness ContentPadding");
-        drawerThemes.ShouldContain("<ControlTheme x:Key=\"{x:Type atom:Drawer}\" TargetType=\"atom:Drawer\">");
-        drawerThemes.ShouldContain("<Setter Property=\"ContentPadding\" Value=\"{atom:DrawerTokenResource ContentPadding}\" />");
+        drawerTheme.ShouldContain("<ControlTheme x:Key=\"{x:Type atom:Drawer}\" TargetType=\"atom:Drawer\">");
+        drawerTheme.ShouldContain("<Setter Property=\"ContentPadding\" Value=\"{atom:DrawerTokenResource ContentPadding}\" />");
         containerSource.ShouldContain("ContentPaddingProperty");
         containerTheme.ShouldContain("ContentPadding=\"{TemplateBinding ContentPadding}\"");
         infoContainerSource.ShouldContain("ContentPaddingProperty");

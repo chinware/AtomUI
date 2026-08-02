@@ -151,6 +151,32 @@ public partial class DesignToken : AbstractDesignToken
         PaddingLG  = new Thickness(SizeLG);
         PaddingXL  = new Thickness(SizeXL);
 
+        InputPadding = new Thickness(
+            UniformlyPaddingSM - LineWidth,
+            Math.Round((ControlHeight - FontSize * RelativeLineHeight) / 2 * 10) / 10 - LineWidth);
+        InputPaddingSM = new Thickness(
+            ControlPaddingHorizontalSM - LineWidth,
+            Math.Round((ControlHeightSM - FontSize * RelativeLineHeight) / 2 * 10) / 10 - LineWidth * 2);
+        InputPaddingLG = new Thickness(
+            ControlPaddingHorizontal - LineWidth,
+            Math.Ceiling((ControlHeightLG - FontSizeLG * RelativeLineHeightLG) / 2 * 10) / 10 - LineWidth);
+        InputContentMargin = new Thickness(LineWidth);
+        InputActiveShadow = new BoxShadows(new BoxShadow
+        {
+            Spread = ControlOutlineWidth,
+            Color  = ColorControlOutline
+        });
+        InputErrorActiveShadow = new BoxShadows(new BoxShadow
+        {
+            Spread = ControlOutlineWidth,
+            Color  = ColorErrorOutline
+        });
+        InputWarningActiveShadow = new BoxShadows(new BoxShadow
+        {
+            Spread = ControlOutlineWidth,
+            Color  = ColorWarningOutline
+        });
+
         PaddingContentHorizontalLG = SizeLG;
         PaddingContentVerticalLG   = SizeMS;
         PaddingContentHorizontal   = SizeMS;

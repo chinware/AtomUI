@@ -21,7 +21,7 @@ public class SkeletonBehaviorTests
     public void Loading_Background_Uses_AntDesign_Shimmer_Geometry()
     {
         var token = new SkeletonToken();
-        token.AssignSharedToken(new DesignToken
+        token.AssignEffectiveGlobalToken(new DesignToken
         {
             ColorFillContent   = Colors.LightGray,
             ColorFill          = Colors.WhiteSmoke,

@@ -17,7 +17,6 @@ Masonry 的实现由公开 `ItemsControl` 外壳和 internal `Panel` 布局引�
 - `src/AtomUI.Desktop.Controls/Masonry/MasonryItemSpan.cs`：子项 span 枚举。
 - `src/AtomUI.Desktop.Controls/Masonry/MasonryLayoutChangedEventArgs.cs`：布局结果事件参数。
 - `src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`：默认 ControlTheme，装配 `ItemsPresenter` 和 `MasonryPanel`。
-- `src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryThemes.axaml`：主题资源聚合。
 
 ## 3. 核心类职责
 

@@ -15,7 +15,7 @@ using Avalonia.Threading;
 
 namespace AtomUI.Theme;
 
-internal class ThemeManager : Styles, IThemeManager, ILanguageManager
+internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposable
 {
     private static readonly LanguageVariant s_defaultLanguage = LanguageVariant.zh_CN;
 
@@ -45,6 +45,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
     public event EventHandler<LanguageVariantChangedEventArgs>? LanguageVariantChanged;
 
     private readonly List<ControlTokenDescriptor> _controlTokenDescriptors;
+    private readonly List<ControlThemeAssetDescriptor> _controlThemeAssetDescriptors;
     private readonly List<IControlThemesProvider> _controlThemesProviders;
     private ThemeCompiler? _themeCompiler;
     private ThemeSnapshotCache? _themeSnapshotCache;
@@ -54,6 +55,13 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
     private readonly ThemePrepareDelegate _prepareTheme;
     private ThemeTransaction? _activeTransaction;
     private ThemeTransaction? _queuedTransaction;
+    private readonly Dictionary<long, PendingThemeScopeUpdate> _pendingScopeUpdates;
+    private readonly HashSet<ThemeContextLease> _contextLeases;
+    private bool _scopeUpdateProcessorRunning;
+    private int _catalogReloadOperationCount;
+    private int _transactionExecutionUsers;
+    private bool _disposeRequested;
+    private bool _disposeCompleted;
     private ThemeRequestCacheKey? _lastCommittedRequestKey;
     private ThemeRequest? _lastCommittedRequest;
     private ThemeSnapshot? _currentSnapshot;
@@ -64,7 +72,9 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
     private ThemeState? _currentTheme;
     private Application? _application;
     private ThemeSchemaRegistry? _startupRegistry;
+    private ControlThemeAssetManifest? _startupControlThemeAssetManifest;
     private CompiledThemeCatalog? _compiledThemeCatalog;
+    private readonly ThemeDefinitionLoadCache _themeDefinitionLoadCache;
     private IReadOnlyList<IThemeDefinitionResolver> _themeDefinitionResolvers =
         Array.AsReadOnly(new[] { CoreThemeDefinitionResolver.Create() });
     private string _applicationId = typeof(ThemeManager).Assembly.GetName().Name!;
@@ -89,12 +99,16 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         ThemePrepareDelegate? prepareTheme = null)
     {
         _controlTokenDescriptors = new List<ControlTokenDescriptor>();
+        _controlThemeAssetDescriptors = new List<ControlThemeAssetDescriptor>();
         _controlThemesProviders  = new List<IControlThemesProvider>();
         _languageProviders       = new List<ILanguageProvider>();
         _languages               = new Dictionary<LanguageVariant, ResourceDictionary>();
         _transactionGate         = new object();
         _transactionExecutionGate = new SemaphoreSlim(1, 1);
         _scopeGraph              = new ThemeScopeGraph(this);
+        _pendingScopeUpdates     = new Dictionary<long, PendingThemeScopeUpdate>();
+        _contextLeases           = new HashSet<ThemeContextLease>(ReferenceEqualityComparer.Instance);
+        _themeDefinitionLoadCache = new ThemeDefinitionLoadCache();
         _checkTransitionAccess   = themeTransitionAccessCheck ?? (static () => Dispatcher.UIThread.CheckAccess());
         _prepareTheme            = prepareTheme ?? PrepareThemeAsync;
     }
@@ -153,7 +167,8 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
                 _applicationId,
                 _applicationDataRoot,
                 false,
-                0));
+                0),
+            _themeDefinitionLoadCache);
         if (!catalogResult.Success)
         {
             throw new ThemeLoadException(
@@ -309,6 +324,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         {
             mutationGeneration = ++_generation;
             reloadGeneration = ++_nextCatalogReloadGeneration;
+            _catalogReloadOperationCount++;
             transitionId = NextTransitionId();
             scopeCapture = _scopeGraph.CaptureAll();
             currentCatalog = _compiledThemeCatalog;
@@ -344,7 +360,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         ThemeRequest currentRequest,
         IReadOnlyList<ThemeDiagnostic> currentDiagnostics)
     {
-        await _transactionExecutionGate.WaitAsync().ConfigureAwait(true);
+        await EnterTransactionExecutionGateAsync().ConfigureAwait(true);
         try
         {
             CatalogReloadPreparation prepared;
@@ -469,7 +485,12 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         }
         finally
         {
-            _transactionExecutionGate.Release();
+            lock (_transactionGate)
+            {
+                _catalogReloadOperationCount--;
+            }
+            ExitTransactionExecutionGate();
+            StartPendingScopeUpdateProcessor();
         }
     }
 
@@ -492,7 +513,8 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
                 _applicationId,
                 _applicationDataRoot,
                 true,
-                reloadGeneration));
+                reloadGeneration),
+            _themeDefinitionLoadCache);
         if (!catalogResult.Success)
         {
             return CatalogReloadPreparation.Failed(
@@ -571,6 +593,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
             current.Complete(result);
             if (next is null)
             {
+                StartPendingScopeUpdateProcessor();
                 return;
             }
             current = next;
@@ -580,14 +603,14 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
     private async ValueTask<ThemeTransitionResult> ExecuteTransactionAsync(
         ThemeTransaction transaction)
     {
-        await _transactionExecutionGate.WaitAsync().ConfigureAwait(true);
+        await EnterTransactionExecutionGateAsync().ConfigureAwait(true);
         try
         {
             return await ExecuteTransactionCoreAsync(transaction).ConfigureAwait(true);
         }
         finally
         {
-            _transactionExecutionGate.Release();
+            ExitTransactionExecutionGate();
         }
     }
 
@@ -684,6 +707,10 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         {
             if (committed)
             {
+                ThemeRuntimeLogger.LogPublishFailure(
+                    this,
+                    nameof(ThemeManager),
+                    exception);
                 return new ThemeTransitionResult(
                     transaction.TransitionId,
                     ThemeTransitionStatus.Committed,
@@ -756,7 +783,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
             ? Avalonia.Styling.ThemeVariant.Dark
             : Avalonia.Styling.ThemeVariant.Light;
 
-        PublishBoundary(
+        ThemePublishBoundary.Dispatch(
             () =>
             {
                 if (_application is not null)
@@ -764,35 +791,40 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
                     _application.RequestedThemeVariant = avaloniaVariant;
                 }
             },
+            this,
             diagnostics,
             "ApplicationThemeVariant");
 
-        PublishBoundary(
-            () =>
-            {
-                if (transaction.AddsResourceProvider)
-                {
-                    Resources.MergedDictionaries.Add(transaction.PreparedResourceProvider!);
-                    transaction.PreparedRootContext!.Publish(notifyResources: false);
-                }
-                else
-                {
-                    transaction.PreparedRootContext!.Publish();
-                }
-            },
-            diagnostics,
-            "ThemeResources");
-
-        foreach (var scope in transaction.PreparedScopes)
+        if (transaction.AddsResourceProvider)
         {
+            ThemePublishBoundary.Dispatch(
+                () => Resources.MergedDictionaries.Add(transaction.PreparedResourceProvider!),
+                this,
+                diagnostics,
+                "ThemeResources");
+        }
+
+        ThemePublishBoundary.Dispatch(
+            () => diagnostics.AddRange(transaction.PreparedRootContext!.Publish(
+                notifyResources: !transaction.AddsResourceProvider)),
+            this,
+            diagnostics,
+            "RootThemeContext");
+
+        for (var index = 0; index < transaction.PreparedScopes.Count; index++)
+        {
+            var scope = transaction.PreparedScopes[index];
             if (!_scopeGraph.TryGetNode(scope.Stamp.RegistrationId, out var node) ||
                 node!.Stamp != scope.Stamp)
             {
                 continue;
             }
 
-            PublishBoundary(
-                () => node.Provider.PublishCommittedContext(scope.Context, notifyResources: true),
+            ThemePublishBoundary.Dispatch(
+                () => diagnostics.AddRange(node.Provider.PublishCommittedContext(
+                    scope.Context,
+                    notifyResources: false)),
+                this,
                 diagnostics,
                 $"ThemeScope[{scope.Stamp.RegistrationId}]");
         }
@@ -857,30 +889,60 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
             : transaction;
     }
 
-    private static void PublishBoundary(
-        Action action,
-        List<ThemeDiagnostic> diagnostics,
-        string source)
-    {
-        try
-        {
-            action();
-        }
-        catch (Exception exception)
-        {
-            Debug.WriteLine(exception);
-            diagnostics.Add(new ThemeDiagnostic(
-                "ATMTHM7003",
-                ThemeDiagnosticSeverity.Warning,
-                source,
-                "$",
-                $"Theme publish boundary failed: {exception.GetBaseException().Message}"));
-        }
-    }
-
     private long NextTransitionId()
     {
         return ++_nextTransitionId;
+    }
+
+    private async ValueTask EnterTransactionExecutionGateAsync()
+    {
+        lock (_transactionGate)
+        {
+            ObjectDisposedException.ThrowIf(_disposeRequested, this);
+            _transactionExecutionUsers++;
+        }
+
+        try
+        {
+            await _transactionExecutionGate.WaitAsync().ConfigureAwait(true);
+        }
+        catch
+        {
+            var disposeNow = false;
+            lock (_transactionGate)
+            {
+                _transactionExecutionUsers--;
+                if (_disposeRequested && _transactionExecutionUsers == 0 && !_disposeCompleted)
+                {
+                    _disposeCompleted = true;
+                    disposeNow = true;
+                }
+            }
+            if (disposeNow)
+            {
+                DisposeCore();
+            }
+            throw;
+        }
+    }
+
+    private void ExitTransactionExecutionGate()
+    {
+        _transactionExecutionGate.Release();
+        var disposeNow = false;
+        lock (_transactionGate)
+        {
+            _transactionExecutionUsers--;
+            if (_disposeRequested && _transactionExecutionUsers == 0 && !_disposeCompleted)
+            {
+                _disposeCompleted = true;
+                disposeNow = true;
+            }
+        }
+        if (disposeNow)
+        {
+            DisposeCore();
+        }
     }
 
     private void VerifyTransitionAccess()
@@ -889,14 +951,147 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         {
             throw new InvalidOperationException("Theme transitions must be captured on the UI thread.");
         }
+        ObjectDisposedException.ThrowIf(_disposeRequested, this);
+    }
+
+    internal void RegisterContextLease(ThemeContextLease lease)
+    {
+        ArgumentNullException.ThrowIfNull(lease);
+        VerifyTransitionAccess();
+        lock (_transactionGate)
+        {
+            ObjectDisposedException.ThrowIf(_disposeRequested, this);
+            _contextLeases.Add(lease);
+        }
+    }
+
+    internal void UnregisterContextLease(ThemeContextLease lease)
+    {
+        ArgumentNullException.ThrowIfNull(lease);
+        lock (_transactionGate)
+        {
+            _contextLeases.Remove(lease);
+        }
+    }
+
+    public void Dispose()
+    {
+        if (!_checkTransitionAccess())
+        {
+            throw new InvalidOperationException("ThemeManager must be disposed on the UI thread.");
+        }
+
+        ThemeTransaction? queuedTransaction;
+        var disposeNow = false;
+        lock (_transactionGate)
+        {
+            if (_disposeRequested)
+            {
+                return;
+            }
+
+            _disposeRequested = true;
+            _generation++;
+            _pendingScopeUpdates.Clear();
+            queuedTransaction = _queuedTransaction;
+            _queuedTransaction = null;
+            if (_transactionExecutionUsers == 0)
+            {
+                _disposeCompleted = true;
+                disposeNow = true;
+            }
+        }
+
+        queuedTransaction?.Complete(CreateSupersededResult(queuedTransaction));
+        if (disposeNow)
+        {
+            DisposeCore();
+        }
+    }
+
+    private void DisposeCore()
+    {
+        Debug.Assert(_disposeRequested);
+        Debug.Assert(_disposeCompleted);
+        Debug.Assert(_transactionExecutionUsers == 0);
+
+        var application = _application;
+        if (application?.PlatformSettings is { } settings)
+        {
+            settings.ColorValuesChanged -= HandleSystemColorValuesChanged;
+        }
+
+        foreach (var lease in _contextLeases.ToArray())
+        {
+            DisposeBoundary(lease.Dispose);
+        }
+        _contextLeases.Clear();
+
+        DisposeBoundary(_scopeGraph.DisposeAll);
+        if (application is not null)
+        {
+            DisposeBoundary(() => application.Styles.Remove(this));
+        }
+        DisposeBoundary(Resources.MergedDictionaries.Clear);
+        DisposeBoundary(Resources.Clear);
+        DisposeBoundary(Clear);
+
+        _themeDefinitionLoadCache.Dispose();
+        _controlTokenDescriptors.Clear();
+        _controlThemeAssetDescriptors.Clear();
+        _controlThemesProviders.Clear();
+        _languageProviders?.Clear();
+        _languageProviders = null;
+        _languages.Clear();
+        _themeDefinitionResolvers = Array.Empty<IThemeDefinitionResolver>();
+        _pendingScopeUpdates.Clear();
+        _scopeUpdateProcessorRunning = false;
+
+        _application = null;
+        _applicationInitialized = false;
+        _startupRegistry = null;
+        _startupControlThemeAssetManifest = null;
+        _compiledThemeCatalog = null;
+        _themeCatalogDiagnostics = Array.Empty<ThemeDiagnostic>();
+        _themeCompiler = null;
+        _themeSnapshotCache = null;
+        _rootTokenResourceProvider = null;
+        _rootContext = null;
+        _currentSnapshot = null;
+        _currentSnapshotKey = null;
+        _currentTheme = null;
+        _lastCommittedRequest = null;
+        _lastCommittedRequestKey = null;
+        _followSystemLightRequest = null;
+        _followSystemDarkRequest = null;
+
+        ThemeChanged = null;
+        ThemeChangeFailed = null;
+        ThemeCatalogChanged = null;
+        LanguageVariantChanged = null;
+        _transactionExecutionGate.Dispose();
+    }
+
+    private static void DisposeBoundary(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine(exception);
+        }
     }
 
     internal void EnsureRegistrationCapacity(
         int controlTokenCount,
+        int controlThemeAssetCount,
         int controlThemesProviderCount,
         int languageProviderCount)
     {
         EnsureListCapacity(_controlTokenDescriptors, controlTokenCount);
+        EnsureListCapacity(_controlThemeAssetDescriptors, controlThemeAssetCount);
         EnsureListCapacity(_controlThemesProviders, controlThemesProviderCount);
 
         if (_languageProviders is not null)
@@ -928,6 +1123,11 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         _controlTokenDescriptors.Add(descriptor);
     }
 
+    internal void RegisterControlThemeAssetDescriptor(ControlThemeAssetDescriptor descriptor)
+    {
+        _controlThemeAssetDescriptors.Add(descriptor);
+    }
+
     internal ThemeScopeRegistration RegisterScope(
         ThemeConfigProvider provider,
         ThemeContext parentContext,
@@ -935,6 +1135,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         out ThemeScopeUpdateResult result)
     {
         VerifyTransitionAccess();
+        var transitionId = NextTransitionId();
         var registration = _scopeGraph.Register(provider, parentContext, config);
         var request = CreateScopeRequest(config);
         var capture = _scopeGraph.CaptureSubtree(registration.RegistrationId);
@@ -945,8 +1146,9 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         if (!preparation.Success)
         {
             result = ThemeScopeUpdateResult.Failed(
+                transitionId,
                 request,
-                CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
+                CreateScopeState(parentContext.Snapshot, transitionId),
                 preparation.Diagnostics,
                 preparation.Exception);
             return registration;
@@ -955,8 +1157,9 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         if (!_scopeGraph.IsCurrent(capture))
         {
             result = ThemeScopeUpdateResult.Failed(
+                transitionId,
                 request,
-                CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
+                CreateScopeState(parentContext.Snapshot, transitionId),
                 [new ThemeDiagnostic(
                     "ATMTHM8001",
                     ThemeDiagnosticSeverity.Error,
@@ -973,8 +1176,9 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
             _scopeGraph.AcceptConfig(staged.Stamp.RegistrationId);
         }
         result = ThemeScopeUpdateResult.Succeeded(
+            transitionId,
             request,
-            CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."));
+            CreateScopeState(registration.Context.Snapshot, transitionId));
         return registration;
     }
 
@@ -989,55 +1193,159 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         }
 
         _scopeGraph.ReplaceConfig(node!.RegistrationId, config);
-        var registrationId = node.RegistrationId;
-        var configRevision = node.ConfigRevision;
-        long generation;
+        var startProcessor = false;
         lock (_transactionGate)
         {
-            generation = _generation;
+            _pendingScopeUpdates[node.RegistrationId] = new PendingThemeScopeUpdate(
+                provider,
+                node.RegistrationId,
+                node.ConfigRevision,
+                config);
+            if (CanStartPendingScopeUpdateProcessor())
+            {
+                _scopeUpdateProcessorRunning = true;
+                startProcessor = true;
+            }
         }
 
-        _ = ProcessScopeUpdateAsync(provider, registrationId, configRevision, generation);
+        if (startProcessor)
+        {
+            _ = ProcessPendingScopeUpdatesAsync();
+        }
     }
 
-    private async Task ProcessScopeUpdateAsync(
-        ThemeConfigProvider provider,
-        long registrationId,
-        long configRevision,
-        long generation)
+    private void StartPendingScopeUpdateProcessor()
     {
-        await _transactionExecutionGate.WaitAsync().ConfigureAwait(true);
+        var startProcessor = false;
+        lock (_transactionGate)
+        {
+            if (CanStartPendingScopeUpdateProcessor())
+            {
+                _scopeUpdateProcessorRunning = true;
+                startProcessor = true;
+            }
+        }
+
+        if (startProcessor)
+        {
+            _ = ProcessPendingScopeUpdatesAsync();
+        }
+    }
+
+    private bool CanStartPendingScopeUpdateProcessor()
+    {
+        return !_disposeRequested &&
+               !_scopeUpdateProcessorRunning &&
+               _activeTransaction is null &&
+               _catalogReloadOperationCount == 0 &&
+               _pendingScopeUpdates.Count != 0;
+    }
+
+    private async Task ProcessPendingScopeUpdatesAsync()
+    {
+        while (true)
+        {
+            PendingThemeScopeUpdate pending;
+            long generation;
+            long transitionId;
+            lock (_transactionGate)
+            {
+                if (_disposeRequested ||
+                    _activeTransaction is not null ||
+                    _catalogReloadOperationCount != 0 ||
+                    _pendingScopeUpdates.Count == 0)
+                {
+                    _scopeUpdateProcessorRunning = false;
+                    return;
+                }
+
+                pending = _pendingScopeUpdates.Values
+                                              .OrderBy(static update => update.RegistrationId)
+                                              .First();
+                generation = _generation;
+                transitionId = NextTransitionId();
+            }
+
+            var result = await ProcessScopeUpdateAsync(
+                pending,
+                generation,
+                transitionId).ConfigureAwait(true);
+
+            lock (_transactionGate)
+            {
+                if (_pendingScopeUpdates.TryGetValue(pending.RegistrationId, out var currentPending) &&
+                    ReferenceEquals(currentPending, pending))
+                {
+                    if (!_scopeGraph.TryGetNode(pending.RegistrationId, out var currentNode) ||
+                        !ReferenceEquals(currentNode!.Provider, pending.Provider) ||
+                        (result.Status != ThemeTransitionStatus.Superseded &&
+                         currentNode.ConfigRevision == pending.ConfigRevision))
+                    {
+                        _pendingScopeUpdates.Remove(pending.RegistrationId);
+                    }
+                }
+            }
+
+            pending.Provider.DispatchResult(result);
+        }
+    }
+
+    private async Task<ThemeScopeUpdateResult> ProcessScopeUpdateAsync(
+        PendingThemeScopeUpdate pending,
+        long generation,
+        long transitionId)
+    {
+        await EnterTransactionExecutionGateAsync().ConfigureAwait(true);
         try
         {
             lock (_transactionGate)
             {
                 if (generation != _generation ||
-                    !_scopeGraph.TryGetNode(registrationId, out var current) ||
-                    current!.ConfigRevision != configRevision ||
-                    !ReferenceEquals(current.Provider, provider))
+                    !_scopeGraph.TryGetNode(pending.RegistrationId, out var current) ||
+                    current!.ConfigRevision != pending.ConfigRevision ||
+                    !ReferenceEquals(current.Provider, pending.Provider))
                 {
-                    return;
+                    return ThemeScopeUpdateResult.Superseded(
+                        transitionId,
+                        CreateScopeRequest(pending.Config),
+                        CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."));
                 }
             }
 
-            var result = ApplyScopeConfig(provider, registrationId, generation);
-            provider.DispatchResult(result);
+            return ApplyScopeConfig(pending, generation, transitionId);
+        }
+        catch (Exception exception)
+        {
+            return ThemeScopeUpdateResult.Failed(
+                transitionId,
+                CreateScopeRequest(pending.Config),
+                CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
+                [new ThemeDiagnostic(
+                    "ATMTHM8003",
+                    ThemeDiagnosticSeverity.Error,
+                    nameof(ThemeManager),
+                    "$",
+                    $"Theme scope update failed: {exception.GetBaseException().Message}")],
+                exception);
         }
         finally
         {
-            _transactionExecutionGate.Release();
+            ExitTransactionExecutionGate();
         }
     }
 
     private ThemeScopeUpdateResult ApplyScopeConfig(
-        ThemeConfigProvider provider,
-        long registrationId,
-        long generation)
+        PendingThemeScopeUpdate pending,
+        long generation,
+        long transitionId)
     {
-        if (!_scopeGraph.TryGetNode(registrationId, out var node) ||
-            !ReferenceEquals(node!.Provider, provider))
+        if (!_scopeGraph.TryGetNode(pending.RegistrationId, out var node) ||
+            !ReferenceEquals(node!.Provider, pending.Provider))
         {
-            throw new InvalidOperationException("The ThemeConfigProvider is not registered.");
+            return ThemeScopeUpdateResult.Superseded(
+                transitionId,
+                CreateScopeRequest(pending.Config),
+                CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."));
         }
 
         var config = node.Config;
@@ -1051,25 +1359,34 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         if (!preparation.Success)
         {
             return ThemeScopeUpdateResult.Failed(
+                transitionId,
                 request,
-                CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
+                CreateScopeState(node.Context.Snapshot, transitionId),
                 preparation.Diagnostics,
                 preparation.Exception);
         }
+        var noOp = preparation.Snapshots.All(static staged =>
+            SnapshotsEquivalent(staged.Context.Snapshot, staged.Snapshot));
         lock (_transactionGate)
         {
             if (generation != _generation || !_scopeGraph.IsCurrent(capture))
             {
-                return ThemeScopeUpdateResult.Failed(
+                return ThemeScopeUpdateResult.Superseded(
+                    transitionId,
                     request,
-                    CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
-                    [new ThemeDiagnostic(
-                        "ATMTHM8002",
-                        ThemeDiagnosticSeverity.Error,
-                        nameof(ThemeScopeGraph),
-                        "$",
-                        "Theme scope changed while its configuration was being prepared.")],
-                    null);
+                    CreateScopeState(node.Context.Snapshot, transitionId));
+            }
+
+            if (noOp)
+            {
+                foreach (var staged in preparation.Snapshots)
+                {
+                    _scopeGraph.AcceptConfig(staged.Stamp.RegistrationId);
+                }
+                return ThemeScopeUpdateResult.NoOp(
+                    transitionId,
+                    request,
+                    CreateScopeState(node.Context.Snapshot, transitionId));
             }
 
             foreach (var staged in preparation.Snapshots)
@@ -1080,24 +1397,46 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
         }
 
         var publishDiagnostics = new List<ThemeDiagnostic>();
-        foreach (var staged in preparation.Snapshots)
+        for (var index = 0; index < preparation.Snapshots.Count; index++)
         {
+            var staged = preparation.Snapshots[index];
             if (!_scopeGraph.TryGetNode(staged.Stamp.RegistrationId, out var stagedNode))
             {
                 continue;
             }
-            PublishBoundary(
-                () => stagedNode!.Provider.PublishCommittedContext(
+            ThemePublishBoundary.Dispatch(
+                () => publishDiagnostics.AddRange(stagedNode!.Provider.PublishCommittedContext(
                     staged.Context,
-                    notifyResources: true),
+                    notifyResources: index == 0)),
+                this,
                 publishDiagnostics,
                 $"ThemeScope[{staged.Stamp.RegistrationId}]");
         }
 
         return ThemeScopeUpdateResult.Succeeded(
+            transitionId,
             request,
-            CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
+            CreateScopeState(preparation.Snapshots[0].Snapshot, transitionId),
             publishDiagnostics.AsReadOnly());
+    }
+
+    private static bool SnapshotsEquivalent(ThemeSnapshot left, ThemeSnapshot right)
+    {
+        return string.Equals(left.ThemeId, right.ThemeId, StringComparison.Ordinal) &&
+               left.DefinitionRevision == right.DefinitionRevision &&
+               left.RegistryRevision == right.RegistryRevision &&
+               left.Appearance == right.Appearance &&
+               left.EffectiveConfig.Equals(right.EffectiveConfig);
+    }
+
+    private static ThemeState CreateScopeState(ThemeSnapshot snapshot, long transitionId)
+    {
+        return new ThemeState(
+            snapshot.ThemeId,
+            snapshot.EffectiveConfig.Algorithms.Select(static algorithm => algorithm.Id).ToArray(),
+            snapshot.Appearance,
+            snapshot.ContentFingerprint.Value,
+            transitionId);
     }
 
     private ScopePreparation PrepareScopeCapture(
@@ -1344,10 +1683,15 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager
 
     private ThemeSchemaRegistry CreateStartupRegistry()
     {
-        return new ThemeSchemaRegistry(
+        var registry = new ThemeSchemaRegistry(
             GeneratedThemeSchema.GetGlobalTokens(),
             _controlTokenDescriptors,
-            GeneratedThemeSchema.GetAlgorithms());
+            GeneratedThemeSchema.GetAlgorithms(),
+            _controlThemeAssetDescriptors);
+        _startupControlThemeAssetManifest = new ControlThemeAssetManifest(
+            registry,
+            _controlThemeAssetDescriptors);
+        return registry;
     }
 
     private static ThemeAppearance ResolveSystemAppearance(Application application)

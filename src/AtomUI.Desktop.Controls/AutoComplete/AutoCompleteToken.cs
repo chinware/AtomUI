@@ -6,7 +6,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class AutoCompleteToken : AbstractControlDesignToken
 {
-    public const string ID = "AutoComplete";
     
     /// <summary>
     /// 菜单内容边距
@@ -30,15 +29,15 @@ internal class AutoCompleteToken : AbstractControlDesignToken
     public double MaxPopupWidth { get; set; }
     
     public AutoCompleteToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        OptionHeight        = SharedToken.ControlHeight;
-        PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
+        OptionHeight        = EffectiveGlobalToken.ControlHeight;
+        PopupContentPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS / 2);
         MinPopupWidth       = 120;
         MaxPopupWidth       = 200;
     }

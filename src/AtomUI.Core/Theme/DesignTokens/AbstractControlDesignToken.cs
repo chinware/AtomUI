@@ -1,24 +1,15 @@
 ﻿namespace AtomUI.Theme.DesignTokens;
 
 /// <summary>
-/// 所有的组件 Token 定义是除了全局的 Token 的之外的专属于当前的组件的 Token 值
+/// 所有的控件 Token 定义是除了全局 Token 之外专属于当前控件的 Token 值。
 /// </summary>
 public abstract class AbstractControlDesignToken : AbstractDesignToken
 {
-    public string Id => _id;
-    protected DesignToken SharedToken;
+    protected DesignToken EffectiveGlobalToken { get; private set; } = default!;
 
-    private readonly string _id;
-
-    protected AbstractControlDesignToken(string id)
+    internal void AssignEffectiveGlobalToken(DesignToken effectiveGlobalToken)
     {
-        _id         = id;
-        SharedToken = default!;
-    }
-
-    public void AssignSharedToken(DesignToken sharedToken)
-    {
-        SharedToken = sharedToken;
+        EffectiveGlobalToken = effectiveGlobalToken;
     }
 
     public virtual void CalculateTokenValues(bool isDarkMode)

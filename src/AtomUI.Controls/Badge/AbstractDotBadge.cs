@@ -96,6 +96,7 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
     private const int MaxAdornerLayerRetryCount = 30;
     private bool _adornerLayerRetryScheduled;
     private int _adornerLayerRetryCount;
+    private IDisposable? _motionBinding;
 
     static AbstractDotBadge()
     {
@@ -103,11 +104,6 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
         AffectsRender<AbstractDotBadge>(DotColorProperty, StatusProperty);
         HorizontalAlignmentProperty.OverrideDefaultValue<AbstractDotBadge>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<AbstractDotBadge>(VerticalAlignment.Top);
-    }
-
-    public AbstractDotBadge()
-    {
-        this.ConfigureMotionBindingStyle();
     }
 
     private protected abstract AbstractDotBadgeAdorner CreateDotBadgeAdorner();
@@ -222,6 +218,8 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _motionBinding?.Dispose();
+        _motionBinding = this.ConfigureMotionBindingStyle();
         _adornerLayerRetryCount = 0;
         if (BadgeIsVisible)
         {
@@ -232,6 +230,8 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _motionBinding?.Dispose();
+        _motionBinding = null;
         Loaded -= HandleAdornerLayerRetryLoaded;
         _adornerLayerRetryScheduled = false;
         _adornerLayerRetryCount     = 0;

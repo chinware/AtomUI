@@ -184,7 +184,7 @@ CheckableTagGroup
 
 主题状态包括 unchecked、checked、pointerover、pressed、focus、disabled。checked 状态只读取 `IsChecked`，不通过 `TagColor` 或 `Variant` 派生。`CheckableTag` 复用 Tag 家族的尺寸、字号、圆角和内容间距语义，并从 SharedToken 读取 primary、text、hover、disabled 和 focus 颜色。
 
-`CheckableTagGroup` 不定义组件 Token；Group 间距使用 SharedToken。选择值、`IsMultiple`、checked、hover、pressed、focus 和 disabled 均为实例状态，不写入 `TagToken`。
+`CheckableTagGroup` 不定义控件 Token；Group 间距使用 SharedToken。选择值、`IsMultiple`、checked、hover、pressed、focus 和 disabled 均为实例状态，不写入 `TagToken`。
 
 ## 7. 数据流与生命周期
 

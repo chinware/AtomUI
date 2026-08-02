@@ -7,10 +7,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class TextBoxToken : AbstractControlDesignToken
 {
-    public const string ID = "TextBox";
 
     public TextBoxToken()
-        : base(ID)
+
     {
     }
 
@@ -20,39 +19,19 @@ internal class TextBoxToken : AbstractControlDesignToken
     public Color BorderColor { get; set; }
 
     /// <summary>
-    /// 默认边框厚度
-    /// </summary>
-    public Thickness BorderThickness { get; set; }
-
-    /// <summary>
-    /// 默认圆角
-    /// </summary>
-    public CornerRadius BorderRadius { get; set; }
-
-    /// <summary>
-    /// 大号圆角
-    /// </summary>
-    public CornerRadius BorderRadiusLG { get; set; }
-
-    /// <summary>
-    /// 小号圆角
-    /// </summary>
-    public CornerRadius BorderRadiusSM { get; set; }
-
-    /// <summary>
     /// 默认内边距
     /// </summary>
-    public Thickness Padding { get; set; }
+    public Thickness ContentPadding { get; set; }
 
     /// <summary>
     /// 小号内边距
     /// </summary>
-    public Thickness PaddingSM { get; set; }
+    public Thickness ContentPaddingSM { get; set; }
 
     /// <summary>
     /// 大号内边距
     /// </summary>
-    public Thickness PaddingLG { get; set; }
+    public Thickness ContentPaddingLG { get; set; }
 
     /// <summary>
     /// 悬浮态边框色
@@ -73,30 +52,26 @@ internal class TextBoxToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
 
-        var fontSize     = SharedToken.FontSize;
-        var fontSizeLG   = SharedToken.FontSizeLG;
-        var lineHeight   = SharedToken.RelativeLineHeight;
-        var lineHeightLG = SharedToken.RelativeLineHeightLG;
-        var lineWidth    = SharedToken.LineWidth;
+        var fontSize     = EffectiveGlobalToken.FontSize;
+        var fontSizeLG   = EffectiveGlobalToken.FontSizeLG;
+        var lineHeight   = EffectiveGlobalToken.RelativeLineHeight;
+        var lineHeightLG = EffectiveGlobalToken.RelativeLineHeightLG;
+        var lineWidth    = EffectiveGlobalToken.LineWidth;
 
-        BorderColor     = SharedToken.ColorBorder;
-        BorderThickness = SharedToken.BorderThickness;
-        BorderRadius    = SharedToken.BorderRadius;
-        BorderRadiusLG  = SharedToken.BorderRadiusLG;
-        BorderRadiusSM  = SharedToken.BorderRadiusSM;
-        Padding = new Thickness(SharedToken.UniformlyPaddingSM - lineWidth,
-            Math.Round((SharedToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
-        PaddingSM = new Thickness(SharedToken.ControlPaddingHorizontalSM - lineWidth,
-            Math.Round((SharedToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth * 2);
-        PaddingLG = new Thickness(SharedToken.ControlPaddingHorizontal - lineWidth,
-            Math.Ceiling((SharedToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
+        BorderColor     = EffectiveGlobalToken.ColorBorder;
+        ContentPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM - lineWidth,
+            Math.Round((EffectiveGlobalToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
+        ContentPaddingSM = new Thickness(EffectiveGlobalToken.ControlPaddingHorizontalSM - lineWidth,
+            Math.Round((EffectiveGlobalToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth * 2);
+        ContentPaddingLG = new Thickness(EffectiveGlobalToken.ControlPaddingHorizontal - lineWidth,
+            Math.Ceiling((EffectiveGlobalToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
             lineWidth);
-        HoverBorderColor  = SharedToken.ColorPrimaryHover;
-        ActiveBorderColor = SharedToken.ColorPrimary;
+        HoverBorderColor  = EffectiveGlobalToken.ColorPrimaryHover;
+        ActiveBorderColor = EffectiveGlobalToken.ColorPrimary;
         ActiveShadow = new BoxShadows(new BoxShadow
         {
-            Spread = SharedToken.ControlOutlineWidth,
-            Color  = SharedToken.ColorControlOutline
+            Spread = EffectiveGlobalToken.ControlOutlineWidth,
+            Color  = EffectiveGlobalToken.ColorControlOutline
         });
     }
 

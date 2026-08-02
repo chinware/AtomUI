@@ -2,7 +2,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.DatePickerLang;
 
-[LanguageProvider(LanguageCode.zh_TW, DatePickerToken.ID)]
+[LanguageProvider(LanguageCode.zh_TW, "DatePicker")]
 internal class zh_TW
 {
     public const string Today = "今天";

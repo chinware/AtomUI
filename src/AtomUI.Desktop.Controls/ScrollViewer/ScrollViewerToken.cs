@@ -8,7 +8,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ScrollViewerToken : AbstractControlDesignToken
 {
-    public const string ID = "ScrollViewer";
     
     /// <summary>
     /// 极简模式下，滚动条滑块的粗细
@@ -24,6 +23,11 @@ internal class ScrollViewerToken : AbstractControlDesignToken
     /// 滚动条滑块的圆角大小
     /// </summary>
     public CornerRadius ThumbCornerRadius { get; set; }
+
+    /// <summary>
+    /// 指示器滚动条滑块的圆角大小。
+    /// </summary>
+    public CornerRadius IndicatorThumbCornerRadius { get; set; }
 
     /// <summary>
     /// 滚动条滑块背景颜色
@@ -53,31 +57,32 @@ internal class ScrollViewerToken : AbstractControlDesignToken
     #endregion
     
     public ScrollViewerToken()
-        : base(ID)
+
     {
     }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        LiteModeThumbThickness   = SharedToken.LineWidthBold;
-        NormalModeThumbThickness = SharedToken.SizeXS;
+        LiteModeThumbThickness   = EffectiveGlobalToken.LineWidthBold;
+        NormalModeThumbThickness = EffectiveGlobalToken.SizeXS;
 
         if (isDarkMode)
         {
-            ThumbBg       = SharedToken.ColorBorder;
+            ThumbBg       = EffectiveGlobalToken.ColorBorder;
             ThumbHoverBg  = ThumbBg.Lighten();
             ThumbActiveBg = ThumbHoverBg.Lighten();
         }
         else
         {
-            ThumbBg       = SharedToken.ColorBorder;
+            ThumbBg       = EffectiveGlobalToken.ColorBorder;
             ThumbHoverBg  = ThumbBg.Darken();
             ThumbActiveBg = ThumbHoverBg.Darken();
         }
         ThumbCornerRadius        = new CornerRadius(NormalModeThumbThickness / 2);
-        ScrollBarContentHPadding = new Thickness(SharedToken.UniformlyPaddingXXS, 0d);
-        ScrollBarContentVPadding = new Thickness(0d, SharedToken.UniformlyPaddingXXS);
+        IndicatorThumbCornerRadius = new CornerRadius(LiteModeThumbThickness / 2);
+        ScrollBarContentHPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS, 0d);
+        ScrollBarContentVPadding = new Thickness(0d, EffectiveGlobalToken.UniformlyPaddingXXS);
     }
     
 }

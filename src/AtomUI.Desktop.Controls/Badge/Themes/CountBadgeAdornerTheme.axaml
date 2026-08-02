@@ -2,9 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themeResources="using:AtomUI.Theme.Resources"
-    xmlns:generated="using:AtomUI.Generated.AtomUI_Desktop_Controls"
-    themeResources:ControlTokenScope.Identity="{x:Static generated:BadgeThemeAsset.Identity}"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:CountBadgeAdorner}" TargetType="atom:CountBadgeAdorner">
         <Setter Property="Template">
@@ -26,12 +23,12 @@
             </ControlTemplate>
         </Setter>
 
-        <Setter Property="Foreground" Value="{atom:BadgeTokenResource BadgeTextColor}" />
+        <Setter Property="Foreground" Value="{atom:CountBadgeTokenResource TextColor}" />
         <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="BadgeShadowSize" Value="{atom:BadgeTokenResource BadgeShadowSize}" />
-        <Setter Property="BadgeShadowColor" Value="{atom:BadgeTokenResource BadgeShadowColor}" />
+        <Setter Property="BadgeShadowSize" Value="{atom:CountBadgeTokenResource ShadowSize}" />
+        <Setter Property="BadgeShadowColor" Value="{atom:CountBadgeTokenResource ShadowColor}" />
         <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationMid}" />
-        <Setter Property="BadgeColor" Value="{atom:BadgeTokenResource BadgeColor}" />
+        <Setter Property="BadgeColor" Value="{atom:CountBadgeTokenResource IndicatorColor}" />
 
         <Style Selector="^[IsAdornerMode=True]">
             <Style Selector="^ /template/ Panel#RootLayout">
@@ -40,25 +37,25 @@
             </Style>
         </Style>
         <Style Selector="^ /template/ Border#BadgeIndicator">
-            <Setter Property="Height" Value="{atom:BadgeTokenResource IndicatorHeight}" />
-            <Setter Property="MinWidth" Value="{atom:BadgeTokenResource IndicatorHeight}" />
+            <Setter Property="Height" Value="{atom:CountBadgeTokenResource IndicatorHeight}" />
+            <Setter Property="MinWidth" Value="{atom:CountBadgeTokenResource IndicatorHeight}" />
             <Setter Property="CornerRadius"
-                    Value="{atom:BadgeTokenResource CountBadgeCornerRadius}" />
+                    Value="{atom:CountBadgeTokenResource CornerRadius}" />
         </Style>
         <Style Selector="^ /template/ atom|TextBlock#BadgeText">
-            <Setter Property="FontSize" Value="{atom:BadgeTokenResource TextFontSize}" />
-            <Setter Property="Padding" Value="{atom:BadgeTokenResource CountBadgeTextPadding}" />
+            <Setter Property="FontSize" Value="{atom:CountBadgeTokenResource TextFontSize}" />
+            <Setter Property="Padding" Value="{atom:CountBadgeTokenResource TextPadding}" />
         </Style>
 
         <Style Selector="^[Size=Small]">
             <Style Selector="^ /template/ Border#BadgeIndicator">
-                <Setter Property="Height" Value="{atom:BadgeTokenResource IndicatorHeightSM}" />
-                <Setter Property="MinWidth" Value="{atom:BadgeTokenResource IndicatorHeightSM}" />
+                <Setter Property="Height" Value="{atom:CountBadgeTokenResource IndicatorHeightSM}" />
+                <Setter Property="MinWidth" Value="{atom:CountBadgeTokenResource IndicatorHeightSM}" />
                 <Setter Property="CornerRadius"
-                        Value="{atom:BadgeTokenResource CountBadgeCornerRadiusSM}" />
+                        Value="{atom:CountBadgeTokenResource CornerRadiusSM}" />
             </Style>
             <Style Selector="^ /template/ atom|TextBlock#BadgeText">
-                <Setter Property="FontSize" Value="{atom:BadgeTokenResource TextFontSizeSM}" />
+                <Setter Property="FontSize" Value="{atom:CountBadgeTokenResource TextFontSizeSM}" />
             </Style>
         </Style>
     </ControlTheme>

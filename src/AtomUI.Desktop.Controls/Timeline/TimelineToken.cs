@@ -7,18 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class TimelineToken : AbstractControlDesignToken
 {
-    public const string ID = "Timeline";
-    
-    public TimelineToken()
-        : this(ID)
-    {
-    }
-
-    protected TimelineToken(string id)
-        : base(id)
-    {
-    }
-
     /// <summary>
     /// Timeline 轨迹颜色
     /// </summary>
@@ -78,19 +66,19 @@ internal class TimelineToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
 
-        IndicatorTailColor = SharedToken.ColorSplit;
-        IndicatorTailWidth = SharedToken.LineWidthBold;
+        IndicatorTailColor = EffectiveGlobalToken.ColorSplit;
+        IndicatorTailWidth = EffectiveGlobalToken.LineWidthBold;
 
-        IndicatorDotBorderWidth = SharedToken.LineWidth * 3;
-        ItemPaddingBottom       = new Thickness(0, 0, 0, SharedToken.UniformlyPadding * 1.25);
+        IndicatorDotBorderWidth = EffectiveGlobalToken.LineWidth * 3;
+        ItemPaddingBottom       = new Thickness(0, 0, 0, EffectiveGlobalToken.UniformlyPadding * 1.25);
         ItemPaddingBottomLG     = ItemPaddingBottom * 2;
         
-        IndicatorStartModeMargin  = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
-        IndicatorEndModeMargin    = new Thickness(SharedToken.UniformlyMargin, 0, 0, 0);
-        IndicatorMiddleModeMargin = new Thickness(SharedToken.UniformlyMargin, 0);
+        IndicatorStartModeMargin  = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMargin, 0);
+        IndicatorEndModeMargin    = new Thickness(EffectiveGlobalToken.UniformlyMargin, 0, 0, 0);
+        IndicatorMiddleModeMargin = new Thickness(EffectiveGlobalToken.UniformlyMargin, 0);
 
-        LastItemContentMinHeight = SharedToken.ControlHeightLG * 1.2;
-        IndicatorSize            = SharedToken.SizeMS;
+        LastItemContentMinHeight = EffectiveGlobalToken.ControlHeightLG * 1.2;
+        IndicatorSize            = EffectiveGlobalToken.SizeMS;
         IndicatorDotSize         = 8;
     }
     

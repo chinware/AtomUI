@@ -2,7 +2,7 @@
 
 namespace AtomUI.Desktop.Controls.PaginationLang;
 
-[LanguageProvider(LanguageCode.en_US, PaginationToken.ID)]
+[LanguageProvider(LanguageCode.en_US, "Pagination")]
 internal class en_US
 {
     public const string JumpToText = "Go to";

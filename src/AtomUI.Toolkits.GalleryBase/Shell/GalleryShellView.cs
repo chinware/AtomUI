@@ -232,6 +232,6 @@ public sealed class GalleryShellView : UserControl, IDisposable
 
     private void BindToken(AvaloniaObject target, AvaloniaProperty property, SharedTokenKind tokenKind)
     {
-        _themeBindings.Add(TokenResourceBinder.CreateTokenBinding(target, property, tokenKind));
+        _themeBindings.Add(TokenResourceBinder.CreateGlobalTokenBinding(target, property, tokenKind));
     }
 }

@@ -23,7 +23,7 @@ Form 的实现以 `ItemsControl` 为容器基础，`FormItem` 作为字段级容
 - `src/AtomUI.Desktop.Controls/Form/FormItemDecorator.cs`：组合输入控件的表单能力转发。
 - `src/AtomUI.Desktop.Controls/Form/FormSizeTypeBindingHelper.cs`：`CustomizableSizeType` 到新旧尺寸接口的转发规则。
 - `src/AtomUI.Desktop.Controls/Form/SubmitButton.cs`、`ResetButton.cs`：表单操作按钮和路由事件。
-- `src/AtomUI.Desktop.Controls/Form/FormToken.cs`：Form 组件 Token。
+- `src/AtomUI.Desktop.Controls/Form/FormToken.cs`：Form 控件 Token。
 - `src/AtomUI.Desktop.Controls/Form/Themes/*.axaml`：Form、FormItem、Decorator、Feedback 和操作按钮主题。
 
 ## 3. 核心类职责

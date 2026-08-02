@@ -164,74 +164,58 @@ Global Token，`StarGap` 来自 Own Token，但语法完全一致。
 生成器为它产生强类型 `RatingTokenKey` 和 MarkupExtension 构造参数，因此：
 
 - 输入 `{atom:RatingTokenResource ` 后可以获得 Token 提示。
-- Own Token 和已经支持的 Global Token 优先显示，并带来源文档。
-- 使用新的 Global Token 会形成新的主题依赖。
+- 可以选择 Rating Own Token 和当前 registry 中的全部 Global Token。
 - Token 写错时在 AXAML 编译期失败。
 - 运行时不解析字符串、不反射属性、不推断 TargetType。
 
 这里故意没有 `Global=`、`Own=` 或 ControlTheme scope 配置。定义层负责分类，消费层只表达“读取 Rating 的这个
 Token”。
 
-## 5. SupportedGlobalTokens：让 Control 级配置有意义
+## 5. 每个 Control 都拥有完整 Effective Global Token
 
-一个 Control 技术上可以看到完整 Global Token schema，但用户不应该在该 Control 下配置一堆永远不会生效的
-Token。每个 `ControlTokenDescriptor` 因此包含：
-
-```text
-SupportedGlobalTokens
-OwnTokens
-```
-
-用户在某个 Control 下可以配置的集合是：
+Control 配置允许使用的 Token 固定为：
 
 ```text
 Configurable Control Tokens
-    = SupportedGlobalTokens
-    + OwnTokens
+    = All Global Tokens
+    + Current Control Own Tokens
 ```
 
-### 5.1 支持清单不是人工维护的白名单
+AtomUI 不维护“这个 Control 消费了哪些 Global Token”的白名单。Own Token 计算、AXAML 和 C# Binding 都可以直接
+使用任意已注册 Global Token，不需要生成依赖声明。配置绑定时先匹配当前 Control Own Token，未命中时匹配完整
+Global Token schema；两处都不存在才报错。Own Token 与任意 Global Token 禁止同名。
 
-生成器从 Control Own Token 计算中收集依赖：
+一个合法 Global Token 如果没有被当前 Control 直接或间接使用，覆盖后可以没有视觉效果。这是允许的确定行为，
+不能因此影响其他 Control identity 或真正的 Global Token snapshot。启用 `Global` 或 `Custom` Control 算法时，
+Seed/Map 覆盖可能重新派生其他 Token，因此一个看似未直接使用的 Token 仍可能产生局部间接效果。
 
-```csharp
-StarSize = EffectiveGlobalToken.ControlHeight;
-```
-
-这表示 Rating 的 Own Token 默认值依赖 `ControlHeight`。
-
-生成器也从主题资产中收集依赖：
-
-```xml
-<Setter Property="Foreground"
-        Value="{atom:RatingTokenResource ColorPrimary}" />
-```
-
-这表示 Rating 主题直接消费 `ColorPrimary`。
-
-最终集合为：
-
-```text
-SupportedGlobalTokens
-    = Own Token calculation dependencies
-    + built-in ControlTheme dependencies
-    + generated third-party theme dependency manifests
-    + generated application theme dependency manifests
-```
-
-### 5.2 自定义 ControlTheme 可以扩展支持清单
-
-假设默认 Rating 主题没有使用 `MotionDurationSlow`，应用的自定义主题可以声明：
+### 5.1 AXAML 和 C# 使用同一语义
 
 ```xml
 <Setter Property="MotionDuration"
         Value="{atom:RatingTokenResource MotionDurationSlow}" />
 ```
 
-应用生成器会把这次引用写入 dependency manifest。ThemeManager 在解析主题配置前合并所有 manifest，此后
-`MotionDurationSlow` 才能合法出现在 Rating 的 Control 配置下。
+只要 `MotionDurationSlow` 存在于 Global Token schema，这个引用和对应 Rating 配置就始终合法，不扩展 schema。
+C# Binding 显式区分普通 Global 与当前 Control Effective Global：
 
-这条规则同时满足两个要求：默认配置列表只展示真正有意义的 Token，而自定义主题仍然可以扩展设计能力。
+```csharp
+TokenResourceBinder.CreateGlobalTokenBinding(
+    this, MotionDurationProperty, SharedTokenKind.MotionDurationSlow);
+
+TokenResourceBinder.CreateControlTokenBinding(
+    this, MotionDurationProperty, SharedTokenKind.MotionDurationSlow);
+```
+
+第二种 API 使用实例 exact CLR type 对应的生成式 identity；基类代码在注册的派生 Control 实例上读取派生
+identity。Own Token 不随 CLR 继承替换。内部 part 由公开 owner 使用带 `owner` 的重载绑定，不创建公开 identity。
+命令式读取使用 `ControlTokenAccessor.Capture(owner)`，不通过隐藏 StyledProperty 转运 Token。
+
+### 5.2 为什么不保留“仅用于提示”的消费清单
+
+消费清单无法完整证明间接计算、继承代码、C# Binding 和第三方主题行为。一旦它不再参与正确性，却继续出现在
+Gallery 或文档中，就容易再次被误认为支持边界。AtomUI 因此彻底删除该清单；Gallery 单独展示 Control Own
+Token，并提供统一、可搜索的 Global Token 目录。
 
 ## 6. 主题系统的五个运行时边界
 
@@ -247,8 +231,8 @@ SupportedGlobalTokens
 
 ### 6.1 ThemeSchemaRegistry
 
-Registry 在应用初始化时由生成 descriptor 构建，包含 Global Token schema、Control descriptor、算法 descriptor、
-ControlTheme asset manifest 和 Token dependency manifest。首个 snapshot 编译前冻结，之后不能动态追加类型。
+Registry 在应用初始化时由生成 descriptor 构建，包含 Global Token schema、带 exact CLR type 的 Control
+descriptor、算法 descriptor 和 ControlTheme asset manifest。首个 snapshot 编译前冻结，之后不能动态追加类型。
 
 ### 6.2 ThemeConfig 与 ThemeDefinition
 
@@ -277,7 +261,7 @@ ControlTokenIdentity = Snapshot 内查询哪个 Control 的 Effective Token
 | 需求 | 应使用的入口 |
 | --- | --- |
 | 修改整个应用的主色、圆角或字体 | Global Token |
-| 只修改所有 Button 的主色或高度 | Button 下的 Supported Global Token |
+| 只修改所有 Button 的主色或高度 | Button 下的 Global Token 覆盖 |
 | 修改 Button 独有的内容内边距 | Button Own Token |
 | 为页面建立局部暗色或紧凑主题 | ThemeConfigProvider |
 | 修改 Control 的模板结构或状态映射 | 自定义 ControlTheme |
@@ -338,8 +322,8 @@ Theme Definition XML 适合声明可命名、可切换、可放入应用资源�
 2. Button 在自己的 Effective Global Token 中进一步覆盖 `ColorPrimary`。
 3. `ContentFontSize` 覆盖 Button Own Token。
 
-Binder 会根据当前 registry revision 验证 Button identity、Token 名、值类型和 Supported Global Token。不能在
-Button 下配置一个它既不计算也不消费的 Global Token。
+Binder 会根据当前 registry revision 验证 Button identity、Token 名和值类型。Button Own Token 与任意已注册
+Global Token 都可以配置；只有名称在这两个 schema 中都不存在时才失败。
 
 完整 XML 协议、算法形态和安全限制见 [主题定义 XML v1 规范](theme-definition-xml.md)。
 
@@ -422,8 +406,8 @@ theme.ControlTokens
     .Set(ButtonTokens.ContentFontSize, 15);
 ```
 
-配置入口与 Theme Definition XML 使用同一个 schema，所以两者对 identity、支持清单、类型和算法的判断完全
-一致。
+配置入口与 Theme Definition XML 使用同一个 schema，所以两者对 identity、Own/Global Token 分类、值类型和
+算法的判断完全一致。
 
 ## 11. 为页面建立局部主题
 
@@ -470,7 +454,7 @@ Token 负责设计值，ControlTheme 负责把设计值映射到 Avalonia 属性
 
 这里的关键不是 AXAML 语法，而是职责分配：
 
-- `ControlHeight` 和 `ColorText` 是 Rating 支持覆盖的 Global Token。
+- `ControlHeight` 和 `ColorText` 是这个默认 RatingTheme 当前消费的 Global Token；Rating 仍可覆盖其他任意 Global Token。
 - `StarGap` 是 Rating Own Token。
 - pressed、hover、disabled 等实例状态由 selector 和 Theme Variables 映射。
 - 模板节点名称、临时布局值和实例状态不进入 Own Token。
@@ -522,7 +506,7 @@ Rating/
 1. 创建 public Rating Control。
 2. 只有存在 Rating 独有设计值时才创建带 `[ControlDesignToken]` 的 `RatingToken.cs`。
 3. 在 `Themes/RatingTheme.axaml` 中使用 `RatingTokenResource` 消费 Effective Control Token。
-4. 由生成器产生 identity、Token key、descriptor、dependency manifest 和 asset manifest。
+4. 由生成器产生 exact CLR type/identity、Token key、descriptor 和 asset manifest。
 5. 包只公开一次生成的 `UseAcmeControls()` 注册入口。
 
 不需要泛型 Token Attribute、Theme Asset glob、每 Theme Module、手工 manifest、聚合 AXAML 或运行时程序集扫描。
@@ -579,11 +563,11 @@ strongly typed resource key
 NativeAOT 约束决定了注册模型：
 
 - generator 产生 Token descriptor、factory、getter、setter 和 resource projector。
-- generator 产生 ControlTheme asset 和 dependency manifest。
+- generator 产生 ControlTheme asset manifest、owner 和引用的 Control identities。
 - 包级入口显式注册生成结果。
 - 运行时不使用 `Assembly.GetTypes()`、`Activator.CreateInstance` 或 PropertyInfo 构建 schema。
 
-这不只是为了消除 analyzer warning。它让 identity、依赖和资源 key 在构建期可验证，也让第三方 Control 与内置
+这不只是为了消除 analyzer warning。它让 identity、Own Token 和资源 key 在构建期可验证，也让第三方 Control 与内置
 Control 使用同一条确定性路径。
 
 ## 17. 常见错误及其根因
@@ -593,7 +577,7 @@ Control 使用同一条确定性路径。
 | 在 ControlTheme 中给 `ControlTokenScope.Identity` 赋值 | 把 Token 归属变成隐式环境状态 | 使用 `XxxTokenResource` |
 | 在 RatingToken 中重新定义 `ControlHeight` | 与 Global Token 产生重名和双真源 | 使用 Rating Effective Global Token |
 | `NumericUpDownToken : ButtonSpinnerToken` | 配置 identity 与实际消费关系失真 | 定义独立 Own Token，共享值提升到 Global Token |
-| 在 Rating 下配置任意 Global Token | 用户无法知道配置是否会生效 | 只接受 `SupportedGlobalTokens` |
+| 把合法但未消费的 Global Token 当成配置错误 | 重新引入不完整消费白名单 | 接受全部 Global Token，未知名称才失败 |
 | 用 `SharedTokenResource` 期待 Rating 局部覆盖 | Shared 始终读取全局值 | 改用 `RatingTokenResource` |
 | 为 SearchEdit 创建借用 Button/LineEdit Token 的 SearchButton | 一个类型出现多个 Token 归属 | 组合 public Button + `SearchButtonTheme` |
 | 为每个 ControlTheme 写注册代码 | 容易遗漏且破坏第三方开发体验 | 约定目录 + 生成 manifest |
@@ -603,11 +587,11 @@ Control 使用同一条确定性路径。
 
 1. 先确定修改属于全局设计语言、Control 有效 Global Token、Own Token、ControlTheme 还是 Semantic Part Theme。
 2. 从 Global Token 开始定制，让算法生成完整派生值。
-3. 只有单个 Control 需要偏离时，查看其 `SupportedGlobalTokens` 与 `OwnTokens`。
+3. 只有单个 Control 需要偏离时，优先选择已有 Global Token；只有 Control 独有语义才使用 Own Token。
 4. Token 能表达的视觉差异不要复制模板。
 5. 只有结构、selector 或状态映射需要改变时才创建自定义 ControlTheme。
 6. 组合 Control 优先使用稳定 Semantic Part Theme，不依赖 internal 模板节点。
-7. 新主题资产通过生成 manifest 注册，在 ThemeManager 构建前冻结依赖。
+7. 新主题资产通过生成 manifest 注册，在 ThemeManager 构建前冻结 owner、引用 identity 和结构契约。
 8. 验证 Light/Dark、Control 算法、局部 ThemeContext、Popup/TopLevel 和 NativeAOT 路径。
 
 ## 19. 最终心智模型
@@ -615,7 +599,7 @@ Control 使用同一条确定性路径。
 可以把 AtomUI 主题系统记成下面五句话：
 
 1. Global Token 定义设计语言，Own Token 只表达某个 Control 独有的稳定语义。
-2. Control 可以覆盖自己真正支持的 Global Token，但不能修改全局结果或影响其他 Control。
+2. Control 可以覆盖完整 Global Token schema，但不能修改全局结果或影响其他 Control。
 3. `SharedTokenResource` 永远读全局，`XxxTokenResource` 永远读 Xxx 的 Effective Control Token。
 4. ControlTheme 负责样式和模板，Semantic Part Theme 负责稳定内部定制，Token identity 不由 TargetType 推断。
 5. 所有输入先编译成不可变 ThemeSnapshot，再由稳定 ThemeContext 原子发布。

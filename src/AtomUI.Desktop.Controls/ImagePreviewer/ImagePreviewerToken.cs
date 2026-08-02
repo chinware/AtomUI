@@ -8,7 +8,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ImagePreviewerToken : AbstractControlDesignToken
 {
-    public const string ID = "ImagePreviewer";
     
     /// <summary>
     /// 预览操作图标大小
@@ -86,18 +85,18 @@ internal class ImagePreviewerToken : AbstractControlDesignToken
     public double CoverImageWidth { get; set; }
     
     public ImagePreviewerToken()
-        : base(ID)
+
     {
     }
     
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        PreviewOperationColor         = SharedToken.ColorTextLightSolid.SetAlphaF(0.85);
-        PreviewOperationHoverColor    = SharedToken.ColorTextLightSolid;
-        PreviewOperationColorDisabled = SharedToken.ColorTextDisabled;
-        PreviewOperationSize          = SharedToken.FontSizeIcon * 1.5;
-        ImagePreviewSwitchSize        = SharedToken.ControlHeightLG;
+        PreviewOperationColor         = EffectiveGlobalToken.ColorTextLightSolid.SetAlphaF(0.85);
+        PreviewOperationHoverColor    = EffectiveGlobalToken.ColorTextLightSolid;
+        PreviewOperationColorDisabled = EffectiveGlobalToken.ColorTextDisabled;
+        PreviewOperationSize          = EffectiveGlobalToken.FontSizeIcon * 1.5;
+        ImagePreviewSwitchSize        = EffectiveGlobalToken.ControlHeightLG;
         MaskBgColor                   = ColorUtils.FromRgbF(0.3, 0, 0, 0);
         DialogMinWidth                = 710;
         DialogMinHeight               = 240;
@@ -105,17 +104,17 @@ internal class ImagePreviewerToken : AbstractControlDesignToken
         
         if (isDarkMode)
         {
-            TitleBarBackgroundColor       = SharedToken.ColorBorderSecondary;
+            TitleBarBackgroundColor       = EffectiveGlobalToken.ColorBorderSecondary;
         }
         else
         {
-            TitleBarBackgroundColor       = SharedToken.ColorBorderSecondary.Darken(1);
+            TitleBarBackgroundColor       = EffectiveGlobalToken.ColorBorderSecondary.Darken(1);
         }
 
-        NavButtonBgColor             = SharedToken.ColorBgMask.SetAlphaF(0.1);
-        NavButtonBgHoverColor        = SharedToken.ColorBgMask.SetAlphaF(0.2);
-        FloatToolbarPadding          = new Thickness(SharedToken.UniformlyPaddingLG / 2, 0);
-        FloatToolbarIndicatorPadding = new Thickness(SharedToken.UniformlyPaddingXS, 0);
+        NavButtonBgColor             = EffectiveGlobalToken.ColorBgMask.SetAlphaF(0.1);
+        NavButtonBgHoverColor        = EffectiveGlobalToken.ColorBgMask.SetAlphaF(0.2);
+        FloatToolbarPadding          = new Thickness(EffectiveGlobalToken.UniformlyPaddingLG / 2, 0);
+        FloatToolbarIndicatorPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingXS, 0);
     }
     
 }

@@ -5,17 +5,11 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ButtonSpinnerToken : LineEditToken
+internal class ButtonSpinnerToken : AbstractControlDesignToken
 {
-    public new const string ID = "ButtonSpinner";
     
     public ButtonSpinnerToken()
-        : this(ID)
-    {
-    }
 
-    protected ButtonSpinnerToken(string id)
-        : base(id)
     {
     }
 
@@ -63,14 +57,14 @@ internal class ButtonSpinnerToken : LineEditToken
     {
         base.CalculateTokenValues(isDarkMode);
         ControlWidth   = 90;
-        HandleWidth    = SharedToken.ControlHeightSM;
-        HandleIconSize = SharedToken.FontSize / 2;
-        HandleActiveBg = SharedToken.ColorFillAlter;
-        HandleBg       = SharedToken.ColorBgContainer;
-        FilledHandleBg = ColorUtils.OnBackground(SharedToken.ColorFillSecondary,
+        HandleWidth    = EffectiveGlobalToken.ControlHeightSM;
+        HandleIconSize = EffectiveGlobalToken.FontSize / 2;
+        HandleActiveBg = EffectiveGlobalToken.ColorFillAlter;
+        HandleBg       = EffectiveGlobalToken.ColorBgContainer;
+        FilledHandleBg = ColorUtils.OnBackground(EffectiveGlobalToken.ColorFillSecondary,
             HandleBg);
-        HandleHoverColor  = SharedToken.ColorPrimary;
-        HandleBorderColor = SharedToken.ColorBorder;
+        HandleHoverColor  = EffectiveGlobalToken.ColorPrimary;
+        HandleBorderColor = EffectiveGlobalToken.ColorBorder;
     }
     
 }

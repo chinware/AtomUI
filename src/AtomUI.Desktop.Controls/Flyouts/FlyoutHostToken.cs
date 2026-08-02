@@ -7,7 +7,6 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class FlyoutHostToken : AbstractControlDesignToken
 {
-    public const string ID = "FlyoutHost";
     
     /// <summary>
     /// 默认 Popup 和 PlacementTarget 的间距
@@ -35,15 +34,15 @@ internal class FlyoutHostToken : AbstractControlDesignToken
     public double VerticalOffset { get; set; }
 
     public FlyoutHostToken()
-        : base(ID)
+
     {
     }
     
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        MarginToAnchor    = SharedToken.UniformlyMarginXXS;
-        OverlayHostShadow = SharedToken.BoxShadowsSecondary;
+        MarginToAnchor    = EffectiveGlobalToken.UniformlyMarginXXS;
+        OverlayHostShadow = EffectiveGlobalToken.BoxShadowsSecondary;
         PopupRootShadow = new BoxShadows(new BoxShadow
         {
             OffsetX = 0,
@@ -59,8 +58,8 @@ internal class FlyoutHostToken : AbstractControlDesignToken
             Spread  = 0,
             Color   = ColorUtils.FromRgbF(0.10, 0, 0, 0)
         }]);
-        HorizontalOffset = SharedToken.UniformlyMarginXS;
-        VerticalOffset   = SharedToken.UniformlyMarginXS;
+        HorizontalOffset = EffectiveGlobalToken.UniformlyMarginXS;
+        VerticalOffset   = EffectiveGlobalToken.UniformlyMarginXS;
     }
     
 }

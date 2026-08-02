@@ -6,10 +6,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class SeparatorToken : AbstractControlDesignToken
 {
-    public const string ID = "Separator";
 
     public SeparatorToken()
-        : base(ID)
+
     {
     }
 
@@ -54,11 +53,11 @@ internal class SeparatorToken : AbstractControlDesignToken
         base.CalculateTokenValues(isDarkMode);
         TextPaddingInline              = 1.0;
         OrientationMarginPercent       = 0.05;
-        VerticalMarginInline           = SharedToken.UniformlyMarginXS;
-        HorizontalMarginBlockSM        = new Thickness(0, SharedToken.UniformlyMarginXS);
-        HorizontalMarginBlock          = new Thickness(0, SharedToken.UniformlyMargin);
-        HorizontalMarginBlockLG        = new Thickness(0, SharedToken.UniformlyMarginLG);
-        HorizontalWithTextGutterMargin = new Thickness(0, SharedToken.UniformlyMargin);
+        VerticalMarginInline           = EffectiveGlobalToken.UniformlyMarginXS;
+        HorizontalMarginBlockSM        = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXS);
+        HorizontalMarginBlock          = new Thickness(0, EffectiveGlobalToken.UniformlyMargin);
+        HorizontalMarginBlockLG        = new Thickness(0, EffectiveGlobalToken.UniformlyMarginLG);
+        HorizontalWithTextGutterMargin = new Thickness(0, EffectiveGlobalToken.UniformlyMargin);
     }
     
 }

@@ -5,6 +5,7 @@
         <RootNamespace>AtomUI.Controls</RootNamespace>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+        <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
     </PropertyGroup>
 
     <ItemGroup>

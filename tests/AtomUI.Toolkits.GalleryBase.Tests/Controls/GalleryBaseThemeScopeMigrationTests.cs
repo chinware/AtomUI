@@ -7,8 +7,8 @@ public class GalleryBaseThemeScopeMigrationTests
 {
     private static readonly string[] ControlThemeFiles =
     [
-        "src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeaderTheme.axaml",
-        "src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml"
+        "src/AtomUI.Toolkits.GalleryBase/Controls/Themes/GalleryShowCaseHeaderTheme.axaml",
+        "src/AtomUI.Toolkits.GalleryBase/Controls/Themes/ShowCaseItemTheme.axaml"
     ];
 
     [Fact]
@@ -30,14 +30,14 @@ public class GalleryBaseThemeScopeMigrationTests
     }
 
     [Fact]
-    public void GalleryBase_Control_Themes_Use_Ambient_Shared_Token_Scopes()
+    public void GalleryBase_Control_Themes_Use_Explicit_Token_Resources()
     {
         foreach (var relativePath in ControlThemeFiles)
         {
             var text = File.ReadAllText(GetRepoFile(relativePath));
 
             text.ShouldContain("{atom:SharedTokenResource ");
-            text.ShouldContain("themeResources:ControlTokenScope.Identity=");
+            text.ShouldNotContain("ControlTokenScope.Identity");
             text.ShouldNotContain("TokenSharedTokenResource");
         }
     }

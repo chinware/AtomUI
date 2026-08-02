@@ -24,12 +24,14 @@ public class ThemeSchemaGeneratorTests
         source.ShouldContain("internal static class GeneratedThemeSchema");
         source.ShouldNotContain("namespace AtomUI.Theme.Schema;");
         source.ShouldNotContain("class ThemeSchemaDescriptorPool");
+        source.ShouldContain("typeof(global::Demo.Button)");
         source.ShouldContain("new ControlTokenIdentity(\"AtomUI\", \"Button\")");
         source.ShouldContain("global::AtomUI.Theme.Resources.SharedTokenKind");
         source.ShouldContain("new TokenDescriptor(\"Alpha\", 0, TokenStage.Seed");
         source.ShouldContain("new TokenDescriptor(\"Zeta\", 1, TokenStage.Alias");
         source.ShouldContain("new TokenDescriptor(\"Height\", 0, TokenStage.Control");
         source.ShouldContain("new TokenDescriptor(\"Label\", 1, TokenStage.Control");
+        source.ShouldNotContain("SupportedGlobalToken");
         source.ShouldContain("ThemeTokenValueParser.Parse<global::System.Double>(value)");
         source.ShouldContain("ThemeTokenValueFormatter.Format((global::System.Double)value!)");
         source.ShouldContain("((global::Demo.ButtonToken)token).Height = (global::System.Double)value!");
@@ -66,12 +68,81 @@ public class ThemeSchemaGeneratorTests
         source.ShouldContain("namespace AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid;");
     }
 
+    [Fact]
+    public void Ignores_Non_Token_Effective_Global_Calculation_Helpers()
+    {
+        var outputCompilation = RunGenerator(CreateCompilation("""
+            using AtomUI.Theme.DesignTokens;
+
+            namespace Demo
+            {
+                [ControlDesignToken]
+                internal sealed class ButtonToken : AbstractControlDesignToken
+                {
+                    public double Height { get; set; }
+
+                    public override void CalculateTokenValues(bool isDark)
+                    {
+                        _ = EffectiveGlobalToken.ColorPalettes.Count;
+                        Height = EffectiveGlobalToken.ControlHeight;
+                    }
+                }
+            }
+            """), out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(outputCompilation, "GeneratedThemeSchema.g.cs");
+        source.ShouldNotContain("\"ColorPalettes\"");
+    }
+
+    [Fact]
+    public void Generates_One_Package_Registration_Entry()
+    {
+        var outputCompilation = RunGenerator(
+            CreateCompilation(TokenSource),
+            out var diagnostics,
+            new InMemoryAdditionalText(
+                "Button/Themes/ButtonTheme.axaml",
+                """
+                <ControlTheme xmlns="https://github.com/avaloniaui"
+                              xmlns:atom="https://atomui.net"
+                              TargetType="Demo.Button">
+                    <Setter Property="Tag" Value="{atom:ButtonTokenResource Height}" />
+                </ControlTheme>
+                """));
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(outputCompilation, "GeneratedControlPackageRegistration.g.cs");
+        source.ShouldContain("internal static class GeneratedControlPackageRegistration");
+        source.ShouldContain("internal static void Register(");
+        source.ShouldContain("global::AtomUI.Theme.IThemeManagerBuilder themeManagerBuilder");
+        source.ShouldContain("global::AtomUI.Theme.Resources.IControlThemesProvider controlThemesProvider");
+        source.ShouldContain("global::System.Func<global::System.Collections.Generic.IReadOnlyList<global::AtomUI.Theme.Schema.ControlThemeAssetDescriptor>, global::System.Collections.Generic.IReadOnlyList<global::AtomUI.Theme.Schema.ControlThemeAssetDescriptor>>? selectAssets = null");
+        source.ShouldContain("GeneratedThemeSchema.GetControls()");
+        source.ShouldContain("GeneratedControlThemeAssetManifest.GetDescriptors()");
+        source.ShouldContain("asset.ReferencedControlIdentities");
+        source.ShouldContain("includeIdentity(referencedIdentity)");
+        source.ShouldContain("var packageAssets = selectAssets is null ? selectedAssets : selectAssets(selectedAssets)");
+        source.ShouldContain("GeneratedControlThemeAssetResources.AddResources(controlThemesProvider, packageAssets)");
+        source.ShouldContain("global::AtomUI.Theme.Language.LanguageProviderPool.GetLanguageProviders()");
+        source.ShouldContain("new global::AtomUI.Theme.ControlPackageRegistration(");
+        source.ShouldContain("            packageAssets,");
+        source.ShouldContain("themeManagerBuilder.AddControlPackage(package)");
+        source.ShouldNotContain("AddControlToken");
+        source.ShouldNotContain("AddLanguageProviders");
+    }
+
     private static CSharpCompilation RunGenerator(
         CSharpCompilation compilation,
-        out ImmutableArray<Diagnostic> diagnostics)
+        out ImmutableArray<Diagnostic> diagnostics,
+        params AdditionalText[] additionalTexts)
     {
         var cancellationToken = TestContext.Current.CancellationToken;
-        var driver = CSharpGeneratorDriver.Create(new TokenResourceKeyGenerator());
+        var driver = CSharpGeneratorDriver.Create(
+            [new TokenResourceKeyGenerator().AsSourceGenerator()],
+            additionalTexts.ToImmutableArray(),
+            (CSharpParseOptions)compilation.SyntaxTrees[0].Options,
+            null);
 
         driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out diagnostics, cancellationToken);
         return (CSharpCompilation)outputCompilation;
@@ -122,15 +193,13 @@ public class ThemeSchemaGeneratorTests
             [ControlDesignToken]
             internal sealed class ButtonToken : AbstractControlDesignToken
             {
-                public const string ID = "Button";
-
-                public ButtonToken()
-                    : base(ID)
-                {
-                }
-
                 public string Label { get; set; } = string.Empty;
                 public double Height { get; set; }
+
+                public override void CalculateTokenValues(bool isDark)
+                {
+                    Height = EffectiveGlobalToken.ControlHeight;
+                }
             }
 
             [ThemeAlgorithm("Default", 1, ThemeAppearanceEffect.Light)]
@@ -177,15 +246,13 @@ public class ThemeSchemaGeneratorTests
             [ControlDesignToken]
             internal sealed class ButtonToken : AbstractControlDesignToken
             {
-                public const string ID = "Button";
-
-                public ButtonToken()
-                    : base(ID)
-                {
-                }
-
                 public double Height { get; set; }
                 public string Label { get; set; } = string.Empty;
+
+                public override void CalculateTokenValues(bool isDark)
+                {
+                    Height = EffectiveGlobalToken.ControlHeight;
+                }
             }
 
             [GlobalDesignToken]
@@ -201,6 +268,20 @@ public class ThemeSchemaGeneratorTests
         """;
 
     private const string AtomUIStubs = """
+        namespace Avalonia.Controls
+        {
+            public class Control
+            {
+            }
+        }
+
+        namespace Demo
+        {
+            public sealed class Button : Avalonia.Controls.Control
+            {
+            }
+        }
+
         namespace AtomUI.Theme
         {
             public readonly struct ControlTokenRegistration
@@ -224,6 +305,15 @@ public class ThemeSchemaGeneratorTests
                 protected TokenResourceExtension(TTokenKind kind)
                 {
                 }
+
+                protected virtual object GetResourceKey(TTokenKind kind) => kind;
+            }
+
+            public static class ControlTokenResourceKey
+            {
+                public static object Global(
+                    AtomUI.Theme.Schema.ControlTokenIdentity identity,
+                    SharedTokenKind kind) => kind;
             }
         }
 
@@ -275,6 +365,7 @@ public class ThemeSchemaGeneratorTests
             public sealed class ControlTokenDescriptor
             {
                 public ControlTokenDescriptor(
+                    System.Type controlType,
                     ControlTokenIdentity identity,
                     System.Collections.Generic.IReadOnlyList<TokenDescriptor> ownTokens,
                     System.Func<AtomUI.Theme.DesignTokens.AbstractControlDesignToken> factory,
@@ -373,11 +464,18 @@ public class ThemeSchemaGeneratorTests
             {
             }
 
+            public sealed class DesignToken : AbstractDesignToken
+            {
+                [NotTokenDefinition]
+                public System.Collections.Generic.IDictionary<string, string> ColorPalettes { get; } =
+                    new System.Collections.Generic.Dictionary<string, string>();
+
+                public double ControlHeight { get; set; }
+            }
+
             public abstract class AbstractControlDesignToken : AbstractDesignToken
             {
-                protected AbstractControlDesignToken(string id)
-                {
-                }
+                protected DesignToken EffectiveGlobalToken { get; } = new DesignToken();
 
                 public virtual void CalculateTokenValues(bool isDark)
                 {
@@ -385,4 +483,23 @@ public class ThemeSchemaGeneratorTests
             }
         }
         """;
+
+    private sealed class InMemoryAdditionalText : AdditionalText
+    {
+        private readonly Microsoft.CodeAnalysis.Text.SourceText _text;
+
+        internal InMemoryAdditionalText(string path, string text)
+        {
+            Path = path;
+            _text = Microsoft.CodeAnalysis.Text.SourceText.From(text);
+        }
+
+        public override string Path { get; }
+
+        public override Microsoft.CodeAnalysis.Text.SourceText GetText(
+            CancellationToken cancellationToken = default)
+        {
+            return _text;
+        }
+    }
 }

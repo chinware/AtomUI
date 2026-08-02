@@ -7,10 +7,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class ListBoxToken : AbstractControlDesignToken
 {
-    public const string ID = "ListBox";
     
     public ListBoxToken()
-        : base(ID)
+
     {
     }
     
@@ -88,30 +87,30 @@ internal class ListBoxToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        var colorTextDisabled  = SharedToken.ColorTextDisabled;
-        var colorTextSecondary = SharedToken.ColorTextSecondary;
-        var colorBgTextHover   = SharedToken.ColorBgTextHover;
+        var colorTextDisabled  = EffectiveGlobalToken.ColorTextDisabled;
+        var colorTextSecondary = EffectiveGlobalToken.ColorTextSecondary;
+        var colorBgTextHover   = EffectiveGlobalToken.ColorBgTextHover;
 
         ItemColor         = colorTextSecondary;
         ItemHoverColor    = colorTextSecondary;
-        ItemSelectedColor = SharedToken.ColorText;
+        ItemSelectedColor = EffectiveGlobalToken.ColorText;
 
-        ItemBgColor         = SharedToken.ColorTransparent;
+        ItemBgColor         = EffectiveGlobalToken.ColorTransparent;
         ItemHoverBgColor    = colorBgTextHover;
-        ItemSelectedBgColor = SharedToken.ControlItemBgActive;
+        ItemSelectedBgColor = EffectiveGlobalToken.ControlItemBgActive;
 
         ItemDisabledColor = colorTextDisabled;
 
-        ItemPaddingLG = new Thickness(SharedToken.UniformlyPadding, 0);
-        ItemPaddingSM = new Thickness(SharedToken.UniformlyPaddingXS, 0);
-        ItemPadding   = new Thickness(SharedToken.UniformlyPaddingSM, 0);
+        ItemPaddingLG = new Thickness(EffectiveGlobalToken.UniformlyPadding, 0);
+        ItemPaddingSM = new Thickness(EffectiveGlobalToken.UniformlyPaddingXS, 0);
+        ItemPadding   = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM, 0);
 
-        ContentPadding   = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
+        ContentPadding   = new Thickness(EffectiveGlobalToken.UniformlyPaddingXXS / 2);
         ItemMargin       = new Thickness(0, 0.5);
 
-        FilterHighlightColor = SharedToken.ColorError;
+        FilterHighlightColor = EffectiveGlobalToken.ColorError;
 
-        SelectedIndicatorMargin = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
+        SelectedIndicatorMargin = new Thickness(EffectiveGlobalToken.UniformlyMarginXXS, 0, 0, 0);
     }
     
 }

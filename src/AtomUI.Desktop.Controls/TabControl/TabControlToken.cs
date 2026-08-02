@@ -7,10 +7,9 @@ namespace AtomUI.Desktop.Controls;
 [ControlDesignToken]
 internal class TabControlToken : AbstractControlDesignToken
 {
-    public const string ID = "TabControl";
 
     public TabControlToken()
-        : base(ID)
+
     {
     }
 
@@ -162,53 +161,53 @@ internal class TabControlToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        var lineHeight = SharedToken.RelativeLineHeight;
-        var lineWidth  = SharedToken.LineWidth;
+        var lineHeight = EffectiveGlobalToken.RelativeLineHeight;
+        var lineWidth  = EffectiveGlobalToken.LineWidth;
 
-        CardBg = SharedToken.ColorFillAlter;
+        CardBg = EffectiveGlobalToken.ColorFillAlter;
 
-        CardSize = SharedToken.ControlHeightLG;
+        CardSize = EffectiveGlobalToken.ControlHeightLG;
 
-        CardPadding = new Thickness(SharedToken.UniformlyPadding,
-            (CardSize - Math.Round(SharedToken.FontSize * lineHeight)) / 2 - lineWidth);
-        CardPaddingSM = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingXXS * 1.5);
-        CardPaddingLG = new Thickness(top: SharedToken.UniformlyPaddingXS,
-            bottom: SharedToken.UniformlyPaddingXXS * 1.5,
-            left: SharedToken.UniformlyPadding,
-            right: SharedToken.UniformlyPadding);
+        CardPadding = new Thickness(EffectiveGlobalToken.UniformlyPadding,
+            (CardSize - Math.Round(EffectiveGlobalToken.FontSize * lineHeight)) / 2 - lineWidth);
+        CardPaddingSM = new Thickness(EffectiveGlobalToken.UniformlyPadding, EffectiveGlobalToken.UniformlyPaddingXXS * 1.5);
+        CardPaddingLG = new Thickness(top: EffectiveGlobalToken.UniformlyPaddingXS,
+            bottom: EffectiveGlobalToken.UniformlyPaddingXXS * 1.5,
+            left: EffectiveGlobalToken.UniformlyPadding,
+            right: EffectiveGlobalToken.UniformlyPadding);
 
-        TitleFontSize   = SharedToken.FontSize;
-        TitleFontSizeLG = SharedToken.FontSizeLG;
-        TitleFontSizeSM = SharedToken.FontSize;
+        TitleFontSize   = EffectiveGlobalToken.FontSize;
+        TitleFontSizeLG = EffectiveGlobalToken.FontSizeLG;
+        TitleFontSizeSM = EffectiveGlobalToken.FontSize;
 
-        InkBarColor = SharedToken.ColorPrimary;
+        InkBarColor = EffectiveGlobalToken.ColorPrimary;
 
-        HorizontalMargin     = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
+        HorizontalMargin     = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMargin, 0);
         HorizontalItemGutter = 32;
         HorizontalItemMargin = new Thickness();
 
-        HorizontalItemPadding   = new Thickness(0, SharedToken.UniformlyPaddingSM);
-        HorizontalItemPaddingSM = new Thickness(0, SharedToken.UniformlyPaddingXS);
-        HorizontalItemPaddingLG = new Thickness(0, SharedToken.UniformlyPadding);
+        HorizontalItemPadding   = new Thickness(0, EffectiveGlobalToken.UniformlyPaddingSM);
+        HorizontalItemPaddingSM = new Thickness(0, EffectiveGlobalToken.UniformlyPaddingXS);
+        HorizontalItemPaddingLG = new Thickness(0, EffectiveGlobalToken.UniformlyPadding);
 
-        VerticalItemGutter  = SharedToken.SpacingXXS;
-        VerticalItemPadding = new Thickness(SharedToken.UniformlyPaddingXS, SharedToken.UniformlyPaddingXS);
+        VerticalItemGutter  = EffectiveGlobalToken.SpacingXXS;
+        VerticalItemPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingXS, EffectiveGlobalToken.UniformlyPaddingXS);
 
-        ItemColor         = SharedToken.ColorText;
-        ItemSelectedColor = SharedToken.ColorPrimary;
-        ItemHoverColor    = SharedToken.ColorPrimaryHover;
+        ItemColor         = EffectiveGlobalToken.ColorText;
+        ItemSelectedColor = EffectiveGlobalToken.ColorPrimary;
+        ItemHoverColor    = EffectiveGlobalToken.ColorPrimaryHover;
 
-        CardGutter                   = SharedToken.UniformlyMarginXXS / 2;
-        AddTabButtonMarginHorizontal = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
-        AddTabButtonMarginVertical   = new Thickness(0, SharedToken.UniformlyMarginXXS, 0, 0);
-        ItemIconMargin               = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
+        CardGutter                   = EffectiveGlobalToken.UniformlyMarginXXS / 2;
+        AddTabButtonMarginHorizontal = new Thickness(EffectiveGlobalToken.UniformlyMarginXXS, 0, 0, 0);
+        AddTabButtonMarginVertical   = new Thickness(0, EffectiveGlobalToken.UniformlyMarginXXS, 0, 0);
+        ItemIconMargin               = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMarginSM, 0);
 
-        MenuIndicatorPaddingHorizontal = new Thickness(SharedToken.UniformlyPaddingXS, 0, 0, 0);
-        MenuIndicatorPaddingVertical   = new Thickness(0, SharedToken.UniformlyPaddingXS, 0, 0);
-        CloseIconMargin                = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
+        MenuIndicatorPaddingHorizontal = new Thickness(EffectiveGlobalToken.UniformlyPaddingXS, 0, 0, 0);
+        MenuIndicatorPaddingVertical   = new Thickness(0, EffectiveGlobalToken.UniformlyPaddingXS, 0, 0);
+        CloseIconMargin                = new Thickness(EffectiveGlobalToken.UniformlyMarginXXS, 0, 0, 0);
 
         MenuEdgeThickness   = 20;
-        TabAndContentGutter = SharedToken.UniformlyMarginSM;
+        TabAndContentGutter = EffectiveGlobalToken.UniformlyMarginSM;
     }
     
 }

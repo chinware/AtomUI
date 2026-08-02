@@ -20,7 +20,7 @@ public class WindowTitleBarTokenTests
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs"));
 
-        source.ShouldContain("CaptionButtonPadding = new Thickness(SharedToken.SizeUnit * 2)");
+        source.ShouldContain("CaptionButtonPadding = new Thickness(EffectiveGlobalToken.SizeUnit * 2)");
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class WindowTitleBarTokenTests
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs"));
 
-        source.ShouldContain("CaptionButtonIconSize       = SharedToken.IconSize;");
+        source.ShouldContain("CaptionButtonIconSize       = EffectiveGlobalToken.IconSize;");
         source.ShouldContain("WindowsCaptionIconSize      = 11;");
     }
 
@@ -188,8 +188,8 @@ public class WindowTitleBarTokenTests
             "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"));
         var buttonTheme = XDocument.Load(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonTheme.axaml"));
-        var themeResources = XDocument.Load(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarThemes.axaml"));
+        var assetManifest = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator/GeneratedControlThemeAssetManifest.g.cs"));
 
         var expectedResources = new[]
         {
@@ -249,13 +249,8 @@ public class WindowTitleBarTokenTests
         buttonTheme.ToString().ShouldContain("WindowTitleBarTokenResource ActiveColor");
         buttonTheme.ToString().ShouldContain("WindowTitleBarTokenResource InactiveColor");
 
-        var includes = themeResources.Root!
-                                     .Element(themeResources.Root.Name.Namespace + "ResourceDictionary.MergedDictionaries")!
-                                     .Elements()
-                                     .Select(element => (string?)element.Attribute("Source"))
-                                     .ToList();
-        includes.IndexOf("WindowsCaptionIconGeometries.axaml")
-                .ShouldBeLessThan(includes.IndexOf("CaptionButtonGroupTheme.axaml"));
+        assetManifest.ShouldContain("WindowTitleBar/Themes/WindowsCaptionIconGeometries.axaml");
+        assetManifest.ShouldContain("WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml");
     }
 
     [Fact]
