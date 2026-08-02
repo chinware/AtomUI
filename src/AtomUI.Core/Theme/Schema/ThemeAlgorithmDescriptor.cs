@@ -14,27 +14,30 @@ public sealed class ThemeAlgorithmDescriptor
     private readonly Func<IThemeAlgorithm> _factory;
 
     public ThemeAlgorithmDescriptor(
-        string id,
+        ThemeAlgorithm algorithm,
         int revision,
         ThemeAppearanceEffect appearanceEffect,
         Func<IThemeAlgorithm> factory)
     {
-        SchemaIdentifier.Validate(id, nameof(id));
+        if (!Enum.IsDefined(algorithm))
+        {
+            throw new ArgumentOutOfRangeException(nameof(algorithm), algorithm, "Theme algorithm must be defined.");
+        }
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(revision);
         ArgumentNullException.ThrowIfNull(factory);
-        Id               = id;
+        Algorithm        = algorithm;
         Revision         = revision;
         AppearanceEffect = appearanceEffect;
         _factory         = factory;
     }
 
-    public string Id { get; }
+    public ThemeAlgorithm Algorithm { get; }
     public int Revision { get; }
     public ThemeAppearanceEffect AppearanceEffect { get; }
 
     public IThemeAlgorithm Create()
     {
         return _factory() ??
-               throw new InvalidOperationException($"Theme algorithm '{Id}' factory returned null.");
+               throw new InvalidOperationException($"Theme algorithm '{Algorithm}' factory returned null.");
     }
 }

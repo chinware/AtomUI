@@ -27,7 +27,7 @@ internal sealed class GeneratedThemeSchemaWriter
         _globalTokens = globalTokens.OrderBy(static token => token.Name, StringComparer.Ordinal).ToArray();
         _controls = controls.OrderBy(static control => control.ControlName, StringComparer.Ordinal)
                             .ToArray();
-        _algorithms = algorithms.OrderBy(static algorithm => algorithm.Id, StringComparer.Ordinal)
+        _algorithms = algorithms.OrderBy(static algorithm => algorithm.AlgorithmValue)
                                 .ThenBy(static algorithm => algorithm.TypeName, StringComparer.Ordinal)
                                 .ToArray();
     }
@@ -152,8 +152,8 @@ internal sealed class GeneratedThemeSchemaWriter
         source.AppendLine("    {");
         foreach (var algorithm in _algorithms)
         {
-            var id = SymbolDisplay.FormatLiteral(algorithm.Id, quote: true);
-            source.Append("        new ThemeAlgorithmDescriptor(").Append(id)
+            source.Append("        new ThemeAlgorithmDescriptor(global::AtomUI.Theme.Algorithms.ThemeAlgorithm.")
+                  .Append(algorithm.Algorithm)
                   .Append(", ").Append(algorithm.Revision)
                   .Append(", ThemeAppearanceEffect.").Append(algorithm.AppearanceEffect).AppendLine(",");
             source.Append("            static () => new ").Append(algorithm.TypeName).AppendLine("()),");

@@ -3,6 +3,7 @@ using System.Reactive.Threading.Tasks;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUI.Controls;
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
 using AtomUI.Toolkits.GalleryBase.Configuration;
@@ -413,7 +414,11 @@ public class GalleryBaseFoundationTests
             viewModel.CurrentThemeId.ShouldBe("PolarGreen");
             manager.CurrentTheme!.ThemeId.ShouldBe("PolarGreen");
             manager.CurrentTheme.Appearance.ShouldBe(ThemeAppearance.Dark);
-            manager.CurrentTheme.Algorithms.ShouldBe(["Default", "Compact", "Dark"]);
+            manager.CurrentTheme.Algorithms.ShouldBe([
+                ThemeAlgorithm.Default,
+                ThemeAlgorithm.Compact,
+                ThemeAlgorithm.Dark
+            ]);
             committedRequest.ShouldNotBeNull();
             ReadToken(committedRequest!.Config, nameof(SharedTokenKind.EnableMotion)).ShouldBe("false");
             ReadToken(committedRequest.Config, nameof(SharedTokenKind.EnableWaveSpirit)).ShouldBe("false");
@@ -490,7 +495,7 @@ public class GalleryBaseFoundationTests
     private static async Task RestoreDefaultThemeAsync(IThemeManager manager)
     {
         var config = new ThemeConfigBuilder()
-                     .WithAlgorithms("Default")
+                     .WithAlgorithms(ThemeAlgorithm.Default)
                      .WithToken(nameof(SharedTokenKind.EnableMotion), "true")
                      .WithToken(nameof(SharedTokenKind.EnableWaveSpirit), "true")
                      .Build();

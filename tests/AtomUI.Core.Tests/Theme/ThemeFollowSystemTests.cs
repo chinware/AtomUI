@@ -1,4 +1,5 @@
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using Avalonia;
 using Avalonia.Styling;
@@ -21,11 +22,11 @@ public class ThemeFollowSystemTests
             var application = Application.Current!;
             var light = new ThemeRequest(
                 IThemeManager.DEFAULT_THEME_ID,
-                new ThemeConfigBuilder().WithAlgorithms("Default").Build(),
+                new ThemeConfigBuilder().WithAlgorithms(ThemeAlgorithm.Default).Build(),
                 ThemeTransitionReason.FollowSystem);
             var dark = new ThemeRequest(
                 IThemeManager.DEFAULT_THEME_ID,
-                new ThemeConfigBuilder().WithAlgorithms("Default", "Dark").Build(),
+                new ThemeConfigBuilder().WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Dark).Build(),
                 ThemeTransitionReason.FollowSystem);
             var builder = new ThemeManagerBuilder();
             builder.WithFollowSystemThemes(light, dark);
@@ -50,11 +51,11 @@ public class ThemeFollowSystemTests
             var application = Application.Current!;
             var light = new ThemeRequest(
                 IThemeManager.DEFAULT_THEME_ID,
-                new ThemeConfigBuilder().WithAlgorithms("Default").Build(),
+                new ThemeConfigBuilder().WithAlgorithms(ThemeAlgorithm.Default).Build(),
                 ThemeTransitionReason.FollowSystem);
             var dark = new ThemeRequest(
                 IThemeManager.DEFAULT_THEME_ID,
-                new ThemeConfigBuilder().WithAlgorithms("Default", "Dark").Build(),
+                new ThemeConfigBuilder().WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Dark).Build(),
                 ThemeTransitionReason.FollowSystem);
             var builder = new ThemeManagerBuilder();
             builder.WithFollowSystemThemes(light, dark);

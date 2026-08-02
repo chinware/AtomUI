@@ -1,12 +1,14 @@
+using AtomUI.Theme.Algorithms;
+
 namespace AtomUI.Theme;
 
 public sealed record ThemeState
 {
-    private readonly IReadOnlyList<string> _algorithms;
+    private readonly IReadOnlyList<ThemeAlgorithm> _algorithms;
 
     public ThemeState(
         string themeId,
-        IReadOnlyList<string> algorithms,
+        IReadOnlyList<ThemeAlgorithm> algorithms,
         ThemeAppearance appearance,
         ulong fingerprint,
         long transitionId)
@@ -22,7 +24,7 @@ public sealed record ThemeState
     }
 
     public string ThemeId { get; }
-    public IReadOnlyList<string> Algorithms => _algorithms;
+    public IReadOnlyList<ThemeAlgorithm> Algorithms => _algorithms;
     public ThemeAppearance Appearance { get; }
     public ulong Fingerprint { get; }
     public long TransitionId { get; }

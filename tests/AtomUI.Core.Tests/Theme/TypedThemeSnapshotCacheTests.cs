@@ -18,7 +18,7 @@ public class TypedThemeSnapshotCacheTests
     {
         var evaluations = 0;
         var algorithm = new ThemeAlgorithmDescriptor(
-            "Counting",
+            ThemeAlgorithm.Default,
             1,
             ThemeAppearanceEffect.Light,
             () => new CountingAlgorithm(() => Interlocked.Increment(ref evaluations)));
@@ -102,7 +102,7 @@ public class TypedThemeSnapshotCacheTests
         ThemeSnapshot? reusableParent = null)
     {
         var effectiveAlgorithms = algorithms ??
-            [registry.Algorithms.Single(static algorithm => algorithm.Id == "Default")];
+            [registry.Algorithms.Single(static algorithm => algorithm.Algorithm == ThemeAlgorithm.Default)];
         var location = new ThemeSourceLocation("test", 1, 1, "/Theme");
         var definition = new BoundThemeDefinition(
             "TestTheme",

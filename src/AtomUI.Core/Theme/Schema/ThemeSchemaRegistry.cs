@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Resources;
 
 namespace AtomUI.Theme.Schema;
@@ -10,7 +11,7 @@ internal sealed class ThemeSchemaRegistry
     private readonly FrozenDictionary<string, TokenDescriptor> _globalTokensByName;
     private readonly FrozenDictionary<ControlTokenIdentity, ControlTokenDescriptor> _controlsByIdentity;
     private readonly FrozenDictionary<Type, ControlTokenDescriptor> _controlsByType;
-    private readonly FrozenDictionary<string, ThemeAlgorithmDescriptor> _algorithmsById;
+    private readonly FrozenDictionary<ThemeAlgorithm, ThemeAlgorithmDescriptor> _algorithmsByAlgorithm;
     private readonly FrozenDictionary<object, int> _controlResourceSlotsByKey;
     private readonly object?[] _sharedResourceKeys;
     private readonly object?[][] _controlSharedResourceKeys;
@@ -30,7 +31,7 @@ internal sealed class ThemeSchemaRegistry
         var controlInputs = controls.OrderBy(static descriptor => descriptor.Identity.Catalog, StringComparer.Ordinal)
                                     .ThenBy(static descriptor => descriptor.Identity.Id, StringComparer.Ordinal)
                                     .ToArray();
-        var algorithmArray = algorithms.OrderBy(static descriptor => descriptor.Id, StringComparer.Ordinal).ToArray();
+        var algorithmArray = algorithms.OrderBy(static descriptor => descriptor.Algorithm).ToArray();
         var assetArray = themeAssets.OrderBy(
             static descriptor => descriptor.AssetUri.ToString(),
             StringComparer.Ordinal).ToArray();
@@ -76,8 +77,8 @@ internal sealed class ThemeSchemaRegistry
 
         var algorithmMap = BuildUniqueMap(
             algorithmArray,
-            static descriptor => descriptor.Id,
-            StringComparer.Ordinal,
+            static descriptor => descriptor.Algorithm,
+            EqualityComparer<ThemeAlgorithm>.Default,
             "algorithm");
 
         GlobalTokens          = globalTokensView;
@@ -92,7 +93,7 @@ internal sealed class ThemeSchemaRegistry
                                     EqualityComparer<Type>.Default,
                                     "Control CLR type")
                                 .ToFrozenDictionary();
-        _algorithmsById       = algorithmMap.ToFrozenDictionary(StringComparer.Ordinal);
+        _algorithmsByAlgorithm = algorithmMap.ToFrozenDictionary();
         _controlResourceSlotsByKey = CreateControlResourceSlotMap(controlArray);
         _sharedResourceKeys = CreateSharedResourceKeys(globalArray);
         _controlSharedResourceKeys = CreateControlSharedResourceKeys(controlArray.Length);
@@ -166,10 +167,10 @@ internal sealed class ThemeSchemaRegistry
     }
 
     internal bool TryGetAlgorithm(
-        string id,
+        ThemeAlgorithm algorithm,
         [NotNullWhen(true)] out ThemeAlgorithmDescriptor? descriptor)
     {
-        return _algorithmsById.TryGetValue(id, out descriptor);
+        return _algorithmsByAlgorithm.TryGetValue(algorithm, out descriptor);
     }
 
     internal bool TryGetControlResourceSlot(object resourceKey, out int controlSlot)
@@ -389,7 +390,7 @@ internal sealed class ThemeSchemaRegistry
         fingerprint.Add(algorithms.Count);
         foreach (var algorithm in algorithms)
         {
-            fingerprint.Add(algorithm.Id);
+            fingerprint.Add((int)algorithm.Algorithm);
             fingerprint.Add(algorithm.Revision);
             fingerprint.Add((byte)algorithm.AppearanceEffect);
         }

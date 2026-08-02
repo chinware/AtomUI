@@ -365,6 +365,8 @@ Global Algorithm 是有序派生链。例如暗色主题可以使用：
 ```
 
 Compact 算法可以继续追加，并声明为保持当前 appearance。算法不是简单的布尔开关；顺序属于主题语义。
+`ThemeAlgorithm` 是算法身份的唯一类型，当前封闭成员为 `Default`、`Dark` 和 `Compact`。C# 配置、运行时状态、
+descriptor 和缓存都使用枚举；XML 的 `Id` 只是在 Reader 边界使用的严格序列化文本。
 
 Control 级算法有四种状态：
 
@@ -388,7 +390,7 @@ this.UseAtomUI(builder =>
     builder.WithInitialTheme(
         "AcmeLight",
         new ThemeConfigBuilder()
-            .WithAlgorithms(ThemeAlgorithms.Default)
+            .WithAlgorithms(ThemeAlgorithm.Default)
             .Build());
 
     builder.UseDesktopControls();

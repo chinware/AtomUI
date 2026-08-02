@@ -101,7 +101,7 @@ Theme                                  exactly 1
 | `Appearance` | 是 | `Light` 或 `Dark` | 该 definition 算法链求值后的最终 appearance 断言 |
 | `IsDefault` | 否 | `true` 或 `false` | 是否参与默认主题选择，默认 `false` |
 
-`Id`、Algorithm `Id`、Control `Catalog`、Control `Id` 和 Token `Name` 使用相同 Identifier 词法：
+Theme `Id`、Control `Catalog`、Control `Id` 和 Token `Name` 使用相同 Identifier 词法：
 
 ```text
 [A-Za-z_][A-Za-z0-9_.-]{0,127}
@@ -120,9 +120,9 @@ computed = Fold(Light, definition.Algorithms[*].AppearanceEffect)
 require computed == Theme.Appearance
 ```
 
-AtomUI 内置 `Default`、`Dark`、`Compact` descriptor 的 effect 分别为 `Light`、`Dark`、`Preserve`。Binder 不按
-算法名称猜测 effect；第三方算法必须在 descriptor 中显式声明。无法解析 descriptor、effect 不合法或最终结果
-与 `Appearance` 不一致时，整个 definition 绑定失败。
+AtomUI 的 `Default`、`Dark`、`Compact` descriptor effect 分别为 `Light`、`Dark`、`Preserve`。Binder 不按算法
+名称猜测 effect，而是读取枚举键对应 descriptor 的声明。descriptor 未注册、effect 不合法或最终结果与
+`Appearance` 不一致时，整个 definition 绑定失败。
 
 绑定后，`Appearance` 作为已验证的 definition 最终 appearance 存入不可变 `ThemeDefinition`。运行时
 `ThemeConfig` 可以整体替换有效全局算法链，但不会修改 definition 元数据；编译器始终从 Light baseline 折叠
@@ -147,14 +147,17 @@ result = ApplyMapAndAliasOverrides(Mn)
 Map。第一个算法收到 `previousMap=null`；内置算法需要默认 Map 时可以在自身实现中调用 Default fallback，但
 不得改变通用链契约。
 
-`Algorithm` 是空元素，只允许一个必填 `Id` 属性。`Id` 必须解析到
-`ThemeSchemaRegistry` 中唯一的 `ThemeAlgorithmDescriptor`。算法 ID 区分大小写，同一算法链内不得重复。
+`Algorithm` 是空元素，只允许一个必填 `Id` 属性。v1 XSD 的允许值严格为 `Default`、`Dark` 和 `Compact`，并区分
+大小写；`dark`、`Unknown`、`1` 和空值都会在 Reader 边界失败并产生带源码位置的 diagnostic。同一算法链内不得
+重复枚举值。
 
-AtomUI 内置算法使用 `Default`、`Dark` 和 `Compact`。第三方算法必须使用包含自身命名域的稳定 ID，例如
-`Acme.HighContrast`，避免与其他 descriptor 冲突。
+Reader 使用精确映射把 XML 文本转换成 `ThemeAlgorithm`；读取成功的 `ThemeDocument` 不保存原始字符串。Binder
+再用枚举键查询 `ThemeSchemaRegistry` 中唯一的 `ThemeAlgorithmDescriptor`。因此“XML 值非法”和“合法枚举但
+当前 schema 未注册实现”属于两个明确的错误边界。
 
 主题文件只声明算法身份和顺序。算法实例、依赖关系、AOT 构造委托以及外观影响由 descriptor 提供；每个
-descriptor 必须提供显式 revision/version，算法行为变化时必须提升 revision。
+descriptor 必须提供显式 revision/version，算法行为变化时必须提升 revision。当前算法集合是封闭的，不支持任意
+第三方字符串 ID。新增算法必须追加 `ThemeAlgorithm` 显式数值，并同步实现及 Attribute、v1 XSD 枚举和契约测试。
 
 ## 6. Tokens 与 Token
 
@@ -231,7 +234,7 @@ ControlAlgorithmMode
 +-- Unspecified
 +-- Disabled
 +-- Global
-\-- Custom -> ordered algorithm identities
+\-- Custom -> ordered ThemeAlgorithm values
 ```
 
 `Global` 的含义也不是简单的“启用”，而是“使用当前作用域的全局算法链重新派生该 Control 的有效
@@ -268,11 +271,11 @@ internal enum ControlAlgorithmMode : byte
 }
 ```
 
-`Custom` 对应的有序算法 identity 作为规范化 Control 配置中的不可变 payload 保存，并且只允许在 Mode 为
+`Custom` 对应的有序 `ThemeAlgorithm` 枚举值作为规范化 Control 配置中的不可变 payload 保存，并且只允许在 Mode 为
 `Custom` 时非空。Reader 和 Binder 不得先降级为 `bool` 或 `bool?` 再推断。这样 Schema、diagnostic、C#
 配置模型和运行时合并器共享同一套领域语义。
 
-自定义算法示例：
+自定义算法链示例：
 
 ```xml
 <Control Catalog="AtomUI" Id="DataGrid">
@@ -335,12 +338,12 @@ typed immutable ThemeDefinition + diagnostics
 
 1. XML well-formedness：编码、标签、属性引用和 namespace 正确。
 2. XSD validation：元素顺序、数量、属性、基础词法和单文件唯一性正确。
-3. Registry binding：算法、Control 和 Token identity 均存在。
+3. Registry binding：已解析的算法枚举、Control 和 Token identity 均存在。
 4. Value conversion：每个 Token 值转换为 schema 指定的强类型值。
 5. Semantic validation：算法互斥、外观一致性、空 Control、跨文件默认主题冲突等规则成立。
 
-XSD validation 不能替代 Binder。XSD 不包含当前进程安装的 Control、Token 或算法集合，也不负责解析 Token
-值的目标类型。
+XSD validation 不能替代 Binder。XSD 固定算法枚举的可读文本，但不保证当前进程已注册相应 descriptor，也不包含
+当前进程安装的 Control、Token 集合或 Token 值目标类型。
 
 每条 diagnostic 必须包含：
 
@@ -398,7 +401,7 @@ Reader 保留源码位置和声明顺序；Binder 输出 typed、不可变定义
 
 - namespace 版本。
 - Theme metadata。
-- 有序算法 `(identity, descriptor revision)`。
+- 有序算法 `(ThemeAlgorithm, descriptor revision)`。
 - 按 Token slot 排序的 typed Token value。
 - 按 `(Catalog, Id)` 排序的 Control 配置。
 - Schema registry revision。
@@ -438,11 +441,11 @@ adapter。
 - Binder 从 library Light baseline 折叠 definition 算法 effect；声明 `Appearance` 与计算结果不一致时拒绝绑定。
 - 运行时替换全局算法链后只改变新 snapshot appearance；Control custom appearance 不改变作用域 variant。
 - `Algorithm` 属性与 `<Algorithms>` 同时出现时被拒绝。
-- 未知算法、Control、Token 和非法 Value 产生带行列及路径的 diagnostic。
+- 非法算法文本、未注册算法枚举、未知 Control/Token 和非法 Value 产生带行列及路径的 diagnostic。
 - DTD、外部实体、超限文件和超限元素数量在发布定义前失败。
 - 相同 typed 内容的不同 XML 排版得到相同 fingerprint。
 - 相同 fingerprint、不同 typed 结构的碰撞样例不会被判定为同一主题定义。
 - 文件内容或 schema/algorithm descriptor revision 变化时旧绑定和编译缓存失效。
-- 同一 algorithm id 提升 descriptor revision 后 definition fingerprint、Binder 缓存和 Compiler 缓存全部失效；
+- 同一算法枚举值提升 descriptor revision 后 definition fingerprint、Binder 缓存和 Compiler 缓存全部失效；
   只改变 XML revision 但 typed 内容不变时，仍通过结构比较安全复用可复用的编译结果。
 - Schema 校验、Reader 和 Binder 的正常路径通过 NativeAOT 验证，不执行反射扫描或动态代码生成。

@@ -37,8 +37,8 @@ public class ThemeSchemaGeneratorTests
         source.ShouldContain("((global::Demo.ButtonToken)token).Height = (global::System.Double)value!");
         source.ShouldContain("static () => new global::Demo.ButtonToken()");
         source.ShouldContain("((global::Demo.ButtonToken)token).CalculateTokenValues(appearance == global::AtomUI.Theme.ThemeAppearance.Dark)");
-        source.ShouldContain("new ThemeAlgorithmDescriptor(\"Dark\", 1, ThemeAppearanceEffect.Dark");
-        source.ShouldContain("new ThemeAlgorithmDescriptor(\"Default\", 1, ThemeAppearanceEffect.Light");
+        source.ShouldContain("new ThemeAlgorithmDescriptor(global::AtomUI.Theme.Algorithms.ThemeAlgorithm.Dark, 1, ThemeAppearanceEffect.Dark");
+        source.ShouldContain("new ThemeAlgorithmDescriptor(global::AtomUI.Theme.Algorithms.ThemeAlgorithm.Default, 1, ThemeAppearanceEffect.Light");
         source.ShouldNotContain("Activator.CreateInstance");
         source.ShouldNotContain("PropertyInfo");
         source.ShouldNotContain("typeof(global::Demo.ButtonToken)");
@@ -55,6 +55,23 @@ public class ThemeSchemaGeneratorTests
             "GeneratedThemeSchema.g.cs");
 
         second.ShouldBe(first);
+    }
+
+    [Fact]
+    public void Ignores_An_Undefined_ThemeAlgorithm_Attribute_Value()
+    {
+        var invalidSource = TokenSource.Replace(
+            "ThemeAlgorithm.Dark, 1, ThemeAppearanceEffect.Dark",
+            "(ThemeAlgorithm)999, 1, ThemeAppearanceEffect.Dark",
+            StringComparison.Ordinal);
+
+        var outputCompilation = RunGenerator(CreateCompilation(invalidSource), out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(outputCompilation, "GeneratedThemeSchema.g.cs");
+        source.ShouldContain("ThemeAlgorithm.Default");
+        source.ShouldNotContain("ThemeAlgorithm.Dark");
+        source.ShouldNotContain("999");
     }
 
     [Fact]
@@ -202,7 +219,7 @@ public class ThemeSchemaGeneratorTests
                 }
             }
 
-            [ThemeAlgorithm("Default", 1, ThemeAppearanceEffect.Light)]
+            [ThemeAlgorithm(ThemeAlgorithm.Default, 1, ThemeAppearanceEffect.Light)]
             internal sealed class DefaultAlgorithm : IThemeAlgorithm
             {
                 public DefaultAlgorithm()
@@ -210,7 +227,7 @@ public class ThemeSchemaGeneratorTests
                 }
             }
 
-            [ThemeAlgorithm("Dark", 1, ThemeAppearanceEffect.Dark)]
+            [ThemeAlgorithm(ThemeAlgorithm.Dark, 1, ThemeAppearanceEffect.Dark)]
             internal sealed class DarkAlgorithm : IThemeAlgorithm
             {
                 public DarkAlgorithm()
@@ -227,7 +244,7 @@ public class ThemeSchemaGeneratorTests
 
         namespace Demo
         {
-            [ThemeAlgorithm("Dark", 1, ThemeAppearanceEffect.Dark)]
+            [ThemeAlgorithm(ThemeAlgorithm.Dark, 1, ThemeAppearanceEffect.Dark)]
             internal sealed class DarkAlgorithm : IThemeAlgorithm
             {
                 public DarkAlgorithm()
@@ -235,7 +252,7 @@ public class ThemeSchemaGeneratorTests
                 }
             }
 
-            [ThemeAlgorithm("Default", 1, ThemeAppearanceEffect.Light)]
+            [ThemeAlgorithm(ThemeAlgorithm.Default, 1, ThemeAppearanceEffect.Light)]
             internal sealed class DefaultAlgorithm : IThemeAlgorithm
             {
                 public DefaultAlgorithm()
@@ -377,7 +394,7 @@ public class ThemeSchemaGeneratorTests
             public sealed class ThemeAlgorithmDescriptor
             {
                 public ThemeAlgorithmDescriptor(
-                    string id,
+                    AtomUI.Theme.Algorithms.ThemeAlgorithm algorithm,
                     int revision,
                     ThemeAppearanceEffect appearanceEffect,
                     System.Func<AtomUI.Theme.Algorithms.IThemeAlgorithm> factory)
@@ -412,6 +429,13 @@ public class ThemeSchemaGeneratorTests
 
         namespace AtomUI.Theme.Algorithms
         {
+            public enum ThemeAlgorithm
+            {
+                Default = 0,
+                Dark = 1,
+                Compact = 2
+            }
+
             public interface IThemeAlgorithm
             {
             }
@@ -420,7 +444,7 @@ public class ThemeSchemaGeneratorTests
             public sealed class ThemeAlgorithmAttribute : System.Attribute
             {
                 public ThemeAlgorithmAttribute(
-                    string id,
+                    ThemeAlgorithm algorithm,
                     int revision,
                     AtomUI.Theme.Schema.ThemeAppearanceEffect appearanceEffect)
                 {

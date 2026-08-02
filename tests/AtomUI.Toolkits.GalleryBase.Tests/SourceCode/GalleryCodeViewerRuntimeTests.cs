@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using AtomUI.Controls;
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUI.Toolkits.GalleryBase.SourceCode;
@@ -569,7 +570,7 @@ public class GalleryCodeViewerRuntimeTests
             themeManager.CurrentTheme
                         .ShouldNotBeNull()
                         .Algorithms
-                        .ShouldContain("Dark");
+                        .ShouldContain(ThemeAlgorithm.Dark);
 
             var viewer = new GalleryCodeViewer
             {
@@ -1090,28 +1091,25 @@ public class GalleryCodeViewerRuntimeTests
         return new WeakReference(viewer);
     }
 
-    private static string[] CaptureCurrentAlgorithms(IThemeManager themeManager)
+    private static ThemeAlgorithm[] CaptureCurrentAlgorithms(IThemeManager themeManager)
     {
-        return themeManager.CurrentTheme?.Algorithms.ToArray() ?? ["Default"];
+        return themeManager.CurrentTheme?.Algorithms.ToArray() ?? [ThemeAlgorithm.Default];
     }
 
     private static void SetDarkAppearance(IThemeManager themeManager, bool isDark)
     {
         var algorithms = CaptureCurrentAlgorithms(themeManager)
-                         .Where(static algorithm => !string.Equals(
-                             algorithm,
-                             "Dark",
-                             StringComparison.Ordinal))
+                         .Where(static algorithm => algorithm != ThemeAlgorithm.Dark)
                          .ToList();
         if (isDark)
         {
-            algorithms.Add("Dark");
+            algorithms.Add(ThemeAlgorithm.Dark);
         }
 
         ApplyAlgorithms(themeManager, algorithms);
     }
 
-    private static void ApplyAlgorithms(IThemeManager themeManager, IEnumerable<string> algorithms)
+    private static void ApplyAlgorithms(IThemeManager themeManager, IEnumerable<ThemeAlgorithm> algorithms)
     {
         var config = new ThemeConfigBuilder()
                      .WithAlgorithms(algorithms.ToArray())

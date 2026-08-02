@@ -1,5 +1,6 @@
 using System.Globalization;
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Language;
@@ -15,24 +16,30 @@ public class ThemeInitialModeTests
     public void Builder_Initial_Theme_Keeps_Theme_Id_And_Dark_Algorithm_Config()
     {
         var builder = new TestThemeManagerBuilder();
-        var config = new ThemeConfigBuilder().WithAlgorithms("Default", "Dark").Build();
+        var config = new ThemeConfigBuilder().WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Dark).Build();
 
         builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID, config);
 
         builder.ThemeId.ShouldBe(IThemeManager.DEFAULT_THEME_ID);
         builder.InitialConfig.ShouldBeSameAs(config);
-        builder.InitialConfig!.Algorithms.ShouldBe(["Default", "Dark"]);
+        builder.InitialConfig!.Algorithms.ShouldBe([ThemeAlgorithm.Default, ThemeAlgorithm.Dark]);
     }
 
     [Fact]
     public void Builder_Initial_Theme_Preserves_Explicit_Algorithm_Order()
     {
         var builder = new TestThemeManagerBuilder();
-        var config = new ThemeConfigBuilder().WithAlgorithms("Default", "Compact", "Dark").Build();
+        var config = new ThemeConfigBuilder()
+                     .WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Compact, ThemeAlgorithm.Dark)
+                     .Build();
 
         builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID, config);
 
-        builder.InitialConfig!.Algorithms.ShouldBe(["Default", "Compact", "Dark"]);
+        builder.InitialConfig!.Algorithms.ShouldBe([
+            ThemeAlgorithm.Default,
+            ThemeAlgorithm.Compact,
+            ThemeAlgorithm.Dark
+        ]);
     }
 
     [Fact]

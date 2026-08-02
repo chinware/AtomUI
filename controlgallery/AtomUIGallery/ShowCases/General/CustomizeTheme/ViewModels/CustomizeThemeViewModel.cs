@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Schema;
 using AtomUI.Theme.DesignTokens;
@@ -47,7 +48,7 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
             "#ff0000",
             (nameof(DesignToken.BorderRadius), "0"));
         PurpleThemeConfig = BuildGlobalConfig("#7D3C98");
-        DarkThemeConfig = new ThemeConfigBuilder().WithAlgorithms("Dark").Build();
+        DarkThemeConfig = new ThemeConfigBuilder().WithAlgorithms(ThemeAlgorithm.Dark).Build();
         ControlAlgorithmEnabledConfig = BuildControlConfig(ControlAlgorithmMode.Global);
         ControlAlgorithmDisabledConfig = BuildControlConfig(ControlAlgorithmMode.Disabled);
         NestedBlueThemeConfig = BuildGlobalConfig("#1677ff");

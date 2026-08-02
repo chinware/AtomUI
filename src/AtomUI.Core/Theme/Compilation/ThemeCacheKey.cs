@@ -1,18 +1,19 @@
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Schema;
 
 namespace AtomUI.Theme.Compilation;
 
 internal readonly record struct AlgorithmCacheKey(
-    string Id,
+    ThemeAlgorithm Algorithm,
     int Revision,
     ThemeAppearanceEffect AppearanceEffect)
 {
     internal static AlgorithmCacheKey Create(ThemeAlgorithmDescriptor descriptor)
     {
         return new AlgorithmCacheKey(
-            descriptor.Id,
+            descriptor.Algorithm,
             descriptor.Revision,
             descriptor.AppearanceEffect);
     }

@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
@@ -197,11 +198,11 @@ public class ThemeConfigProviderTests
     [Fact]
     public void Local_Explicit_Algorithm_List_Replaces_Parent_Dark_Algorithms()
     {
-        var manager = CreateInitializedManager(CreatePreparedWithAlgorithms("Default", "Dark"));
+        var manager = CreateInitializedManager(CreatePreparedWithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Dark));
         var provider = new ThemeConfigProvider
         {
             Config = new ThemeConfigBuilder()
-                     .WithAlgorithms("Compact")
+                     .WithAlgorithms(ThemeAlgorithm.Compact)
                      .Build(),
             Child = new Border()
         };
@@ -210,8 +211,8 @@ public class ThemeConfigProviderTests
 
         var context = provider.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull();
         context.Snapshot.Appearance.ShouldBe(ThemeAppearance.Light);
-        context.Snapshot.EffectiveConfig.Algorithms.Select(static algorithm => algorithm.Id)
-               .ShouldBe(["Compact"]);
+        context.Snapshot.EffectiveConfig.Algorithms.Select(static algorithm => algorithm.Algorithm)
+               .ShouldBe([ThemeAlgorithm.Compact]);
         provider.RequestedThemeVariant.ShouldBe(ThemeVariant.Light);
     }
 
@@ -328,13 +329,13 @@ public class ThemeConfigProviderTests
         return ThemeTransactionPreparation.Succeeded(snapshot, ThemeSnapshotCacheKey.Create(input));
     }
 
-    private static ThemeTransactionPreparation CreatePreparedWithAlgorithms(params string[] algorithmIds)
+    private static ThemeTransactionPreparation CreatePreparedWithAlgorithms(params ThemeAlgorithm[] algorithms)
     {
         var registry = TypedThemeSnapshotCacheTests.CreateRegistry();
-        var algorithms = algorithmIds
-                         .Select(id => registry.Algorithms.Single(algorithm => algorithm.Id == id))
-                         .ToArray();
-        var input = TypedThemeSnapshotCacheTests.CreateInput(registry, algorithms);
+        var descriptors = algorithms
+                          .Select(algorithm => registry.Algorithms.Single(descriptor => descriptor.Algorithm == algorithm))
+                          .ToArray();
+        var input = TypedThemeSnapshotCacheTests.CreateInput(registry, descriptors);
         var snapshot = new ThemeCompiler().Compile(input).Snapshot!;
         return ThemeTransactionPreparation.Succeeded(snapshot, ThemeSnapshotCacheKey.Create(input));
     }

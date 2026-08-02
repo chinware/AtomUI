@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using AtomUI.Theme.Algorithms;
 
 namespace AtomUI.Theme.Configuration;
 
@@ -6,7 +7,7 @@ public sealed class ControlThemeConfig
 {
     internal ControlThemeConfig(
         ControlAlgorithmMode algorithm,
-        IReadOnlyList<string>? algorithms,
+        IReadOnlyList<ThemeAlgorithm>? algorithms,
         IReadOnlyDictionary<string, string> tokens)
     {
         Algorithm  = algorithm;
@@ -17,7 +18,7 @@ public sealed class ControlThemeConfig
 
     public ControlAlgorithmMode Algorithm { get; }
 
-    public IReadOnlyList<string>? Algorithms { get; }
+    public IReadOnlyList<ThemeAlgorithm>? Algorithms { get; }
 
     public IReadOnlyDictionary<string, string> Tokens { get; }
 }

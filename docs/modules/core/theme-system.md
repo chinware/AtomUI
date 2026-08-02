@@ -2,8 +2,7 @@
 
 本文是 AtomUI 主题系统唯一的长期架构设计文档。它定义最终运行时模型、公开配置语义、主题来源解析、主题文件
 处理、Catalog 刷新、Token 编译、动态作用域、资源发布、事件契约、AOT 边界和验收标准。阶段性分析、迁移过程和
-任务进度
-不写入本文，统一放在 `docs/superpowers/`。
+任务进度不写入本文。
 
 本文描述目标架构。实现过程中不得为了保留旧主题系统 API 而偏离这些约束。
 面向主题作者和 Control 开发者的分层讲解与定制示例见
@@ -94,8 +93,8 @@ AtomUI 的控件算法必须能表达四种状态：
 
 算法配置的领域模型是 `Unspecified / Disabled / Global / Custom` 四态策略。可空 `bool` 加自定义算法列表
 虽然可以间接编码这些状态，但会把一个领域值拆成两个耦合字段，并产生布尔值与自定义列表同时声明等无效
-组合。因此配置规范化后必须使用 `ControlAlgorithmMode` 枚举；Custom 的有序算法 identity 作为不可变 payload
-保存，并且只允许在 Mode 为 `Custom` 时非空。`bool` 或 `bool?` 不能作为内部真源。
+组合。因此配置规范化后必须使用 `ControlAlgorithmMode` 枚举；Custom 的有序 `ThemeAlgorithm` 枚举值作为不可变
+payload 保存，并且只允许在 Mode 为 `Custom` 时非空。`bool` 或 `bool?` 不能作为内部真源。
 
 `ThemeConfig`、`ControlThemeConfig` 及其全部集合在构造完成后不可修改。公开构造器或
 `ThemeConfigBuilder` 必须防御性复制输入；Builder 只是一次性构造工具，不进入 Provider、Manager、snapshot 或
@@ -185,7 +184,7 @@ ThemeSchemaRegistry 还为 Binder、Normalizer 和资源投影提供 descriptor�
 ```text
 ThemeConfig
 +-- Inherit = true
-+-- Algorithms: optional ordered list
++-- Algorithms: optional ordered ThemeAlgorithm list
 +-- Tokens: global token overrides
 \-- Controls[ControlTokenIdentity]
     \-- ControlThemeConfig
@@ -208,6 +207,18 @@ Provider 不订阅 Config 内部对象图。Capture 在 UI 线程读取一个深
 
 `Algorithms=null` 表示“未指定”；非空集合表示显式算法链；空集合表示显式替换为 AtomUI 默认算法链，
 等价于 Ant Design 全局 `algorithm: []` 回到 `defaultTheme`。Control 自定义算法链仍必须声明至少一个算法。
+
+公开配置只接受 `ThemeAlgorithm`：
+
+```csharp
+new ThemeConfigBuilder()
+    .WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Dark)
+    .Build();
+```
+
+`ThemeConfig.Algorithms`、`ControlThemeConfig.Algorithms` 和 `ThemeState.Algorithms` 都是只读枚举列表。系统不提供
+字符串 Builder 重载，也不在配置、状态、descriptor、registry 或 cache key 中保存字符串算法身份。未定义的强制
+转换枚举值由 Normalizer 拒绝。
 
 `ThemeConfigProvider` 是轻量局部 ThemeVariant 宿主，只公开一个 `Config` 和继承的内容子节点。旧的
 `SharedTokenSetters`、`ControlTokenInfoSetters`、字符串算法集合以及 Token 查询属性不属于新架构。
@@ -285,12 +296,17 @@ ThemeSchemaRegistry
 |   \-- exact CLR type, factory, own token schema, evaluator, resource projector
 +-- ControlThemeAssetManifest
 |   \-- theme asset, owner identity, referenced Control identities, semantic part contract
-\-- ThemeAlgorithmDescriptor[algorithm id]
+\-- ThemeAlgorithmDescriptor[ThemeAlgorithm]
     \-- revision, evaluator, AOT factory, appearance effect
 ```
 
-每个 `ThemeAlgorithmDescriptor` 必须声明稳定 id 和显式 revision/version。算法实现、默认参数、依赖 Token 或
-输出语义发生变化时必须提升 revision，不能只保留相同 id 让旧缓存继续命中。
+每个 `ThemeAlgorithmDescriptor` 必须声明稳定的 `ThemeAlgorithm` 枚举值和显式 revision/version。算法实现、默认
+参数、依赖 Token 或输出语义发生变化时必须提升 revision，不能只保留相同枚举值让旧缓存继续命中。当前封闭集合
+只有 `Default`、`Dark` 和 `Compact`；不支持第三方自由字符串算法 ID。
+
+算法实现使用 `ThemeAlgorithmAttribute(ThemeAlgorithm, revision, appearanceEffect)` 声明元数据。源生成器读取
+Roslyn enum typed constant 并生成枚举 Descriptor 构造表达式；运行时不反射扫描算法，也不建立字符串注册路径。
+增加算法时必须追加新的显式枚举值，并同步算法实现、Attribute、XML XSD 枚举和契约测试。
 
 算法 descriptor 的求值契约固定为：
 
@@ -305,7 +321,7 @@ Evaluate(effectiveSeed, previousMap?) -> nextMap
 
 `ThemeSchemaRegistry.Revision` 根据排序后的完整 descriptor schema 确定性计算，输入至少包含 Global Token
 schema、Control identity、Control CLR type、Own Token name/kind/stage/value type/resource key schema、主题资产
-结构、算法 id/revision 及其外观声明。ControlTheme 或 C# 实现消费了哪些 Global Token 不属于 schema，也不进入
+结构、算法枚举值/revision 及其外观声明。ControlTheme 或 C# 实现消费了哪些 Global Token 不属于 schema，也不进入
 revision。注册顺序不影响 revision；任何会改变配置绑定、Token 类型或资源投影结构的 descriptor 变化都必须
 改变 revision。
 
@@ -400,7 +416,7 @@ Token 和主题资产。Own Token 使用无参数 `[ControlDesignToken]` 供生�
 
 `ThemeDefinitionBinder` 负责：
 
-- 使用 `ThemeSchemaRegistry` 解析 Token 和算法 id。
+- 使用 `ThemeSchemaRegistry` 解析 Token，并按 Reader 已转换的 `ThemeAlgorithm` 枚举绑定算法 descriptor。
 - 将字符串值一次性转换为目标类型。
 - 校验未知 Token、未知 Control、算法冲突、Appearance 一致性和跨字段语义。
 - 输出不可变、typed `ThemeDefinition` 和结构化 diagnostics。
@@ -1319,8 +1335,8 @@ ThemeScopeGraph 在注册有效期间强持有 ScopeNode 和对应 ThemeConfigPr
 - 内置和应用资源 Resolver 只使用显式 `avares://` URI；用户 Resolver 只枚举显式配置目录的顶层
   `*.theme.xml`，不反射发现 Resolver、Theme 或 Token。
 - 手动刷新不使用 `FileSystemWatcher`、动态代码生成或运行时类型构造。
-- 第三方 Control 的 identity、Token descriptor 和资源投影必须由 AtomUI generator 生成并通过包级入口注册；
-  自定义算法 descriptor 必须提供稳定 id 和显式 revision/version。
+- 第三方 Control 的 identity、Token descriptor 和资源投影必须由 AtomUI generator 生成并通过包级入口注册；算法
+  descriptor 只使用 `ThemeAlgorithm` 的封闭成员，并提供显式 revision/version。
 - 生成器测试必须验证 exact CLR type/identity、Own Token、统一强类型 key、常量时间 key 映射、资源投影、资产
   manifest 和输出稳定性，并限制生成源码体积回归。
 - 主题系统完成后必须执行真实 Gallery NativeAOT publish，不能只依赖 analyzer。

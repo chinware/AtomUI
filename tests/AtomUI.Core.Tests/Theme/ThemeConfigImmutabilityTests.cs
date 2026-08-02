@@ -1,3 +1,4 @@
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Schema;
 using Shouldly;
@@ -10,8 +11,8 @@ public class ThemeConfigImmutabilityTests
     [Fact]
     public void Build_Defensively_Copies_All_Nested_Input()
     {
-        var algorithms = new[] { "Default", "Dark" };
-        var controlAlgorithms = new[] { "Default", "Compact" };
+        var algorithms = new[] { ThemeAlgorithm.Default, ThemeAlgorithm.Dark };
+        var controlAlgorithms = new[] { ThemeAlgorithm.Default, ThemeAlgorithm.Compact };
         var identity = new ControlTokenIdentity("AtomUI", "Button");
         var controlBuilder = new ControlThemeConfigBuilder()
                              .WithAlgorithm(ControlAlgorithmMode.Custom)
@@ -24,14 +25,14 @@ public class ThemeConfigImmutabilityTests
 
         var config = configBuilder.Build();
 
-        algorithms[0] = "Changed";
-        controlAlgorithms[0] = "Changed";
+        algorithms[0] = ThemeAlgorithm.Compact;
+        controlAlgorithms[0] = ThemeAlgorithm.Dark;
         controlBuilder.WithToken("ColorPrimary", "#000000");
         configBuilder.WithToken("BorderRadius", "99");
 
-        config.Algorithms.ShouldBe(["Default", "Dark"]);
+        config.Algorithms.ShouldBe([ThemeAlgorithm.Default, ThemeAlgorithm.Dark]);
         config.Tokens["BorderRadius"].ShouldBe("6");
-        config.Controls[identity].Algorithms.ShouldBe(["Default", "Compact"]);
+        config.Controls[identity].Algorithms.ShouldBe([ThemeAlgorithm.Default, ThemeAlgorithm.Compact]);
         config.Controls[identity].Tokens["ColorPrimary"].ShouldBe("#1677FF");
     }
 
@@ -44,5 +45,31 @@ public class ThemeConfigImmutabilityTests
         config.Algorithms.ShouldBeNull();
         config.Tokens.ShouldBeEmpty();
         config.Controls.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Algorithm_Config_APIs_Expose_Only_Enum_Collections()
+    {
+        typeof(ThemeConfig).GetProperty(nameof(ThemeConfig.Algorithms))!
+                           .PropertyType.ShouldBe(typeof(IReadOnlyList<ThemeAlgorithm>));
+        typeof(ControlThemeConfig).GetProperty(nameof(ControlThemeConfig.Algorithms))!
+                                  .PropertyType.ShouldBe(typeof(IReadOnlyList<ThemeAlgorithm>));
+
+        typeof(ThemeConfigBuilder).GetMethod(
+            nameof(ThemeConfigBuilder.WithAlgorithms),
+            [typeof(ThemeAlgorithm[])])
+                                  .ShouldNotBeNull();
+        typeof(ThemeConfigBuilder).GetMethod(
+            nameof(ThemeConfigBuilder.WithAlgorithms),
+            [typeof(string[])])
+                                  .ShouldBeNull();
+        typeof(ControlThemeConfigBuilder).GetMethod(
+            nameof(ControlThemeConfigBuilder.WithAlgorithms),
+            [typeof(ThemeAlgorithm[])])
+                                         .ShouldNotBeNull();
+        typeof(ControlThemeConfigBuilder).GetMethod(
+            nameof(ControlThemeConfigBuilder.WithAlgorithms),
+            [typeof(string[])])
+                                         .ShouldBeNull();
     }
 }

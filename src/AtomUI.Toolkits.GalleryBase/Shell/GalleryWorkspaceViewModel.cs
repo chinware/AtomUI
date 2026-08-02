@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Resources;
@@ -27,7 +28,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     private bool _isCompact;
     private bool _isMotionEnabled = true;
     private bool _isWaveSpiritEnabled = true;
-    private string[] _baseAlgorithms = ["Default"];
+    private ThemeAlgorithm[] _baseAlgorithms = [ThemeAlgorithm.Default];
     private IReadOnlyList<ThemeInfo> _availableThemes = Array.Empty<ThemeInfo>();
     private string _currentThemeId = IThemeManager.DEFAULT_THEME_ID;
     private ThemePreference _appearanceMode = ThemePreference.Light;
@@ -242,15 +243,15 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
             return;
         }
 
-        var algorithms = new List<string>(_baseAlgorithms.Length + 2);
+        var algorithms = new List<ThemeAlgorithm>(_baseAlgorithms.Length + 2);
         algorithms.AddRange(_baseAlgorithms);
         if (_isCompact)
         {
-            algorithms.Add("Compact");
+            algorithms.Add(ThemeAlgorithm.Compact);
         }
         if (_isDark)
         {
-            algorithms.Add("Dark");
+            algorithms.Add(ThemeAlgorithm.Dark);
         }
 
         var config = new ThemeConfigBuilder()
@@ -364,15 +365,14 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
                     ? ThemePreference.Dark
                     : ThemePreference.Light;
             }
-            _isCompact = state.Algorithms.Contains("Compact", StringComparer.Ordinal);
+            _isCompact = state.Algorithms.Contains(ThemeAlgorithm.Compact);
             _baseAlgorithms = state.Algorithms
                                    .Where(static algorithm =>
-                                       !string.Equals(algorithm, "Compact", StringComparison.Ordinal) &&
-                                       !string.Equals(algorithm, "Dark", StringComparison.Ordinal))
+                                       algorithm is not ThemeAlgorithm.Compact and not ThemeAlgorithm.Dark)
                                    .ToArray();
             if (_baseAlgorithms.Length == 0)
             {
-                _baseAlgorithms = ["Default"];
+                _baseAlgorithms = [ThemeAlgorithm.Default];
             }
         }
 

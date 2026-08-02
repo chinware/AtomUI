@@ -77,8 +77,8 @@ public class DenseThemeCompilerTests
     public void Compile_Passes_The_Same_Effective_Seed_And_The_Previous_Map_Through_The_Algorithm_Chain()
     {
         var calls = new List<AlgorithmCall>();
-        var first = Algorithm("First", calls);
-        var second = Algorithm("Second", calls);
+        var first = Algorithm(ThemeAlgorithm.Default, calls);
+        var second = Algorithm(ThemeAlgorithm.Compact, calls);
         var registry = new ThemeSchemaRegistry(
             GeneratedThemeSchema.GetGlobalTokens(),
             Array.Empty<ControlTokenDescriptor>(),
@@ -326,7 +326,7 @@ public class DenseThemeCompilerTests
         ThemeSnapshot? reusableParent = null)
     {
         var effectiveAlgorithms = algorithms ??
-            [registry.Algorithms.Single(static algorithm => algorithm.Id == "Default")];
+            [registry.Algorithms.Single(static algorithm => algorithm.Algorithm == ThemeAlgorithm.Default)];
         var location = new ThemeSourceLocation("test", 1, 1, "/Theme");
         var definition = new BoundThemeDefinition(
             "TestTheme",
@@ -477,10 +477,10 @@ public class DenseThemeCompilerTests
                 ((DenseSolidColorBrushControlToken)builder).Evaluate(appearance));
     }
 
-    private static ThemeAlgorithmDescriptor Algorithm(string id, List<AlgorithmCall> calls)
+    private static ThemeAlgorithmDescriptor Algorithm(ThemeAlgorithm algorithm, List<AlgorithmCall> calls)
     {
         return new ThemeAlgorithmDescriptor(
-            id,
+            algorithm,
             1,
             ThemeAppearanceEffect.Preserve,
             () => new RecordingAlgorithm(calls));

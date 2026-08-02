@@ -1,4 +1,5 @@
 using AtomUI.Theme.Compilation;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Resources;
 
 namespace AtomUI.Theme;
@@ -230,7 +231,7 @@ internal sealed record PendingThemeScopeUpdate(
 
 internal sealed class ThemeRequestCacheKey : IEquatable<ThemeRequestCacheKey>
 {
-    private readonly string[]? _algorithms;
+    private readonly ThemeAlgorithm[]? _algorithms;
     private readonly KeyValuePair<string, string>[]? _tokens;
     private readonly ControlRequestCacheKey[]? _controls;
     private readonly int _hashCode;
@@ -313,7 +314,7 @@ internal sealed class ThemeRequestCacheKey : IEquatable<ThemeRequestCacheKey>
 
 internal sealed class ControlRequestCacheKey : IEquatable<ControlRequestCacheKey>
 {
-    private readonly string[]? _algorithms;
+    private readonly ThemeAlgorithm[]? _algorithms;
     private readonly KeyValuePair<string, string>[] _tokens;
     private readonly int _hashCode;
 
@@ -360,7 +361,7 @@ internal sealed class ControlRequestCacheKey : IEquatable<ControlRequestCacheKey
             hash.Add(_algorithms.Length);
             foreach (var algorithm in _algorithms)
             {
-                hash.Add(algorithm, StringComparer.Ordinal);
+                hash.Add(algorithm);
             }
         }
         foreach (var token in _tokens)

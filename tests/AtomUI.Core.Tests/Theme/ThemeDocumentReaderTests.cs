@@ -1,5 +1,7 @@
 using System.Text;
+using System.Xml.Linq;
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
 using Shouldly;
@@ -40,7 +42,67 @@ public class ThemeDocumentReaderTests
             ControlAlgorithmMode.Global,
             ControlAlgorithmMode.Custom
         ]);
-        result.Document.Controls[3].Algorithms.Select(static algorithm => algorithm.Id).ShouldBe(["Compact"]);
+        result.Document.Controls[3].Algorithms.Select(static algorithm => algorithm.Algorithm)
+              .ShouldBe([ThemeAlgorithm.Compact]);
+    }
+
+    [Fact]
+    public void Read_Maps_Exact_Algorithm_Names_To_Enum_Values()
+    {
+        var result = Read($$"""
+                            <Theme xmlns="{{Namespace}}" Id="T" Name="T" Appearance="Dark">
+                              <Algorithms>
+                                <Algorithm Id="Default" />
+                                <Algorithm Id="Compact" />
+                                <Algorithm Id="Dark" />
+                              </Algorithms>
+                            </Theme>
+                            """);
+
+        result.Success.ShouldBeTrue(result.DiagnosticsText());
+        result.Document!.Algorithms.Select(static algorithm => algorithm.Algorithm).ShouldBe([
+            ThemeAlgorithm.Default,
+            ThemeAlgorithm.Compact,
+            ThemeAlgorithm.Dark
+        ]);
+    }
+
+    [Theory]
+    [InlineData("dark")]
+    [InlineData("Unknown")]
+    [InlineData("1")]
+    [InlineData("")]
+    public void Read_Rejects_Non_Canonical_Algorithm_Values_With_Source_Position(string algorithm)
+    {
+        var result = Read($$"""
+                            <Theme xmlns="{{Namespace}}" Id="T" Name="T" Appearance="Light">
+                              <Algorithms><Algorithm Id="{{algorithm}}" /></Algorithms>
+                            </Theme>
+                            """);
+
+        result.Success.ShouldBeFalse();
+        result.Document.ShouldBeNull();
+        var diagnostic = result.Diagnostics.First(static item => item.Code == "ATMTHM1002");
+        diagnostic.Line.ShouldBeGreaterThan(0);
+        diagnostic.Column.ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
+    public void Xsd_Algorithm_Values_Match_The_ThemeAlgorithm_Enum()
+    {
+        const string resourceName = "AtomUI.Theme.Definitions.Schemas.atomui-theme-v1.xsd";
+        using var stream = typeof(ThemeConfig).Assembly.GetManifestResourceStream(resourceName);
+        stream.ShouldNotBeNull();
+        var schema = XDocument.Load(stream!);
+        XNamespace xs = "http://www.w3.org/2001/XMLSchema";
+
+        var values = schema.Descendants(xs + "simpleType")
+                           .Single(element => (string?)element.Attribute("name") == "ThemeAlgorithmType")
+                           .Descendants(xs + "enumeration")
+                           .Select(element => (string?)element.Attribute("value"))
+                           .ToArray();
+
+        values.ShouldBe(Enum.GetNames<ThemeAlgorithm>());
     }
 
     [Fact]

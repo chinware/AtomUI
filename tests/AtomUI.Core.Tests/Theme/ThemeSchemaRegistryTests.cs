@@ -1,3 +1,4 @@
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Schema;
 using Shouldly;
 using Xunit;
@@ -19,7 +20,7 @@ public class ThemeSchemaRegistryTests
             [contentFontSize],
             static () => throw new InvalidOperationException(),
             static (_, _) => throw new InvalidOperationException());
-        var defaultAlgorithm = Algorithm("Default", ThemeAppearanceEffect.Preserve);
+        var defaultAlgorithm = Algorithm(ThemeAlgorithm.Default, ThemeAppearanceEffect.Preserve);
 
         var registry = new ThemeSchemaRegistry(
             [colorPrimary, borderRadius],
@@ -34,8 +35,9 @@ public class ThemeSchemaRegistryTests
         registry.TryGetControl(buttonIdentity, out var foundControl).ShouldBeTrue();
         foundControl.ShouldBeSameAs(registry.Controls[0]);
         foundControl.OwnTokens.ShouldBe([contentFontSize]);
-        registry.TryGetAlgorithm("Default", out var foundAlgorithm).ShouldBeTrue();
+        registry.TryGetAlgorithm(ThemeAlgorithm.Default, out var foundAlgorithm).ShouldBeTrue();
         foundAlgorithm.ShouldBeSameAs(defaultAlgorithm);
+        foundAlgorithm.Algorithm.ShouldBe(ThemeAlgorithm.Default);
         registry.TryGetGlobalToken("colorprimary", out _).ShouldBeFalse();
         registry.TryGetControl(new ControlTokenIdentity("atomui", "Button"), out _).ShouldBeFalse();
     }
@@ -60,9 +62,9 @@ public class ThemeSchemaRegistryTests
             "control-identity" => new[] { button, Control("AtomUI", "Button") },
             _                  => new[] { button }
         };
-        var defaultAlgorithm = Algorithm("Default", ThemeAppearanceEffect.Preserve);
+        var defaultAlgorithm = Algorithm(ThemeAlgorithm.Default, ThemeAppearanceEffect.Preserve);
         var algorithms = duplicate == "algorithm-id"
-            ? new[] { defaultAlgorithm, Algorithm("Default", ThemeAppearanceEffect.Dark) }
+            ? new[] { defaultAlgorithm, Algorithm(ThemeAlgorithm.Default, ThemeAppearanceEffect.Dark) }
             : new[] { defaultAlgorithm };
 
         Should.Throw<ThemeSchemaException>(() => new ThemeSchemaRegistry(globals, controls, algorithms));
@@ -97,7 +99,7 @@ public class ThemeSchemaRegistryTests
         Should.Throw<ThemeSchemaException>(() => new ThemeSchemaRegistry(
             [Token("ColorPrimary", 1, TokenStage.Seed)],
             Array.Empty<ControlTokenDescriptor>(),
-            [Algorithm("Default", ThemeAppearanceEffect.Preserve)]));
+            [Algorithm(ThemeAlgorithm.Default, ThemeAppearanceEffect.Preserve)]));
 
         var invalidControl = new ControlTokenDescriptor(
             typeof(ButtonThemeTestControl),
@@ -108,7 +110,7 @@ public class ThemeSchemaRegistryTests
         Should.Throw<ThemeSchemaException>(() => new ThemeSchemaRegistry(
             [Token("ColorPrimary", 0, TokenStage.Seed)],
             [invalidControl],
-            [Algorithm("Default", ThemeAppearanceEffect.Preserve)]));
+            [Algorithm(ThemeAlgorithm.Default, ThemeAppearanceEffect.Preserve)]));
     }
 
     [Fact]
@@ -153,18 +155,25 @@ public class ThemeSchemaRegistryTests
         var first = new ThemeSchemaRegistry(
             [token],
             [control],
-            [Algorithm("Default", ThemeAppearanceEffect.Light, revision: 1)]);
+            [Algorithm(ThemeAlgorithm.Default, ThemeAppearanceEffect.Light, revision: 1)]);
         var reordered = new ThemeSchemaRegistry(
             [token],
             [control],
-            [Algorithm("Default", ThemeAppearanceEffect.Light, revision: 1)]);
+            [Algorithm(ThemeAlgorithm.Default, ThemeAppearanceEffect.Light, revision: 1)]);
         var changed = new ThemeSchemaRegistry(
             [token],
             [control],
-            [Algorithm("Default", ThemeAppearanceEffect.Light, revision: 2)]);
+            [Algorithm(ThemeAlgorithm.Default, ThemeAppearanceEffect.Light, revision: 2)]);
 
         reordered.Revision.ShouldBe(first.Revision);
         changed.Revision.ShouldNotBe(first.Revision);
+    }
+
+    [Fact]
+    public void Algorithm_Descriptor_Rejects_An_Undefined_Algorithm_Value()
+    {
+        Should.Throw<ArgumentOutOfRangeException>(() =>
+            Algorithm((ThemeAlgorithm)999, ThemeAppearanceEffect.Preserve));
     }
 
     private static TokenDescriptor Token(string name, int slot, TokenStage stage)
@@ -190,12 +199,12 @@ public class ThemeSchemaRegistryTests
     }
 
     private static ThemeAlgorithmDescriptor Algorithm(
-        string id,
+        ThemeAlgorithm algorithm,
         ThemeAppearanceEffect effect,
         int revision = 1)
     {
         return new ThemeAlgorithmDescriptor(
-            id,
+            algorithm,
             revision,
             effect,
             static () => throw new InvalidOperationException());

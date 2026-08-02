@@ -12,11 +12,11 @@ internal partial class zh_TW
     public const string PageDescription = "Customize Theme 展示 ThemeConfigProvider 如何覆蓋 Global Token、應用預設算法、配置控件 Token 和嵌套主題上下文，而不需要修改應用全局主題。";
     public const string ApiMemberThemeConfigProviderConfig = "不可變的局部主題配置；運行期更新需要替換完整配置值。";
     public const string ApiMemberThemeConfigInherit = "是否繼承並合併父級主題配置。";
-    public const string ApiMemberThemeConfigAlgorithms = "有序的全局算法標識；null 表示繼承父級算法鏈。";
+    public const string ApiMemberThemeConfigAlgorithms = "有序的 ThemeAlgorithm 枚舉值；null 表示繼承父級算法鏈。";
     public const string ApiMemberThemeConfigTokens = "按 Token 名稱索引的全局 Token 覆蓋。";
     public const string ApiMemberThemeConfigControls = "按 ControlTokenIdentity 索引的控件主題配置。";
     public const string ApiMemberControlThemeConfigAlgorithm = "控件算法模式：Unspecified、Disabled、Global 或 Custom。";
-    public const string ApiMemberControlThemeConfigAlgorithms = "僅在 Algorithm 為 Custom 時使用的有序控件算法。";
+    public const string ApiMemberControlThemeConfigAlgorithms = "僅在 Algorithm 為 Custom 時使用的有序 ThemeAlgorithm 枚舉值。";
     public const string ApiMemberControlThemeConfigTokens = "僅應用到目標 Control identity 的 Global Token 與 Own Token 覆蓋。";
     public const string CustomizeDesignTokenTitle = "自定義設計令牌";
     public const string CustomizeDesignTokenDescription = "通過修改主題的 token 屬性，可以全局修改 Design Token。部分 token 會影響其他 token，這類 token 稱為 Seed Token。";

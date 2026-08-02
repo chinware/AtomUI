@@ -1,9 +1,11 @@
+using AtomUI.Theme.Algorithms;
+
 namespace AtomUI.Theme.Configuration;
 
 public sealed class ControlThemeConfigBuilder
 {
     private ControlAlgorithmMode _algorithm;
-    private List<string>? _algorithms;
+    private List<ThemeAlgorithm>? _algorithms;
     private readonly Dictionary<string, string> _tokens = new(StringComparer.Ordinal);
 
     public ControlThemeConfigBuilder WithAlgorithm(ControlAlgorithmMode algorithm)
@@ -12,10 +14,10 @@ public sealed class ControlThemeConfigBuilder
         return this;
     }
 
-    public ControlThemeConfigBuilder WithAlgorithms(params string[] algorithms)
+    public ControlThemeConfigBuilder WithAlgorithms(params ThemeAlgorithm[] algorithms)
     {
         ArgumentNullException.ThrowIfNull(algorithms);
-        _algorithms = new List<string>(algorithms);
+        _algorithms = new List<ThemeAlgorithm>(algorithms);
         return this;
     }
 

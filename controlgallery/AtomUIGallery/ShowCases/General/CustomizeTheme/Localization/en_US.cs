@@ -12,11 +12,11 @@ internal partial class en_US
     public const string PageDescription = "Customize Theme demonstrates how ThemeConfigProvider overrides Global Tokens, applies preset algorithms, configures Control Tokens, and nests theme contexts without changing the global application theme.";
     public const string ApiMemberThemeConfigProviderConfig = "Immutable scoped theme configuration. Runtime updates replace the complete value.";
     public const string ApiMemberThemeConfigInherit = "Whether this configuration inherits and merges the parent theme configuration.";
-    public const string ApiMemberThemeConfigAlgorithms = "Ordered global algorithm identities. A null value inherits the parent algorithm chain.";
+    public const string ApiMemberThemeConfigAlgorithms = "Ordered ThemeAlgorithm values. A null value inherits the parent algorithm chain.";
     public const string ApiMemberThemeConfigTokens = "Global token overrides keyed by token name.";
     public const string ApiMemberThemeConfigControls = "Control theme configurations keyed by ControlTokenIdentity.";
     public const string ApiMemberControlThemeConfigAlgorithm = "How the control applies algorithms: Unspecified, Disabled, Global, or Custom.";
-    public const string ApiMemberControlThemeConfigAlgorithms = "Ordered custom control algorithms used only when Algorithm is Custom.";
+    public const string ApiMemberControlThemeConfigAlgorithms = "Ordered ThemeAlgorithm values used only when Algorithm is Custom.";
     public const string ApiMemberControlThemeConfigTokens = "Global Token and Own Token overrides applied only to the selected Control identity.";
     public const string CustomizeDesignTokenTitle = "Customize Design Token";
     public const string CustomizeDesignTokenDescription = "By modifying token property of theme, we can modify Design Token globally. Some tokens will affect other tokens. We call these tokens Seed Token.";

@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Schema;
@@ -51,7 +52,8 @@ public class ThemeDefinitionBinderTests
         definition.DeclaredAppearance.ShouldBe(ThemeAppearance.Dark);
         definition.EffectiveAppearance.ShouldBe(ThemeAppearance.Dark);
         definition.IsDefault.ShouldBeTrue();
-        definition.Algorithms.Select(static algorithm => algorithm.Id).ShouldBe(["Default", "Dark"]);
+        definition.Algorithms.Select(static algorithm => algorithm.Algorithm)
+                  .ShouldBe([ThemeAlgorithm.Default, ThemeAlgorithm.Dark]);
         definition.Tokens.ShouldHaveSingleItem().Value.ShouldBe(12.5);
 
         var button = definition.Controls.ShouldHaveSingleItem();
@@ -111,11 +113,12 @@ public class ThemeDefinitionBinderTests
         result.Success.ShouldBeTrue(result.DiagnosticsText());
         var button = result.Definition!.Controls.ShouldHaveSingleItem();
         button.AlgorithmMode.ShouldBe(ControlAlgorithmMode.Custom);
-        button.Algorithms.Select(static algorithm => algorithm.Id).ShouldBe(["Default", "Compact"]);
+        button.Algorithms.Select(static algorithm => algorithm.Algorithm)
+              .ShouldBe([ThemeAlgorithm.Default, ThemeAlgorithm.Compact]);
     }
 
     [Theory]
-    [InlineData("<Algorithm Id='Unknown'/>", "", "ATMTHM2001")]
+    [InlineData("<Algorithm Id='Compact'/>", "", "ATMTHM2001")]
     [InlineData("<Algorithm Id='Default'/>", "<Controls><Control Catalog='AtomUI' Id='Unknown' Algorithm='Disabled'/></Controls>", "ATMTHM2002")]
     [InlineData("<Algorithm Id='Default'/>", "<Tokens><Token Name='Unknown' Value='1'/></Tokens>", "ATMTHM2003")]
     [InlineData("<Algorithm Id='Default'/>", "<Controls><Control Catalog='AtomUI' Id='Button'><Tokens><Token Name='NotRegistered' Value='1'/></Tokens></Control></Controls>", "ATMTHM2003")]
@@ -131,7 +134,7 @@ public class ThemeDefinitionBinderTests
                              </Theme>
                              """);
 
-        var result = ThemeDefinitionBinder.Bind(document, CreateRegistry());
+        var result = ThemeDefinitionBinder.Bind(document, CreateRegistry(includeCompact: expectedCode != "ATMTHM2001"));
 
         result.Success.ShouldBeFalse();
         result.Definition.ShouldBeNull();
@@ -200,7 +203,7 @@ public class ThemeDefinitionBinderTests
         diagnostic.Message.ShouldBe("Token 'ColorPrimary' cannot be converted to 'Double'.");
     }
 
-    private static ThemeSchemaRegistry CreateRegistry()
+    private static ThemeSchemaRegistry CreateRegistry(bool includeCompact = true)
     {
         var colorPrimary = Token(
             "ColorPrimary",
@@ -224,6 +227,16 @@ public class ThemeDefinitionBinderTests
             static value => int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture))
         };
 
+        var algorithms = new List<ThemeAlgorithmDescriptor>
+        {
+            Algorithm(ThemeAlgorithm.Dark, ThemeAppearanceEffect.Dark),
+            Algorithm(ThemeAlgorithm.Default, ThemeAppearanceEffect.Preserve)
+        };
+        if (includeCompact)
+        {
+            algorithms.Add(Algorithm(ThemeAlgorithm.Compact, ThemeAppearanceEffect.Preserve));
+        }
+
         return new ThemeSchemaRegistry(
             [colorPrimary, borderRadius],
             [new ControlTokenDescriptor(
@@ -232,11 +245,7 @@ public class ThemeDefinitionBinderTests
                 ownTokens,
                 static () => throw new InvalidOperationException("The Binder must not create Token builders."),
                 static (_, _) => throw new InvalidOperationException("The Binder must not evaluate Control Tokens."))],
-            [
-                Algorithm("Compact", ThemeAppearanceEffect.Preserve),
-                Algorithm("Dark", ThemeAppearanceEffect.Dark),
-                Algorithm("Default", ThemeAppearanceEffect.Preserve)
-            ]);
+            algorithms);
     }
 
     private static TokenDescriptor Token(
@@ -259,10 +268,10 @@ public class ThemeDefinitionBinderTests
             static _ => throw new InvalidOperationException("The Binder must not project resources."));
     }
 
-    private static ThemeAlgorithmDescriptor Algorithm(string id, ThemeAppearanceEffect effect)
+    private static ThemeAlgorithmDescriptor Algorithm(ThemeAlgorithm algorithm, ThemeAppearanceEffect effect)
     {
         return new ThemeAlgorithmDescriptor(
-            id,
+            algorithm,
             revision: 1,
             effect,
             static () => throw new InvalidOperationException("The Binder must not create algorithms."));

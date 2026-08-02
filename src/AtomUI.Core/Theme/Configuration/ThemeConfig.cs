@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Schema;
 
 namespace AtomUI.Theme.Configuration;
@@ -7,7 +8,7 @@ public sealed class ThemeConfig
 {
     internal ThemeConfig(
         bool inherit,
-        IReadOnlyList<string>? algorithms,
+        IReadOnlyList<ThemeAlgorithm>? algorithms,
         IReadOnlyDictionary<string, string> tokens,
         IReadOnlyDictionary<ControlTokenIdentity, ControlThemeConfig> controls)
     {
@@ -21,7 +22,7 @@ public sealed class ThemeConfig
 
     public bool Inherit { get; }
 
-    public IReadOnlyList<string>? Algorithms { get; }
+    public IReadOnlyList<ThemeAlgorithm>? Algorithms { get; }
 
     public IReadOnlyDictionary<string, string> Tokens { get; }
 

@@ -2,12 +2,12 @@
 
 ## 1. 背景与目标
 
-AtomUI 已公开 `ThemeAlgorithm` 枚举，当前成员为 `Default`、`Dark` 和 `Compact`，但主题系统仍使用
+迁移前，AtomUI 虽已公开成员为 `Default`、`Dark` 和 `Compact` 的 `ThemeAlgorithm` 枚举，主题系统仍使用
 字符串表示算法身份。字符串从 `ThemeConfig`、主题 XML 和 source generator 元数据进入系统，随后继续流经
 descriptor、registry、normalizer、ThemeState 和 cache key。这使编译器无法检查算法名称，也允许运行时构造
 实际上不受支持的算法 ID。
 
-本次改造将算法集合定义为封闭枚举。当前只支持三种算法；以后增加算法时扩展 `ThemeAlgorithm`，同时增加实现、
+本设计把算法集合定义为封闭枚举。当前只支持三种算法；以后增加算法时扩展 `ThemeAlgorithm`，同时增加实现、
 注册信息、XML schema 成员和测试。主题 XML 的 `Id` 文本只属于序列化边界，Reader 读取完成后，主题系统中的
 算法身份必须全部使用 `ThemeAlgorithm`。
 
@@ -61,7 +61,7 @@ cache identity，必须视为稳定契约。
 
 ### 3.2 Config 与 Builder
 
-以下公开 API 改为枚举：
+公开 API 使用枚举：
 
 ```csharp
 public IReadOnlyList<ThemeAlgorithm>? ThemeConfig.Algorithms { get; }
@@ -87,7 +87,7 @@ new ThemeConfigBuilder()
 `ThemeAlgorithmAttribute` 的首个参数从 `string id` 改为 `ThemeAlgorithm algorithm`，公开属性从 `Id` 改为
 `Algorithm`。`ThemeAlgorithmDescriptor` 同样使用 `ThemeAlgorithm Algorithm`，不再暴露字符串 `Id`。
 
-这是一项有意的 Public API 破坏性变更。项目内算法声明、生成器测试桩、Gallery 示例和所有调用方一次性迁移，
+这是一项有意的 Public API 破坏性变更。项目内算法声明、生成器测试桩、Gallery 示例和所有调用方已一次性迁移，
 不增加 obsolete 字符串兼容层。
 
 ## 4. XML 读取边界
@@ -195,7 +195,7 @@ Generator 的语义模型不再把 attribute 参数解释为任意算法 ID。�
 | 同一链重复枚举 | 保持现有重复算法诊断 |
 | 枚举合法但 descriptor 未注册 | Binder/Normalizer 返回 not registered diagnostic |
 
-此次变更会导致使用字符串 Builder、读取字符串 `Algorithms` 或构造字符串 descriptor 的调用方源码无法编译。
+使用字符串 Builder、读取字符串 `Algorithms` 或构造字符串 descriptor 的调用方源码无法编译。
 这是预期迁移信号。由于当前版本分支正在进行 6.0 架构调整，不提供双 API 过渡期。
 
 ## 8. 文档与 Gallery

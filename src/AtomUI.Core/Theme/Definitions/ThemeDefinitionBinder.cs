@@ -61,13 +61,13 @@ internal static class ThemeDefinitionBinder
         var algorithms = new List<ThemeAlgorithmDescriptor>(documents.Count);
         foreach (var document in documents)
         {
-            if (!registry.TryGetAlgorithm(document.Id, out var descriptor))
+            if (!registry.TryGetAlgorithm(document.Algorithm, out var descriptor))
             {
                 AddError(
                     diagnostics,
                     UnknownAlgorithmCode,
                     document.Location,
-                    $"Theme algorithm '{document.Id}' is not registered.");
+                    $"Theme algorithm '{document.Algorithm}' is not registered.");
                 continue;
             }
 

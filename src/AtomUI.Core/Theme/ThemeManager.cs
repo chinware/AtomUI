@@ -742,7 +742,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         var snapshot = transaction.Preparation!.Snapshot!;
         transaction.PreparedState = new ThemeState(
             transaction.Request.ThemeId,
-            snapshot.EffectiveConfig.Algorithms.Select(static algorithm => algorithm.Id).ToArray(),
+            snapshot.EffectiveConfig.Algorithms.Select(static algorithm => algorithm.Algorithm).ToArray(),
             snapshot.Appearance,
             snapshot.ContentFingerprint.Value,
             transaction.TransitionId);
@@ -1468,7 +1468,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
     {
         return new ThemeState(
             snapshot.ThemeId,
-            snapshot.EffectiveConfig.Algorithms.Select(static algorithm => algorithm.Id).ToArray(),
+            snapshot.EffectiveConfig.Algorithms.Select(static algorithm => algorithm.Algorithm).ToArray(),
             snapshot.Appearance,
             snapshot.ContentFingerprint.Value,
             transitionId);

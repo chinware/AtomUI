@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
 using Avalonia;
@@ -256,14 +257,14 @@ public class TagColorVariantTests
         var provider = new ThemeConfigProvider
         {
             Child  = tag,
-            Config = new ThemeConfigBuilder().WithAlgorithms("Default", "Dark").Build()
+            Config = new ThemeConfigBuilder().WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Dark).Build()
         };
 
         ShowInWindow(provider, () =>
         {
             AssertPresetPalette(tag, isDark: true);
 
-            provider.Config = new ThemeConfigBuilder().WithAlgorithms("Default").Build();
+            provider.Config = new ThemeConfigBuilder().WithAlgorithms(ThemeAlgorithm.Default).Build();
             Dispatcher.UIThread.RunJobs();
 
             AssertPresetPalette(tag, isDark: false);

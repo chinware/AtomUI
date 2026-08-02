@@ -20,7 +20,7 @@ public class ThemeConfigNormalizerTests
                            .WithToken("Height", "32")
                            .Build();
         var input = new ThemeConfigBuilder()
-                    .WithAlgorithms("Default")
+                    .WithAlgorithms(ThemeAlgorithm.Default)
                     .WithToken("Alpha", "1.5")
                     .WithControl(ThemeConfigTestSchema.ButtonIdentity, buttonConfig)
                     .Build();
@@ -30,7 +30,7 @@ public class ThemeConfigNormalizerTests
         result.Success.ShouldBeTrue();
         var normalized = result.Config.ShouldNotBeNull();
         normalized.AlgorithmsSpecified.ShouldBeTrue();
-        normalized.Algorithms.Select(static item => item.Id).ShouldBe(["Default"]);
+        normalized.Algorithms.Select(static item => item.Algorithm).ShouldBe([ThemeAlgorithm.Default]);
         normalized.GlobalTokens.Single().Value.ShouldBe(1.5d);
         var button = normalized.Controls.Single();
         button.AlgorithmMode.ShouldBe(ControlAlgorithmMode.Global);
@@ -63,12 +63,12 @@ public class ThemeConfigNormalizerTests
     {
         var schema = ThemeConfigTestSchema.Create();
         var first = new ThemeConfigBuilder()
-                    .WithAlgorithms("Default", "Compact")
+                    .WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Compact)
                     .WithToken("Beta", "2.50")
                     .WithToken("Alpha", "1.50")
                     .Build();
         var second = new ThemeConfigBuilder()
-                     .WithAlgorithms("Default", "Compact")
+                     .WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Compact)
                      .WithToken("Alpha", "1.5")
                      .WithToken("Beta", "2.5")
                      .Build();
@@ -97,7 +97,60 @@ public class ThemeConfigNormalizerTests
         result.Diagnostics.ShouldBeEmpty();
         var normalized = result.Config.ShouldNotBeNull();
         normalized.AlgorithmsSpecified.ShouldBeTrue();
-        normalized.Algorithms.Select(static algorithm => algorithm.Id).ShouldBe(["Default"]);
+        normalized.Algorithms.Select(static algorithm => algorithm.Algorithm).ShouldBe([ThemeAlgorithm.Default]);
+    }
+
+    [Fact]
+    public void Normalize_Rejects_An_Undefined_Algorithm_Value()
+    {
+        var input = new ThemeConfigBuilder()
+                    .WithAlgorithms((ThemeAlgorithm)999)
+                    .Build();
+
+        var result = ThemeConfigNormalizer.Normalize(input, ThemeConfigTestSchema.Create());
+
+        result.Success.ShouldBeFalse();
+        result.Config.ShouldBeNull();
+        result.Diagnostics.ShouldContain(static diagnostic =>
+            diagnostic.Code == "ATMTHM4004" &&
+            diagnostic.Path == "$.Algorithms[0]");
+    }
+
+    [Fact]
+    public void Normalize_Rejects_Duplicate_Global_Algorithm_Values()
+    {
+        var input = new ThemeConfigBuilder()
+                    .WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Default)
+                    .Build();
+
+        var result = ThemeConfigNormalizer.Normalize(input, ThemeConfigTestSchema.Create());
+
+        result.Success.ShouldBeFalse();
+        result.Config.ShouldBeNull();
+        result.Diagnostics.ShouldContain(static diagnostic =>
+            diagnostic.Code == "ATMTHM4004" &&
+            diagnostic.Path == "$.Algorithms[1]");
+    }
+
+    [Fact]
+    public void Normalize_Rejects_Duplicate_Control_Custom_Algorithm_Values()
+    {
+        var input = new ThemeConfigBuilder()
+                    .WithControl(
+                        ThemeConfigTestSchema.ButtonIdentity,
+                        new ControlThemeConfigBuilder()
+                            .WithAlgorithm(ControlAlgorithmMode.Custom)
+                            .WithAlgorithms(ThemeAlgorithm.Compact, ThemeAlgorithm.Compact)
+                            .Build())
+                    .Build();
+
+        var result = ThemeConfigNormalizer.Normalize(input, ThemeConfigTestSchema.Create());
+
+        result.Success.ShouldBeFalse();
+        result.Config.ShouldBeNull();
+        result.Diagnostics.ShouldContain(static diagnostic =>
+            diagnostic.Code == "ATMTHM4004" &&
+            diagnostic.Path == "$.Controls['AtomUI:Button'].Algorithms[1]");
     }
 
     [Fact]
@@ -105,7 +158,7 @@ public class ThemeConfigNormalizerTests
     {
         var schema = ThemeConfigTestSchema.Create();
         var input = new ThemeConfigBuilder()
-                    .WithAlgorithms("Unknown")
+                    .WithAlgorithms((ThemeAlgorithm)999)
                     .WithToken("Alpha", "not-a-number")
                     .WithToken("Missing", "1")
                     .WithControl(
@@ -133,7 +186,7 @@ public class ThemeConfigNormalizerTests
     public void Normalize_Fingerprint_Changes_With_Algorithm_Revision()
     {
         var config = new ThemeConfigBuilder()
-                     .WithAlgorithms("Default")
+                     .WithAlgorithms(ThemeAlgorithm.Default)
                      .Build();
 
         var first = ThemeConfigNormalizer.Normalize(config, ThemeConfigTestSchema.Create()).Config.ShouldNotBeNull();
@@ -223,12 +276,12 @@ internal static class ThemeConfigTestSchema
         var algorithms = new[]
         {
             new ThemeAlgorithmDescriptor(
-                "Compact",
+                ThemeAlgorithm.Compact,
                 revision: 1,
                 ThemeAppearanceEffect.Preserve,
                 static () => new TestAlgorithm()),
             new ThemeAlgorithmDescriptor(
-                "Default",
+                ThemeAlgorithm.Default,
                 revision: defaultAlgorithmRevision,
                 ThemeAppearanceEffect.Light,
                 static () => new TestAlgorithm())

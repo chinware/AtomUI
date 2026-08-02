@@ -23,7 +23,7 @@ internal sealed class ThemeCompiler
         IReadOnlyList<ThemeAlgorithmDescriptor> algorithms = definition.Algorithms;
         if (algorithms.Count == 0)
         {
-            registry.TryGetAlgorithm(nameof(ThemeAlgorithm.Default), out var defaultAlgorithm);
+            registry.TryGetAlgorithm(ThemeAlgorithm.Default, out var defaultAlgorithm);
             algorithms =
             [
                 defaultAlgorithm ??
@@ -67,7 +67,7 @@ internal sealed class ThemeCompiler
         ThemeSchemaRegistry registry)
     {
         ArgumentNullException.ThrowIfNull(registry);
-        if (!registry.TryGetAlgorithm(nameof(ThemeAlgorithm.Default), out var defaultAlgorithm) ||
+        if (!registry.TryGetAlgorithm(ThemeAlgorithm.Default, out var defaultAlgorithm) ||
             defaultAlgorithm is null)
         {
             throw new InvalidOperationException("Default algorithm is not registered.");
@@ -439,7 +439,7 @@ internal sealed class ThemeCompiler
 
         for (var index = 0; index < left.Count; index++)
         {
-            if (!string.Equals(left[index].Id, right[index].Id, StringComparison.Ordinal) ||
+            if (left[index].Algorithm != right[index].Algorithm ||
                 left[index].Revision != right[index].Revision)
             {
                 return false;

@@ -204,7 +204,7 @@ internal struct ThemeConfigFingerprintBuilder
         builder.Add(config.Algorithms.Count);
         foreach (var algorithm in config.Algorithms)
         {
-            builder.Add(algorithm.Id);
+            builder.Add((int)algorithm.Algorithm);
             builder.Add(algorithm.Revision);
         }
 
@@ -225,7 +225,7 @@ internal struct ThemeConfigFingerprintBuilder
             builder.Add(control.Algorithms.Count);
             foreach (var algorithm in control.Algorithms)
             {
-                builder.Add(algorithm.Id);
+                builder.Add((int)algorithm.Algorithm);
                 builder.Add(algorithm.Revision);
             }
 

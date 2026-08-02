@@ -44,37 +44,37 @@ internal static class ThemeConfigNormalizer
     }
 
     private static IReadOnlyList<ThemeAlgorithmDescriptor> BindAlgorithms(
-        IReadOnlyList<string>? algorithmIds,
+        IReadOnlyList<ThemeAlgorithm>? algorithms,
         ThemeSchemaRegistry registry,
         List<ThemeDefinitionDiagnostic> diagnostics,
         string path)
     {
-        if (algorithmIds is null)
+        if (algorithms is null)
         {
             return Array.Empty<ThemeAlgorithmDescriptor>();
         }
 
-        var descriptors = new List<ThemeAlgorithmDescriptor>(algorithmIds.Count);
-        var seen = new HashSet<string>(StringComparer.Ordinal);
-        for (var index = 0; index < algorithmIds.Count; index++)
+        var descriptors = new List<ThemeAlgorithmDescriptor>(algorithms.Count);
+        var seen = new HashSet<ThemeAlgorithm>();
+        for (var index = 0; index < algorithms.Count; index++)
         {
-            var id = algorithmIds[index];
+            var algorithm = algorithms[index];
             var itemPath = $"{path}[{index}]";
-            if (string.IsNullOrWhiteSpace(id))
+            if (!Enum.IsDefined(algorithm))
             {
-                AddError(diagnostics, InvalidInputCode, itemPath, "Algorithm id cannot be empty.");
+                AddError(diagnostics, UnknownAlgorithmCode, itemPath, $"Algorithm value '{(int)algorithm}' is invalid.");
                 continue;
             }
 
-            if (!seen.Add(id))
+            if (!seen.Add(algorithm))
             {
-                AddError(diagnostics, UnknownAlgorithmCode, itemPath, $"Algorithm '{id}' is duplicated.");
+                AddError(diagnostics, UnknownAlgorithmCode, itemPath, $"Algorithm '{algorithm}' is duplicated.");
                 continue;
             }
 
-            if (!registry.TryGetAlgorithm(id, out var descriptor))
+            if (!registry.TryGetAlgorithm(algorithm, out var descriptor))
             {
-                AddError(diagnostics, UnknownAlgorithmCode, itemPath, $"Algorithm '{id}' is not registered.");
+                AddError(diagnostics, UnknownAlgorithmCode, itemPath, $"Algorithm '{algorithm}' is not registered.");
                 continue;
             }
 
@@ -89,7 +89,7 @@ internal static class ThemeConfigNormalizer
         List<ThemeDefinitionDiagnostic> diagnostics,
         string path)
     {
-        if (!registry.TryGetAlgorithm(nameof(ThemeAlgorithm.Default), out var descriptor))
+        if (!registry.TryGetAlgorithm(ThemeAlgorithm.Default, out var descriptor))
         {
             AddError(
                 diagnostics,

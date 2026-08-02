@@ -7,18 +7,21 @@ internal sealed class ThemeAlgorithmInfo
     private const string ThemeAlgorithmInterface = "global::AtomUI.Theme.Algorithms.IThemeAlgorithm";
 
     internal ThemeAlgorithmInfo(
-        string id,
+        string algorithm,
+        int algorithmValue,
         int revision,
         string appearanceEffect,
         string typeName)
     {
-        Id = id;
+        Algorithm = algorithm;
+        AlgorithmValue = algorithmValue;
         Revision = revision;
         AppearanceEffect = appearanceEffect;
         TypeName = typeName;
     }
 
-    public string Id { get; }
+    public string Algorithm { get; }
+    public int AlgorithmValue { get; }
     public int Revision { get; }
     public string AppearanceEffect { get; }
     public string TypeName { get; }
@@ -36,10 +39,25 @@ internal sealed class ThemeAlgorithmInfo
         var attribute = context.Attributes.FirstOrDefault();
         if (attribute is null ||
             attribute.ConstructorArguments.Length != 3 ||
-            attribute.ConstructorArguments[0].Value is not string id ||
-            string.IsNullOrWhiteSpace(id) ||
+            attribute.ConstructorArguments[0] is not
+            {
+                Kind: TypedConstantKind.Enum,
+                Type: INamedTypeSymbol algorithmType,
+                Value: int algorithmValue
+            } ||
             attribute.ConstructorArguments[1].Value is not int revision ||
             revision <= 0)
+        {
+            return null;
+        }
+
+        var algorithm = algorithmType.GetMembers()
+                                     .OfType<IFieldSymbol>()
+                                     .SingleOrDefault(field =>
+                                         field.HasConstantValue &&
+                                         field.ConstantValue is int value &&
+                                         value == algorithmValue);
+        if (algorithm is null)
         {
             return null;
         }
@@ -69,7 +87,8 @@ internal sealed class ThemeAlgorithmInfo
         if (parameterless is not null)
         {
             return new ThemeAlgorithmInfo(
-                id,
+                algorithm.Name,
+                algorithmValue,
                 revision,
                 appearance,
                 type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));

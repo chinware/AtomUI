@@ -1,4 +1,5 @@
 using AtomUI.Theme.Configuration;
+using AtomUI.Theme.Algorithms;
 
 namespace AtomUI.Theme.Definitions;
 
@@ -14,7 +15,7 @@ internal readonly record struct ThemeControlDocumentIdentity(string Catalog, str
 }
 
 internal sealed record ThemeAlgorithmDocument(
-    string Id,
+    ThemeAlgorithm Algorithm,
     ThemeSourceLocation Location);
 
 internal sealed record ThemeTokenDocument(

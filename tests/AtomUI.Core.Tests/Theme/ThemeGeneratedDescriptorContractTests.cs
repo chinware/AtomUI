@@ -89,7 +89,7 @@ public class ThemeGeneratedDescriptorContractTests
     public void Algorithm_Descriptor_Uses_Revisioned_Independent_Factory_And_Exact_Evaluate_Contract()
     {
         var descriptor = new ThemeAlgorithmDescriptor(
-            "Default",
+            ThemeAlgorithm.Default,
             revision: 3,
             ThemeAppearanceEffect.Light,
             static () => new SchemaAlgorithm());
@@ -101,14 +101,31 @@ public class ThemeGeneratedDescriptorContractTests
         algorithm.Evaluate(effectiveSeed, previousMap, nextMap);
 
         descriptor.Revision.ShouldBe(3);
+        descriptor.Algorithm.ShouldBe(ThemeAlgorithm.Default);
         algorithm.EffectiveSeed.ShouldBeSameAs(effectiveSeed);
         algorithm.PreviousMap.ShouldBeSameAs(previousMap);
         algorithm.NextMap.ShouldBeSameAs(nextMap);
         Should.Throw<ArgumentOutOfRangeException>(() => new ThemeAlgorithmDescriptor(
-            "Invalid",
+            ThemeAlgorithm.Default,
             revision: 0,
             ThemeAppearanceEffect.Preserve,
             static () => new SchemaAlgorithm()));
+    }
+
+    [Fact]
+    public void Algorithm_Attribute_Uses_A_Defined_Enum_Identity()
+    {
+        var attribute = new ThemeAlgorithmAttribute(
+            ThemeAlgorithm.Dark,
+            revision: 2,
+            ThemeAppearanceEffect.Dark);
+
+        attribute.Algorithm.ShouldBe(ThemeAlgorithm.Dark);
+        attribute.GetType().GetProperty("Id").ShouldBeNull();
+        Should.Throw<ArgumentOutOfRangeException>(() => new ThemeAlgorithmAttribute(
+            (ThemeAlgorithm)999,
+            revision: 1,
+            ThemeAppearanceEffect.Preserve));
     }
 
     [Fact]

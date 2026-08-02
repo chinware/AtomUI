@@ -6,7 +6,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Theme.Algorithms;
 
-[ThemeAlgorithmAttribute("Dark", 1, ThemeAppearanceEffect.Dark)]
+[ThemeAlgorithmAttribute(ThemeAlgorithm.Dark, 1, ThemeAppearanceEffect.Dark)]
 public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
 {
     public const ThemeAlgorithm Algorithm = ThemeAlgorithm.Dark;

@@ -20,7 +20,7 @@ internal static class ThemeTestSnapshotFactory
             GeneratedThemeSchema.GetGlobalTokens(),
             controls,
             GeneratedThemeSchema.GetAlgorithms());
-        registry.TryGetAlgorithm(nameof(ThemeAlgorithm.Default), out var defaultAlgorithm).ShouldBeTrue();
+        registry.TryGetAlgorithm(ThemeAlgorithm.Default, out var defaultAlgorithm).ShouldBeTrue();
         var location = new ThemeSourceLocation("test", 1, 1, "/Theme");
         var definition = new BoundThemeDefinition(
             "TestTheme",

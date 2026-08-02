@@ -1,4 +1,5 @@
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.DesignTokens;
@@ -137,7 +138,7 @@ public class ThemeCatalogReloadTests
             var manager = builder.Build();
             manager.InitializeApplication(Application.Current!);
             var config = new ThemeConfigBuilder()
-                         .WithAlgorithms("Default", "Compact", "Dark")
+                         .WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Compact, ThemeAlgorithm.Dark)
                          .WithToken(nameof(DesignToken.EnableMotion), "false")
                          .WithToken(nameof(DesignToken.EnableWaveSpirit), "false")
                          .Build();
@@ -151,7 +152,11 @@ public class ThemeCatalogReloadTests
 
             result.Status.ShouldBe(ThemeCatalogReloadStatus.Committed);
             manager.CurrentTheme!.ThemeId.ShouldBe(IThemeManager.DEFAULT_THEME_ID);
-            manager.CurrentTheme.Algorithms.ShouldBe(["Default", "Compact", "Dark"]);
+            manager.CurrentTheme.Algorithms.ShouldBe([
+                ThemeAlgorithm.Default,
+                ThemeAlgorithm.Compact,
+                ThemeAlgorithm.Dark
+            ]);
             var snapshot = manager.CurrentSnapshot.ShouldNotBeNull();
             snapshot.Global<bool>(nameof(DesignToken.EnableMotion)).ShouldBeFalse();
             snapshot.Global<bool>(nameof(DesignToken.EnableWaveSpirit)).ShouldBeFalse();
@@ -173,7 +178,7 @@ public class ThemeCatalogReloadTests
             var reloadTask = manager.ReloadThemesAsync(TestContext.Current.CancellationToken);
             await resolver.Started.Task.WaitAsync(TestContext.Current.CancellationToken);
             var config = new ThemeConfigBuilder()
-                         .WithAlgorithms("Default", "Compact")
+                         .WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Compact)
                          .Build();
             var themeTask = manager.ApplyThemeAsync(
                 new ThemeRequest(
@@ -185,7 +190,7 @@ public class ThemeCatalogReloadTests
 
             (await reloadTask).Status.ShouldBe(ThemeCatalogReloadStatus.Superseded);
             (await themeTask).Status.ShouldBe(ThemeTransitionStatus.Committed);
-            manager.CurrentTheme!.Algorithms.ShouldBe(["Default", "Compact"]);
+            manager.CurrentTheme!.Algorithms.ShouldBe([ThemeAlgorithm.Default, ThemeAlgorithm.Compact]);
         });
     }
 

@@ -1,5 +1,6 @@
 using System.Xml;
 using System.Xml.Schema;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 
 namespace AtomUI.Theme.Definitions;
@@ -32,7 +33,7 @@ internal static class ThemeDocumentReader
         }
 
         var diagnostics = new List<ThemeDefinitionDiagnostic>();
-        var builder = new ThemeDocumentBuilder(source);
+        var builder = new ThemeDocumentBuilder(source, diagnostics);
         var currentPath = "/";
         var elementCount = 0;
 
@@ -192,6 +193,7 @@ internal static class ThemeDocumentReader
     private sealed class ThemeDocumentBuilder
     {
         private readonly string _source;
+        private readonly List<ThemeDefinitionDiagnostic> _diagnostics;
         private string? _id;
         private string? _name;
         private ThemeAppearance _appearance;
@@ -202,9 +204,12 @@ internal static class ThemeDocumentReader
         private readonly List<ControlThemeDocument> _controls = new();
         private ControlBuilder? _currentControl;
 
-        internal ThemeDocumentBuilder(string source)
+        internal ThemeDocumentBuilder(
+            string source,
+            List<ThemeDefinitionDiagnostic> diagnostics)
         {
-            _source = source;
+            _source      = source;
+            _diagnostics = diagnostics;
         }
 
         internal string ReadElement(XmlReader reader)
@@ -288,7 +293,33 @@ internal static class ThemeDocumentReader
         {
             var id = reader.GetAttribute("Id") ?? string.Empty;
             var path = $"{CurrentContainerPath("Algorithms")}/Algorithm[@Id='{id}']";
-            var document = new ThemeAlgorithmDocument(id, Location(reader, path));
+            var location = Location(reader, path);
+            var algorithm = id switch
+            {
+                "Default" => ThemeAlgorithm.Default,
+                "Dark"    => ThemeAlgorithm.Dark,
+                "Compact" => ThemeAlgorithm.Compact,
+                _         => (ThemeAlgorithm?)null
+            };
+            if (algorithm is null)
+            {
+                if (!_diagnostics.Any(diagnostic =>
+                        diagnostic.Code == SchemaValidationCode &&
+                        diagnostic.Line == location.Line))
+                {
+                    _diagnostics.Add(new ThemeDefinitionDiagnostic(
+                        SchemaValidationCode,
+                        ThemeDefinitionDiagnosticSeverity.Error,
+                        location.Source,
+                        location.Line,
+                        location.Column,
+                        location.Path,
+                        $"Theme algorithm '{id}' is not a supported value."));
+                }
+                return path;
+            }
+
+            var document = new ThemeAlgorithmDocument(algorithm.Value, location);
             if (_currentControl is null)
             {
                 _algorithms.Add(document);

@@ -2,6 +2,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Threading.Tasks;
 using AtomUI.Controls;
 using AtomUI.Theme;
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
 using AtomUI.Toolkits.GalleryBase.Configuration;
@@ -39,7 +40,7 @@ public class GalleryWorkspaceViewModelAppearanceTests
             viewModel.IsLightAppearanceMode.ShouldBeFalse();
             viewModel.IsSystemAppearanceMode.ShouldBeFalse();
             manager.CurrentTheme!.Appearance.ShouldBe(ThemeAppearance.Dark);
-            manager.CurrentTheme.Algorithms.ShouldBe(["Default", "Dark"]);
+            manager.CurrentTheme.Algorithms.ShouldBe([ThemeAlgorithm.Default, ThemeAlgorithm.Dark]);
 
             await viewModel.SetAppearanceModeCommand.Execute(ThemePreference.Light).ToTask();
 
@@ -47,7 +48,7 @@ public class GalleryWorkspaceViewModelAppearanceTests
             viewModel.IsLightAppearanceMode.ShouldBeTrue();
             viewModel.IsDarkAppearanceMode.ShouldBeFalse();
             manager.CurrentTheme!.Appearance.ShouldBe(ThemeAppearance.Light);
-            manager.CurrentTheme.Algorithms.ShouldBe(["Default"]);
+            manager.CurrentTheme.Algorithms.ShouldBe([ThemeAlgorithm.Default]);
             systemSource.ActiveSubscriptionCount.ShouldBe(0);
         }
         finally
@@ -73,14 +74,14 @@ public class GalleryWorkspaceViewModelAppearanceTests
             viewModel.AppearanceMode.ShouldBe(ThemePreference.System);
             viewModel.IsSystemAppearanceMode.ShouldBeTrue();
             manager.CurrentTheme!.Appearance.ShouldBe(ThemeAppearance.Dark);
-            manager.CurrentTheme.Algorithms.ShouldBe(["Default", "Dark"]);
+            manager.CurrentTheme.Algorithms.ShouldBe([ThemeAlgorithm.Default, ThemeAlgorithm.Dark]);
             systemSource.ActiveSubscriptionCount.ShouldBe(1);
 
             systemSource.SetAppearance(ThemeAppearance.Light);
             await WaitForThemeAppearanceAsync(manager, ThemeAppearance.Light);
 
             viewModel.AppearanceMode.ShouldBe(ThemePreference.System);
-            manager.CurrentTheme!.Algorithms.ShouldBe(["Default"]);
+            manager.CurrentTheme!.Algorithms.ShouldBe([ThemeAlgorithm.Default]);
         }
         finally
         {
@@ -109,7 +110,7 @@ public class GalleryWorkspaceViewModelAppearanceTests
             systemSource.SetAppearance(ThemeAppearance.Dark);
 
             manager.CurrentTheme!.Appearance.ShouldBe(ThemeAppearance.Light);
-            manager.CurrentTheme.Algorithms.ShouldBe(["Default"]);
+            manager.CurrentTheme.Algorithms.ShouldBe([ThemeAlgorithm.Default]);
         }
         finally
         {
@@ -152,7 +153,7 @@ public class GalleryWorkspaceViewModelAppearanceTests
     private static async Task RestoreDefaultThemeAsync(IThemeManager manager)
     {
         var config = new ThemeConfigBuilder()
-                     .WithAlgorithms("Default")
+                     .WithAlgorithms(ThemeAlgorithm.Default)
                      .WithToken(nameof(SharedTokenKind.EnableMotion), "true")
                      .WithToken(nameof(SharedTokenKind.EnableWaveSpirit), "true")
                      .Build();

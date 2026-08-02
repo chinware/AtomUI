@@ -81,7 +81,7 @@ this.UseAtomUI(builder =>
     builder.WithInitialTheme(
         IThemeManager.DEFAULT_THEME_ID,
         new ThemeConfigBuilder()
-            .WithAlgorithms(ThemeAlgorithms.Default, ThemeAlgorithms.Dark)
+            .WithAlgorithms(ThemeAlgorithm.Default, ThemeAlgorithm.Dark)
             .Build());
     builder.UseDesktopControls();
 });
@@ -124,7 +124,7 @@ Popup/Flyout 通过逻辑树自然继承，独立 Window/Dialog/Notification Top
 - `ControlThemesProviders`：AXAML 主题 Provider。
 - `ThemeDefinitionResolvers`：内置资源、应用 `avares://` 资源和可选用户配置目录的统一主题来源解析器。
 - `LanguageProviders`：本地化资源 Provider。
-- `ThemeAlgorithmDescriptors`：默认、暗色、紧凑和自定义算法。
+- `ThemeAlgorithmDescriptors`：`ThemeAlgorithm.Default`、`Dark`、`Compact` 的生成式 descriptor。
 - `InitialThemeRequests`：固定主题或 FollowSystem 的 Light/Dark 不可变 root request 模板。
 - `ModuleInitializers`：与 ThemeLoaded 等主题生命周期无关的模块初始化回调。
 

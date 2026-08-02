@@ -6,16 +6,20 @@ namespace AtomUI.Theme.Algorithms;
 public sealed class ThemeAlgorithmAttribute : Attribute
 {
     public ThemeAlgorithmAttribute(
-        string id,
+        ThemeAlgorithm algorithm,
         int revision,
         ThemeAppearanceEffect appearanceEffect)
     {
-        Id               = id;
+        if (!Enum.IsDefined(algorithm))
+        {
+            throw new ArgumentOutOfRangeException(nameof(algorithm), algorithm, "Theme algorithm must be defined.");
+        }
+        Algorithm        = algorithm;
         Revision         = revision;
         AppearanceEffect = appearanceEffect;
     }
 
-    public string Id { get; }
+    public ThemeAlgorithm Algorithm { get; }
 
     public int Revision { get; }
 
