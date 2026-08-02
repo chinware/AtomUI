@@ -123,6 +123,18 @@ internal static class ThemeDefinitionBinder
                 continue;
             }
 
+            if (document.AlgorithmMode == ControlAlgorithmMode.Unspecified &&
+                document.Algorithms.Count == 0 &&
+                document.Tokens.Count == 0)
+            {
+                AddError(
+                    diagnostics,
+                    InvalidAlgorithmPolicyCode,
+                    document.Location,
+                    $"Control '{identity}' must declare an algorithm or at least one Token.");
+                continue;
+            }
+
             var hasCustomAlgorithms = document.Algorithms.Count != 0;
             if (hasCustomAlgorithms != (document.AlgorithmMode == ControlAlgorithmMode.Custom))
             {

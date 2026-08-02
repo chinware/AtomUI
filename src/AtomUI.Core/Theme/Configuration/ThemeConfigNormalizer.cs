@@ -1,3 +1,4 @@
+using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Schema;
 
@@ -21,15 +22,9 @@ internal static class ThemeConfigNormalizer
 
         var diagnostics = new List<ThemeDefinitionDiagnostic>();
         var algorithmsSpecified = config.Algorithms is not null;
-        if (algorithmsSpecified && config.Algorithms!.Count == 0)
-        {
-            AddError(
-                diagnostics,
-                InvalidInputCode,
-                "$.Algorithms",
-                "Algorithms cannot be empty when explicitly specified.");
-        }
-        var algorithms = BindAlgorithms(config.Algorithms, registry, diagnostics, "$.Algorithms");
+        var algorithms = algorithmsSpecified && config.Algorithms!.Count == 0
+            ? BindDefaultAlgorithm(registry, diagnostics, "$.Algorithms")
+            : BindAlgorithms(config.Algorithms, registry, diagnostics, "$.Algorithms");
         var globalTokens = BindGlobalTokens(config.Tokens, registry, diagnostics);
         var controls = BindControls(config.Controls, registry, diagnostics);
 
@@ -87,6 +82,24 @@ internal static class ThemeConfigNormalizer
         }
 
         return descriptors;
+    }
+
+    private static IReadOnlyList<ThemeAlgorithmDescriptor> BindDefaultAlgorithm(
+        ThemeSchemaRegistry registry,
+        List<ThemeDefinitionDiagnostic> diagnostics,
+        string path)
+    {
+        if (!registry.TryGetAlgorithm(nameof(ThemeAlgorithm.Default), out var descriptor))
+        {
+            AddError(
+                diagnostics,
+                UnknownAlgorithmCode,
+                path,
+                "Default algorithm is not registered.");
+            return Array.Empty<ThemeAlgorithmDescriptor>();
+        }
+
+        return [descriptor];
     }
 
     private static IReadOnlyList<NormalizedTokenValue> BindGlobalTokens(
@@ -272,6 +285,11 @@ internal static class ThemeConfigNormalizer
         try
         {
             var parsed = descriptor.Parse(rawValue);
+            if (!IsCompatibleValue(descriptor.ValueType, parsed))
+            {
+                throw new InvalidOperationException(
+                    "The Token parser returned an incompatible value.");
+            }
             value = new NormalizedTokenValue(descriptor, parsed, descriptor.Format(parsed));
             return true;
         }
@@ -285,6 +303,16 @@ internal static class ThemeConfigNormalizer
             value = null!;
             return false;
         }
+    }
+
+    private static bool IsCompatibleValue(Type expectedType, object? value)
+    {
+        if (value is null)
+        {
+            return !expectedType.IsValueType || Nullable.GetUnderlyingType(expectedType) is not null;
+        }
+
+        return (Nullable.GetUnderlyingType(expectedType) ?? expectedType).IsInstanceOfType(value);
     }
 
     private static void AddError(

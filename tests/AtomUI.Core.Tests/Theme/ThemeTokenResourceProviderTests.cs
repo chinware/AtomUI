@@ -2,8 +2,10 @@ using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
+using AtomUI.Theme.Schema;
 using AtomUI.Theme.DesignTokens;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Shouldly;
 using Xunit;
 
@@ -127,6 +129,23 @@ public class ThemeTokenResourceProviderTests
         provider.TryGetResource(CompilerButtonTokenKind.Height, null, out var value).ShouldBeTrue();
 
         value.ShouldBe(32d);
+    }
+
+    [Fact]
+    public void Provider_Returns_A_Copy_For_Mutable_Control_Own_Resource_Values()
+    {
+        var descriptor = CreateBrushControlDescriptor();
+        var provider = new ThemeTokenResourceProvider(
+            ThemeTestSnapshotFactory.Compile(new ThemeConfigBuilder().Build(), descriptor));
+
+        provider.TryGetResource(BrushTokenKind.Brush, null, out var firstValue).ShouldBeTrue();
+        provider.TryGetResource(BrushTokenKind.Brush, null, out var secondValue).ShouldBeTrue();
+
+        var first = firstValue.ShouldBeOfType<SolidColorBrush>();
+        var second = secondValue.ShouldBeOfType<SolidColorBrush>();
+        first.ShouldNotBeSameAs(second);
+        first.Opacity = 0.1;
+        second.Opacity.ShouldBe(0.75);
     }
 
     [Fact]
@@ -302,6 +321,28 @@ public class ThemeTokenResourceProviderTests
             new AtomUI.Theme.Schema.ControlTokenIdentity(catalog, id));
     }
 
+    private static AtomUI.Theme.Schema.ControlTokenDescriptor CreateBrushControlDescriptor()
+    {
+        var brush = new AtomUI.Theme.Schema.TokenDescriptor(
+            "Brush",
+            0,
+            AtomUI.Theme.Schema.TokenStage.Control,
+            typeof(SolidColorBrush),
+            BrushTokenKind.Brush,
+            static value => ThemeTokenValueParser.Parse<SolidColorBrush>(value),
+            static value => ((SolidColorBrush)value!).ToString() ?? string.Empty,
+            static token => ((BrushControlToken)token).Brush,
+            static (token, value) => ((BrushControlToken)token).Brush = (SolidColorBrush)value!,
+            static token => ((BrushControlToken)token).Brush);
+        return new AtomUI.Theme.Schema.ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", BrushControlToken.ID),
+            new AtomUI.Theme.Schema.ControlTokenIdentity("AtomUI", BrushControlToken.ID),
+            [brush],
+            static () => new BrushControlToken(),
+            static (token, appearance) =>
+                ((BrushControlToken)token).CalculateTokenValues(appearance == ThemeAppearance.Dark));
+    }
+
     private static readonly (string ParentControl, string ChildControl)[] CrossControlPairs =
     [
         (CompilerButtonToken.ID, CompilerIconToken.ID),
@@ -367,4 +408,21 @@ internal sealed class CompilerDialogToken : CrossControlCompilerToken
 internal sealed class CompilerDataGridToken : CrossControlCompilerToken
 {
     internal const string ID = "DataGrid";
+}
+
+internal enum BrushTokenKind
+{
+    Brush
+}
+
+internal sealed class BrushControlToken : AbstractControlDesignToken
+{
+    internal const string ID = "BrushControl";
+
+    public SolidColorBrush? Brush { get; set; }
+
+    public override void CalculateTokenValues(bool isDarkMode)
+    {
+        Brush = new SolidColorBrush(Colors.CornflowerBlue, 0.75);
+    }
 }

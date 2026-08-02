@@ -3,6 +3,7 @@
 AtomUI 的主题系统不是一组可以随意覆盖的 Brush，也不是在每个 ControlTheme 外面再包一层 ResourceDictionary。
 它解决的是一个更完整的问题：如何用稳定的设计语言描述全局视觉，允许单个 Control 精确偏离全局规则，又能在
 运行时安全切换主题、建立局部主题、支持第三方 Control，并保持 NativeAOT、性能和资源生命周期可控。
+功能语义以 Ant Design 主题系统为真源；本文只说明这些语义在 Avalonia、C# 和 AtomUI 控件主题中的等价落地方式。
 
 本文面向两类读者：
 

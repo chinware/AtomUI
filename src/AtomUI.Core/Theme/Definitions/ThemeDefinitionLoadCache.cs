@@ -4,9 +4,12 @@ namespace AtomUI.Theme.Definitions;
 
 internal sealed class ThemeDefinitionLoadCache : IDisposable
 {
+    private const int MaxEntriesPerKind = 256;
     private readonly object _gate = new();
     private readonly Dictionary<ThemeSourceCacheKey, ThemeSourceReadCacheEntry> _reads = new();
     private readonly Dictionary<ThemeBindingCacheKey, ThemeBindingCacheEntry> _bindings = new();
+    private readonly Queue<ThemeSourceCacheKey> _readOrder = new();
+    private readonly Queue<ThemeBindingCacheKey> _bindingOrder = new();
     private bool _disposed;
 
     internal bool TryGetRead(
@@ -34,7 +37,12 @@ internal sealed class ThemeDefinitionLoadCache : IDisposable
         {
             if (!_disposed)
             {
+                if (!_reads.ContainsKey(key))
+                {
+                    _readOrder.Enqueue(key);
+                }
                 _reads[key] = entry;
+                Trim(_reads, _readOrder);
             }
         }
     }
@@ -64,7 +72,12 @@ internal sealed class ThemeDefinitionLoadCache : IDisposable
         {
             if (!_disposed)
             {
+                if (!_bindings.ContainsKey(key))
+                {
+                    _bindingOrder.Enqueue(key);
+                }
                 _bindings[key] = entry;
+                Trim(_bindings, _bindingOrder);
             }
         }
     }
@@ -81,6 +94,19 @@ internal sealed class ThemeDefinitionLoadCache : IDisposable
             _disposed = true;
             _reads.Clear();
             _bindings.Clear();
+            _readOrder.Clear();
+            _bindingOrder.Clear();
+        }
+    }
+
+    private static void Trim<TKey, TValue>(
+        Dictionary<TKey, TValue> values,
+        Queue<TKey> order)
+        where TKey : notnull
+    {
+        while (values.Count > MaxEntriesPerKind && order.TryDequeue(out var oldest))
+        {
+            values.Remove(oldest);
         }
     }
 }
@@ -90,7 +116,8 @@ internal readonly record struct ThemeSourceCacheKey(
     string SourceRevision);
 
 internal readonly record struct ThemeBindingCacheKey(
-    ThemeSourceCacheKey Source,
+    string SourceIdentity,
+    string ContentDigest,
     ThemeSchemaRevision RegistryRevision);
 
 internal sealed record ThemeSourceReadCacheEntry(

@@ -57,10 +57,12 @@ internal sealed class ThemeTokenResourceProvider : ResourceProvider
             }
 
             var control = snapshot.Controls[controlSlot];
-            return control.TryGetSharedResource(
+            var found = control.TryGetSharedResource(
                 snapshot.Registry.GetSharedResourceKey(controlKey.Kind),
                 snapshot.GlobalResources,
                 out value);
+            value = ThemeResourceValue.CloneForConsumer(value);
+            return found;
         }
 
         if (key is ControlOwnTokenResourceKey ownKey)
@@ -78,19 +80,24 @@ internal sealed class ThemeTokenResourceProvider : ResourceProvider
                     $"'{ownKey.ControlType.FullName}'.");
             }
 
-            return snapshot.Controls[descriptor.Slot]
-                           .ControlResources
-                           .TryGetValue(ownKey.ResourceKey, out value);
+            var found = snapshot.Controls[descriptor.Slot]
+                                   .ControlResources
+                                   .TryGetValue(ownKey.ResourceKey, out value);
+            value = ThemeResourceValue.CloneForConsumer(value);
+            return found;
         }
 
         if (snapshot.GlobalResources.TryGetValue(key, out value))
         {
+            value = ThemeResourceValue.CloneForConsumer(value);
             return true;
         }
         if (snapshot.Registry.TryGetControlResourceSlot(key, out var resourceControlSlot) &&
             (uint)resourceControlSlot < (uint)snapshot.Controls.Count)
         {
-            return snapshot.Controls[resourceControlSlot].ControlResources.TryGetValue(key, out value);
+            var found = snapshot.Controls[resourceControlSlot].ControlResources.TryGetValue(key, out value);
+            value = ThemeResourceValue.CloneForConsumer(value);
+            return found;
         }
 
         value = null;

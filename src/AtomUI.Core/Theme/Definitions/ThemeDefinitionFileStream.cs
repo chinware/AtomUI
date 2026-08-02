@@ -149,11 +149,13 @@ internal static class ThemeDefinitionFileStream
     {
         const int linuxNoFollow = 0x00020000;
         const int linuxCloseOnExec = 0x00080000;
+        const int linuxNonBlocking = 0x00000800;
         const int macNoFollow = 0x00000100;
         const int macCloseOnExec = 0x01000000;
+        const int macNonBlocking = 0x00000004;
         var flags = OperatingSystem.IsMacOS()
-            ? macNoFollow | macCloseOnExec
-            : linuxNoFollow | linuxCloseOnExec;
+            ? macNoFollow | macCloseOnExec | macNonBlocking
+            : linuxNoFollow | linuxCloseOnExec | linuxNonBlocking;
         var descriptor = Open(path, flags);
         if (descriptor < 0)
         {
@@ -163,6 +165,16 @@ internal static class ThemeDefinitionFileStream
         var handle = new SafeFileHandle((IntPtr)descriptor, ownsHandle: true);
         try
         {
+            if (!TryGetUnixFileMode(descriptor, out var mode))
+            {
+                throw IoError(path, Marshal.GetLastPInvokeError());
+            }
+            if (!IsUnixRegularFile(mode))
+            {
+                throw new IOException(
+                    $"Theme definition file '{path}' must be a regular file and cannot be a pipe or device.");
+            }
+
             return new FileStream(handle, FileAccess.Read, 4096, isAsync: false);
         }
         catch
@@ -170,6 +182,33 @@ internal static class ThemeDefinitionFileStream
             handle.Dispose();
             throw;
         }
+    }
+
+    private static bool TryGetUnixFileMode(int descriptor, out uint mode)
+    {
+        var buffer = Marshal.AllocHGlobal(UnixStatBufferBytes);
+        try
+        {
+            if (FStat(descriptor, buffer) != 0)
+            {
+                mode = 0;
+                return false;
+            }
+
+            mode = OperatingSystem.IsMacOS()
+                ? (ushort)Marshal.ReadInt16(buffer, MacStatModeOffset)
+                : unchecked((uint)Marshal.ReadInt32(buffer, LinuxStatModeOffset));
+            return true;
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(buffer);
+        }
+    }
+
+    private static bool IsUnixRegularFile(uint mode)
+    {
+        return (mode & UnixFileTypeMask) == UnixRegularFileType;
     }
 
     private static FileStream OpenPortable(string path)
@@ -241,6 +280,9 @@ internal static class ThemeDefinitionFileStream
         [MarshalAs(UnmanagedType.LPUTF8Str)] string path,
         int flags);
 
+    [DllImport("libc", EntryPoint = "fstat", SetLastError = true)]
+    private static extern int FStat(int descriptor, IntPtr information);
+
     [DllImport("libc", EntryPoint = "realpath", SetLastError = true)]
     private static extern IntPtr RealPath(
         [MarshalAs(UnmanagedType.LPUTF8Str)] string path,
@@ -255,4 +297,10 @@ internal static class ThemeDefinitionFileStream
         internal uint FileAttributes;
         internal uint ReparseTag;
     }
+
+    private const int UnixStatBufferBytes = 256;
+    private const int LinuxStatModeOffset = 24;
+    private const int MacStatModeOffset = 4;
+    private const uint UnixFileTypeMask = 0xF000;
+    private const uint UnixRegularFileType = 0x8000;
 }

@@ -350,37 +350,40 @@ internal sealed class CompiledThemeCatalog
         }
 
         var sourceKey = new ThemeSourceCacheKey(identity, revision);
+        // Source revisions are only candidate metadata.  Reloadable sources must be
+        // read again so same-size/timestamp edits cannot reuse stale documents.
         ThemeDocument document;
         string contentDigest;
         var diagnostics = new List<ThemeDiagnostic>();
-        if (loadCache?.TryGetRead(sourceKey, out var cachedRead) == true)
+        byte[] bytes;
+        try
         {
-            document = cachedRead!.Document;
-            contentDigest = cachedRead.ContentDigest;
+            using var stream = source.OpenRead() ??
+                               throw new InvalidOperationException(
+                                   $"Theme definition source '{identity}' returned a null stream.");
+            bytes = ReadBounded(stream, ThemeDocumentReaderOptions.DefaultMaxDocumentBytes);
+        }
+        catch (Exception exception)
+        {
+            return ThemeSourceLoadResult.Failed(
+                [Error(
+                    "ATMTHM4003",
+                    identity,
+                    "$",
+                    $"Theme definition source '{identity}' could not be read: " +
+                    exception.GetBaseException().Message)],
+                exception);
+        }
+
+        contentDigest = Convert.ToHexString(SHA256.HashData(bytes));
+        if (loadCache?.TryGetRead(sourceKey, out var cachedRead) == true &&
+            string.Equals(cachedRead!.ContentDigest, contentDigest, StringComparison.Ordinal))
+        {
+            document = cachedRead.Document;
             diagnostics.AddRange(cachedRead.Diagnostics);
         }
         else
         {
-            byte[] bytes;
-            try
-            {
-                using var stream = source.OpenRead() ??
-                                   throw new InvalidOperationException(
-                                       $"Theme definition source '{identity}' returned a null stream.");
-                bytes = ReadBounded(stream, ThemeDocumentReaderOptions.DefaultMaxDocumentBytes);
-            }
-            catch (Exception exception)
-            {
-                return ThemeSourceLoadResult.Failed(
-                    [Error(
-                        "ATMTHM4003",
-                        identity,
-                        "$",
-                        $"Theme definition source '{identity}' could not be read: " +
-                        exception.GetBaseException().Message)],
-                    exception);
-            }
-
             using var input = new MemoryStream(bytes, writable: false);
             var read = ThemeDocumentReader.Read(input, identity);
             diagnostics.AddRange(ConvertDiagnostics(read.Diagnostics));
@@ -390,14 +393,13 @@ internal sealed class CompiledThemeCatalog
             }
 
             document = read.Document!;
-            contentDigest = Convert.ToHexString(SHA256.HashData(bytes));
             loadCache?.StoreRead(
                 sourceKey,
                 new ThemeSourceReadCacheEntry(document, contentDigest, diagnostics.ToArray()));
         }
 
         BoundThemeDefinition definition;
-        var bindingKey = new ThemeBindingCacheKey(sourceKey, registry.Revision);
+        var bindingKey = new ThemeBindingCacheKey(identity, contentDigest, registry.Revision);
         if (loadCache?.TryGetBinding(bindingKey, out var cachedBinding) == true)
         {
             definition = cachedBinding!.Definition;

@@ -23,7 +23,7 @@ internal sealed class TokenValueTable
 
     internal T Get<T>(int slot)
     {
-        var value = GetValue(slot);
+        var value = ThemeResourceValue.CloneForConsumer(GetValue(slot));
         if (value is T typed)
         {
             return typed;

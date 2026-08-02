@@ -32,6 +32,14 @@ internal sealed class ControlThemeAssetManifest
                 throw new ThemeSchemaException(
                     $"Control theme asset '{descriptor.AssetUri}' has an empty resource-key schema fingerprint.");
             }
+            var expectedFingerprint = ThemeSchemaRegistry.ComputeResourceKeySchemaFingerprint(
+                descriptor,
+                registry.GlobalTokens);
+            if (descriptor.ResourceKeySchemaFingerprint != expectedFingerprint)
+            {
+                throw new ThemeSchemaException(
+                    $"Control theme asset '{descriptor.AssetUri}' was compiled against a different resource-key schema.");
+            }
             if (!uris.Add(descriptor.AssetUri.ToString()))
             {
                 throw new ThemeSchemaException(

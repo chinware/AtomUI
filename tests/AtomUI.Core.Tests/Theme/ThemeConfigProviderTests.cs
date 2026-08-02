@@ -153,7 +153,7 @@ public class ThemeConfigProviderTests
     }
 
     [Fact]
-    public void Inherit_False_Uses_The_Definition_Baseline_Instead_Of_Parent_Overrides()
+    public void Inherit_False_Uses_Library_Defaults_Instead_Of_Parent_Overrides()
     {
         var manager = CreateInitializedManager();
         var child = new ThemeConfigProvider
@@ -173,6 +173,46 @@ public class ThemeConfigProviderTests
              .ShouldNotBeNull()
              .Snapshot.Global<CornerRadius>(nameof(DesignToken.BorderRadius))
              .ShouldBe(new CornerRadius(6));
+    }
+
+    [Fact]
+    public void Inherit_False_Uses_Library_Defaults_Instead_Of_Root_Effective_Config()
+    {
+        var manager = CreateInitializedManager(
+            CreatePrepared(nameof(DesignToken.BorderRadius), "20"));
+        var provider = new ThemeConfigProvider
+        {
+            Config = new ThemeConfigBuilder().WithInherit(false).Build(),
+            Child = new Border()
+        };
+
+        using var root = Attach(manager, provider);
+
+        provider.GetValue(ThemeScope.ContextProperty)
+                .ShouldNotBeNull()
+                .Snapshot.Global<CornerRadius>(nameof(DesignToken.BorderRadius))
+                .ShouldBe(new CornerRadius(6));
+    }
+
+    [Fact]
+    public void Local_Explicit_Algorithm_List_Replaces_Parent_Dark_Algorithms()
+    {
+        var manager = CreateInitializedManager(CreatePreparedWithAlgorithms("Default", "Dark"));
+        var provider = new ThemeConfigProvider
+        {
+            Config = new ThemeConfigBuilder()
+                     .WithAlgorithms("Compact")
+                     .Build(),
+            Child = new Border()
+        };
+
+        using var root = Attach(manager, provider);
+
+        var context = provider.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull();
+        context.Snapshot.Appearance.ShouldBe(ThemeAppearance.Light);
+        context.Snapshot.EffectiveConfig.Algorithms.Select(static algorithm => algorithm.Id)
+               .ShouldBe(["Compact"]);
+        provider.RequestedThemeVariant.ShouldBe(ThemeVariant.Light);
     }
 
     [Fact]
@@ -253,7 +293,11 @@ public class ThemeConfigProviderTests
 
     private static ThemeManager CreateInitializedManager()
     {
-        var prepared = CreatePrepared();
+        return CreateInitializedManager(CreatePrepared());
+    }
+
+    private static ThemeManager CreateInitializedManager(ThemeTransactionPreparation prepared)
+    {
         var manager = new ThemeManager(
             static () => true,
             (_, _, _) => ValueTask.FromResult(prepared));
@@ -280,6 +324,17 @@ public class ThemeConfigProviderTests
         var parsed = descriptor!.Parse(tokenValue);
         var token = new NormalizedTokenValue(descriptor, parsed, descriptor.Format(parsed));
         var input = TypedThemeSnapshotCacheTests.CreateInput(registry, globalTokens: [token]);
+        var snapshot = new ThemeCompiler().Compile(input).Snapshot!;
+        return ThemeTransactionPreparation.Succeeded(snapshot, ThemeSnapshotCacheKey.Create(input));
+    }
+
+    private static ThemeTransactionPreparation CreatePreparedWithAlgorithms(params string[] algorithmIds)
+    {
+        var registry = TypedThemeSnapshotCacheTests.CreateRegistry();
+        var algorithms = algorithmIds
+                         .Select(id => registry.Algorithms.Single(algorithm => algorithm.Id == id))
+                         .ToArray();
+        var input = TypedThemeSnapshotCacheTests.CreateInput(registry, algorithms);
         var snapshot = new ThemeCompiler().Compile(input).Snapshot!;
         return ThemeTransactionPreparation.Succeeded(snapshot, ThemeSnapshotCacheKey.Create(input));
     }

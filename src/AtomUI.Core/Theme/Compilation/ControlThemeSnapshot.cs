@@ -1,3 +1,5 @@
+using AtomUI.Theme.Schema;
+
 namespace AtomUI.Theme.Compilation;
 
 internal sealed class ControlThemeSnapshot
@@ -39,7 +41,7 @@ internal sealed class ControlThemeSnapshot
         {
             if (value is T typed)
             {
-                return typed;
+                return (T)ThemeResourceValue.CloneForConsumer(typed)!;
             }
 
             if (value is null && default(T) is null)

@@ -125,9 +125,10 @@ AtomUI 内置 `Default`、`Dark`、`Compact` descriptor 的 effect 分别为 `Li
 与 `Appearance` 不一致时，整个 definition 绑定失败。
 
 绑定后，`Appearance` 作为已验证的 definition 最终 appearance 存入不可变 `ThemeDefinition`。运行时
-`ThemeConfig` 可以整体替换有效全局算法链，但不会修改 definition 元数据；`ThemeConfigMerger` 先确定当前入口
-的 BaseAppearance，再折叠有效算法链，最终 `ThemeSnapshot.Appearance` 才是发布 Avalonia Light/Dark variant 的
-唯一依据。具体根作用域、局部 `Inherit` 和 FollowSystem 规则见 [主题系统架构](theme-system.md)。
+`ThemeConfig` 可以整体替换有效全局算法链，但不会修改 definition 元数据；编译器始终从 Light baseline 折叠
+当前有效算法链，最终 `ThemeSnapshot.Appearance` 才是发布 Avalonia Light/Dark variant 的唯一依据。父 Dark +
+子显式 Compact 的结果因此是 Light Compact；Dark Compact 必须显式声明完整算法链。具体根作用域、局部
+`Inherit` 和 FollowSystem 规则见 [主题系统架构](theme-system.md)。
 
 ## 5. Algorithms 与 Algorithm
 

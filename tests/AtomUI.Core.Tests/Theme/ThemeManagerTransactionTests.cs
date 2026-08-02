@@ -1,3 +1,4 @@
+using System.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Configuration;
@@ -449,8 +450,9 @@ public class ThemeManagerTransactionTests
     {
         var initial = CreatePrepared("Initial", "#1677ff");
         var next = CreatePrepared("Next", "#52c41a");
+        var nextStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var manager = CreateManager((request, _, _) => ValueTask.FromResult(
-            request.ThemeId == "Next" ? next : initial));
+            Prepare(request, initial, next, nextStarted)));
         (await ApplyAsync(manager, Request("Initial"))).Status.ShouldBe(ThemeTransitionStatus.Committed);
         var provider = new ThemeConfigProvider
         {
@@ -468,14 +470,17 @@ public class ThemeManagerTransactionTests
                           .Build();
         var finalLocalCommit = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         Task<ThemeTransitionResult>? rootTransition = null;
+        var transactionUsersDuringLocalPublish = -1;
         var localCommits = 0;
         provider.ThemeChanged += (_, _) =>
         {
             localCommits++;
             if (localCommits == 1)
             {
+                transactionUsersDuringLocalPublish = GetTransactionExecutionUsers(manager);
                 provider.Config = finalConfig;
                 rootTransition = ApplyAsync(manager, Request("Next"));
+                nextStarted.Task.IsCompleted.ShouldBeFalse();
             }
             else
             {
@@ -487,12 +492,28 @@ public class ThemeManagerTransactionTests
                          .WithToken(nameof(DesignToken.ColorPrimary), "#fa8c16")
                          .Build();
 
+        transactionUsersDuringLocalPublish.ShouldBeGreaterThan(0);
         (await rootTransition!).Status.ShouldBe(ThemeTransitionStatus.Committed);
         await finalLocalCommit.Task.WaitAsync(TestContext.Current.CancellationToken);
         context.Snapshot.Global<Avalonia.Media.Color>(nameof(DesignToken.ColorPrimary))
                .ShouldBe(Avalonia.Media.Color.Parse("#00b96b"));
         manager.ScopeGraph.TryGetNode(provider, out var node).ShouldBeTrue();
         node!.LastValidConfig.ShouldBeSameAs(finalConfig);
+
+        static ThemeTransactionPreparation Prepare(
+            ThemeRequest request,
+            ThemeTransactionPreparation initial,
+            ThemeTransactionPreparation next,
+            TaskCompletionSource nextStarted)
+        {
+            if (request.ThemeId == "Next")
+            {
+                nextStarted.TrySetResult();
+                return next;
+            }
+
+            return initial;
+        }
     }
 
     [Fact]
@@ -540,6 +561,15 @@ public class ThemeManagerTransactionTests
         ThemeRequest request)
     {
         return manager.ApplyThemeAsync(request, TestContext.Current.CancellationToken);
+    }
+
+    private static int GetTransactionExecutionUsers(ThemeManager manager)
+    {
+        var field = typeof(ThemeManager).GetField(
+            "_transactionExecutionUsers",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return (int)field.GetValue(manager)!;
     }
 
     private static ThemeTransactionPreparation CreatePrepared(string themeId, string color)

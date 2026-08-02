@@ -57,6 +57,7 @@ internal sealed class ThemeContextLease : IDisposable
             host.SetValue(LeaseProperty, lease);
             ownerContext.Manager.RegisterContextLease(lease);
             registeredWithManager = true;
+            bridge.RestartListening();
         }
         catch
         {

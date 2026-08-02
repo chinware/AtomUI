@@ -72,7 +72,7 @@ public class CompiledThemeCatalogResolverTests
             var result = await manager.ReloadThemesAsync(TestContext.Current.CancellationToken);
 
             result.Status.ShouldBe(ThemeCatalogReloadStatus.NoOp);
-            source.OpenCount.ShouldBe(1);
+            source.OpenCount.ShouldBe(2);
         });
     }
 
@@ -109,11 +109,48 @@ public class CompiledThemeCatalogResolverTests
         first.Success.ShouldBeTrue();
         sameRegistry.Success.ShouldBeTrue();
         nextRegistry.Success.ShouldBeTrue();
-        source.OpenCount.ShouldBe(1);
+        source.OpenCount.ShouldBe(3);
         sameRegistry.Catalog!.Get("RegistryCache").Definition
                     .ShouldBeSameAs(first.Catalog!.Get("RegistryCache").Definition);
         nextRegistry.Catalog!.Get("RegistryCache").Definition
                     .ShouldNotBeSameAs(first.Catalog.Get("RegistryCache").Definition);
+    }
+
+    [Fact]
+    public void Definition_Cache_Rebinds_When_Source_Content_Changes_With_The_Same_Revision()
+    {
+        var source = new MutableMemorySource(
+            "memory://mutable-cache",
+            "1",
+            ThemeXml("MutableCache", "Mutable Cache", "#52C41A", isDefault: true));
+        var resolver = new MutableMemoryResolver(source);
+        var context = new ThemeDefinitionResolveContext("Tests", string.Empty, false, 0);
+        var registry = TypedThemeSnapshotCacheTests.CreateRegistry();
+        using var cache = new ThemeDefinitionLoadCache();
+
+        var first = CompiledThemeCatalog.LoadInitial(
+            registry,
+            [resolver],
+            context,
+            cache);
+        source.Replace(ThemeXml("MutableCache", "Mutable Cache", "#FA8C16", isDefault: true));
+        var second = CompiledThemeCatalog.LoadInitial(
+            registry,
+            [resolver],
+            context,
+            cache);
+
+        first.Success.ShouldBeTrue();
+        second.Success.ShouldBeTrue();
+        source.OpenCount.ShouldBe(2);
+        second.Catalog!.Get("MutableCache").Revision.ContentDigest
+              .ShouldNotBe(first.Catalog!.Get("MutableCache").Revision.ContentDigest);
+        second.Catalog.Get("MutableCache").Definition
+              .ShouldNotBeSameAs(first.Catalog.Get("MutableCache").Definition);
+        second.Catalog.Get("MutableCache").Definition.Tokens
+              .Single(static token => token.Descriptor.Name == nameof(DesignToken.ColorPrimary))
+              .Value
+              .ShouldBe(Color.Parse("#FA8C16"));
     }
 
     [Fact]
@@ -296,6 +333,17 @@ public class CompiledThemeCatalogResolverTests
         }
     }
 
+    private sealed class MutableMemoryResolver(MutableMemorySource source) : IThemeDefinitionResolver
+    {
+        public string Id => "MutableMemory";
+        public bool SupportsReload => false;
+
+        public ThemeDefinitionResolveResult Resolve(ThemeDefinitionResolveContext context)
+        {
+            return new ThemeDefinitionResolveResult([source], []);
+        }
+    }
+
     private sealed class MemorySource : IThemeDefinitionSource
     {
         private readonly byte[] _bytes;
@@ -315,6 +363,36 @@ public class CompiledThemeCatalogResolverTests
         public string SourceRevision { get; }
         internal string ContentDigest { get; }
         internal int OpenCount { get; private set; }
+
+        public Stream OpenRead()
+        {
+            OpenCount++;
+            return new MemoryStream(_bytes, writable: false);
+        }
+    }
+
+    private sealed class MutableMemorySource : IThemeDefinitionSource
+    {
+        private byte[] _bytes = [];
+
+        internal MutableMemorySource(
+            string identity,
+            string revision,
+            string xml)
+        {
+            SourceIdentity = identity;
+            SourceRevision = revision;
+            Replace(xml);
+        }
+
+        public string SourceIdentity { get; }
+        public string SourceRevision { get; }
+        internal int OpenCount { get; private set; }
+
+        internal void Replace(string xml)
+        {
+            _bytes = Encoding.UTF8.GetBytes(xml);
+        }
 
         public Stream OpenRead()
         {

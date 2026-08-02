@@ -85,7 +85,7 @@ public class ThemeConfigNormalizerTests
     }
 
     [Fact]
-    public void Normalize_Rejects_An_Empty_Global_Algorithm_List()
+    public void Normalize_Treats_An_Empty_Global_Algorithm_List_As_Explicit_Default()
     {
         var input = new ThemeConfigBuilder()
                     .WithAlgorithms()
@@ -93,11 +93,11 @@ public class ThemeConfigNormalizerTests
 
         var result = ThemeConfigNormalizer.Normalize(input, ThemeConfigTestSchema.Create());
 
-        result.Success.ShouldBeFalse();
-        result.Config.ShouldBeNull();
-        result.Diagnostics.ShouldContain(static diagnostic =>
-            diagnostic.Code == "ATMTHM4007" &&
-            diagnostic.Path == "$.Algorithms");
+        result.Success.ShouldBeTrue();
+        result.Diagnostics.ShouldBeEmpty();
+        var normalized = result.Config.ShouldNotBeNull();
+        normalized.AlgorithmsSpecified.ShouldBeTrue();
+        normalized.Algorithms.Select(static algorithm => algorithm.Id).ShouldBe(["Default"]);
     }
 
     [Fact]
@@ -144,6 +144,37 @@ public class ThemeConfigNormalizerTests
         changed.Fingerprint.ShouldNotBe(first.Fingerprint);
     }
 
+    [Fact]
+    public void Normalize_Rejects_A_Parser_Result_That_Does_Not_Match_The_Token_Value_Type()
+    {
+        var schema = ThemeConfigTestSchema.Create();
+        var badToken = new TokenDescriptor(
+            "Alpha",
+            0,
+            TokenStage.Seed,
+            typeof(double),
+            "Alpha",
+            static _ => "not-a-double",
+            static value => ThemeTokenValueFormatter.Format((double)value!),
+            static token => ((BadDesignToken)token).Value,
+            static (token, value) => ((BadDesignToken)token).Value = (double)value!,
+            static token => ((BadDesignToken)token).Value);
+        var registry = new ThemeSchemaRegistry(
+            [badToken],
+            Array.Empty<ControlTokenDescriptor>(),
+            schema.Algorithms);
+        var input = new ThemeConfigBuilder()
+                    .WithToken("Alpha", "1")
+                    .Build();
+
+        var result = ThemeConfigNormalizer.Normalize(input, registry);
+
+        result.Success.ShouldBeFalse();
+        result.Diagnostics.ShouldContain(static diagnostic =>
+            diagnostic.Code == "ATMTHM4006" &&
+            diagnostic.Path == "$.Tokens['Alpha']");
+    }
+
     private sealed class CultureScope : IDisposable
     {
         private readonly CultureInfo _originalCulture = CultureInfo.CurrentCulture;
@@ -160,6 +191,11 @@ public class ThemeConfigNormalizerTests
             CultureInfo.CurrentCulture = _originalCulture;
             CultureInfo.CurrentUICulture = _originalUICulture;
         }
+    }
+
+    private sealed class BadDesignToken : AbstractDesignToken
+    {
+        internal double Value { get; set; }
     }
 }
 

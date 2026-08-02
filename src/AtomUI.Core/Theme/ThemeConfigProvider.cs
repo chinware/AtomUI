@@ -98,6 +98,31 @@ public class ThemeConfigProvider : ThemeVariantScope
         }
 
         var diagnostics = new List<ThemeDiagnostic>();
+        SetCommittedVariant(context, diagnostics);
+        ThemePublishBoundary.Dispatch(
+            () => diagnostics.AddRange(context.Publish(notifyResources)),
+            this,
+            diagnostics,
+            $"ThemeScope[{context.RegistrationId}].ContextPublish");
+        return diagnostics.AsReadOnly();
+    }
+
+    internal IReadOnlyList<ThemeDiagnostic> SetCommittedVariant(ThemeContext context)
+    {
+        var diagnostics = new List<ThemeDiagnostic>();
+        SetCommittedVariant(context, diagnostics);
+        return diagnostics.AsReadOnly();
+    }
+
+    private void SetCommittedVariant(
+        ThemeContext context,
+        List<ThemeDiagnostic> diagnostics)
+    {
+        if (!ReferenceEquals(_context, context))
+        {
+            return;
+        }
+
         ThemePublishBoundary.Dispatch(
             () => SetCurrentValue(
                 RequestedThemeVariantProperty,
@@ -107,12 +132,6 @@ public class ThemeConfigProvider : ThemeVariantScope
             this,
             diagnostics,
             $"ThemeScope[{context.RegistrationId}].ThemeVariant");
-        ThemePublishBoundary.Dispatch(
-            () => diagnostics.AddRange(context.Publish(notifyResources)),
-            this,
-            diagnostics,
-            $"ThemeScope[{context.RegistrationId}].ContextPublish");
-        return diagnostics.AsReadOnly();
     }
 
     internal void ReleaseManagerRegistration(ThemeContext context)

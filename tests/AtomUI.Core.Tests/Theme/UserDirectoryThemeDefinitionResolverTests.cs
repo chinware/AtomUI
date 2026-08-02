@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 using AtomUI.Theme;
 using AtomUI.Theme.Definitions;
 using Avalonia;
@@ -114,6 +116,27 @@ public class UserDirectoryThemeDefinitionResolverTests
     }
 
     [Fact]
+    public void User_Theme_Stream_Open_Rejects_A_Named_Pipe()
+    {
+        if (!OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS())
+        {
+            return;
+        }
+
+        using var directory = new TemporaryDirectory();
+        var pipe = System.IO.Path.Combine(directory.Path, "pipe.theme.xml");
+        if (MkFifo(pipe, Convert.ToUInt32("600", 8)) != 0)
+        {
+            var error = Marshal.GetLastPInvokeError();
+            throw new IOException(
+                $"Could not create named pipe for theme source test: {new Win32Exception(error).Message}",
+                new Win32Exception(error));
+        }
+
+        Should.Throw<IOException>(() => ThemeDefinitionFileStream.OpenReadNoFollow(pipe));
+    }
+
+    [Fact]
     public void Resolver_Freezes_A_Canonical_Root_When_An_Ancestor_Is_A_Symbolic_Link()
     {
         using var directory = new TemporaryDirectory();
@@ -216,4 +239,9 @@ public class UserDirectoryThemeDefinitionResolverTests
             Directory.Delete(Path, recursive: true);
         }
     }
+
+    [DllImport("libc", EntryPoint = "mkfifo", SetLastError = true)]
+    private static extern int MkFifo(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string path,
+        uint mode);
 }

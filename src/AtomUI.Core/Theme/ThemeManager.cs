@@ -804,6 +804,20 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
                 "ThemeResources");
         }
 
+        // Publish all subtree variants before any context/resource notification.
+        foreach (var scope in transaction.PreparedScopes)
+        {
+            if (_scopeGraph.TryGetNode(scope.Stamp.RegistrationId, out var node) &&
+                node is not null)
+            {
+                ThemePublishBoundary.Dispatch(
+                    () => diagnostics.AddRange(node.Provider.SetCommittedVariant(scope.Context)),
+                    this,
+                    diagnostics,
+                    $"ThemeScope[{scope.Stamp.RegistrationId}].ThemeVariant");
+            }
+        }
+
         ThemePublishBoundary.Dispatch(
             () => diagnostics.AddRange(transaction.PreparedRootContext!.Publish(
                 notifyResources: !transaction.AddsResourceProvider)),
@@ -815,7 +829,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         {
             var scope = transaction.PreparedScopes[index];
             if (!_scopeGraph.TryGetNode(scope.Stamp.RegistrationId, out var node) ||
-                node!.Stamp != scope.Stamp)
+                node is null)
             {
                 continue;
             }
@@ -1269,7 +1283,8 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
             var result = await ProcessScopeUpdateAsync(
                 pending,
                 generation,
-                transitionId).ConfigureAwait(true);
+                transitionId,
+                pending.Provider.DispatchResult).ConfigureAwait(true);
 
             lock (_transactionGate)
             {
@@ -1285,19 +1300,20 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
                     }
                 }
             }
-
-            pending.Provider.DispatchResult(result);
         }
     }
 
     private async Task<ThemeScopeUpdateResult> ProcessScopeUpdateAsync(
         PendingThemeScopeUpdate pending,
         long generation,
-        long transitionId)
+        long transitionId,
+        Action<ThemeScopeUpdateResult> dispatchResult)
     {
+        ArgumentNullException.ThrowIfNull(dispatchResult);
         await EnterTransactionExecutionGateAsync().ConfigureAwait(true);
         try
         {
+            ThemeScopeUpdateResult result;
             lock (_transactionGate)
             {
                 if (generation != _generation ||
@@ -1305,18 +1321,22 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
                     current!.ConfigRevision != pending.ConfigRevision ||
                     !ReferenceEquals(current.Provider, pending.Provider))
                 {
-                    return ThemeScopeUpdateResult.Superseded(
+                    result = ThemeScopeUpdateResult.Superseded(
                         transitionId,
                         CreateScopeRequest(pending.Config),
                         CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."));
+                    dispatchResult(result);
+                    return result;
                 }
             }
 
-            return ApplyScopeConfig(pending, generation, transitionId);
+            result = ApplyScopeConfig(pending, generation, transitionId);
+            dispatchResult(result);
+            return result;
         }
         catch (Exception exception)
         {
-            return ThemeScopeUpdateResult.Failed(
+            var result = ThemeScopeUpdateResult.Failed(
                 transitionId,
                 CreateScopeRequest(pending.Config),
                 CurrentTheme ?? throw new InvalidOperationException("Root theme is not initialized."),
@@ -1327,6 +1347,8 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
                     "$",
                     $"Theme scope update failed: {exception.GetBaseException().Message}")],
                 exception);
+            dispatchResult(result);
+            return result;
         }
         finally
         {
@@ -1397,6 +1419,19 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         }
 
         var publishDiagnostics = new List<ThemeDiagnostic>();
+        foreach (var staged in preparation.Snapshots)
+        {
+            if (_scopeGraph.TryGetNode(staged.Stamp.RegistrationId, out var stagedNode) &&
+                stagedNode is not null)
+            {
+                ThemePublishBoundary.Dispatch(
+                    () => publishDiagnostics.AddRange(stagedNode.Provider.SetCommittedVariant(staged.Context)),
+                    this,
+                    publishDiagnostics,
+                    $"ThemeScope[{staged.Stamp.RegistrationId}].ThemeVariant");
+            }
+        }
+
         for (var index = 0; index < preparation.Snapshots.Count; index++)
         {
             var staged = preparation.Snapshots[index];
@@ -1490,9 +1525,11 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
             return new ThemeCompileResult(null, normalized.Diagnostics, null);
         }
 
-        var defaults = ThemeCompiler.CreateDefinitionDefaults(
-            parentSnapshot.Definition,
-            parentSnapshot.Registry);
+        var defaults = config.Inherit
+            ? ThemeCompiler.CreateDefinitionDefaults(
+                parentSnapshot.Definition,
+                parentSnapshot.Registry)
+            : ThemeCompiler.CreateLibraryDefaults(parentSnapshot.Registry);
         var effective = ThemeConfigMerger.Merge(
             defaults,
             parentSnapshot.EffectiveConfig,
@@ -1556,21 +1593,33 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         try
         {
             var entry = (catalog ?? _compiledThemeCatalog!).Get(request.ThemeId);
-            var config = AddDefaultFont(request.Config) ?? new ThemeConfigBuilder().Build();
-            var normalized = ThemeConfigNormalizer.Normalize(config, _startupRegistry!);
-            if (!normalized.Success)
+            var runtimeConfig = AddDefaultFont(request.Config) ?? new ThemeConfigBuilder().Build();
+            var normalizedRuntime = ThemeConfigNormalizer.Normalize(runtimeConfig, _startupRegistry!);
+            if (!normalizedRuntime.Success)
             {
                 return ThemeTransactionPreparation.Failed(
-                    ConvertDiagnostics(normalized.Diagnostics));
+                    ConvertDiagnostics(normalizedRuntime.Diagnostics));
             }
 
             var defaults = ThemeCompiler.CreateDefinitionDefaults(
                 entry.Definition,
                 _startupRegistry!);
-            var effective = ThemeConfigMerger.Merge(
+            var initialConfig = AddDefaultFont(_initialRequest.Config) ?? new ThemeConfigBuilder().Build();
+            var normalizedInitial = ThemeConfigNormalizer.Normalize(initialConfig, _startupRegistry!);
+            if (!normalizedInitial.Success)
+            {
+                return ThemeTransactionPreparation.Failed(
+                    ConvertDiagnostics(normalizedInitial.Diagnostics));
+            }
+
+            var applicationConfig = ThemeConfigMerger.Merge(
                 defaults,
                 null,
-                normalized.Config!).EffectiveConfig;
+                normalizedInitial.Config!).EffectiveConfig;
+            var effective = ThemeConfigMerger.Merge(
+                defaults,
+                applicationConfig,
+                normalizedRuntime.Config!).EffectiveConfig;
             var input = new ThemeCompileInput(
                 entry.Definition,
                 entry.Revision,

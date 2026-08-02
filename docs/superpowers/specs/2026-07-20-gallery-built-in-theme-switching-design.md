@@ -269,7 +269,8 @@ Gallery 第一版不增加 `ReloadThemesCommand`。`ReloadThemesAsync()` 仍是 
 
 ```text
 Theme Id: requested id or CurrentTheme.ThemeId
-Algorithms: base algorithms + Compact? + Dark?
+Algorithms: null when no orthogonal algorithm override is active; otherwise a complete replacement chain
+            ([Dark], [Compact], or [Dark, Compact])
 Tokens:
   EnableMotion
   EnableWaveSpirit
@@ -282,7 +283,7 @@ Tokens:
 
 以下状态必须在切换主题色时保留：
 
-- Dark：保留并把 `Dark` 算法附加在 definition 的 `Default` 基线之后。
+- Dark：运行时显式替换为 `Dark` 算法链，不会把 `Dark` 隐式附加在 definition 的 `Default` 基线之后。
 - Compact：保留 `Compact` 算法。
 - Motion：保留 `EnableMotion`。
 - Wave Spirit：保留 `EnableWaveSpirit`，且继续服从 Motion 的现有依赖关系。

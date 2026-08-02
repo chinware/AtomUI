@@ -36,6 +36,16 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
             var compilation = value.Left.Right;
             var assemblyName = compilation.AssemblyName ?? "AtomUI";
             var controlCatalog = ThemeGeneratorOptions.GetControlCatalog(value.Right);
+            var globalTokenNames = compilation.GetTypeByMetadataName("AtomUI.Theme.Resources.SharedTokenKind")?
+                                         .GetMembers()
+                                         .OfType<IFieldSymbol>()
+                                         .Where(static field => field.HasConstantValue && field.Name != "value__")
+                                         .OrderBy(static field => Convert.ToInt64(
+                                             field.ConstantValue,
+                                             System.Globalization.CultureInfo.InvariantCulture))
+                                         .ThenBy(static field => field.Name, StringComparer.Ordinal)
+                                         .Select(static field => field.Name)
+                                         .ToArray() ?? Array.Empty<string>();
             var sourceControls = ControlThemeModelBuilder
                                  .GetPublicControls(compilation.Assembly.GlobalNamespace)
                                  .ToArray();
@@ -80,7 +90,8 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
                 productionContext,
                 assemblyName,
                 resolved,
-                auxiliary).Write();
+                auxiliary,
+                globalTokenNames).Write();
         });
     }
 

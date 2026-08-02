@@ -1,8 +1,11 @@
 using AtomUI.Theme;
+using AtomUI.Theme.Configuration;
+using AtomUI.Theme.DesignTokens;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Schema;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Styling;
 using Shouldly;
 using Xunit;
@@ -18,12 +21,21 @@ public class ThemeStartupTests
         HeadlessTestApp.Run(() =>
         {
             var descriptor = ThemeCompilerTests.CreateCompilerButtonDescriptor();
-            var asset = new ControlThemeAssetDescriptor(
+            var provisional = new ControlThemeAssetDescriptor(
                 new Uri("avares://Tests/Themes/Button.axaml"),
                 descriptor.Identity,
                 [descriptor.Identity],
                 null,
                 1);
+            var registry = TypedThemeSnapshotCacheTests.CreateRegistry([descriptor]);
+            var asset = new ControlThemeAssetDescriptor(
+                provisional.AssetUri,
+                provisional.OwnerIdentity,
+                provisional.ReferencedControlIdentities,
+                provisional.SemanticPart,
+                ThemeSchemaRegistry.ComputeResourceKeySchemaFingerprint(
+                    provisional,
+                    registry.GlobalTokens));
             var provider = new TestControlThemesProvider("Tests.Controls");
             var package = new ControlPackageRegistration(
                 provider.Id,
@@ -71,6 +83,39 @@ public class ThemeStartupTests
                 style.Setters.OfType<Setter>().Any(setter =>
                     setter.Property == ThemeScope.ContextProperty &&
                     ReferenceEquals(setter.Value, manager.RootContext)));
+        });
+    }
+
+    [Fact]
+    public async Task Runtime_Request_Preserves_Startup_Config_As_The_Lower_Layer()
+    {
+        await HeadlessTestApp.RunAsync(async () =>
+        {
+            var application = Application.Current!;
+            var builder = new ThemeManagerBuilder();
+            builder.WithInitialTheme(
+                IThemeManager.DEFAULT_THEME_ID,
+                new ThemeConfigBuilder()
+                    .WithToken(nameof(DesignToken.BorderRadius), "12")
+                    .Build());
+            var manager = builder.Build();
+            manager.InitializeApplication(application);
+
+            var result = await manager.ApplyThemeAsync(
+                new ThemeRequest(
+                    IThemeManager.DEFAULT_THEME_ID,
+                    new ThemeConfigBuilder()
+                        .WithToken(nameof(DesignToken.ColorPrimary), "#00b96b")
+                        .Build(),
+                    ThemeTransitionReason.UserRequest),
+                TestContext.Current.CancellationToken);
+
+            result.Status.ShouldBe(ThemeTransitionStatus.Committed);
+            var snapshot = manager.CurrentSnapshot.ShouldNotBeNull();
+            snapshot.Global<CornerRadius>(nameof(DesignToken.BorderRadius))
+                    .ShouldBe(new CornerRadius(12));
+            snapshot.Global<Color>(nameof(DesignToken.ColorPrimary))
+                    .ShouldBe(Color.Parse("#00b96b"));
         });
     }
 

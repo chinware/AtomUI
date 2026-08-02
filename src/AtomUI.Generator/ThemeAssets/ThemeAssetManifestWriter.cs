@@ -9,17 +9,20 @@ internal sealed class ThemeAssetManifestWriter
     private readonly string _assemblyName;
     private readonly IReadOnlyList<ResolvedThemeAssetInfo> _assets;
     private readonly IReadOnlyList<ThemeAssetInfo> _auxiliaryAssets;
+    private readonly IReadOnlyList<string> _globalTokenNames;
 
     internal ThemeAssetManifestWriter(
         SourceProductionContext context,
         string assemblyName,
         IReadOnlyList<ResolvedThemeAssetInfo> assets,
-        IReadOnlyList<ThemeAssetInfo> auxiliaryAssets)
+        IReadOnlyList<ThemeAssetInfo> auxiliaryAssets,
+        IReadOnlyList<string> globalTokenNames)
     {
         _context = context;
         _assemblyName = assemblyName;
         _assets = assets;
         _auxiliaryAssets = auxiliaryAssets;
+        _globalTokenNames = globalTokenNames;
     }
 
     internal void Write()
@@ -151,7 +154,7 @@ internal sealed class ThemeAssetManifestWriter
                .AppendLine("UL),");
     }
 
-    private static ulong ComputeFingerprint(ResolvedThemeAssetInfo asset)
+    private ulong ComputeFingerprint(ResolvedThemeAssetInfo asset)
     {
         var hash = 14695981039346656037UL;
         Add(ref hash, asset.OwnerIdentity.Catalog);
@@ -160,6 +163,10 @@ internal sealed class ThemeAssetManifestWriter
         {
             Add(ref hash, identity.Catalog);
             Add(ref hash, identity.Id);
+        }
+        foreach (var tokenName in _globalTokenNames)
+        {
+            Add(ref hash, tokenName);
         }
         if (asset.SemanticPart is not null)
         {

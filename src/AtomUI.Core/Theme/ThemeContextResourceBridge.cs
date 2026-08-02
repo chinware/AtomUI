@@ -13,6 +13,15 @@ internal sealed class ThemeContextResourceBridge : ResourceProvider, IDisposable
         ownerContext.Published += HandleContextPublished;
     }
 
+    internal void RestartListening()
+    {
+        if (_ownerContext is { } context)
+        {
+            context.Published -= HandleContextPublished;
+            context.Published += HandleContextPublished;
+        }
+    }
+
     internal ThemeContext OwnerContext => _ownerContext ??
         throw new ObjectDisposedException(nameof(ThemeContextResourceBridge));
 

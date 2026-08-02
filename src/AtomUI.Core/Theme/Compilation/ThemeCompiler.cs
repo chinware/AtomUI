@@ -1,4 +1,7 @@
 using System.Collections.Frozen;
+using Avalonia.Animation.Easings;
+using Avalonia.Media;
+using Avalonia.Media.Immutable;
 using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
@@ -10,7 +13,7 @@ namespace AtomUI.Theme.Compilation;
 internal sealed class ThemeCompiler
 {
     private const string CompilerPath = "ThemeCompiler";
-internal static NormalizedThemeConfig CreateDefinitionDefaults(
+    internal static NormalizedThemeConfig CreateDefinitionDefaults(
         BoundThemeDefinition definition,
         ThemeSchemaRegistry registry)
     {
@@ -58,6 +61,24 @@ internal static NormalizedThemeConfig CreateDefinitionDefaults(
             algorithms,
             globalTokens,
             controls);
+    }
+
+    internal static NormalizedThemeConfig CreateLibraryDefaults(
+        ThemeSchemaRegistry registry)
+    {
+        ArgumentNullException.ThrowIfNull(registry);
+        if (!registry.TryGetAlgorithm(nameof(ThemeAlgorithm.Default), out var defaultAlgorithm) ||
+            defaultAlgorithm is null)
+        {
+            throw new InvalidOperationException("Default algorithm is not registered.");
+        }
+
+        return new NormalizedThemeConfig(
+            false,
+            true,
+            [defaultAlgorithm],
+            Array.Empty<NormalizedTokenValue>(),
+            Array.Empty<NormalizedControlThemeConfig>());
     }
 
     private static IReadOnlyList<NormalizedTokenValue> NormalizeBoundTokens(
@@ -187,7 +208,7 @@ internal static NormalizedThemeConfig CreateDefinitionDefaults(
         {
             var descriptor = input.Registry.Controls[slot];
             var config = FindControlConfig(input.EffectiveConfig.Controls, descriptor.Identity);
-            if (CanReuseControl(input.ReusableParent, descriptor, config))
+            if (CanReuseControl(input.ReusableParent, descriptor, config, reuseGlobal))
             {
                 controls[slot] = input.ReusableParent!.Controls[slot];
                 continue;
@@ -222,7 +243,8 @@ internal static NormalizedThemeConfig CreateDefinitionDefaults(
     private static bool CanReuseControl(
         ThemeSnapshot? parent,
         ControlTokenDescriptor descriptor,
-        NormalizedControlThemeConfig? config)
+        NormalizedControlThemeConfig? config,
+        bool reuseGlobal)
     {
         if (parent is null)
         {
@@ -237,6 +259,11 @@ internal static NormalizedThemeConfig CreateDefinitionDefaults(
         if (config is null && parentConfig is null && !descriptor.HasOwnTokens)
         {
             return true;
+        }
+
+        if (!reuseGlobal)
+        {
+            return false;
         }
 
         return config is null ? parentConfig is null : config.Equals(parentConfig);
@@ -592,10 +619,28 @@ internal static NormalizedThemeConfig CreateDefinitionDefaults(
         var resources = new Dictionary<object, object?>(descriptors.Count);
         foreach (var descriptor in descriptors)
         {
-            resources.Add(descriptor.ResourceKey, descriptor.ProjectResourceValue(builder));
+            resources.Add(
+                descriptor.ResourceKey,
+                FreezeResourceValue(descriptor.ProjectResourceValue(builder)));
         }
 
         return resources.ToFrozenDictionary();
+    }
+
+    private static object? FreezeResourceValue(object? value)
+    {
+        return value switch
+        {
+            SolidColorBrush brush => ThemeResourceValue.CloneSolidColorBrush(brush),
+            IBrush brush => brush.ToImmutable(),
+            SplineEasing easing => new SplineEasing(easing.X1, easing.Y1, easing.X2, easing.Y2),
+            SpringEasing easing => new SpringEasing(
+                easing.Mass,
+                easing.Stiffness,
+                easing.Damping,
+                easing.InitialVelocity),
+            _ => value
+        };
     }
 
     private static IReadOnlyDictionary<PresetPrimaryColor, PaletteInfo> FreezePresetPalettes(

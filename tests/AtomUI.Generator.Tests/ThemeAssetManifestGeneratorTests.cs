@@ -111,6 +111,32 @@ public class ThemeAssetManifestGeneratorTests
     }
 
     [Fact]
+    public void Resource_Key_Schema_Fingerprint_Uses_Shared_Token_Kind_Value_Order()
+    {
+        var compilation = CreateCompilation(TokenSource + """
+
+            namespace AtomUI.Theme.Resources
+            {
+                public enum SharedTokenKind
+                {
+                    Zeta = 0,
+                    Alpha = 1
+                }
+            }
+            """);
+        var result = RunGenerator(
+            compilation,
+            [Asset("Button/Themes/ButtonTheme.axaml", ControlTheme("Button", "ButtonTokenResource Height"))],
+            out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetManifest.g.cs");
+        var expected = ComputeFingerprint("AtomUI", "Button", "AtomUI", "Button", "Zeta", "Alpha");
+        source.ShouldContain(
+            "0x" + expected.ToString("X16", System.Globalization.CultureInfo.InvariantCulture) + "UL");
+    }
+
+    [Fact]
     public void Generates_Aot_Safe_Resource_Loader_For_Default_Typed_Control_Themes()
     {
         var compilation = CreateCompilation("""
@@ -528,6 +554,20 @@ public class ThemeAssetManifestGeneratorTests
             {{values}}
             </ResourceDictionary>
             """;
+    }
+
+    private static ulong ComputeFingerprint(params string[] values)
+    {
+        var hash = 14695981039346656037UL;
+        foreach (var value in values)
+        {
+            foreach (var character in value)
+            {
+                hash ^= character;
+                hash *= 1099511628211UL;
+            }
+        }
+        return hash;
     }
 
     private const string TokenSource = """

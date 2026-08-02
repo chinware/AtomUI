@@ -231,6 +231,23 @@ public class DenseThemeCompilerTests
     }
 
     [Fact]
+    public void Compile_Recomputes_An_OwnToken_Control_When_Global_Content_Changes()
+    {
+        var control = Control("Button");
+        var registry = CreateRegistry([control]);
+        registry.TryGetControl(control.Identity, out control).ShouldBeTrue();
+        var parent = new ThemeCompiler().Compile(CreateInput(registry)).Snapshot!;
+
+        var changed = new ThemeCompiler().Compile(CreateInput(
+            registry,
+            globalTokens: [Token(registry, nameof(DesignToken.ControlHeight), "48")],
+            reusableParent: parent)).Snapshot!;
+
+        changed.Controls[control.Slot].ShouldNotBeSameAs(parent.Controls[control.Slot]);
+        changed.Controls[control.Slot].ControlTokenValues.Get<double>(0).ShouldBe(48);
+    }
+
+    [Fact]
     public void Compile_Preserves_Immutable_Control_Token_Values_Without_String_Round_Trip()
     {
         var transform = new ImmutableTransform(Matrix.CreateTranslation(4, 8));

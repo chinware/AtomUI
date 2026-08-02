@@ -103,6 +103,46 @@ internal sealed class ThemeSchemaRegistry
     public IReadOnlyList<ThemeAlgorithmDescriptor> Algorithms { get; }
     public ThemeSchemaRevision Revision { get; }
 
+    internal static ulong ComputeResourceKeySchemaFingerprint(
+        ControlThemeAssetDescriptor descriptor,
+        IReadOnlyList<TokenDescriptor> globalTokens)
+    {
+        ArgumentNullException.ThrowIfNull(descriptor);
+        ArgumentNullException.ThrowIfNull(globalTokens);
+
+        var hash = 14695981039346656037UL;
+        AddAssetFingerprint(ref hash, descriptor.OwnerIdentity);
+        foreach (var identity in descriptor.ReferencedControlIdentities)
+        {
+            AddAssetFingerprint(ref hash, identity);
+        }
+        foreach (var token in globalTokens.OrderBy(static token => token.Slot))
+        {
+            AddAssetFingerprint(ref hash, token.Name);
+        }
+        if (descriptor.SemanticPart is { } semanticPart)
+        {
+            AddAssetFingerprint(ref hash, semanticPart.PropertyName);
+            AddAssetFingerprint(ref hash, semanticPart.TargetTypeName);
+        }
+        return hash;
+    }
+
+    private static void AddAssetFingerprint(ref ulong hash, ControlTokenIdentity identity)
+    {
+        AddAssetFingerprint(ref hash, identity.Catalog);
+        AddAssetFingerprint(ref hash, identity.Id);
+    }
+
+    private static void AddAssetFingerprint(ref ulong hash, string value)
+    {
+        foreach (var character in value)
+        {
+            hash ^= character;
+            hash *= 1099511628211UL;
+        }
+    }
+
     internal bool TryGetGlobalToken(
         string name,
         [NotNullWhen(true)] out TokenDescriptor? descriptor)

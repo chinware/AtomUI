@@ -7,10 +7,10 @@ namespace AtomUI.Core.Tests.Theme;
 public class ControlThemeAssetManifestTests
 {
     [Fact]
-    public void Registry_Tracks_Theme_Asset_References_Without_Global_Token_Dependencies()
+    public void Registry_Tracks_Theme_Asset_References_With_Resource_Key_Schema_Fingerprint()
     {
         var control = ThemeCompilerTests.CreateCompilerButtonDescriptor();
-        var asset = new ControlThemeAssetDescriptor(
+        var provisional = new ControlThemeAssetDescriptor(
             new Uri("avares://Tests/Themes/SearchButtonTheme.axaml"),
             control.Identity,
             [control.Identity],
@@ -18,6 +18,15 @@ public class ControlThemeAssetManifestTests
                 "SearchButtonTheme",
                 "global::Avalonia.Controls.Button"),
             1);
+        var baseRegistry = TypedThemeSnapshotCacheTests.CreateRegistry([control]);
+        var asset = new ControlThemeAssetDescriptor(
+            provisional.AssetUri,
+            provisional.OwnerIdentity,
+            provisional.ReferencedControlIdentities,
+            provisional.SemanticPart,
+            ThemeSchemaRegistry.ComputeResourceKeySchemaFingerprint(
+                provisional,
+                baseRegistry.GlobalTokens));
 
         var registry = TypedThemeSnapshotCacheTests.CreateRegistry(
             [control],
@@ -38,12 +47,20 @@ public class ControlThemeAssetManifestTests
         var semanticPart = new ControlThemeSemanticPartDescriptor(
             "SearchButtonTheme",
             "global::Avalonia.Controls.Button");
-        var descriptor = new ControlThemeAssetDescriptor(
+        var provisional = new ControlThemeAssetDescriptor(
             new Uri("avares://Tests/Themes/Button.axaml"),
             identity,
             [identity],
             semanticPart,
             1);
+        var descriptor = new ControlThemeAssetDescriptor(
+            provisional.AssetUri,
+            provisional.OwnerIdentity,
+            provisional.ReferencedControlIdentities,
+            provisional.SemanticPart,
+            ThemeSchemaRegistry.ComputeResourceKeySchemaFingerprint(
+                provisional,
+                registry.GlobalTokens));
 
         var manifest = new ControlThemeAssetManifest(registry, [descriptor]);
 
@@ -64,8 +81,8 @@ public class ControlThemeAssetManifestTests
         Should.Throw<ThemeSchemaException>(() => new ControlThemeAssetManifest(
             registry,
             [
-                Asset(identity, fingerprint: 1),
-                Asset(identity, fingerprint: 1)
+                Asset(identity, fingerprint: Fingerprint(identity)),
+                Asset(identity, fingerprint: Fingerprint(identity))
             ]));
         Should.Throw<ThemeSchemaException>(() => new ControlThemeAssetManifest(
             registry,
@@ -73,19 +90,41 @@ public class ControlThemeAssetManifestTests
     }
 
     [Fact]
+    public void Manifest_Rejects_Resource_Key_Schema_Fingerprint_Mismatch()
+    {
+        var registry = CreateRegistry();
+        var identity = registry.Controls[0].Identity;
+        var expected = Fingerprint(identity);
+        var mismatched = expected == ulong.MaxValue ? expected - 1 : expected + 1;
+
+        Should.Throw<ThemeSchemaException>(() => new ControlThemeAssetManifest(
+            registry,
+            [Asset(identity, fingerprint: mismatched)]));
+    }
+
+    [Fact]
     public void Manifest_Rejects_Unregistered_Referenced_Control_Identity()
     {
         var registry = CreateRegistry();
         var owner = registry.Controls[0].Identity;
+        var descriptor = new ControlThemeAssetDescriptor(
+            new Uri("avares://Tests/Themes/Button.axaml"),
+            owner,
+            [new ControlTokenIdentity("AtomUI", "Missing")],
+            null,
+            1);
+        var descriptorWithFingerprint = new ControlThemeAssetDescriptor(
+            descriptor.AssetUri,
+            descriptor.OwnerIdentity,
+            descriptor.ReferencedControlIdentities,
+            descriptor.SemanticPart,
+            ThemeSchemaRegistry.ComputeResourceKeySchemaFingerprint(
+                descriptor,
+                registry.GlobalTokens));
 
         Should.Throw<ThemeSchemaException>(() => new ControlThemeAssetManifest(
             registry,
-            [new ControlThemeAssetDescriptor(
-                new Uri("avares://Tests/Themes/Button.axaml"),
-                owner,
-                [new ControlTokenIdentity("AtomUI", "Missing")],
-                null,
-                1)]));
+            [descriptorWithFingerprint]));
     }
 
     private static ControlThemeAssetDescriptor Asset(
@@ -98,6 +137,13 @@ public class ControlThemeAssetManifestTests
             [identity],
             null,
             fingerprint);
+    }
+
+    private static ulong Fingerprint(ControlTokenIdentity identity)
+    {
+        var asset = Asset(identity, 1);
+        var registry = CreateRegistry();
+        return ThemeSchemaRegistry.ComputeResourceKeySchemaFingerprint(asset, registry.GlobalTokens);
     }
 
     private static ThemeSchemaRegistry CreateRegistry()

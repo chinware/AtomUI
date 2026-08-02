@@ -44,12 +44,15 @@
 
 ### 2.1 主题语义与 Avalonia 映射
 
-AtomUI 主题系统以本项目的公开配置契约、Token 模型和运行时作用域为准。设计上沿用分层 Token、配置继承、
-有序算法链和作用域隔离等通用主题语义，但不把外部项目的具体版本、commit、包实现或源码快照作为架构约束。
-需要保持的 AtomUI 契约是：
+AtomUI 是 Ant Design 主题系统在 Avalonia 领域的实现。主题配置合并、Token 派生、全局算法替换、
+组件级算法策略和嵌套作用域语义以 Ant Design 的 `ConfigProvider`、`useTheme` 和 `useToken` 行为为功能真源。
+Avalonia 侧允许使用静态 `ControlTheme`、typed resource key、snapshot-backed `ResourceProvider` 和显式生命周期
+宿主来实现等价语义；React hook、CSS-in-JS、hash、CSS 变量和 SSR 等 Web 实现细节不作为 AtomUI 的实现约束。
+当本文或代码与 Ant Design 主题语义冲突时，以 Ant Design 语义为准并修正文档或实现。需要保持的 AtomUI 契约是：
 
 - `ThemeConfig` 对 Token 按 key 合并，对 Control 配置先按 identity、再按字段合并；`Algorithms` 整体替换。
-- `Inherit=false` 只切断父 `ThemeContext`，仍从 AtomUI 默认主题基线开始计算。
+- `Inherit=false` 切断父配置继承；root 运行时请求保留当前所选 `ThemeDefinition` 基线，局部 Provider 回到
+  AtomUI library defaults。
 - Token 按 Seed、Map、Alias、Control 四层派生；每个 Control 都可以覆盖当前 registry 中的任意 Global Token。
 - 算法是有序 derivative 链；每个算法接收同一份 Seed 和前一算法的 Map 结果。
 - 主题计算和 Control 计算按完整内容缓存，缓存身份包含算法链和所有会改变结果的配置。
@@ -203,8 +206,8 @@ Provider 不订阅 Config 内部对象图。Capture 在 UI 线程读取一个深
 复制，也不会观察到中途变化。旧 Config 在属性替换后不再被 Provider、Manager、Compiler、snapshot 或缓存
 保留；缓存只保存规范化后的结构化 key。
 
-`Algorithms=null` 表示“未指定”；非空集合表示显式算法链。空集合不是“禁用算法”，属于无效输入，必须
-产生 diagnostic 并保留最后一次有效配置。Control 自定义算法链遵守相同规则。
+`Algorithms=null` 表示“未指定”；非空集合表示显式算法链；空集合表示显式替换为 AtomUI 默认算法链，
+等价于 Ant Design 全局 `algorithm: []` 回到 `defaultTheme`。Control 自定义算法链仍必须声明至少一个算法。
 
 `ThemeConfigProvider` 是轻量局部 ThemeVariant 宿主，只公开一个 `Config` 和继承的内容子节点。旧的
 `SharedTokenSetters`、`ControlTokenInfoSetters`、字符串算法集合以及 Token 查询属性不属于新架构。
@@ -252,14 +255,15 @@ AtomUI library defaults，不继承父作用域、当前所选主题定义、应
 - 当前 `Tokens` 按 key 覆盖父 `Tokens`。
 - `Controls` 先按 `ControlTokenIdentity` 合并，再按 Token key 合并。
 - Control 的算法未指定时继承父策略；显式 disabled、global 或 custom 时替换父策略。
-- 当前 `Algorithms` 为 `null` 时继承基线算法；显式提供非空列表时整体替换，不和基线算法拼接。
+- 当前 `Algorithms` 为 `null` 时继承基线算法；显式提供列表时整体替换，不和基线算法拼接；空列表先规范化为
+  AtomUI 默认算法链。
 - 主题定义、应用级配置和运行时请求都先转换为规范化配置，再按同一规则合并。
 
-合并器同时计算 `BaseAppearance`：根配置以所选 ThemeDefinition 的已验证 appearance 为基线；局部
-`Inherit=true` 以父 snapshot appearance 为基线；局部 `Inherit=false` 以 AtomUI library baseline 的 Light
-appearance 为基线。全局算法 descriptor 的 appearance effect 按顺序折叠，最后一个非 `Preserve` effect
-决定结果。Control 自定义算法只影响该 Control 的 Token 和 Control appearance，不改变所在 ThemeContext 的
-Avalonia ThemeVariant。
+运行时算法列表是整体替换，不和父层或 definition 的算法链拼接。编译器始终从 Light baseline 重新折叠当前
+有效算法链，因此父 Dark + 子 Compact 的结果是 Light Compact，而不是保留父 Dark。要得到 Dark Compact，
+必须显式提供完整算法链。全局算法 descriptor 的 appearance effect 按顺序折叠，最后一个非 `Preserve`
+effect 决定结果。Control 自定义算法只影响该 Control 的 Token 和 Control appearance，不改变所在
+ThemeContext 的 Avalonia ThemeVariant。
 
 Control 的 `Tokens` 使用一个扁平集合表达 Own Token 和 Control 级 Global Token 覆盖。每个 Control 天然可以
 覆盖当前 registry 中的任意 Global Token，不维护或推导 Global Token 白名单。Schema Binder 先在当前
@@ -1480,7 +1484,7 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
 - Control 覆盖不修改全局 Token，也不创建实例私有作用域；同一 ThemeContext 中全部同 identity Control
   使用一致的覆盖结果。
 - 同一主题的新 runtime override 会产生新有效配置，不复用过期 Theme 对象。
-- `Algorithms=null` 继承基线算法，空算法列表被诊断为无效输入。
+- `Algorithms=null` 继承基线算法，空算法列表显式替换为 AtomUI 默认算法链。
 - `ThemeConfig`、`ControlThemeConfig`、`ThemeRequest` 及其全部集合深度不可变；替换 Provider.Config 是唯一局部
   动态配置入口，修改旧输入对象不可能触发事务。
 - 所有全局和 Control 算法严格遵守 `Evaluate(sameEffectiveSeed, previousMap?) -> nextMap`；后续算法不能把前一

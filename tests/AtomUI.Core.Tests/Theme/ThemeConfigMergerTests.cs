@@ -41,6 +41,20 @@ public class ThemeConfigMergerTests
         result.ChangeSet.GlobalTokensChanged.ShouldBeTrue();
     }
 
+    [Fact]
+    public void Merge_Empty_Algorithm_List_Explicitly_Replaces_Parent_With_Default()
+    {
+        var schema = ThemeConfigTestSchema.Create();
+        var defaults = Normalize(schema, false, ["Default"]);
+        var parent = Normalize(schema, true, ["Compact"]);
+        var local = Normalize(schema, true, []);
+
+        var result = ThemeConfigMerger.Merge(defaults, parent, local);
+
+        result.EffectiveConfig.Algorithms.Select(static item => item.Id).ShouldBe(["Default"]);
+        result.ChangeSet.AlgorithmsChanged.ShouldBeTrue();
+    }
+
     [Theory]
     [InlineData((int)ControlAlgorithmMode.Unspecified, (int)ControlAlgorithmMode.Custom)]
     [InlineData((int)ControlAlgorithmMode.Disabled, (int)ControlAlgorithmMode.Disabled)]
