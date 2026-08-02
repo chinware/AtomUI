@@ -46,12 +46,11 @@ LineEdit
   -> ResizeHandle (control theme, ResizeHandleTheme.axaml)
      -> Border#Frame (template-stable)
   -> RevealButton (control theme, RevealButtonTheme.axaml)
-  -> SearchButton (control theme, SearchButtonTheme.axaml)
   -> SearchEditDecoratedBox (control theme, SearchEditDecoratedBoxTheme.axaml)
      -> SearchEditPanel#RootLayout (internal-observable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
            -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
-        -> SearchButton#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (internal-observable)
+        -> Button#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (template-stable)
         -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
            -> DockPanel#ContentLayout (template-stable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
@@ -84,12 +83,11 @@ LineEdit
 | `ResizeHandle` | control theme | `ResizeHandleTheme.axaml` | LineEdit | `Background` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (Border) | `ResizeHandleTheme.axaml` | ResizeHandle | `Background` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RevealButton` | control theme | `RevealButtonTheme.axaml` | LineEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `SearchButton` | control theme | `SearchButtonTheme.axaml` | LineEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SearchEditDecoratedBox` | control theme | `SearchEditDecoratedBoxTheme.axaml` | LineEdit | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (SearchEditPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (SearchButton) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `EffectiveStatus`, `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SizeType`, `StyleVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (Button) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SearchButtonTheme`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -178,7 +176,7 @@ LineEdit 家族使用输入壳体和文本 presenter 分层：
 
 Token 边界：
 
-LineEdit 输入家族使用三个组件级 Token scope：
+LineEdit 输入家族使用三个控件级 Token scope：
 
 | Token | Scope | 职责 |
 | --- | --- | --- |

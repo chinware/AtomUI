@@ -14,7 +14,24 @@
 
 ## Abstract AXAML Structure
 
-未定位到可生成抽象 AXAML 结构的 ControlTheme 模板。生成器不会根据 semantic parts 发明 AXAML 节点；请以 Template Parts、主题文件和源码索引为准。
+来源：`src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`
+
+```xml
+<Panel>
+    <WaveSpiritDecorator Name="PART_WaveSpirit" />
+    <Border Name="ShadowsFrame" />
+    <DashedBorder Name="Frame" />
+    <Border Name="CustomBackgroundLayer" />
+    <Border>
+        <DockPanel Name="PART_RootLayout">
+            <IconPresenter Name="PART_DropdownIndicator" />
+            <LoadingOutlined Name="PART_LoadingIcon" />
+            <IconPresenter Name="PART_ButtonIcon" />
+            <ContentPresenter Name="PART_ContentPresenter" />
+        </DockPanel>
+    </Border>
+</Panel>
+```
 
 ## Composition Model
 
@@ -24,7 +41,7 @@
 
 ```text
 DropdownButton
-  -> DropdownButton (control theme, BrowserButtonThemes.axaml)
+  -> DropdownButton (control theme, DropdownButtonTheme.axaml)
      -> Panel (template-stable)
         -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
         -> Border#ShadowsFrame (template-stable)
@@ -33,6 +50,35 @@ DropdownButton
         -> Border (template-stable)
            -> DockPanel#PART_RootLayout (template-stable)
               -> IconPresenter#PART_DropdownIndicator (template-stable)
+              -> LoadingOutlined#PART_LoadingIcon (template-stable)
+              -> IconPresenter#PART_ButtonIcon (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+  -> DropdownButton (control theme, DropdownButtonBaseTheme.axaml)
+     -> Panel (template-stable)
+        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
+        -> Border#ShadowsFrame (template-stable)
+        -> DashedBorder#Frame (template-stable)
+        -> Border#CustomBackgroundLayer (template-stable)
+        -> Border (template-stable)
+           -> DockPanel#PART_RootLayout (template-stable)
+              -> LoadingOutlined#PART_LoadingIcon (template-stable)
+              -> IconPresenter#PART_ButtonIcon (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+     -> Panel (template-stable)
+        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
+        -> Border#ShadowsFrame (template-stable)
+        -> Border#CustomBackgroundLayer (template-stable)
+        -> DashedBorder#Frame (template-stable)
+           -> DockPanel#PART_RootLayout (template-stable)
+              -> LoadingOutlined#PART_LoadingIcon (template-stable)
+              -> IconPresenter#PART_ButtonIcon (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+     -> Panel (template-stable)
+        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
+        -> Border#ShadowsFrame (template-stable)
+        -> Border#CustomBackgroundLayer (template-stable)
+        -> DashedBorder#Frame (template-stable)
+           -> DockPanel#PART_RootLayout (template-stable)
               -> LoadingOutlined#PART_LoadingIcon (template-stable)
               -> IconPresenter#PART_ButtonIcon (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
@@ -54,17 +100,6 @@ DropdownButton
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `DropdownButton` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `DropdownButton` | control theme | `BrowserButtonThemes.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `BrowserButtonThemes.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `BrowserButtonThemes.axaml` | DropdownButton | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ShadowsFrame` | template node (Border) | `BrowserButtonThemes.axaml` | DropdownButton | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (DashedBorder) | `BrowserButtonThemes.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `CustomBackgroundLayer` | template node (Border) | `BrowserButtonThemes.axaml` | DropdownButton | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_RootLayout` | template node (DockPanel) | `BrowserButtonThemes.axaml` | DropdownButton | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `IsShowOpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_DropdownIndicator` | template node (IconPresenter) | `BrowserButtonThemes.axaml` | DropdownButton | `Foreground`, `IsShowOpenIndicator`, `OpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LoadingIcon` | template node (LoadingOutlined) | `BrowserButtonThemes.axaml` | DropdownButton | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ButtonIcon` | template node (IconPresenter) | `BrowserButtonThemes.axaml` | DropdownButton | `Foreground`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ContentPresenter` | template node (ContentPresenter) | `BrowserButtonThemes.axaml` | DropdownButton | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DropdownButton` | control theme | `DropdownButtonTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `DropdownButtonTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `DropdownButtonTheme.axaml` | DropdownButton | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -73,8 +108,19 @@ DropdownButton
 | `CustomBackgroundLayer` | template node (Border) | `DropdownButtonTheme.axaml` | DropdownButton | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLayout` | template node (DockPanel) | `DropdownButtonTheme.axaml` | DropdownButton | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `IsShowOpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_DropdownIndicator` | template node (IconPresenter) | `DropdownButtonTheme.axaml` | DropdownButton | `Foreground`, `IsShowOpenIndicator`, `OpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ButtonIcon` | template node (IconPresenter) | `DropdownButtonTheme.axaml` | DropdownButton | `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LoadingIcon` | template node (LoadingOutlined) | `DropdownButtonTheme.axaml` | DropdownButton | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ButtonIcon` | template node (IconPresenter) | `DropdownButtonTheme.axaml` | DropdownButton | `Foreground`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `DropdownButtonTheme.axaml` | DropdownButton | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DropdownButton` | control theme | `DropdownButtonBaseTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ShadowsFrame` | template node (Border) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (DashedBorder) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `CustomBackgroundLayer` | template node (Border) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_RootLayout` | template node (DockPanel) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LoadingIcon` | template node (LoadingOutlined) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ButtonIcon` | template node (IconPresenter) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Foreground`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentPresenter` | template node (ContentPresenter) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -90,7 +136,7 @@ DropdownButton
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## State Flow
 
@@ -113,13 +159,12 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-DropdownButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+DropdownButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
-| `ButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `DropdownButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
+| `Browser/DropdownButtonTheme.axaml` | Browser 平台的 DropdownButton 主题叶子，保持相同 public 状态语义。 |
 
 DropdownButton 当前没有专属 Token 文档；主题通过 SharedToken、关联控件 Token 或继承主题资源表达视觉语义。运行时状态不得写入 Token 模型。
 

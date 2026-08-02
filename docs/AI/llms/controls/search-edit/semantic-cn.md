@@ -40,12 +40,11 @@ SearchEdit
   -> ResizeHandle (control theme, ResizeHandleTheme.axaml)
      -> Border#Frame (template-stable)
   -> RevealButton (control theme, RevealButtonTheme.axaml)
-  -> SearchButton (control theme, SearchButtonTheme.axaml)
   -> SearchEditDecoratedBox (control theme, SearchEditDecoratedBoxTheme.axaml)
      -> SearchEditPanel#RootLayout (internal-observable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
            -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
-        -> SearchButton#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (internal-observable)
+        -> Button#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (template-stable)
         -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
            -> DockPanel#ContentLayout (template-stable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
@@ -78,12 +77,11 @@ SearchEdit
 | `ResizeHandle` | control theme | `ResizeHandleTheme.axaml` | SearchEdit | `Background` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (Border) | `ResizeHandleTheme.axaml` | ResizeHandle | `Background` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RevealButton` | control theme | `RevealButtonTheme.axaml` | SearchEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `SearchButton` | control theme | `SearchButtonTheme.axaml` | SearchEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SearchEditDecoratedBox` | control theme | `SearchEditDecoratedBoxTheme.axaml` | SearchEdit | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (SearchEditPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (SearchButton) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `EffectiveStatus`, `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SizeType`, `StyleVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (Button) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SearchButtonTheme`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -110,7 +108,7 @@ SearchEdit
 | Template Part | 类型 | 所属主题 | 职责 |
 | --- | --- | --- | --- |
 | `PART_AddOnDecoratedBox` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 搜索输入壳体、状态、Addon、CompactSpace 和搜索按钮协作入口。 |
-| `PART_RightAddOn` | `SearchButton` | `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮，承载图标、文字、loading、按钮样式和点击事件。 |
+| `PART_RightAddOn` | `Button` | `SearchEditDecoratedBoxTheme.axaml` | public Button 语义部件，承载图标、文字、loading、按钮样式和点击事件。 |
 | `PART_ContentFrame` | `Border` | `SearchEditDecoratedBoxTheme.axaml` | 文本输入框视觉边框和背景。 |
 | `PART_ScrollViewer` | `ScrollViewer` | `SearchEditTheme.axaml` | 文本滚动区域。 |
 | `PART_TextPresenter` | `InputTextPresenter` | `SearchEditTheme.axaml` | 文本显示、光标、选择和密码 reveal。 |
@@ -128,7 +126,7 @@ SearchEdit
 SearchEdit 的文本输入行为继承 LineEdit，搜索按钮行为独立建模：
 
 ```text
-SearchButton.Click
+Button#PART_RightAddOn.Click
   ↓
 SearchEditDecoratedBox.HandleSearchButtonClick
   ↓
@@ -162,20 +160,28 @@ SearchEdit 使用三层主题协作：
 | `SearchEditDecoratedBoxTheme.axaml` | 输入框内容边框、搜索按钮、左右布局、搜索按钮 style 和 z-index 关系。 |
 | `SearchButtonTheme.axaml` | 搜索按钮在不同输入表面中的背景、前景和状态色。 |
 
-SearchEdit 不定义独立组件 Token。主题资源来源：
+SearchEdit 拥有独立 `ControlTokenIdentity`，但不定义 Own Token。它继承 `LineEdit` 的行为并不意味着继承或借用
+LineEdit identity；Control 级配置中的任意已注册 Global Token 都绑定到 SearchEdit 自己的 Effective Global
+Token。合法但没有被当前主题直接或间接消费的 Global Token 可以没有视觉效果。
+
+主题资源边界：
 
 | Token 来源 | 用途 |
 | --- | --- |
-| `LineEditToken` | 输入文本字号。 |
-| `AddOnDecoratedBoxToken` | 输入壳体 focus shadow、active 背景和状态视觉。 |
-| `ButtonToken` | 搜索按钮字号、padding、图标和按钮状态。 |
-| `SharedToken` | 控件高度、字体高度、边框、颜色、间距、motion 和 disabled 语义。 |
+| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，负责输入与搜索按钮组合语义，例如 focus shadow、主色和输入状态背景。 |
+| `AddOnDecoratedBoxTokenResource` | 由 `SearchEditDecoratedBoxTheme` 的 BasedOn 主题显式读取输入壳体 Own/Effective Global Token。 |
+| `ButtonTokenResource` | 由真实 Button 和 `SearchButtonTheme` 显式读取 Button Own/Effective Global Token，负责按钮基础视觉。 |
+| `SharedTokenResource` | 读取真正的 Global Token，只用于不响应 SearchEdit Control 级覆盖的共享值。 |
+
+`SearchButtonTheme` 的 `TargetType` 是 Button，但资产 owner 和组合语义属于 SearchEdit。它可以同时使用
+`SearchEditTokenResource` 与 `ButtonTokenResource`；这是显式跨 Control 资源引用，不是 SearchEdit 借用 Button
+或 LineEdit identity。
 
 搜索按钮必须与输入框视觉上组成单一控件。Custom 高度下，搜索按钮的可视 `Frame` 高度必须跟随 `SearchEditDecoratedBox` 的实际布局高度，避免按钮边框和输入框边框错位。
 
 Token 边界：
 
-- SearchEdit 当前没有专属 `token.md`；LLMS 生成按第 5 节视觉与主题模型、SharedToken、控件家族 Token 或主题资源说明 Token 边界。
+- SearchEdit 当前没有 Own Token，因此没有专属 `token.md`；LLMS 生成按第 5 节说明独立 SearchEdit identity、完整 Effective Global Token、Button Semantic Part 和显式跨 Control 资源边界。
 
 ## Customization Boundaries
 
@@ -184,11 +190,12 @@ Token 边界：
 - 不改变继承自 LineEdit 的 `Text`、选择、光标、清除、reveal、Form 和 CompactSpace 语义。
 - 不删除或重命名 `SearchButtonStyle`、`SearchButtonText`、`IsOperating`、`SearchButtonClick`。
 - `IsOperating=true` 必须阻止重复搜索点击，但不得自动管理异步任务或修改 `Text`。
-- 搜索按钮的 `IsEnabled`、`SizeType`、`Status` 和 `StyleVariant` 必须跟随 SearchEdit 输入壳体。
+- 搜索按钮的 `IsEnabled`、`SizeType` 和 loading 必须跟随 SearchEdit；按钮组合视觉必须响应输入壳体的 `Status` 和 `StyleVariant`。
 - 右侧外部 add-on 位置属于搜索按钮；内部右侧内容必须继续由 `InnerRightContent` 承载。
 - SearchEdit 的按钮边框和输入框边框必须在 Large、Middle、Small 和 Custom 高度下严格对齐。
 - `SizeType=Custom` 必须以 Middle 作为未显式覆盖时的视觉基线。
-- SearchEdit 不新增专属 Token；搜索按钮视觉应继续复用 ButtonToken、AddOnDecoratedBoxToken 和 SharedToken。
+- SearchEdit 保持独立 Control identity；当前不新增 Own Token，也不得借用 LineEdit 或 Button identity。
+- `SearchButtonTheme` 必须继续以 public Button 为 TargetType，并显式区分 SearchEdit 组合语义与 Button 基础视觉。
 - 重新套用模板时必须释放旧搜索按钮 click 订阅。
 
 维护不变量：
@@ -199,7 +206,9 @@ Token 边界：
 - `IsOperating=true` 必须阻止重复搜索事件，并继续驱动按钮 loading。
 - 搜索按钮和内容框的边框必须在同一布局高度下绘制。
 - `SearchEditPanel` 的按钮左边框重叠算法不能破坏单线边框视觉。
-- 搜索按钮必须继承 SearchEdit 的 `SizeType`、`StyleVariant`、`Status` 和 `IsEnabled`。
+- 搜索按钮必须接收 SearchEdit 的 `SizeType`、`IsEnabled` 和 loading；`StyleVariant` 与 effective status 的组合视觉由 SearchEdit owner theme 投射。
+- 搜索按钮必须保持 public Button 类型；不得重新引入借用 LineEdit 或 Button identity 的 internal SearchButton。
+- `SearchButtonTheme` 必须继续作为强类型 Semantic Part Theme，并允许实例级替换。
 - 搜索按钮右侧外部 AddOn 位置不可被用户内容替代。
 - `InnerRightContent`、clear、reveal 和文本 presenter 的绑定仍由 LineEdit 模板路径维护。
 - AutoCompleteSearchEdit 复用 SearchEdit 视觉时不能绕过 SearchEdit 搜索按钮契约。

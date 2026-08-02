@@ -6,7 +6,7 @@
 
 `Calendar` 是按日期组织业务展示内容的桌面日历控件，遵循本专题定义的月面板、年面板、Header、范围限制、禁用规则、周序号和单元格定制语义。它同时保留桌面端可用的焦点与方向键导航。
 
-Calendar 只负责“查看并选择一个日期或月份”的面板体验，不负责日期输入弹层、范围选择、多日期选择、时间编辑或日程排布。日期输入由 DatePicker 等控件承担，范围和日程数据由业务层承担。新 Calendar 的内部 `CalendarView` 与 DatePicker 的旧 CalendarView 子系统完全隔离。
+Calendar 只负责“查看并选择一个日期或月份”的面板体验，不负责日期输入弹层、范围选择、多日期选择、时间编辑或复杂日程排布。日期输入由 DatePicker 等控件承担，范围和日程数据由业务层承担；Calendar 只提供轻量 `RangeBars` 标记能力，用于在日期网格中表达连续日期业务条。新 Calendar 的内部 `CalendarView` 与 DatePicker 的旧 CalendarView 子系统完全隔离。
 
 主要源码入口：
 
@@ -32,7 +32,7 @@ Calendar 的设计语言围绕日期面板的产品语义、可观察状态和�
 | 产品语义 | 控件在界面中承担的稳定职责。 | 以 Month/Year 两种面板展示日期或月份，并提交单一选中值。 |
 | 内容承载 | 业务数据和模板如何进入控件。 | `Value`、`ValidRange`、`DisabledDate`、`CellTemplate`、`FullCellTemplate` 与 `HeaderTemplate`。 |
 | 状态反馈 | API、内部状态与伪类如何形成反馈。 | `today`、`selected`、`outside`、`disabled`、`focused`、`fullscreen`、`mini`、`show-week`。 |
-| 主题语义 | SharedToken、CalendarControlToken、ControlTheme 与模板如何表达视觉。 | 四个 Calendar ControlTheme 消费共享 Token 与七个 Calendar 专属 Token。 |
+| 主题语义 | SharedToken、CalendarControlToken、ControlTheme 与模板如何表达视觉。 | 四个 Calendar ControlTheme 消费共享 Token 与八个 Calendar 专属 Token。 |
 
 设计上的首要不变量是：Cell 定制不能夺走日期值、选中、禁用、焦点和命中测试语义；这些语义由 Cell 容器保留，模板只改变内容呈现方式。
 
@@ -53,8 +53,11 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 | `CellTemplate` | `null` | 替换默认值下方的业务内容区域，但保留默认日期/月值和 Cell 状态。 |
 | `FullCellTemplate` | `null` | 替换 Cell 的完整内部内容；优先于 `CellTemplate`。 |
 | `HeaderTemplate` | `null` | 自定义 Header；为空时使用默认 Year/Month/Mode Header。 |
+| `RangeBars` | empty | 声明连续日期范围条；仅在 Fullscreen Month 日期网格 overlay 中渲染。 |
 
 `ValidRange` 使用 `CalendarDateRange(start, end)`，两端均包含，构造函数把时间规范化到日期并拒绝 `end < start`。`CalendarCellContext` 提供 `Value`、`Today`、`CellType`、`DisplayValue`、`IsToday`、`IsInView`、`IsSelected` 和 `IsDisabled`。`CalendarHeaderContext` 提供当前 `Value`/`Mode` 以及提交值和模式的命令。
+
+`CalendarRangeBar` 提供 `StartDate`、`EndDate`、`Label`、`Background` 和 `Height`。日期端点按 `.Date` 投影，首尾包含；`Background` 支持普通 brush、binding、DynamicResource 和 TokenResource。范围条模型、分段算法和资源生命周期见 [Calendar 范围条设计](range-bar-design.md)。
 
 `Value` 与 `Mode` 的默认 Avalonia binding mode 均为 `TwoWay`，用户通过 Cell 或 Header 提交的新状态可以写回绑定源。
 
@@ -72,7 +75,7 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 ### 3.3 模板、伪类与主题契约
 
-稳定的根模板协作入口为 `PART_CalendarView`、`PART_DefaultHeader` 和 `PART_CustomHeader`；默认 Header 内部使用 `PART_YearSelect`、`PART_MonthSelect`、`PART_ModeSwitch`，View 内部使用 `PART_WeekHeader` 和 `PART_CellHost`，Cell 内部使用 `PART_Item`、`PART_CellInner`、`PART_ItemContent` 和 `PART_Value`。
+稳定的根模板协作入口为 `PART_HeaderPresenter`、`PART_BodyPresenter`、`PART_CalendarView`、`PART_RangeBarPanel`、`PART_DefaultHeader` 和 `PART_CustomHeader`；默认 Header 内部使用 `PART_YearSelect`、`PART_MonthSelect`、`PART_ModeSwitch`，View 内部使用 `PART_WeekHeader` 和 `PART_CellHost`，Cell 内部使用 `PART_Item`、`PART_CellInner`、`PART_ItemContent` 和 `PART_Value`。
 
 根伪类包括 `:fullscreen`、`:mini`、`:month`、`:year`、`:show-week`；Cell 伪类包括 `:date`、`:month`、`:week`、`:today`、`:selected`、`:outside`、`:disabled`、`:focused`。四个内部 ControlTheme 的 key 与伪类是主题兼容契约，变更必须同步源码、Gallery 和文档。
 
@@ -92,7 +95,7 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:33`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:41`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -100,11 +103,42 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:Calendar Value="{Binding SampleDate}"
 ```
 
+### 跨日期事件
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:167`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<atom:Calendar Value="{Binding CrossDateEventsSampleDate}"
+               MinWidth="640"
+               HorizontalAlignment="Stretch">
+    <atom:Calendar.RangeBars>
+        <atom:CalendarRangeBar StartDate="2026-01-08"
+                               EndDate="2026-01-10"
+                               Label="发布窗口"
+                               Background="{atom:SharedTokenResource ColorPrimary}" />
+        <atom:CalendarRangeBar StartDate="2026-01-14"
+                               EndDate="2026-01-14"
+                               Label="设计评审"
+                               Background="{atom:SharedTokenResource ColorSuccess}" />
+        <atom:CalendarRangeBar StartDate="2026-01-21"
+                               EndDate="2026-01-24"
+                               Label="维护窗口"
+                               Background="{atom:SharedTokenResource ColorWarning}" />
+        <atom:CalendarRangeBar StartDate="2026-01-30"
+                               EndDate="2026-01-31"
+                               Label="缺陷修复"
+                               Background="{atom:SharedTokenResource ColorError}" />
+    </atom:Calendar.RangeBars>
+</atom:Calendar>
+```
+
 ### 迷你模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:45`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:198`
 
-Gallery key：`ExamplesContent` / item `1`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <atom:Calendar Value="{Binding SampleDate}" Fullscreen="False" Width="300" />
@@ -112,19 +146,9 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 年模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:55`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:208`
 
-Gallery key：`ExamplesContent` / item `2`
-
-```axaml
-<atom:Calendar Value="{Binding SampleDate}"
-```
-
-### 周序号
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:68`
-
-Gallery key：`ExamplesContent` / item `3`
+Gallery key：`ExamplesContent` / item `4`
 
 ```axaml
 <atom:Calendar Value="{Binding SampleDate}"
@@ -148,25 +172,25 @@ Public API / Header / Cell input
 - 日期禁用由 `ValidRange` 与 `DisabledDate` 的并集决定；月份禁用按“月份首日和末日都在范围外”或业务规则判定，不能只检查当前日。
 - 方向键只移动面板内的 roving focus；应跳过禁用 Cell 和周序号 Cell，无合法目标时保留当前焦点。Enter/Space 才提交选择。
 - `Fullscreen`/Mini 只改变布局密度和 Header 控件尺寸，不改变值、事件顺序、禁用和模板优先级。
+- `RangeBars` 只改变日期网格上方的 overlay 业务标记层，不改变 Cell 外间距、选择状态、禁用状态、鼠标指针、事件顺序或 Automation。
 - AtomUI 语言服务改变会同步更新日期格式、周标题、月份名称、Header 的 Month/Year 文本与年份后缀。
 
 ## 主题与 Design Token
 
-Calendar 使用 `CalendarControlToken`（scope id `CalendarControl`）以及 SharedToken。专属 Token 只表达七个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`MiniContentHeight`、`FullCellMinHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
+Calendar 使用 `CalendarControlToken`（scope id `CalendarControl`）以及 SharedToken。专属 Token 只表达八个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`MiniContentHeight`、`FullCellMinHeight`、`RangeBarHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
 
 | Theme 文件 | 稳定职责 |
 | --- | --- |
-| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择和 CalendarView 接线；Fullscreen 拉伸且无紧凑边框，Mini 使用圆角边框。 |
+| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择、CalendarView 与范围条 overlay 接线；Fullscreen 拉伸且无紧凑边框，Mini 使用圆角边框。 |
 | `CalendarHeaderTheme.axaml` | Year Select、Month Select、Month/Year 模式切换。Mini 时 Header 交互控件应使用 Small 尺寸。 |
 | `CalendarViewTheme.axaml` | WeekHeader、CellHost，以及 Fullscreen/Mini 的布局差异。 |
 | `CalendarViewCellTheme.axaml` | 默认日期值、Cell/FullCell 模板消费、状态 selector 和命中测试视觉。 |
-| `CalendarThemes.axaml` | 四个内部 Theme 的资源聚合。 |
 
-`CellTemplate` 必须保留默认值显示；`FullCellTemplate` 覆盖完整 Cell 内部内容且优先级最高。两者都不能删除禁用、选中、焦点和 outside 的容器状态。
+`CellTemplate` 必须保留默认值显示，并与内置范围条 overlay 共存；`FullCellTemplate` 覆盖完整 Cell 内部内容且优先级最高，但不替换 Calendar body overlay。两者都不能删除禁用、选中、焦点和 outside 的容器状态。
 
 Token 来源：
 
-新 Calendar 的 Token 收敛为七个公开视觉语义。日期值、周标题、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则。
+新 Calendar 的 Token 收敛为八个公开视觉语义。日期值、周标题、范围条间距、范围条圆角、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则，范围条默认高度通过 `RangeBarHeight` 固化 Calendar overlay 的默认条高。
 
 当前 Token scope：
 
@@ -179,6 +203,8 @@ Token 来源：
 - 日期/月/周计算在 model 失效时完成，不在 Measure/Arrange 热路径重复执行。
 - `DisabledDate` 对同一次 model 构建的每个候选值最多调用一次；异常不得被静默吞掉。
 - Container pool 只复用无业务所有权的视觉容器；模板、Context、Focus 和 Automation 必须随 Bind/Unbind 完整更新。
+- RangeBars 集合使用 owner-managed 非 Visual `AvaloniaObject` 范式；`CalendarRangeBar.Background` 的动态资源和 TokenResource 由 generated scoped resource host 承载，Calendar 负责 attach/release。
+- `CalendarRangeBarPanel` 不遍历 Cell visual tree，不在 pointer move 热路径中计算，也不拥有业务数据生命周期。
 - Token 通过 `CalendarControlTokenResource` 和 SharedToken 进入 AXAML；运行时状态由伪类 selector 表达。
 - 不使用运行时反射扫描 API、Token、日期类型或 Gallery 数据；属性静态注册、强类型上下文和生成资源保持 NativeAOT 兼容。
 - LanguageManager、VisualTree、Template part 等外部订阅必须有成对释放路径，避免 detach 后保留 Calendar。
@@ -194,11 +220,13 @@ src/AtomUI.Desktop.Controls/Calendar/
 ├── CalendarEnums.cs
 ├── CalendarEventArgs.cs
 ├── CalendarHeaderContext.cs
+├── CalendarRangeBar.cs
 ├── CalendarToken.cs                 # DatePicker 旧 CalendarView 的遗留 Token，不属于新 Calendar
 ├── Internal/
 │   ├── CalendarHeader.cs
 │   ├── CalendarHeaderOptions.cs
 │   ├── CalendarPseudoClass.cs
+│   ├── CalendarRangeBarPanel.cs
 │   ├── CalendarRelayCommand.cs
 │   ├── CalendarView.cs
 │   ├── CalendarViewAutomationPeer.cs
@@ -215,8 +243,7 @@ src/AtomUI.Desktop.Controls/Calendar/
     ├── CalendarTheme.axaml(.cs)
     ├── CalendarHeaderTheme.axaml(.cs)
     ├── CalendarViewTheme.axaml(.cs)
-    ├── CalendarViewCellTheme.axaml(.cs)
-    └── CalendarThemes.axaml
+    └── CalendarViewCellTheme.axaml(.cs)
 ```
 
 `CalendarToken.cs` 属于 DatePicker 的旧 CalendarView 兼容边界；新 Calendar 的专属 Token 是 `CalendarControlToken.cs`。两者不得在实现或文档中混用。

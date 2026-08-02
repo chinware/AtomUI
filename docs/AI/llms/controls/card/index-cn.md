@@ -252,7 +252,6 @@ Card 的默认视觉由根 Card 主题和多个子控件主题组成。
 | `CardGridItemTheme.axaml` | 栅格项内容承载、padding、阴影和 hover 状态。 |
 | `CardTabsContentTheme.axaml` | 内部 TabControl、ContentPadding 和 header edge padding。 |
 | `CardMetaContentTheme.axaml` | Avatar、标题和描述的元信息布局。 |
-| `CardThemes.axaml` | 汇总 Card 相关主题资源。 |
 
 Token 关系：
 
@@ -268,7 +267,7 @@ CardTheme / CardActionPanelTheme / CardGridItemTheme / CardTabsContentTheme / Ca
 
 Token 来源：
 
-CardToken 是 Card 的组件级 Token scope，描述卡片 Header、Body、Actions、Tabs、Extra、阴影、Grid item 和 action icon 的组件语义值。
+CardToken 是 Card 的控件级 Token scope，描述卡片 Header、Body、Actions、Tabs、Extra、阴影、Grid item 和 action icon 的组件语义值。
 
 CardToken 不承载以下状态：
 
@@ -308,7 +307,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Card/CardGridItem.cs`：Grid item 容器，负责 content、row/column/span 和 hover/size/motion 状态。
 - `src/AtomUI.Desktop.Controls/Card/CardTabsContent.cs`：Card tabs 内容桥接控件，负责把 Items 集合复制到内部 TabControl。
 - `src/AtomUI.Desktop.Controls/Card/CardPseudoClass.cs`：Card 稳定伪类常量。
-- `src/AtomUI.Desktop.Controls/Card/CardToken.cs`：Card 组件 Token。
+- `src/AtomUI.Desktop.Controls/Card/CardToken.cs`：Card 控件 Token。
 - `src/AtomUI.Desktop.Controls/Card/Themes/*.axaml`：根主题、操作区、操作按钮、Meta、Grid、Tabs 等主题资源。
 
 ## 相关文档

@@ -109,14 +109,13 @@ Public API / attached panel properties / pointer drag / collapse button
 
 ## Theme and Token Boundaries
 
-Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、组件 Token 共同构成。
+Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `SplitterTheme.axaml` | 定义 `Splitter` 根模板、外层 Frame 和 `PART_SplitterPanel`。 |
 | `SplitterHandleTheme.axaml` | 定义可见分割线、拖拽命中区和折叠按钮的组合结构。 |
 | `SplitterDragBarTheme.axaml` | 定义拖拽命中区、grip 尺寸、grip 圆角和方向 cursor。 |
-| `SplitterThemes.axaml` | 聚合 Splitter 主题资源，保证包级引入顺序稳定。 |
 
 视觉语义拆分：
 

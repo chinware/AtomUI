@@ -23,7 +23,7 @@ Modal 不承担通知队列、轻量 Tooltip、Popup 菜单或业务级导航服
 
 - 对话表面由标题、内容、Footer 和操作按钮组成，Overlay 与 Window 共享同一个内容模型。
 - modal 通过 mask 或原生 owner 关系阻断底层输入；modeless 保持底层可交互。
-- 打开与关闭 motion 属于 Session 生命周期的一部分。异步打开在入场完成后触发 `Opened`，异步关闭在退出 motion、宿主移除和资源释放完成后结束。
+- Presenter 的真实展示边界属于 Session 生命周期的一部分。Overlay 在入场 motion 完成后触发 `Opened`，Window 在原生 `DialogWindow.Opened` 后触发；关闭任务分别等待 Overlay 退出 motion 或原生 `DialogWindow.Closed`，并在宿主移除和资源释放完成后结束。
 - `MessageBoxStyle` 只表达消息语义和默认图标/按钮策略，不改变 Dialog 生命周期。
 
 ## 3. API 与契约模型
@@ -46,7 +46,7 @@ Modal 不承担通知队列、轻量 Tooltip、Popup 菜单或业务级导航服
 - `ShowDialogModalAsync(...)` 创建 modal Dialog。
 - 两者都在完整 teardown 后返回 `Task<object?>`。
 
-同一个实例在 `Opening`、`Open`、`ClosePending` 或 `Closing` 时再次调用 `OpenAsync` 会抛出 `InvalidOperationException`。声明式 `IsOpen=true` 可以在旧 Session 完整关闭后创建新 Session。
+同一个实例存在任何尚未进入 `Closed` 的 Session 时，再次调用 `OpenAsync` 会抛出 `InvalidOperationException`。声明式 `IsOpen=true` 可以在旧 Session 完整关闭后创建新 Session。
 
 ### 3.2 关闭事件
 
@@ -66,7 +66,7 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
   -> Closed
 ```
 
-`ButtonClicked.Handled=true`、`Closing.Cancel=true` 或 `BeforeCloseAsync` 返回 `false` 会取消本次普通关闭。owner close、placement target detach、外部取消和 presenter 打开失败属于强制 teardown；它们忽略业务 veto 和 confirm loading，但仍执行完整释放。
+`ButtonClicked.Handled=true`、`Closing.Cancel=true` 或 `BeforeCloseAsync` 返回 `false` 会取消本次普通关闭。owner close、placement target detach、外部取消和 presenter 打开失败属于强制 teardown：Session 仍触发一次 `Closing`，但忽略 `Cancel`、跳过 `BeforeCloseAsync`，也不受 confirm loading 阻止，随后执行完整释放。
 
 事件处理器或 presenter 在结果提交后抛出的首个异常，只会在 teardown 完成后传播。
 
@@ -98,7 +98,7 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 - Enter/Escape 根据当前有效按钮序列查找 default/escape 按钮，运行时修改标准按钮或自定义按钮会立即生效。
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
 - 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
-- Overlay 与 Window 都等待 opening/closing motion；`IsMotionEnabled=false` 跳过 motion，但不跳过宿主打开、关闭和释放。
+- Overlay 等待 mask 与 Surface 的 opening/closing motion；`IsMotionEnabled=false` 只跳过这些 motion，不跳过宿主附加、移除和释放。Window 不创建 Surface `MotionActor`，其打开与关闭分别等待原生 `DialogWindow.Opened` 和 `DialogWindow.Closed`。
 - `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。Overlay handle 捕获 pointer，release 或 capture lost 都会完整结束当前 resize，不复用上一次拖拽 origin。
 
 ## 5. 视觉与主题模型
@@ -192,7 +192,7 @@ LLMS 语义区域：
 | `host` | Overlay presenter / native Window | 承载模态、placement、尺寸和宿主生命周期。 | `DialogHostType`, `IsModal`, `PlacementTarget` | SharedToken motion | internal-observable |
 | `surface` | `DialogSurface` | 共享标题、正文、Footer、按钮和 focus scope。 | `Content`, `StandardButtons`, `IsLoading` | `ContentBg`, padding/footer tokens | internal-observable |
 | `content` | Content / `MessageBoxContent` | 呈现任意 Dialog 内容或 MessageBox 语义内容。 | `Content`, `ContentTemplate`, `Style`, `Icon` | typography/color tokens | stable |
-| `motion` | `MotionActor` | 等待 opening/closing motion 并维持 task 边界。 | `IsMotionEnabled` | `MotionDurationMid` | internal-observable |
+| `motion` | Overlay `MotionActor` | 等待 Overlay opening/closing motion；Window 使用原生 Opened/Closed 边界。 | `IsMotionEnabled` | `MotionDurationMid` | internal-observable |
 
 LLMS 导出来源：
 

@@ -65,7 +65,7 @@
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | DataGrid Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、Control Own Token 和模板绑定如何表达视觉。 | DataGrid Token + ControlTheme。 |
 
 ## State Flow
 
@@ -93,11 +93,10 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-DataGrid 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+DataGrid 的视觉模型由控件模板、ControlTheme、SharedToken 和 DataGrid Own Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `AtomUIDataGridThemesProvider.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DataGridCellTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `DataGridColumnGroupHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `DataGridColumnHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
@@ -117,7 +116,7 @@ DataGrid 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `DataGridSortIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DataGridTreeFilterFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-DataGrid 使用 `DataGridToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、motion、visual option 运行时状态。
+DataGrid 拥有独立 Control identity；`DataGridToken` 只表达 DataGrid Own Token 语义，不承载 selection/checked/active、collection/filter、motion 或 visual option 运行时状态。Control 级 Global Token 覆盖与 Own Token 通过 `DataGridTokenResource` 统一读取。
 
 主题维护规则：
 

@@ -241,7 +241,7 @@ LineEdit 家族使用输入壳体和文本 presenter 分层：
 
 Token 来源：
 
-LineEdit 输入家族使用三个组件级 Token scope：
+LineEdit 输入家族使用三个控件级 Token scope：
 
 | Token | Scope | 职责 |
 | --- | --- | --- |

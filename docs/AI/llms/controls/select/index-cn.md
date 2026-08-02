@@ -337,7 +337,7 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 
 Token 来源：
 
-SelectToken 是 Select 的组件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken。
+SelectToken 是 Select 的控件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken。
 
 SelectToken 不承载以下状态：
 
@@ -379,7 +379,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Select/SelectHandle.cs`：右侧展开、loading、清除和 Form feedback 图标。
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
 - `src/AtomUI.Desktop.Controls/Select/DataLoad/*`：异步候选加载接口、结果和事件参数。
-- `src/AtomUI.Desktop.Controls/Select/SelectToken.cs`：Select 组件 Token。
+- `src/AtomUI.Desktop.Controls/Select/SelectToken.cs`：Select 控件 Token。
 - `src/AtomUI.Desktop.Controls/Select/Themes/*.axaml`：Select 根模板、候选列表、结果标签、handle、输入壳体和 token 样式。
 
 ## 相关文档

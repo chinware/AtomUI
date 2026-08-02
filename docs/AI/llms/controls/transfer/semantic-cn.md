@@ -76,14 +76,14 @@ Transfer
 | `TransferItemDecorator` | control theme | `TransferItemDecoratorTheme.axaml` | Transfer | `BodyCornerRadius`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (PixelAlignedBorder) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BodyCornerRadius`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RootLayout` | template node (DockPanel) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BodyCornerRadius`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius`, `FilterPlaceholderText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `HeaderFrame` | template node (PixelAlignedBorder) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BorderThickness`, `CornerRadius`, `IsAllSelected`, `IsItemsSourceEmpty`, `IsMotionEnabled`, `IsOneWay` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `HeaderFrame` | template node (PixelAlignedBorder) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BorderThickness`, `CornerRadius`, `HeaderHeight`, `HeaderPadding`, `IsAllSelected`, `IsItemsSourceEmpty` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderLayout` | template node (DockPanel) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `IsAllSelected`, `IsItemsSourceEmpty`, `IsMotionEnabled`, `IsOneWay`, `IsPaginationEnabled`, `IsShowSelectDropdownMenu` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SelectAllCheckBox` | template node (CheckBox) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `IsAllSelected`, `IsItemsSourceEmpty` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `MenuIndicator` | template node (TransferSelectDropdown) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `IsAllSelected`, `IsItemsSourceEmpty`, `IsMotionEnabled`, `IsOneWay`, `IsPaginationEnabled`, `IsShowSelectDropdownMenu` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SelectedInfo` | template node (ContentPresenter) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `SelectedMessage` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `TitleContentPresenter` | template node (ContentPresenter) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `Title`, `TitleTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `FilterInput` | template node (LineEdit) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `FilterPlaceholderText`, `IsFilterEnabled`, `ViewType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `FooterFrame` | template node (PixelAlignedBorder) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BorderThickness`, `CornerRadius`, `Footer`, `FooterTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `FooterFrame` | template node (PixelAlignedBorder) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BorderThickness`, `CornerRadius`, `Footer`, `FooterTemplate`, `HeaderPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FooterPresenter` | template node (ContentPresenter) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `Footer`, `FooterTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentPresenter` | template node (ContentPresenter) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BodyCornerRadius`, `Content`, `ContentTemplate`, `ListHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `TransferListItem` | item container control theme | `TransferListItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `HorizontalContentAlignment`, `IsCheckable` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
@@ -122,7 +122,7 @@ Transfer
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Transfer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Transfer Token + ControlTheme。 |
 
 ## State Flow
 
@@ -146,7 +146,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -156,13 +156,12 @@ Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `TransferListItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferListViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TransferSelectDropdownTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TransferThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TransferTreeViewItemHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferTreeViewItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferTreeViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TreeTransferTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Transfer 使用 `TransferToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
+Transfer 使用 `TransferToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 

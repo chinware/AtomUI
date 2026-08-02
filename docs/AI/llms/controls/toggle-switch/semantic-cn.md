@@ -110,7 +110,6 @@ ToggleSwitch 使用控件本体绘制轨道，模板负责内容和把手。
 | --- | --- |
 | `ToggleSwitchTheme.axaml` | 主模板、状态 selector、SizeType 分支、轨道背景、WaveSpirit 和 SwitchKnob token 传递。 |
 | `SwitchKnobTheme.axaml` | 把手加载透明度、加载动画周期和把手宽度动效。 |
-| `ToggleSwitchThemes.axaml` | 聚合 ToggleSwitch 与 SwitchKnob 主题。 |
 
 视觉状态主要由主题 selector 表达：
 
@@ -124,7 +123,7 @@ ToggleSwitch 使用控件本体绘制轨道，模板负责内容和把手。
 
 Token 边界：
 
-ToggleSwitchToken 是 ToggleSwitch 的组件级 Token scope，描述轨道尺寸、把手尺寸、内容边距、图标尺寸、开关颜色、禁用透明度、内容字体、把手阴影和加载指示。
+ToggleSwitchToken 是 ToggleSwitch 的控件级 Token scope，描述轨道尺寸、把手尺寸、内容边距、图标尺寸、开关颜色、禁用透明度、内容字体、把手阴影和加载指示。
 
 ToggleSwitchToken 不承载以下状态：
 

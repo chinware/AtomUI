@@ -72,7 +72,7 @@ Tag
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | Tag 使用颜色分类和 `Variant`；CheckableTag 使用 `IsChecked`；Group 使用 `CheckedItem(s)`。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
 
 ## State Flow
 
@@ -112,16 +112,15 @@ Group 的内部 SelectedItem(s) 只保存归一后的 option wrapper，不是 pu
 
 ## Theme and Token Boundaries
 
-Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `TagTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CheckableTagTheme.axaml` | 提供二态标签的内容结构以及 checked、focus、disabled 等状态视觉。 |
 | `CheckableTagGroupTheme.axaml` | 组合内部选择控件、ItemsPresenter 和 WrapPanel。 |
-| `TagThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Tag 使用 `TagToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
+Tag 使用 `TagToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
 
 Tag 的视觉组合由以下矩阵表达：
 

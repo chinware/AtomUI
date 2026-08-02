@@ -242,7 +242,7 @@ TreeSelect 的默认视觉由 TreeSelect 专属主题、Select 家族输入壳�
 
 Token 来源：
 
-TreeSelectToken 是 TreeSelect 的组件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
+TreeSelectToken 是 TreeSelect 的控件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
 
 TreeSelectToken 不承载以下状态：
 
@@ -279,7 +279,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectTreeView.cs`：TreeSelect 候选树，使用 TreeView 样式键并创建专用容器。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeViewSelectTreeViewItem.cs`：候选树节点容器，承接最大选择数状态。
 - `src/AtomUI.Desktop.Controls/TreeSelect/Converters/*`：树节点显示转换辅助。
-- `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectToken.cs`：TreeSelect 组件 Token。
+- `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectToken.cs`：TreeSelect 控件 Token。
 - `src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml`：根模板、输入壳体、右侧内容、结果区域、popup 和 selector。
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
 

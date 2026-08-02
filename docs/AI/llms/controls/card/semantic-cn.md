@@ -177,7 +177,6 @@ Card 的默认视觉由根 Card 主题和多个子控件主题组成。
 | `CardGridItemTheme.axaml` | 栅格项内容承载、padding、阴影和 hover 状态。 |
 | `CardTabsContentTheme.axaml` | 内部 TabControl、ContentPadding 和 header edge padding。 |
 | `CardMetaContentTheme.axaml` | Avatar、标题和描述的元信息布局。 |
-| `CardThemes.axaml` | 汇总 Card 相关主题资源。 |
 
 Token 关系：
 
@@ -193,7 +192,7 @@ CardTheme / CardActionPanelTheme / CardGridItemTheme / CardTabsContentTheme / Ca
 
 Token 边界：
 
-CardToken 是 Card 的组件级 Token scope，描述卡片 Header、Body、Actions、Tabs、Extra、阴影、Grid item 和 action icon 的组件语义值。
+CardToken 是 Card 的控件级 Token scope，描述卡片 Header、Body、Actions、Tabs、Extra、阴影、Grid item 和 action icon 的组件语义值。
 
 CardToken 不承载以下状态：
 

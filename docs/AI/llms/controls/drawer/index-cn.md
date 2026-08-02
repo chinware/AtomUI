@@ -31,7 +31,7 @@ Drawer 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Drawer 是 AtomUI 桌面控件体系中的抽屉控件，用于从窗口边缘滑入承载附加内容或操作面板。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`ContentTemplate`、`ExtraTemplate`、`FooterTemplate`、`Title`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Drawer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Drawer Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -233,15 +233,14 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Drawer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Drawer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `DrawerContainerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DrawerInfoContainerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DrawerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Drawer 使用 `DrawerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
+Drawer 使用 `DrawerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -288,7 +287,6 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerContainerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerInfoContainerTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerThemes.axaml`
 
 职责边界：
 

@@ -269,7 +269,6 @@ Steps 使用统一语义模板，而不是按 Type、Orientation 和 TitlePlacem
 | `StepsTheme.axaml` | 根模板、ItemsPresenter、StepsPanel 和根展示输入映射。 |
 | `StepsItemTheme.axaml` | 统一 item 语义模板、状态颜色、Connector、内容和交互视觉。 |
 | `StepsItemIndicatorTheme.axaml` | 统一 Indicator 模板、Dot、Icon、状态图标、Progress 和 Wave。 |
-| `StepsThemes.axaml` | Steps 主题资源聚合入口。 |
 
 运行时组合：
 
@@ -345,11 +344,10 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Steps/StepsItemIndicator.cs`：Indicator 状态、Wave part、Progress 绘制和渲染失效。
 - `src/AtomUI.Desktop.Controls/Steps/StepsPanel.cs`：item 间水平 flex、Navigation 等宽、Inline 和垂直 stack 布局。
 - `src/AtomUI.Desktop.Controls/Steps/StepsItemLayoutPanel.cs`：Indicator、Header、SubHeader、Connector、Content、NavigationArrow 和 NavigationActiveIndicator 的 item 内布局。
-- `src/AtomUI.Desktop.Controls/Steps/StepsToken.cs`：Steps 组件 Token。
+- `src/AtomUI.Desktop.Controls/Steps/StepsToken.cs`：Steps 控件 Token。
 - `src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`：根模板和 StepsPanel。
 - `src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemTheme.axaml`：统一 item 语义模板和状态样式。
 - `src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemIndicatorTheme.axaml`：统一 Indicator、Dot、Icon、Progress 和 Wave 模板。
-- `src/AtomUI.Desktop.Controls/Steps/Themes/StepsThemes.axaml`：Steps 主题聚合入口。
 
 测试目录：
 

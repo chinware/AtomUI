@@ -31,7 +31,7 @@ TabStrip 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | TabStrip 是 AtomUI 桌面控件体系中的标签条控件，用于展示、选择、关闭和拖动排序页签，不承载内容页。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CloseIcon`、`HeaderEndEdgePadding`、`HeaderEndExtraContent`、`HeaderEndExtraContentTemplate`、`HeaderStartEdgePadding`、`HeaderStartExtraContent`、`HeaderStartExtraContentTemplate`、`Icon`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、reorder、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -175,7 +175,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-TabStrip 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+TabStrip 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 当前控件未抽取到专属 AXAML 主题文件；视觉契约主要来自继承控件、共享主题和资源 key。
 

@@ -36,6 +36,15 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     public RoutingState Router { get; }
     public GalleryNavigationViewModel Navigation { get; }
 
+    public IReadOnlyList<ThemeInfo> AvailableThemes { get; }
+    public string CurrentThemeId { get; }
+    public ThemePreference AppearanceMode { get; }
+    public bool IsLightAppearanceMode { get; }
+    public bool IsDarkAppearanceMode { get; }
+    public bool IsSystemAppearanceMode { get; }
+
+    public ReactiveCommand<string, Unit> SwitchThemeCommand { get; }
+    public ReactiveCommand<ThemePreference, Unit> SetAppearanceModeCommand { get; }
     public ReactiveCommand<bool, Unit> ToggleDarkModeCommand { get; }
     public ReactiveCommand<bool, Unit> ToggleCompactModeCommand { get; }
     public ReactiveCommand<bool, Unit> ToggleMotionCommand { get; }
@@ -50,9 +59,11 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 
 - 持有 ReactiveUI Router。
 - 持有导航 ViewModel。
-- 转发主题、紧凑、动效、语言切换命令。
-- 监听 ThemeManager 语言变化并更新菜单状态。
-- 释放时解绑 ThemeManager 语言事件，并释放 `GalleryNavigationViewModel`。
+- 投影 ThemeManager 已提交的主题目录、当前 Theme Id 和 Light/Dark/Follow System 状态。
+- 转发主题、Appearance、紧凑、动效、Wave Spirit 和语言切换命令；所有主题维度通过一次完整 ThemeRequest 提交。
+- Follow System 模式订阅平台 appearance source，平台变化时只提交完整的新主题状态，不直接修改资源。
+- 监听 `ThemeChanged`、`ThemeCatalogChanged` 和语言变化并更新菜单状态。
+- 释放时解绑 ThemeManager、语言和系统 appearance 订阅，并释放 `GalleryNavigationViewModel`。
 
 `GalleryWorkspaceViewModel` 不能知道具体产品页面类型。产品可以通过继承或组合方式提供自己的导航 ViewModel 类型别名，例如 AtomUI Gallery 的 `WorkspaceWindowViewModel` 继承 `GalleryWorkspaceViewModel`，并把 `CaseNavigation` 暴露为产品侧兼容属性。
 
@@ -140,8 +151,12 @@ Footer
 | 菜单 | 配置开关 | 职责 |
 |---|---|---|
 | Window Options | `IsWindowOptionsMenuEnabled` | 控制 caption button、移动、缩放 |
-| Theme | `IsThemeMenuEnabled` | 暗色、紧凑、动效、WaveSpirit |
+| Theme | `IsThemeMenuEnabled` | 主题目录、Light/Dark/Follow System、紧凑、动效、WaveSpirit |
 | Language | `IsLanguageMenuEnabled` | 切换 AtomUI 语言变体 |
+
+AtomUIGallery Desktop 窗口根据 `AvailableThemes` 动态建立同组 Radio 项，并以 `CurrentThemeId` 设置选中态；菜单不
+写死主题 Id、名称或颜色。主题选择、Appearance 三态和运行时算法组合的完整规则见
+[GalleryBase 主题与本地化设计](theming-localization.md)。
 
 语言菜单第一阶段提供 AtomUI 已支持的语言：
 

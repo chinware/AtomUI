@@ -49,7 +49,7 @@ Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、�
 | 面板尺寸 | `Splitter.Size`、`Splitter.DefaultSize`、`Splitter.MinSize`、`Splitter.MaxSize` | 定义子面板初始尺寸、默认尺寸和尺寸约束。 |
 | 面板交互 | `Splitter.IsResizable` | 控制相邻边界是否允许拖拽调整。 |
 | 事件 | `ResizeStarted`、`ResizeDelta`、`ResizeCompleted` | 把 internal drag 流转换为控件级 resize 事件。 |
-| 主题入口 | `HandleSize`、组件 Token、根模板外观入口 | 区分命中区域、可见分割线和根框架外观。 |
+| 主题入口 | `HandleSize`、控件 Token、根模板外观入口 | 区分命中区域、可见分割线和根框架外观。 |
 
 样式能力边界：
 
@@ -69,7 +69,7 @@ Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、�
 | `PART_CollapsePrevButton` | `IconButton` | internal handle template part | 触发前侧面板折叠或展开。 |
 | `PART_CollapseNextButton` | `IconButton` | internal handle template part | 触发后侧面板折叠或展开。 |
 
-`PART_HandleLine`、`PART_DragBar`、`PART_Grip` 和折叠按钮虽然是稳定 internal theme part，但不应作为用户自定义入口暴露。用户级定制应通过 `Splitter` public API、组件 Token、ControlTheme 和 Gallery 展示的稳定用法进入。
+`PART_HandleLine`、`PART_DragBar`、`PART_Grip` 和折叠按钮虽然是稳定 internal theme part，但不应作为用户自定义入口暴露。用户级定制应通过 `Splitter` public API、控件 Token、ControlTheme 和 Gallery 展示的稳定用法进入。
 
 伪类模型：
 
@@ -199,14 +199,13 @@ Public API / attached panel properties / pointer drag / collapse button
 
 ## 主题与 Design Token
 
-Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、组件 Token 共同构成。
+Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `SplitterTheme.axaml` | 定义 `Splitter` 根模板、外层 Frame 和 `PART_SplitterPanel`。 |
 | `SplitterHandleTheme.axaml` | 定义可见分割线、拖拽命中区和折叠按钮的组合结构。 |
 | `SplitterDragBarTheme.axaml` | 定义拖拽命中区、grip 尺寸、grip 圆角和方向 cursor。 |
-| `SplitterThemes.axaml` | 聚合 Splitter 主题资源，保证包级引入顺序稳定。 |
 
 视觉语义拆分：
 
@@ -267,7 +266,6 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterHandleTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterDragBarTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterThemes.axaml`
 
 Gallery 与文档结构：
 

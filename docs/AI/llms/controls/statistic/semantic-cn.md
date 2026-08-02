@@ -33,7 +33,7 @@
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | loading/async、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Statistic Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Statistic Token + ControlTheme。 |
 
 ## State Flow
 
@@ -56,17 +56,16 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Statistic 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Statistic 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `AbstractStatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `StatisticCountUpTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `StatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `StatisticThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TimerStatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Statistic 使用 `StatisticToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、collection/filter、input/value、motion、visual option 运行时状态。
+Statistic 使用 `StatisticToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 

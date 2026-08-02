@@ -272,7 +272,7 @@ Mentions 的默认视觉由 `MentionsTheme.axaml` 和内部 TextArea 主题协�
 
 Token 来源：
 
-MentionsToken 是 Mentions 的组件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / AddOnDecoratedBox / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
+MentionsToken 是 Mentions 的控件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / AddOnDecoratedBox / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
 
 MentionsToken 不承载以下状态：
 
@@ -314,7 +314,6 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Mentions/MentionPseudoClass.cs`：`:candidateopen` 伪类常量。
 - `src/AtomUI.Desktop.Controls/Mentions/MentionsToken.cs`：候选弹层尺寸 Token。
 - `src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml`：Mentions 模板、popup、loading 和候选列表视觉。
-- `src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsThemes.axaml`：Mentions 主题聚合入口。
 
 ## 相关文档
 

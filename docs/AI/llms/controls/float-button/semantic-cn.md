@@ -10,7 +10,7 @@
 | `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `command` | `真实 FloatButton` | 承载 `Command`、`CommandParameter`、`CanExecute`、点击和禁用语义；host 只做投影。 | `Command`、`CommandParameter`、`Href` | 见视觉与主题模型 | stable |
 | `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、组件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
 ## Abstract AXAML Structure
 
@@ -85,7 +85,7 @@ FloatButton
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | FloatButton Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | FloatButton Token + ControlTheme。 |
 
 ## State Flow
 
@@ -112,7 +112,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -124,9 +124,8 @@ FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `FloatButtonHostTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `FloatButtonItemsControlTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `FloatButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `FloatButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-FloatButton 使用 `FloatButtonToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
+FloatButton 使用 `FloatButtonToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
 
 主题维护规则：
 

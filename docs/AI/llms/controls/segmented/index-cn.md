@@ -225,7 +225,6 @@ Segmented 的视觉由根主题、item 主题、专属 Token 和 SharedToken 共
 | --- | --- |
 | `SegmentedTheme.axaml` | 根模板、轨道 padding/background、选中滑块资源、SizeType/Shape 圆角分支、方向/展开对齐和滑块动画。 |
 | `SegmentedItemTheme.axaml` | item 模板、图标/内容布局、hover/pressed/selected/disabled 状态、SizeType/Shape 分支和图标尺寸。 |
-| `SegmentedThemes.axaml` | 汇总 Segmented 相关主题资源。 |
 
 视觉关系：
 
@@ -245,7 +244,7 @@ track + selected thumb + item states
 
 Token 来源：
 
-SegmentedToken 是 Segmented 的组件级 Token scope，描述分段轨道、选项文本状态、选项背景状态、选中滑块背景和 item 尺寸的主题语义。
+SegmentedToken 是 Segmented 的控件级 Token scope，描述分段轨道、选项文本状态、选项背景状态、选中滑块背景和 item 尺寸的主题语义。
 
 SegmentedToken 不承载以下状态：
 
@@ -290,10 +289,9 @@ AOT 边界：
 
 - `src/AtomUI.Desktop.Controls/Segmented/Segmented.cs`：桌面公开根控件，注册 Token scope，创建 `SegmentedItem` 容器。
 - `src/AtomUI.Desktop.Controls/Segmented/SegmentedItem.cs`：桌面公开 item，注册 Token scope。
-- `src/AtomUI.Desktop.Controls/Segmented/SegmentedToken.cs`：Segmented 组件 Token。
+- `src/AtomUI.Desktop.Controls/Segmented/SegmentedToken.cs`：Segmented 控件 Token。
 - `src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedTheme.axaml`：根模板、轨道、滑块、方向/expanding、SizeType/Shape 和 motion 样式。
 - `src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedItemTheme.axaml`：item 模板、状态样式、SizeType/Shape 和图标样式。
-- `src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedThemes.axaml`：主题资源聚合入口。
 
 Gallery 和测试：
 

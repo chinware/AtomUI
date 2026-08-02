@@ -32,7 +32,7 @@ Rate 的设计语言围绕控件职责、可观察状态和主题契约组织，
 | 产品语义 | 控件在界面中承担的稳定职责。 | Rate 是 AtomUI 桌面控件体系中的评分控件，用于以图标序列表达评分、半选和只读展示。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `DefaultValue`、`Value`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Rate Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Rate Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -154,16 +154,15 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Rate 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Rate 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RateItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `RateItemsControlTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `RateTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `RateThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Rate 使用 `RateToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、input/value、motion、visual option 运行时状态。
+Rate 使用 `RateToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -210,7 +209,6 @@ Rate Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - `src/AtomUI.Desktop.Controls/Rate/Themes/RateItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Rate/Themes/RateItemsControlTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Rate/Themes/RateTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Rate/Themes/RateThemes.axaml`
 
 职责边界：
 

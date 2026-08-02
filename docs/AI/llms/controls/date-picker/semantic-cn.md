@@ -109,7 +109,7 @@ DatePicker
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | DatePicker Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | DatePicker Token + ControlTheme。 |
 
 ## State Flow
 
@@ -144,7 +144,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -157,13 +157,12 @@ DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `RangeCalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `DatePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DatePickerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `DualMonthRangeDatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `RangeDatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `RangeDatePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimedRangeDatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 
-DatePicker 使用 `DatePickerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、visual option 运行时状态。
+DatePicker 使用 `DatePickerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、visual option 运行时状态。
 
 主题维护规则：
 

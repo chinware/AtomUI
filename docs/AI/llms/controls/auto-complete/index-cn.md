@@ -31,7 +31,7 @@ AutoComplete 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | AutoComplete 是 AtomUI 桌面控件体系中的自动完成输入控件，用于把文本输入、候选弹层、过滤和提交事件组合在一起。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ClearIcon`、`ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`DefaultValue`、`FilterValue`、`FilterValueSelector` 等 14 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、open/close、loading/async、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | AutoComplete Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | AutoComplete Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -186,7 +186,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -194,9 +194,8 @@ AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `AutoCompleteSearchEditTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AutoCompleteTextAreaTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AutoCompleteTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `AutoCompleteThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-AutoComplete 使用 `AutoCompleteToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、loading/async、collection/filter、input/value、motion、visual option 运行时状态。
+AutoComplete 使用 `AutoCompleteToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、loading/async、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -257,7 +256,6 @@ AutoComplete Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - `src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteSearchEditTheme.axaml`
 - `src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTextAreaTheme.axaml`
 - `src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTheme.axaml`
-- `src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteThemes.axaml`
 
 职责边界：
 

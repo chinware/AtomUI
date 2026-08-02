@@ -31,7 +31,7 @@ InfoFlyout 的设计语言围绕控件职责、可观察状态和主题契约组
 | 产品语义 | 控件在界面中承担的稳定职责。 | InfoFlyout 是 AtomUI 桌面控件体系中的信息浮出层家族，用于从目标元素弹出普通内容、菜单内容或树形内容。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`ItemContainerTheme`、`ItemTemplate`、`ItemsSource`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | InfoFlyout Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | InfoFlyout Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -153,17 +153,15 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-InfoFlyout 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+InfoFlyout 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserFlyoutThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `FlyoutHostTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `FlyoutThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `MenuFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `TreeViewFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-InfoFlyout 使用 `FlyoutHostToken`、`TreeFlyoutToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
+InfoFlyout 使用 `FlyoutHostToken`、`TreeFlyoutToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -209,9 +207,7 @@ InfoFlyout Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - `src/AtomUI.Desktop.Controls/Flyouts/MenuFlyout.cs`
 - `src/AtomUI.Desktop.Controls/Flyouts/MenuFlyoutPresenter.cs`
 - `src/AtomUI.Desktop.Controls/Flyouts/PopupFlyoutBaseReflectionExtensions.cs`
-- `src/AtomUI.Desktop.Controls/Flyouts/Themes/BrowserFlyoutThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/FlyoutHostTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Flyouts/Themes/FlyoutThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.cs`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/TreeViewFlyoutPresenterTheme.axaml`

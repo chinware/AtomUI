@@ -31,7 +31,7 @@ SplitButton 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | SplitButton 是 AtomUI 桌面控件体系中的拆分按钮，用于把主命令和次级下拉命令组合成一个紧凑动作入口。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`Icon`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -97,11 +97,10 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-SplitButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+SplitButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `ButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `SplitButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 
 SplitButton 当前没有专属 Token 文档；主题通过 SharedToken、关联控件 Token 或继承主题资源表达视觉语义。运行时状态不得写入 Token 模型。
@@ -139,7 +138,6 @@ Token 来源：
 
 - `src/AtomUI.Desktop.Controls/Buttons/SplitButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonThemes.axaml`
 
 职责边界：
 

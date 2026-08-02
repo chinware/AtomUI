@@ -255,7 +255,7 @@ ProgressBarToken 提供默认进度色、剩余轨道色、圆形文字和图标
 
 Token 来源：
 
-ProgressBarToken 是 ProgressBar 家族的组件级 Token scope。它定义默认进度色、剩余轨道色、圆形文本和图标最小尺寸、线形状态图标尺寸、线形额外信息间距和线形内部 padding。
+ProgressBarToken 是 ProgressBar 家族的控件级 Token scope。它定义默认进度色、剩余轨道色、圆形文本和图标最小尺寸、线形状态图标尺寸、线形额外信息间距和线形内部 padding。
 
 ProgressBarToken 不承载以下状态：
 
@@ -310,7 +310,7 @@ AOT 边界：
 - `StepsProgressBar.cs`：注册 token scope 的步骤线形控件入口。
 - `CircleProgress.cs`：注册 token scope 的圆形控件入口。
 - `DashboardProgress.cs`：注册 token scope 的仪表盘控件入口。
-- `ProgressBarToken.cs`：组件级 Token 默认值计算。
+- `ProgressBarToken.cs`：控件级 Token 默认值计算。
 - `Themes/*.axaml`：共享主题、线形主题、圆形主题和具体控件主题。
 
 Gallery 示例位于 `controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/`。

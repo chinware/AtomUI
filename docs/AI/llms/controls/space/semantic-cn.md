@@ -31,7 +31,7 @@
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Space Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Space Token + ControlTheme。 |
 
 ## State Flow
 
@@ -54,15 +54,14 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Space 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Space 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `CompactSpaceAddOnTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CompactSpaceTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `SpaceThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Space 使用 `SpaceToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
+Space 使用 `SpaceToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
 
 主题维护规则：
 

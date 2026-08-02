@@ -272,7 +272,6 @@ Masonry 不使用反射读取 item template 内部元素，不创建不可见测
 - `src/AtomUI.Desktop.Controls/Masonry/MasonryItemSpan.cs`：子项 span 枚举。
 - `src/AtomUI.Desktop.Controls/Masonry/MasonryLayoutChangedEventArgs.cs`：布局结果事件参数。
 - `src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`：默认 ControlTheme，装配 `ItemsPresenter` 和 `MasonryPanel`。
-- `src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryThemes.axaml`：主题资源聚合。
 
 ## 相关文档
 

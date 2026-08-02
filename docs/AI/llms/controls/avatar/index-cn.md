@@ -32,7 +32,7 @@ Avatar 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Avatar 是 AtomUI 桌面控件体系中的头像控件，用于展示用户、组织或对象的图像、文字和图标标识。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `BitmapSrc`、`FoldAvatarFlyoutTriggerType`、`FoldInfoAvatarBackground`、`FoldInfoAvatarForeground`、`Icon`、`Src`、`Text`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Avatar Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Avatar Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -119,15 +119,14 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Avatar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Avatar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `AvatarGroupTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AvatarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `AvatarThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Avatar 使用 `AvatarToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、input/value、motion、visual option 运行时状态。
+Avatar 使用 `AvatarToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -172,7 +171,6 @@ Avatar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Avatar/AvatarToken.cs`
 - `src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarGroupTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarThemes.axaml`
 
 职责边界：
 

@@ -32,7 +32,7 @@ FloatButton 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | FloatButton 是 AtomUI 桌面控件体系中的悬浮动作按钮，用于页面或窗口边缘提供全局快捷操作、回到顶部、帮助和工具入口。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CloseIcon`、`Description`、`DescriptionTemplate`、`Icon`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | FloatButton Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | FloatButton Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -170,7 +170,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -182,9 +182,8 @@ FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `FloatButtonHostTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `FloatButtonItemsControlTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `FloatButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `FloatButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-FloatButton 使用 `FloatButtonToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
+FloatButton 使用 `FloatButtonToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -240,7 +239,6 @@ FloatButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonHostTheme.axaml`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonItemsControlTheme.axaml`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonThemes.axaml`
 - `src/AtomUI.Controls/FloatButton/AbstractBackTopFloatButton.cs`
 - `src/AtomUI.Controls/FloatButton/AbstractBackTopFloatButtonHost.cs`
 - `src/AtomUI.Controls/FloatButton/AbstractFloatButton.cs`

@@ -9,7 +9,7 @@
 | `root` | `Separator` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、组件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
 ## Abstract AXAML Structure
 
@@ -50,7 +50,7 @@ Separator
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Separator Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Separator Token + ControlTheme。 |
 
 ## State Flow
 
@@ -74,7 +74,7 @@ Public API / inherited command / item source / user input
 ### 4.1 可自定义间距尺寸
 
 `AbstractSeparator` 实现 `ICustomizableSizeTypeAware`，`SizeType` 使用 `CustomizableSizeType`，默认值为
-`Middle`。水平 Separator 的预设尺寸控制上下外间距：`Small`、`Middle`、`Large` 分别映射到组件 Token 的
+`Middle`。水平 Separator 的预设尺寸控制上下外间距：`Small`、`Middle`、`Large` 分别映射到控件 Token 的
 小、中、大 block margin；该规则对带标题和无标题的水平 Separator 一致，垂直 Separator 不应用这组间距。
 
 `SizeType=Custom` 表示调用方接管间距。Theme 保留 Middle block margin 作为未指定 `Margin` 时的基础值，但不为
@@ -83,13 +83,13 @@ Separator 应使用 `Custom`，并由组合控件自身的 Theme 明确设置间
 
 ## Theme and Token Boundaries
 
-Separator 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Separator 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `SeparatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Separator 使用 `SeparatorToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
+Separator 使用 `SeparatorToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
 
 主题维护规则：
 

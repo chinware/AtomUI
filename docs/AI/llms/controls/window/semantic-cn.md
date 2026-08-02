@@ -174,7 +174,7 @@ Window
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Window Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Window Token + ControlTheme。 |
 
 ## State Flow
 
@@ -198,7 +198,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -206,9 +206,8 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
 | `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
 | `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
-| `WindowThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
+Window 使用 `WindowToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
 
 主题维护规则：
 

@@ -31,7 +31,7 @@ Window 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Window 是 AtomUI 桌面控件体系中的桌面窗口控件，用于提供 AtomUI 自绘窗口、平台窗口能力和主题集成入口。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer` 等 11 项。`TitleBarFrameLayer` 表示标题栏背景或装饰层，不作为按钮、菜单、搜索框等交互控件入口。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Window Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Window Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -113,7 +113,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -121,9 +121,8 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
 | `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
 | `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
-| `WindowThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
+Window 使用 `WindowToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
 
 主题维护规则：
 
@@ -221,7 +220,6 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowResizerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.cs`
-- `src/AtomUI.Desktop.Controls/Window/Themes/WindowThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Utils/FullscreenPopoverLayer.cs`
 - `src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Window/Utils/WindowResizer.cs`

@@ -60,7 +60,7 @@ Session 状态为 `Created -> Opening -> Open -> ClosePending -> Closing -> Clos
 
 - 普通关闭只在 `Open` 接受，并在执行 `Closing`/`BeforeCloseAsync` 前进入 `ClosePending`。
 - veto 或关闭策略异常返回 `Open`；声明式 `IsOpen=false` 被 veto 时恢复为 `true`。
-- 强制关闭取消 pending policy 与 opening motion，从可关闭状态直接进入 `Closing`。
+- 强制关闭取消 pending policy 与 opening motion，从可关闭状态直接进入 `Closing`；它仍触发 `Closing`，但忽略 `Cancel`、跳过 `BeforeCloseAsync`，并忽略 `IsConfirmLoading`。
 - 一旦结果提交，后续事件或 presenter 异常不允许把 Session 恢复为 Open。
 - completion 只有在 presenter close/dispose、焦点恢复和 Session `Closed` 后才完成、取消或 fault。
 
@@ -113,13 +113,13 @@ Window 和 Overlay 各自拥有一个 Surface 实例，不共享同一个视觉�
 | Overlay mask/header/resize handlers 与 pointer capture | `OverlayDialogPresenter` / `OverlayDialogResizer` | release、capture lost、re-template 或 `DisposeAsync` |
 | Window events and property bindings | `WindowDialogPresenter` | `DisposeAsync` |
 | Dialog-to-Window resource bridge | `WindowDialogPresenter` | 从 Window resources 移除并在 `DisposeAsync` 退订 |
-| Surface composition child links | concrete presenter | closing motion 后、移除 layer/window 前同步断开 |
+| Surface composition child links | concrete presenter | Overlay 在退出 motion 后、移除 layer 前断开；Window 在原生关闭后于 dispose 中断开 |
 | inheritance/resource parent | presenter | 从 layer/window 移除后清空 |
 | MessageBox default button content cache | `MessageBox` 当前 Surface | `ReleaseSurfaceButtons` |
 
 `DialogSurface.OnApplyTemplate` 先释放旧 Header/ButtonBox/Resizer 订阅，再接入新 parts。`DialogButtonBox` 在 template 为空或重套用时立即清空旧 panel 和视觉父级。
 
-Presenter 在永久 teardown 时先断开 `DialogSurface` 子树的 composition children，再释放 Surface 并移除 Overlay layer 或关闭 Window。该顺序防止调用方保留 Content/CustomButton 等子控件时，其旧 `CompositionVisual.Parent` 链反向保留 Presenter 和 Surface。Overlay presenter 移除后，空的 `DialogOverlayLayer` 也从 `ScopeAwareOverlayLayer` 删除并解绑 size 事件。Window presenter 即使原生关闭抛出，也会继续清空 bindings、资源 bridge、Surface 和 `Window.Content`，再传播首个异常。
+Overlay presenter 在退出 motion 后先断开 `DialogSurface` 子树的 composition children，再释放 Surface 并移除 Overlay layer；空的 `DialogOverlayLayer` 随后从实际 host 删除并解绑 size 事件。Window presenter 先等待原生 Window 关闭，再在 dispose 中断开 composition children、释放 Surface、bindings、资源 bridge 和 `Window.Content`。两条路径都防止调用方保留 Content/CustomButton 等子控件时，其旧 `CompositionVisual.Parent` 链反向保留 Presenter 和 Surface；原生关闭或后续释放抛出时仍继续 teardown，最后传播首个异常。
 
 ## 7. 交互与事件处理
 

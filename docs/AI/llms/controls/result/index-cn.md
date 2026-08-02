@@ -32,7 +32,7 @@ Result 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Result 是 AtomUI 桌面控件体系中的结果页控件，用于展示成功、失败、警告和信息结果状态。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ExtraTemplate`、`Header`、`HeaderFontSize`、`HeaderTemplate`、`Icon`、`SubHeader`、`SubHeaderFontSize`、`SubHeaderTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Result Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Result Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -159,13 +159,13 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Result 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Result 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ResultTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Result 使用 `ResultToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
+Result 使用 `ResultToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
 
 主题维护规则：
 

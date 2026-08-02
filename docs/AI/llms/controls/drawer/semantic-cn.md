@@ -42,7 +42,7 @@ Drawer
            -> ContentPresenter#InfoContainer (internal-observable)
            -> Separator (template-stable)
            -> ContentPresenter#InfoFooter (internal-observable)
-  -> Drawer (control theme, DrawerThemes.axaml)
+  -> Drawer (control theme, DrawerTheme.axaml)
 ```
 
 ### 协作节点
@@ -66,7 +66,7 @@ Drawer
 | `ExtraContentPresenter` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Extra`, `ExtraTemplate`, `HasExtra` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InfoContainer` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InfoFooter` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Footer`, `FooterTemplate`, `HasFooter` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Drawer` | control theme | `DrawerThemes.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Drawer` | control theme | `DrawerTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 
 ## Template Parts
 
@@ -80,7 +80,7 @@ Drawer
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Drawer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Drawer Token + ControlTheme。 |
 
 ## State Flow
 
@@ -105,15 +105,14 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Drawer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Drawer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `DrawerContainerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DrawerInfoContainerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DrawerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Drawer 使用 `DrawerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
+Drawer 使用 `DrawerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
 
 主题维护规则：
 

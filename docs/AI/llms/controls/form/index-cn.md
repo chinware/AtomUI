@@ -411,7 +411,7 @@ Form 视觉由 Form 根模板、FormItem 模板、FormValidateFeedback 模板和
 
 Token 来源：
 
-FormToken 是 Form 的组件级 Token scope，描述标签视觉、必填标记、冒号间距和表单项布局间距。输入控件自身高度、边框、状态色、图标尺寸、字体基础值和通用 spacing 来自 SharedToken 或对应输入控件 Token。
+FormToken 是 Form 的控件级 Token scope，描述标签视觉、必填标记、冒号间距和表单项布局间距。输入控件自身高度、边框、状态色、图标尺寸、字体基础值和通用 spacing 来自 SharedToken 或对应输入控件 Token。
 
 FormToken 不承载以下状态：
 
@@ -456,7 +456,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Form/FormItemDecorator.cs`：组合输入控件的表单能力转发。
 - `src/AtomUI.Desktop.Controls/Form/FormSizeTypeBindingHelper.cs`：`CustomizableSizeType` 到新旧尺寸接口的转发规则。
 - `src/AtomUI.Desktop.Controls/Form/SubmitButton.cs`、`ResetButton.cs`：表单操作按钮和路由事件。
-- `src/AtomUI.Desktop.Controls/Form/FormToken.cs`：Form 组件 Token。
+- `src/AtomUI.Desktop.Controls/Form/FormToken.cs`：Form 控件 Token。
 - `src/AtomUI.Desktop.Controls/Form/Themes/*.axaml`：Form、FormItem、Decorator、Feedback 和操作按钮主题。
 
 ## 相关文档

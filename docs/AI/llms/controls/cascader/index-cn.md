@@ -281,7 +281,15 @@ input display + Form value
 
 - `FilterValue` 非空且控件 loaded 时，CascaderView 收集所有叶子路径并按 `Filter` 过滤。
 - 过滤结果显示完整路径文本，选中过滤结果后回写目标 option。
+- 过滤模式下，`Up` / `Down` 在可用结果间循环移动内部候选高亮，不修改 `SelectedOption`；`Enter` 提交当前候选，尚无候选时提交第一个可用结果，没有可用结果时保持选择和 popup 状态不变。路径中任一祖先 disabled 时，该过滤结果也不可作为候选或提交。
 - 清空过滤值或关闭 popup 后，过滤列表、过滤计数和缓存路径会被清理。
+
+树形键盘导航：
+
+- popup 打开且未过滤时，`Up` / `Down` 在当前已展开列的可见 enabled item 间循环移动内部候选；候选高亮与真实选择相互独立。
+- `Right` 从当前候选或第一个可见 enabled item 开始，展开可展开节点并把候选移到下一列的第一个 enabled child。
+- `Left` 优先把子级候选移回父级；候选已位于展开的根级非叶节点时折叠该节点。
+- `Enter` 提交 enabled、非 loading 的叶子候选；`IsAllowSelectParent=true` 时也可提交父节点，否则沿用 `Right` 的展开并进入子级行为。
 
 Form：
 

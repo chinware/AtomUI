@@ -149,6 +149,8 @@ container clear / detach -> dispose attachment and subscriptions
 
 `CascaderView.OnApplyTemplate()` 获取 `PART_ItemsPanel`、`PART_RootLevelList` 和 `PART_FilterList`。Root level list 设置 `Level=1` 和 `OwnerView=this`，filter list 必须解除旧 selection 订阅再订阅新实例。
 
+`CascaderView` 分别持有树形 `_keyboardCandidateItem` 与 `CascaderViewFilterList` 的过滤候选。过滤结果重建或清空、filter list 重套模板、以及 pointer 在过滤列表内移动时清除过滤候选；单选 popup 关闭时 `ResetInteractionState()` 清除两类候选并折叠展开路径。虚拟化树容器回收时必须清除 `IsCandidateSelectedProperty`，不能让候选视觉进入下一个 option 的复用容器。
+
 `CascaderViewLevelList.ContainerForItemPreparedOverride()` 对每个 `ICascaderOption` 调用 `CascaderViewItem.PrepareCascaderOptionData()`。如果 option 是 `BindableCascaderOption`，容器创建同一生命周期的 `CompositeDisposable`，用于保存 resource host attachment、属性订阅和 children 集合订阅。
 
 `ClearContainerForItemOverride()` 保存虚拟化上下文后，必须先释放绑定型选项订阅，再清空容器属性。这个顺序防止容器清理动作把空值反写到用户数据。
@@ -169,6 +171,9 @@ Pointer 路径：
 键盘路径：
 
 - popup 打开时，按键先交给 `_cascaderView.HandleKeyDown()`。
+- 过滤模式的 `Up` / `Down` 由 `CascaderViewFilterList` 在 displayed result order 中循环查找 enabled item，并只更新 `CandidateSelectedItem` / `CandidateSelectedIndex` 和容器候选视觉；`Enter` 通过 `GetCandidateOrFirstEnabledItem()` 取得当前候选或第一个 enabled result，再进入与 pointer selection 相同的 `TrySelectFilterResult()` 提交流程。
+- 树模式的 `Up` / `Down` 从当前所有已展开列收集 realized、enabled 的 `CascaderViewItem` 并循环移动 `_keyboardCandidateItem`。`Right` 展开当前或第一个候选并在布局完成后进入第一个 enabled child；`Left` 从子级返回 parent，位于展开根节点时折叠；`Enter` 提交 enabled、非 loading 的 leaf 或允许选择的 parent，否则执行同一展开/进入子级流程。
+- 两类候选都只写 `IsCandidateSelected` 高亮，不写 `SelectedIndex`、`SelectedOption` 或 `SelectedOptions`；真实选择只在 Enter 或 pointer 提交路径发生。
 - `Escape` 关闭 popup。
 - popup 关闭时，`Down` 打开 popup，`F4` 切换 popup。
 

@@ -31,7 +31,7 @@ TimePicker 的设计语言围绕控件职责、可观察状态和主题契约组
 | 产品语义 | 控件在界面中承担的稳定职责。 | TimePicker 是 AtomUI 桌面控件体系中的时间选择控件，用于在输入壳体和时间面板之间选择时分秒。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `IsShowHeader`、`ItemFormat`、`ItemHeight`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | TimePicker Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | TimePicker Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -198,18 +198,17 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-TimePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+TimePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RangeTimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `TimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TimePickerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TimeViewCellTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TimeViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-TimePicker 使用 `TimePickerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active 运行时状态。
+TimePicker 使用 `TimePickerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active 运行时状态。
 
 主题维护规则：
 
@@ -253,7 +252,6 @@ TimePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/RangeTimePickerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimePickerPresenterTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimePickerTheme.axaml`
-- `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimePickerThemes.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimeViewCellTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimeViewTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimePicker.cs`

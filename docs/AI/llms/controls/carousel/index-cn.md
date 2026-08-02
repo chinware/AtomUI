@@ -31,7 +31,7 @@ Carousel 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Carousel 是 AtomUI 桌面控件体系中的轮播控件，用于在多个页面或媒体项之间自动或手动切换。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | 继承 ItemsControl 的 `Items` / `ItemsSource` 与 `CarouselPage` 容器。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、loading/async、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Carousel Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Carousel Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -174,7 +174,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Carousel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Carousel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -183,9 +183,8 @@ Carousel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `CarouselPageTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CarouselPaginationTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CarouselTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `CarouselThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Carousel 使用 `CarouselToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、collection/filter、motion、visual option 运行时状态。
+Carousel 使用 `CarouselToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -234,7 +233,6 @@ Carousel Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselPageTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselPaginationTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Carousel/VirtualizingCarouselPanel.cs`
 
 职责边界：

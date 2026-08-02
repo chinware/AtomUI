@@ -186,7 +186,7 @@ SharedToken 提供全局边框、字体、动效时长、图标大小和基础�
 
 Token 边界：
 
-ExpanderToken 是 Expander 的组件级 Token scope，描述 Header/Content 的默认 padding、背景、整体圆角和展开图标默认外边距。
+ExpanderToken 是 Expander 的控件级 Token scope，描述 Header/Content 的默认 padding、背景、整体圆角和展开图标默认外边距。
 
 ExpanderToken 不承载以下状态：
 

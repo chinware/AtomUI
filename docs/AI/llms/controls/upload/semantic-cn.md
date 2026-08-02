@@ -97,7 +97,7 @@ Upload
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | `UploadFileItem.Status`、`Progress`、`ErrorMessage`、`Result` 是任务状态来源；Form 错误走 `DataValidationErrors`。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Upload Token + ControlTheme；滚动边界在 `UploadList` 内部，并使用 AtomUI 自动隐藏滚动条。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Upload Token + ControlTheme；滚动边界在 `UploadList` 内部，并使用 AtomUI 自动隐藏滚动条。 |
 
 ## State Flow
 
@@ -124,7 +124,7 @@ Public API / UploadTrigger / UploadDropZone
 
 ## Theme and Token Boundaries
 
-Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Token 共同构成。
+Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -145,7 +145,6 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Tok
 | `UploadPictureShapePreviewContentTheme.axaml` | Shape preview 内容。 |
 | `UploadPictureShapeUploadingContentTheme.axaml` | Shape uploading 内容。 |
 | `UploadPictureShapeDefaultContentTheme.axaml` | Shape fallback 内容。 |
-| `UploadThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 主题维护规则：
 

@@ -68,24 +68,51 @@ GalleryBase 依赖 AtomUI Desktop 控件作为 Shell 默认 UI，因此产品应
 GalleryBase 本身不注册产品主题定义。具体产品通过 `IThemeDefinitionResolver` 显式追加自己的 XML 资源；例如
 AtomUIGallery 在 `UseGalleryControls()` 中注册四个产品主题，而单独使用 `UseGalleryBase()` 的应用不会看到这些主题。
 
+AtomUIGallery 当前产品主题目录由 XML definition 唯一描述，显示顺序与 Resolver source 顺序一致：
+
+| Theme Id | 显示名 | `ColorPrimary` / `ColorLink` | 来源 |
+|---|---|---|---|
+| `DaybreakBlue` | Daybreak Blue | `#1677FF` | AtomUI Core 默认 definition |
+| `PolarGreen` | Polar Green | `#52C41A` | AtomUIGallery asset |
+| `SunsetOrange` | Sunset Orange | `#FA8C16` | AtomUIGallery asset |
+| `GoldenPurple` | Golden Purple | `#722ED1` | AtomUIGallery asset |
+| `Magenta` | Magenta | `#EB2F96` | AtomUIGallery asset |
+
+四个产品 asset 由 `UseGalleryControls()` 通过 `AvaloniaAssetThemeDefinitionResolver` 显式列出 `avares://` URI，
+不扫描程序集或资源目录。Desktop Gallery 另外使用 `WithApplicationId("AtomUIGallery")` 和
+`UseUserThemeDirectory()` 追加用户目录；Browser Gallery 只使用随应用发布的显式 Resolver。Gallery 不提供独立的
+reload command 或菜单，宿主需要刷新用户主题时直接调用 `IThemeManager.ReloadThemesAsync()`。Catalog 的冲突、
+首次用户来源降级、整批原子刷新和删除当前用户主题后的默认回退语义以
+[Core 主题系统设计](../core/theme-system.md)为准。
+
 ## Shell 主题选择状态
 
 `GalleryWorkspaceViewModel` 把 ThemeManager 已提交的 Catalog 和主题状态投影成 Shell 可消费的只读状态：
 
 - `AvailableThemes`：`IThemeManager.AvailableThemes` 的防御性快照；`ThemeCatalogChanged` 后整体替换。
 - `CurrentThemeId`：只由已提交的 `ThemeChanged`/Catalog 回退状态更新，不把菜单点击当成提交结果。
-- `SwitchThemeCommand`：接收 Theme Id，并沿统一请求路径组合 Dark、Compact、Motion 和 Wave Spirit 设置。
+- `SwitchThemeCommand`：接收 Theme Id，并沿统一请求路径组合基础算法、Appearance、Compact、Motion 和 Wave Spirit 设置。
+- `AppearanceMode` 与 `IsLightAppearanceMode` / `IsDarkAppearanceMode` / `IsSystemAppearanceMode`：投影 Light、Dark、Follow System 三态；`SetAppearanceModeCommand` 负责显式切换，`ToggleDarkModeCommand` 保留 bool 到 Light/Dark 的便捷映射。
 
-主题色切换只改变 `ThemeRequest.ThemeId`。AtomUIGallery 的内置产品主题在对应 Theme Definition XML 中显式声明
+相对于当前已提交设置，主题色选择只替换下一次请求的 `ThemeRequest.ThemeId`；请求仍重建并携带完整的运行时
+`ThemeConfig`。AtomUIGallery 的内置产品主题在对应 Theme Definition XML 中显式声明
 相同颜色的 `ColorPrimary` 与 `ColorLink`，使品牌控件和 Link 同步换色；`ColorInfo` 等语义色保持独立。颜色 Seed
-不写入运行时 `ThemeConfig`。Dark、Compact、Motion 和 Wave Spirit 与主题 Id 正交组合；失败或被更新请求替代时，
-Shell 会重新投影已提交的 `CurrentThemeId`，避免 Radio 菜单停留在未提交选项。
+不写入运行时 `ThemeConfig`。每次请求都从最近一次已提交 `ThemeState.Algorithms` 提取除 `Compact`、`Dark` 之外的
+基础链；基础链为空时回退 `Default`，随后按顺序追加可选 `Compact` 和 `Dark`。因此 Dark + Compact 的当前标准链是
+`Default -> Compact -> Dark`，不是用 `[Dark]` 或 `[Compact, Dark]` 丢弃 definition 的基础算法。Motion 和 Wave
+Spirit 作为完整请求中的 Token override 一并提交；关闭 Motion 会同时关闭 Wave Spirit，启用 Wave Spirit 会同时
+启用 Motion。
 
-ViewModel 对 `ThemeChanged`、`ThemeCatalogChanged` 和语言事件都保存对称的 handler，并在 `Dispose()` 中解除订阅。
+Follow System 通过 `IGallerySystemAppearanceSource` 更新 Dark 状态，并以 `ThemeTransitionReason.FollowSystem` 提交同一
+完整请求。主题 Id、Appearance、Compact、Motion 和 Wave Spirit 保持正交；失败或被更新请求替代时，Shell 会重新
+投影已提交状态，避免 Radio 菜单停留在未提交选项。
+
+ViewModel 对 `ThemeChanged`、`ThemeCatalogChanged` 和语言事件都保存对称的 handler，并在 `Dispose()` 中解除这些
+handler 及当前 Follow System appearance 订阅。
 产品窗口可以基于 `AvailableThemes` 动态创建同组 Radio 菜单，但不应复制主题名称/Id，也不应自行解析 XML。
 AtomUIGallery 将这些 Radio 项放在本地化的 Theme Settings 子菜单中；主题声明 `AccentColor` 时，菜单项在文字右侧
-显示 `12 × 12`、`2px` 圆角的实心正方形色块，未声明时不创建占位色块。Dark、Compact、Motion 和 Wave Spirit
-仍是外层 Theme 菜单中的正交开关。
+显示 `12 × 12`、`2px` 圆角的实心正方形色块，未声明时不创建占位色块。Light、Dark、Follow System 位于
+Appearance 子菜单，Compact、Motion 和 Wave Spirit 保留为外层 Theme 菜单中的正交开关。
 
 ## 主题资产与生成注册
 

@@ -30,7 +30,7 @@
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## State Flow
 
@@ -53,7 +53,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-FlexPanel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+FlexPanel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 当前控件未抽取到专属 AXAML 主题文件；视觉契约主要来自继承控件、共享主题和资源 key。
 

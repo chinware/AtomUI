@@ -31,7 +31,7 @@ TabControl 的设计语言围绕控件职责、可观察状态和主题契约组
 | 产品语义 | 控件在界面中承担的稳定职责。 | TabControl 是 AtomUI 桌面控件体系中的标签页内容控件，用于在多个内容页面之间切换、关闭、拖动排序和溢出导航。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CloseIcon`、`ContentPadding`、`ContentTemplate`、`HeaderEndEdgePadding`、`HeaderEndExtraContent`、`HeaderEndExtraContentTemplate`、`HeaderStartEdgePadding`、`HeaderStartExtraContent` 等 15 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、reorder、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | TabControl Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | TabControl Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -190,7 +190,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -201,7 +201,6 @@ TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `CardTabControlTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CardTabItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TabControlTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TabControlThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TabItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `BaseTabStripItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `BaseTabStripTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -210,7 +209,7 @@ TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `TabStripItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TabStripTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-TabControl 使用 `TabControlToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
+TabControl 使用 `TabControlToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
 
 主题维护规则：
 

@@ -32,7 +32,7 @@ Tag 的设计语言围绕控件职责、可观察状态和主题契约组织，�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Tag 表达展示语义，CheckableTag 表达二态选择，CheckableTagGroup 表达一组选项的单选或多选。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | Tag 使用 `Text`/`Icon`；CheckableTag 使用 `Content`/`Icon`；Group 使用 `Options` 和 `ItemTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | Tag 使用颜色分类和 `Variant`；CheckableTag 使用 `IsChecked`；Group 使用 `CheckedItem(s)`。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -188,16 +188,15 @@ Group 的内部 SelectedItem(s) 只保存归一后的 option wrapper，不是 pu
 
 ## 主题与 Design Token
 
-Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `TagTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CheckableTagTheme.axaml` | 提供二态标签的内容结构以及 checked、focus、disabled 等状态视觉。 |
 | `CheckableTagGroupTheme.axaml` | 组合内部选择控件、ItemsPresenter 和 WrapPanel。 |
-| `TagThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Tag 使用 `TagToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
+Tag 使用 `TagToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
 
 Tag 的视觉组合由以下矩阵表达：
 
@@ -255,7 +254,6 @@ Tag Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆�
 - `src/AtomUI.Desktop.Controls/Tag/TagToken.cs`
 - `src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.cs`
-- `src/AtomUI.Desktop.Controls/Tag/Themes/TagThemes.axaml`
 
 职责边界：
 

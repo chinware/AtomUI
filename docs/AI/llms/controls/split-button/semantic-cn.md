@@ -9,7 +9,7 @@
 | `root` | `SplitButton` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、组件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
 ## Abstract AXAML Structure
 
@@ -60,7 +60,7 @@ SplitButton
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## State Flow
 
@@ -83,11 +83,10 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-SplitButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+SplitButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `ButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `SplitButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 
 SplitButton 当前没有专属 Token 文档；主题通过 SharedToken、关联控件 Token 或继承主题资源表达视觉语义。运行时状态不得写入 Token 模型。

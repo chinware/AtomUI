@@ -31,7 +31,7 @@ ColorPicker 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | ColorPicker 是 AtomUI 桌面控件体系中的颜色选择控件，用于选择纯色、透明度、预设色和渐变色。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ColorValue`、`ColorValueBrush`、`DefaultValue`、`EmptyColorText`、`GradientValue`、`IsTextVisible`、`MaxValue`、`MinValue` 等 10 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ColorPicker Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、Control Own Token 和模板绑定如何表达视觉。 | ColorPicker Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -258,11 +258,10 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和 ColorPicker Own Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `AtomUIColorPickerThemesProvider.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AbstractColorPickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ColorBlockTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ColorPickerPaletteGroupTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -281,7 +280,7 @@ ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `GradientColorPickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `PaletteColorItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 
-ColorPicker 使用 `ColorPickerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
+ColorPicker 拥有独立 Control identity；`ColorPickerToken` 只表达 ColorPicker Own Token 语义，不承载 open/close、collection/filter、input/value、motion 或 visual option 运行时状态。Control 级 Global Token 覆盖与 Own Token 通过 `ColorPickerTokenResource` 统一读取。
 
 主题维护规则：
 
@@ -318,12 +317,13 @@ ColorPicker Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls.ColorPicker`：20 个文件，代表文件 `AbstractColorPicker.cs`、`AtomUIColorPickerThemesProvider.axaml`、`AtomUIColorPickerThemesProvider.cs`、`ColorBlock.cs`、`ColorChangedEventArgs.cs` 等。
+- `src/AtomUI.Desktop.Controls.ColorPicker`：代表文件包括 `AbstractColorPicker.cs`、`AtomUIColorPickerThemesProvider.cs`、`ThemeManagerBuilderExtensions.cs`、`ColorBlock.cs`、`ColorChangedEventArgs.cs` 等。
 - `src/AtomUI.Desktop.Controls.ColorPicker/ColorSlider`：10 个文件，代表文件 `AbstractColorPickerSliderTrack.cs`、`AbstractColorSlider.cs`、`ColorPickerSliderTrack.cs`、`ColorSlider.cs`、`ColorSliderPseudoClass.cs` 等。
 - `src/AtomUI.Desktop.Controls.ColorPicker/ColorView`：6 个文件，代表文件 `AbstractColorPickerView.cs`、`ColorPickerInput.cs`、`ColorPickerView.cs`、`ColorSpectrum.cs`、`ColorSpectrumPseudoClass.cs` 等。
 - `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator`：2 个文件，代表文件 `LanguageProviderPool.g.cs`、`LanguageResourceConst.g.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ResourceHost.ScopedResourceHostGenerator`：1 个文件，代表文件 `GenerateScopedResourceHostAttribute.g.cs`。
-- `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：2 个文件，代表文件 `ControlTokenTypePool.g.cs`、`TokenResourceConst.g.cs`。
+- `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：生成 `GeneratedControlPackageRegistration.g.cs`、`GeneratedThemeSchema.g.cs` 和 `TokenResourceConst.g.cs`。
+- `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator`：生成独立主题叶子的 `GeneratedControlThemeAssetManifest.g.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/Properties`：1 个文件，代表文件 `AssemblyInfo.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/Themes`：21 个文件，代表文件 `AbstractColorPickerTheme.axaml`、`AbstractColorPickerTheme.cs`、`ColorBlockTheme.axaml`、`ColorPickerPaletteGroupTheme.axaml`、`ColorPickerTheme.axaml` 等。

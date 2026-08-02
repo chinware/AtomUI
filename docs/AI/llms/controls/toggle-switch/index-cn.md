@@ -179,7 +179,6 @@ ToggleSwitch 使用控件本体绘制轨道，模板负责内容和把手。
 | --- | --- |
 | `ToggleSwitchTheme.axaml` | 主模板、状态 selector、SizeType 分支、轨道背景、WaveSpirit 和 SwitchKnob token 传递。 |
 | `SwitchKnobTheme.axaml` | 把手加载透明度、加载动画周期和把手宽度动效。 |
-| `ToggleSwitchThemes.axaml` | 聚合 ToggleSwitch 与 SwitchKnob 主题。 |
 
 视觉状态主要由主题 selector 表达：
 
@@ -193,7 +192,7 @@ ToggleSwitch 使用控件本体绘制轨道，模板负责内容和把手。
 
 Token 来源：
 
-ToggleSwitchToken 是 ToggleSwitch 的组件级 Token scope，描述轨道尺寸、把手尺寸、内容边距、图标尺寸、开关颜色、禁用透明度、内容字体、把手阴影和加载指示。
+ToggleSwitchToken 是 ToggleSwitch 的控件级 Token scope，描述轨道尺寸、把手尺寸、内容边距、图标尺寸、开关颜色、禁用透明度、内容字体、把手阴影和加载指示。
 
 ToggleSwitchToken 不承载以下状态：
 
@@ -228,10 +227,9 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Switch/ToggleSwitch.cs`：public 桌面控件，注册 `ToggleSwitchToken` resource scope。
 - `src/AtomUI.Controls/Switch/AbstractToggleSwitch.cs`：公共 API、测量、布局、内容绑定、loading、hit test、Form 和渲染主逻辑。
 - `src/AtomUI.Controls/Switch/SwitchKnob.cs`：把手绘制、加载指示绘制、把手宽度动画和加载动画生命周期。
-- `src/AtomUI.Desktop.Controls/Switch/ToggleSwitchToken.cs`：ToggleSwitch 组件级 Token。
+- `src/AtomUI.Desktop.Controls/Switch/ToggleSwitchToken.cs`：ToggleSwitch 控件级 Token。
 - `src/AtomUI.Desktop.Controls/Switch/Themes/ToggleSwitchTheme.axaml`：主模板、状态 selector、SizeType 分支和 Token 引用。
 - `src/AtomUI.Desktop.Controls/Switch/Themes/SwitchKnobTheme.axaml`：把手主题、加载动画周期和动效。
-- `src/AtomUI.Desktop.Controls/Switch/Themes/ToggleSwitchThemes.axaml`：主题聚合入口。
 
 ## 相关文档
 

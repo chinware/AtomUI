@@ -31,7 +31,7 @@ Transfer 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Transfer 是 AtomUI 桌面控件体系中的穿梭框控件，用于在源列表和目标列表之间移动、搜索和选择数据项。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`ContentTemplate`、`FilterPlaceholderText`、`FilterValueSelector`、`FooterTemplate`、`ItemTemplate`、`SelectionsIcon`、`SelectionsIconTemplate` 等 22 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Transfer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Transfer Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -178,7 +178,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -188,13 +188,12 @@ Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `TransferListItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferListViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TransferSelectDropdownTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TransferThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TransferTreeViewItemHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferTreeViewItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferTreeViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TreeTransferTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Transfer 使用 `TransferToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
+Transfer 使用 `TransferToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 

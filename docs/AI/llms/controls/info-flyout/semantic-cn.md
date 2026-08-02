@@ -65,7 +65,7 @@ InfoFlyout
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | InfoFlyout Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | InfoFlyout Token + ControlTheme。 |
 
 ## State Flow
 
@@ -88,17 +88,15 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-InfoFlyout 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+InfoFlyout 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserFlyoutThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `FlyoutHostTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `FlyoutThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `MenuFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `TreeViewFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-InfoFlyout 使用 `FlyoutHostToken`、`TreeFlyoutToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
+InfoFlyout 使用 `FlyoutHostToken`、`TreeFlyoutToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 

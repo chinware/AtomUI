@@ -31,7 +31,7 @@ Menu 的设计语言围绕控件职责、可观察状态和主题契约组织，
 | 产品语义 | 控件在界面中承担的稳定职责。 | Menu 是 AtomUI 桌面控件体系中的菜单控件家族，用于组织命令列表、上下文操作、MenuFlyout 和数据驱动菜单项。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Items`、`MenuItem`、`MenuItemData` 和 `MenuSeparatorData`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Menu Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Menu Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -198,20 +198,18 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserMenuThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `ContextMenuTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `MenuItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `MenuSeparatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `MenuTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `MenuThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TopLevelMenuItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml` | 定义 `MenuFlyout` 菜单项 presenter 的弹层内容模板和滚动承载结构。 |
 
-Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
+Menu 使用 `MenuToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -270,13 +268,11 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - `src/AtomUI.Desktop.Controls/Menu/MenuSeparator.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuSeparatorData.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuToken.cs`
-- `src/AtomUI.Desktop.Controls/Menu/Themes/BrowserMenuThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/ContextMenuTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuItemTheme.cs`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuSeparatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Menu/Themes/MenuThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/TopLevelMenuItemTheme.axaml`
 
 职责边界：

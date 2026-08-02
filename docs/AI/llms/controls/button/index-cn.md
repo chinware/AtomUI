@@ -268,7 +268,6 @@ ButtonToken 是 Button 的组件级设计变量层。它把全局设计体系中
 ButtonToken 服务以下主题和控件：
 
 - `ButtonTheme.axaml`
-- `BrowserButtonThemes.axaml`
 - `DropdownButtonTheme.axaml`
 - `SplitButtonTheme.axaml`
 - `HyperLinkButtonTheme.axaml`
@@ -289,9 +288,10 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/Buttons/Button.cs`：Button public API、Avalonia 属性注册、effective state、伪类同步、CompactSpace / Form / Wave 接口实现。
-- `src/AtomUI.Desktop.Controls/Buttons/ButtonToken.cs`：Button 组件 Token 定义与派生。
+- `src/AtomUI.Desktop.Controls/Buttons/ButtonToken.cs`：Button 控件 Token 定义与派生。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`：桌面 Button 模板、状态 selector 和主题变量映射。
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/BrowserButtonThemes.axaml`：Browser 风格 Button 主题。
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/ButtonTheme.axaml`：Browser Button 模板投影，与桌面主题共享同一 public 状态语义。
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/IconButtonTheme.axaml`：Browser IconButton 默认主题叶子。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.cs`：主题资源注册辅助。
 - `src/AtomUI.Controls/Buttons/ButtonPseudoClass.cs`：共享 Button 伪类定义。
 - `src/AtomUI.Controls/Buttons/Converters/ButtonIconVisibleConverter.cs`：icon 可见性转换辅助。

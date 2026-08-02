@@ -145,7 +145,7 @@ Slider 的默认视觉由三层主题组成：
 
 Token 边界：
 
-SliderToken 是 Slider 的组件级 Token scope，定义轨道尺寸、rail 尺寸、thumb 尺寸、mark 尺寸、track / rail / mark / thumb 颜色、outline 和 orientation padding。
+SliderToken 是 Slider 的控件级 Token scope，定义轨道尺寸、rail 尺寸、thumb 尺寸、mark 尺寸、track / rail / mark / thumb 颜色、outline 和 orientation padding。
 
 SliderToken 不承载：
 

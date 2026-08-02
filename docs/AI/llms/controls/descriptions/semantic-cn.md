@@ -155,7 +155,6 @@ Descriptions 的默认视觉由根主题、默认项主题和边框 cell 主题�
 | `DescriptionDefaultItemTheme.axaml` | 普通项 horizontal/vertical/vertical bordered 三种模板和冒号、label、content 视觉。 |
 | `DescriptionBorderedItemLabelTheme.axaml` | 水平边框模式 label cell 视觉。 |
 | `DescriptionBorderedItemContentTheme.axaml` | 水平边框模式 content cell 视觉。 |
-| `DescriptionsThemes.axaml` | 汇总 Descriptions 相关主题资源。 |
 
 Token 关系：
 
@@ -171,7 +170,7 @@ DescriptionsTheme / DescriptionDefaultItemTheme / bordered cell themes
 
 Token 边界：
 
-DescriptionsToken 是 Descriptions 的组件级 Token scope，描述描述列表的 label 背景、文本颜色、标题颜色、Header 间距、item padding、冒号间距、内容颜色和 Extra 颜色。
+DescriptionsToken 是 Descriptions 的控件级 Token scope，描述描述列表的 label 背景、文本颜色、标题颜色、Header 间距、item padding、冒号间距、内容颜色和 Extra 颜色。
 
 DescriptionsToken 不承载以下状态：
 

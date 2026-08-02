@@ -198,7 +198,7 @@ Form 视觉由 Form 根模板、FormItem 模板、FormValidateFeedback 模板和
 
 Token 边界：
 
-FormToken 是 Form 的组件级 Token scope，描述标签视觉、必填标记、冒号间距和表单项布局间距。输入控件自身高度、边框、状态色、图标尺寸、字体基础值和通用 spacing 来自 SharedToken 或对应输入控件 Token。
+FormToken 是 Form 的控件级 Token scope，描述标签视觉、必填标记、冒号间距和表单项布局间距。输入控件自身高度、边框、状态色、图标尺寸、字体基础值和通用 spacing 来自 SharedToken 或对应输入控件 Token。
 
 FormToken 不承载以下状态：
 

@@ -31,7 +31,7 @@ DropdownButton 的设计语言围绕控件职责、可观察状态和主题契�
 | 产品语义 | 控件在界面中承担的稳定职责。 | DropdownButton 是 AtomUI 桌面控件体系中的下拉按钮，用于从一个动作按钮展开次级命令或菜单内容。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | 继承 Button 的 `Content`、`Icon`、`Command` 等动作入口。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -100,13 +100,12 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-DropdownButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+DropdownButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
-| `ButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `DropdownButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
+| `Browser/DropdownButtonTheme.axaml` | Browser 平台的 DropdownButton 主题叶子，保持相同 public 状态语义。 |
 
 DropdownButton 当前没有专属 Token 文档；主题通过 SharedToken、关联控件 Token 或继承主题资源表达视觉语义。运行时状态不得写入 Token 模型。
 
@@ -143,8 +142,7 @@ Token 来源：
 
 - `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/BrowserButtonThemes.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonThemes.axaml`
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`
 
 职责边界：
 

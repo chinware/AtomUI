@@ -274,7 +274,6 @@ ButtonToken 是 Button 的组件级设计变量层。它把全局设计体系中
 ButtonToken 服务以下主题和控件：
 
 - `ButtonTheme.axaml`
-- `BrowserButtonThemes.axaml`
 - `DropdownButtonTheme.axaml`
 - `SplitButtonTheme.axaml`
 - `HyperLinkButtonTheme.axaml`
@@ -295,9 +294,10 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/Buttons/Button.cs`：Button public API、Avalonia 属性注册、effective state、伪类同步、CompactSpace / Form / Wave 接口实现。
-- `src/AtomUI.Desktop.Controls/Buttons/ButtonToken.cs`：Button 组件 Token 定义与派生。
+- `src/AtomUI.Desktop.Controls/Buttons/ButtonToken.cs`：Button 控件 Token 定义与派生。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`：桌面 Button 模板、状态 selector 和主题变量映射。
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/BrowserButtonThemes.axaml`：Browser 风格 Button 主题。
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/ButtonTheme.axaml`：Browser Button 模板投影，与桌面主题共享同一 public 状态语义。
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/IconButtonTheme.axaml`：Browser IconButton 默认主题叶子。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.cs`：主题资源注册辅助。
 - `src/AtomUI.Controls/Buttons/ButtonPseudoClass.cs`：共享 Button 伪类定义。
 - `src/AtomUI.Controls/Buttons/Converters/ButtonIconVisibleConverter.cs`：icon 可见性转换辅助。
@@ -347,7 +347,7 @@ FloatButton 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | FloatButton 是 AtomUI 桌面控件体系中的悬浮动作按钮，用于页面或窗口边缘提供全局快捷操作、回到顶部、帮助和工具入口。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CloseIcon`、`Description`、`DescriptionTemplate`、`Icon`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | FloatButton Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | FloatButton Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -485,7 +485,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -497,9 +497,8 @@ FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `FloatButtonHostTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `FloatButtonItemsControlTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `FloatButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `FloatButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-FloatButton 使用 `FloatButtonToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
+FloatButton 使用 `FloatButtonToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -555,7 +554,6 @@ FloatButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonHostTheme.axaml`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonItemsControlTheme.axaml`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonThemes.axaml`
 - `src/AtomUI.Controls/FloatButton/AbstractBackTopFloatButton.cs`
 - `src/AtomUI.Controls/FloatButton/AbstractBackTopFloatButtonHost.cs`
 - `src/AtomUI.Controls/FloatButton/AbstractFloatButton.cs`
@@ -613,7 +611,7 @@ Icon 的设计语言围绕控件职责、可观察状态和主题契约组织，
 | 产品语义 | 控件在界面中承担的稳定职责。 | Icon 是 AtomUI 桌面控件体系中的图标渲染控件，用于在按钮、菜单、表格和独立图标场景中稳定呈现矢量图标。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Icon`、`IconBrush`、`IconTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | 基础交互和主题状态。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Icon Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Icon Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -670,16 +668,15 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Icon 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Icon 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `IconPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `IconTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `IconThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `PathIconTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Icon 使用 `IconToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 基础交互和主题状态 运行时状态。
+Icon 使用 `IconToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 基础交互和主题状态 运行时状态。
 
 主题维护规则：
 
@@ -723,7 +720,6 @@ Icon Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - `src/AtomUI.Controls/Icon/IconToken.cs`
 - `src/AtomUI.Controls/Icon/Themes/IconPresenterTheme.axaml`
 - `src/AtomUI.Controls/Icon/Themes/IconTheme.axaml`
-- `src/AtomUI.Controls/Icon/Themes/IconThemes.axaml`
 - `src/AtomUI.Controls/Icon/Themes/PathIconTheme.axaml`
 
 职责边界：
@@ -777,7 +773,7 @@ Separator 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Separator 是 AtomUI 桌面控件体系中的分割线控件，用于在列表、菜单、工具栏和内容区之间表达轻量分隔。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Title`、`TitleColor`、`TitlePosition`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Separator Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Separator Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -918,7 +914,7 @@ Public API / inherited command / item source / user input
 ### 4.1 可自定义间距尺寸
 
 `AbstractSeparator` 实现 `ICustomizableSizeTypeAware`，`SizeType` 使用 `CustomizableSizeType`，默认值为
-`Middle`。水平 Separator 的预设尺寸控制上下外间距：`Small`、`Middle`、`Large` 分别映射到组件 Token 的
+`Middle`。水平 Separator 的预设尺寸控制上下外间距：`Small`、`Middle`、`Large` 分别映射到控件 Token 的
 小、中、大 block margin；该规则对带标题和无标题的水平 Separator 一致，垂直 Separator 不应用这组间距。
 
 `SizeType=Custom` 表示调用方接管间距。Theme 保留 Middle block margin 作为未指定 `Margin` 时的基础值，但不为
@@ -927,13 +923,13 @@ Separator 应使用 `Custom`，并由组合控件自身的 Theme 明确设置间
 
 ## 主题与 Design Token
 
-Separator 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Separator 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `SeparatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Separator 使用 `SeparatorToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
+Separator 使用 `SeparatorToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
 
 主题维护规则：
 
@@ -1027,7 +1023,7 @@ SplitButton 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | SplitButton 是 AtomUI 桌面控件体系中的拆分按钮，用于把主命令和次级下拉命令组合成一个紧凑动作入口。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`Icon`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -1093,11 +1089,10 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-SplitButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+SplitButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `ButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `SplitButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 
 SplitButton 当前没有专属 Token 文档；主题通过 SharedToken、关联控件 Token 或继承主题资源表达视觉语义。运行时状态不得写入 Token 模型。
@@ -1135,7 +1130,6 @@ Token 来源：
 
 - `src/AtomUI.Desktop.Controls/Buttons/SplitButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonThemes.axaml`
 
 职责边界：
 
@@ -1186,7 +1180,7 @@ FlexPanel 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | FlexPanel 是 AtomUI 桌面控件体系中的弹性布局面板，用于按主轴、换行、对齐和 flex 参数排列子元素。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `AlignContent`、`AlignItems`、`JustifyContent`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -1390,7 +1384,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-FlexPanel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+FlexPanel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 当前控件未抽取到专属 AXAML 主题文件；视觉契约主要来自继承控件、共享主题和资源 key。
 
@@ -1487,7 +1481,7 @@ Grid 的设计语言围绕控件职责、可观察状态和主题契约组织，
 | 产品语义 | 控件在界面中承担的稳定职责。 | Grid 是 AtomUI 桌面控件体系中的响应式栅格控件，用 Row、Col 和断点信息组织十二栅格布局。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Row` / `Col` 子元素、栅格断点信息和布局属性。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | 基础交互和主题状态。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -1771,7 +1765,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Grid 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Grid 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 当前控件未抽取到专属 AXAML 主题文件；视觉契约主要来自继承控件、共享主题和资源 key。
 
@@ -2110,7 +2104,6 @@ Masonry 不使用反射读取 item template 内部元素，不创建不可见测
 - `src/AtomUI.Desktop.Controls/Masonry/MasonryItemSpan.cs`：子项 span 枚举。
 - `src/AtomUI.Desktop.Controls/Masonry/MasonryLayoutChangedEventArgs.cs`：布局结果事件参数。
 - `src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`：默认 ControlTheme，装配 `ItemsPresenter` 和 `MasonryPanel`。
-- `src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryThemes.axaml`：主题资源聚合。
 
 ## 相关文档
 
@@ -2154,7 +2147,7 @@ Space 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Space 是 AtomUI 桌面控件体系中的间距布局控件，用于在一组子元素之间提供一致的水平、垂直或紧凑间距。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CompactSpaceItemPosition`、`Content`、`ContentTemplate`、`ItemHeight`、`ItemSpacing`、`ItemWidth`、`ItemsAlignment`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Space Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Space Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -2348,15 +2341,14 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Space 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Space 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `CompactSpaceAddOnTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CompactSpaceTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `SpaceThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Space 使用 `SpaceToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
+Space 使用 `SpaceToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
 
 主题维护规则：
 
@@ -2404,7 +2396,6 @@ Space Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Space/SpaceToken.cs`
 - `src/AtomUI.Desktop.Controls/Space/Themes/CompactSpaceAddOnTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Space/Themes/CompactSpaceTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Space/Themes/SpaceThemes.axaml`
 
 职责边界：
 
@@ -2474,7 +2465,7 @@ Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、�
 | 面板尺寸 | `Splitter.Size`、`Splitter.DefaultSize`、`Splitter.MinSize`、`Splitter.MaxSize` | 定义子面板初始尺寸、默认尺寸和尺寸约束。 |
 | 面板交互 | `Splitter.IsResizable` | 控制相邻边界是否允许拖拽调整。 |
 | 事件 | `ResizeStarted`、`ResizeDelta`、`ResizeCompleted` | 把 internal drag 流转换为控件级 resize 事件。 |
-| 主题入口 | `HandleSize`、组件 Token、根模板外观入口 | 区分命中区域、可见分割线和根框架外观。 |
+| 主题入口 | `HandleSize`、控件 Token、根模板外观入口 | 区分命中区域、可见分割线和根框架外观。 |
 
 样式能力边界：
 
@@ -2494,7 +2485,7 @@ Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、�
 | `PART_CollapsePrevButton` | `IconButton` | internal handle template part | 触发前侧面板折叠或展开。 |
 | `PART_CollapseNextButton` | `IconButton` | internal handle template part | 触发后侧面板折叠或展开。 |
 
-`PART_HandleLine`、`PART_DragBar`、`PART_Grip` 和折叠按钮虽然是稳定 internal theme part，但不应作为用户自定义入口暴露。用户级定制应通过 `Splitter` public API、组件 Token、ControlTheme 和 Gallery 展示的稳定用法进入。
+`PART_HandleLine`、`PART_DragBar`、`PART_Grip` 和折叠按钮虽然是稳定 internal theme part，但不应作为用户自定义入口暴露。用户级定制应通过 `Splitter` public API、控件 Token、ControlTheme 和 Gallery 展示的稳定用法进入。
 
 伪类模型：
 
@@ -2624,14 +2615,13 @@ Public API / attached panel properties / pointer drag / collapse button
 
 ## 主题与 Design Token
 
-Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、组件 Token 共同构成。
+Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `SplitterTheme.axaml` | 定义 `Splitter` 根模板、外层 Frame 和 `PART_SplitterPanel`。 |
 | `SplitterHandleTheme.axaml` | 定义可见分割线、拖拽命中区和折叠按钮的组合结构。 |
 | `SplitterDragBarTheme.axaml` | 定义拖拽命中区、grip 尺寸、grip 圆角和方向 cursor。 |
-| `SplitterThemes.axaml` | 聚合 Splitter 主题资源，保证包级引入顺序稳定。 |
 
 视觉语义拆分：
 
@@ -2692,7 +2682,6 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterHandleTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterDragBarTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Splitter/Themes/SplitterThemes.axaml`
 
 Gallery 与文档结构：
 
@@ -2753,7 +2742,7 @@ Breadcrumb 的设计语言围绕控件职责、可观察状态和主题契约组
 | 产品语义 | 控件在界面中承担的稳定职责。 | Breadcrumb 是 AtomUI 桌面控件体系中的面包屑导航控件，用于展示当前位置路径并提供上级跳转入口。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Icon`、`SeparatorTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Breadcrumb Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Breadcrumb Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -2879,15 +2868,14 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Breadcrumb 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Breadcrumb 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `BreadcrumbItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `BreadcrumbTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `BreadcrumbThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Breadcrumb 使用 `BreadcrumbToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 motion 运行时状态。
+Breadcrumb 使用 `BreadcrumbToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 motion 运行时状态。
 
 主题维护规则：
 
@@ -2933,7 +2921,6 @@ Breadcrumb Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - `src/AtomUI.Desktop.Controls/Breadcrumb/IBreadcrumbItemData.cs`
 - `src/AtomUI.Desktop.Controls/Breadcrumb/Themes/BreadcrumbItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Breadcrumb/Themes/BreadcrumbTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Breadcrumb/Themes/BreadcrumbThemes.axaml`
 
 职责边界：
 
@@ -2985,7 +2972,7 @@ ButtonSpinner 的设计语言围绕控件职责、可观察状态和主题契约
 | 产品语义 | 控件在界面中承担的稳定职责。 | ButtonSpinner 是 AtomUI 桌面控件体系中的带步进按钮的输入基座，用于承载增减、选择或候选切换类输入。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ContentLeftShift`、`ContentPadding`、`ContentRightShift`、`InnerLeftContent`、`InnerLeftContentTemplate`、`InnerRightContent`、`InnerRightContentTemplate`、`LeftAddOnTemplate` 等 10 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ButtonSpinner Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ButtonSpinner Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -3186,16 +3173,15 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-ButtonSpinner 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ButtonSpinner 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ButtonSpinnerDecoratedBoxTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `ButtonSpinnerHandleTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `ButtonSpinnerTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `ButtonSpinnerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-ButtonSpinner 使用 `ButtonSpinnerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 motion、visual option 运行时状态。
+ButtonSpinner 使用 `ButtonSpinnerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -3241,7 +3227,6 @@ ButtonSpinner Token 只表达组件级视觉变量，例如尺寸、间距、颜
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerDecoratedBoxTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerHandleTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerTheme.axaml`
-- `src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/ButtonSpinnerThemes.axaml`
 
 职责边界：
 
@@ -3293,7 +3278,7 @@ ComboBox 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | ComboBox 是 AtomUI 桌面控件体系中的组合框控件，用于在可输入文本框和候选列表之间完成选择。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`FilterValue`、`FilterValueSelector`、`LeftAddOnTemplate`、`OptionFontSize` 等 9 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ComboBox Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ComboBox Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -3487,18 +3472,17 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-ComboBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ComboBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ComboBoxHandleTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `ComboBoxItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `ComboBoxTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
-| `ComboBoxThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 非编辑态选中内容的完整文本提示复用共享 `OverflowTip` attached behavior。模板只在 `SelectedContentPresenter` 上接入 `IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` 和 `SelectionBoxItem`；`IsEditable=true` 时编辑输入框不默认启用该提示。
 
-ComboBox 使用 `ComboBoxToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
+ComboBox 使用 `ComboBoxToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -3544,7 +3528,6 @@ ComboBox Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxHandleTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml`
-- `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxThemes.axaml`
 
 职责边界：
 
@@ -3596,7 +3579,7 @@ DropdownButton 的设计语言围绕控件职责、可观察状态和主题契�
 | 产品语义 | 控件在界面中承担的稳定职责。 | DropdownButton 是 AtomUI 桌面控件体系中的下拉按钮，用于从一个动作按钮展开次级命令或菜单内容。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | 继承 Button 的 `Content`、`Icon`、`Command` 等动作入口。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -3665,13 +3648,12 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-DropdownButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+DropdownButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
-| `ButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `DropdownButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
+| `Browser/DropdownButtonTheme.axaml` | Browser 平台的 DropdownButton 主题叶子，保持相同 public 状态语义。 |
 
 DropdownButton 当前没有专属 Token 文档；主题通过 SharedToken、关联控件 Token 或继承主题资源表达视觉语义。运行时状态不得写入 Token 模型。
 
@@ -3708,8 +3690,7 @@ Token 来源：
 
 - `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/BrowserButtonThemes.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonThemes.axaml`
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`
 
 职责边界：
 
@@ -3760,7 +3741,7 @@ Menu 的设计语言围绕控件职责、可观察状态和主题契约组织，
 | 产品语义 | 控件在界面中承担的稳定职责。 | Menu 是 AtomUI 桌面控件体系中的菜单控件家族，用于组织命令列表、上下文操作、MenuFlyout 和数据驱动菜单项。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Items`、`MenuItem`、`MenuItemData` 和 `MenuSeparatorData`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Menu Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Menu Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -3927,20 +3908,18 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserMenuThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `ContextMenuTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `MenuItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `MenuSeparatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `MenuTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `MenuThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TopLevelMenuItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml` | 定义 `MenuFlyout` 菜单项 presenter 的弹层内容模板和滚动承载结构。 |
 
-Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
+Menu 使用 `MenuToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -3999,13 +3978,11 @@ Menu Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - `src/AtomUI.Desktop.Controls/Menu/MenuSeparator.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuSeparatorData.cs`
 - `src/AtomUI.Desktop.Controls/Menu/MenuToken.cs`
-- `src/AtomUI.Desktop.Controls/Menu/Themes/BrowserMenuThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/ContextMenuTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuItemTheme.cs`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuSeparatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/MenuTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Menu/Themes/MenuThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Menu/Themes/TopLevelMenuItemTheme.axaml`
 
 职责边界：
@@ -4276,7 +4253,7 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 - `src/AtomUI.Desktop.Controls/NavMenu/InlineNavMenuInteractionHandler.cs`：Inline 展开收起交互策略。
 - `src/AtomUI.Desktop.Controls/NavMenu/Header/`：三种 header 控件。
 - `src/AtomUI.Desktop.Controls/NavMenu/Themes/`：root、item、header 和 popup 主题。
-- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuToken.cs`：组件 Token。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuToken.cs`：控件 Token。
 
 ## 相关文档
 
@@ -4321,7 +4298,7 @@ Pagination 的设计语言围绕控件职责、可观察状态和主题契约组
 | 产品语义 | 控件在界面中承担的稳定职责。 | Pagination 是 AtomUI 桌面控件体系中的分页控件，用于在有限页集合中切换页码、页大小和上一页下一页。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Icon`、`JumpToText`、`PageText`、`PaginationItemType`、`TotalInfoTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Pagination Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Pagination Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -4471,18 +4448,17 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Pagination 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Pagination 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `PaginationNavItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `PaginationNavTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `PaginationTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `PaginationThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `QuickJumperBarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `SimplePaginationTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Pagination 使用 `PaginationToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
+Pagination 使用 `PaginationToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -4535,7 +4511,6 @@ Pagination Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationNavItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationNavTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/QuickJumperBarTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/SimplePaginationTheme.axaml`
 
@@ -4827,7 +4802,6 @@ Steps 使用统一语义模板，而不是按 Type、Orientation 和 TitlePlacem
 | `StepsTheme.axaml` | 根模板、ItemsPresenter、StepsPanel 和根展示输入映射。 |
 | `StepsItemTheme.axaml` | 统一 item 语义模板、状态颜色、Connector、内容和交互视觉。 |
 | `StepsItemIndicatorTheme.axaml` | 统一 Indicator 模板、Dot、Icon、状态图标、Progress 和 Wave。 |
-| `StepsThemes.axaml` | Steps 主题资源聚合入口。 |
 
 运行时组合：
 
@@ -4903,11 +4877,10 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Steps/StepsItemIndicator.cs`：Indicator 状态、Wave part、Progress 绘制和渲染失效。
 - `src/AtomUI.Desktop.Controls/Steps/StepsPanel.cs`：item 间水平 flex、Navigation 等宽、Inline 和垂直 stack 布局。
 - `src/AtomUI.Desktop.Controls/Steps/StepsItemLayoutPanel.cs`：Indicator、Header、SubHeader、Connector、Content、NavigationArrow 和 NavigationActiveIndicator 的 item 内布局。
-- `src/AtomUI.Desktop.Controls/Steps/StepsToken.cs`：Steps 组件 Token。
+- `src/AtomUI.Desktop.Controls/Steps/StepsToken.cs`：Steps 控件 Token。
 - `src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`：根模板和 StepsPanel。
 - `src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemTheme.axaml`：统一 item 语义模板和状态样式。
 - `src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemIndicatorTheme.axaml`：统一 Indicator、Dot、Icon、Progress 和 Wave 模板。
-- `src/AtomUI.Desktop.Controls/Steps/Themes/StepsThemes.axaml`：Steps 主题聚合入口。
 
 测试目录：
 
@@ -4960,7 +4933,7 @@ TabControl 的设计语言围绕控件职责、可观察状态和主题契约组
 | 产品语义 | 控件在界面中承担的稳定职责。 | TabControl 是 AtomUI 桌面控件体系中的标签页内容控件，用于在多个内容页面之间切换、关闭、拖动排序和溢出导航。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CloseIcon`、`ContentPadding`、`ContentTemplate`、`HeaderEndEdgePadding`、`HeaderEndExtraContent`、`HeaderEndExtraContentTemplate`、`HeaderStartEdgePadding`、`HeaderStartExtraContent` 等 15 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、reorder、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | TabControl Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | TabControl Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -5119,7 +5092,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -5130,7 +5103,6 @@ TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `CardTabControlTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CardTabItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TabControlTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TabControlThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TabItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `BaseTabStripItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `BaseTabStripTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -5139,7 +5111,7 @@ TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `TabStripItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TabStripTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-TabControl 使用 `TabControlToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
+TabControl 使用 `TabControlToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -5237,7 +5209,7 @@ TabStrip 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | TabStrip 是 AtomUI 桌面控件体系中的标签条控件，用于展示、选择、关闭和拖动排序页签，不承载内容页。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CloseIcon`、`HeaderEndEdgePadding`、`HeaderEndExtraContent`、`HeaderEndExtraContentTemplate`、`HeaderStartEdgePadding`、`HeaderStartExtraContent`、`HeaderStartExtraContentTemplate`、`Icon`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、reorder、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -5381,7 +5353,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-TabStrip 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+TabStrip 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 当前控件未抽取到专属 AXAML 主题文件；视觉契约主要来自继承控件、共享主题和资源 key。
 
@@ -5481,7 +5453,7 @@ AutoComplete 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | AutoComplete 是 AtomUI 桌面控件体系中的自动完成输入控件，用于把文本输入、候选弹层、过滤和提交事件组合在一起。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ClearIcon`、`ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`DefaultValue`、`FilterValue`、`FilterValueSelector` 等 14 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、open/close、loading/async、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | AutoComplete Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | AutoComplete Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -5636,7 +5608,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -5644,9 +5616,8 @@ AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `AutoCompleteSearchEditTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AutoCompleteTextAreaTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AutoCompleteTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `AutoCompleteThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-AutoComplete 使用 `AutoCompleteToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、loading/async、collection/filter、input/value、motion、visual option 运行时状态。
+AutoComplete 使用 `AutoCompleteToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、loading/async、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -5707,7 +5678,6 @@ AutoComplete Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - `src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteSearchEditTheme.axaml`
 - `src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTextAreaTheme.axaml`
 - `src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTheme.axaml`
-- `src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteThemes.axaml`
 
 职责边界：
 
@@ -6009,7 +5979,15 @@ input display + Form value
 
 - `FilterValue` 非空且控件 loaded 时，CascaderView 收集所有叶子路径并按 `Filter` 过滤。
 - 过滤结果显示完整路径文本，选中过滤结果后回写目标 option。
+- 过滤模式下，`Up` / `Down` 在可用结果间循环移动内部候选高亮，不修改 `SelectedOption`；`Enter` 提交当前候选，尚无候选时提交第一个可用结果，没有可用结果时保持选择和 popup 状态不变。路径中任一祖先 disabled 时，该过滤结果也不可作为候选或提交。
 - 清空过滤值或关闭 popup 后，过滤列表、过滤计数和缓存路径会被清理。
+
+树形键盘导航：
+
+- popup 打开且未过滤时，`Up` / `Down` 在当前已展开列的可见 enabled item 间循环移动内部候选；候选高亮与真实选择相互独立。
+- `Right` 从当前候选或第一个可见 enabled item 开始，展开可展开节点并把候选移到下一列的第一个 enabled child。
+- `Left` 优先把子级候选移回父级；候选已位于展开的根级非叶节点时折叠该节点。
+- `Enter` 提交 enabled、非 loading 的叶子候选；`IsAllowSelectParent=true` 时也可提交父节点，否则沿用 `Right` 的展开并进入子级行为。
 
 Form：
 
@@ -6124,7 +6102,7 @@ CheckBox 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | CheckBox 是 AtomUI 桌面控件体系中的复选框控件，用于表达二元选择、多选集合和中间态。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CheckedItems`、`ItemSpacing`、`ItemTemplate`、`ItemsSource`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | CheckBox Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | CheckBox Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -6281,7 +6259,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-CheckBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+CheckBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -6289,9 +6267,8 @@ CheckBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `CheckBoxIndicatorTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `CheckBoxItemsControlTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `CheckBoxTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
-| `CheckBoxThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-CheckBox 使用 `CheckBoxToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、motion、visual option 运行时状态。
+CheckBox 使用 `CheckBoxToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -6336,7 +6313,6 @@ CheckBox Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls/CheckBox/Themes/CheckBoxIndicatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/CheckBox/Themes/CheckBoxItemsControlTheme.axaml`
 - `src/AtomUI.Desktop.Controls/CheckBox/Themes/CheckBoxTheme.axaml`
-- `src/AtomUI.Desktop.Controls/CheckBox/Themes/CheckBoxThemes.axaml`
 - `src/AtomUI.Controls/CheckBox/AbstractCheckBox.cs`
 - `src/AtomUI.Controls/CheckBox/AbstractCheckBoxGroup.cs`
 - `src/AtomUI.Controls/CheckBox/AbstractCheckBoxItemsControl.cs`
@@ -6395,7 +6371,7 @@ ColorPicker 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | ColorPicker 是 AtomUI 桌面控件体系中的颜色选择控件，用于选择纯色、透明度、预设色和渐变色。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ColorValue`、`ColorValueBrush`、`DefaultValue`、`EmptyColorText`、`GradientValue`、`IsTextVisible`、`MaxValue`、`MinValue` 等 10 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ColorPicker Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、Control Own Token 和模板绑定如何表达视觉。 | ColorPicker Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -6622,11 +6598,10 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和 ColorPicker Own Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `AtomUIColorPickerThemesProvider.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AbstractColorPickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ColorBlockTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ColorPickerPaletteGroupTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -6645,7 +6620,7 @@ ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `GradientColorPickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `PaletteColorItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 
-ColorPicker 使用 `ColorPickerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
+ColorPicker 拥有独立 Control identity；`ColorPickerToken` 只表达 ColorPicker Own Token 语义，不承载 open/close、collection/filter、input/value、motion 或 visual option 运行时状态。Control 级 Global Token 覆盖与 Own Token 通过 `ColorPickerTokenResource` 统一读取。
 
 主题维护规则：
 
@@ -6682,12 +6657,13 @@ ColorPicker Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls.ColorPicker`：20 个文件，代表文件 `AbstractColorPicker.cs`、`AtomUIColorPickerThemesProvider.axaml`、`AtomUIColorPickerThemesProvider.cs`、`ColorBlock.cs`、`ColorChangedEventArgs.cs` 等。
+- `src/AtomUI.Desktop.Controls.ColorPicker`：代表文件包括 `AbstractColorPicker.cs`、`AtomUIColorPickerThemesProvider.cs`、`ThemeManagerBuilderExtensions.cs`、`ColorBlock.cs`、`ColorChangedEventArgs.cs` 等。
 - `src/AtomUI.Desktop.Controls.ColorPicker/ColorSlider`：10 个文件，代表文件 `AbstractColorPickerSliderTrack.cs`、`AbstractColorSlider.cs`、`ColorPickerSliderTrack.cs`、`ColorSlider.cs`、`ColorSliderPseudoClass.cs` 等。
 - `src/AtomUI.Desktop.Controls.ColorPicker/ColorView`：6 个文件，代表文件 `AbstractColorPickerView.cs`、`ColorPickerInput.cs`、`ColorPickerView.cs`、`ColorSpectrum.cs`、`ColorSpectrumPseudoClass.cs` 等。
 - `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator`：2 个文件，代表文件 `LanguageProviderPool.g.cs`、`LanguageResourceConst.g.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ResourceHost.ScopedResourceHostGenerator`：1 个文件，代表文件 `GenerateScopedResourceHostAttribute.g.cs`。
-- `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：2 个文件，代表文件 `ControlTokenTypePool.g.cs`、`TokenResourceConst.g.cs`。
+- `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：生成 `GeneratedControlPackageRegistration.g.cs`、`GeneratedThemeSchema.g.cs` 和 `TokenResourceConst.g.cs`。
+- `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator`：生成独立主题叶子的 `GeneratedControlThemeAssetManifest.g.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/Properties`：1 个文件，代表文件 `AssemblyInfo.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/Themes`：21 个文件，代表文件 `AbstractColorPickerTheme.axaml`、`AbstractColorPickerTheme.cs`、`ColorBlockTheme.axaml`、`ColorPickerPaletteGroupTheme.axaml`、`ColorPickerTheme.axaml` 等。
@@ -6743,7 +6719,7 @@ DatePicker 的设计语言围绕控件职责、可观察状态和主题契约组
 | 产品语义 | 控件在界面中承担的稳定职责。 | DatePicker 是 AtomUI 桌面控件体系中的日期选择控件，用于单日期、日期范围和日历面板选择。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `HeaderBackground`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | DatePicker Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | DatePicker Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -6961,7 +6937,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -6974,13 +6950,12 @@ DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `RangeCalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `DatePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DatePickerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `DualMonthRangeDatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `RangeDatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `RangeDatePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimedRangeDatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 
-DatePicker 使用 `DatePickerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、visual option 运行时状态。
+DatePicker 使用 `DatePickerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、visual option 运行时状态。
 
 主题维护规则：
 
@@ -7456,7 +7431,7 @@ Form 视觉由 Form 根模板、FormItem 模板、FormValidateFeedback 模板和
 
 Token 来源：
 
-FormToken 是 Form 的组件级 Token scope，描述标签视觉、必填标记、冒号间距和表单项布局间距。输入控件自身高度、边框、状态色、图标尺寸、字体基础值和通用 spacing 来自 SharedToken 或对应输入控件 Token。
+FormToken 是 Form 的控件级 Token scope，描述标签视觉、必填标记、冒号间距和表单项布局间距。输入控件自身高度、边框、状态色、图标尺寸、字体基础值和通用 spacing 来自 SharedToken 或对应输入控件 Token。
 
 FormToken 不承载以下状态：
 
@@ -7501,7 +7476,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Form/FormItemDecorator.cs`：组合输入控件的表单能力转发。
 - `src/AtomUI.Desktop.Controls/Form/FormSizeTypeBindingHelper.cs`：`CustomizableSizeType` 到新旧尺寸接口的转发规则。
 - `src/AtomUI.Desktop.Controls/Form/SubmitButton.cs`、`ResetButton.cs`：表单操作按钮和路由事件。
-- `src/AtomUI.Desktop.Controls/Form/FormToken.cs`：Form 组件 Token。
+- `src/AtomUI.Desktop.Controls/Form/FormToken.cs`：Form 控件 Token。
 - `src/AtomUI.Desktop.Controls/Form/Themes/*.axaml`：Form、FormItem、Decorator、Feedback 和操作按钮主题。
 
 ## 相关文档
@@ -7757,7 +7732,7 @@ LineEdit 家族使用输入壳体和文本 presenter 分层：
 
 Token 来源：
 
-LineEdit 输入家族使用三个组件级 Token scope：
+LineEdit 输入家族使用三个控件级 Token scope：
 
 | Token | Scope | 职责 |
 | --- | --- | --- |
@@ -8086,7 +8061,7 @@ Mentions 的默认视觉由 `MentionsTheme.axaml` 和内部 TextArea 主题协�
 
 Token 来源：
 
-MentionsToken 是 Mentions 的组件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / AddOnDecoratedBox / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
+MentionsToken 是 Mentions 的控件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / AddOnDecoratedBox / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
 
 MentionsToken 不承载以下状态：
 
@@ -8128,7 +8103,6 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Mentions/MentionPseudoClass.cs`：`:candidateopen` 伪类常量。
 - `src/AtomUI.Desktop.Controls/Mentions/MentionsToken.cs`：候选弹层尺寸 Token。
 - `src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml`：Mentions 模板、popup、loading 和候选列表视觉。
-- `src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsThemes.axaml`：Mentions 主题聚合入口。
 
 ## 相关文档
 
@@ -8399,7 +8373,7 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 
 Token 来源：
 
-NumericUpDownToken 是 NumericUpDown 的组件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供数值输入控件可消费的输入壳体、步进 Handle、字体和尺寸语义。
+NumericUpDownToken 是 NumericUpDown 的控件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供数值输入控件可消费的输入壳体、步进 Handle、字体和尺寸语义。
 
 该设计使 NumericUpDown 能复用 ButtonSpinner 输入壳体体系，同时保留控件级 Token scope。生成的 `NumericUpDownTokenKind` 表达 NumericUpDown scope 下可展示和可覆盖的 Token；默认主题中的输入壳体和 Handle 仍通过 `ButtonSpinnerTokenResource` 消费共享 ButtonSpinner 语义值。
 
@@ -8734,7 +8708,6 @@ OtpLineEdit 使用“根输入控件 + cell presenter + separator + action 区�
 | --- | --- |
 | `OtpLineEditTheme.axaml` | 根模板、cell host、清除入口、Form feedback、focus/error/warning/disabled 视觉投射。 |
 | `OtpLineEditCellTheme.axaml` | 单个 cell 的输入表面、字符显示、placeholder、mask 和 active 状态。 |
-| `OtpLineEditThemes.axaml` | OtpLineEdit 主题聚合入口。 |
 
 视觉状态必须与 AtomUI 输入体系一致：
 
@@ -8789,7 +8762,6 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditToken.cs`：cell 宽度、cell 间距和 separator 间距 Token。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditTheme.axaml`：根模板、cell host、清除按钮和 feedback 区。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditCellTheme.axaml`：cell 的字符显示、mask、placeholder、active/focus/error 状态。
-- `src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditThemes.axaml`：控件主题聚合入口。
 
 测试与 Gallery：
 
@@ -8844,7 +8816,7 @@ RadioButton 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | 普通单选指示器与按钮式单选组共享互斥选择语义。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CheckedItem`、`SelectedItem`、`Items`、`ItemsSource`、`ItemTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | checked/selected、disabled、pointer、motion、ButtonStyle 和方向组合状态。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | RadioButtonToken、OptionButtonToken 与对应 ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | RadioButtonToken、OptionButtonToken 与对应 ControlTheme。 |
 
 ## 公共 API
 
@@ -8973,17 +8945,15 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-RadioButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+RadioButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RadioButtonGroupTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `RadioButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `RadioButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `RadioIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `OptionButtonGroupTheme.axaml` | 定义按钮组 ItemsPresenter、方向布局入口、尺寸和组级边框资源。 |
 | `OptionButtonTheme.axaml` | 定义按钮内容、Outline/Solid、checked/disabled、方向对齐和 Wave 视觉。 |
-| `OptionButtonBoxThemes.axaml` | 聚合 OptionButtonGroup 与 OptionButton 的主题资源。 |
 
 普通单选控件使用 `RadioButtonToken`，按钮式选项使用 `OptionButtonToken`。Token 只表达组件视觉语义，不承载 checked/selected、Orientation、GroupPositionTrait 或 EffectiveCornerRadius 运行时状态。
 
@@ -9031,7 +9001,6 @@ RadioButton 和 OptionButton Token 只表达组件级视觉变量，例如指示
 - `src/AtomUI.Desktop.Controls/RadioButton/RadioButtonToken.cs`
 - `src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonGroupTheme.axaml`
 - `src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioButtonThemes.axaml`
 - `src/AtomUI.Desktop.Controls/RadioButton/Themes/RadioIndicatorTheme.axaml`
 - `src/AtomUI.Controls/RadioButton/AbstractRadioButton.cs`
 - `src/AtomUI.Controls/RadioButton/AbstractRadioButtonGroup.cs`
@@ -9044,7 +9013,6 @@ RadioButton 和 OptionButton Token 只表达组件级视觉变量，例如指示
 - `src/AtomUI.Desktop.Controls/OptionButtonGroup/OptionButtonToken.cs`
 - `src/AtomUI.Desktop.Controls/OptionButtonGroup/Themes/OptionButtonGroupTheme.axaml`
 - `src/AtomUI.Desktop.Controls/OptionButtonGroup/Themes/OptionButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml`
 - `src/AtomUI.Controls/OptionButtonGroup/AbstractOptionButton.cs`
 - `src/AtomUI.Controls/OptionButtonGroup/AbstractOptionButtonGroup.cs`
 - `src/AtomUI.Controls/OptionButtonGroup/OptionButtonData.cs`
@@ -9102,7 +9070,7 @@ Rate 的设计语言围绕控件职责、可观察状态和主题契约组织，
 | 产品语义 | 控件在界面中承担的稳定职责。 | Rate 是 AtomUI 桌面控件体系中的评分控件，用于以图标序列表达评分、半选和只读展示。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `DefaultValue`、`Value`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Rate Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Rate Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -9224,16 +9192,15 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Rate 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Rate 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RateItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `RateItemsControlTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `RateTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `RateThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Rate 使用 `RateToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、input/value、motion、visual option 运行时状态。
+Rate 使用 `RateToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -9280,7 +9247,6 @@ Rate Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - `src/AtomUI.Desktop.Controls/Rate/Themes/RateItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Rate/Themes/RateItemsControlTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Rate/Themes/RateTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Rate/Themes/RateThemes.axaml`
 
 职责边界：
 
@@ -9345,7 +9311,8 @@ SearchEdit 专项 API：
 | `SearchButtonStyle` | `SearchEditButtonStyle` | 搜索按钮样式，支持 `Default` 和 `Primary`。 |
 | `SearchButtonText` | `string` | 搜索按钮显示文本；未设置时按钮以搜索图标为主要视觉。 |
 | `IsOperating` | `bool` | 搜索按钮 loading 状态；为 `true` 时阻止重复触发 `SearchButtonClick`。 |
-| `SearchButtonClick` | `RoutedEvent<RoutedEventArgs>` | 搜索按钮点击事件，由内部 `SearchButton` 点击冒泡为 SearchEdit 事件。 |
+| `SearchButtonTheme` | `ControlTheme?` | 搜索按钮 Semantic Part Theme；`TargetType` 必须兼容 public `Button`。 |
+| `SearchButtonClick` | `RoutedEvent<RoutedEventArgs>` | 搜索按钮点击事件，由 `Button#PART_RightAddOn` 点击冒泡为 SearchEdit 事件。 |
 
 继承输入 API 的 SearchEdit 约束：
 
@@ -9367,7 +9334,7 @@ SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。维护时不应�
 | Template Part | 类型 | 所属主题 | 职责 |
 | --- | --- | --- | --- |
 | `PART_AddOnDecoratedBox` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 搜索输入壳体、状态、Addon、CompactSpace 和搜索按钮协作入口。 |
-| `PART_RightAddOn` | `SearchButton` | `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮，承载图标、文字、loading、按钮样式和点击事件。 |
+| `PART_RightAddOn` | `Button` | `SearchEditDecoratedBoxTheme.axaml` | public Button 语义部件，承载图标、文字、loading、按钮样式和点击事件。 |
 | `PART_ContentFrame` | `Border` | `SearchEditDecoratedBoxTheme.axaml` | 文本输入框视觉边框和背景。 |
 | `PART_ScrollViewer` | `ScrollViewer` | `SearchEditTheme.axaml` | 文本滚动区域。 |
 | `PART_TextPresenter` | `InputTextPresenter` | `SearchEditTheme.axaml` | 文本显示、光标、选择和密码 reveal。 |
@@ -9378,8 +9345,8 @@ SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。维护时不应�
 
 ## 事件与命令
 
-| `SearchButtonClick` | `RoutedEvent<RoutedEventArgs>` | 搜索按钮点击事件，由内部 `SearchButton` 点击冒泡为 SearchEdit 事件。 |
-| `PART_RightAddOn` | `SearchButton` | `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮，承载图标、文字、loading、按钮样式和点击事件。 |
+| `SearchButtonClick` | `RoutedEvent<RoutedEventArgs>` | 搜索按钮点击事件，由 `Button#PART_RightAddOn` 点击冒泡为 SearchEdit 事件。 |
+| `PART_RightAddOn` | `Button` | `SearchEditDecoratedBoxTheme.axaml` | public Button 语义部件，承载图标、文字、loading、按钮样式和点击事件。 |
 
 ## 使用示例
 
@@ -9461,7 +9428,7 @@ Gallery key：`ExamplesContent` / item `5`
 SearchEdit 的文本输入行为继承 LineEdit，搜索按钮行为独立建模：
 
 ```text
-SearchButton.Click
+Button#PART_RightAddOn.Click
   ↓
 SearchEditDecoratedBox.HandleSearchButtonClick
   ↓
@@ -9495,20 +9462,28 @@ SearchEdit 使用三层主题协作：
 | `SearchEditDecoratedBoxTheme.axaml` | 输入框内容边框、搜索按钮、左右布局、搜索按钮 style 和 z-index 关系。 |
 | `SearchButtonTheme.axaml` | 搜索按钮在不同输入表面中的背景、前景和状态色。 |
 
-SearchEdit 不定义独立组件 Token。主题资源来源：
+SearchEdit 拥有独立 `ControlTokenIdentity`，但不定义 Own Token。它继承 `LineEdit` 的行为并不意味着继承或借用
+LineEdit identity；Control 级配置中的任意已注册 Global Token 都绑定到 SearchEdit 自己的 Effective Global
+Token。合法但没有被当前主题直接或间接消费的 Global Token 可以没有视觉效果。
+
+主题资源边界：
 
 | Token 来源 | 用途 |
 | --- | --- |
-| `LineEditToken` | 输入文本字号。 |
-| `AddOnDecoratedBoxToken` | 输入壳体 focus shadow、active 背景和状态视觉。 |
-| `ButtonToken` | 搜索按钮字号、padding、图标和按钮状态。 |
-| `SharedToken` | 控件高度、字体高度、边框、颜色、间距、motion 和 disabled 语义。 |
+| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，负责输入与搜索按钮组合语义，例如 focus shadow、主色和输入状态背景。 |
+| `AddOnDecoratedBoxTokenResource` | 由 `SearchEditDecoratedBoxTheme` 的 BasedOn 主题显式读取输入壳体 Own/Effective Global Token。 |
+| `ButtonTokenResource` | 由真实 Button 和 `SearchButtonTheme` 显式读取 Button Own/Effective Global Token，负责按钮基础视觉。 |
+| `SharedTokenResource` | 读取真正的 Global Token，只用于不响应 SearchEdit Control 级覆盖的共享值。 |
+
+`SearchButtonTheme` 的 `TargetType` 是 Button，但资产 owner 和组合语义属于 SearchEdit。它可以同时使用
+`SearchEditTokenResource` 与 `ButtonTokenResource`；这是显式跨 Control 资源引用，不是 SearchEdit 借用 Button
+或 LineEdit identity。
 
 搜索按钮必须与输入框视觉上组成单一控件。Custom 高度下，搜索按钮的可视 `Frame` 高度必须跟随 `SearchEditDecoratedBox` 的实际布局高度，避免按钮边框和输入框边框错位。
 
 Token 来源：
 
-- SearchEdit 当前没有专属 `token.md`；LLMS 生成按第 5 节视觉与主题模型、SharedToken、控件家族 Token 或主题资源说明 Token 边界。
+- SearchEdit 当前没有 Own Token，因此没有专属 `token.md`；LLMS 生成按第 5 节说明独立 SearchEdit identity、完整 Effective Global Token、Button Semantic Part 和显式跨 Control 资源边界。
 
 ## AOT 与裁剪注意事项
 
@@ -9520,11 +9495,12 @@ SearchEdit 不依赖运行时反射发现模板结构。跨模板协作使用固
 - `OwningSearchEdit` 只保存当前模板 owner，不创建全局订阅。
 - 搜索按钮高度同步使用 XAML binding，不在布局过程中写本地 `Height` 值。
 - 搜索按钮状态不创建异步任务；业务异步状态由外部设置 `IsOperating`。
-- SearchEdit 没有独立 Token scope，不应为运行时状态新增 Token。
+- SearchEdit 有独立 Control identity、没有 Own Token；运行时状态不得进入 Token schema。
+- `SearchEditTokenResource` 读取 SearchEdit Effective Global Token；Button 基础视觉继续显式读取 `ButtonTokenResource`。
 
 AOT 边界：
 
-- SearchEdit 主题通过显式 ResourceInclude 注册。
+- SearchEdit identity、强类型 TokenResource 和三个独立主题叶子通过生成 descriptor/asset manifest 注册。
 - `AutoCompleteSearchEditBox` 使用显式 `StyleKeyOverride` 复用 SearchEdit 主题。
 - API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护，不依赖运行时反射扫描。
 
@@ -9534,11 +9510,11 @@ AOT 边界：
 
 - `src/AtomUI.Desktop.Controls/Input/SearchEdit.cs`：public API、默认 clear icon、模板接入和搜索点击事件抛出。
 - `src/AtomUI.Desktop.Controls/Input/SearchEditDecoratedBox.cs`：内部输入壳体，转接 SearchEdit 属性并订阅搜索按钮 click。
-- `src/AtomUI.Desktop.Controls/Input/SearchButton.cs`：搜索按钮类型，继承 Button 并接入输入 `StyleVariant`、`Status`。
 - `src/AtomUI.Desktop.Controls/Input/SearchEditPanel.cs`：搜索输入布局面板，负责左侧 AddOn、搜索按钮和内容框重叠边框排布。
 - `src/AtomUI.Desktop.Controls/Input/Themes/SearchEditTheme.axaml`：SearchEdit 根模板、文本区域、内部 action 和 focus/status selector。
 - `src/AtomUI.Desktop.Controls/Input/Themes/SearchEditDecoratedBoxTheme.axaml`：搜索按钮和输入框一体化模板。
 - `src/AtomUI.Desktop.Controls/Input/Themes/SearchButtonTheme.axaml`：搜索按钮在不同输入表面下的状态视觉。
+- `src/AtomUI.Desktop.Controls/Input/Themes/SearchButtonTheme.cs`：SearchButton Semantic Part typed theme。
 - `src/AtomUI.Desktop.Controls/AutoComplete/AutoCompleteSearchEdit.cs`：AutoComplete 搜索输入入口，复用 SearchEdit 搜索按钮属性。
 - `src/AtomUI.Desktop.Controls/AutoComplete/AutoCompleteSearchEditBox.cs`：AutoComplete 内部 SearchEdit box，使用 SearchEdit style key。
 
@@ -9890,7 +9866,7 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 
 Token 来源：
 
-SelectToken 是 Select 的组件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken。
+SelectToken 是 Select 的控件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken。
 
 SelectToken 不承载以下状态：
 
@@ -9932,7 +9908,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Select/SelectHandle.cs`：右侧展开、loading、清除和 Form feedback 图标。
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
 - `src/AtomUI.Desktop.Controls/Select/DataLoad/*`：异步候选加载接口、结果和事件参数。
-- `src/AtomUI.Desktop.Controls/Select/SelectToken.cs`：Select 组件 Token。
+- `src/AtomUI.Desktop.Controls/Select/SelectToken.cs`：Select 控件 Token。
 - `src/AtomUI.Desktop.Controls/Select/Themes/*.axaml`：Select 根模板、候选列表、结果标签、handle、输入壳体和 token 样式。
 
 ## 相关文档
@@ -10265,7 +10241,7 @@ Slider 的默认视觉由三层主题组成：
 
 Token 来源：
 
-SliderToken 是 Slider 的组件级 Token scope，定义轨道尺寸、rail 尺寸、thumb 尺寸、mark 尺寸、track / rail / mark / thumb 颜色、outline 和 orientation padding。
+SliderToken 是 Slider 的控件级 Token scope，定义轨道尺寸、rail 尺寸、thumb 尺寸、mark 尺寸、track / rail / mark / thumb 颜色、outline 和 orientation padding。
 
 SliderToken 不承载：
 
@@ -10345,7 +10321,7 @@ TimePicker 的设计语言围绕控件职责、可观察状态和主题契约组
 | 产品语义 | 控件在界面中承担的稳定职责。 | TimePicker 是 AtomUI 桌面控件体系中的时间选择控件，用于在输入壳体和时间面板之间选择时分秒。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `IsShowHeader`、`ItemFormat`、`ItemHeight`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | TimePicker Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | TimePicker Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -10512,18 +10488,17 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-TimePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+TimePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RangeTimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `TimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TimePickerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TimeViewCellTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TimeViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-TimePicker 使用 `TimePickerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active 运行时状态。
+TimePicker 使用 `TimePickerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active 运行时状态。
 
 主题维护规则：
 
@@ -10567,7 +10542,6 @@ TimePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/RangeTimePickerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimePickerPresenterTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimePickerTheme.axaml`
-- `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimePickerThemes.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimeViewCellTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimeViewTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimePicker.cs`
@@ -10775,7 +10749,6 @@ ToggleSwitch 使用控件本体绘制轨道，模板负责内容和把手。
 | --- | --- |
 | `ToggleSwitchTheme.axaml` | 主模板、状态 selector、SizeType 分支、轨道背景、WaveSpirit 和 SwitchKnob token 传递。 |
 | `SwitchKnobTheme.axaml` | 把手加载透明度、加载动画周期和把手宽度动效。 |
-| `ToggleSwitchThemes.axaml` | 聚合 ToggleSwitch 与 SwitchKnob 主题。 |
 
 视觉状态主要由主题 selector 表达：
 
@@ -10789,7 +10762,7 @@ ToggleSwitch 使用控件本体绘制轨道，模板负责内容和把手。
 
 Token 来源：
 
-ToggleSwitchToken 是 ToggleSwitch 的组件级 Token scope，描述轨道尺寸、把手尺寸、内容边距、图标尺寸、开关颜色、禁用透明度、内容字体、把手阴影和加载指示。
+ToggleSwitchToken 是 ToggleSwitch 的控件级 Token scope，描述轨道尺寸、把手尺寸、内容边距、图标尺寸、开关颜色、禁用透明度、内容字体、把手阴影和加载指示。
 
 ToggleSwitchToken 不承载以下状态：
 
@@ -10824,10 +10797,9 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Switch/ToggleSwitch.cs`：public 桌面控件，注册 `ToggleSwitchToken` resource scope。
 - `src/AtomUI.Controls/Switch/AbstractToggleSwitch.cs`：公共 API、测量、布局、内容绑定、loading、hit test、Form 和渲染主逻辑。
 - `src/AtomUI.Controls/Switch/SwitchKnob.cs`：把手绘制、加载指示绘制、把手宽度动画和加载动画生命周期。
-- `src/AtomUI.Desktop.Controls/Switch/ToggleSwitchToken.cs`：ToggleSwitch 组件级 Token。
+- `src/AtomUI.Desktop.Controls/Switch/ToggleSwitchToken.cs`：ToggleSwitch 控件级 Token。
 - `src/AtomUI.Desktop.Controls/Switch/Themes/ToggleSwitchTheme.axaml`：主模板、状态 selector、SizeType 分支和 Token 引用。
 - `src/AtomUI.Desktop.Controls/Switch/Themes/SwitchKnobTheme.axaml`：把手主题、加载动画周期和动效。
-- `src/AtomUI.Desktop.Controls/Switch/Themes/ToggleSwitchThemes.axaml`：主题聚合入口。
 
 ## 相关文档
 
@@ -10872,7 +10844,7 @@ Transfer 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Transfer 是 AtomUI 桌面控件体系中的穿梭框控件，用于在源列表和目标列表之间移动、搜索和选择数据项。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`ContentTemplate`、`FilterPlaceholderText`、`FilterValueSelector`、`FooterTemplate`、`ItemTemplate`、`SelectionsIcon`、`SelectionsIconTemplate` 等 22 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Transfer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Transfer Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -11019,7 +10991,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -11029,13 +11001,12 @@ Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `TransferListItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferListViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TransferSelectDropdownTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TransferThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TransferTreeViewItemHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferTreeViewItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferTreeViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TreeTransferTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Transfer 使用 `TransferToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
+Transfer 使用 `TransferToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -11337,7 +11308,7 @@ TreeSelect 的默认视觉由 TreeSelect 专属主题、Select 家族输入壳�
 
 Token 来源：
 
-TreeSelectToken 是 TreeSelect 的组件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
+TreeSelectToken 是 TreeSelect 的控件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
 
 TreeSelectToken 不承载以下状态：
 
@@ -11374,7 +11345,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectTreeView.cs`：TreeSelect 候选树，使用 TreeView 样式键并创建专用容器。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeViewSelectTreeViewItem.cs`：候选树节点容器，承接最大选择数状态。
 - `src/AtomUI.Desktop.Controls/TreeSelect/Converters/*`：树节点显示转换辅助。
-- `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectToken.cs`：TreeSelect 组件 Token。
+- `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectToken.cs`：TreeSelect 控件 Token。
 - `src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml`：根模板、输入壳体、右侧内容、结果区域、popup 和 selector。
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
 
@@ -11423,7 +11394,7 @@ Upload 的设计语言围绕“单一文件状态 owner + 可组合操作入口 
 | 产品语义 | 控件在界面中承担的稳定职责。 | `Upload` 是上传状态协调器，统一管理文件、队列、选择入口、拖拽入口和列表视图。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Files` 保存真实文件项；`TriggerContent`、`UploadTrigger`、`UploadDropZone` 和 `UploadList` 负责组合展示。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | `UploadFileItem.Status`、`Progress`、`ErrorMessage`、`Result` 是任务状态来源；Form 错误走 `DataValidationErrors`。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Upload Token + ControlTheme；滚动边界在 `UploadList` 内部，并使用 AtomUI 自动隐藏滚动条。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Upload Token + ControlTheme；滚动边界在 `UploadList` 内部，并使用 AtomUI 自动隐藏滚动条。 |
 
 ## 公共 API
 
@@ -11572,7 +11543,7 @@ Public API / UploadTrigger / UploadDropZone
 
 ## 主题与 Design Token
 
-Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Token 共同构成。
+Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -11593,7 +11564,6 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Tok
 | `UploadPictureShapePreviewContentTheme.axaml` | Shape preview 内容。 |
 | `UploadPictureShapeUploadingContentTheme.axaml` | Shape uploading 内容。 |
 | `UploadPictureShapeDefaultContentTheme.axaml` | Shape fallback 内容。 |
-| `UploadThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 主题维护规则：
 
@@ -11663,7 +11633,6 @@ AOT 边界：
 | `src/AtomUI.Desktop.Controls/Upload/Themes/UploadListTheme.axaml` | 列表 shell，内部拥有自动隐藏的 `atom:ScrollViewer` 和滚动边界。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/PictureList/*` | Picture 列表项视觉，pending 内容优先读取 `UploadFileItem.PendingText`。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/PictureShapeList/*` | PictureCard/PictureCircle 列表布局和 item 视觉；append slot 由 display source 承载并进入同一 wrap flow。 |
-| `src/AtomUI.Desktop.Controls/Upload/Themes/UploadThemes.axaml` | 聚合 Upload 家族主题，保证资源引入顺序稳定。 |
 
 ## 相关文档
 
@@ -11709,7 +11678,7 @@ Avatar 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Avatar 是 AtomUI 桌面控件体系中的头像控件，用于展示用户、组织或对象的图像、文字和图标标识。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `BitmapSrc`、`FoldAvatarFlyoutTriggerType`、`FoldInfoAvatarBackground`、`FoldInfoAvatarForeground`、`Icon`、`Src`、`Text`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Avatar Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Avatar Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -11796,15 +11765,14 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Avatar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Avatar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `AvatarGroupTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AvatarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `AvatarThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Avatar 使用 `AvatarToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、input/value、motion、visual option 运行时状态。
+Avatar 使用 `AvatarToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -11849,7 +11817,6 @@ Avatar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Avatar/AvatarToken.cs`
 - `src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarGroupTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarThemes.axaml`
 
 职责边界：
 
@@ -11902,7 +11869,7 @@ Badge 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Badge 是 AtomUI 桌面控件体系中的徽标控件，用于在目标元素上展示数量、状态点和角标提示。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Text`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Badge Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Badge Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -12065,17 +12032,16 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Badge 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Badge 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BadgeThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `CountBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DotBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DotBadgeIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `RibbonBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Badge 使用 `BadgeToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 input/value、motion、visual option 运行时状态。
+Badge 使用 `BadgeToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -12128,7 +12094,6 @@ Badge Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Badge/DotBadgeAdorner.cs`
 - `src/AtomUI.Desktop.Controls/Badge/RibbonBadge.cs`
 - `src/AtomUI.Desktop.Controls/Badge/RibbonBadgeAdorner.cs`
-- `src/AtomUI.Desktop.Controls/Badge/Themes/BadgeThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Badge/Themes/CountBadgeAdornerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Badge/Themes/DotBadgeAdornerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Badge/Themes/DotBadgeIndicatorTheme.axaml`
@@ -12159,7 +12124,7 @@ Source: ./controls/calendar/index-cn.md
 
 `Calendar` 是按日期组织业务展示内容的桌面日历控件，遵循本专题定义的月面板、年面板、Header、范围限制、禁用规则、周序号和单元格定制语义。它同时保留桌面端可用的焦点与方向键导航。
 
-Calendar 只负责“查看并选择一个日期或月份”的面板体验，不负责日期输入弹层、范围选择、多日期选择、时间编辑或日程排布。日期输入由 DatePicker 等控件承担，范围和日程数据由业务层承担。新 Calendar 的内部 `CalendarView` 与 DatePicker 的旧 CalendarView 子系统完全隔离。
+Calendar 只负责“查看并选择一个日期或月份”的面板体验，不负责日期输入弹层、范围选择、多日期选择、时间编辑或复杂日程排布。日期输入由 DatePicker 等控件承担，范围和日程数据由业务层承担；Calendar 只提供轻量 `RangeBars` 标记能力，用于在日期网格中表达连续日期业务条。新 Calendar 的内部 `CalendarView` 与 DatePicker 的旧 CalendarView 子系统完全隔离。
 
 主要源码入口：
 
@@ -12185,7 +12150,7 @@ Calendar 的设计语言围绕日期面板的产品语义、可观察状态和�
 | 产品语义 | 控件在界面中承担的稳定职责。 | 以 Month/Year 两种面板展示日期或月份，并提交单一选中值。 |
 | 内容承载 | 业务数据和模板如何进入控件。 | `Value`、`ValidRange`、`DisabledDate`、`CellTemplate`、`FullCellTemplate` 与 `HeaderTemplate`。 |
 | 状态反馈 | API、内部状态与伪类如何形成反馈。 | `today`、`selected`、`outside`、`disabled`、`focused`、`fullscreen`、`mini`、`show-week`。 |
-| 主题语义 | SharedToken、CalendarControlToken、ControlTheme 与模板如何表达视觉。 | 四个 Calendar ControlTheme 消费共享 Token 与七个 Calendar 专属 Token。 |
+| 主题语义 | SharedToken、CalendarControlToken、ControlTheme 与模板如何表达视觉。 | 四个 Calendar ControlTheme 消费共享 Token 与八个 Calendar 专属 Token。 |
 
 设计上的首要不变量是：Cell 定制不能夺走日期值、选中、禁用、焦点和命中测试语义；这些语义由 Cell 容器保留，模板只改变内容呈现方式。
 
@@ -12206,8 +12171,11 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 | `CellTemplate` | `null` | 替换默认值下方的业务内容区域，但保留默认日期/月值和 Cell 状态。 |
 | `FullCellTemplate` | `null` | 替换 Cell 的完整内部内容；优先于 `CellTemplate`。 |
 | `HeaderTemplate` | `null` | 自定义 Header；为空时使用默认 Year/Month/Mode Header。 |
+| `RangeBars` | empty | 声明连续日期范围条；仅在 Fullscreen Month 日期网格 overlay 中渲染。 |
 
 `ValidRange` 使用 `CalendarDateRange(start, end)`，两端均包含，构造函数把时间规范化到日期并拒绝 `end < start`。`CalendarCellContext` 提供 `Value`、`Today`、`CellType`、`DisplayValue`、`IsToday`、`IsInView`、`IsSelected` 和 `IsDisabled`。`CalendarHeaderContext` 提供当前 `Value`/`Mode` 以及提交值和模式的命令。
+
+`CalendarRangeBar` 提供 `StartDate`、`EndDate`、`Label`、`Background` 和 `Height`。日期端点按 `.Date` 投影，首尾包含；`Background` 支持普通 brush、binding、DynamicResource 和 TokenResource。范围条模型、分段算法和资源生命周期见 [Calendar 范围条设计](range-bar-design.md)。
 
 `Value` 与 `Mode` 的默认 Avalonia binding mode 均为 `TwoWay`，用户通过 Cell 或 Header 提交的新状态可以写回绑定源。
 
@@ -12225,7 +12193,7 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 ### 3.3 模板、伪类与主题契约
 
-稳定的根模板协作入口为 `PART_CalendarView`、`PART_DefaultHeader` 和 `PART_CustomHeader`；默认 Header 内部使用 `PART_YearSelect`、`PART_MonthSelect`、`PART_ModeSwitch`，View 内部使用 `PART_WeekHeader` 和 `PART_CellHost`，Cell 内部使用 `PART_Item`、`PART_CellInner`、`PART_ItemContent` 和 `PART_Value`。
+稳定的根模板协作入口为 `PART_HeaderPresenter`、`PART_BodyPresenter`、`PART_CalendarView`、`PART_RangeBarPanel`、`PART_DefaultHeader` 和 `PART_CustomHeader`；默认 Header 内部使用 `PART_YearSelect`、`PART_MonthSelect`、`PART_ModeSwitch`，View 内部使用 `PART_WeekHeader` 和 `PART_CellHost`，Cell 内部使用 `PART_Item`、`PART_CellInner`、`PART_ItemContent` 和 `PART_Value`。
 
 根伪类包括 `:fullscreen`、`:mini`、`:month`、`:year`、`:show-week`；Cell 伪类包括 `:date`、`:month`、`:week`、`:today`、`:selected`、`:outside`、`:disabled`、`:focused`。四个内部 ControlTheme 的 key 与伪类是主题兼容契约，变更必须同步源码、Gallery 和文档。
 
@@ -12245,7 +12213,7 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:33`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:41`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -12253,11 +12221,42 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:Calendar Value="{Binding SampleDate}"
 ```
 
+### 跨日期事件
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:167`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<atom:Calendar Value="{Binding CrossDateEventsSampleDate}"
+               MinWidth="640"
+               HorizontalAlignment="Stretch">
+    <atom:Calendar.RangeBars>
+        <atom:CalendarRangeBar StartDate="2026-01-08"
+                               EndDate="2026-01-10"
+                               Label="发布窗口"
+                               Background="{atom:SharedTokenResource ColorPrimary}" />
+        <atom:CalendarRangeBar StartDate="2026-01-14"
+                               EndDate="2026-01-14"
+                               Label="设计评审"
+                               Background="{atom:SharedTokenResource ColorSuccess}" />
+        <atom:CalendarRangeBar StartDate="2026-01-21"
+                               EndDate="2026-01-24"
+                               Label="维护窗口"
+                               Background="{atom:SharedTokenResource ColorWarning}" />
+        <atom:CalendarRangeBar StartDate="2026-01-30"
+                               EndDate="2026-01-31"
+                               Label="缺陷修复"
+                               Background="{atom:SharedTokenResource ColorError}" />
+    </atom:Calendar.RangeBars>
+</atom:Calendar>
+```
+
 ### 迷你模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:45`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:198`
 
-Gallery key：`ExamplesContent` / item `1`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <atom:Calendar Value="{Binding SampleDate}" Fullscreen="False" Width="300" />
@@ -12265,19 +12264,9 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 年模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:55`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:208`
 
-Gallery key：`ExamplesContent` / item `2`
-
-```axaml
-<atom:Calendar Value="{Binding SampleDate}"
-```
-
-### 周序号
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:68`
-
-Gallery key：`ExamplesContent` / item `3`
+Gallery key：`ExamplesContent` / item `4`
 
 ```axaml
 <atom:Calendar Value="{Binding SampleDate}"
@@ -12301,25 +12290,25 @@ Public API / Header / Cell input
 - 日期禁用由 `ValidRange` 与 `DisabledDate` 的并集决定；月份禁用按“月份首日和末日都在范围外”或业务规则判定，不能只检查当前日。
 - 方向键只移动面板内的 roving focus；应跳过禁用 Cell 和周序号 Cell，无合法目标时保留当前焦点。Enter/Space 才提交选择。
 - `Fullscreen`/Mini 只改变布局密度和 Header 控件尺寸，不改变值、事件顺序、禁用和模板优先级。
+- `RangeBars` 只改变日期网格上方的 overlay 业务标记层，不改变 Cell 外间距、选择状态、禁用状态、鼠标指针、事件顺序或 Automation。
 - AtomUI 语言服务改变会同步更新日期格式、周标题、月份名称、Header 的 Month/Year 文本与年份后缀。
 
 ## 主题与 Design Token
 
-Calendar 使用 `CalendarControlToken`（scope id `CalendarControl`）以及 SharedToken。专属 Token 只表达七个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`MiniContentHeight`、`FullCellMinHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
+Calendar 使用 `CalendarControlToken`（scope id `CalendarControl`）以及 SharedToken。专属 Token 只表达八个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`MiniContentHeight`、`FullCellMinHeight`、`RangeBarHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
 
 | Theme 文件 | 稳定职责 |
 | --- | --- |
-| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择和 CalendarView 接线；Fullscreen 拉伸且无紧凑边框，Mini 使用圆角边框。 |
+| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择、CalendarView 与范围条 overlay 接线；Fullscreen 拉伸且无紧凑边框，Mini 使用圆角边框。 |
 | `CalendarHeaderTheme.axaml` | Year Select、Month Select、Month/Year 模式切换。Mini 时 Header 交互控件应使用 Small 尺寸。 |
 | `CalendarViewTheme.axaml` | WeekHeader、CellHost，以及 Fullscreen/Mini 的布局差异。 |
 | `CalendarViewCellTheme.axaml` | 默认日期值、Cell/FullCell 模板消费、状态 selector 和命中测试视觉。 |
-| `CalendarThemes.axaml` | 四个内部 Theme 的资源聚合。 |
 
-`CellTemplate` 必须保留默认值显示；`FullCellTemplate` 覆盖完整 Cell 内部内容且优先级最高。两者都不能删除禁用、选中、焦点和 outside 的容器状态。
+`CellTemplate` 必须保留默认值显示，并与内置范围条 overlay 共存；`FullCellTemplate` 覆盖完整 Cell 内部内容且优先级最高，但不替换 Calendar body overlay。两者都不能删除禁用、选中、焦点和 outside 的容器状态。
 
 Token 来源：
 
-新 Calendar 的 Token 收敛为七个公开视觉语义。日期值、周标题、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则。
+新 Calendar 的 Token 收敛为八个公开视觉语义。日期值、周标题、范围条间距、范围条圆角、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则，范围条默认高度通过 `RangeBarHeight` 固化 Calendar overlay 的默认条高。
 
 当前 Token scope：
 
@@ -12332,6 +12321,8 @@ Token 来源：
 - 日期/月/周计算在 model 失效时完成，不在 Measure/Arrange 热路径重复执行。
 - `DisabledDate` 对同一次 model 构建的每个候选值最多调用一次；异常不得被静默吞掉。
 - Container pool 只复用无业务所有权的视觉容器；模板、Context、Focus 和 Automation 必须随 Bind/Unbind 完整更新。
+- RangeBars 集合使用 owner-managed 非 Visual `AvaloniaObject` 范式；`CalendarRangeBar.Background` 的动态资源和 TokenResource 由 generated scoped resource host 承载，Calendar 负责 attach/release。
+- `CalendarRangeBarPanel` 不遍历 Cell visual tree，不在 pointer move 热路径中计算，也不拥有业务数据生命周期。
 - Token 通过 `CalendarControlTokenResource` 和 SharedToken 进入 AXAML；运行时状态由伪类 selector 表达。
 - 不使用运行时反射扫描 API、Token、日期类型或 Gallery 数据；属性静态注册、强类型上下文和生成资源保持 NativeAOT 兼容。
 - LanguageManager、VisualTree、Template part 等外部订阅必须有成对释放路径，避免 detach 后保留 Calendar。
@@ -12347,11 +12338,13 @@ src/AtomUI.Desktop.Controls/Calendar/
 ├── CalendarEnums.cs
 ├── CalendarEventArgs.cs
 ├── CalendarHeaderContext.cs
+├── CalendarRangeBar.cs
 ├── CalendarToken.cs                 # DatePicker 旧 CalendarView 的遗留 Token，不属于新 Calendar
 ├── Internal/
 │   ├── CalendarHeader.cs
 │   ├── CalendarHeaderOptions.cs
 │   ├── CalendarPseudoClass.cs
+│   ├── CalendarRangeBarPanel.cs
 │   ├── CalendarRelayCommand.cs
 │   ├── CalendarView.cs
 │   ├── CalendarViewAutomationPeer.cs
@@ -12368,8 +12361,7 @@ src/AtomUI.Desktop.Controls/Calendar/
     ├── CalendarTheme.axaml(.cs)
     ├── CalendarHeaderTheme.axaml(.cs)
     ├── CalendarViewTheme.axaml(.cs)
-    ├── CalendarViewCellTheme.axaml(.cs)
-    └── CalendarThemes.axaml
+    └── CalendarViewCellTheme.axaml(.cs)
 ```
 
 `CalendarToken.cs` 属于 DatePicker 的旧 CalendarView 兼容边界；新 Calendar 的专属 Token 是 `CalendarControlToken.cs`。两者不得在实现或文档中混用。
@@ -12638,7 +12630,6 @@ Card 的默认视觉由根 Card 主题和多个子控件主题组成。
 | `CardGridItemTheme.axaml` | 栅格项内容承载、padding、阴影和 hover 状态。 |
 | `CardTabsContentTheme.axaml` | 内部 TabControl、ContentPadding 和 header edge padding。 |
 | `CardMetaContentTheme.axaml` | Avatar、标题和描述的元信息布局。 |
-| `CardThemes.axaml` | 汇总 Card 相关主题资源。 |
 
 Token 关系：
 
@@ -12654,7 +12645,7 @@ CardTheme / CardActionPanelTheme / CardGridItemTheme / CardTabsContentTheme / Ca
 
 Token 来源：
 
-CardToken 是 Card 的组件级 Token scope，描述卡片 Header、Body、Actions、Tabs、Extra、阴影、Grid item 和 action icon 的组件语义值。
+CardToken 是 Card 的控件级 Token scope，描述卡片 Header、Body、Actions、Tabs、Extra、阴影、Grid item 和 action icon 的组件语义值。
 
 CardToken 不承载以下状态：
 
@@ -12694,7 +12685,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Card/CardGridItem.cs`：Grid item 容器，负责 content、row/column/span 和 hover/size/motion 状态。
 - `src/AtomUI.Desktop.Controls/Card/CardTabsContent.cs`：Card tabs 内容桥接控件，负责把 Items 集合复制到内部 TabControl。
 - `src/AtomUI.Desktop.Controls/Card/CardPseudoClass.cs`：Card 稳定伪类常量。
-- `src/AtomUI.Desktop.Controls/Card/CardToken.cs`：Card 组件 Token。
+- `src/AtomUI.Desktop.Controls/Card/CardToken.cs`：Card 控件 Token。
 - `src/AtomUI.Desktop.Controls/Card/Themes/*.axaml`：根主题、操作区、操作按钮、Meta、Grid、Tabs 等主题资源。
 
 ## 相关文档
@@ -12740,7 +12731,7 @@ Carousel 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Carousel 是 AtomUI 桌面控件体系中的轮播控件，用于在多个页面或媒体项之间自动或手动切换。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | 继承 ItemsControl 的 `Items` / `ItemsSource` 与 `CarouselPage` 容器。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、loading/async、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Carousel Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Carousel Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -12883,7 +12874,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Carousel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Carousel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -12892,9 +12883,8 @@ Carousel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `CarouselPageTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CarouselPaginationTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CarouselTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `CarouselThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Carousel 使用 `CarouselToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、collection/filter、motion、visual option 运行时状态。
+Carousel 使用 `CarouselToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -12943,7 +12933,6 @@ Carousel Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselPageTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselPaginationTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Carousel/Themes/CarouselThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Carousel/VirtualizingCarouselPanel.cs`
 
 职责边界：
@@ -12996,7 +12985,7 @@ Collapse 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Collapse 是 AtomUI 桌面控件体系中的折叠面板控件，用于在多个可展开内容区之间展示和隐藏内容。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `AddOnContent`、`AddOnContentTemplate`、`ContentPadding`、`ExpandIcon`、`ExpandIconPosition`、`HeaderPadding`、`IsShowExpandIcon`、`ItemContentPadding` 等 9 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Collapse Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Collapse Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -13166,15 +13155,14 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Collapse 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Collapse 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `CollapseItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `CollapseTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `CollapseThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Collapse 使用 `CollapseToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
+Collapse 使用 `CollapseToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
 
 Collapse 的分隔线采用结构化所有权：
 
@@ -13228,7 +13216,6 @@ Collapse Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls/Collapse/ICollapseItemData.cs`
 - `src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseThemes.axaml`
 
 职责边界：
 
@@ -13280,7 +13267,7 @@ DataGrid 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | DataGrid 是 AtomUI 桌面控件体系中的数据表格控件，用于列模型、行选择、排序、过滤、编辑、冻结列和分页展示。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `AutoGenerateColumns`、`CanUserFilterColumns`、`CanUserReorderColumns`、`CanUserReorderRows`、`CanUserResizeColumns`、`CanUserSortColumns`、`CellEditingTemplate`、`CellTemplate` 等 32 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | DataGrid Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、Control Own Token 和模板绑定如何表达视觉。 | DataGrid Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -13314,7 +13301,7 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 主要公开类型与枚举：
 
-- 类型：`AtomUIDataGridThemesProvider`、`CollectionViewGroupComparer`、`CollectionViewGroupRoot`、`ControlTokenTypePool`、`DataGrid`、`DataGridAbstractTextColumn`、`DataGridAutoGeneratingColumnEventArgs`、`DataGridBeginningEditEventArgs`、`DataGridBoundColumn`、`DataGridCell`、`DataGridCellCollection`、`DataGridCellCoordinates`、`DataGridCellEditEndedEventArgs`、`DataGridCellEditEndingEventArgs` 等 95 项。
+- 类型：`DataGrid`、`DataGridAbstractTextColumn`、`DataGridAutoGeneratingColumnEventArgs`、`DataGridBeginningEditEventArgs`、`DataGridBoundColumn`、`DataGridCell`、`DataGridCellCollection`、`DataGridCellCoordinates`、`DataGridCellEditEndedEventArgs`、`DataGridCellEditEndingEventArgs` 等 public DataGrid 类型。
 - 枚举：`DataGridClipboardCopyMode`、`DataGridEditAction`、`DataGridEditingUnit`、`DataGridFilterPresenterMode`、`DataGridFilterSelectionMode`、`DataGridFilterApplyMode`、`DataGridGridLinesVisibility`、`DataGridHeadersVisibility`、`DataGridLangResourceKind`、`DataGridLengthUnitType`、`DataGridPaginationVisibility`、`DataGridRowDetailsVisibilityMode` 等。
 
 稳定 template part：
@@ -13346,7 +13333,7 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
 稳定事件包括 `SelectionChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
-- 类型：`AtomUIDataGridThemesProvider`、`CollectionViewGroupComparer`、`CollectionViewGroupRoot`、`ControlTokenTypePool`、`DataGrid`、`DataGridAbstractTextColumn`、`DataGridAutoGeneratingColumnEventArgs`、`DataGridBeginningEditEventArgs`、`DataGridBoundColumn`、`DataGridCell`、`DataGridCellCollection`、`DataGridCellCoordinates`、`DataGridCellEditEndedEventArgs`、`DataGridCellEditEndingEventArgs` 等 95 项。
+- 类型：`DataGrid`、`DataGridAbstractTextColumn`、`DataGridAutoGeneratingColumnEventArgs`、`DataGridBeginningEditEventArgs`、`DataGridBoundColumn`、`DataGridCell`、`DataGridCellCollection`、`DataGridCellCoordinates`、`DataGridCellEditEndedEventArgs`、`DataGridCellEditEndingEventArgs` 等 public DataGrid 类型。
 
 ## 使用示例
 
@@ -13595,11 +13582,10 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-DataGrid 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+DataGrid 的视觉模型由控件模板、ControlTheme、SharedToken 和 DataGrid Own Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `AtomUIDataGridThemesProvider.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DataGridCellTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `DataGridColumnGroupHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `DataGridColumnHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
@@ -13619,7 +13605,7 @@ DataGrid 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `DataGridSortIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DataGridTreeFilterFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-DataGrid 使用 `DataGridToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、motion、visual option 运行时状态。
+DataGrid 拥有独立 Control identity；`DataGridToken` 只表达 DataGrid Own Token 语义，不承载 selection/checked/active、collection/filter、motion 或 visual option 运行时状态。Control 级 Global Token 覆盖与 Own Token 通过 `DataGridTokenResource` 统一读取。
 
 主题维护规则：
 
@@ -13656,7 +13642,7 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls.DataGrid`：18 个文件，代表文件 `AtomUIDataGridThemesProvider.axaml`、`AtomUIDataGridThemesProvider.cs`、`DataGrid.Cells.cs`、`DataGrid.Columns.cs`、`DataGrid.Privates.cs` 等。
+- `src/AtomUI.Desktop.Controls.DataGrid`：代表文件包括 `AtomUIDataGridThemesProvider.cs`、`ThemeManagerBuilderExtensions.cs`、`DataGrid.Cells.cs`、`DataGrid.Columns.cs`、`DataGrid.Privates.cs` 等。
 - `src/AtomUI.Desktop.Controls.DataGrid/Cell`：4 个文件，代表文件 `DataGridCell.cs`、`DataGridCellCollection.cs`、`DataGridCellCoordinates.cs`、`DataGridCellsPresenter.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/Column`：31 个文件，代表文件 `DataGridAbstractTextColumn.cs`、`DataGridBoundColumn.cs`、`DataGridCheckBoxColumn.cs`、`DataGridColumn.Privates.cs`、`DataGridColumn.cs` 等。
 - `src/AtomUI.Desktop.Controls.DataGrid/Column/Filters`：7 个文件，代表文件 `DataGridFilterIndicator.cs`、`DataGridFilterItem.cs`、`DataGridFilterValuesSelectedEventArgs.cs`、`DataGridMenuFilterFlyout.cs`、`DataGridMenuFilterFlyoutPresenter.cs` 等。
@@ -13664,7 +13650,8 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls.DataGrid/EventArgs`：18 个文件，代表文件 `DataGridAutoGeneratingColumnEventArgs.cs`、`DataGridBeginningEditEventArgs.cs`、`DataGridCellEditEndedEventArgs.cs`、`DataGridCellEditEndingEventArgs.cs`、`DataGridCellEventArgs.cs` 等。
 - `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator`：2 个文件，代表文件 `LanguageProviderPool.g.cs`、`LanguageResourceConst.g.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ResourceHost.ScopedResourceHostGenerator`：1 个文件，代表文件 `GenerateScopedResourceHostAttribute.g.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：2 个文件，代表文件 `ControlTokenTypePool.g.cs`、`TokenResourceConst.g.cs`。
+- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：生成 `GeneratedControlPackageRegistration.g.cs`、`GeneratedThemeSchema.g.cs` 和 `TokenResourceConst.g.cs`。
+- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator`：生成独立主题叶子的 `GeneratedControlThemeAssetManifest.g.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/Properties`：1 个文件，代表文件 `AssemblyInfo.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/Row`：7 个文件，代表文件 `DataGridDetailsPresenter.cs`、`DataGridRow.Privates.cs`、`DataGridRow.cs`、`DataGridRowGroupHeader.cs`、`DataGridRowGroupInfo.cs` 等。
@@ -13986,7 +13973,6 @@ Descriptions 的默认视觉由根主题、默认项主题和边框 cell 主题�
 | `DescriptionDefaultItemTheme.axaml` | 普通项 horizontal/vertical/vertical bordered 三种模板和冒号、label、content 视觉。 |
 | `DescriptionBorderedItemLabelTheme.axaml` | 水平边框模式 label cell 视觉。 |
 | `DescriptionBorderedItemContentTheme.axaml` | 水平边框模式 content cell 视觉。 |
-| `DescriptionsThemes.axaml` | 汇总 Descriptions 相关主题资源。 |
 
 Token 关系：
 
@@ -14002,7 +13988,7 @@ DescriptionsTheme / DescriptionDefaultItemTheme / bordered cell themes
 
 Token 来源：
 
-DescriptionsToken 是 Descriptions 的组件级 Token scope，描述描述列表的 label 背景、文本颜色、标题颜色、Header 间距、item padding、冒号间距、内容颜色和 Extra 颜色。
+DescriptionsToken 是 Descriptions 的控件级 Token scope，描述描述列表的 label 背景、文本颜色、标题颜色、Header 间距、item padding、冒号间距、内容颜色和 Extra 颜色。
 
 DescriptionsToken 不承载以下状态：
 
@@ -14084,7 +14070,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Descriptions/DescriptionBorderedCell.cs`：水平边框模式 label/content cell 的共享内部基类。
 - `src/AtomUI.Desktop.Controls/Descriptions/DescriptionBorderedItemLabel.cs`：水平边框模式 label cell 类型。
 - `src/AtomUI.Desktop.Controls/Descriptions/DescriptionBorderedItemContent.cs`：水平边框模式 content cell 类型。
-- `src/AtomUI.Desktop.Controls/Descriptions/DescriptionsToken.cs`：Descriptions 组件 Token。
+- `src/AtomUI.Desktop.Controls/Descriptions/DescriptionsToken.cs`：Descriptions 控件 Token。
 - `src/AtomUI.Desktop.Controls/Descriptions/Themes/*.axaml`：根模板、普通项模板、边框 cell 模板和 token 样式。
 
 ## 相关文档
@@ -14131,7 +14117,7 @@ Empty 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Empty 是 AtomUI 桌面控件体系中的空状态控件，用于表达无数据、无结果或占位状态。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Description`、`ImagePath`、`ImageSource`、`IsDescriptionVisible`、`PresetImage`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Empty Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Empty Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -14227,13 +14213,13 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Empty 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Empty 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `EmptyTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Empty 使用 `EmptyToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
+Empty 使用 `EmptyToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
 
 主题维护规则：
 
@@ -14534,7 +14520,7 @@ SharedToken 提供全局边框、字体、动效时长、图标大小和基础�
 
 Token 来源：
 
-ExpanderToken 是 Expander 的组件级 Token scope，描述 Header/Content 的默认 padding、背景、整体圆角和展开图标默认外边距。
+ExpanderToken 是 Expander 的控件级 Token scope，描述 Header/Content 的默认 padding、背景、整体圆角和展开图标默认外边距。
 
 ExpanderToken 不承载以下状态：
 
@@ -14577,7 +14563,7 @@ AOT 边界：
 
 - `src/AtomUI.Desktop.Controls/Expander/Expander.cs`：公共 API、内部 effective state、template part 接入、触发区域、默认图标、边框状态、动效状态机和自定义 padding 度量。
 - `src/AtomUI.Desktop.Controls/Expander/ExpanderPseudoClass.cs`：方向、自定义 padding 和展开状态相关伪类常量。
-- `src/AtomUI.Desktop.Controls/Expander/ExpanderToken.cs`：Expander 组件 Token。
+- `src/AtomUI.Desktop.Controls/Expander/ExpanderToken.cs`：Expander 控件 Token。
 - `src/AtomUI.Desktop.Controls/Expander/Themes/ExpanderTheme.axaml`：控件模板、SizeType 分支、方向分支、图标位置分支、触发分支、Borderless/Ghost 分支和 token 引用。
 - `tests/AtomUI.Desktop.Controls.Tests/Expander/ExpanderBehaviorTests.cs`：Expander 行为和布局回归测试。
 
@@ -14806,7 +14792,7 @@ Token 通过动态资源进入 Theme，不应在 `Render` 中主动查找全局�
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/GroupBox/GroupBox.cs`：公共 API、template part 获取、测量 bounds、渲染和失效逻辑。
-- `src/AtomUI.Desktop.Controls/GroupBox/GroupBoxToken.cs`：GroupBox 组件 Token。
+- `src/AtomUI.Desktop.Controls/GroupBox/GroupBoxToken.cs`：GroupBox 控件 Token。
 - `src/AtomUI.Desktop.Controls/GroupBox/Themes/GroupBoxTheme.axaml`：模板结构、Header 对齐、TokenResource 引用和默认视觉属性。
 
 ## 相关文档
@@ -14852,7 +14838,7 @@ ImagePreviewer 的设计语言围绕控件职责、可观察状态和主题契�
 | 产品语义 | 控件在界面中承担的稳定职责。 | ImagePreviewer 是 AtomUI 桌面控件体系中的图片预览控件，用于查看、缩放、旋转、切换和窗口化预览图片。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Source`、`Sources`、`FallbackSource`、`CoverIndex`、`CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | current item、open/close、image loading、loaded/failed、fallback、motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ImagePreviewer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ImagePreviewer Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -15001,7 +14987,7 @@ Public API / IImagePreviewSource / ImageSourceUri / inherited command / user inp
 
 ## 主题与 Design Token
 
-ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -15012,11 +14998,10 @@ ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和�
 | `ImagePreviewerCoverTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ImagePreviewerDialogTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `ImagePreviewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `ImagePreviewerTitleBarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ImageViewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-ImagePreviewer 使用 `ImagePreviewerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
+ImagePreviewer 使用 `ImagePreviewerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
 
 预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。预览 dialog 的 `TitleAlignment` 默认值覆盖为 `WindowCenter`，因此 Windows、Linux 和 macOS 都默认以完整窗口水平中心作为标题基准；显式设置 `TitleAlignment` 时仍通过 `ImagePreviewerTitleBar` 投射，并继续由 `WindowTitleBarLayoutPanel` 处理左右安全区裁剪。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
 
@@ -15131,7 +15116,7 @@ InfoFlyout 的设计语言围绕控件职责、可观察状态和主题契约组
 | 产品语义 | 控件在界面中承担的稳定职责。 | InfoFlyout 是 AtomUI 桌面控件体系中的信息浮出层家族，用于从目标元素弹出普通内容、菜单内容或树形内容。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`ItemContainerTheme`、`ItemTemplate`、`ItemsSource`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | InfoFlyout Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | InfoFlyout Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -15253,17 +15238,15 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-InfoFlyout 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+InfoFlyout 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserFlyoutThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `FlyoutHostTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `FlyoutThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `MenuFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `TreeViewFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-InfoFlyout 使用 `FlyoutHostToken`、`TreeFlyoutToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
+InfoFlyout 使用 `FlyoutHostToken`、`TreeFlyoutToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -15309,9 +15292,7 @@ InfoFlyout Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - `src/AtomUI.Desktop.Controls/Flyouts/MenuFlyout.cs`
 - `src/AtomUI.Desktop.Controls/Flyouts/MenuFlyoutPresenter.cs`
 - `src/AtomUI.Desktop.Controls/Flyouts/PopupFlyoutBaseReflectionExtensions.cs`
-- `src/AtomUI.Desktop.Controls/Flyouts/Themes/BrowserFlyoutThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/FlyoutHostTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Flyouts/Themes/FlyoutThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.cs`
 - `src/AtomUI.Desktop.Controls/Flyouts/Themes/TreeViewFlyoutPresenterTheme.axaml`
@@ -15598,7 +15579,6 @@ ListBox 不通过反射访问模板内部结构。模板接入依赖稳定 part 
 - `src/AtomUI.Desktop.Controls/ListBox/ListBoxToken.cs`：ListBox 专属 Token 定义。
 - `src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`：root 模板、ScrollViewer、ItemsPresenter、EmptyIndicator、默认 ItemTemplate 和 root 样式。
 - `src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxItemTheme.axaml`：条目模板、选中指示器、普通内容、过滤高亮文本和条目状态样式。
-- `src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxThemes.axaml`：ListBox 和 ListBoxItem theme 注册。
 - `src/AtomUI.Desktop.Controls/Primitives/CandidateList/CandidateList.cs`：基于 ListBox 的候选项列表扩展。
 - `src/AtomUI.Controls.Shared/IListVirtualizingContextAware.cs`：虚拟化上下文保存、恢复和清理接口。
 
@@ -16000,7 +15980,7 @@ QRCode 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | QRCode 是 AtomUI 桌面控件体系中的二维码控件，用于把文本或业务字符串渲染为可扫描二维码。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ExpiredContent`、`ExpiredContentTemplate`、`Icon`、`IconBgColor`、`IconSize`、`LoadingContent`、`LoadingContentTemplate`、`ScannedContent` 等 10 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | loading/async、input/value、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | QRCode Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | QRCode Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -16120,13 +16100,13 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-QRCode 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+QRCode 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `QRCodeTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-QRCode 使用 `QRCodeToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、input/value、visual option 运行时状态。
+QRCode 使用 `QRCodeToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、input/value、visual option 运行时状态。
 
 主题维护规则：
 
@@ -16416,7 +16396,6 @@ Segmented 的视觉由根主题、item 主题、专属 Token 和 SharedToken 共
 | --- | --- |
 | `SegmentedTheme.axaml` | 根模板、轨道 padding/background、选中滑块资源、SizeType/Shape 圆角分支、方向/展开对齐和滑块动画。 |
 | `SegmentedItemTheme.axaml` | item 模板、图标/内容布局、hover/pressed/selected/disabled 状态、SizeType/Shape 分支和图标尺寸。 |
-| `SegmentedThemes.axaml` | 汇总 Segmented 相关主题资源。 |
 
 视觉关系：
 
@@ -16436,7 +16415,7 @@ track + selected thumb + item states
 
 Token 来源：
 
-SegmentedToken 是 Segmented 的组件级 Token scope，描述分段轨道、选项文本状态、选项背景状态、选中滑块背景和 item 尺寸的主题语义。
+SegmentedToken 是 Segmented 的控件级 Token scope，描述分段轨道、选项文本状态、选项背景状态、选中滑块背景和 item 尺寸的主题语义。
 
 SegmentedToken 不承载以下状态：
 
@@ -16481,10 +16460,9 @@ AOT 边界：
 
 - `src/AtomUI.Desktop.Controls/Segmented/Segmented.cs`：桌面公开根控件，注册 Token scope，创建 `SegmentedItem` 容器。
 - `src/AtomUI.Desktop.Controls/Segmented/SegmentedItem.cs`：桌面公开 item，注册 Token scope。
-- `src/AtomUI.Desktop.Controls/Segmented/SegmentedToken.cs`：Segmented 组件 Token。
+- `src/AtomUI.Desktop.Controls/Segmented/SegmentedToken.cs`：Segmented 控件 Token。
 - `src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedTheme.axaml`：根模板、轨道、滑块、方向/expanding、SizeType/Shape 和 motion 样式。
 - `src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedItemTheme.axaml`：item 模板、状态样式、SizeType/Shape 和图标样式。
-- `src/AtomUI.Desktop.Controls/Segmented/Themes/SegmentedThemes.axaml`：主题资源聚合入口。
 
 Gallery 和测试：
 
@@ -16536,7 +16514,7 @@ Statistic 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Statistic 是 AtomUI 桌面控件体系中的统计数值控件，用于展示标题、数值、前后缀、计时或动态计数。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `AnimatingValue`、`ContentFontSize`、`ContentForeground`、`EndValue`、`Value`、`ValuePrefixAddOn`、`ValuePrefixAddOnTemplate`、`ValueSuffixAddOn` 等 9 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | loading/async、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Statistic Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Statistic Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -16652,17 +16630,16 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Statistic 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Statistic 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `AbstractStatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `StatisticCountUpTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `StatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `StatisticThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TimerStatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Statistic 使用 `StatisticToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、collection/filter、input/value、motion、visual option 运行时状态。
+Statistic 使用 `StatisticToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -16708,7 +16685,6 @@ Statistic Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls/Statistic/Themes/AbstractStatisticTheme.cs`
 - `src/AtomUI.Desktop.Controls/Statistic/Themes/StatisticCountUpTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Statistic/Themes/StatisticTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Statistic/Themes/StatisticThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Statistic/Themes/TimerStatisticTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Statistic/TimerStatistic.cs`
 
@@ -16763,7 +16739,7 @@ Tag 的设计语言围绕控件职责、可观察状态和主题契约组织，�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Tag 表达展示语义，CheckableTag 表达二态选择，CheckableTagGroup 表达一组选项的单选或多选。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | Tag 使用 `Text`/`Icon`；CheckableTag 使用 `Content`/`Icon`；Group 使用 `Options` 和 `ItemTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | Tag 使用颜色分类和 `Variant`；CheckableTag 使用 `IsChecked`；Group 使用 `CheckedItem(s)`。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -16919,16 +16895,15 @@ Group 的内部 SelectedItem(s) 只保存归一后的 option wrapper，不是 pu
 
 ## 主题与 Design Token
 
-Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `TagTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CheckableTagTheme.axaml` | 提供二态标签的内容结构以及 checked、focus、disabled 等状态视觉。 |
 | `CheckableTagGroupTheme.axaml` | 组合内部选择控件、ItemsPresenter 和 WrapPanel。 |
-| `TagThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Tag 使用 `TagToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
+Tag 使用 `TagToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
 
 Tag 的视觉组合由以下矩阵表达：
 
@@ -16986,7 +16961,6 @@ Tag Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆�
 - `src/AtomUI.Desktop.Controls/Tag/TagToken.cs`
 - `src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tag/Themes/TagTheme.cs`
-- `src/AtomUI.Desktop.Controls/Tag/Themes/TagThemes.axaml`
 
 职责边界：
 
@@ -17040,7 +17014,7 @@ Timeline 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`Label`、`IndicatorIcon`、`Pending`、`PendingIcon`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | `IsReverse`、Pending 状态、可见项顺序和首尾节点状态。 |
 | 布局语义 | 主轴方向和内容相对轴线的位置如何组合。 | `Orientation` 决定主轴，`Mode` 决定交叉轴上的 `Start`、`End` 或交替布局。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Timeline Token、方向 selector、Item 模板和 Indicator renderer。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Timeline Token、方向 selector、Item 模板和 Indicator renderer。 |
 
 ## 公共 API
 
@@ -17221,16 +17195,15 @@ Orientation / Mode / IsReverse / Items / item visibility
 
 ## 主题与 Design Token
 
-Timeline 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Timeline 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `TimelineIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimelineItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TimelineTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TimelineThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Timeline 使用 `TimelineToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载方向、Mode、视觉索引或 Pending 相邻状态。水平布局的内容间距优先使用 SharedToken；方向差异由 ControlTheme selector 和布局 Panel 表达。
+Timeline 使用 `TimelineToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载方向、Mode、视觉索引或 Pending 相邻状态。水平布局的内容间距优先使用 SharedToken；方向差异由 ControlTheme selector 和布局 Panel 表达。
 
 主题维护规则：
 
@@ -17278,7 +17251,6 @@ Timeline Token 只表达节点、连接线和 Item 的组件级尺寸、间距�
 - `src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineIndicatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Timeline/Themes/TimelineThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Timeline/Timeline.cs`
 - `src/AtomUI.Desktop.Controls/Timeline/TimelineItem.cs`
 - `src/AtomUI.Desktop.Controls/Timeline/TimelineToken.cs`
@@ -17333,7 +17305,7 @@ Tooltip 的设计语言围绕控件职责、可观察状态和主题契约组织
 | 产品语义 | 控件在界面中承担的稳定职责。 | Tooltip 是 AtomUI 桌面控件体系中的工具提示控件，用于在目标元素附近展示短文本或轻量说明。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | 继承 ToolTip 的 `Content` 与目标控件 tooltip 绑定。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Tooltip Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Tooltip Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -17481,13 +17453,13 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Tooltip 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Tooltip 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ToolTipTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Tooltip 使用 `ToolTipToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 motion 运行时状态。
+Tooltip 使用 `ToolTipToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 motion 运行时状态。
 
 主题维护规则：
 
@@ -17580,7 +17552,7 @@ Tour 的设计语言围绕控件职责、可观察状态和主题契约组织，
 | 产品语义 | 控件在界面中承担的稳定职责。 | Tour 是 AtomUI 桌面控件体系中的漫游引导控件，用于按步骤高亮界面目标并展示说明。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CloseIcon`、`CoverTemplate`、`Description`、`DescriptionTemplate`、`ItemSpacing`、`ItemTemplate`、`Title`、`TitleTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Tour Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Tour Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -17676,7 +17648,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Tour 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Tour 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -17685,9 +17657,8 @@ Tour 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组
 | `TourStepTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TourStepsViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TourTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TourThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Tour 使用 `TourToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、motion、visual option 运行时状态。
+Tour 使用 `TourToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -17735,7 +17706,6 @@ Tour Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TourStepTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TourStepsViewTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Tour/Themes/TourThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Tour.cs`
 - `src/AtomUI.Desktop.Controls/Tour/TourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/TourLayer.cs`
@@ -18253,7 +18223,7 @@ Alert 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Alert 是 AtomUI 桌面控件体系中的警告提示控件，用于展示页面内的成功、信息、警告和错误反馈。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CloseIcon`、`Description`、`IsShowIcon`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | 基础交互和主题状态。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Alert Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Alert Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -18406,13 +18376,13 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Alert 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Alert 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `AlertTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Alert 使用 `AlertToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 基础交互和主题状态 运行时状态。
+Alert 使用 `AlertToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 基础交互和主题状态 运行时状态。
 
 主题维护规则：
 
@@ -18503,7 +18473,7 @@ Drawer 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Drawer 是 AtomUI 桌面控件体系中的抽屉控件，用于从窗口边缘滑入承载附加内容或操作面板。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Content`、`ContentTemplate`、`ExtraTemplate`、`FooterTemplate`、`Title`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Drawer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Drawer Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -18705,15 +18675,14 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Drawer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Drawer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `DrawerContainerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DrawerInfoContainerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DrawerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Drawer 使用 `DrawerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
+Drawer 使用 `DrawerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -18760,7 +18729,6 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerContainerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerInfoContainerTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerThemes.axaml`
 
 职责边界：
 
@@ -18812,7 +18780,7 @@ Message 的设计语言围绕控件职责、可观察状态和主题契约组织
 | 产品语义 | 控件在界面中承担的稳定职责。 | Message 是 AtomUI 桌面控件体系中的全局消息控件，用于展示轻量级、自动关闭的操作反馈。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Icon`、`MaxItems`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Message Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Message Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -18923,15 +18891,14 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Message 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Message 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `MessageCardTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `MessageThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `WindowMessageManagerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-Message 使用 `MessageToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、motion、visual option 运行时状态。
+Message 使用 `MessageToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -18976,7 +18943,6 @@ Message Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 - `src/AtomUI.Desktop.Controls/Message/MessageToken.cs`
 - `src/AtomUI.Desktop.Controls/Message/MessageType.cs`
 - `src/AtomUI.Desktop.Controls/Message/Themes/MessageCardTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Message/Themes/MessageThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Message/Themes/WindowMessageManagerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Message/WindowMessageManager.cs`
 
@@ -19023,7 +18989,7 @@ Modal 不承担通知队列、轻量 Tooltip、Popup 菜单或业务级导航服
 
 - 对话表面由标题、内容、Footer 和操作按钮组成，Overlay 与 Window 共享同一个内容模型。
 - modal 通过 mask 或原生 owner 关系阻断底层输入；modeless 保持底层可交互。
-- 打开与关闭 motion 属于 Session 生命周期的一部分。异步打开在入场完成后触发 `Opened`，异步关闭在退出 motion、宿主移除和资源释放完成后结束。
+- Presenter 的真实展示边界属于 Session 生命周期的一部分。Overlay 在入场 motion 完成后触发 `Opened`，Window 在原生 `DialogWindow.Opened` 后触发；关闭任务分别等待 Overlay 退出 motion 或原生 `DialogWindow.Closed`，并在宿主移除和资源释放完成后结束。
 - `MessageBoxStyle` 只表达消息语义和默认图标/按钮策略，不改变 Dialog 生命周期。
 
 ## 公共 API
@@ -19046,7 +19012,7 @@ Modal 不承担通知队列、轻量 Tooltip、Popup 菜单或业务级导航服
 - `ShowDialogModalAsync(...)` 创建 modal Dialog。
 - 两者都在完整 teardown 后返回 `Task<object?>`。
 
-同一个实例在 `Opening`、`Open`、`ClosePending` 或 `Closing` 时再次调用 `OpenAsync` 会抛出 `InvalidOperationException`。声明式 `IsOpen=true` 可以在旧 Session 完整关闭后创建新 Session。
+同一个实例存在任何尚未进入 `Closed` 的 Session 时，再次调用 `OpenAsync` 会抛出 `InvalidOperationException`。声明式 `IsOpen=true` 可以在旧 Session 完整关闭后创建新 Session。
 
 ### 3.2 关闭事件
 
@@ -19066,7 +19032,7 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
   -> Closed
 ```
 
-`ButtonClicked.Handled=true`、`Closing.Cancel=true` 或 `BeforeCloseAsync` 返回 `false` 会取消本次普通关闭。owner close、placement target detach、外部取消和 presenter 打开失败属于强制 teardown；它们忽略业务 veto 和 confirm loading，但仍执行完整释放。
+`ButtonClicked.Handled=true`、`Closing.Cancel=true` 或 `BeforeCloseAsync` 返回 `false` 会取消本次普通关闭。owner close、placement target detach、外部取消和 presenter 打开失败属于强制 teardown：Session 仍触发一次 `Closing`，但忽略 `Cancel`、跳过 `BeforeCloseAsync`，也不受 confirm loading 阻止，随后执行完整释放。
 
 事件处理器或 presenter 在结果提交后抛出的首个异常，只会在 teardown 完成后传播。
 
@@ -19285,7 +19251,7 @@ Gallery key：`ExamplesContent` / item `4`
 - Enter/Escape 根据当前有效按钮序列查找 default/escape 按钮，运行时修改标准按钮或自定义按钮会立即生效。
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
 - 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
-- Overlay 与 Window 都等待 opening/closing motion；`IsMotionEnabled=false` 跳过 motion，但不跳过宿主打开、关闭和释放。
+- Overlay 等待 mask 与 Surface 的 opening/closing motion；`IsMotionEnabled=false` 只跳过这些 motion，不跳过宿主附加、移除和释放。Window 不创建 Surface `MotionActor`，其打开与关闭分别等待原生 `DialogWindow.Opened` 和 `DialogWindow.Closed`。
 - `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。Overlay handle 捕获 pointer，release 或 capture lost 都会完整结束当前 resize，不复用上一次拖拽 origin。
 
 ## 主题与 Design Token
@@ -19385,7 +19351,7 @@ Notification 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Notification 是 AtomUI 桌面控件体系中的通知控件，用于在窗口角落展示可关闭的较重反馈和进度信息。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Icon`、`MaxItems`、`Title`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、loading/async、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Notification Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Notification Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -19512,16 +19478,15 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Notification 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Notification 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `NotificationCardTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `NotificationProgressBarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `NotificationsThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `WindowNotificationManagerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-Notification 使用 `NotificationToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、collection/filter、motion、visual option 运行时状态。
+Notification 使用 `NotificationToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -19570,7 +19535,6 @@ Notification Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - `src/AtomUI.Desktop.Controls/Notifications/NotificationType.cs`
 - `src/AtomUI.Desktop.Controls/Notifications/Themes/NotificationCardTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Notifications/Themes/NotificationProgressBarTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Notifications/Themes/NotificationsThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Notifications/Themes/WindowNotificationManagerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Notifications/Utils/NotificationProgressBarVisibleConverter.cs`
 - `src/AtomUI.Desktop.Controls/Notifications/WindowNotificationManager.cs`
@@ -19625,7 +19589,7 @@ PopupConfirm 的设计语言围绕控件职责、可观察状态和主题契约�
 | 产品语义 | 控件在界面中承担的稳定职责。 | PopupConfirm 是 AtomUI 桌面控件体系中的气泡确认框控件，用于在目标元素附近完成轻量确认。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CancelText`、`ConfirmContent`、`ConfirmContentTemplate`、`Icon`、`OkText`、`Title`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | input/value。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | PopupConfirm Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | PopupConfirm Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -19728,15 +19692,14 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-PopupConfirm 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+PopupConfirm 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `PopupConfirmContainerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `PopupConfirmTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `PopupConfirmThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-PopupConfirm 使用 `PopupConfirmToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 input/value 运行时状态。
+PopupConfirm 使用 `PopupConfirmToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value 运行时状态。
 
 主题维护规则：
 
@@ -19780,7 +19743,6 @@ PopupConfirm Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - `src/AtomUI.Desktop.Controls/PopupConfirm/PopupConfirmToken.cs`
 - `src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmContainerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmTheme.axaml`
-- `src/AtomUI.Desktop.Controls/PopupConfirm/Themes/PopupConfirmThemes.axaml`
 
 职责边界：
 
@@ -20056,7 +20018,7 @@ ProgressBarToken 提供默认进度色、剩余轨道色、圆形文字和图标
 
 Token 来源：
 
-ProgressBarToken 是 ProgressBar 家族的组件级 Token scope。它定义默认进度色、剩余轨道色、圆形文本和图标最小尺寸、线形状态图标尺寸、线形额外信息间距和线形内部 padding。
+ProgressBarToken 是 ProgressBar 家族的控件级 Token scope。它定义默认进度色、剩余轨道色、圆形文本和图标最小尺寸、线形状态图标尺寸、线形额外信息间距和线形内部 padding。
 
 ProgressBarToken 不承载以下状态：
 
@@ -20111,7 +20073,7 @@ AOT 边界：
 - `StepsProgressBar.cs`：注册 token scope 的步骤线形控件入口。
 - `CircleProgress.cs`：注册 token scope 的圆形控件入口。
 - `DashboardProgress.cs`：注册 token scope 的仪表盘控件入口。
-- `ProgressBarToken.cs`：组件级 Token 默认值计算。
+- `ProgressBarToken.cs`：控件级 Token 默认值计算。
 - `Themes/*.axaml`：共享主题、线形主题、圆形主题和具体控件主题。
 
 Gallery 示例位于 `controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/`。
@@ -20160,7 +20122,7 @@ Result 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Result 是 AtomUI 桌面控件体系中的结果页控件，用于展示成功、失败、警告和信息结果状态。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ExtraTemplate`、`Header`、`HeaderFontSize`、`HeaderTemplate`、`Icon`、`SubHeader`、`SubHeaderFontSize`、`SubHeaderTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Result Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Result Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -20287,13 +20249,13 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Result 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Result 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ResultTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Result 使用 `ResultToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
+Result 使用 `ResultToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
 
 主题维护规则：
 
@@ -20389,7 +20351,7 @@ Skeleton 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Skeleton 是 AtomUI 桌面控件体系中的骨架屏控件，用于在内容加载前展示结构占位。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `AvatarShape`、`AvatarSize`、`AvatarSizeType`、`Content`、`ContentTemplate`、`HorizontalContentAlignment`、`IsShowAvatar`、`IsShowTitle` 等 12 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、loading/async、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Skeleton Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Skeleton Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -20508,7 +20470,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Skeleton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Skeleton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -20522,9 +20484,8 @@ Skeleton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `SkeletonNodeTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `SkeletonParagraphTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `SkeletonTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `SkeletonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Skeleton 使用 `SkeletonToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、motion、visual option 运行时状态。
+Skeleton 使用 `SkeletonToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -20586,7 +20547,6 @@ Skeleton Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonNodeTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonParagraphTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonThemes.axaml`
 
 职责边界：
 
@@ -20639,7 +20599,7 @@ Spin 的设计语言围绕控件职责、可观察状态和主题契约组织，
 | 产品语义 | 控件在界面中承担的稳定职责。 | Spin 是 AtomUI 桌面控件体系中的加载中控件，用于表示局部或整体内容正在处理。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CustomIndicatorTemplate`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Spin Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Spin Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -20795,15 +20755,14 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Spin 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Spin 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `SpinIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `SpinTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `SpinThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Spin 使用 `SpinToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 motion、visual option 运行时状态。
+Spin 使用 `SpinToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -20848,7 +20807,6 @@ Spin Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - `src/AtomUI.Desktop.Controls/Spin/SpinToken.cs`
 - `src/AtomUI.Desktop.Controls/Spin/Themes/SpinIndicatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Spin/Themes/SpinTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Spin/Themes/SpinThemes.axaml`
 
 职责边界：
 
@@ -20901,7 +20859,7 @@ Splash 的设计语言围绕“启动中但应用尚不可交互”的产品语�
 | 内容承载 | 用户数据、展示内容、模板或操作入口如何进入控件。 | `Logo`、`Title`、`Subtitle`、`Message`、`Detail`、`Content`、`Footer`。 |
 | 状态反馈 | public API、服务状态和模板绑定如何形成用户可感知反馈。 | `Status`、`Progress`、`IsIndeterminate`、`IsMotionEnabled`。 |
 | 宿主语义 | 启动窗口、静态 API 和实例服务如何协作。 | `SplashWindow` 负责窗口，`SplashService` 负责编排，`Splash` 静态 API 做薄封装。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Splash Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Splash Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -21144,9 +21102,8 @@ Splash 的视觉模型由 `Splash` 控件模板、`SplashWindow` 宿主主题、
 | --- | --- |
 | `SplashTheme.axaml` | 定义启动页视觉控件模板、状态 selector、ProgressBar/Spin 组合和内容区域。 |
 | `SplashWindowTheme.axaml` | 定义桌面启动窗口宿主、透明无装饰窗口模板、阴影宿主和内容承载边界。 |
-| `SplashThemes.axaml` | 聚合 Splash 视觉控件主题资源，保证包级引入顺序稳定。 |
 
-Splash 使用 `SplashToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。
+Splash 使用 `SplashToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。
 `SplashWindow` 使用 `{x:Type atom:SplashWindow}` 作为隐式 `ControlTheme` key；窗口模板必须保持透明内容宿主，避免默认 Window 背景破坏 Splash 表面圆角。
 `SplashWindowTheme.axaml` 直接使用 `ShadowsAwareContainer#PART_SurfaceHost` 承载 `Splash`，由 `SurfaceBoxShadow` 控制窗口表面阴影，由 `SurfaceCornerRadius` 控制阴影遮罩圆角。`SplashTheme.axaml` 内部的 `PART_RootLayout` 和 `PART_SurfaceLayout` 继续负责背景、内容圆角和裁剪。
 
@@ -21205,8 +21162,6 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 - `src/AtomUI.Desktop.Controls.Extras/Splash/SplashPseudoClass.cs`
 - `src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashTheme.axaml`
 - `src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashWindowTheme.axaml`
-- `src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashThemes.axaml`
-- `src/AtomUI.Desktop.Controls.Extras/AtomUIExtrasThemesProvider.axaml`
 - `src/AtomUI.Desktop.Controls.Extras/AtomUIExtrasThemesProvider.cs`
 - `src/AtomUI.Desktop.Controls.Extras/ThemeManagerBuilderExtensions.cs`
 
@@ -21263,7 +21218,7 @@ Watermark 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Watermark 是 AtomUI 桌面控件体系中的水印控件，用于在目标元素上绘制文本或图片水印。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Source`、`Text`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、input/value、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -21383,7 +21338,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Watermark 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Watermark 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 当前控件未抽取到专属 AXAML 主题文件；视觉契约主要来自继承控件、共享主题和资源 key。
 
@@ -21477,7 +21432,7 @@ Window 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 产品语义 | 控件在界面中承担的稳定职责。 | Window 是 AtomUI 桌面控件体系中的桌面窗口控件，用于提供 AtomUI 自绘窗口、平台窗口能力和主题集成入口。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer` 等 11 项。`TitleBarFrameLayer` 表示标题栏背景或装饰层，不作为按钮、菜单、搜索框等交互控件入口。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Window Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Window Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -21559,7 +21514,7 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -21567,9 +21522,8 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
 | `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
 | `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
-| `WindowThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
+Window 使用 `WindowToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
 
 主题维护规则：
 
@@ -21667,7 +21621,6 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowResizerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.cs`
-- `src/AtomUI.Desktop.Controls/Window/Themes/WindowThemes.axaml`
 - `src/AtomUI.Desktop.Controls/Window/Utils/FullscreenPopoverLayer.cs`
 - `src/AtomUI.Desktop.Controls/Window/Utils/WindowDrawnDecorationsReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/Window/Utils/WindowResizer.cs`

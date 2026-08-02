@@ -31,7 +31,7 @@ ComboBox 的设计语言围绕控件职责、可观察状态和主题契约组�
 | 产品语义 | 控件在界面中承担的稳定职责。 | ComboBox 是 AtomUI 桌面控件体系中的组合框控件，用于在可输入文本框和候选列表之间完成选择。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`FilterValue`、`FilterValueSelector`、`LeftAddOnTemplate`、`OptionFontSize` 等 9 项。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ComboBox Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ComboBox Token + ControlTheme。 |
 
 ## 公共 API
 
@@ -225,18 +225,17 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-ComboBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ComboBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ComboBoxHandleTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `ComboBoxItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `ComboBoxTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
-| `ComboBoxThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 非编辑态选中内容的完整文本提示复用共享 `OverflowTip` attached behavior。模板只在 `SelectedContentPresenter` 上接入 `IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` 和 `SelectionBoxItem`；`IsEditable=true` 时编辑输入框不默认启用该提示。
 
-ComboBox 使用 `ComboBoxToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
+ComboBox 使用 `ComboBoxToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -282,7 +281,6 @@ ComboBox Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxHandleTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml`
-- `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxThemes.axaml`
 
 职责边界：
 

@@ -50,7 +50,7 @@ Source: ./controls/button/semantic-cn.md
 
 ```text
 Button
-  -> Button (control theme, BrowserButtonThemes.axaml)
+  -> Button (control theme, ButtonTheme.axaml)
      -> Panel (template-stable)
         -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
         -> Border#ShadowsFrame (template-stable)
@@ -115,16 +115,6 @@ Button
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Button` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Button` | control theme | `BrowserButtonThemes.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `BrowserButtonThemes.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `BrowserButtonThemes.axaml` | Button | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ShadowsFrame` | template node (Border) | `BrowserButtonThemes.axaml` | Button | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (DashedBorder) | `BrowserButtonThemes.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `CustomBackgroundLayer` | template node (Border) | `BrowserButtonThemes.axaml` | Button | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_RootLayout` | template node (DockPanel) | `BrowserButtonThemes.axaml` | Button | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LoadingIcon` | template node (LoadingOutlined) | `BrowserButtonThemes.axaml` | Button | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ButtonIcon` | template node (IconPresenter) | `BrowserButtonThemes.axaml` | Button | `Foreground`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ContentPresenter` | template node (ContentPresenter) | `BrowserButtonThemes.axaml` | Button | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Button` | control theme | `ButtonTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `ButtonTheme.axaml` | Button | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -132,7 +122,7 @@ Button
 | `Frame` | template node (DashedBorder) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `ButtonTheme.axaml` | Button | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLayout` | template node (DockPanel) | `ButtonTheme.axaml` | Button | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LoadingIcon` | template node (LoadingOutlined) | `ButtonTheme.axaml` | Button | `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LoadingIcon` | template node (LoadingOutlined) | `ButtonTheme.axaml` | Button | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ButtonIcon` | template node (IconPresenter) | `ButtonTheme.axaml` | Button | `Foreground`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `ButtonTheme.axaml` | Button | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
@@ -218,7 +208,6 @@ ButtonToken 是 Button 的组件级设计变量层。它把全局设计体系中
 ButtonToken 服务以下主题和控件：
 
 - `ButtonTheme.axaml`
-- `BrowserButtonThemes.axaml`
 - `DropdownButtonTheme.axaml`
 - `SplitButtonTheme.axaml`
 - `HyperLinkButtonTheme.axaml`
@@ -277,7 +266,7 @@ Source: ./controls/float-button/semantic-cn.md
 | `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `command` | `真实 FloatButton` | 承载 `Command`、`CommandParameter`、`CanExecute`、点击和禁用语义；host 只做投影。 | `Command`、`CommandParameter`、`Href` | 见视觉与主题模型 | stable |
 | `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、组件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
 ## Abstract AXAML Structure
 
@@ -352,7 +341,7 @@ FloatButton
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | FloatButton Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | FloatButton Token + ControlTheme。 |
 
 ## State Flow
 
@@ -379,7 +368,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -391,9 +380,8 @@ FloatButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `FloatButtonHostTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `FloatButtonItemsControlTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `FloatButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `FloatButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-FloatButton 使用 `FloatButtonToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
+FloatButton 使用 `FloatButtonToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -450,7 +438,7 @@ Source: ./controls/icon/semantic-cn.md
 | `root` | `Icon` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、组件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
 ## Abstract AXAML Structure
 
@@ -490,7 +478,7 @@ Icon
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | 基础交互和主题状态。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Icon Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Icon Token + ControlTheme。 |
 
 ## State Flow
 
@@ -513,16 +501,15 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Icon 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Icon 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `IconPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `IconTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `IconThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `PathIconTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Icon 使用 `IconToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 基础交互和主题状态 运行时状态。
+Icon 使用 `IconToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 基础交互和主题状态 运行时状态。
 
 主题维护规则：
 
@@ -574,7 +561,7 @@ Source: ./controls/separator/semantic-cn.md
 | `root` | `Separator` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、组件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
 ## Abstract AXAML Structure
 
@@ -615,7 +602,7 @@ Separator
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Separator Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Separator Token + ControlTheme。 |
 
 ## State Flow
 
@@ -639,7 +626,7 @@ Public API / inherited command / item source / user input
 ### 4.1 可自定义间距尺寸
 
 `AbstractSeparator` 实现 `ICustomizableSizeTypeAware`，`SizeType` 使用 `CustomizableSizeType`，默认值为
-`Middle`。水平 Separator 的预设尺寸控制上下外间距：`Small`、`Middle`、`Large` 分别映射到组件 Token 的
+`Middle`。水平 Separator 的预设尺寸控制上下外间距：`Small`、`Middle`、`Large` 分别映射到控件 Token 的
 小、中、大 block margin；该规则对带标题和无标题的水平 Separator 一致，垂直 Separator 不应用这组间距。
 
 `SizeType=Custom` 表示调用方接管间距。Theme 保留 Middle block margin 作为未指定 `Margin` 时的基础值，但不为
@@ -648,13 +635,13 @@ Separator 应使用 `Custom`，并由组合控件自身的 Theme 明确设置间
 
 ## Theme and Token Boundaries
 
-Separator 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Separator 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `SeparatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Separator 使用 `SeparatorToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
+Separator 使用 `SeparatorToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
 
 主题维护规则：
 
@@ -706,7 +693,7 @@ Source: ./controls/split-button/semantic-cn.md
 | `root` | `SplitButton` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 | `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、组件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
 
 ## Abstract AXAML Structure
 
@@ -757,7 +744,7 @@ SplitButton
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## State Flow
 
@@ -780,11 +767,10 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-SplitButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+SplitButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `ButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `SplitButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 
 SplitButton 当前没有专属 Token 文档；主题通过 SharedToken、关联控件 Token 或继承主题资源表达视觉语义。运行时状态不得写入 Token 模型。
@@ -856,7 +842,7 @@ Source: ./controls/flex-panel/semantic-cn.md
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## State Flow
 
@@ -879,7 +865,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-FlexPanel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+FlexPanel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 当前控件未抽取到专属 AXAML 主题文件；视觉契约主要来自继承控件、共享主题和资源 key。
 
@@ -953,7 +939,7 @@ Source: ./controls/grid/semantic-cn.md
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | 基础交互和主题状态。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## State Flow
 
@@ -976,7 +962,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Grid 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Grid 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 当前控件未抽取到专属 AXAML 主题文件；视觉契约主要来自继承控件、共享主题和资源 key。
 
@@ -1180,7 +1166,7 @@ Source: ./controls/space/semantic-cn.md
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Space Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Space Token + ControlTheme。 |
 
 ## State Flow
 
@@ -1203,15 +1189,14 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Space 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Space 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `CompactSpaceAddOnTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CompactSpaceTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `SpaceThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Space 使用 `SpaceToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
+Space 使用 `SpaceToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
 
 主题维护规则：
 
@@ -1363,14 +1348,13 @@ Public API / attached panel properties / pointer drag / collapse button
 
 ## Theme and Token Boundaries
 
-Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、组件 Token 共同构成。
+Splitter 的视觉模型由根控件模板、internal 面板和 handle 模板、SharedToken、控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `SplitterTheme.axaml` | 定义 `Splitter` 根模板、外层 Frame 和 `PART_SplitterPanel`。 |
 | `SplitterHandleTheme.axaml` | 定义可见分割线、拖拽命中区和折叠按钮的组合结构。 |
 | `SplitterDragBarTheme.axaml` | 定义拖拽命中区、grip 尺寸、grip 圆角和方向 cursor。 |
-| `SplitterThemes.axaml` | 聚合 Splitter 主题资源，保证包级引入顺序稳定。 |
 
 视觉语义拆分：
 
@@ -1496,7 +1480,7 @@ Breadcrumb
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Breadcrumb Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Breadcrumb Token + ControlTheme。 |
 
 ## State Flow
 
@@ -1519,15 +1503,14 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Breadcrumb 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Breadcrumb 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `BreadcrumbItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `BreadcrumbTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `BreadcrumbThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Breadcrumb 使用 `BreadcrumbToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 motion 运行时状态。
+Breadcrumb 使用 `BreadcrumbToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 motion 运行时状态。
 
 主题维护规则：
 
@@ -1655,7 +1638,7 @@ ButtonSpinner
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ButtonSpinner Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ButtonSpinner Token + ControlTheme。 |
 
 ## State Flow
 
@@ -1678,16 +1661,15 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-ButtonSpinner 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ButtonSpinner 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ButtonSpinnerDecoratedBoxTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `ButtonSpinnerHandleTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `ButtonSpinnerTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `ButtonSpinnerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-ButtonSpinner 使用 `ButtonSpinnerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 motion、visual option 运行时状态。
+ButtonSpinner 使用 `ButtonSpinnerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -1838,7 +1820,7 @@ ComboBox
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ComboBox Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ComboBox Token + ControlTheme。 |
 
 ## State Flow
 
@@ -1862,18 +1844,17 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-ComboBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ComboBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ComboBoxHandleTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `ComboBoxItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `ComboBoxTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
-| `ComboBoxThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 非编辑态选中内容的完整文本提示复用共享 `OverflowTip` attached behavior。模板只在 `SelectedContentPresenter` 上接入 `IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` 和 `SelectionBoxItem`；`IsEditable=true` 时编辑输入框不默认启用该提示。
 
-ComboBox 使用 `ComboBoxToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
+ComboBox 使用 `ComboBoxToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -1930,7 +1911,24 @@ Source: ./controls/dropdown-button/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-未定位到可生成抽象 AXAML 结构的 ControlTheme 模板。生成器不会根据 semantic parts 发明 AXAML 节点；请以 Template Parts、主题文件和源码索引为准。
+来源：`src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`
+
+```xml
+<Panel>
+    <WaveSpiritDecorator Name="PART_WaveSpirit" />
+    <Border Name="ShadowsFrame" />
+    <DashedBorder Name="Frame" />
+    <Border Name="CustomBackgroundLayer" />
+    <Border>
+        <DockPanel Name="PART_RootLayout">
+            <IconPresenter Name="PART_DropdownIndicator" />
+            <LoadingOutlined Name="PART_LoadingIcon" />
+            <IconPresenter Name="PART_ButtonIcon" />
+            <ContentPresenter Name="PART_ContentPresenter" />
+        </DockPanel>
+    </Border>
+</Panel>
+```
 
 ## Composition Model
 
@@ -1940,7 +1938,7 @@ Source: ./controls/dropdown-button/semantic-cn.md
 
 ```text
 DropdownButton
-  -> DropdownButton (control theme, BrowserButtonThemes.axaml)
+  -> DropdownButton (control theme, DropdownButtonTheme.axaml)
      -> Panel (template-stable)
         -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
         -> Border#ShadowsFrame (template-stable)
@@ -1949,6 +1947,35 @@ DropdownButton
         -> Border (template-stable)
            -> DockPanel#PART_RootLayout (template-stable)
               -> IconPresenter#PART_DropdownIndicator (template-stable)
+              -> LoadingOutlined#PART_LoadingIcon (template-stable)
+              -> IconPresenter#PART_ButtonIcon (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+  -> DropdownButton (control theme, DropdownButtonBaseTheme.axaml)
+     -> Panel (template-stable)
+        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
+        -> Border#ShadowsFrame (template-stable)
+        -> DashedBorder#Frame (template-stable)
+        -> Border#CustomBackgroundLayer (template-stable)
+        -> Border (template-stable)
+           -> DockPanel#PART_RootLayout (template-stable)
+              -> LoadingOutlined#PART_LoadingIcon (template-stable)
+              -> IconPresenter#PART_ButtonIcon (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+     -> Panel (template-stable)
+        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
+        -> Border#ShadowsFrame (template-stable)
+        -> Border#CustomBackgroundLayer (template-stable)
+        -> DashedBorder#Frame (template-stable)
+           -> DockPanel#PART_RootLayout (template-stable)
+              -> LoadingOutlined#PART_LoadingIcon (template-stable)
+              -> IconPresenter#PART_ButtonIcon (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+     -> Panel (template-stable)
+        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
+        -> Border#ShadowsFrame (template-stable)
+        -> Border#CustomBackgroundLayer (template-stable)
+        -> DashedBorder#Frame (template-stable)
+           -> DockPanel#PART_RootLayout (template-stable)
               -> LoadingOutlined#PART_LoadingIcon (template-stable)
               -> IconPresenter#PART_ButtonIcon (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
@@ -1970,17 +1997,6 @@ DropdownButton
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `DropdownButton` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `DropdownButton` | control theme | `BrowserButtonThemes.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `BrowserButtonThemes.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `BrowserButtonThemes.axaml` | DropdownButton | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ShadowsFrame` | template node (Border) | `BrowserButtonThemes.axaml` | DropdownButton | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (DashedBorder) | `BrowserButtonThemes.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `CustomBackgroundLayer` | template node (Border) | `BrowserButtonThemes.axaml` | DropdownButton | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_RootLayout` | template node (DockPanel) | `BrowserButtonThemes.axaml` | DropdownButton | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `IsShowOpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_DropdownIndicator` | template node (IconPresenter) | `BrowserButtonThemes.axaml` | DropdownButton | `Foreground`, `IsShowOpenIndicator`, `OpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LoadingIcon` | template node (LoadingOutlined) | `BrowserButtonThemes.axaml` | DropdownButton | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ButtonIcon` | template node (IconPresenter) | `BrowserButtonThemes.axaml` | DropdownButton | `Foreground`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ContentPresenter` | template node (ContentPresenter) | `BrowserButtonThemes.axaml` | DropdownButton | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DropdownButton` | control theme | `DropdownButtonTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `DropdownButtonTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `DropdownButtonTheme.axaml` | DropdownButton | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -1989,8 +2005,19 @@ DropdownButton
 | `CustomBackgroundLayer` | template node (Border) | `DropdownButtonTheme.axaml` | DropdownButton | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLayout` | template node (DockPanel) | `DropdownButtonTheme.axaml` | DropdownButton | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `IsShowOpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_DropdownIndicator` | template node (IconPresenter) | `DropdownButtonTheme.axaml` | DropdownButton | `Foreground`, `IsShowOpenIndicator`, `OpenIndicator` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ButtonIcon` | template node (IconPresenter) | `DropdownButtonTheme.axaml` | DropdownButton | `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LoadingIcon` | template node (LoadingOutlined) | `DropdownButtonTheme.axaml` | DropdownButton | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ButtonIcon` | template node (IconPresenter) | `DropdownButtonTheme.axaml` | DropdownButton | `Foreground`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `DropdownButtonTheme.axaml` | DropdownButton | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DropdownButton` | control theme | `DropdownButtonBaseTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `Content`, `ContentTemplate`, `CustomBackground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `EffectiveCornerRadius`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `WaveSpiritType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ShadowsFrame` | template node (Border) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (DashedBorder) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `CustomBackgroundLayer` | template node (Border) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_RootLayout` | template node (DockPanel) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LoadingIcon` | template node (LoadingOutlined) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Foreground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ButtonIcon` | template node (IconPresenter) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Foreground`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentPresenter` | template node (ContentPresenter) | `DropdownButtonBaseTheme.axaml` | DropdownButton | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -2006,7 +2033,7 @@ DropdownButton
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## State Flow
 
@@ -2029,13 +2056,12 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-DropdownButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+DropdownButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
-| `ButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `DropdownButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
+| `Browser/DropdownButtonTheme.axaml` | Browser 平台的 DropdownButton 主题叶子，保持相同 public 状态语义。 |
 
 DropdownButton 当前没有专属 Token 文档；主题通过 SharedToken、关联控件 Token 或继承主题资源表达视觉语义。运行时状态不得写入 Token 模型。
 
@@ -2203,7 +2229,7 @@ Menu
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Menu Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Menu Token + ControlTheme。 |
 
 ## State Flow
 
@@ -2236,20 +2262,18 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Menu 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserMenuThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `ContextMenuTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `MenuItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `MenuSeparatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `MenuTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `MenuThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TopLevelMenuItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `src/AtomUI.Desktop.Controls/Flyouts/Themes/MenuFlyoutPresenterTheme.axaml` | 定义 `MenuFlyout` 菜单项 presenter 的弹层内容模板和滚动承载结构。 |
 
-Menu 使用 `MenuToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
+Menu 使用 `MenuToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -2655,7 +2679,7 @@ Pagination
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Pagination Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Pagination Token + ControlTheme。 |
 
 ## State Flow
 
@@ -2679,18 +2703,17 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Pagination 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Pagination 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `PaginationNavItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `PaginationNavTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `PaginationTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `PaginationThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `QuickJumperBarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `SimplePaginationTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Pagination 使用 `PaginationToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
+Pagination 使用 `PaginationToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -2906,7 +2929,6 @@ Steps 使用统一语义模板，而不是按 Type、Orientation 和 TitlePlacem
 | `StepsTheme.axaml` | 根模板、ItemsPresenter、StepsPanel 和根展示输入映射。 |
 | `StepsItemTheme.axaml` | 统一 item 语义模板、状态颜色、Connector、内容和交互视觉。 |
 | `StepsItemIndicatorTheme.axaml` | 统一 Indicator 模板、Dot、Icon、状态图标、Progress 和 Wave。 |
-| `StepsThemes.axaml` | Steps 主题资源聚合入口。 |
 
 运行时组合：
 
@@ -3120,7 +3142,7 @@ TabControl
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、reorder、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | TabControl Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | TabControl Token + ControlTheme。 |
 
 ## State Flow
 
@@ -3148,7 +3170,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -3159,7 +3181,6 @@ TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `CardTabControlTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CardTabItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TabControlTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TabControlThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TabItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `BaseTabStripItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `BaseTabStripTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -3168,7 +3189,7 @@ TabControl 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `TabStripItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TabStripTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-TabControl 使用 `TabControlToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
+TabControl 使用 `TabControlToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -3272,7 +3293,7 @@ Source: ./controls/tab-strip/semantic-cn.md
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、reorder、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## State Flow
 
@@ -3300,7 +3321,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-TabStrip 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+TabStrip 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 当前控件未抽取到专属 AXAML 主题文件；视觉契约主要来自继承控件、共享主题和资源 key。
 
@@ -3445,7 +3466,7 @@ AutoComplete
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、open/close、loading/async、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | AutoComplete Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | AutoComplete Token + ControlTheme。 |
 
 ## State Flow
 
@@ -3468,7 +3489,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -3476,9 +3497,8 @@ AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `AutoCompleteSearchEditTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AutoCompleteTextAreaTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AutoCompleteTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `AutoCompleteThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-AutoComplete 使用 `AutoCompleteToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、loading/async、collection/filter、input/value、motion、visual option 运行时状态。
+AutoComplete 使用 `AutoCompleteToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、loading/async、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -3712,7 +3732,15 @@ input display + Form value
 
 - `FilterValue` 非空且控件 loaded 时，CascaderView 收集所有叶子路径并按 `Filter` 过滤。
 - 过滤结果显示完整路径文本，选中过滤结果后回写目标 option。
+- 过滤模式下，`Up` / `Down` 在可用结果间循环移动内部候选高亮，不修改 `SelectedOption`；`Enter` 提交当前候选，尚无候选时提交第一个可用结果，没有可用结果时保持选择和 popup 状态不变。路径中任一祖先 disabled 时，该过滤结果也不可作为候选或提交。
 - 清空过滤值或关闭 popup 后，过滤列表、过滤计数和缓存路径会被清理。
+
+树形键盘导航：
+
+- popup 打开且未过滤时，`Up` / `Down` 在当前已展开列的可见 enabled item 间循环移动内部候选；候选高亮与真实选择相互独立。
+- `Right` 从当前候选或第一个可见 enabled item 开始，展开可展开节点并把候选移到下一列的第一个 enabled child。
+- `Left` 优先把子级候选移回父级；候选已位于展开的根级非叶节点时折叠该节点。
+- `Enter` 提交 enabled、非 loading 的叶子候选；`IsAllowSelectParent=true` 时也可提交父节点，否则沿用 `Right` 的展开并进入子级行为。
 
 Form：
 
@@ -3758,6 +3786,7 @@ Token 边界：
 - 需要 binding target 或动态资源能力时使用 `BindableCascaderOption`。
 - `Header` 的容器内容必须继续是 option 对象本身，避免破坏 `OptionTemplate` 的数据上下文。
 - `SelectedOption` 和 `SelectedOptions` 的单选 / 多选边界不能混用。
+- 键盘候选只能表达当前导航位置，不能通过 `SelectedIndex` 或 `SelectedOption` 提前提交真实选择；disabled 或 loading item 不得成为可提交候选。
 - `ShowCheckedStrategy` 只能影响 `EffectiveSelectedOptions`，不能改写真实 `SelectedOptions`。
 - `IsAllowSelectParent=false` 时，非 leaf 节点不能作为普通单选结果提交。
 - `DefaultSelectOptionPath` 的路径段必须继续按 `ItemKey` 优先、`Value` 兜底匹配。
@@ -3869,7 +3898,7 @@ CheckBox
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | CheckBox Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | CheckBox Token + ControlTheme。 |
 
 ## State Flow
 
@@ -3893,7 +3922,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-CheckBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+CheckBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -3901,9 +3930,8 @@ CheckBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `CheckBoxIndicatorTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `CheckBoxItemsControlTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `CheckBoxTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
-| `CheckBoxThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-CheckBox 使用 `CheckBoxToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、motion、visual option 运行时状态。
+CheckBox 使用 `CheckBoxToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -3994,7 +4022,7 @@ Source: ./controls/color-picker/semantic-cn.md
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ColorPicker Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、Control Own Token 和模板绑定如何表达视觉。 | ColorPicker Token + ControlTheme。 |
 
 ## State Flow
 
@@ -4018,11 +4046,10 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和 ColorPicker Own Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `AtomUIColorPickerThemesProvider.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AbstractColorPickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ColorBlockTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ColorPickerPaletteGroupTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -4041,7 +4068,7 @@ ColorPicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必�
 | `GradientColorPickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `PaletteColorItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 
-ColorPicker 使用 `ColorPickerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
+ColorPicker 拥有独立 Control identity；`ColorPickerToken` 只表达 ColorPicker Own Token 语义，不承载 open/close、collection/filter、input/value、motion 或 visual option 运行时状态。Control 级 Global Token 覆盖与 Own Token 通过 `ColorPickerTokenResource` 统一读取。
 
 主题维护规则：
 
@@ -4193,7 +4220,7 @@ DatePicker
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | DatePicker Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | DatePicker Token + ControlTheme。 |
 
 ## State Flow
 
@@ -4228,7 +4255,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -4241,13 +4268,12 @@ DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `RangeCalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `DatePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DatePickerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `DualMonthRangeDatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `RangeDatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `RangeDatePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimedRangeDatePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 
-DatePicker 使用 `DatePickerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、visual option 运行时状态。
+DatePicker 使用 `DatePickerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、visual option 运行时状态。
 
 主题维护规则：
 
@@ -4490,7 +4516,7 @@ Form 视觉由 Form 根模板、FormItem 模板、FormValidateFeedback 模板和
 
 Token 边界：
 
-FormToken 是 Form 的组件级 Token scope，描述标签视觉、必填标记、冒号间距和表单项布局间距。输入控件自身高度、边框、状态色、图标尺寸、字体基础值和通用 spacing 来自 SharedToken 或对应输入控件 Token。
+FormToken 是 Form 的控件级 Token scope，描述标签视觉、必填标记、冒号间距和表单项布局间距。输入控件自身高度、边框、状态色、图标尺寸、字体基础值和通用 spacing 来自 SharedToken 或对应输入控件 Token。
 
 FormToken 不承载以下状态：
 
@@ -4583,12 +4609,11 @@ LineEdit
   -> ResizeHandle (control theme, ResizeHandleTheme.axaml)
      -> Border#Frame (template-stable)
   -> RevealButton (control theme, RevealButtonTheme.axaml)
-  -> SearchButton (control theme, SearchButtonTheme.axaml)
   -> SearchEditDecoratedBox (control theme, SearchEditDecoratedBoxTheme.axaml)
      -> SearchEditPanel#RootLayout (internal-observable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
            -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
-        -> SearchButton#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (internal-observable)
+        -> Button#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (template-stable)
         -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
            -> DockPanel#ContentLayout (template-stable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
@@ -4621,12 +4646,11 @@ LineEdit
 | `ResizeHandle` | control theme | `ResizeHandleTheme.axaml` | LineEdit | `Background` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (Border) | `ResizeHandleTheme.axaml` | ResizeHandle | `Background` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RevealButton` | control theme | `RevealButtonTheme.axaml` | LineEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `SearchButton` | control theme | `SearchButtonTheme.axaml` | LineEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SearchEditDecoratedBox` | control theme | `SearchEditDecoratedBoxTheme.axaml` | LineEdit | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (SearchEditPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (SearchButton) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `EffectiveStatus`, `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SizeType`, `StyleVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (Button) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SearchButtonTheme`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -4715,7 +4739,7 @@ LineEdit 家族使用输入壳体和文本 presenter 分层：
 
 Token 边界：
 
-LineEdit 输入家族使用三个组件级 Token scope：
+LineEdit 输入家族使用三个控件级 Token scope：
 
 | Token | Scope | 职责 |
 | --- | --- | --- |
@@ -4908,7 +4932,7 @@ Mentions 的默认视觉由 `MentionsTheme.axaml` 和内部 TextArea 主题协�
 
 Token 边界：
 
-MentionsToken 是 Mentions 的组件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / AddOnDecoratedBox / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
+MentionsToken 是 Mentions 的控件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / AddOnDecoratedBox / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
 
 MentionsToken 不承载以下状态：
 
@@ -5003,12 +5027,11 @@ NumericUpDown
   -> ResizeHandle (control theme, ResizeHandleTheme.axaml)
      -> Border#Frame (template-stable)
   -> RevealButton (control theme, RevealButtonTheme.axaml)
-  -> SearchButton (control theme, SearchButtonTheme.axaml)
   -> SearchEditDecoratedBox (control theme, SearchEditDecoratedBoxTheme.axaml)
      -> SearchEditPanel#RootLayout (internal-observable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
            -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
-        -> SearchButton#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (internal-observable)
+        -> Button#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (template-stable)
         -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
            -> DockPanel#ContentLayout (template-stable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
@@ -5066,12 +5089,11 @@ NumericUpDown
 | `ResizeHandle` | control theme | `ResizeHandleTheme.axaml` | NumericUpDown | `Background` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (Border) | `ResizeHandleTheme.axaml` | ResizeHandle | `Background` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RevealButton` | control theme | `RevealButtonTheme.axaml` | NumericUpDown | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `SearchButton` | control theme | `SearchButtonTheme.axaml` | NumericUpDown | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SearchEditDecoratedBox` | control theme | `SearchEditDecoratedBoxTheme.axaml` | NumericUpDown | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (SearchEditPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (SearchButton) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `EffectiveStatus`, `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SizeType`, `StyleVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (Button) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SearchButtonTheme`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -5080,6 +5102,7 @@ NumericUpDown
 | `TextAreaDecoratedBox` | control theme | `TextAreaDecoratedBoxTheme.axaml` | NumericUpDown | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TextAreaContentFrame` | template node (Border) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ContentLayout` | template node (DockPanel) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -5165,7 +5188,7 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 
 Token 边界：
 
-NumericUpDownToken 是 NumericUpDown 的组件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供数值输入控件可消费的输入壳体、步进 Handle、字体和尺寸语义。
+NumericUpDownToken 是 NumericUpDown 的控件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供数值输入控件可消费的输入壳体、步进 Handle、字体和尺寸语义。
 
 该设计使 NumericUpDown 能复用 ButtonSpinner 输入壳体体系，同时保留控件级 Token scope。生成的 `NumericUpDownTokenKind` 表达 NumericUpDown scope 下可展示和可覆盖的 Token；默认主题中的输入壳体和 Handle 仍通过 `ButtonSpinnerTokenResource` 消费共享 ButtonSpinner 语义值。
 
@@ -5372,7 +5395,6 @@ OtpLineEdit 使用“根输入控件 + cell presenter + separator + action 区�
 | --- | --- |
 | `OtpLineEditTheme.axaml` | 根模板、cell host、清除入口、Form feedback、focus/error/warning/disabled 视觉投射。 |
 | `OtpLineEditCellTheme.axaml` | 单个 cell 的输入表面、字符显示、placeholder、mask 和 active 状态。 |
-| `OtpLineEditThemes.axaml` | OtpLineEdit 主题聚合入口。 |
 
 视觉状态必须与 AtomUI 输入体系一致：
 
@@ -5502,7 +5524,7 @@ RadioButton
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | checked/selected、disabled、pointer、motion、ButtonStyle 和方向组合状态。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | RadioButtonToken、OptionButtonToken 与对应 ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | RadioButtonToken、OptionButtonToken 与对应 ControlTheme。 |
 
 ## State Flow
 
@@ -5528,17 +5550,15 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-RadioButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+RadioButton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RadioButtonGroupTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `RadioButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `RadioButtonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `RadioIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `OptionButtonGroupTheme.axaml` | 定义按钮组 ItemsPresenter、方向布局入口、尺寸和组级边框资源。 |
 | `OptionButtonTheme.axaml` | 定义按钮内容、Outline/Solid、checked/disabled、方向对齐和 Wave 视觉。 |
-| `OptionButtonBoxThemes.axaml` | 聚合 OptionButtonGroup 与 OptionButton 的主题资源。 |
 
 普通单选控件使用 `RadioButtonToken`，按钮式选项使用 `OptionButtonToken`。Token 只表达组件视觉语义，不承载 checked/selected、Orientation、GroupPositionTrait 或 EffectiveCornerRadius 运行时状态。
 
@@ -5657,7 +5677,7 @@ Rate
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Rate Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Rate Token + ControlTheme。 |
 
 ## State Flow
 
@@ -5681,16 +5701,15 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Rate 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Rate 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RateItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `RateItemsControlTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `RateTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `RateThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Rate 使用 `RateToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、input/value、motion、visual option 运行时状态。
+Rate 使用 `RateToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -5773,12 +5792,11 @@ SearchEdit
   -> ResizeHandle (control theme, ResizeHandleTheme.axaml)
      -> Border#Frame (template-stable)
   -> RevealButton (control theme, RevealButtonTheme.axaml)
-  -> SearchButton (control theme, SearchButtonTheme.axaml)
   -> SearchEditDecoratedBox (control theme, SearchEditDecoratedBoxTheme.axaml)
      -> SearchEditPanel#RootLayout (internal-observable)
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
            -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
-        -> SearchButton#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (internal-observable)
+        -> Button#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (template-stable)
         -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
            -> DockPanel#ContentLayout (template-stable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
@@ -5811,12 +5829,11 @@ SearchEdit
 | `ResizeHandle` | control theme | `ResizeHandleTheme.axaml` | SearchEdit | `Background` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (Border) | `ResizeHandleTheme.axaml` | ResizeHandle | `Background` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RevealButton` | control theme | `RevealButtonTheme.axaml` | SearchEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `SearchButton` | control theme | `SearchButtonTheme.axaml` | SearchEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SearchEditDecoratedBox` | control theme | `SearchEditDecoratedBoxTheme.axaml` | SearchEdit | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `RootLayout` | template node (SearchEditPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (SearchButton) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `EffectiveStatus`, `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SizeType`, `StyleVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (Button) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SearchButtonTheme`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -5843,7 +5860,7 @@ SearchEdit
 | Template Part | 类型 | 所属主题 | 职责 |
 | --- | --- | --- | --- |
 | `PART_AddOnDecoratedBox` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 搜索输入壳体、状态、Addon、CompactSpace 和搜索按钮协作入口。 |
-| `PART_RightAddOn` | `SearchButton` | `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮，承载图标、文字、loading、按钮样式和点击事件。 |
+| `PART_RightAddOn` | `Button` | `SearchEditDecoratedBoxTheme.axaml` | public Button 语义部件，承载图标、文字、loading、按钮样式和点击事件。 |
 | `PART_ContentFrame` | `Border` | `SearchEditDecoratedBoxTheme.axaml` | 文本输入框视觉边框和背景。 |
 | `PART_ScrollViewer` | `ScrollViewer` | `SearchEditTheme.axaml` | 文本滚动区域。 |
 | `PART_TextPresenter` | `InputTextPresenter` | `SearchEditTheme.axaml` | 文本显示、光标、选择和密码 reveal。 |
@@ -5861,7 +5878,7 @@ SearchEdit
 SearchEdit 的文本输入行为继承 LineEdit，搜索按钮行为独立建模：
 
 ```text
-SearchButton.Click
+Button#PART_RightAddOn.Click
   ↓
 SearchEditDecoratedBox.HandleSearchButtonClick
   ↓
@@ -5895,20 +5912,28 @@ SearchEdit 使用三层主题协作：
 | `SearchEditDecoratedBoxTheme.axaml` | 输入框内容边框、搜索按钮、左右布局、搜索按钮 style 和 z-index 关系。 |
 | `SearchButtonTheme.axaml` | 搜索按钮在不同输入表面中的背景、前景和状态色。 |
 
-SearchEdit 不定义独立组件 Token。主题资源来源：
+SearchEdit 拥有独立 `ControlTokenIdentity`，但不定义 Own Token。它继承 `LineEdit` 的行为并不意味着继承或借用
+LineEdit identity；Control 级配置中的任意已注册 Global Token 都绑定到 SearchEdit 自己的 Effective Global
+Token。合法但没有被当前主题直接或间接消费的 Global Token 可以没有视觉效果。
+
+主题资源边界：
 
 | Token 来源 | 用途 |
 | --- | --- |
-| `LineEditToken` | 输入文本字号。 |
-| `AddOnDecoratedBoxToken` | 输入壳体 focus shadow、active 背景和状态视觉。 |
-| `ButtonToken` | 搜索按钮字号、padding、图标和按钮状态。 |
-| `SharedToken` | 控件高度、字体高度、边框、颜色、间距、motion 和 disabled 语义。 |
+| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，负责输入与搜索按钮组合语义，例如 focus shadow、主色和输入状态背景。 |
+| `AddOnDecoratedBoxTokenResource` | 由 `SearchEditDecoratedBoxTheme` 的 BasedOn 主题显式读取输入壳体 Own/Effective Global Token。 |
+| `ButtonTokenResource` | 由真实 Button 和 `SearchButtonTheme` 显式读取 Button Own/Effective Global Token，负责按钮基础视觉。 |
+| `SharedTokenResource` | 读取真正的 Global Token，只用于不响应 SearchEdit Control 级覆盖的共享值。 |
+
+`SearchButtonTheme` 的 `TargetType` 是 Button，但资产 owner 和组合语义属于 SearchEdit。它可以同时使用
+`SearchEditTokenResource` 与 `ButtonTokenResource`；这是显式跨 Control 资源引用，不是 SearchEdit 借用 Button
+或 LineEdit identity。
 
 搜索按钮必须与输入框视觉上组成单一控件。Custom 高度下，搜索按钮的可视 `Frame` 高度必须跟随 `SearchEditDecoratedBox` 的实际布局高度，避免按钮边框和输入框边框错位。
 
 Token 边界：
 
-- SearchEdit 当前没有专属 `token.md`；LLMS 生成按第 5 节视觉与主题模型、SharedToken、控件家族 Token 或主题资源说明 Token 边界。
+- SearchEdit 当前没有 Own Token，因此没有专属 `token.md`；LLMS 生成按第 5 节说明独立 SearchEdit identity、完整 Effective Global Token、Button Semantic Part 和显式跨 Control 资源边界。
 
 ## Customization Boundaries
 
@@ -5917,11 +5942,12 @@ Token 边界：
 - 不改变继承自 LineEdit 的 `Text`、选择、光标、清除、reveal、Form 和 CompactSpace 语义。
 - 不删除或重命名 `SearchButtonStyle`、`SearchButtonText`、`IsOperating`、`SearchButtonClick`。
 - `IsOperating=true` 必须阻止重复搜索点击，但不得自动管理异步任务或修改 `Text`。
-- 搜索按钮的 `IsEnabled`、`SizeType`、`Status` 和 `StyleVariant` 必须跟随 SearchEdit 输入壳体。
+- 搜索按钮的 `IsEnabled`、`SizeType` 和 loading 必须跟随 SearchEdit；按钮组合视觉必须响应输入壳体的 `Status` 和 `StyleVariant`。
 - 右侧外部 add-on 位置属于搜索按钮；内部右侧内容必须继续由 `InnerRightContent` 承载。
 - SearchEdit 的按钮边框和输入框边框必须在 Large、Middle、Small 和 Custom 高度下严格对齐。
 - `SizeType=Custom` 必须以 Middle 作为未显式覆盖时的视觉基线。
-- SearchEdit 不新增专属 Token；搜索按钮视觉应继续复用 ButtonToken、AddOnDecoratedBoxToken 和 SharedToken。
+- SearchEdit 保持独立 Control identity；当前不新增 Own Token，也不得借用 LineEdit 或 Button identity。
+- `SearchButtonTheme` 必须继续以 public Button 为 TargetType，并显式区分 SearchEdit 组合语义与 Button 基础视觉。
 - 重新套用模板时必须释放旧搜索按钮 click 订阅。
 
 维护不变量：
@@ -5932,7 +5958,9 @@ Token 边界：
 - `IsOperating=true` 必须阻止重复搜索事件，并继续驱动按钮 loading。
 - 搜索按钮和内容框的边框必须在同一布局高度下绘制。
 - `SearchEditPanel` 的按钮左边框重叠算法不能破坏单线边框视觉。
-- 搜索按钮必须继承 SearchEdit 的 `SizeType`、`StyleVariant`、`Status` 和 `IsEnabled`。
+- 搜索按钮必须接收 SearchEdit 的 `SizeType`、`IsEnabled` 和 loading；`StyleVariant` 与 effective status 的组合视觉由 SearchEdit owner theme 投射。
+- 搜索按钮必须保持 public Button 类型；不得重新引入借用 LineEdit 或 Button identity 的 internal SearchButton。
+- `SearchButtonTheme` 必须继续作为强类型 Semantic Part Theme，并允许实例级替换。
 - 搜索按钮右侧外部 AddOn 位置不可被用户内容替代。
 - `InnerRightContent`、clear、reveal 和文本 presenter 的绑定仍由 LineEdit 模板路径维护。
 - AutoCompleteSearchEdit 复用 SearchEdit 视觉时不能绕过 SearchEdit 搜索按钮契约。
@@ -6130,7 +6158,7 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 
 Token 边界：
 
-SelectToken 是 Select 的组件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken。
+SelectToken 是 Select 的控件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken。
 
 SelectToken 不承载以下状态：
 
@@ -6328,7 +6356,7 @@ Slider 的默认视觉由三层主题组成：
 
 Token 边界：
 
-SliderToken 是 Slider 的组件级 Token scope，定义轨道尺寸、rail 尺寸、thumb 尺寸、mark 尺寸、track / rail / mark / thumb 颜色、outline 和 orientation padding。
+SliderToken 是 Slider 的控件级 Token scope，定义轨道尺寸、rail 尺寸、thumb 尺寸、mark 尺寸、track / rail / mark / thumb 颜色、outline 和 orientation padding。
 
 SliderToken 不承载：
 
@@ -6471,7 +6499,7 @@ TimePicker
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | TimePicker Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | TimePicker Token + ControlTheme。 |
 
 ## State Flow
 
@@ -6496,18 +6524,17 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-TimePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+TimePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RangeTimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `TimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TimePickerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TimeViewCellTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TimeViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-TimePicker 使用 `TimePickerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active 运行时状态。
+TimePicker 使用 `TimePickerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active 运行时状态。
 
 主题维护规则：
 
@@ -6660,7 +6687,6 @@ ToggleSwitch 使用控件本体绘制轨道，模板负责内容和把手。
 | --- | --- |
 | `ToggleSwitchTheme.axaml` | 主模板、状态 selector、SizeType 分支、轨道背景、WaveSpirit 和 SwitchKnob token 传递。 |
 | `SwitchKnobTheme.axaml` | 把手加载透明度、加载动画周期和把手宽度动效。 |
-| `ToggleSwitchThemes.axaml` | 聚合 ToggleSwitch 与 SwitchKnob 主题。 |
 
 视觉状态主要由主题 selector 表达：
 
@@ -6674,7 +6700,7 @@ ToggleSwitch 使用控件本体绘制轨道，模板负责内容和把手。
 
 Token 边界：
 
-ToggleSwitchToken 是 ToggleSwitch 的组件级 Token scope，描述轨道尺寸、把手尺寸、内容边距、图标尺寸、开关颜色、禁用透明度、内容字体、把手阴影和加载指示。
+ToggleSwitchToken 是 ToggleSwitch 的控件级 Token scope，描述轨道尺寸、把手尺寸、内容边距、图标尺寸、开关颜色、禁用透明度、内容字体、把手阴影和加载指示。
 
 ToggleSwitchToken 不承载以下状态：
 
@@ -6790,14 +6816,14 @@ Transfer
 | `TransferItemDecorator` | control theme | `TransferItemDecoratorTheme.axaml` | Transfer | `BodyCornerRadius`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (PixelAlignedBorder) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BodyCornerRadius`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RootLayout` | template node (DockPanel) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BodyCornerRadius`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius`, `FilterPlaceholderText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `HeaderFrame` | template node (PixelAlignedBorder) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BorderThickness`, `CornerRadius`, `IsAllSelected`, `IsItemsSourceEmpty`, `IsMotionEnabled`, `IsOneWay` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `HeaderFrame` | template node (PixelAlignedBorder) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BorderThickness`, `CornerRadius`, `HeaderHeight`, `HeaderPadding`, `IsAllSelected`, `IsItemsSourceEmpty` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderLayout` | template node (DockPanel) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `IsAllSelected`, `IsItemsSourceEmpty`, `IsMotionEnabled`, `IsOneWay`, `IsPaginationEnabled`, `IsShowSelectDropdownMenu` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SelectAllCheckBox` | template node (CheckBox) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `IsAllSelected`, `IsItemsSourceEmpty` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `MenuIndicator` | template node (TransferSelectDropdown) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `IsAllSelected`, `IsItemsSourceEmpty`, `IsMotionEnabled`, `IsOneWay`, `IsPaginationEnabled`, `IsShowSelectDropdownMenu` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SelectedInfo` | template node (ContentPresenter) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `SelectedMessage` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `TitleContentPresenter` | template node (ContentPresenter) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `Title`, `TitleTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `FilterInput` | template node (LineEdit) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `FilterPlaceholderText`, `IsFilterEnabled`, `ViewType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `FooterFrame` | template node (PixelAlignedBorder) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BorderThickness`, `CornerRadius`, `Footer`, `FooterTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `FooterFrame` | template node (PixelAlignedBorder) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BorderThickness`, `CornerRadius`, `Footer`, `FooterTemplate`, `HeaderPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FooterPresenter` | template node (ContentPresenter) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `Footer`, `FooterTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentPresenter` | template node (ContentPresenter) | `TransferItemDecoratorTheme.axaml` | TransferItemDecorator | `BodyCornerRadius`, `Content`, `ContentTemplate`, `ListHeight` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `TransferListItem` | item container control theme | `TransferListItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `HorizontalContentAlignment`, `IsCheckable` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
@@ -6836,7 +6862,7 @@ Transfer
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Transfer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Transfer Token + ControlTheme。 |
 
 ## State Flow
 
@@ -6860,7 +6886,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -6870,13 +6896,12 @@ Transfer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `TransferListItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferListViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TransferSelectDropdownTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TransferThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TransferTreeViewItemHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferTreeViewItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TransferTreeViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TreeTransferTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Transfer 使用 `TransferToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
+Transfer 使用 `TransferToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -7063,7 +7088,7 @@ TreeSelect 的默认视觉由 TreeSelect 专属主题、Select 家族输入壳�
 
 Token 边界：
 
-TreeSelectToken 是 TreeSelect 的组件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
+TreeSelectToken 是 TreeSelect 的控件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
 
 TreeSelectToken 不承载以下状态：
 
@@ -7204,7 +7229,7 @@ Upload
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | `UploadFileItem.Status`、`Progress`、`ErrorMessage`、`Result` 是任务状态来源；Form 错误走 `DataValidationErrors`。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Upload Token + ControlTheme；滚动边界在 `UploadList` 内部，并使用 AtomUI 自动隐藏滚动条。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Upload Token + ControlTheme；滚动边界在 `UploadList` 内部，并使用 AtomUI 自动隐藏滚动条。 |
 
 ## State Flow
 
@@ -7231,7 +7256,7 @@ Public API / UploadTrigger / UploadDropZone
 
 ## Theme and Token Boundaries
 
-Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Token 共同构成。
+Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -7252,7 +7277,6 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和组件 Tok
 | `UploadPictureShapePreviewContentTheme.axaml` | Shape preview 内容。 |
 | `UploadPictureShapeUploadingContentTheme.axaml` | Shape uploading 内容。 |
 | `UploadPictureShapeDefaultContentTheme.axaml` | Shape fallback 内容。 |
-| `UploadThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
 主题维护规则：
 
@@ -7374,7 +7398,7 @@ Avatar
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Avatar Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Avatar Token + ControlTheme。 |
 
 ## State Flow
 
@@ -7397,15 +7421,14 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Avatar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Avatar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `AvatarGroupTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `AvatarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `AvatarThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Avatar 使用 `AvatarToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、input/value、motion、visual option 运行时状态。
+Avatar 使用 `AvatarToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -7525,7 +7548,7 @@ Badge
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Badge Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Badge Token + ControlTheme。 |
 
 ## State Flow
 
@@ -7548,17 +7571,16 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Badge 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Badge 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BadgeThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `CountBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DotBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DotBadgeIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `RibbonBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Badge 使用 `BadgeToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 input/value、motion、visual option 运行时状态。
+Badge 使用 `BadgeToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -7609,9 +7631,10 @@ Source: ./controls/calendar/semantic-cn.md
 | --- | --- | --- | --- | --- | --- |
 | `root` | `Calendar` | 桌面日历控件根语义区域，承载 public API、状态投影和主题入口。 | `Value`、`Mode`、`Fullscreen`、`ShowWeek`、`ValidRange`、`DisabledDate`、`CellTemplate`、`FullCellTemplate`、`HeaderTemplate` | `CalendarControlToken` | stable |
 | `header` | `PART_HeaderPresenter` / `CalendarHeader` | 年份、月份和模式切换区域。 | `Value`、`Mode`、`Fullscreen`、`ValidRange` | `YearControlWidth`、`MonthControlWidth` | stable |
-| `body` | `PART_CalendarView` / `CalendarView` | 日期/月网格与周标题区域。 | `Value`、`Mode`、`Fullscreen`、`ShowWeek`、`ValidRange`、`DisabledDate` | `FullBg`、`FullPanelBg`、`MiniContentHeight`、`FullCellMinHeight` | stable |
+| `body` | `PART_BodyPresenter` / `PART_CalendarView` / `CalendarView` | 日期/月网格、周标题与 overlay 承载区域。 | `Value`、`Mode`、`Fullscreen`、`ShowWeek`、`ValidRange`、`DisabledDate` | `FullBg`、`FullPanelBg`、`MiniContentHeight`、`FullCellMinHeight` | stable |
 | `content` | `PART_CellHost` | 日期、月份和周序号容器区域。 | `Value`、`Mode`、`ShowWeek`、`ValidRange`、`DisabledDate` | `ItemActiveBg` | stable |
 | `item` | `CalendarViewCell` / `PART_Item` | 单个日期、月份或周序号单元。 | `CellTemplate`、`FullCellTemplate`、`Value`、`Mode`、`ShowWeek` | `ItemActiveBg` | stable |
+| `rangeBar` | `PART_RangeBarPanel` / `CalendarRangeBarPanel` | Fullscreen Month 日期网格上方的连续日期范围条 overlay。 | `RangeBars`、`CalendarRangeBar` | `RangeBarHeight` | stable |
 | `itemContent` | `PART_ItemContent` | CellTemplate / FullCellTemplate 的业务内容区域。 | `CellTemplate`、`FullCellTemplate`、`CalendarCellContext` | `ItemActiveBg` | stable |
 
 ## Abstract AXAML Structure
@@ -7625,7 +7648,10 @@ Source: ./controls/calendar/semantic-cn.md
             <CalendarHeader Name="PART_DefaultHeader" />
             <ContentControl Name="PART_CustomHeader" />
         </Panel>
-        <CalendarView Name="PART_CalendarView" />
+        <Panel Name="PART_BodyPresenter">
+            <CalendarView Name="PART_CalendarView" />
+            <CalendarRangeBarPanel Name="PART_RangeBarPanel" />
+        </Panel>
     </DockPanel>
 </Border>
 ```
@@ -7652,7 +7678,9 @@ Calendar
            -> Panel#PART_HeaderPresenter (template-stable)
               -> CalendarHeader#PART_DefaultHeader (template-stable)
               -> ContentControl#PART_CustomHeader (template-stable)
-           -> CalendarView#PART_CalendarView (template-stable)
+           -> Panel#PART_BodyPresenter (template-stable)
+              -> CalendarView#PART_CalendarView (template-stable)
+              -> CalendarRangeBarPanel#PART_RangeBarPanel (template-stable)
   -> CalendarViewCell (control theme, CalendarViewCellTheme.axaml)
      -> Border#PART_Item (template-stable)
         -> Border#PART_CellInner (template-stable)
@@ -7682,11 +7710,13 @@ Calendar
 | `PART_HeaderPresenter` | template node (Panel) | `CalendarTheme.axaml` | Calendar | `Fullscreen`, `HeaderTemplate`, `Mode`, `ValidRange`, `Value` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_DefaultHeader` | template node (CalendarHeader) | `CalendarTheme.axaml` | Calendar | `Fullscreen`, `Mode`, `ValidRange`, `Value` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CustomHeader` | template node (ContentControl) | `CalendarTheme.axaml` | Calendar | `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_BodyPresenter` | template node (Panel) | `CalendarTheme.axaml` | Calendar | `CellTemplate`, `DisabledDate`, `FullCellTemplate`, `Fullscreen`, `Mode`, `RangeBars` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CalendarView` | template node (CalendarView) | `CalendarTheme.axaml` | Calendar | `CellTemplate`, `DisabledDate`, `FullCellTemplate`, `Fullscreen`, `ShowWeek`, `ValidRange` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `CalendarViewCell` | control theme | `CalendarViewCellTheme.axaml` | Calendar | `CellTemplate`, `Context`, `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Item` | template node (Border) | `CalendarViewCellTheme.axaml` | CalendarViewCell | `CellTemplate`, `Context`, `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_CellInner` | template node (Border) | `CalendarViewCellTheme.axaml` | CalendarViewCell | `CellTemplate`, `Context`, `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ItemContent` | template node (ContentControl) | `CalendarViewCellTheme.axaml` | CalendarViewCell | `CellTemplate`, `Context` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_RangeBarPanel` | template node (CalendarRangeBarPanel) | `CalendarTheme.axaml` | Calendar | `Fullscreen`, `Mode`, `RangeBars`, `ShowWeek`, `Value` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `CalendarViewCell` | control theme | `CalendarViewCellTheme.axaml` | Calendar | `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Item` | template node (Border) | `CalendarViewCellTheme.axaml` | CalendarViewCell | `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_CellInner` | template node (Border) | `CalendarViewCellTheme.axaml` | CalendarViewCell | `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ItemContent` | template node (ContentControl) | `CalendarViewCellTheme.axaml` | CalendarViewCell | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Value` | template node (TextBlock) | `CalendarViewCellTheme.axaml` | CalendarViewCell | `DisplayText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CalendarView` | control theme | `CalendarViewTheme.axaml` | Calendar | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Body` | template node (DockPanel) | `CalendarViewTheme.axaml` | CalendarView | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -7700,7 +7730,7 @@ Calendar
 ## Pseudo Classes
 
 | 状态反馈 | API、内部状态与伪类如何形成反馈。 | `today`、`selected`、`outside`、`disabled`、`focused`、`fullscreen`、`mini`、`show-week`。 |
-| 主题语义 | SharedToken、CalendarControlToken、ControlTheme 与模板如何表达视觉。 | 四个 Calendar ControlTheme 消费共享 Token 与七个 Calendar 专属 Token。 |
+| 主题语义 | SharedToken、CalendarControlToken、ControlTheme 与模板如何表达视觉。 | 四个 Calendar ControlTheme 消费共享 Token 与八个 Calendar 专属 Token。 |
 
 设计上的首要不变量是：Cell 定制不能夺走日期值、选中、禁用、焦点和命中测试语义；这些语义由 Cell 容器保留，模板只改变内容呈现方式。
 
@@ -7722,25 +7752,25 @@ Public API / Header / Cell input
 - 日期禁用由 `ValidRange` 与 `DisabledDate` 的并集决定；月份禁用按“月份首日和末日都在范围外”或业务规则判定，不能只检查当前日。
 - 方向键只移动面板内的 roving focus；应跳过禁用 Cell 和周序号 Cell，无合法目标时保留当前焦点。Enter/Space 才提交选择。
 - `Fullscreen`/Mini 只改变布局密度和 Header 控件尺寸，不改变值、事件顺序、禁用和模板优先级。
+- `RangeBars` 只改变日期网格上方的 overlay 业务标记层，不改变 Cell 外间距、选择状态、禁用状态、鼠标指针、事件顺序或 Automation。
 - AtomUI 语言服务改变会同步更新日期格式、周标题、月份名称、Header 的 Month/Year 文本与年份后缀。
 
 ## Theme and Token Boundaries
 
-Calendar 使用 `CalendarControlToken`（scope id `CalendarControl`）以及 SharedToken。专属 Token 只表达七个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`MiniContentHeight`、`FullCellMinHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
+Calendar 使用 `CalendarControlToken`（scope id `CalendarControl`）以及 SharedToken。专属 Token 只表达八个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`MiniContentHeight`、`FullCellMinHeight`、`RangeBarHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
 
 | Theme 文件 | 稳定职责 |
 | --- | --- |
-| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择和 CalendarView 接线；Fullscreen 拉伸且无紧凑边框，Mini 使用圆角边框。 |
+| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择、CalendarView 与范围条 overlay 接线；Fullscreen 拉伸且无紧凑边框，Mini 使用圆角边框。 |
 | `CalendarHeaderTheme.axaml` | Year Select、Month Select、Month/Year 模式切换。Mini 时 Header 交互控件应使用 Small 尺寸。 |
 | `CalendarViewTheme.axaml` | WeekHeader、CellHost，以及 Fullscreen/Mini 的布局差异。 |
 | `CalendarViewCellTheme.axaml` | 默认日期值、Cell/FullCell 模板消费、状态 selector 和命中测试视觉。 |
-| `CalendarThemes.axaml` | 四个内部 Theme 的资源聚合。 |
 
-`CellTemplate` 必须保留默认值显示；`FullCellTemplate` 覆盖完整 Cell 内部内容且优先级最高。两者都不能删除禁用、选中、焦点和 outside 的容器状态。
+`CellTemplate` 必须保留默认值显示，并与内置范围条 overlay 共存；`FullCellTemplate` 覆盖完整 Cell 内部内容且优先级最高，但不替换 Calendar body overlay。两者都不能删除禁用、选中、焦点和 outside 的容器状态。
 
 Token 边界：
 
-新 Calendar 的 Token 收敛为七个公开视觉语义。日期值、周标题、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则。
+新 Calendar 的 Token 收敛为八个公开视觉语义。日期值、周标题、范围条间距、范围条圆角、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则，范围条默认高度通过 `RangeBarHeight` 固化 Calendar overlay 的默认条高。
 
 当前 Token scope：
 
@@ -7752,6 +7782,7 @@ Token 边界：
 
 - 不擅自新增、删除或重命名 public 属性、事件、上下文类型、枚举成员、模板 part、伪类、ControlTheme key 或 Token。
 - `Value` 的日期规范化、用户事件顺序、`FullCellTemplate` 优先级和月份两端禁用规则属于行为兼容契约。
+- `RangeBars` 不改变 Cell 外间距、网格行列、选择/禁用语义、事件顺序和 Automation；`CalendarRangeBar.Background` 的资源绑定必须跟随 Calendar owner 生命周期释放。
 - 模板重应用、模式切换、语言切换和控件 detach 必须释放旧事件订阅、清理旧容器 owner，并把当前状态回放到新模板。
 - 不把 DatePicker 的旧 Calendar API（`SelectedDate`、`BlackoutDates`、范围选择、Decade 等）映射进新 Calendar。
 - 不用运行时反射发现 API、Token 或模板；AXAML 绑定、静态注册和生成资源必须保持 NativeAOT 友好。
@@ -7762,6 +7793,7 @@ Token 边界：
 - Calendar 是唯一 public 状态 owner；View/Cell 不得引入第二份可写 Value。
 - `Value` 永远是日期值；所有提交和上下文值均不携带时间部分。
 - `FullCellTemplate` 优先于 `CellTemplate`，但两者都保留 Cell 状态和交互语义。
+- `RangeBars` 只进入 Fullscreen Month 日期网格 overlay 层，不改变 Cell 外间距、Pointer、键盘、Automation 或选择事件顺序。
 - Month 禁用使用月首/月末范围判断；方向键跳过禁用和周序号 Cell。
 - 默认 Header、自定义 Header、Cell Pointer、键盘和 Automation 使用同一提交与事件顺序。
 - 新 Calendar 与 DatePicker 旧 CalendarView 的类型、Token、Theme key 和生命周期互不越界。
@@ -7948,7 +7980,6 @@ Card 的默认视觉由根 Card 主题和多个子控件主题组成。
 | `CardGridItemTheme.axaml` | 栅格项内容承载、padding、阴影和 hover 状态。 |
 | `CardTabsContentTheme.axaml` | 内部 TabControl、ContentPadding 和 header edge padding。 |
 | `CardMetaContentTheme.axaml` | Avatar、标题和描述的元信息布局。 |
-| `CardThemes.axaml` | 汇总 Card 相关主题资源。 |
 
 Token 关系：
 
@@ -7964,7 +7995,7 @@ CardTheme / CardActionPanelTheme / CardGridItemTheme / CardTabsContentTheme / Ca
 
 Token 边界：
 
-CardToken 是 Card 的组件级 Token scope，描述卡片 Header、Body、Actions、Tabs、Extra、阴影、Grid item 和 action icon 的组件语义值。
+CardToken 是 Card 的控件级 Token scope，描述卡片 Header、Body、Actions、Tabs、Extra、阴影、Grid item 和 action icon 的组件语义值。
 
 CardToken 不承载以下状态：
 
@@ -8104,7 +8135,7 @@ Carousel
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、loading/async、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Carousel Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Carousel Token + ControlTheme。 |
 
 ## State Flow
 
@@ -8127,7 +8158,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Carousel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Carousel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -8136,9 +8167,8 @@ Carousel 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `CarouselPageTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CarouselPaginationTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CarouselTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `CarouselThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Carousel 使用 `CarouselToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、collection/filter、motion、visual option 运行时状态。
+Carousel 使用 `CarouselToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -8258,7 +8288,7 @@ Collapse
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Collapse Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Collapse Token + ControlTheme。 |
 
 ## State Flow
 
@@ -8286,15 +8316,14 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Collapse 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Collapse 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `CollapseItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `CollapseTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `CollapseThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Collapse 使用 `CollapseToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
+Collapse 使用 `CollapseToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、motion、visual option 运行时状态。
 
 Collapse 的分隔线采用结构化所有权：
 
@@ -8414,7 +8443,7 @@ Source: ./controls/data-grid/semantic-cn.md
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | DataGrid Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、Control Own Token 和模板绑定如何表达视觉。 | DataGrid Token + ControlTheme。 |
 
 ## State Flow
 
@@ -8442,11 +8471,10 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-DataGrid 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+DataGrid 的视觉模型由控件模板、ControlTheme、SharedToken 和 DataGrid Own Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `AtomUIDataGridThemesProvider.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DataGridCellTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `DataGridColumnGroupHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `DataGridColumnHeaderTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
@@ -8466,7 +8494,7 @@ DataGrid 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `DataGridSortIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DataGridTreeFilterFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-DataGrid 使用 `DataGridToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、collection/filter、motion、visual option 运行时状态。
+DataGrid 拥有独立 Control identity；`DataGridToken` 只表达 DataGrid Own Token 语义，不承载 selection/checked/active、collection/filter、motion 或 visual option 运行时状态。Control 级 Global Token 覆盖与 Own Token 通过 `DataGridTokenResource` 统一读取。
 
 主题维护规则：
 
@@ -8666,7 +8694,6 @@ Descriptions 的默认视觉由根主题、默认项主题和边框 cell 主题�
 | `DescriptionDefaultItemTheme.axaml` | 普通项 horizontal/vertical/vertical bordered 三种模板和冒号、label、content 视觉。 |
 | `DescriptionBorderedItemLabelTheme.axaml` | 水平边框模式 label cell 视觉。 |
 | `DescriptionBorderedItemContentTheme.axaml` | 水平边框模式 content cell 视觉。 |
-| `DescriptionsThemes.axaml` | 汇总 Descriptions 相关主题资源。 |
 
 Token 关系：
 
@@ -8682,7 +8709,7 @@ DescriptionsTheme / DescriptionDefaultItemTheme / bordered cell themes
 
 Token 边界：
 
-DescriptionsToken 是 Descriptions 的组件级 Token scope，描述描述列表的 label 背景、文本颜色、标题颜色、Header 间距、item padding、冒号间距、内容颜色和 Extra 颜色。
+DescriptionsToken 是 Descriptions 的控件级 Token scope，描述描述列表的 label 背景、文本颜色、标题颜色、Header 间距、item padding、冒号间距、内容颜色和 Extra 颜色。
 
 DescriptionsToken 不承载以下状态：
 
@@ -8792,7 +8819,7 @@ Empty
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Empty Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Empty Token + ControlTheme。 |
 
 ## State Flow
 
@@ -8815,13 +8842,13 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Empty 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Empty 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `EmptyTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Empty 使用 `EmptyToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
+Empty 使用 `EmptyToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
 
 主题维护规则：
 
@@ -9050,7 +9077,7 @@ SharedToken 提供全局边框、字体、动效时长、图标大小和基础�
 
 Token 边界：
 
-ExpanderToken 是 Expander 的组件级 Token scope，描述 Header/Content 的默认 padding、背景、整体圆角和展开图标默认外边距。
+ExpanderToken 是 Expander 的控件级 Token scope，描述 Header/Content 的默认 padding、背景、整体圆角和展开图标默认外边距。
 
 ExpanderToken 不承载以下状态：
 
@@ -9325,13 +9352,13 @@ ImagePreviewer
            -> Border#Mask (template-stable)
               -> ContentPresenter#MaskContentPresenter (internal-observable)
   -> ImagePreviewerDialog (control theme, ImagePreviewerDialogTheme.axaml)
-  -> ImagePreviewer (control theme, ImagePreviewerTheme.axaml)
-     -> PixelAlignedBorder (template-stable)
-        -> ImagePreviewerCover (internal-observable)
-  -> ImagePreviewerOverlayHost (control theme, ImagePreviewerThemes.axaml)
+  -> ImagePreviewerOverlayHost (control theme, ImagePreviewerOverlayHostTheme.axaml)
      -> Panel (template-stable)
         -> ContentPresenter (internal-observable)
         -> IconButton#PART_CloseButton (template-stable)
+  -> ImagePreviewer (control theme, ImagePreviewerTheme.axaml)
+     -> PixelAlignedBorder (template-stable)
+        -> ImagePreviewerCover (internal-observable)
   -> ImagePreviewerTitleBar (control theme, ImagePreviewerTitleBarTheme.axaml)
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (template-stable)
@@ -9438,7 +9465,7 @@ ImagePreviewer
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | current item、open/close、image loading、loaded/failed、fallback、motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ImagePreviewer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ImagePreviewer Token + ControlTheme。 |
 
 ## State Flow
 
@@ -9468,7 +9495,7 @@ Public API / IImagePreviewSource / ImageSourceUri / inherited command / user inp
 
 ## Theme and Token Boundaries
 
-ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -9479,11 +9506,10 @@ ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和�
 | `ImagePreviewerCoverTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ImagePreviewerDialogTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `ImagePreviewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `ImagePreviewerTitleBarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `ImageViewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-ImagePreviewer 使用 `ImagePreviewerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
+ImagePreviewer 使用 `ImagePreviewerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
 
 预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。预览 dialog 的 `TitleAlignment` 默认值覆盖为 `WindowCenter`，因此 Windows、Linux 和 macOS 都默认以完整窗口水平中心作为标题基准；显式设置 `TitleAlignment` 时仍通过 `ImagePreviewerTitleBar` 投射，并继续由 `WindowTitleBarLayoutPanel` 处理左右安全区裁剪。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
 
@@ -9622,7 +9648,7 @@ InfoFlyout
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | InfoFlyout Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | InfoFlyout Token + ControlTheme。 |
 
 ## State Flow
 
@@ -9645,17 +9671,15 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-InfoFlyout 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+InfoFlyout 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `BrowserFlyoutThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `FlyoutHostTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `FlyoutThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `MenuFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `TreeViewFlyoutPresenterTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-InfoFlyout 使用 `FlyoutHostToken`、`TreeFlyoutToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
+InfoFlyout 使用 `FlyoutHostToken`、`TreeFlyoutToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -10272,7 +10296,7 @@ QRCode
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | loading/async、input/value、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | QRCode Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | QRCode Token + ControlTheme。 |
 
 ## State Flow
 
@@ -10295,13 +10319,13 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-QRCode 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+QRCode 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `QRCodeTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-QRCode 使用 `QRCodeToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、input/value、visual option 运行时状态。
+QRCode 使用 `QRCodeToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、input/value、visual option 运行时状态。
 
 主题维护规则：
 
@@ -10480,7 +10504,6 @@ Segmented 的视觉由根主题、item 主题、专属 Token 和 SharedToken 共
 | --- | --- |
 | `SegmentedTheme.axaml` | 根模板、轨道 padding/background、选中滑块资源、SizeType/Shape 圆角分支、方向/展开对齐和滑块动画。 |
 | `SegmentedItemTheme.axaml` | item 模板、图标/内容布局、hover/pressed/selected/disabled 状态、SizeType/Shape 分支和图标尺寸。 |
-| `SegmentedThemes.axaml` | 汇总 Segmented 相关主题资源。 |
 
 视觉关系：
 
@@ -10500,7 +10523,7 @@ track + selected thumb + item states
 
 Token 边界：
 
-SegmentedToken 是 Segmented 的组件级 Token scope，描述分段轨道、选项文本状态、选项背景状态、选中滑块背景和 item 尺寸的主题语义。
+SegmentedToken 是 Segmented 的控件级 Token scope，描述分段轨道、选项文本状态、选项背景状态、选中滑块背景和 item 尺寸的主题语义。
 
 SegmentedToken 不承载以下状态：
 
@@ -10586,7 +10609,7 @@ Source: ./controls/statistic/semantic-cn.md
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | loading/async、collection/filter、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Statistic Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Statistic Token + ControlTheme。 |
 
 ## State Flow
 
@@ -10609,17 +10632,16 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Statistic 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Statistic 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `AbstractStatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `StatisticCountUpTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `StatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `StatisticThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `TimerStatisticTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Statistic 使用 `StatisticToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、collection/filter、input/value、motion、visual option 运行时状态。
+Statistic 使用 `StatisticToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、collection/filter、input/value、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -10734,7 +10756,7 @@ Tag
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | Tag 使用颜色分类和 `Variant`；CheckableTag 使用 `IsChecked`；Group 使用 `CheckedItem(s)`。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Tag Token + ControlTheme。 |
 
 ## State Flow
 
@@ -10774,16 +10796,15 @@ Group 的内部 SelectedItem(s) 只保存归一后的 option wrapper，不是 pu
 
 ## Theme and Token Boundaries
 
-Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Tag 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `TagTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `CheckableTagTheme.axaml` | 提供二态标签的内容结构以及 checked、focus、disabled 等状态视觉。 |
 | `CheckableTagGroupTheme.axaml` | 组合内部选择控件、ItemsPresenter 和 WrapPanel。 |
-| `TagThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Tag 使用 `TagToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
+Tag 使用 `TagToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value、visual option 运行时状态。
 
 Tag 的视觉组合由以下矩阵表达：
 
@@ -10921,7 +10942,7 @@ Timeline
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | `IsReverse`、Pending 状态、可见项顺序和首尾节点状态。 |
 | 布局语义 | 主轴方向和内容相对轴线的位置如何组合。 | `Orientation` 决定主轴，`Mode` 决定交叉轴上的 `Start`、`End` 或交替布局。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Timeline Token、方向 selector、Item 模板和 Indicator renderer。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Timeline Token、方向 selector、Item 模板和 Indicator renderer。 |
 
 ## State Flow
 
@@ -10950,16 +10971,15 @@ Orientation / Mode / IsReverse / Items / item visibility
 
 ## Theme and Token Boundaries
 
-Timeline 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Timeline 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `TimelineIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimelineItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `TimelineTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TimelineThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Timeline 使用 `TimelineToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载方向、Mode、视觉索引或 Pending 相邻状态。水平布局的内容间距优先使用 SharedToken；方向差异由 ControlTheme selector 和布局 Panel 表达。
+Timeline 使用 `TimelineToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载方向、Mode、视觉索引或 Pending 相邻状态。水平布局的内容间距优先使用 SharedToken；方向差异由 ControlTheme selector 和布局 Panel 表达。
 
 主题维护规则：
 
@@ -11041,7 +11061,7 @@ Source: ./controls/tooltip/semantic-cn.md
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | motion。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Tooltip Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Tooltip Token + ControlTheme。 |
 
 ## State Flow
 
@@ -11064,13 +11084,13 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Tooltip 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Tooltip 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ToolTipTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Tooltip 使用 `ToolTipToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 motion 运行时状态。
+Tooltip 使用 `ToolTipToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 motion 运行时状态。
 
 主题维护规则：
 
@@ -11223,7 +11243,7 @@ Tour
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Tour Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Tour Token + ControlTheme。 |
 
 ## State Flow
 
@@ -11247,7 +11267,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Tour 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Tour 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -11256,9 +11276,8 @@ Tour 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组
 | `TourStepTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TourStepsViewTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TourTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `TourThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Tour 使用 `TourToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、motion、visual option 运行时状态。
+Tour 使用 `TourToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、open/close、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -11695,7 +11714,7 @@ Alert
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | 基础交互和主题状态。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Alert Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Alert Token + ControlTheme。 |
 
 ## State Flow
 
@@ -11718,13 +11737,13 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Alert 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Alert 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `AlertTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Alert 使用 `AlertToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 基础交互和主题状态 运行时状态。
+Alert 使用 `AlertToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 基础交互和主题状态 运行时状态。
 
 主题维护规则：
 
@@ -11809,7 +11828,7 @@ Drawer
            -> ContentPresenter#InfoContainer (internal-observable)
            -> Separator (template-stable)
            -> ContentPresenter#InfoFooter (internal-observable)
-  -> Drawer (control theme, DrawerThemes.axaml)
+  -> Drawer (control theme, DrawerTheme.axaml)
 ```
 
 ### 协作节点
@@ -11833,7 +11852,7 @@ Drawer
 | `ExtraContentPresenter` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Extra`, `ExtraTemplate`, `HasExtra` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InfoContainer` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InfoFooter` | template node (ContentPresenter) | `DrawerInfoContainerTheme.axaml` | DrawerInfoContainer | `Footer`, `FooterTemplate`, `HasFooter` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Drawer` | control theme | `DrawerThemes.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Drawer` | control theme | `DrawerTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 
 ## Template Parts
 
@@ -11847,7 +11866,7 @@ Drawer
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Drawer Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Drawer Token + ControlTheme。 |
 
 ## State Flow
 
@@ -11872,15 +11891,14 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Drawer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Drawer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `DrawerContainerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `DrawerInfoContainerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DrawerThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Drawer 使用 `DrawerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
+Drawer 使用 `DrawerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -11981,7 +11999,7 @@ Message
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Message Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Message Token + ControlTheme。 |
 
 ## State Flow
 
@@ -12004,15 +12022,14 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Message 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Message 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `MessageCardTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `MessageThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `WindowMessageManagerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-Message 使用 `MessageToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、motion、visual option 运行时状态。
+Message 使用 `MessageToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -12065,7 +12082,7 @@ Source: ./controls/modal/semantic-cn.md
 | `host` | Overlay presenter / native Window | 承载模态、placement、尺寸和宿主生命周期。 | `DialogHostType`, `IsModal`, `PlacementTarget` | SharedToken motion | internal-observable |
 | `surface` | `DialogSurface` | 共享标题、正文、Footer、按钮和 focus scope。 | `Content`, `StandardButtons`, `IsLoading` | `ContentBg`, padding/footer tokens | internal-observable |
 | `content` | Content / `MessageBoxContent` | 呈现任意 Dialog 内容或 MessageBox 语义内容。 | `Content`, `ContentTemplate`, `Style`, `Icon` | typography/color tokens | stable |
-| `motion` | `MotionActor` | 等待 opening/closing motion 并维持 task 边界。 | `IsMotionEnabled` | `MotionDurationMid` | internal-observable |
+| `motion` | Overlay `MotionActor` | 等待 Overlay opening/closing motion；Window 使用原生 Opened/Closed 边界。 | `IsMotionEnabled` | `MotionDurationMid` | internal-observable |
 
 ## Abstract AXAML Structure
 
@@ -12099,7 +12116,7 @@ Source: ./controls/modal/semantic-cn.md
 - Enter/Escape 根据当前有效按钮序列查找 default/escape 按钮，运行时修改标准按钮或自定义按钮会立即生效。
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
 - 打开后焦点进入 DialogSurface；嵌套 Dialog 关闭时恢复下层 Surface，最后一层关闭时恢复原触发控件。
-- Overlay 与 Window 都等待 opening/closing motion；`IsMotionEnabled=false` 跳过 motion，但不跳过宿主打开、关闭和释放。
+- Overlay 等待 mask 与 Surface 的 opening/closing motion；`IsMotionEnabled=false` 只跳过这些 motion，不跳过宿主附加、移除和释放。Window 不创建 Surface `MotionActor`，其打开与关闭分别等待原生 `DialogWindow.Opened` 和 `DialogWindow.Closed`。
 - `IsResizable=true` 允许在有效尺寸区间内交互缩放，不表示无约束 resize。结构性最小尺寸在宿主容量允许时始终保留标题、Footer 和非零正文 viewport；`HostMin*` 只能提高该下限，`HostMax*=PositiveInfinity` 仍受 owner 或 screen capacity 限制。Overlay handle 捕获 pointer，release 或 capture lost 都会完整结束当前 resize，不复用上一次拖拽 origin。
 
 ## Theme and Token Boundaries
@@ -12224,7 +12241,7 @@ Notification
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、loading/async、collection/filter、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Notification Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Notification Token + ControlTheme。 |
 
 ## State Flow
 
@@ -12247,16 +12264,15 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Notification 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Notification 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `NotificationCardTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `NotificationProgressBarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `NotificationsThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 | `WindowNotificationManagerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 
-Notification 使用 `NotificationToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、collection/filter、motion、visual option 运行时状态。
+Notification 使用 `NotificationToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、collection/filter、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -12370,7 +12386,7 @@ PopupConfirm
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | input/value。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | PopupConfirm Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | PopupConfirm Token + ControlTheme。 |
 
 ## State Flow
 
@@ -12393,15 +12409,14 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-PopupConfirm 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+PopupConfirm 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `PopupConfirmContainerTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
 | `PopupConfirmTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `PopupConfirmThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-PopupConfirm 使用 `PopupConfirmToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 input/value 运行时状态。
+PopupConfirm 使用 `PopupConfirmToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value 运行时状态。
 
 主题维护规则：
 
@@ -12554,7 +12569,7 @@ ProgressBarToken 提供默认进度色、剩余轨道色、圆形文字和图标
 
 Token 边界：
 
-ProgressBarToken 是 ProgressBar 家族的组件级 Token scope。它定义默认进度色、剩余轨道色、圆形文本和图标最小尺寸、线形状态图标尺寸、线形额外信息间距和线形内部 padding。
+ProgressBarToken 是 ProgressBar 家族的控件级 Token scope。它定义默认进度色、剩余轨道色、圆形文本和图标最小尺寸、线形状态图标尺寸、线形额外信息间距和线形内部 padding。
 
 ProgressBarToken 不承载以下状态：
 
@@ -12681,7 +12696,7 @@ Result
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Result Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Result Token + ControlTheme。 |
 
 ## State Flow
 
@@ -12704,13 +12719,13 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Result 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Result 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `ResultTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Result 使用 `ResultToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
+Result 使用 `ResultToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 visual option 运行时状态。
 
 主题维护规则：
 
@@ -12861,7 +12876,7 @@ Skeleton
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、loading/async、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Skeleton Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Skeleton Token + ControlTheme。 |
 
 ## State Flow
 
@@ -12884,7 +12899,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Skeleton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Skeleton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -12898,9 +12913,8 @@ Skeleton 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `SkeletonNodeTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `SkeletonParagraphTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `SkeletonTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `SkeletonThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Skeleton 使用 `SkeletonToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、motion、visual option 运行时状态。
+Skeleton 使用 `SkeletonToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 selection/checked/active、loading/async、motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -13029,7 +13043,7 @@ Spin
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Spin Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Spin Token + ControlTheme。 |
 
 ## State Flow
 
@@ -13052,15 +13066,14 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Spin 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Spin 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `SpinIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `SpinTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `SpinThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Spin 使用 `SpinToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 motion、visual option 运行时状态。
+Spin 使用 `SpinToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 motion、visual option 运行时状态。
 
 主题维护规则：
 
@@ -13247,9 +13260,8 @@ Splash 的视觉模型由 `Splash` 控件模板、`SplashWindow` 宿主主题、
 | --- | --- |
 | `SplashTheme.axaml` | 定义启动页视觉控件模板、状态 selector、ProgressBar/Spin 组合和内容区域。 |
 | `SplashWindowTheme.axaml` | 定义桌面启动窗口宿主、透明无装饰窗口模板、阴影宿主和内容承载边界。 |
-| `SplashThemes.axaml` | 聚合 Splash 视觉控件主题资源，保证包级引入顺序稳定。 |
 
-Splash 使用 `SplashToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。
+Splash 使用 `SplashToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。
 `SplashWindow` 使用 `{x:Type atom:SplashWindow}` 作为隐式 `ControlTheme` key；窗口模板必须保持透明内容宿主，避免默认 Window 背景破坏 Splash 表面圆角。
 `SplashWindowTheme.axaml` 直接使用 `ShadowsAwareContainer#PART_SurfaceHost` 承载 `Splash`，由 `SurfaceBoxShadow` 控制窗口表面阴影，由 `SurfaceCornerRadius` 控制阴影遮罩圆角。`SplashTheme.axaml` 内部的 `PART_RootLayout` 和 `PART_SurfaceLayout` 继续负责背景、内容圆角和裁剪。
 
@@ -13334,7 +13346,7 @@ Source: ./controls/watermark/semantic-cn.md
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、input/value、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | SharedToken / 关联控件 Token + ControlTheme。 |
 
 ## State Flow
 
@@ -13357,7 +13369,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Watermark 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Watermark 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 当前控件未抽取到专属 AXAML 主题文件；视觉契约主要来自继承控件、共享主题和资源 key。
 
@@ -13574,7 +13586,7 @@ Window
 ## Pseudo Classes
 
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close。 |
-| 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | Window Token + ControlTheme。 |
+| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Window Token + ControlTheme。 |
 
 ## State Flow
 
@@ -13598,7 +13610,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的组件 Token 共同构成。
+Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -13606,9 +13618,8 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
 | `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
 | `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
-| `WindowThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
 
-Window 使用 `WindowToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
+Window 使用 `WindowToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close 运行时状态。
 
 主题维护规则：
 

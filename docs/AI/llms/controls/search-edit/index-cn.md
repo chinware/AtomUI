@@ -44,7 +44,8 @@ SearchEdit 专项 API：
 | `SearchButtonStyle` | `SearchEditButtonStyle` | 搜索按钮样式，支持 `Default` 和 `Primary`。 |
 | `SearchButtonText` | `string` | 搜索按钮显示文本；未设置时按钮以搜索图标为主要视觉。 |
 | `IsOperating` | `bool` | 搜索按钮 loading 状态；为 `true` 时阻止重复触发 `SearchButtonClick`。 |
-| `SearchButtonClick` | `RoutedEvent<RoutedEventArgs>` | 搜索按钮点击事件，由内部 `SearchButton` 点击冒泡为 SearchEdit 事件。 |
+| `SearchButtonTheme` | `ControlTheme?` | 搜索按钮 Semantic Part Theme；`TargetType` 必须兼容 public `Button`。 |
+| `SearchButtonClick` | `RoutedEvent<RoutedEventArgs>` | 搜索按钮点击事件，由 `Button#PART_RightAddOn` 点击冒泡为 SearchEdit 事件。 |
 
 继承输入 API 的 SearchEdit 约束：
 
@@ -66,7 +67,7 @@ SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。维护时不应�
 | Template Part | 类型 | 所属主题 | 职责 |
 | --- | --- | --- | --- |
 | `PART_AddOnDecoratedBox` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 搜索输入壳体、状态、Addon、CompactSpace 和搜索按钮协作入口。 |
-| `PART_RightAddOn` | `SearchButton` | `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮，承载图标、文字、loading、按钮样式和点击事件。 |
+| `PART_RightAddOn` | `Button` | `SearchEditDecoratedBoxTheme.axaml` | public Button 语义部件，承载图标、文字、loading、按钮样式和点击事件。 |
 | `PART_ContentFrame` | `Border` | `SearchEditDecoratedBoxTheme.axaml` | 文本输入框视觉边框和背景。 |
 | `PART_ScrollViewer` | `ScrollViewer` | `SearchEditTheme.axaml` | 文本滚动区域。 |
 | `PART_TextPresenter` | `InputTextPresenter` | `SearchEditTheme.axaml` | 文本显示、光标、选择和密码 reveal。 |
@@ -77,8 +78,8 @@ SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。维护时不应�
 
 ## 事件与命令
 
-| `SearchButtonClick` | `RoutedEvent<RoutedEventArgs>` | 搜索按钮点击事件，由内部 `SearchButton` 点击冒泡为 SearchEdit 事件。 |
-| `PART_RightAddOn` | `SearchButton` | `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮，承载图标、文字、loading、按钮样式和点击事件。 |
+| `SearchButtonClick` | `RoutedEvent<RoutedEventArgs>` | 搜索按钮点击事件，由 `Button#PART_RightAddOn` 点击冒泡为 SearchEdit 事件。 |
+| `PART_RightAddOn` | `Button` | `SearchEditDecoratedBoxTheme.axaml` | public Button 语义部件，承载图标、文字、loading、按钮样式和点击事件。 |
 
 ## 使用示例
 
@@ -160,7 +161,7 @@ Gallery key：`ExamplesContent` / item `5`
 SearchEdit 的文本输入行为继承 LineEdit，搜索按钮行为独立建模：
 
 ```text
-SearchButton.Click
+Button#PART_RightAddOn.Click
   ↓
 SearchEditDecoratedBox.HandleSearchButtonClick
   ↓
@@ -194,20 +195,28 @@ SearchEdit 使用三层主题协作：
 | `SearchEditDecoratedBoxTheme.axaml` | 输入框内容边框、搜索按钮、左右布局、搜索按钮 style 和 z-index 关系。 |
 | `SearchButtonTheme.axaml` | 搜索按钮在不同输入表面中的背景、前景和状态色。 |
 
-SearchEdit 不定义独立组件 Token。主题资源来源：
+SearchEdit 拥有独立 `ControlTokenIdentity`，但不定义 Own Token。它继承 `LineEdit` 的行为并不意味着继承或借用
+LineEdit identity；Control 级配置中的任意已注册 Global Token 都绑定到 SearchEdit 自己的 Effective Global
+Token。合法但没有被当前主题直接或间接消费的 Global Token 可以没有视觉效果。
+
+主题资源边界：
 
 | Token 来源 | 用途 |
 | --- | --- |
-| `LineEditToken` | 输入文本字号。 |
-| `AddOnDecoratedBoxToken` | 输入壳体 focus shadow、active 背景和状态视觉。 |
-| `ButtonToken` | 搜索按钮字号、padding、图标和按钮状态。 |
-| `SharedToken` | 控件高度、字体高度、边框、颜色、间距、motion 和 disabled 语义。 |
+| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，负责输入与搜索按钮组合语义，例如 focus shadow、主色和输入状态背景。 |
+| `AddOnDecoratedBoxTokenResource` | 由 `SearchEditDecoratedBoxTheme` 的 BasedOn 主题显式读取输入壳体 Own/Effective Global Token。 |
+| `ButtonTokenResource` | 由真实 Button 和 `SearchButtonTheme` 显式读取 Button Own/Effective Global Token，负责按钮基础视觉。 |
+| `SharedTokenResource` | 读取真正的 Global Token，只用于不响应 SearchEdit Control 级覆盖的共享值。 |
+
+`SearchButtonTheme` 的 `TargetType` 是 Button，但资产 owner 和组合语义属于 SearchEdit。它可以同时使用
+`SearchEditTokenResource` 与 `ButtonTokenResource`；这是显式跨 Control 资源引用，不是 SearchEdit 借用 Button
+或 LineEdit identity。
 
 搜索按钮必须与输入框视觉上组成单一控件。Custom 高度下，搜索按钮的可视 `Frame` 高度必须跟随 `SearchEditDecoratedBox` 的实际布局高度，避免按钮边框和输入框边框错位。
 
 Token 来源：
 
-- SearchEdit 当前没有专属 `token.md`；LLMS 生成按第 5 节视觉与主题模型、SharedToken、控件家族 Token 或主题资源说明 Token 边界。
+- SearchEdit 当前没有 Own Token，因此没有专属 `token.md`；LLMS 生成按第 5 节说明独立 SearchEdit identity、完整 Effective Global Token、Button Semantic Part 和显式跨 Control 资源边界。
 
 ## AOT 与裁剪注意事项
 
@@ -219,11 +228,12 @@ SearchEdit 不依赖运行时反射发现模板结构。跨模板协作使用固
 - `OwningSearchEdit` 只保存当前模板 owner，不创建全局订阅。
 - 搜索按钮高度同步使用 XAML binding，不在布局过程中写本地 `Height` 值。
 - 搜索按钮状态不创建异步任务；业务异步状态由外部设置 `IsOperating`。
-- SearchEdit 没有独立 Token scope，不应为运行时状态新增 Token。
+- SearchEdit 有独立 Control identity、没有 Own Token；运行时状态不得进入 Token schema。
+- `SearchEditTokenResource` 读取 SearchEdit Effective Global Token；Button 基础视觉继续显式读取 `ButtonTokenResource`。
 
 AOT 边界：
 
-- SearchEdit 主题通过显式 ResourceInclude 注册。
+- SearchEdit identity、强类型 TokenResource 和三个独立主题叶子通过生成 descriptor/asset manifest 注册。
 - `AutoCompleteSearchEditBox` 使用显式 `StyleKeyOverride` 复用 SearchEdit 主题。
 - API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护，不依赖运行时反射扫描。
 
@@ -233,11 +243,11 @@ AOT 边界：
 
 - `src/AtomUI.Desktop.Controls/Input/SearchEdit.cs`：public API、默认 clear icon、模板接入和搜索点击事件抛出。
 - `src/AtomUI.Desktop.Controls/Input/SearchEditDecoratedBox.cs`：内部输入壳体，转接 SearchEdit 属性并订阅搜索按钮 click。
-- `src/AtomUI.Desktop.Controls/Input/SearchButton.cs`：搜索按钮类型，继承 Button 并接入输入 `StyleVariant`、`Status`。
 - `src/AtomUI.Desktop.Controls/Input/SearchEditPanel.cs`：搜索输入布局面板，负责左侧 AddOn、搜索按钮和内容框重叠边框排布。
 - `src/AtomUI.Desktop.Controls/Input/Themes/SearchEditTheme.axaml`：SearchEdit 根模板、文本区域、内部 action 和 focus/status selector。
 - `src/AtomUI.Desktop.Controls/Input/Themes/SearchEditDecoratedBoxTheme.axaml`：搜索按钮和输入框一体化模板。
 - `src/AtomUI.Desktop.Controls/Input/Themes/SearchButtonTheme.axaml`：搜索按钮在不同输入表面下的状态视觉。
+- `src/AtomUI.Desktop.Controls/Input/Themes/SearchButtonTheme.cs`：SearchButton Semantic Part typed theme。
 - `src/AtomUI.Desktop.Controls/AutoComplete/AutoCompleteSearchEdit.cs`：AutoComplete 搜索输入入口，复用 SearchEdit 搜索按钮属性。
 - `src/AtomUI.Desktop.Controls/AutoComplete/AutoCompleteSearchEditBox.cs`：AutoComplete 内部 SearchEdit box，使用 SearchEdit style key。
 
