@@ -408,12 +408,14 @@ internal readonly struct ControlCompilationCacheKey : IEquatable<ControlCompilat
     private readonly NormalizedControlConfigCacheKey? _controlConfig;
 
     private ControlCompilationCacheKey(
-        ThemeCompileInput input,
+        GlobalCompilationCacheKey global,
         ControlTokenDescriptor descriptor,
         NormalizedControlThemeConfig? controlConfig,
         ThemeAppearance appearance)
     {
-        _global       = GlobalCompilationCacheKey.Create(input);
+        ArgumentNullException.ThrowIfNull(global);
+
+        _global       = global;
         Identity      = descriptor.Identity;
         ControlSlot   = descriptor.Slot;
         Appearance    = appearance;
@@ -427,12 +429,12 @@ internal readonly struct ControlCompilationCacheKey : IEquatable<ControlCompilat
     internal ThemeAppearance Appearance { get; }
 
     internal static ControlCompilationCacheKey Create(
-        ThemeCompileInput input,
+        GlobalCompilationCacheKey global,
         ControlTokenDescriptor descriptor,
         NormalizedControlThemeConfig? controlConfig,
         ThemeAppearance appearance)
     {
-        return new ControlCompilationCacheKey(input, descriptor, controlConfig, appearance);
+        return new ControlCompilationCacheKey(global, descriptor, controlConfig, appearance);
     }
 
     public bool Equals(ControlCompilationCacheKey other)

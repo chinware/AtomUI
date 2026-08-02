@@ -1,3 +1,5 @@
+using System.Reflection;
+using AtomUI.Theme;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Schema;
@@ -9,6 +11,35 @@ namespace AtomUI.Core.Tests.Theme;
 
 public class ControlCompilationCacheTests
 {
+    [Fact]
+    public void Control_Keys_Share_The_Precomputed_Global_Key()
+    {
+        var button = CreateControl("Button");
+        var input = CreateControl("Input");
+        var registry = TypedThemeSnapshotCacheTests.CreateRegistry([button, input]);
+        registry.TryGetControl(button.Identity, out button).ShouldBeTrue();
+        registry.TryGetControl(input.Identity, out input).ShouldBeTrue();
+        var compileInput = TypedThemeSnapshotCacheTests.CreateInput(registry);
+        var globalKey = GlobalCompilationCacheKey.Create(compileInput);
+
+        var buttonKey = ControlCompilationCacheKey.Create(
+            globalKey,
+            button,
+            null,
+            ThemeAppearance.Light);
+        var inputKey = ControlCompilationCacheKey.Create(
+            globalKey,
+            input,
+            null,
+            ThemeAppearance.Light);
+
+        var field = typeof(ControlCompilationCacheKey).GetField(
+            "_global",
+            BindingFlags.Instance | BindingFlags.NonPublic)!;
+        field.GetValue(buttonKey).ShouldBeSameAs(globalKey);
+        field.GetValue(inputKey).ShouldBeSameAs(globalKey);
+    }
+
     [Fact]
     public async Task Different_Snapshots_Reuse_Only_Equivalent_Control_Compilations()
     {

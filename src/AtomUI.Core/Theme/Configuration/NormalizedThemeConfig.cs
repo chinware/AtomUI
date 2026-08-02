@@ -25,7 +25,8 @@ internal sealed class NormalizedTokenValue : IEquatable<NormalizedTokenValue>
 
     public bool Equals(NormalizedTokenValue? other)
     {
-        return other is not null &&
+        return ReferenceEquals(this, other) ||
+               other is not null &&
                ReferenceEquals(Descriptor, other.Descriptor) &&
                string.Equals(CanonicalValue, other.CanonicalValue, StringComparison.Ordinal);
     }
@@ -62,6 +63,43 @@ internal sealed class NormalizedControlThemeConfig : IEquatable<NormalizedContro
         OwnTokens     = Array.AsReadOnly(_ownTokens);
     }
 
+    private NormalizedControlThemeConfig(
+        ControlTokenIdentity identity,
+        ControlAlgorithmMode algorithmMode,
+        ThemeAlgorithmDescriptor[] algorithms,
+        NormalizedTokenValue[] globalTokens,
+        NormalizedTokenValue[] ownTokens,
+        bool takeOwnership)
+    {
+        Identity      = identity;
+        AlgorithmMode = algorithmMode;
+        _algorithms   = algorithms;
+        _globalTokens = globalTokens;
+        _ownTokens    = ownTokens;
+        Algorithms    = Array.AsReadOnly(_algorithms);
+        GlobalTokens  = Array.AsReadOnly(_globalTokens);
+        OwnTokens     = Array.AsReadOnly(_ownTokens);
+    }
+
+    internal static NormalizedControlThemeConfig CreateCanonical(
+        ControlTokenIdentity identity,
+        ControlAlgorithmMode algorithmMode,
+        ThemeAlgorithmDescriptor[] algorithms,
+        NormalizedTokenValue[] globalTokens,
+        NormalizedTokenValue[] ownTokens)
+    {
+        ArgumentNullException.ThrowIfNull(algorithms);
+        ArgumentNullException.ThrowIfNull(globalTokens);
+        ArgumentNullException.ThrowIfNull(ownTokens);
+        return new NormalizedControlThemeConfig(
+            identity,
+            algorithmMode,
+            algorithms,
+            globalTokens,
+            ownTokens,
+            true);
+    }
+
     public ControlTokenIdentity Identity { get; }
     public ControlAlgorithmMode AlgorithmMode { get; }
     public IReadOnlyList<ThemeAlgorithmDescriptor> Algorithms { get; }
@@ -70,7 +108,8 @@ internal sealed class NormalizedControlThemeConfig : IEquatable<NormalizedContro
 
     public bool Equals(NormalizedControlThemeConfig? other)
     {
-        return other is not null &&
+        return ReferenceEquals(this, other) ||
+               other is not null &&
                Identity == other.Identity &&
                AlgorithmMode == other.AlgorithmMode &&
                SequenceEqual(_algorithms, other._algorithms) &&
@@ -139,6 +178,44 @@ internal sealed class NormalizedThemeConfig : IEquatable<NormalizedThemeConfig>
         Fingerprint  = ThemeConfigFingerprintBuilder.Compute(this);
     }
 
+    private NormalizedThemeConfig(
+        bool inherit,
+        bool algorithmsSpecified,
+        ThemeAlgorithmDescriptor[] algorithms,
+        NormalizedTokenValue[] globalTokens,
+        NormalizedControlThemeConfig[] controls,
+        bool takeOwnership)
+    {
+        Inherit              = inherit;
+        AlgorithmsSpecified = algorithmsSpecified;
+        _algorithms          = algorithms;
+        _globalTokens        = globalTokens;
+        _controls            = controls;
+        Algorithms           = Array.AsReadOnly(_algorithms);
+        GlobalTokens         = Array.AsReadOnly(_globalTokens);
+        Controls             = Array.AsReadOnly(_controls);
+        Fingerprint          = ThemeConfigFingerprintBuilder.Compute(this);
+    }
+
+    internal static NormalizedThemeConfig CreateCanonical(
+        bool inherit,
+        bool algorithmsSpecified,
+        ThemeAlgorithmDescriptor[] algorithms,
+        NormalizedTokenValue[] globalTokens,
+        NormalizedControlThemeConfig[] controls)
+    {
+        ArgumentNullException.ThrowIfNull(algorithms);
+        ArgumentNullException.ThrowIfNull(globalTokens);
+        ArgumentNullException.ThrowIfNull(controls);
+        return new NormalizedThemeConfig(
+            inherit,
+            algorithmsSpecified,
+            algorithms,
+            globalTokens,
+            controls,
+            true);
+    }
+
     public bool Inherit { get; }
     public bool AlgorithmsSpecified { get; }
     public IReadOnlyList<ThemeAlgorithmDescriptor> Algorithms { get; }
@@ -148,7 +225,8 @@ internal sealed class NormalizedThemeConfig : IEquatable<NormalizedThemeConfig>
 
     public bool Equals(NormalizedThemeConfig? other)
     {
-        return other is not null &&
+        return ReferenceEquals(this, other) ||
+               other is not null &&
                Fingerprint == other.Fingerprint &&
                Inherit == other.Inherit &&
                AlgorithmsSpecified == other.AlgorithmsSpecified &&

@@ -36,6 +36,22 @@ public class TypedThemeSnapshotCacheTests
     }
 
     [Fact]
+    public void Cache_Accepts_A_Precomputed_Snapshot_Key()
+    {
+        var registry = CreateRegistry();
+        var input = CreateInput(registry);
+        var key = ThemeSnapshotCacheKey.Create(input);
+        var cache = new ThemeSnapshotCache();
+
+        var first = cache.GetOrCompile(key, input, new ThemeCompiler());
+        var second = cache.GetOrCompile(key, input, new ThemeCompiler());
+
+        first.Success.ShouldBeTrue();
+        second.Snapshot.ShouldBeSameAs(first.Snapshot);
+        cache.Count.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task Reusable_Parent_Publication_Identity_Does_Not_Change_The_Snapshot_Key()
     {
         var registry = CreateRegistry();

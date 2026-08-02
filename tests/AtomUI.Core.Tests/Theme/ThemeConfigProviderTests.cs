@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using AtomUI.Theme;
 using AtomUI.Theme.Algorithms;
@@ -118,6 +119,59 @@ public class ThemeConfigProviderTests
         var snapshot = child.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull().Snapshot;
         snapshot.Global<Color>(nameof(DesignToken.ColorPrimary)).ShouldBe(Color.Parse("#00b96b"));
         snapshot.Global<CornerRadius>(nameof(DesignToken.BorderRadius)).ShouldBe(new CornerRadius(12));
+    }
+
+    [Fact]
+    public void Empty_Inherited_Provider_Reuses_The_Parent_Snapshot()
+    {
+        var manager = CreateInitializedManager();
+        typeof(ThemeManager)
+            .GetField("_themeSnapshotCache", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .SetValue(manager, new ThemeSnapshotCache(new ThemeCacheOptions(SnapshotRetainedBytesLimit: 1)));
+        var child = new ThemeConfigProvider
+        {
+            Config = new ThemeConfigBuilder().Build(),
+            Child = new Border()
+        };
+        var parent = new ThemeConfigProvider
+        {
+            Config = ConfigWithToken(nameof(DesignToken.BorderRadius), "12"),
+            Child = child
+        };
+
+        using var root = Attach(manager, parent);
+
+        var parentContext = parent.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull();
+        var childContext = child.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull();
+        childContext.ShouldNotBeSameAs(parentContext);
+        childContext.ResourceProvider.ShouldNotBeSameAs(parentContext.ResourceProvider);
+        childContext.Snapshot.ShouldBeSameAs(parentContext.Snapshot);
+    }
+
+    [Fact]
+    public void Equivalent_Inherited_Provider_Reuses_The_Parent_Snapshot()
+    {
+        var manager = CreateInitializedManager();
+        typeof(ThemeManager)
+            .GetField("_themeSnapshotCache", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .SetValue(manager, new ThemeSnapshotCache(new ThemeCacheOptions(SnapshotRetainedBytesLimit: 1)));
+        var child = new ThemeConfigProvider
+        {
+            Config = ConfigWithToken(nameof(DesignToken.BorderRadius), "12"),
+            Child = new Border()
+        };
+        var parent = new ThemeConfigProvider
+        {
+            Config = ConfigWithToken(nameof(DesignToken.BorderRadius), "12"),
+            Child = child
+        };
+
+        using var root = Attach(manager, parent);
+
+        var parentSnapshot = parent.GetValue(ThemeScope.ContextProperty).ShouldNotBeNull().Snapshot;
+        child.GetValue(ThemeScope.ContextProperty)
+             .ShouldNotBeNull()
+             .Snapshot.ShouldBeSameAs(parentSnapshot);
     }
 
     [Fact]

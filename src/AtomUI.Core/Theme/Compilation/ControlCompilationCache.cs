@@ -21,18 +21,18 @@ internal sealed class ControlCompilationCache
     internal int InFlightCount => _entries.InFlightCount;
 
     internal ControlThemeSnapshot GetOrCompile(
-        ThemeCompileInput input,
+        GlobalCompilationCacheKey globalKey,
         ControlTokenDescriptor descriptor,
         NormalizedControlThemeConfig? controlConfig,
         ThemeAppearance appearance,
         Func<ControlThemeSnapshot> factory)
     {
-        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(globalKey);
         ArgumentNullException.ThrowIfNull(descriptor);
         ArgumentNullException.ThrowIfNull(factory);
 
         var key = ControlCompilationCacheKey.Create(
-            input,
+            globalKey,
             descriptor,
             controlConfig,
             appearance);

@@ -41,6 +41,14 @@ internal sealed class ThemeSnapshotCache
         return GetOrCompileAsync(input, compiler).GetAwaiter().GetResult();
     }
 
+    internal ThemeCompileResult GetOrCompile(
+        ThemeSnapshotCacheKey key,
+        ThemeCompileInput input,
+        ThemeCompiler compiler)
+    {
+        return GetOrCompileAsync(key, input, compiler).GetAwaiter().GetResult();
+    }
+
     internal ValueTask<ThemeCompileResult> GetOrCompileAsync(
         ThemeCompileInput input,
         ThemeCompiler compiler)
@@ -57,10 +65,29 @@ internal sealed class ThemeSnapshotCache
         ArgumentNullException.ThrowIfNull(compiler);
 
         var key = ThemeSnapshotCacheKey.Create(input);
+        return GetOrCompileAsync(key, input, compiler, callerCancellation);
+    }
+
+    internal ValueTask<ThemeCompileResult> GetOrCompileAsync(
+        ThemeSnapshotCacheKey key,
+        ThemeCompileInput input,
+        ThemeCompiler compiler)
+    {
+        return GetOrCompileAsync(key, input, compiler, CancellationToken.None);
+    }
+
+    internal ValueTask<ThemeCompileResult> GetOrCompileAsync(
+        ThemeSnapshotCacheKey key,
+        ThemeCompileInput input,
+        ThemeCompiler compiler,
+        CancellationToken callerCancellation)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(compiler);
+
         return _entries.GetOrCreateAsync(
             key,
             _ => ValueTask.FromResult(compiler.Compile(input, _controlCompilations)),
             callerCancellation);
     }
-
 }

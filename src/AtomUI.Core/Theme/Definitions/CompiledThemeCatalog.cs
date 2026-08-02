@@ -349,7 +349,6 @@ internal sealed class CompiledThemeCatalog
                 exception);
         }
 
-        var sourceKey = new ThemeSourceCacheKey(identity, revision);
         // Source revisions are only candidate metadata.  Reloadable sources must be
         // read again so same-size/timestamp edits cannot reuse stale documents.
         ThemeDocument document;
@@ -376,10 +375,10 @@ internal sealed class CompiledThemeCatalog
         }
 
         contentDigest = Convert.ToHexString(SHA256.HashData(bytes));
-        if (loadCache?.TryGetRead(sourceKey, out var cachedRead) == true &&
-            string.Equals(cachedRead!.ContentDigest, contentDigest, StringComparison.Ordinal))
+        var sourceKey = new ThemeSourceCacheKey(identity, contentDigest);
+        if (loadCache?.TryGetRead(sourceKey, out var cachedRead) == true)
         {
-            document = cachedRead.Document;
+            document = cachedRead!.Document;
             diagnostics.AddRange(cachedRead.Diagnostics);
         }
         else
@@ -395,7 +394,7 @@ internal sealed class CompiledThemeCatalog
             document = read.Document!;
             loadCache?.StoreRead(
                 sourceKey,
-                new ThemeSourceReadCacheEntry(document, contentDigest, diagnostics.ToArray()));
+                new ThemeSourceReadCacheEntry(document, diagnostics.ToArray()));
         }
 
         BoundThemeDefinition definition;

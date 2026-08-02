@@ -154,6 +154,38 @@ public class CompiledThemeCatalogResolverTests
     }
 
     [Fact]
+    public void Definition_Cache_Reuses_The_Parsed_Document_When_Only_Source_Revision_Changes()
+    {
+        var source = new MutableMemorySource(
+            "memory://revision-only-cache",
+            "1",
+            ThemeXml("RevisionOnlyCache", "Revision Only Cache", "#52C41A", isDefault: true));
+        var resolver = new MutableMemoryResolver(source);
+        var context = new ThemeDefinitionResolveContext("Tests", string.Empty, false, 0);
+        var registry = TypedThemeSnapshotCacheTests.CreateRegistry();
+        using var cache = new ThemeDefinitionLoadCache();
+
+        var first = CompiledThemeCatalog.LoadInitial(registry, [resolver], context, cache);
+        var digest = first.Catalog!.Get("RevisionOnlyCache").Revision.ContentDigest;
+        cache.TryGetRead(
+                 new ThemeSourceCacheKey(source.SourceIdentity, digest),
+                 out var firstRead)
+             .ShouldBeTrue();
+        source.SetRevision("2");
+
+        var second = CompiledThemeCatalog.LoadInitial(registry, [resolver], context, cache);
+
+        second.Success.ShouldBeTrue();
+        source.OpenCount.ShouldBe(2);
+        second.Catalog!.Get("RevisionOnlyCache").Revision.SourceRevision.ShouldBe("2");
+        cache.TryGetRead(
+                 new ThemeSourceCacheKey(source.SourceIdentity, digest),
+                 out var secondRead)
+             .ShouldBeTrue();
+        secondRead.ShouldBeSameAs(firstRead);
+    }
+
+    [Fact]
     public void Duplicate_Theme_Id_Across_Static_Resolvers_Fails_Startup()
     {
         HeadlessTestApp.Run(() =>
@@ -386,12 +418,17 @@ public class CompiledThemeCatalogResolverTests
         }
 
         public string SourceIdentity { get; }
-        public string SourceRevision { get; }
+        public string SourceRevision { get; private set; }
         internal int OpenCount { get; private set; }
 
         internal void Replace(string xml)
         {
             _bytes = Encoding.UTF8.GetBytes(xml);
+        }
+
+        internal void SetRevision(string revision)
+        {
+            SourceRevision = revision;
         }
 
         public Stream OpenRead()

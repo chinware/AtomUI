@@ -1,7 +1,7 @@
 using System.Collections.Frozen;
+using System.Runtime.CompilerServices;
 using Avalonia.Animation.Easings;
 using Avalonia.Media;
-using Avalonia.Media.Immutable;
 using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
@@ -13,6 +13,13 @@ namespace AtomUI.Theme.Compilation;
 internal sealed class ThemeCompiler
 {
     private const string CompilerPath = "ThemeCompiler";
+    private static readonly ConditionalWeakTable<
+        BoundThemeDefinition,
+        ConditionalWeakTable<ThemeSchemaRegistry, NormalizedThemeConfig>> s_definitionDefaults = new();
+    private static readonly ConditionalWeakTable<
+        ThemeSchemaRegistry,
+        NormalizedThemeConfig> s_libraryDefaults = new();
+
     internal static NormalizedThemeConfig CreateDefinitionDefaults(
         BoundThemeDefinition definition,
         ThemeSchemaRegistry registry)
@@ -20,6 +27,18 @@ internal sealed class ThemeCompiler
         ArgumentNullException.ThrowIfNull(definition);
         ArgumentNullException.ThrowIfNull(registry);
 
+        var byRegistry = s_definitionDefaults.GetValue(
+            definition,
+            static _ => new ConditionalWeakTable<ThemeSchemaRegistry, NormalizedThemeConfig>());
+        return byRegistry.GetValue(
+            registry,
+            currentRegistry => CreateDefinitionDefaultsCore(definition, currentRegistry));
+    }
+
+    private static NormalizedThemeConfig CreateDefinitionDefaultsCore(
+        BoundThemeDefinition definition,
+        ThemeSchemaRegistry registry)
+    {
         IReadOnlyList<ThemeAlgorithmDescriptor> algorithms = definition.Algorithms;
         if (algorithms.Count == 0)
         {
@@ -48,17 +67,23 @@ internal sealed class ThemeCompiler
         for (var index = 0; index < controls.Length; index++)
         {
             var control = definition.Controls[index];
-            controls[index] = new NormalizedControlThemeConfig(
+            var mode = control.AlgorithmMode == ControlAlgorithmMode.Unspecified
+                ? ControlAlgorithmMode.Disabled
+                : control.AlgorithmMode;
+            controls[index] = NormalizedControlThemeConfig.CreateCanonical(
                 control.Descriptor.Identity,
-                control.AlgorithmMode,
-                control.Algorithms,
+                mode,
+                mode == ControlAlgorithmMode.Custom
+                    ? ThemeConfigArray.Copy(control.Algorithms)
+                    : Array.Empty<ThemeAlgorithmDescriptor>(),
                 NormalizeBoundTokens(control.GlobalTokens),
                 NormalizeBoundTokens(control.OwnTokens));
         }
-        return new NormalizedThemeConfig(
+        Array.Sort(controls, static (left, right) => CompareIdentity(left.Identity, right.Identity));
+        return NormalizedThemeConfig.CreateCanonical(
             false,
             true,
-            algorithms,
+            ThemeConfigArray.Copy(algorithms),
             globalTokens,
             controls);
     }
@@ -67,13 +92,17 @@ internal sealed class ThemeCompiler
         ThemeSchemaRegistry registry)
     {
         ArgumentNullException.ThrowIfNull(registry);
-        if (!registry.TryGetAlgorithm(ThemeAlgorithm.Default, out var defaultAlgorithm) ||
-            defaultAlgorithm is null)
+        return s_libraryDefaults.GetValue(registry, CreateLibraryDefaultsCore);
+    }
+
+    private static NormalizedThemeConfig CreateLibraryDefaultsCore(ThemeSchemaRegistry registry)
+    {
+        if (!registry.TryGetAlgorithm(ThemeAlgorithm.Default, out var defaultAlgorithm))
         {
             throw new InvalidOperationException("Default algorithm is not registered.");
         }
 
-        return new NormalizedThemeConfig(
+        return NormalizedThemeConfig.CreateCanonical(
             false,
             true,
             [defaultAlgorithm],
@@ -81,7 +110,7 @@ internal sealed class ThemeCompiler
             Array.Empty<NormalizedControlThemeConfig>());
     }
 
-    private static IReadOnlyList<NormalizedTokenValue> NormalizeBoundTokens(
+    private static NormalizedTokenValue[] NormalizeBoundTokens(
         IReadOnlyList<BoundTokenValue> tokens)
     {
         var result = new NormalizedTokenValue[tokens.Count];
@@ -98,7 +127,6 @@ internal sealed class ThemeCompiler
             static (left, right) => left.Descriptor.Slot.CompareTo(right.Descriptor.Slot));
         return result;
     }
-
 
     internal ThemeCompileResult Compile(ThemeCompileInput input)
     {
@@ -182,11 +210,20 @@ internal sealed class ThemeCompiler
     private static bool CanReuseGlobal(ThemeCompileInput input, ThemeAppearance appearance)
     {
         var parent = input.ReusableParent;
-        return parent is not null &&
-               parent.DefinitionRevision == input.DefinitionRevision &&
-               parent.RegistryRevision == input.Registry.Revision &&
-               parent.Appearance == appearance &&
-               AlgorithmSequenceEqual(
+        if (parent is null ||
+            parent.DefinitionRevision != input.DefinitionRevision ||
+            parent.RegistryRevision != input.Registry.Revision ||
+            parent.Appearance != appearance)
+        {
+            return false;
+        }
+
+        if (input.ChangesFromReusableParent is { } changes)
+        {
+            return !changes.AlgorithmsChanged && !changes.GlobalTokensChanged;
+        }
+
+        return AlgorithmSequenceEqual(
                    parent.EffectiveConfig.Algorithms,
                    input.EffectiveConfig.Algorithms) &&
                TokenSequenceEqual(
@@ -204,13 +241,49 @@ internal sealed class ThemeCompiler
         ControlCompilationCache? controlCompilationCache)
     {
         var controls = new ControlThemeSnapshot[input.Registry.Controls.Count];
+        GlobalCompilationCacheKey? globalCompilationCacheKey = null;
+        var configIndex = 0;
+        var parentConfigIndex = 0;
+        var changedControlIndex = 0;
         for (var slot = 0; slot < controls.Length; slot++)
         {
             var descriptor = input.Registry.Controls[slot];
-            var config = FindControlConfig(input.EffectiveConfig.Controls, descriptor.Identity);
-            if (CanReuseControl(input.ReusableParent, descriptor, config, reuseGlobal))
+            var config = FindControlConfig(
+                input.EffectiveConfig.Controls,
+                descriptor.Identity,
+                ref configIndex);
+            var parentConfig = input.ReusableParent is null
+                ? null
+                : FindControlConfig(
+                    input.ReusableParent.EffectiveConfig.Controls,
+                    descriptor.Identity,
+                    ref parentConfigIndex);
+            bool? controlChanged = input.ChangesFromReusableParent is null
+                ? null
+                : IsControlChanged(
+                    input.ChangesFromReusableParent.ChangedControls,
+                    descriptor.Identity,
+                    ref changedControlIndex);
+            if (CanReuseControl(
+                    input.ReusableParent,
+                    descriptor,
+                    config,
+                    parentConfig,
+                    reuseGlobal,
+                    controlChanged))
             {
                 controls[slot] = input.ReusableParent!.Controls[slot];
+                continue;
+            }
+            if (config is null && !descriptor.HasOwnTokens)
+            {
+                controls[slot] = new ControlThemeSnapshot(
+                    descriptor.Slot,
+                    globalAppearance,
+                    FrozenDictionary<int, object?>.Empty,
+                    FrozenDictionary<object, object?>.Empty,
+                    TokenValueTable.Empty,
+                    FrozenDictionary<object, object?>.Empty);
                 continue;
             }
 
@@ -230,7 +303,7 @@ internal sealed class ThemeCompiler
             controls[slot] = controlCompilationCache is null
                 ? CompileCurrentControl()
                 : controlCompilationCache.GetOrCompile(
-                    input,
+                    globalCompilationCacheKey ??= GlobalCompilationCacheKey.Create(input),
                     descriptor,
                     config,
                     globalAppearance,
@@ -244,7 +317,9 @@ internal sealed class ThemeCompiler
         ThemeSnapshot? parent,
         ControlTokenDescriptor descriptor,
         NormalizedControlThemeConfig? config,
-        bool reuseGlobal)
+        NormalizedControlThemeConfig? parentConfig,
+        bool reuseGlobal,
+        bool? controlChanged)
     {
         if (parent is null)
         {
@@ -255,7 +330,10 @@ internal sealed class ThemeCompiler
             return false;
         }
 
-        var parentConfig = FindControlConfig(parent.EffectiveConfig.Controls, descriptor.Identity);
+        if (controlChanged == true)
+        {
+            return false;
+        }
         if (config is null && parentConfig is null && !descriptor.HasOwnTokens)
         {
             return true;
@@ -266,7 +344,8 @@ internal sealed class ThemeCompiler
             return false;
         }
 
-        return config is null ? parentConfig is null : config.Equals(parentConfig);
+        return controlChanged == false ||
+               (config is null ? parentConfig is null : config.Equals(parentConfig));
     }
 
     private static ControlThemeSnapshot CompileControl(
@@ -281,6 +360,7 @@ internal sealed class ThemeCompiler
     {
         var effectiveGlobalBuilder = CopyBuilder(globalBuilder, globalDescriptors);
         var appearance = globalAppearance;
+        var effectiveGlobalMatchesRoot = config is null;
         if (config is not null)
         {
             switch (config.AlgorithmMode)
@@ -307,6 +387,7 @@ internal sealed class ThemeCompiler
                 case ControlAlgorithmMode.Disabled:
                     ApplyAllValues(effectiveGlobalBuilder, config.GlobalTokens);
                     NormalizeFinalBehavior(effectiveGlobalBuilder);
+                    effectiveGlobalMatchesRoot = config.GlobalTokens.Count == 0;
                     break;
 
                 default:
@@ -315,10 +396,20 @@ internal sealed class ThemeCompiler
             }
         }
 
-        var effectiveGlobalValues = TokenValueTable.Freeze(effectiveGlobalBuilder, globalDescriptors);
-        var effectiveGlobalResources = BuildResourceMap(effectiveGlobalBuilder, globalDescriptors);
-        var globalDelta = BuildTokenDelta(globalValues, effectiveGlobalValues);
-        var globalResourceDelta = BuildDenseResourceDelta(globalResources, effectiveGlobalResources);
+        IReadOnlyDictionary<int, object?> globalDelta;
+        IReadOnlyDictionary<object, object?> globalResourceDelta;
+        if (effectiveGlobalMatchesRoot)
+        {
+            globalDelta = FrozenDictionary<int, object?>.Empty;
+            globalResourceDelta = FrozenDictionary<object, object?>.Empty;
+        }
+        else
+        {
+            var effectiveGlobalValues = TokenValueTable.Freeze(effectiveGlobalBuilder, globalDescriptors);
+            var effectiveGlobalResources = BuildResourceMap(effectiveGlobalBuilder, globalDescriptors);
+            globalDelta = BuildTokenDelta(globalValues, effectiveGlobalValues);
+            globalResourceDelta = BuildDenseResourceDelta(globalResources, effectiveGlobalResources);
+        }
 
         var controlBuilder = descriptor.CreateBuilder();
         var controlTokenValues = TokenValueTable.Empty;
@@ -381,17 +472,56 @@ internal sealed class ThemeCompiler
 
     private static NormalizedControlThemeConfig? FindControlConfig(
         IReadOnlyList<NormalizedControlThemeConfig> controls,
-        Schema.ControlTokenIdentity identity)
+        ControlTokenIdentity identity,
+        ref int index)
     {
-        foreach (var control in controls)
+        while (index < controls.Count)
         {
-            if (control.Identity == identity)
+            var control = controls[index];
+            var comparison = CompareIdentity(control.Identity, identity);
+            if (comparison < 0)
             {
+                index++;
+                continue;
+            }
+            if (comparison == 0)
+            {
+                index++;
                 return control;
             }
+            break;
         }
 
         return null;
+    }
+
+    private static bool IsControlChanged(
+        IReadOnlyList<ControlTokenIdentity> changedControls,
+        ControlTokenIdentity identity,
+        ref int index)
+    {
+        while (index < changedControls.Count)
+        {
+            var comparison = CompareIdentity(changedControls[index], identity);
+            if (comparison < 0)
+            {
+                index++;
+                continue;
+            }
+            if (comparison == 0)
+            {
+                index++;
+                return true;
+            }
+            break;
+        }
+        return false;
+    }
+
+    private static int CompareIdentity(ControlTokenIdentity left, ControlTokenIdentity right)
+    {
+        var catalog = string.Compare(left.Catalog, right.Catalog, StringComparison.Ordinal);
+        return catalog != 0 ? catalog : string.Compare(left.Id, right.Id, StringComparison.Ordinal);
     }
 
     private static IReadOnlyDictionary<int, object?> BuildTokenDelta(

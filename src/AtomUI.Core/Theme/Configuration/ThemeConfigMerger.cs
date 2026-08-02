@@ -12,125 +12,166 @@ internal static class ThemeConfigMerger
         ArgumentNullException.ThrowIfNull(defaults);
         ArgumentNullException.ThrowIfNull(current);
 
-        var effectiveDefaults = ResolveDefaults(defaults);
         var effectiveParent = parent is null
-            ? effectiveDefaults
-            : Apply(effectiveDefaults, parent);
-        var mergeBase = current.Inherit ? effectiveParent : effectiveDefaults;
+            ? defaults
+            : parent;
+        var mergeBase = current.Inherit ? effectiveParent : defaults;
         var candidate = Apply(mergeBase, current);
-        var effective = candidate.Equals(effectiveParent) ? effectiveParent : candidate;
-        var changeSet = CreateChangeSet(effectiveParent, effective);
-        return new ThemeConfigMergeResult(effective, changeSet);
-    }
-
-    private static NormalizedThemeConfig ResolveDefaults(NormalizedThemeConfig defaults)
-    {
-        var controls = new NormalizedControlThemeConfig[defaults.Controls.Count];
-        for (var index = 0; index < controls.Length; index++)
+        if (candidate.Equals(effectiveParent))
         {
-            var control = defaults.Controls[index];
-            var mode = control.AlgorithmMode == ControlAlgorithmMode.Unspecified
-                ? ControlAlgorithmMode.Disabled
-                : control.AlgorithmMode;
-            controls[index] = new NormalizedControlThemeConfig(
-                control.Identity,
-                mode,
-                mode == ControlAlgorithmMode.Custom
-                    ? control.Algorithms
-                    : Array.Empty<ThemeAlgorithmDescriptor>(),
-                control.GlobalTokens,
-                control.OwnTokens);
+            return new ThemeConfigMergeResult(effectiveParent, ThemeConfigChangeSet.Empty);
         }
 
-        return new NormalizedThemeConfig(
-            false,
-            true,
-            defaults.AlgorithmsSpecified
-                ? defaults.Algorithms
-                : Array.Empty<ThemeAlgorithmDescriptor>(),
-            defaults.GlobalTokens,
-            controls);
+        return new ThemeConfigMergeResult(candidate, Compare(effectiveParent, candidate));
     }
 
     private static NormalizedThemeConfig Apply(
         NormalizedThemeConfig effectiveBase,
         NormalizedThemeConfig current)
     {
+        if (!current.AlgorithmsSpecified &&
+            current.GlobalTokens.Count == 0 &&
+            current.Controls.Count == 0)
+        {
+            return effectiveBase;
+        }
+
         var algorithms = current.AlgorithmsSpecified
-            ? current.Algorithms
-            : effectiveBase.Algorithms;
+            ? ThemeConfigArray.Copy(current.Algorithms)
+            : ThemeConfigArray.Copy(effectiveBase.Algorithms);
         var globalTokens = MergeTokens(effectiveBase.GlobalTokens, current.GlobalTokens);
         var controls = MergeControls(effectiveBase.Controls, current.Controls);
-        return new NormalizedThemeConfig(false, true, algorithms, globalTokens, controls);
+        return NormalizedThemeConfig.CreateCanonical(false, true, algorithms, globalTokens, controls);
     }
 
-    private static IReadOnlyList<NormalizedTokenValue> MergeTokens(
+    private static NormalizedTokenValue[] MergeTokens(
         IReadOnlyList<NormalizedTokenValue> inherited,
         IReadOnlyList<NormalizedTokenValue> current)
     {
         if (current.Count == 0)
         {
-            return inherited;
+            return ThemeConfigArray.Copy(inherited);
         }
 
-        var values = new Dictionary<int, NormalizedTokenValue>(inherited.Count + current.Count);
-        foreach (var token in inherited)
+        var result = new NormalizedTokenValue[inherited.Count + current.Count];
+        var inheritedIndex = 0;
+        var currentIndex = 0;
+        var resultIndex = 0;
+        while (inheritedIndex < inherited.Count || currentIndex < current.Count)
         {
-            values[token.Descriptor.Slot] = token;
-        }
-        foreach (var token in current)
-        {
-            values[token.Descriptor.Slot] = token;
-        }
-
-        var result = new NormalizedTokenValue[values.Count];
-        values.Values.CopyTo(result, 0);
-        Array.Sort(result, static (left, right) => left.Descriptor.Slot.CompareTo(right.Descriptor.Slot));
-        return result;
-    }
-
-    private static IReadOnlyList<NormalizedControlThemeConfig> MergeControls(
-        IReadOnlyList<NormalizedControlThemeConfig> inherited,
-        IReadOnlyList<NormalizedControlThemeConfig> current)
-    {
-        var controls = new Dictionary<ControlTokenIdentity, NormalizedControlThemeConfig>(
-            inherited.Count + current.Count);
-        foreach (var control in inherited)
-        {
-            controls[control.Identity] = ResolveInheritedControl(control);
-        }
-
-        foreach (var local in current)
-        {
-            controls.TryGetValue(local.Identity, out var parent);
-            var mode = local.AlgorithmMode == ControlAlgorithmMode.Unspecified
-                ? parent?.AlgorithmMode ?? ControlAlgorithmMode.Disabled
-                : local.AlgorithmMode;
-            IReadOnlyList<ThemeAlgorithmDescriptor> algorithms;
-            if (local.AlgorithmMode == ControlAlgorithmMode.Unspecified)
+            if (inheritedIndex == inherited.Count)
             {
-                algorithms = mode == ControlAlgorithmMode.Custom && parent is not null
-                    ? parent.Algorithms
-                    : Array.Empty<ThemeAlgorithmDescriptor>();
+                result[resultIndex++] = current[currentIndex++];
+                continue;
+            }
+            if (currentIndex == current.Count)
+            {
+                result[resultIndex++] = inherited[inheritedIndex++];
+                continue;
+            }
+
+            var inheritedToken = inherited[inheritedIndex];
+            var currentToken = current[currentIndex];
+            var comparison = inheritedToken.Descriptor.Slot.CompareTo(currentToken.Descriptor.Slot);
+            if (comparison < 0)
+            {
+                result[resultIndex++] = inheritedToken;
+                inheritedIndex++;
             }
             else
             {
-                algorithms = mode == ControlAlgorithmMode.Custom
-                    ? local.Algorithms
-                    : Array.Empty<ThemeAlgorithmDescriptor>();
+                result[resultIndex++] = currentToken;
+                currentIndex++;
+                if (comparison == 0)
+                {
+                    inheritedIndex++;
+                }
             }
-
-            controls[local.Identity] = new NormalizedControlThemeConfig(
-                local.Identity,
-                mode,
-                algorithms,
-                MergeTokens(parent?.GlobalTokens ?? Array.Empty<NormalizedTokenValue>(), local.GlobalTokens),
-                MergeTokens(parent?.OwnTokens ?? Array.Empty<NormalizedTokenValue>(), local.OwnTokens));
         }
 
-        var result = new NormalizedControlThemeConfig[controls.Count];
-        controls.Values.CopyTo(result, 0);
+        if (resultIndex != result.Length)
+        {
+            Array.Resize(ref result, resultIndex);
+        }
         return result;
+    }
+
+    private static NormalizedControlThemeConfig[] MergeControls(
+        IReadOnlyList<NormalizedControlThemeConfig> inherited,
+        IReadOnlyList<NormalizedControlThemeConfig> current)
+    {
+        var result = new NormalizedControlThemeConfig[inherited.Count + current.Count];
+        var inheritedIndex = 0;
+        var currentIndex = 0;
+        var resultIndex = 0;
+        while (inheritedIndex < inherited.Count || currentIndex < current.Count)
+        {
+            if (inheritedIndex == inherited.Count)
+            {
+                result[resultIndex++] = MergeControl(null, current[currentIndex++]);
+                continue;
+            }
+            if (currentIndex == current.Count)
+            {
+                result[resultIndex++] = ResolveInheritedControl(inherited[inheritedIndex++]);
+                continue;
+            }
+
+            var parent = inherited[inheritedIndex];
+            var local = current[currentIndex];
+            var comparison = CompareIdentity(parent.Identity, local.Identity);
+            if (comparison < 0)
+            {
+                result[resultIndex++] = ResolveInheritedControl(parent);
+                inheritedIndex++;
+            }
+            else if (comparison > 0)
+            {
+                result[resultIndex++] = MergeControl(null, local);
+                currentIndex++;
+            }
+            else
+            {
+                result[resultIndex++] = MergeControl(parent, local);
+                inheritedIndex++;
+                currentIndex++;
+            }
+        }
+
+        if (resultIndex != result.Length)
+        {
+            Array.Resize(ref result, resultIndex);
+        }
+        return result;
+    }
+
+    private static NormalizedControlThemeConfig MergeControl(
+        NormalizedControlThemeConfig? parent,
+        NormalizedControlThemeConfig local)
+    {
+        var mode = local.AlgorithmMode == ControlAlgorithmMode.Unspecified
+            ? parent?.AlgorithmMode ?? ControlAlgorithmMode.Disabled
+            : local.AlgorithmMode;
+        ThemeAlgorithmDescriptor[] algorithms;
+        if (local.AlgorithmMode == ControlAlgorithmMode.Unspecified)
+        {
+            algorithms = mode == ControlAlgorithmMode.Custom && parent is not null
+                ? ThemeConfigArray.Copy(parent.Algorithms)
+                : Array.Empty<ThemeAlgorithmDescriptor>();
+        }
+        else
+        {
+            algorithms = mode == ControlAlgorithmMode.Custom
+                ? ThemeConfigArray.Copy(local.Algorithms)
+                : Array.Empty<ThemeAlgorithmDescriptor>();
+        }
+
+        return NormalizedControlThemeConfig.CreateCanonical(
+            local.Identity,
+            mode,
+            algorithms,
+            MergeTokens(parent?.GlobalTokens ?? Array.Empty<NormalizedTokenValue>(), local.GlobalTokens),
+            MergeTokens(parent?.OwnTokens ?? Array.Empty<NormalizedTokenValue>(), local.OwnTokens));
     }
 
     private static NormalizedControlThemeConfig ResolveInheritedControl(NormalizedControlThemeConfig control)
@@ -148,10 +189,17 @@ internal static class ThemeConfigMerger
             control.OwnTokens);
     }
 
-    private static ThemeConfigChangeSet CreateChangeSet(
+    internal static ThemeConfigChangeSet Compare(
         NormalizedThemeConfig previous,
         NormalizedThemeConfig current)
     {
+        ArgumentNullException.ThrowIfNull(previous);
+        ArgumentNullException.ThrowIfNull(current);
+        if (ReferenceEquals(previous, current))
+        {
+            return ThemeConfigChangeSet.Empty;
+        }
+
         var algorithmsChanged = !AlgorithmSequenceEqual(previous.Algorithms, current.Algorithms);
         var globalTokensChanged = !TokenSequenceEqual(previous.GlobalTokens, current.GlobalTokens);
         var changedControls = FindChangedControls(previous.Controls, current.Controls);
@@ -262,14 +310,29 @@ internal sealed class ThemeConfigMergeResult
 
 internal sealed class ThemeConfigChangeSet
 {
+    internal static ThemeConfigChangeSet Empty { get; } = new(
+        false,
+        false,
+        Array.Empty<ControlTokenIdentity>());
+
     internal ThemeConfigChangeSet(
         bool algorithmsChanged,
         bool globalTokensChanged,
         IEnumerable<ControlTokenIdentity> changedControls)
     {
+        ArgumentNullException.ThrowIfNull(changedControls);
+
+        var changedControlArray = ThemeConfigArray.Copy(changedControls);
+        Array.Sort(changedControlArray, static (left, right) =>
+        {
+            var catalog = string.Compare(left.Catalog, right.Catalog, StringComparison.Ordinal);
+            return catalog != 0
+                ? catalog
+                : string.Compare(left.Id, right.Id, StringComparison.Ordinal);
+        });
         AlgorithmsChanged  = algorithmsChanged;
         GlobalTokensChanged = globalTokensChanged;
-        ChangedControls     = Array.AsReadOnly(ThemeConfigArray.Copy(changedControls));
+        ChangedControls     = Array.AsReadOnly(changedControlArray);
     }
 
     public bool AlgorithmsChanged { get; }

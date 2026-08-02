@@ -102,6 +102,7 @@ public class ThemeConfigMergerTests
         changed.ChangeSet.IsEmpty.ShouldBeFalse();
         noOp.ChangeSet.IsEmpty.ShouldBeTrue();
         noOp.EffectiveConfig.ShouldBe(changed.EffectiveConfig);
+        noOp.EffectiveConfig.ShouldBeSameAs(changed.EffectiveConfig);
         noOp.EffectiveConfig.Fingerprint.ShouldBe(changed.EffectiveConfig.Fingerprint);
     }
 

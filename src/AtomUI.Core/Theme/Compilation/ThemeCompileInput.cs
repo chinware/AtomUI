@@ -11,17 +11,19 @@ internal sealed record ThemeCompileInput
         ThemeDefinitionRevision definitionRevision,
         NormalizedThemeConfig effectiveConfig,
         ThemeSchemaRegistry registry,
-        ThemeSnapshot? reusableParent = null)
+        ThemeSnapshot? reusableParent = null,
+        ThemeConfigChangeSet? changesFromReusableParent = null)
     {
         ArgumentNullException.ThrowIfNull(definition);
         ArgumentNullException.ThrowIfNull(effectiveConfig);
         ArgumentNullException.ThrowIfNull(registry);
 
-        Definition         = definition;
-        DefinitionRevision = definitionRevision;
-        EffectiveConfig    = effectiveConfig;
-        Registry           = registry;
-        ReusableParent     = reusableParent;
+        Definition                = definition;
+        DefinitionRevision        = definitionRevision;
+        EffectiveConfig           = effectiveConfig;
+        Registry                  = registry;
+        ReusableParent            = reusableParent;
+        ChangesFromReusableParent = changesFromReusableParent;
     }
 
     internal BoundThemeDefinition Definition { get; }
@@ -29,4 +31,5 @@ internal sealed record ThemeCompileInput
     internal NormalizedThemeConfig EffectiveConfig { get; }
     internal ThemeSchemaRegistry Registry { get; }
     internal ThemeSnapshot? ReusableParent { get; }
+    internal ThemeConfigChangeSet? ChangesFromReusableParent { get; }
 }

@@ -6,6 +6,12 @@ namespace AtomUI.Theme.Configuration;
 
 public sealed class ThemeConfig
 {
+    internal static ThemeConfig Empty { get; } = new(
+        true,
+        null,
+        new Dictionary<string, string>(StringComparer.Ordinal),
+        new Dictionary<ControlTokenIdentity, ControlThemeConfig>());
+
     internal ThemeConfig(
         bool inherit,
         IReadOnlyList<ThemeAlgorithm>? algorithms,

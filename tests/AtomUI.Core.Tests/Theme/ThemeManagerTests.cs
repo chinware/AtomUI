@@ -1,5 +1,7 @@
+using System.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
+using AtomUI.Theme.DesignTokens;
 using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,6 +15,38 @@ namespace AtomUI.Core.Tests.Theme;
 [Collection(ThemeConfigProviderTestCollection.Name)]
 public class ThemeManagerTests
 {
+    [Fact]
+    public async Task Manager_Normalizes_The_Initial_Config_Once_After_Registry_Creation()
+    {
+        await HeadlessTestApp.RunAsync(async () =>
+        {
+            var builder = new ThemeManagerBuilder();
+            builder.WithInitialTheme(
+                IThemeManager.DEFAULT_THEME_ID,
+                new ThemeConfigBuilder()
+                    .WithToken(nameof(DesignToken.BorderRadius), "12")
+                    .Build());
+            var manager = builder.Build();
+            manager.InitializeApplication(Application.Current!);
+            var field = typeof(ThemeManager)
+                .GetField("_normalizedInitialConfig", BindingFlags.Instance | BindingFlags.NonPublic)
+                .ShouldNotBeNull();
+            var initialNormalization = field.GetValue(manager).ShouldNotBeNull();
+
+            var result = await manager.ApplyThemeAsync(
+                new ThemeRequest(
+                    IThemeManager.DEFAULT_THEME_ID,
+                    new ThemeConfigBuilder()
+                        .WithToken(nameof(DesignToken.ColorPrimary), "#00b96b")
+                        .Build(),
+                    ThemeTransitionReason.UserRequest),
+                TestContext.Current.CancellationToken);
+
+            result.Status.ShouldBe(ThemeTransitionStatus.Committed);
+            field.GetValue(manager).ShouldBeSameAs(initialNormalization);
+        });
+    }
+
     [Fact]
     public async Task Unknown_Theme_Fails_Without_Changing_The_Committed_State()
     {

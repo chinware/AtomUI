@@ -18,6 +18,67 @@ namespace AtomUI.Core.Tests.Theme;
 public class DenseThemeCompilerTests
 {
     [Fact]
+    public void Default_Configs_Are_Cached_By_Their_Immutable_Owner()
+    {
+        var registry = CreateRegistry();
+        var definition = CreateInput(registry).Definition;
+
+        var firstLibraryDefaults = ThemeCompiler.CreateLibraryDefaults(registry);
+        var secondLibraryDefaults = ThemeCompiler.CreateLibraryDefaults(registry);
+        var firstDefinitionDefaults = ThemeCompiler.CreateDefinitionDefaults(definition, registry);
+        var secondDefinitionDefaults = ThemeCompiler.CreateDefinitionDefaults(definition, registry);
+
+        secondLibraryDefaults.ShouldBeSameAs(firstLibraryDefaults);
+        secondDefinitionDefaults.ShouldBeSameAs(firstDefinitionDefaults);
+    }
+
+    [Fact]
+    public void Definition_Defaults_Are_Canonical_Regardless_Of_Declaration_Order()
+    {
+        var button = Control("Button");
+        var input = Control("Input");
+        var registry = CreateRegistry([button, input]);
+        registry.TryGetControl(button.Identity, out button).ShouldBeTrue();
+        registry.TryGetControl(input.Identity, out input).ShouldBeTrue();
+        var algorithm = registry.Algorithms.Single(static item => item.Algorithm == ThemeAlgorithm.Default);
+        var location = new ThemeSourceLocation("test", 1, 1, "/Theme");
+        var definition = new BoundThemeDefinition(
+            "TestTheme",
+            "Test Theme",
+            ThemeAppearance.Light,
+            ThemeAppearance.Light,
+            true,
+            [algorithm],
+            Array.Empty<BoundTokenValue>(),
+            [
+                new ControlThemeDefinition(
+                    input,
+                    ControlAlgorithmMode.Unspecified,
+                    Array.Empty<ThemeAlgorithmDescriptor>(),
+                    Array.Empty<BoundTokenValue>(),
+                    Array.Empty<BoundTokenValue>(),
+                    location),
+                new ControlThemeDefinition(
+                    button,
+                    ControlAlgorithmMode.Unspecified,
+                    Array.Empty<ThemeAlgorithmDescriptor>(),
+                    Array.Empty<BoundTokenValue>(),
+                    Array.Empty<BoundTokenValue>(),
+                    location)
+            ],
+            location);
+
+        var defaults = ThemeCompiler.CreateDefinitionDefaults(definition, registry);
+
+        defaults.Controls.Select(static control => control.Identity).ShouldBe([
+            button.Identity,
+            input.Identity
+        ]);
+        defaults.Controls.ShouldAllBe(static control =>
+            control.AlgorithmMode == ControlAlgorithmMode.Disabled);
+    }
+
+    [Fact]
     public void Compile_Applies_Seed_Map_And_Alias_Overrides_In_Order()
     {
         var registry = CreateRegistry();
@@ -158,6 +219,48 @@ public class DenseThemeCompilerTests
     }
 
     [Fact]
+    public void Compile_Control_Without_Own_Tokens_Or_Config_Does_Not_Reproject_Global_Resources()
+    {
+        var resourceProjections = 0;
+        var globalToken = ProjectionCountingGlobalToken(() => resourceProjections++);
+        var algorithm = Algorithm(ThemeAlgorithm.Default, []);
+        var control = new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", "Rating"),
+            new ControlTokenIdentity("AtomUI", "Rating"));
+        var registry = new ThemeSchemaRegistry([globalToken], [control], [algorithm]);
+
+        var result = new ThemeCompiler().Compile(CreateInput(registry, [algorithm]));
+
+        result.Success.ShouldBeTrue();
+        resourceProjections.ShouldBe(1);
+        var controlSnapshot = result.Snapshot!.Controls.ShouldHaveSingleItem();
+        controlSnapshot.EffectiveGlobalTokenDelta.ShouldBeEmpty();
+        controlSnapshot.EffectiveGlobalResourceDelta.ShouldBeEmpty();
+        controlSnapshot.ControlTokenValues.ShouldBeSameAs(TokenValueTable.Empty);
+        controlSnapshot.ControlResources.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Compile_Control_Without_Global_Overrides_Does_Not_Reproject_Global_Resources()
+    {
+        var resourceProjections = 0;
+        var globalToken = ProjectionCountingGlobalToken(() => resourceProjections++);
+        var algorithm = Algorithm(ThemeAlgorithm.Default, []);
+        var control = Control("Button");
+        var registry = new ThemeSchemaRegistry([globalToken], [control], [algorithm]);
+
+        var result = new ThemeCompiler().Compile(CreateInput(registry, [algorithm]));
+
+        result.Success.ShouldBeTrue();
+        resourceProjections.ShouldBe(1);
+        var controlSnapshot = result.Snapshot!.Controls.ShouldHaveSingleItem();
+        controlSnapshot.EffectiveGlobalTokenDelta.ShouldBeEmpty();
+        controlSnapshot.EffectiveGlobalResourceDelta.ShouldBeEmpty();
+        controlSnapshot.ControlTokenValues.Count.ShouldBe(1);
+        controlSnapshot.ControlResources.Count.ShouldBe(1);
+    }
+
+    [Fact]
     public void Compile_Control_Global_Rederives_Map_And_Freezes_Own_Tokens_With_Appearance()
     {
         var control = Control("Button");
@@ -209,6 +312,44 @@ public class DenseThemeCompilerTests
         child.GlobalTokenValues.ShouldBeSameAs(parent.GlobalTokenValues);
         child.GlobalResources.ShouldBeSameAs(parent.GlobalResources);
         child.PresetColorPalettes.ShouldBeSameAs(parent.PresetColorPalettes);
+        child.Controls[button.Slot].ShouldNotBeSameAs(parent.Controls[button.Slot]);
+        child.Controls[input.Slot].ShouldBeSameAs(parent.Controls[input.Slot]);
+    }
+
+    [Fact]
+    public void Compile_Uses_The_ChangeSet_To_Recompute_Only_The_Changed_Control()
+    {
+        var buttonEvaluations = 0;
+        var inputEvaluations = 0;
+        var button = CountingControl("Button", () => buttonEvaluations++);
+        var input = CountingControl("Input", () => inputEvaluations++);
+        var registry = CreateRegistry([button, input]);
+        registry.TryGetControl(button.Identity, out button).ShouldBeTrue();
+        registry.TryGetControl(input.Identity, out input).ShouldBeTrue();
+        var compiler = new ThemeCompiler();
+        var parent = compiler.Compile(CreateInput(registry)).Snapshot!;
+        var buttonConfig = new NormalizedControlThemeConfig(
+            button.Identity,
+            ControlAlgorithmMode.Disabled,
+            Array.Empty<ThemeAlgorithmDescriptor>(),
+            Array.Empty<NormalizedTokenValue>(),
+            [ControlToken(button, "48")]);
+        var changedConfig = new NormalizedThemeConfig(
+            false,
+            true,
+            parent.EffectiveConfig.Algorithms,
+            parent.EffectiveConfig.GlobalTokens,
+            [buttonConfig]);
+        var changeSet = ThemeConfigMerger.Compare(parent.EffectiveConfig, changedConfig);
+
+        var child = compiler.Compile(CreateInput(
+            registry,
+            controls: [buttonConfig],
+            reusableParent: parent,
+            changeSet: changeSet)).Snapshot!;
+
+        buttonEvaluations.ShouldBe(2);
+        inputEvaluations.ShouldBe(1);
         child.Controls[button.Slot].ShouldNotBeSameAs(parent.Controls[button.Slot]);
         child.Controls[input.Slot].ShouldBeSameAs(parent.Controls[input.Slot]);
     }
@@ -323,7 +464,8 @@ public class DenseThemeCompilerTests
         IReadOnlyList<ThemeAlgorithmDescriptor>? algorithms = null,
         IReadOnlyList<NormalizedTokenValue>? globalTokens = null,
         IReadOnlyList<NormalizedControlThemeConfig>? controls = null,
-        ThemeSnapshot? reusableParent = null)
+        ThemeSnapshot? reusableParent = null,
+        ThemeConfigChangeSet? changeSet = null)
     {
         var effectiveAlgorithms = algorithms ??
             [registry.Algorithms.Single(static algorithm => algorithm.Algorithm == ThemeAlgorithm.Default)];
@@ -349,7 +491,8 @@ public class DenseThemeCompilerTests
             new ThemeDefinitionRevision("test", "1", "A1"),
             config,
             registry,
-            reusableParent);
+            reusableParent,
+            changeSet);
     }
 
     private static NormalizedTokenValue Token(
@@ -404,6 +547,50 @@ public class DenseThemeCompilerTests
             [token],
             static () => new DenseControlToken(),
             static (builder, appearance) => ((DenseControlToken)builder).Evaluate(appearance));
+    }
+
+    private static TokenDescriptor ProjectionCountingGlobalToken(Action onProject)
+    {
+        return new TokenDescriptor(
+            nameof(DesignToken.ColorPrimary),
+            0,
+            TokenStage.Seed,
+            typeof(Color),
+            nameof(DesignToken.ColorPrimary),
+            static value => ThemeTokenValueParser.Parse<Color>(value),
+            static value => ThemeTokenValueFormatter.Format((Color)value!),
+            static builder => ((DesignToken)builder).ColorPrimary,
+            static (builder, value) => ((DesignToken)builder).ColorPrimary = (Color)value!,
+            builder =>
+            {
+                onProject();
+                return ((DesignToken)builder).ColorPrimary;
+            });
+    }
+
+    private static ControlTokenDescriptor CountingControl(string id, Action onEvaluate)
+    {
+        var token = new TokenDescriptor(
+            "Height",
+            0,
+            TokenStage.Control,
+            typeof(double),
+            $"{id}.Height",
+            static value => ThemeTokenValueParser.Parse<double>(value),
+            static value => ThemeTokenValueFormatter.Format((double)value!),
+            static builder => ((DenseControlToken)builder).Height,
+            static (builder, value) => ((DenseControlToken)builder).Height = (double)value!,
+            static builder => ((DenseControlToken)builder).Height);
+        return new ControlTokenDescriptor(
+            ThemeTestControlTypes.For("AtomUI", id),
+            new ControlTokenIdentity("AtomUI", id),
+            [token],
+            static () => new DenseControlToken(),
+            (builder, appearance) =>
+            {
+                onEvaluate();
+                ((DenseControlToken)builder).Evaluate(appearance);
+            });
     }
 
     private static ControlTokenDescriptor ImmutableTransformControl(

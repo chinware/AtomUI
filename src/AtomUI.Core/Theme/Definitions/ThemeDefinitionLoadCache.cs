@@ -113,7 +113,7 @@ internal sealed class ThemeDefinitionLoadCache : IDisposable
 
 internal readonly record struct ThemeSourceCacheKey(
     string SourceIdentity,
-    string SourceRevision);
+    string ContentDigest);
 
 internal readonly record struct ThemeBindingCacheKey(
     string SourceIdentity,
@@ -122,7 +122,6 @@ internal readonly record struct ThemeBindingCacheKey(
 
 internal sealed record ThemeSourceReadCacheEntry(
     ThemeDocument Document,
-    string ContentDigest,
     IReadOnlyList<ThemeDiagnostic> Diagnostics);
 
 internal sealed record ThemeBindingCacheEntry(

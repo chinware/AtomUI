@@ -66,6 +66,8 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
     private ThemeRequest? _lastCommittedRequest;
     private ThemeSnapshot? _currentSnapshot;
     private ThemeSnapshotCacheKey? _currentSnapshotKey;
+    private ThemeConfigNormalizeResult? _normalizedInitialConfig;
+    private ThemeConfigNormalizeResult? _normalizedRuntimeDefaultConfig;
     private ThemeTokenResourceProvider? _rootTokenResourceProvider;
     private ThemeContext? _rootContext;
     private readonly ThemeScopeGraph _scopeGraph;
@@ -160,6 +162,14 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
 
         _application = application;
         _startupRegistry = CreateStartupRegistry();
+        _normalizedRuntimeDefaultConfig = ThemeConfigNormalizer.Normalize(
+            AddDefaultFont(null) ?? ThemeConfig.Empty,
+            _startupRegistry);
+        _normalizedInitialConfig = _initialRequest.Config is null
+            ? _normalizedRuntimeDefaultConfig
+            : ThemeConfigNormalizer.Normalize(
+                AddDefaultFont(_initialRequest.Config)!,
+                _startupRegistry);
         var catalogResult = CompiledThemeCatalog.LoadInitial(
             _startupRegistry,
             _themeDefinitionResolvers,
@@ -1519,6 +1529,17 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         ThemeSnapshot parentSnapshot,
         ThemeConfig config)
     {
+        if (config.Inherit &&
+            config.Algorithms is null &&
+            config.Tokens.Count == 0 &&
+            config.Controls.Count == 0)
+        {
+            return new ThemeCompileResult(
+                parentSnapshot,
+                Array.Empty<ThemeDefinitionDiagnostic>(),
+                null);
+        }
+
         var normalized = ThemeConfigNormalizer.Normalize(config, parentSnapshot.Registry);
         if (!normalized.Success)
         {
@@ -1530,17 +1551,27 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
                 parentSnapshot.Definition,
                 parentSnapshot.Registry)
             : ThemeCompiler.CreateLibraryDefaults(parentSnapshot.Registry);
-        var effective = ThemeConfigMerger.Merge(
+        var merge = ThemeConfigMerger.Merge(
             defaults,
             parentSnapshot.EffectiveConfig,
-            normalized.Config!).EffectiveConfig;
+            normalized.Config!);
+        if (merge.ChangeSet.IsEmpty)
+        {
+            return new ThemeCompileResult(
+                parentSnapshot,
+                Array.Empty<ThemeDefinitionDiagnostic>(),
+                null);
+        }
+
         var input = new ThemeCompileInput(
             parentSnapshot.Definition,
             parentSnapshot.DefinitionRevision,
-            effective,
+            merge.EffectiveConfig,
             parentSnapshot.Registry,
-            parentSnapshot);
-        return GetThemeSnapshotCache().GetOrCompile(input, GetThemeCompiler());
+            parentSnapshot,
+            merge.ChangeSet);
+        var key = ThemeSnapshotCacheKey.Create(input);
+        return GetThemeSnapshotCache().GetOrCompile(key, input, GetThemeCompiler());
     }
 
     private ThemeSnapshot ResolveParentSnapshot(long parentRegistrationId)
@@ -1593,8 +1624,9 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         try
         {
             var entry = (catalog ?? _compiledThemeCatalog!).Get(request.ThemeId);
-            var runtimeConfig = AddDefaultFont(request.Config) ?? new ThemeConfigBuilder().Build();
-            var normalizedRuntime = ThemeConfigNormalizer.Normalize(runtimeConfig, _startupRegistry!);
+            var normalizedRuntime = request.Config is null
+                ? _normalizedRuntimeDefaultConfig!
+                : ThemeConfigNormalizer.Normalize(AddDefaultFont(request.Config)!, _startupRegistry!);
             if (!normalizedRuntime.Success)
             {
                 return ThemeTransactionPreparation.Failed(
@@ -1604,8 +1636,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
             var defaults = ThemeCompiler.CreateDefinitionDefaults(
                 entry.Definition,
                 _startupRegistry!);
-            var initialConfig = AddDefaultFont(_initialRequest.Config) ?? new ThemeConfigBuilder().Build();
-            var normalizedInitial = ThemeConfigNormalizer.Normalize(initialConfig, _startupRegistry!);
+            var normalizedInitial = _normalizedInitialConfig!;
             if (!normalizedInitial.Success)
             {
                 return ThemeTransactionPreparation.Failed(
@@ -1620,12 +1651,16 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
                 defaults,
                 applicationConfig,
                 normalizedRuntime.Config!).EffectiveConfig;
+            var changeSet = currentSnapshot is null
+                ? null
+                : ThemeConfigMerger.Compare(currentSnapshot.EffectiveConfig, effective);
             var input = new ThemeCompileInput(
                 entry.Definition,
                 entry.Revision,
                 effective,
                 _startupRegistry!,
-                currentSnapshot);
+                currentSnapshot,
+                changeSet);
             var key = ThemeSnapshotCacheKey.Create(input);
             if (_currentSnapshotKey is ThemeSnapshotCacheKey currentKey &&
                 currentSnapshot is not null &&
@@ -1634,7 +1669,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
                 return ThemeTransactionPreparation.Succeeded(currentSnapshot, key);
             }
 
-            var result = GetThemeSnapshotCache().GetOrCompile(input, GetThemeCompiler());
+            var result = GetThemeSnapshotCache().GetOrCompile(key, input, GetThemeCompiler());
             return result.Success
                 ? ThemeTransactionPreparation.Succeeded(
                     result.Snapshot!,
