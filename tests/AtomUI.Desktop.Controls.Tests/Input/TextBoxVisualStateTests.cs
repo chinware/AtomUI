@@ -94,6 +94,107 @@ public class TextBoxVisualStateTests
         });
     }
 
+    [Theory]
+    [InlineData(ControlAlgorithmMode.Global, true)]
+    [InlineData(ControlAlgorithmMode.Disabled, false)]
+    public void LineEdit_Hover_Uses_Control_Effective_ColorPrimaryHover(
+        ControlAlgorithmMode algorithm,
+        bool expectDerivedHover)
+    {
+        AssertCompositeInputHoverUsesControlEffectiveColorPrimaryHover(
+            new AtomUILineEdit
+            {
+                Width           = 180,
+                IsMotionEnabled = false
+            },
+            LineEditTokens.Identity,
+            algorithm,
+            expectDerivedHover);
+    }
+
+    [Theory]
+    [InlineData(ControlAlgorithmMode.Global)]
+    [InlineData(ControlAlgorithmMode.Disabled)]
+    public void LineEdit_FocusWithin_Uses_Control_Effective_ColorPrimary(ControlAlgorithmMode algorithm)
+    {
+        AssertCompositeInputFocusWithinUsesControlEffectiveColorPrimary(
+            new AtomUILineEdit
+            {
+                Width           = 180,
+                IsMotionEnabled = false
+            },
+            LineEditTokens.Identity,
+            algorithm);
+    }
+
+    [Theory]
+    [InlineData(ControlAlgorithmMode.Global, true)]
+    [InlineData(ControlAlgorithmMode.Disabled, false)]
+    public void SearchEdit_Hover_Uses_Control_Effective_ColorPrimaryHover(
+        ControlAlgorithmMode algorithm,
+        bool expectDerivedHover)
+    {
+        AssertCompositeInputHoverUsesControlEffectiveColorPrimaryHover(
+            new AtomUISearchEdit
+            {
+                Width           = 180,
+                IsMotionEnabled = false
+            },
+            SearchEditTokens.Identity,
+            algorithm,
+            expectDerivedHover);
+    }
+
+    [Theory]
+    [InlineData(ControlAlgorithmMode.Global)]
+    [InlineData(ControlAlgorithmMode.Disabled)]
+    public void SearchEdit_FocusWithin_Uses_Control_Effective_ColorPrimary(ControlAlgorithmMode algorithm)
+    {
+        AssertCompositeInputFocusWithinUsesControlEffectiveColorPrimary(
+            new AtomUISearchEdit
+            {
+                Width           = 180,
+                IsMotionEnabled = false
+            },
+            SearchEditTokens.Identity,
+            algorithm);
+    }
+
+    [Theory]
+    [InlineData(ControlAlgorithmMode.Global, true)]
+    [InlineData(ControlAlgorithmMode.Disabled, false)]
+    public void TextArea_Hover_Uses_Control_Effective_ColorPrimaryHover(
+        ControlAlgorithmMode algorithm,
+        bool expectDerivedHover)
+    {
+        AssertCompositeInputHoverUsesControlEffectiveColorPrimaryHover(
+            new AtomUITextArea
+            {
+                Width           = 180,
+                Height          = 80,
+                IsMotionEnabled = false
+            },
+            TextAreaTokens.Identity,
+            algorithm,
+            expectDerivedHover);
+    }
+
+    [Theory]
+    [InlineData(ControlAlgorithmMode.Global)]
+    [InlineData(ControlAlgorithmMode.Disabled)]
+    public void TextArea_FocusWithin_Uses_Control_Effective_ColorPrimary(ControlAlgorithmMode algorithm)
+    {
+        AssertCompositeInputFocusWithinUsesControlEffectiveColorPrimary(
+            new AtomUITextArea
+            {
+                Width           = 180,
+                Height          = 80,
+                IsMotionEnabled = false
+            },
+            TextAreaTokens.Identity,
+            algorithm);
+    }
+
     [Fact]
     public void TextBox_Uses_Customizable_SizeType_Contract_And_Control_Shared_Token_Resources()
     {
@@ -531,6 +632,100 @@ public class TextBoxVisualStateTests
     {
         var tokenKind = (TextBoxTokenKind)Enum.Parse(typeof(TextBoxTokenKind), kindName);
         return GetThemeResource<T>(tokenKind);
+    }
+
+    private static void AssertCompositeInputHoverUsesControlEffectiveColorPrimaryHover(
+        Control control,
+        ControlTokenIdentity identity,
+        ControlAlgorithmMode algorithm,
+        bool expectDerivedHover)
+    {
+        var provider = new ThemeConfigProvider
+        {
+            Config = CreateControlPrimaryConfig(identity, algorithm),
+            Child  = control
+        };
+
+        ShowInWindow(provider, () =>
+        {
+            control.TryFindResource(
+                    SharedTokenKind.ColorPrimaryHover,
+                    out var globalHoverResource)
+                .ShouldBeTrue();
+            control.TryFindResource(
+                    ControlTokenResourceKey.Global(identity, SharedTokenKind.ColorPrimaryHover),
+                    out var controlHoverResource)
+                .ShouldBeTrue();
+
+            var globalHover  = GetSolidBrushColor((IBrush)globalHoverResource!);
+            var controlHover = GetSolidBrushColor((IBrush)controlHoverResource!);
+            if (expectDerivedHover)
+            {
+                controlHover.ShouldNotBe(globalHover);
+            }
+            else
+            {
+                controlHover.ShouldBe(globalHover);
+            }
+
+            var decoratedBox = FindTemplatePart<global::AtomUI.Desktop.Controls.AddOnDecoratedBox>(
+                control,
+                global::AtomUI.Desktop.Controls.AddOnDecoratedBox.AddOnDecoratedBoxPart);
+            var contentFrame = FindTemplatePart<PixelAlignedBorder>(control, "PART_ContentFrame");
+
+            decoratedBox.IsInnerBoxHover = true;
+            Dispatcher.UIThread.RunJobs();
+
+            GetSolidBrushColor(contentFrame.BorderBrush).ShouldBe(controlHover);
+        });
+    }
+
+    private static void AssertCompositeInputFocusWithinUsesControlEffectiveColorPrimary(
+        Control control,
+        ControlTokenIdentity identity,
+        ControlAlgorithmMode algorithm)
+    {
+        var provider = new ThemeConfigProvider
+        {
+            Config = CreateControlPrimaryConfig(identity, algorithm),
+            Child  = control
+        };
+
+        ShowInWindow(provider, () =>
+        {
+            control.TryFindResource(
+                    ControlTokenResourceKey.Global(identity, SharedTokenKind.ColorPrimary),
+                    out var controlPrimaryResource)
+                .ShouldBeTrue();
+            var controlPrimary = GetSolidBrushColor((IBrush)controlPrimaryResource!);
+            var decoratedBox = FindTemplatePart<global::AtomUI.Desktop.Controls.AddOnDecoratedBox>(
+                control,
+                global::AtomUI.Desktop.Controls.AddOnDecoratedBox.AddOnDecoratedBoxPart);
+            var contentFrame = FindTemplatePart<PixelAlignedBorder>(control, "PART_ContentFrame");
+
+            decoratedBox.IsInnerBoxHover = true;
+            decoratedBox.Focus();
+            Dispatcher.UIThread.RunJobs();
+
+            decoratedBox.IsFocused.ShouldBeTrue();
+            control.IsFocused.ShouldBeFalse();
+            control.IsKeyboardFocusWithin.ShouldBeTrue();
+            GetSolidBrushColor(contentFrame.BorderBrush).ShouldBe(controlPrimary);
+        });
+    }
+
+    private static ThemeConfig CreateControlPrimaryConfig(
+        ControlTokenIdentity identity,
+        ControlAlgorithmMode algorithm)
+    {
+        return new ThemeConfigBuilder()
+               .WithControl(
+                   identity,
+                   new ControlThemeConfigBuilder()
+                       .WithAlgorithm(algorithm)
+                       .WithToken(nameof(SharedTokenKind.ColorPrimary), "#eb2f96")
+                       .Build())
+               .Build();
     }
 
     private static void BrushShouldHaveSameColor(IBrush? actual, IBrush? expected)

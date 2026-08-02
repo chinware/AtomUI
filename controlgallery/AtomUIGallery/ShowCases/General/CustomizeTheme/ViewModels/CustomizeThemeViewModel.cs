@@ -90,7 +90,7 @@ public class CustomizeThemeViewModel : ReactiveObject, IRoutableViewModel, IActi
                        .WithToken(nameof(DesignToken.ColorPrimary), "#00b96b")
                        .Build())
                .WithControl(
-                   new ControlTokenIdentity("AtomUI", "AddOnDecoratedBox"),
+                   new ControlTokenIdentity("AtomUI", "LineEdit"),
                    new ControlThemeConfigBuilder()
                        .WithAlgorithm(algorithm)
                        .WithToken(nameof(DesignToken.ColorPrimary), "#eb2f96")
