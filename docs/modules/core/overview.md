@@ -45,6 +45,7 @@ registry 后不扫描上层程序集或 AXAML。它对多个上层项目开放 `
 
 - [主题系统架构](theme-system.md)
 - [主题系统架构与主题定制指南](theme-architecture-and-customization.md)
+- [主题算法枚举化设计](theme-algorithm-enum-design.md)
 - [主题定义 XML v1 规范](theme-definition-xml.md)
 - [AtomUI Theme Definition XML Schema v1](schemas/atomui-theme-v1.xsd)
 - [../../architecture/startup-and-registration.md](../../architecture/startup-and-registration.md)
