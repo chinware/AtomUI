@@ -61,7 +61,10 @@ internal class DataGridRowReorderHandle : TemplatedControl
         Debug.Assert(rowsPresenter != null);
         Debug.Assert(OwningRow != null);
 
-        if (_dragRowIndex == null)
+        var dragRowIndex = _dragRowIndex;
+        var currentDraggingOverRowIndex = _currentDraggingOverRowIndex;
+
+        if (dragRowIndex == null)
         {
             ResetDragState(rowsPresenter, invalidateArrange: false);
             return;
@@ -77,28 +80,25 @@ internal class DataGridRowReorderHandle : TemplatedControl
         {
             _indicatorButton.DisableTransitions();
         }
-        if (_currentDraggingOverRowIndex != null && _currentDraggingOverRowIndex != _dragRowIndex)
+        if (currentDraggingOverRowIndex != null && currentDraggingOverRowIndex != dragRowIndex)
         {
             if (OwningGrid.CollectionView is IList collectionView)
             {
-                if (_dragRowIndex != null)
+                var data = collectionView[dragRowIndex.Value];
+                if (data is not null)
                 {
-                    var data = collectionView[_dragRowIndex.Value];
-                    if (data is not null)
-                    {
-                        collectionView.RemoveAt(_dragRowIndex.Value);
-                        collectionView.Insert(_currentDraggingOverRowIndex.Value, data);
-                    }
+                    collectionView.RemoveAt(dragRowIndex.Value);
+                    collectionView.Insert(currentDraggingOverRowIndex.Value, data);
                 }
-               
-                if (_indicatorButton != null)
-                {
-                    _indicatorButton.EnableTransitions();
-                }
-                OwningGrid.CollectionView.Refresh();
             }
+
+            if (_indicatorButton != null)
+            {
+                _indicatorButton.EnableTransitions();
+            }
+            OwningGrid.CollectionView?.Refresh();
         }
-        
+
         ResetDragState(rowsPresenter, invalidateArrange: true);
     }
 
