@@ -30,7 +30,7 @@
 - `Splash.StaticAPI.cs` 只放静态便利入口，所有逻辑委托给 `Splash.DefaultService`。
 - `SplashWindow.cs` 负责窗口级 `Splash` 内容承载属性、展示时间记录、淡出关闭和关闭请求状态；`SplashWindowTheme.axaml` 负责透明无装饰窗口默认值、窗口模板、阴影宿主和内容承载边界。
 - `SplashService.cs` 是启动编排 owner，负责创建窗口、创建或复用 `Splash` 实例、应用运行时 options、更新状态、关闭窗口和 UI thread 调度。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
+- Theme 文件负责静态视觉结构、template part、selector 和资源绑定；`SplashTheme.axaml` 使用 `SplashTokenResource` 读取 Splash Effective Global Token 与 Own Token，不绕过 Control identity 直接读取同名 SharedToken。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 
@@ -186,6 +186,24 @@ Splash 的交互事件应从启动服务收敛到控件状态：
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - `SplashWindow.Resources` 与 `Splash.Resources` 的资源覆盖边界。
 
+主题文本资源流保持为：
+
+```text
+Global Token snapshot
+  -> Splash Effective Global Token
+     -> SplashTokenResource ColorTextHeading -> PART_TitleBlock.Foreground
+     -> SplashTokenResource ColorText        -> PART_MessageBlock.Foreground
+
+Splash Own Token
+  -> SplashTokenResource SubtleForeground -> PART_SubtitleBlock / PART_DetailBlock.Foreground
+  -> SplashTokenResource SuccessColor      -> :success message visual
+  -> SplashTokenResource ErrorColor        -> :error message visual
+```
+
+`ColorTextHeading` 和 `ColorText` 已属于 Global Token，不在 `SplashToken` 中重复定义标题或消息前景 Own Token。Success/Error selector 继续覆盖普通消息前景，不能把普通 `ColorText` 覆盖扩散为状态色覆盖。
+
+Gallery 的窗口演示使用 `GallerySplashWindow : SplashWindow` 和窗口持有的 `GalleryWindowSplash : Splash`。标准 Splash Theme 先把 `SurfaceBackground`、`ContentPadding` 和 `SurfaceCornerRadius` Token 映射到 Splash 的 `Background`、`Padding` 和 `CornerRadius`，模板表面再通过 `TemplateBinding` 消费这些属性；专用子控件因此可以使用正常属性值定制表面，而不需要覆盖 Token 资源或进入表面节点。`GalleryWindowSplash.StyleKeyOverride` 返回 `Splash`，直接复用标准 Splash Theme，避免从 Gallery AXAML 通过不可静态解析的 `BasedOn` 引用控件包内部主题资产。标题、加载状态普通消息和弱文本视觉位于 `GalleryWindowSplash` 自己的 AXAML `Styles`，每个 selector 只进入自己的一层模板；普通消息覆盖只在 `:loading` 生效，Success/Error 继续使用标准主题状态色。`GallerySplashService.CreateWindow()` 只创建专用窗口，不写入 Token 资源、不构造运行时 Style，也不依赖标准 Splash 的 `PART_*` 节点。标准 Splash 的默认主题、Effective Global Token、Own Token 和 Success/Error 状态语义不因 Gallery 专用视觉而改变。
+
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
 ## 8. 资源、性能与 AOT 边界
@@ -196,6 +214,7 @@ Splash 的交互事件应从启动服务收敛到控件状态：
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 不为模板稳定节点之间的 token 资源关系创建 `TokenResourceBinder` 桥接；`PART_SurfaceHost` 和 `Splash` 内部模板应通过相同的资源树解析 `SplashTokenResource`。
 - 窗口级视觉覆盖写入 `SplashWindow.Resources`，确保 `PART_SurfaceHost` 与 `Splash` 内部模板都能解析；`Splash.Resources` 只用于仅影响 Splash 内部模板的覆盖。
+- Gallery 和业务代码不得从页面、父控件 Style、窗口 ControlTheme 或 C# 动态 Style 穿透 Splash 模板。需要完整专用视觉时定义专用 Splash 子控件，通过 `StyleKeyOverride` 复用标准 Theme，并把专用 selector 放在该子控件自己的 AXAML `Styles` 中；每个 selector 最多进入自己的一层模板，并继续遵守稳定 template part 和状态 selector 契约。
 - `SplashService` 中的延迟任务、淡出任务和取消 token 必须能取消或释放。
 - 事件订阅必须与窗口或服务生命周期一致。
 - `Splash.DefaultService` 替换不得保留旧服务窗口引用。
@@ -214,6 +233,7 @@ Splash 的交互事件应从启动服务收敛到控件状态：
 - 视觉控件、窗口宿主、实例服务和静态 API 的职责边界。
 - Public API、默认值、服务委托路径和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- `SplashTokenResource` 对 Effective Global Token 与 Own Token 的统一消费边界；`SharedTokenResource` 只用于明确要求永远跟随真正 Global Token snapshot 的值。
 - `CloseAsync()` 幂等、最短展示时间、关闭延迟和引用释放路径。
 - Light/Dark、不同 DPI、不同平台窗口系统下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

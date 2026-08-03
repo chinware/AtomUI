@@ -2,6 +2,19 @@
 
 本文档记录 Splash 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-03
+
+- Theme
+  - Route title and ordinary message foregrounds through `SplashTokenResource`, so Splash Control-level `ColorTextHeading` and `ColorText` overrides are consumed through the existing Effective Global Token mechanism.
+  - Bind the Splash surface template to the control's existing `Background`, `Padding` and `CornerRadius` properties, preserving Token-backed defaults while allowing derived themes to customize the surface through normal setters.
+  - Keep Success/Error message foregrounds on the existing `SuccessColor` and `ErrorColor` Own Tokens, preserving current state semantics and default rendering.
+- Gallery
+  - Move the window showcase visual into a dedicated `GallerySplashWindow` and a `GalleryWindowSplash` that owns its AXAML `Styles`.
+  - Remove window resource-key overrides and runtime template selectors from the Gallery service; the service now only creates the dedicated window.
+  - Establish that pages, parent styles and window themes must not cross the Splash template boundary, while a dedicated Splash child may reuse the standard Theme through `StyleKeyOverride` and own its single template boundary.
+- Docs
+  - Document the Splash Effective Global Token, Own Token, dedicated-window customization and template ownership boundaries without adding new Splash public API or duplicate foreground Own Tokens.
+
 ## 2026-06-28
 
 - Code

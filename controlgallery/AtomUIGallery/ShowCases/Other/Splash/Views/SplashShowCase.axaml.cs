@@ -1,6 +1,5 @@
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
@@ -8,7 +7,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Styling;
 
 using AtomUITextBlock = AtomUI.Desktop.Controls.TextBlock;
 
@@ -21,9 +19,6 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
     private const double WindowSplashWidth = 560;
     private const double WindowSplashMinHeight = 360;
     private static readonly TimeSpan WindowSplashDuration = TimeSpan.FromSeconds(5);
-    private static readonly IBrush WindowSplashTitleBrush = Brushes.White;
-    private static readonly IBrush WindowSplashPrimaryTextBrush = new SolidColorBrush(Color.Parse("#F5F8FF"));
-    private static readonly IBrush WindowSplashSubtleTextBrush = new SolidColorBrush(Color.Parse("#D6E4FF"));
 
     private static readonly SplashLogoInfo WindowSplashLogo = new(
         "A6",
@@ -189,46 +184,11 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
         };
     }
 
-    private static LinearGradientBrush CreateWindowSplashSurfaceBrush()
-    {
-        return new LinearGradientBrush
-        {
-            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-            EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
-            GradientStops = new GradientStops
-            {
-                new(Color.Parse("#0B1026"), 0),
-                new(Color.Parse("#1D39C4"), 0.48),
-                new(Color.Parse("#13C2C2"), 1)
-            }
-        };
-    }
-
     private sealed class GallerySplashService : SplashService
     {
         protected override SplashWindow CreateWindow(SplashOptions? options)
         {
-            var window = base.CreateWindow(null);
-
-            window.Resources[SplashTokenKind.SurfaceBackground] = CreateWindowSplashSurfaceBrush();
-            window.Resources[SplashTokenKind.SubtleForeground]   = WindowSplashSubtleTextBrush;
-            AddTemplateForegroundStyle(window, "PART_TitleBlock", WindowSplashTitleBrush);
-            AddTemplateForegroundStyle(window, "PART_MessageBlock", WindowSplashPrimaryTextBrush);
-
-            return window;
-        }
-
-        private static void AddTemplateForegroundStyle(
-            SplashWindow window,
-            string partName,
-            IBrush foreground)
-        {
-            var style = new Style(selector => selector
-                .OfType<AtomUI.Desktop.Controls.Splash>()
-                .Template()
-                .Name(partName));
-            style.Setters.Add(new Setter(Avalonia.Controls.TextBlock.ForegroundProperty, foreground));
-            window.Styles.Add(style);
+            return new GallerySplashWindow();
         }
     }
 }

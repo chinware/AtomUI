@@ -31,9 +31,23 @@ Splash 的控件专项模型通过 Theme 消费 Token：
 
 - C# 控件负责 `Status`、`Progress`、`IsIndeterminate` 的状态归一和伪类同步。
 - AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、padding、尺寸、阴影和动效。
-- Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
+- `SplashTokenResource` 是 Splash ControlTheme 的统一读取入口：它同时解析 Splash 的 Effective Global Token 和 Splash Own Token。
+- 标题使用 Effective Global Token `ColorTextHeading`，普通消息使用 Effective Global Token `ColorText`；这两个语义不在 `SplashToken` 中重复定义 Own Token。
+- 副标题和详情使用 Splash Own Token `SubtleForeground`；表面、间距、尺寸、阴影和状态色继续使用对应 Splash Own Token。
+- Token 默认值从 Splash Effective Global Token 派生，不直接读取控件实例状态。
 - `SuccessColor` 和 `ErrorColor` 表达状态语义色来源，不保存当前实例状态。
+- Success/Error 状态 selector 分别使用 `SuccessColor` 和 `ErrorColor`，普通消息的 `ColorText` 覆盖不得替代状态色。
 - Token 类型、生成数据和 token.md 应显式维护，不依赖运行时反射扫描。
+
+资源消费边界：
+
+| 资源类别 | Theme 入口 | 正式配置边界 |
+| --- | --- | --- |
+| Splash Effective Global Token | `SplashTokenResource` | 通过 `ThemeConfig` 的 Splash Control 配置覆盖对应 Global Token。 |
+| Splash Own Token | `SplashTokenResource` | 通过 `ThemeConfig` 的 Splash Control 配置覆盖对应 Own Token。 |
+| 真正的 Global Token snapshot | `SharedTokenResource` | 通过全局 `ThemeConfig` 配置；仅用于明确不响应 Splash Control 级覆盖的共享值。 |
+
+系统级 Token 调整统一通过 `ThemeConfig` 进入主题编译流程。完整的应用专属启动窗口视觉由专用 `SplashWindow`、内部 Splash 子控件及其自有 AXAML `Styles` 表达；业务 C# 不得手工拼装 Token 资源键、向窗口资源字典写入此类覆盖或构造运行时 Style。
 
 ## 4. 控件家族影响
 
@@ -51,6 +65,8 @@ Splash 的控件专项模型通过 Theme 消费 Token：
 - 不删除或重命名已生成的 TokenKind、TokenResource key 和 AXAML 引用。
 - 不把实例状态、交互状态、启动步骤或 `EffectiveXxx` 状态写成 Token。
 - 不在 Token 中展开状态组合矩阵；状态关系应由 Theme selector 表达。
+- 不为已有 Global Token 语义重复增加 `TitleForeground`、`MessageForeground` 等 Splash Own Token；使用 Splash Effective Global Token 保持单一真源。
+- 不用 `SharedTokenResource` 绕过 Splash identity 读取需要响应 Splash Control 级覆盖的 Global Token。
 - Token 默认值变更必须同步评估 Gallery 示例和截图可观察外观。
 - 如需引入新 Token，必须同步 Token 类型、生成资源、主题引用和本文档。
 

@@ -1,10 +1,12 @@
 using System.Xml.Linq;
 using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
@@ -478,7 +480,7 @@ public class SplashBehaviorTests
                                      (string?)element.Attribute("Name") == "PART_RootLayout");
 
         rootLayout.Attribute("CornerRadius").ShouldNotBeNull().Value.ShouldBe(
-            "{atom:SplashTokenResource SurfaceCornerRadius}");
+            "{TemplateBinding CornerRadius}");
         rootLayout.Attribute("ClipToBounds").ShouldNotBeNull().Value.ShouldBe("True");
         rootLayout.Attribute("Background").ShouldBeNull();
         rootLayout.Attribute("Padding").ShouldBeNull();
@@ -489,14 +491,83 @@ public class SplashBehaviorTests
                                           (string?)element.Attribute("Name") == "PART_SurfaceLayout");
 
         surfaceLayout.Attribute("Background").ShouldNotBeNull().Value.ShouldBe(
-            "{atom:SplashTokenResource SurfaceBackground}");
+            "{TemplateBinding Background}");
         surfaceLayout.Attribute("CornerRadius").ShouldNotBeNull().Value.ShouldBe(
-            "{atom:SplashTokenResource SurfaceCornerRadius}");
+            "{TemplateBinding CornerRadius}");
         surfaceLayout.Attribute("ClipToBounds").ShouldNotBeNull().Value.ShouldBe("True");
         surfaceLayout.Attribute("Padding").ShouldNotBeNull().Value.ShouldBe(
-            "{atom:SplashTokenResource ContentPadding}");
+            "{TemplateBinding Padding}");
         surfaceLayout.Elements(av + "StackPanel")
                      .Single(element => (string?)element.Attribute("Name") == "PART_ContentLayout");
+    }
+
+    [Fact]
+    public void Splash_Theme_Consumes_Effective_Global_Text_Tokens_And_Preserves_Status_Tokens()
+    {
+        var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashTheme.axaml"));
+        XNamespace av = "https://github.com/avaloniaui";
+
+        var styles = document.Descendants(av + "Style").ToList();
+        var titleStyle = styles.Single(element =>
+            (string?)element.Attribute("Selector") == "^ /template/ atom|TextBlock#PART_TitleBlock");
+        var messageStyle = styles.Single(element =>
+            (string?)element.Attribute("Selector") == "^ /template/ atom|TextBlock#PART_MessageBlock");
+        var successStyle = styles.Single(element =>
+            (string?)element.Attribute("Selector") == "^:success /template/ atom|TextBlock#PART_MessageBlock");
+        var errorStyle = styles.Single(element =>
+            (string?)element.Attribute("Selector") == "^:error /template/ atom|TextBlock#PART_MessageBlock");
+
+        GetSetterValue(titleStyle, "Foreground").ShouldBe("{atom:SplashTokenResource ColorTextHeading}");
+        GetSetterValue(messageStyle, "Foreground").ShouldBe("{atom:SplashTokenResource ColorText}");
+        GetSetterValue(successStyle, "Foreground").ShouldBe("{atom:SplashTokenResource SuccessColor}");
+        GetSetterValue(errorStyle, "Foreground").ShouldBe("{atom:SplashTokenResource ErrorColor}");
+    }
+
+    [Fact]
+    public void SplashWindow_Scoped_Global_Text_Tokens_Style_Only_Ordinary_Text()
+    {
+        var titleBrush   = new SolidColorBrush(Color.Parse("#FFF1B8"));
+        var messageBrush = new SolidColorBrush(Color.Parse("#E6F4FF"));
+        var service      = new InspectingSplashService();
+        var window       = new SplashWindow();
+
+        window.Resources[ControlTokenResourceKey.Global(
+            SplashTokens.Identity,
+            SharedTokenKind.ColorTextHeading)] = titleBrush;
+        window.Resources[ControlTokenResourceKey.Global(
+            SplashTokens.Identity,
+            SharedTokenKind.ColorText)] = messageBrush;
+        service.ConfigureWindowForTest(window, new SplashOptions
+        {
+            Title   = "AtomUI",
+            Message = "Starting"
+        });
+
+        try
+        {
+            window.Show();
+
+            var titleBlock = FindSplashTextBlock(window, "PART_TitleBlock");
+            var messageBlock = FindSplashTextBlock(window, "PART_MessageBlock");
+            GetSolidBrushColor(titleBlock.Foreground).ShouldBe(titleBrush.Color);
+            GetSolidBrushColor(messageBlock.Foreground).ShouldBe(messageBrush.Color);
+
+            window.TryFindResource(SplashTokenKind.SuccessColor, out var successResource).ShouldBeTrue();
+            window.TryFindResource(SplashTokenKind.ErrorColor, out var errorResource).ShouldBeTrue();
+
+            window.Splash.ShouldNotBeNull();
+            window.Splash!.Status = SplashStatus.Success;
+            Dispatcher.UIThread.RunJobs();
+            GetSolidBrushColor(messageBlock.Foreground).ShouldBe(GetSolidBrushColor((IBrush?)successResource));
+
+            window.Splash.Status = SplashStatus.Error;
+            Dispatcher.UIThread.RunJobs();
+            GetSolidBrushColor(messageBlock.Foreground).ShouldBe(GetSolidBrushColor((IBrush?)errorResource));
+        }
+        finally
+        {
+            window.Close();
+        }
     }
 
     [Fact]
@@ -605,6 +676,24 @@ public class SplashBehaviorTests
     {
         brush.ShouldBeAssignableTo<ISolidColorBrush>();
         return ((ISolidColorBrush)brush!).Color;
+    }
+
+    private static string GetSetterValue(XElement style, string property)
+    {
+        return style.Elements()
+                    .Single(element =>
+                        element.Name.LocalName == "Setter" &&
+                        (string?)element.Attribute("Property") == property)
+                    .Attribute("Value")
+                    .ShouldNotBeNull()
+                    .Value;
+    }
+
+    private static AtomUI.Desktop.Controls.TextBlock FindSplashTextBlock(SplashWindow window, string name)
+    {
+        return window.GetVisualDescendants()
+                     .OfType<AtomUI.Desktop.Controls.TextBlock>()
+                     .Single(control => control.Name == name);
     }
 
     private static string GetRepoFile(string relativePath)

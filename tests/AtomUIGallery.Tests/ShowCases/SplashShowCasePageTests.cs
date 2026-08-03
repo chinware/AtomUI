@@ -1,4 +1,3 @@
-using AtomUI.Theme.Resources;
 using AtomUI.Toolkits.GalleryBase.Localization;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using AtomUIGallery.ShowCases.Splash;
@@ -143,22 +142,21 @@ public class SplashShowCasePageTests
         codeBehindSource.ShouldContain("private bool _isWindowSplashRunning");
         codeBehindSource.ShouldContain("new GallerySplashService()");
         codeBehindSource.ShouldContain("private sealed class GallerySplashService : SplashService");
-        codeBehindSource.ShouldContain("SplashTokenKind.SurfaceBackground");
-        codeBehindSource.ShouldNotContain("ControlSharedTokenResourceKey");
-        codeBehindSource.ShouldNotContain("SharedTokenKind.ColorTextHeading");
-        codeBehindSource.ShouldNotContain("SharedTokenKind.ColorText");
-        codeBehindSource.ShouldContain("SplashTokenKind.SubtleForeground");
-        codeBehindSource.ShouldContain("window.Resources[SplashTokenKind.SurfaceBackground]");
-        codeBehindSource.ShouldContain("AddTemplateForegroundStyle(window, \"PART_TitleBlock\", WindowSplashTitleBrush)");
-        codeBehindSource.ShouldContain("AddTemplateForegroundStyle(window, \"PART_MessageBlock\", WindowSplashPrimaryTextBrush)");
-        codeBehindSource.ShouldContain(".Template()");
-        codeBehindSource.ShouldContain(".Name(partName)");
-        codeBehindSource.ShouldNotContain("window.Resources[SharedTokenKind.ColorTextHeading]");
-        codeBehindSource.ShouldNotContain("window.Resources[SharedTokenKind.ColorText]");
-        codeBehindSource.ShouldNotContain("window.Splash.Resources");
-        codeBehindSource.ShouldContain("#0B1026");
-        codeBehindSource.ShouldContain("#1D39C4");
-        codeBehindSource.ShouldContain("#13C2C2");
+        codeBehindSource.ShouldContain("return new GallerySplashWindow();");
+        codeBehindSource.ShouldNotContain("base.CreateWindow(");
+        codeBehindSource.ShouldNotContain("window.Resources[");
+        codeBehindSource.ShouldNotContain("ControlTokenResourceKey");
+        codeBehindSource.ShouldNotContain("SplashTokens.Identity");
+        codeBehindSource.ShouldNotContain("SharedTokenKind");
+        codeBehindSource.ShouldNotContain("SplashTokenKind");
+        codeBehindSource.ShouldNotContain("WindowSplashTitleForegroundResourceKey");
+        codeBehindSource.ShouldNotContain("WindowSplashMessageForegroundResourceKey");
+        codeBehindSource.ShouldNotContain("AddTemplateForegroundStyle");
+        codeBehindSource.ShouldNotContain(".Template()");
+        codeBehindSource.ShouldNotContain(".Name(partName)");
+        codeBehindSource.ShouldNotContain("PART_TitleBlock");
+        codeBehindSource.ShouldNotContain("PART_MessageBlock");
+        codeBehindSource.ShouldNotContain("CreateWindowSplashSurfaceBrush");
         codeBehindSource.ShouldContain("await splashService.ShowAsync(new SplashOptions");
         codeBehindSource.ShouldContain("private const double WindowSplashWidth = 560");
         codeBehindSource.ShouldContain("private const double WindowSplashMinHeight = 360");
@@ -187,6 +185,52 @@ public class SplashShowCasePageTests
             source.ShouldContain("P2WindowSplashMessageComplete");
             source.ShouldContain("P2WindowSplashFooter");
         }
+    }
+
+    [Fact]
+    public void Splash_ShowCase_Dedicated_Child_Owns_Its_Custom_Splash_Styles()
+    {
+        var windowSource = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/Other/Splash/ShowCaseControls/GallerySplashWindow.axaml");
+        var windowControlSource = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/Other/Splash/ShowCaseControls/GallerySplashWindow.axaml.cs");
+        var splashSource = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/Other/Splash/ShowCaseControls/GalleryWindowSplash.axaml");
+        var splashControlSource = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/Other/Splash/ShowCaseControls/GalleryWindowSplash.axaml.cs");
+
+        windowControlSource.ShouldContain("partial class GallerySplashWindow : SplashWindow");
+        windowControlSource.ShouldNotContain("GalleryWindowSplash :");
+        windowSource.ShouldContain("x:Class=\"AtomUIGallery.ShowCases.Splash.GallerySplashWindow\"");
+        windowSource.ShouldContain("<local:GalleryWindowSplash />");
+        windowSource.ShouldNotContain("ControlTheme");
+        windowSource.ShouldNotContain("BasedOn");
+        windowSource.ShouldNotContain("StaticResource");
+        windowSource.ShouldNotContain("/template/");
+
+        splashControlSource.ShouldContain("sealed partial class GalleryWindowSplash : SplashControl");
+        splashControlSource.ShouldContain("StyleKeyOverride { get; } = typeof(SplashControl)");
+        splashSource.ShouldContain("x:Class=\"AtomUIGallery.ShowCases.Splash.GalleryWindowSplash\"");
+        splashSource.ShouldContain("Classes=\"gallery-window-splash\"");
+        splashSource.ShouldContain("<atom:Splash.Background>");
+        splashSource.ShouldContain("<atom:Splash.Styles>");
+        splashSource.ShouldNotContain("ControlTheme");
+        splashSource.ShouldNotContain("BasedOn");
+        splashSource.ShouldNotContain("StaticResource");
+        splashSource.ShouldNotContain("Border#PART_SurfaceLayout");
+        splashSource.ShouldContain("atom|Splash.gallery-window-splash /template/ atom|TextBlock#PART_TitleBlock");
+        splashSource.ShouldContain("atom|Splash.gallery-window-splash:loading /template/ atom|TextBlock#PART_MessageBlock");
+        splashSource.ShouldContain("atom|Splash.gallery-window-splash /template/ atom|TextBlock#PART_SubtitleBlock");
+        splashSource.ShouldContain("atom|Splash.gallery-window-splash /template/ atom|TextBlock#PART_DetailBlock");
+        splashSource.ShouldContain("#0B1026");
+        splashSource.ShouldContain("#1D39C4");
+        splashSource.ShouldContain("#13C2C2");
+        splashSource.ShouldContain("#F5F8FF");
+        splashSource.ShouldContain("#D6E4FF");
+        splashSource.ShouldNotContain("ControlTokenResourceKey");
+        splashSource.ShouldNotContain("SplashTokenKind");
+        splashSource.ShouldNotContain("gallery-window-splash:success");
+        splashSource.ShouldNotContain("gallery-window-splash:error");
     }
 
     private static string ExtractShowCaseItemMarkup(string source, string titleMarker)
