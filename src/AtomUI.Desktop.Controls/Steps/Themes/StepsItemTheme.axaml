@@ -323,5 +323,15 @@
         <Style Selector="^[IsLast=True] /template/ atom|StepsNavigationArrow#NavigationArrow">
             <Setter Property="IsVisible" Value="False" />
         </Style>
+
+        <Style Selector="^:item-header-foreground-override /template/ ContentPresenter#HeaderPresenter">
+            <Setter Property="Foreground" Value="{TemplateBinding ItemHeaderForeground}" />
+        </Style>
+        <Style Selector="^:item-sub-header-foreground-override /template/ ContentPresenter#SubHeaderPresenter">
+            <Setter Property="Foreground" Value="{TemplateBinding ItemSubHeaderForeground}" />
+        </Style>
+        <Style Selector="^:item-rail-background-override /template/ atom|PixelAlignedBorder#Connector">
+            <Setter Property="Background" Value="{TemplateBinding ItemRailBackground}" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

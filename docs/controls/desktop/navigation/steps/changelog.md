@@ -3,6 +3,18 @@
 本文档记录 Steps 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-03
+
+- API
+  - 在 `Steps` 根控件定义 nullable `ItemHeaderForeground`、`ItemSubHeaderForeground` 和 `ItemRailBackground` 实例级语义样式属性；默认 `null` 保留当前状态和类型的 Token 视觉。
+- Theme
+  - 将三项公开语义值投影到 `StepsItem` internal StyledProperty，并仅由 `StepsItemTheme.axaml` 在自身模板边界内消费。
+  - 禁止 Gallery 和外部样式依赖 `HeaderPresenter`、`SubHeaderPresenter`、`Connector` 或通过 `/template/` selector 穿透 `StepsItem`。
+- Gallery
+  - Inline style combination 通过 `Steps` 公开语义 API 表达，不再使用 class 和深层 selector 修改 item 内部节点。
+- Docs
+  - 同步根 API、容器投影生命周期、模板所有权和实例覆盖相对 StepsToken 的优先级契约。
+
 ## 2026-07-17
 
 - API

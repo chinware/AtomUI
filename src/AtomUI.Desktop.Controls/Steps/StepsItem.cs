@@ -1,14 +1,20 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
+[PseudoClasses(
+    StepsItemPseudoClass.ItemHeaderForegroundOverride,
+    StepsItemPseudoClass.ItemSubHeaderForegroundOverride,
+    StepsItemPseudoClass.ItemRailBackgroundOverride)]
 public class StepsItem : HeaderedContentControl
 {
     #region 公共属性定义
@@ -73,6 +79,15 @@ public class StepsItem : HeaderedContentControl
 
     internal static readonly StyledProperty<double?> PercentProperty =
         Steps.PercentProperty.AddOwner<StepsItem>();
+
+    internal static readonly StyledProperty<IBrush?> ItemHeaderForegroundProperty =
+        AvaloniaProperty.Register<StepsItem, IBrush?>(nameof(ItemHeaderForeground));
+
+    internal static readonly StyledProperty<IBrush?> ItemSubHeaderForegroundProperty =
+        AvaloniaProperty.Register<StepsItem, IBrush?>(nameof(ItemSubHeaderForeground));
+
+    internal static readonly StyledProperty<IBrush?> ItemRailBackgroundProperty =
+        AvaloniaProperty.Register<StepsItem, IBrush?>(nameof(ItemRailBackground));
 
     internal static readonly DirectProperty<StepsItem, int> StepNumberProperty =
         AvaloniaProperty.RegisterDirect<StepsItem, int>(
@@ -174,6 +189,24 @@ public class StepsItem : HeaderedContentControl
     {
         get => GetValue(PercentProperty);
         set => SetValue(PercentProperty, value);
+    }
+
+    internal IBrush? ItemHeaderForeground
+    {
+        get => GetValue(ItemHeaderForegroundProperty);
+        set => SetValue(ItemHeaderForegroundProperty, value);
+    }
+
+    internal IBrush? ItemSubHeaderForeground
+    {
+        get => GetValue(ItemSubHeaderForegroundProperty);
+        set => SetValue(ItemSubHeaderForegroundProperty, value);
+    }
+
+    internal IBrush? ItemRailBackground
+    {
+        get => GetValue(ItemRailBackgroundProperty);
+        set => SetValue(ItemRailBackgroundProperty, value);
     }
 
     private int _stepNumber;
@@ -346,6 +379,25 @@ public class StepsItem : HeaderedContentControl
         if (change.Property == IsCurrentProperty && IsCurrent && _indicator is not null)
         {
             _indicator.IsItemHover = false;
+        }
+
+        if (change.Property == ItemHeaderForegroundProperty)
+        {
+            PseudoClasses.Set(
+                StepsItemPseudoClass.ItemHeaderForegroundOverride,
+                ItemHeaderForeground is not null);
+        }
+        else if (change.Property == ItemSubHeaderForegroundProperty)
+        {
+            PseudoClasses.Set(
+                StepsItemPseudoClass.ItemSubHeaderForegroundOverride,
+                ItemSubHeaderForeground is not null);
+        }
+        else if (change.Property == ItemRailBackgroundProperty)
+        {
+            PseudoClasses.Set(
+                StepsItemPseudoClass.ItemRailBackgroundOverride,
+                ItemRailBackground is not null);
         }
     }
 

@@ -463,17 +463,6 @@
                     IsOccupyEntireRow="True"
                     MinHeight="200"
                     IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.Styles>
-                        <Style Selector="atom|Steps.inline-primary atom|StepsItem">
-                            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimaryText}" />
-                        </Style>
-                        <Style Selector="atom|Steps.inline-primary atom|StepsItem /template/ ContentPresenter#SubHeaderPresenter">
-                            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimaryTextActive}" />
-                        </Style>
-                        <Style Selector="atom|Steps.inline-primary atom|StepsItem /template/ atom|PixelAlignedBorder#Connector">
-                            <Setter Property="Background" Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                        </Style>
-                    </gallery:ShowCaseItem.Styles>
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:StepsViewModel">
                             <StackPanel Orientation="Vertical" Spacing="18">
@@ -484,7 +473,13 @@
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderSubTitle}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsStepN4}"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN5}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderSubTitle}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsStepN5}"/>
                                 </atom:Steps>
-                                <atom:Steps Classes="inline-primary" Current="4" Type="Inline" Status="Finish">
+                                <atom:Steps
+                                    Current="4"
+                                    Type="Inline"
+                                    Status="Finish"
+                                    ItemHeaderForeground="{atom:SharedTokenResource ColorPrimaryText}"
+                                    ItemSubHeaderForeground="{atom:SharedTokenResource ColorPrimaryTextActive}"
+                                    ItemRailBackground="{atom:SharedTokenResource ColorTextDisabled}">
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderSubTitle}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsStepN1}"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderSubTitle}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsStepN2}"/>
                                     <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderSubTitle}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsStepN3}"/>

@@ -84,6 +84,11 @@ public class StepsShowCasePageTests
         pageSource.ShouldContain("TitlePlacement=\"Vertical\"");
         pageSource.ShouldContain("Percent=\"60\"");
         pageSource.ShouldContain("Offset=\"2\"");
+        pageSource.ShouldContain("ItemHeaderForeground=\"{atom:SharedTokenResource ColorPrimaryText}\"");
+        pageSource.ShouldContain("ItemSubHeaderForeground=\"{atom:SharedTokenResource ColorPrimaryTextActive}\"");
+        pageSource.ShouldContain("ItemRailBackground=\"{atom:SharedTokenResource ColorTextDisabled}\"");
+        pageSource.ShouldNotContain("inline-primary");
+        pageSource.ShouldNotContain("/template/");
         CountOccurrences(pageSource, "SourceKey=\"").ShouldBe(15);
 
         codeBehindSource.ShouldContain("HandleCurrentChangeRequested");

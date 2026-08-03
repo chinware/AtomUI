@@ -37,6 +37,7 @@ Gallery 目录：
 `Steps : ItemsControl` 是状态协调 owner：
 
 - 保存根 public 输入。
+- 保存 ItemHeaderForeground、ItemSubHeaderForeground 和 ItemRailBackground，并投影到全部已实现 item 容器。
 - 创建和清理 `StepsItem` 容器。
 - 根据 index 计算 StepNumber 和 AutomaticStatus。
 - 维护每个 item 指向下一个 item 的 ConnectorStatus。
@@ -48,6 +49,7 @@ Gallery 目录：
 `StepsItem : HeaderedContentControl` 是单项 public 容器：
 
 - 承载 Header、SubHeader、Content、Icon 和 nullable Status。
+- 通过 internal StyledProperty 保存 owner 投影的 Header、SubHeader 和 Connector 语义画刷覆盖。
 - 保存 StepNumber、IsCurrent、AutomaticStatus、EffectiveStatus、ConnectorStatus、IsFirst、IsLast 和 CanInvoke 的 internal 投影。
 - 处理 pointer、keyboard、focus 和 hover。
 - 把激活请求交给 owner，不写入根 Current。
@@ -88,9 +90,12 @@ IsItemClickable
 Offset
 HorizontalContentAlignment
 IsMotionEnabled
+ItemHeaderForeground
+ItemSubHeaderForeground
+ItemRailBackground
 ```
 
-状态输入和展示输入分开处理。只有 Current、Initial、根 Status、item Status 和 item index 参与 EffectiveStatus 计算。
+状态输入和展示输入分开处理。只有 Current、Initial、根 Status、item Status 和 item index 参与 EffectiveStatus 计算。三个 Item 语义样式属性属于展示输入，不参与 EffectiveStatus、ConnectorStatus、布局或交互计算。
 
 ### 4.2 Item 投影
 
@@ -136,6 +141,21 @@ IsProgressVisible =
 - 普通数据项：创建 StepsItem，把数据项写入 Content，把 Steps.ItemTemplate 写入 ContentTemplate。
 - 数据源 ItemTemplate 负责渲染完整文字区域；Indicator 和 Connector 仍由容器主题管理。
 
+### 4.6 语义样式投影
+
+实例级 item 语义样式沿固定边界单向投影：
+
+```text
+Steps public nullable semantic brush
+    -> StepsItem internal StyledProperty
+    -> StepsItemTheme
+    -> StepsItem 自身模板中的对应语义节点
+```
+
+`Steps` 是三项公开输入的唯一 owner。容器准备时为直接 `StepsItem` 和普通数据项生成的 `StepsItem` 建立相同的普通 Avalonia binding；运行时属性变化由既有 binding 更新全部已实现容器，不重新准备容器、不重建模板，也不触发状态重算；容器清理时释放 owner 投影，避免直接 item 或回收容器保留上一个 owner 的值。
+
+internal StyledProperty 只作为根控件与 item 自有主题之间的强类型传递通道，不是新的 public item API。`StepsItemTheme.axaml` 仅在值非 `null` 时覆盖 Header、SubHeader 或 Connector 的 Token 结果；清空公开属性后必须恢复当前 Type 和 EffectiveStatus 的完整 Token 视觉。
+
 ## 5. 组合结构模型
 
 ### 5.1 控件角色图
@@ -180,6 +200,7 @@ Steps (public)
 2. 计算 StepNumber、IsFirst、IsLast、AutomaticStatus、EffectiveStatus 和 IsCurrent。
 3. 按下一个 item 的 EffectiveStatus 计算当前 item 的 ConnectorStatus。
 4. 普通数据项接入 Content / ContentTemplate。
+5. 建立三项 item 语义样式从 owner 到容器 internal StyledProperty 的投影。
 
 初始实现每个容器只执行 O(1) 初始化，不在每次 ContainerPrepared 时遍历全部 Items。
 
@@ -188,7 +209,8 @@ Steps (public)
 - Add/Remove/Move：重新编号受影响区间并更新边界 Connector。
 - Replace：清理旧容器后准备新容器。
 - Reset：按当前 public 输入完整重建已实现容器投影。
-- Current、Initial 或根 Status 变化：O(n) 刷新已实现容器。
+- Current、Initial 或根 Status 变化：O(n) 刷新已实现容器的状态投影。
+- 任一 item 语义样式变化：由容器已有 binding 更新对应 internal StyledProperty，不重算状态、不重新准备容器或重建模板。
 
 ### 6.3 容器清理
 
@@ -197,6 +219,7 @@ Steps (public)
 - `Owner = null`。
 - `ItemIndex = -1`。
 - 清除 owner 写入的 internal 派生值和数据项 Content 映射。
+- 释放并清空 owner 写入的 Header、SubHeader 和 Connector 语义样式投影。
 - 让 Indicator visual detach；WaveSpiritDecorator 在 detach 中取消自身 animation owner。
 
 外部继续持有被移除 StepsItem 时，它不能保留旧 Steps owner。
@@ -206,6 +229,8 @@ Steps (public)
 `Steps` 不重写 `OnApplyTemplate()`；根模板通过 `ItemsPresenter.ItemsPanel` 直接接入 `StepsPanel`，模板生命周期不修改 Current、Initial 或 item 状态。
 
 `StepsItem.OnApplyTemplate()` 和 `StepsItemIndicator.OnApplyTemplate()` 在获取新 part 前先清空旧引用。AXAML Ancestor Binding 的建立和释放由 Avalonia template 生命周期管理。
+
+`StepsTheme.axaml`、Gallery 和外部应用不得通过 `/template/` selector 访问 `HeaderPresenter`、`SubHeaderPresenter`、`Connector` 或其他 `StepsItem` 内部节点。`StepsItemTheme.axaml` 进入 `StepsItem` 自身模板并消费 internal StyledProperty 属于控件自身的合法主题边界。
 
 不创建根级步骤页面内容 observable、长期 Relay Binding、全局事件订阅或 detach 后仍存活的 CompositeDisposable。
 
@@ -276,6 +301,7 @@ value > 100      -> 100
 - TokenResource 和 SharedToken 只提供视觉值，不保存实例状态。
 - 根展示属性使用 AXAML Ancestor Binding 投影到 item 和 internal panel。
 - 固定模板关系使用 TemplateBinding、Ancestor Binding 和 selector，不使用字符串路径反射。
+- item 语义样式使用静态注册的 StyledProperty 和普通 Avalonia binding 投影，不生成运行时 selector，也不依赖内部节点名称从控件外穿透模板。
 
 性能边界：
 
@@ -290,6 +316,7 @@ AOT 边界：
 - 不新增运行时反射扫描、动态类型注册或编译期不可分析的 binding 路径。
 - 不通过反射访问 Wave 播放状态；测试使用 internal 可观察入口或渲染结果。
 - 新 internal panel 由静态 AXAML 和显式类型引用创建。
+- 三项语义样式投影不使用反射、动态属性发现或运行时类型扫描。
 
 ## 10. 维护不变量
 
@@ -305,6 +332,8 @@ AOT 边界：
 - pointer click 是 Wave 的唯一触发源；Current 变化不能播放 Wave。
 - OutlineDot click 不能播放 Wave；该例外必须在 Indicator 层兜住，避免 pointer、keyboard 或未来激活入口绕过。
 - 每个主题只维护一套语义模板。
+- 外部代码不得通过深层 selector 修改 StepsItem 内部节点；实例级 Header、SubHeader 和 Connector 定制由根控件三项 nullable 语义 API 进入。
+- 语义样式的 `null` 值必须完整回退 Token；容器清理和重新准备不得残留旧 owner 的显式值。
 - StepsPanel 和 StepsItemLayoutPanel 只负责布局。
 - 容器清理必须释放 Owner，模板重套必须释放旧 part 引用。
 - Percent、Icon、Type 和 EffectiveStatus 运行时变化必须立即更新 Progress。
@@ -349,5 +378,13 @@ Progress：
 - 模板重套不改变 Current。
 - 旧 Indicator/Wave part 不被保留。
 - detach/reattach 和数据容器回收不保留旧状态。
+
+语义样式：
+
+- 三项公开属性默认均为 `null`，默认渲染与现有状态、类型和 Inline Token 完全一致。
+- 分别设置 Header、SubHeader 和 Connector 覆盖时只影响对应语义节点。
+- 运行时修改和清空属性立即更新已实现容器，并在清空后恢复当前 Token 视觉。
+- 直接 StepsItem、普通数据项生成容器、移除后复用和数据容器回收遵循同一投影与清理规则。
+- Gallery 不包含针对 StepsItem 内部节点的 `/template/` selector。
 
 收尾运行 Steps 定向测试、相邻 Desktop Controls 测试、Gallery 测试和 `git diff --check`。

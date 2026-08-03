@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -52,6 +53,15 @@ public class Steps : ItemsControl,
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Steps>();
+
+    public static readonly StyledProperty<IBrush?> ItemHeaderForegroundProperty =
+        AvaloniaProperty.Register<Steps, IBrush?>(nameof(ItemHeaderForeground));
+
+    public static readonly StyledProperty<IBrush?> ItemSubHeaderForegroundProperty =
+        AvaloniaProperty.Register<Steps, IBrush?>(nameof(ItemSubHeaderForeground));
+
+    public static readonly StyledProperty<IBrush?> ItemRailBackgroundProperty =
+        AvaloniaProperty.Register<Steps, IBrush?>(nameof(ItemRailBackground));
 
     public int Current
     {
@@ -125,6 +135,24 @@ public class Steps : ItemsControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
+    public IBrush? ItemHeaderForeground
+    {
+        get => GetValue(ItemHeaderForegroundProperty);
+        set => SetValue(ItemHeaderForegroundProperty, value);
+    }
+
+    public IBrush? ItemSubHeaderForeground
+    {
+        get => GetValue(ItemSubHeaderForegroundProperty);
+        set => SetValue(ItemSubHeaderForegroundProperty, value);
+    }
+
+    public IBrush? ItemRailBackground
+    {
+        get => GetValue(ItemRailBackgroundProperty);
+        set => SetValue(ItemRailBackgroundProperty, value);
+    }
+
     #endregion
 
     #region 公共事件定义
@@ -181,6 +209,9 @@ public class Steps : ItemsControl,
         stepsItem[!StepsItem.IsClickableProperty] = this[!IsItemClickableProperty];
         stepsItem[!StepsItem.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
         stepsItem[!StepsItem.PercentProperty] = this[!PercentProperty];
+        stepsItem[!StepsItem.ItemHeaderForegroundProperty] = this[!ItemHeaderForegroundProperty];
+        stepsItem[!StepsItem.ItemSubHeaderForegroundProperty] = this[!ItemSubHeaderForegroundProperty];
+        stepsItem[!StepsItem.ItemRailBackgroundProperty] = this[!ItemRailBackgroundProperty];
 
         stepsItem.AttachToOwner(this, index);
         ApplyItemState(stepsItem, index);
@@ -385,6 +416,9 @@ public class Steps : ItemsControl,
         item.ClearValue(StepsItem.IsClickableProperty);
         item.ClearValue(StepsItem.IsMotionEnabledProperty);
         item.ClearValue(StepsItem.PercentProperty);
+        item.ClearValue(StepsItem.ItemHeaderForegroundProperty);
+        item.ClearValue(StepsItem.ItemSubHeaderForegroundProperty);
+        item.ClearValue(StepsItem.ItemRailBackgroundProperty);
     }
 
     private void UpdatePseudoClasses()

@@ -12,6 +12,7 @@ StepsToken 不承载：
 - public Status、AutomaticStatus、EffectiveStatus、IsCurrent 或 ConnectorStatus。
 - item 数量、layout bounds、pointer、keyboard、focus 或 Wave 播放状态。
 - Percent 当前值、CanInvoke、IsItemClickable 或 IsMotionEnabled。
+- `ItemHeaderForeground`、`ItemSubHeaderForeground` 或 `ItemRailBackground` 的实例值。
 
 ## 2. Token 分类
 
@@ -124,6 +125,19 @@ Type / Orientation / EffectiveTitlePlacement / SizeType
 
 Token 不能替代 EffectiveStatus、LayoutPanel 计算或 Percent coercion。
 
+### 3.1 实例语义样式与 Token 边界
+
+`ItemHeaderForeground`、`ItemSubHeaderForeground` 和 `ItemRailBackground` 是 `Steps` 实例级的显式语义覆盖，不是新的 StepsToken，也不改变 StepsToken 的派生或资源作用域。
+
+主题解析优先级为：
+
+```text
+实例语义样式非 null -> 使用实例值
+实例语义样式为 null -> 使用当前 Type / EffectiveStatus 对应的 Token
+```
+
+因此默认 `null` 时，Wait、Process、Finish、Error 和 Inline 的既有标题、副标题与 Connector 视觉保持不变。单个 Steps 实例需要定制这些语义区域时，应设置公开属性；不得修改、复制 Token scope，或从外部通过 selector 穿透 `StepsItem` 模板。
+
 ## 4. 控件家族影响
 
 StepsToken 只影响：
@@ -143,6 +157,7 @@ StepsToken 只影响：
 完成 Steps 重构后，以下 Token 边界保持稳定：
 
 - 不把实例 Current、Status、Percent、item 数量或 layout bounds 迁移为 Token。
+- 不把三项 item 实例语义样式迁移为 Token；非 `null` 实例值只覆盖对应语义区域，`null` 完整回退 Token。
 - 状态色必须同时覆盖 Indicator、Title、Content、Connector、Dot 和 OutlineDot。
 - Indicator 尺寸变化必须验证 Default、Small、状态图标和 custom Icon。
 - Dot 尺寸变化必须验证水平、垂直、current dot、outline dot 和 Connector 对齐。
@@ -162,5 +177,6 @@ StepsToken 只影响：
 | Navigation Token | 验证水平/垂直 Navigation、active 表达、间距和箭头不裁剪。 |
 | Progress Token | 验证 Default/Navigation、0/100 Percent、尺寸、厚度、颜色和裁剪。 |
 | Inline Token | 验证 Inline dot、Connector、padding、hover 和 current 表达。 |
+| 实例语义样式 | 验证三项属性默认 null、非 null 优先级、运行时修改、清空回退，以及不会改变未覆盖的状态/类型 Token 视觉。 |
 | Token 删除或重命名 | 同步类型、生成资源、AXAML、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档 | 运行 `git diff --check`，检查相对链接和 LLMS 源文档一致。 |
