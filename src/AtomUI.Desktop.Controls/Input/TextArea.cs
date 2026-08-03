@@ -207,12 +207,14 @@ public class TextArea : AvaloniaTextBox,
     #endregion
 
     private ScrollViewer? _scrollViewer;
+    private TextAreaDecoratedBox? _textAreaDecoratedBox;
     private IconButton? _clearButton;
     private ResizeHandle? _resizeHandle;
     private CompositeDisposable? _contentRightAddOnBindings;
     private IDisposable? _feedbackStatusSubscription;
     private TextPresenter? _textPresenter;
     private IDisposable? _preeditTextSubscription;
+    private IDisposable? _textViewportSubscription;
     private double? _originHeight; // 拖动改变高度的初始值
     private double _minResizeHeight; // 拖动改变高度时允许的最小 TextArea.Height
     private double _maxResizeHeight; // 拖动改变高度时允许的最大 TextArea.Height
@@ -289,10 +291,20 @@ public class TextArea : AvaloniaTextBox,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        var decorator = e.NameScope.Find<TextAreaDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-        if (decorator != null)
+
+        _textViewportSubscription?.Dispose();
+        _textViewportSubscription = null;
+        TextViewportMetrics.SetViewportWidth(this, null);
+        if (_textAreaDecoratedBox is not null)
         {
-            decorator.Owner = this;
+            _textAreaDecoratedBox.Owner = null;
+        }
+
+        SetupTextPresenterPreeditSubscription(e);
+        _textAreaDecoratedBox = e.NameScope.Find<TextAreaDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        if (_textAreaDecoratedBox is not null)
+        {
+            _textAreaDecoratedBox.Owner = this;
         }
 
         if (_clearButton != null)
@@ -314,7 +326,6 @@ public class TextArea : AvaloniaTextBox,
 
         UpdatePseudoClasses();
         ConfigureEffectiveShowClearButton();
-        SetupTextPresenterPreeditSubscription(e);
         ConfigurePlaceholderTextVisibility();
         HandleInputChanged(Text);
         SetupContentRightAddOnBindings(e);
@@ -381,6 +392,13 @@ public class TextArea : AvaloniaTextBox,
     {
         _scrollViewer = scrollViewer;
         this.SetScrollViewer(scrollViewer);
+        SetupTextViewportMetrics(scrollViewer);
+    }
+
+    private void SetupTextViewportMetrics(ScrollViewer scrollViewer)
+    {
+        _textViewportSubscription?.Dispose();
+        _textViewportSubscription = TextViewportMetrics.PublishViewportWidth(this, scrollViewer, _textPresenter);
     }
 
     private void ValidateLinesValue(int lines)

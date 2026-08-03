@@ -15,6 +15,7 @@
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipPseudoClass.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipService.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipToken.cs`
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`
 
 职责边界：
 
@@ -28,6 +29,7 @@
 - `ToolTip`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `ToolTipPseudoClass`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `ToolTipToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
+- `OverflowTip`：附加到文本展示节点的共享溢出提示 behavior，只管理自己写入的 tooltip，并在文本实际超出可见宽度时启用提示。
 
 核心协作规则：
 
@@ -60,6 +62,17 @@ Public API / ItemsSource / Command / Event
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
 
+`OverflowTip` 的状态流：
+
+```text
+attached properties + target text/font
+  -> owner bounds or published text viewport metric
+  -> text width comparison
+  -> owned ToolTip.Tip / placement / delay
+```
+
+用户显式设置的 `ToolTip.Tip` 始终优先。`OverflowTip` 只清理由自己写入的 tip，不参与目标控件的选择、输入或模板状态。
+
 ## 5. 生命周期与模板接入
 
 生命周期规则：
@@ -69,6 +82,8 @@ Public API / ItemsSource / Command / Event
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+- `OverflowTipState` 对 owner bounds、文本、字体、tooltip 和内部 text viewport metric 的订阅必须由同一个 disposable owner 管理；禁用 behavior 时统一释放。
+- TextBox/TextArea 的 template part 由输入控件自己获取和管理。`OverflowTip` 不得调用 `GetVisualDescendants()`、查找 `PART_TextPresenter` 或持有输入控件的 presenter/scroller。
 
 稳定 template part 接入点：
 
@@ -98,11 +113,23 @@ Tooltip 的交互事件应从输入源收敛到控件级语义事件：
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
+### 7.1 OverflowTip 宽度解析
+
+宽度解析按稳定能力而不是模板类型判断：
+
+1. AtomUI TextBox/TextArea 已发布内部 text viewport metric 时，使用该有效宽度并订阅后续变化。
+2. metric 为 `NaN` 时表示 viewport 已接入但布局尚未完成，此时不显示 tip，等待度量更新，不使用瞬时 owner fallback。
+3. 原生或第三方 Avalonia TextBox 没有发布 metric 时，使用 `Bounds.Width - horizontal Padding` 作为兼容降级路径。
+4. TextBlock 使用自身 bounds 扣除 horizontal padding；其他受支持展示节点使用 owner bounds。
+
+内部 metric 只输出宽度，不暴露输入模板对象。输入控件模板改变时，由输入控件在自己的所有权边界内更新计算方式，`OverflowTip` 算法不随模板结构修改。
+
 ## 8. 资源、性能与 AOT 边界
 
 资源和 AOT 约束：
 
 - 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
+- 不通过 VisualTree 遍历或反射发现其他控件的 template part；输入文本可视宽度只消费输入控件发布的内部 metric。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
@@ -123,6 +150,7 @@ Tooltip 的交互事件应从输入源收敛到控件级语义事件：
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- TextBox 内部按钮、feedback、padding 或模板重套用改变有效 viewport 时，OverflowTip 必须由度量通知重新判断，不能依赖 owner Bounds 恰好变化。
 
 ## 10. 测试与验证
 
@@ -133,3 +161,4 @@ Tooltip 的交互事件应从输入源收敛到控件级语义事件：
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
+- `OverflowTip` 回归测试覆盖 TextBox 精确 viewport、内部 viewport 独立变化、模板重套用、第三方 TextBox fallback 和禁止外部 `PART_TextPresenter` 查询。

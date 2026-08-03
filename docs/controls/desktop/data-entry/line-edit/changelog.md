@@ -8,6 +8,12 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-03
+
+- Architecture
+  - Define an internal text viewport metric owned by TextBox/TextArea so consumers can react to effective text width without traversing input templates.
+  - Define viewport, padding, presenter margin and template reapply lifecycle as the single source of truth for input text width.
+
 ## 2026-06-26
 
 - Docs

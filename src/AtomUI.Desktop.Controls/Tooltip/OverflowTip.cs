@@ -224,6 +224,8 @@ public sealed class OverflowTip : AvaloniaObject
             else if (_owner is AvaloniaTextBox textBox)
             {
                 _subscriptions.Add(textBox.GetObservable(AvaloniaTextBox.TextProperty).Subscribe(_ => Update()));
+                _subscriptions.Add(textBox.GetObservable(TextViewportMetrics.ViewportWidthProperty)
+                                          .Subscribe(_ => Update()));
             }
             else if (_owner is ContentPresenter contentPresenter)
             {
@@ -384,12 +386,10 @@ public sealed class OverflowTip : AvaloniaObject
         {
             if (_owner is AvaloniaTextBox textBox)
             {
-                var presenter = textBox.GetVisualDescendants()
-                                       .OfType<TextPresenter>()
-                                       .FirstOrDefault(part => part.Name == "PART_TextPresenter");
-                if (presenter is not null && IsUsableWidth(presenter.Bounds.Width))
+                var viewportWidth = TextViewportMetrics.GetViewportWidth(textBox);
+                if (viewportWidth.HasValue)
                 {
-                    return presenter.Bounds.Width;
+                    return viewportWidth.Value;
                 }
 
                 return textBox.Bounds.Width - textBox.Padding.Left - textBox.Padding.Right;

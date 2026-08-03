@@ -7,6 +7,10 @@ using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AvaloniaWindow = Avalonia.Controls.Window;
+using AvaloniaTextBox = Avalonia.Controls.TextBox;
+using AtomUIScrollViewer = AtomUI.Desktop.Controls.ScrollViewer;
+using AtomUITextArea = AtomUI.Desktop.Controls.TextArea;
+using AtomUITextBox = AtomUI.Desktop.Controls.TextBox;
 
 namespace AtomUI.Desktop.Controls.Tests.Tooltip;
 
@@ -49,6 +53,183 @@ public class OverflowTipTests
 
             ToolTip.GetTip(textBlock).ShouldBeNull();
         });
+    }
+
+    [Fact]
+    public void AtomUI_TextBox_Uses_Visible_Text_Viewport_For_Overflow()
+    {
+        const string value = "AtomUI text input overflow must use the visible text viewport";
+        var textBox = new AtomUITextBox
+        {
+            Width = 100,
+            Text  = value
+        };
+
+        OverflowTip.SetIsEnabled(textBox, true);
+
+        ShowInWindow(textBox, () => ToolTip.GetTip(textBox).ShouldBe(value));
+    }
+
+    [Fact]
+    public void AtomUI_TextArea_Publishes_Visible_Text_Viewport_Width()
+    {
+        var textArea = new AtomUITextArea
+        {
+            Width = 160,
+            Text  = "AtomUI text area viewport"
+        };
+
+        ShowInWindow(textArea, () =>
+        {
+            var scrollViewer = textArea.GetVisualDescendants()
+                                       .OfType<AtomUIScrollViewer>()
+                                       .Single(item => item.Name == "PART_ScrollViewer");
+            var textPresenter = textArea.GetVisualDescendants()
+                                        .OfType<TextPresenter>()
+                                        .Single(item => item.Name == "PART_TextPresenter");
+
+            scrollViewer.Padding = new Thickness(3, 0, 7, 0);
+            textPresenter.Margin = new Thickness(5, 0, 11, 0);
+            Dispatcher.UIThread.RunJobs();
+
+            var viewportWidth = TextViewportMetrics.GetViewportWidth(textArea);
+            var expectedWidth = scrollViewer.Viewport.Width -
+                                scrollViewer.Padding.Left - scrollViewer.Padding.Right -
+                                textPresenter.Margin.Left - textPresenter.Margin.Right;
+
+            viewportWidth.ShouldNotBeNull();
+            viewportWidth.Value.ShouldBe(expectedWidth, 0.001);
+        });
+    }
+
+    [Fact]
+    public void AtomUI_TextBox_Reevaluates_When_Viewport_Padding_Changes_Without_Owner_Resize()
+    {
+        const string value = "AtomUI";
+        var textBox = new AtomUITextBox
+        {
+            Width = 160,
+            Text  = value
+        };
+
+        OverflowTip.SetIsEnabled(textBox, true);
+
+        ShowInWindow(textBox, () =>
+        {
+            ToolTip.GetTip(textBox).ShouldBeNull();
+            var ownerBounds = textBox.Bounds;
+            var scrollViewer = textBox.GetVisualDescendants()
+                                      .OfType<AtomUIScrollViewer>()
+                                      .Single(item => item.Name == "ScrollViewer");
+            var viewportWidth = scrollViewer.Viewport.Width;
+
+            scrollViewer.Padding = new Thickness(0, 0, viewportWidth - 12, 0);
+            Dispatcher.UIThread.RunJobs();
+
+            textBox.Bounds.ShouldBe(ownerBounds);
+            ToolTip.GetTip(textBox).ShouldBe(value);
+        });
+    }
+
+    [Fact]
+    public void AtomUI_TextBox_Releases_Previous_Viewport_Source_On_Template_Reapply()
+    {
+        var textBox = new AtomUITextBox
+        {
+            Width = 160,
+            Text  = "AtomUI"
+        };
+
+        OverflowTip.SetIsEnabled(textBox, true);
+
+        ShowInWindow(textBox, () =>
+        {
+            var oldScrollViewer = textBox.GetVisualDescendants()
+                                             .OfType<AtomUIScrollViewer>()
+                                             .Single(item => item.Name == "ScrollViewer");
+            var template = textBox.Template;
+            template.ShouldNotBeNull();
+
+            textBox.Template = null;
+            Dispatcher.UIThread.RunJobs();
+            textBox.Template = template;
+            Dispatcher.UIThread.RunJobs();
+
+            var newScrollViewer = textBox.GetVisualDescendants()
+                                             .OfType<AtomUIScrollViewer>()
+                                             .Single(item => item.Name == "ScrollViewer");
+            ReferenceEquals(oldScrollViewer, newScrollViewer).ShouldBeFalse();
+            var currentWidth = TextViewportMetrics.GetViewportWidth(textBox);
+
+            oldScrollViewer.Padding = new Thickness(0, 0, oldScrollViewer.Viewport.Width - 4, 0);
+            Dispatcher.UIThread.RunJobs();
+
+            TextViewportMetrics.GetViewportWidth(textBox).ShouldBe(currentWidth);
+            ToolTip.GetTip(textBox).ShouldBeNull();
+        });
+    }
+
+    [Fact]
+    public void AtomUI_TextArea_Releases_Previous_Viewport_Source_On_Template_Reapply()
+    {
+        var textArea = new AtomUITextArea
+        {
+            Width = 160,
+            Text  = "AtomUI"
+        };
+
+        ShowInWindow(textArea, () =>
+        {
+            var oldScrollViewer = textArea.GetVisualDescendants()
+                                          .OfType<AtomUIScrollViewer>()
+                                          .Single(item => item.Name == "PART_ScrollViewer");
+            var template = textArea.Template;
+            template.ShouldNotBeNull();
+
+            textArea.Template = null;
+            Dispatcher.UIThread.RunJobs();
+            textArea.Template = template;
+            Dispatcher.UIThread.RunJobs();
+
+            var newScrollViewer = textArea.GetVisualDescendants()
+                                          .OfType<AtomUIScrollViewer>()
+                                          .Single(item => item.Name == "PART_ScrollViewer");
+            ReferenceEquals(oldScrollViewer, newScrollViewer).ShouldBeFalse();
+            var currentWidth = TextViewportMetrics.GetViewportWidth(textArea);
+
+            oldScrollViewer.Padding = new Thickness(0, 0, oldScrollViewer.Viewport.Width - 4, 0);
+            Dispatcher.UIThread.RunJobs();
+
+            TextViewportMetrics.GetViewportWidth(textArea).ShouldBe(currentWidth);
+        });
+    }
+
+    [Fact]
+    public void Avalonia_TextBox_Uses_Geometry_Fallback_When_No_Viewport_Metric_Is_Published()
+    {
+        const string value = "Third-party Avalonia TextBox fallback must remain available";
+        var textBox = new AvaloniaTextBox
+        {
+            Width = 80,
+            Text  = value
+        };
+
+        OverflowTip.SetIsEnabled(textBox, true);
+
+        ShowInWindow(textBox, () =>
+        {
+            TextViewportMetrics.GetViewportWidth(textBox).ShouldBeNull();
+            ToolTip.GetTip(textBox).ShouldBe(value);
+        });
+    }
+
+    [Fact]
+    public void OverflowTip_Does_Not_Query_TextBox_Template_Internals()
+    {
+        var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs");
+
+        source.ShouldNotContain("GetVisualDescendants()");
+        source.ShouldNotContain("PART_TextPresenter");
     }
 
     [Fact]

@@ -198,6 +198,7 @@ public class TextBox : AvaloniaTextBox,
     private IDisposable? _feedbackStatusSubscription;
     private TextPresenter? _textPresenter;
     private IDisposable? _preeditTextSubscription;
+    private IDisposable? _textViewportSubscription;
 
     static TextBox()
     {
@@ -311,6 +312,7 @@ public class TextBox : AvaloniaTextBox,
             _clearButton.Click += HandleClearButtonClicked;
         }
         SetupTextPresenterPreeditSubscription(e);
+        SetupTextViewportMetrics(e);
         ConfigureEffectiveShowClearButton();
         ConfigurePlaceholderTextVisibility();
         HandleInputChanged(Text);
@@ -327,6 +329,22 @@ public class TextBox : AvaloniaTextBox,
             _preeditTextSubscription = _textPresenter.GetObservable(TextPresenter.PreeditTextProperty)
                                                      .Subscribe(_ => ConfigurePlaceholderTextVisibility());
         }
+    }
+
+    private void SetupTextViewportMetrics(TemplateAppliedEventArgs e)
+    {
+        _textViewportSubscription?.Dispose();
+        _textViewportSubscription = null;
+
+        var scrollViewer = e.NameScope.Find<ScrollViewer>("PART_ScrollViewer") ??
+                           e.NameScope.Find<ScrollViewer>("ScrollViewer");
+        if (scrollViewer is null)
+        {
+            TextViewportMetrics.SetViewportWidth(this, null);
+            return;
+        }
+
+        _textViewportSubscription = TextViewportMetrics.PublishViewportWidth(this, scrollViewer, _textPresenter);
     }
 
     private void ConfigurePlaceholderTextVisibility()

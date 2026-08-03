@@ -102,8 +102,27 @@ internal class TextAreaDecoratedBox : AddOnDecoratedBox
         AffectsRender<TextAreaDecoratedBox>(ResizeIndicatorLineBrushProperty, IsResizableProperty);
     }
     
-    internal ScrollViewer? ScrollViewer { get; set; }
-    internal TextArea? Owner { get; set; }
+    internal ScrollViewer? ScrollViewer { get; private set; }
+
+    private TextArea? _owner;
+
+    internal TextArea? Owner
+    {
+        get => _owner;
+        set
+        {
+            if (ReferenceEquals(_owner, value))
+            {
+                return;
+            }
+
+            _owner = value;
+            if (_owner is not null && ScrollViewer is not null)
+            {
+                _owner.NotifyScrollViewerCreated(ScrollViewer);
+            }
+        }
+    }
     private Control? _rightContentAddOn;
     private IPen? _resizeIndicatorPen;
 

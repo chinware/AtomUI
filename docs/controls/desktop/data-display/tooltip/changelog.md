@@ -2,6 +2,12 @@
 
 本文档记录 Tooltip 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-03
+
+- Architecture
+  - Replace OverflowTip's dependency on TextBox visual descendants with an internal text viewport metric published by the input owner.
+  - Define reactive viewport updates, template reapply cleanup and the compatibility fallback for third-party Avalonia TextBox templates.
+
 ## 2026-06-26
 
 - Docs

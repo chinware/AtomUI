@@ -17,6 +17,7 @@ LineEdit 家族的实现以 Avalonia `TextBox` 为文本编辑内核，AtomUI �
 - `src/AtomUI.Desktop.Controls/Input/InputTextPresenter.cs`：输入文本 presenter，处理 Avalonia 12 selection foreground 缓存刷新。
 - `src/AtomUI.Desktop.Controls/Input/SearchEditDecoratedBox.cs`：SearchEdit 输入壳体与搜索按钮协作。
 - `src/AtomUI.Desktop.Controls/Input/TextAreaDecoratedBox.cs`：TextArea 输入壳体、scroll viewer 和 resize 相关协作。
+- `src/AtomUI.Desktop.Controls/Input/TextViewportMetrics.cs`：输入控件向同程序集消费方发布有效文本 viewport 宽度的内部度量契约。
 - `src/AtomUI.Desktop.Controls/Input/ResizeHandle.cs`：TextArea resize 拖拽入口。
 - `src/AtomUI.Desktop.Controls/Input/TextBoxToken.cs`：基础 TextBox 边框、padding、hover/focus 和 shadow Token。
 - `src/AtomUI.Desktop.Controls/Input/LineEditToken.cs`：单行输入字号 Token。
@@ -32,6 +33,8 @@ LineEdit 家族的实现以 Avalonia `TextBox` 为文本编辑内核，AtomUI �
 `SearchEdit` 在 `LineEdit` 基础上把搜索按钮加入输入壳体。搜索按钮点击由 `SearchEditDecoratedBox` 通知 `SearchEdit`，再由控件抛出 `SearchButtonClick` 路由事件。
 
 `TextArea` 独立继承 Avalonia `TextBox`，因为多行输入需要不同模板、scroll viewer 接入、固定行数测量和 resize 流程。它复用 LineEdit 家族的状态、尺寸、清除、字数统计和 Form 模型。
+
+`TextViewportMetrics` 是不对用户公开的响应式度量通道。TextBox/TextArea 仍是自身模板结构和文本可视区域的唯一 owner；消费方只能读取发布后的有效宽度，不能获得 `TextPresenter`、`ScrollViewer` 或 NameScope，也不能反向遍历输入控件的 VisualTree。
 
 ## 4. 状态与数据流
 
@@ -71,6 +74,18 @@ ValidateStatus         → Warning/Success/Validating extension state
 Form feedback control  → FormFeedback + IsFormFeedbackVisible
 ```
 
+文本 viewport 度量流：
+
+```text
+TextBox/TextArea own template parts
+      ↓
+ScrollViewer.Viewport / Padding + TextPresenter.Margin
+      ↓
+TextViewportMetrics.ViewportWidth
+      ↓
+OverflowTip and other internal consumers
+```
+
 状态伪类：
 
 - native validation error 设置 Avalonia `:error`。
@@ -91,6 +106,8 @@ Form feedback control  → FormFeedback + IsFormFeedbackVisible
 - `LineEdit` / `TextArea` 的 `_contentRightAddOnBindings` 在重新套用模板时先 dispose，再绑定 clear/reveal/form/inner-right/count presenter。
 - `SearchEdit` 获取 `SearchEditDecoratedBox` 后设置 `OwningSearchEdit`，由 decorated box 回调搜索事件。
 - `TextArea` 获取 `TextAreaDecoratedBox` 后设置 `Owner`，获取 `ResizeHandle` 后设置 `Owner`。
+- `TextBox` / `TextArea` 每次套用模板时先释放旧文本 viewport source 订阅，再由当前模板中的 scroll viewer 和 text presenter 发布新的有效宽度；旧 part 后续变化不得再影响控件度量。
+- `TextAreaDecoratedBox` 只在自己的 `OnApplyTemplate` 中获取 `PART_ScrollViewer`，再通过直接 owner 协作把 source 交给 `TextArea`。`TextArea` 和外部 behavior 都不得进入 decorated box 的模板查找该 part。
 - Form feedback 订阅在 `FormFeedback` 变化时替换，在 detach 时释放。
 
 模板 part 属于主题契约。需要调整内部视觉时，应优先在 AXAML 中维护静态模板和 selector，不把 clear/reveal/search/resize 视觉搬到 C# 动态创建。
@@ -142,6 +159,20 @@ TextArea resize 以控件当前 `Bounds.Height` 为起点。拖拽时高度被�
 
 `InputTextPresenter` 在 `SelectionStart`、`SelectionEnd`、`SelectionForegroundBrush` 和 `ShowSelectionHighlight` 变化时调用 `InvalidateTextLayout()`，用于避免 Avalonia 12 文本 run 缓存导致选中文本前景色滞留。
 
+### 7.6 文本 viewport 宽度
+
+文本是否在输入表面内可见，必须以 scroll viewer 的 viewport 为起点，不能使用会随文本内容扩展的 `TextPresenter.Bounds.Width`，也不能由消费方使用 `GetVisualDescendants()` 查找 `PART_TextPresenter`。
+
+当前模板的有效宽度按以下语义计算：
+
+```text
+effective width = ScrollViewer.Viewport.Width
+                - ScrollViewer horizontal padding
+                - TextPresenter horizontal margin
+```
+
+外壳 padding、border、左右 AddOn、clear/reveal/feedback/count 等布局占用应由 scroll viewer 的实际 viewport 或 padding 反映，不能在 `OverflowTip` 中复制控件模板补偿。内部度量使用三态：`null` 表示当前模板没有精确 source、`NaN` 表示 source 已接入但布局尚未产生有效宽度、正数表示可消费的有效宽度。
+
 ## 8. 资源、性能与 AOT 边界
 
 LineEdit 家族不依赖运行时反射发现模板结构。跨模板协作通过稳定 part、`TemplateBinding`、`BindUtils.RelayBind`、接口和 owner 引用完成。
@@ -151,6 +182,7 @@ LineEdit 家族不依赖运行时反射发现模板结构。跨模板协作通�
 - `_contentRightAddOnBindings` 必须在重新套用模板前 dispose。
 - `_feedbackStatusSubscription` 必须在 `FormFeedback` 变化和 detach 时释放。
 - clear button click 订阅必须在新模板接入前解绑旧按钮。
+- 文本 viewport source 的 `Viewport`、`Padding` 和 presenter `Margin` 订阅必须由 TextBox/TextArea 持有，并在模板重套用时成组替换。
 - TextArea resize 不创建全局订阅；拖拽状态保存在控件实例字段中。
 - Token 只表达尺寸、字体、padding 和 resize 视觉语义，不承载文本值、清除状态、Form 状态或搜索运行状态。
 
@@ -171,7 +203,8 @@ AOT 边界：
 - `SearchEdit.IsOperating=true` 必须阻止重复搜索事件。
 - `TextArea` 的 fixed lines、auto-size 和 resize 不互相覆盖高度状态。
 - 重新套用模板不能泄漏旧按钮 click、旧 binding 或旧 Form feedback 订阅。
-- TextPresenter margin 是输入模板视觉契约；宽度计算问题应在使用方模板或测量源头解决，不在业务控件中加入隐藏补偿。
+- TextPresenter margin 是输入模板视觉契约；文本有效宽度由输入控件在模板所有权边界内统一计算并发布，不在业务控件或消费 behavior 中加入隐藏补偿。
+- 输入控件不得向内部消费方暴露 `TextPresenter` / `ScrollViewer` 实例；模板结构变化只能影响输入控件自己的度量实现。
 
 ## 10. 测试与验证
 
@@ -184,4 +217,5 @@ AOT 边界：
 - AddOn：外部 left/right AddOn、内部 left/right content、Form feedback、字数统计顺序。
 - SearchEdit：Default/Primary 搜索按钮、loading、搜索事件和 disabled。
 - TextArea：Lines、MinLines、MaxLines、IsAutoSize、IsResizable、resize 边界和字数统计。
+- 文本 viewport：clear/feedback/addon 改变内部可用宽度但 owner Bounds 不变时发布新值；模板重套用后旧 source 不再发布；TextArea scroller padding 和 presenter margin 被正确扣除。
 - 文档改动运行 `git diff --check`，并检查相对链接存在。
