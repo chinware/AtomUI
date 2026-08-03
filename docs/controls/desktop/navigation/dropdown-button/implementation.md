@@ -11,6 +11,7 @@
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`
 
@@ -52,7 +53,7 @@ Public API / ItemsSource / Command / Event
 
 - 内容与数据：继承 Button 的 `Content`、`Icon`、`Command` 等动作入口。
 - 交互与状态：`IsArrowVisible`、`IsPointAtCenter`、`IsShowOpenIndicator`、`ShouldUseOverlayPopup`。
-- 视觉与布局：`MarginToAnchor`、`Placement`、`PlacementAnchor`、`PlacementGravity`。
+- 视觉与布局：继承 Button 的 `IconWidth`、`IconHeight`，并扩展 `MarginToAnchor`、`Placement`、`PlacementAnchor`、`PlacementGravity`。
 - 弹层与窗口：`DropdownFlyout`。
 - 动效与异步：`MouseEnterDelay`、`MouseLeaveDelay`。
 - 其他稳定入口：`OpenIndicator`、`TriggerType`。
@@ -74,11 +75,14 @@ Public API / ItemsSource / Command / Event
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
 
+图标尺寸不在模板生命周期中手工同步。桌面 `DropdownButtonBaseTheme`、具体 `DropdownButtonTheme` 和 Browser `DropdownButtonTheme` 中的 `PART_ButtonIcon`、`PART_LoadingIcon` 都通过 `TemplateBinding IconWidth/IconHeight` 读取 owner 属性；Theme selector 也只设置 owner 属性默认值。`PART_DropdownIndicator` 继续按 DropdownButton 的 OpenIndicator 主题规则独立设置尺寸。
+
 稳定 template part 接入点：
 
 - `PART_WaveSpirit`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_RootLayout`：承载根视觉、边框、背景或尺寸基线。
 - `PART_DropdownIndicator`：展示指示器、进度、分页或状态反馈。
+- `PART_LoadingIcon`：展示继承自 Button loading 状态的图标，并绑定 owner 的图标宽高。
 - `PART_ButtonIcon`：承载用户触发入口、导航或关闭动作。
 - `PART_ContentPresenter`：展示用户内容、文本、图标或模板化数据。
 
@@ -101,6 +105,7 @@ DropdownButton 的交互事件应从输入源收敛到控件级语义事件：
 - Template part 重新应用时的状态回放。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - 内容、命令和视觉状态在模板节点之间的同步。
+- `SizeType` 到 `IconWidth`、`IconHeight` 默认值的映射，以及 `:icononly:loading` 对 `OnlyIconSize*` 的状态覆盖。
 - 状态变化时避免创建不必要的视觉对象、订阅或动画对象。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
@@ -118,6 +123,7 @@ DropdownButton 的交互事件应从输入源收敛到控件级语义事件：
 性能边界：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
+- 图标尺寸使用 owner StyledProperty、Style 默认值与 `TemplateBinding` 单向投影，不为模板 part 建立运行时订阅或查找同步。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
@@ -129,6 +135,8 @@ DropdownButton 的交互事件应从输入源收敛到控件级语义事件：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
+- `IconWidth`、`IconHeight` 的本地值优先级、两个图标 part 的一致投影以及 `OpenIndicator` 的独立尺寸职责。
+- 外部样式不得使用 `/template/` 或 part selector 修改用户 icon、loading icon 的宽高。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 
 ## 10. 测试与验证
@@ -137,6 +145,7 @@ DropdownButton 的交互事件应从输入源收敛到控件级语义事件：
 
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
+- 图标尺寸变更覆盖 Desktop / Browser、Large / Middle / Small / Custom、icon-only / loading、本地非正方形尺寸和 `OpenIndicator` 独立性。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

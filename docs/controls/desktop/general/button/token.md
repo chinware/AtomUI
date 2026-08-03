@@ -50,18 +50,25 @@ ButtonToken 当前按 Button 语义分为七类。
 
 用于 Button 的尺寸密度、icon-only 内边距、圆形按钮内边距、DropdownButton 额外内容和下拉菜单间距。
 
-`SizeType=Custom` 不新增 ButtonToken。Custom 尺寸的默认值复用 `Middle` 档 Token；实例级定制通过 Button 现有布局和排版属性完成，Token 仍只表达预设尺寸语义。
+`SizeType=Custom` 不新增 ButtonToken。Custom 尺寸的默认值复用 `Middle` 档 Token；实例级定制通过 Button 现有布局、排版以及 `IconWidth`、`IconHeight` 属性完成，Token 仍只表达预设尺寸语义。
 
-### 2.3 Icon Token
+### 2.3 Icon Token 与 SharedToken 依赖
+
+ButtonToken 提供：
 
 - `OnlyIconSize`
 - `OnlyIconSizeLG`
 - `OnlyIconSizeSM`
+
+SharedToken 依赖：
+
 - `IconSize`
 - `IconSizeLG`
 - `IconSizeSM`
 
-用于区分普通 icon 和 icon-only 场景。icon-only 按钮的图标尺寸独立于普通内容按钮。
+`IconSizeLG`、`IconSize`、`IconSizeSM` 是用户 icon 与普通 loading icon 的默认尺寸，也用于非 loading 的 icon-only 用户图标。`OnlyIconSizeLG`、`OnlyIconSize`、`OnlyIconSizeSM` 只用于 `:icononly:loading` 状态下的 loading icon 默认尺寸，不改变普通 icon-only 用户图标的既有视觉。
+
+Theme 把上述 ButtonToken 或 SharedToken 资源设置到 Button 自身的 `IconWidth`、`IconHeight`，模板中的用户 icon 与 loading icon 再通过 `TemplateBinding` 消费。Token 只提供默认值；Button 实例上的本地 `IconWidth`、`IconHeight` 具有更高优先级，并同时覆盖两个图标节点。宽高属性相互独立，Token 默认值为正方形不限制用户设置非正方形尺寸。
 
 ### 2.4 默认按钮颜色 Token
 
@@ -158,7 +165,7 @@ ButtonToken 当前被 Button 家族主题共同引用。Token 变更必须评估
 
 如果某个值只服务特定家族控件，应确认它是否仍属于 Button 体系共享语义。只有共享语义值才应进入 ButtonToken。
 
-Button 家族控件支持 Custom 尺寸时，应沿用同一原则：未设置本地尺寸属性时使用 Middle 默认值；设置本地属性时由本地值覆盖。不得为家族控件私自复制一组 Custom 专属 Token，除非该值已经证明是稳定的家族级语义。
+Button 家族控件支持 Custom 尺寸时，应沿用同一原则：未设置本地尺寸属性时使用 Middle 默认值；设置本地属性时由本地值覆盖。DropdownButton 继承 Button 的 `IconWidth`、`IconHeight` 语义，但其 `OpenIndicator` 保持独立尺寸职责。不得为家族控件私自复制一组 Custom 专属 Token，除非该值已经证明是稳定的家族级语义。
 
 ## 5. 兼容性要求
 
@@ -181,3 +188,4 @@ ButtonToken 变更要求：
 | 修改 ButtonToken 计算 | 覆盖 light / dark 主题，检查 Button 与 Button 家族视觉。 |
 | 删除或重命名 ButtonToken | 默认不允许；如获授权，需同步所有 AXAML 引用和生成文件。 |
 | 多彩按钮 Token 调整 | 验证 default、primary、danger、preset color 与各 variant 的状态映射。 |
+| Icon Token 投影调整 | 覆盖 Large / Middle / Small / Custom、普通 icon-only、icon-only loading、本地 `IconWidth` / `IconHeight` 覆盖，以及桌面 / Browser / DropdownButton 模板。 |

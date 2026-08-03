@@ -32,9 +32,13 @@
                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                             <antdicons:LoadingOutlined Name="PART_LoadingIcon"
+                                                       Width="{TemplateBinding IconWidth}"
+                                                       Height="{TemplateBinding IconHeight}"
                                                        DockPanel.Dock="Left"
                                                        LoadingAnimation="Spin" />
                             <atom:IconPresenter Name="PART_ButtonIcon"
+                                                Width="{TemplateBinding IconWidth}"
+                                                Height="{TemplateBinding IconHeight}"
                                                 DockPanel.Dock="Left"
                                                 Icon="{TemplateBinding Icon}"
                                                 IconBrush="{TemplateBinding Foreground}"
@@ -79,9 +83,13 @@
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <antdicons:LoadingOutlined Name="PART_LoadingIcon"
+                                                           Width="{TemplateBinding IconWidth}"
+                                                           Height="{TemplateBinding IconHeight}"
                                                            DockPanel.Dock="Left"
                                                            LoadingAnimation="Spin" />
                                 <atom:IconPresenter Name="PART_ButtonIcon"
+                                                    Width="{TemplateBinding IconWidth}"
+                                                    Height="{TemplateBinding IconHeight}"
                                                     DockPanel.Dock="Left"
                                                     Icon="{TemplateBinding Icon}"
                                                     IconBrush="{TemplateBinding Foreground}"
@@ -127,9 +135,13 @@
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <antdicons:LoadingOutlined Name="PART_LoadingIcon"
+                                                           Width="{TemplateBinding IconWidth}"
+                                                           Height="{TemplateBinding IconHeight}"
                                                            DockPanel.Dock="Left"
                                                            LoadingAnimation="Spin" />
                                 <atom:IconPresenter Name="PART_ButtonIcon"
+                                                    Width="{TemplateBinding IconWidth}"
+                                                    Height="{TemplateBinding IconHeight}"
                                                     DockPanel.Dock="Left"
                                                     Icon="{TemplateBinding Icon}"
                                                     IconBrush="{TemplateBinding Foreground}"
@@ -172,6 +184,8 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeLG}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeLG}" />
             <Style Selector="^:not(^[Shape=Circle])">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource ContentPaddingLG}" />
             </Style>
@@ -184,6 +198,8 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
             <Style Selector="^:not(^[Shape=Circle])">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource ContentPadding}" />
             </Style>
@@ -196,6 +212,8 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeSM}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Style Selector="^:not(^[Shape=Circle])">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource ContentPaddingSM}" />
             </Style>
@@ -208,6 +226,8 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
             <Style Selector="^:not(^[Shape=Circle])">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource ContentPadding}" />
             </Style>
@@ -220,26 +240,6 @@
             <Setter Property="Padding" Value="{atom:ButtonTokenResource CirclePadding}" />
         </Style>
 
-        <Style Selector="^[SizeType=Large] /template/ atom|IconPresenter#PART_ButtonIcon, ^[SizeType=Large] /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
-        </Style>
-
-        <Style Selector="^[SizeType=Middle] /template/ atom|IconPresenter#PART_ButtonIcon, ^[SizeType=Middle] /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
-        </Style>
-
-        <Style Selector="^[SizeType=Custom] /template/ atom|IconPresenter#PART_ButtonIcon, ^[SizeType=Custom] /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
-        </Style>
-
-        <Style Selector="^[SizeType=Small] /template/ atom|IconPresenter#PART_ButtonIcon, ^[SizeType=Small] /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeSM}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeSM}" />
-        </Style>
-
         <Style Selector="^:not(:icononly) /template/ atom|IconPresenter#PART_ButtonIcon, ^:not(:icononly) /template/ atom|Icon#PART_LoadingIcon">
             <Setter Property="Margin" Value="{atom:ButtonTokenResource IconMargin}" />
         </Style>
@@ -248,24 +248,24 @@
             <Setter Property="Margin" Value="0" />
         </Style>
 
-        <Style Selector="^:icononly^[SizeType=Large] /template/ atom|IconPresenter#PART_ButtonIcon, ^:icononly^[SizeType=Large] /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="Width" Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
-            <Setter Property="Height" Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
+        <Style Selector="^:icononly:loading[SizeType=Large]">
+            <Setter Property="IconWidth" Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
+            <Setter Property="IconHeight" Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
         </Style>
 
-        <Style Selector="^:icononly^[SizeType=Middle] /template/ atom|IconPresenter#PART_ButtonIcon, ^:icononly^[SizeType=Middle] /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="Width" Value="{atom:ButtonTokenResource OnlyIconSize}" />
-            <Setter Property="Height" Value="{atom:ButtonTokenResource OnlyIconSize}" />
+        <Style Selector="^:icononly:loading[SizeType=Middle]">
+            <Setter Property="IconWidth" Value="{atom:ButtonTokenResource OnlyIconSize}" />
+            <Setter Property="IconHeight" Value="{atom:ButtonTokenResource OnlyIconSize}" />
         </Style>
 
-        <Style Selector="^:icononly^[SizeType=Custom] /template/ atom|IconPresenter#PART_ButtonIcon, ^:icononly^[SizeType=Custom] /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="Width" Value="{atom:ButtonTokenResource OnlyIconSize}" />
-            <Setter Property="Height" Value="{atom:ButtonTokenResource OnlyIconSize}" />
+        <Style Selector="^:icononly:loading[SizeType=Custom]">
+            <Setter Property="IconWidth" Value="{atom:ButtonTokenResource OnlyIconSize}" />
+            <Setter Property="IconHeight" Value="{atom:ButtonTokenResource OnlyIconSize}" />
         </Style>
 
-        <Style Selector="^:icononly^[SizeType=Small] /template/ atom|IconPresenter#PART_ButtonIcon, ^:icononly^[SizeType=Small] /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="Width" Value="{atom:ButtonTokenResource OnlyIconSizeSM}" />
-            <Setter Property="Height" Value="{atom:ButtonTokenResource OnlyIconSizeSM}" />
+        <Style Selector="^:icononly:loading[SizeType=Small]">
+            <Setter Property="IconWidth" Value="{atom:ButtonTokenResource OnlyIconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:ButtonTokenResource OnlyIconSizeSM}" />
         </Style>
 
         <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">

@@ -35,6 +35,8 @@
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <antdicons:LoadingOutlined
                                     Name="PART_LoadingIcon"
+                                    Width="{TemplateBinding IconWidth}"
+                                    Height="{TemplateBinding IconHeight}"
                                     LoadingAnimation="Spin"
                                     FillBrush="{TemplateBinding Foreground}"
                                     StrokeBrush="{TemplateBinding Foreground}"
@@ -42,6 +44,8 @@
 
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
+                                    Width="{TemplateBinding IconWidth}"
+                                    Height="{TemplateBinding IconHeight}"
                                     Icon="{TemplateBinding Icon}"
                                     IconBrush="{TemplateBinding Foreground}">
                                     <atom:IconPresenter.IsVisible>
@@ -97,6 +101,8 @@
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <antdicons:LoadingOutlined
                                     Name="PART_LoadingIcon"
+                                    Width="{TemplateBinding IconWidth}"
+                                    Height="{TemplateBinding IconHeight}"
                                     LoadingAnimation="Spin"
                                     FillBrush="{TemplateBinding Foreground}"
                                     StrokeBrush="{TemplateBinding Foreground}"
@@ -104,6 +110,8 @@
 
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
+                                    Width="{TemplateBinding IconWidth}"
+                                    Height="{TemplateBinding IconHeight}"
                                     Icon="{TemplateBinding Icon}"
                                     IconBrush="{TemplateBinding Foreground}">
                                     <atom:IconPresenter.IsVisible>
@@ -158,6 +166,8 @@
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <antdicons:LoadingOutlined
                                     Name="PART_LoadingIcon"
+                                    Width="{TemplateBinding IconWidth}"
+                                    Height="{TemplateBinding IconHeight}"
                                     LoadingAnimation="Spin"
                                     FillBrush="{TemplateBinding Foreground}"
                                     StrokeBrush="{TemplateBinding Foreground}"
@@ -165,6 +175,8 @@
 
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
+                                    Width="{TemplateBinding IconWidth}"
+                                    Height="{TemplateBinding IconHeight}"
                                     Icon="{TemplateBinding Icon}"
                                     IconBrush="{TemplateBinding Foreground}">
                                     <atom:IconPresenter.IsVisible>
@@ -219,6 +231,8 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
             <Setter Property="FontSize" Value="{atom:DropdownButtonTokenResource ContentFontSizeLG}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeLG}" />
             <Style Selector="^:not(^[Shape=Circle])">
                 <Setter Property="Padding" Value="{atom:DropdownButtonTokenResource ContentPaddingLG}" />
             </Style>
@@ -231,6 +245,8 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="FontSize" Value="{atom:DropdownButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
             <Style Selector="^:not(^[Shape=Circle])">
                 <Setter Property="Padding" Value="{atom:DropdownButtonTokenResource ContentPadding}" />
             </Style>
@@ -243,6 +259,8 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
             <Setter Property="FontSize" Value="{atom:DropdownButtonTokenResource ContentFontSizeSM}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Style Selector="^:not(^[Shape=Circle])">
                 <Setter Property="Padding" Value="{atom:DropdownButtonTokenResource ContentPaddingSM}" />
             </Style>
@@ -255,6 +273,8 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="FontSize" Value="{atom:DropdownButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
             <Style Selector="^:not(^[Shape=Circle])">
                 <Setter Property="Padding" Value="{atom:DropdownButtonTokenResource ContentPadding}" />
             </Style>
@@ -263,108 +283,27 @@
             </Style>
         </Style>
 
-        <!--  text 和 icon 都存在的情况 -->
-        <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
-                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
-                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
-            </Style>
-        </Style>
-        <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
-                <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
-                <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
-            </Style>
-        </Style>
-        <Style Selector="^[SizeType=Custom]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
-                <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
-                <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
-            </Style>
-        </Style>
-        <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeSM}" />
-                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeSM}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeSM}" />
-                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeSM}" />
-            </Style>
-        </Style>
-
         <Style Selector="^:icononly">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
                 <Setter Property="Margin" Value="0" />
             </Style>
-            <Style Selector="^[SizeType=Large]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon atom|Icon">
-                    <Setter Property="Width"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSizeLG}" />
-                    <Setter Property="Height"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSizeLG}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="Width"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSizeLG}" />
-                    <Setter Property="Height"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSizeLG}" />
-                </Style>
-            </Style>
-            <Style Selector="^[SizeType=Middle]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon atom|Icon">
-                    <Setter Property="Width"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
-                    <Setter Property="Height"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="Width"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
-                    <Setter Property="Height"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
-                </Style>
-            </Style>
-            <Style Selector="^[SizeType=Custom]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon atom|Icon">
-                    <Setter Property="Width"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
-                    <Setter Property="Height"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="Width"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
-                    <Setter Property="Height"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
-                </Style>
-            </Style>
-            <Style Selector="^[SizeType=Small]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon atom|Icon">
-                    <Setter Property="Width"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSizeSM}" />
-                    <Setter Property="Height"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSizeSM}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="Width"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSizeSM}" />
-                    <Setter Property="Height"
-                            Value="{atom:DropdownButtonTokenResource OnlyIconSizeSM}" />
-                </Style>
-            </Style>
+        </Style>
+
+        <Style Selector="^:icononly:loading[SizeType=Large]">
+            <Setter Property="IconWidth" Value="{atom:DropdownButtonTokenResource OnlyIconSizeLG}" />
+            <Setter Property="IconHeight" Value="{atom:DropdownButtonTokenResource OnlyIconSizeLG}" />
+        </Style>
+        <Style Selector="^:icononly:loading[SizeType=Middle]">
+            <Setter Property="IconWidth" Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
+            <Setter Property="IconHeight" Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
+        </Style>
+        <Style Selector="^:icononly:loading[SizeType=Custom]">
+            <Setter Property="IconWidth" Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
+            <Setter Property="IconHeight" Value="{atom:DropdownButtonTokenResource OnlyIconSize}" />
+        </Style>
+        <Style Selector="^:icononly:loading[SizeType=Small]">
+            <Setter Property="IconWidth" Value="{atom:DropdownButtonTokenResource OnlyIconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:DropdownButtonTokenResource OnlyIconSizeSM}" />
         </Style>
 
         <Style Selector="^[IconPlacement=Start]">

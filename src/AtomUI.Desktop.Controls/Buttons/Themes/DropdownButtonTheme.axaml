@@ -1,6 +1,7 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:antdicons="https://atomui.net/icons/antdesign"
               TargetType="{x:Type atom:DropdownButton}"
               x:Class="AtomUI.Desktop.Controls.Themes.DropdownButtonTheme">
     <ControlTheme.BasedOn>
@@ -43,8 +44,18 @@
                                     Icon="{TemplateBinding OpenIndicator}"
                                     IconBrush="{TemplateBinding Foreground}"
                                     IsVisible="{TemplateBinding IsShowOpenIndicator}" />
+                                <antdicons:LoadingOutlined
+                                    Name="PART_LoadingIcon"
+                                    Width="{TemplateBinding IconWidth}"
+                                    Height="{TemplateBinding IconHeight}"
+                                    LoadingAnimation="Spin"
+                                    FillBrush="{TemplateBinding Foreground}"
+                                    StrokeBrush="{TemplateBinding Foreground}"
+                                    DockPanel.Dock="Left" />
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
+                                    Width="{TemplateBinding IconWidth}"
+                                    Height="{TemplateBinding IconHeight}"
                                     Icon="{TemplateBinding Icon}"
                                     DockPanel.Dock="Left">
                                     <atom:IconPresenter.IsVisible>

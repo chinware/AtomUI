@@ -112,6 +112,12 @@ public partial class Button : AvaloniaButton,
     public static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<Button, PathIcon?>(nameof(Icon));
 
+    public static readonly StyledProperty<double> IconWidthProperty =
+        AvaloniaProperty.Register<Button, double>(nameof(IconWidth));
+
+    public static readonly StyledProperty<double> IconHeightProperty =
+        AvaloniaProperty.Register<Button, double>(nameof(IconHeight));
+
     public static readonly StyledProperty<ButtonIconPlacement> IconPlacementProperty =
         AvaloniaProperty.Register<Button, ButtonIconPlacement>(
             nameof(IconPlacement),
@@ -172,6 +178,18 @@ public partial class Button : AvaloniaButton,
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
+    }
+
+    public double IconWidth
+    {
+        get => GetValue(IconWidthProperty);
+        set => SetValue(IconWidthProperty, value);
+    }
+
+    public double IconHeight
+    {
+        get => GetValue(IconHeightProperty);
+        set => SetValue(IconHeightProperty, value);
     }
 
     public ButtonIconPlacement IconPlacement
@@ -460,6 +478,8 @@ public partial class Button : AvaloniaButton,
         AffectsMeasure<Button>(SizeTypeProperty,
             ShapeProperty,
             IconProperty,
+            IconWidthProperty,
+            IconHeightProperty,
             IconPlacementProperty,
             CompactSpaceItemPositionProperty,
             CompactSpaceOrientationProperty);

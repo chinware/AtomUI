@@ -8,6 +8,14 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-03
+
+- Design
+  - Define `IconWidthProperty` / `IconHeightProperty` and `IconWidth` / `IconHeight` as the Button-owned public icon sizing contract.
+  - Define `TemplateBinding` from Button and DropdownButton user/loading icon parts to the owner sizing properties, replacing external deep-template sizing selectors.
+  - Preserve existing visuals by keeping ordinary and non-loading icon-only icons on `IconSize*`, while reserving `OnlyIconSize*` for icon-only loading defaults.
+  - Keep DropdownButton `OpenIndicator` sizing independent and keep SplitButton outside this composite-control API change.
+
 ## 2026-07-20
 
 - Fix

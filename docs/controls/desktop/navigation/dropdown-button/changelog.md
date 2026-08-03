@@ -2,6 +2,12 @@
 
 本文档记录 DropdownButton 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-03
+
+- Design
+  - Inherit Button `IconWidth` / `IconHeight` semantics for the user and loading icons across desktop and Browser templates.
+  - Keep `OpenIndicator` sizing independent from the inherited user/loading icon sizing contract.
+
 ## 2026-06-26
 
 - Docs

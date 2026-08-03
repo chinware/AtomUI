@@ -94,17 +94,15 @@
                             <Setter Property="Height" Value="44" />
                             <Setter Property="Padding" Value="18,0" />
                             <Setter Property="FontSize" Value="15" />
+                            <Setter Property="IconWidth" Value="18" />
+                            <Setter Property="IconHeight" Value="18" />
                         </Style>
                         <Style Selector="atom|Button.size-demo-button[SizeType=Custom]:icononly">
                             <Setter Property="Padding" Value="12" />
                         </Style>
-                        <Style Selector="atom|Button.size-demo-button[SizeType=Custom] /template/ atom|IconPresenter#PART_ButtonIcon, atom|Button.size-demo-button[SizeType=Custom] /template/ atom|Icon#PART_LoadingIcon">
-                            <Setter Property="Width" Value="18" />
-                            <Setter Property="Height" Value="18" />
-                        </Style>
-                        <Style Selector="atom|Button.size-demo-button[SizeType=Custom]:icononly /template/ atom|IconPresenter#PART_ButtonIcon atom|Icon, atom|Button.size-demo-button[SizeType=Custom]:icononly /template/ atom|Icon#PART_LoadingIcon">
-                            <Setter Property="Width" Value="20" />
-                            <Setter Property="Height" Value="20" />
+                        <Style Selector="atom|Button.size-demo-button[SizeType=Custom]:icononly:loading">
+                            <Setter Property="IconWidth" Value="20" />
+                            <Setter Property="IconHeight" Value="20" />
                         </Style>
                     </gallery:ShowCaseItem.Styles>
                     <gallery:ShowCaseItem.DeferredContentTemplate>
