@@ -56,7 +56,7 @@ public enum CalendarSelectSource
 
 `CalendarDateRange` 是 ValidRange 的首尾包含值对象。构造函数把两端规范化到 `.Date`，`end < start` 抛出 `ArgumentOutOfRangeException`。`ValidRange` 只限制面板可选择范围，不改变外部传入的锚点值。
 
-Calendar 的年月名称、星期标题、周规则和 Calendar 专用文案跟随 AtomUI 全局语言服务。`Value` 与 `Mode` 的默认绑定模式为 `TwoWay`。
+Calendar 的年月名称、星期标题、周规则和 Calendar 专用文案跟随 AtomUI 全局语言服务。启用 `ShowWeek` 时，周序号前缀表头保持视觉留空，避免在紧凑卡片中挤压星期标题；本地化的 `Week` 文案只作为该表头的 Automation 名称。`Value` 与 `Mode` 的默认绑定模式为 `TwoWay`。
 
 ### 3.3 Cell 与 Header 定制
 

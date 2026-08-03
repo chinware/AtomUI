@@ -2,6 +2,7 @@ using System.Globalization;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Localization;
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -872,7 +873,7 @@ internal sealed class CalendarView : TemplatedControl
         {
             var weekLabel = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Week)
                             ?? CalendarControlLangResourceKind.Week.ToString();
-            UpdateWeekHeaderText(index++, weekLabel, 0);
+            UpdateWeekHeaderText(index++, string.Empty, 0, weekLabel);
         }
 
         var columnOffset = ShowWeek ? 1 : 0;
@@ -896,12 +897,21 @@ internal sealed class CalendarView : TemplatedControl
         }
     }
 
-    private void UpdateWeekHeaderText(int index, string text, int column)
+    private void UpdateWeekHeaderText(int index, string text, int column, string? automationName = null)
     {
         var label = GetWeekHeaderText(index);
         if (label.Text != text)
         {
             label.Text = text;
+        }
+
+        if (automationName is null && AutomationProperties.GetName(label) is not null)
+        {
+            label.ClearValue(AutomationProperties.NameProperty);
+        }
+        else if (AutomationProperties.GetName(label) != automationName)
+        {
+            AutomationProperties.SetName(label, automationName);
         }
 
         if (Grid.GetColumn(label) != column)

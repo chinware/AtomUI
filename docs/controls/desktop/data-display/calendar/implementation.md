@@ -158,7 +158,7 @@ Automation 语义使用当前 Avalonia 可移植契约：View 是 `Table` 并实
 
 ### 8.3 周序号
 
-从日期网格每行首日按 Culture 的 `CalendarWeekRule` 和 `FirstDayOfWeek` 计算周号。周序号 Cell 的选择值是该行首日；它是可见的辅助 Cell，不进入日期/月 Cell 模板上下文。
+从日期网格每行首日按 Culture 的 `CalendarWeekRule` 和 `FirstDayOfWeek` 计算周号。周序号 Cell 的选择值是该行首日；它是可见的辅助 Cell，不进入日期/月 Cell 模板上下文。WeekHeader 为周序号保留与 CellHost 一致的首列，但不绘制可见的 `Week` 文本；本地化文案写入首列表头的 Automation 名称，ShowWeek 关闭或表头复用为星期标题时必须清理该附加名称。
 
 ### 8.4 失效与容器复用
 

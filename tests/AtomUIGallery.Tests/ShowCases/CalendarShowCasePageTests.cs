@@ -1,8 +1,14 @@
 using System.Globalization;
 using AtomUIGallery.ShowCases.Calendar;
 using AtomUI.Desktop.Controls;
+using AtomUI.Toolkits.GalleryBase.Controls;
+using Avalonia;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
+using AtomUICalendar = AtomUI.Desktop.Controls.Calendar;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Tests.ShowCases;
 
@@ -82,6 +88,95 @@ public class CalendarShowCasePageTests
     }
 
     [Fact]
+    public void Calendar_CustomHeader_ShowCase_Uses_Public_HeaderTemplate_Contract()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
+        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
+        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_CN.cs");
+        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_TW.cs");
+
+        var cardIndex = source.IndexOf("CalendarShowCaseLangResource CardTitle", StringComparison.Ordinal);
+        var customHeaderIndex = source.IndexOf(
+            "CalendarShowCaseLangResource CustomHeaderTitle",
+            StringComparison.Ordinal);
+        var showWeekIndex = source.IndexOf("CalendarShowCaseLangResource ShowWeekTitle", StringComparison.Ordinal);
+        var nextShowCaseItemIndex = source.IndexOf(
+            "<gallery:ShowCaseItem Title=",
+            customHeaderIndex + 1,
+            StringComparison.Ordinal);
+
+        cardIndex.ShouldBeGreaterThanOrEqualTo(0);
+        showWeekIndex.ShouldBeGreaterThan(cardIndex);
+        customHeaderIndex.ShouldBeGreaterThan(showWeekIndex);
+        nextShowCaseItemIndex.ShouldBe(-1);
+
+        var customHeaderSource = source[customHeaderIndex..];
+        customHeaderSource.ShouldContain("<atom:Calendar Value=\"{Binding SampleDate}\"");
+        customHeaderSource.ShouldContain("Fullscreen=\"False\"");
+        customHeaderSource.ShouldContain("<atom:Calendar.HeaderTemplate>");
+        customHeaderSource.ShouldContain("<DataTemplate x:DataType=\"atom:CalendarHeaderContext\">");
+        customHeaderSource.ShouldContain("CalendarShowCaseLangResource CustomHeaderContentTitle");
+        customHeaderSource.ShouldContain("<atom:OptionButtonGroup");
+        customHeaderSource.ShouldContain("SelectionChanged=\"OnCustomHeaderModeSelectionChanged\"");
+        customHeaderSource.ShouldContain("Name=\"CustomHeaderYearSelect\"");
+        customHeaderSource.ShouldContain("SelectionChanged=\"OnCustomHeaderYearSelectionChanged\"");
+        customHeaderSource.ShouldContain("Name=\"CustomHeaderMonthSelect\"");
+        customHeaderSource.ShouldContain("SelectionChanged=\"OnCustomHeaderMonthSelectionChanged\"");
+        customHeaderSource.ShouldNotContain("PART_");
+        customHeaderSource.ShouldNotContain("/template/");
+
+        enUs.ShouldContain("public const string CustomHeaderTitle = \"Customize Header\";");
+        enUs.ShouldContain("public const string CustomHeaderDescription = \"Customize Calendar header content.\";");
+        zhCn.ShouldContain("public const string CustomHeaderTitle = \"自定义 Header\";");
+        zhTw.ShouldContain("public const string CustomHeaderTitle = \"自訂 Header\";");
+    }
+
+    [Fact]
+    public void Calendar_CustomHeader_ShowCase_Materializes_Without_Resource_Type_Errors()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+        var page = new CalendarShowCase
+        {
+            ViewModel = new CalendarViewModel(null!)
+        };
+        var window = new AvaloniaWindow
+        {
+            Width = 1200,
+            Height = 900,
+            Content = page
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            page.ApplyTemplate();
+            page.Measure(new Size(1200, 900));
+            page.Arrange(new Rect(0, 0, 1200, 900));
+            Dispatcher.UIThread.RunJobs();
+
+            var items = page.GetVisualDescendants().OfType<ShowCaseItem>().ToArray();
+            items.Length.ShouldBeGreaterThan(4);
+            var customHeaderItem = items[^1];
+
+            customHeaderItem.MaterializeDeferredContent();
+            customHeaderItem.Measure(new Size(1200, 900));
+            customHeaderItem.Arrange(new Rect(customHeaderItem.DesiredSize));
+            Dispatcher.UIThread.RunJobs();
+
+            customHeaderItem.GetVisualDescendants()
+                .OfType<AtomUICalendar>()
+                .Single()
+                .HeaderTemplate.ShouldNotBeNull();
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
     public void Calendar_Lunar_ShowCases_Follow_Card_And_Precede_Selectable()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
@@ -104,6 +199,8 @@ public class CalendarShowCasePageTests
         source.ShouldContain("Fullscreen=\"False\"");
         source.ShouldContain("ShowSolarTerms=\"True\"");
         source.ShouldContain("ShowTraditionalFestivals=\"True\"");
+        CountOccurrences(source, "HighlightWeekends=\"False\"").ShouldBe(2);
+        source.ShouldNotContain("HighlightWeekends=\"True\"");
         lunarSource.ShouldContain("HolidayProvider=\"{Binding LunarCalendarHolidayProvider}\"");
         lunarCardSource.ShouldNotContain("HolidayProvider=\"{Binding LunarCalendarHolidayProvider}\"");
         lunarCardSource.ShouldContain("<Border MinWidth=\"300\"");
@@ -139,7 +236,7 @@ public class CalendarShowCasePageTests
     }
 
     [Fact]
-    public void Calendar_Selectable_ShowCase_Follows_Card_IsLast_And_Matches_AntDesign_State_Flow()
+    public void Calendar_Selectable_ShowCase_Follows_Card_And_Matches_AntDesign_State_Flow()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
         var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
@@ -148,14 +245,8 @@ public class CalendarShowCasePageTests
 
         var cardIndex = source.IndexOf("CalendarShowCaseLangResource CardTitle", StringComparison.Ordinal);
         var selectableIndex = source.IndexOf("CalendarShowCaseLangResource SelectableCalendarTitle", StringComparison.Ordinal);
-        var nextShowCaseItemIndex = source.IndexOf(
-            "<gallery:ShowCaseItem Title=",
-            selectableIndex + 1,
-            StringComparison.Ordinal);
-
         cardIndex.ShouldBeGreaterThanOrEqualTo(0);
         selectableIndex.ShouldBeGreaterThan(cardIndex);
-        nextShowCaseItemIndex.ShouldBe(-1);
         source.ShouldContain("<atom:Alert Type=\"Info\"");
         source.ShouldContain("Message=\"{Binding SelectableCalendarSelectedText}\"");
         source.ShouldContain("Value=\"{Binding SelectableCalendarValue}\"");
@@ -167,6 +258,42 @@ public class CalendarShowCasePageTests
         zhCn.ShouldContain("public const string SelectableCalendarSelectedMessage = \"你选择的日期：{0:yyyy-MM-dd}\";");
         zhTw.ShouldContain("public const string SelectableCalendarTitle = \"可選擇的日曆\";");
         zhTw.ShouldContain("public const string SelectableCalendarSelectedMessage = \"你選擇的日期：{0:yyyy-MM-dd}\";");
+    }
+
+    [Fact]
+    public void Calendar_ShowWeek_ShowCase_Follows_Selectable_And_Precedes_CustomHeader()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
+        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
+        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_CN.cs");
+        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_TW.cs");
+
+        var selectableIndex = source.IndexOf("CalendarShowCaseLangResource SelectableCalendarTitle", StringComparison.Ordinal);
+        var showWeekIndex = source.IndexOf("CalendarShowCaseLangResource ShowWeekTitle", StringComparison.Ordinal);
+        var customHeaderIndex = source.IndexOf("CalendarShowCaseLangResource CustomHeaderTitle", StringComparison.Ordinal);
+
+        selectableIndex.ShouldBeGreaterThanOrEqualTo(0);
+        showWeekIndex.ShouldBeGreaterThan(selectableIndex);
+        customHeaderIndex.ShouldBeGreaterThan(showWeekIndex);
+
+        var showWeekSource = source[showWeekIndex..customHeaderIndex];
+        CountOccurrences(showWeekSource, "ShowWeek=\"True\"").ShouldBe(2);
+        showWeekSource.ShouldContain("Fullscreen=\"True\"");
+        showWeekSource.ShouldContain("MinWidth=\"640\"");
+        showWeekSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
+        showWeekSource.ShouldContain("<Border Width=\"300\"");
+        showWeekSource.ShouldContain("HorizontalAlignment=\"Left\"");
+        showWeekSource.ShouldContain("BorderBrush=\"{atom:SharedTokenResource ColorBorderSecondary}\"");
+        showWeekSource.ShouldContain("BorderThickness=\"{atom:SharedTokenResource BorderThickness}\"");
+        showWeekSource.ShouldContain("CornerRadius=\"{atom:SharedTokenResource BorderRadiusLG}\"");
+        showWeekSource.ShouldContain("Fullscreen=\"False\"");
+
+        enUs.ShouldContain("public const string ShowWeekTitle = \"Show Week\";");
+        enUs.ShouldContain("public const string ShowWeekDescription = \"Show week numbers in full-screen and card calendars by setting ShowWeek to True.\";");
+        zhCn.ShouldContain("public const string ShowWeekTitle = \"显示周数\";");
+        zhCn.ShouldContain("public const string ShowWeekDescription = \"通过将 ShowWeek 设置为 True，在完整模式和卡片模式日历中显示周数。\";");
+        zhTw.ShouldContain("public const string ShowWeekTitle = \"顯示週數\";");
+        zhTw.ShouldContain("public const string ShowWeekDescription = \"透過將 ShowWeek 設定為 True，在完整模式和卡片模式日曆中顯示週數。\";");
     }
 
     [Fact]

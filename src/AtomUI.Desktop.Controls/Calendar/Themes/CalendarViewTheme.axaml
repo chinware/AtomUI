@@ -6,6 +6,7 @@
     x:Class="AtomUI.Desktop.Controls.Themes.CalendarViewTheme"
     TargetType="calendar:CalendarView"
     x:ClassModifier="internal">
+    <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
     <Setter Property="Template">
         <ControlTemplate TargetType="calendar:CalendarView">
             <DockPanel Name="PART_Body" LastChildFill="True">
@@ -16,17 +17,16 @@
         </ControlTemplate>
     </Setter>
 
-    <Style Selector="^ /template/ Grid#PART_WeekHeader > TextBlock">
+    <Style Selector="^ /template/ Grid#PART_WeekHeader > atom|TextBlock">
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
     </Style>
 
-    <Style Selector="^:fullscreen /template/ Grid#PART_WeekHeader > TextBlock">
+    <Style Selector="^:fullscreen /template/ Grid#PART_WeekHeader > atom|TextBlock">
         <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
     </Style>
 
-    <Style Selector="^:mini /template/ Grid#PART_WeekHeader > TextBlock">
+    <Style Selector="^:mini /template/ Grid#PART_WeekHeader > atom|TextBlock">
         <Setter Property="MinHeight" Value="{atom:SharedTokenResource FontHeightSM}" />
     </Style>
 

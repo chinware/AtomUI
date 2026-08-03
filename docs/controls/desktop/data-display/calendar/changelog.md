@@ -17,12 +17,16 @@
 - Fixed
   - 默认 Header 年/月选择器的下拉列表视口按 Ant Design Select 的 256 高度（8 个 32 高选项）配置，弹层内边距保持由 ComboBox Token 控制。
   - LunarCalendar 卡片内容高度改由专用 Token 按双行 Cell 和共享间距派生；presentation adapter 把有效高度传给 CalendarView，修复六周网格中相邻行贴靠，同时保持普通 Calendar 的 256 高度不变。
+  - ShowWeek 的周序号前缀表头改为视觉留空并保留本地化 Automation 名称；WeekHeader selector 同步匹配实际的 AtomUI `TextBlock`，标题前景改为继承 CalendarView 根的 `ColorText`，避免紧凑卡片中可见 `Week` 文本挤压首列间距并稳定恢复 Token 前景色。
 - Internal
   - 农历面板预计算类型由 `LunarCalendarSnapshot` / `LunarCalendarSnapshotKey` 重命名为 `LunarCalendarPanelData` / `LunarCalendarPanelDataKey`，同步更新 adapter 字段与构建方法，不改变匹配、失效或 Provider 查询行为。
 - Gallery
   - 在 Card 示例后增加可选择日历示例：Header 面板变化只同步 Calendar 面板值，实际日期选择同时更新面板值和三语 Alert 反馈。
-  - 可选择日历调整为页面最后一个 ShowcaseItem，移除其后的 Year、ShowWeek、ValidRange/DisabledDate、CellTemplate、FullCellTemplate、HeaderTemplate 和事件示例及对应页面专用状态。
-  - 应用级节假日 Provider 示例移到 Fullscreen LunarCalendar；紧凑卡片只展示内置农历、节气和传统节日，示例 Provider 的业务名称固定使用中文，不随 Gallery Culture 翻译。
+  - 移除可选择日历后的 Year、ValidRange/DisabledDate、CellTemplate、FullCellTemplate、HeaderTemplate 和事件示例及对应页面专用状态。
+  - 在 Calendar Showcase 末尾增加聚焦的 Customize Header 示例：通过 `HeaderTemplate` 的强类型 `CalendarHeaderContext` 读取 `Value` / `Mode`，并使用公开命令驱动年月选择和模式切换，不依赖默认 Header 或 Calendar 的内部模板结构。
+  - Customize Header 的 8 像素内容边距使用 `Thickness` 值表达，避免把 `double` 类型的 SharedToken 动态资源绑定到 `Margin` 后在内容 materialize 或主题变化时触发类型转换异常。
+  - 在可选择日历后增加 Show Week 示例，同一 ShowcaseItem 同时展示 `ShowWeek=True` 的 Fullscreen 与 Card 模式，卡片沿用外部 300 宽边框容器。
+  - 应用级节假日 Provider 示例移到 Fullscreen LunarCalendar；紧凑卡片只展示内置农历、节气和传统节日，两个农历示例均显式关闭周末红色高亮，示例 Provider 的业务名称固定使用中文，不随 Gallery Culture 翻译。
 - Docs
   - 新增 `lunar-calendar-design.md`，定义 `LunarCalendar` 在 Calendar 模块内的 Public API、Fullscreen/Card × Month/Year 模式、1900-2100 历法范围、二十四节气、传统节日、节假日 Provider、专用 Cell/adapter、Token、RangeBars 避让和验证契约。
   - 同步 overview、implementation、behavior、range-bar、token 与 Data Display 导航，并按当前源码将基础 Token 名称统一为 `CalendarToken` / `CalendarTokenResource`。

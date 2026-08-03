@@ -17,6 +17,12 @@ internal partial class en_US
     public const string CardTitle = "Card";
     public const string CardDescription = "Nested inside a container element for rendering in limited space.";
 
+    public const string CustomHeaderTitle = "Customize Header";
+    public const string CustomHeaderDescription = "Customize Calendar header content.";
+    public const string CustomHeaderContentTitle = "Custom header";
+    public const string CustomHeaderMonthText = "Month";
+    public const string CustomHeaderYearText = "Year";
+
     public const string LunarCalendarTitle = "Lunar Calendar";
     public const string LunarCalendarDescription = "A full-screen calendar with lunar dates, solar terms, traditional festivals, and application-provided holiday annotations.";
     public const string LunarCalendarCardTitle = "Lunar Calendar Card";
@@ -25,6 +31,9 @@ internal partial class en_US
     public const string SelectableCalendarTitle = "Selectable Calendar";
     public const string SelectableCalendarDescription = "A basic calendar component with Year/Month switch.";
     public const string SelectableCalendarSelectedMessage = "You selected date: {0:yyyy-MM-dd}";
+
+    public const string ShowWeekTitle = "Show Week";
+    public const string ShowWeekDescription = "Show week numbers in full-screen and card calendars by setting ShowWeek to True.";
 
     public const string NoticeCalendarTitle = "Notice Calendar";
     public const string NoticeCalendarDescription = "Render notice items in date cells and backlog numbers in month cells.";

@@ -3,6 +3,7 @@ using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Desktop.Controls.Internal.Calendar;
 using AtomUI.Theme.Resources;
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Media;
@@ -861,7 +862,8 @@ public class CalendarRenderTests
             .OfType<Panel>()
             .Single(panel => panel.Name == "PART_WeekHeader");
         var weekText = weekHeader.Children.OfType<DesktopTextBlock>().First();
-        weekText.Text.ShouldBe(expectedWeekLabel);
+        weekText.Text.ShouldBeEmpty();
+        AutomationProperties.GetName(weekText).ShouldBe(expectedWeekLabel);
     }
 
     private static IDataTemplate CreateMarkerTemplate(string marker)

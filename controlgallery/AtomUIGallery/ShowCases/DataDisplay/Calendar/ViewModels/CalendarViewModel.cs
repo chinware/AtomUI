@@ -3,6 +3,7 @@ using AtomUIGallery.Localization;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Threading;
@@ -183,6 +184,61 @@ public sealed class NoticeCalendarMonthBacklogVisibilityConverter : IValueConver
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         return value is CalendarCellContext { CellType: CalendarCellType.Month, Value.Month: 9 };
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotSupportedException();
+    }
+}
+
+public sealed class CustomCalendarHeaderYearOptionsConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is not DateTime date)
+        {
+            return Array.Empty<int>();
+        }
+
+        const int optionCount = 20;
+        var startYear = Math.Clamp(date.Year - 10, DateTime.MinValue.Year, DateTime.MaxValue.Year - optionCount + 1);
+        return Enumerable.Range(startYear, optionCount).ToArray();
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotSupportedException();
+    }
+}
+
+public sealed class CustomCalendarHeaderMonthOptionsConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        var displayCulture = Application.Current?.GetLanguageVariant()?.ToCultureInfo() ?? culture;
+        return Enumerable.Range(1, 12)
+            .Select(displayCulture.DateTimeFormat.GetAbbreviatedMonthName)
+            .ToArray();
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotSupportedException();
+    }
+}
+
+public sealed class CustomCalendarHeaderSelectionIndexConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return value switch
+        {
+            CalendarMode.Month => 0,
+            CalendarMode.Year => 1,
+            DateTime date => date.Month - 1,
+            _ => -1
+        };
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

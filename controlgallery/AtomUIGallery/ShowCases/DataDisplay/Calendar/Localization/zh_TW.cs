@@ -17,6 +17,12 @@ internal partial class zh_TW
     public const string CardTitle = "卡片模式";
     public const string CardDescription = "用於嵌套在空間有限的容器中。";
 
+    public const string CustomHeaderTitle = "自訂 Header";
+    public const string CustomHeaderDescription = "自訂日曆標頭內容。";
+    public const string CustomHeaderContentTitle = "自訂 Header";
+    public const string CustomHeaderMonthText = "月";
+    public const string CustomHeaderYearText = "年";
+
     public const string LunarCalendarTitle = "農曆日曆";
     public const string LunarCalendarDescription = "完整模式的日曆，展示農曆日期、二十四節氣、傳統節日和應用提供的節假日標記。";
     public const string LunarCalendarCardTitle = "農曆卡片日曆";
@@ -25,6 +31,9 @@ internal partial class zh_TW
     public const string SelectableCalendarTitle = "可選擇的日曆";
     public const string SelectableCalendarDescription = "一個通用的日曆面板，支援年/月切換。";
     public const string SelectableCalendarSelectedMessage = "你選擇的日期：{0:yyyy-MM-dd}";
+
+    public const string ShowWeekTitle = "顯示週數";
+    public const string ShowWeekDescription = "透過將 ShowWeek 設定為 True，在完整模式和卡片模式日曆中顯示週數。";
 
     public const string NoticeCalendarTitle = "通知事項日曆";
     public const string NoticeCalendarDescription = "在日期儲存格內展示通知事項，在月份儲存格內展示待辦數量。";

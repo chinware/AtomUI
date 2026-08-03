@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Reflection;
 using AtomUI.Desktop.Controls.Internal.Calendar;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -31,6 +32,27 @@ public class CalendarViewTests
         var view = NewView(new DateTime(2026, 7, 15), CalendarViewMode.Date, showWeek: true);
         Rebuild(view);
         CellModelCount(view).ShouldBe(48); // 42 date + 6 week
+    }
+
+    [Fact]
+    public void DateMode_ShowWeek_UsesVisuallyEmptyAccessiblePrefixHeader()
+    {
+        var view = NewView(new DateTime(2026, 7, 15), CalendarViewMode.Date, showWeek: true);
+        ApplyTemplateParts(view);
+
+        var weekHeader = GetWeekHeader(view);
+        var labels = weekHeader.Children.Cast<TextBlock>().ToArray();
+        labels.Length.ShouldBe(8);
+        labels[0].Text.ShouldBeEmpty();
+        AutomationProperties.GetName(labels[0]).ShouldNotBeNullOrWhiteSpace();
+        labels.Skip(1).ShouldAllBe(label => !string.IsNullOrWhiteSpace(label.Text));
+
+        SetProp(view, "ShowWeek", false);
+
+        labels = weekHeader.Children.Cast<TextBlock>().ToArray();
+        labels.Length.ShouldBe(7);
+        labels[0].Text.ShouldNotBeNullOrWhiteSpace();
+        AutomationProperties.GetName(labels[0]).ShouldBeNull();
     }
 
     [Fact]
@@ -293,5 +315,12 @@ public class CalendarViewTests
         var field = typeof(CalendarViewControl).GetField(
             "_cellPool", BindingFlags.Instance | BindingFlags.NonPublic)!;
         return (IReadOnlyList<CalendarViewCell>)field.GetValue(view)!;
+    }
+
+    private static Panel GetWeekHeader(CalendarViewControl view)
+    {
+        var field = typeof(CalendarViewControl).GetField(
+            "_weekHeader", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        return (Panel)field.GetValue(view)!;
     }
 }
