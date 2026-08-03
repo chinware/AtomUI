@@ -1,0 +1,19 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Desktop.Controls.Themes.ColorSliderTrackButtonTheme"
+              x:ClassModifier="internal"
+              TargetType="atom:ColorSliderTrackButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:ColorSliderTrackButton">
+            <Border Name="FocusTarget"
+                    Background="Transparent"
+                    Margin="0,-10" />
+        </ControlTemplate>
+    </Setter>
+</ControlTheme>

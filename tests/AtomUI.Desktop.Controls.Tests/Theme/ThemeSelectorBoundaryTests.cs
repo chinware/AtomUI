@@ -37,6 +37,30 @@ public class ThemeSelectorBoundaryTests
         violations.Count.ShouldBe(0, string.Join(Environment.NewLine, violations));
     }
 
+    [Fact]
+    public void Production_ControlThemes_Do_Not_Override_Child_Control_Templates()
+    {
+        var repositoryRoot = GetRepositoryRoot();
+        var sourceRoot     = Path.Combine(repositoryRoot, "src");
+        var violations     = new List<string>();
+
+        foreach (var path in Directory.EnumerateFiles(sourceRoot, "*.axaml", SearchOption.AllDirectories))
+        {
+            var document = XDocument.Load(path);
+            foreach (var theme in document.Descendants().Where(element => element.Name.LocalName == "ControlTheme"))
+            {
+                foreach (var templateProperty in theme.Descendants()
+                                                       .Where(element => element.Name.LocalName.EndsWith(".Template", StringComparison.Ordinal)))
+                {
+                    violations.Add(
+                        $"{Path.GetRelativePath(repositoryRoot, path)}: {templateProperty.Name.LocalName}");
+                }
+            }
+        }
+
+        violations.Count.ShouldBe(0, string.Join(Environment.NewLine, violations));
+    }
+
     private static int CountTemplateBoundaries(string selector)
     {
         var count = 0;

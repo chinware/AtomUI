@@ -29,34 +29,10 @@
                                                      Value="{TemplateBinding Value, Mode=TwoWay}"
                                                      ClipToBounds="False">
                             <atom:ColorPickerSliderTrack.DecreaseButton>
-                                <RepeatButton Name="PART_DecreaseButton"
-                                              Background="Transparent"
-                                              Focusable="False"
-                                              HorizontalAlignment="Stretch"
-                                              VerticalAlignment="Stretch">
-                                    <RepeatButton.Template>
-                                        <ControlTemplate>
-                                            <Border Name="FocusTarget"
-                                                    Background="Transparent"
-                                                    Margin="0,-10" />
-                                        </ControlTemplate>
-                                    </RepeatButton.Template>
-                                </RepeatButton>
+                                <atom:ColorSliderTrackButton Name="PART_DecreaseButton" />
                             </atom:ColorPickerSliderTrack.DecreaseButton>
                             <atom:ColorPickerSliderTrack.IncreaseButton>
-                                <RepeatButton Name="PART_IncreaseButton"
-                                              Background="Transparent"
-                                              Focusable="False"
-                                              HorizontalAlignment="Stretch"
-                                              VerticalAlignment="Stretch">
-                                    <RepeatButton.Template>
-                                        <ControlTemplate>
-                                            <Border Name="FocusTarget"
-                                                    Background="Transparent"
-                                                    Margin="0,-10" />
-                                        </ControlTemplate>
-                                    </RepeatButton.Template>
-                                </RepeatButton>
+                                <atom:ColorSliderTrackButton Name="PART_IncreaseButton" />
                             </atom:ColorPickerSliderTrack.IncreaseButton>
                             <atom:ColorSliderThumb Name="ColorSliderThumb"
                                                    Margin="0"

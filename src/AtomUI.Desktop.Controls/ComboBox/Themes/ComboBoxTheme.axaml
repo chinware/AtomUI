@@ -62,7 +62,7 @@
                                 atom:OverflowTip.ShowDelay="{TemplateBinding OverflowTipDelay}"
                                 atom:OverflowTip.Placement="{TemplateBinding OverflowTipPlacement}"
                                 atom:OverflowTip.PlacementTarget="{Binding $parent[atom:AddOnDecoratedBox]}" />
-                            <TextBox
+                            <atom:ComboBoxTextBox
                                 Name="PART_EditableTextBox"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
@@ -75,46 +75,7 @@
                                 Text="{TemplateBinding Text, Mode=TwoWay}"
                                 PlaceholderText="{TemplateBinding PlaceholderText}"
                                 PlaceholderForeground="{TemplateBinding PlaceholderForeground}"
-                                IsVisible="{TemplateBinding IsEditable}">
-                                <TextBox.Template>
-                                    <ControlTemplate TargetType="TextBox">
-                                        <ScrollViewer
-                                            Name="ScrollViewer"
-                                            Cursor="Ibeam"
-                                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
-                                            <Panel>
-                                                <atom:TextBlock
-                                                    Name="Placeholder"
-                                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                    Text="{TemplateBinding PlaceholderText}"
-                                                    Foreground="{TemplateBinding PlaceholderForeground}"
-                                                    LineHeight="{TemplateBinding LineHeight}"
-                                                    TextAlignment="{TemplateBinding TextAlignment}"
-                                                    TextWrapping="{TemplateBinding TextWrapping}" />
-                                                <atom:InputTextPresenter
-                                                    Name="PART_TextPresenter"
-                                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                    CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
-                                                    CaretBrush="{TemplateBinding CaretBrush}"
-                                                    CaretIndex="{TemplateBinding CaretIndex}"
-                                                    LineHeight="{TemplateBinding LineHeight}"
-                                                    PasswordChar="{TemplateBinding PasswordChar}"
-                                                    RevealPassword="{TemplateBinding RevealPassword}"
-                                                    SelectionBrush="{TemplateBinding SelectionBrush}"
-                                                    SelectionStart="{TemplateBinding SelectionStart}"
-                                                    SelectionEnd="{TemplateBinding SelectionEnd}"
-                                                    SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
-                                                    Text="{TemplateBinding Text, Mode=TwoWay}"
-                                                    TextAlignment="{TemplateBinding TextAlignment}"
-                                                    TextWrapping="{TemplateBinding TextWrapping}" />
-                                            </Panel>
-                                        </ScrollViewer>
-                                    </ControlTemplate>
-                                </TextBox.Template>
-                            </TextBox>
+                                IsVisible="{TemplateBinding IsEditable}" />
                         </Panel>
                     </atom:AddOnDecoratedBox>
 
