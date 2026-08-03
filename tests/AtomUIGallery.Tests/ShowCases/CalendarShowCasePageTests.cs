@@ -1,3 +1,6 @@
+using System.Globalization;
+using AtomUIGallery.ShowCases.Calendar;
+using AtomUI.Desktop.Controls;
 using Shouldly;
 using Xunit;
 
@@ -76,6 +79,116 @@ public class CalendarShowCasePageTests
         zhCn.ShouldContain("public const string CardDescription = \"用于嵌套在空间有限的容器中。\";");
         zhTw.ShouldContain("public const string CardTitle = \"卡片模式\";");
         zhTw.ShouldContain("public const string CardDescription = \"用於嵌套在空間有限的容器中。\";");
+    }
+
+    [Fact]
+    public void Calendar_Lunar_ShowCases_Follow_Card_And_Precede_Selectable()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
+        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
+        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_CN.cs");
+        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_TW.cs");
+
+        var cardIndex = source.IndexOf("CalendarShowCaseLangResource CardTitle", StringComparison.Ordinal);
+        var lunarIndex = source.IndexOf("CalendarShowCaseLangResource LunarCalendarTitle", StringComparison.Ordinal);
+        var lunarCardIndex = source.IndexOf("CalendarShowCaseLangResource LunarCalendarCardTitle", StringComparison.Ordinal);
+        var selectableIndex = source.IndexOf("CalendarShowCaseLangResource SelectableCalendarTitle", StringComparison.Ordinal);
+
+        cardIndex.ShouldBeGreaterThanOrEqualTo(0);
+        lunarIndex.ShouldBeGreaterThan(cardIndex);
+        lunarCardIndex.ShouldBeGreaterThan(lunarIndex);
+        selectableIndex.ShouldBeGreaterThan(lunarCardIndex);
+        var lunarSource = source[lunarIndex..lunarCardIndex];
+        var lunarCardSource = source[lunarCardIndex..selectableIndex];
+        source.ShouldContain("<atom:LunarCalendar Value=\"{Binding LunarCalendarSampleDate}\"");
+        source.ShouldContain("Fullscreen=\"False\"");
+        source.ShouldContain("ShowSolarTerms=\"True\"");
+        source.ShouldContain("ShowTraditionalFestivals=\"True\"");
+        lunarSource.ShouldContain("HolidayProvider=\"{Binding LunarCalendarHolidayProvider}\"");
+        lunarCardSource.ShouldNotContain("HolidayProvider=\"{Binding LunarCalendarHolidayProvider}\"");
+        lunarCardSource.ShouldContain("<Border MinWidth=\"300\"");
+        lunarCardSource.ShouldNotContain("<Border Width=\"300\"");
+
+        enUs.ShouldContain("public const string LunarCalendarTitle = \"Lunar Calendar\";");
+        enUs.ShouldContain("public const string LunarCalendarCardTitle = \"Lunar Calendar Card\";");
+        zhCn.ShouldContain("public const string LunarCalendarTitle = \"农历日历\";");
+        zhCn.ShouldContain("public const string LunarCalendarCardTitle = \"农历卡片日历\";");
+        zhTw.ShouldContain("public const string LunarCalendarTitle = \"農曆日曆\";");
+        zhTw.ShouldContain("public const string LunarCalendarCardTitle = \"農曆卡片日曆\";");
+    }
+
+    [Fact]
+    public void Calendar_Lunar_ViewModel_Provides_Static_Holiday_Data()
+    {
+        var viewModel = new CalendarViewModel(null!);
+
+        viewModel.LunarCalendarSampleDate.ShouldBe(new DateTime(2024, 2, 10));
+        viewModel.LunarCalendarHolidayProvider.ShouldNotBeNull();
+        viewModel.LunarCalendarHolidayProvider.TryGetHolidays(
+            new CalendarDateRange(new DateTime(2024, 2, 1), new DateTime(2024, 2, 29)),
+            CultureInfo.GetCultureInfo("en-US"),
+            out var holidays).ShouldBeTrue();
+        holidays.ShouldContain(item =>
+            item.Date == new DateTime(2024, 2, 9) &&
+            item.Name == "除夕" &&
+            item.Kind == LunarCalendarHolidayKind.Holiday);
+        holidays.ShouldContain(item =>
+            item.Date == new DateTime(2024, 2, 18) &&
+            item.Name == "调休工作日" &&
+            item.Kind == LunarCalendarHolidayKind.Workday);
+    }
+
+    [Fact]
+    public void Calendar_Selectable_ShowCase_Follows_Card_IsLast_And_Matches_AntDesign_State_Flow()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
+        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
+        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_CN.cs");
+        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_TW.cs");
+
+        var cardIndex = source.IndexOf("CalendarShowCaseLangResource CardTitle", StringComparison.Ordinal);
+        var selectableIndex = source.IndexOf("CalendarShowCaseLangResource SelectableCalendarTitle", StringComparison.Ordinal);
+        var nextShowCaseItemIndex = source.IndexOf(
+            "<gallery:ShowCaseItem Title=",
+            selectableIndex + 1,
+            StringComparison.Ordinal);
+
+        cardIndex.ShouldBeGreaterThanOrEqualTo(0);
+        selectableIndex.ShouldBeGreaterThan(cardIndex);
+        nextShowCaseItemIndex.ShouldBe(-1);
+        source.ShouldContain("<atom:Alert Type=\"Info\"");
+        source.ShouldContain("Message=\"{Binding SelectableCalendarSelectedText}\"");
+        source.ShouldContain("Value=\"{Binding SelectableCalendarValue}\"");
+        source.ShouldContain("Selected=\"OnSelectableCalendarSelected\"");
+
+        enUs.ShouldContain("public const string SelectableCalendarTitle = \"Selectable Calendar\";");
+        enUs.ShouldContain("public const string SelectableCalendarSelectedMessage = \"You selected date: {0:yyyy-MM-dd}\";");
+        zhCn.ShouldContain("public const string SelectableCalendarTitle = \"可选择的日历\";");
+        zhCn.ShouldContain("public const string SelectableCalendarSelectedMessage = \"你选择的日期：{0:yyyy-MM-dd}\";");
+        zhTw.ShouldContain("public const string SelectableCalendarTitle = \"可選擇的日曆\";");
+        zhTw.ShouldContain("public const string SelectableCalendarSelectedMessage = \"你選擇的日期：{0:yyyy-MM-dd}\";");
+    }
+
+    [Fact]
+    public void Calendar_Selectable_ViewModel_Separates_Panel_Value_From_Selected_Value()
+    {
+        var viewModel = new CalendarViewModel(null!);
+
+        var initialDate = new DateTime(2017, 1, 25);
+        viewModel.SelectableCalendarValue.ShouldBe(initialDate);
+        viewModel.SelectableCalendarSelectedValue.ShouldBe(initialDate);
+        viewModel.SelectableCalendarSelectedText.ShouldBe("You selected date: 2017-01-25");
+
+        viewModel.SelectableCalendarValue = new DateTime(2017, 2, 25);
+        viewModel.SelectableCalendarSelectedValue.ShouldBe(initialDate);
+        viewModel.SelectableCalendarSelectedText.ShouldBe("You selected date: 2017-01-25");
+
+        var selectedDate = new DateTime(2017, 3, 12);
+        viewModel.SelectSelectableCalendarDate(selectedDate);
+
+        viewModel.SelectableCalendarValue.ShouldBe(selectedDate);
+        viewModel.SelectableCalendarSelectedValue.ShouldBe(selectedDate);
+        viewModel.SelectableCalendarSelectedText.ShouldBe("You selected date: 2017-03-12");
     }
 
     private static string ExtractCalendarExampleItems(string source)

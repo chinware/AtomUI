@@ -67,6 +67,12 @@ internal sealed class CalendarView : TemplatedControl
     public static readonly StyledProperty<IDataTemplate?> FullCellTemplateProperty =
         AvaloniaProperty.Register<CalendarView, IDataTemplate?>(nameof(FullCellTemplate));
 
+    public static readonly StyledProperty<double> MiniContentHeightProperty =
+        AvaloniaProperty.Register<CalendarView, double>(nameof(MiniContentHeight), double.NaN);
+
+    public static readonly StyledProperty<double> FullCellMinHeightProperty =
+        AvaloniaProperty.Register<CalendarView, double>(nameof(FullCellMinHeight), double.NaN);
+
     public DateTime Value
     {
         get => GetValue(ValueProperty);
@@ -127,6 +133,18 @@ internal sealed class CalendarView : TemplatedControl
         set => SetValue(FullCellTemplateProperty, value);
     }
 
+    public double MiniContentHeight
+    {
+        get => GetValue(MiniContentHeightProperty);
+        set => SetValue(MiniContentHeightProperty, value);
+    }
+
+    public double FullCellMinHeight
+    {
+        get => GetValue(FullCellMinHeightProperty);
+        set => SetValue(FullCellMinHeightProperty, value);
+    }
+
     public CalendarView()
     {
         Focusable = true;
@@ -142,6 +160,27 @@ internal sealed class CalendarView : TemplatedControl
     public event EventHandler<CalendarCellSelectedEventArgs>? CellSelected;
 
     public IReadOnlyList<CalendarViewCellModel> CellModels => _cellModels;
+
+    private ICalendarPresentationAdapter _presentationAdapter = DefaultCalendarPresentationAdapter.Instance;
+
+    internal ICalendarPresentationAdapter PresentationAdapter
+    {
+        get => _presentationAdapter;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            if (ReferenceEquals(_presentationAdapter, value))
+            {
+                return;
+            }
+
+            ReleaseContainers();
+            _cellPool.Clear();
+            _presentationAdapter = value;
+            RebuildCells();
+            RealizeContainers();
+        }
+    }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -193,6 +232,13 @@ internal sealed class CalendarView : TemplatedControl
                 }
             }
         }
+        else if (change.Property == FullCellMinHeightProperty)
+        {
+            foreach (var cell in _cellPool)
+            {
+                cell.FullCellMinHeight = FullCellMinHeight;
+            }
+        }
 
         if (change.Property == FullscreenProperty ||
             change.Property == ViewModeProperty ||
@@ -217,8 +263,9 @@ internal sealed class CalendarView : TemplatedControl
         var culture = Culture ?? CultureInfo.CurrentCulture;
         var value = Value.Date;
         var today = Today == default ? DateTime.Today : Today.Date;
-        var start = ValidRange?.Start;
-        var end = ValidRange?.End;
+        var effectiveRange = PresentationAdapter.GetEffectiveRange(ValidRange);
+        var start = effectiveRange.BuilderStart;
+        var end = effectiveRange.BuilderEnd;
 
         if (ViewMode == CalendarViewMode.Month)
         {
@@ -696,6 +743,11 @@ internal sealed class CalendarView : TemplatedControl
 
     private void PlaceCell(CalendarViewCell cell, CalendarViewCellModel model, int row, int col, int index)
     {
+        if (cell.FullCellMinHeight != FullCellMinHeight)
+        {
+            cell.FullCellMinHeight = FullCellMinHeight;
+        }
+
         var cellTemplate = CellTemplate;
         if (!ReferenceEquals(cell.CellTemplate, cellTemplate))
         {
@@ -737,7 +789,7 @@ internal sealed class CalendarView : TemplatedControl
     {
         while (_cellPool.Count <= index)
         {
-            _cellPool.Add(new CalendarViewCell());
+            _cellPool.Add(PresentationAdapter.CreateCell());
         }
 
         return _cellPool[index];
@@ -778,6 +830,17 @@ internal sealed class CalendarView : TemplatedControl
             if (cell.Model is not null)
             {
                 yield return cell;
+            }
+        }
+    }
+
+    internal void RefreshPresentation()
+    {
+        foreach (var cell in _cellPool)
+        {
+            if (cell.Model is { } model)
+            {
+                cell.Bind(this, model);
             }
         }
     }

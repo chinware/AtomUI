@@ -17,20 +17,14 @@ internal partial class en_US
     public const string CardTitle = "Card";
     public const string CardDescription = "Nested inside a container element for rendering in limited space.";
 
-    public const string YearModeTitle = "Year mode";
-    public const string YearModeDescription = "A year panel showing a month grid (Mode = Year).";
+    public const string LunarCalendarTitle = "Lunar Calendar";
+    public const string LunarCalendarDescription = "A full-screen calendar with lunar dates, solar terms, traditional festivals, and application-provided holiday annotations.";
+    public const string LunarCalendarCardTitle = "Lunar Calendar Card";
+    public const string LunarCalendarCardDescription = "A compact lunar calendar for limited spaces.";
 
-    public const string ShowWeekTitle = "Week numbers";
-    public const string ShowWeekDescription = "Show an extra week-number column (ShowWeek = true).";
-
-    public const string RangeTitle = "Valid range and disabled dates";
-    public const string RangeDescription = "Constrain selectable dates with ValidRange, and disable specific dates with DisabledDate.";
-
-    public const string CellTemplateTitle = "Custom cell content";
-    public const string CellTemplateDescription = "Render business content inside each cell with CellTemplate.";
-
-    public const string FullCellTemplateTitle = "Custom full cell";
-    public const string FullCellTemplateDescription = "Replace the whole cell inner content with FullCellTemplate.";
+    public const string SelectableCalendarTitle = "Selectable Calendar";
+    public const string SelectableCalendarDescription = "A basic calendar component with Year/Month switch.";
+    public const string SelectableCalendarSelectedMessage = "You selected date: {0:yyyy-MM-dd}";
 
     public const string NoticeCalendarTitle = "Notice Calendar";
     public const string NoticeCalendarDescription = "Render notice items in date cells and backlog numbers in month cells.";
@@ -51,10 +45,4 @@ internal partial class en_US
     public const string CrossDateEventsMaintenanceText = "Maintenance";
     public const string CrossDateEventsBugFixText = "Bug fix";
 
-    public const string HeaderTemplateTitle = "Custom header";
-    public const string HeaderTemplateDescription = "Replace the default header with HeaderTemplate.";
-
-    public const string EventsTitle = "Selection events";
-    public const string EventsDescription = "Observe ValueChanged, Selected, and PanelChanged and their sources.";
-    public const string EventsLogHint = "Interact with the calendar to see events.";
 }

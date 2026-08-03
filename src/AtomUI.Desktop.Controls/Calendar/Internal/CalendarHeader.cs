@@ -81,6 +81,23 @@ internal sealed class CalendarHeader : TemplatedControl
     private bool _suppress;
     private bool _yearDropDownActive;
     private bool _monthDropDownActive;
+    private ICalendarPresentationAdapter _presentationAdapter = DefaultCalendarPresentationAdapter.Instance;
+
+    internal ICalendarPresentationAdapter PresentationAdapter
+    {
+        get => _presentationAdapter;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            if (ReferenceEquals(_presentationAdapter, value))
+            {
+                return;
+            }
+
+            _presentationAdapter = value;
+            SyncFromState();
+        }
+    }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -171,19 +188,23 @@ internal sealed class CalendarHeader : TemplatedControl
 
         var culture = Culture ?? CultureInfo.CurrentCulture;
         var value = Value.Date;
-        var yearSuffix = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.YearSuffix) ?? string.Empty;
+        var effectiveRange = PresentationAdapter.GetEffectiveRange(ValidRange);
 
-        var years = CalendarHeaderOptions.BuildYearOptions(
-            value.Year, ValidRange?.Start.Year, ValidRange?.End.Year);
+        var years = effectiveRange.IsEmpty
+            ? Array.Empty<int>()
+            : CalendarHeaderOptions.BuildYearOptions(
+                value.Year, effectiveRange.Start?.Year, effectiveRange.End?.Year);
         var yearItems = years
-            .Select(y => new CalendarHeaderItem(y, y.ToString(CultureInfo.InvariantCulture) + yearSuffix))
+            .Select(y => new CalendarHeaderItem(y, PresentationAdapter.FormatYearOption(y, culture)))
             .ToList();
 
         // Month Select 仅 Month 模式显示
         var showMonth = Mode == CalendarMode.Month;
         var monthItems = showMonth
-            ? CalendarHeaderOptions.BuildMonthOptions(value.Year, ValidRange?.Start, ValidRange?.End)
-                .Select(m => new CalendarHeaderItem(m, culture.DateTimeFormat.AbbreviatedMonthNames[m - 1]))
+            ? (effectiveRange.IsEmpty
+                ? Array.Empty<int>()
+                : CalendarHeaderOptions.BuildMonthOptions(value.Year, effectiveRange.Start, effectiveRange.End))
+                .Select(m => new CalendarHeaderItem(m, PresentationAdapter.FormatMonthOption(value.Year, m, culture)))
                 .ToList()
             : null;
 
@@ -253,6 +274,8 @@ internal sealed class CalendarHeader : TemplatedControl
             _suppress = false;
         }
     }
+
+    internal void RefreshPresentation() => SyncFromState();
 
     private static bool HasSameItems(
         System.Collections.IEnumerable? source,
@@ -329,7 +352,9 @@ internal sealed class CalendarHeader : TemplatedControl
 
         var value = Value.Date;
         var year = item.Key;
-        var month = CalendarHeaderOptions.ClampMonthToYear(value.Month, year, ValidRange?.Start, ValidRange?.End);
+        var effectiveRange = PresentationAdapter.GetEffectiveRange(ValidRange);
+        var month = CalendarHeaderOptions.ClampMonthToYear(
+            value.Month, year, effectiveRange.Start, effectiveRange.End);
         var day = Math.Min(value.Day, DateTime.DaysInMonth(year, month));
         YearSelected?.Invoke(this, new DateTime(year, month, day));
     }

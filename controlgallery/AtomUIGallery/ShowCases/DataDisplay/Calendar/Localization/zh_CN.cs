@@ -17,20 +17,14 @@ internal partial class zh_CN
     public const string CardTitle = "卡片模式";
     public const string CardDescription = "用于嵌套在空间有限的容器中。";
 
-    public const string YearModeTitle = "年模式";
-    public const string YearModeDescription = "显示月份网格的年面板（Mode = Year）。";
+    public const string LunarCalendarTitle = "农历日历";
+    public const string LunarCalendarDescription = "完整模式的日历，展示农历日期、二十四节气、传统节日和应用提供的节假日标记。";
+    public const string LunarCalendarCardTitle = "农历卡片日历";
+    public const string LunarCalendarCardDescription = "适用于有限空间的紧凑农历日历。";
 
-    public const string ShowWeekTitle = "周序号";
-    public const string ShowWeekDescription = "显示额外的周序号列（ShowWeek = true）。";
-
-    public const string RangeTitle = "有效范围与禁用日期";
-    public const string RangeDescription = "用 ValidRange 约束可选日期，用 DisabledDate 禁用特定日期。";
-
-    public const string CellTemplateTitle = "自定义单元格内容";
-    public const string CellTemplateDescription = "用 CellTemplate 在每个单元格内渲染业务内容。";
-
-    public const string FullCellTemplateTitle = "自定义完整单元格";
-    public const string FullCellTemplateDescription = "用 FullCellTemplate 替换整个单元格 inner 内容。";
+    public const string SelectableCalendarTitle = "可选择的日历";
+    public const string SelectableCalendarDescription = "一个通用的日历面板，支持年/月切换。";
+    public const string SelectableCalendarSelectedMessage = "你选择的日期：{0:yyyy-MM-dd}";
 
     public const string NoticeCalendarTitle = "通知事项日历";
     public const string NoticeCalendarDescription = "在日期单元格内展示通知事项，在月份单元格内展示待办数量。";
@@ -51,10 +45,4 @@ internal partial class zh_CN
     public const string CrossDateEventsMaintenanceText = "维护窗口";
     public const string CrossDateEventsBugFixText = "缺陷修复";
 
-    public const string HeaderTemplateTitle = "自定义头部";
-    public const string HeaderTemplateDescription = "用 HeaderTemplate 替换默认头部。";
-
-    public const string EventsTitle = "选择事件";
-    public const string EventsDescription = "观察 ValueChanged、Selected、PanelChanged 及其来源。";
-    public const string EventsLogHint = "与日历交互以查看事件。";
 }

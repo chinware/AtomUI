@@ -24,7 +24,7 @@ namespace AtomUI.Desktop.Controls.Internal.Calendar;
     CalendarCellPseudoClass.Outside,
     CalendarCellPseudoClass.Disabled,
     CalendarCellPseudoClass.Focused)]
-internal sealed class CalendarViewCell : TemplatedControl
+internal class CalendarViewCell : TemplatedControl
 {
     public static readonly StyledProperty<string> DisplayTextProperty =
         AvaloniaProperty.Register<CalendarViewCell, string>(nameof(DisplayText), string.Empty);
@@ -37,6 +37,9 @@ internal sealed class CalendarViewCell : TemplatedControl
 
     public static readonly StyledProperty<IDataTemplate?> FullCellTemplateProperty =
         AvaloniaProperty.Register<CalendarViewCell, IDataTemplate?>(nameof(FullCellTemplate));
+
+    public static readonly StyledProperty<double> FullCellMinHeightProperty =
+        AvaloniaProperty.Register<CalendarViewCell, double>(nameof(FullCellMinHeight), double.NaN);
 
     /// <summary>Cell 主显示文本（日两位数 / 短月名 / 周序号）。</summary>
     public string DisplayText
@@ -62,6 +65,12 @@ internal sealed class CalendarViewCell : TemplatedControl
     {
         get => GetValue(FullCellTemplateProperty);
         set => SetValue(FullCellTemplateProperty, value);
+    }
+
+    public double FullCellMinHeight
+    {
+        get => GetValue(FullCellMinHeightProperty);
+        set => SetValue(FullCellMinHeightProperty, value);
     }
 
     private CalendarViewCellModel? _model;
@@ -126,16 +135,9 @@ internal sealed class CalendarViewCell : TemplatedControl
         }
         else
         {
-            Context = new CalendarCellContext(
-                Value: model.Value,
-                Today: owner.Today == default ? DateTime.Today : owner.Today.Date,
-                CellType: model.Kind == CalendarViewCellKind.Month ? CalendarCellType.Month : CalendarCellType.Date,
-                DisplayValue: model.DisplayText,
-                IsToday: model.IsToday,
-                IsInView: model.IsInView,
-                IsSelected: model.IsSelected,
-                IsDisabled: model.IsDisabled);
+            Context = owner.PresentationAdapter.CreateCellContext(owner, model);
         }
+        owner.PresentationAdapter.ApplyCellPresentation(this, owner, model);
         UpdatePseudoClasses();
         UpdateTemplatePresentation();
     }
@@ -153,19 +155,14 @@ internal sealed class CalendarViewCell : TemplatedControl
                 return string.Empty;
             }
 
-            var culture = _owner?.Culture ?? System.Globalization.CultureInfo.CurrentCulture;
-            return model.Kind switch
-            {
-                CalendarViewCellKind.Date => model.Value.ToString("D", culture),
-                CalendarViewCellKind.Month => model.Value.ToString("Y", culture),
-                _ => $"{LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Week) ?? CalendarControlLangResourceKind.Week.ToString()} {model.DisplayText}"
-            };
+            return _owner?.PresentationAdapter.GetAutomationName(_owner, model) ?? string.Empty;
         }
     }
 
     /// <summary>释放池化容器持有的 owner、model、模板与上下文引用。</summary>
     internal void Unbind()
     {
+        _owner?.PresentationAdapter.ClearCellPresentation(this);
         _owner = null;
         _model = null;
         SetCurrentValue(IsEnabledProperty, true);
@@ -174,6 +171,7 @@ internal sealed class CalendarViewCell : TemplatedControl
         Context = null;
         CellTemplate = null;
         FullCellTemplate = null;
+        FullCellMinHeight = double.NaN;
         SetFullscreen(false);
         UpdatePseudoClasses();
         UpdateTemplatePresentation();
@@ -237,7 +235,12 @@ internal sealed class CalendarViewCell : TemplatedControl
                 Grid.SetRow(_valueText, 0);
             }
 
-            var valueRowSpan = !_fullscreen && !useCellTemplate && !useFullTemplate ? 2 : 1;
+            var valueRowSpan = !_fullscreen &&
+                               !HasDefaultSecondaryContent &&
+                               !useCellTemplate &&
+                               !useFullTemplate
+                ? 2
+                : 1;
             if (Grid.GetRowSpan(_valueText) != valueRowSpan)
             {
                 Grid.SetRowSpan(_valueText, valueRowSpan);
@@ -260,6 +263,8 @@ internal sealed class CalendarViewCell : TemplatedControl
     }
 
     private bool HasCustomTemplate => CellTemplate is not null || FullCellTemplate is not null;
+
+    protected virtual bool HasDefaultSecondaryContent => false;
 
     private void UpdatePseudoClasses()
     {

@@ -10,6 +10,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.VisualTree;
 using CalendarRangeBarPanelControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarRangeBarPanel;
 using CalendarViewControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarView;
@@ -173,10 +174,42 @@ public class Calendar : TemplatedControl
 
     #endregion
 
+    #region Internal Presentation Properties
+
+    internal static readonly StyledProperty<double> EffectiveMiniContentHeightProperty =
+        AvaloniaProperty.Register<Calendar, double>(nameof(EffectiveMiniContentHeight), double.NaN);
+
+    internal static readonly StyledProperty<double> EffectiveFullCellMinHeightProperty =
+        AvaloniaProperty.Register<Calendar, double>(nameof(EffectiveFullCellMinHeight), double.NaN);
+
+    internal static readonly StyledProperty<double> EffectiveRangeBarTopOffsetProperty =
+        AvaloniaProperty.Register<Calendar, double>(nameof(EffectiveRangeBarTopOffset), double.NaN);
+
+    internal double EffectiveMiniContentHeight
+    {
+        get => GetValue(EffectiveMiniContentHeightProperty);
+        set => SetValue(EffectiveMiniContentHeightProperty, value);
+    }
+
+    internal double EffectiveFullCellMinHeight
+    {
+        get => GetValue(EffectiveFullCellMinHeightProperty);
+        set => SetValue(EffectiveFullCellMinHeightProperty, value);
+    }
+
+    internal double EffectiveRangeBarTopOffset
+    {
+        get => GetValue(EffectiveRangeBarTopOffsetProperty);
+        set => SetValue(EffectiveRangeBarTopOffsetProperty, value);
+    }
+
+    #endregion
+
     public Calendar()
     {
         SetCurrentValue(ValueProperty, DateTime.Today);
         _rangeBars.CollectionChanged += OnRangeBarsCollectionChanged;
+        BindPresentationMetrics();
     }
 
     /// <summary>公开 <see cref="Mode"/> 到内部面板模式的映射：Month 显示日期，Year 显示月份。</summary>
@@ -192,8 +225,14 @@ public class Calendar : TemplatedControl
     private CalendarRangeBarPanelControl? _rangeBarPanel;
     private CalendarHeader? _defaultHeader;
     private ContentControl? _customHeader;
+    private ICalendarPresentationAdapter _presentationAdapter = DefaultCalendarPresentationAdapter.Instance;
+    private IDisposable? _miniContentHeightBinding;
+    private IDisposable? _fullCellMinHeightBinding;
+    private IDisposable? _rangeBarTopOffsetBinding;
     private readonly Dictionary<CalendarRangeBar, CalendarRangeBarAttachment> _rangeBarAttachments =
         new(ReferenceEqualityComparer.Instance);
+
+    internal CultureInfo CurrentCulture { get; private set; } = CultureInfo.CurrentCulture;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -207,6 +246,7 @@ public class Calendar : TemplatedControl
         _calendarView = e.NameScope.Find<CalendarViewControl>(CalendarViewPart);
         if (_calendarView is not null)
         {
+            _calendarView.PresentationAdapter = _presentationAdapter;
             _calendarView.Today = DateTime.Today;
             _calendarView.CellSelected += OnCellSelected;
         }
@@ -224,6 +264,7 @@ public class Calendar : TemplatedControl
         _defaultHeader = e.NameScope.Find<CalendarHeader>(DefaultHeaderPart);
         if (_defaultHeader is not null)
         {
+            _defaultHeader.PresentationAdapter = _presentationAdapter;
             _defaultHeader.IsVisible = HeaderTemplate is null;
             _defaultHeader.YearSelected += OnHeaderYearSelected;
             _defaultHeader.MonthSelected += OnHeaderMonthSelected;
@@ -454,6 +495,7 @@ public class Calendar : TemplatedControl
     private void ApplyCulture()
     {
         var culture = Application.Current?.GetLanguageVariant()?.ToCultureInfo() ?? CultureInfo.CurrentCulture;
+        CurrentCulture = culture;
         if (_calendarView is not null)
         {
             _calendarView.Culture = culture;
@@ -468,6 +510,56 @@ public class Calendar : TemplatedControl
         {
             _defaultHeader.Culture = culture;
         }
+
+        RefreshCustomHeaderContent();
+    }
+
+    internal void SetPresentationAdapter(ICalendarPresentationAdapter presentationAdapter)
+    {
+        ArgumentNullException.ThrowIfNull(presentationAdapter);
+        if (ReferenceEquals(_presentationAdapter, presentationAdapter))
+        {
+            return;
+        }
+
+        _presentationAdapter = presentationAdapter;
+        BindPresentationMetrics();
+        if (_calendarView is not null)
+        {
+            _calendarView.PresentationAdapter = presentationAdapter;
+        }
+
+        if (_defaultHeader is not null)
+        {
+            _defaultHeader.PresentationAdapter = presentationAdapter;
+        }
+
+        RefreshCustomHeaderContent();
+    }
+
+    private void BindPresentationMetrics()
+    {
+        _miniContentHeightBinding?.Dispose();
+        _fullCellMinHeightBinding?.Dispose();
+        _rangeBarTopOffsetBinding?.Dispose();
+
+        var metrics = _presentationAdapter.Metrics;
+        _miniContentHeightBinding = Bind(
+            EffectiveMiniContentHeightProperty,
+            new DynamicResourceExtension(metrics.MiniContentHeightResourceKey));
+        _fullCellMinHeightBinding = Bind(
+            EffectiveFullCellMinHeightProperty,
+            new DynamicResourceExtension(metrics.FullCellMinHeightResourceKey));
+        _rangeBarTopOffsetBinding = Bind(
+            EffectiveRangeBarTopOffsetProperty,
+            new DynamicResourceExtension(metrics.RangeBarTopOffsetResourceKey));
+    }
+
+    internal void RefreshPresentation()
+    {
+        _calendarView?.RefreshPresentation();
+        _defaultHeader?.RefreshPresentation();
+        RefreshCustomHeaderContent();
     }
 
     private void OnHeaderYearSelected(object? sender, DateTime target) =>
@@ -591,7 +683,7 @@ public class Calendar : TemplatedControl
             execute: p => CommitModeChange((CalendarMode)p!),
             canExecute: p => p is CalendarMode mode && (mode == CalendarMode.Month || mode == CalendarMode.Year));
 
-        return new CalendarHeaderContext(Value.Date, Mode, changeValue, changeMode);
+        return _presentationAdapter.CreateHeaderContext(this, changeValue, changeMode);
     }
 
     private sealed class CalendarRangeBarAttachment : IDisposable

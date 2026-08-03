@@ -6,7 +6,7 @@ namespace AtomUI.Desktop.Controls;
 /// 自定义 Header 模板（<see cref="Calendar.HeaderTemplate"/>）的数据上下文。
 /// 不暴露 Calendar 实例；模板只能通过命令提交用户意图。
 /// </summary>
-public sealed class CalendarHeaderContext
+public class CalendarHeaderContext
 {
     public CalendarHeaderContext(DateTime value, CalendarMode mode, ICommand changeValueCommand, ICommand changeModeCommand)
     {

@@ -1,6 +1,6 @@
 # Calendar 行为设计
 
-本文档定义 Calendar 的日期/月面板组合、定制模板、禁用规则、键盘与 Automation 契约。控件定位、公共契约入口见 [Calendar 桌面版架构设计](overview.md)，源码 ownership 与维护边界见 [Calendar 桌面版实现原理](implementation.md)，范围条模型见 [Calendar 范围条设计](range-bar-design.md)，专属 Token 见 [Calendar Token 设计](token.md)。
+本文档定义 Calendar 的日期/月面板组合、定制模板、禁用规则、键盘与 Automation 契约。控件定位、公共契约入口见 [Calendar 桌面版架构设计](overview.md)，源码 ownership 与维护边界见 [Calendar 桌面版实现原理](implementation.md)，农历扩展见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)，范围条模型见 [Calendar 范围条设计](range-bar-design.md)，专属 Token 见 [Calendar Token 设计](token.md)。
 
 ## 1. 设计定位
 
@@ -189,9 +189,9 @@ Calendar 向 Header 和 View 单向投影状态。Template reapply 前解绑旧 
 
 ## 9. 兼容性与定制边界
 
-稳定契约包括 Calendar 的现有公共属性、三个事件、Template Part、九个 CalendarControl Token、根/Cell 伪类和四个 Calendar 语言资源键。FullCellTemplate 不得移除外层交互和 Automation；CellTemplate 不得替换默认日期/月值或内置范围条 overlay。应用负责模板内部业务视觉和业务数据，AtomUI 负责外层选择、禁用、焦点、Automation、主题、范围条投影和生命周期。
+稳定契约包括 Calendar 的现有公共属性、三个事件、Template Part、九个 `CalendarToken` 语义、根/Cell 伪类和四个 Calendar 语言资源键。FullCellTemplate 不得移除外层交互和 Automation；CellTemplate 不得替换默认日期/月值或内置范围条 overlay。应用负责模板内部业务视觉和业务数据，AtomUI 负责外层选择、禁用、焦点、Automation、主题、范围条投影和生命周期。LunarCalendar 复用这些行为，仅按 [LunarCalendar 农历能力设计](lunar-calendar-design.md) 增加支持范围、农历投影、Provider 和专用呈现。
 
-旧 `SelectedDate`、`SelectedDates`、`SelectionMode`、`DisplayDate*`、`BlackoutDates`、Decade 面板、Previous/Next Header 和旧 CalendarButton 体系不属于本控件契约。DatePicker 继续使用独立的旧 CalendarToken 和 CalendarView 类型。
+旧 `SelectedDate`、`SelectedDates`、`SelectionMode`、`DisplayDate*`、`BlackoutDates`、Decade 面板、Previous/Next Header 和旧 CalendarButton 体系不属于本控件契约。DatePicker 继续使用自身模块内独立的日期面板类型，不与本目录 CalendarView 或 Token 混用。
 
 ## 10. 验证要求
 

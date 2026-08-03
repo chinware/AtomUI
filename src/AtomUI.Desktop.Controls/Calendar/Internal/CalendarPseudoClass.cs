@@ -26,3 +26,10 @@ internal static class CalendarCellPseudoClass
     public const string Disabled = ":disabled";
     public const string Focused = ":focused";
 }
+
+internal static class LunarCalendarCellPseudoClass
+{
+    public const string Weekend = ":weekend";
+    public const string Holiday = ":holiday";
+    public const string Workday = ":workday";
+}

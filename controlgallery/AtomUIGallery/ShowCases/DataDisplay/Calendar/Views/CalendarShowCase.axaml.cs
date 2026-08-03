@@ -1,4 +1,9 @@
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
+using Avalonia;
 
 namespace AtomUIGallery.ShowCases.Calendar;
 
@@ -9,29 +14,35 @@ public partial class CalendarShowCase : GalleryReactiveUserControl<CalendarViewM
     public CalendarShowCase()
     {
         InitializeComponent();
+
+        this.WhenActivated(disposables =>
+        {
+            RefreshSelectableCalendarText();
+
+            var languageManager = Application.Current?.GetLanguageManager();
+            if (languageManager is not null)
+            {
+                EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshSelectableCalendarText();
+                languageManager.LanguageVariantChanged += handler;
+                Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
+                          .DisposeWith(disposables);
+            }
+        });
     }
 
-    private void OnCalendarValueChanged(object? sender, CalendarValueChangedEventArgs e)
+    private void OnSelectableCalendarSelected(object? sender, CalendarSelectedEventArgs e)
     {
         if (DataContext is CalendarViewModel vm)
         {
-            vm.EventLog = $"ValueChanged: {e.OldValue:yyyy-MM-dd} -> {e.NewValue:yyyy-MM-dd}";
+            vm.SelectSelectableCalendarDate(e.Value);
         }
     }
 
-    private void OnCalendarSelected(object? sender, CalendarSelectedEventArgs e)
+    private void RefreshSelectableCalendarText()
     {
         if (DataContext is CalendarViewModel vm)
         {
-            vm.EventLog = $"Selected: {e.Value:yyyy-MM-dd} ({e.Source})";
-        }
-    }
-
-    private void OnCalendarPanelChanged(object? sender, CalendarPanelChangedEventArgs e)
-    {
-        if (DataContext is CalendarViewModel vm)
-        {
-            vm.EventLog = $"PanelChanged: {e.Value:yyyy-MM} ({e.Mode})";
+            vm.RefreshSelectableCalendarText();
         }
     }
 }

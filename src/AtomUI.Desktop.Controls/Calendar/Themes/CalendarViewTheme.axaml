@@ -31,8 +31,8 @@
     </Style>
 
     <Style Selector="^:mini">
-        <Setter Property="Height" Value="{atom:CalendarTokenResource MiniContentHeight}" />
-        <Setter Property="MaxHeight" Value="{atom:CalendarTokenResource MiniContentHeight}" />
+        <Setter Property="Height" Value="{Binding MiniContentHeight, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="MaxHeight" Value="{Binding MiniContentHeight, RelativeSource={RelativeSource Self}}" />
     </Style>
 
     <!-- Fullscreen：完整数据布局，Panel 背景与较高内容区 -->

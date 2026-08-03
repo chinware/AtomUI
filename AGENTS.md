@@ -81,6 +81,7 @@ Read the relevant document before touching the corresponding area:
 - AOT, trimming, dynamic data, source generators: [docs/engineering/aot-programming-guidelines.md](docs/engineering/aot-programming-guidelines.md)
 - Compiler diagnostics: [docs/engineering/compiler-diagnostics-guidelines.md](docs/engineering/compiler-diagnostics-guidelines.md)
 - Changelog and release notes: [docs/engineering/changelog-guidelines.md](docs/engineering/changelog-guidelines.md)
+- Apple iOS development environment: [docs/engineering/apple-ios-development-environment.md](docs/engineering/apple-ios-development-environment.md)
 - Gallery NativeAOT release flow: [docs/engineering/gallery-aot-release-workflow.md](docs/engineering/gallery-aot-release-workflow.md)
 - Gallery page structure: [docs/gallery/gallery-showcase-design-pattern.md](docs/gallery/gallery-showcase-design-pattern.md)
 - Gallery organization: [docs/gallery/organization.md](docs/gallery/organization.md)

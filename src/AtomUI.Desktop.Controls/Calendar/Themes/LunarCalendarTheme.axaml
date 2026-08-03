@@ -1,0 +1,12 @@
+<ControlTheme
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:AtomUI.Desktop.Controls"
+    xmlns:themes="clr-namespace:AtomUI.Desktop.Controls.Themes"
+    x:Class="AtomUI.Desktop.Controls.Themes.LunarCalendarControlTheme"
+    TargetType="controls:LunarCalendar"
+    x:ClassModifier="internal">
+    <ControlTheme.BasedOn>
+        <themes:CalendarControlTheme TargetType="controls:LunarCalendar" />
+    </ControlTheme.BasedOn>
+</ControlTheme>

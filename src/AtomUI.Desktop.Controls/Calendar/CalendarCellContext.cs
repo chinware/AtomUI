@@ -3,7 +3,7 @@ namespace AtomUI.Desktop.Controls;
 /// <summary>
 /// Cell 模板（<see cref="Calendar.CellTemplate"/> / <see cref="Calendar.FullCellTemplate"/>）的数据上下文。
 /// </summary>
-public sealed record CalendarCellContext(
+public record CalendarCellContext(
     DateTime Value,
     DateTime Today,
     CalendarCellType CellType,

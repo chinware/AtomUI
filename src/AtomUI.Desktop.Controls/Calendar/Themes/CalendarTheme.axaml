@@ -42,6 +42,8 @@
                                                    DisabledDate="{TemplateBinding DisabledDate}"
                                                    CellTemplate="{TemplateBinding CellTemplate}"
                                                    FullCellTemplate="{TemplateBinding FullCellTemplate}"
+                                                   MiniContentHeight="{TemplateBinding EffectiveMiniContentHeight}"
+                                                   FullCellMinHeight="{TemplateBinding EffectiveFullCellMinHeight}"
                                                    HorizontalAlignment="Stretch"
                                                    VerticalAlignment="Stretch"
                                                    ZIndex="0" />
@@ -53,7 +55,7 @@
                                                             RangeBars="{TemplateBinding RangeBars}"
                                                             RangeBarHeight="{atom:CalendarTokenResource RangeBarHeight}"
                                                             WeekHeaderHeight="{atom:SharedTokenResource ControlHeightSM}"
-                                                            RangeBarTopOffset="{atom:SharedTokenResource ControlHeightSM}"
+                                                            RangeBarTopOffset="{TemplateBinding EffectiveRangeBarTopOffset}"
                                                             RangeBarHorizontalInset="{atom:SharedTokenResource UniformlyMarginXXS}"
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Stretch"

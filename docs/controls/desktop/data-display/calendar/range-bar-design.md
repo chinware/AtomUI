@@ -1,6 +1,6 @@
 # Calendar 范围条设计
 
-本文档定义 `Calendar` 内置范围条的公共模型、overlay 渲染层、网格坐标算法、资源生命周期和验证边界。控件总体设计见 [Calendar 桌面版架构设计](overview.md)，源码职责与维护入口见 [Calendar 桌面版实现原理](implementation.md)，日期面板行为见 [Calendar 行为设计](behavior-design.md)，视觉变量见 [Calendar Token 设计](token.md)。
+本文档定义 `Calendar` 内置范围条的公共模型、overlay 渲染层、网格坐标算法、资源生命周期和验证边界。控件总体设计见 [Calendar 桌面版架构设计](overview.md)，源码职责与维护入口见 [Calendar 桌面版实现原理](implementation.md)，日期面板行为见 [Calendar 行为设计](behavior-design.md)，农历 Cell 避让规则见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)，视觉变量见 [Calendar Token 设计](token.md)。
 
 ## 1. 设计定位
 
@@ -57,7 +57,7 @@
 | `EndDate` | `null` | 区间结束日期，投影时规范化到 `.Date`。 |
 | `Label` | `null` | 显示在范围起点条段内的内容；为空时只绘制色条。 |
 | `Background` | `null` | 范围条背景画刷；支持普通 brush、binding、DynamicResource 和 TokenResource。 |
-| `Height` | `double.NaN` | 显式条高；非有限正数时使用 `CalendarControlToken.RangeBarHeight`。 |
+| `Height` | `double.NaN` | 显式条高；非有限正数时使用 `CalendarToken.RangeBarHeight`。 |
 
 `StartDate` 或 `EndDate` 缺失时，该范围条不参与投影。`EndDate < StartDate` 时，该范围条按无效输入跳过渲染，不在 XAML 解析或 binding 过渡状态下抛出异常。范围条不改变 `ValidRange`、`DisabledDate` 或 Cell 是否可选；业务需要隐藏无效日期上的标记时，应从数据源侧移除对应范围。
 
@@ -157,7 +157,7 @@ CalendarViewCell
 - `Mode`、`Fullscreen` 和 `ShowWeek`。
 - `PART_BodyPresenter` / `CalendarRangeBarPanel` 的可用尺寸。
 - 周标题高度，默认来自 SharedToken 的 `ControlHeightSM`。
-- `CalendarControlToken.RangeBarHeight` 和单条 `CalendarRangeBar.Height`。
+- `CalendarToken.RangeBarHeight` 和单条 `CalendarRangeBar.Height`。
 - 有效 `CalendarRangeBar` 集合快照。
 
 输出：
@@ -200,7 +200,7 @@ weekHeaderHeight = SharedToken.ControlHeightSM
 dateAreaHeight = panelHeight - weekHeaderHeight
 cellWidth = panelWidth / totalColumns
 cellHeight = dateAreaHeight / 6
-effectiveHeight = finite Height > 0 ? Height : CalendarControlToken.RangeBarHeight
+effectiveHeight = finite Height > 0 ? Height : CalendarToken.RangeBarHeight
 ```
 
 行段位置：
@@ -217,7 +217,7 @@ width = (endColumn - startColumn + 1) * cellWidth
 y = weekHeaderHeight + row * cellHeight + laneOffset
 ```
 
-`laneOffset` 由日期值下方的范围条可用区域决定，必须保持同一 row 内各 lane 垂直连续且不制造 Cell 外间距。默认条高来自 `CalendarControlToken.RangeBarHeight`；单条 `Height` 只覆盖自身高度。条间距、圆角和 label padding 从 SharedToken 派生，作为内部 metrics，不新增额外 public API。
+`laneOffset` 由日期值下方的范围条可用区域决定，必须保持同一 row 内各 lane 垂直连续且不制造 Cell 外间距。默认条高来自 `CalendarToken.RangeBarHeight`；单条 `Height` 只覆盖自身高度。条间距、圆角和 label padding 从 SharedToken 派生，作为内部 metrics，不新增额外 public API。LunarCalendar 的 presentation adapter 只把有效顶部偏移下移到农历次级文本行之后，分段、lane、x/width 和日期顺序算法保持不变。
 
 FlowDirection 为 RTL 时，视觉 x 坐标按 panel 宽度镜像；日期顺序、日期比较和事件语义不变。圆角也按视觉 inline-start/inline-end 镜像。
 
@@ -232,7 +232,7 @@ FlowDirection 为 RTL 时，视觉 x 坐标按 panel 宽度镜像；日期顺序
 
 ## 9. 兼容性与定制边界
 
-稳定契约包括 `Calendar.RangeBars`、`CalendarRangeBar` 的五个公开属性、`CalendarControlToken.RangeBarHeight`、范围条在 Fullscreen Month 日期网格 overlay 中的渲染语义、Cell 外层交互保留和资源宿主生命周期。
+稳定契约包括 `Calendar.RangeBars`、`CalendarRangeBar` 的五个公开属性、`CalendarToken.RangeBarHeight`、范围条在 Fullscreen Month 日期网格 overlay 中的渲染语义、Cell 外层交互保留和资源宿主生命周期。
 
 应用可以通过 `RangeBars` 数据控制日期、颜色、高度和 label；可以继续使用 `CellTemplate` 添加日期内业务内容；也可以使用 `FullCellTemplate` 完整替换 Cell 内部视觉。范围条 overlay 不读取业务模板内部结构，因此应用不需要在模板中手写跨日期连接算法。
 

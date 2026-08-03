@@ -101,7 +101,7 @@
         <Setter Property="CornerRadius" Value="0" />
         <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillSecondary}" />
         <Setter Property="BorderThickness" Value="0,2,0,0" />
-        <Setter Property="MinHeight" Value="{atom:CalendarTokenResource FullCellMinHeight}" />
+        <Setter Property="MinHeight" Value="{TemplateBinding FullCellMinHeight}" />
         <Setter Property="Padding" Value="8,4,8,0" />
     </Style>
     <Style Selector="^:fullscreen /template/ atom|TextBlock#PART_Value">
