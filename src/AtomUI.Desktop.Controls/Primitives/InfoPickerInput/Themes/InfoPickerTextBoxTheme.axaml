@@ -1,0 +1,18 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+              x:Class="AtomUI.Desktop.Controls.Primitives.Themes.InfoPickerTextBoxTheme"
+              x:ClassModifier="internal"
+              TargetType="atom:InfoPickerTextBox">
+    <ControlTheme.BasedOn>
+        <themes:EmbeddedTextBoxTheme TargetType="{x:Type atom:InfoPickerTextBox}" />
+    </ControlTheme.BasedOn>
+
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+
+    <Style Selector="^ /template/ TextPresenter#PART_TextPresenter">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+</ControlTheme>

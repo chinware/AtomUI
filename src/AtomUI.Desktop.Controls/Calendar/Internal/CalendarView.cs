@@ -138,13 +138,6 @@ internal sealed class CalendarView : TemplatedControl
     /// <summary>当前网格的不可变 Cell Model 列表。</summary>
     private IReadOnlyList<CalendarViewCellModel> _cellModels = Array.Empty<CalendarViewCellModel>();
 
-    /// <summary>Cell 模型失效需要重建的属性集合。</summary>
-    private static readonly HashSet<AvaloniaProperty> RebuildTriggers = new()
-    {
-        ValueProperty, TodayProperty, ViewModeProperty, ShowWeekProperty,
-        ValidRangeProperty, DisabledDateProperty, CultureProperty
-    };
-
     /// <summary>用户有效激活某个可选 Cell 时触发。</summary>
     public event EventHandler<CalendarCellSelectedEventArgs>? CellSelected;
 
@@ -153,10 +146,38 @@ internal sealed class CalendarView : TemplatedControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (RebuildTriggers.Contains(change.Property))
+        if (change.Property == ViewModeProperty || change.Property == ShowWeekProperty)
         {
             RebuildCells();
             RealizeContainers();
+        }
+        else if (change.Property == ValueProperty)
+        {
+            SyncValue(change.OldValue is DateTime oldValue ? oldValue.Date : Value.Date);
+        }
+        else if (change.Property == TodayProperty ||
+                 change.Property == ValidRangeProperty ||
+                 change.Property == DisabledDateProperty)
+        {
+            RefreshCellModels();
+        }
+        else if (change.Property == CultureProperty)
+        {
+            var oldCulture = change.OldValue as CultureInfo ?? CultureInfo.CurrentCulture;
+            var newCulture = Culture ?? CultureInfo.CurrentCulture;
+            var dateGridTopologyChanged = ViewMode == CalendarViewMode.Date &&
+                                           oldCulture.DateTimeFormat.FirstDayOfWeek !=
+                                           newCulture.DateTimeFormat.FirstDayOfWeek;
+            if (dateGridTopologyChanged)
+            {
+                RebuildCells();
+                RealizeContainers();
+            }
+            else
+            {
+                RefreshCellModels();
+                BuildWeekHeader(newCulture, ViewMode == CalendarViewMode.Date);
+            }
         }
         else if (change.Property == CellTemplateProperty || change.Property == FullCellTemplateProperty)
         {
@@ -224,6 +245,132 @@ internal sealed class CalendarView : TemplatedControl
         }
 
         FocusedValue = value;
+    }
+
+    /// <summary>
+    /// 同一日期网格内的 Value 变化只改变选中模型，不重新计算日期拓扑或重排容器。
+    /// </summary>
+    private void SyncValue(DateTime oldValue)
+    {
+        var value = Value.Date;
+        if (ViewMode == CalendarViewMode.Date &&
+            oldValue.Year == value.Year &&
+            oldValue.Month == value.Month &&
+            TrySyncDateSelection(value, oldValue))
+        {
+            FocusedValue = value;
+            ResetCellFocus();
+            SyncRealizedCells();
+            return;
+        }
+
+        if (ViewMode == CalendarViewMode.Month &&
+            oldValue.Year == value.Year &&
+            _cellModels.Count == 12 &&
+            _cellModels.Any(model =>
+                model.Kind == CalendarViewCellKind.Month &&
+                model.IsSelected &&
+                model.Value.Year == oldValue.Year))
+        {
+            RebuildCells();
+            ResetCellFocus();
+            SyncRealizedCells();
+            return;
+        }
+
+        RebuildCells();
+        RealizeContainers();
+    }
+
+    private bool TrySyncDateSelection(DateTime value, DateTime oldValue)
+    {
+        if (_cellModels.Count is not (CalendarViewCellBuilder.DateGridCellCount or 48) ||
+            _cellModels.Any(model => model.Kind is not CalendarViewCellKind.Date and not CalendarViewCellKind.Week))
+        {
+            return false;
+        }
+
+        if (!_cellModels.Any(model =>
+                model.Kind == CalendarViewCellKind.Date &&
+                model.IsSelected &&
+                model.Value.Year == oldValue.Year &&
+                model.Value.Month == oldValue.Month))
+        {
+            return false;
+        }
+
+        List<CalendarViewCellModel>? updatedModels = null;
+        for (var index = 0; index < _cellModels.Count; index++)
+        {
+            var model = _cellModels[index];
+            if (model.Kind == CalendarViewCellKind.Week)
+            {
+                continue;
+            }
+
+            var isSelected = model.Value.Date == value;
+            if (model.IsSelected == isSelected)
+            {
+                continue;
+            }
+
+            updatedModels ??= new List<CalendarViewCellModel>(_cellModels);
+            updatedModels[index] = model with { IsSelected = isSelected };
+        }
+
+        if (updatedModels is not null)
+        {
+            _cellModels = updatedModels;
+        }
+
+        return true;
+    }
+
+    private void RefreshCellModels()
+    {
+        RebuildCells();
+        ResetCellFocus();
+        SyncRealizedCells();
+    }
+
+    private void ResetCellFocus()
+    {
+        foreach (var cell in _cellPool)
+        {
+            cell.SetFocused(false);
+        }
+    }
+
+    private void SyncRealizedCells()
+    {
+        foreach (var cell in _cellPool)
+        {
+            if (cell.Model is not { } currentModel ||
+                FindEquivalentModel(currentModel) is not { } nextModel ||
+                Equals(currentModel, nextModel))
+            {
+                continue;
+            }
+
+            cell.Bind(this, nextModel);
+        }
+    }
+
+    private CalendarViewCellModel? FindEquivalentModel(CalendarViewCellModel currentModel)
+    {
+        foreach (var model in _cellModels)
+        {
+            var matches = model.Kind == currentModel.Kind &&
+                          (model.Kind == CalendarViewCellKind.Month
+                              ? model.Value.Year == currentModel.Value.Year && model.Value.Month == currentModel.Value.Month
+                              : model.Value.Date == currentModel.Value.Date);
+            if (matches)
+            {
+                return model;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>由 Cell 容器在有效激活时调用，转发用户意图给 Calendar。</summary>

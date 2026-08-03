@@ -14,8 +14,8 @@ internal partial class en_US
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "A full-screen month calendar.";
 
-    public const string MiniTitle = "Mini";
-    public const string MiniDescription = "A compact calendar for narrow containers (Fullscreen = false).";
+    public const string CardTitle = "Card";
+    public const string CardDescription = "Nested inside a container element for rendering in limited space.";
 
     public const string YearModeTitle = "Year mode";
     public const string YearModeDescription = "A year panel showing a month grid (Mode = Year).";

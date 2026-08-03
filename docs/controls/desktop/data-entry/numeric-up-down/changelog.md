@@ -8,6 +8,12 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-03
+
+- Implementation
+  - Extract `NumericUpDownSpinner` as an internal `ButtonSpinner` child control and move the spinner-mode template and action-button visuals into `NumericUpDownSpinnerTheme`.
+  - Keep NumericUpDown template parts, `ShowButtonSpinner` visibility, spin handling and rendered behavior unchanged while removing parent selectors that crossed the ButtonSpinner template boundary.
+
 ## 2026-07-02
 
 - Implementation

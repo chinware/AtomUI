@@ -25,6 +25,7 @@
 - `src/AtomUI.Desktop.Controls/TimePicker/TimeView/DateTimePickerPanel.cs`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimeView/TimeView.cs`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimeView/TimeViewCell.cs`
+- `src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/InfoPickerTextBox.cs` 与 `Themes/InfoPickerTextBoxTheme.axaml`：TimePicker 输入框使用的 internal 子控件及其文本 presenter、padding 基础视觉。
 
 职责边界：
 
@@ -39,6 +40,7 @@
 - `RangeTimePicker`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TimePicker`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TimePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
+- `InfoPickerTextBox`：internal 输入子控件，负责 picker 输入框的无 chrome padding 和文本 presenter 间距；TimePicker/RangeTimePicker 主题只负责直接子控件的状态颜色。
 - `TimePickerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `TimeView`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TimeViewCell`：集合项、节点或容器类型，承载单项状态和模板协作。

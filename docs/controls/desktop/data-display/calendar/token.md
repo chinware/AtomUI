@@ -4,7 +4,7 @@
 
 ## 1. 定位
 
-新 Calendar 的 Token 收敛为八个公开视觉语义。日期值、周标题、范围条间距、范围条圆角、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则，范围条默认高度通过 `RangeBarHeight` 固化 Calendar overlay 的默认条高。
+新 Calendar 的 Token 收敛为九个公开视觉语义。日期值、周标题、范围条间距、范围条圆角、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则，Year 模式月份单元宽度通过 `YearMonthCellWidth` 固化面板单元测量规则，范围条默认高度通过 `RangeBarHeight` 固化 Calendar overlay 的默认条高。
 
 当前 Token scope：
 
@@ -21,7 +21,8 @@
 | `ItemActiveBg` | Color | 完整模式选中日期/月单元背景，派生自 active item 背景（`ControlItemBgActive`） |
 | `YearControlWidth` | double | Year Select 最小宽度，默认 80 |
 | `MonthControlWidth` | double | Month Select 最小宽度，默认 70 |
-| `MiniContentHeight` | double | Mini 内容高度，默认 256 |
+| `YearMonthCellWidth` | double | Year 模式月份单元内容宽度，按 `ControlHeightLG * 1.5` 派生 |
+| `MiniContentHeight` | double | Mini 内容高度，默认 256；约束包含 WeekHeader 与六行 CellHost 的完整 CalendarView，不包含 Header、body 分隔线或 body Padding |
 | `FullCellMinHeight` | double | Fullscreen 日期/月单元最小高度，按 `ControlHeightSM + ((FontHeightSM + MarginXS) * 3 + LineWidth * 2) + PaddingXS / 2 + LineWidthBold` 派生 |
 | `RangeBarHeight` | double | Fullscreen 日期范围条默认高度，默认 `ControlHeightSM - MarginXXS` |
 

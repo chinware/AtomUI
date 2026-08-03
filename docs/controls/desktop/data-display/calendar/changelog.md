@@ -2,6 +2,21 @@
 
 本文档记录 Calendar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-02
+
+- Fixed
+  - `Fullscreen=false` 改为无内部外框的卡片内容布局，`MiniContentHeight` 约束包含 WeekHeader 与六行日期的完整 CalendarView。
+  - 默认 Header 的 Month/Year 切换改用 `OptionButtonGroup`，并对齐 Header、body 分隔线与纵向 Padding。
+  - Header 控件组在卡片容器中保持右对齐；Year 模式月份 Cell 使用 `YearMonthCellWidth` 铺开选中背景，匹配 Ant Design 面板布局。
+  - Mini 日期选中态改为主色实心与浅色文本，today、outside、disabled 和星期标题对齐各自的 SharedToken 状态语义；Fullscreen 选中态保持独立规则。
+- Gallery
+  - 卡片示例使用外部 300 宽边框容器，容器在 Showcase 内容区左对齐，并同步 Card 标题与三种语言说明文案。
+
+## 2026-08-03
+
+- Fixed
+  - 默认 Header 年/月选择器的下拉列表视口按 Ant Design Select 的 256 高度（8 个 32 高选项）配置，弹层内边距保持由 ComboBox Token 控制。
+
 ## 2026-07-31
 
 - Fixed

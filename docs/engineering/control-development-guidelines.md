@@ -139,6 +139,13 @@ Theme 中增加 `Custom` selector。
 - 在 `AddOnDecoratedBox`、`ButtonSpinner`、InfoPicker 输入壳体等外壳控件中嵌入文本输入时，外壳负责内容 padding、边框、背景、hover、focus 和 disabled 视觉；内部输入应使用 internal `EmbeddedTextBox`，由它提供 `SizeType=Custom`、`Padding=0`、`BorderThickness=0` 和无 chrome disabled 视觉。需要响应外层尺寸时继续绑定 `FontSize` / `FontFamily` / `FontStyle` / `FontWeight`。不要让外壳 content padding 与 `TextBoxToken` padding 叠加，也不要让内层输入再绘制自己的 disabled 背景或边框。
 - AXAML 层级优化后应通过对应控件测试或 Gallery 走查验证外观、交互和主题切换不变。如果声明性能收益，需要提供前后 VisualTree 节点数、层级深度或测量数据。
 
+### ControlTheme 模板边界
+
+- 父控件的 `ControlTheme` selector 最多只进入自己的模板一层；禁止连续使用 `/template/` 穿过子控件模板继续选择其内部节点。
+- 子控件需要专用模板、内部节点样式或交互视觉时，应新增 `internal` 专用子控件及其 `ControlTheme`，由子控件自己维护内部模板。
+- 父主题可以根据自身状态设置直接模板子控件的属性，例如 `Foreground` 或 `IsVisible`，但不能依赖子控件的内部 `PART`、`TextPresenter` 或其他模板节点。
+- 生产 AXAML 应由主题边界回归测试扫描，确保每个 selector 分支最多包含一个 `/template/` 边界。
+
 ## 输入控件验证集成
 
 输入类控件不得在 Avalonia `DataValidationErrors` 之外另建一套独立 error 机制。AtomUI 的 Form、`InputControlStatus`、feedback 图标和 AddOn 视觉只能作为 native validation 的扩展投影：

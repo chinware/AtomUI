@@ -33,7 +33,7 @@
                             <atom:AddOnContentPresenter Name="PART_ContentRightAddOnPresenter" />
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
-                    <atom:EmbeddedTextBox Name="PART_InfoInputBox"
+                    <atom:InfoPickerTextBox Name="PART_InfoInputBox"
                                           HorizontalContentAlignment="Stretch"
                                           VerticalContentAlignment="Center"
                                           VerticalAlignment="Stretch"
@@ -80,24 +80,15 @@
         <Setter Property="MarginToAnchor" Value="{atom:PopupTokenResource MarginToAnchor}" />
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
         
-        <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox">
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Foreground"
-                    Value="{atom:SharedTokenResource ColorText}" />
-        </Style>
-        <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox /template/ TextPresenter#PART_TextPresenter">
-            <Setter Property="Margin" Value="0" />
-        </Style>
-
         <Style Selector="^:flyout-open">
-            <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox">
+            <Style Selector="^ /template/ atom|InfoPickerTextBox#PART_InfoInputBox">
                 <Setter Property="Foreground"
                         Value="{atom:SharedTokenResource ColorTextTertiary}" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|EmbeddedTextBox">
+            <Style Selector="^ /template/ atom|InfoPickerTextBox">
                 <Setter Property="Foreground"
                         Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>

@@ -14,7 +14,7 @@ namespace AtomUI.Desktop.Controls.Internal.Calendar;
 /// </summary>
 [TemplatePart(YearSelectPart, typeof(ComboBox))]
 [TemplatePart(MonthSelectPart, typeof(ComboBox))]
-[TemplatePart(ModeSwitchPart, typeof(Segmented))]
+[TemplatePart(ModeSwitchPart, typeof(OptionButtonGroup))]
 internal sealed class CalendarHeader : TemplatedControl
 {
     internal const string YearSelectPart = "PART_YearSelect";
@@ -77,8 +77,10 @@ internal sealed class CalendarHeader : TemplatedControl
 
     private AtomUI.Desktop.Controls.ComboBox? _yearSelect;
     private AtomUI.Desktop.Controls.ComboBox? _monthSelect;
-    private Segmented? _modeSwitch;
+    private OptionButtonGroup? _modeSwitch;
     private bool _suppress;
+    private bool _yearDropDownActive;
+    private bool _monthDropDownActive;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -88,16 +90,20 @@ internal sealed class CalendarHeader : TemplatedControl
 
         _yearSelect = e.NameScope.Find<AtomUI.Desktop.Controls.ComboBox>(YearSelectPart);
         _monthSelect = e.NameScope.Find<AtomUI.Desktop.Controls.ComboBox>(MonthSelectPart);
-        _modeSwitch = e.NameScope.Find<Segmented>(ModeSwitchPart);
+        _modeSwitch = e.NameScope.Find<OptionButtonGroup>(ModeSwitchPart);
 
         if (_yearSelect is not null)
         {
             _yearSelect.SelectionChanged += OnYearChanged;
+            _yearSelect.DropDownOpened += OnSelectDropDownOpened;
+            _yearSelect.DropDownClosed += OnSelectDropDownClosed;
         }
 
         if (_monthSelect is not null)
         {
             _monthSelect.SelectionChanged += OnMonthChanged;
+            _monthSelect.DropDownOpened += OnSelectDropDownOpened;
+            _monthSelect.DropDownClosed += OnSelectDropDownClosed;
         }
 
         if (_modeSwitch is not null)
@@ -106,7 +112,7 @@ internal sealed class CalendarHeader : TemplatedControl
         }
 
         UpdateControlSizes();
-        Rebuild();
+        SyncFromState();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -121,7 +127,7 @@ internal sealed class CalendarHeader : TemplatedControl
                  change.Property == ValidRangeProperty ||
                  change.Property == CultureProperty)
         {
-            Rebuild();
+            SyncFromState();
         }
     }
 
@@ -130,27 +136,38 @@ internal sealed class CalendarHeader : TemplatedControl
         if (_yearSelect is not null)
         {
             _yearSelect.SelectionChanged -= OnYearChanged;
+            _yearSelect.DropDownOpened -= OnSelectDropDownOpened;
+            _yearSelect.DropDownClosed -= OnSelectDropDownClosed;
         }
 
         if (_monthSelect is not null)
         {
             _monthSelect.SelectionChanged -= OnMonthChanged;
+            _monthSelect.DropDownOpened -= OnSelectDropDownOpened;
+            _monthSelect.DropDownClosed -= OnSelectDropDownClosed;
         }
 
         if (_modeSwitch is not null)
         {
             _modeSwitch.SelectionChanged -= OnModeChanged;
         }
+
+        _yearDropDownActive = false;
+        _monthDropDownActive = false;
     }
 
-    private void Rebuild()
+    private bool IsDropDownActive =>
+        _yearSelect?.IsDropDownOpen == true ||
+        _monthSelect?.IsDropDownOpen == true ||
+        _yearDropDownActive ||
+        _monthDropDownActive;
+
+    private void SyncFromState()
     {
         if (_yearSelect is null || _monthSelect is null)
         {
             return;
         }
-
-        _suppress = true;
 
         var culture = Culture ?? CultureInfo.CurrentCulture;
         var value = Value.Date;
@@ -158,46 +175,130 @@ internal sealed class CalendarHeader : TemplatedControl
 
         var years = CalendarHeaderOptions.BuildYearOptions(
             value.Year, ValidRange?.Start.Year, ValidRange?.End.Year);
-        _yearSelect.ItemsSource = years.Select(y => new CalendarHeaderItem(y, y.ToString(CultureInfo.InvariantCulture) + yearSuffix)).ToList();
-        _yearSelect.SelectedItem = ((System.Collections.Generic.IEnumerable<CalendarHeaderItem>)_yearSelect.ItemsSource)
-            .FirstOrDefault(i => i.Key == value.Year);
+        var yearItems = years
+            .Select(y => new CalendarHeaderItem(y, y.ToString(CultureInfo.InvariantCulture) + yearSuffix))
+            .ToList();
 
         // Month Select 仅 Month 模式显示
-        _monthSelect.IsVisible = Mode == CalendarMode.Month;
-        if (_monthSelect.IsVisible)
+        var showMonth = Mode == CalendarMode.Month;
+        var monthItems = showMonth
+            ? CalendarHeaderOptions.BuildMonthOptions(value.Year, ValidRange?.Start, ValidRange?.End)
+                .Select(m => new CalendarHeaderItem(m, culture.DateTimeFormat.AbbreviatedMonthNames[m - 1]))
+                .ToList()
+            : null;
+
+        var yearItemsChanged = !HasSameItems(_yearSelect.ItemsSource, yearItems);
+        var monthItemsChanged = monthItems is not null && !HasSameItems(_monthSelect.ItemsSource, monthItems);
+
+        // Replacing ItemsSource creates/removes popup item visuals. Keep the current
+        // source intact until the popup has completed its close traversal.
+        if (IsDropDownActive && (yearItemsChanged || monthItemsChanged))
         {
-            var months = CalendarHeaderOptions.BuildMonthOptions(value.Year, ValidRange?.Start, ValidRange?.End);
-            var monthNames = culture.DateTimeFormat.AbbreviatedMonthNames;
-            _monthSelect.ItemsSource = months.Select(m => new CalendarHeaderItem(m, monthNames[m - 1])).ToList();
-            _monthSelect.SelectedItem = ((System.Collections.Generic.IEnumerable<CalendarHeaderItem>)_monthSelect.ItemsSource)
-                .FirstOrDefault(i => i.Key == value.Month);
+            return;
         }
 
-        if (_modeSwitch is not null)
+        _suppress = true;
+        try
         {
-            if (_modeSwitch.Items.Count >= 2)
+            if (yearItemsChanged)
             {
-                var monthLabel = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Month)
-                                 ?? CalendarControlLangResourceKind.Month.ToString();
-                var yearLabel = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Year)
-                                 ?? CalendarControlLangResourceKind.Year.ToString();
-
-                if (_modeSwitch.Items[0] is SegmentedItem monthItem)
-                {
-                    monthItem.Content = monthLabel;
-                }
-
-                if (_modeSwitch.Items[1] is SegmentedItem yearItem)
-                {
-                    yearItem.Content = yearLabel;
-                }
+                _yearSelect.ItemsSource = yearItems;
             }
 
-            _modeSwitch.SelectedIndex = Mode == CalendarMode.Year ? 1 : 0;
+            if (monthItemsChanged && monthItems is not null)
+            {
+                _monthSelect.ItemsSource = monthItems;
+            }
+
+            SetSelectedItem(_yearSelect, value.Year);
+            if (showMonth)
+            {
+                SetSelectedItem(_monthSelect, value.Month);
+            }
+
+            if (_monthSelect.IsVisible != showMonth)
+            {
+                _monthSelect.IsVisible = showMonth;
+            }
+
+            if (_modeSwitch is not null)
+            {
+                if (_modeSwitch.Items.Count >= 2)
+                {
+                    var monthLabel = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Month)
+                                     ?? CalendarControlLangResourceKind.Month.ToString();
+                    var yearLabel = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Year)
+                                     ?? CalendarControlLangResourceKind.Year.ToString();
+
+                    if (_modeSwitch.Items[0] is OptionButton monthItem && !Equals(monthItem.Content, monthLabel))
+                    {
+                        monthItem.Content = monthLabel;
+                    }
+
+                    if (_modeSwitch.Items[1] is OptionButton yearItem && !Equals(yearItem.Content, yearLabel))
+                    {
+                        yearItem.Content = yearLabel;
+                    }
+                }
+
+                var selectedIndex = Mode == CalendarMode.Year ? 1 : 0;
+                if (_modeSwitch.SelectedIndex != selectedIndex)
+                {
+                    _modeSwitch.SelectedIndex = selectedIndex;
+                }
+            }
+        }
+        finally
+        {
+            _suppress = false;
+        }
+    }
+
+    private static bool HasSameItems(
+        System.Collections.IEnumerable? source,
+        IReadOnlyList<CalendarHeaderItem> expected)
+    {
+        return source is System.Collections.Generic.IEnumerable<CalendarHeaderItem> current &&
+               current.SequenceEqual(expected);
+    }
+
+    private static void SetSelectedItem(AtomUI.Desktop.Controls.ComboBox select, int key)
+    {
+        if (select.SelectedItem is CalendarHeaderItem current && current.Key == key)
+        {
+            return;
         }
 
-        UpdateControlSizes();
-        _suppress = false;
+        if (select.ItemsSource is System.Collections.Generic.IEnumerable<CalendarHeaderItem> items)
+        {
+            select.SelectedItem = items.FirstOrDefault(item => item.Key == key);
+        }
+    }
+
+    private void OnSelectDropDownOpened(object? sender, EventArgs e)
+    {
+        if (ReferenceEquals(sender, _yearSelect))
+        {
+            _yearDropDownActive = true;
+        }
+        else if (ReferenceEquals(sender, _monthSelect))
+        {
+            _monthDropDownActive = true;
+        }
+    }
+
+    private void OnSelectDropDownClosed(object? sender, EventArgs e)
+    {
+        if (ReferenceEquals(sender, _yearSelect))
+        {
+            _yearDropDownActive = false;
+        }
+        else if (ReferenceEquals(sender, _monthSelect))
+        {
+            _monthDropDownActive = false;
+        }
+
+        SyncFromState();
     }
 
     private void UpdateControlSizes()

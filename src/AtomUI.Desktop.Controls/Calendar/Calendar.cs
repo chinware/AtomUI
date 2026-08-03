@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls.Internal.Calendar;
 using AtomUI.Theme.Language;
 using Avalonia;
@@ -451,7 +450,7 @@ public class Calendar : TemplatedControl
 
     private void OnLanguageVariantChanged(object? sender, LanguageVariantChangedEventArgs e) => ApplyCulture();
 
-    /// <summary>解析当前语言的 Culture 并推给 CalendarView / 默认 Header，触发它们重建。</summary>
+    /// <summary>解析当前语言的 Culture 并推给 CalendarView / 默认 Header，触发它们按需同步。</summary>
     private void ApplyCulture()
     {
         var culture = Application.Current?.GetLanguageVariant()?.ToCultureInfo() ?? CultureInfo.CurrentCulture;

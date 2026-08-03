@@ -150,6 +150,7 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 | 主题 | 职责 |
 | --- | --- |
 | `NumericUpDownTheme.axaml` | 装配控件结构和传递状态。 |
+| `NumericUpDownSpinnerTheme.axaml` | 装配 NumericUpDown 专用 inline spinner 模板及其 action 按钮状态。 |
 | `ButtonSpinnerTheme.axaml` | 装配 spinner 壳体和 Handle 内容。 |
 | `ButtonSpinnerDecoratedBoxTheme.axaml` | 输入壳体、Addon、浮动 Handle 透明度和偏移。 |
 | `ButtonSpinnerHandleTheme.axaml` | Handle 背景、边框、图标尺寸和交互视觉。 |

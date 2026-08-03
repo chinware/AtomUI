@@ -2,14 +2,12 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
-    <Thickness x:Key="NumericUpDownSpinnerContentPadding">0</Thickness>
 
     <ControlTheme x:Key="{x:Type atom:NumericUpDown}" TargetType="atom:NumericUpDown">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:ButtonSpinner
+                <atom:NumericUpDownSpinner
                     Name="PART_Spinner"
                     IsSpinEnabled="{TemplateBinding AllowSpin}"
                     IsEnabled="{TemplateBinding IsEnabled}"
@@ -65,14 +63,14 @@
                         PlaceholderText="{TemplateBinding PlaceholderText}"
                         PlaceholderForeground="{TemplateBinding PlaceholderForeground}"
                         />
-                </atom:ButtonSpinner>
+                </atom:NumericUpDownSpinner>
             </ControlTemplate>
         </Setter>
 
         <Style Selector="^[Mode=Spinner][ShowButtonSpinner=True]">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <atom:ButtonSpinner
+                    <atom:NumericUpDownSpinner
                         Name="PART_Spinner"
                         IsSpinEnabled="{TemplateBinding AllowSpin}"
                         IsEnabled="{TemplateBinding IsEnabled}"
@@ -94,100 +92,6 @@
                         CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
                         CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                         IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
-                        <atom:ButtonSpinner.Styles>
-                            <Style Selector="atom|ButtonSpinner /template/ atom|IconButton#PART_DecreaseButton,
-                                             atom|ButtonSpinner /template/ atom|IconButton#PART_IncreaseButton">
-                                <Setter Property="Background" Value="Transparent" />
-                            </Style>
-                            <Style Selector="atom|ButtonSpinner /template/ atom|IconButton#PART_DecreaseButton:pointerover:not(:disabled),
-                                             atom|ButtonSpinner /template/ atom|IconButton#PART_IncreaseButton:pointerover:not(:disabled)">
-                                <Setter Property="IconBrush" Value="{atom:ButtonSpinnerTokenResource HandleHoverColor}" />
-                            </Style>
-                            <Style Selector="atom|ButtonSpinner /template/ atom|IconButton#PART_DecreaseButton:pressed:not(:disabled),
-                                             atom|ButtonSpinner /template/ atom|IconButton#PART_IncreaseButton:pressed:not(:disabled)">
-                                <Setter Property="Background" Value="{atom:ButtonSpinnerTokenResource HandleActiveBg}" />
-                            </Style>
-                        </atom:ButtonSpinner.Styles>
-                        <atom:ButtonSpinner.Template>
-                            <ControlTemplate TargetType="atom:ButtonSpinner">
-                                <atom:ButtonSpinnerDecoratedBox
-                                    Name="PART_DecoratedBox"
-                                    LeftAddOn="{TemplateBinding LeftAddOn}"
-                                    LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
-                                    RightAddOn="{TemplateBinding RightAddOn}"
-                                    RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
-                                    StyleVariant="{TemplateBinding StyleVariant}"
-                                    SizeType="{TemplateBinding SizeType}"
-                                    Status="{TemplateBinding Status}"
-                                    IsShowHandle="False"
-                                    IsHandleFloatable="False"
-                                    ContentPadding="{Binding Source={StaticResource NumericUpDownSpinnerContentPadding}, Priority=LocalValue}"
-                                    Focusable="True"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
-                                    CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
-                                    IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
-                                    <DockPanel LastChildFill="True">
-                                        <atom:PixelAlignedBorder
-                                            DockPanel.Dock="Left"
-                                            BorderBrush="{atom:ButtonSpinnerTokenResource HandleBorderColor}"
-                                            BorderThickness="0,0,1,0"
-                                            IsVisible="{TemplateBinding IsButtonSpinnerVisible}">
-                                            <atom:IconButton
-                                                Name="PART_DecreaseButton"
-                                                Icon="{antdicons:AntDesignIconProvider MinusOutlined}"
-                                                CornerRadius="0"
-                                                BorderThickness="0"
-                                                Padding="{atom:NumericUpDownTokenResource InputPadding}"
-                                                BackgroundSizing="InnerBorderEdge"
-                                                IconWidth="{atom:SharedTokenResource IconSize}"
-                                                IconHeight="{atom:SharedTokenResource IconSize}"
-                                                HorizontalAlignment="Stretch"
-                                                VerticalAlignment="Stretch" />
-                                        </atom:PixelAlignedBorder>
-                                        <atom:PixelAlignedBorder
-                                            DockPanel.Dock="Right"
-                                            BorderBrush="{atom:ButtonSpinnerTokenResource HandleBorderColor}"
-                                            BorderThickness="1,0,0,0"
-                                            IsVisible="{TemplateBinding IsButtonSpinnerVisible}">
-                                            <atom:IconButton
-                                                Name="PART_IncreaseButton"
-                                                Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
-                                                CornerRadius="0"
-                                                BorderThickness="0"
-                                                Padding="{atom:NumericUpDownTokenResource InputPadding}"
-                                                BackgroundSizing="InnerBorderEdge"
-                                                IconWidth="{atom:SharedTokenResource IconSize}"
-                                                IconHeight="{atom:SharedTokenResource IconSize}"
-                                                HorizontalAlignment="Stretch"
-                                                VerticalAlignment="Stretch" />
-                                        </atom:PixelAlignedBorder>
-                                        <DockPanel LastChildFill="True">
-                                            <atom:AddOnContentPresenter
-                                                DockPanel.Dock="Left"
-                                                VerticalAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                HorizontalAlignment="Left"
-                                                Focusable="False"
-                                                Content="{TemplateBinding InnerLeftContent}"
-                                                ContentTemplate="{TemplateBinding InnerLeftContentTemplate}" />
-                                            <atom:AddOnContentPresenter
-                                                DockPanel.Dock="Right"
-                                                VerticalAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                HorizontalAlignment="Right"
-                                                Focusable="False"
-                                                Content="{TemplateBinding InnerRightContent}"
-                                                ContentTemplate="{TemplateBinding InnerRightContentTemplate}" />
-                                            <ContentPresenter
-                                                Content="{TemplateBinding Content}"
-                                                ContentTemplate="{TemplateBinding ContentTemplate}" />
-                                        </DockPanel>
-                                    </DockPanel>
-                                </atom:ButtonSpinnerDecoratedBox>
-                            </ControlTemplate>
-                        </atom:ButtonSpinner.Template>
                         <atom:ButtonSpinner.InnerRightContent>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
@@ -222,9 +126,10 @@
                             TextAlignment="Center"
                             PlaceholderText="{TemplateBinding PlaceholderText}"
                             PlaceholderForeground="{TemplateBinding PlaceholderForeground}" />
-                    </atom:ButtonSpinner>
+                    </atom:NumericUpDownSpinner>
                 </ControlTemplate>
             </Setter>
+
         </Style>
 
         <Setter Property="IsMotionEnabled"

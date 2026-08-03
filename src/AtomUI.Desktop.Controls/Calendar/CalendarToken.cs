@@ -41,6 +41,11 @@ internal class CalendarToken : AbstractControlDesignToken
     public double MonthControlWidth { get; set; }
 
     /// <summary>
+    /// Year 模式月份单元的内容宽度。
+    /// </summary>
+    public double YearMonthCellWidth { get; set; }
+
+    /// <summary>
     /// Mini 内容高度。
     /// </summary>
     public double MiniContentHeight { get; set; }
@@ -67,6 +72,7 @@ internal class CalendarToken : AbstractControlDesignToken
         ItemActiveBg = EffectiveGlobalToken.ControlItemBgActive;
         YearControlWidth = 80;
         MonthControlWidth = 70;
+        YearMonthCellWidth = EffectiveGlobalToken.ControlHeightLG * 1.5;
         MiniContentHeight = 256;
         FullCellMinHeight = EffectiveGlobalToken.ControlHeightSM +
                             dateContentHeight +

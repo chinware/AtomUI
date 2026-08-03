@@ -44,7 +44,7 @@
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Grid ColumnDefinitions="*, Auto, *">
-                            <atom:EmbeddedTextBox Name="PART_InfoInputBox"
+                            <atom:InfoPickerTextBox Name="PART_InfoInputBox"
                                                   Grid.Column="0"
                                                   HorizontalContentAlignment="Stretch"
                                                   VerticalContentAlignment="Center"
@@ -63,7 +63,7 @@
                             <antdicons:SwapRightOutlined
                                 Name="PART_RangePickerArrow"
                                 Grid.Column="1" />
-                            <atom:EmbeddedTextBox
+                            <atom:InfoPickerTextBox
                                 Name="PART_SecondaryInfoInputBox"
                                 Grid.Column="2"
                                 HorizontalContentAlignment="Stretch"

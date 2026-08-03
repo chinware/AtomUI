@@ -54,6 +54,30 @@ public class CalendarShowCasePageTests
             .ShouldBe(NormalizeMarkup(approved));
     }
 
+    [Fact]
+    public void Calendar_Card_ShowCase_UsesExternalContainerAndReferenceCopy()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
+        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
+        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_CN.cs");
+        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_TW.cs");
+
+        source.ShouldContain("CalendarShowCaseLangResource CardTitle");
+        source.ShouldContain("CalendarShowCaseLangResource CardDescription");
+        source.ShouldContain("<Border Width=\"300\"");
+        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldContain("BorderBrush=\"{atom:SharedTokenResource ColorBorderSecondary}\"");
+        source.ShouldContain("BorderThickness=\"{atom:SharedTokenResource BorderThickness}\"");
+        source.ShouldContain("CornerRadius=\"{atom:SharedTokenResource BorderRadiusLG}\"");
+
+        enUs.ShouldContain("public const string CardTitle = \"Card\";");
+        enUs.ShouldContain("public const string CardDescription = \"Nested inside a container element for rendering in limited space.\";");
+        zhCn.ShouldContain("public const string CardTitle = \"卡片模式\";");
+        zhCn.ShouldContain("public const string CardDescription = \"用于嵌套在空间有限的容器中。\";");
+        zhTw.ShouldContain("public const string CardTitle = \"卡片模式\";");
+        zhTw.ShouldContain("public const string CardDescription = \"用於嵌套在空間有限的容器中。\";");
+    }
+
     private static string ExtractCalendarExampleItems(string source)
     {
         const string firstItemMarker = "<gallery:ShowCaseItem";

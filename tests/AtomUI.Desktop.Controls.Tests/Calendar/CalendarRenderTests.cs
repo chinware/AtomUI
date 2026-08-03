@@ -1,5 +1,7 @@
 using AtomUI.Controls;
+using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Desktop.Controls.Internal.Calendar;
+using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -14,8 +16,8 @@ using CalendarHeaderItem = AtomUI.Desktop.Controls.Internal.Calendar.CalendarHea
 using CalendarViewControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarView;
 using CalendarCellControl = AtomUI.Desktop.Controls.Internal.Calendar.CalendarViewCell;
 using DesktopComboBox = AtomUI.Desktop.Controls.ComboBox;
-using DesktopSegmented = AtomUI.Desktop.Controls.Segmented;
-using DesktopSegmentedItem = AtomUI.Desktop.Controls.SegmentedItem;
+using DesktopOptionButton = AtomUI.Desktop.Controls.OptionButton;
+using DesktopOptionButtonGroup = AtomUI.Desktop.Controls.OptionButtonGroup;
 using DesktopTextBlock = AtomUI.Desktop.Controls.TextBlock;
 using AtomUI.Theme.Language;
 
@@ -158,6 +160,36 @@ public class CalendarRenderTests
                 .FirstOrDefault();
             header.ShouldNotBeNull();
             header!.IsVisible.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Calendar_Header_UsesAntVerticalSpacing()
+    {
+        var calendar = new AtomUICalendar
+        {
+            Value = new DateTime(2026, 7, 15),
+            Fullscreen = false
+        };
+        var window = Show(calendar, 400, 400);
+        try
+        {
+            var header = calendar.GetVisualDescendants().OfType<CalendarHeaderControl>().Single();
+            var year = header.GetVisualDescendants().OfType<DesktopComboBox>().Single(control => control.Name == "PART_YearSelect");
+            var month = header.GetVisualDescendants().OfType<DesktopComboBox>().Single(control => control.Name == "PART_MonthSelect");
+            var mode = header.GetVisualDescendants().OfType<DesktopOptionButtonGroup>().Single(control => control.Name == "PART_ModeSwitch");
+            var padding = GetThemeResource<double>(SharedTokenKind.UniformlyPaddingSM);
+            var contentHeight = year.Bounds.Height;
+            year.DropDownDisplayPageSize.ShouldBe(8);
+            month.DropDownDisplayPageSize.ShouldBe(8);
+            header.Bounds.Height.ShouldBe(contentHeight + padding * 2, 0.5);
+            year.TranslatePoint(new Point(), header)!.Value.Y.ShouldBe(padding, 0.5);
+            month.TranslatePoint(new Point(), header)!.Value.Y.ShouldBe(padding, 0.5);
+            mode.TranslatePoint(new Point(), header)!.Value.Y.ShouldBe(padding, 0.5);
         }
         finally
         {
@@ -595,7 +627,7 @@ public class CalendarRenderTests
     }
 
     [Fact]
-    public void Calendar_Mini_UsesFramedCompactLayout()
+    public void Calendar_Mini_UsesUnframedCardContentLayout()
     {
         var calendar = new AtomUICalendar
         {
@@ -608,19 +640,98 @@ public class CalendarRenderTests
         {
             var root = calendar.GetVisualDescendants().OfType<Border>()
                 .Single(border => border.Name == "PART_Root");
-            root.BorderThickness.Left.ShouldBeGreaterThan(0);
+            root.BorderThickness.ShouldBe(default);
+            root.Padding.ShouldBe(default);
+
+            var view = calendar.GetVisualDescendants()
+                .OfType<CalendarViewControl>()
+                .Single();
+            view.Bounds.Height.ShouldBe(256, 0.5);
 
             var host = calendar.GetVisualDescendants().OfType<Avalonia.Controls.Grid>()
                 .Single(grid => grid.Name == "PART_CellHost");
-            host.Bounds.Height.ShouldBeLessThanOrEqualTo(256.5);
+            host.Bounds.Height.ShouldBeLessThan(255.5);
 
-            var selectedCellInner = calendar.GetVisualDescendants()
+            var selectedCell = calendar.GetVisualDescendants()
                 .OfType<CalendarCellControl>()
-                .Single(cell => cell.Model is { IsSelected: true })
+                .Single(cell => cell.Model is { IsSelected: true });
+            var selectedCellInner = selectedCell
                 .GetVisualDescendants()
                 .OfType<Border>()
                 .Single(border => border.Name == "PART_CellInner");
             selectedCellInner.CornerRadius.TopLeft.ShouldBeGreaterThan(0);
+            BrushShouldHaveSameColor(
+                selectedCellInner.Background,
+                GetThemeResource<IBrush>(SharedTokenKind.ColorPrimary));
+
+            var selectedValue = selectedCell.GetVisualDescendants()
+                .OfType<DesktopTextBlock>()
+                .Single(text => text.Name == "PART_Value");
+            BrushShouldHaveSameColor(
+                selectedValue.Foreground,
+                GetThemeResource<IBrush>(SharedTokenKind.ColorTextLightSolid));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Calendar_Mini_UsesCardDateStatesAndWeekHeaderStyle()
+    {
+        var today = DateTime.Today;
+        var selectedDay = today.Day == 1 ? 2 : 1;
+        var disabledDay = selectedDay is 10 ? 11 : 10;
+        var calendar = new AtomUICalendar
+        {
+            Value = new DateTime(today.Year, today.Month, selectedDay),
+            Fullscreen = false,
+            Width = 300,
+            DisabledDate = date => date.Year == today.Year &&
+                                   date.Month == today.Month &&
+                                   date.Day == disabledDay
+        };
+        var window = Show(calendar, 720, 600);
+        try
+        {
+            var cells = calendar.GetVisualDescendants()
+                .OfType<CalendarCellControl>()
+                .ToList();
+
+            var todayCell = cells.Single(cell => cell.Model is { IsToday: true });
+            var todayInner = GetCellBorder(todayCell, "PART_CellInner");
+            BrushShouldHaveSameColor(
+                todayInner.BorderBrush,
+                GetThemeResource<IBrush>(SharedTokenKind.ColorPrimary));
+            todayInner.BorderThickness.ShouldBe(
+                GetThemeResource<Thickness>(SharedTokenKind.BorderThickness));
+
+            var outsideCell = cells.First(cell => cell.Model is
+                { Kind: CalendarViewCellKind.Date, IsInView: false });
+            var outsideValue = GetCellValue(outsideCell);
+            BrushShouldHaveSameColor(
+                outsideValue.Foreground,
+                GetThemeResource<IBrush>(SharedTokenKind.ColorTextDisabled));
+
+            var disabledCell = cells.Single(cell => cell.Model is
+                { Kind: CalendarViewCellKind.Date, IsInView: true, IsDisabled: true });
+            BrushShouldHaveSameColor(
+                GetCellValue(disabledCell).Foreground,
+                GetThemeResource<IBrush>(SharedTokenKind.ColorTextDisabled));
+            BrushShouldHaveSameColor(
+                GetCellBorder(disabledCell, "PART_Item").Background,
+                GetThemeResource<IBrush>(SharedTokenKind.ColorBgContainerDisabled));
+
+            var weekHeader = calendar.GetVisualDescendants()
+                .OfType<Panel>()
+                .Single(panel => panel.Name == "PART_WeekHeader");
+            var weekText = weekHeader.Children.OfType<DesktopTextBlock>().First();
+            BrushShouldHaveSameColor(
+                weekText.Foreground,
+                GetThemeResource<IBrush>(SharedTokenKind.ColorText));
+            weekText.Bounds.Height.ShouldBeLessThan(
+                GetThemeResource<double>(SharedTokenKind.ControlHeightSM));
         }
         finally
         {
@@ -664,15 +775,22 @@ public class CalendarRenderTests
         {
             // 初始 Month 模式:42 个日期容器
             calendar.GetVisualDescendants().OfType<CalendarCellControl>().Count().ShouldBe(42);
+            var modeSwitch = calendar.GetVisualDescendants()
+                .OfType<DesktopOptionButtonGroup>()
+                .Single(control => control.Name == "PART_ModeSwitch");
+            modeSwitch.ButtonStyle.ShouldBe(OptionButtonStyle.Outline);
+            modeSwitch.SelectedIndex.ShouldBe(0);
 
-            // 运行时切到 Year:应换成 12 个月份容器
-            calendar.Mode = CalendarMode.Year;
+            // Header 切到 Year:应更新公开 Mode 并换成 12 个月份容器
+            modeSwitch.SelectedIndex = 1;
             Dispatcher.UIThread.RunJobs();
+            calendar.Mode.ShouldBe(CalendarMode.Year);
             calendar.GetVisualDescendants().OfType<CalendarCellControl>().Count().ShouldBe(12);
 
-            // 切回 Month:回到 42
-            calendar.Mode = CalendarMode.Month;
+            // Header 切回 Month:公开 Mode 和日期网格一起恢复
+            modeSwitch.SelectedIndex = 0;
             Dispatcher.UIThread.RunJobs();
+            calendar.Mode.ShouldBe(CalendarMode.Month);
             calendar.GetVisualDescendants().OfType<CalendarCellControl>().Count().ShouldBe(42);
         }
         finally
@@ -716,7 +834,7 @@ public class CalendarRenderTests
         monthSelect.SizeType.ShouldBe(CustomizableSizeType.Small);
 
         var modeSwitch = header.GetVisualDescendants()
-            .OfType<DesktopSegmented>()
+            .OfType<DesktopOptionButtonGroup>()
             .Single(control => control.Name == "PART_ModeSwitch");
         modeSwitch.SizeType.ShouldBe(CustomizableSizeType.Small);
 
@@ -733,11 +851,11 @@ public class CalendarRenderTests
             items[0].Display.EndsWith(expectedYearSuffix).ShouldBeTrue();
         }
 
-        var segmentedItems = modeSwitch.GetVisualDescendants()
-            .OfType<DesktopSegmentedItem>()
+        var modeButtons = modeSwitch.GetVisualDescendants()
+            .OfType<DesktopOptionButton>()
             .ToList();
-        segmentedItems.Any(item => Equals(item.Content, expectedMonthLabel)).ShouldBeTrue();
-        segmentedItems.Any(item => Equals(item.Content, expectedYearLabel)).ShouldBeTrue();
+        modeButtons.Any(item => Equals(item.Content, expectedMonthLabel)).ShouldBeTrue();
+        modeButtons.Any(item => Equals(item.Content, expectedYearLabel)).ShouldBeTrue();
 
         var weekHeader = calendar.GetVisualDescendants()
             .OfType<Panel>()
@@ -757,5 +875,39 @@ public class CalendarRenderTests
                 Height = 8
             };
         });
+    }
+
+    private static Border GetCellBorder(CalendarCellControl cell, string name)
+    {
+        return cell.GetVisualDescendants()
+            .OfType<Border>()
+            .Single(border => border.Name == name);
+    }
+
+    private static DesktopTextBlock GetCellValue(CalendarCellControl cell)
+    {
+        return cell.GetVisualDescendants()
+            .OfType<DesktopTextBlock>()
+            .Single(text => text.Name == "PART_Value");
+    }
+
+    private static T GetThemeResource<T>(object key)
+    {
+        var application = Application.Current.ShouldNotBeNull();
+        application!.TryGetResource(key, application.ActualThemeVariant, out var value).ShouldBeTrue();
+        value.ShouldBeAssignableTo<T>();
+        return (T)value!;
+    }
+
+    private static void BrushShouldHaveSameColor(IBrush? actual, IBrush? expected)
+    {
+        GetSolidBrushColor(actual).ShouldBe(GetSolidBrushColor(expected));
+    }
+
+    private static Color GetSolidBrushColor(IBrush? brush)
+    {
+        brush.ShouldNotBeNull();
+        brush.ShouldBeAssignableTo<ISolidColorBrush>();
+        return ((ISolidColorBrush)brush!).Color;
     }
 }

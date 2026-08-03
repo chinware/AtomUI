@@ -288,7 +288,12 @@ public class TextBoxVisualStateTests
     {
         var source = ReadRepoFile(relativePath);
 
-        source.ShouldContain("<atom:EmbeddedTextBox");
+        var expectedInputType = relativePath.Contains("InfoPicker", StringComparison.OrdinalIgnoreCase) ||
+                                relativePath.Contains("RangeDatePicker", StringComparison.OrdinalIgnoreCase)
+            ? "<atom:InfoPickerTextBox"
+            : "<atom:EmbeddedTextBox";
+
+        source.ShouldContain(expectedInputType);
         source.ShouldNotContain("<atom:TextBox");
     }
 

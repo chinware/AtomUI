@@ -102,6 +102,11 @@ internal sealed class CalendarViewCell : TemplatedControl
         _owner = owner;
         _model = model;
         SetFullscreen(owner.Fullscreen);
+        if (IsEnabled == model.IsDisabled)
+        {
+            SetCurrentValue(IsEnabledProperty, !model.IsDisabled);
+        }
+
         if (Focusable != model.IsFocusable)
         {
             Focusable = model.IsFocusable;
@@ -163,6 +168,7 @@ internal sealed class CalendarViewCell : TemplatedControl
     {
         _owner = null;
         _model = null;
+        SetCurrentValue(IsEnabledProperty, true);
         Focusable = false;
         DisplayText = string.Empty;
         Context = null;

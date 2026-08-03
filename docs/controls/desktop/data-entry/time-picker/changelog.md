@@ -2,6 +2,11 @@
 
 本文档记录 TimePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-03
+
+- Implementation
+  - Use the shared internal `InfoPickerTextBox` for TimePicker input visuals, keeping padding and text-presenter spacing in the child theme instead of crossing the child template from TimePicker themes.
+
 ## 2026-07-16
 
 - Changed

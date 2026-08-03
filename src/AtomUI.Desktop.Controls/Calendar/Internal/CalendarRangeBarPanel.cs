@@ -1,5 +1,4 @@
 using System.Globalization;
-using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -144,6 +143,17 @@ internal sealed class CalendarRangeBarPanel : Panel
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+        if (change.Property == ValueProperty &&
+            change.OldValue is DateTime oldValue &&
+            change.NewValue is DateTime newValue &&
+            oldValue.Date.Year == newValue.Date.Year &&
+            oldValue.Date.Month == newValue.Date.Month)
+        {
+            // The date grid origin is stable within one month, so range-bar
+            // geometry and segment topology do not change with the selected day.
+            return;
+        }
+
         if (LayoutTriggers.Contains(change.Property))
         {
             InvalidateRangeBars();
@@ -449,12 +459,62 @@ internal sealed class CalendarRangeBarPanel : Panel
 
     private void ApplySegment(Border element, CalendarRangeBarSegment segment)
     {
-        element.Background = segment.Background;
-        element.CornerRadius = segment.CornerRadius;
-        element.Width = segment.Bounds.Width;
-        element.Height = segment.Bounds.Height;
-        element.Padding = new Thickness(DefaultLabelHorizontalPadding, 0);
-        element.Child = CreateLabel(segment.Label);
+        if (!Equals(element.Background, segment.Background))
+        {
+            element.Background = segment.Background;
+        }
+
+        if (element.CornerRadius != segment.CornerRadius)
+        {
+            element.CornerRadius = segment.CornerRadius;
+        }
+
+        if (element.Width != segment.Bounds.Width)
+        {
+            element.Width = segment.Bounds.Width;
+        }
+
+        if (element.Height != segment.Bounds.Height)
+        {
+            element.Height = segment.Bounds.Height;
+        }
+
+        var padding = new Thickness(DefaultLabelHorizontalPadding, 0);
+        if (element.Padding != padding)
+        {
+            element.Padding = padding;
+        }
+
+        var text = segment.Label?.ToString();
+        if (string.IsNullOrEmpty(text))
+        {
+            if (element.Child is not null)
+            {
+                element.Child = null;
+            }
+
+            return;
+        }
+
+        if (element.Child is TextBlock label)
+        {
+            if (label.Text != text)
+            {
+                label.Text = text;
+            }
+
+            var textAlignment = FlowDirection == FlowDirection.RightToLeft
+                ? TextAlignment.Right
+                : TextAlignment.Left;
+            if (label.TextAlignment != textAlignment)
+            {
+                label.TextAlignment = textAlignment;
+            }
+        }
+        else
+        {
+            element.Child = CreateLabel(text);
+        }
     }
 
     private TextBlock? CreateLabel(object? label)

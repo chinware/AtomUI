@@ -69,6 +69,7 @@
         </Setter>
     </Style>
     <Style Selector="^ /template/ atom|TextBlock#PART_Value">
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
         <Setter Property="Transitions">
             <Transitions>
                 <atom:SolidColorBrushTransition Property="Foreground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationSlow}" />
@@ -78,7 +79,8 @@
 
     <!-- Mini 布局 -->
     <Style Selector="^:mini /template/ Border#PART_Item">
-        <Setter Property="Margin" Value="{atom:SharedTokenResource MarginXXS}" />
+        <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style Selector="^:mini /template/ Border#PART_CellInner">
         <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeightSM}" />
@@ -86,6 +88,9 @@
         <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="^:mini:month /template/ Border#PART_CellInner">
+        <Setter Property="Width" Value="{atom:CalendarTokenResource YearMonthCellWidth}" />
     </Style>
 
     <!-- Fullscreen 布局 -->
@@ -105,16 +110,22 @@
     </Style>
 
     <!-- 今天 -->
-    <Style Selector="^:mini:today /template/ Border#PART_CellInner">
+    <Style Selector="^:mini:date:today /template/ Border#PART_CellInner">
         <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
     </Style>
-    <Style Selector="^:fullscreen:today /template/ Border#PART_CellInner">
+    <Style Selector="^:fullscreen:date:today /template/ Border#PART_CellInner">
         <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
     </Style>
 
     <!-- 选中 -->
-    <Style Selector="^:selected /template/ Border#PART_CellInner">
+    <Style Selector="^:mini:selected:not(:disabled) /template/ Border#PART_CellInner">
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+    </Style>
+    <Style Selector="^:mini:selected:not(:disabled) /template/ atom|TextBlock#PART_Value">
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+    </Style>
+    <Style Selector="^:fullscreen:selected /template/ Border#PART_CellInner">
         <Setter Property="Background" Value="{atom:CalendarTokenResource ItemActiveBg}" />
     </Style>
     <Style Selector="^:fullscreen:selected /template/ atom|TextBlock#PART_Value">
@@ -145,6 +156,12 @@
     </Style>
     <Style Selector="^:disabled /template/ Border#PART_Item">
         <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+    <Style Selector="^:mini:disabled /template/ Border#PART_Item">
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+    </Style>
+    <Style Selector="^:mini:date:disabled:today /template/ Border#PART_CellInner">
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
     </Style>
 
     <!-- 周序号 -->

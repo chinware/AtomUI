@@ -8,20 +8,41 @@
     x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="calendar:CalendarHeader">
-            <Border Padding="{atom:SharedTokenResource PaddingXS}">
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right"
-                            Spacing="{atom:SharedTokenResource UniformlyMarginXS}">
-                    <atom:ComboBox Name="PART_YearSelect"
-                                   MinWidth="{atom:CalendarTokenResource YearControlWidth}" />
-                    <atom:ComboBox Name="PART_MonthSelect"
-                                   MinWidth="{atom:CalendarTokenResource MonthControlWidth}" />
-                    <atom:Segmented Name="PART_ModeSwitch">
-                        <atom:SegmentedItem Content="Month" />
-                        <atom:SegmentedItem Content="Year" />
-                    </atom:Segmented>
-                </StackPanel>
-            </Border>
+            <DockPanel LastChildFill="True">
+                <Border DockPanel.Dock="Top"
+                        Height="{atom:SharedTokenResource UniformlyPaddingSM}" />
+                <Border DockPanel.Dock="Bottom"
+                        Height="{atom:SharedTokenResource UniformlyPaddingSM}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0"
+                            Width="{atom:SharedTokenResource UniformlyPaddingXS}"
+                            IsVisible="{TemplateBinding Fullscreen, Converter={x:Static BoolConverters.Not}}" />
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Column="2"
+                                HorizontalAlignment="Right"
+                                Spacing="{atom:SharedTokenResource UniformlyMarginXS}">
+                        <atom:ComboBox Name="PART_YearSelect"
+                                       MinWidth="{atom:CalendarTokenResource YearControlWidth}"
+                                       DropDownDisplayPageSize="8" />
+                        <atom:ComboBox Name="PART_MonthSelect"
+                                       MinWidth="{atom:CalendarTokenResource MonthControlWidth}"
+                                       DropDownDisplayPageSize="8" />
+                        <atom:OptionButtonGroup Name="PART_ModeSwitch" ButtonStyle="Outline">
+                            <atom:OptionButton Content="Month" />
+                            <atom:OptionButton Content="Year" />
+                        </atom:OptionButtonGroup>
+                    </StackPanel>
+                    <Border Grid.Column="3"
+                            Width="{atom:SharedTokenResource UniformlyPaddingXS}"
+                            IsVisible="{TemplateBinding Fullscreen, Converter={x:Static BoolConverters.Not}}" />
+                </Grid>
+            </DockPanel>
         </ControlTemplate>
     </Setter>
 </ControlTheme>

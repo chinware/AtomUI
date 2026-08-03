@@ -14,6 +14,7 @@
 - `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：CalendarView runtime。`State` 保存归一化状态和 action，`Models` 保存纯 panel model，`Rendering` 将 model 应用到 generated buttons，`Infrastructure` 封装 culture 和 pointer tracking。
 - `src/AtomUI.Desktop.Controls/DatePicker/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
 - `src/AtomUI.Desktop.Controls/DatePicker/Themes`：19 个文件，代表文件 `CalendarButtonTheme.axaml`、`CalendarButtonTheme.cs`、`CalendarDayButtonTheme.axaml`、`CalendarItemTheme.axaml`、`CalendarItemTheme.cs` 等。
+- `src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/InfoPickerTextBox.cs` 与 `Themes/InfoPickerTextBoxTheme.axaml`：DatePicker 输入框使用的 internal 子控件及其文本 presenter、padding 基础视觉。
 
 职责边界：
 
@@ -34,6 +35,7 @@
 - `DatePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `DatePickerDateRangeConstraint`：internal 纯值约束模型，按 `PickerMode` 归一 `MinDate`、`MaxDate`，提供 picker unit 有效性判断和显示锚点收敛，不持有控件或视觉对象。
 - `DatePickerPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
+- `InfoPickerTextBox`：internal 输入子控件，负责 picker 输入框的无 chrome padding 和文本 presenter 间距；DatePicker/RangeDatePicker 主题只负责直接子控件的状态颜色。
 - `DatePickerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `DualMonthArrowDecoratedBox`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `DualMonthCalendarItem`：集合项、节点或容器类型，承载单项状态和模板协作。

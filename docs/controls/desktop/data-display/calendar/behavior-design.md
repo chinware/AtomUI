@@ -126,7 +126,7 @@ Calendar
 ```
 
 - `Calendar`：公开属性、用户事件、状态归一、Header/View 接线和模板生命周期。
-- `CalendarHeader`：默认 Year Select、Month Select、模式 Segmented；只报告 Year/Month/Mode 用户操作。
+- `CalendarHeader`：默认 Year Select、Month Select、模式 `OptionButtonGroup`；只报告 Year/Month/Mode 用户操作。
 - `CalendarView`：按输入构建不可变 Cell Model，管理有界容器池、焦点和键盘；只通过 `CellSelected` 报告意图。
 - `CalendarRangeBarPanel`：按月份网格和 body bounds 统一排布范围条 overlay；不参与命中测试。
 - `CalendarViewCell`：保留外层交互和 Automation，应用 Cell Model，并承载 Cell/FullCell 内容。
@@ -156,7 +156,7 @@ Calendar 使用 `PART_HeaderPresenter`、`PART_BodyPresenter`、`PART_DefaultHea
 
 `CellTemplate` 不隐藏 `PART_Value`，也不替换内置范围条 overlay。`FullCellTemplate` 隐藏默认 inner 结构并显示完整模板，但不替换 `PART_Item` 或 Calendar body overlay。周序号 Cell 使用默认周序号内容，且不把空的 Week Context 传给业务模板。
 
-WeekHeader 使用与 CellHost 相同的 Grid 列定义，ShowWeek 切换时周标题、周序号列和日期列保持对齐。Mini Header 的 ComboBox 和 Segmented 使用 Small，Fullscreen 使用默认尺寸。
+WeekHeader 使用与 CellHost 相同的 Grid 列定义，ShowWeek 切换时周标题、周序号列和日期列保持对齐。Mini Header 的 ComboBox 和 `OptionButtonGroup` 使用 Small，Fullscreen 使用默认尺寸。
 
 ## 7. 核心算法、数据流与生命周期
 
@@ -189,7 +189,7 @@ Calendar 向 Header 和 View 单向投影状态。Template reapply 前解绑旧 
 
 ## 9. 兼容性与定制边界
 
-稳定契约包括 Calendar 的现有公共属性、三个事件、Template Part、八个 CalendarControl Token、根/Cell 伪类和四个 Calendar 语言资源键。FullCellTemplate 不得移除外层交互和 Automation；CellTemplate 不得替换默认日期/月值或内置范围条 overlay。应用负责模板内部业务视觉和业务数据，AtomUI 负责外层选择、禁用、焦点、Automation、主题、范围条投影和生命周期。
+稳定契约包括 Calendar 的现有公共属性、三个事件、Template Part、九个 CalendarControl Token、根/Cell 伪类和四个 Calendar 语言资源键。FullCellTemplate 不得移除外层交互和 Automation；CellTemplate 不得替换默认日期/月值或内置范围条 overlay。应用负责模板内部业务视觉和业务数据，AtomUI 负责外层选择、禁用、焦点、Automation、主题、范围条投影和生命周期。
 
 旧 `SelectedDate`、`SelectedDates`、`SelectionMode`、`DisplayDate*`、`BlackoutDates`、Decade 面板、Previous/Next Header 和旧 CalendarButton 体系不属于本控件契约。DatePicker 继续使用独立的旧 CalendarToken 和 CalendarView 类型。
 

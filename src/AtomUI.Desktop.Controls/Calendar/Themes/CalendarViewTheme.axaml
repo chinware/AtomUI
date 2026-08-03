@@ -16,12 +16,23 @@
         </ControlTemplate>
     </Setter>
 
-    <!-- WeekHeader 的每个星期标题等分 -->
     <Style Selector="^ /template/ Grid#PART_WeekHeader > TextBlock">
-        <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLabel}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+    </Style>
+
+    <Style Selector="^:fullscreen /template/ Grid#PART_WeekHeader > TextBlock">
+        <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
+    </Style>
+
+    <Style Selector="^:mini /template/ Grid#PART_WeekHeader > TextBlock">
+        <Setter Property="MinHeight" Value="{atom:SharedTokenResource FontHeightSM}" />
+    </Style>
+
+    <Style Selector="^:mini">
+        <Setter Property="Height" Value="{atom:CalendarTokenResource MiniContentHeight}" />
+        <Setter Property="MaxHeight" Value="{atom:CalendarTokenResource MiniContentHeight}" />
     </Style>
 
     <!-- Fullscreen：完整数据布局，Panel 背景与较高内容区 -->
@@ -30,9 +41,4 @@
         <Setter Property="MinHeight" Value="0" />
     </Style>
 
-    <!-- Mini：紧凑布局，内容区限制到 MiniContentHeight -->
-    <Style Selector="^:mini /template/ Grid#PART_CellHost">
-        <Setter Property="Height" Value="{atom:CalendarTokenResource MiniContentHeight}" />
-        <Setter Property="MaxHeight" Value="{atom:CalendarTokenResource MiniContentHeight}" />
-    </Style>
 </ControlTheme>

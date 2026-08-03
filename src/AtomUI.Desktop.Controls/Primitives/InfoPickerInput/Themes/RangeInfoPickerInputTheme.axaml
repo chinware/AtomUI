@@ -42,7 +42,7 @@
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
                     <Grid ColumnDefinitions="*, Auto, *">
-                        <atom:EmbeddedTextBox Name="PART_InfoInputBox"
+                        <atom:InfoPickerTextBox Name="PART_InfoInputBox"
                                               Grid.Column="0"
                                               HorizontalContentAlignment="Stretch"
                                               VerticalContentAlignment="Center"
@@ -61,7 +61,7 @@
                         <antdicons:SwapRightOutlined
                             Name="PART_RangePickerArrow"
                             Grid.Column="1" />
-                        <atom:EmbeddedTextBox
+                        <atom:InfoPickerTextBox
                             Name="PART_SecondaryInfoInputBox"
                             Grid.Column="2"
                             HorizontalContentAlignment="Stretch"
@@ -109,29 +109,19 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Once" />
-        <Style Selector="^ /template/ atom|EmbeddedTextBox">
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Foreground"
-                    Value="{atom:SharedTokenResource ColorText}" />
-        </Style>
-        <Style
-            Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox /template/ TextPresenter#PART_TextPresenter, ^ /template/ atom|EmbeddedTextBox#PART_SecondaryInfoInputBox /template/ TextPresenter#PART_TextPresenter">
-            <Setter Property="Margin" Value="0" />
-        </Style>
-
         <Style Selector="^:flyout-open">
-            <Style Selector="^ /template/ atom|EmbeddedTextBox">
+            <Style Selector="^ /template/ atom|InfoPickerTextBox">
                 <Setter Property="Foreground"
                         Value="{atom:SharedTokenResource ColorText}" />
             </Style>
             <Style Selector="^[RangeActivatedPart=Start]">
-                <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_InfoInputBox">
+                <Style Selector="^ /template/ atom|InfoPickerTextBox#PART_InfoInputBox">
                     <Setter Property="Foreground"
                             Value="{atom:SharedTokenResource ColorTextTertiary}" />
                 </Style>
             </Style>
             <Style Selector="^[RangeActivatedPart=End]">
-                <Style Selector="^ /template/ atom|EmbeddedTextBox#PART_SecondaryInfoInputBox">
+                <Style Selector="^ /template/ atom|InfoPickerTextBox#PART_SecondaryInfoInputBox">
                     <Setter Property="Foreground"
                             Value="{atom:SharedTokenResource ColorTextTertiary}" />
                 </Style>

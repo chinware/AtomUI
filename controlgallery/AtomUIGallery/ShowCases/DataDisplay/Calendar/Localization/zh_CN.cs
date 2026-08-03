@@ -14,8 +14,8 @@ internal partial class zh_CN
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "完整模式的月日历。";
 
-    public const string MiniTitle = "迷你模式";
-    public const string MiniDescription = "适用于窄容器的紧凑日历（Fullscreen = false）。";
+    public const string CardTitle = "卡片模式";
+    public const string CardDescription = "用于嵌套在空间有限的容器中。";
 
     public const string YearModeTitle = "年模式";
     public const string YearModeDescription = "显示月份网格的年面板（Mode = Year）。";

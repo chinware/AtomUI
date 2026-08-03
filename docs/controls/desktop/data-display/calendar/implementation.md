@@ -60,7 +60,7 @@ src/AtomUI.Desktop.Controls/Calendar/
 | `CalendarViewCell` | 将 model 绑定到 `CalendarCellContext`、伪类和模板，处理 Pointer/Automation 激活；不承载范围条布局。 |
 | `CalendarViewAutomationPeer` | 暴露 `AutomationControlType.Table` 与单选 `ISelectionProvider`。 |
 | `CalendarViewCellAutomationPeer` | 暴露 `AutomationControlType.ListItem` 与 `ISelectionItemProvider`；完整本地化名称、选中状态和 SelectionContainer 来自当前 owner/model。 |
-| `CalendarControlToken` | 从 SharedToken 派生八个 Calendar 视觉 Token；不保存运行时状态。 |
+| `CalendarControlToken` | 从 SharedToken 派生九个 Calendar 视觉 Token；不保存运行时状态。 |
 
 ## 4. 状态与数据流
 
@@ -118,13 +118,15 @@ Date 模式默认生成 42 个日期 Cell；启用 `ShowWeek` 时另加 6 个周
 
 ### 7.1 Header
 
-默认 Header 使用 Year Select、Month Select 和 Month/Year Segmented。ValidRange 限制年份选项；月份选项按年份和范围收敛；跨年时保留可用月份并把日期日收敛到目标月有效天数。Month/Year 显示文本和年份后缀必须来自当前语言资源，Mini 模式的 Header 控件使用 Small 尺寸。
+默认 Header 使用 Year Select、Month Select 和 Month/Year `OptionButtonGroup`。ValidRange 限制年份选项；月份选项按年份和范围收敛；跨年时保留可用月份并把日期日收敛到目标月有效天数。Month/Year 显示文本和年份后缀必须来自当前语言资源，Mini 模式的 Header 控件使用 Small 尺寸。Year/Month Select 的下拉列表视口固定映射 Ant Design Select 的 `listHeight=256`：按 AtomUI 默认选项高度 `ControlHeight=32` 配置 8 项显示高度，弹层上下内边距仍由 ComboBox Token 提供。
+
+`Fullscreen=false` 对应卡片内容布局：Calendar 根只提供背景与圆角，不拥有外部边框、固定宽度或额外 Padding；承载 Calendar 的容器负责卡片边框。Header 使用 SharedToken 的纵向 `PaddingSM`，Mini 额外保留横向 `PaddingXS`，并保持控件组右对齐；body 在顶部分隔线之后使用纵向 `PaddingXS`。Year 模式月份 Cell 使用 `YearMonthCellWidth` 铺开内容区域，日期模式仍使用紧凑方形 Cell。
 
 ### 7.2 Cell 与模板
 
 `CellTemplate` 的内容上下文是 `CalendarCellContext`，默认 `PART_Value` 仍显示日期值；内置范围条 overlay 在 Calendar body 上层按日期网格绘制，并与 `CellTemplate` 共存。`FullCellTemplate` 直接替代完整 `PART_CellInner` 内容并优先于 `CellTemplate`，但不替换 Calendar body overlay。Week Cell 不产生日期/月上下文，周序号显示由 View 生成；周序号激活以该行首日提交选择。
 
-模板只替换内容，不能绕过容器的 disabled hit-test、selected/today/outside/focused 状态、Automation 或事件提交路径。
+模板只替换内容，不能绕过容器的 disabled hit-test、selected/today/outside/focused 状态、Automation 或事件提交路径。Mini 日期选中态使用主色背景与浅色文本，today 使用主色单线描边；Fullscreen 选中态继续使用 `ItemActiveBg` 与主色日期值。outside 与 disabled 使用禁用文本色，disabled 日期同时使用禁用容器背景。
 
 ### 7.3 键盘与 Automation
 

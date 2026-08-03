@@ -333,6 +333,8 @@ public class ComboBox : AvaloniaComboBox,
     private int _candidateSelectedIndex = -1;
     private ComboBoxItem? _candidateSelectedItem;
     private readonly Dictionary<ComboBoxItem, FilterVisibilityState> _filterItemVisibilityContext = new();
+    // Keep popup closing after SelectionChanged callbacks finish updating bound state.
+    private bool _selectionFromEventInProgress;
 
     static ComboBox()
     {
@@ -528,7 +530,9 @@ public class ComboBox : AvaloniaComboBox,
         {
             ConfigureMaxDropdownHeight();
         }
-        else if (change.Property == SelectedItemProperty && change.NewValue != null)
+        else if (change.Property == SelectedItemProperty &&
+                 change.NewValue != null &&
+                 !_selectionFromEventInProgress)
         {
             // Close dropdown when an item is selected
             if (IsDropDownOpen)
@@ -638,13 +642,22 @@ public class ComboBox : AvaloniaComboBox,
 
     public override bool UpdateSelectionFromEvent(Control container, RoutedEventArgs eventArgs)
     {
-        var handled = base.UpdateSelectionFromEvent(container, eventArgs);
-        if (handled && IsDropDownOpen)
+        var previous = _selectionFromEventInProgress;
+        _selectionFromEventInProgress = true;
+        try
         {
-            SetCurrentValue(IsDropDownOpenProperty, false);
-        }
+            var handled = base.UpdateSelectionFromEvent(container, eventArgs);
+            if (handled && IsDropDownOpen)
+            {
+                SetCurrentValue(IsDropDownOpenProperty, false);
+            }
 
-        return handled;
+            return handled;
+        }
+        finally
+        {
+            _selectionFromEventInProgress = previous;
+        }
     }
 
     protected override void OnSizeChanged(SizeChangedEventArgs e)

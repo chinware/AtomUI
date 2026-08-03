@@ -62,7 +62,7 @@ ButtonSpinnerToken
         ↓
 NumericUpDownToken scope
         ↓
-NumericUpDownTheme / ButtonSpinner themes
+NumericUpDownTheme / NumericUpDownSpinnerTheme / ButtonSpinner themes
         ↓
 TextBox + ButtonSpinnerHandle visual state
 ```
@@ -104,6 +104,7 @@ Spinner mode 不新增专属 Token。`Mode=Spinner` 的三段式拨轮结构复�
 NumericUpDownToken 与 ButtonSpinnerToken 共享同一套输入 Handle 语义。Token 变更必须评估以下控件或主题：
 
 - `NumericUpDownTheme.axaml`
+- `NumericUpDownSpinnerTheme.axaml`
 - `ButtonSpinnerTheme.axaml`
 - `ButtonSpinnerDecoratedBoxTheme.axaml`
 - `ButtonSpinnerHandleTheme.axaml`

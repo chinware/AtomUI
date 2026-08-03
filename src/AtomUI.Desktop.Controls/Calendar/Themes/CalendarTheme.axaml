@@ -23,35 +23,45 @@
                                         ContentTemplate="{TemplateBinding HeaderTemplate}"
                                         IsVisible="{Binding HeaderTemplate, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}" />
                     </Panel>
-                    <Panel Name="PART_BodyPresenter"
-                           ClipToBounds="True">
-                        <calendar:CalendarView Name="PART_CalendarView"
-                                               Value="{TemplateBinding Value}"
-                                               Fullscreen="{TemplateBinding Fullscreen}"
-                                               ShowWeek="{TemplateBinding ShowWeek}"
-                                               ValidRange="{TemplateBinding ValidRange}"
-                                               DisabledDate="{TemplateBinding DisabledDate}"
-                                               CellTemplate="{TemplateBinding CellTemplate}"
-                                               FullCellTemplate="{TemplateBinding FullCellTemplate}"
-                                               HorizontalAlignment="Stretch"
-                                               VerticalAlignment="Stretch"
-                                               ZIndex="0" />
-                        <calendar:CalendarRangeBarPanel Name="PART_RangeBarPanel"
-                                                        Value="{TemplateBinding Value}"
-                                                        Mode="{TemplateBinding Mode}"
-                                                        Fullscreen="{TemplateBinding Fullscreen}"
-                                                        ShowWeek="{TemplateBinding ShowWeek}"
-                                                        RangeBars="{TemplateBinding RangeBars}"
-                                                        RangeBarHeight="{atom:CalendarTokenResource RangeBarHeight}"
-                                                        WeekHeaderHeight="{atom:SharedTokenResource ControlHeightSM}"
-                                                        RangeBarTopOffset="{atom:SharedTokenResource ControlHeightSM}"
-                                                        RangeBarHorizontalInset="{atom:SharedTokenResource UniformlyMarginXXS}"
-                                                        HorizontalAlignment="Stretch"
-                                                        VerticalAlignment="Stretch"
-                                                        IsVisible="False"
-                                                        IsHitTestVisible="False"
-                                                        ZIndex="1" />
-                    </Panel>
+                    <DockPanel Name="PART_BodyPresenter"
+                               LastChildFill="True"
+                               ClipToBounds="True">
+                        <Border DockPanel.Dock="Top"
+                                Height="{atom:SharedTokenResource LineWidth}"
+                                Background="{atom:SharedTokenResource ColorSplit}" />
+                        <Border DockPanel.Dock="Top"
+                                Height="{atom:SharedTokenResource UniformlyPaddingXS}" />
+                        <Border DockPanel.Dock="Bottom"
+                                Height="{atom:SharedTokenResource UniformlyPaddingXS}" />
+                        <Grid>
+                            <calendar:CalendarView Name="PART_CalendarView"
+                                                   Value="{TemplateBinding Value}"
+                                                   Fullscreen="{TemplateBinding Fullscreen}"
+                                                   ShowWeek="{TemplateBinding ShowWeek}"
+                                                   ValidRange="{TemplateBinding ValidRange}"
+                                                   DisabledDate="{TemplateBinding DisabledDate}"
+                                                   CellTemplate="{TemplateBinding CellTemplate}"
+                                                   FullCellTemplate="{TemplateBinding FullCellTemplate}"
+                                                   HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   ZIndex="0" />
+                            <calendar:CalendarRangeBarPanel Name="PART_RangeBarPanel"
+                                                            Value="{TemplateBinding Value}"
+                                                            Mode="{TemplateBinding Mode}"
+                                                            Fullscreen="{TemplateBinding Fullscreen}"
+                                                            ShowWeek="{TemplateBinding ShowWeek}"
+                                                            RangeBars="{TemplateBinding RangeBars}"
+                                                            RangeBarHeight="{atom:CalendarTokenResource RangeBarHeight}"
+                                                            WeekHeaderHeight="{atom:SharedTokenResource ControlHeightSM}"
+                                                            RangeBarTopOffset="{atom:SharedTokenResource ControlHeightSM}"
+                                                            RangeBarHorizontalInset="{atom:SharedTokenResource UniformlyMarginXXS}"
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Stretch"
+                                                            IsVisible="False"
+                                                            IsHitTestVisible="False"
+                                                            ZIndex="1" />
+                        </Grid>
+                    </DockPanel>
                 </DockPanel>
             </Border>
         </ControlTemplate>
@@ -68,12 +78,12 @@
     </Style>
 
     <Style Selector="^:mini">
-        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Top" />
     </Style>
     <Style Selector="^:mini /template/ Border#PART_Root">
-        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
-        <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingSM}" />
+        <Setter Property="Padding" Value="0" />
     </Style>
 </ControlTheme>

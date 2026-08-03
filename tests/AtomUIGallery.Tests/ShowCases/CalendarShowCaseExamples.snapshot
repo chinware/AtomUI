@@ -155,12 +155,18 @@
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource MiniTitle}"
-                                      Description="{gallery:CalendarShowCaseLangResource MiniDescription}"
+                <gallery:ShowCaseItem Title="{gallery:CalendarShowCaseLangResource CardTitle}"
+                                      Description="{gallery:CalendarShowCaseLangResource CardDescription}"
                                       IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:CalendarViewModel">
-                            <atom:Calendar Value="{Binding SampleDate}" Fullscreen="False" Width="300" />
+                            <Border Width="300"
+                                    HorizontalAlignment="Left"
+                                    BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                                    BorderThickness="{atom:SharedTokenResource BorderThickness}"
+                                    CornerRadius="{atom:SharedTokenResource BorderRadiusLG}">
+                                <atom:Calendar Value="{Binding SampleDate}" Fullscreen="False" />
+                            </Border>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
