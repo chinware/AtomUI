@@ -4,13 +4,21 @@
 
 ## Unreleased
 
+- Design
+  - Define the cross-platform drag-and-drop contract in `drag-drop-design.md`.
+  - Establish `UploadDropZone` as the sole DragDrop owner and `UploadDefaultDropArea` as a visual-only control.
+  - Lock the existing DropZone/DropArea ControlTheme, layout, Token mapping and rendered result as compatibility invariants.
 - API
+  - Move click-to-select ownership from `Upload` to `UploadDropZone`.
+  - Replace ambiguous string accept rules with typed allowed file types and a unified input batch result.
   - Redesign Upload around `Files` as the single state owner.
   - Replace directory mode with composable `UploadTrigger.SourceKind`.
 - Theme
   - Move list scrolling into `UploadList`.
   - Replace picture trigger fake task with append trigger content.
 - Behavior
+  - Require explicit Copy/None negotiation, Drop-only data materialization and one shared picker/drop/programmatic input pipeline.
+  - Define directory traversal, per-item rejection, cancellation and StorageItem lease ownership.
   - Add configurable success auto-remove and pending text.
 
 ## 2026-06-26

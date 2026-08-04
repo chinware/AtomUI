@@ -8,7 +8,8 @@
 | --- | --- | --- | --- | --- | --- |
 | `root` | `Upload` | 上传状态协调器，拥有文件集合、上传队列、Form 值投影和生命周期。 | `Files`、`UploadTransport`、`FileValueMode` | `UploadToken`、SharedToken | stable |
 | `trigger` | `TriggerContent` / `UploadTrigger` | 承载文件或目录选择入口，只提交选择动作，不持有上传状态。 | `TriggerContent`、`SourceKind`、`SelectFilesAsync()`、`SelectDirectoriesAsync()` | Upload trigger 主题资源 | stable |
-| `drop-zone` | `UploadDropZone` | 接收拖拽文件并提交给最近的 `Upload`。 | `EnqueueFilesAsync()` | Upload drop-zone 主题资源 | stable |
+| `drop-zone` | `UploadDropZone` | 协商拖动效果、取得 Drop 快照并创建统一输入批次。 | `IsOpenFileDialogOnClick`、`DirectoryDropMode`、`DragState` | Upload drop-zone 主题资源 | stable |
+| `drop-area` | `UploadDefaultDropArea` | 渲染默认拖动图标、标题、副标题和边框，不处理 DataTransfer。 | `DropIcon`、`Header`、`SubHeader` | Upload Token、SharedToken | stable |
 | `list` | `UploadList` | 渲染 `Files` 并拥有列表滚动边界，不创建第二份文件状态。 | `Files`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | Upload list 主题资源 | internal-observable |
 | `item` | `AbstractUploadListItem` 派生容器 | 投射单个 `UploadFileItem` 的状态、进度和操作入口。 | `UploadFileItem.Status`、`Progress`、`ErrorMessage`、`Result` | Upload item 主题资源 | internal-observable |
 | `validation` | `Upload` Form / validation 投影 | 按 `FileValueMode` 输出 Form 值，并把错误投射到 `DataValidationErrors`。 | `FileValueMode`、`IFormItemAware` | SharedToken、Form Token | stable |
@@ -87,7 +88,10 @@ Upload
 | --- | --- | --- |
 | 文件状态 | `Files`、`UploadFileItem` | 唯一文件状态 owner，支持绑定、Form 投影和列表渲染。 |
 | 文件选择 | `UploadTrigger`、`UploadSourceKind`、`SelectFilesAsync`、`SelectDirectoriesAsync` | 文件与目录选择是独立动作入口，不再由根控件 bool 互斥。 |
-| 拖拽提交 | `UploadDropZone`、`EnqueueFilesAsync` | 拖拽区只提交文件，不保存列表状态。 |
+| 拖拽提交 | `UploadDropZone`、`UploadDirectoryDropMode`、`UploadDragState` | DropZone 负责平台协商和快照，`Upload` 负责统一准入与文件状态。 |
+| 文件准入 | `AllowedFileTypes`、`CountOverflowBehavior`、`AdmissionPolicy` | picker、directory、drop 和 programmatic 输入共享同一准入与数量语义。 |
+| 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受、拒绝和取消结果。 |
+| 文件内容 | `UploadFileInfo`、`IUploadFileSource` | Transport 通过可打开内容源读取文件，不假定本地路径可访问。 |
 | 上传队列 | `UploadTransport`、`AutoUpload`、`MaxConcurrentTasks`、`UploadQueue` | 上传调度与视觉控件解耦，生命周期由 `Upload` 统一释放。 |
 | 列表展示 | `UploadList`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | 列表内部滚动，触发区保持固定。 |
 | 触发入口 | `TriggerContent`、`UploadTrigger`、Picture append slot | 文件/目录触发器由用户布局组合，PictureCard/PictureCircle 通过显示源 append slot 呈现。 |
@@ -130,7 +134,8 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Tok
 | --- | --- |
 | `UploadTheme.axaml` | 根模板，连接 `TriggerContent`、list 和 picture display source。 |
 | `UploadTriggerTheme.axaml` | 触发器 shell，只承载用户内容和点击动作，不硬编码 Button。 |
-| `UploadDropZoneTheme.axaml` | 拖拽区域 shell，承载 drop 视觉和用户内容。 |
+| `UploadDropZoneTheme.axaml` | 拖拽行为 shell，只承载用户内容和内容对齐。 |
+| `UploadDefaultDropAreaTheme.axaml` | 默认拖动视觉，保留边框、图标、标题、副标题、状态 selector 和动效，不处理拖动数据。 |
 | `UploadListTheme.axaml` | 上传列表 shell，内部拥有自动隐藏的 `atom:ScrollViewer` 和滚动边界。 |
 | `UploadTextListItemTheme.axaml` | Text 列表项状态视觉。 |
 | `UploadTextListItemHeaderTheme.axaml` | Text 列表项头部状态视觉。 |
@@ -164,22 +169,25 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 ## Customization Boundaries
 
-本次重构是 L3 breaking change。维护 Upload 时必须保持以下新不变量：
+维护 Upload 时必须保持以下兼容性不变量：
 
-- 不重新引入 `TaskInfoList`、`DefaultTaskList`、`CurrentTaskList` 或 fake trigger task。
+- 不引入与 `Files` 平行的任务集合或把触发入口伪装成文件项。
 - 不让视觉容器反向持有业务任务状态。
 - 不用延时、强制刷新或 suppression flag 掩盖状态不同步。
 - Template reapply、集合替换、remove、reset、detach 都必须释放旧订阅、取消运行任务和取消 pending auto-remove。
 - 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
-- 文档只描述当前目标设计；历史变化记录在 `changelog.md`。
+- `UploadDropZone` 和 `UploadDefaultDropArea` 的 ControlTheme、模板视觉树、Token 映射、布局和默认渲染结果保持稳定。
+- 文档只描述稳定设计；历史变化记录在 `changelog.md`。
 
 维护不变量：
 
 维护 Upload 时不得破坏以下不变量：
 
 - `Files` 是唯一文件状态 owner。
-- `UploadTaskInfo`、`TaskInfoList`、`DefaultTaskList`、`CurrentTaskList` 和 fake picture trigger task 不得重新进入目标实现。
+- 不得引入与 `Files` 平行的任务集合，也不得把 picture trigger 伪装成文件项。
 - trigger、drop-zone、list、item container 都不能保存第二份业务任务状态。
+- `UploadDropZone` 是唯一 DragDrop 行为 owner；`UploadDefaultDropArea` 必须保持纯视觉职责。
+- 默认 DropZone/DropArea ControlTheme、模板视觉树、Token、布局和渲染结果不得因输入管线重构改变。
 - PictureCard/PictureCircle 的上传入口只能通过 `EffectivePictureItems` 中的 display append slot 呈现，确保与图片项处于同一 wrap flow。
 - `RemoveFileAsync`、`ResetAsync`、detach 必须释放上传任务、auto-remove delay、集合订阅和 container 绑定。
 - `DataValidationErrors` 是 error 状态来源，Upload 不维护独立 error 机制。

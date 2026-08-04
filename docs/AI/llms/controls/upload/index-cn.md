@@ -22,7 +22,7 @@ Upload 不负责具体网络传输协议、文件存储服务或业务附件模�
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload` |
-| 状态 | Stable，`Unreleased` 中规划 L3 重构 |
+| 状态 | Stable |
 
 ## 何时使用
 
@@ -45,7 +45,8 @@ Upload 以 `Files` 作为唯一上传文件状态 owner。触发器、拖拽区�
 
 - `Upload.Files` 表示所有可观察上传文件。
 - `UploadTrigger` 通过 `SourceKind=Files|Directories` 选择文件或目录。
-- `UploadDropZone` 将拖拽文件提交给最近的 `Upload`。
+- `UploadDropZone` 独占拖动协商和 Drop 快照，并把输入批次提交给最近的 `Upload`。
+- `UploadDefaultDropArea` 只提供默认视觉，不读取拖动数据或维护文件状态。
 - `UploadList` 渲染 `Files`，并独立管理滚动区域。
 - `PictureCard` / `PictureCircle` 的上传入口通过 append slot 呈现，不作为 `UploadFileItem`。
 
@@ -55,14 +56,17 @@ Upload 以 `Files` 作为唯一上传文件状态 owner。触发器、拖拽区�
 | --- | --- | --- |
 | 文件状态 | `Files`、`UploadFileItem` | 唯一文件状态 owner，支持绑定、Form 投影和列表渲染。 |
 | 文件选择 | `UploadTrigger`、`UploadSourceKind`、`SelectFilesAsync`、`SelectDirectoriesAsync` | 文件与目录选择是独立动作入口，不再由根控件 bool 互斥。 |
-| 拖拽提交 | `UploadDropZone`、`EnqueueFilesAsync` | 拖拽区只提交文件，不保存列表状态。 |
+| 拖拽提交 | `UploadDropZone`、`UploadDirectoryDropMode`、`UploadDragState` | DropZone 负责平台协商和快照，`Upload` 负责统一准入与文件状态。 |
+| 文件准入 | `AllowedFileTypes`、`CountOverflowBehavior`、`AdmissionPolicy` | picker、directory、drop 和 programmatic 输入共享同一准入与数量语义。 |
+| 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受、拒绝和取消结果。 |
+| 文件内容 | `UploadFileInfo`、`IUploadFileSource` | Transport 通过可打开内容源读取文件，不假定本地路径可访问。 |
 | 上传队列 | `UploadTransport`、`AutoUpload`、`MaxConcurrentTasks`、`UploadQueue` | 上传调度与视觉控件解耦，生命周期由 `Upload` 统一释放。 |
 | 列表展示 | `UploadList`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | 列表内部滚动，触发区保持固定。 |
 | 触发入口 | `TriggerContent`、`UploadTrigger`、Picture append slot | 文件/目录触发器由用户布局组合，PictureCard/PictureCircle 通过显示源 append slot 呈现。 |
 | 状态反馈 | `SuccessAutoRemoveDelay`、`PendingText`、`FileValueMode` | 成功自动移除、待上传文案和 Form 值投影可配置。 |
 | 视觉与动效 | `IsMotionEnabled`、Upload Token | 只表达视觉状态，不保存业务任务状态。 |
 
-### 3.3 新公共类型
+### 3.3 公共状态类型
 
 ```csharp
 public class UploadFileItem : AvaloniaObject
@@ -94,20 +98,7 @@ public enum UploadFileValueMode
 }
 ```
 
-### 3.4 破坏性 API 调整
-
-| Removed API | Replacement |
-| --- | --- |
-| `TaskInfoList` | `Files` |
-| `UploadTaskInfo` 作为 public 状态模型 | `UploadFileItem` |
-| `DefaultTaskList` | 初始化或绑定 `Files` |
-| `CurrentTaskList` | 不再公开或内部复制任务视图 |
-| `IsUploadDirectoryEnabled` | `UploadTrigger.SourceKind=Directories` |
-| `IsShowUploadTrigger` | 由用户布局控制 trigger 可见性 |
-| fake picture trigger task | `TriggerContent` / display append slot |
-| `UploadTriggerContent` 作为内部统一触发器 | public `UploadTrigger` |
-
-### 3.5 推荐用法
+### 3.4 推荐用法
 
 ```xml
 <atom:Upload Files="{Binding Attachments}"
@@ -131,6 +122,7 @@ public enum UploadFileValueMode
 ## 事件与命令
 
 Upload 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
+| 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受、拒绝和取消结果。 |
 
 ## 使用示例
 
@@ -188,7 +180,8 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Tok
 | --- | --- |
 | `UploadTheme.axaml` | 根模板，连接 `TriggerContent`、list 和 picture display source。 |
 | `UploadTriggerTheme.axaml` | 触发器 shell，只承载用户内容和点击动作，不硬编码 Button。 |
-| `UploadDropZoneTheme.axaml` | 拖拽区域 shell，承载 drop 视觉和用户内容。 |
+| `UploadDropZoneTheme.axaml` | 拖拽行为 shell，只承载用户内容和内容对齐。 |
+| `UploadDefaultDropAreaTheme.axaml` | 默认拖动视觉，保留边框、图标、标题、副标题、状态 selector 和动效，不处理拖动数据。 |
 | `UploadListTheme.axaml` | 上传列表 shell，内部拥有自动隐藏的 `atom:ScrollViewer` 和滚动边界。 |
 | `UploadTextListItemTheme.axaml` | Text 列表项状态视觉。 |
 | `UploadTextListItemHeaderTheme.axaml` | Text 列表项头部状态视觉。 |
@@ -225,6 +218,8 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 资源边界：
 
 - 异步上传任务、取消源、delay、drag/drop 事件、collection change 和 item container 绑定必须有确定释放点。
+- DragOver 不读取文件值或元数据；Drop 只物化一次顶层 StorageItem 数据。
+- 输入批次串行提交数量决策，目录与元数据异步处理保持有限并发和稳定顺序。
 - `UploadFileItem` 不持有视觉控件，避免文件项生命周期反向保留控件树。
 - `UploadQueue` 不捕获 `Upload` 外的视觉对象；回调只写 item 状态。
 - C# binding 仅用于 AXAML 无法表达的动态关系，并必须挂到明确 owner 上释放。
@@ -238,12 +233,13 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 AOT 边界：
 
 - 不通过运行时反射扫描 public API、Token、API 契约摘要或上传模型。
+- 拖动输入使用 typed DataTransfer、StorageItem 和显式策略，不依赖平台私有反射或动态发现。
 - 新增 public 类型应显式引用并由源码、Gallery 和测试覆盖。
 - Source generator 生成文件不手工编辑；LLMS 产物也不在本次运行时代码任务中手工修改。
 
 ## 源码索引
 
-目标源码结构按“状态 owner、动作入口、队列协调、列表视图、主题模板”分层。
+源码结构按“状态 owner、输入入口、输入管线、队列协调、列表视图、主题模板”分层。
 
 | 路径 | 职责 |
 | --- | --- |
@@ -255,7 +251,8 @@ AOT 边界：
 | `src/AtomUI.Desktop.Controls/Upload/UploadSourceKind.cs` | public 触发来源枚举，区分文件选择和目录选择。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadFileValueMode.cs` | public Form 值投影枚举，控制提交全部文件、成功文件或上传结果。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadTrigger.cs` | public 可组合触发器，查找最近的 `Upload` 并触发文件或目录选择。 |
-| `src/AtomUI.Desktop.Controls/Upload/UploadDropZone.cs` | public 可组合拖拽区，将 drop 文件提交给最近的 `Upload`。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadDropZone.cs` | public 可组合拖拽区，拥有 DragDrop 协商、状态和 Drop 快照。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadDefaultDropArea.cs` | public 默认拖动视觉，只保存图标、标题、副标题和动效属性。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadQueue.cs` | internal 上传队列协调器，映射 `UploadFileItem` 与 `FileUploadTask`。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadList.cs` | 文件列表视图，渲染 effective 文件视图并维护列表滚动。 |
 | `src/AtomUI.Desktop.Controls/Upload/AbstractUploadListItem.cs` | 列表项基类，只绑定 `UploadFileItem` 并发出 item action，不拥有任务状态。 |
@@ -268,7 +265,8 @@ AOT 边界：
 | --- | --- |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/UploadTheme.axaml` | 根模板，连接 `TriggerContent`、list 和 picture display source，并保持触发区与列表的稳定间距。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/UploadTriggerTheme.axaml` | 触发器 shell，只承载用户内容和点击表面。 |
-| `src/AtomUI.Desktop.Controls/Upload/Themes/UploadDropZoneTheme.axaml` | 拖拽区 shell，承载 drag/drop 视觉和内容。 |
+| `src/AtomUI.Desktop.Controls/Upload/Themes/UploadDropZoneTheme.axaml` | 拖拽行为 shell，只承载用户内容和内容对齐。 |
+| `src/AtomUI.Desktop.Controls/Upload/Themes/UploadDefaultDropAreaTheme.axaml` | 默认拖动视觉，保持 Frame、内容 presenter、Token 和动效结构。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/UploadListTheme.axaml` | 列表 shell，内部拥有自动隐藏的 `atom:ScrollViewer` 和滚动边界。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/PictureList/*` | Picture 列表项视觉，pending 内容优先读取 `UploadFileItem.PendingText`。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/PictureShapeList/*` | PictureCard/PictureCircle 列表布局和 item 视觉；append slot 由 display source 承载并进入同一 wrap flow。 |
