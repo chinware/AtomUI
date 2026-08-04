@@ -6,81 +6,61 @@ namespace AtomUI.Desktop.Controls;
 internal static class UploadStorageItemEnumerator
 {
     internal static async Task<UploadStorageEnumerationResult> EnumerateAsync(
+        UploadInputBatchOperation operation,
         IReadOnlyList<IStorageItem> storageItems,
         UploadDirectoryDropMode directoryMode,
         int maxDirectoryDepth,
         int maxEnumeratedItems,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(operation);
         ArgumentNullException.ThrowIfNull(storageItems);
         ArgumentOutOfRangeException.ThrowIfNegative(maxDirectoryDepth);
         ArgumentOutOfRangeException.ThrowIfLessThan(maxEnumeratedItems, 1);
 
         var candidates = new List<UploadInputCandidate>();
         var rejectedItems = new List<UploadRejectedItem>();
-        var currentIndex = 0;
-        var firstUnownedIndex = 0;
+        var context = new DirectoryEnumerationContext(
+            operation,
+            storageItems,
+            directoryMode,
+            maxDirectoryDepth,
+            maxEnumeratedItems,
+            candidates,
+            rejectedItems);
 
-        try
+        foreach (var storageItem in storageItems)
         {
-            for (; currentIndex < storageItems.Count; currentIndex++)
+            cancellationToken.ThrowIfCancellationRequested();
+            switch (storageItem)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                var storageItem = storageItems[currentIndex];
-                switch (storageItem)
-                {
-                    case IStorageFile storageFile:
-                        TryAddCandidate(storageFile, candidates, rejectedItems);
-                        firstUnownedIndex = currentIndex + 1;
-                        break;
+                case IStorageFile storageFile:
+                    TryAddCandidate(operation, storageFile, candidates, rejectedItems);
+                    break;
 
-                    case IStorageFolder storageFolder:
-                        if (directoryMode == UploadDirectoryDropMode.Reject)
-                        {
-                            rejectedItems.Add(CreateRejection(
-                                storageFolder,
-                                UploadRejectionReason.DirectoryNotAllowed,
-                                "Directory input is disabled."));
-                            storageFolder.Dispose();
-                            firstUnownedIndex = currentIndex + 1;
-                            break;
-                        }
-
-                        var context = new DirectoryEnumerationContext(
-                            directoryMode,
-                            maxDirectoryDepth,
-                            maxEnumeratedItems,
-                            candidates,
-                            rejectedItems);
-                        context.TryVisit(storageFolder);
-                        firstUnownedIndex = currentIndex + 1;
-                        await EnumerateFolderAsync(storageFolder, 0, context, cancellationToken).ConfigureAwait(false);
-                        break;
-
-                    default:
+                case IStorageFolder storageFolder:
+                    if (directoryMode == UploadDirectoryDropMode.Reject)
+                    {
                         rejectedItems.Add(CreateRejection(
-                            storageItem,
-                            UploadRejectionReason.UnsupportedStorageItem,
-                            "The storage item is neither a file nor a folder."));
-                        storageItem.Dispose();
-                        firstUnownedIndex = currentIndex + 1;
+                            storageFolder,
+                            UploadRejectionReason.DirectoryNotAllowed,
+                            "Directory input is disabled."));
+                        operation.ReleaseStorageItem(storageFolder);
                         break;
-                }
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            foreach (var candidate in candidates)
-            {
-                candidate.Dispose();
-            }
+                    }
 
-            for (var index = firstUnownedIndex; index < storageItems.Count; index++)
-            {
-                storageItems[index].Dispose();
-            }
+                    context.TryVisit(storageFolder);
+                    await EnumerateFolderAsync(storageFolder, 0, context, cancellationToken).ConfigureAwait(false);
+                    break;
 
-            throw;
+                default:
+                    rejectedItems.Add(CreateRejection(
+                        storageItem,
+                        UploadRejectionReason.UnsupportedStorageItem,
+                        "The storage item is neither a file nor a folder."));
+                    operation.ReleaseStorageItem(storageItem);
+                    break;
+            }
         }
 
         return new UploadStorageEnumerationResult(candidates, rejectedItems);
@@ -98,16 +78,25 @@ internal static class UploadStorageItemEnumerator
                                               .WithCancellation(cancellationToken)
                                               .ConfigureAwait(false))
             {
+                if (!context.TryAdoptChild(child))
+                {
+                    continue;
+                }
+
                 if (!context.TryObserve(child))
                 {
-                    child.Dispose();
+                    context.Operation.ReleaseStorageItem(child);
                     break;
                 }
 
                 switch (child)
                 {
                     case IStorageFile storageFile:
-                        TryAddCandidate(storageFile, context.Candidates, context.RejectedItems);
+                        TryAddCandidate(
+                            context.Operation,
+                            storageFile,
+                            context.Candidates,
+                            context.RejectedItems);
                         break;
 
                     case IStorageFolder childFolder:
@@ -117,7 +106,7 @@ internal static class UploadStorageItemEnumerator
                                 childFolder,
                                 UploadRejectionReason.DirectoryNotAllowed,
                                 "Nested directories are not expanded in TopLevelFiles mode."));
-                            childFolder.Dispose();
+                            context.Operation.ReleaseStorageItem(childFolder);
                         }
                         else if (depth + 1 > context.MaxDirectoryDepth)
                         {
@@ -125,7 +114,7 @@ internal static class UploadStorageItemEnumerator
                                 childFolder,
                                 UploadRejectionReason.DirectoryDepthExceeded,
                                 $"Directory depth exceeds {context.MaxDirectoryDepth}."));
-                            childFolder.Dispose();
+                            context.Operation.ReleaseStorageItem(childFolder);
                         }
                         else if (!context.TryVisit(childFolder))
                         {
@@ -133,7 +122,7 @@ internal static class UploadStorageItemEnumerator
                                 childFolder,
                                 UploadRejectionReason.DirectoryCycleDetected,
                                 "The directory was already visited."));
-                            childFolder.Dispose();
+                            context.Operation.ReleaseStorageItem(childFolder);
                         }
                         else
                         {
@@ -147,7 +136,7 @@ internal static class UploadStorageItemEnumerator
                             child,
                             UploadRejectionReason.UnsupportedStorageItem,
                             "The storage item is neither a file nor a folder."));
-                        child.Dispose();
+                        context.Operation.ReleaseStorageItem(child);
                         break;
                 }
             }
@@ -174,11 +163,12 @@ internal static class UploadStorageItemEnumerator
         }
         finally
         {
-            folder.Dispose();
+            context.Operation.ReleaseStorageItem(folder);
         }
     }
 
     private static void TryAddCandidate(
+        UploadInputBatchOperation operation,
         IStorageFile storageFile,
         ICollection<UploadInputCandidate> candidates,
         ICollection<UploadRejectedItem> rejectedItems)
@@ -194,7 +184,7 @@ internal static class UploadStorageItemEnumerator
                 storageFile,
                 UploadRejectionReason.StorageReadFailed,
                 "The storage file could not be read."));
-            storageFile.Dispose();
+            operation.ReleaseStorageItem(storageFile);
         }
     }
 
@@ -228,9 +218,11 @@ internal static class UploadStorageItemEnumerator
 
     private sealed class DirectoryEnumerationContext
     {
+        private readonly HashSet<IStorageItem> _observedItems;
         private readonly HashSet<string> _visitedDirectories = new(StringComparer.Ordinal);
         private int _enumeratedItemCount;
 
+        internal UploadInputBatchOperation Operation { get; }
         internal UploadDirectoryDropMode DirectoryMode { get; }
         internal int MaxDirectoryDepth { get; }
         internal int MaxEnumeratedItems { get; }
@@ -238,17 +230,32 @@ internal static class UploadStorageItemEnumerator
         internal List<UploadRejectedItem> RejectedItems { get; }
 
         internal DirectoryEnumerationContext(
+            UploadInputBatchOperation operation,
+            IEnumerable<IStorageItem> storageItems,
             UploadDirectoryDropMode directoryMode,
             int maxDirectoryDepth,
             int maxEnumeratedItems,
             List<UploadInputCandidate> candidates,
             List<UploadRejectedItem> rejectedItems)
         {
-            DirectoryMode       = directoryMode;
-            MaxDirectoryDepth   = maxDirectoryDepth;
-            MaxEnumeratedItems  = maxEnumeratedItems;
-            Candidates          = candidates;
-            RejectedItems       = rejectedItems;
+            Operation          = operation;
+            DirectoryMode      = directoryMode;
+            MaxDirectoryDepth  = maxDirectoryDepth;
+            MaxEnumeratedItems = maxEnumeratedItems;
+            Candidates         = candidates;
+            RejectedItems      = rejectedItems;
+            _observedItems     = new HashSet<IStorageItem>(storageItems, ReferenceEqualityComparer.Instance);
+        }
+
+        internal bool TryAdoptChild(IStorageItem storageItem)
+        {
+            if (!_observedItems.Add(storageItem))
+            {
+                return false;
+            }
+
+            Operation.AdoptStorageItem(storageItem);
+            return true;
         }
 
         internal bool TryObserve(IStorageItem storageItem)

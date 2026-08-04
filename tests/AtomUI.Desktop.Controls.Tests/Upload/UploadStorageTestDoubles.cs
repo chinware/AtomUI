@@ -78,6 +78,44 @@ internal sealed class TestStorageFile : TestStorageItem, IStorageFile
     }
 }
 
+internal sealed class ThrowingStorageFile : IStorageFile
+{
+    public string Name { get; }
+    public Uri Path { get; }
+    public bool CanBookmark => false;
+    public int DisposeCount { get; private set; }
+
+    internal ThrowingStorageFile(string name, string path)
+    {
+        Name = name;
+        Path = new Uri(path, UriKind.Absolute);
+    }
+
+    public Task<StorageItemProperties> GetBasicPropertiesAsync() =>
+        Task.FromResult(new StorageItemProperties(3));
+
+    public Task<Stream> OpenReadAsync() =>
+        Task.FromResult<Stream>(new MemoryStream([1, 2, 3], writable: false));
+
+    public Task<Stream> OpenWriteAsync() =>
+        Task.FromResult<Stream>(new MemoryStream());
+
+    public Task<string?> SaveBookmarkAsync() => Task.FromResult<string?>(null);
+
+    public Task<IStorageFolder?> GetParentAsync() => Task.FromResult<IStorageFolder?>(null);
+
+    public Task DeleteAsync() => Task.CompletedTask;
+
+    public Task<IStorageItem?> MoveAsync(IStorageFolder destination) =>
+        Task.FromResult<IStorageItem?>(null);
+
+    public void Dispose()
+    {
+        DisposeCount++;
+        throw new InvalidOperationException($"Dispose failed for {Name}.");
+    }
+}
+
 internal sealed class TestStorageFolder : TestStorageItem, IStorageFolder
 {
     private readonly IReadOnlyList<IStorageItem> _items;

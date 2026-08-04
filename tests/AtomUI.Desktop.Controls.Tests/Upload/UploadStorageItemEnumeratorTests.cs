@@ -28,9 +28,15 @@ public class UploadStorageItemEnumeratorTests
     public async Task Reject_Mode_Rejects_And_Disposes_A_Directory()
     {
         var folder = Folder("root", File("inside.txt"));
+        using var operation = CreateOperation(folder);
 
         var result = await UploadStorageItemEnumerator.EnumerateAsync(
-            [folder], UploadDirectoryDropMode.Reject, 32, 10_000, TestContext.Current.CancellationToken);
+            operation,
+            [folder],
+            UploadDirectoryDropMode.Reject,
+            32,
+            10_000,
+            TestContext.Current.CancellationToken);
 
         result.Candidates.ShouldBeEmpty();
         result.RejectedItems.Single().Reason.ShouldBe(UploadRejectionReason.DirectoryNotAllowed);
@@ -44,16 +50,22 @@ public class UploadStorageItemEnumeratorTests
         var nested = Folder("nested", File("nested.txt"));
         var second = File("second.txt");
         var root = Folder("root", first, nested, second);
+        using var operation = CreateOperation(root);
 
         var result = await UploadStorageItemEnumerator.EnumerateAsync(
-            [root], UploadDirectoryDropMode.TopLevelFiles, 32, 10_000, TestContext.Current.CancellationToken);
+            operation,
+            [root],
+            UploadDirectoryDropMode.TopLevelFiles,
+            32,
+            10_000,
+            TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name).ShouldBe(["first.txt", "second.txt"]);
         result.RejectedItems.Single().Name.ShouldBe("nested");
         nested.DisposeCount.ShouldBe(1);
         root.DisposeCount.ShouldBe(1);
 
-        DisposeCandidates(result);
+        operation.Dispose();
         first.DisposeCount.ShouldBe(1);
         second.DisposeCount.ShouldBe(1);
     }
@@ -68,9 +80,15 @@ public class UploadStorageItemEnumeratorTests
         var nested = Folder("nested", nestedFile, deep);
         var last = File("last.txt");
         var root = Folder("root", first, nested, last);
+        using var operation = CreateOperation(root);
 
         var result = await UploadStorageItemEnumerator.EnumerateAsync(
-            [root], UploadDirectoryDropMode.RecursiveFiles, 32, 10_000, TestContext.Current.CancellationToken);
+            operation,
+            [root],
+            UploadDirectoryDropMode.RecursiveFiles,
+            32,
+            10_000,
+            TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name)
             .ShouldBe(["first.txt", "nested.txt", "deep.txt", "last.txt"]);
@@ -79,7 +97,11 @@ public class UploadStorageItemEnumeratorTests
         nested.DisposeCount.ShouldBe(1);
         deep.DisposeCount.ShouldBe(1);
 
-        DisposeCandidates(result);
+        operation.Dispose();
+        first.DisposeCount.ShouldBe(1);
+        nestedFile.DisposeCount.ShouldBe(1);
+        deepFile.DisposeCount.ShouldBe(1);
+        last.DisposeCount.ShouldBe(1);
     }
 
     [Fact]
@@ -90,16 +112,23 @@ public class UploadStorageItemEnumeratorTests
         var child = Folder("child", tooDeep);
         var sibling = File("sibling.txt");
         var root = Folder("root", child, sibling);
+        using var operation = CreateOperation(root);
 
         var result = await UploadStorageItemEnumerator.EnumerateAsync(
-            [root], UploadDirectoryDropMode.RecursiveFiles, 1, 10_000, TestContext.Current.CancellationToken);
+            operation,
+            [root],
+            UploadDirectoryDropMode.RecursiveFiles,
+            1,
+            10_000,
+            TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name).ShouldBe(["sibling.txt"]);
         result.RejectedItems.Single().Reason.ShouldBe(UploadRejectionReason.DirectoryDepthExceeded);
         tooDeep.DisposeCount.ShouldBe(1);
         tooDeepFile.DisposeCount.ShouldBe(0);
 
-        DisposeCandidates(result);
+        operation.Dispose();
+        sibling.DisposeCount.ShouldBe(1);
     }
 
     [Fact]
@@ -108,15 +137,22 @@ public class UploadStorageItemEnumeratorTests
         var first = File("first.txt");
         var overflow = File("overflow.txt");
         var root = Folder("root", first, overflow);
+        using var operation = CreateOperation(root);
 
         var result = await UploadStorageItemEnumerator.EnumerateAsync(
-            [root], UploadDirectoryDropMode.RecursiveFiles, 32, 1, TestContext.Current.CancellationToken);
+            operation,
+            [root],
+            UploadDirectoryDropMode.RecursiveFiles,
+            32,
+            1,
+            TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name).ShouldBe(["first.txt"]);
         result.RejectedItems.Single().Reason.ShouldBe(UploadRejectionReason.EnumerationLimitExceeded);
         overflow.DisposeCount.ShouldBe(1);
 
-        DisposeCandidates(result);
+        operation.Dispose();
+        first.DisposeCount.ShouldBe(1);
     }
 
     [Fact]
@@ -128,9 +164,15 @@ public class UploadStorageItemEnumeratorTests
         };
         var sibling = File("sibling.txt");
         var root = Folder("root", denied, sibling);
+        using var operation = CreateOperation(root);
 
         var result = await UploadStorageItemEnumerator.EnumerateAsync(
-            [root], UploadDirectoryDropMode.RecursiveFiles, 32, 10_000, TestContext.Current.CancellationToken);
+            operation,
+            [root],
+            UploadDirectoryDropMode.RecursiveFiles,
+            32,
+            10_000,
+            TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name).ShouldBe(["sibling.txt"]);
         var rejection = result.RejectedItems.Single();
@@ -138,24 +180,52 @@ public class UploadStorageItemEnumeratorTests
         rejection.Message.ShouldBe("Directory access was denied.");
         denied.DisposeCount.ShouldBe(1);
 
-        DisposeCandidates(result);
+        operation.Dispose();
+        sibling.DisposeCount.ShouldBe(1);
     }
 
     [Fact]
     public async Task Duplicate_Directory_Path_Is_Rejected_As_A_Cycle()
     {
-        var repeated = Folder("root-again");
+        var repeated = new TestStorageFolder("root-again", "file:///tmp/root");
         var root = new TestStorageFolder("root", "file:///tmp/root", repeated);
-        repeated = new TestStorageFolder("root-again", "file:///tmp/root");
-        root = new TestStorageFolder("root", "file:///tmp/root", repeated);
+        using var operation = CreateOperation(root);
 
         var result = await UploadStorageItemEnumerator.EnumerateAsync(
-            [root], UploadDirectoryDropMode.RecursiveFiles, 32, 10_000, TestContext.Current.CancellationToken);
+            operation,
+            [root],
+            UploadDirectoryDropMode.RecursiveFiles,
+            32,
+            10_000,
+            TestContext.Current.CancellationToken);
 
         result.Candidates.ShouldBeEmpty();
         result.RejectedItems.Single().Reason.ShouldBe(UploadRejectionReason.DirectoryCycleDetected);
         repeated.DisposeCount.ShouldBe(1);
         root.DisposeCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task Duplicate_Object_References_Are_Processed_And_Disposed_Once()
+    {
+        var file = File("duplicate.txt");
+        var root = Folder("root", file, file);
+        using var operation = CreateOperation(root);
+
+        var result = await UploadStorageItemEnumerator.EnumerateAsync(
+            operation,
+            [root],
+            UploadDirectoryDropMode.RecursiveFiles,
+            32,
+            10_000,
+            TestContext.Current.CancellationToken);
+
+        result.Candidates.Select(candidate => candidate.Name).ShouldBe(["duplicate.txt"]);
+        file.DisposeCount.ShouldBe(0);
+        root.DisposeCount.ShouldBe(1);
+
+        operation.Dispose();
+        file.DisposeCount.ShouldBe(1);
     }
 
     [Fact]
@@ -165,36 +235,57 @@ public class UploadStorageItemEnumeratorTests
         var second = File("second.txt");
         using var cancellation = new CancellationTokenSource();
         var storageItems = new CancellingStorageItemList(cancellation, first, second);
+        using var operation = CreateOperation(first, second);
 
         await Should.ThrowAsync<OperationCanceledException>(() =>
             UploadStorageItemEnumerator.EnumerateAsync(
+                operation,
                 storageItems,
                 UploadDirectoryDropMode.Reject,
                 32,
                 10_000,
                 cancellation.Token));
 
+        operation.Dispose();
         first.DisposeCount.ShouldBe(1);
         second.DisposeCount.ShouldBe(1);
     }
 
     [Fact]
-    public async Task File_Info_Construction_Failure_Releases_The_Transferred_Storage_Source()
+    public async Task Candidate_Is_A_Non_Owning_View_Over_A_Batch_Owned_File()
     {
-        var storageFile = File(" ");
+        var storageFile = File("file.txt");
+        using var operation = CreateOperation(storageFile);
+
         var result = await UploadStorageItemEnumerator.EnumerateAsync(
+            operation,
             [storageFile],
             UploadDirectoryDropMode.Reject,
             32,
             10_000,
             TestContext.Current.CancellationToken);
+
         var candidate = result.Candidates.Single();
+        candidate.StorageFile.ShouldBeSameAs(storageFile);
+        typeof(UploadInputCandidate).GetInterfaces().ShouldNotContain(typeof(IDisposable));
+        storageFile.DisposeCount.ShouldBe(0);
 
-        await Should.ThrowAsync<ArgumentException>(async () =>
-            await candidate.CreateFileInfoAsync(TestContext.Current.CancellationToken));
-        candidate.Dispose();
-
+        operation.Dispose();
         storageFile.DisposeCount.ShouldBe(1);
+    }
+
+    private static UploadInputBatchOperation CreateOperation(params IStorageItem[] storageItems)
+    {
+        var operation = new UploadInputBatchOperation(UploadInputSource.DragDrop);
+        var seen = new HashSet<IStorageItem>(ReferenceEqualityComparer.Instance);
+        foreach (var storageItem in storageItems)
+        {
+            if (seen.Add(storageItem))
+            {
+                operation.AdoptStorageItem(storageItem);
+            }
+        }
+        return operation;
     }
 
     private static TestStorageFile File(string name)
@@ -205,14 +296,6 @@ public class UploadStorageItemEnumeratorTests
     private static TestStorageFolder Folder(string name, params IStorageItem[] items)
     {
         return new TestStorageFolder(name, $"file:///tmp/{name}", items);
-    }
-
-    private static void DisposeCandidates(UploadStorageEnumerationResult result)
-    {
-        foreach (var candidate in result.Candidates)
-        {
-            candidate.Dispose();
-        }
     }
 
     private sealed class CancellingStorageItemList(
@@ -233,8 +316,13 @@ public class UploadStorageItemEnumeratorTests
             }
         }
 
-        public IEnumerator<IStorageItem> GetEnumerator() =>
-            ((IEnumerable<IStorageItem>)items).GetEnumerator();
+        public IEnumerator<IStorageItem> GetEnumerator()
+        {
+            for (var index = 0; index < items.Length; index++)
+            {
+                yield return this[index];
+            }
+        }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
     }

@@ -23,8 +23,9 @@ internal sealed class UploadInputPipeline
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(files);
-        return TrackOperation(source, (operation, token) =>
-            ProcessFileInfosAsync(operation, files, ownsFileSources: false, token), cancellationToken);
+        var operation = new UploadInputBatchOperation(source);
+        return TrackOperation(operation, (batch, token) =>
+            ProcessFileInfosAsync(batch, files, token), cancellationToken);
     }
 
     internal Task ProcessStorageItemsAsync(
@@ -37,15 +38,24 @@ internal sealed class UploadInputPipeline
     {
         ArgumentNullException.ThrowIfNull(storageItems);
 
-        return TrackOperation(source, async (operation, token) =>
+        var operation = new UploadInputBatchOperation(source);
+        var seenStorageItems = new HashSet<IStorageItem>(ReferenceEqualityComparer.Instance);
+        var snapshot = new List<IStorageItem>(storageItems.Count);
+        foreach (var storageItem in storageItems)
         {
-            foreach (var storageItem in storageItems)
+            ArgumentNullException.ThrowIfNull(storageItem);
+            if (seenStorageItems.Add(storageItem))
             {
-                operation.Transfer(storageItem);
+                operation.AdoptStorageItem(storageItem);
+                snapshot.Add(storageItem);
             }
+        }
 
+        return TrackOperation(operation, async (batch, token) =>
+        {
             var enumeration = await UploadStorageItemEnumerator.EnumerateAsync(
-                storageItems,
+                batch,
+                snapshot,
                 directoryMode,
                 maxDirectoryDepth,
                 maxEnumeratedItems,
@@ -53,40 +63,50 @@ internal sealed class UploadInputPipeline
 
             foreach (var rejection in enumeration.RejectedItems)
             {
-                operation.Reject(rejection);
+                batch.Reject(rejection);
             }
 
             var fileInfos = new List<UploadFileInfo>(enumeration.Candidates.Count);
             foreach (var candidate in enumeration.Candidates)
             {
-                using (candidate)
+                token.ThrowIfCancellationRequested();
+                StorageItemProperties properties;
+                long? size;
+                try
                 {
-                    token.ThrowIfCancellationRequested();
-                    try
+                    ArgumentException.ThrowIfNullOrWhiteSpace(candidate.Name);
+                    properties = await candidate.StorageFile.GetBasicPropertiesAsync()
+                                                .WaitAsync(token)
+                                                .ConfigureAwait(false);
+                    size = properties.Size switch
                     {
-                        var file = await candidate.CreateFileInfoAsync(token).ConfigureAwait(false);
-                        operation.OwnFileSource(file);
-                        fileInfos.Add(file);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        throw;
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Upload storage metadata read failed for '{candidate.Name}': {ex.Message}");
-                        operation.Reject(new UploadRejectedItem(
-                            candidate.Name,
-                            candidate.Path,
-                            UploadRejectionReason.StorageReadFailed,
-                            message: "The storage file could not be read."));
-                    }
+                        null => null,
+                        <= long.MaxValue => (long)properties.Size.Value,
+                        _ => throw new OverflowException("The storage item size exceeds Int64.MaxValue.")
+                    };
                 }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Upload storage metadata read failed for '{candidate.Name}': {ex.Message}");
+                    batch.ReleaseStorageItem(candidate.StorageFile);
+                    batch.Reject(new UploadRejectedItem(
+                        candidate.Name,
+                        candidate.Path,
+                        UploadRejectionReason.StorageReadFailed,
+                        message: "The storage file could not be read."));
+                    continue;
+                }
+
+                fileInfos.Add(CreateStorageFileInfo(batch, candidate, properties, size));
             }
 
-            await ProcessFileInfosAsync(operation, fileInfos, ownsFileSources: true, token)
+            await ProcessFileInfosAsync(batch, fileInfos, token)
                 .ConfigureAwait(false);
-        }, cancellationToken, storageItems.Cast<IDisposable>());
+        }, cancellationToken);
     }
 
     internal async Task CancelAllAsync(CancellationToken cancellationToken = default)
@@ -115,20 +135,10 @@ internal sealed class UploadInputPipeline
     }
 
     private Task TrackOperation(
-        UploadInputSource source,
+        UploadInputBatchOperation operation,
         Func<UploadInputBatchOperation, CancellationToken, Task> process,
-        CancellationToken cancellationToken,
-        IEnumerable<IDisposable>? initiallyOwnedResources = null)
+        CancellationToken cancellationToken)
     {
-        var operation = new UploadInputBatchOperation(source);
-        if (initiallyOwnedResources is not null)
-        {
-            foreach (var resource in initiallyOwnedResources)
-            {
-                operation.Own(resource);
-            }
-        }
-
         CancellationTokenSource linkedCancellation;
         Task operationTask;
         lock (_syncRoot)
@@ -204,7 +214,6 @@ internal sealed class UploadInputPipeline
     private async Task ProcessFileInfosAsync(
         UploadInputBatchOperation operation,
         IReadOnlyList<UploadFileInfo> files,
-        bool ownsFileSources,
         CancellationToken cancellationToken)
     {
         var options = await _owner.GetInputPipelineOptionsAsync().ConfigureAwait(false);
@@ -214,11 +223,6 @@ internal sealed class UploadInputPipeline
         {
             cancellationToken.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(file);
-            if (ownsFileSources)
-            {
-                operation.OwnFileSource(file);
-            }
-
             var admission = await UploadFileAdmissionService.EvaluateAsync(
                 operation.BatchId,
                 operation.Source,
@@ -249,9 +253,9 @@ internal sealed class UploadInputPipeline
 
         await _owner.CommitInputFilesAsync(filesToCommit, file =>
         {
-            if (file.Source is IUploadFileSourceLease lease)
+            if (file.Source is IUploadFileSourceLease)
             {
-                operation.Transfer(lease);
+                operation.TransferFileSourceToUpload(file);
             }
             operation.Accept(file);
         }).ConfigureAwait(false);
@@ -298,6 +302,22 @@ internal sealed class UploadInputPipeline
             file.Path,
             UploadRejectionReason.CountLimitExceeded,
             message: "The upload count limit has been reached.");
+    }
+
+    private static UploadFileInfo CreateStorageFileInfo(
+        UploadInputBatchOperation operation,
+        UploadInputCandidate candidate,
+        StorageItemProperties properties,
+        long? size)
+    {
+        var source = operation.PromoteStorageFile(candidate.StorageFile);
+        return new UploadFileInfo(
+            candidate.Name,
+            source,
+            candidate.Path,
+            size,
+            dateCreated: properties.DateCreated,
+            dateModified: properties.DateModified);
     }
 }
 

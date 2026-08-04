@@ -186,6 +186,31 @@ public class UploadInputPipelineTests
     }
 
     [Fact]
+    public async Task Duplicate_Top_Level_Storage_References_Are_Accepted_And_Disposed_Once()
+    {
+        var upload = CreateUpload();
+        var storageFile = new TestStorageFile("duplicate.txt", "file:///duplicate.txt");
+        UploadInputBatchCompletedEventArgs? completed = null;
+        upload.InputBatchCompleted += (_, args) => completed = args;
+
+        await upload.ProcessStorageItemsAsync(
+            UploadInputSource.DragDrop,
+            [storageFile, storageFile],
+            UploadDirectoryDropMode.Reject,
+            32,
+            10_000,
+            TestContext.Current.CancellationToken);
+
+        var item = upload.Files!.Single();
+        item.Name.ShouldBe("duplicate.txt");
+        completed.ShouldNotBeNull();
+        completed.AcceptedFiles.Select(file => file.Name).ShouldBe(["duplicate.txt"]);
+
+        await upload.RemoveFileAsync(item.Id, TestContext.Current.CancellationToken);
+        storageFile.DisposeCount.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task Accepted_Storage_File_Lease_Is_Released_On_Remove_Reset_And_Files_Replacement()
     {
         var upload = CreateUpload();
@@ -228,6 +253,33 @@ public class UploadInputPipelineTests
         upload.Files!.Select(item => item.Name).ShouldBe(["accepted.txt"]);
         failed.DisposeCount.ShouldBe(1);
         completed.ShouldNotBeNull();
+        completed.RejectedItems.Single().Reason.ShouldBe(UploadRejectionReason.StorageReadFailed);
+    }
+
+    [Fact]
+    public async Task Oversized_Metadata_Is_Rejected_Without_Stopping_Later_Candidates()
+    {
+        var oversized = new TestStorageFile(
+            "oversized.txt",
+            "file:///oversized.txt",
+            size: ulong.MaxValue);
+        var accepted = new TestStorageFile("accepted.txt", "file:///accepted.txt");
+        var upload = CreateUpload();
+        UploadInputBatchCompletedEventArgs? completed = null;
+        upload.InputBatchCompleted += (_, args) => completed = args;
+
+        await upload.ProcessStorageItemsAsync(
+            UploadInputSource.DragDrop,
+            [oversized, accepted],
+            UploadDirectoryDropMode.Reject,
+            0,
+            10,
+            TestContext.Current.CancellationToken);
+
+        upload.Files!.Select(item => item.Name).ShouldBe(["accepted.txt"]);
+        oversized.DisposeCount.ShouldBe(1);
+        completed.ShouldNotBeNull();
+        completed.Status.ShouldBe(UploadInputBatchStatus.Completed);
         completed.RejectedItems.Single().Reason.ShouldBe(UploadRejectionReason.StorageReadFailed);
     }
 
