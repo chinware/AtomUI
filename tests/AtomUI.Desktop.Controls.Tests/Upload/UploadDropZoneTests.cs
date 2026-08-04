@@ -356,7 +356,7 @@ public class UploadDropZoneTests
             CancellationToken cancellationToken = default)
         {
             await gate.WaitAsync(cancellationToken);
-            return new UploadAdmissionDecision(true);
+            return UploadAdmissionDecision.Accept();
         }
     }
 

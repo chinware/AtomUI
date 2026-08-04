@@ -135,7 +135,7 @@ public class UploadStorageItemEnumeratorTests
         result.Candidates.Select(candidate => candidate.Name).ShouldBe(["sibling.txt"]);
         var rejection = result.RejectedItems.Single();
         rejection.Reason.ShouldBe(UploadRejectionReason.AccessDenied);
-        rejection.Exception.ShouldBeOfType<UnauthorizedAccessException>();
+        rejection.Message.ShouldBe("Directory access was denied.");
         denied.DisposeCount.ShouldBe(1);
 
         DisposeCandidates(result);

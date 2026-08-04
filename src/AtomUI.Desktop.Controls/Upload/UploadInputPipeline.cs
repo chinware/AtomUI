@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AtomUI.Controls;
 using Avalonia.Platform.Storage;
 
@@ -73,12 +74,12 @@ internal sealed class UploadInputPipeline
                     }
                     catch (Exception ex)
                     {
+                        Debug.WriteLine($"Upload storage metadata read failed for '{candidate.Name}': {ex.Message}");
                         operation.Reject(new UploadRejectedItem(
                             candidate.Name,
                             candidate.Path,
-                            UploadRejectionReason.MetadataReadFailed,
-                            Message: ex.Message,
-                            Exception: ex));
+                            UploadRejectionReason.StorageReadFailed,
+                            message: "The storage file could not be read."));
                     }
                 }
             }
@@ -162,12 +163,8 @@ internal sealed class UploadInputPipeline
             }
             catch (Exception ex)
             {
-                operation.Reject(new UploadRejectedItem(
-                    string.Empty,
-                    null,
-                    UploadRejectionReason.InputFailed,
-                    Message: ex.Message,
-                    Exception: ex));
+                Debug.WriteLine($"Upload input batch failed: {ex.Message}");
+                operation.MarkFailed(UploadInputFailureReason.ProcessingFailed);
             }
             finally
             {
@@ -300,7 +297,7 @@ internal sealed class UploadInputPipeline
             file.Name,
             file.Path,
             UploadRejectionReason.CountLimitExceeded,
-            Message: "The upload count limit has been reached.");
+            message: "The upload count limit has been reached.");
     }
 }
 

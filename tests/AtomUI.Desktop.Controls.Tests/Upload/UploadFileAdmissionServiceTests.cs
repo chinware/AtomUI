@@ -86,7 +86,7 @@ public class UploadFileAdmissionServiceTests
     public async Task Admission_Policy_Rejection_Preserves_Code_And_Message()
     {
         var policy = new DelegateAdmissionPolicy((_, _) =>
-            ValueTask.FromResult(new UploadAdmissionDecision(false, "virus", "Rejected by scanner.")));
+            ValueTask.FromResult(UploadAdmissionDecision.Reject("virus", "Rejected by scanner.")));
 
         var result = await UploadFileAdmissionService.EvaluateAsync(
             Guid.NewGuid(),
@@ -110,7 +110,7 @@ public class UploadFileAdmissionServiceTests
         var policy = new DelegateAdmissionPolicy((context, _) =>
         {
             observed = context;
-            return ValueTask.FromResult(new UploadAdmissionDecision(true));
+            return ValueTask.FromResult(UploadAdmissionDecision.Accept());
         });
         var batchId = Guid.NewGuid();
         var file = File("safe.txt");
@@ -146,8 +146,9 @@ public class UploadFileAdmissionServiceTests
 
         result.IsAccepted.ShouldBeFalse();
         result.Rejection.ShouldNotBeNull();
-        result.Rejection.Reason.ShouldBe(UploadRejectionReason.AdmissionRejected);
-        result.Rejection.Exception.ShouldBeSameAs(exception);
+        result.Rejection.Reason.ShouldBe(UploadRejectionReason.AdmissionPolicyFailed);
+        result.Rejection.RejectionCode.ShouldBeNull();
+        result.Rejection.Message.ShouldBeNull();
     }
 
     [Fact]

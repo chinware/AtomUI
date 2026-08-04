@@ -32,7 +32,8 @@ public class UploadInputPipelineTests
         events[0].Source.ShouldBe(UploadInputSource.Programmatic);
         events[0].AcceptedFiles.Select(file => file.Name).ShouldBe(["first.txt", "second.txt"]);
         events[0].RejectedItems.ShouldBeEmpty();
-        events[0].IsCancelled.ShouldBeFalse();
+        events[0].Status.ShouldBe(UploadInputBatchStatus.Completed);
+        events[0].FailureReason.ShouldBeNull();
     }
 
     [Fact]
@@ -227,7 +228,7 @@ public class UploadInputPipelineTests
         upload.Files!.Select(item => item.Name).ShouldBe(["accepted.txt"]);
         failed.DisposeCount.ShouldBe(1);
         completed.ShouldNotBeNull();
-        completed.RejectedItems.Single().Reason.ShouldBe(UploadRejectionReason.MetadataReadFailed);
+        completed.RejectedItems.Single().Reason.ShouldBe(UploadRejectionReason.StorageReadFailed);
     }
 
     [Fact]
@@ -463,7 +464,8 @@ public class UploadInputPipelineTests
         acquiredChild.DisposeCount.ShouldBe(1);
         unobservedChild.DisposeCount.ShouldBe(0);
         completed.ShouldNotBeNull();
-        completed.IsCancelled.ShouldBeTrue();
+        completed.Status.ShouldBe(UploadInputBatchStatus.Cancelled);
+        completed.FailureReason.ShouldBeNull();
     }
 
     [Fact]
@@ -488,7 +490,8 @@ public class UploadInputPipelineTests
 
         upload.Files.ShouldBeEmpty();
         events.Count.ShouldBe(1);
-        events[0].IsCancelled.ShouldBeTrue();
+        events[0].Status.ShouldBe(UploadInputBatchStatus.Cancelled);
+        events[0].FailureReason.ShouldBeNull();
     }
 
     [Fact]
@@ -727,7 +730,9 @@ public class UploadInputPipelineTests
             Names.Add(context.File.Name);
             FirstEvaluationStarted.TrySetResult();
             var accepted = await _evaluate(context.File, cancellationToken);
-            return new UploadAdmissionDecision(accepted);
+            return accepted
+                ? UploadAdmissionDecision.Accept()
+                : UploadAdmissionDecision.Reject();
         }
     }
 
@@ -742,7 +747,7 @@ public class UploadInputPipelineTests
         {
             Started.TrySetResult();
             await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
-            return new UploadAdmissionDecision(true);
+            return UploadAdmissionDecision.Accept();
         }
     }
 

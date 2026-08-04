@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO.Enumeration;
 using AtomUI.Controls;
 using Avalonia.Platform.Storage;
@@ -29,7 +30,7 @@ internal static class UploadFileAdmissionService
                     file.Name,
                     file.Path,
                     UploadRejectionReason.FileTypeNotAllowed,
-                    Message: "The file does not match AllowedFileTypes."));
+                    message: "The file does not match AllowedFileTypes."));
         }
 
         if (admissionPolicy is null)
@@ -62,14 +63,13 @@ internal static class UploadFileAdmissionService
         }
         catch (Exception ex)
         {
+            Debug.WriteLine($"Upload admission policy failed for '{file.Name}': {ex.Message}");
             return new UploadFileAdmissionResult(
                 false,
                 new UploadRejectedItem(
                     file.Name,
                     file.Path,
-                    UploadRejectionReason.AdmissionRejected,
-                    Message: ex.Message,
-                    Exception: ex));
+                    UploadRejectionReason.AdmissionPolicyFailed));
         }
     }
 

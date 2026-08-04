@@ -72,6 +72,42 @@ public class UploadRedesignContractTests
     }
 
     [Fact]
+    public void Input_Result_Uses_Stable_Status_And_Exception_Free_Rejections()
+    {
+        Enum.GetNames<UploadInputBatchStatus>().ShouldBe(["Completed", "Cancelled", "Failed"]);
+        Enum.GetNames<UploadInputFailureReason>().ShouldBe(["DataSnapshotFailed", "ProcessingFailed"]);
+        Enum.GetNames<UploadRejectionReason>().ShouldBe([
+            "UnsupportedStorageItem",
+            "DirectoryNotAllowed",
+            "DirectoryDepthExceeded",
+            "DirectoryCycleDetected",
+            "EnumerationLimitExceeded",
+            "AccessDenied",
+            "StorageReadFailed",
+            "FileTypeNotAllowed",
+            "AdmissionRejected",
+            "AdmissionPolicyFailed",
+            "CountLimitExceeded"
+        ]);
+
+        typeof(UploadRejectedItem).GetProperty("Exception").ShouldBeNull();
+        typeof(UploadInputBatchCompletedEventArgs).GetProperty("IsCancelled").ShouldBeNull();
+        typeof(UploadInputBatchCompletedEventArgs)
+            .GetProperty(nameof(UploadInputBatchCompletedEventArgs.Status))
+            .ShouldNotBeNull();
+        typeof(UploadInputBatchCompletedEventArgs)
+            .GetProperty(nameof(UploadInputBatchCompletedEventArgs.FailureReason))
+            .ShouldNotBeNull();
+
+        typeof(UploadAdmissionDecision).GetConstructors().ShouldBeEmpty();
+        UploadAdmissionDecision.Accept().IsAccepted.ShouldBeTrue();
+        var rejection = UploadAdmissionDecision.Reject("blocked", "Policy blocked the file.");
+        rejection.IsAccepted.ShouldBeFalse();
+        rejection.RejectionCode.ShouldBe("blocked");
+        rejection.Message.ShouldBe("Policy blocked the file.");
+    }
+
+    [Fact]
     public void UploadTrigger_SourceKind_Is_A_Public_Composable_Trigger_Contract()
     {
         var uploadTriggerType = GetUploadType("UploadTrigger");

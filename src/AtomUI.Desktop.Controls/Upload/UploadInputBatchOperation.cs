@@ -10,7 +10,8 @@ internal sealed class UploadInputBatchOperation : IDisposable
 
     internal Guid BatchId { get; } = Guid.NewGuid();
     internal UploadInputSource Source { get; }
-    internal bool IsCancelled { get; private set; }
+    internal UploadInputBatchStatus Status { get; private set; } = UploadInputBatchStatus.Completed;
+    internal UploadInputFailureReason? FailureReason { get; private set; }
 
     internal UploadInputBatchOperation(UploadInputSource source)
     {
@@ -59,7 +60,16 @@ internal sealed class UploadInputBatchOperation : IDisposable
 
     internal void MarkCancelled()
     {
-        IsCancelled = true;
+        if (Status != UploadInputBatchStatus.Failed)
+        {
+            Status = UploadInputBatchStatus.Cancelled;
+        }
+    }
+
+    internal void MarkFailed(UploadInputFailureReason reason)
+    {
+        Status        = UploadInputBatchStatus.Failed;
+        FailureReason = reason;
     }
 
     internal UploadInputBatchCompletedEventArgs CreateCompletedEventArgs()
@@ -67,9 +77,10 @@ internal sealed class UploadInputBatchOperation : IDisposable
         return new UploadInputBatchCompletedEventArgs(
             BatchId,
             Source,
+            Status,
+            FailureReason,
             _acceptedFiles.ToArray(),
-            _rejectedItems.ToArray(),
-            IsCancelled);
+            _rejectedItems.ToArray());
     }
 
     public void Dispose()

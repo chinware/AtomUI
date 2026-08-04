@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia.Platform.Storage;
 
 namespace AtomUI.Desktop.Controls;
@@ -157,19 +158,19 @@ internal static class UploadStorageItemEnumerator
         }
         catch (UnauthorizedAccessException ex)
         {
+            Debug.WriteLine($"Upload directory access failed: {ex.Message}");
             context.RejectedItems.Add(CreateRejection(
                 folder,
                 UploadRejectionReason.AccessDenied,
-                ex.Message,
-                ex));
+                "Directory access was denied."));
         }
         catch (Exception ex)
         {
+            Debug.WriteLine($"Upload directory enumeration failed: {ex.Message}");
             context.RejectedItems.Add(CreateRejection(
                 folder,
-                UploadRejectionReason.InputFailed,
-                ex.Message,
-                ex));
+                UploadRejectionReason.StorageReadFailed,
+                "Directory enumeration failed."));
         }
         finally
         {
@@ -188,11 +189,11 @@ internal static class UploadStorageItemEnumerator
         }
         catch (Exception ex)
         {
+            Debug.WriteLine($"Upload storage item snapshot failed: {ex.Message}");
             rejectedItems.Add(CreateRejection(
                 storageFile,
-                UploadRejectionReason.ContentSourceCreationFailed,
-                ex.Message,
-                ex));
+                UploadRejectionReason.StorageReadFailed,
+                "The storage file could not be read."));
             storageFile.Dispose();
         }
     }
@@ -200,8 +201,7 @@ internal static class UploadStorageItemEnumerator
     private static UploadRejectedItem CreateRejection(
         IStorageItem storageItem,
         UploadRejectionReason reason,
-        string message,
-        Exception? exception = null)
+        string message)
     {
         string name;
         Uri? path;
@@ -223,7 +223,7 @@ internal static class UploadStorageItemEnumerator
             path = null;
         }
 
-        return new UploadRejectedItem(name, path, reason, Message: message, Exception: exception);
+        return new UploadRejectedItem(name, path, reason, message: message);
     }
 
     private sealed class DirectoryEnumerationContext
