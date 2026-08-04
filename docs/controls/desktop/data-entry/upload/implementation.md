@@ -18,8 +18,8 @@ Upload 的实现定位是上传状态协调器，而不是固定上传按钮、�
 | `src/AtomUI.Desktop.Controls/Upload/UploadAppendContentItem.cs` | internal picture append visual slot，用于把 `TriggerContent` 放入 PictureCard/PictureCircle 的同一 wrap flow；不进入 `Files`。 |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.FileSelection.cs` | 封装文件选择和目录选择动作，供 `UploadTrigger` 调用。 |
 | `src/AtomUI.Desktop.Controls/Upload/IUploadStorageProviderAdapter.cs` | 隔离 Avalonia storage picker 调用，向文件选择和目录选择提供可测试的 typed StorageItem 边界。 |
-| `src/AtomUI.Desktop.Controls/Upload/Upload.InputPipeline.cs` | 连接 `Upload` 状态 owner 与输入管线，负责 UI 线程快照、提交、批次事件和 ReplaceExisting 清理。 |
-| `src/AtomUI.Desktop.Controls/Upload/UploadInputPipeline.cs` | 串行执行 picker、directory、drop 和 programmatic 批次，在一次 worker 边界内协调遍历、准入和数量决策，再进入 UI commit。 |
+| `src/AtomUI.Desktop.Controls/Upload/Upload.InputPipeline.cs` | 连接 `Upload` 状态 owner 与输入管线，负责 UI 线程 option 快照、typed commit、批次事件和 ReplaceExisting source handoff。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadInputPipeline.cs` | 串行执行 picker、directory、drop 和 programmatic 批次，在一次 worker 边界内协调遍历与准入，再把数量策略和集合变更交给 UI commit。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadInputBatchOperation.cs` | 分别持有单个批次的 typed StorageItem 与 source lease ownership，验证 transfer，并在完成事件前释放全部未移交资源。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadStorageItemEnumerator.cs` | 仅使用 `IStorageFolder.GetItemsAsync()` 按稳定顺序展开 storage items，并隔离目录分支错误。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadInputCandidate.cs` | 非 owning 地引用批次已拥有的 storage file，并提供基础元数据读取入口。 |
@@ -74,8 +74,8 @@ Upload state flows through one path:
 ```text
 Public API / Trigger / DropZone
   -> UploadInputPipeline
-  -> StorageItem enumeration / metadata / admission / count policy
-  -> Upload.CommitInputFilesAsync
+  -> StorageItem enumeration / metadata / admission
+  -> Upload UI count policy / typed commit
   -> Files collection
   -> UploadQueue/FileUploadScheduler
   -> UploadFileItem.Status/Progress/Result
@@ -178,9 +178,9 @@ Upload 的生命周期释放必须成对设计，不能依赖 GC 或视觉树自
 
 1. 文件选择、目录选择、拖动或程序化入口创建统一输入批次。
 2. `UploadInputPipeline` 在 UI 线程取得不可变 option snapshot，再在单一 worker 边界中展开目录并取得受控 `IUploadFileSource`。
-3. 管线在非 UI 执行上下文应用 `AllowedFileTypes`、`AdmissionPolicy` 和数量溢出策略。
-4. 接受文件转换为 `UploadFileItem` 并追加到 effective `Files`；typed batch operation 验证 source-to-Upload transfer，拒绝文件立即释放 lease。
-5. `AutoUpload=true` 时将 item 与 file info 交给 `UploadQueue`。
+3. 管线在非 UI 执行上下文应用 `AllowedFileTypes` 和 `AdmissionPolicy`。
+4. UI commit 根据当前 effective file count 和批次 option snapshot 计算数量策略，再把接受文件转换为 `UploadFileItem`；typed batch operation 在集合变更前验证 ownership，并只为实际保留项执行 source-to-Upload transfer。
+5. 数量拒绝或尚未提交的文件仍由批次释放 lease；`AutoUpload=true` 时已提交 item 与 file info 进入 `UploadQueue`。
 6. queue/scheduler 回调只更新对应 `UploadFileItem`，列表通过绑定观察变化。
 7. 批次逐项释放全部未移交资源并聚合清理异常，再在 UI 线程触发一次 `InputBatchCompleted`；事件处理返回后，正常 Task 完成，取消或失败 Task 向等待方传播对应异常。
 
@@ -206,7 +206,7 @@ Upload 的生命周期释放必须成对设计，不能依赖 GC 或视觉树自
 
 - 异步上传任务、取消源、delay、drag/drop 事件、collection change 和 item container 绑定必须有确定释放点。
 - DragOver 不读取文件值或元数据；Drop 只物化一次顶层 StorageItem 数据。
-- 输入批次通过 arrival gate 串行执行；每个批次只建立一次显式 worker dispatch，目录展开、元数据读取、准入和数量决策按候选稳定顺序处理，不创建无界并发任务。
+- 输入批次通过 arrival gate 串行执行；每个批次只建立一次显式 worker dispatch，目录展开、元数据读取和准入按候选稳定顺序处理，不创建无界并发任务；数量决策与集合变更保持在同一个 UI commit 边界。
 - `UploadInputBatchOperation` 不保存泛化 `IDisposable`；StorageItem 和 source lease 使用独立的引用相等 owner set，释放遍历不得因单个异常提前中止。
 - `UploadFileItem` 不持有视觉控件，避免文件项生命周期反向保留控件树。
 - `UploadQueue` 不捕获 `Upload` 外的视觉对象；回调只写 item 状态。

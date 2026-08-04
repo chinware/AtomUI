@@ -147,8 +147,8 @@ Upload 的状态流只允许按以下路径收敛：
 ```text
 Public API / UploadTrigger / UploadDropZone
   -> UploadInputPipeline
-  -> directory traversal / file admission / count policy
-  -> accepted file commit
+  -> directory traversal / file admission
+  -> UI count policy / accepted file commit
   -> Files collection
   -> UploadQueue / FileUploadScheduler
   -> UploadFileItem.Status / Progress / Result

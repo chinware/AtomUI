@@ -26,7 +26,7 @@
   - Replace picture trigger fake task with append trigger content.
 - Behavior
   - Require explicit Copy/None negotiation, Drop-only data materialization and one shared picker/drop/programmatic input pipeline.
-  - Run enumeration, metadata, admission and count evaluation inside one non-UI worker boundary per batch.
+  - Run enumeration, metadata and admission inside one non-UI worker boundary per batch, then evaluate count capacity at the UI commit boundary.
   - Replace generic disposable ownership, boolean lifecycle switches and transfer callbacks with typed batch operations and named replacement paths.
   - Commit `ReplaceExisting` before asynchronously cancelling removed queue entries while retaining their sources until execution exits.
   - Define directory traversal, per-item rejection, cancellation and StorageItem lease ownership.

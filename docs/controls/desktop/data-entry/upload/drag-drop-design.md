@@ -29,7 +29,7 @@
 8. 单项拒绝不终止同一批次中的其他项目，取消和批次级失败不伪装成拒绝项。
 9. 每个 `IStorageItem`、文件内容源、Stream、取消源和异步批次都有唯一释放 owner。
 10. ownership transfer 必须验证来源 owner，失败时立即抛出，不能静默忽略。
-11. 目录枚举、元数据读取、文件准入和数量计算不在 Avalonia UI 线程执行。
+11. 目录枚举、元数据读取和文件准入不在 Avalonia UI 线程执行；数量策略与集合变更在同一个 UI commit 边界完成。
 12. 默认 ControlTheme、视觉树、布局、Token 映射和最终渲染结果保持不变。
 
 ## 3. 专项模型与 Public API
@@ -310,7 +310,7 @@ public sealed class UploadInputBatchCompletedEventArgs : EventArgs
 | input coordinator | `UploadInputPipeline` | 文件选择、目录选择、Drop 或程序化批次 | accepted/rejected batch result | 网络上传。 |
 | storage enumeration | `UploadStorageItemEnumerator` | `IStorageItem` 和目录策略 | 有序文件候选项 | 文件类型和数量决策。 |
 | input candidate | `UploadInputCandidate` | 批次已拥有的 `IStorageFile` | 非 owning 文件候选及元数据读取入口 | StorageItem 或 source lease 释放。 |
-| admission | `UploadFileAdmissionService` | 文件元数据、AllowedFileTypes、业务策略、剩余容量 | 接受或拒绝决定 | 视觉状态。 |
+| admission | `UploadFileAdmissionService` | 文件元数据、AllowedFileTypes、业务策略 | 接受或拒绝决定 | 数量策略和视觉状态。 |
 | storage source | `UploadStorageFileSource` | `IStorageFile` | 可重复请求的读取 Stream | 上传协议。 |
 | batch lifetime | `UploadInputBatchOperation` | 快照、取消令牌 | 批次终态、typed StorageItem/source ownership 和完整释放 | 控件渲染。 |
 | UI commit | `Upload` | 准入后的文件与 typed batch operation | `UploadFileItem`、accepted source ownership 和 queue task | 平台 DragDrop 数据。 |
@@ -437,7 +437,7 @@ StorageFile lease
   -> UploadQueue
 ```
 
-UI 线程快照不可变的 filename pattern、MIME 规则、AdmissionPolicy 引用、数量策略、MaxCount 和 effective file count。Worker 不读取调用方可变的规则集合。准入成功后，文件 source lease 继续由批次持有，直到 UI commit；准入失败时由批次立即释放。
+UI 线程快照不可变的 filename pattern、MIME 规则、AdmissionPolicy 引用、数量策略和 MaxCount。Worker 不读取调用方可变的规则集合；effective file count 不进入 worker snapshot，而是在 UI commit 紧邻集合变更时读取。准入成功后，文件 source lease 继续由批次持有，直到 UI commit；准入失败时由批次立即释放。
 
 `RejectBatch` 在提交任何文件项前完成批次级数量判断，避免部分修改；`RejectExcess` 按稳定候选顺序填满剩余容量；`ReplaceExisting` 按空 replacement target 计算容量。外部 `Files` 可能在异步处理期间变化，因此普通数量策略在 UI commit 前重新验证可用容量。
 
@@ -446,10 +446,18 @@ UI 线程快照不可变的 filename pattern、MIME 规则、AdmissionPolicy 引
 commit 使用 typed batch operation，不通过通用 callback 表达 ownership：
 
 ```csharp
-internal Task CommitInputFilesAsync(
+internal Task<IReadOnlyList<UploadFileInfo>> CommitInputFilesAsync(
     IReadOnlyList<UploadFileInfo> files,
-    UploadInputBatchOperation operation);
+    UploadInputBatchOperation operation,
+    UploadInputPipelineOptions options);
+
+internal Task<IReadOnlyList<UploadFileInfo>> ReplaceInputFilesAsync(
+    IReadOnlyList<UploadFileInfo> files,
+    UploadInputBatchOperation operation,
+    UploadInputPipelineOptions options);
 ```
+
+两个入口在变更集合前验证所有 lease-backed file 都由当前 batch operation 持有，并在同一个 UI callback 中应用当前容量。返回值只包含因 UI 时刻容量而拒绝的文件，由管线按候选顺序登记 `CountLimitExceeded` 并释放仍属 batch 的 lease。
 
 `UploadFileItem` 加入 effective collection 且 accepted-file map 登记成功后，Upload 才调用 `TransferFileSourceToUpload`。只有完成 collection commit 与 ownership transfer 的文件进入 `AcceptedFiles`；commit 失败时尚未提交的 source 仍由批次释放，已完整提交的文件继续作为接受项报告。
 
@@ -468,7 +476,7 @@ private void ClearEffectiveFilesAfterQueueCancellation();
 
 ### 7.7 线程、取消和 Task 终态
 
-批次进入串行 gate 并取得 UI option snapshot 后，只建立一次显式 worker dispatch。目录枚举、元数据读取、AdmissionPolicy 和数量计算包含在同一个 worker 边界内，不为每个文件创建 `Task.Run`。Avalonia 属性快照、effective collection 修改、Upload 生命周期事件和 `InputBatchCompleted` 只在 UI 线程执行。
+批次进入串行 gate 并取得 UI option snapshot 后，只建立一次显式 worker dispatch。目录枚举、元数据读取和 AdmissionPolicy 包含在同一个 worker 边界内，不为每个文件创建 `Task.Run`。数量计算、effective collection 修改、Upload 生命周期事件和 `InputBatchCompleted` 只在 UI 线程执行。
 
 一个 Upload 的输入批次串行执行，批次内候选顺序稳定。公共契约不额外承诺并发调用的 FIFO 顺序；数量和 replacement 结果由实际进入 gate 的批次决定。`CancelAllAsync` 关闭当前 generation，取消并等待所有已跟踪批次完成终态事件和资源释放；在 reset 边界结束后才允许新 generation 执行输入。
 

@@ -90,7 +90,7 @@ Upload
 | 文件选择 | `UploadTrigger`、`UploadSourceKind`、`SelectFilesAsync`、`SelectDirectoriesAsync` | 文件与目录选择是独立动作入口，不再由根控件 bool 互斥。 |
 | 拖拽提交 | `UploadDropZone`、`UploadDirectoryDropMode`、`UploadDragState` | DropZone 负责平台协商和快照，`Upload` 负责统一准入与文件状态。 |
 | 文件准入 | `AllowedFileTypes`、`CountOverflowBehavior`、`AdmissionPolicy` | picker、directory、drop 和 programmatic 输入共享同一准入与数量语义。 |
-| 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受、拒绝和取消结果。 |
+| 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受项、拒绝项以及 Completed、Cancelled 或 Failed 终态。 |
 | 文件内容 | `UploadFileInfo`、`IUploadFileSource` | Transport 通过可打开内容源读取文件，不假定本地路径可访问。 |
 | 上传队列 | `UploadTransport`、`AutoUpload`、`MaxConcurrentTasks`、`UploadQueue` | 上传调度与视觉控件解耦，生命周期由 `Upload` 统一释放。 |
 | 列表展示 | `UploadList`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | 列表内部滚动，触发区保持固定。 |
@@ -110,8 +110,8 @@ Upload 的状态流只允许按以下路径收敛：
 ```text
 Public API / UploadTrigger / UploadDropZone
   -> UploadInputPipeline
-  -> directory traversal / file admission / count policy
-  -> accepted file commit
+  -> directory traversal / file admission
+  -> UI count policy / accepted file commit
   -> Files collection
   -> UploadQueue / FileUploadScheduler
   -> UploadFileItem.Status / Progress / Result
@@ -190,6 +190,9 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 不得引入与 `Files` 平行的任务集合，也不得把 picture trigger 伪装成文件项。
 - trigger、drop-zone、list、item container 都不能保存第二份业务任务状态。
 - `UploadDropZone` 是唯一 DragDrop 行为 owner；`UploadDefaultDropArea` 必须保持纯视觉职责。
+- `AdmissionPolicy` 不得在 UI 线程执行，也不得访问 Avalonia 控件；策略异常与策略显式拒绝必须使用不同 rejection reason。
+- 取消和批次级失败通过 `UploadInputBatchStatus` 表达，不得创建空名称或虚假 `UploadRejectedItem`。
+- ownership transfer 必须由 typed batch operation 验证；不得重新引入 `ownsFileSources`、`queueAlreadyCancelled` 或通用 transfer callback。
 - 默认 DropZone/DropArea ControlTheme、模板视觉树、Token、布局和渲染结果不得因输入管线重构改变。
 - PictureCard/PictureCircle 的上传入口只能通过 `EffectivePictureItems` 中的 display append slot 呈现，确保与图片项处于同一 wrap flow。
 - `RemoveFileAsync`、外部集合变更、`Files` 替换、Form Set/Clear、`ResetAsync` 和 detach 必须以各自时序释放上传任务、source lease、auto-remove delay、集合订阅和 container 绑定。
