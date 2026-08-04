@@ -124,25 +124,21 @@ internal sealed class UploadInputBatchOperation : IDisposable
         Reject(rejection);
     }
 
-    internal void MarkCancelled()
+    internal void SetTerminalState(
+        UploadInputBatchStatus status,
+        UploadInputFailureReason? failureReason)
     {
-        ThrowIfDisposed();
-        if (Status != UploadInputBatchStatus.Failed)
+        if ((status == UploadInputBatchStatus.Failed) != failureReason.HasValue)
         {
-            Status = UploadInputBatchStatus.Cancelled;
+            throw new ArgumentException("FailureReason must be set if and only if Status is Failed.");
         }
-    }
 
-    internal void MarkFailed(UploadInputFailureReason reason)
-    {
-        ThrowIfDisposed();
-        Status        = UploadInputBatchStatus.Failed;
-        FailureReason = reason;
+        Status        = status;
+        FailureReason = failureReason;
     }
 
     internal UploadInputBatchCompletedEventArgs CreateCompletedEventArgs()
     {
-        ThrowIfDisposed();
         return new UploadInputBatchCompletedEventArgs(
             BatchId,
             Source,

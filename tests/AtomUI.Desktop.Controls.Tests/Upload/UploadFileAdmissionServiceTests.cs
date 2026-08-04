@@ -92,7 +92,7 @@ public class UploadFileAdmissionServiceTests
             Guid.NewGuid(),
             UploadInputSource.DragDrop,
             File("unsafe.exe"),
-            null,
+            [],
             policy,
             TestContext.Current.CancellationToken);
 
@@ -119,7 +119,7 @@ public class UploadFileAdmissionServiceTests
             batchId,
             UploadInputSource.Programmatic,
             file,
-            null,
+            [],
             policy,
             TestContext.Current.CancellationToken);
 
@@ -140,7 +140,7 @@ public class UploadFileAdmissionServiceTests
             Guid.NewGuid(),
             UploadInputSource.FilePicker,
             File("file.txt"),
-            null,
+            [],
             policy,
             TestContext.Current.CancellationToken);
 
@@ -164,7 +164,7 @@ public class UploadFileAdmissionServiceTests
                 Guid.NewGuid(),
                 UploadInputSource.DirectoryPicker,
                 File("file.txt"),
-                null,
+                [],
                 policy,
                 cancellationTokenSource.Token));
     }
@@ -173,11 +173,14 @@ public class UploadFileAdmissionServiceTests
         UploadFileInfo file,
         IReadOnlyList<FilePickerFileType>? allowedFileTypes)
     {
+        var rules = allowedFileTypes?.Select(fileType => new UploadFileTypeRule(
+            fileType.Patterns?.ToArray() ?? [],
+            fileType.MimeTypes?.ToArray() ?? [])).ToArray() ?? [];
         return UploadFileAdmissionService.EvaluateAsync(
             Guid.NewGuid(),
             UploadInputSource.Programmatic,
             file,
-            allowedFileTypes,
+            rules,
             null,
             TestContext.Current.CancellationToken).AsTask();
     }

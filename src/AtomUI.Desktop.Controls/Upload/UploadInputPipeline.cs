@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 using AtomUI.Controls;
 using Avalonia.Platform.Storage;
 
@@ -24,8 +25,8 @@ internal sealed class UploadInputPipeline
     {
         ArgumentNullException.ThrowIfNull(files);
         var operation = new UploadInputBatchOperation(source);
-        return TrackOperation(operation, (batch, token) =>
-            ProcessFileInfosAsync(batch, files, token), cancellationToken);
+        return TrackOperation(operation, (batch, options, token) =>
+            ProcessFileInfosAsync(batch, files, options, token), cancellationToken);
     }
 
     internal Task ProcessStorageItemsAsync(
@@ -51,7 +52,7 @@ internal sealed class UploadInputPipeline
             }
         }
 
-        return TrackOperation(operation, async (batch, token) =>
+        return TrackOperation(operation, async (batch, options, token) =>
         {
             var enumeration = await UploadStorageItemEnumerator.EnumerateAsync(
                 batch,
@@ -104,7 +105,7 @@ internal sealed class UploadInputPipeline
                 fileInfos.Add(CreateStorageFileInfo(batch, candidate, properties, size));
             }
 
-            await ProcessFileInfosAsync(batch, fileInfos, token)
+            await ProcessFileInfosAsync(batch, fileInfos, options, token)
                 .ConfigureAwait(false);
         }, cancellationToken);
     }
@@ -136,7 +137,7 @@ internal sealed class UploadInputPipeline
 
     private Task TrackOperation(
         UploadInputBatchOperation operation,
-        Func<UploadInputBatchOperation, CancellationToken, Task> process,
+        Func<UploadInputBatchOperation, UploadInputPipelineOptions, CancellationToken, Task> process,
         CancellationToken cancellationToken)
     {
         CancellationTokenSource linkedCancellation;
@@ -155,44 +156,75 @@ internal sealed class UploadInputPipeline
 
     private async Task ExecuteAsync(
         UploadInputBatchOperation operation,
-        Func<UploadInputBatchOperation, CancellationToken, Task> process,
+        Func<UploadInputBatchOperation, UploadInputPipelineOptions, CancellationToken, Task> process,
         CancellationTokenSource linkedCancellation)
     {
-        using (operation)
+        var gateEntered = false;
+        var wasCancelled = false;
+        Exception? terminalException = null;
+        try
         {
-            var gateEntered = false;
-            try
-            {
-                await _arrivalGate.WaitAsync(linkedCancellation.Token).ConfigureAwait(false);
-                gateEntered = true;
-                await process(operation, linkedCancellation.Token).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                operation.MarkCancelled();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Upload input batch failed: {ex.Message}");
-                operation.MarkFailed(UploadInputFailureReason.ProcessingFailed);
-            }
-            finally
-            {
-                if (gateEntered)
-                {
-                    _arrivalGate.Release();
-                }
+            await _arrivalGate.WaitAsync(linkedCancellation.Token).ConfigureAwait(false);
+            gateEntered = true;
+            var options = await _owner.GetInputPipelineOptionsAsync().ConfigureAwait(false);
+            await Task.Run(
+                () => process(operation, options, linkedCancellation.Token),
+                CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException ex) when (linkedCancellation.IsCancellationRequested)
+        {
+            wasCancelled = true;
+            terminalException = ex;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Upload input batch failed: {ex.Message}");
+            terminalException = ex;
+        }
 
-                try
-                {
-                    await _owner.RaiseInputBatchCompletedAsync(operation.CreateCompletedEventArgs())
-                                .ConfigureAwait(false);
-                }
-                finally
-                {
-                    linkedCancellation.Dispose();
-                }
+        Exception? cleanupException = null;
+        try
+        {
+            operation.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Upload input batch cleanup failed: {ex.Message}");
+            cleanupException = ex;
+            terminalException = CombineExceptions(terminalException, ex);
+        }
+
+        var status = cleanupException is not null || terminalException is not null && !wasCancelled
+            ? UploadInputBatchStatus.Failed
+            : wasCancelled
+                ? UploadInputBatchStatus.Cancelled
+                : UploadInputBatchStatus.Completed;
+        UploadInputFailureReason? failureReason = status == UploadInputBatchStatus.Failed
+            ? UploadInputFailureReason.ProcessingFailed
+            : null;
+        operation.SetTerminalState(status, failureReason);
+        var eventArgs = operation.CreateCompletedEventArgs();
+
+        try
+        {
+            await _owner.RaiseInputBatchCompletedAsync(eventArgs).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            terminalException = CombineExceptions(terminalException, ex);
+        }
+        finally
+        {
+            if (gateEntered)
+            {
+                _arrivalGate.Release();
             }
+            linkedCancellation.Dispose();
+        }
+
+        if (terminalException is not null)
+        {
+            ExceptionDispatchInfo.Capture(terminalException).Throw();
         }
     }
 
@@ -214,9 +246,9 @@ internal sealed class UploadInputPipeline
     private async Task ProcessFileInfosAsync(
         UploadInputBatchOperation operation,
         IReadOnlyList<UploadFileInfo> files,
+        UploadInputPipelineOptions options,
         CancellationToken cancellationToken)
     {
-        var options = await _owner.GetInputPipelineOptionsAsync().ConfigureAwait(false);
         var admittedFiles = new List<UploadFileInfo>(files.Count);
 
         foreach (var file in files)
@@ -319,10 +351,21 @@ internal sealed class UploadInputPipeline
             dateCreated: properties.DateCreated,
             dateModified: properties.DateModified);
     }
+
+    private static Exception CombineExceptions(Exception? first, Exception second)
+    {
+        return first is null
+            ? second
+            : new AggregateException(first, second).Flatten();
+    }
 }
 
+internal sealed record UploadFileTypeRule(
+    IReadOnlyList<string> Patterns,
+    IReadOnlyList<string> MimeTypes);
+
 internal sealed record UploadInputPipelineOptions(
-    IReadOnlyList<FilePickerFileType>? AllowedFileTypes,
+    IReadOnlyList<UploadFileTypeRule> AllowedFileTypes,
     IUploadAdmissionPolicy? AdmissionPolicy,
     UploadCountOverflowBehavior CountOverflowBehavior,
     int MaxCount,

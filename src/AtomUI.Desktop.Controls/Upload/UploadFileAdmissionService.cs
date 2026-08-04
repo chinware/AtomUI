@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.IO.Enumeration;
 using AtomUI.Controls;
-using Avalonia.Platform.Storage;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -15,7 +14,7 @@ internal static class UploadFileAdmissionService
         Guid batchId,
         UploadInputSource inputSource,
         UploadFileInfo file,
-        IReadOnlyList<FilePickerFileType>? allowedFileTypes,
+        IReadOnlyList<UploadFileTypeRule> allowedFileTypes,
         IUploadAdmissionPolicy? admissionPolicy,
         CancellationToken cancellationToken = default)
     {
@@ -75,9 +74,9 @@ internal static class UploadFileAdmissionService
 
     private static bool IsFileTypeAllowed(
         UploadFileInfo file,
-        IReadOnlyList<FilePickerFileType>? allowedFileTypes)
+        IReadOnlyList<UploadFileTypeRule> allowedFileTypes)
     {
-        if (allowedFileTypes is null || allowedFileTypes.Count == 0)
+        if (allowedFileTypes.Count == 0)
         {
             return true;
         }

@@ -25,12 +25,18 @@ public partial class Upload
     internal async Task<UploadInputPipelineOptions> GetInputPipelineOptionsAsync()
     {
         UploadInputPipelineOptions? options = null;
-        await InvokeOnUiThreadAsync(() => options = new UploadInputPipelineOptions(
-            AllowedFileTypes,
-            AdmissionPolicy,
-            CountOverflowBehavior,
-            MaxCount,
-            EffectiveFiles.Count)).ConfigureAwait(false);
+        await InvokeOnUiThreadAsync(() =>
+        {
+            var fileTypes = AllowedFileTypes?.Select(fileType => new UploadFileTypeRule(
+                fileType.Patterns?.ToArray() ?? [],
+                fileType.MimeTypes?.ToArray() ?? [])).ToArray() ?? [];
+            options = new UploadInputPipelineOptions(
+                fileTypes,
+                AdmissionPolicy,
+                CountOverflowBehavior,
+                MaxCount,
+                EffectiveFiles.Count);
+        }).ConfigureAwait(false);
         return options!;
     }
 

@@ -135,29 +135,85 @@ public class UploadInputPipelineTests
     }
 
     [Fact]
-    public async Task Concurrent_Batches_Commit_In_Arrival_Order()
+    public void Admission_Policy_Runs_Outside_The_UI_Thread()
     {
-        var firstGate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var policy = new RecordingAdmissionPolicy(async (file, cancellationToken) =>
+        var upload = CreateUpload();
+        bool? policyHadUiAccess = null;
+        upload.AdmissionPolicy = new RecordingAdmissionPolicy((_, _) =>
         {
-            if (file.Name == "first.txt")
+            policyHadUiAccess = Dispatcher.UIThread.CheckAccess();
+            return Task.FromResult(true);
+        });
+        Task input = Task.CompletedTask;
+
+        Dispatcher.UIThread.Invoke(() =>
+            input = upload.EnqueueFilesAsync(
+                [CreateFile("file.txt")],
+                TestContext.Current.CancellationToken));
+        WaitWithDispatcherPump(input);
+
+        policyHadUiAccess.ShouldBe(false);
+    }
+
+    [Fact]
+    public async Task Input_Options_Are_An_Immutable_Per_Batch_Snapshot()
+    {
+        var policyEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releasePolicy = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var patterns = new List<string> { "*.txt" };
+        var upload = CreateUpload();
+        upload.AllowedFileTypes = [new FilePickerFileType("text") { Patterns = patterns }];
+        var evaluationCount = 0;
+        upload.AdmissionPolicy = new RecordingAdmissionPolicy(async (_, token) =>
+        {
+            if (Interlocked.Increment(ref evaluationCount) == 1)
             {
-                await firstGate.Task.WaitAsync(cancellationToken);
+                policyEntered.SetResult();
+                await releasePolicy.Task.WaitAsync(token);
             }
             return true;
+        });
+
+        var input = upload.EnqueueFilesAsync(
+            [CreateFile("first.txt"), CreateFile("second.txt")],
+            TestContext.Current.CancellationToken);
+        await policyEntered.Task.WaitAsync(TestContext.Current.CancellationToken);
+        patterns[0] = "*.png";
+        releasePolicy.SetResult();
+        WaitWithDispatcherPump(input);
+
+        upload.Files!.Select(item => item.Name).ShouldBe(["first.txt", "second.txt"]);
+    }
+
+    [Fact]
+    public void Concurrent_Batches_Never_Run_Admission_At_The_Same_Time()
+    {
+        var active = 0;
+        var maximumActive = 0;
+        var policy = new RecordingAdmissionPolicy(async (_, cancellationToken) =>
+        {
+            var current = Interlocked.Increment(ref active);
+            SetMaximum(ref maximumActive, current);
+            try
+            {
+                await Task.Delay(20, cancellationToken);
+                return true;
+            }
+            finally
+            {
+                Interlocked.Decrement(ref active);
+            }
         });
         var upload = CreateUpload();
         upload.AdmissionPolicy = policy;
 
         var first = upload.EnqueueFilesAsync([CreateFile("first.txt")], TestContext.Current.CancellationToken);
-        await policy.FirstEvaluationStarted.Task.WaitAsync(TestContext.Current.CancellationToken);
         var second = upload.EnqueueFilesAsync([CreateFile("second.txt")], TestContext.Current.CancellationToken);
-        second.IsCompleted.ShouldBeFalse();
-
-        firstGate.SetResult();
         WaitWithDispatcherPump(Task.WhenAll(first, second));
 
-        upload.Files!.Select(item => item.Name).ShouldBe(["first.txt", "second.txt"]);
+        maximumActive.ShouldBe(1);
+        upload.Files!.Select(item => item.Name).OrderBy(name => name)
+            .ShouldBe(["first.txt", "second.txt"]);
     }
 
     [Fact]
@@ -292,7 +348,7 @@ public class UploadInputPipelineTests
         upload.UploadTaskCreated += (_, _) => throw new InvalidOperationException("task event failed");
         upload.InputBatchCompleted += (_, args) => completed = args;
 
-        await AddStorageFileAsync(upload, storageFile);
+        await Should.ThrowAsync<InvalidOperationException>(() => AddStorageFileAsync(upload, storageFile));
 
         upload.Files!.Single().Name.ShouldBe("committed.txt");
         storageFile.DisposeCount.ShouldBe(0);
@@ -314,7 +370,7 @@ public class UploadInputPipelineTests
             throw new InvalidOperationException("form value event failed");
         ((IFormItemAware)upload).ValueChanged += throwingHandler;
 
-        await AddStorageFileAsync(upload, storageFile);
+        await Should.ThrowAsync<InvalidOperationException>(() => AddStorageFileAsync(upload, storageFile));
 
         upload.Files!.Single().Name.ShouldBe("collection-event.txt");
         storageFile.DisposeCount.ShouldBe(0);
@@ -449,7 +505,11 @@ public class UploadInputPipelineTests
             WaitWithDispatcherPump(policy.Started.Task);
 
             window.Close();
-            Should.Throw<InvalidOperationException>(() => WaitWithDispatcherPump(activeBatch));
+            var error = Should.Throw<AggregateException>(() => WaitWithDispatcherPump(activeBatch));
+            var innerExceptions = error.Flatten().InnerExceptions;
+            innerExceptions.Any(exception =>
+                exception is InvalidOperationException && exception.Message == "batch completion failed").ShouldBeTrue();
+            innerExceptions.Any(exception => exception is OperationCanceledException).ShouldBeTrue();
             WaitUntilWithDispatcherPump(() => storageFile.DisposeCount == 1);
         });
     }
@@ -480,7 +540,8 @@ public class UploadInputPipelineTests
         cancellation.Cancel();
         policyGate.SetResult();
 
-        WaitWithDispatcherPump(Task.WhenAll(first, waiting));
+        WaitWithDispatcherPump(first);
+        Should.Throw<OperationCanceledException>(() => WaitWithDispatcherPump(waiting));
 
         waitingFile.DisposeCount.ShouldBe(1);
     }
@@ -510,7 +571,7 @@ public class UploadInputPipelineTests
             cancellation.Token);
         await folder.EnumerationPaused.Task.WaitAsync(TestContext.Current.CancellationToken);
         cancellation.Cancel();
-        WaitWithDispatcherPump(task);
+        Should.Throw<OperationCanceledException>(() => WaitWithDispatcherPump(task));
 
         folder.DisposeCount.ShouldBe(1);
         acquiredChild.DisposeCount.ShouldBe(1);
@@ -538,12 +599,79 @@ public class UploadInputPipelineTests
         var task = upload.EnqueueFilesAsync([CreateFile("file.txt")], cancellation.Token);
         await policy.FirstEvaluationStarted.Task.WaitAsync(TestContext.Current.CancellationToken);
         cancellation.Cancel();
-        WaitWithDispatcherPump(task);
+        Should.Throw<OperationCanceledException>(() => WaitWithDispatcherPump(task));
 
         upload.Files.ShouldBeEmpty();
         events.Count.ShouldBe(1);
         events[0].Status.ShouldBe(UploadInputBatchStatus.Cancelled);
         events[0].FailureReason.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task Cancellation_Cleans_Resources_Then_Raises_Event_Then_Throws_To_Caller()
+    {
+        var policy = new CancellationBlockingPolicy();
+        var upload = CreateUpload();
+        upload.AdmissionPolicy = policy;
+        var storageFile = new TestStorageFile("file.txt", "file:///file.txt");
+        var disposeCountAtEvent = -1;
+        UploadInputBatchCompletedEventArgs? completed = null;
+        upload.InputBatchCompleted += (_, args) =>
+        {
+            disposeCountAtEvent = storageFile.DisposeCount;
+            completed = args;
+        };
+        using var cancellation = new CancellationTokenSource();
+
+        var input = upload.ProcessStorageItemsAsync(
+            UploadInputSource.DragDrop,
+            [storageFile],
+            UploadDirectoryDropMode.Reject,
+            32,
+            10_000,
+            cancellation.Token);
+        await policy.Started.Task.WaitAsync(TestContext.Current.CancellationToken);
+        cancellation.Cancel();
+
+        Should.Throw<OperationCanceledException>(() => WaitWithDispatcherPump(input));
+        disposeCountAtEvent.ShouldBe(1);
+        completed.ShouldNotBeNull();
+        completed.Status.ShouldBe(UploadInputBatchStatus.Cancelled);
+        completed.FailureReason.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task Cleanup_Failure_Overrides_Cancellation_After_All_Resources_Are_Attempted()
+    {
+        var policy = new CancellationBlockingPolicy();
+        var upload = CreateUpload();
+        upload.AdmissionPolicy = policy;
+        var first = new ThrowingStorageFile("first.txt", "file:///first.txt");
+        var second = new ThrowingStorageFile("second.txt", "file:///second.txt");
+        using var cancellation = new CancellationTokenSource();
+        UploadInputBatchCompletedEventArgs? completed = null;
+        upload.InputBatchCompleted += (_, args) => completed = args;
+
+        var input = upload.ProcessStorageItemsAsync(
+            UploadInputSource.DragDrop,
+            [first, second],
+            UploadDirectoryDropMode.Reject,
+            32,
+            10_000,
+            cancellation.Token);
+        await policy.Started.Task.WaitAsync(TestContext.Current.CancellationToken);
+        cancellation.Cancel();
+
+        var error = Should.Throw<AggregateException>(() => WaitWithDispatcherPump(input));
+
+        var flattened = error.Flatten();
+        flattened.InnerExceptions.ShouldContain(exception => exception is OperationCanceledException);
+        flattened.InnerExceptions.Count(exception => exception is InvalidOperationException).ShouldBe(2);
+        first.DisposeCount.ShouldBe(1);
+        second.DisposeCount.ShouldBe(1);
+        completed.ShouldNotBeNull();
+        completed.Status.ShouldBe(UploadInputBatchStatus.Failed);
+        completed.FailureReason.ShouldBe(UploadInputFailureReason.ProcessingFailed);
     }
 
     [Fact]
@@ -662,7 +790,7 @@ public class UploadInputPipelineTests
             WaitWithDispatcherPump(policy.Started.Task);
 
             window.Close();
-            WaitWithDispatcherPump(inputTask);
+            Should.Throw<OperationCanceledException>(() => WaitWithDispatcherPump(inputTask));
 
             storageFile.DisposeCount.ShouldBe(1);
         });
@@ -750,6 +878,20 @@ public class UploadInputPipelineTests
         }
 
         condition().ShouldBeTrue("The Upload lifecycle operation should complete within the test timeout.");
+    }
+
+    private static void SetMaximum(ref int location, int value)
+    {
+        int current;
+        do
+        {
+            current = Volatile.Read(ref location);
+            if (current >= value)
+            {
+                return;
+            }
+        }
+        while (Interlocked.CompareExchange(ref location, value, current) != current);
     }
 
     private sealed class RecordingAdmissionPolicy : IUploadAdmissionPolicy
