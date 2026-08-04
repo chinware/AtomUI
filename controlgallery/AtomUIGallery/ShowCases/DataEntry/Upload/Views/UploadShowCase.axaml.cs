@@ -203,8 +203,10 @@ public partial class UploadShowCase : GalleryReactiveUserControl<UploadViewModel
     private void HandleImageUploadAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
     {
         var fileInfo          = e.UploadFileInfo;
-        var ext               = Path.GetExtension(fileInfo.FilePath.LocalPath);
-        var isAllowedFileType = ext is ".jpeg" or ".jpg" or ".png";
+        var ext               = Path.GetExtension(fileInfo.Name);
+        var isAllowedFileType = ext.Equals(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                                ext.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                                ext.Equals(".png", StringComparison.OrdinalIgnoreCase);
         if (!isAllowedFileType)
         {
             e.Result       = UploadPredicateResult.CancelWithInTaskList;
@@ -214,7 +216,7 @@ public partial class UploadShowCase : GalleryReactiveUserControl<UploadViewModel
             return;
         }
 
-        var isLt2M = (double)fileInfo.Size / 1024 / 1024 < 2;
+        var isLt2M = fileInfo.Size is null or < 2 * 1024 * 1024;
         if (!isLt2M)
         {
             e.Result       = UploadPredicateResult.CancelWithInTaskList;
@@ -227,8 +229,8 @@ public partial class UploadShowCase : GalleryReactiveUserControl<UploadViewModel
     private void HandlePngUploadAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
     {
         var fileInfo = e.UploadFileInfo;
-        var ext      = Path.GetExtension(fileInfo.FilePath.LocalPath);
-        if (ext != ".png")
+        var ext      = Path.GetExtension(fileInfo.Name);
+        if (!ext.Equals(".png", StringComparison.OrdinalIgnoreCase))
         {
             e.Result       = UploadPredicateResult.Cancel;
             e.CancelReason = UploadShowCaseLanguage.Get(
@@ -299,7 +301,7 @@ public class UploadMockTransport : IFileUploadTransport
         IProgress<FileUploadProgress>? progress = null,
         CancellationToken cancellationToken = default)
     {
-        var totalBytes  = fileInfo.Size;
+        var totalBytes  = fileInfo.Size ?? 0;
         var bytesSent   = 0L;
         var elapsedTime = TimeSpan.Zero;
         try
@@ -317,13 +319,13 @@ public class UploadMockTransport : IFileUploadTransport
                 var delay = TimeSpan.FromMilliseconds(Random.Shared.Next(300, 1000));
                 await Task.Delay(delay, cancellationToken);
                 elapsedTime += delay;
-                bytesSent += (long)(totalBytes *
-                                    ((double)Random.Shared.NextInt64((long)totalBytes / 20, (long)totalBytes / 10) /
-                                     totalBytes));
+                var minChunk = Math.Max(1, totalBytes / 20);
+                var maxChunk = Math.Max(minChunk + 1, totalBytes / 10 + 1);
+                bytesSent += Random.Shared.NextInt64(minChunk, maxChunk);
                 bytesSent = Math.Min(bytesSent, totalBytes);
                 var uploadProgress = new FileUploadProgress()
                 {
-                    TotalBytes = fileInfo.Size,
+                    TotalBytes = totalBytes,
                     BytesSent  = bytesSent,
                 };
                 progress?.Report(uploadProgress);
@@ -336,8 +338,8 @@ public class UploadMockTransport : IFileUploadTransport
             }
 
             return FileUploadResult.SuccessResult(
-                fileInfo.FilePath,
-                fileInfo.Size,
+                fileInfo.Path ?? new Uri($"file:///{Uri.EscapeDataString(fileInfo.Name)}"),
+                totalBytes,
                 elapsedTime,
                 "Success");
         }

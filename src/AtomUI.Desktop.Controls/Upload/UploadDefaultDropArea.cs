@@ -5,10 +5,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
-using Avalonia.Platform.Storage;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -73,28 +71,6 @@ public class UploadDefaultDropArea : TemplatedControl, IMotionAwareControl
 
     #endregion
 
-    #region 公共事件定义
-
-    public static readonly RoutedEvent<UploadFilesDroppedEventArgs> FilesDroppedEvent =
-        RoutedEvent.Register<UploadDefaultDropArea, UploadFilesDroppedEventArgs>(nameof(FilesDropped), RoutingStrategies.Bubble);
-    
-    public event EventHandler<UploadFilesDroppedEventArgs>? FilesDropped
-    {
-        add => AddHandler(FilesDroppedEvent, value);
-        remove => RemoveHandler(FilesDroppedEvent, value);
-    }
-
-    #endregion
-
-    static UploadDefaultDropArea()
-    {
-        DragDrop.DropEvent.AddClassHandler<UploadDefaultDropArea>((area, args) =>
-        {
-            area.HandleDrop(args);
-        });
-   
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -114,25 +90,5 @@ public class UploadDefaultDropArea : TemplatedControl, IMotionAwareControl
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
-    }
-
-    private void HandleDrop(DragEventArgs e)
-    {
-        List<IStorageFile>? files = null;
-        foreach (var item in e.DataTransfer.Items)
-        {
-            var raw = item.TryGetRaw(DataFormat.File);
-            if (raw is IStorageFile file)
-            {
-                files ??= new List<IStorageFile>(e.DataTransfer.Items.Count);
-                files.Add(file);
-            }
-        }
-        IReadOnlyList<IStorageFile> droppedFiles = files is null ? Array.Empty<IStorageFile>() : files;
-        RaiseEvent(new UploadFilesDroppedEventArgs(droppedFiles)
-        {
-            Source = this,
-            RoutedEvent = FilesDroppedEvent,
-        });
     }
 }

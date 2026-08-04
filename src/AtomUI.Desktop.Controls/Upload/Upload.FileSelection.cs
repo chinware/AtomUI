@@ -1,4 +1,3 @@
-using AtomUI.Controls;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 
@@ -6,97 +5,63 @@ namespace AtomUI.Desktop.Controls;
 
 public partial class Upload
 {
+    internal IUploadStorageProviderAdapter? StorageProviderAdapter { get; set; }
+
     public async Task SelectFilesAsync(CancellationToken cancellationToken = default)
     {
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is null)
+        var storageProvider = ResolveStorageProviderAdapter();
+        if (storageProvider is null || !storageProvider.CanOpenFiles)
         {
             return;
         }
 
-        var storageProvider = topLevel.StorageProvider;
-        if (!storageProvider.CanOpen)
+        var files = await storageProvider.OpenFilesAsync(new FilePickerOpenOptions
         {
-            if (RuntimePlatform.Features.SupportsNativeWindow)
-            {
-                throw new InvalidOperationException("Can't open storage provider");
-            }
+            AllowMultiple = IsMultipleEnabled,
+            FileTypeFilter = AllowedFileTypes
+        }, cancellationToken).ConfigureAwait(false);
 
-            return;
-        }
-
-        var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            AllowMultiple     = IsMultipleEnabled,
-            SuggestedFileType = new FilePickerFileType("filter")
-            {
-                MimeTypes                   = Accepts,
-                Patterns                    = Accepts,
-                AppleUniformTypeIdentifiers = Accepts
-            }
-        });
-
-        await EnqueueStorageFilesAsync(files, cancellationToken);
+        await ProcessStorageItemsAsync(
+            UploadInputSource.FilePicker,
+            files.Cast<IStorageItem>().ToArray(),
+            UploadDirectoryDropMode.Reject,
+            0,
+            10_000,
+            cancellationToken).ConfigureAwait(false);
     }
 
     public async Task SelectDirectoriesAsync(CancellationToken cancellationToken = default)
     {
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is null)
+        var storageProvider = ResolveStorageProviderAdapter();
+        if (storageProvider is null || !storageProvider.CanOpenFolders)
         {
             return;
         }
 
-        var storageProvider = topLevel.StorageProvider;
-        if (!storageProvider.CanOpen || !RuntimePlatform.Features.SupportsLocalFileSystemEnumeration)
-        {
-            return;
-        }
-
-        var directories = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+        var folders = await storageProvider.OpenFoldersAsync(new FolderPickerOpenOptions
         {
             AllowMultiple = IsMultipleEnabled
-        });
+        }, cancellationToken).ConfigureAwait(false);
 
-        var files = new List<UploadFileInfo>();
-        foreach (var directory in directories)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            foreach (var filePath in Directory.EnumerateFiles(directory.Path.LocalPath, "*", SearchOption.TopDirectoryOnly))
-            {
-                var fileInfo = new FileInfo(filePath);
-                files.Add(new UploadFileInfo(
-                    fileInfo.Name,
-                    new Uri(fileInfo.FullName),
-                    fileInfo.Length,
-                    fileInfo.CreationTime,
-                    fileInfo.LastWriteTime));
-            }
-        }
-
-        await EnqueueFilesAsync(files, cancellationToken);
+        await ProcessStorageItemsAsync(
+            UploadInputSource.DirectoryPicker,
+            folders.Cast<IStorageItem>().ToArray(),
+            UploadDirectoryDropMode.TopLevelFiles,
+            0,
+            10_000,
+            cancellationToken).ConfigureAwait(false);
     }
 
-    internal async Task EnqueueStorageFilesAsync(IReadOnlyList<IStorageFile> files, CancellationToken cancellationToken = default)
+    private IUploadStorageProviderAdapter? ResolveStorageProviderAdapter()
     {
-        var uploadFiles = new List<UploadFileInfo>(files.Count);
-        foreach (var file in files)
+        if (StorageProviderAdapter is not null)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            uploadFiles.Add(await CreateUploadFileInfoAsync(file));
+            return StorageProviderAdapter;
         }
 
-        await EnqueueFilesAsync(uploadFiles, cancellationToken);
-    }
-
-    internal static async Task<UploadFileInfo> CreateUploadFileInfoAsync(IStorageFile file)
-    {
-        var properties = await file.GetBasicPropertiesAsync();
-        return new UploadFileInfo(
-            file.Name,
-            file.Path,
-            (long)(properties.Size ?? 0),
-            properties.DateCreated,
-            properties.DateModified);
+        var topLevel = TopLevel.GetTopLevel(this);
+        return topLevel is null
+            ? null
+            : new AvaloniaUploadStorageProviderAdapter(topLevel.StorageProvider);
     }
 }

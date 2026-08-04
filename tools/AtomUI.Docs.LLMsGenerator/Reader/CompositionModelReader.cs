@@ -747,7 +747,7 @@ public static partial class CompositionModelReader
     [GeneratedRegex(@"src/[^\s`]+\.cs")]
     private static partial Regex SourceCodePathRegex();
 
-    [GeneratedRegex(@"(?m)^\s*(?<access>public|internal)?\s*(?:partial\s+)?(?:class|record|struct|interface|enum)\s+(?<name>[A-Za-z_][A-Za-z0-9_]*)")]
+    [GeneratedRegex(@"(?m)^\s*(?<access>public|internal|protected|private)?\s*(?:(?:abstract|sealed|static|partial|readonly|ref|file)\s+)*(?:class|interface|enum|struct|record(?:\s+(?:class|struct))?)\s+(?<name>[A-Za-z_][A-Za-z0-9_]*)")]
     private static partial Regex TypeDeclarationRegex();
 
     [GeneratedRegex(@"(?:^|[:\s{])(?<name>[A-Z][A-Za-z0-9_]+)(?=[}\s,]|$)")]

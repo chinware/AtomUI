@@ -7,32 +7,22 @@ internal sealed class UploadQueue
     private readonly Upload _owner;
     private readonly object _syncRoot = new();
     private readonly Dictionary<Guid, FileUploadTask> _tasks = new();
-    private FileUploadScheduler _scheduler;
-    private int _maxConcurrentTasks;
+    private readonly FileUploadScheduler _scheduler;
 
     public UploadQueue(Upload owner, IFileUploadTransport? transport = null, int maxConcurrentTasks = 3)
     {
-        _owner              = owner;
-        _maxConcurrentTasks = maxConcurrentTasks;
-        _scheduler          = new FileUploadScheduler(transport, maxConcurrentTasks);
+        _owner     = owner;
+        _scheduler = new FileUploadScheduler(transport, maxConcurrentTasks);
     }
 
-    internal async Task SetTransportAsync(IFileUploadTransport? transport, CancellationToken cancellationToken = default)
+    internal Task SetTransportAsync(IFileUploadTransport? transport, CancellationToken cancellationToken = default)
     {
-        if (transport is null)
-        {
-            await CancelAllAsync(cancellationToken);
-            _scheduler = new FileUploadScheduler(null, _maxConcurrentTasks);
-            return;
-        }
-
-        await _scheduler.SetTransportAsync(transport, cancellationToken);
+        return _scheduler.SetTransportAsync(transport, cancellationToken);
     }
 
-    internal async Task SetMaxConcurrentTasksAsync(int maxConcurrentTasks, CancellationToken cancellationToken = default)
+    internal Task SetMaxConcurrentTasksAsync(int maxConcurrentTasks, CancellationToken cancellationToken = default)
     {
-        _maxConcurrentTasks = maxConcurrentTasks;
-        await _scheduler.SetMaxConcurrentTasksAsync(maxConcurrentTasks, cancellationToken);
+        return _scheduler.SetMaxConcurrentTasksAsync(maxConcurrentTasks, cancellationToken);
     }
 
     internal void Enqueue(UploadFileItem item, UploadFileInfo fileInfo)

@@ -64,6 +64,27 @@ Upload 以 `Files` 作为唯一上传文件状态 owner。触发器、拖拽区�
 | 状态反馈 | `SuccessAutoRemoveDelay`、`PendingText`、`FileValueMode` | 成功自动移除、待上传文案和 Form 值投影可配置。 |
 | 视觉与动效 | `IsMotionEnabled`、Upload Token | 只表达视觉状态，不保存业务任务状态。 |
 
+输入与准入 API 的默认契约：
+
+| 成员 | 默认值 | 语义 |
+| --- | --- | --- |
+| `Upload.AllowedFileTypes` | `null` | 不按文件名 pattern 或 MIME 拒绝文件；空集合含义相同。 |
+| `Upload.CountOverflowBehavior` | `RejectExcess` | 按候选稳定顺序接受剩余容量内的文件，并拒绝超出项。 |
+| `Upload.AdmissionPolicy` | `null` | 不执行额外业务准入。 |
+| `Upload.MaxCount` | `int.MaxValue` | 输入管线可提交的最大 effective 文件数。 |
+| `UploadDropZone.IsOpenFileDialogOnClick` | `true` | 主指针点击 DropZone 时按 `SourceKind` 打开选择器。 |
+| `UploadDropZone.SourceKind` | `Files` | 点击时打开文件选择器。 |
+| `UploadDropZone.IsFileDropEnabled` | `true` | DropZone 参与文件 DragDrop 协商。 |
+| `UploadDropZone.DirectoryDropMode` | `Reject` | 外部拖入目录时拒绝目录。 |
+| `UploadDropZone.MaxDirectoryDepth` | `32` | 递归目录根深度为 `0`，属性值不得小于 `0`。 |
+| `UploadDropZone.MaxEnumeratedItems` | `10000` | 每个顶层目录树最多观察的文件和目录总数，属性值必须大于 `0`。 |
+| `UploadDropZone.DragState` | `None` | 只读拖动协商状态。 |
+| `UploadDropZone.IsDropProcessing` | `false` | 只读活动 Drop 批次状态。 |
+
+`Upload.EnqueueFilesAsync`、文件选择器、目录选择器和拖动输入分别产生 `Programmatic`、`FilePicker`、`DirectoryPicker` 和 `DragDrop` 批次。每个实际启动的批次只触发一次 `InputBatchCompleted`；事件在输入处理进入终态且接受项已经提交后于 UI 线程触发，调用方等待的输入任务在事件处理完成后返回。
+
+`UploadFileInfo` 是不可变输入描述。`Name` 和 `Source` 必须存在；`Path`、`Size`、`ContentType`、`DateCreated` 与 `DateModified` 都允许为空，因为跨进程或受限平台存储项不保证提供本地路径和完整元数据。`IUploadFileSource.OpenReadAsync` 是 transport 读取内容的唯一稳定入口。
+
 ### 3.3 公共状态类型
 
 ```csharp
@@ -123,7 +144,9 @@ Upload 的状态流只允许按以下路径收敛：
 
 ```text
 Public API / UploadTrigger / UploadDropZone
-  -> Upload.EnqueueFilesAsync
+  -> UploadInputPipeline
+  -> directory traversal / file admission / count policy
+  -> accepted file commit
   -> Files collection
   -> UploadQueue / FileUploadScheduler
   -> UploadFileItem.Status / Progress / Result
@@ -133,7 +156,7 @@ Public API / UploadTrigger / UploadDropZone
 
 状态维护规则：
 
-- `Files` 是唯一文件状态 owner；实现中不得保留 `_allTaskList`、`TaskInfoList`、`CurrentTaskList` 或同类复制集合。
+- `Files` 是唯一文件状态 owner；实现中按文件 id 保存的 accepted `UploadFileInfo` 只承担内容源 lease，不形成第二份可观察任务状态。
 - `UploadQueue` 只负责把 `UploadFileItem` 映射到 `FileUploadTask` 并转发调度结果，不直接操作视觉容器。
 - `UploadList` 只渲染 `Files`，不得创建、删除或隐藏真实任务状态。
 - 文件选择和目录选择由 `UploadTrigger.SourceKind` 决定，可以在同一 `Upload` 下并存。
@@ -205,6 +228,7 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Tok
 - Template reapply、集合替换、remove、reset、detach 都必须释放旧订阅、取消运行任务和取消 pending auto-remove。
 - 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - `UploadDropZone` 和 `UploadDefaultDropArea` 的 ControlTheme、模板视觉树、Token 映射、布局和默认渲染结果保持稳定。
+- `UploadDropZone` 的新增拖动状态伪类只提供自定义主题入口；AtomUI 默认主题不得据此改变 pointerover、disabled、motion、Light/Dark 或缩放后的视觉结果。
 - 文档只描述稳定设计；历史变化记录在 `changelog.md`。
 
 ## 8. 专项模型
@@ -214,7 +238,7 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Tok
 `UploadTrigger.SourceKind` 决定点击后的选择动作：
 
 - `Files`：打开文件选择器，支持 `AllowedFileTypes` 和 `MaxCount`。
-- `Directories`：打开目录选择器，枚举目录顶层文件并提交给 `Upload.EnqueueFilesAsync`。
+- `Directories`：打开目录选择器，并以 `TopLevelFiles` 目录策略提交统一输入管线。
 
 文件和目录触发器可以同时存在于一个 `Upload.TriggerContent` 中。
 
@@ -224,7 +248,7 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Tok
 
 `UploadDefaultDropArea` 保留当前默认渲染，但不再设置 `DragDrop.AllowDrop`、注册 Drop handler 或暴露第二条文件事件。完整状态、平台、Template 和生命周期契约见 [Upload 拖动上传设计](drag-drop-design.md)。
 
-默认契约为 `IsOpenFileDialogOnClick=true`、`IsFileDropEnabled=true`、`DirectoryDropMode=Reject`、`MaxDirectoryDepth=32` 和 `MaxEnumeratedItems=10000`。`DragState` 与 `IsDropProcessing` 只表达运行状态，默认主题不使用它们改变渲染。
+默认契约为 `IsOpenFileDialogOnClick=true`、`SourceKind=Files`、`IsFileDropEnabled=true`、`DirectoryDropMode=Reject`、`MaxDirectoryDepth=32` 和 `MaxEnumeratedItems=10000`。`DragState=None` 与 `IsDropProcessing=false` 只表达运行状态，默认主题不使用它们改变渲染。
 
 ### 8.3 列表滚动模型
 

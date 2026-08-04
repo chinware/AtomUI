@@ -140,6 +140,18 @@ public class LLMsWriterTests
     }
 
     [Fact]
+    public void SemanticWriterTreatsPublicSealedControlsAsPublicCompositionNodes()
+    {
+        var upload = LLMsSemanticWriter.Write(
+            ReadAllModels().Single(model => model.ControlName == "upload"));
+        var composition = ExtractSecondLevelSection(upload, "Composition Model");
+
+        composition.ShouldContain(
+            "| `UploadDropZone` | control theme | `UploadDropZoneTheme.axaml` | 用户代码 / 控件宿主 | " +
+            "`Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | public |");
+    }
+
+    [Fact]
     public void RootAndAggregateWritersCoverEveryDesktopControl()
     {
         var models = ReadAllModels();

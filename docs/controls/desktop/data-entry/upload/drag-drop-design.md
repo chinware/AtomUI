@@ -110,8 +110,8 @@ public enum UploadCountOverflowBehavior
 
 - `AllowedFileTypes=null` 或空集合表示不按类型拒绝文件。
 - `CountOverflowBehavior` 默认为 `RejectExcess`。
-- 文件选择器和拖动输入从同一组 `FilePickerFileType` 生成匹配规则。
-- `Patterns` 按文件名匹配；MIME 和 Apple UTI 只在平台或文件源提供可靠类型信息时参与匹配。
+- 文件选择器直接接收同一组 `FilePickerFileType`；统一输入管线独立执行相同对象中的文件名 pattern 和 MIME 规则。
+- `Patterns` 按文件名匹配；MIME 只在 `UploadFileInfo.ContentType` 可用时参与匹配。`UploadFileInfo` 不提供可靠 UTI 元数据，因此 `AppleUniformTypeIdentifiers` 不参与管线准入。
 - `AdmissionPolicy` 在创建 `UploadFileItem` 前异步执行，用于业务准入；策略结果必须包含稳定的接受或拒绝决定。
 - `InputBatchCompleted` 在 UI 线程触发，每个批次恰好一次，并同时报告接受项、拒绝项和取消状态。
 
@@ -227,8 +227,7 @@ public sealed class UploadInputBatchCompletedEventArgs : EventArgs
 
 | 边界 | 类型或文件 | 输入 | 输出 | 不负责 |
 | --- | --- | --- | --- | --- |
-| DropTarget | `UploadDropZone` | DragDrop routed events | 同步 StorageItem 快照 | 目录枚举、任务状态。 |
-| drag session | `UploadDropSession` | 数据格式、允许效果、位置、owner 能力 | DragState、DragEffects、Handled | 异步 I/O。 |
+| DropTarget / drag session | `UploadDropZone` | DragDrop routed events、数据格式、允许效果、位置和 owner 能力 | DragState、DragEffects、Handled 和同步 StorageItem 快照 | 目录枚举、元数据和任务状态。 |
 | input coordinator | `UploadInputPipeline` | 文件选择、目录选择、Drop 或程序化批次 | accepted/rejected batch result | 网络上传。 |
 | storage enumeration | `UploadStorageItemEnumerator` | `IStorageItem` 和目录策略 | 有序文件候选项 | 文件类型和数量决策。 |
 | admission | `UploadFileAdmissionService` | 文件元数据、AllowedFileTypes、业务策略、剩余容量 | 接受或拒绝决定 | 视觉状态。 |
@@ -283,8 +282,8 @@ Template 契约：
 Drop 处理必须保持同步边界：
 
 1. 重新执行协商。
-2. 调用一次 typed `TryGetFiles()`。
-3. 将结果复制为独立数组并把 lease 所有权交给输入批次。
+2. 调用一次 typed `TryGetFiles()` 并取得独立的 `IStorageItem[]` 快照。
+3. 把快照中 storage item 的 lease 所有权交给输入批次。
 4. 设置最终 `DragEffects` 和 `Handled`。
 5. 将 `DragState` 恢复为 `None`。
 6. 启动被 `Upload` 跟踪的批次操作。
@@ -329,13 +328,15 @@ StorageFile lease
 | 批次 cancellation source | 批次完成、reset 或 detach |
 | metadata/open Stream | 当前异步操作完成或异常 |
 
-输入批次按到达顺序执行准入和数量提交，使 `MaxCount` 结果确定。元数据读取可以有限并发，但结果必须恢复到候选顺序。`ResetAsync` 和 detach 取消等待中的输入批次，并通过同一 lease owner 释放尚未提交的资源。
+输入批次按到达顺序串行执行目录展开、元数据读取、准入和数量提交，使 `MaxCount` 结果确定，并避免 StorageItem 操作形成无界并发。外部集合 remove/reset、`Files` replacement 和 Form Set/Clear 会同步更新文件状态，但 accepted source lease 必须先移交给被观察的取消清理任务，并在对应 upload execution 退出后释放。`ResetAsync` 和 detach 取消等待中的输入批次，并通过同一 lease owner 释放尚未提交的资源。
+
+用户事件、Form 通知或 collection change 观察者抛出的异常不得成为资源释放边界。实现必须先完成 pending/running cancellation、accepted-source ownership 移交和 lease 释放，再向等待方传播原异常；并发的 cancel-all、transport 替换和并发度变更必须串行化，不能留下已经离开 pending queue 但仍为 Pending 的任务。
 
 ## 8. 资源、性能与 AOT 边界
 
 - `DragOver` 热路径不分配文件列表，不执行同步 selection 读取，不启动异步任务。
 - Drop 只创建一次顶层 StorageItem 数组；目录内容通过异步枚举流入管线，不无界物化整棵目录树。
-- 元数据读取使用有上限的并发，不允许为每个文件创建无约束后台任务。
+- 元数据读取按候选稳定顺序执行，不为每个文件创建无约束后台任务。
 - `IsDropProcessing` 由活动 Drop 批次数量计算，不通过延时或 suppression flag 修正。
 - DragDrop handler、批次任务、取消源和 StorageItem lease 都有明确 owner，不依赖 GC 结束平台访问。
 - 运行时路径使用静态注册、强类型 API 和显式策略，不使用反射扫描、动态类型发现或运行时代码生成。
@@ -374,7 +375,7 @@ StorageFile lease
 | 纯逻辑 | 状态转换、Copy/None 协商、目录深度/计数、数量溢出和拒绝原因确定。 |
 | headless 控件 | Enter/Over/Leave/Drop 路由、嵌套 DropZone、子元素切换、只读状态和 owner 失效。 |
 | 数据管线 | TryGetFiles 只调用一次，DragOver 不物化数据，文件/目录混合输入保持顺序。 |
-| 生命周期 | accepted/rejected/cancel/reset/detach 路径中的 StorageItem、Stream、Task 和 CTS 恰好释放一次。 |
+| 生命周期 | accepted/rejected/cancel/reset/detach 及用户回调异常路径中的 StorageItem、Stream、Task 和 CTS 恰好释放一次；scheduler 维护操作保持调用顺序和队列一致性。 |
 | 主题契约 | 两个 ControlTheme 的视觉树、selector、Token、Transitions、Measure 和 Bounds 不变。 |
 | Gallery | 现有拖动示例 AXAML 组合不变，Light/Dark 和不同缩放下截图与基线一致。 |
 | Windows/macOS | 真实文件管理器的单文件、多文件、目录、混合输入和取消。 |

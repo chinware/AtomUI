@@ -29,6 +29,20 @@ public class UploadTriggerTests
     }
 
     [Fact]
+    public void UploadTrigger_Observes_Picker_Tasks_Without_AsyncVoid()
+    {
+        var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadTrigger.cs");
+        var handledIndex = source.IndexOf("e.Handled = true;", StringComparison.Ordinal);
+        var taskIndex = source.IndexOf("var task =", StringComparison.Ordinal);
+
+        source.ShouldContain("private void HandlePointerReleased");
+        source.ShouldNotContain("async void HandlePointerReleased");
+        source.ShouldContain("ObserveSelectionOperationAsync(task)");
+        handledIndex.ShouldBeGreaterThan(-1);
+        taskIndex.ShouldBeGreaterThan(handledIndex);
+    }
+
+    [Fact]
     public void UploadTrigger_Restores_Picture_Shape_Visual_Shell()
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadTrigger.cs");
@@ -131,7 +145,9 @@ public class UploadTriggerTests
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadDropZone.cs");
 
         source.ShouldContain("DragDrop.SetAllowDrop(this, true)");
-        source.ShouldContain("owner.EnqueueStorageFilesAsync(files)");
+        source.ShouldContain("e.DataTransfer.TryGetFiles()");
+        source.ShouldContain("owner.ProcessStorageItemsAsync(");
+        source.ShouldNotContain("EnqueueStorageFilesAsync");
     }
 
     private static string ReadRepoFile(string relativePath)

@@ -503,9 +503,11 @@ public class TextBoxVisualStateTests
     }
 
     [Theory]
-    [MemberData(nameof(TextInputControlsWithPlaceholder))]
-    public void Placeholder_Hides_While_Ime_Preedit_Text_Is_Rendered(Control textInput)
+    [MemberData(nameof(TextInputControlTypesWithPlaceholder))]
+    public void Placeholder_Hides_While_Ime_Preedit_Text_Is_Rendered(Type textInputType)
     {
+        var textInput = CreateTextInputWithPlaceholder(textInputType);
+
         ShowInWindow(textInput, () =>
         {
             var placeholder = FindTemplatePart<TextBlock>(textInput, "Placeholder");
@@ -596,32 +598,40 @@ public class TextBoxVisualStateTests
         });
     }
 
-    public static TheoryData<Control> TextInputControlsWithPlaceholder()
+    public static TheoryData<Type> TextInputControlTypesWithPlaceholder()
     {
-        return new TheoryData<Control>
+        return new TheoryData<Type>
         {
-            new AtomUITextBox
-            {
-                Width           = 180,
-                PlaceholderText = "请输入"
-            },
-            new AtomUILineEdit
-            {
-                Width           = 180,
-                PlaceholderText = "请输入"
-            },
-            new AtomUISearchEdit
-            {
-                Width           = 180,
-                PlaceholderText = "搜索"
-            },
-            new AtomUITextArea
-            {
-                Width           = 180,
-                Height          = 80,
-                PlaceholderText = "请输入"
-            }
+            typeof(AtomUITextBox),
+            typeof(AtomUILineEdit),
+            typeof(AtomUISearchEdit),
+            typeof(AtomUITextArea)
         };
+    }
+
+    private static Control CreateTextInputWithPlaceholder(Type textInputType)
+    {
+        if (textInputType == typeof(AtomUITextBox))
+        {
+            return new AtomUITextBox { Width = 180, PlaceholderText = "请输入" };
+        }
+
+        if (textInputType == typeof(AtomUILineEdit))
+        {
+            return new AtomUILineEdit { Width = 180, PlaceholderText = "请输入" };
+        }
+
+        if (textInputType == typeof(AtomUISearchEdit))
+        {
+            return new AtomUISearchEdit { Width = 180, PlaceholderText = "搜索" };
+        }
+
+        if (textInputType == typeof(AtomUITextArea))
+        {
+            return new AtomUITextArea { Width = 180, Height = 80, PlaceholderText = "请输入" };
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(textInputType), textInputType, null);
     }
 
     private static T GetThemeResource<T>(object key)

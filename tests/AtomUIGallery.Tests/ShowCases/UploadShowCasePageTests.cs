@@ -54,7 +54,12 @@ public class UploadShowCasePageTests
         source.ShouldContain("UploadShowCaseLangResource UploadPngOnlyTitle");
         source.ShouldContain("<atom:UploadTrigger SourceKind=\"Files\"");
         source.ShouldContain("<atom:UploadTrigger SourceKind=\"Directories\"");
-        source.ShouldContain("<atom:UploadDropZone>");
+        Regex.IsMatch(
+            source,
+            "<atom:UploadDropZone>\\s*<atom:UploadDefaultDropArea\\s*/>\\s*</atom:UploadDropZone>",
+            RegexOptions.CultureInvariant).ShouldBeTrue();
+        source.ShouldContain("AllowedFileTypes=\"{Binding PngFileTypes}\"");
+        source.ShouldNotContain("Accepts=");
         source.ShouldContain("Files=\"{Binding DefaultFiles}\"");
         source.ShouldContain("Files=\"{Binding ScrollableUploadFiles}\"");
         source.ShouldNotContain("DefaultTaskList");
@@ -64,6 +69,22 @@ public class UploadShowCasePageTests
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void Upload_ShowCase_Uses_The_Stream_Source_Metadata_Contract()
+    {
+        var viewSource = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadShowCase.axaml.cs");
+        var viewModelSource = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/ViewModels/UploadViewModel.cs");
+
+        viewSource.ShouldNotContain("FilePath");
+        viewSource.ShouldContain("Path.GetExtension(fileInfo.Name)");
+        viewSource.ShouldContain("fileInfo.Size ?? 0");
+        viewSource.ShouldContain("fileInfo.Path ??");
+        viewModelSource.ShouldContain("IReadOnlyList<FilePickerFileType> PngFileTypes");
+        viewModelSource.ShouldContain("Patterns = [\"*.png\"]");
     }
 
     [Fact]

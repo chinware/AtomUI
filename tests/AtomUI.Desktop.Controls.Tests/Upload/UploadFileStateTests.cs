@@ -165,7 +165,11 @@ public class UploadFileStateTests
 
     private static UploadFileInfo CreateUploadFile(string name)
     {
-        return new UploadFileInfo(name, new Uri($"file:///tmp/{name}"), 12);
+        return new UploadFileInfo(
+            name,
+            new UploadTestFileSource(),
+            new Uri($"file:///tmp/{name}"),
+            12);
     }
 
     private static Type GetUploadType(string typeName)

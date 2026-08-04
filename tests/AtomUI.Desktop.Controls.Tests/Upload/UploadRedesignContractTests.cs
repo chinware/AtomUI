@@ -2,6 +2,7 @@ using System.Reflection;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Platform.Storage;
 using Shouldly;
 using Xunit;
 
@@ -43,6 +44,31 @@ public class UploadRedesignContractTests
         var fileValueModeProperty = GetAvaloniaProperty(typeof(Desktop.Controls.Upload), "FileValueModeProperty");
         fileValueModeProperty.PropertyType.ShouldBe(fileValueModeType);
         GetPropertyValue(upload, "FileValueMode").ShouldBe(Enum.Parse(fileValueModeType, "SuccessfulFiles"));
+    }
+
+    [Fact]
+    public void File_Input_Properties_Use_The_Typed_Admission_Contract()
+    {
+        var upload = new Desktop.Controls.Upload();
+
+        var allowedFileTypesProperty = GetAvaloniaProperty(typeof(Desktop.Controls.Upload), "AllowedFileTypesProperty");
+        allowedFileTypesProperty.PropertyType.ShouldBe(typeof(IReadOnlyList<FilePickerFileType>));
+        GetPropertyValue(upload, "AllowedFileTypes").ShouldBeNull();
+
+        var overflowType = GetUploadType("UploadCountOverflowBehavior");
+        var overflowProperty = GetAvaloniaProperty(typeof(Desktop.Controls.Upload), "CountOverflowBehaviorProperty");
+        overflowProperty.PropertyType.ShouldBe(overflowType);
+        GetPropertyValue(upload, "CountOverflowBehavior").ShouldBe(Enum.Parse(overflowType, "RejectExcess"));
+
+        var admissionPolicyType = GetUploadType("IUploadAdmissionPolicy");
+        var admissionPolicyProperty = GetAvaloniaProperty(typeof(Desktop.Controls.Upload), "AdmissionPolicyProperty");
+        admissionPolicyProperty.PropertyType.ShouldBe(admissionPolicyType);
+        GetPropertyValue(upload, "AdmissionPolicy").ShouldBeNull();
+
+        typeof(Desktop.Controls.Upload).GetEvent("InputBatchCompleted").ShouldNotBeNull();
+        typeof(Desktop.Controls.Upload).GetField("AcceptsProperty", BindingFlags.Public | BindingFlags.Static).ShouldBeNull();
+        typeof(Desktop.Controls.Upload).GetField("IsOpenFileDialogOnClickProperty", BindingFlags.Public | BindingFlags.Static)
+            .ShouldBeNull();
     }
 
     [Fact]

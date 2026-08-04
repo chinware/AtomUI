@@ -10,5 +10,5 @@ internal interface IFileUploadScheduler
     void EnableSchedule();
     bool IsScheduleEnabled();
     Task SetMaxConcurrentTasksAsync(int taskCount, CancellationToken cancellationToken = default);
-    Task SetTransportAsync(IFileUploadTransport transport, CancellationToken cancellationToken = default);
+    Task SetTransportAsync(IFileUploadTransport? transport, CancellationToken cancellationToken = default);
 }

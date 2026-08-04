@@ -1,7 +1,10 @@
 using Avalonia;
 using Avalonia.Headless;
+using Avalonia.Headless.XUnit;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUI.Desktop.Controls.Tests.TestAppBuilder))]
+[assembly: AvaloniaTestFramework]
+[assembly: AvaloniaTestIsolation(AvaloniaTestIsolationLevel.PerTest)]
 
 namespace AtomUI.Desktop.Controls.Tests;
 
@@ -11,6 +14,12 @@ internal static class AvaloniaTestApp
 
     public static void EnsureInitialized()
     {
+        if (Application.Current is not null)
+        {
+            Volatile.Write(ref _initialized, 1);
+            return;
+        }
+
         if (Interlocked.Exchange(ref _initialized, 1) == 1)
         {
             return;

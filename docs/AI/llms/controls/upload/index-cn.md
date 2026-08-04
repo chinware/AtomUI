@@ -66,6 +66,27 @@ Upload 以 `Files` 作为唯一上传文件状态 owner。触发器、拖拽区�
 | 状态反馈 | `SuccessAutoRemoveDelay`、`PendingText`、`FileValueMode` | 成功自动移除、待上传文案和 Form 值投影可配置。 |
 | 视觉与动效 | `IsMotionEnabled`、Upload Token | 只表达视觉状态，不保存业务任务状态。 |
 
+输入与准入 API 的默认契约：
+
+| 成员 | 默认值 | 语义 |
+| --- | --- | --- |
+| `Upload.AllowedFileTypes` | `null` | 不按文件名 pattern 或 MIME 拒绝文件；空集合含义相同。 |
+| `Upload.CountOverflowBehavior` | `RejectExcess` | 按候选稳定顺序接受剩余容量内的文件，并拒绝超出项。 |
+| `Upload.AdmissionPolicy` | `null` | 不执行额外业务准入。 |
+| `Upload.MaxCount` | `int.MaxValue` | 输入管线可提交的最大 effective 文件数。 |
+| `UploadDropZone.IsOpenFileDialogOnClick` | `true` | 主指针点击 DropZone 时按 `SourceKind` 打开选择器。 |
+| `UploadDropZone.SourceKind` | `Files` | 点击时打开文件选择器。 |
+| `UploadDropZone.IsFileDropEnabled` | `true` | DropZone 参与文件 DragDrop 协商。 |
+| `UploadDropZone.DirectoryDropMode` | `Reject` | 外部拖入目录时拒绝目录。 |
+| `UploadDropZone.MaxDirectoryDepth` | `32` | 递归目录根深度为 `0`，属性值不得小于 `0`。 |
+| `UploadDropZone.MaxEnumeratedItems` | `10000` | 每个顶层目录树最多观察的文件和目录总数，属性值必须大于 `0`。 |
+| `UploadDropZone.DragState` | `None` | 只读拖动协商状态。 |
+| `UploadDropZone.IsDropProcessing` | `false` | 只读活动 Drop 批次状态。 |
+
+`Upload.EnqueueFilesAsync`、文件选择器、目录选择器和拖动输入分别产生 `Programmatic`、`FilePicker`、`DirectoryPicker` 和 `DragDrop` 批次。每个实际启动的批次只触发一次 `InputBatchCompleted`；事件在输入处理进入终态且接受项已经提交后于 UI 线程触发，调用方等待的输入任务在事件处理完成后返回。
+
+`UploadFileInfo` 是不可变输入描述。`Name` 和 `Source` 必须存在；`Path`、`Size`、`ContentType`、`DateCreated` 与 `DateModified` 都允许为空，因为跨进程或受限平台存储项不保证提供本地路径和完整元数据。`IUploadFileSource.OpenReadAsync` 是 transport 读取内容的唯一稳定入口。
+
 ### 3.3 公共状态类型
 
 ```csharp
@@ -123,6 +144,7 @@ public enum UploadFileValueMode
 
 Upload 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
 | 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受、拒绝和取消结果。 |
+`Upload.EnqueueFilesAsync`、文件选择器、目录选择器和拖动输入分别产生 `Programmatic`、`FilePicker`、`DirectoryPicker` 和 `DragDrop` 批次。每个实际启动的批次只触发一次 `InputBatchCompleted`；事件在输入处理进入终态且接受项已经提交后于 UI 线程触发，调用方等待的输入任务在事件处理完成后返回。
 
 ## 使用示例
 
@@ -155,7 +177,9 @@ Upload 的状态流只允许按以下路径收敛：
 
 ```text
 Public API / UploadTrigger / UploadDropZone
-  -> Upload.EnqueueFilesAsync
+  -> UploadInputPipeline
+  -> directory traversal / file admission / count policy
+  -> accepted file commit
   -> Files collection
   -> UploadQueue / FileUploadScheduler
   -> UploadFileItem.Status / Progress / Result
@@ -165,7 +189,7 @@ Public API / UploadTrigger / UploadDropZone
 
 状态维护规则：
 
-- `Files` 是唯一文件状态 owner；实现中不得保留 `_allTaskList`、`TaskInfoList`、`CurrentTaskList` 或同类复制集合。
+- `Files` 是唯一文件状态 owner；实现中按文件 id 保存的 accepted `UploadFileInfo` 只承担内容源 lease，不形成第二份可观察任务状态。
 - `UploadQueue` 只负责把 `UploadFileItem` 映射到 `FileUploadTask` 并转发调度结果，不直接操作视觉容器。
 - `UploadList` 只渲染 `Files`，不得创建、删除或隐藏真实任务状态。
 - 文件选择和目录选择由 `UploadTrigger.SourceKind` 决定，可以在同一 `Upload` 下并存。
@@ -219,9 +243,11 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 异步上传任务、取消源、delay、drag/drop 事件、collection change 和 item container 绑定必须有确定释放点。
 - DragOver 不读取文件值或元数据；Drop 只物化一次顶层 StorageItem 数据。
-- 输入批次串行提交数量决策，目录与元数据异步处理保持有限并发和稳定顺序。
+- 输入批次通过 arrival gate 串行执行；目录展开、元数据读取、准入和数量决策按候选稳定顺序处理，不创建无界并发任务。
 - `UploadFileItem` 不持有视觉控件，避免文件项生命周期反向保留控件树。
 - `UploadQueue` 不捕获 `Upload` 外的视觉对象；回调只写 item 状态。
+- scheduler 的取消完成语义必须等待 transport execution task 真正退出，source lease 才能被上层释放。
+- scheduler maintenance 必须先把全部 Pending task 转入 Cancelled、向全部 Running task 发出取消，再观察调用方取消令牌；并发 transport/并发度变更按调用顺序生效。
 - C# binding 仅用于 AXAML 无法表达的动态关系，并必须挂到明确 owner 上释放。
 
 性能边界：
@@ -246,6 +272,14 @@ AOT 边界：
 | `src/AtomUI.Desktop.Controls/Upload/Upload.cs` | 保留 public/protected API、Avalonia 属性注册、构造、display source 桥接、`IFormItemAware` 和顶层上传协调。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadAppendContentItem.cs` | internal picture append visual slot，用于把 `TriggerContent` 放入 PictureCard/PictureCircle 的同一 wrap flow；不进入 `Files`。 |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.FileSelection.cs` | 封装文件选择和目录选择动作，供 `UploadTrigger` 调用。 |
+| `src/AtomUI.Desktop.Controls/Upload/IUploadStorageProviderAdapter.cs` | 隔离 Avalonia storage picker 调用，向文件选择和目录选择提供可测试的 typed StorageItem 边界。 |
+| `src/AtomUI.Desktop.Controls/Upload/Upload.InputPipeline.cs` | 连接 `Upload` 状态 owner 与输入管线，负责 UI 线程快照、提交、批次事件和 ReplaceExisting 清理。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadInputPipeline.cs` | 串行执行 picker、directory、drop 和 programmatic 批次，协调遍历、准入、数量与提交。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadInputBatchOperation.cs` | 持有单个批次的标识、结果和未移交资源；在终态释放仍由批次拥有的 lease。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadStorageItemEnumerator.cs` | 仅使用 `IStorageFolder.GetItemsAsync()` 按稳定顺序展开 storage items，并隔离目录分支错误。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadInputCandidate.cs` | 在 storage file 与 `UploadFileInfo` 之间移交唯一 ownership，并读取基础元数据。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadFileAdmissionService.cs` | 执行 `AllowedFileTypes` 和 `AdmissionPolicy`，生成明确的接受或拒绝结果。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadStorageFileSource.cs` | 以 `IStorageFile` lease 实现 `IUploadFileSource`，允许 transport 在 lease 有效期内打开读取流。 |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.AutoRemove.cs` | 管理成功自动移除的延迟任务、取消和生命周期释放。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadFileItem.cs` | public 文件状态模型，承载文件元数据、状态、进度、错误、结果和 pending 文案。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadSourceKind.cs` | public 触发来源枚举，区分文件选择和目录选择。 |
@@ -258,6 +292,8 @@ AOT 边界：
 | `src/AtomUI.Desktop.Controls/Upload/AbstractUploadListItem.cs` | 列表项基类，只绑定 `UploadFileItem` 并发出 item action，不拥有任务状态。 |
 | `src/AtomUI.Controls.Shared/Net/FileUploadScheduler.cs` | 共享上传调度器，跟踪 pending/running 任务、并发和取消。 |
 | `src/AtomUI.Controls.Shared/Net/FileUploadTask.cs` | 共享上传任务对象，承载传输回调和 cancellation 状态。 |
+| `src/AtomUI.Controls.Shared/Net/IUploadFileSource.cs` | public 文件内容读取契约，不要求本地路径。 |
+| `src/AtomUI.Controls.Shared/Net/IUploadFileSourceLease.cs` | internal AtomUI-owned source lease 标记，只由接受该 lease 的 owner 释放。 |
 
 主题结构：
 
