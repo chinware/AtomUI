@@ -978,6 +978,8 @@ public partial class DataGrid : TemplatedControl,
         SizeTypeProperty.OverrideDefaultValue<DataGrid>(CustomizableSizeType.Large);
 
         ItemsSourceProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleItemsSourcePropertyChanged(e));
+        CanUserReorderRowsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
+            x.HandleCanUserReorderRowsChanged(e));
         CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
             x.HandleCanUserResizeColumnsChanged(e));
         ColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleColumnWidthChanged(e));
@@ -1215,6 +1217,7 @@ public partial class DataGrid : TemplatedControl,
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        CancelRowReorder();
         base.OnDetachedFromVisualTree(e);
         // When wired to INotifyCollectionChanged, the DataGrid will be cleaned up by GC
         if (DataConnection.DataSource != null && DataConnection.EventsWired)
@@ -1502,6 +1505,8 @@ public partial class DataGrid : TemplatedControl,
     //TODO Validation UI
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        CancelRowReorder();
+
         // The template has changed, so we need to refresh the visuals
         _measured = false;
 

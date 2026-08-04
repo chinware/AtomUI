@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Utils;
@@ -17,8 +18,8 @@ using Avalonia.Collections;
 
 namespace AtomUI.Desktop.Controls.Data;
 
-public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridEditableCollectionView, IList,
-                                             INotifyPropertyChanged, IDisposable
+public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridCollectionViewMoveSupport,
+                                             IDataGridEditableCollectionView, IList, INotifyPropertyChanged, IDisposable
 {
     /// <summary>
     /// Since there's nothing in the un-cancelable event args that is mutable,
@@ -528,6 +529,17 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     public bool CanGroup => true;
 
+    /// <inheritdoc />
+    public bool CanMove => SourceList is { IsFixedSize: false, IsReadOnly: false } &&
+                           !IsAddingNew &&
+                           !IsEditingItem &&
+                           !IsRefreshDeferred &&
+                           CheckFlag(CollectionViewFlags.ShouldProcessCollectionChanged) &&
+                           SortDescriptions.Count == 0 &&
+                           !HasActiveFilter &&
+                           GroupDescriptions.Count == 0 &&
+                           PageSize == 0;
+
     /// <summary>
     /// Gets a value indicating whether the view supports Remove and RemoveAt.
     /// </summary>
@@ -538,6 +550,243 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// Gets a value indicating whether we support sorting with this ICollectionView.
     /// </summary>
     public bool CanSort => true;
+
+    /// <inheritdoc />
+    public bool TryMove(int sourceIndex, int targetIndex)
+    {
+        if (!CanMove ||
+            sourceIndex < 0 || sourceIndex >= Count ||
+            targetIndex < 0 || targetIndex >= Count ||
+            sourceIndex == targetIndex)
+        {
+            return false;
+        }
+
+        Debug.Assert(SourceList != null);
+        var sourceList          = SourceList;
+        var originalItems       = SnapshotItems(sourceList);
+        var expectedAfterRemove = originalItems.ToList();
+        var item                = expectedAfterRemove[sourceIndex];
+        expectedAfterRemove.RemoveAt(sourceIndex);
+        var expectedAfterMove = expectedAfterRemove.ToList();
+        expectedAfterMove.Insert(targetIndex, item);
+
+        var       moveSucceeded   = false;
+        Exception? moveFailure     = null;
+        Exception? rollbackFailure = null;
+        try
+        {
+            SetFlag(CollectionViewFlags.ShouldProcessCollectionChanged, false);
+            sourceList.RemoveAt(sourceIndex);
+            if (ItemsMatch(sourceList, expectedAfterRemove))
+            {
+                sourceList.Insert(targetIndex, item);
+                moveSucceeded = ItemsMatch(sourceList, expectedAfterMove);
+            }
+
+            if (!moveSucceeded)
+            {
+                RollbackMove(sourceList, originalItems, sourceIndex, targetIndex, item);
+            }
+        }
+        catch (Exception exception)
+        {
+            moveFailure = exception;
+            try
+            {
+                RollbackMove(sourceList, originalItems, sourceIndex, targetIndex, item);
+            }
+            catch (Exception rollbackException)
+            {
+                rollbackFailure = rollbackException;
+            }
+        }
+        finally
+        {
+            SetFlag(CollectionViewFlags.ShouldProcessCollectionChanged, true);
+        }
+
+        ResetTrackingEnumerator();
+        Exception? refreshFailure  = null;
+        Exception? recoveryFailure = null;
+        try
+        {
+            Refresh();
+        }
+        catch (Exception exception)
+        {
+            refreshFailure = exception;
+            if (moveSucceeded)
+            {
+                try
+                {
+                    SetFlag(CollectionViewFlags.ShouldProcessCollectionChanged, false);
+                    RollbackMove(sourceList, originalItems, sourceIndex, targetIndex, item);
+                }
+                catch (Exception rollbackException)
+                {
+                    rollbackFailure = rollbackException;
+                }
+                finally
+                {
+                    SetFlag(CollectionViewFlags.ShouldProcessCollectionChanged, true);
+                }
+
+                moveSucceeded = false;
+                ResetTrackingEnumerator();
+                if (rollbackFailure == null)
+                {
+                    try
+                    {
+                        Refresh();
+                    }
+                    catch (Exception recoveryException)
+                    {
+                        recoveryFailure = recoveryException;
+                    }
+                }
+            }
+        }
+
+        if (moveFailure != null)
+        {
+            if (rollbackFailure != null || refreshFailure != null || recoveryFailure != null)
+            {
+                var failures = new List<Exception> { moveFailure };
+                if (rollbackFailure != null)
+                {
+                    failures.Add(rollbackFailure);
+                }
+                if (refreshFailure != null)
+                {
+                    failures.Add(refreshFailure);
+                }
+                if (recoveryFailure != null)
+                {
+                    failures.Add(recoveryFailure);
+                }
+                throw new AggregateException("DataGrid collection view move and recovery failed.", failures);
+            }
+
+            ExceptionDispatchInfo.Capture(moveFailure).Throw();
+        }
+
+        if (refreshFailure != null)
+        {
+            if (rollbackFailure != null || recoveryFailure != null)
+            {
+                var failures = new List<Exception> { refreshFailure };
+                if (rollbackFailure != null)
+                {
+                    failures.Add(rollbackFailure);
+                }
+                if (recoveryFailure != null)
+                {
+                    failures.Add(recoveryFailure);
+                }
+                throw new AggregateException("DataGrid collection view notification and recovery failed.", failures);
+            }
+
+            ExceptionDispatchInfo.Capture(refreshFailure).Throw();
+        }
+
+        if (rollbackFailure != null)
+        {
+            ExceptionDispatchInfo.Capture(rollbackFailure).Throw();
+        }
+
+        if (recoveryFailure != null)
+        {
+            ExceptionDispatchInfo.Capture(recoveryFailure).Throw();
+        }
+
+        return moveSucceeded;
+    }
+
+    private static List<object?> SnapshotItems(IList source)
+    {
+        var items = new List<object?>(source.Count);
+        for (var index = 0; index < source.Count; index++)
+        {
+            items.Add(source[index]);
+        }
+        return items;
+    }
+
+    private static bool ItemsMatch(IList source, IReadOnlyList<object?> expected)
+    {
+        if (source.Count != expected.Count)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < expected.Count; index++)
+        {
+            if (!MoveItemsMatch(source[index], expected[index]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static void RollbackMove(
+        IList source,
+        IReadOnlyList<object?> originalItems,
+        int sourceIndex,
+        int targetIndex,
+        object? item)
+    {
+        if (ItemsMatch(source, originalItems))
+        {
+            return;
+        }
+
+        var currentIndex = FindMovedItemIndex(source, sourceIndex, targetIndex, item);
+        if (currentIndex >= 0)
+        {
+            source.RemoveAt(currentIndex);
+        }
+
+        source.Insert(Math.Min(sourceIndex, source.Count), item);
+    }
+
+    private static int FindMovedItemIndex(IList source, int sourceIndex, int targetIndex, object? item)
+    {
+        if (targetIndex < source.Count && MoveItemsMatch(source[targetIndex], item))
+        {
+            return targetIndex;
+        }
+        if (sourceIndex < source.Count && MoveItemsMatch(source[sourceIndex], item))
+        {
+            return sourceIndex;
+        }
+
+        for (var index = 0; index < source.Count; index++)
+        {
+            if (MoveItemsMatch(source[index], item))
+            {
+                return index;
+            }
+        }
+
+        return -1;
+    }
+
+    private static bool MoveItemsMatch(object? actual, object? expected)
+    {
+        if (ReferenceEquals(actual, expected))
+        {
+            return true;
+        }
+
+        return actual != null &&
+               expected != null &&
+               actual.GetType().IsValueType &&
+               actual.GetType() == expected.GetType() &&
+               actual.Equals(expected);
+    }
 
     /// <summary>
     /// Gets the number of records in the view after 
@@ -1088,6 +1337,9 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// is true.
     /// </summary>
     private bool IsRefreshDeferred => _deferLevel > 0;
+
+    private bool HasActiveFilter => FilterDescriptions.Count > 0 ||
+                                    Filter is { Target: not DataGridDefaultFilter };
 
     /// <summary>
     /// Gets whether the current page is empty and we need

@@ -265,17 +265,12 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         e.Handled = e.Handled || (OwningGrid?.UpdateScroll(-e.Delta) ?? false);
     }
     
-    internal void NotifyAboutToDragging()
+    internal void NotifyAboutToDragging(object? data, int sourceIndex)
     {
         Debug.Assert(OwningGrid != null);
-        Debug.Assert(DraggedRowIndex.HasValue);
-        object? data = null;
-        if (OwningGrid.CollectionView is DataGridCollectionView collectionView)
-        {
-            data = collectionView.GetItemAt(DraggedRowIndex.Value);
-        }
+        Debug.Assert(DraggedRowIndex == sourceIndex);
         _dragIndicator            = OwningGrid.GetGeneratedGhostRow(data);
-        _dragIndicator.Index      = DraggedRowIndex.Value;
+        _dragIndicator.Index      = sourceIndex;
         _dragIndicator.IsDragging = true;
         LogicalChildren.Add(_dragIndicator);
         VisualChildren.Add(_dragIndicator);

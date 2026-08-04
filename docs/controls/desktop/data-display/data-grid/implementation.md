@@ -67,6 +67,10 @@
 - Template part 是视觉协作对象，生命周期必须受 `OnApplyTemplate` 或模板加载流程管理。
 - 数据对象、选项对象、任务对象或节点对象只保存业务数据，不应反向持有不可释放的视觉对象。
 - 弹层、窗口、计时器、异步 loader 和全局管理器必须有明确关闭、解绑或释放路径。
+- `DataGrid` 是行拖动会话 owner；`DataGridRowReorderHandle` 只转发 Pointer 输入，`DataGridRowsPresenter` 只维护
+  ghost row，二者都不保存跨控件共享的拖拽状态。
+- `IDataGridCollectionViewMoveSupport` 是 CollectionView 的可选移动能力边界；`DataGridCollectionView` 负责
+  内置源集合的能力判断、索引解释、提交、通知和失败回滚。
 
 ## 4. 状态与数据流
 
@@ -137,6 +141,28 @@ Gallery 或业务 XAML 常见写法会在 `DataGrid` 上用 `x:DataType` 声明�
 - `FilterDescriptions` 因 collection view 或清除 API 变化时，同步回 `SelectedFilterValues` 前必须判断来源，避免 clear / apply 重入。
 - `Filters` 重置、替换或集合变更后需要重新物化 flyout，并通过同一管线剔除已不在有效叶子过滤项中的选中值。
 
+行拖动状态流以 `DataGrid` 实例会话和 CollectionView 移动能力为 owner：
+
+```text
+DataGridRowReorderHandle.PointerPressed
+  -> RowReorderSession(Pressed, pointer, row, item, view, sourceIndex)
+  -> pointer distance > Constants.DragThreshold
+  -> RowReordering
+  -> revalidate owner / row / item / view / CanMove
+  -> DataGridRowsPresenter.ShowDragIndicator(item)
+  -> RowReorderSession(Dragging, targetIndex)
+
+PointerReleased
+  -> IDataGridCollectionViewMoveSupport.TryMove(sourceIndex, targetIndex)
+  -> CancelDragSession / cleanup
+  -> RowReordered (only when TryMove returned true and the view is still current)
+```
+
+会话状态只允许 `Idle -> Pressed -> Dragging -> Completed` 或
+`Idle -> Pressed/Dragging -> Cancelled`。取消状态在对应 Pointer 释放前保持终止，不能回到 Pressed 或重复触发
+`RowReordering`。Pointer、handle、row、item 和 CollectionView 必须全部匹配会话快照；任何公开事件或集合通知
+返回后都重新验证，不依赖事件调用前的视觉容器或索引继续执行。
+
 ## 5. 生命周期与模板接入
 
 生命周期规则：
@@ -148,6 +174,13 @@ Gallery 或业务 XAML 常见写法会在 `DataGrid` 上用 `x:DataType` 声明�
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+- 行拖动开始时由 handle 捕获并记录具体 Pointer；正常释放和 `PointerCaptureLost` 都进入同一个会话终止入口。
+- `IsEnabled=false`、`CanUserReorderRows=false`、ItemsSource 或 CollectionView 变化、源行回收、重排列移除、
+  模板重套用以及 DataGrid detach 必须主动取消当前行拖动，而不是等待 PointerReleased 补偿清理。
+- `CancelDragSession` 先把会话标记为终止以阻止事件重入，再释放 capture、移除 ghost row、重置拖动偏移、
+  恢复 transition，最后清除会话引用。会话清理必须幂等，允许 release、capture lost 和 detach 连续到达。
+- 源行因自动滚动而被虚拟化回收时，会话立即取消；同一 PointerMoved 帧必须在滚动返回后重新检查会话，
+  不得继续读取已经清空的坐标、row 或 presenter 状态。
 
 稳定 template part 接入点：
 
@@ -179,7 +212,16 @@ DataGrid 的交互事件应从输入源收敛到控件级语义事件：
 - 集合类路径必须稳定处理 container prepare、clear、过滤、分组和虚拟化回收。
 - 值提交或命令触发必须保持继承控件的事件顺序。
 
-稳定事件路径包括 `SelectionChanged`。事件参数和触发时机属于兼容边界。
+稳定事件路径包括 `SelectionChanged`、`RowReordering` 和 `RowReordered`。事件参数和触发时机属于兼容边界。
+
+行重排事件路径遵循以下顺序：
+
+- `RowReordering` 仅在 Pointer 移动超过 `Constants.DragThreshold` 后触发一次，并且发生在 ghost row 创建和数据提交前。
+- `RowReordering` 返回后重新确认 DataGrid、row、item、CollectionView 和 `CanMove`；回调导致任一 owner 变化时取消会话。
+- `RowReordered` 只表示 CollectionView 已经产生实际顺序变化。目标为空、同位置释放、取消、能力不足、
+  会话失效或移动失败都不触发该事件。
+- `RowReordered` 在 capture、ghost、offset、transition 和会话引用清理后触发，事件处理器可以安全替换 ItemsSource、
+  刷新 View 或移除重排列。
 
 ## 7. 内部算法与关键流程
 
@@ -221,6 +263,24 @@ Frame 与 Header 圆角不变量：
 - 单选模式只允许一个有效过滤值进入 `SelectedFilterValues`；多选模式保持集合顺序稳定，但比较时按集合值语义去重。
 - 清除过滤通过清空 `SelectedFilterValues` 进入同一状态管线，最终移除对应 `DataGridFilterDescription` 并刷新图标激活态。
 
+行拖动算法不变量：
+
+- PointerPressed 只创建 Pressed 会话；Pointer 移动距离超过 `Constants.DragThreshold` 后才允许进入 Dragging。
+- 拖动目标索引来自当前显示 `DataGridRow.Index`，但只作为 CollectionView 的 View 索引传递，不能直接作为源
+  `IList` 索引使用。
+- 顶部自动滚动量限制在 `[-VerticalScrollBar.Value, 0]`，底部自动滚动量限制在
+  `[0, VerticalScrollBar.Maximum - VerticalScrollBar.Value]`。ghost offset 只能使用实际采用的滚动量。
+- `IDataGridCollectionViewMoveSupport.CanMove` 是开始拖动和提交前的双重能力门。内置 `DataGridCollectionView`
+  仅在源集合可写、非只读、非固定长度、没有新增或编辑事务、没有排序/过滤/分组/分页且未延迟刷新时返回 true。
+- `TryMove` 的两个索引都相对当前 View，范围为 `[0, Count)`；索引相同返回 false。内置平面 View 的源索引与
+  View 索引相同，移动时按源索引执行 `RemoveAt`，不能通过 `Remove(item)` 的值相等语义定位源对象。
+- 内置移动事务抑制自身对中间 Remove/Add 通知的普通处理，并验证预期项目身份、源集合数量和通知序列。
+  检测到额外集合重入时中止提交并执行可行回滚；提交成功后统一重建 View 并发出稳定的集合重置信号。
+- Insert 或通知处理失败时，移动事务尝试把原项目恢复到原索引并恢复 CollectionView 的处理标志；原始异常在
+  拖拽会话清理后继续向上传递。回滚本身失败时必须保留原始异常上下文，不能把数据异常转换成成功返回。
+- CollectionView 在 `TryMove` 期间被替换时，旧 View 可以完成已经开始的数据事务，但 DataGrid 不再向新 View
+  投射 ghost、目标索引或 `RowReordered`。
+
 ## 8. 资源、性能与 AOT 边界
 
 资源和 AOT 约束：
@@ -236,6 +296,10 @@ Frame 与 Header 圆角不变量：
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- 行拖动 PointerMoved 热路径只更新会话坐标、目标索引、ghost offset 和必要的自动滚动请求；不在移动帧修改
+  集合、刷新 View、重建模板或分配新的 ghost row。
+- 每次有效 PointerPressed 最多创建一个轻量行拖动会话，每次进入 Dragging 最多创建一个 ghost row；两者在
+  完成或取消时释放。移动能力通过直接接口能力判断，不使用反射、动态调用或运行时类型扫描。
 
 ## 9. 维护不变量
 
@@ -245,6 +309,11 @@ Frame 与 Header 圆角不变量：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 列过滤只能有一个选中状态 owner；`Filters`、flyout checked state、`SelectedFilterValues` 和 `FilterDescriptions` 之间不得形成互相覆盖的并行状态源。
+- 行拖动只能有一个 DataGrid 实例级会话 owner；禁止在 handle 类型上保存 static Pointer、row、index、bounds、
+  offset 或 owner 状态。
+- Handle、RowsPresenter 和 CollectionView 的职责不能重新混合：handle 不修改数据，presenter 不决定移动语义，
+  CollectionView 不持有视觉对象。
+- 所有行拖动终止路径都必须移除 ghost、释放 capture 并清空会话；`RowReordered` 不能用于通知未提交的拖动。
 - 过滤项解析必须支持业务 DTO 和 `DataGridFilterItem` 两类输入，不得要求 VM 反向依赖内部 flyout、menu item 或 tree item 类型；业务 DTO 必须有生成的 data member accessor，不在 AOT 敏感路径中使用运行时反射兜底。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
@@ -258,3 +327,8 @@ Frame 与 Header 圆角不变量：
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
+- 行重排状态测试覆盖两个 DataGrid 的会话隔离、PointerCaptureLost、禁用和 detach 清理、拖动阈值、取消去重、
+  RowReordering 重入、自动滚动虚拟化回收和顶部/底部滚动边界。
+- CollectionView 移动测试覆盖普通可变列表、数组、只读或固定长度集合、普通 IEnumerable、编辑和新增状态、
+  排序/过滤/分组/分页拒绝、同位置释放、null 项目、重复 Equals 项目、自定义移动 View、异常回滚和额外集合重入。
+- 事件测试确认 `RowReordering` 每个 Pointer 会话最多一次，`RowReordered` 只在成功提交和完整清理之后一次触发。

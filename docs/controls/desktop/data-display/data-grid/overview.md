@@ -45,7 +45,26 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | 视觉与布局 | `BottomPaginationAlign`、`ColumnWidth`、`HorizontalAlignment`、`HorizontalScrollBarVisibility`、`MaxColumnWidth`、`MinColumnWidth`、`RowHeight`、`SeparatorBrush`、`SizeType`、`SublevelIndent` 等 14 项 | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `CellTheme`、`CollectionView`、`CustomOperatingIndicator`、`EmptyIndicator`、`Footer`、`FormatString`、`GridLinesVisibility`、`Level`、`Maximum`、`Minimum` 等 15 项 | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
-稳定事件包括 `SelectionChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+稳定事件包括 `SelectionChanged`、`RowReordering` 和 `RowReordered`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+
+行拖动重排由 `CanUserReorderRows`、`DataGridRowReorderColumn`、`RowReordering`、`RowReordered` 和可选的
+`IDataGridCollectionViewMoveSupport` 共同表达。`DataGrid` 不直接把 View 索引解释为源集合索引，也不直接对
+`IList` 执行 `RemoveAt` / `Insert`。CollectionView 只有在实现移动能力接口并声明 `CanMove=true` 时才参与提交：
+
+```csharp
+public interface IDataGridCollectionViewMoveSupport
+{
+    bool CanMove { get; }
+
+    bool TryMove(int sourceIndex, int targetIndex);
+}
+```
+
+`sourceIndex` 和 `targetIndex` 都使用当前 CollectionView 的零基索引。`TryMove` 只有在项目顺序发生实际变化并且
+提交成功时返回 `true`；同位置释放、能力缺失、索引失效或会话在提交前失效时返回 `false`，且不触发
+`RowReordered`。内置 `DataGridCollectionView` 只在源集合可写、非只读、非固定长度、未处于新增或编辑状态，
+并且没有排序、过滤、分组、分页或延迟刷新时提供移动能力。自定义 CollectionView 可以通过实现该可选接口
+定义自己的索引映射和提交语义，而不需要改变已有 `IDataGridCollectionView` 实现。
 
 分页公共契约由 `PageSize`、`PaginationVisibility`、`TopPaginationAlign`、`BottomPaginationAlign` 和
 `IsHideOnSinglePage` 共同表达。`PageSize` 默认为 `0`，表示不启用内建分页；非零值配置当前
@@ -112,6 +131,11 @@ Public API / inherited command / item source / user input
 - `ClearFilters()` 和单列清除过滤必须通过清空列级 `SelectedFilterValues` 完成，不能只清空 `FilterDescriptions`，否则 VM 绑定、过滤图标激活态和 flyout 勾选态会分裂。
 - 分页状态以当前 `DataGridCollectionView` 为 owner；顶部和底部分页部件必须从同一份 `ItemCount`、`PageSize`
   和 `PageIndex` 投影，不能互相覆盖，也不能在模板重建时反向重置 CollectionView。
+- 行拖动状态以当前 `DataGrid` 的单一拖拽会话为 owner；handle 和 RowsPresenter 只投影输入与 ghost row，不能保存
+  跨 DataGrid 共享的静态拖拽状态。Pointer capture、源行、CollectionView 和目标索引必须属于同一个会话。
+- `RowReordering` 在超过拖动阈值后且创建 ghost row 前触发一次；事件取消或事件回调改变 DataGrid、源行、
+  ItemsSource、CollectionView 或移动能力时，本次 Pointer 会话保持取消状态，不得在后续移动帧重复开始。
+- `RowReordered` 只在 CollectionView 成功提交顺序变化，并且 ghost、capture、动画与会话状态全部清理后触发。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -196,6 +220,10 @@ DataGrid 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
+- `IDataGridCollectionViewMoveSupport` 是独立的 opt-in 能力接口；不得把成员直接追加到
+  `IDataGridCollectionView`，避免破坏已有自定义 View 的二进制和源码兼容性。
+- 普通可变平面列表的拖动结果保持现有顺序语义；排序、过滤、分组、分页、编辑、只读或固定长度数据源在没有
+  专用移动能力时必须安全拒绝，不能退化为错误移动、部分提交或完成事件假成功。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
 ## 8. 专项模型
@@ -208,7 +236,32 @@ DataGrid 的当前项状态必须由单一 owner 推导。public 选择属性、
 
 DataGrid 的集合状态必须能处理 source replace、reset、clear 和 container recycle。业务数据对象不应反向持有视觉对象，虚拟化或懒创建路径必须在容器回收时清理旧状态。
 
-### 8.3 列过滤模型
+### 8.3 行拖动重排模型
+
+行拖动重排采用“控件会话负责交互、CollectionView 负责数据提交”的单向模型：
+
+```text
+PointerPressed
+  -> DataGrid row reorder session (Pressed)
+  -> DragThreshold
+  -> RowReordering
+  -> session validation
+  -> RowsPresenter ghost row (Dragging)
+  -> IDataGridCollectionViewMoveSupport.TryMove
+  -> session cleanup
+  -> RowReordered
+```
+
+每个 `DataGrid` 同时最多拥有一个行拖动会话。会话跟踪 Pointer、源 handle、源 row、源项目、开始时的
+CollectionView、源 View 索引、目标 View 索引和拖动几何。Pointer 不匹配、capture 丢失、控件禁用、
+`CanUserReorderRows=false`、ItemsSource 或 CollectionView 替换、行回收、重排列移除、模板重建或 DataGrid detach
+都会取消会话。取消和完成共用同一个清理边界，必须移除 ghost row、恢复动效、释放 capture 并清除会话引用。
+
+移动提交由 CollectionView 维护自己的数据和通知。DataGrid 不推断自定义 View 的源集合结构；CollectionView
+不支持移动时，handle 不进入可提交的 Dragging 状态。源集合在移动过程中抛出异常时，View 先执行可行的回滚并
+恢复自己的通知状态，DataGrid 再无条件清理视觉会话；异常不允许留下 ghost row 或可复用的旧索引。
+
+### 8.4 列过滤模型
 
 列过滤模型由四层组成：
 
@@ -225,11 +278,11 @@ Column.Filters / Filter*MemberPath
 
 `FilterEvaluator` 用于表达列过滤谓词。默认谓词应按选中值集合判断当前单元格值是否匹配；复杂场景通过显式 evaluator 扩展，不应把字符串 `Contains` 作为所有过滤值类型的唯一默认语义。
 
-### 8.4 动效模型
+### 8.5 动效模型
 
 DataGrid 的动效只表达状态变化反馈，不应改变 public API 语义。初始加载、禁用态和卸载路径应能抑制或取消动效，避免保留旧控件实例。
 
-### 8.5 视觉选项模型
+### 8.6 视觉选项模型
 
 DataGrid 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
 

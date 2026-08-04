@@ -1381,6 +1381,8 @@ public partial class DataGrid
                 throw DataGridError.DataGrid.CannotChangeItemsWhenLoadingRows();
             }
 
+            CancelRowReorder();
+
             // Try to commit edit on the old DataSource, but force a cancel if it fails
             if (!CommitEdit())
             {
@@ -2284,6 +2286,18 @@ public partial class DataGrid
     //TODO: Check
     private void HandleIsEnabledChanged(AvaloniaPropertyChangedEventArgs change)
     {
+        if (!IsEnabled)
+        {
+            CancelRowReorder();
+        }
+    }
+
+    private void HandleCanUserReorderRowsChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        if (!CanUserReorderRows)
+        {
+            CancelRowReorder();
+        }
     }
 
     private void HandleFrozenColumnCountChanged(AvaloniaPropertyChangedEventArgs change)
