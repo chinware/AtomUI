@@ -56,7 +56,7 @@ Upload 以 `Files` 作为唯一上传文件状态 owner。触发器、拖拽区�
 | 文件选择 | `UploadTrigger`、`UploadSourceKind`、`SelectFilesAsync`、`SelectDirectoriesAsync` | 文件与目录选择是独立动作入口，不再由根控件 bool 互斥。 |
 | 拖拽提交 | `UploadDropZone`、`UploadDirectoryDropMode`、`UploadDragState` | DropZone 负责平台协商和快照，`Upload` 负责统一准入与文件状态。 |
 | 文件准入 | `AllowedFileTypes`、`CountOverflowBehavior`、`AdmissionPolicy` | picker、directory、drop 和 programmatic 输入共享同一准入与数量语义。 |
-| 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受、拒绝和取消结果。 |
+| 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受项、拒绝项以及 Completed、Cancelled 或 Failed 终态。 |
 | 文件内容 | `UploadFileInfo`、`IUploadFileSource` | Transport 通过可打开内容源读取文件，不假定本地路径可访问。 |
 | 上传队列 | `UploadTransport`、`AutoUpload`、`MaxConcurrentTasks`、`UploadQueue` | 上传调度与视觉控件解耦，生命周期由 `Upload` 统一释放。 |
 | 列表展示 | `UploadList`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | 列表内部滚动，触发区保持固定。 |
@@ -70,7 +70,7 @@ Upload 以 `Files` 作为唯一上传文件状态 owner。触发器、拖拽区�
 | --- | --- | --- |
 | `Upload.AllowedFileTypes` | `null` | 不按文件名 pattern 或 MIME 拒绝文件；空集合含义相同。 |
 | `Upload.CountOverflowBehavior` | `RejectExcess` | 按候选稳定顺序接受剩余容量内的文件，并拒绝超出项。 |
-| `Upload.AdmissionPolicy` | `null` | 不执行额外业务准入。 |
+| `Upload.AdmissionPolicy` | `null` | 不执行额外业务准入；非空策略固定在非 UI 执行上下文调用。 |
 | `Upload.MaxCount` | `int.MaxValue` | 输入管线可提交的最大 effective 文件数。 |
 | `UploadDropZone.IsOpenFileDialogOnClick` | `true` | 主指针点击 DropZone 时按 `SourceKind` 打开选择器。 |
 | `UploadDropZone.SourceKind` | `Files` | 点击时打开文件选择器。 |
@@ -81,7 +81,9 @@ Upload 以 `Files` 作为唯一上传文件状态 owner。触发器、拖拽区�
 | `UploadDropZone.DragState` | `None` | 只读拖动协商状态。 |
 | `UploadDropZone.IsDropProcessing` | `false` | 只读活动 Drop 批次状态。 |
 
-`Upload.EnqueueFilesAsync`、文件选择器、目录选择器和拖动输入分别产生 `Programmatic`、`FilePicker`、`DirectoryPicker` 和 `DragDrop` 批次。每个实际启动的批次只触发一次 `InputBatchCompleted`；事件在输入处理进入终态且接受项已经提交后于 UI 线程触发，调用方等待的输入任务在事件处理完成后返回。
+`Upload.EnqueueFilesAsync`、文件选择器、目录选择器和拖动输入分别产生 `Programmatic`、`FilePicker`、`DirectoryPicker` 和 `DragDrop` 批次。每个实际启动的批次只触发一次 `InputBatchCompleted`；事件在输入处理进入终态、剩余批次资源完成释放且接受项已经提交后于 UI 线程触发。正常批次在事件后完成 Task，取消批次在事件后传播 `OperationCanceledException`，失败批次在事件后传播原始异常或清理聚合异常。
+
+`UploadInputBatchStatus` 通过 `Completed`、`Cancelled` 和 `Failed` 区分互斥终态。只有 `Failed` 携带 `UploadInputFailureReason`；取消和批次级失败不再构造虚假的 rejected item。`UploadRejectedItem` 只公开稳定的 `UploadRejectionReason`、业务 rejection code 和业务 message，不公开平台 `Exception`。`UploadAdmissionDecision` 通过 `Accept()` 和 `Reject(...)` 创建，不能构造“接受但携带拒绝信息”的矛盾状态。
 
 `UploadFileInfo` 是不可变输入描述。`Name` 和 `Source` 必须存在；`Path`、`Size`、`ContentType`、`DateCreated` 与 `DateModified` 都允许为空，因为跨进程或受限平台存储项不保证提供本地路径和完整元数据。`IUploadFileSource.OpenReadAsync` 是 transport 读取内容的唯一稳定入口。
 
@@ -244,7 +246,7 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Tok
 
 ### 8.2 拖动输入模型
 
-`UploadDropZone` 只在 `Drop` 阶段取得一次 StorageItem 快照；`DragEnter` 和 `DragOver` 仅检查 typed DataTransfer 格式并明确返回 `Copy` 或 `None`。目录展开、文件类型、业务准入、数量限制和资源释放全部收敛到 `Upload` 的统一输入管线。
+`UploadDropZone` 只在 `Drop` 阶段取得一次 StorageItem 快照；`DragEnter` 和 `DragOver` 仅检查 typed DataTransfer 格式并明确返回 `Copy` 或 `None`。目录展开、文件类型、业务准入、数量限制和资源释放全部收敛到 `Upload` 的统一输入管线。批次分别持有 typed StorageItem 和 source lease ownership，storage-to-source 与 source-to-Upload transfer 都验证当前 owner；单个释放异常不能截断其他资源清理。
 
 `UploadDefaultDropArea` 保留当前默认渲染，但不再设置 `DragDrop.AllowDrop`、注册 Drop handler 或暴露第二条文件事件。完整状态、平台、Template 和生命周期契约见 [Upload 拖动上传设计](drag-drop-design.md)。
 

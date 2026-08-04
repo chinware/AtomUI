@@ -19,11 +19,11 @@ Upload 的实现定位是上传状态协调器，而不是固定上传按钮、�
 | `src/AtomUI.Desktop.Controls/Upload/Upload.FileSelection.cs` | 封装文件选择和目录选择动作，供 `UploadTrigger` 调用。 |
 | `src/AtomUI.Desktop.Controls/Upload/IUploadStorageProviderAdapter.cs` | 隔离 Avalonia storage picker 调用，向文件选择和目录选择提供可测试的 typed StorageItem 边界。 |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.InputPipeline.cs` | 连接 `Upload` 状态 owner 与输入管线，负责 UI 线程快照、提交、批次事件和 ReplaceExisting 清理。 |
-| `src/AtomUI.Desktop.Controls/Upload/UploadInputPipeline.cs` | 串行执行 picker、directory、drop 和 programmatic 批次，协调遍历、准入、数量与提交。 |
-| `src/AtomUI.Desktop.Controls/Upload/UploadInputBatchOperation.cs` | 持有单个批次的标识、结果和未移交资源；在终态释放仍由批次拥有的 lease。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadInputPipeline.cs` | 串行执行 picker、directory、drop 和 programmatic 批次，在一次 worker 边界内协调遍历、准入和数量决策，再进入 UI commit。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadInputBatchOperation.cs` | 分别持有单个批次的 typed StorageItem 与 source lease ownership，验证 transfer，并在完成事件前释放全部未移交资源。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadStorageItemEnumerator.cs` | 仅使用 `IStorageFolder.GetItemsAsync()` 按稳定顺序展开 storage items，并隔离目录分支错误。 |
-| `src/AtomUI.Desktop.Controls/Upload/UploadInputCandidate.cs` | 在 storage file 与 `UploadFileInfo` 之间移交唯一 ownership，并读取基础元数据。 |
-| `src/AtomUI.Desktop.Controls/Upload/UploadFileAdmissionService.cs` | 执行 `AllowedFileTypes` 和 `AdmissionPolicy`，生成明确的接受或拒绝结果。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadInputCandidate.cs` | 非 owning 地引用批次已拥有的 storage file，并提供基础元数据读取入口。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadFileAdmissionService.cs` | 在非 UI 执行上下文执行 `AllowedFileTypes` 和 `AdmissionPolicy`，生成明确的接受或拒绝结果。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadStorageFileSource.cs` | 以 `IStorageFile` lease 实现 `IUploadFileSource`，允许 transport 在 lease 有效期内打开读取流。 |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.AutoRemove.cs` | 管理成功自动移除的延迟任务、取消和生命周期释放。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadFileItem.cs` | public 文件状态模型，承载文件元数据、状态、进度、错误、结果和 pending 文案。 |
@@ -94,7 +94,7 @@ Public API / Trigger / DropZone
 
 - `UploadQueue` 通过 `UploadFileItem.Id` 查找对应 `FileUploadTask`。
 - scheduler 回调只更新对应 `UploadFileItem.Status`、`Progress`、`ErrorMessage` 和 `Result`。
-- `RemoveFileAsync`、`ResetAsync`、`ReplaceExisting` 和 detach 在 AtomUI 可控制的路径中先等待相关队列工作退出，再移除文件或释放 source lease。
+- `RemoveFileAsync`、`ResetAsync` 和 detach 在 AtomUI 可控制的路径中等待相关队列工作退出，再释放 source lease；`ReplaceExisting` 先在 UI commit 中替换集合，再让被观察的清理任务取消实际移除项，旧 source 在执行退出前保持有效。
 - 外部集合 remove/reset、`Files` 属性替换和同步 Form Set/Clear 已经先改变了集合；`Upload` 必须立即从 accepted-source map 取走被移除项，再由被观察的清理任务等待对应 queue cancellation，最后释放 lease。
 - `MaxConcurrentTasks`、`UploadTransport` 和 cancel-all 维护操作必须经由同一个 scheduler maintenance gate 串行执行；取消令牌不得让已出队的 Pending task 留在无 owner 状态。
 
@@ -147,7 +147,7 @@ Upload 的生命周期释放必须成对设计，不能依赖 GC 或视觉树自
 | success auto-remove delay | remove, reset, detach, status changes away from Success |
 | trigger parent lookup | detached visual tree |
 | drop-zone drag session | leave、drop、disable 或 detached visual tree |
-| input batch / StorageItem lease | reject、cancel、accepted item transfer、reset 或 detach |
+| input batch typed StorageItem/source sets | reject、cancel、failed cleanup、accepted item transfer、reset 或 detach；所有 transfer 验证当前 owner |
 | accepted `UploadFileInfo` source lease | remove、external collection change、`Files` replacement、Form Set/Clear、reset 或 detach；释放前等待对应 upload execution 退出 |
 | generated list container bindings | container recycle |
 
@@ -177,12 +177,12 @@ Upload 的生命周期释放必须成对设计，不能依赖 GC 或视觉树自
 ### 8.1 入队流程
 
 1. 文件选择、目录选择、拖动或程序化入口创建统一输入批次。
-2. `UploadInputPipeline` 展开目录并取得受控 `IUploadFileSource`。
-3. 管线应用 `AllowedFileTypes`、`AdmissionPolicy` 和数量溢出策略。
-4. 接受文件转换为 `UploadFileItem` 并追加到 effective `Files`；拒绝文件立即释放 lease。
+2. `UploadInputPipeline` 在 UI 线程取得不可变 option snapshot，再在单一 worker 边界中展开目录并取得受控 `IUploadFileSource`。
+3. 管线在非 UI 执行上下文应用 `AllowedFileTypes`、`AdmissionPolicy` 和数量溢出策略。
+4. 接受文件转换为 `UploadFileItem` 并追加到 effective `Files`；typed batch operation 验证 source-to-Upload transfer，拒绝文件立即释放 lease。
 5. `AutoUpload=true` 时将 item 与 file info 交给 `UploadQueue`。
 6. queue/scheduler 回调只更新对应 `UploadFileItem`，列表通过绑定观察变化。
-7. 管线在 UI 线程触发一次 `InputBatchCompleted`；事件处理返回后，批次作用域释放仍未移交的资源并完成调用方等待的任务。
+7. 批次逐项释放全部未移交资源并聚合清理异常，再在 UI 线程触发一次 `InputBatchCompleted`；事件处理返回后，正常 Task 完成，取消或失败 Task 向等待方传播对应异常。
 
 拖动协商、Drop 快照、目录遍历、平台矩阵和 StorageItem 生命周期的完整算法见 [Upload 拖动上传设计](drag-drop-design.md)。
 
@@ -206,7 +206,8 @@ Upload 的生命周期释放必须成对设计，不能依赖 GC 或视觉树自
 
 - 异步上传任务、取消源、delay、drag/drop 事件、collection change 和 item container 绑定必须有确定释放点。
 - DragOver 不读取文件值或元数据；Drop 只物化一次顶层 StorageItem 数据。
-- 输入批次通过 arrival gate 串行执行；目录展开、元数据读取、准入和数量决策按候选稳定顺序处理，不创建无界并发任务。
+- 输入批次通过 arrival gate 串行执行；每个批次只建立一次显式 worker dispatch，目录展开、元数据读取、准入和数量决策按候选稳定顺序处理，不创建无界并发任务。
+- `UploadInputBatchOperation` 不保存泛化 `IDisposable`；StorageItem 和 source lease 使用独立的引用相等 owner set，释放遍历不得因单个异常提前中止。
 - `UploadFileItem` 不持有视觉控件，避免文件项生命周期反向保留控件树。
 - `UploadQueue` 不捕获 `Upload` 外的视觉对象；回调只写 item 状态。
 - scheduler 的取消完成语义必须等待 transport execution task 真正退出，source lease 才能被上层释放。
@@ -234,6 +235,9 @@ AOT 边界：
 - 不得引入与 `Files` 平行的任务集合，也不得把 picture trigger 伪装成文件项。
 - trigger、drop-zone、list、item container 都不能保存第二份业务任务状态。
 - `UploadDropZone` 是唯一 DragDrop 行为 owner；`UploadDefaultDropArea` 必须保持纯视觉职责。
+- `AdmissionPolicy` 不得在 UI 线程执行，也不得访问 Avalonia 控件；策略异常与策略显式拒绝必须使用不同 rejection reason。
+- 取消和批次级失败通过 `UploadInputBatchStatus` 表达，不得创建空名称或虚假 `UploadRejectedItem`。
+- ownership transfer 必须由 typed batch operation 验证；不得重新引入 `ownsFileSources`、`queueAlreadyCancelled` 或通用 transfer callback。
 - 默认 DropZone/DropArea ControlTheme、模板视觉树、Token、布局和渲染结果不得因输入管线重构改变。
 - PictureCard/PictureCircle 的上传入口只能通过 `EffectivePictureItems` 中的 display append slot 呈现，确保与图片项处于同一 wrap flow。
 - `RemoveFileAsync`、外部集合变更、`Files` 替换、Form Set/Clear、`ResetAsync` 和 detach 必须以各自时序释放上传任务、source lease、auto-remove delay、集合订阅和 container 绑定。
@@ -247,11 +251,11 @@ AOT 边界：
 
 | 变更范围 | 验证 |
 | --- | --- |
-| public API | `UploadRedesignContractTests` 检查属性、默认值、绑定模式和组合契约。 |
+| public API | `UploadRedesignContractTests` 检查属性、默认值、batch status/failure、AdmissionDecision factory 和 raw Exception 移除。 |
 | 单一状态 owner | `UploadFileStateTests` 覆盖 add、remove、reset、集合替换和外部绑定集合保持。 |
 | 队列生命周期 | `UploadSchedulerTests` 覆盖 running 计数、完成释放、cancel all、维护操作序列化、取消中途一致性和 transport 替换。 |
 | 触发器与拖拽 | 行为测试覆盖文件/目录触发、Copy/None 协商、Drop-only 数据读取、嵌套路由和 owner 委托。 |
-| 输入管线与生命周期 | fake StorageItem 覆盖目录模式、准入、数量策略、取消、通知异常、detach 异常隔离和 lease 恰好释放一次。 |
+| 输入管线与生命周期 | fake StorageItem 覆盖目录模式、worker-thread 准入、数量策略、typed adopt/transfer、取消、异常聚合、ReplaceExisting、detach 和 lease 恰好释放一次。 |
 | 平台拖动 | Windows、macOS、X11 和 Wayland 跨进程验证文件、目录、效果反馈和异步读取。 |
 | 渲染兼容 | Light/Dark、不同缩放和自定义 Content 的截图、Measure、Arrange 与 Bounds 保持基线。 |
 | 成功自动移除 | `UploadAutoRemoveTests` 覆盖 delay 到期、remove、reset、detach 和状态变更取消。 |
