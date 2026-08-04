@@ -182,7 +182,14 @@ public sealed class UploadDropZone : ContentControl
             catch (Exception ex)
             {
                 Debug.WriteLine($"Upload Drop data snapshot failed: {ex.Message}");
-                isAccepted = false;
+                e.DragEffects = DragDropEffects.None;
+                e.Handled = true;
+                SetDragState(UploadDragState.None);
+                StartDropOperation(owner.ProcessInputFailureAsync(
+                    UploadInputSource.DragDrop,
+                    UploadInputFailureReason.DataSnapshotFailed,
+                    ex));
+                return;
             }
         }
 
@@ -195,12 +202,12 @@ public sealed class UploadDropZone : ContentControl
             return;
         }
 
-        StartDropOperation(
-            owner,
+        StartDropOperation(owner.ProcessStorageItemsAsync(
+            UploadInputSource.DragDrop,
             storageItems,
             DirectoryDropMode,
             MaxDirectoryDepth,
-            MaxEnumeratedItems);
+            MaxEnumeratedItems));
     }
 
     private void HandlePointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -256,22 +263,11 @@ public sealed class UploadDropZone : ContentControl
         e.Handled = true;
     }
 
-    private void StartDropOperation(
-        Upload owner,
-        IReadOnlyList<IStorageItem> storageItems,
-        UploadDirectoryDropMode directoryMode,
-        int maxDirectoryDepth,
-        int maxEnumeratedItems)
+    private void StartDropOperation(Task operation)
     {
         _activeDropOperationCount++;
         UpdateDropProcessingState();
-        var task = owner.ProcessStorageItemsAsync(
-            UploadInputSource.DragDrop,
-            storageItems,
-            directoryMode,
-            maxDirectoryDepth,
-            maxEnumeratedItems);
-        _ = ObserveDropOperationAsync(task);
+        _ = ObserveDropOperationAsync(operation);
     }
 
     private async Task ObserveDropOperationAsync(Task operation)

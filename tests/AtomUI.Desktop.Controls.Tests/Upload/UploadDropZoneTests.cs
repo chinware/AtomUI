@@ -224,6 +224,40 @@ public class UploadDropZoneTests
         });
     }
 
+    [Fact]
+    public void Drop_Snapshot_Failure_Raises_One_Failed_Batch_And_Is_Observed()
+    {
+        var upload = CreateUpload(new UploadDropZone(), out var zone);
+        UploadInputBatchCompletedEventArgs? completed = null;
+        var eventCount = 0;
+        upload.InputBatchCompleted += (_, args) =>
+        {
+            eventCount++;
+            completed = args;
+        };
+
+        ShowInWindow(upload, () =>
+        {
+            var args = RaiseDrag(
+                zone,
+                DragDrop.DropEvent,
+                new ThrowingFileDataTransfer(new IOException("snapshot failed")),
+                DragDropEffects.Copy);
+
+            args.Handled.ShouldBeTrue();
+            args.DragEffects.ShouldBe(DragDropEffects.None);
+            zone.DragState.ShouldBe(UploadDragState.None);
+            RunDispatcherJobsUntil(() => eventCount == 1 && !zone.IsDropProcessing);
+
+            completed.ShouldNotBeNull();
+            completed.Source.ShouldBe(UploadInputSource.DragDrop);
+            completed.Status.ShouldBe(UploadInputBatchStatus.Failed);
+            completed.FailureReason.ShouldBe(UploadInputFailureReason.DataSnapshotFailed);
+            completed.AcceptedFiles.ShouldBeEmpty();
+            completed.RejectedItems.ShouldBeEmpty();
+        });
+    }
+
     [Theory]
     [InlineData(UploadSourceKind.Files)]
     [InlineData(UploadSourceKind.Directories)]
@@ -411,6 +445,27 @@ public class UploadDropZoneTests
         {
             TryGetRawCount++;
             return requestedFormat == format ? value : null;
+        }
+    }
+
+    private sealed class ThrowingFileDataTransfer(Exception exception) : IDataTransfer
+    {
+        public IReadOnlyList<DataFormat> Formats { get; } = [DataFormat.File];
+        public IReadOnlyList<IDataTransferItem> Items { get; } =
+            [new ThrowingFileDataTransferItem(exception)];
+
+        public void Dispose()
+        {
+        }
+    }
+
+    private sealed class ThrowingFileDataTransferItem(Exception exception) : IDataTransferItem
+    {
+        public IReadOnlyList<DataFormat> Formats { get; } = [DataFormat.File];
+
+        public object? TryGetRaw(DataFormat requestedFormat)
+        {
+            throw exception;
         }
     }
 

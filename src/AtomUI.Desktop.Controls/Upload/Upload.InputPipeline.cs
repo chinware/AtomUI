@@ -22,6 +22,14 @@ public partial class Upload
             cancellationToken);
     }
 
+    internal Task ProcessInputFailureAsync(
+        UploadInputSource source,
+        UploadInputFailureReason failureReason,
+        Exception exception)
+    {
+        return _inputPipeline.ProcessFailureAsync(source, failureReason, exception);
+    }
+
     internal async Task<UploadInputPipelineOptions> GetInputPipelineOptionsAsync()
     {
         UploadInputPipelineOptions? options = null;

@@ -110,6 +110,15 @@ internal sealed class UploadInputPipeline
         }, cancellationToken);
     }
 
+    internal Task ProcessFailureAsync(
+        UploadInputSource source,
+        UploadInputFailureReason failureReason,
+        Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+        return TrackTerminalFailure(source, failureReason, exception);
+    }
+
     internal async Task CancelAllAsync(CancellationToken cancellationToken = default)
     {
         CancellationTokenSource oldGeneration;
@@ -138,7 +147,8 @@ internal sealed class UploadInputPipeline
     private Task TrackOperation(
         UploadInputBatchOperation operation,
         Func<UploadInputBatchOperation, UploadInputPipelineOptions, CancellationToken, Task> process,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        UploadInputFailureReason processingFailureReason = UploadInputFailureReason.ProcessingFailed)
     {
         CancellationTokenSource linkedCancellation;
         Task operationTask;
@@ -147,7 +157,7 @@ internal sealed class UploadInputPipeline
             linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(
                 _generationCancellation.Token,
                 cancellationToken);
-            operationTask = ExecuteAsync(operation, process, linkedCancellation);
+            operationTask = ExecuteAsync(operation, process, linkedCancellation, processingFailureReason);
             _activeOperations.Add(operationTask);
         }
 
@@ -157,7 +167,8 @@ internal sealed class UploadInputPipeline
     private async Task ExecuteAsync(
         UploadInputBatchOperation operation,
         Func<UploadInputBatchOperation, UploadInputPipelineOptions, CancellationToken, Task> process,
-        CancellationTokenSource linkedCancellation)
+        CancellationTokenSource linkedCancellation,
+        UploadInputFailureReason processingFailureReason)
     {
         var gateEntered = false;
         var wasCancelled = false;
@@ -200,7 +211,7 @@ internal sealed class UploadInputPipeline
                 ? UploadInputBatchStatus.Cancelled
                 : UploadInputBatchStatus.Completed;
         UploadInputFailureReason? failureReason = status == UploadInputBatchStatus.Failed
-            ? UploadInputFailureReason.ProcessingFailed
+            ? processingFailureReason
             : null;
         operation.SetTerminalState(status, failureReason);
         var eventArgs = operation.CreateCompletedEventArgs();
@@ -226,6 +237,19 @@ internal sealed class UploadInputPipeline
         {
             ExceptionDispatchInfo.Capture(terminalException).Throw();
         }
+    }
+
+    private Task TrackTerminalFailure(
+        UploadInputSource source,
+        UploadInputFailureReason failureReason,
+        Exception exception)
+    {
+        var operation = new UploadInputBatchOperation(source);
+        return TrackOperation(
+            operation,
+            (_, _, _) => Task.FromException(exception),
+            CancellationToken.None,
+            failureReason);
     }
 
     private async Task ObserveOperationAsync(Task operationTask)
