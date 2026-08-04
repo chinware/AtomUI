@@ -56,7 +56,8 @@ public enum UploadRejectionReason
     FileTypeNotAllowed,
     AdmissionRejected,
     AdmissionPolicyFailed,
-    CountLimitExceeded
+    CountLimitExceeded,
+    MultipleSelectionNotAllowed
 }
 
 public interface IUploadAdmissionPolicy

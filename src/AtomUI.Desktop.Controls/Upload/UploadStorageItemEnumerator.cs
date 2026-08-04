@@ -11,6 +11,7 @@ internal static class UploadStorageItemEnumerator
         UploadDirectoryDropMode directoryMode,
         int maxDirectoryDepth,
         int maxEnumeratedItems,
+        bool isMultipleEnabled,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(operation);
@@ -29,9 +30,20 @@ internal static class UploadStorageItemEnumerator
             candidates,
             rejectedItems);
 
-        foreach (var storageItem in storageItems)
+        for (var index = 0; index < storageItems.Count; index++)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            var storageItem = storageItems[index];
+            if (!isMultipleEnabled && index > 0)
+            {
+                rejectedItems.Add(CreateRejection(
+                    storageItem,
+                    UploadRejectionReason.MultipleSelectionNotAllowed,
+                    "Multiple top-level input items are disabled."));
+                operation.ReleaseStorageItem(storageItem);
+                continue;
+            }
+
             switch (storageItem)
             {
                 case IStorageFile storageFile:

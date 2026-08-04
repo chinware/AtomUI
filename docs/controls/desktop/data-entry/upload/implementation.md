@@ -16,12 +16,12 @@ Upload 的实现定位是上传状态协调器，而不是固定上传按钮、�
 | --- | --- |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.cs` | 保留 public/protected API、Avalonia 属性注册、构造、display source 桥接、`IFormItemAware` 和顶层上传协调。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadAppendContentItem.cs` | internal picture append visual slot，用于把 `TriggerContent` 放入 PictureCard/PictureCircle 的同一 wrap flow；不进入 `Files`。 |
-| `src/AtomUI.Desktop.Controls/Upload/Upload.FileSelection.cs` | 封装文件选择和目录选择动作，供 `UploadTrigger` 调用。 |
+| `src/AtomUI.Desktop.Controls/Upload/Upload.FileSelection.cs` | 封装文件选择和目录选择动作，并把同一个 `IsMultipleEnabled` 值投射到两种 picker 的 `AllowMultiple`。 |
 | `src/AtomUI.Desktop.Controls/Upload/IUploadStorageProviderAdapter.cs` | 隔离 Avalonia storage picker 调用，向文件选择和目录选择提供可测试的 typed StorageItem 边界。 |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.InputPipeline.cs` | 连接 `Upload` 状态 owner 与输入管线，负责 UI 线程 option 快照、typed commit、批次事件和 ReplaceExisting source handoff。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadInputPipeline.cs` | 串行执行 picker、directory、drop 和 programmatic 批次，在一次 worker 边界内协调遍历与准入，再把数量策略和集合变更交给 UI commit。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadInputBatchOperation.cs` | 分别持有单个批次的 typed StorageItem 与 source lease ownership，验证 transfer，并在完成事件前释放全部未移交资源。 |
-| `src/AtomUI.Desktop.Controls/Upload/UploadStorageItemEnumerator.cs` | 仅使用 `IStorageFolder.GetItemsAsync()` 按稳定顺序展开 storage items，并隔离目录分支错误。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadStorageItemEnumerator.cs` | 在目录展开前应用顶层多选限制，再仅使用 `IStorageFolder.GetItemsAsync()` 按稳定顺序展开 storage items，并隔离目录分支错误。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadInputCandidate.cs` | 非 owning 地引用批次已拥有的 storage file，并提供基础元数据读取入口。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadFileAdmissionService.cs` | 在非 UI 执行上下文执行 `AllowedFileTypes` 和 `AdmissionPolicy`，生成明确的接受或拒绝结果。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadStorageFileSource.cs` | 以 `IStorageFile` lease 实现 `IUploadFileSource`，允许 transport 在 lease 有效期内打开读取流。 |
@@ -62,7 +62,7 @@ Upload 的实现定位是上传状态协调器，而不是固定上传按钮、�
 | `UploadTrigger` | 根据 `SourceKind` 调用最近 `Upload` 的文件或目录选择方法。 | 不保存文件集合，不直接打开业务上传 transport。 |
 | `UploadDropZone` | 处理 DragDrop 路由、Copy/None 协商、Drop 快照和输入批次创建。 | 不读取文件元数据、枚举目录或维护任务状态。 |
 | `UploadDefaultDropArea` | 通过既有 ControlTheme 渲染默认拖动界面。 | 不设置 DropTarget、不读取 DataTransfer、不查找 Upload owner。 |
-| `UploadInputPipeline` | 统一处理 picker、directory、drop 和 programmatic 输入。 | 不渲染控件，不执行网络传输。 |
+| `UploadInputPipeline` | 统一处理 picker、directory、drop 和 programmatic 输入；只对 StorageItem 用户输入应用顶层多选限制。 | 不渲染控件，不执行网络传输。 |
 | `UploadList` | 渲染 effective 文件视图，维护 `ListMaxHeight` 和 `ListScrollBarVisibility`；Picture shape 派生列表可追加 display-only visual slot。 | 不创建、删除、隐藏真实上传文件状态。 |
 | `AbstractUploadListItem` | 从 `UploadFileItem` 投射 item 视觉状态并发出 remove/preview 等动作请求。 | 不反向持有 scheduler task 或复制 item 状态。 |
 | `FileUploadScheduler` | 共享并发调度、pending/running 跟踪、取消和 transport 替换。 | 不引用 `Upload`、`UploadList` 或其他视觉控件。 |
@@ -167,6 +167,7 @@ Upload 的生命周期释放必须成对设计，不能依赖 GC 或视觉树自
 - 文件按钮点击：`UploadTrigger.SourceKind=Files` 调用 `Upload.SelectFilesAsync`。
 - 目录按钮点击：`UploadTrigger.SourceKind=Directories` 调用 `Upload.SelectDirectoriesAsync`。
 - 拖拽提交：`UploadDropZone` 同步取得一次 StorageItem 快照，再交给 `UploadInputPipeline`。
+- 文件 picker、目录 picker 与 Drop 共享 `Upload.IsMultipleEnabled` 契约；picker 打开时把该值写入 `AllowMultiple`，StorageItem 管线在处理批次时快照该值。程序化 `EnqueueFilesAsync` 不应用顶层输入限制。
 - 手动移除：列表项发出 remove 请求，`Upload.RemoveFileAsync` 负责取消任务、取消 auto-remove 并从 `Files` 移除。
 - 表单写入与清空：同步更新当前 effective 集合，并把被移除 source 移交给被观察的取消清理任务；不得直接释放仍可能被 transport 使用的 lease。
 
@@ -177,7 +178,7 @@ Upload 的生命周期释放必须成对设计，不能依赖 GC 或视觉树自
 ### 8.1 入队流程
 
 1. 文件选择、目录选择、拖动或程序化入口创建统一输入批次。
-2. `UploadInputPipeline` 在 UI 线程取得不可变 option snapshot，再在单一 worker 边界中展开目录并取得受控 `IUploadFileSource`。
+2. `UploadInputPipeline` 在 UI 线程取得包含 `IsMultipleEnabled` 的不可变 option snapshot；StorageItem 批次先按稳定顺序限制顶层项目，再在单一 worker 边界中展开目录并取得受控 `IUploadFileSource`。程序化文件批次直接进入文件准入。
 3. 管线在非 UI 执行上下文应用 `AllowedFileTypes` 和 `AdmissionPolicy`。
 4. UI commit 根据当前 effective file count 和批次 option snapshot 计算数量策略，再把接受文件转换为 `UploadFileItem`；typed batch operation 在集合变更前验证 ownership，并只为实际保留项执行 source-to-Upload transfer。
 5. 数量拒绝或尚未提交的文件仍由批次释放 lease；`AutoUpload=true` 时已提交 item 与 file info 进入 `UploadQueue`。
@@ -235,6 +236,7 @@ AOT 边界：
 - 不得引入与 `Files` 平行的任务集合，也不得把 picture trigger 伪装成文件项。
 - trigger、drop-zone、list、item container 都不能保存第二份业务任务状态。
 - `UploadDropZone` 是唯一 DragDrop 行为 owner；`UploadDefaultDropArea` 必须保持纯视觉职责。
+- `IsMultipleEnabled` 只能限制 picker 与 Drop 的顶层 StorageItem 数量；目录内部展开、`EnqueueFilesAsync` 和最终 `MaxCount` 各自保持独立语义。
 - `AdmissionPolicy` 不得在 UI 线程执行，也不得访问 Avalonia 控件；策略异常与策略显式拒绝必须使用不同 rejection reason。
 - 取消和批次级失败通过 `UploadInputBatchStatus` 表达，不得创建空名称或虚假 `UploadRejectedItem`。
 - ownership transfer 必须由 typed batch operation 验证；不得重新引入 `ownsFileSources`、`queueAlreadyCancelled` 或通用 transfer callback。

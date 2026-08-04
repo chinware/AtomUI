@@ -25,7 +25,7 @@
 4. `DragEnter` 和 `DragOver` 只检查数据格式和可接受效果，不物化文件或枚举目录。
 5. `Drop` 期间只读取一次文件数据，并且不跨异步边界保留 `DragEventArgs` 或 `IDataTransfer`。
 6. AtomUI 只接受 `Copy` 语义，不返回 `Move`，也不移动或删除源文件。
-7. 文件选择、目录选择、拖动和程序化输入使用同一准入、数量和任务创建规则。
+7. 文件选择、目录选择和拖动共享 `IsMultipleEnabled` 顶层输入策略；这些入口与程序化输入继续共享文件准入、最终数量和任务创建规则。
 8. 单项拒绝不终止同一批次中的其他项目，取消和批次级失败不伪装成拒绝项。
 9. 每个 `IStorageItem`、文件内容源、Stream、取消源和异步批次都有唯一释放 owner。
 10. ownership transfer 必须验证来源 owner，失败时立即抛出，不能静默忽略。
@@ -97,6 +97,7 @@ API 语义：
 public IReadOnlyList<FilePickerFileType>? AllowedFileTypes { get; set; }
 public UploadCountOverflowBehavior CountOverflowBehavior { get; set; }
 public IUploadAdmissionPolicy? AdmissionPolicy { get; set; }
+public bool IsMultipleEnabled { get; set; }
 
 public event EventHandler<UploadInputBatchCompletedEventArgs> InputBatchCompleted;
 ```
@@ -116,6 +117,10 @@ public enum UploadCountOverflowBehavior
 - `Patterns` 按文件名匹配；MIME 只在 `UploadFileInfo.ContentType` 可用时参与匹配。`UploadFileInfo` 不提供可靠 UTI 元数据，因此 `AppleUniformTypeIdentifiers` 不参与管线准入。
 - `AdmissionPolicy` 在创建 `UploadFileItem` 前异步执行，用于业务准入；策略结果必须包含稳定的接受或拒绝决定。
 - `AdmissionPolicy` 固定在非 UI 执行上下文调用，不能读取或修改 Avalonia 控件。
+- `IsMultipleEnabled` 默认为 `false`，统一控制文件 picker、目录 picker 和 Drop 的顶层 StorageItem 数量。
+- `IsMultipleEnabled=false` 时，Drop 只处理稳定快照中的第一个顶层项目，其余项目以 `MultipleSelectionNotAllowed` 拒绝；单个目录仍可按目录策略展开多个文件。
+- `IsMultipleEnabled=true` 时，picker 和 Drop 均允许多个顶层项目。
+- `EnqueueFilesAsync(IEnumerable<UploadFileInfo>)` 是显式程序化批量入口，不受 `IsMultipleEnabled` 限制。
 - `InputBatchCompleted` 在 UI 线程触发，每个批次恰好一次，并同时报告接受项、拒绝项和批次终态。
 
 业务准入契约为：
@@ -216,7 +221,8 @@ public enum UploadRejectionReason
     FileTypeNotAllowed,
     AdmissionRejected,
     AdmissionPolicyFailed,
-    CountLimitExceeded
+    CountLimitExceeded,
+    MultipleSelectionNotAllowed
 }
 
 public sealed class UploadRejectedItem
@@ -308,7 +314,7 @@ public sealed class UploadInputBatchCompletedEventArgs : EventArgs
 | --- | --- | --- | --- | --- |
 | DropTarget / drag session | `UploadDropZone` | DragDrop routed events、数据格式、允许效果、位置和 owner 能力 | DragState、DragEffects、Handled 和同步 StorageItem 快照 | 目录枚举、元数据和任务状态。 |
 | input coordinator | `UploadInputPipeline` | 文件选择、目录选择、Drop 或程序化批次 | accepted/rejected batch result | 网络上传。 |
-| storage enumeration | `UploadStorageItemEnumerator` | `IStorageItem` 和目录策略 | 有序文件候选项 | 文件类型和数量决策。 |
+| storage enumeration | `UploadStorageItemEnumerator` | `IStorageItem`、`IsMultipleEnabled` 和目录策略 | 有序文件候选项与顶层多选拒绝 | 文件类型和最终文件数量决策。 |
 | input candidate | `UploadInputCandidate` | 批次已拥有的 `IStorageFile` | 非 owning 文件候选及元数据读取入口 | StorageItem 或 source lease 释放。 |
 | admission | `UploadFileAdmissionService` | 文件元数据、AllowedFileTypes、业务策略 | 接受或拒绝决定 | 数量策略和视觉状态。 |
 | storage source | `UploadStorageFileSource` | `IStorageFile` | 可重复请求的读取 Stream | 上传协议。 |
@@ -367,15 +373,19 @@ Drop 处理必须保持同步边界：
 3. 按对象引用归一化重复项，并把 storage item ownership 同步交给输入批次。
 4. 设置最终 `DragEffects` 和 `Handled`。
 5. 将 `DragState` 恢复为 `None`。
-6. 启动被 `Upload` 跟踪的批次操作。
+6. 启动被 `Upload` 跟踪的批次操作；管线按 option snapshot 在目录展开前应用顶层多选限制。
 
 完成第 4 步后不得访问 `DragEventArgs`、`IDataTransfer` 或延迟的文件 enumerable。Linux portal、X11 selection 和 Wayland pipe-backed 数据都必须在 routed event 有效期内完成顶层快照，异步任务只能持有独立的 `IStorageItem[]`。
 
 `TryGetFiles()` 抛出异常时不创建虚构拒绝项。DropZone 恢复 `DragState=None`、返回 `DragDropEffects.None`，并通过 `InputBatchCompleted` 报告 `Failed/DataSnapshotFailed`；原始异常只由被观察的内部任务记录。数据格式不匹配属于协商失败，不启动输入批次。
 
+顶层多选限制按去重后的快照顺序执行。`IsMultipleEnabled=false` 时，第一个项目无论最终被接受还是因目录策略、文件类型或业务策略被拒绝，都占用唯一顶层输入位置；后续项目不展开目录、不读取元数据，登记 `MultipleSelectionNotAllowed` 后立即通过批次 owner 释放。
+
 ### 7.3 目录遍历
 
 目录只通过 `IStorageFolder.GetItemsAsync()` 遍历，不把 StorageItem 降级为 `DirectoryInfo` 或 `Directory.EnumerateFiles`。
+
+目录遍历只接收已经通过顶层多选限制的项目。顶层目录计为一个用户输入项目，其子文件和子目录不再次应用 `IsMultipleEnabled`。
 
 - `Reject`：目录生成一个拒绝结果。
 - `TopLevelFiles`：只输出根目录直接包含的文件，子目录作为不可展开项跳过。
@@ -437,7 +447,7 @@ StorageFile lease
   -> UploadQueue
 ```
 
-UI 线程快照不可变的 filename pattern、MIME 规则、AdmissionPolicy 引用、数量策略和 MaxCount。Worker 不读取调用方可变的规则集合；effective file count 不进入 worker snapshot，而是在 UI commit 紧邻集合变更时读取。准入成功后，文件 source lease 继续由批次持有，直到 UI commit；准入失败时由批次立即释放。
+UI 线程快照不可变的 filename pattern、MIME 规则、AdmissionPolicy 引用、`IsMultipleEnabled`、数量策略和 MaxCount。StorageItem worker 先应用顶层输入限制，再展开目录和执行准入；程序化文件批次跳过顶层 StorageItem 限制。Worker 不读取调用方可变的规则集合；effective file count 不进入 worker snapshot，而是在 UI commit 紧邻集合变更时读取。准入成功后，文件 source lease 继续由批次持有，直到 UI commit；准入失败时由批次立即释放。
 
 `RejectBatch` 在提交任何文件项前完成批次级数量判断，避免部分修改；`RejectExcess` 按稳定候选顺序填满剩余容量；`ReplaceExisting` 按空 replacement target 计算容量。外部 `Files` 可能在异步处理期间变化，因此普通数量策略在 UI commit 前重新验证可用容量。
 
@@ -515,6 +525,7 @@ private void ClearEffectiveFilesAfterQueueCancellation();
 - `Upload.Accepts` 由 `Upload.AllowedFileTypes` 替代。
 - `UploadDefaultDropArea.FilesDropped` 和 `UploadFilesDroppedEventArgs` 不再作为第二条数据出口。
 - 输入结果统一通过 `Upload.InputBatchCompleted` 观察。
+- `Upload.IsMultipleEnabled` 统一约束 picker 与 Drop 的顶层 StorageItem 数量，不承担目录展开或最终文件容量职责。
 - `UploadTrigger`、`SelectFilesAsync`、`SelectDirectoriesAsync` 和程序化输入必须进入同一输入管线。
 
 ### 9.2 批次 API 变更
@@ -559,7 +570,8 @@ private void ClearEffectiveFilesAfterQueueCancellation();
 | 生命周期 | accepted/rejected/cancel/reset/detach 及用户回调异常路径中的 StorageItem、Stream、Task 和 CTS 恰好释放一次；scheduler 维护操作保持调用顺序和队列一致性。 |
 | replacement | `ReplaceExisting` 不提前释放旧 source，只取消实际移除项；Reset 不重复取消已经完成 cancel-all 的 queue generation。 |
 | 主题契约 | 两个 ControlTheme 的视觉树、selector、Token、Transitions、Measure 和 Bounds 不变。 |
-| Gallery | 现有拖动示例 AXAML 组合不变，Light/Dark 和不同缩放下截图与基线一致。 |
+| Gallery | 拖动示例显式启用 `IsMultipleEnabled`，同时保持 DropZone/DropArea 组合、Light/Dark 和不同缩放下截图与基线一致。 |
+| 用户输入范围 | `IsMultipleEnabled=false` 时 picker 单选且 Drop 只处理第一个顶层项目；`true` 时两者均允许多个顶层项目；单目录展开和程序化批量输入不受该属性限制。 |
 | Windows/macOS | 真实文件管理器的单文件、多文件、目录、混合输入和取消。 |
 | Linux X11 | XDND Copy/None status、Drop-only selection 读取和跨进程输入。 |
 | Linux Wayland | compositor 效果反馈、pipe-backed 数据一次物化和 Drop 后异步读取。 |

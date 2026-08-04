@@ -56,6 +56,11 @@ public class UploadShowCasePageTests
         source.ShouldContain("<atom:UploadTrigger SourceKind=\"Directories\"");
         Regex.IsMatch(
             source,
+            "<atom:Upload Name=\"DragAndDropUpload\"[^>]*IsMultipleEnabled=\"True\"[^>]*>.*" +
+            "<atom:UploadDropZone>\\s*<atom:UploadDefaultDropArea\\s*/>\\s*</atom:UploadDropZone>",
+            RegexOptions.CultureInvariant | RegexOptions.Singleline).ShouldBeTrue();
+        Regex.IsMatch(
+            source,
             "<atom:UploadDropZone>\\s*<atom:UploadDefaultDropArea\\s*/>\\s*</atom:UploadDropZone>",
             RegexOptions.CultureInvariant).ShouldBeTrue();
         source.ShouldContain("AllowedFileTypes=\"{Binding PngFileTypes}\"");

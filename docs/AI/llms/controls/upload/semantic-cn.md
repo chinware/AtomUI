@@ -6,7 +6,7 @@
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Upload` | 上传状态协调器，拥有文件集合、上传队列、Form 值投影和生命周期。 | `Files`、`UploadTransport`、`FileValueMode` | `UploadToken`、SharedToken | stable |
+| `root` | `Upload` | 上传状态协调器，拥有文件集合、用户输入范围、上传队列、Form 值投影和生命周期。 | `Files`、`IsMultipleEnabled`、`UploadTransport`、`FileValueMode` | `UploadToken`、SharedToken | stable |
 | `trigger` | `TriggerContent` / `UploadTrigger` | 承载文件或目录选择入口，只提交选择动作，不持有上传状态。 | `TriggerContent`、`SourceKind`、`SelectFilesAsync()`、`SelectDirectoriesAsync()` | Upload trigger 主题资源 | stable |
 | `drop-zone` | `UploadDropZone` | 协商拖动效果、取得 Drop 快照并创建统一输入批次。 | `IsOpenFileDialogOnClick`、`DirectoryDropMode`、`DragState` | Upload drop-zone 主题资源 | stable |
 | `drop-area` | `UploadDefaultDropArea` | 渲染默认拖动图标、标题、副标题和边框，不处理 DataTransfer。 | `DropIcon`、`Header`、`SubHeader` | Upload Token、SharedToken | stable |
@@ -87,8 +87,9 @@ Upload
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 文件状态 | `Files`、`UploadFileItem` | 唯一文件状态 owner，支持绑定、Form 投影和列表渲染。 |
-| 文件选择 | `UploadTrigger`、`UploadSourceKind`、`SelectFilesAsync`、`SelectDirectoriesAsync` | 文件与目录选择是独立动作入口，不再由根控件 bool 互斥。 |
+| 文件选择 | `UploadTrigger`、`UploadSourceKind`、`SelectFilesAsync`、`SelectDirectoriesAsync` | 文件与目录选择是独立动作入口；`IsMultipleEnabled` 统一决定用户是否可提交多个顶层 StorageItem。 |
 | 拖拽提交 | `UploadDropZone`、`UploadDirectoryDropMode`、`UploadDragState` | DropZone 负责平台协商和快照，`Upload` 负责统一准入与文件状态。 |
+| 用户输入范围 | `IsMultipleEnabled` | 统一限制文件选择、目录选择和 Drop 的顶层 StorageItem 数量，不限制单个目录的文件展开结果或显式程序化批量输入。 |
 | 文件准入 | `AllowedFileTypes`、`CountOverflowBehavior`、`AdmissionPolicy` | picker、directory、drop 和 programmatic 输入共享同一准入与数量语义。 |
 | 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受项、拒绝项以及 Completed、Cancelled 或 Failed 终态。 |
 | 文件内容 | `UploadFileInfo`、`IUploadFileSource` | Transport 通过可打开内容源读取文件，不假定本地路径可访问。 |
@@ -110,7 +111,7 @@ Upload 的状态流只允许按以下路径收敛：
 ```text
 Public API / UploadTrigger / UploadDropZone
   -> UploadInputPipeline
-  -> directory traversal / file admission
+  -> top-level input limit / directory traversal / file admission
   -> UI count policy / accepted file commit
   -> Files collection
   -> UploadQueue / FileUploadScheduler
@@ -125,6 +126,7 @@ Public API / UploadTrigger / UploadDropZone
 - `UploadQueue` 只负责把 `UploadFileItem` 映射到 `FileUploadTask` 并转发调度结果，不直接操作视觉容器。
 - `UploadList` 只渲染 `Files`，不得创建、删除或隐藏真实任务状态。
 - 文件选择和目录选择由 `UploadTrigger.SourceKind` 决定，可以在同一 `Upload` 下并存。
+- `IsMultipleEnabled` 是 picker 与 Drop 共享的顶层输入策略，不得复用为目录展开数量或最终文件容量限制。
 - `SuccessAutoRemoveDelay` 的延迟任务必须在 remove、reset、detach 和状态离开 success 时取消。
 - Form 值由 `FileValueMode` 投影，错误状态以 Avalonia `DataValidationErrors` 为准。
 
@@ -190,6 +192,7 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 不得引入与 `Files` 平行的任务集合，也不得把 picture trigger 伪装成文件项。
 - trigger、drop-zone、list、item container 都不能保存第二份业务任务状态。
 - `UploadDropZone` 是唯一 DragDrop 行为 owner；`UploadDefaultDropArea` 必须保持纯视觉职责。
+- `IsMultipleEnabled` 只能限制 picker 与 Drop 的顶层 StorageItem 数量；目录内部展开、`EnqueueFilesAsync` 和最终 `MaxCount` 各自保持独立语义。
 - `AdmissionPolicy` 不得在 UI 线程执行，也不得访问 Avalonia 控件；策略异常与策略显式拒绝必须使用不同 rejection reason。
 - 取消和批次级失败通过 `UploadInputBatchStatus` 表达，不得创建空名称或虚假 `UploadRejectedItem`。
 - ownership transfer 必须由 typed batch operation 验证；不得重新引入 `ownsFileSources`、`queueAlreadyCancelled` 或通用 transfer callback。

@@ -49,13 +49,37 @@ public class UploadFileSelectionTests
         adapter.LastFileOptions.FileTypeFilter.ShouldBeSameAs(upload.AllowedFileTypes);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task File_And_Directory_Pickers_Use_The_Same_Multiple_Input_Option(bool isMultipleEnabled)
+    {
+        var adapter = new TestStorageProviderAdapter();
+        var upload = CreateUpload(adapter);
+        upload.IsMultipleEnabled = isMultipleEnabled;
+
+        await upload.SelectFilesAsync(TestContext.Current.CancellationToken);
+        await upload.SelectDirectoriesAsync(TestContext.Current.CancellationToken);
+
+        adapter.LastFileOptions.ShouldNotBeNull();
+        adapter.LastFileOptions.AllowMultiple.ShouldBe(isMultipleEnabled);
+        adapter.LastFolderOptions.ShouldNotBeNull();
+        adapter.LastFolderOptions.AllowMultiple.ShouldBe(isMultipleEnabled);
+    }
+
     [Fact]
     public async Task Directory_Picker_Uses_TopLevelFiles_And_Preserves_Per_Item_Results()
     {
-        var topLevelFile = new TestStorageFile("top.txt", "file:///folder/top.txt");
+        var firstTopLevelFile = new TestStorageFile("first.txt", "file:///folder/first.txt");
+        var secondTopLevelFile = new TestStorageFile("second.txt", "file:///folder/second.txt");
         var nestedFile = new TestStorageFile("nested.txt", "file:///folder/nested/nested.txt");
         var nestedFolder = new TestStorageFolder("nested", "file:///folder/nested/", nestedFile);
-        var root = new TestStorageFolder("folder", "file:///folder/", topLevelFile, nestedFolder);
+        var root = new TestStorageFolder(
+            "folder",
+            "file:///folder/",
+            firstTopLevelFile,
+            secondTopLevelFile,
+            nestedFolder);
         var adapter = new TestStorageProviderAdapter { Folders = [root] };
         var upload = CreateUpload(adapter);
         UploadInputBatchCompletedEventArgs? completed = null;
@@ -63,7 +87,7 @@ public class UploadFileSelectionTests
 
         await upload.SelectDirectoriesAsync(TestContext.Current.CancellationToken);
 
-        upload.Files!.Select(item => item.Name).ShouldBe(["top.txt"]);
+        upload.Files!.Select(item => item.Name).ShouldBe(["first.txt", "second.txt"]);
         completed.ShouldNotBeNull();
         completed.Source.ShouldBe(UploadInputSource.DirectoryPicker);
         completed.RejectedItems.Single().Reason.ShouldBe(UploadRejectionReason.DirectoryNotAllowed);

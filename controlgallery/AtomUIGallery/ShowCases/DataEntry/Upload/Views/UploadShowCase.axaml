@@ -181,6 +181,7 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:UploadViewModel">
                             <atom:Upload Name="DragAndDropUpload"
+                                         IsMultipleEnabled="True"
                                          UploadTransport="{Binding UploadTransport}"
                                          UploadTaskFailed="HandleUploadFailed"
                                          UploadTaskCompleted="HandleUploadCompleted">

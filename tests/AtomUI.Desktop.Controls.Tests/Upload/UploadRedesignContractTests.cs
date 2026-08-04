@@ -65,6 +65,12 @@ public class UploadRedesignContractTests
         admissionPolicyProperty.PropertyType.ShouldBe(admissionPolicyType);
         GetPropertyValue(upload, "AdmissionPolicy").ShouldBeNull();
 
+        var isMultipleEnabledProperty = GetAvaloniaProperty(
+            typeof(Desktop.Controls.Upload),
+            "IsMultipleEnabledProperty");
+        isMultipleEnabledProperty.PropertyType.ShouldBe(typeof(bool));
+        GetPropertyValue(upload, "IsMultipleEnabled").ShouldBe(false);
+
         typeof(Desktop.Controls.Upload).GetEvent("InputBatchCompleted").ShouldNotBeNull();
         typeof(Desktop.Controls.Upload).GetField("AcceptsProperty", BindingFlags.Public | BindingFlags.Static).ShouldBeNull();
         typeof(Desktop.Controls.Upload).GetField("IsOpenFileDialogOnClickProperty", BindingFlags.Public | BindingFlags.Static)
@@ -87,7 +93,8 @@ public class UploadRedesignContractTests
             "FileTypeNotAllowed",
             "AdmissionRejected",
             "AdmissionPolicyFailed",
-            "CountLimitExceeded"
+            "CountLimitExceeded",
+            "MultipleSelectionNotAllowed"
         ]);
 
         typeof(UploadRejectedItem).GetProperty("Exception").ShouldBeNull();

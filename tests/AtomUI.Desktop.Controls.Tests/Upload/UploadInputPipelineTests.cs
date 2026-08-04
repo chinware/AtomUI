@@ -143,6 +143,7 @@ public class UploadInputPipelineTests
         var committedSource = new TestStorageFile("committed.txt", "file:///committed.txt");
         var uncommittedSource = new TestStorageFile("not-committed.txt", "file:///not-committed.txt");
         var upload = CreateUpload();
+        upload.IsMultipleEnabled = true;
         upload.Files = new ThrowAfterFirstAddCollection();
         UploadInputBatchCompletedEventArgs? completed = null;
         upload.InputBatchCompleted += (_, args) => completed = args;
@@ -342,6 +343,55 @@ public class UploadInputPipelineTests
     }
 
     [Fact]
+    public async Task Single_Input_Mode_Accepts_The_First_Dropped_Item_And_Rejects_The_Rest()
+    {
+        var first = new TestStorageFile("first.txt", "file:///first.txt");
+        var second = new TestStorageFile("second.txt", "file:///second.txt");
+        var upload = CreateUpload();
+        UploadInputBatchCompletedEventArgs? completed = null;
+        upload.InputBatchCompleted += (_, args) => completed = args;
+
+        await upload.ProcessStorageItemsAsync(
+            UploadInputSource.DragDrop,
+            [first, second],
+            UploadDirectoryDropMode.Reject,
+            0,
+            10,
+            TestContext.Current.CancellationToken);
+
+        upload.Files!.Select(item => item.Name).ShouldBe(["first.txt"]);
+        completed.ShouldNotBeNull();
+        completed.AcceptedFiles.Select(file => file.Name).ShouldBe(["first.txt"]);
+        var rejection = completed.RejectedItems.Single();
+        rejection.Name.ShouldBe("second.txt");
+        rejection.Reason.ShouldBe(UploadRejectionReason.MultipleSelectionNotAllowed);
+        second.DisposeCount.ShouldBe(1);
+
+        await upload.RemoveFileAsync(upload.Files!.Single().Id, TestContext.Current.CancellationToken);
+        first.DisposeCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task Multiple_Input_Mode_Accepts_All_Dropped_Items()
+    {
+        var upload = CreateUpload();
+        upload.IsMultipleEnabled = true;
+
+        await upload.ProcessStorageItemsAsync(
+            UploadInputSource.DragDrop,
+            [
+                new TestStorageFile("first.txt", "file:///first.txt"),
+                new TestStorageFile("second.txt", "file:///second.txt")
+            ],
+            UploadDirectoryDropMode.Reject,
+            0,
+            10,
+            TestContext.Current.CancellationToken);
+
+        upload.Files!.Select(item => item.Name).ShouldBe(["first.txt", "second.txt"]);
+    }
+
+    [Fact]
     public async Task Duplicate_Top_Level_Storage_References_Are_Accepted_And_Disposed_Once()
     {
         var upload = CreateUpload();
@@ -395,6 +445,7 @@ public class UploadInputPipelineTests
         };
         var accepted = new TestStorageFile("accepted.txt", "file:///accepted.txt");
         var upload = CreateUpload();
+        upload.IsMultipleEnabled = true;
         UploadInputBatchCompletedEventArgs? completed = null;
         upload.InputBatchCompleted += (_, args) => completed = args;
 
@@ -421,6 +472,7 @@ public class UploadInputPipelineTests
             size: ulong.MaxValue);
         var accepted = new TestStorageFile("accepted.txt", "file:///accepted.txt");
         var upload = CreateUpload();
+        upload.IsMultipleEnabled = true;
         UploadInputBatchCompletedEventArgs? completed = null;
         upload.InputBatchCompleted += (_, args) => completed = args;
 
@@ -745,6 +797,7 @@ public class UploadInputPipelineTests
     {
         var policy = new CancellationBlockingPolicy();
         var upload = CreateUpload();
+        upload.IsMultipleEnabled = true;
         upload.AdmissionPolicy = policy;
         var first = new ThrowingStorageFile("first.txt", "file:///first.txt");
         var second = new ThrowingStorageFile("second.txt", "file:///second.txt");

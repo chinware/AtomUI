@@ -13,6 +13,7 @@
   - Remove `Upload.IsOpenFileDialogOnClick`; click-to-select ownership moves to `UploadDropZone.IsOpenFileDialogOnClick` and `UploadDropZone.SourceKind`.
   - Remove `Upload.Accepts`; replace it with `Upload.AllowedFileTypes` based on `FilePickerFileType`.
   - Add `Upload.CountOverflowBehavior`, `Upload.AdmissionPolicy` and `Upload.InputBatchCompleted` for deterministic batch admission and diagnostics.
+  - Add `UploadRejectionReason.MultipleSelectionNotAllowed` for excess top-level user input items.
   - Replace `IsCancelled` and synthetic batch rejection values with `UploadInputBatchStatus` and `UploadInputFailureReason`.
   - Remove raw exceptions from `UploadRejectedItem`, consolidate storage-read failures and distinguish policy rejection from policy execution failure.
   - Replace directly constructed `UploadAdmissionDecision` records with `Accept()` and `Reject(...)` factories.
@@ -37,6 +38,7 @@
   - Serialize scheduler maintenance operations and preserve pending/running task ownership when cancellation is requested during cleanup.
   - Continue cancellation and source lease release when collection, Form, batch-completion or task callbacks throw, then propagate the cleanup error.
   - Add configurable success auto-remove and pending text.
+  - Unify file picker, directory picker and Drop top-level item counts under `Upload.IsMultipleEnabled`; keep directory expansion and explicit programmatic batches independent.
 
 ## 2026-06-26
 

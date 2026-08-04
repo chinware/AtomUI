@@ -60,6 +60,7 @@ internal sealed class UploadInputPipeline
                 directoryMode,
                 maxDirectoryDepth,
                 maxEnumeratedItems,
+                options.IsMultipleEnabled,
                 token).ConfigureAwait(false);
 
             foreach (var rejection in enumeration.RejectedItems)
@@ -360,4 +361,5 @@ internal sealed record UploadInputPipelineOptions(
     IReadOnlyList<UploadFileTypeRule> AllowedFileTypes,
     IUploadAdmissionPolicy? AdmissionPolicy,
     UploadCountOverflowBehavior CountOverflowBehavior,
-    int MaxCount);
+    int MaxCount,
+    bool IsMultipleEnabled);

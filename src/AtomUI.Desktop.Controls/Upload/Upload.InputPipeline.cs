@@ -42,7 +42,8 @@ public partial class Upload
                 fileTypes,
                 AdmissionPolicy,
                 CountOverflowBehavior,
-                MaxCount);
+                MaxCount,
+                IsMultipleEnabled);
         }).ConfigureAwait(false);
         return options!;
     }

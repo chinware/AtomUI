@@ -36,6 +36,7 @@ public class UploadStorageItemEnumeratorTests
             UploadDirectoryDropMode.Reject,
             32,
             10_000,
+            isMultipleEnabled: true,
             TestContext.Current.CancellationToken);
 
         result.Candidates.ShouldBeEmpty();
@@ -58,6 +59,7 @@ public class UploadStorageItemEnumeratorTests
             UploadDirectoryDropMode.TopLevelFiles,
             32,
             10_000,
+            isMultipleEnabled: true,
             TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name).ShouldBe(["first.txt", "second.txt"]);
@@ -88,6 +90,7 @@ public class UploadStorageItemEnumeratorTests
             UploadDirectoryDropMode.RecursiveFiles,
             32,
             10_000,
+            isMultipleEnabled: true,
             TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name)
@@ -120,6 +123,7 @@ public class UploadStorageItemEnumeratorTests
             UploadDirectoryDropMode.RecursiveFiles,
             1,
             10_000,
+            isMultipleEnabled: true,
             TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name).ShouldBe(["sibling.txt"]);
@@ -145,6 +149,7 @@ public class UploadStorageItemEnumeratorTests
             UploadDirectoryDropMode.RecursiveFiles,
             32,
             1,
+            isMultipleEnabled: true,
             TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name).ShouldBe(["first.txt"]);
@@ -172,6 +177,7 @@ public class UploadStorageItemEnumeratorTests
             UploadDirectoryDropMode.RecursiveFiles,
             32,
             10_000,
+            isMultipleEnabled: true,
             TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name).ShouldBe(["sibling.txt"]);
@@ -197,6 +203,7 @@ public class UploadStorageItemEnumeratorTests
             UploadDirectoryDropMode.RecursiveFiles,
             32,
             10_000,
+            isMultipleEnabled: true,
             TestContext.Current.CancellationToken);
 
         result.Candidates.ShouldBeEmpty();
@@ -218,6 +225,7 @@ public class UploadStorageItemEnumeratorTests
             UploadDirectoryDropMode.RecursiveFiles,
             32,
             10_000,
+            isMultipleEnabled: true,
             TestContext.Current.CancellationToken);
 
         result.Candidates.Select(candidate => candidate.Name).ShouldBe(["duplicate.txt"]);
@@ -244,6 +252,7 @@ public class UploadStorageItemEnumeratorTests
                 UploadDirectoryDropMode.Reject,
                 32,
                 10_000,
+                isMultipleEnabled: true,
                 cancellation.Token));
 
         operation.Dispose();
@@ -263,6 +272,7 @@ public class UploadStorageItemEnumeratorTests
             UploadDirectoryDropMode.Reject,
             32,
             10_000,
+            isMultipleEnabled: true,
             TestContext.Current.CancellationToken);
 
         var candidate = result.Candidates.Single();
