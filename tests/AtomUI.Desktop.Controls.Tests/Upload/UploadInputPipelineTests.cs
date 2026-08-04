@@ -99,23 +99,123 @@ public class UploadInputPipelineTests
     }
 
     [Fact]
-    public async Task ReplaceExisting_Removes_Old_Items_Then_Commits_The_New_Batch()
+    public void ReplaceExisting_Commits_New_Files_Before_Old_Upload_Cancellation_Completes()
     {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var transport = new DelayedCancellationTransport();
+            var upload = new Desktop.Controls.Upload
+            {
+                AutoUpload = true,
+                UploadTransport = transport,
+                CountOverflowBehavior = UploadCountOverflowBehavior.ReplaceExisting,
+                MaxCount = 1,
+                Files = new ObservableCollection<UploadFileItem>()
+            };
+            Dispatcher.UIThread.RunJobs();
+            var oldSource = new TestStorageFile("old.txt", "file:///old.txt");
+
+            WaitWithDispatcherPump(AddStorageFileAsync(upload, oldSource));
+            WaitWithDispatcherPump(transport.Started.Task);
+
+            var replacement = upload.EnqueueFilesAsync(
+                [CreateFile("new.txt")],
+                TestContext.Current.CancellationToken);
+            try
+            {
+                WaitWithDispatcherPump(replacement);
+                upload.Files!.Select(item => item.Name).ShouldBe(["new.txt"]);
+                oldSource.DisposeCount.ShouldBe(0);
+            }
+            finally
+            {
+                transport.Release();
+                WaitWithDispatcherPump(replacement);
+                WaitWithDispatcherPump(transport.Finished.Task);
+                WaitUntilWithDispatcherPump(() => oldSource.DisposeCount == 1);
+            }
+        });
+    }
+
+    [Fact]
+    public async Task Partial_Commit_Reports_Only_Files_With_Transferred_Source_Ownership()
+    {
+        var committedSource = new TestStorageFile("committed.txt", "file:///committed.txt");
+        var uncommittedSource = new TestStorageFile("not-committed.txt", "file:///not-committed.txt");
         var upload = CreateUpload();
-        upload.MaxCount = 2;
-        upload.CountOverflowBehavior = UploadCountOverflowBehavior.ReplaceExisting;
-        await upload.EnqueueFilesAsync(
-            [CreateFile("old-first.txt"), CreateFile("old-second.txt")],
-            TestContext.Current.CancellationToken);
-        var removedIds = new List<Guid>();
-        upload.UploadTaskRemoved += (_, args) => removedIds.Add(args.TaskId);
+        upload.Files = new ThrowAfterFirstAddCollection();
+        UploadInputBatchCompletedEventArgs? completed = null;
+        upload.InputBatchCompleted += (_, args) => completed = args;
 
-        await upload.EnqueueFilesAsync(
-            [CreateFile("new-first.txt"), CreateFile("new-second.txt")],
-            TestContext.Current.CancellationToken);
+        await Should.ThrowAsync<InvalidOperationException>(() => upload.ProcessStorageItemsAsync(
+            UploadInputSource.DragDrop,
+            [committedSource, uncommittedSource],
+            UploadDirectoryDropMode.Reject,
+            0,
+            10,
+            TestContext.Current.CancellationToken));
 
-        upload.Files!.Select(item => item.Name).ShouldBe(["new-first.txt", "new-second.txt"]);
-        removedIds.Count.ShouldBe(2);
+        completed.ShouldNotBeNull();
+        completed.Status.ShouldBe(UploadInputBatchStatus.Failed);
+        completed.FailureReason.ShouldBe(UploadInputFailureReason.ProcessingFailed);
+        completed.AcceptedFiles.Select(file => file.Name).ShouldBe(["committed.txt"]);
+        upload.Files!.Select(item => item.Name).ShouldBe(["committed.txt"]);
+        committedSource.DisposeCount.ShouldBe(0);
+        uncommittedSource.DisposeCount.ShouldBe(1);
+
+        await upload.RemoveFileAsync(
+            upload.Files.Single().Id,
+            TestContext.Current.CancellationToken);
+        committedSource.DisposeCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task Commit_Revalidates_Current_Capacity_On_The_UI_Thread()
+    {
+        var releasePolicy = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var policy = new RecordingAdmissionPolicy(async (_, cancellationToken) =>
+        {
+            await releasePolicy.Task.WaitAsync(cancellationToken);
+            return true;
+        });
+        var upload = CreateUpload();
+        upload.MaxCount = 1;
+        upload.CountOverflowBehavior = UploadCountOverflowBehavior.RejectExcess;
+        upload.AdmissionPolicy = policy;
+        UploadInputBatchCompletedEventArgs? completed = null;
+        upload.InputBatchCompleted += (_, args) => completed = args;
+
+        var input = upload.EnqueueFilesAsync(
+            [CreateFile("candidate.txt")],
+            TestContext.Current.CancellationToken);
+        await policy.FirstEvaluationStarted.Task.WaitAsync(TestContext.Current.CancellationToken);
+        Dispatcher.UIThread.Invoke(() => upload.Files!.Add(new UploadFileItem { Name = "external.txt" }));
+        releasePolicy.SetResult();
+        WaitWithDispatcherPump(input);
+
+        upload.Files!.Select(item => item.Name).ShouldBe(["external.txt"]);
+        completed.ShouldNotBeNull();
+        completed.AcceptedFiles.ShouldBeEmpty();
+        completed.RejectedItems.Single().Reason.ShouldBe(UploadRejectionReason.CountLimitExceeded);
+    }
+
+    [Fact]
+    public async Task Commit_Validates_Lease_Ownership_Before_Mutating_The_Collection()
+    {
+        var source = new UnownedUploadFileSourceLease();
+        var upload = CreateUpload();
+        UploadInputBatchCompletedEventArgs? completed = null;
+        upload.InputBatchCompleted += (_, args) => completed = args;
+
+        await Should.ThrowAsync<InvalidOperationException>(() => upload.EnqueueFilesAsync(
+            [new UploadFileInfo("unowned.txt", source)],
+            TestContext.Current.CancellationToken));
+
+        upload.Files.ShouldBeEmpty();
+        source.DisposeCount.ShouldBe(0);
+        completed.ShouldNotBeNull();
+        completed.Status.ShouldBe(UploadInputBatchStatus.Failed);
+        completed.AcceptedFiles.ShouldBeEmpty();
     }
 
     [Fact]
@@ -953,6 +1053,13 @@ public class UploadInputPipelineTests
             new(TaskCreationOptions.RunContinuationsAsynchronously);
         internal TaskCompletionSource AllowExit { get; } =
             new(TaskCreationOptions.RunContinuationsAsynchronously);
+        internal TaskCompletionSource Finished { get; } =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        internal void Release()
+        {
+            AllowExit.TrySetResult();
+        }
 
         public async Task<FileUploadResult> UploadAsync(
             UploadFileInfo fileInfo,
@@ -969,10 +1076,39 @@ public class UploadInputPipelineTests
             {
                 CancellationObserved.TrySetResult();
                 await AllowExit.Task;
+                Finished.TrySetResult();
                 throw;
             }
 
             throw new InvalidOperationException("The blocking transport should only finish by cancellation.");
+        }
+    }
+
+    private sealed class ThrowAfterFirstAddCollection : Collection<UploadFileItem>
+    {
+        protected override void InsertItem(int index, UploadFileItem item)
+        {
+            if (Count == 1)
+            {
+                throw new InvalidOperationException("The second collection insert failed.");
+            }
+            base.InsertItem(index, item);
+        }
+    }
+
+    private sealed class UnownedUploadFileSourceLease : IUploadFileSource, IUploadFileSourceLease
+    {
+        internal int DisposeCount { get; private set; }
+
+        public ValueTask<Stream> OpenReadAsync(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return ValueTask.FromResult<Stream>(new MemoryStream([1, 2, 3], writable: false));
+        }
+
+        public void Dispose()
+        {
+            DisposeCount++;
         }
     }
 }

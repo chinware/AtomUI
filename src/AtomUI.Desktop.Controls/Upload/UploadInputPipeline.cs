@@ -296,59 +296,27 @@ internal sealed class UploadInputPipeline
             }
         }
 
-        var filesToCommit = ApplyCountPolicy(operation, admittedFiles, options);
-        if (filesToCommit.Count == 0)
+        if (admittedFiles.Count == 0)
         {
             return;
         }
 
+        IReadOnlyList<UploadFileInfo> rejectedFiles;
         if (options.CountOverflowBehavior == UploadCountOverflowBehavior.ReplaceExisting)
         {
-            await _owner.RemoveAllFilesForReplacementAsync(cancellationToken).ConfigureAwait(false);
+            rejectedFiles = await _owner.ReplaceInputFilesAsync(admittedFiles, operation, options)
+                                        .ConfigureAwait(false);
+        }
+        else
+        {
+            rejectedFiles = await _owner.CommitInputFilesAsync(admittedFiles, operation, options)
+                                        .ConfigureAwait(false);
         }
 
-        await _owner.CommitInputFilesAsync(filesToCommit, file =>
-        {
-            if (file.Source is IUploadFileSourceLease)
-            {
-                operation.TransferFileSourceToUpload(file);
-            }
-            operation.Accept(file);
-        }).ConfigureAwait(false);
-    }
-
-    private static IReadOnlyList<UploadFileInfo> ApplyCountPolicy(
-        UploadInputBatchOperation operation,
-        IReadOnlyList<UploadFileInfo> admittedFiles,
-        UploadInputPipelineOptions options)
-    {
-        var maxCount = Math.Max(0, options.MaxCount);
-        var availableCount = Math.Max(0, maxCount - options.ExistingCount);
-        if (options.CountOverflowBehavior == UploadCountOverflowBehavior.ReplaceExisting)
-        {
-            availableCount = maxCount;
-        }
-
-        if (admittedFiles.Count <= availableCount)
-        {
-            return admittedFiles;
-        }
-
-        if (options.CountOverflowBehavior == UploadCountOverflowBehavior.RejectBatch)
-        {
-            foreach (var file in admittedFiles)
-            {
-                operation.Reject(file, CreateCountRejection(file));
-            }
-            return [];
-        }
-
-        var accepted = admittedFiles.Take(availableCount).ToArray();
-        foreach (var file in admittedFiles.Skip(availableCount))
+        foreach (var file in rejectedFiles)
         {
             operation.Reject(file, CreateCountRejection(file));
         }
-        return accepted;
     }
 
     private static UploadRejectedItem CreateCountRejection(UploadFileInfo file)
@@ -392,5 +360,4 @@ internal sealed record UploadInputPipelineOptions(
     IReadOnlyList<UploadFileTypeRule> AllowedFileTypes,
     IUploadAdmissionPolicy? AdmissionPolicy,
     UploadCountOverflowBehavior CountOverflowBehavior,
-    int MaxCount,
-    int ExistingCount);
+    int MaxCount);

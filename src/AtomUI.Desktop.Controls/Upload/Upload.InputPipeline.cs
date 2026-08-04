@@ -42,53 +42,36 @@ public partial class Upload
                 fileTypes,
                 AdmissionPolicy,
                 CountOverflowBehavior,
-                MaxCount,
-                EffectiveFiles.Count);
+                MaxCount);
         }).ConfigureAwait(false);
         return options!;
     }
 
-    internal Task CommitInputFilesAsync(
+    internal async Task<IReadOnlyList<UploadFileInfo>> CommitInputFilesAsync(
         IReadOnlyList<UploadFileInfo> files,
-        Action<UploadFileInfo> transferOwnership)
+        UploadInputBatchOperation operation,
+        UploadInputPipelineOptions options)
     {
-        return InvokeOnUiThreadAsync(() =>
-        {
-            foreach (var file in files)
-            {
-                CommitInputFile(file, transferOwnership);
-            }
-        });
+        IReadOnlyList<UploadFileInfo>? rejectedFiles = null;
+        await InvokeOnUiThreadAsync(() =>
+            rejectedFiles = CommitInputFiles(files, operation, options)).ConfigureAwait(false);
+        return rejectedFiles!;
     }
 
-    internal async Task RemoveAllFilesForReplacementAsync(CancellationToken cancellationToken)
+    internal async Task<IReadOnlyList<UploadFileInfo>> ReplaceInputFilesAsync(
+        IReadOnlyList<UploadFileInfo> files,
+        UploadInputBatchOperation operation,
+        UploadInputPipelineOptions options)
     {
-        var fileIds = await GetEffectiveFileIdsAsync().ConfigureAwait(false);
-        foreach (var fileId in fileIds)
-        {
-            await _uploadQueue.CancelAsync(fileId, cancellationToken).ConfigureAwait(false);
-        }
-
+        IReadOnlyList<UploadFileInfo>? rejectedFiles = null;
         await InvokeOnUiThreadAsync(() =>
-        {
-            foreach (var item in EffectiveFiles.ToArray())
-            {
-                RemoveFileCore(item, raiseRemovedEvent: true);
-            }
-        }).ConfigureAwait(false);
+            rejectedFiles = ReplaceInputFiles(files, operation, options)).ConfigureAwait(false);
+        return rejectedFiles!;
     }
 
     internal Task RaiseInputBatchCompletedAsync(UploadInputBatchCompletedEventArgs args)
     {
         return InvokeOnUiThreadAsync(() => InputBatchCompleted?.Invoke(this, args));
-    }
-
-    private async Task<Guid[]> GetEffectiveFileIdsAsync()
-    {
-        Guid[]? ids = null;
-        await InvokeOnUiThreadAsync(() => ids = EffectiveFiles.Select(file => file.Id).ToArray())
-            .ConfigureAwait(false);
-        return ids!;
     }
 
     private Task InvokeOnUiThreadAsync(Action action)
