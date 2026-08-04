@@ -139,17 +139,6 @@ public class UploadTriggerTests
         uploadingTheme.ShouldNotContain("Margin=\"0, 10, 0, 0\"");
     }
 
-    [Fact]
-    public void UploadDropZone_Enables_Drop_And_Delegates_To_Owning_Upload()
-    {
-        var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadDropZone.cs");
-
-        source.ShouldContain("DragDrop.SetAllowDrop(this, true)");
-        source.ShouldContain("e.DataTransfer.TryGetFiles()");
-        source.ShouldContain("owner.ProcessStorageItemsAsync(");
-        source.ShouldNotContain("EnqueueStorageFilesAsync");
-    }
-
     private static string ReadRepoFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

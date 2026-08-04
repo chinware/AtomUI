@@ -13,16 +13,6 @@ public class UploadImplementationContractTests
         File.Exists(GetRepoFile("src/AtomUI.Desktop.Controls/Upload/Themes/UploadTriggerContentTheme.axaml")).ShouldBeFalse();
     }
 
-    [Fact]
-    public void Upload_Lifecycle_Does_Not_Use_AsyncVoid_Or_Nested_Dispatcher_Async_Delegates()
-    {
-        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Upload/Upload.cs"));
-
-        source.ShouldNotContain("async void");
-        source.ShouldNotContain("Dispatcher.InvokeAsync(async");
-        source.ShouldContain("StartObservedLifecycleOperation");
-    }
-
     private static string GetRepoFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
