@@ -1,15 +1,14 @@
 using AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid;
-using AtomUI.Theme;
-
 namespace AtomUI.Desktop.Controls;
 
 public static class DataGridThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseDesktopDataGrid(this IThemeManagerBuilder themeManagerBuilder)
+    public static IAtomUIBuilder UseDesktopDataGrid(this IAtomUIBuilder builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
         GeneratedControlPackageRegistration.Register(
-            themeManagerBuilder,
+            builder.Theme,
             new AtomUIDataGridThemesProvider());
-        return themeManagerBuilder;
+        return builder;
     }
 }

@@ -117,7 +117,9 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         Navigation = navigationFactory?.Invoke(this) ?? new GalleryNavigationViewModel(this, configuration);
 
         _themeManager = Application.Current?.GetThemeManager();
-        _languageManager = Application.Current?.GetLanguageManager();
+        _languageManager = Application.Current is { } application
+            ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+            : null;
         AvailableThemes = CaptureThemes(_themeManager?.AvailableThemes);
         SyncThemeState(_themeManager?.CurrentTheme, null);
         SyncLanguageState(_languageManager?.LanguageVariant);

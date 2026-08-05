@@ -1,15 +1,14 @@
 using AtomUI.Generated.AtomUI_Desktop_Controls_ColorPicker;
-using AtomUI.Theme;
-
 namespace AtomUI.Desktop.Controls;
 
 public static class ColorPickerThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseDesktopColorPicker(this IThemeManagerBuilder themeManagerBuilder)
+    public static IAtomUIBuilder UseDesktopColorPicker(this IAtomUIBuilder builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
         GeneratedControlPackageRegistration.Register(
-            themeManagerBuilder,
+            builder.Theme,
             new AtomUIColorPickerThemesProvider());
-        return themeManagerBuilder;
+        return builder;
     }
 }

@@ -1,15 +1,14 @@
 using AtomUI.Generated.AtomUI_Desktop_Controls_Extras;
-using AtomUI.Theme;
-
 namespace AtomUI.Desktop.Controls;
 
 public static class ExtrasThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseDesktopExtras(this IThemeManagerBuilder themeManagerBuilder)
+    public static IAtomUIBuilder UseDesktopExtras(this IAtomUIBuilder builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
         GeneratedControlPackageRegistration.Register(
-            themeManagerBuilder,
+            builder.Theme,
             new AtomUIExtrasThemesProvider());
-        return themeManagerBuilder;
+        return builder;
     }
 }

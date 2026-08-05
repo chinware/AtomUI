@@ -119,7 +119,9 @@ public class PriceInput : TemplatedControl,
             return;
         }
 
-        _subscribedLanguageManager = Application.Current?.GetLanguageManager();
+        _subscribedLanguageManager = Application.Current is { } application
+            ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+            : null;
         if (_subscribedLanguageManager != null)
         {
             _subscribedLanguageManager.LanguageVariantChanged += HandleLanguageVariantChanged;

@@ -30,7 +30,9 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
             if (DataContext is FormViewModel viewModel)
             {
                 RefreshLocalizedOptionData(viewModel);
-                var languageManager = Application.Current?.GetLanguageManager();
+                var languageManager = Application.Current is { } application
+                    ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+                    : null;
                 if (languageManager != null)
                 {
                     EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedOptionData(viewModel);

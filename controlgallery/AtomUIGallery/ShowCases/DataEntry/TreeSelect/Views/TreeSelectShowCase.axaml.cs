@@ -26,7 +26,9 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
                 viewModel.AsyncLoadTreeNodeLoader = new LocalizedTreeSelectItemDataLoader();
                 viewModel.Placement = SelectPopupPlacement.TopEdgeAlignedLeft;
 
-                var languageManager = Application.Current?.GetLanguageManager();
+                var languageManager = Application.Current is { } application
+                    ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+                    : null;
                 if (languageManager != null)
                 {
                     EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedTreeNodes(viewModel);

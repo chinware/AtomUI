@@ -26,7 +26,9 @@ public partial class DrawerShowCase : GalleryReactiveUserControl<DrawerViewModel
             if (DataContext is DrawerViewModel viewModel)
             {
                 RefreshLocalizedOptionData(viewModel);
-                var languageManager = Application.Current?.GetLanguageManager();
+                var languageManager = Application.Current is { } application
+                    ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+                    : null;
                 if (languageManager is not null)
                 {
                     EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedOptionData(viewModel);

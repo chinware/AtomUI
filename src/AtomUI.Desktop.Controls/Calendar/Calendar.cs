@@ -468,7 +468,9 @@ public class Calendar : TemplatedControl
             return;
         }
 
-        var languageManager = Application.Current?.GetLanguageManager();
+        var languageManager = Application.Current is { } application
+            ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+            : null;
         if (languageManager is null)
         {
             return;

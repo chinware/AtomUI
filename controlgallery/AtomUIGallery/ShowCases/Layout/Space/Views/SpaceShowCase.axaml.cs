@@ -26,7 +26,9 @@ public partial class SpaceShowCase : GalleryReactiveUserControl<SpaceViewModel>
         this.WhenActivated(disposables =>
         {
             RefreshCurrentViewModelData();
-            var languageManager = Application.Current?.GetLanguageManager();
+            var languageManager = Application.Current is { } application
+                ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+                : null;
             if (languageManager != null)
             {
                 EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshCurrentViewModelData();

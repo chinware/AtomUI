@@ -11,29 +11,30 @@ namespace AtomUI.Desktop.Controls;
 
 public static class ThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseDesktopControls(this IThemeManagerBuilder themeManagerBuilder)
+    public static IAtomUIBuilder UseDesktopControls(this IAtomUIBuilder builder)
     {
-        themeManagerBuilder.UseCommonControls();
+        ArgumentNullException.ThrowIfNull(builder);
+        builder.Theme.UseCommonControls();
         DialogInputCaptureTracker.Initialize();
         if (RuntimePlatform.Features.SupportsNativeWindow)
         {
             GeneratedControlPackageRegistration.Register(
-                themeManagerBuilder,
+                builder.Theme,
                 new DesktopControlThemesProvider(),
                 selectAssets: DesktopControlThemeAssetSelector.SelectNative);
         }
         else
         {
             GeneratedControlPackageRegistration.Register(
-                themeManagerBuilder,
+                builder.Theme,
                 new BrowserDesktopControlThemesProvider(),
                 DesktopControlThemeAssetSelector.IsBrowserControlSupported,
                 DesktopControlThemeAssetSelector.SelectBrowser);
         }
 
-        themeManagerBuilder.AddInitializer(InitializeDesktopRuntime);
+        builder.Theme.AddInitializer(InitializeDesktopRuntime);
 
-        return themeManagerBuilder;
+        return builder;
     }
 
     private static void InitializeDesktopRuntime(IThemeManager manager)

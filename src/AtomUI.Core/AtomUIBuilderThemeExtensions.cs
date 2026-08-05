@@ -1,3 +1,4 @@
+using System.Globalization;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
@@ -38,6 +39,14 @@ public static class AtomUIBuilderThemeExtensions
         ThemeConfig? config = null)
     {
         GetTheme(builder).WithInitialTheme(themeId, config);
+        return builder;
+    }
+
+    public static IAtomUIBuilder WithDefaultCultureInfo(
+        this IAtomUIBuilder builder,
+        CultureInfo cultureInfo)
+    {
+        GetTheme(builder).WithDefaultCultureInfo(cultureInfo);
         return builder;
     }
 

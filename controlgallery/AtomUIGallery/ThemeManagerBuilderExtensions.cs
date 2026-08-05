@@ -1,3 +1,5 @@
+using AtomUI;
+using AtomUI.Generated.AtomUIGallery;
 using AtomUI.Theme;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Language;
@@ -7,11 +9,11 @@ namespace AtomUIGallery;
 
 public static class ThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseGalleryControls(this IThemeManagerBuilder themeManagerBuilder)
+    public static IAtomUIBuilder UseGalleryControls(this IAtomUIBuilder builder)
     {
-        ArgumentNullException.ThrowIfNull(themeManagerBuilder);
-        themeManagerBuilder.UseGalleryBase(AtomUIGalleryModule.Configure);
-        themeManagerBuilder.AddThemeDefinitionResolver(
+        ArgumentNullException.ThrowIfNull(builder);
+        builder.UseGalleryBase(AtomUIGalleryModule.Configure);
+        builder.Theme.AddThemeDefinitionResolver(
             new AvaloniaAssetThemeDefinitionResolver(
                 "AtomUIGallery.BuiltInThemes",
                 [
@@ -25,8 +27,8 @@ public static class ThemeManagerBuilderExtensions
         var languageProviders = LanguageProviderPool.GetLanguageProviders();
         foreach (var languageProvider in languageProviders)
         {
-            themeManagerBuilder.AddLanguageProvider(languageProvider);
+            builder.Theme.AddLanguageProvider(languageProvider);
         }
-        return themeManagerBuilder;
+        return builder;
     }
 }

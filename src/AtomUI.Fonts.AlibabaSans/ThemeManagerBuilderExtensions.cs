@@ -1,12 +1,13 @@
+using AtomUI;
 using AtomUI.Fonts.AlibabaSans;
-using AtomUI.Theme;
 using Avalonia.Media;
 
 public static class AlibabaSansThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseAlibabaSansFont(this IThemeManagerBuilder themeManagerBuilder)
+    public static IAtomUIBuilder UseAlibabaSansFont(this IAtomUIBuilder builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
         FontManager.Current.AddFontCollection(new AlibabaSansFontCollection());
-        return themeManagerBuilder;
+        return builder;
     }
 }
