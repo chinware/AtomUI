@@ -18,6 +18,10 @@
   - 将逻辑树父级与导航语义父级分离；分组对 `ParentNode`、`Level`、`IsTopLevel`、selection path、default path、Accordion 和 keyboard navigation 保持透明。
   - 定义无扁平列表分配的 semantic navigator，按已生成容器处理同层和 inline 可见树漫游，跳过分组、分隔线和不可交互项。
   - 将 generated container clear 定义为 selection 与 interaction 的统一失效出口，清除 realized selection、keyboard active、pointer press/release 目标和指向旧容器的 hover 延迟任务。
+  - 明确模板重应用与容器回收的状态边界：`NavMenuItem.OnApplyTemplate` 只替换 template part、订阅和局部 motion 资源，不清理打开路径或选中路径；节点状态只由对应 coordinator 和真实 container clear 路径维护。
+  - selection coordinator 区分已应用节点身份和临时 realized container 引用；容器回收只失效临时引用，视觉树 detach 保留已应用节点身份，后续选择按语义路径解析并清除当前旧容器，避免模板重建或重新挂载后出现多个 selected leaf。
+  - generated node container 在 prepare 完成后统一从 selection coordinator 投影 `IsSelected` / `IsInSelectedPath`，使任意深度 collapsed popup 延迟生成、关闭重开或容器复用时恢复同一持久选择，不依赖 popup 打开事件或 dispatcher 刷新时机。
+  - generated node container clear 完整复位 `IsSelected`、`IsInSelectedPath` 和 `IsSubMenuOpen`，避免 recycle 把旧节点视觉状态转移给新节点。
   - keyboard active 有效性同时检查 effective visible/effective enabled 与语义父链打开状态，避免 popup 关闭后提交仍被框架保留的 child container。
 - Theme
   - 定义 Inline/Vertical 固定 Header/Footer 与中间滚动 entry 区，Horizontal 左 Header、右 Footer 和中间菜单区。
@@ -28,9 +32,13 @@
   - 复用 `GroupTitleColor`、`DarkGroupTitleColor`、`GroupTitleLineHeight`、`GroupTitleFontSize` 表达非交互分组标题，不新增专属 divider token。
   - 明确 `CollapsedIconSize` 默认映射全局 `IconSizeLG`，相对普通 `ItemIconSize=IconSize` 使用大一档图标尺寸。
   - 明确 `VerticalItemsPanelSpacing=0` 保持默认 block margin 视觉；显式 `NavMenu.ItemSpacing` 是实例级额外 panel spacing，可覆盖根与后代默认 ItemsPanel，但不改写 Token。
+  - 将 `MenuPopupMaxHeight` 默认值定义为八个标准菜单项高度；短菜单保持自然高度，长菜单在固定可见范围内滚动。
 - Verification
   - 定义任意层级结构 entry、集合全动作、非法数据确定性失败、路径、选择、键盘、collapsed、Header/Footer、spacing、资源释放、容器回收隔离和纯节点快路径验证矩阵。
   - 覆盖 active container 移除后的 Enter、pressed container 移除后的 pointer release、pending open/close 目标回收，以及 popup 关闭后隐藏 child 不得被 Enter 提交。
+  - 覆盖开启宽度 motion 后连续两轮 inline collapsed 折叠/展开，验证任意深度的 selected item、祖先 selected path 和 cached inline open path 在模板重应用后完整恢复。
+  - 覆盖连续折叠/展开后切换 sibling、视觉树 detach 后程序化切换 sibling，以及 node container clear 的完整选择状态复位。
+  - 覆盖与 Gallery 相同的三级 collapsed popup 路径，验证当前 leaf 在两轮 popup 关闭重开和容器重新生成后持续保持唯一 selected 状态。
   - 覆盖 node/group 同 owner 与跨 owner 重复拒绝、释放后重挂载、root source 重复、跨根迁移、弱 owner 回收和 divider 复用。
   - 覆盖离线和根菜单中的 custom wrapper 共享内置后代、嵌套 observable source 动态获取/释放 owner、动态重复、动态 owner/祖先环拒绝、custom source weak subscription 回收、批量初始化原子失败、parent callback 与集合通知同步重入，以及纯 built-in 深树不产生祖先重复订阅。
   - Menu Gallery 增加结构化 NavMenu 示例，覆盖固定 Header/Footer、根与嵌套分组、分隔线和显式 `ItemSpacing`，并由页面结构测试与 approved snapshot 保护。

@@ -453,7 +453,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         
         MenuPopupMinWidth               = 160d;
         MenuPopupMaxWidth               = 800d;
-        MenuPopupMaxHeight              = ItemHeight * 30;
+        MenuPopupMaxHeight              = ItemHeight * 8;
         TopLevelItemPopupMarginToAnchor = EffectiveGlobalToken.UniformlyMarginXS;
         
         MenuPopupBg               = EffectiveGlobalToken.ColorBgElevated;

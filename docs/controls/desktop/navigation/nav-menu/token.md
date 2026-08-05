@@ -105,6 +105,8 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 
 用于 `Vertical` / `Horizontal` 弹出式子菜单。Popup 视觉不能直接使用 shared elevated background 绕过组件 token，因为 NavMenu popup 背景和 root/background/dark style 是稳定主题契约。
 
+`MenuPopupMaxHeight` 的默认值为 `ItemHeight * 8`。短菜单按内容自然高度测量；长菜单由 popup 内部滚动容器承载，避免弹出层随条目数量无限增长。主题可以覆盖该 token 调整可见范围，但不应通过改变 `ItemHeight` 间接控制 popup 容量。
+
 ### 2.7 Horizontal 导航 Token
 
 - `MenuHorizontalHeight`

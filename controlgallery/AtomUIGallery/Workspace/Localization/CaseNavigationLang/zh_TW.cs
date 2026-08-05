@@ -9,6 +9,8 @@ internal partial class zh_TW
     public const string Overview = "概覽";
     public const string Community = "社區";
     public const string Components = "組件";
+    public const string CollapseNavigation = "收起導覽";
+    public const string ExpandNavigation = "展開導覽";
 
     public const string General = "通用";
     public const string General_AboutUs = "關於我們";

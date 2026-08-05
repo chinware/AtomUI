@@ -1,27 +1,54 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Icons.AntDesign;
 using AtomUI.Theme.Language;
 using AtomUI.Toolkits.GalleryBase.Navigation;
+using AtomUI.Toolkits.GalleryBase.Shell;
+using AtomUIGallery.Localization;
 using AtomUIGallery.Workspace.ViewModels;
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using DesktopButton = AtomUI.Desktop.Controls.Button;
 using Window = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Workspace.Views;
 
-public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationViewModel>
+public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationViewModel>,
+                                      IGallerySidebarNavMenuHost
 {
     public const string LanguageId = nameof(CaseNavigation);
     private EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
+    private readonly PathIcon _collapseNavigationIcon;
+    private readonly PathIcon _expandNavigationIcon;
+    private readonly DesktopButton _navigationCollapseButton;
+
+    NavMenu IGallerySidebarNavMenuHost.SidebarNavMenu => ShowCaseNavMenu;
+    Control? IGallerySidebarNavMenuHost.SidebarHeaderAction => _navigationCollapseButton;
 
     public CaseNavigation()
     {
         InitializeComponent();
+        _collapseNavigationIcon = CreateNavigationIcon(AntDesignIconKind.MenuFoldOutlined);
+        _expandNavigationIcon   = CreateNavigationIcon(AntDesignIconKind.MenuUnfoldOutlined);
+        _navigationCollapseButton = new DesktopButton
+        {
+            Name                = "NavigationCollapseButton",
+            Width               = 40,
+            Height              = 40,
+            ButtonType          = ButtonType.Text,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        _navigationCollapseButton.Click += HandleToggleNavigationCollapsedClick;
         ConfigureNavigationMenu();
+        UpdateNavigationCollapseButtonPresentation();
 
         this.WhenActivated(disposables =>
         {
@@ -41,6 +68,9 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
             ShowCaseNavMenu.NavMenuItemClick += NavMenuItemClickHandler;
             Disposable.Create(() => ShowCaseNavMenu.NavMenuItemClick -= NavMenuItemClickHandler)
                       .DisposeWith(disposables);
+            ShowCaseNavMenu.GetObservable(NavMenu.IsInlineCollapsedProperty)
+                           .Subscribe(_ => UpdateNavigationCollapseButtonPresentation())
+                           .DisposeWith(disposables);
         });
     }
 
@@ -94,7 +124,11 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
             return;
         }
 
-        _languageVariantChangedHandler = (_, _) => ConfigureNavigationMenu();
+        _languageVariantChangedHandler = (_, _) =>
+        {
+            ConfigureNavigationMenu();
+            UpdateNavigationCollapseButtonPresentation();
+        };
         languageManager.LanguageVariantChanged += _languageVariantChangedHandler;
     }
 
@@ -130,5 +164,31 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
                          .Subscribe();
             }
         }
+    }
+
+    private void HandleToggleNavigationCollapsedClick(object? sender, RoutedEventArgs e)
+    {
+        ShowCaseNavMenu.IsInlineCollapsed = !ShowCaseNavMenu.IsInlineCollapsed;
+        UpdateNavigationCollapseButtonPresentation();
+    }
+
+    private void UpdateNavigationCollapseButtonPresentation()
+    {
+        var isCollapsed = ShowCaseNavMenu.IsInlineCollapsed;
+        var resourceKind = isCollapsed
+            ? CaseNavigationLangResourceKind.ExpandNavigation
+            : CaseNavigationLangResourceKind.CollapseNavigation;
+        var fallback = isCollapsed ? "Expand navigation" : "Collapse navigation";
+        var accessibleText = LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+
+        _navigationCollapseButton.Icon = isCollapsed
+            ? _expandNavigationIcon
+            : _collapseNavigationIcon;
+        AutomationProperties.SetName(_navigationCollapseButton, accessibleText);
+    }
+
+    private static PathIcon CreateNavigationIcon(AntDesignIconKind iconKind)
+    {
+        return (PathIcon)new AntDesignIconProvider(iconKind).ProvideValue(null!);
     }
 }

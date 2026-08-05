@@ -191,6 +191,24 @@ public class NavMenuEntryContainerTests
     }
 
     [Fact]
+    public void Clear_Node_Container_Resets_Transient_Selection_State()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu();
+        var container = new NavMenuItem
+        {
+            IsSelected       = true,
+            IsInSelectedPath = true,
+            IsSubMenuOpen    = true
+        };
+
+        NavMenuEntryContainerCoordinator.ClearContainer(menu, container);
+
+        container.IsSelected.ShouldBeFalse();
+        container.IsInSelectedPath.ShouldBeFalse();
+        container.IsSubMenuOpen.ShouldBeFalse();
+    }
+
+    [Fact]
     public void Removed_Group_Container_Releases_All_Owner_Bindings()
     {
         var firstTemplate = new FuncDataTemplate<object?>((_, _) => new TextBlock { Text = "First" });

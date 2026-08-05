@@ -4,22 +4,31 @@ namespace AtomUI.Desktop.Controls;
 
 internal sealed class NavMenuSelectionCoordinator
 {
-    private NavMenuItem? _latestSelectedItem;
+    private INavMenuNode? _appliedSelectedNode;
+    private NavMenuItem? _appliedSelectedItem;
 
     public void Select(NavMenu menu, NavMenuItem menuItem)
     {
-        if (ReferenceEquals(_latestSelectedItem, menuItem))
+        var selectedNode = ((INavMenuItem)menuItem).Node;
+        if (selectedNode is null)
         {
+            return;
+        }
+
+        if (ReferenceEquals(_appliedSelectedNode, selectedNode) && menuItem.IsSelected)
+        {
+            _appliedSelectedItem = menuItem;
             return;
         }
 
         var newItems         = NavMenu.CollectSelectPathItems(menuItem);
         var newSelectedPaths = NavMenu.BuildSelectPathSet(newItems);
+        var oldSelectedItem  = ResolveLatestSelectedItem(menu);
 
         HashSet<NavMenuItem>? oldSelectedPaths = null;
-        if (_latestSelectedItem != null)
+        if (oldSelectedItem != null)
         {
-            var oldItems = NavMenu.CollectSelectPathItems(_latestSelectedItem);
+            var oldItems = NavMenu.CollectSelectPathItems(oldSelectedItem);
             oldSelectedPaths = NavMenu.BuildSelectPathSet(oldItems);
         }
 
@@ -34,10 +43,10 @@ internal sealed class NavMenuSelectionCoordinator
             }
         }
 
-        if (_latestSelectedItem != null)
+        if (oldSelectedItem != null)
         {
-            var oldParentItem = ResolveSelectionOwner(menu, _latestSelectedItem);
-            oldParentItem?.SelectChildItem(_latestSelectedItem, false);
+            var oldParentItem = ResolveSelectionOwner(menu, oldSelectedItem);
+            oldParentItem.SelectChildItem(oldSelectedItem, false);
         }
 
         foreach (var newInSelectPathItem in newSelectedPaths)
@@ -46,43 +55,92 @@ internal sealed class NavMenuSelectionCoordinator
         }
 
         var parentItem = ResolveSelectionOwner(menu, menuItem);
-        parentItem?.SelectChildItem(menuItem, true);
-        _latestSelectedItem = menuItem;
+        parentItem.SelectChildItem(menuItem, true);
+        _appliedSelectedNode = selectedNode;
+        _appliedSelectedItem = menuItem;
         menu.RaiseNavMenuItemSelected(menuItem);
     }
 
-    public void ClearSelection()
+    public void ClearSelection(NavMenu menu)
     {
-        if (_latestSelectedItem is null)
+        var oldSelectedItem = ResolveLatestSelectedItem(menu);
+        if (oldSelectedItem is null)
         {
+            Reset();
             return;
         }
 
-        var oldItems = NavMenu.CollectSelectPathItems(_latestSelectedItem);
+        var oldItems = NavMenu.CollectSelectPathItems(oldSelectedItem);
         foreach (var oldInSelectPathItem in oldItems)
         {
             oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
         }
 
-        var ownerMenu = _latestSelectedItem.OwnerMenu;
-        var oldParentItem = ownerMenu is null
-            ? null
-            : ResolveSelectionOwner(ownerMenu, _latestSelectedItem);
-        oldParentItem?.SelectChildItem(_latestSelectedItem, false);
+        var oldParentItem = ResolveSelectionOwner(menu, oldSelectedItem);
+        oldParentItem.SelectChildItem(oldSelectedItem, false);
         Reset();
     }
 
-    public void Reset()
+    public void PrepareContainer(NavMenu menu, NavMenuItem menuItem)
     {
-        _latestSelectedItem = null;
+        var node = ((INavMenuItem)menuItem).Node;
+        if (node is null)
+        {
+            return;
+        }
+
+        var selectedNode = _appliedSelectedNode ?? menu.SelectedItem;
+        var isSelected = ReferenceEquals(node, selectedNode);
+        menuItem.SetCurrentValue(NavMenuItem.IsSelectedProperty, isSelected);
+        menuItem.SetCurrentValue(
+            NavMenuItem.IsInSelectedPathProperty,
+            !isSelected && IsAncestorOf(node, selectedNode));
+
+        if (isSelected && ReferenceEquals(node, _appliedSelectedNode))
+        {
+            _appliedSelectedItem = menuItem;
+        }
     }
 
     public void Forget(NavMenuItem menuItem)
     {
-        if (ReferenceEquals(_latestSelectedItem, menuItem))
+        if (ReferenceEquals(_appliedSelectedItem, menuItem))
         {
-            Reset();
+            _appliedSelectedItem = null;
         }
+    }
+
+    private NavMenuItem? ResolveLatestSelectedItem(NavMenu menu)
+    {
+        if (_appliedSelectedItem is not null)
+        {
+            return _appliedSelectedItem;
+        }
+
+        var selectedNode = _appliedSelectedNode ?? menu.SelectedItem;
+        return selectedNode is null ? null : menu.FindRealizedMenuItem(selectedNode);
+    }
+
+    private void Reset()
+    {
+        _appliedSelectedNode = null;
+        _appliedSelectedItem = null;
+    }
+
+    private static bool IsAncestorOf(INavMenuNode candidate, INavMenuNode? selectedNode)
+    {
+        var current = selectedNode?.ParentNode as INavMenuNode;
+        while (current is not null)
+        {
+            if (ReferenceEquals(current, candidate))
+            {
+                return true;
+            }
+
+            current = current.ParentNode as INavMenuNode;
+        }
+
+        return false;
     }
 
     private static IMenuChildSelectable ResolveSelectionOwner(NavMenu menu, NavMenuItem menuItem)

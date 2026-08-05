@@ -511,20 +511,6 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
 
-    private void ClearStateRecursively(INavMenuItem menuItem)
-    {
-        foreach (var child in menuItem.SubItems)
-        {
-            ClearStateRecursively(child);
-        }
-
-        if (menuItem is NavMenuItem navMenuItem)
-        {
-            navMenuItem.IsSubMenuOpen    = false;
-            navMenuItem.IsInSelectedPath = false;
-        }
-    }
-    
     protected virtual void NotifySubmenuOpened(RoutedEventArgs e)
     {
         if (e.Source is NavMenuItem menuItem)
@@ -1092,7 +1078,6 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         CancelInlineMotion();
-        ClearStateRecursively(this);
         base.OnApplyTemplate(e);
         if (_popup != null)
         {

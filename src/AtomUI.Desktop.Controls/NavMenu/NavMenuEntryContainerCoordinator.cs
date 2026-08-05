@@ -132,6 +132,8 @@ internal static class NavMenuEntryContainerCoordinator
                 parentItem.PrepareGeneratedNavMenuItem(menuItem, item, index);
                 break;
         }
+
+        context.OwnerMenu?.ApplySelectionStateToPreparedContainer(menuItem);
     }
 
     private static void PrepareGroupContainer(
@@ -328,6 +330,7 @@ internal static class NavMenuEntryContainerCoordinator
         menuItem.ClearValue(NavMenuItem.ShouldUseOverlayPopupProperty);
         menuItem.ClearValue(NavMenuItem.ItemContainerThemeProperty);
         menuItem.ClearValue(NavMenuItem.IsInSelectedPathProperty);
+        menuItem.ClearValue(NavMenuItem.IsSelectedProperty);
         menuItem.ClearValue(NavMenuItem.IsSubMenuOpenProperty);
     }
 

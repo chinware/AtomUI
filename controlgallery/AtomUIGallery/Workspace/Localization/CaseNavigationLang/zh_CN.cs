@@ -9,6 +9,8 @@ internal partial class zh_CN
     public const string Overview = "概览";
     public const string Community = "社区";
     public const string Components = "组件";
+    public const string CollapseNavigation = "收起导航";
+    public const string ExpandNavigation = "展开导航";
 
     public const string General = "通用";
     public const string General_AboutUs = "关于我们";

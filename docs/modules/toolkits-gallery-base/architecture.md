@@ -245,6 +245,7 @@ GalleryBase 提供两个宿主：
 |---|---|
 | `GalleryShellView` | Desktop 与 Browser 共用的侧边栏、footer 和内容路由布局 |
 | `GalleryBrowserShellView` | Browser 单页面基础视图，继承 `UserControl` 并实现 `IScreen`、`IMediaBreakAwareControl` |
+| `IGallerySidebarNavMenuHost` | 产品导航视图显式暴露根 `NavMenu` 和可选品牌区 Header Action，使共享 Shell 可以跟随 NavMenu 的有效折叠宽度并摆放产品操作，而不遍历产品视图内部结构 |
 
 两者共享：
 

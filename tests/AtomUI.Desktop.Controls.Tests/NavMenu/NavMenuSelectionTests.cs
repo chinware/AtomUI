@@ -303,6 +303,63 @@ public class NavMenuSelectionTests
     }
 
     [Fact]
+    public void NavMenu_Detach_Then_Programmatic_Sibling_Selection_Clears_Previous_Selection()
+    {
+        var first = new NavMenuNode
+        {
+            Header  = "First",
+            ItemKey = "first"
+        };
+        var second = new NavMenuNode
+        {
+            Header  = "Second",
+            ItemKey = "second"
+        };
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(first);
+        menu.Items.Add(second);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            menu.SelectedItem = first;
+            Dispatcher.UIThread.RunJobs();
+
+            var firstContainer = menu.ContainerFromItem(first).ShouldBeOfType<NavMenuItem>();
+            firstContainer.IsSelected.ShouldBeTrue();
+
+            window.Content = null;
+            Dispatcher.UIThread.RunJobs();
+
+            menu.SelectedItem = second;
+            window.Content    = menu;
+            Dispatcher.UIThread.RunJobs();
+
+            var secondContainer = menu.ContainerFromItem(second).ShouldBeOfType<NavMenuItem>();
+            firstContainer.IsSelected.ShouldBeFalse(
+                "visual detach must not discard the identity needed to clear the applied selection.");
+            secondContainer.IsSelected.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Inline_Submenu_Child_Press_Does_Not_Apply_Active_Background_To_Parent_Header()
     {
         var menu = new AtomUI.Desktop.Controls.NavMenu

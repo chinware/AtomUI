@@ -28,6 +28,42 @@ GalleryShell
 
 `GalleryShellView` 负责 Sidebar、BrandArea、FooterLinks、VersionTag、`RoutedViewHost` 和导航/内容分隔线。Shell 不负责 Demo 页面内部布局。ShowCase 页面继续使用 `GalleryStickyTabsHost`、`ShowCasePanel` 和 `ShowCaseItem`。
 
+### 可折叠 Sidebar
+
+GalleryBase 通过显式 NavMenu host 契约为产品导航视图提供可选的 Sidebar 折叠能力：
+
+```csharp
+public interface IGallerySidebarNavMenuHost
+{
+    NavMenu SidebarNavMenu { get; }
+    Control? SidebarHeaderAction { get; }
+}
+```
+
+产品导航视图只有在实现该接口时才启用可折叠布局；普通 `Control` 导航视图继续使用固定
+`GalleryShellConfiguration.SidebarWidth`，保持既有兼容行为。GalleryBase 不通过名称、视觉树遍历或模板 part
+查找产品导航视图内部的 `NavMenu`。
+
+折叠状态和宽度遵守以下所有权：
+
+- `NavMenu.IsInlineCollapsed` 是唯一折叠状态源，Shell 和产品 ViewModel 不保存第二份镜像状态。
+- 展开宽度由 `GalleryShellConfiguration.SidebarWidth` 写入 host 暴露的根 `NavMenu.Width`。
+- 折叠宽度由 `NavMenu.InlineCollapsedWidth` 及其主题 Token 决定，GalleryBase 不重复配置默认值。
+- 可折叠 Sidebar 使用 `Auto,*` 列布局，Sidebar 宽度单向跟随 `NavMenu.Width` 的有效值，使 NavMenu
+  的折叠/展开 motion 同时驱动品牌区、导航/内容分隔线和内容区边界。
+- `SidebarHeaderAction` 是产品导航视图提供的、尚未挂入其他视觉树的可选操作控件。Shell 只把它放入品牌区
+  右侧，不拥有其命令、图标、文案或折叠状态。
+- 品牌区使用左侧品牌内容与右侧 Header Action 两个独立视觉单元。展开状态下 Action 位于 Sidebar 右上角；
+  折叠状态下只隐藏品牌内容，Action 在折叠宽度内保持居中和可交互。
+- Sidebar 在宽度 motion 期间裁剪品牌和 footer 内容；完整品牌内容和 footer 在折叠状态下隐藏。
+- NavMenu Header 不承载 Sidebar 折叠入口，避免把全局布局操作夹在品牌区与第一个导航项之间。
+- `GalleryShellView.Dispose()` 必须释放从 NavMenu 到 Sidebar 的属性绑定，不能让 Shell 或导航 ViewModel
+  因宽度同步而被长期保留。
+
+折叠只改变呈现和有效交互模式，不重建导航 entry，不修改路由、`SelectedItem`、默认路径或展开路径。
+Desktop 与 Browser 共用同一 `GalleryShellView`，因此 Browser 内容区的 media breakpoint 继续由折叠后的
+`ContentHost` 实际宽度自然驱动。
+
 ## 共享 ViewModel
 
 ```csharp
@@ -86,6 +122,8 @@ var shellView = new GalleryShellView(configuration, navigationView, viewModel.Ro
 - 产品窗口创建并绑定产品 `GalleryWorkspaceViewModel` 派生类型。
 - 产品窗口配置 AtomUI Window title bar 和菜单事件。
 - `GalleryShellView` 应用 Sidebar、品牌、footer 和 routing content host。
+- 产品导航视图需要 Sidebar 折叠时，实现 `IGallerySidebarNavMenuHost`，显式暴露根 `NavMenu` 和可选的
+  `SidebarHeaderAction`；不能通过 Shell 穿透产品视图查找或修改内部模板。
 - 产品窗口处理 caption button 可见性、移动、缩放、置顶等窗口行为。
 
 Desktop 不负责：
@@ -229,3 +267,6 @@ Desktop 崩溃日志当前仍由产品启动项目处理。`GalleryPlatformOptio
 - 标题栏菜单按配置开关显示或隐藏。
 - Browser OverlayLayer 初始化方法存在于 GalleryBase Browser 宿主中。
 - Browser 不再手写重复导航树。
+- 可折叠 NavMenu host 的 Sidebar 宽度跟随 NavMenu 有效宽度，连续折叠/展开不产生独立 Shell 动画状态。
+- 普通导航 `Control` 不实现 host 契约时继续使用固定 Sidebar 宽度。
+- 折叠和展开不得重建导航 entry，且不能改变路由、选中节点或展开路径。

@@ -9,6 +9,8 @@ internal partial class en_US
     public const string Overview = "Overview";
     public const string Community = "Community";
     public const string Components = "Components";
+    public const string CollapseNavigation = "Collapse navigation";
+    public const string ExpandNavigation = "Expand navigation";
 
     public const string General = "General";
     public const string General_AboutUs = "AboutUS";

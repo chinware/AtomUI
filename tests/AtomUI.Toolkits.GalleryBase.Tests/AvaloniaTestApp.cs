@@ -1,6 +1,7 @@
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Headless;
+using ReactiveUI.Avalonia;
 using Xunit;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUI.Toolkits.GalleryBase.Tests.TestAppBuilder))]
@@ -28,6 +29,7 @@ public static class TestAppBuilder
     public static AppBuilder BuildAvaloniaApp()
     {
         return AppBuilder.Configure<TestApplication>()
+                         .UseReactiveUI(_ => { })
                          .UseHeadless(new AvaloniaHeadlessPlatformOptions());
     }
 }

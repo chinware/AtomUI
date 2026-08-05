@@ -10,6 +10,8 @@ using Avalonia.Media;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 using DesktopHyperLinkButton = AtomUI.Desktop.Controls.HyperLinkButton;
+using DesktopNavMenu = AtomUI.Desktop.Controls.NavMenu;
+using DesktopNavMenuMode = AtomUI.Desktop.Controls.NavMenuMode;
 using DesktopTag = AtomUI.Desktop.Controls.Tag;
 using SvgControl = Avalonia.Svg.Svg;
 
@@ -18,6 +20,7 @@ namespace AtomUI.Toolkits.GalleryBase.Shell;
 public sealed class GalleryShellView : UserControl, IDisposable
 {
     private readonly CompositeDisposable _themeBindings = new();
+    private readonly CompositeDisposable _sidebarBindings = new();
     private readonly Border              _navigationSeparator;
     private bool _isDisposed;
 
@@ -29,11 +32,24 @@ public sealed class GalleryShellView : UserControl, IDisposable
                             Control navigationView,
                             RoutingState router)
     {
+        var sidebarHost    = navigationView as IGallerySidebarNavMenuHost;
+        var sidebarNavMenu = sidebarHost?.SidebarNavMenu;
+        sidebarNavMenu?.SetCurrentValue(WidthProperty, configuration.Shell.SidebarWidth);
+
         var sidebar = new Border
         {
-            Child = CreateSidebar(configuration, navigationView)
+            Name         = "WorkspaceSidebar",
+            ClipToBounds = sidebarNavMenu is not null,
+            Child        = CreateSidebar(configuration,
+                                         navigationView,
+                                         sidebarNavMenu,
+                                         sidebarHost?.SidebarHeaderAction)
         };
         BindToken(sidebar, Border.BackgroundProperty, SharedTokenKind.ColorBgContainer);
+        if (sidebarNavMenu is not null)
+        {
+            _sidebarBindings.Add(sidebar.Bind(WidthProperty, sidebarNavMenu.GetObservable(WidthProperty)));
+        }
 
         RoutedViewHost = new RoutedViewHost
         {
@@ -62,7 +78,10 @@ public sealed class GalleryShellView : UserControl, IDisposable
 
         var rootLayout = new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions($"{configuration.Shell.SidebarWidth},*"),
+            Name = "WorkspaceRootLayout",
+            ColumnDefinitions = sidebarNavMenu is not null
+                ? new ColumnDefinitions("Auto,*")
+                : new ColumnDefinitions($"{configuration.Shell.SidebarWidth},*"),
             Children =
             {
                 sidebar,
@@ -88,6 +107,7 @@ public sealed class GalleryShellView : UserControl, IDisposable
         }
 
         _isDisposed = true;
+        _sidebarBindings.Dispose();
         _themeBindings.Dispose();
     }
 
@@ -97,17 +117,42 @@ public sealed class GalleryShellView : UserControl, IDisposable
         base.OnDetachedFromVisualTree(e);
     }
 
-    private Grid CreateSidebar(GalleryBaseConfiguration configuration, Control navigationView)
+    private Grid CreateSidebar(GalleryBaseConfiguration configuration,
+                               Control navigationView,
+                               DesktopNavMenu? sidebarNavMenu,
+                               Control? sidebarHeaderAction)
     {
-        var logoHost = new StackPanel
+        var brandContent = new Border
         {
-            Margin = new Thickness(24, 28, 24, 24),
+            Name                = "WorkspaceBrandContent",
+            Margin              = new Thickness(24, 0, 0, 0),
+            HorizontalAlignment = HorizontalAlignment.Left,
+            Child               = CreateBrandContent(configuration.Branding)
+        };
+        var brandHeader = new Grid
+        {
+            Name   = "WorkspaceBrandHost",
+            Margin = new Thickness(0, 20, 0, 16),
             Children =
             {
-                CreateBrandContent(configuration.Branding)
+                brandContent
             }
         };
-        Grid.SetRow(logoHost, 0);
+
+        Border? sidebarHeaderActionHost = null;
+        if (sidebarHeaderAction is not null)
+        {
+            sidebarHeaderActionHost = new Border
+            {
+                Name                = "WorkspaceSidebarHeaderActionHost",
+                Margin              = new Thickness(0, 0, 4, 0),
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment   = VerticalAlignment.Center,
+                Child               = sidebarHeaderAction
+            };
+            brandHeader.Children.Add(sidebarHeaderActionHost);
+        }
+        Grid.SetRow(brandHeader, 0);
 
         Grid.SetRow(navigationView, 1);
 
@@ -116,7 +161,7 @@ public sealed class GalleryShellView : UserControl, IDisposable
             RowDefinitions = new RowDefinitions("Auto,*,Auto"),
             Children =
             {
-                logoHost,
+                brandHeader,
                 navigationView
             }
         };
@@ -128,7 +173,53 @@ public sealed class GalleryShellView : UserControl, IDisposable
             sidebar.Children.Add(footer);
         }
 
+        BindSidebarPresentation(brandHeader,
+                                brandContent,
+                                sidebarHeaderActionHost,
+                                footer,
+                                sidebarNavMenu);
+
         return sidebar;
+    }
+
+    private void BindSidebarPresentation(Control brandHeader,
+                                         Control brandContent,
+                                         Border? sidebarHeaderActionHost,
+                                         Control? footer,
+                                         DesktopNavMenu? sidebarNavMenu)
+    {
+        if (sidebarNavMenu is null)
+        {
+            return;
+        }
+
+        void UpdatePresentation()
+        {
+            var isInlineCollapsed = sidebarNavMenu.Mode == DesktopNavMenuMode.Inline &&
+                                    sidebarNavMenu.IsInlineCollapsed;
+            brandHeader.Margin = isInlineCollapsed
+                ? new Thickness(0, 20, 0, 0)
+                : new Thickness(0, 20, 0, 16);
+            brandContent.IsVisible = !isInlineCollapsed;
+            if (footer is not null)
+            {
+                footer.IsVisible = !isInlineCollapsed;
+            }
+            if (sidebarHeaderActionHost is not null)
+            {
+                sidebarHeaderActionHost.HorizontalAlignment = isInlineCollapsed
+                    ? HorizontalAlignment.Center
+                    : HorizontalAlignment.Right;
+                sidebarHeaderActionHost.Margin = isInlineCollapsed
+                    ? default
+                    : new Thickness(0, 0, 4, 0);
+            }
+        }
+
+        _sidebarBindings.Add(sidebarNavMenu.GetObservable(DesktopNavMenu.IsInlineCollapsedProperty)
+                                           .Subscribe(_ => UpdatePresentation()));
+        _sidebarBindings.Add(sidebarNavMenu.GetObservable(DesktopNavMenu.ModeProperty)
+                                           .Subscribe(_ => UpdatePresentation()));
     }
 
     private static Control CreateBrandContent(GalleryBrandingConfiguration branding)
@@ -198,6 +289,7 @@ public sealed class GalleryShellView : UserControl, IDisposable
 
         var footer = new Border
         {
+            Name            = "WorkspaceSidebarFooter",
             BorderThickness = new Thickness(0, 1, 0, 0),
             Padding         = new Thickness(16, 12),
             Child           = footerLayout

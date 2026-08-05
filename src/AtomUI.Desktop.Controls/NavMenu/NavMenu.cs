@@ -2,7 +2,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
-using AtomUI.Data;
 using AtomUI.Theme.Resources;
 using AtomUI.Utils;
 using Avalonia;
@@ -450,7 +449,6 @@ public class NavMenu : ItemsControl,
         ClearInlineCollapsedLayoutWidth();
         InteractionHandler?.Detach(this);
         InteractionHandler = null;
-        _selectionCoordinator.Reset();
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
@@ -479,6 +477,11 @@ public class NavMenu : ItemsControl,
     {
     }
 
+    internal void ApplySelectionStateToPreparedContainer(NavMenuItem menuItem)
+    {
+        _selectionCoordinator.PrepareContainer(this, menuItem);
+    }
+
     internal void ForgetGeneratedContainer(NavMenuItem menuItem)
     {
         _selectionCoordinator.Forget(menuItem);
@@ -492,7 +495,7 @@ public class NavMenu : ItemsControl,
 
     internal void ClearSelectionState()
     {
-        _selectionCoordinator.ClearSelection();
+        _selectionCoordinator.ClearSelection(this);
     }
     
     private void ConfigureInteractionHandler(bool needMount = false)
@@ -615,7 +618,6 @@ public class NavMenu : ItemsControl,
         CloseOpenSubmenusPreservingSelection(this);
         UpdateEffectiveMode();
         ConfigureInteractionHandler(true);
-        QueueApplySelectedStateToRealizedPath();
         StartPreparedInlineCollapsedWidthMotion(shouldAnimateWidth, motionStartWidth, motionTargetWidth);
     }
 
@@ -626,7 +628,6 @@ public class NavMenu : ItemsControl,
         UpdateEffectiveMode();
         ConfigureInteractionHandler(true);
         RestoreInlineCollapsedOpenPaths();
-        QueueApplySelectedStateToRealizedPath();
         StartPreparedInlineCollapsedWidthMotion(shouldAnimateWidth, motionStartWidth, motionTargetWidth);
     }
 
@@ -908,44 +909,6 @@ public class NavMenu : ItemsControl,
         }
     }
 
-    private void ApplySelectedStateToRealizedPath()
-    {
-        if (SelectedItem is null)
-        {
-            return;
-        }
-
-        var pathNodes = CollectPathNodes(SelectedItem);
-        if (pathNodes.Count == 0)
-        {
-            return;
-        }
-
-        ItemsControl current = this;
-        for (var i = 0; i < pathNodes.Count; i++)
-        {
-            if (NavMenuSemanticNavigator.FindDirectItem(current, pathNodes[i]) is not { } item)
-            {
-                return;
-            }
-
-            if (i == pathNodes.Count - 1)
-            {
-                item.SetCurrentValue(NavMenuItem.IsSelectedProperty, true);
-                return;
-            }
-
-            item.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, true);
-            current = item;
-        }
-    }
-
-    private void QueueApplySelectedStateToRealizedPath()
-    {
-        ApplySelectedStateToRealizedPath();
-        Dispatcher.InvokeAsync(ApplySelectedStateToRealizedPath, DispatcherPriority.Loaded);
-    }
-    
     private void ConfigureDefaultOpenedPaths()
     {
         if (DefaultOpenPaths != null && !_defaultOpenPathsApplied)
@@ -1104,6 +1067,34 @@ public class NavMenu : ItemsControl,
         }
 
         return false;
+    }
+
+    internal NavMenuItem? FindRealizedMenuItem(INavMenuNode node)
+    {
+        var pathNodes = CollectPathNodes(node);
+        if (pathNodes.Count == 0)
+        {
+            return null;
+        }
+
+        ItemsControl current = this;
+        for (var i = 0; i < pathNodes.Count; i++)
+        {
+            var menuItem = NavMenuSemanticNavigator.FindDirectItem(current, pathNodes[i]);
+            if (menuItem is null)
+            {
+                return null;
+            }
+
+            if (i == pathNodes.Count - 1)
+            {
+                return menuItem;
+            }
+
+            current = menuItem;
+        }
+
+        return null;
     }
 
     public void Close()

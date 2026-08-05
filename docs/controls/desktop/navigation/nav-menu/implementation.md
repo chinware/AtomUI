@@ -45,7 +45,7 @@ NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护包含节点�
 
 inline collapsed coordinator 由 `NavMenu` 拥有，负责根据 `Mode` 和 `IsInlineCollapsed` 计算 effective mode，缓存 inline 打开路径，关闭折叠期间的临时 popup，并把折叠视觉状态下发到 `NavMenuItem` 和 header。它不拥有选择状态，也不直接修改 `Mode`。
 
-`NavMenuSelectionCoordinator` 统一处理旧选中节点清理、新选中节点设置、祖先路径标记和事件派发，避免选择逻辑散落在 click handler、默认路径 replay 和 property changed 分支中。
+`NavMenuSelectionCoordinator` 统一处理旧选中节点清理、新选中节点设置、祖先路径标记和事件派发，避免选择逻辑散落在 click handler、默认路径 replay 和 property changed 分支中。它保存最后一次已应用选择的节点身份，并把当前 realized `NavMenuItem` 仅作为可失效缓存；容器回收后通过节点语义路径重新解析当前容器，不扫描或扁平化整棵 entry 树。每个 node container 完成 owner、node 和 semantic parent 准备后，都必须由 coordinator 投影当前 `IsSelected` / `IsInSelectedPath`，因此延迟打开的任意深度 popup 不依赖先前的 dispatcher 刷新时机。
 
 interaction handler 按 mode 分工：Inline handler 处理视觉树内展开，Default handler 处理 popup 打开、延迟关闭、窗口失焦和同级互斥。键盘导航由 interaction handler 层统一接入，负责 active/focus 漫游、层级进入/返回、Enter 提交和 Esc 关闭当前 popup 分支，不能散落到各个 `NavMenuItem` 的局部 key handler 中。
 
@@ -85,7 +85,7 @@ Interaction handler + KeyboardNavigationCoordinator + SelectionCoordinator
 Header theme / Popup frame / Inline child frame
 ```
 
-`SelectedItem` 是持续选择状态。`DefaultSelectedPath` 和 `DefaultOpenPaths` 只在初始路径应用中参与 replay。程序连续设置多个选择时，过期 replay 必须被忽略，只应用最新 revision。
+`SelectedItem` 是持续选择状态。selection coordinator 中的已应用节点身份用于描述当前视觉投影，不替代 `SelectedItem` 公共状态；realized container 引用只在对应容器仍服务同一节点时有效。容器回收只失效临时引用，视觉树 detach 也不能清空已应用节点身份，因为同一控件及其选择视觉可以随后重新挂载。只有显式清空选择时，公共选择和已应用投影才共同复位。`DefaultSelectedPath` 和 `DefaultOpenPaths` 只在初始路径应用中参与 replay。程序连续设置多个选择时，过期 replay 必须被忽略，只应用最新 revision。
 
 `IsInlineCollapsed` 是 `Inline` 模式附加状态。进入折叠时，当前 inline 打开路径写入 cache，主视觉树中的 inline 子菜单关闭，effective mode 切为 `Vertical`；退出折叠时，折叠期间打开的 popup 关闭，再从 cache 恢复 inline 打开路径。这个流程不能调用 `NavMenu.Close()`，不能改写 `SelectedItem`。
 
@@ -119,7 +119,7 @@ expand:
   sync expanded visual state
 ```
 
-`NavMenuItem.OnApplyTemplate` 获取 header、popup、popup frame、inline motion actor、child frame、items presenter 和 active indicator。模板替换时必须解除旧 part 事件订阅，并重新绑定 handler 需要的 part。
+`NavMenuItem.OnApplyTemplate` 获取 header、popup、popup frame、inline motion actor、child frame、items presenter 和 active indicator。模板替换时必须解除旧 part 事件订阅，并重新绑定 handler 需要的 part。模板重应用只负责 template part、事件订阅和局部 motion 资源的替换，不能重置 `IsSubMenuOpen`、`IsInSelectedPath` 或 `IsSelected`；这些状态分别由 open-path coordinator、selection coordinator 和明确的容器清理路径维护。`NavMenuEntryContainerCoordinator.PrepareContainer` 在 node binding 和 semantic context 就绪后统一调用 selection coordinator，把当前已应用节点身份投影到新容器。只有 `ClearContainer` 确认容器退出当前数据项并进入回收流程时，才清除 `IsSubMenuOpen`、`IsInSelectedPath`、`IsSelected` 和 owner context，并通知 selection / interaction coordinator 忘记对该 realized container 的引用，避免 re-template 破坏持续状态或 recycle 把旧节点状态转移给新节点。
 
 Root template 把 Header、菜单 entry 区和 Footer 组织为三个稳定区域。Inline/Vertical 的 Header/Footer 位于 ScrollViewer 外部，中间 entry 区独立滚动；Horizontal 使用左侧 Header、中间 entry 区和右侧 Footer。Header/Footer content 为空时 presenter 使用 `IsVisible=false` 退化，不改变无 slot 的测量结果。有效 inline collapsed 状态下 Header presenter 保持存在以承载展开入口，Footer presenter 退出布局；展开后同一 Footer content 恢复，不重建或替换用户内容。
 
@@ -256,6 +256,8 @@ NavMenu.SelectedItem + NavMenuNodeSelected
 祖先路径只标记导航路径，不应通过 ancestor pointer state 让父级 header 进入 hover 背景。
 
 选择祖先从 `SemanticParentItem` 迭代，不使用 `GetLogicalParent<NavMenuItem>()`。节点位于任意层级分组内时，分组容器不会出现在 selected path；顶层分组中的节点仍由 root selection owner 直接选择。
+
+选择协调器必须区分节点身份和容器身份。最后一次已应用的节点身份跨 template reapply、inline collapsed 切换和视觉树 detach 保留；realized container 被回收时只清除容器引用。新容器 prepare 时根据已应用节点及其 parent path 精确设置自身 selected/path 状态；如果程序化 `SelectedItem` 正在等待 revision replay，prepare 继续投影旧的已应用节点，不能提前覆盖 coordinator 状态。下一次选择若没有可用缓存，应沿目标节点的 semantic parent path 逐层解析旧选中容器，再清除旧 leaf 和旧祖先路径。查找工作只覆盖路径深度和各层透明分组的结构查找，不能为一次选择构造全树快照。
 
 键盘提交必须复用同一流程。active 项不是选择项，方向键移动不进入 selection coordinator。Enter 提交叶子节点时先触发 item click 语义，再由 selection coordinator 更新选中路径，确保键盘与 pointer click 的事件顺序一致。
 
@@ -422,7 +424,7 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 - 重复挂载覆盖同一/不同 `Entries` owner、根 source、Remove 后重挂载、source removal 后换根菜单、root owner WeakReference 回收，以及 `NavMenuDivider` 多位置复用。
 - custom wrapper 覆盖离线和根菜单中的初始共享内置后代、嵌套 observable source 动态获取/释放 owner、动态重复、动态指回 built-in owner/祖先、Remove 后重挂载，以及外部 custom source 不得保留 owner。
 - 批量初始化覆盖同步观察者重入，确保完整批次在首次通知前已经提交 ownership；纯 built-in 深链覆盖祖先不订阅后代 collection。
-- `SelectedItem`、`DefaultSelectedPath`、`DefaultOpenPaths`、stale replay 和 clear selection。
+- `SelectedItem`、`DefaultSelectedPath`、`DefaultOpenPaths`、stale replay、clear selection、容器回收后的 sibling selection、视觉树 detach 后的程序化选择切换，以及任意深度 collapsed popup 关闭重开后的 selected leaf 投影。
 - 点击子节点时父级 header 不出现错误 hover 背景。
 - `IsItemBackgroundEnabled=true/false` 下 inline 背景块、header 背景和间距分别正确。
 - Dark root、popup、submenu、header、selected 和 hover 颜色与 Token 语义一致。
