@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Media;
 using Shouldly;
 using Xunit;
 
@@ -6,6 +7,25 @@ namespace AtomUI.Localization.Tests;
 
 public class LanguageResourceProviderTests
 {
+    [Fact]
+    public void Provider_Projects_FlowDirection_From_The_Current_Language_Revision()
+    {
+        var runtime = LanguageManagerTestRuntime.Create();
+
+        runtime.Provider.TryGetResource(
+            LanguageRuntimeResourceKeys.FlowDirection,
+            null,
+            out var leftToRight).ShouldBeTrue();
+        runtime.Manager.ChangeLanguage(LanguageTags.ArSA);
+        runtime.Provider.TryGetResource(
+            LanguageRuntimeResourceKeys.FlowDirection,
+            null,
+            out var rightToLeft).ShouldBeTrue();
+
+        leftToRight.ShouldBe(FlowDirection.LeftToRight);
+        rightToLeft.ShouldBe(FlowDirection.RightToLeft);
+    }
+
     [Fact]
     public void Provider_Resolves_The_Exact_Boxed_Enum_Key_From_The_Current_Snapshot()
     {

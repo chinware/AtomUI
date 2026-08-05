@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Localization;
@@ -22,6 +23,13 @@ internal sealed class LanguageResourceProvider : ResourceProvider
         ArgumentNullException.ThrowIfNull(key);
 
         var revision = _context.Current;
+        if (ReferenceEquals(key, LanguageRuntimeResourceKeys.FlowDirection))
+        {
+            value = revision.State.TextDirection == LanguageTextDirection.RightToLeft
+                ? FlowDirection.RightToLeft
+                : FlowDirection.LeftToRight;
+            return true;
+        }
         if (!_context.Registry.TryGetCatalogSlot(key.GetType(), out var catalogSlot))
         {
             value = null;
