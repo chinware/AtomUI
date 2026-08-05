@@ -45,10 +45,10 @@ public class MenuShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:MenuShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(17);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(17);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(17);
-        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:MenuViewModel\"").ShouldBe(17);
+        CountShowCaseItemElements(source).ShouldBe(18);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(18);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(18);
+        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:MenuViewModel\"").ShouldBe(18);
         source.ShouldContain("MenuShowCaseLangResource BasicTitle");
         source.ShouldContain("MenuShowCaseLangResource IconAndSubmenuTitle");
         source.ShouldContain("MenuShowCaseLangResource MenuItemItemsSourceTitle");
@@ -56,12 +56,36 @@ public class MenuShowCasePageTests
         source.ShouldContain("MenuShowCaseLangResource VerticalNavMenuTitle");
         source.ShouldContain("MenuShowCaseLangResource NavMenuNodeCommandTitle");
         source.ShouldContain("MenuShowCaseLangResource InlineCollapsedMenuTitle");
+        source.ShouldContain("MenuShowCaseLangResource NavMenuCompositionTitle");
         source.ShouldContain("BadgeText=\"v6.0.6\"");
         source.ShouldContain("IsInlineCollapsed=\"{Binding IsInlineCollapsed}\"");
         source.ShouldContain("Click=\"HandleToggleInlineCollapsedClick\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void Menu_ShowCase_Demonstrates_NavMenu_Structural_Entries_And_Root_Slots()
+    {
+        var pageSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
+        var zhCN = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_CN.cs");
+        var zhTW = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_TW.cs");
+        var enUS = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en_US.cs");
+        var showCaseSource = ExtractShowCaseItem(pageSource, "NavMenuCompositionTitle");
+
+        showCaseSource.ShouldContain("MenuShowCaseLangResource NavMenuCompositionDescription");
+        showCaseSource.ShouldContain("ItemSpacing=\"4\"");
+        showCaseSource.ShouldContain("<atom:NavMenu.Header>");
+        showCaseSource.ShouldContain("<atom:NavMenu.Footer>");
+        CountOccurrences(showCaseSource, "<atom:NavMenuGroup").ShouldBeGreaterThanOrEqualTo(3);
+        CountOccurrences(showCaseSource, "<atom:NavMenuDivider").ShouldBeGreaterThanOrEqualTo(2);
+        showCaseSource.ShouldContain("<atom:NavMenuNode.Entries>");
+        showCaseSource.ShouldNotContain("<atom:NavMenu.Styles>");
+
+        zhCN.ShouldContain("public const string NavMenuCompositionTitle = \"结构化导航菜单\";");
+        zhTW.ShouldContain("public const string NavMenuCompositionTitle = \"結構化導航菜單\";");
+        enUS.ShouldContain("public const string NavMenuCompositionTitle = \"Structured nav menu\";");
     }
 
     [Fact]

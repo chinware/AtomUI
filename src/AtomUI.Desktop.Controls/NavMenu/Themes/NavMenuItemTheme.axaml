@@ -6,6 +6,13 @@
     x:ClassModifier="internal">
     <converters:NavMenuIsSubMenuOpenConverter x:Key="IsSubMenuOpenConverter" />
     <ControlTheme x:Key="{x:Type atom:NavMenuItem}" TargetType="atom:NavMenuItem">
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Vertical"
+                            Spacing="{TemplateBinding EntryItemSpacing}" />
+            </ItemsPanelTemplate>
+        </Setter>
+
         <Style Selector="^[Mode=Horizontal]">
             <Setter Property="Template">
                 <ControlTemplate>
@@ -188,11 +195,6 @@
                     Value="{atom:SharedTokenResource MotionDurationSlow}" />
 
             <Setter Property="Focusable" Value="False" />
-            <Style Selector="^ /template/ ItemsPresenter#ChildItemsPresenter StackPanel">
-                <Setter Property="Spacing"
-                        Value="{atom:NavMenuTokenResource VerticalItemsPanelSpacing}" />
-            </Style>
-
             <Style Selector="^[IsItemBackgroundEnabled=True]">
                 <Style Selector="^ /template/ atom|LayoutAwareMotionActor#PART_ChildItemsLayoutTransform">
                     <Setter Property="Margin"

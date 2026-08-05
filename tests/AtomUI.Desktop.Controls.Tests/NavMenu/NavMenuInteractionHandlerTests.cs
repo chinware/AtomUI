@@ -2,6 +2,7 @@ using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -94,6 +95,131 @@ public class NavMenuInteractionHandlerTests
     }
 
     [Fact]
+    public void Removing_An_Item_Disposes_Its_Pending_Delayed_Open()
+    {
+        var fixture = CreateScrollableHorizontalMenuFixture();
+        var delayedRuns = new List<ScheduledRun>();
+        var handler = new DefaultNavMenuInteractionHandler(null, (action, _) =>
+        {
+            var run = new ScheduledRun(action);
+            delayedRuns.Add(run);
+            return run;
+        });
+
+        try
+        {
+            fixture.Window.Show();
+            Dispatcher.UIThread.RunJobs();
+            ReplaceInteractionHandler(fixture.Menu, handler);
+
+            var item = fixture.Menu.ContainerFromItem(fixture.Submenu).ShouldBeOfType<NavMenuItem>();
+            RaisePointerEntered(item, fixture.Window, timestamp: 42);
+            Dispatcher.UIThread.RunJobs();
+            delayedRuns.Count.ShouldBe(1);
+            delayedRuns[0].IsDisposed.ShouldBeFalse();
+
+            fixture.Menu.Items.Remove(fixture.Submenu);
+            Dispatcher.UIThread.RunJobs();
+            fixture.Window.UpdateLayout();
+
+            delayedRuns[0].IsDisposed.ShouldBeTrue(
+                "A delayed hover action must not retain or later act on a recycled container.");
+        }
+        finally
+        {
+            fixture.Window.Close();
+        }
+    }
+
+    [Fact]
+    public void Removing_An_Item_Disposes_Its_Pending_Delayed_Close()
+    {
+        var fixture = CreateScrollableHorizontalMenuFixture();
+        var delayedRuns = new List<ScheduledRun>();
+        var handler = new DefaultNavMenuInteractionHandler(null, (action, _) =>
+        {
+            var run = new ScheduledRun(action);
+            delayedRuns.Add(run);
+            return run;
+        });
+
+        try
+        {
+            fixture.Window.Show();
+            Dispatcher.UIThread.RunJobs();
+            ReplaceInteractionHandler(fixture.Menu, handler);
+
+            var item = fixture.Menu.ContainerFromItem(fixture.Submenu).ShouldBeOfType<NavMenuItem>();
+            item.Open();
+            Dispatcher.UIThread.RunJobs();
+            RaisePointerExited(item, fixture.Window, timestamp: 42);
+            Dispatcher.UIThread.RunJobs();
+            delayedRuns.Count.ShouldBe(1);
+            delayedRuns[0].IsDisposed.ShouldBeFalse();
+
+            fixture.Menu.Items.Remove(fixture.Submenu);
+            Dispatcher.UIThread.RunJobs();
+            fixture.Window.UpdateLayout();
+
+            delayedRuns[0].IsDisposed.ShouldBeTrue(
+                "A delayed close action must not retain or later act on a recycled container.");
+        }
+        finally
+        {
+            fixture.Window.Close();
+        }
+    }
+
+    [Fact]
+    public void Pointer_Enter_On_A_Grouped_Leaf_Closes_An_Open_Item_In_Another_Root_Group()
+    {
+        var openNode = CreateSubmenuNode("Open");
+        var leaf = new NavMenuNode { Header = "Leaf" };
+        var firstGroup = new NavMenuGroup { Header = "First group" };
+        firstGroup.Entries.Add(openNode);
+        var secondGroup = new NavMenuGroup { Header = "Second group" };
+        secondGroup.Entries.Add(leaf);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Vertical,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(firstGroup);
+        menu.Items.Add(secondGroup);
+        var overlay = new VisualLayerManager { Child = menu };
+        EnablePopupOverlayLayer(overlay);
+        var window = new AvaloniaWindow { Width = 320, Height = 240, Content = overlay };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var openContainer = menu.ContainerFromItem(firstGroup)
+                .ShouldBeOfType<NavMenuGroupItem>()
+                .ContainerFromItem(openNode)
+                .ShouldBeOfType<NavMenuItem>();
+            var leafContainer = menu.ContainerFromItem(secondGroup)
+                .ShouldBeOfType<NavMenuGroupItem>()
+                .ContainerFromItem(leaf)
+                .ShouldBeOfType<NavMenuItem>();
+
+            openContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+            openContainer.IsSubMenuOpen.ShouldBeTrue();
+
+            RaisePointerEntered(leafContainer, window, timestamp: 42);
+            RunDispatcherJobsUntil(() => !openContainer.IsSubMenuOpen);
+
+            openContainer.IsSubMenuOpen.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Layout_Induced_Pointer_Enter_Does_Not_Schedule_Submenu_Open()
     {
         var fixture = CreateScrollableHorizontalMenuFixture();
@@ -152,6 +278,200 @@ public class NavMenuInteractionHandlerTests
         scheduledRuns[0].IsDisposed.ShouldBeTrue();
     }
 
+    [Fact]
+    public void Removing_The_Pressed_Item_Invalidates_It_Before_Pointer_Release()
+    {
+        var first = new NavMenuNode { Header = "First", ItemKey = "first" };
+        var second = new NavMenuNode { Header = "Second", ItemKey = "second" };
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(first);
+        menu.Items.Add(second);
+
+        var clickedItems = new List<INavMenuItem>();
+        menu.NavMenuItemClick += (_, args) => clickedItems.Add(args.NavMenuItem);
+        var window = new AvaloniaWindow
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var firstContainer = menu.ContainerFromItem(first).ShouldBeOfType<NavMenuItem>();
+            var header = firstContainer.ItemHeader.ShouldNotBeNull();
+            var point = header.TranslatePoint(
+                new Point(header.Bounds.Width / 2, header.Bounds.Height / 2),
+                window).ShouldNotBeNull();
+
+            window.MouseMove(point);
+            window.MouseDown(point, MouseButton.Left);
+            Dispatcher.UIThread.RunJobs();
+
+            menu.Items.Remove(first);
+            Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+
+            window.MouseUp(point, MouseButton.Left);
+            Dispatcher.UIThread.RunJobs();
+
+            clickedItems.ShouldBeEmpty(
+                "Releasing after the pressed container was recycled must not click the removed entry.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Inline_Accordion_Closes_A_Previously_Open_Top_Level_Item_Through_Groups()
+    {
+        var first = CreateSubmenuNode("First");
+        var second = CreateSubmenuNode("Second");
+        var firstGroup = new NavMenuGroup { Header = "First group" };
+        firstGroup.Entries.Add(first);
+        var secondGroup = new NavMenuGroup { Header = "Second group" };
+        secondGroup.Entries.Add(second);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsAccordionMode = true,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(firstGroup);
+        menu.Items.Add(new NavMenuDivider());
+        menu.Items.Add(secondGroup);
+        var window = new AvaloniaWindow { Width = 320, Height = 240, Content = menu };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var firstContainer = menu.ContainerFromItem(firstGroup)
+                .ShouldBeOfType<NavMenuGroupItem>()
+                .ContainerFromItem(first)
+                .ShouldBeOfType<NavMenuItem>();
+            var secondContainer = menu.ContainerFromItem(secondGroup)
+                .ShouldBeOfType<NavMenuGroupItem>()
+                .ContainerFromItem(second)
+                .ShouldBeOfType<NavMenuItem>();
+
+            firstContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+            firstContainer.IsSubMenuOpen.ShouldBeTrue();
+
+            secondContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            secondContainer.IsSubMenuOpen.ShouldBeTrue();
+            firstContainer.IsSubMenuOpen.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Vertical_Grouped_Sibling_Submenus_Remain_Mutually_Exclusive()
+    {
+        var first = CreateSubmenuNode("First");
+        var second = CreateSubmenuNode("Second");
+        var group = new NavMenuGroup { Header = "Section" };
+        group.Entries.Add(first);
+        group.Entries.Add(second);
+        var parent = new NavMenuNode { Header = "Parent" };
+        parent.Entries.Add(group);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Vertical,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(parent);
+        var overlay = new VisualLayerManager { Child = menu };
+        EnablePopupOverlayLayer(overlay);
+        var window = new AvaloniaWindow { Width = 320, Height = 240, Content = overlay };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = menu.ContainerFromItem(parent).ShouldBeOfType<NavMenuItem>();
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+            menu.ExecutePendingContainerLayout(parentContainer);
+            var groupContainer = parentContainer.ContainerFromItem(group).ShouldBeOfType<NavMenuGroupItem>();
+            var firstContainer = groupContainer.ContainerFromItem(first).ShouldBeOfType<NavMenuItem>();
+            var secondContainer = groupContainer.ContainerFromItem(second).ShouldBeOfType<NavMenuItem>();
+
+            firstContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+            firstContainer.IsSubMenuOpen.ShouldBeTrue();
+
+            secondContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            secondContainer.IsSubMenuOpen.ShouldBeTrue();
+            firstContainer.IsSubMenuOpen.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Close_Recursively_Closes_Grouped_Descendant_Submenus()
+    {
+        var child = CreateSubmenuNode("Child");
+        var group = new NavMenuGroup { Header = "Section" };
+        group.Entries.Add(child);
+        var parent = new NavMenuNode { Header = "Parent" };
+        parent.Entries.Add(group);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(parent);
+        var window = new AvaloniaWindow { Width = 320, Height = 240, Content = menu };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = menu.ContainerFromItem(parent).ShouldBeOfType<NavMenuItem>();
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+            var groupContainer = parentContainer.ContainerFromItem(group).ShouldBeOfType<NavMenuGroupItem>();
+            var childContainer = groupContainer.ContainerFromItem(child).ShouldBeOfType<NavMenuItem>();
+            childContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+            childContainer.IsSubMenuOpen.ShouldBeTrue();
+
+            parentContainer.Close();
+            RunDispatcherJobsUntil(() => !parentContainer.IsSubMenuOpen);
+
+            parentContainer.IsSubMenuOpen.ShouldBeFalse();
+            childContainer.IsSubMenuOpen.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static void EnablePopupOverlayLayer(VisualLayerManager visualLayerManager)
     {
         var property = typeof(VisualLayerManager).GetProperty(
@@ -207,6 +527,21 @@ public class NavMenuInteractionHandlerTests
         };
 
         return new MenuFixture(window, scrollViewer, menu, submenu);
+    }
+
+    private static NavMenuNode CreateSubmenuNode(string header)
+    {
+        var node = new NavMenuNode { Header = header };
+        node.Children.Add(new NavMenuNode { Header = $"{header} child" });
+        return node;
+    }
+
+    private static void RunDispatcherJobsUntil(Func<bool> condition, int maxPasses = 128)
+    {
+        for (var i = 0; i < maxPasses && !condition(); i++)
+        {
+            Dispatcher.UIThread.RunJobs();
+        }
     }
 
     private static void ReplaceInteractionHandler(

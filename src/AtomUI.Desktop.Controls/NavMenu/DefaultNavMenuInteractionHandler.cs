@@ -16,6 +16,8 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
     private IDisposable? _currentOpenDelayRunDisposable;
     private IDisposable? _currentCloseDelayRunDisposable;
     private IDisposable? _deactivationSubscription;
+    private INavMenuItem? _pendingOpenItem;
+    private INavMenuItem? _pendingCloseItem;
 
     public DefaultNavMenuInteractionHandler()
         : this(AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
@@ -56,11 +58,9 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
         }
         else if (menuItem.Parent != null)
         {
-            var siblings = menuItem.Parent.LogicalChildren;
-            for (var i = 0; i < siblings.Count; i++)
+            foreach (var sibling in menuItem.Parent.SubItems)
             {
-                if (siblings[i] is INavMenuItem sibling &&
-                    sibling.IsSubMenuOpen)
+                if (sibling.IsSubMenuOpen)
                 {
                     sibling.Close();
                 }
@@ -86,6 +86,7 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
 
         if (!menuItem.IsPointerOverSubMenu)
         {
+            _pendingCloseItem = menuItem;
             _currentCloseDelayRunDisposable = DelayRun(() =>
             {
                 if (!menuItem.IsPointerOverSubMenu)
@@ -94,6 +95,7 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
                 }
 
                 _currentCloseDelayRunDisposable = null;
+                _pendingCloseItem               = null;
             }, MenuShowDelay);
         }
     }
@@ -148,10 +150,9 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
     {
         if (Menu != null)
         {
-            var children = Menu.LogicalChildren;
-            for (var i = 0; i < children.Count; i++)
+            foreach (var menuItem in Menu.SubItems)
             {
-                if (children[i] is INavMenuItem { IsSubMenuOpen: true } menuItem)
+                if (menuItem.IsSubMenuOpen)
                 {
                     menuItem.Close();
                 }
@@ -166,10 +167,9 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
             return false;
         }
 
-        var children = Menu.LogicalChildren;
-        for (var i = 0; i < children.Count; i++)
+        foreach (var child in Menu.SubItems)
         {
-            if (children[i] is INavMenuItem { IsSubMenuOpen: true })
+            if (child.IsSubMenuOpen)
             {
                 return true;
             }
@@ -187,10 +187,9 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
 
         var sourceLogical = source as ILogical;
         var sourceItem    = GetMenuItemCore(source as StyledElement);
-        var children      = Menu.LogicalChildren;
-        for (var i = 0; i < children.Count; i++)
+        foreach (var openTopLevelItem in Menu.SubItems)
         {
-            if (children[i] is not INavMenuItem { IsSubMenuOpen: true } openTopLevelItem)
+            if (!openTopLevelItem.IsSubMenuOpen)
             {
                 continue;
             }
@@ -260,6 +259,19 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
         _root                      = null;
         _deactivationSubscription = null;
     }
+
+    protected override void OnForgotten(NavMenuItem menuItem)
+    {
+        if (ReferenceEquals(_pendingOpenItem, menuItem))
+        {
+            DisposePendingOpenDelayRun();
+        }
+
+        if (ReferenceEquals(_pendingCloseItem, menuItem))
+        {
+            DisposePendingCloseDelayRun();
+        }
+    }
     
     protected override void Click(INavMenuItem item)
     {
@@ -279,6 +291,7 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
         void Execute()
         {
             _currentOpenDelayRunDisposable = null;
+            _pendingOpenItem               = null;
             var parent = item.Parent as NavMenuItem;
             if (!item.IsTopLevel && parent?.Popup?.IsOpen == true)
             {
@@ -286,6 +299,7 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
             }
         }
         DisposePendingOpenDelayRun();
+        _pendingOpenItem = item;
         _currentOpenDelayRunDisposable = DelayRun(Execute, MenuShowDelay);
     }
 
@@ -299,12 +313,14 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
     {
         _currentOpenDelayRunDisposable?.Dispose();
         _currentOpenDelayRunDisposable = null;
+        _pendingOpenItem               = null;
     }
 
     private void DisposePendingCloseDelayRun()
     {
         _currentCloseDelayRunDisposable?.Dispose();
         _currentCloseDelayRunDisposable = null;
+        _pendingCloseItem               = null;
     }
 
     private void TopLevelLostPlatformFocus()

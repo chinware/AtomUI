@@ -1,19 +1,18 @@
-using System.Collections.Specialized;
 using System.Windows.Input;
 using AtomUI.Controls;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls;
 
-public interface INavMenuNode : ITreeNode<INavMenuNode>
+public interface INavMenuNode : ITreeNode<INavMenuNode>, INavMenuEntry
 {
     IDataTemplate? HeaderTemplate { get; }
     ICommand? Command => null;
     object? CommandParameter => null;
+    IEnumerable<INavMenuEntry> Entries => Children;
     void UpdateParentNode(INavMenuNode? parentNode) => throw new NotImplementedException();
 }
 
@@ -120,61 +119,120 @@ public partial class NavMenuNode : AvaloniaObject, INavMenuNode
     
     public ITreeNode<INavMenuNode>? ParentNode { get; private set; }
     
-    private readonly AvaloniaList<INavMenuNode> _children = [];
-    
+    private readonly NavMenuEntryCollection _entries;
+    private NavMenuNodeChildrenView? _children;
+    private WeakReference<object>? _structuralOwnerReference;
+
     [Content]
+    public IList<INavMenuEntry> Entries
+    {
+        get => _entries;
+        init => _entries.AddRange(value);
+    }
+
+    IEnumerable<INavMenuEntry> INavMenuNode.Entries => Entries;
+
     public IList<INavMenuNode> Children
     {
-        get => _children;
-        init => _children.AddRange(value);
+        get => _children ??= new NavMenuNodeChildrenView(_entries);
+        init
+        {
+            foreach (var child in value)
+            {
+                _entries.Add(child);
+            }
+        }
     }
 
     IEnumerable<INavMenuNode> ITreeNode<INavMenuNode>.Children => Children;
     
     public NavMenuNode()
     {
-        _children.CollectionChanged += HandleCollectionChanged;
+        _entries = new NavMenuEntryCollection(
+            this,
+            ValidateEntry,
+            AttachEntry,
+            DetachEntry);
     }
     
     public void UpdateParentNode(INavMenuNode? parentNode)
     {
         ParentNode = parentNode;
     }
-    
-    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+
+    internal bool IsStructurallyOwnedBy(object owner)
     {
-        if (e.Action == NotifyCollectionChangedAction.Add)
+        return TryGetStructuralOwner(out var currentOwner) &&
+               ReferenceEquals(currentOwner, owner);
+    }
+
+    internal bool TryGetStructuralOwner(out object? owner)
+    {
+        if (_structuralOwnerReference is not null &&
+            _structuralOwnerReference.TryGetTarget(out var currentOwner))
         {
-            if (e.NewItems != null)
-            {
-                foreach (var child in e.NewItems)
-                {
-                    if (child is INavMenuNode menuItemNode)
-                    {
-                        menuItemNode.UpdateParentNode(this);
-                    }
-                }
-            }
+            owner = currentOwner;
+            return true;
         }
-        else if (e.Action == NotifyCollectionChangedAction.Remove)
+
+        _structuralOwnerReference = null;
+        owner = null;
+        return false;
+    }
+
+    internal void EnsureCanAttachStructuralOwner(object owner)
+    {
+        if (!TryGetStructuralOwner(out var currentOwner))
         {
-            if (e.OldItems != null)
-            {
-                foreach (var child in e.OldItems)
-                {
-                    if (child is INavMenuNode menuItemNode)
-                    {
-                        menuItemNode.UpdateParentNode(null);
-                    }
-                }
-            }
+            return;
         }
-        else if (e.Action == NotifyCollectionChangedAction.Reset)
+
+        throw NavMenuEntryOwnership.CreateAlreadyAttachedException(this, owner, currentOwner!);
+    }
+
+    internal void AttachStructuralOwner(object owner)
+    {
+        _structuralOwnerReference = new WeakReference<object>(owner);
+    }
+
+    internal void DetachStructuralOwner(object owner)
+    {
+        if (IsStructurallyOwnedBy(owner))
         {
-            foreach (var child in Children)
-            {
-                child.UpdateParentNode(this);
-            }
+            _structuralOwnerReference = null;
+        }
+    }
+
+    private void ValidateEntry(INavMenuEntry entry)
+    {
+        NavMenuEntryGraph.ValidateInsertion(this, entry);
+    }
+
+    private void AttachEntry(INavMenuEntry entry)
+    {
+        switch (entry)
+        {
+            case INavMenuNode node:
+                node.UpdateParentNode(this);
+                break;
+
+            case NavMenuGroup group:
+                group.UpdateSemanticParentNode(this);
+                break;
+        }
+    }
+
+    private void DetachEntry(INavMenuEntry entry)
+    {
+        switch (entry)
+        {
+            case INavMenuNode node when ReferenceEquals(node.ParentNode, this):
+                node.UpdateParentNode(null);
+                break;
+
+            case NavMenuGroup group when ReferenceEquals(group.SemanticParentNode, this):
+                group.UpdateSemanticParentNode(null);
+                break;
         }
     }
 }

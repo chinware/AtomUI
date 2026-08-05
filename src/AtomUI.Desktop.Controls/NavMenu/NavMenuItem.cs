@@ -175,18 +175,17 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     bool INavMenuItem.IsPointerOverSubMenu => _popup?.IsPointerOverPopup ?? false;
     INavMenuNode? INavMenuItem.Node => DataContext as INavMenuNode;
     
-    INavMenuElement? INavMenuItem.Parent => Parent as INavMenuElement;
+    INavMenuElement? INavMenuItem.Parent => SemanticParentItem is not null
+        ? SemanticParentItem
+        : OwnerMenu;
     IEnumerable<INavMenuItem> INavMenuElement.SubItems => EnumerateSubItems();
     #endregion
 
     private IEnumerable<INavMenuItem> EnumerateSubItems()
     {
-        foreach (var child in LogicalChildren)
+        foreach (var child in NavMenuSemanticNavigator.EnumerateDirectItems(this))
         {
-            if (child is INavMenuItem item)
-            {
-                yield return item;
-            }
+            yield return child;
         }
     }
     
@@ -275,6 +274,9 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     internal static readonly StyledProperty<bool> IsItemBackgroundEnabledProperty =
         AvaloniaProperty.Register<NavMenuItem, bool>(nameof(IsItemBackgroundEnabled), true);
 
+    internal static readonly StyledProperty<double> EntryItemSpacingProperty =
+        NavMenu.EntryItemSpacingProperty.AddOwner<NavMenuItem>();
+
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuItem>();
     
@@ -336,6 +338,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => GetValue(IsItemBackgroundEnabledProperty);
         set => SetValue(IsItemBackgroundEnabledProperty, value);
+    }
+
+    internal double EntryItemSpacing
+    {
+        get => GetValue(EntryItemSpacingProperty);
+        set => SetValue(EntryItemSpacingProperty, value);
     }
 
     internal bool IsMotionEnabled
@@ -404,7 +412,9 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     private CompositeDisposable? _nodeBindingDisposables;
     
     internal Popup? Popup => _popup;
-    internal NavMenu? OwnerMenu;
+    internal NavMenu? OwnerMenu { get; private set; }
+    internal NavMenuItem? SemanticParentItem { get; private set; }
+    internal ItemsControl? EntryOwner { get; private set; }
 
     internal CompositeDisposable ResetNodeBindingDisposables()
     {
@@ -417,6 +427,32 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         _nodeBindingDisposables?.Dispose();
         _nodeBindingDisposables = null;
+    }
+
+    internal void UpdateEntryContext(
+        NavMenu? ownerMenu,
+        NavMenuItem? semanticParentItem,
+        int level,
+        bool isTopLevel,
+        ItemsControl entryOwner)
+    {
+        OwnerMenu          = ownerMenu;
+        SemanticParentItem = semanticParentItem;
+        EntryOwner         = entryOwner;
+        Level              = level;
+        IsTopLevel         = isTopLevel;
+        UpdatePseudoClasses();
+        ConfigureEffectivePopupMinWidth();
+    }
+
+    internal void ClearEntryContext()
+    {
+        OwnerMenu          = null;
+        SemanticParentItem = null;
+        EntryOwner         = null;
+        Level              = 0;
+        IsTopLevel         = false;
+        UpdatePseudoClasses();
     }
     
     static NavMenuItem()
@@ -459,13 +495,9 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     public async Task CloseItemAsync(INavMenuItem menuItem)
     {
-        var children = menuItem.LogicalChildren;
-        for (var i = 0; i < children.Count; i++)
+        foreach (var child in menuItem.SubItems)
         {
-            if (children[i] is NavMenuItem childNavMenuItem)
-            {
-                await CloseItemAsync(childNavMenuItem);
-            }
+            await CloseItemAsync(child);
         }
 
         if (menuItem is NavMenuItem navMenuItem)
@@ -481,13 +513,9 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
 
     private void ClearStateRecursively(INavMenuItem menuItem)
     {
-        var children = menuItem.LogicalChildren;
-        for (var i = 0; i < children.Count; i++)
+        foreach (var child in menuItem.SubItems)
         {
-            if (children[i] is NavMenuItem childNavMenuItem)
-            {
-                ClearStateRecursively(childNavMenuItem);
-            }
+            ClearStateRecursively(child);
         }
 
         if (menuItem is NavMenuItem navMenuItem)
@@ -501,17 +529,14 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         if (e.Source is NavMenuItem menuItem)
         {
-            if (menuItem.Parent == this)
+            if (ReferenceEquals(menuItem.SemanticParentItem, this))
             {
                 // TODO 我们在这里对模式做一个区分, Inline 暂时不互斥关闭，后面有时间看是否加一个互斥的标记
                 if (Mode != NavMenuMode.Inline)
                 {
-                    var children = LogicalChildren;
-                    for (var i = 0; i < children.Count; i++)
+                    foreach (var child in NavMenuSemanticNavigator.EnumerateDirectItems(this))
                     {
-                        if (children[i] is INavMenuItem child &&
-                            child != menuItem &&
-                            child.IsSubMenuOpen)
+                        if (child != menuItem && child.IsSubMenuOpen)
                         {
                             child.IsSubMenuOpen = false;
                         }
@@ -580,7 +605,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         //Perf optimization - only raise CanExecute event if the menu is open
-        if (!((ILogical)this).IsAttachedToLogicalTree || Parent is NavMenuItem { IsSubMenuOpen: false })
+        if (!((ILogical)this).IsAttachedToLogicalTree || SemanticParentItem is { IsSubMenuOpen: false })
         {
             return;
         }
@@ -597,12 +622,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == ParentProperty)
-        {
-            IsTopLevel = Parent is NavMenu;
-            UpdatePseudoClasses();
-        }
-        else if (change.Property == IsSelectedProperty)
+        if (change.Property == IsSelectedProperty)
         {
             IsSelectedChanged(change);
         }
@@ -691,7 +711,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         if (IsTopLevel)
         {
-            if (Parent is NavMenu navMenu)
+            if (OwnerMenu is { } navMenu)
             {
                 if (navMenu.EffectiveMode == NavMenuMode.Horizontal)
                 {
@@ -875,13 +895,9 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     private void CloseSubmenus()
     {
-        var children = LogicalChildren;
-        for (var i = 0; i < children.Count; i++)
+        foreach (var child in NavMenuSemanticNavigator.EnumerateDirectItems(this))
         {
-            if (children[i] is INavMenuItem child)
-            {
-                child.IsSubMenuOpen = false;
-            }
+            child.IsSubMenuOpen = false;
         }
     }
     
@@ -925,7 +941,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         if (IsTopLevel)
         {
-            if (Parent is NavMenu navMenu)
+            if (OwnerMenu is { } navMenu)
             {
                 if (navMenu.EffectiveMode == NavMenuMode.Horizontal && _itemHeader is not null)
                 {
@@ -945,56 +961,29 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new NavMenuItem();
+        return NavMenuEntryContainerCoordinator.CreateContainer(item, index, recycleKey);
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
     {
-        return NeedsContainer<NavMenuItem>(item, out recycleKey);
+        return NavMenuEntryContainerCoordinator.NeedsContainer(this, item, index, out recycleKey);
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         base.PrepareContainerForItemOverride(container, item, index);
-        if (container is NavMenuItem menuItem)
-        {
-            menuItem.OwnerMenu = OwnerMenu;
-            var nodeBindingDisposables = menuItem.ResetNodeBindingDisposables();
-            IResourceHost resourceHost = OwnerMenu is not null ? OwnerMenu : this;
-            NavMenuItemContainerBinder.BindNode(menuItem, item, resourceHost, nodeBindingDisposables);
-
-            if (!NavMenuItemContainerBinder.TryBindNodeHeaderTemplate(menuItem, item, nodeBindingDisposables) &&
-                ItemTemplate != null)
-            {
-                menuItem[!NavMenuItem.HeaderTemplateProperty] = this[!ItemTemplateProperty];
-            }
-            
-            menuItem[!NavMenuItem.ModeProperty]                  = this[!ModeProperty];
-            menuItem.ClearValue(IsInlineCollapsedProperty);
-            menuItem.SetCurrentValue(IsInlineCollapsedProperty, false);
-            menuItem[!NavMenuItem.IsDarkStyleProperty]           = this[!IsDarkStyleProperty];
-            menuItem[!NavMenuItem.IsItemBackgroundEnabledProperty] = this[!IsItemBackgroundEnabledProperty];
-            menuItem[!NavMenuItem.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
-            menuItem[!NavMenuItem.ItemContainerThemeProperty]    = this[!ItemContainerThemeProperty];
-            menuItem[!NavMenuItem.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
-            
-            PrepareNavMenuItem(menuItem, item, index);
-        }
-        else
-        {
-            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type NavMenuItem.");
-        }
+        NavMenuEntryContainerCoordinator.PrepareContainer(this, container, item, index);
     }
 
     protected override void ClearContainerForItemOverride(Control container)
     {
-        if (container is NavMenuItem menuItem)
-        {
-            menuItem.SetCurrentValue(IsKeyboardActiveProperty, false);
-            menuItem.ClearNodeBindingDisposables();
-        }
-
+        NavMenuEntryContainerCoordinator.ClearContainer(this, container);
         base.ClearContainerForItemOverride(container);
+    }
+
+    internal void PrepareGeneratedNavMenuItem(NavMenuItem menuItem, object? item, int index)
+    {
+        PrepareNavMenuItem(menuItem, item, index);
     }
 
     protected virtual void PrepareNavMenuItem(NavMenuItem menuItem, object? item, int index)
@@ -1019,8 +1008,6 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         base.OnAttachedToLogicalTree(e);
-        Level = CalculateDistanceFromLogicalParent<NavMenu>(this) - 1;
-
         var (command, parameter) = (Command, CommandParameter);
         if (command is not null)
         {
@@ -1083,19 +1070,6 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             _popup.Opened -= PopupOpened;
             _popup.Closed -= PopupClosed;
         }
-    }
-    
-    private static int CalculateDistanceFromLogicalParent<T>(ILogical? logical, int defaultDistance = -1) where T : class
-    {
-        var result = 0;
-
-        while (logical != null && !(logical is T))
-        {
-            ++result;
-            logical = logical.LogicalParent;
-        }
-
-        return logical != null ? result : defaultDistance;
     }
     
     protected override void UpdateDataValidation(

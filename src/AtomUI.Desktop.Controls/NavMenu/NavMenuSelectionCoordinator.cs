@@ -36,7 +36,7 @@ internal sealed class NavMenuSelectionCoordinator
 
         if (_latestSelectedItem != null)
         {
-            var oldParentItem = ItemsControl.ItemsControlFromItemContainer(_latestSelectedItem) as IMenuChildSelectable;
+            var oldParentItem = ResolveSelectionOwner(menu, _latestSelectedItem);
             oldParentItem?.SelectChildItem(_latestSelectedItem, false);
         }
 
@@ -45,7 +45,7 @@ internal sealed class NavMenuSelectionCoordinator
             newInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, true);
         }
 
-        var parentItem = ItemsControl.ItemsControlFromItemContainer(menuItem) as IMenuChildSelectable;
+        var parentItem = ResolveSelectionOwner(menu, menuItem);
         parentItem?.SelectChildItem(menuItem, true);
         _latestSelectedItem = menuItem;
         menu.RaiseNavMenuItemSelected(menuItem);
@@ -64,7 +64,10 @@ internal sealed class NavMenuSelectionCoordinator
             oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
         }
 
-        var oldParentItem = ItemsControl.ItemsControlFromItemContainer(_latestSelectedItem) as IMenuChildSelectable;
+        var ownerMenu = _latestSelectedItem.OwnerMenu;
+        var oldParentItem = ownerMenu is null
+            ? null
+            : ResolveSelectionOwner(ownerMenu, _latestSelectedItem);
         oldParentItem?.SelectChildItem(_latestSelectedItem, false);
         Reset();
     }
@@ -80,5 +83,12 @@ internal sealed class NavMenuSelectionCoordinator
         {
             Reset();
         }
+    }
+
+    private static IMenuChildSelectable ResolveSelectionOwner(NavMenu menu, NavMenuItem menuItem)
+    {
+        return menuItem.SemanticParentItem is not null
+            ? menuItem.SemanticParentItem
+            : menu;
     }
 }

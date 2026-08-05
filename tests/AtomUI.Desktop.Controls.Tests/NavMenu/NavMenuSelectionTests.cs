@@ -124,6 +124,59 @@ public class NavMenuSelectionTests
         }
     }
 
+    [Fact]
+    public void DefaultSelectedPath_Traverses_Groups_Without_Consuming_Path_Segments()
+    {
+        var leaf = new NavMenuNode
+        {
+            Header  = "Leaf",
+            ItemKey = "leaf"
+        };
+        var childGroup = new NavMenuGroup { Header = "Child group" };
+        childGroup.Entries.Add(leaf);
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Entries.Add(childGroup);
+        var rootGroup = new NavMenuGroup { Header = "Root group" };
+        rootGroup.Entries.Add(parent);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode                = NavMenuMode.Inline,
+            IsMotionEnabled     = false,
+            DefaultSelectedPath = new TreeNodePath("parent/leaf")
+        };
+        menu.Items.Add(rootGroup);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            RunDispatcherJobsUntil(() => ReferenceEquals(menu.SelectedItem, leaf));
+
+            var rootGroupContainer = menu.ContainerFromItem(rootGroup).ShouldBeOfType<NavMenuGroupItem>();
+            var parentContainer = rootGroupContainer.ContainerFromItem(parent).ShouldBeOfType<NavMenuItem>();
+            var childGroupContainer = parentContainer.ContainerFromItem(childGroup).ShouldBeOfType<NavMenuGroupItem>();
+            var leafContainer = childGroupContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
+            menu.SelectedItem.ShouldBeSameAs(leaf);
+            parentContainer.IsInSelectedPath.ShouldBeTrue();
+            leafContainer.IsSelected.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     [Theory]
     [InlineData(NavMenuMode.Horizontal)]
     [InlineData(NavMenuMode.Vertical)]
@@ -368,6 +421,102 @@ public class NavMenuSelectionTests
                 "The selected-path state must reach the first ancestor header so its icon, text and arrow use the selected color.");
             secondLevelHeader.IsInSelectedPath.ShouldBeTrue(
                 "Nested ancestor headers must receive selected-path state consistently.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Root_Group_Leaf_Selection_Uses_The_Root_Semantic_Selection_Owner()
+    {
+        var leaf = new NavMenuNode
+        {
+            Header  = "Leaf",
+            ItemKey = "leaf"
+        };
+        var group = new NavMenuGroup { Header = "Section" };
+        group.Entries.Add(leaf);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(group);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var groupContainer = menu.ContainerFromItem(group).ShouldBeOfType<NavMenuGroupItem>();
+            var leafContainer = groupContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(leafContainer);
+
+            leafContainer.IsSelected.ShouldBeTrue();
+            menu.SelectedItem.ShouldBeSameAs(leaf);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Inline_Selection_Through_A_Group_Uses_The_Closest_Node_Selected_Path()
+    {
+        var leaf = new NavMenuNode
+        {
+            Header  = "Leaf",
+            ItemKey = "leaf"
+        };
+        var group = new NavMenuGroup { Header = "Section" };
+        group.Entries.Add(leaf);
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Entries.Add(group);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = menu.ContainerFromItem(parent).ShouldBeOfType<NavMenuItem>();
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+            var groupContainer = parentContainer.ContainerFromItem(group).ShouldBeOfType<NavMenuGroupItem>();
+            var leafContainer = groupContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(leafContainer);
+
+            parentContainer.IsInSelectedPath.ShouldBeTrue();
+            leafContainer.IsSelected.ShouldBeTrue();
+            menu.SelectedItem.ShouldBeSameAs(leaf);
         }
         finally
         {

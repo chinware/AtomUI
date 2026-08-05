@@ -7,29 +7,38 @@
         <Style Selector="^[Mode=Inline],^[Mode=Vertical]">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <atom:ScrollViewer AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}"
-                                       IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
-                                       HorizontalScrollBarVisibility="{TemplateBinding atom:ScrollViewer.HorizontalScrollBarVisibility}"
-                                       VerticalScrollBarVisibility="{TemplateBinding atom:ScrollViewer.VerticalScrollBarVisibility}"
-                                       IsScrollChainingEnabled="{TemplateBinding atom:ScrollViewer.IsScrollChainingEnabled}"
-                                       IsDeferredScrollingEnabled="{TemplateBinding atom:ScrollViewer.IsDeferredScrollingEnabled}">
-                        <atom:PixelAlignedBorder HorizontalAlignment="Stretch"
-                                                 Padding="{TemplateBinding Padding}"
-                                                 Background="{TemplateBinding Background}"
-                                                 BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                                 CornerRadius="{TemplateBinding CornerRadius}">
-                            <ItemsPresenter Name="PART_ItemsPresenter"
-                                            KeyboardNavigation.TabNavigation="Continue">
-                                <ItemsPresenter.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Vertical" />
-                                    </ItemsPanelTemplate>
-                                </ItemsPresenter.ItemsPanel>
-                            </ItemsPresenter>
-                        </atom:PixelAlignedBorder>
-                    </atom:ScrollViewer>
+                    <atom:PixelAlignedBorder HorizontalAlignment="Stretch"
+                                             Padding="{TemplateBinding Padding}"
+                                             Background="{TemplateBinding Background}"
+                                             BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                             BorderThickness="{TemplateBinding BorderThickness}"
+                                             BorderBrush="{TemplateBinding BorderBrush}"
+                                             CornerRadius="{TemplateBinding CornerRadius}">
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <ContentPresenter Name="PART_HeaderPresenter"
+                                              HorizontalContentAlignment="Stretch"
+                                              Content="{TemplateBinding Header}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <atom:ScrollViewer Grid.Row="1"
+                                               AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}"
+                                               IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
+                                               HorizontalScrollBarVisibility="{TemplateBinding atom:ScrollViewer.HorizontalScrollBarVisibility}"
+                                               VerticalScrollBarVisibility="{TemplateBinding atom:ScrollViewer.VerticalScrollBarVisibility}"
+                                               IsScrollChainingEnabled="{TemplateBinding atom:ScrollViewer.IsScrollChainingEnabled}"
+                                               IsDeferredScrollingEnabled="{TemplateBinding atom:ScrollViewer.IsDeferredScrollingEnabled}">
+                                <ItemsPresenter Name="PART_ItemsPresenter"
+                                                ItemsPanel="{TemplateBinding ItemsPanel}"
+                                                KeyboardNavigation.TabNavigation="Continue" />
+                            </atom:ScrollViewer>
+                            <ContentPresenter Name="PART_FooterPresenter"
+                                              Grid.Row="2"
+                                              HorizontalContentAlignment="Stretch"
+                                              Content="{TemplateBinding Footer}"
+                                              ContentTemplate="{TemplateBinding FooterTemplate}"
+                                              IsVisible="{TemplateBinding Footer, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </Grid>
+                    </atom:PixelAlignedBorder>
                 </ControlTemplate>
             </Setter>
         </Style>
@@ -49,14 +58,25 @@
                                                  BorderThickness="{TemplateBinding BorderThickness}"
                                                  BorderBrush="{TemplateBinding BorderBrush}"
                                                  CornerRadius="{TemplateBinding CornerRadius}">
-                            <ItemsPresenter Name="PART_ItemsPresenter"
-                                            KeyboardNavigation.TabNavigation="Continue">
-                                <ItemsPresenter.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsPresenter.ItemsPanel>
-                            </ItemsPresenter>
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <ContentPresenter Name="PART_HeaderPresenter"
+                                                  HorizontalContentAlignment="Stretch"
+                                                  VerticalContentAlignment="Stretch"
+                                                  Content="{TemplateBinding Header}"
+                                                  ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                  IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <ItemsPresenter Name="PART_ItemsPresenter"
+                                                Grid.Column="1"
+                                                ItemsPanel="{TemplateBinding ItemsPanel}"
+                                                KeyboardNavigation.TabNavigation="Continue" />
+                                <ContentPresenter Name="PART_FooterPresenter"
+                                                  Grid.Column="2"
+                                                  HorizontalContentAlignment="Stretch"
+                                                  VerticalContentAlignment="Stretch"
+                                                  Content="{TemplateBinding Footer}"
+                                                  ContentTemplate="{TemplateBinding FooterTemplate}"
+                                                  IsVisible="{TemplateBinding Footer, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            </Grid>
                         </atom:PixelAlignedBorder>
                     </DockPanel>
                 </ControlTemplate>
@@ -69,9 +89,11 @@
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="atom:ScrollViewer.IsLiteMode" Value="True" />
         <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
+        <Setter Property="EntryItemSpacing"
+                Value="{atom:NavMenuTokenResource VerticalItemsPanelSpacing}" />
 
         <Setter Property="ItemTemplate">
-            <TreeDataTemplate ItemsSource="{Binding Children}"
+            <TreeDataTemplate ItemsSource="{Binding Entries}"
                               x:DataType="atom:INavMenuNode">
                 <atom:TextBlock Text="{Binding Header}" />
             </TreeDataTemplate>
@@ -80,9 +102,12 @@
         <Style Selector="^[Mode=Vertical]">
             <Setter Property="ItemsPanel">
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical"/>
+                    <StackPanel Orientation="Vertical"
+                                Spacing="{TemplateBinding ItemSpacing}" />
                 </ItemsPanelTemplate>
             </Setter>
+            <Setter Property="ItemSpacing"
+                    Value="{atom:NavMenuTokenResource VerticalItemsPanelSpacing}" />
             
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Padding"
@@ -92,18 +117,17 @@
             <Style Selector="^[IsDarkStyle=True]">
                 <Setter Property="Background" Value="{atom:NavMenuTokenResource DarkMenuBg}" />
             </Style>
-            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
-                <Setter Property="Spacing"
-                        Value="{atom:NavMenuTokenResource VerticalItemsPanelSpacing}" />
-            </Style>
         </Style>
 
         <Style Selector="^[Mode=Inline]">
             <Setter Property="ItemsPanel">
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical"/>
+                    <StackPanel Orientation="Vertical"
+                                Spacing="{TemplateBinding ItemSpacing}" />
                 </ItemsPanelTemplate>
             </Setter>
+            <Setter Property="ItemSpacing"
+                    Value="{atom:NavMenuTokenResource VerticalItemsPanelSpacing}" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Padding"
                     Value="{atom:NavMenuTokenResource VerticalMenuContentPadding}" />
@@ -112,16 +136,13 @@
             <Style Selector="^[IsDarkStyle=True]">
                 <Setter Property="Background" Value="{atom:NavMenuTokenResource DarkMenuBg}" />
             </Style>
-            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
-                <Setter Property="Spacing"
-                        Value="{atom:NavMenuTokenResource VerticalItemsPanelSpacing}" />
-            </Style>
         </Style>
 
         <Style Selector="^[Mode=Horizontal]">
             <Setter Property="ItemsPanel">
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="{TemplateBinding ItemSpacing}" />
                 </ItemsPanelTemplate>
             </Setter>
             <Setter Property="Background" Value="{atom:NavMenuTokenResource ItemBg}" />

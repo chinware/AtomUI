@@ -1,8 +1,10 @@
 using System.Reflection;
 using AtomUI.Controls;
+using AtomUI.Desktop.Controls.DesignTokens;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Threading;
@@ -119,6 +121,113 @@ public class NavMenuLayoutTests
         }
     }
 
+    [Theory]
+    [InlineData(NavMenuMode.Inline)]
+    [InlineData(NavMenuMode.Vertical)]
+    public void Explicit_ItemSpacing_Adds_Exactly_To_The_Default_Block_Gap(NavMenuMode mode)
+    {
+        const double itemSpacing = 7;
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = mode,
+            IsMotionEnabled = false,
+            ItemSpacing     = itemSpacing,
+            Width           = 240
+        };
+        var first = new NavMenuNode
+        {
+            Header  = "First",
+            ItemKey = "first"
+        };
+        var second = new NavMenuNode
+        {
+            Header  = "Second",
+            ItemKey = "second"
+        };
+        menu.Items.Add(first);
+        menu.Items.Add(second);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+
+            var firstContainer  = (Control)menu.ContainerFromItem(first)!;
+            var secondContainer = (Control)menu.ContainerFromItem(second)!;
+            var firstHeader     = GetItemHeader(firstContainer);
+            var secondHeader    = GetItemHeader(secondContainer);
+            var gap = GetTop(secondHeader, menu) - GetBottom(firstHeader, menu);
+
+            gap.ShouldBe(4 + itemSpacing, 0.5,
+                "ItemSpacing is an additional ItemsPanel gap and must not replace the existing Ant Design item margins.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Theory]
+    [InlineData(NavMenuMode.Inline)]
+    [InlineData(NavMenuMode.Vertical)]
+    public void Root_Header_And_Footer_Are_Outside_The_Scrollable_Entry_Region(NavMenuMode mode)
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = mode,
+            IsMotionEnabled = false,
+            Header          = new Border { Height = 24 },
+            Footer          = new Border { Height = 20 },
+            Width           = 240,
+            Height          = 120
+        };
+        for (var index = 0; index < 10; index++)
+        {
+            menu.Items.Add(new NavMenuNode
+            {
+                Header  = $"Item {index}",
+                ItemKey = $"item-{index}"
+            });
+        }
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var headerPresenter = menu.GetVisualDescendants()
+                                      .OfType<ContentPresenter>()
+                                      .Single(presenter => presenter.Name == "PART_HeaderPresenter");
+            var footerPresenter = menu.GetVisualDescendants()
+                                      .OfType<ContentPresenter>()
+                                      .Single(presenter => presenter.Name == "PART_FooterPresenter");
+            var itemsPresenter = menu.GetVisualDescendants()
+                                     .OfType<ItemsPresenter>()
+                                     .Single(presenter => presenter.Name == "PART_ItemsPresenter");
+
+            headerPresenter.GetVisualAncestors().OfType<AtomUI.Desktop.Controls.ScrollViewer>().ShouldBeEmpty();
+            footerPresenter.GetVisualAncestors().OfType<AtomUI.Desktop.Controls.ScrollViewer>().ShouldBeEmpty();
+            itemsPresenter.GetVisualAncestors().OfType<AtomUI.Desktop.Controls.ScrollViewer>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     [Fact]
     public void Inline_Submenu_First_Child_Header_Gap_Collapses_AntDesign_Block_Margins()
     {
@@ -225,6 +334,243 @@ public class NavMenuLayoutTests
 
             gap.ShouldBe(4, 0.5,
                 "Inline submenu children share Ant Design's vertical menu item margin semantics.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Explicit_ItemSpacing_Is_Inherited_By_Inline_Submenu_ItemsPanel()
+    {
+        const double itemSpacing = 7;
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false,
+            ItemSpacing     = itemSpacing,
+            Width           = 240
+        };
+        var firstChild = new NavMenuNode { Header = "First child", ItemKey = "first-child" };
+        var secondChild = new NavMenuNode { Header = "Second child", ItemKey = "second-child" };
+        var parent = new NavMenuNode { Header = "Parent", ItemKey = "parent" };
+        parent.Children.Add(firstChild);
+        parent.Children.Add(secondChild);
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 320,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+
+            var parentContainer = (NavMenuItem)menu.ContainerFromItem(parent)!;
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var firstContainer = (Control)parentContainer.ContainerFromItem(firstChild)!;
+            var secondContainer = (Control)parentContainer.ContainerFromItem(secondChild)!;
+            var gap = GetTop(GetItemHeader(secondContainer), menu) -
+                      GetBottom(GetItemHeader(firstContainer), menu);
+
+            gap.ShouldBe(4 + itemSpacing, 0.5);
+            parentContainer.EntryItemSpacing.ShouldBe(itemSpacing);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Explicit_ItemSpacing_Is_Inherited_By_Group_ItemsPanel()
+    {
+        const double itemSpacing = 7;
+        var first = new NavMenuNode { Header = "First", ItemKey = "first" };
+        var second = new NavMenuNode { Header = "Second", ItemKey = "second" };
+        var group = new NavMenuGroup { Header = "Section" };
+        group.Entries.Add(first);
+        group.Entries.Add(second);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false,
+            ItemSpacing     = itemSpacing,
+            Width           = 240
+        };
+        menu.Items.Add(group);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 320,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var groupContainer = menu.ContainerFromItem(group).ShouldBeOfType<NavMenuGroupItem>();
+            var firstContainer = (Control)groupContainer.ContainerFromItem(first)!;
+            var secondContainer = (Control)groupContainer.ContainerFromItem(second)!;
+            var gap = GetTop(GetItemHeader(secondContainer), menu) -
+                      GetBottom(GetItemHeader(firstContainer), menu);
+
+            gap.ShouldBe(4 + itemSpacing, 0.5);
+            groupContainer.EntryItemSpacing.ShouldBe(itemSpacing);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Explicit_ItemSpacing_Is_Inherited_By_Popup_ItemsPanel()
+    {
+        const double itemSpacing = 7;
+        var firstChild = new NavMenuNode { Header = "First child", ItemKey = "first-child" };
+        var secondChild = new NavMenuNode { Header = "Second child", ItemKey = "second-child" };
+        var parent = new NavMenuNode { Header = "Parent", ItemKey = "parent" };
+        parent.Children.Add(firstChild);
+        parent.Children.Add(secondChild);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Vertical,
+            IsMotionEnabled = false,
+            ItemSpacing     = itemSpacing,
+            Width           = 240
+        };
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 640,
+            Height  = 480,
+            Content = CreatePopupOverlayHost(menu)
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (NavMenuItem)menu.ContainerFromItem(parent)!;
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var firstContainer = (Control)parentContainer.ContainerFromItem(firstChild)!;
+            var secondContainer = (Control)parentContainer.ContainerFromItem(secondChild)!;
+            var popupFrame = FindPopupFrame(window);
+            var gap = GetTop(GetItemHeader(secondContainer), popupFrame) -
+                      GetBottom(GetItemHeader(firstContainer), popupFrame);
+
+            gap.ShouldBe(4 + itemSpacing, 0.5);
+            parentContainer.EntryItemSpacing.ShouldBe(itemSpacing);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Horizontal_Root_Keeps_Zero_Spacing_While_Popup_Uses_Vertical_Token_Spacing()
+    {
+        const double tokenSpacing = 7;
+        var firstChild = new NavMenuNode { Header = "First child", ItemKey = "first-child" };
+        var secondChild = new NavMenuNode { Header = "Second child", ItemKey = "second-child" };
+        var parent = new NavMenuNode { Header = "Parent", ItemKey = "parent" };
+        parent.Children.Add(firstChild);
+        parent.Children.Add(secondChild);
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Horizontal,
+            IsMotionEnabled = false,
+            Width           = 320
+        };
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 640,
+            Height  = 480,
+            Content = CreatePopupOverlayHost(menu)
+        };
+        window.Resources[NavMenuTokenKind.VerticalItemsPanelSpacing] = tokenSpacing;
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (NavMenuItem)menu.ContainerFromItem(parent)!;
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var firstContainer = (Control)parentContainer.ContainerFromItem(firstChild)!;
+            var secondContainer = (Control)parentContainer.ContainerFromItem(secondChild)!;
+            var popupFrame = FindPopupFrame(window);
+            var gap = GetTop(GetItemHeader(secondContainer), popupFrame) -
+                      GetBottom(GetItemHeader(firstContainer), popupFrame);
+
+            menu.ItemSpacing.ShouldBe(0d);
+            parentContainer.EntryItemSpacing.ShouldBe(tokenSpacing);
+            gap.ShouldBe(4 + tokenSpacing, 0.5);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Horizontal_Header_And_Footer_Bound_The_Entry_Region()
+    {
+        var first = new NavMenuNode { Header = "First", ItemKey = "first" };
+        var second = new NavMenuNode { Header = "Second", ItemKey = "second" };
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Horizontal,
+            IsMotionEnabled = false,
+            Header          = new Border { Width = 40 },
+            Footer          = new Border { Width = 50 },
+            Width           = 400
+        };
+        menu.Items.Add(first);
+        menu.Items.Add(second);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 480,
+            Height  = 160,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var headerPresenter = menu.GetVisualDescendants()
+                                      .OfType<ContentPresenter>()
+                                      .Single(presenter => presenter.Name == "PART_HeaderPresenter");
+            var footerPresenter = menu.GetVisualDescendants()
+                                      .OfType<ContentPresenter>()
+                                      .Single(presenter => presenter.Name == "PART_FooterPresenter");
+            var firstHeader = GetItemHeader((Control)menu.ContainerFromItem(first)!);
+            var secondHeader = GetItemHeader((Control)menu.ContainerFromItem(second)!);
+
+            GetRight(headerPresenter, menu).ShouldBeLessThanOrEqualTo(GetLeft(firstHeader, menu));
+            GetRight(secondHeader, menu).ShouldBeLessThanOrEqualTo(GetLeft(footerPresenter, menu));
         }
         finally
         {
