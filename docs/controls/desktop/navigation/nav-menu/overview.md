@@ -123,7 +123,7 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 | --- | --- | --- |
 | `PART_ItemsPresenter` | `ItemsPresenter` | 承载顶层 entry 容器。 |
 | `PART_HeaderPresenter` | `ContentPresenter` | 承载根导航固定 Header；内容为空时折叠。 |
-| `PART_FooterPresenter` | `ContentPresenter` | 承载根导航固定 Footer；内容为空时折叠。 |
+| `PART_FooterPresenter` | `ContentPresenter` | 承载根导航固定 Footer；内容为空或处于有效 inline collapsed 状态时折叠。 |
 | `PART_HorizontalLine` | `PixelAlignedBorder` | Horizontal light style 下的底部分割线。 |
 | `PART_Header` | `BaseNavMenuItemHeader` 的 mode 专用实现 | 菜单项 header，承载文字、图标、箭头和交互视觉。 |
 | `PART_Popup` | `Popup` | `Vertical` / `Horizontal` 模式下的子菜单浮层。 |
@@ -209,8 +209,8 @@ Theme 映射规则：
 - Header 默认背景为 `Transparent`，hover / selected 背景由 header state 直接控制。
 - Keyboard active 背景使用 `ItemActiveBg`，其优先级低于 `Selected`，高于普通默认态；它可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。dark style 下使用 dark 语义的 active 视觉，不复用 selected 背景表达临时漫游。
 - Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项显示标题首字符，叶子项可用 tooltip 展示完整标题。
-- Inline/Vertical 的 Header 和 Footer 位于菜单滚动区之外；无 Header/Footer 时对应 presenter 折叠，不占用布局空间。Horizontal 中 Header 左停靠、Footer 右停靠，菜单项占用中间区域。
-- 根层 inline collapsed 分组标题隐藏，分组内节点仍按顶层节点居中；popup 或非根语义层级中的分组标题保持可见。Horizontal 根层把分组渲染为透明水平集合并隐藏标题，popup 中恢复垂直分组标题。
+- Inline/Vertical 的 Header 和 Footer 位于菜单滚动区之外；无 Header/Footer 时对应 presenter 折叠，不占用布局空间。Horizontal 中 Header 左停靠、Footer 右停靠，菜单项占用中间区域。进入 inline collapsed 后 Header 保持可见以承载展开入口，Footer 自动隐藏；Header 内容需要根据 `IsInlineCollapsed` 自适应折叠宽度。
+- 根层 inline collapsed 分组标题隐藏，分组及其透明嵌套分组内的节点继续继承根折叠状态，按顶层节点使用 `CollapsedIconSize` 居中；popup 或非根语义层级中的分组标题和节点保持普通 vertical 视觉。Horizontal 根层把分组渲染为透明水平集合并隐藏标题，popup 中恢复垂直分组标题。
 - Horizontal 根层分隔线为竖线；Inline、Vertical、popup 和 inline collapsed 根层分隔线为横线。
 - 根默认 ItemsPanel 通过 `TemplateBinding` 消费公开 `ItemSpacing`；submenu、popup 和 group 默认 ItemsPanel 消费由根控件投影的内部 effective spacing。该路径不使用进入子控件模板的 selector，也不建立逐容器 binding。自定义 ItemsPanel 是否消费 spacing 由自定义面板负责。
 - `IsItemBackgroundEnabled=true` 时，inline child frame 使用 `SubMenuItemBg` / `DarkSubMenuItemBg`，并应用背景块专用外距。

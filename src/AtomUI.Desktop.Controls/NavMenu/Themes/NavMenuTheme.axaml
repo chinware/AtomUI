@@ -136,6 +136,12 @@
             <Style Selector="^[IsDarkStyle=True]">
                 <Setter Property="Background" Value="{atom:NavMenuTokenResource DarkMenuBg}" />
             </Style>
+
+            <Style Selector="^[IsInlineCollapsed=True]">
+                <Style Selector="^ /template/ ContentPresenter#PART_FooterPresenter">
+                    <Setter Property="IsVisible" Value="False" />
+                </Style>
+            </Style>
         </Style>
 
         <Style Selector="^[Mode=Horizontal]">

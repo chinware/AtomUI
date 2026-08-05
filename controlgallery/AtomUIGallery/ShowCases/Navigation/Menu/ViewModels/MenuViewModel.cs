@@ -88,6 +88,14 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
         set => this.RaiseAndSetIfChanged(ref _isInlineCollapsed, value);
     }
 
+    private bool _isStructuredNavMenuCollapsed;
+
+    public bool IsStructuredNavMenuCollapsed
+    {
+        get => _isStructuredNavMenuCollapsed;
+        set => this.RaiseAndSetIfChanged(ref _isStructuredNavMenuCollapsed, value);
+    }
+
     private IList<TreeNodePath>? _inlineCollapsedOpenPaths;
 
     public IList<TreeNodePath>? InlineCollapsedOpenPaths
@@ -176,6 +184,11 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
     public void HandleToggleInlineCollapsedClick(object? sender, RoutedEventArgs? args)
     {
         IsInlineCollapsed = !IsInlineCollapsed;
+    }
+
+    public void HandleToggleStructuredNavMenuCollapsedClick(object? sender, RoutedEventArgs? args)
+    {
+        IsStructuredNavMenuCollapsed = !IsStructuredNavMenuCollapsed;
     }
 
 }

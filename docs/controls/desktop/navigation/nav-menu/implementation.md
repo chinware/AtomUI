@@ -121,7 +121,7 @@ expand:
 
 `NavMenuItem.OnApplyTemplate` 获取 header、popup、popup frame、inline motion actor、child frame、items presenter 和 active indicator。模板替换时必须解除旧 part 事件订阅，并重新绑定 handler 需要的 part。
 
-Root template 把 Header、菜单 entry 区和 Footer 组织为三个稳定区域。Inline/Vertical 的 Header/Footer 位于 ScrollViewer 外部，中间 entry 区独立滚动；Horizontal 使用左侧 Header、中间 entry 区和右侧 Footer。Header/Footer content 为空时 presenter 使用 `IsVisible=false` 退化，不改变无 slot 的测量结果。
+Root template 把 Header、菜单 entry 区和 Footer 组织为三个稳定区域。Inline/Vertical 的 Header/Footer 位于 ScrollViewer 外部，中间 entry 区独立滚动；Horizontal 使用左侧 Header、中间 entry 区和右侧 Footer。Header/Footer content 为空时 presenter 使用 `IsVisible=false` 退化，不改变无 slot 的测量结果。有效 inline collapsed 状态下 Header presenter 保持存在以承载展开入口，Footer presenter 退出布局；展开后同一 Footer content 恢复，不重建或替换用户内容。
 
 默认路径 replay 依赖容器生成和模板应用。实现必须使用有界 replay，不使用固定 sleep 或 timer 作为容器可用性的长期机制。
 
@@ -188,7 +188,7 @@ Keyboard navigation：
 
 `NeedsContainerOverride`、`CreateContainerForItemOverride`、`PrepareContainerForItemOverride` 和 `ClearContainerForItemOverride` 由三个 entry owner 委托给统一 coordinator。节点、分组、分隔线必须使用三个稳定且不同的 recycle key；own-container 项使用 `null`，不能把不同生成容器放入 Avalonia 的同一回收池。
 
-节点数据到容器的绑定必须包括 Header、HeaderTemplate、Icon、ItemKey、IsEnabled、Command、CommandParameter、Entries、owner menu、local entry owner、semantic parent、level、mode、dark style、background mode 和 motion 状态。容器解绑时必须释放资源宿主关系、relay binding、语义 owner 和命令事件订阅。
+节点数据到容器的绑定必须包括 Header、HeaderTemplate、Icon、ItemKey、IsEnabled、Command、CommandParameter、Entries、owner menu、local entry owner、semantic parent、level、mode、dark style、background mode 和 motion 状态。根菜单直接拥有的节点从 NavMenu 接收 effective inline-collapsed 状态；根层透明分组拥有的节点从该分组继续接收同一状态，任意数量的根层透明嵌套分组都不得截断状态；节点或非根分组中的后代固定使用非折叠 popup/inline 子级视觉。容器解绑时必须释放资源宿主关系、relay binding、语义 owner 和命令事件订阅。
 
 `NavMenuNode` 作为非 Visual Avalonia binding target 时使用 `[GenerateScopedResourceHost]`。container binder 先把 generated `AttachResourceHost(owner)` token 加入当前 `NavMenuItem` 的 `CompositeDisposable`，再通过 AvaloniaProperty overload 建立节点属性投影。自定义 `INavMenuNode` 使用强类型 getter overload；实现了 `INotifyPropertyChanged` 的节点保持运行期更新，普通节点取得初始值，未声明命令的既有实现使用接口的 `null` 默认值。所有 `BindUtils.RelayBind` 返回值必须加入同一个 disposable；禁止丢弃返回值或把最后一次容器永久挂回节点。
 
@@ -333,7 +333,7 @@ open path cache 应记录路径语义而不是持有容器引用。容器可能�
 
 初始加载时如果 `IsInlineCollapsed=true` 且存在 `DefaultOpenPaths`，默认展开路径进入 inline open path cache，不立即展开 inline 子树；首次展开时再 replay cache。`DefaultSelectedPath` / `SelectedItem` 仍可应用 selected leaf 和 selected path，不能因为子树未展开而丢失选中语义。
 
-折叠视觉由 theme 层表达：顶层 header 隐藏标题和箭头，icon 使用 `CollapsedIconSize` 居中；没有 icon 的顶层项显示 header 首字符。根分组标题隐藏，但分组子节点仍保持顶层身份；popup 内的非根分组标题继续显示。root 宽度约束属于控件布局状态，由 C# metadata coercion 表达，以保留用户的 base `Width` / binding。inline collapsed 宽度过渡由内部 `InlineCollapsedLayoutWidth` motion 临时接管 coercion 输入，完成后必须清理回 `double.NaN`，让稳态宽度重新由 `InlineCollapsedWidth` 或用户原始 `Width` / binding 决定。C# 层不应为了折叠视觉改写 `Header` 或临时替换 `HeaderTemplate`。
+折叠视觉由 theme 层表达：顶层 header 隐藏标题和箭头，icon 使用 `CollapsedIconSize` 居中；没有 icon 的顶层项显示 header 首字符。根分组标题隐藏，分组容器把 owner 已解析的 effective inline-collapsed 状态继续投影给子 entry，使任意层透明根分组都保持顶层折叠视觉；节点或 popup 内的非根分组从其 owner 接收 `false`，继续显示普通 vertical 标题和 item。root 宽度约束属于控件布局状态，由 C# metadata coercion 表达，以保留用户的 base `Width` / binding。inline collapsed 宽度过渡由内部 `InlineCollapsedLayoutWidth` motion 临时接管 coercion 输入，完成后必须清理回 `double.NaN`，让稳态宽度重新由 `InlineCollapsedWidth` 或用户原始 `Width` / binding 决定。C# 层不应为了折叠视觉改写 `Header` 或临时替换 `HeaderTemplate`。
 
 ## 8. 资源、性能与 AOT 边界
 

@@ -22,9 +22,11 @@
 - Theme
   - 定义 Inline/Vertical 固定 Header/Footer 与中间滚动 entry 区，Horizontal 左 Header、右 Footer 和中间菜单区。
   - 定义 root inline collapsed 隐藏分组标题、popup 分组标题保持可见、Horizontal 根分组透明和 divider orientation 规则。
+  - 明确 root inline collapsed 的透明分组后代继续继承折叠视觉并使用 `CollapsedIconSize` 居中；Footer 在折叠态退出布局，Header 保持可见以承载展开入口。
   - 根 ItemsPanel 通过 `TemplateBinding` 消费公开 `ItemSpacing`；后代 ItemsPanel 消费内部可继承的 `EntryItemSpacing`，既保持 Horizontal 根层默认 `0`，也使 popup、submenu 和 group 正确使用垂直 spacing Token；该路径不使用穿透子控件模板的 selector 或逐容器 binding。
 - Token
   - 复用 `GroupTitleColor`、`DarkGroupTitleColor`、`GroupTitleLineHeight`、`GroupTitleFontSize` 表达非交互分组标题，不新增专属 divider token。
+  - 明确 `CollapsedIconSize` 默认映射全局 `IconSizeLG`，相对普通 `ItemIconSize=IconSize` 使用大一档图标尺寸。
   - 明确 `VerticalItemsPanelSpacing=0` 保持默认 block margin 视觉；显式 `NavMenu.ItemSpacing` 是实例级额外 panel spacing，可覆盖根与后代默认 ItemsPanel，但不改写 Token。
 - Verification
   - 定义任意层级结构 entry、集合全动作、非法数据确定性失败、路径、选择、键盘、collapsed、Header/Footer、spacing、资源释放、容器回收隔离和纯节点快路径验证矩阵。

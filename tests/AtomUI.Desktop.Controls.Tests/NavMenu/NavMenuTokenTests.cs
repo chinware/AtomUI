@@ -56,4 +56,22 @@ public class NavMenuTokenTests
         navMenuToken.InlineCollapsedWidth.ShouldBe(48);
         navMenuToken.CollapsedWidth.ShouldBe(sharedToken.ControlHeight * 2);
     }
+
+    [Fact]
+    public void Inline_Collapsed_Icon_Uses_Large_Icon_Size_Level()
+    {
+        var sharedToken = new DesignToken
+        {
+            IconSize   = 14,
+            IconSizeLG = 16
+        };
+        var navMenuToken = new NavMenuToken();
+        navMenuToken.AssignEffectiveGlobalToken(sharedToken);
+
+        navMenuToken.CalculateTokenValues(isDarkMode: false);
+
+        navMenuToken.ItemIconSize.ShouldBe(sharedToken.IconSize);
+        navMenuToken.CollapsedIconSize.ShouldBe(sharedToken.IconSizeLG);
+        navMenuToken.CollapsedIconSize.ShouldBeGreaterThan(navMenuToken.ItemIconSize);
+    }
 }

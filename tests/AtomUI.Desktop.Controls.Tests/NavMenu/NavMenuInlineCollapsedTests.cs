@@ -4,6 +4,7 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Threading;
@@ -501,6 +502,209 @@ public class NavMenuInlineCollapsedTests
 
             iconCenter.ShouldBe(frameCenter, 0.5,
                 "the collapsed inline header hides text and indicator visuals, so the icon should be centered in the visible item frame rather than in the original text-layout column.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void InlineCollapsed_Root_Group_Items_Use_Collapsed_Icon_Layout_Through_Transparent_Groups()
+    {
+        var item = new NavMenuNode
+        {
+            Header  = "Dashboard",
+            ItemKey = "dashboard",
+            Icon    = new PieChartOutlined()
+        };
+        var nestedItem = new NavMenuNode
+        {
+            Header  = "Projects",
+            ItemKey = "projects",
+            Icon    = new PieChartOutlined()
+        };
+        var nestedGroup = new NavMenuGroup
+        {
+            Header = "Nested workspace"
+        };
+        nestedGroup.Entries.Add(nestedItem);
+        var group = new NavMenuGroup
+        {
+            Header = "Workspace"
+        };
+        group.Entries.Add(item);
+        group.Entries.Add(nestedGroup);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode              = NavMenuMode.Inline,
+            IsMotionEnabled   = false,
+            IsInlineCollapsed = true
+        };
+        menu.Items.Add(group);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 240,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var groupContainer = (ItemsControl)menu.ContainerFromItem(group)!;
+            var itemContainer  = (Control)groupContainer.ContainerFromItem(item)!;
+            var itemHeader     = GetItemHeader(itemContainer);
+            var nestedGroupContainer = (ItemsControl)groupContainer.ContainerFromItem(nestedGroup)!;
+            var nestedItemContainer  = (Control)nestedGroupContainer.ContainerFromItem(nestedItem)!;
+            var nestedItemHeader     = GetItemHeader(nestedItemContainer);
+            var frame = itemHeader.GetVisualDescendants()
+                                  .OfType<Border>()
+                                  .Single(border => border.Name == "Frame");
+            var iconPresenter = itemHeader.GetVisualDescendants()
+                                          .OfType<IconPresenter>()
+                                          .Single(presenter => presenter.Name == "ItemIconPresenter");
+            var nestedIconPresenter = nestedItemHeader.GetVisualDescendants()
+                                                       .OfType<IconPresenter>()
+                                                       .Single(presenter => presenter.Name == "ItemIconPresenter");
+
+            var iconPosition = iconPresenter.TranslatePoint(default, frame);
+            iconPosition.ShouldNotBeNull();
+
+            var frameCenter = frame.Bounds.Width / 2;
+            var iconCenter  = iconPosition.Value.X + iconPresenter.Bounds.Width / 2;
+
+            itemHeader.IsInlineCollapsed.ShouldBeTrue(
+                "a group is structurally transparent, so a root group item must receive the root inline-collapsed state.");
+            nestedItemHeader.IsInlineCollapsed.ShouldBeTrue(
+                "nested transparent root groups must continue forwarding the root inline-collapsed state.");
+            iconPresenter.Bounds.Width.ShouldBe(16, 0.5,
+                "root group items must use the same CollapsedIconSize as direct root items.");
+            iconPresenter.Bounds.Height.ShouldBe(16, 0.5,
+                "root group items must use the same CollapsedIconSize as direct root items.");
+            iconCenter.ShouldBe(frameCenter, 0.5,
+                "root group items must center their collapsed icon in the visible item frame.");
+            nestedIconPresenter.Bounds.Width.ShouldBe(16, 0.5,
+                "transparent group depth must not change the root collapsed icon size.");
+            nestedIconPresenter.Bounds.Height.ShouldBe(16, 0.5,
+                "transparent group depth must not change the root collapsed icon size.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void InlineCollapsed_Hides_Footer_And_Restores_It_After_Expand()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode              = NavMenuMode.Inline,
+            IsMotionEnabled   = false,
+            IsInlineCollapsed = true,
+            Footer            = new TextBlock { Text = "Current workspace" }
+        };
+        menu.Items.Add(new NavMenuNode
+        {
+            Header  = "Dashboard",
+            ItemKey = "dashboard"
+        });
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 240,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var footerPresenter = menu.GetVisualDescendants()
+                                      .OfType<ContentPresenter>()
+                                      .Single(presenter => presenter.Name == "PART_FooterPresenter");
+
+            footerPresenter.IsVisible.ShouldBeFalse(
+                "the expanded footer has no collapsed representation and must not render partial content inside the collapsed width.");
+
+            menu.IsInlineCollapsed = false;
+            Dispatcher.UIThread.RunJobs();
+
+            footerPresenter.IsVisible.ShouldBeTrue(
+                "expanding the menu must restore the configured footer without rebuilding its content.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void InlineCollapsed_Popup_Group_Item_Keeps_Normal_Vertical_Icon_Layout()
+    {
+        var child = new NavMenuNode
+        {
+            Header  = "Profile",
+            ItemKey = "profile",
+            Icon    = new PieChartOutlined()
+        };
+        var group = new NavMenuGroup
+        {
+            Header = "Account"
+        };
+        group.Entries.Add(child);
+        var parent = new NavMenuNode
+        {
+            Header  = "Settings",
+            ItemKey = "settings",
+            Icon    = new PieChartOutlined()
+        };
+        parent.Entries.Add(group);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode              = NavMenuMode.Inline,
+            IsMotionEnabled   = false,
+            IsInlineCollapsed = true
+        };
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 480,
+            Height  = 320,
+            Content = CreatePopupOverlayHost(menu)
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (NavMenuItem)menu.ContainerFromItem(parent)!;
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var groupContainer = (ItemsControl)parentContainer.ContainerFromItem(group)!;
+            var childContainer = (Control)groupContainer.ContainerFromItem(child)!;
+            var childHeader    = GetItemHeader(childContainer);
+            var iconPresenter = childHeader.GetVisualDescendants()
+                                           .OfType<IconPresenter>()
+                                           .Single(presenter => presenter.Name == "ItemIconPresenter");
+
+            childHeader.IsInlineCollapsed.ShouldBeFalse(
+                "groups inside a popup are not root-transparent entries and must keep normal vertical item visuals.");
+            iconPresenter.Bounds.Width.ShouldBe(14, 0.5,
+                "popup group items must keep ItemIconSize instead of the root-only CollapsedIconSize.");
+            iconPresenter.Bounds.Height.ShouldBe(14, 0.5,
+                "popup group items must keep ItemIconSize instead of the root-only CollapsedIconSize.");
         }
         finally
         {

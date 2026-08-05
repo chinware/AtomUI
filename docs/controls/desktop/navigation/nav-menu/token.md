@@ -91,7 +91,7 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 
 用于菜单项图标、horizontal 顶层图标间距、箭头尺寸和 inline 缩进。`InlineItemIndentUnit` 默认来自 `ItemHeight / 2`，使层级缩进与菜单项高度保持比例关系。
 
-`CollapsedIconSize` 继续作为 inline collapsed 顶层图标尺寸 token。它只控制图标尺寸，不控制折叠宽度；折叠宽度由 `InlineCollapsedWidth` 或控件本地属性值决定。
+`CollapsedIconSize` 继续作为 inline collapsed 顶层图标尺寸 token，默认映射全局 `IconSizeLG`，比普通菜单项使用的 `ItemIconSize=IconSize` 大一档。它只控制图标尺寸，不控制折叠宽度；折叠宽度由 `InlineCollapsedWidth` 或控件本地属性值决定。
 
 ### 2.6 Popup Token
 

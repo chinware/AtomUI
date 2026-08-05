@@ -71,6 +71,14 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
         }
     }
 
+    public void HandleToggleStructuredNavMenuCollapsedClick(object? sender, RoutedEventArgs? args)
+    {
+        if (DataContext is MenuViewModel viewModel)
+        {
+            viewModel.HandleToggleStructuredNavMenuCollapsedClick(sender, args);
+        }
+    }
+
     private void RefreshCurrentViewModelData()
     {
         if (DataContext is MenuViewModel viewModel)
@@ -80,7 +88,8 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
                 new TreeNodePath("/3/SubGroup2")
             ];
             viewModel.DefaultSelectedPath = new TreeNodePath("/3/SubGroup1/Option1");
-            viewModel.IsInlineCollapsed   = false;
+            viewModel.IsInlineCollapsed             = false;
+            viewModel.IsStructuredNavMenuCollapsed  = false;
             viewModel.InlineCollapsedOpenPaths =
             [
                 new TreeNodePath("/NavigationOne")
@@ -105,6 +114,7 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
         viewModel.DefaultOpenPaths            = null;
         viewModel.DefaultSelectedPath         = null;
         viewModel.IsInlineCollapsed           = false;
+        viewModel.IsStructuredNavMenuCollapsed = false;
         viewModel.InlineCollapsedOpenPaths    = null;
         viewModel.InlineCollapsedSelectedPath = null;
         viewModel.DefaultSelectedNode         = null;

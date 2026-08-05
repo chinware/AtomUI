@@ -72,6 +72,7 @@ public class MenuShowCasePageTests
         var zhCN = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_CN.cs");
         var zhTW = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_TW.cs");
         var enUS = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en_US.cs");
+        var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/ViewModels/MenuViewModel.cs");
         var showCaseSource = ExtractShowCaseItem(pageSource, "NavMenuCompositionTitle");
 
         showCaseSource.ShouldContain("MenuShowCaseLangResource NavMenuCompositionDescription");
@@ -81,11 +82,31 @@ public class MenuShowCasePageTests
         CountOccurrences(showCaseSource, "<atom:NavMenuGroup").ShouldBeGreaterThanOrEqualTo(3);
         CountOccurrences(showCaseSource, "<atom:NavMenuDivider").ShouldBeGreaterThanOrEqualTo(2);
         showCaseSource.ShouldContain("<atom:NavMenuNode.Entries>");
+        showCaseSource.ShouldContain("IsInlineCollapsed=\"{Binding IsStructuredNavMenuCollapsed}\"");
+        showCaseSource.ShouldContain("Click=\"HandleToggleStructuredNavMenuCollapsedClick\"");
         showCaseSource.ShouldNotContain("<atom:NavMenu.Styles>");
 
+        viewModelSource.ShouldContain("public bool IsStructuredNavMenuCollapsed");
+        viewModelSource.ShouldContain("HandleToggleStructuredNavMenuCollapsedClick");
         zhCN.ShouldContain("public const string NavMenuCompositionTitle = \"结构化导航菜单\";");
         zhTW.ShouldContain("public const string NavMenuCompositionTitle = \"結構化導航菜單\";");
         enUS.ShouldContain("public const string NavMenuCompositionTitle = \"Structured nav menu\";");
+    }
+
+    [Fact]
+    public void Menu_ViewModel_Collapsed_Demo_State_Is_Independent()
+    {
+        var viewModel = new MenuViewModel(new TestScreen());
+
+        viewModel.HandleToggleStructuredNavMenuCollapsedClick(null, null);
+
+        viewModel.IsStructuredNavMenuCollapsed.ShouldBeTrue();
+        viewModel.IsInlineCollapsed.ShouldBeFalse();
+
+        viewModel.HandleToggleInlineCollapsedClick(null, null);
+
+        viewModel.IsInlineCollapsed.ShouldBeTrue();
+        viewModel.IsStructuredNavMenuCollapsed.ShouldBeTrue();
     }
 
     [Fact]

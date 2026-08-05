@@ -243,8 +243,11 @@ internal static class NavMenuEntryContainerCoordinator
 
             case NavMenuGroupItem groupItem:
                 disposables.Add(BindUtils.RelayBind(groupItem, NavMenuGroupItem.ModeProperty, menuItem, NavMenuItem.ModeProperty));
-                menuItem.ClearValue(NavMenuItem.IsInlineCollapsedProperty);
-                menuItem.SetCurrentValue(NavMenuItem.IsInlineCollapsedProperty, false);
+                disposables.Add(BindUtils.RelayBind(
+                    groupItem,
+                    NavMenuGroupItem.IsInlineCollapsedProperty,
+                    menuItem,
+                    NavMenuItem.IsInlineCollapsedProperty));
                 disposables.Add(BindUtils.RelayBind(groupItem, NavMenuGroupItem.IsDarkStyleProperty, menuItem, NavMenuItem.IsDarkStyleProperty));
                 disposables.Add(BindUtils.RelayBind(groupItem, NavMenuGroupItem.IsItemBackgroundEnabledProperty, menuItem, NavMenuItem.IsItemBackgroundEnabledProperty));
                 disposables.Add(BindUtils.RelayBind(groupItem, NavMenuGroupItem.IsMotionEnabledProperty, menuItem, NavMenuItem.IsMotionEnabledProperty));

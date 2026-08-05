@@ -413,7 +413,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         CollapsedWidth       = EffectiveGlobalToken.ControlHeight * 2;
         InlineCollapsedWidth = 48d;
         IconMargin           = new Thickness(0, 0, EffectiveGlobalToken.ControlHeightSM - EffectiveGlobalToken.FontSize, 0);
-        CollapsedIconSize    = EffectiveGlobalToken.FontSizeLG;
+        CollapsedIconSize    = EffectiveGlobalToken.IconSizeLG;
         GroupTitleFontSize   = EffectiveGlobalToken.FontSize;
         
         // Disabled

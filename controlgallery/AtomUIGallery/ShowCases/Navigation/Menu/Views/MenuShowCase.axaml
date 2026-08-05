@@ -603,16 +603,25 @@
             <DataTemplate x:DataType="viewModels:MenuViewModel">
                 <atom:NavMenu Mode="Inline"
                               Width="320"
-                              ItemSpacing="4">
+                              ItemSpacing="4"
+                              IsInlineCollapsed="{Binding IsStructuredNavMenuCollapsed}">
                     <atom:NavMenu.Header>
-                        <StackPanel Margin="12,8,12,12"
-                                    Orientation="Horizontal"
-                                    Spacing="8">
-                            <atom:IconPresenter Icon="{antdicons:AntDesignIconProvider Kind=ProductOutlined}" />
-                            <atom:TextBlock VerticalAlignment="Center"
-                                            FontWeight="SemiBold"
-                                            Text="{gallery:MenuShowCaseLangResource P2HeaderWorkspaceNavigation}" />
-                        </StackPanel>
+                        <Grid Margin="8"
+                              ColumnDefinitions="*,Auto">
+                            <StackPanel Grid.Column="0"
+                                        IsVisible="{Binding IsStructuredNavMenuCollapsed, Converter={x:Static BoolConverters.Not}}"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                <atom:IconPresenter Icon="{antdicons:AntDesignIconProvider Kind=ProductOutlined}" />
+                                <atom:TextBlock VerticalAlignment="Center"
+                                                FontWeight="SemiBold"
+                                                Text="{gallery:MenuShowCaseLangResource P2HeaderWorkspaceNavigation}" />
+                            </StackPanel>
+                            <atom:Button Grid.Column="1"
+                                         ButtonType="Primary"
+                                         Icon="{antdicons:AntDesignIconProvider Kind=MenuFoldOutlined}"
+                                         Click="HandleToggleStructuredNavMenuCollapsedClick" />
+                        </Grid>
                     </atom:NavMenu.Header>
 
                     <atom:NavMenuGroup Header="{gallery:MenuShowCaseLangResource P2HeaderWorkspaceGroup}">
