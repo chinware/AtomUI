@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Reflection;
 using AtomUI.Controls;
+using Avalonia.Threading;
 using Shouldly;
 using Xunit;
 
@@ -24,6 +25,32 @@ public class UploadFileStateTests
 
         files.Count.ShouldBe(1);
         GetPropertyValue(files[0]!, "Name").ShouldBe("first.txt");
+    }
+
+    [Theory]
+    [InlineData(FileUploadStatus.Success)]
+    [InlineData(FileUploadStatus.Failed)]
+    [InlineData(FileUploadStatus.Cancelled)]
+    public void Late_Progress_Does_Not_Reopen_Terminal_File_Item(FileUploadStatus terminalStatus)
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var upload = new Desktop.Controls.Upload();
+            var item = new UploadFileItem
+            {
+                Name     = $"{terminalStatus}.txt",
+                Status   = terminalStatus,
+                Progress = 77
+            };
+            var progressEventCount = 0;
+            upload.UploadTaskProgress += (_, _) => progressEventCount++;
+
+            upload.NotifyUploadProgress(item, CreateUploadFile(item.Name!), 100);
+
+            item.Status.ShouldBe(terminalStatus);
+            item.Progress.ShouldBe(77);
+            progressEventCount.ShouldBe(0);
+        });
     }
 
     [Fact]

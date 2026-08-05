@@ -51,8 +51,13 @@ internal class FileUploadScheduler : IFileUploadScheduler
 
             var progress = new Progress<FileUploadProgress>(report =>
             {
-                task.Progress = report.Percentage;
-                task.UploadProgressHandler?.Invoke(task.Id, task.UploadFileInfo, task.Progress);
+                var taskProgress = report.Percentage;
+                if (!TryRecordUploadProgress(task, taskProgress))
+                {
+                    return;
+                }
+
+                task.UploadProgressHandler?.Invoke(task.Id, task.UploadFileInfo, taskProgress);
             });
 
             var executionTask = Task.Run(() => ExecuteUploadAsync(
@@ -145,8 +150,7 @@ internal class FileUploadScheduler : IFileUploadScheduler
             status = FileUploadStatus.Failed;
             result = FileUploadResult.FailureResult(FileUploadErrorCode.Unknown, ex.Message);
         }
-        task.Result = result;
-        task.Status = status;
+        SetUploadResult(task, status, result);
         try
         {
             switch (status)
@@ -198,6 +202,32 @@ internal class FileUploadScheduler : IFileUploadScheduler
                     uploadTask.ExecutionTask = null;
                 }
             }
+        }
+    }
+
+    private static bool TryRecordUploadProgress(FileUploadTask task, double progress)
+    {
+        lock (task)
+        {
+            if (task.Status != FileUploadStatus.Uploading)
+            {
+                return false;
+            }
+
+            task.Progress = progress;
+            return true;
+        }
+    }
+
+    private static void SetUploadResult(
+        FileUploadTask task,
+        FileUploadStatus status,
+        FileUploadResult result)
+    {
+        lock (task)
+        {
+            task.Result = result;
+            task.Status = status;
         }
     }
     

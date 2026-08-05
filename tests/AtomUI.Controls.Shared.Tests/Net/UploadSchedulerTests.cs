@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Reflection;
 using Shouldly;
 using Xunit;
@@ -41,6 +42,32 @@ public class UploadSchedulerTests
         await WaitUntilAsync(() => task.Status == FileUploadStatus.Success);
 
         GetRunningTaskCount(scheduler).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task Queued_Progress_After_Terminal_Result_Is_Not_Published()
+    {
+        var context = new QueuedSynchronizationContext();
+        var transport = new ImmediateProgressSuccessTransport();
+        var scheduler = new FileUploadScheduler(transport);
+        var task = CreateUploadTask("late-progress.txt");
+        var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var progressReports = new List<double>();
+        task.UploadProgressHandler = (_, _, progress) => progressReports.Add(progress);
+        task.UploadCompletedHandler = (_, _, _) => completed.TrySetResult();
+
+        EnqueueWithSynchronizationContext(scheduler, task, context);
+
+        await completed.Task.WaitAsync(
+            TimeSpan.FromSeconds(3),
+            TestContext.Current.CancellationToken);
+        task.Status.ShouldBe(FileUploadStatus.Success);
+        context.PendingCount.ShouldBe(1);
+
+        context.RunAll();
+
+        progressReports.ShouldBeEmpty();
+        task.Status.ShouldBe(FileUploadStatus.Success);
     }
 
     [Fact]
@@ -359,6 +386,23 @@ public class UploadSchedulerTests
         }
     }
 
+    private static void EnqueueWithSynchronizationContext(
+        FileUploadScheduler scheduler,
+        FileUploadTask task,
+        SynchronizationContext context)
+    {
+        var previousContext = SynchronizationContext.Current;
+        SynchronizationContext.SetSynchronizationContext(context);
+        try
+        {
+            scheduler.EnqueueTask(task);
+        }
+        finally
+        {
+            SynchronizationContext.SetSynchronizationContext(previousContext);
+        }
+    }
+
     private sealed class BlockingUploadTransport : IFileUploadTransport
     {
         public TaskCompletionSource<UploadFileInfo> Started { get; } =
@@ -388,6 +432,46 @@ public class UploadSchedulerTests
             Started.TrySetResult(fileInfo);
 
             return await _completion.Task.WaitAsync(cancellationToken);
+        }
+    }
+
+    private sealed class ImmediateProgressSuccessTransport : IFileUploadTransport
+    {
+        public Task<FileUploadResult> UploadAsync(
+            UploadFileInfo fileInfo,
+            object? context = null,
+            IProgress<FileUploadProgress>? progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            progress?.Report(new FileUploadProgress
+            {
+                BytesSent  = fileInfo.Size ?? 0,
+                TotalBytes = fileInfo.Size ?? 0
+            });
+            return Task.FromResult(FileUploadResult.SuccessResult(
+                new Uri("https://example.com/late-progress.txt"),
+                fileInfo.Size ?? 0,
+                TimeSpan.FromMilliseconds(1)));
+        }
+    }
+
+    private sealed class QueuedSynchronizationContext : SynchronizationContext
+    {
+        private readonly ConcurrentQueue<(SendOrPostCallback Callback, object? State)> _callbacks = new();
+
+        internal int PendingCount => _callbacks.Count;
+
+        public override void Post(SendOrPostCallback d, object? state)
+        {
+            _callbacks.Enqueue((d, state));
+        }
+
+        internal void RunAll()
+        {
+            while (_callbacks.TryDequeue(out var callback))
+            {
+                callback.Callback(callback.State);
+            }
         }
     }
 

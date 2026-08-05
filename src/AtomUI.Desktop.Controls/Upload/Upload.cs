@@ -494,6 +494,11 @@ public partial class Upload : ContentControl,
     {
         RunOnUiThread(() =>
         {
+            if (IsTerminalUploadStatus(item.Status))
+            {
+                return;
+            }
+
             item.Status   = FileUploadStatus.Uploading;
             item.Progress = progress;
             SetCurrentValue(IsTaskRunningProperty, true);
@@ -1265,6 +1270,11 @@ public partial class Upload : ContentControl,
         {
             SetCurrentValue(IsTaskRunningProperty, isTaskRunning);
         }
+    }
+
+    private static bool IsTerminalUploadStatus(FileUploadStatus status)
+    {
+        return status is FileUploadStatus.Success or FileUploadStatus.Failed or FileUploadStatus.Cancelled;
     }
 
     private void RunOnUiThread(Action action)
