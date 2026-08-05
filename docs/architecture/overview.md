@@ -79,7 +79,9 @@ ResourceProvider 和全局 TopLevel context style 的唯一 ThemeManager 随后�
 - 主题与 Token：`ThemeSnapshot` 是唯一 Token 真源；`ThemeManager` 统一提交根/局部事务，稳定
   `ThemeContext` 和 snapshot-backed ResourceProvider 负责作用域资源，源生成器提供 Token schema、Control
   exact CLR type/identity、ControlTheme asset manifest 与强类型资源投影。
-- 本地化：控件包声明 `LanguageProvider`，源生成器生成 `LanguageProviderPool`，注册时统一交给 `ThemeManager`。
+- 本地化：当前实现由控件包声明 `LanguageProvider`，源生成器生成 `LanguageProviderPool`，注册时统一交给
+  `ThemeManager`；面向应用、类库和控件的独立目标架构见
+  [AtomUI 多语言模块架构概览](../modules/localization/overview.md)。
 - 平台适配：`RuntimePlatform.Features.SupportsNativeWindow` 决定桌面/浏览器主题 Provider 和部分 Token 注册。
 - 控件资源：每个对外可主题化 Control 都有独立 identity 和 AXAML 主题；只有存在 Own Token 时才增加 Token 类。
   包级 Provider 只接入生成 manifest，不由开发者维护逐 Control 聚合 AXAML 或主题清单。
