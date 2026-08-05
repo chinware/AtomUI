@@ -19,6 +19,12 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Include="../AtomUI.Localization.Build.Shared/**/*.cs"
+                 Link="LocalizationBuildShared/%(RecursiveDir)%(Filename)%(Extension)" />
+        <InternalsVisibleTo Include="AtomUI.Generator.Tests" />
+    </ItemGroup>
+
     <!-- This ensures the library will be packaged as a source generator when we use `dotnet pack` -->
     <ItemGroup>
         <None Include="$(OutputPath)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>

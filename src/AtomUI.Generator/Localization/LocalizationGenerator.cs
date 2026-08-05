@@ -1,6 +1,6 @@
 using AtomUI.Generator.Localization.Catalog;
+using AtomUI.Generator.Localization.Xliff;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace AtomUI.Generator;
 
@@ -19,8 +19,20 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                               .Select(static (input, cancellationToken) =>
                                   LanguageCatalogSymbolParser.Parse(
                                       input.Left,
-                                      GetModuleId(input.Right, input.Left.Symbol.ContainingAssembly.Name),
+                                      LanguageGeneratorOptions.GetModuleId(
+                                          input.Right,
+                                          input.Left.Symbol.ContainingAssembly.Name),
                                       cancellationToken));
+        var languageFiles = context.AdditionalTextsProvider
+                                   .Combine(context.AnalyzerConfigOptionsProvider)
+                                   .Where(static input => LanguageGeneratorOptions.IsLanguageFile(
+                                       input.Left,
+                                       input.Right))
+                                   .Select(static (input, cancellationToken) =>
+                                       AdditionalLanguageFileParser.Parse(
+                                           input.Left,
+                                           input.Right,
+                                           cancellationToken));
 
         context.RegisterSourceOutput(catalogs, static (sourceContext, result) =>
         {
@@ -29,38 +41,12 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                 sourceContext.ReportDiagnostic(diagnostic);
             }
         });
-    }
-
-    private static string GetModuleId(
-        AnalyzerConfigOptionsProvider optionsProvider,
-        string fallbackAssemblyName)
-    {
-        if (TryGetNonEmpty(optionsProvider.GlobalOptions, "build_property.PackageId", out var packageId))
+        context.RegisterSourceOutput(languageFiles, static (sourceContext, result) =>
         {
-            return packageId;
-        }
-
-        return TryGetNonEmpty(
-            optionsProvider.GlobalOptions,
-            "build_property.AssemblyName",
-            out var assemblyName)
-            ? assemblyName
-            : fallbackAssemblyName;
-    }
-
-    private static bool TryGetNonEmpty(
-        AnalyzerConfigOptions options,
-        string key,
-        out string value)
-    {
-        if (options.TryGetValue(key, out var candidate) &&
-            !string.IsNullOrWhiteSpace(candidate))
-        {
-            value = candidate.Trim();
-            return true;
-        }
-
-        value = string.Empty;
-        return false;
+            foreach (var diagnostic in result.Diagnostics)
+            {
+                sourceContext.ReportDiagnostic(diagnostic);
+            }
+        });
     }
 }
