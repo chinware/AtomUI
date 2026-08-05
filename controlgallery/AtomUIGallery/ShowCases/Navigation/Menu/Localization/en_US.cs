@@ -50,6 +50,8 @@ internal partial class en_US
     public const string DefaultOpenedPathsDescription = "You can open or select the path by default.";
     public const string NavMenuItemItemsSourceTitle = "Generate NavMenuItem by ItemsSource";
     public const string NavMenuItemItemsSourceDescription = "Generate structure based on ItemsSource and template.";
+    public const string NavMenuCompositionTitle = "Structured nav menu";
+    public const string NavMenuCompositionDescription = "Compose fixed header and footer slots with grouped entries, dividers, nested groups, and custom item spacing.";
     public const string P2HeaderFile = "_File";
     public const string P2HeaderNewTextFile = "New Text File";
     public const string P2HeaderNewFile = "New File";
@@ -94,5 +96,18 @@ internal partial class en_US
     public const string P2TextLastCommandKey = "Last executed key:";
     public const string P2TextChangeMode = "Change Mode";
     public const string P2TextChangeStyle = "Change Style";
+    public const string P2HeaderWorkspaceNavigation = "Workspace navigation";
+    public const string P2HeaderWorkspaceGroup = "Workspace";
+    public const string P2HeaderDashboard = "Dashboard";
+    public const string P2HeaderProjects = "Projects";
+    public const string P2HeaderAccountGroup = "Account";
+    public const string P2HeaderAccountSettings = "Account settings";
+    public const string P2HeaderManagementGroup = "Management";
+    public const string P2HeaderTeamMembers = "Team members";
+    public const string P2HeaderPermissions = "Permissions";
+    public const string P2HeaderPersonalGroup = "Personal";
+    public const string P2HeaderProfile = "Profile";
+    public const string P2HeaderSecurity = "Security";
+    public const string P2TextCurrentWorkspace = "Current workspace: AtomUI";
 
 }

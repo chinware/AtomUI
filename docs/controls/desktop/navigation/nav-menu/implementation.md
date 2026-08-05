@@ -14,8 +14,10 @@ NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护包含节点�
 
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenu.cs`：公开控件、属性、ItemsControl 容器入口、默认路径 replay 和 mode 状态同步。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuItem.cs`：内部容器、header 转发、子菜单、popup、选中和打开状态。
-- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuNode.cs`：`INavMenuEntry` / `INavMenuNode` 契约、接口级协变 entry 读取入口、`NavMenuNode.Entries` 唯一可写集合和 `Children` 实时兼容视图；`NavMenuNode` 使用 `[GenerateScopedResourceHost]` 获得 scoped `IResourceHost` / `IThemeVariantHost` 生命周期。
-- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuGroup.cs`、`NavMenuDivider.cs`：公开结构 entry 数据模型；`NavMenuGroup` 管理透明 entry 子树和 scoped resource-host 生命周期。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuEntry.cs`：`INavMenuEntry` 最小标记契约和无状态 `NavMenuDivider` 数据模型。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuNode.cs`：`INavMenuNode` 契约、接口级协变 entry 读取入口、`NavMenuNode.Entries` 唯一可写集合和 `Children` 实时兼容视图；`NavMenuNode` 使用 `[GenerateScopedResourceHost]` 获得 scoped `IResourceHost` / `IThemeVariantHost` 生命周期。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuGroup.cs`：公开分组 entry 数据模型，管理透明 entry 子树和 scoped resource-host 生命周期。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuEntryCollection.cs`、`NavMenuEntryGraph.cs`、`NavMenuEntryOwnershipCoordinator.cs`：内置 entry owner 的事务前校验、循环检测、完整图唯一性协调、弱 structural owner 和嵌套 source 生命周期。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuGroupItem.cs`、`NavMenuDividerItem.cs`：内部不可交互结构容器。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuEntryContainerCoordinator.cs`：统一节点、分组和分隔线的容器类型分派、准备、清理和回收键。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuSemanticNavigator.cs`：按语义 owner 遍历已生成节点容器，跳过结构 entry。
@@ -37,7 +39,7 @@ NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护包含节点�
 
 `NavMenuGroupItem` 是不可聚焦的内部 `ItemsControl`，承载分组标题和同一语义层级的 entry；`NavMenuDividerItem` 只承载分隔视觉。两者都不实现 `INavMenuItem`、`ISelectable` 或 `ICommandSource`，不会进入事件、路径或选择模型。
 
-`NavMenuEntryContainerCoordinator` 是根 `NavMenu`、`NavMenuItem` 和 `NavMenuGroupItem` 的共享容器入口。它按 entry 类型选择容器和独立 recycle key，并统一注入 owner menu、local entry owner、semantic parent、level、mode、theme 和 item spacing 上下文，避免三个 ItemsControl 各自复制容器逻辑。
+`NavMenuEntryContainerCoordinator` 是根 `NavMenu`、`NavMenuItem` 和 `NavMenuGroupItem` 的共享容器入口。它按 entry 类型选择容器和独立 recycle key，并统一注入 owner menu、local entry owner、semantic parent、level、mode 和 theme 上下文，避免三个 ItemsControl 各自复制容器逻辑。根 ItemsPanel 直接消费公开 `ItemSpacing`；后代 ItemsPanel 消费内部可继承的 `EntryItemSpacing`。主题默认把 `VerticalItemsPanelSpacing` 写入后代值，公开 `ItemSpacing` 有有效设置时只在根控件投影一次，不进入逐容器 relay binding。
 
 `NavMenuNode` 是 owner-managed 非 Visual `AvaloniaObject`。它保存节点数据、`Command` 和 `CommandParameter`，但不持有 generated container，不执行命令，也不直接订阅 `ICommand.CanExecuteChanged`。scoped resource-host 样板由 generator 生成，owner 侧 attach token 与节点属性 relay binding 使用同一个容器 disposable 生命周期。
 
@@ -133,6 +135,8 @@ PrepareContainerForItemOverride
   -> bind Command / CommandParameter to NavMenuItem
 
 ClearContainerForItemOverride / rebind / recycle
+  -> forget the generated container in selection and interaction coordinators
+  -> invalidate keyboard-active, pressed and delayed hover targets
   -> dispose the same CompositeDisposable
   -> release node-to-container bindings
   -> release resource-host attachment token
@@ -142,7 +146,7 @@ ClearContainerForItemOverride / rebind / recycle
 
 资源宿主 attachment、节点属性 binding 和命令 binding 不能分散到不同的无 owner subscription 中。re-template、Items reset、container recycle 或节点替换必须复用同一个 clear 路径；不允许依赖 GC、DataContext 清空或页面导航释放旧关系。
 
-分组进入容器时使用同一 acquire/release 结构：prepare 时 attach `NavMenuGroup` resource host、绑定 Header/HeaderTemplate、设置 Entries ItemsSource 和语义 owner；clear/rebind/recycle 时由容器 disposable 同时释放资源宿主、标题 binding、ItemsSource 和语义上下文。分隔线没有数据订阅，但 clear 时仍必须清除 mode、orientation 和 owner 上下文，防止回收后继承旧层级状态。
+分组进入容器时使用同一 acquire/release 结构：prepare 时 attach `NavMenuGroup` resource host、绑定 Header/HeaderTemplate、设置 Entries ItemsSource 和语义 owner；clear/rebind/recycle 时先 dispose 容器 binding owner，再清除 ItemsSource、owner property local value 和语义上下文。分隔线虽然没有数据对象属性，但 mode/dark owner relay binding 仍由独立 disposable 持有；clear 时先释放 binding，再清除 mode、orientation 和 owner 上下文，防止回收后继承旧层级状态。
 
 ## 6. 交互与事件处理
 
@@ -158,6 +162,7 @@ Default handler：
 
 - pointer enter 可延迟打开 popup。
 - pointer leave 可延迟关闭 popup。
+- 延迟打开 / 关闭任务记录各自的目标容器；目标 container clear、handler detach 或新 pointer 状态替换旧任务时精确取消并清空目标引用。
 - 点击叶子节点进入 selection coordinator。
 - popup close 由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。
 - Horizontal 顶层 popup 放置在下方，非顶层和 vertical popup 使用侧向层级。
@@ -166,7 +171,7 @@ Default handler：
 Keyboard navigation：
 
 - NavMenu 在根菜单范围接收方向键、Enter 和 Esc，并根据当前 active/focus 项分派给当前 mode 的导航策略。
-- active 项优先来自当前键盘焦点所在的 `NavMenuItem`；没有可用 focus 时，先解析当前 `SelectedItem` 对应的可见容器作为方向键移动锚点，并把本次方向键 delta 应用到该锚点上；找不到选中容器时再使用当前可见层级中的第一个可交互项。
+- active 项优先来自当前键盘焦点所在的 `NavMenuItem`；没有可用 focus 时，先解析当前 `SelectedItem` 对应的可见容器作为方向键移动锚点，并把本次方向键 delta 应用到该锚点上；找不到选中容器时再使用当前可见层级中的第一个可交互项。可交互项必须 effective visible、effective enabled，并且从自身到根的所有语义父项仍处于打开状态，不能提交已关闭 popup 中残留的容器。
 - Up / Down 在当前语义可见层级内循环移动，跳过分组、分隔线、禁用项和不可交互项。
 - Horizontal 根层使用 Left / Right 在顶层项之间循环移动，Down 或 Enter 打开 active 子菜单并进入第一项。
 - Vertical 根层和 popup 子菜单使用 Right 或 Enter 进入子菜单，Left 或 Esc 返回父级并关闭当前 popup 分支。
@@ -187,13 +192,23 @@ Keyboard navigation：
 
 `NavMenuNode` 作为非 Visual Avalonia binding target 时使用 `[GenerateScopedResourceHost]`。container binder 先把 generated `AttachResourceHost(owner)` token 加入当前 `NavMenuItem` 的 `CompositeDisposable`，再通过 AvaloniaProperty overload 建立节点属性投影。自定义 `INavMenuNode` 使用强类型 getter overload；实现了 `INotifyPropertyChanged` 的节点保持运行期更新，普通节点取得初始值，未声明命令的既有实现使用接口的 `null` 默认值。所有 `BindUtils.RelayBind` 返回值必须加入同一个 disposable；禁止丢弃返回值或把最后一次容器永久挂回节点。
 
+owner menu、parent item 或 parent group 到生成容器的运行期状态关系无法由固定 ControlTemplate 的 `TemplateBinding` 表达，因此 coordinator 使用 `BindUtils.RelayBind`。这些 binding 的 owner 分别是 node、group、divider 容器中的 `CompositeDisposable`；clear 路径必须先 dispose 订阅，再对 target property 执行 `ClearValue` 和默认状态复位，避免 DirectProperty binding 被丢弃后继续持有已回收容器。
+
 ### 7.2 Entry 集合与父级投影
 
 `NavMenuNode.Entries` 是唯一有序存储，`Children` 是延迟创建的实时节点视图。纯节点 entry 的枚举和变更走直接快路径；遇到 `NavMenuGroup` 时只在该语义层级内递归穿透分组，不进入子节点后代。
 
-`INavMenuNode.Entries` 的接口类型是 `IEnumerable<INavMenuEntry>`。默认实现直接返回继承自 `ITreeNode<INavMenuNode>` 的 `IEnumerable<INavMenuNode> Children`，依赖 `IEnumerable<T>` 协变完成类型投影，不创建 wrapper、缓存或第二份集合。`NavMenuNode` 公开可写的 `IList<INavMenuEntry> Entries`，并以显式接口实现把同一实例暴露为读取入口；默认 TreeDataTemplate 统一绑定接口属性。自定义节点若只保留既有 `Children`，其集合通知和节点更新语义保持不变；只有需要混合结构 entry 的自定义节点才覆盖接口 `Entries`。
+`INavMenuNode.Entries` 的接口类型是 `IEnumerable<INavMenuEntry>`。默认实现直接返回继承自 `ITreeNode<INavMenuNode>` 的 `IEnumerable<INavMenuNode> Children`，依赖 `IEnumerable<T>` 协变完成类型投影，不创建 wrapper、缓存或第二份集合。`NavMenuNode` 公开可写的 `IList<INavMenuEntry> Entries`，并以显式接口实现把同一实例暴露为读取入口；默认 TreeDataTemplate 统一绑定接口属性。内置实时集合同时实现泛型与非泛型 `IList`，满足 Avalonia 12 对可通知 ItemsSource 的集合契约。自定义节点若只保留既有 `Children`，其集合通知和节点更新语义保持不变；只有需要混合结构 entry 的自定义节点才覆盖接口 `Entries`。
 
-所有 entry owner 共用一个集合验证职责。根 `NavMenu` 同时监听 direct `Items` 和 `ItemsSource` 投影后的 `ItemsView`；`NavMenuNode` 与 `NavMenuGroup` 在各自 `Entries` 集合入口执行同一规则。验证覆盖初始装载、ItemsSource replacement、Add、Replace 和 Reset：Add/Replace 只检查 `NewItems`，Reset 和 source replacement 对当前视图做完整扫描。每个数据项必须是非空 `INavMenuEntry`；非法项在任何容器分派、父级投影或资源 attach 之前以 `InvalidOperationException` 失败，异常信息包含 entry owner、索引和实际类型。Move/Remove 不重复类型扫描，但仍按集合动作更新父级投影并释放移除项的 owner 状态。
+所有 entry owner 共用一个集合验证职责。根 `NavMenu` 同时监听 direct `Items` 和 `ItemsSource` 投影后的 `ItemsView`；`NavMenuNode` 与 `NavMenuGroup` 在各自 `Entries` 集合入口执行同一类型边界。每个数据项必须是 `INavMenuNode`、`NavMenuGroup` 或 `NavMenuDivider`；仅实现 `INavMenuEntry` 的未知种类也在该入口拒绝，不能等到 container coordinator 的类型分派才失败。异常信息包含 entry owner、索引和实际类型。
+
+内置 `NavMenuNode` / `NavMenuGroup` 另外维护唯一 structural owner。该 owner 与 `ParentNode` / `SemanticParentNode` 不同：前者描述 entry 实例实际存放在哪个根、节点或分组集合，后者描述分组透明之后的导航父级。structural owner 必须使用弱引用，不能让外部持有的数据对象反向保留根 `NavMenu` 或原父 entry。`NavMenuEntryCollection` 在单项 Add、Insert、Replace mutation 前先构造 prospective tree，完成 candidate 类型、循环、现有 owner 和完整图重复校验，再执行集合写入；批量初始化先物化并预检完整批次，避免后续冲突时保留前面已加入的项。成功 mutation 后必须先统一同步 structural owner，再执行可能进入用户实现的 `INavMenuNode.UpdateParentNode` callback 或分组语义父级投影，最后发送属性与集合通知；callback 不能在 ownership 提交窗口内把本次 entry 或其内置后代重挂到其他 owner。Remove、Replace、Clear 在集合移除后释放已经离开当前 scope 的 owner。失败路径不得留下集合项、父级投影或 owner 残留。无状态 `NavMenuDivider` 不参与 owner 跟踪。
+
+既有自定义 `INavMenuNode` 实例自身不登记 structural owner，避免改变旧数据模型契约；但其 entry enumerable 中的内置状态 entry 不能绕过唯一性。每个 `NavMenuEntryCollection` 与根 `NavMenu` 都持有同一种 `NavMenuEntryOwnershipCoordinator`。协调器从自己的 entry 根遍历当前 structural scope：直接 entry 参加校验；custom node 继续递归且后代继承当前 scope owner；内置 node/group 是 scope 边界，其内部集合由该 entry 自己的协调器负责。因此离线 built-in owner、已挂入根菜单的 built-in owner 和根级 custom source 使用同一规则，不依赖根菜单出现后才补做校验。
+
+协调器用引用相等集合检测同 owner、跨 owner、跨 custom wrapper 和跨根菜单的重复 occurrence，并使用 Avalonia weak collection subscription 监听当前 scope 内所有可通知的 custom entry source。built-in child collection 不由祖先协调器订阅，避免深树形成 O(N²) 订阅和重复全子树扫描；其 mutation 由 child 自身协调器在本地处理，structural owner 冲突仍提供跨 scope 的全局唯一性边界。custom source 动态加入内置后代时，协调器复用 entry graph 插入校验，拒绝 candidate 指回当前 built-in scope owner 或其任意 built-in 祖先；通过校验后最近 scope owner 才取得 ownership。后代移除或 source 离开当前 scope 时释放 ownership 和订阅。weak structural owner 与 weak collection subscription 都不能反向强持有根菜单或离线 built-in owner。
+
+根 `NavMenu` 的 direct `Items` 和外部 `ItemsSource` 都通过 `ItemsView.CollectionChanged` 到达控件。由于该通知是 post-mutation，根协调器每次根据当前 root scope 构建引用相等 occurrence/owner 映射，统一检测非法类型、循环、同一状态 entry 的重复 occurrence 和已被其他 structural owner 占用的实例，然后对保留、移除和新增的 root scope owner 及 custom source 弱订阅做 reconcile。校验失败时必须确定性抛出，但不得在通知回调中重入修改调用方 collection 来伪造事务回滚。已从当前 scope 消失的旧 root owner 即使本次新图非法也要释放，避免一次失败的 source replacement 永久锁住旧 entry。内置 `Entries` 集合则在 mutation 前完成同一 scope 校验；`AddRange` 一次写入完整批次，先同步整批 ownership，再投影父级并发送单次批量 Add 通知，保持批量失败原子性并阻止 parent callback 或集合观察者抢占未提交 entry。
 
 根验证不能以 `Items.IsReadOnly` 区分 direct `Items` 和 `ItemsSource`。该状态只描述集合写入口，不代表 source 数据已经满足类型契约；否则 direct Items 会被检查，而绑定 ItemsSource 的初始项、Replace 或 Reset 会绕过校验。
 
@@ -338,17 +353,19 @@ NavMenu 不应通过反射访问 template part 或内部状态。Header、popup�
 
 `CanExecuteChanged` 可能在一次同步命令执行中快速发出 `false -> true`，共享同一命令的多个叶子容器如果逐次立即更新 effective enabled，会同时启动 disabled 前景色过渡并产生闪动。`NavMenuItem` 将通知统一 marshal 到 UI Dispatcher，并以 `Input` 优先级合并同一 UI 周期内的重复通知；回调只重新读取一次当前 `Command.CanExecute(CommandParameter)`，因此持续 `false` 仍会在下一轮交互前生效，而瞬时变化不会暴露中间视觉状态。待处理 operation 由当前 container 持有，并在 command replacement、parameter replacement 和 logical-tree detach 时 abort，不能让已回收容器被 dispatcher callback 延迟持有或被旧 command 状态回写。
 
-handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时释放。延迟打开 / 关闭任务必须支持取消，避免旧 pointer 状态影响新 mode 或新 popup。
+handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时释放。延迟打开 / 关闭任务必须支持取消，避免旧 pointer 状态影响新 mode 或新 popup。任务必须记录对应目标容器，container clear 只取消引用该容器的 pending open / close，不能误取消其他项的当前 hover。
 
 inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template part 引用。状态失效边界包括 ItemsSource reset、container clear、detach、mode change 和 default path replay revision 变化。
 
-键盘导航状态持有的 active item 引用必须随 detach、mode 切换、container clear、popup close 和 item disabled 变化失效。失效时应重新从当前可见层级解析 active 项，不保留悬空容器引用。
+生成容器进入 clear/recycle 时必须通过 `NavMenu.ForgetGeneratedContainer` 同时通知 selection coordinator 和当前 interaction handler。该入口清除 selection coordinator 的 realized container 引用、keyboard-active 引用、pointer press/release 目标，以及 Default handler 指向该容器的 pending open / close；之后才释放 binding、resource host 和 entry context，避免旧交互回调读取已清空的数据对象。
+
+键盘导航状态持有的 active item 引用必须随 detach、mode 切换、container clear、popup close 和 item disabled 变化失效。popup 内容可能在关闭后继续保留生成容器，因此有效性不能只看局部 `IsVisible`；必须同时验证 effective visible/effective enabled 和完整语义父链的打开状态。失效后第一次 Enter 只从当前可见层级重新建立 active 项，不提交旧项。
 
 默认路径 replay 必须有界，避免容器生成失败时形成无休止 dispatcher 队列。
 
-纯节点菜单必须保持一个数据节点对应一个 `NavMenuItem`，不得为统一模型增加额外 wrapper。只有实际存在 `NavMenuGroup` 或 `NavMenuDivider` 时才生成结构容器。语义 `Level` 在 prepare 上下文中 O(1) 得到；直接容器和路径查找优先走无分组快路径；`ItemSpacing` 使用继承属性和 ItemsPanel `TemplateBinding`，不为每个节点增加 relay binding。
+纯节点菜单必须保持一个数据节点对应一个 `NavMenuItem`，不得为统一模型增加额外 wrapper。只有实际存在 `NavMenuGroup` 或 `NavMenuDivider` 时才生成结构容器。语义 `Level` 在 prepare 上下文中 O(1) 得到；直接容器和路径查找优先走无分组快路径；spacing 只在根控件计算公开值与后代默认值的关系，再通过内部继承属性和 ItemsPanel `TemplateBinding` 传播，不为每个节点增加 relay binding。
 
-默认 TreeDataTemplate 对 `INavMenuNode.Entries` 使用编译绑定；自定义节点通过协变接口默认实现回退到 `Children`。该默认路径不分配适配集合。实现不使用反射、运行期类型扫描、动态 Style、dispatcher 延时或持久化扁平导航缓存，保持 NativeAOT 可分析。
+默认 TreeDataTemplate 对 `INavMenuNode.Entries` 使用编译绑定；自定义节点通过协变接口默认实现回退到 `Children`。内置集合直接满足 Avalonia ItemsSource 的 `IList` / `INotifyCollectionChanged` 契约，该默认路径不分配适配集合。实现不使用反射、运行期类型扫描、动态 Style、dispatcher 延时或持久化扁平导航缓存，保持 NativeAOT 可分析。
 
 ## 9. 维护不变量
 
@@ -378,6 +395,10 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 - `CommandParameter` 不隐式使用 `ItemKey`，避免显式 `null` 和容器同步语义分叉。
 - `Entries` 是唯一结构集合，`Children` 不得拥有第二份节点存储。
 - direct `Items`、`ItemsSource`、节点 `Entries` 和分组 `Entries` 必须共用 `INavMenuEntry` 校验语义；初始装载、source replacement、Add、Replace 和 Reset 不得存在绕过路径。
+- 内置 `NavMenuNode` / `NavMenuGroup` 必须以弱 structural owner 保证同一实例只有一个直接挂载位置；`ParentNode` 和 `SemanticParentNode` 不能替代该结构所有权。无状态 `NavMenuDivider` 不进入 owner 跟踪。
+- custom node 自身不登记 owner，但其内置后代必须由最近 built-in/root scope 的完整图协调器检测；嵌套 collection subscription 必须是弱订阅并在 source 离图时释放。
+- custom observable source 的 post-mutation 同步必须重新执行 owner-cycle 校验，不能把当前 built-in owner 或任意 built-in 祖先登记为自己的后代。
+- built-in child collection 由 child 自身协调器负责，祖先不得递归订阅；纯 built-in 深树的订阅数量不得随祖先/后代组合增长为 O(N²)。
 - 非法 entry 必须在容器生成和资源 attach 前确定性失败；不能静默忽略、降级为普通 content 或依赖后续 cast 暴露错误。
 - 分组和分隔线不得实现或模拟 `INavMenuNode`、`ISelectable`、`ICommandSource` 或 keyboard active 状态。
 - 节点的 `ParentNode`、容器的 `Level` / `IsTopLevel`、选择祖先和键盘父级只能来自 semantic owner，不得从逻辑树距离推导。
@@ -398,6 +419,9 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 - 任意层级分组和分隔线不进入键盘、选择、命令或路径序列；跨分组前后移动和 semantic parent 返回保持正确。
 - `Entries` / `Children` 覆盖 Add、Remove、Move、Replace、Reset、嵌套分组、兼容自定义节点和 parent 投影。
 - direct `Items` 和 `ItemsSource` 覆盖初始装载、source replacement、Add、Replace、Reset；`null` 和非 `INavMenuEntry` 项均在容器生成前抛出包含 owner、索引和实际类型的 `InvalidOperationException`。
+- 重复挂载覆盖同一/不同 `Entries` owner、根 source、Remove 后重挂载、source removal 后换根菜单、root owner WeakReference 回收，以及 `NavMenuDivider` 多位置复用。
+- custom wrapper 覆盖离线和根菜单中的初始共享内置后代、嵌套 observable source 动态获取/释放 owner、动态重复、动态指回 built-in owner/祖先、Remove 后重挂载，以及外部 custom source 不得保留 owner。
+- 批量初始化覆盖同步观察者重入，确保完整批次在首次通知前已经提交 ownership；纯 built-in 深链覆盖祖先不订阅后代 collection。
 - `SelectedItem`、`DefaultSelectedPath`、`DefaultOpenPaths`、stale replay 和 clear selection。
 - 点击子节点时父级 header 不出现错误 hover 背景。
 - `IsItemBackgroundEnabled=true/false` 下 inline 背景块、header 背景和间距分别正确。

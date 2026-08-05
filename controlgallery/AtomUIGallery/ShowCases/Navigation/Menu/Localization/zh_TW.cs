@@ -50,6 +50,8 @@ internal partial class zh_TW
     public const string DefaultOpenedPathsDescription = "可以默認展開或選中指定路徑。";
     public const string NavMenuItemItemsSourceTitle = "通過 ItemsSource 生成 NavMenuItem";
     public const string NavMenuItemItemsSourceDescription = "基於 ItemsSource 和模板生成結構。";
+    public const string NavMenuCompositionTitle = "結構化導航菜單";
+    public const string NavMenuCompositionDescription = "組合固定頁頭與頁尾、分組項、分隔線、嵌套分組和自定義菜單項間距。";
     public const string P2HeaderFile = "_文件";
     public const string P2HeaderNewTextFile = "新建文本文件";
     public const string P2HeaderNewFile = "新建文件";
@@ -94,5 +96,18 @@ internal partial class zh_TW
     public const string P2TextLastCommandKey = "最後執行的 key：";
     public const string P2TextChangeMode = "切換模式";
     public const string P2TextChangeStyle = "切換樣式";
+    public const string P2HeaderWorkspaceNavigation = "工作區導航";
+    public const string P2HeaderWorkspaceGroup = "工作區";
+    public const string P2HeaderDashboard = "儀表板";
+    public const string P2HeaderProjects = "項目";
+    public const string P2HeaderAccountGroup = "帳戶";
+    public const string P2HeaderAccountSettings = "帳戶設定";
+    public const string P2HeaderManagementGroup = "管理";
+    public const string P2HeaderTeamMembers = "團隊成員";
+    public const string P2HeaderPermissions = "權限";
+    public const string P2HeaderPersonalGroup = "個人";
+    public const string P2HeaderProfile = "個人資料";
+    public const string P2HeaderSecurity = "安全";
+    public const string P2TextCurrentWorkspace = "目前工作區：AtomUI";
 
 }

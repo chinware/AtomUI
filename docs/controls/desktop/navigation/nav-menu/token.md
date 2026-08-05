@@ -78,7 +78,7 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 
 `CollapsedWidth` 是既有折叠宽度 token，保留兼容，不删除、不重命名。新的 inline collapsed 设计、文档和实现应优先使用 `InlineCollapsedWidth` 表达内联折叠菜单宽度，避免把旧 token 继续扩展为多语义 token。
 
-`NavMenu.ItemSpacing` 是实例级布局输入。默认主题按 mode 将 `VerticalItemsPanelSpacing` 投影到 Inline/Vertical、popup 和分组的默认垂直 ItemsPanel，Horizontal 根层默认使用 `0`。调用方显式设置非零值时，它作为相邻 entry 容器之间的额外间距叠加在 item 自身 margin 之外；它不改写任何 Token，也不要求自定义 ItemsPanel 消费该属性。
+`NavMenu.ItemSpacing` 是实例级布局输入。默认主题按 mode 将 `VerticalItemsPanelSpacing` 投影到 Inline/Vertical 根层，并通过内部 `EntryItemSpacing` 投影到 popup、submenu 和分组的默认 ItemsPanel；Horizontal 根层公开值默认使用 `0`，但其后代默认值仍来自 `VerticalItemsPanelSpacing`。调用方显式设置 `ItemSpacing` 时，包括显式设置为 `0`，该值同时覆盖根与后代默认 ItemsPanel，并作为相邻 entry 容器之间的额外间距叠加在 item 自身 margin 之外；它不改写任何 Token，也不要求自定义 ItemsPanel 消费该属性。
 
 ### 2.5 Icon 与箭头 Token
 
@@ -194,7 +194,7 @@ Horizontal light style 的顶层选中主要由 `PART_ActiveIndicator` 表达，
 | --- | --- |
 | Light group title | `GroupTitleColor`、`GroupTitleFontSize`、`GroupTitleLineHeight` |
 | Dark group title | `DarkGroupTitleColor`、`GroupTitleFontSize`、`GroupTitleLineHeight` |
-| Group entry spacing | `NavMenu.ItemSpacing` 的当前 effective value；默认由 `VerticalItemsPanelSpacing` 映射 |
+| Group entry spacing | 内部 `EntryItemSpacing` 的当前 effective value；默认由 `VerticalItemsPanelSpacing` 映射，显式 `NavMenu.ItemSpacing` 可以覆盖 |
 
 根层 inline collapsed 和 Horizontal 根层隐藏分组标题，但不改变 title token 的含义；popup 或非根语义层级恢复正常标题视觉。Divider 的线宽和颜色使用 shared `LineWidth` / `ColorSplit` 语义，不新增 NavMenu 专属 divider token。Divider orientation 由 mode 和 semantic top-level 状态决定，不进入 Token。
 
