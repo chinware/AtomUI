@@ -24,4 +24,10 @@ internal static class AtomUIDiagnosticIds
     public const string ControlTokenGlobalNameConflict = "ATOMUIGEN019";
     public const string LocalizationInvalidLanguageData = "ATOMUILOC001";
     public const string LocalizationDuplicateLanguageData = "ATOMUILOC002";
+    public const string LocalizationInvalidCatalog = "ATOMUILOC003";
+    public const string LocalizationInvalidCatalogUnit = "ATOMUILOC004";
+    public const string LocalizationInvalidXliff = "ATOMUILOC005";
+    public const string LocalizationCatalogXliffMismatch = "ATOMUILOC006";
+    public const string LocalizationInvalidTranslation = "ATOMUILOC007";
+    public const string LocalizationInvalidApplicationHost = "ATOMUILOC008";
 }

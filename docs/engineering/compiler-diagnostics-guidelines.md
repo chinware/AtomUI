@@ -80,6 +80,12 @@ dotnet_diagnostic.ATOMUIAOT001.severity = error
 | `ATOMUIGEN101` | Generator | Warning | Gallery source code display generator 发现参与默认源码匹配的 `ShowCasePanel` 缺少 `Name` | 给 `ShowCasePanel` 设置稳定 `Name`，或使用显式源码 key 规则 | GallerySourceCodeDisplay |
 | `ATOMUILOC001` | Localization | Error | AtomUI 固定语言数据记录的 schema、标识符、BCP 47 标签或元数据无效 | 按数据 schema 修正发生错误的具体记录 | LanguageTags |
 | `ATOMUILOC002` | Localization | Error | AtomUI 固定语言数据包含重复的属性标识符或规范 BCP 47 标签 | 删除重复记录并为每个属性和标签保留唯一映射 | LanguageTags |
+| `ATOMUILOC003` | Localization | Error | `[LanguageCatalog]` 声明不是可生成的稳定 enum 契约 | 使用非泛型 enum、正数 ContractVersion、至少一个显式资源项且不使用 `[Flags]` | LocalizationGenerator |
+| `ATOMUILOC004` | Localization | Error | Catalog 成员缺少显式正整数 ID，或 ID 重复、越界 | 为每个成员分配唯一且永久保留的显式正 `Int32` ID | LocalizationGenerator |
+| `ATOMUILOC005` | Localization | Error | XLIFF 文档不符合 AtomUI 支持的 XLIFF 2.1 结构或语言元数据规则 | 修正 XML namespace、版本、语言标签、file/unit/segment 结构或翻译状态 | LocalizationGenerator |
+| `ATOMUILOC006` | Localization | Error | XLIFF 的 Catalog identity、版本或 unit 契约与代码声明不匹配 | 使用目标 Catalog 导出的模板同步 file ID、ContractVersion、unit ID/name 和源文本 | LocalizationGenerator |
+| `ATOMUILOC007` | Localization | Error | 翻译文本不可发布或 CompositeFormat 参数契约无效 | 提供 translated target，并保持源/目标占位符索引与格式语法一致 | LocalizationGenerator |
+| `ATOMUILOC008` | Localization | Error | 应用类型无法实现生成式语言 bootstrap | 保留唯一的非抽象 partial Avalonia Application host，或移除应用级语言输入 | LocalizationGenerator |
 
 `ATOMUIGEN005` 和 `ATOMUIGEN006` 原本约束 `[ControlDesignToken]` 类型上的 `public const ID`，该手工 ID 契约已
 删除，因此这两个诊断不在新主题架构中复用。无参数 `[ControlDesignToken]` 本身继续保留，只负责标记 Own Token

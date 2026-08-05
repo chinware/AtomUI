@@ -202,5 +202,59 @@ internal static class AtomUIDiagnosticDescriptors
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidCatalog = new(
+        AtomUIDiagnosticIds.LocalizationInvalidCatalog,
+        "Language Catalog declaration is invalid",
+        "Language Catalog '{0}' is invalid: {1}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidCatalogUnit = new(
+        AtomUIDiagnosticIds.LocalizationInvalidCatalogUnit,
+        "Language Catalog unit is invalid",
+        "Language Catalog unit '{0}' in '{1}' is invalid: {2}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidXliff = new(
+        AtomUIDiagnosticIds.LocalizationInvalidXliff,
+        "XLIFF language document is invalid",
+        "XLIFF language document '{0}' is invalid: {1}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationCatalogXliffMismatch = new(
+        AtomUIDiagnosticIds.LocalizationCatalogXliffMismatch,
+        "XLIFF does not match its Language Catalog",
+        "XLIFF language document '{0}' does not match Catalog '{1}': {2}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidTranslation = new(
+        AtomUIDiagnosticIds.LocalizationInvalidTranslation,
+        "XLIFF translation message is invalid",
+        "Translation unit '{0}' for language '{1}' is invalid: {2}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidApplicationHost = new(
+        AtomUIDiagnosticIds.LocalizationInvalidApplicationHost,
+        "Application cannot host generated localization bootstrap",
+        "Application type '{0}' cannot host generated localization bootstrap: {1}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
 }
 #pragma warning restore RS2008
