@@ -9,6 +9,20 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="LanguageData/language-tags.tsv"
+                         AtomUILanguageTagsData="true" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles"
+                                     MetadataName="AtomUILanguageTagsData" />
+    </ItemGroup>
+
+    <ItemGroup>
         <InternalsVisibleTo Include="AtomUI.Localization.Tests" />
     </ItemGroup>
 </Project>
