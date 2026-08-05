@@ -267,7 +267,7 @@ public class LanguageProviderConstructorGeneratorTests
     }
 
     [Fact]
-    public void DoesNotEmitConstructorFileWhenProjectHasNoLanguageProviders()
+    public void DoesNotEmitLanguageFilesWhenProjectHasNoLanguageProviders()
     {
         var compilation = CreateCompilation("""
             using System;
@@ -340,9 +340,11 @@ public class LanguageProviderConstructorGeneratorTests
                          .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
                          .ShouldBeEmpty();
 
-        outputCompilation.SyntaxTrees
-                         .Any(tree => tree.FilePath.EndsWith("LanguageProviderConstructors.g.cs"))
-                         .ShouldBeFalse();
+        var generatedPaths = outputCompilation.SyntaxTrees.Select(static tree => tree.FilePath).ToArray();
+
+        generatedPaths.ShouldNotContain(static path => path.EndsWith("LanguageResourceConst.g.cs"));
+        generatedPaths.ShouldNotContain(static path => path.EndsWith("LanguageProviderPool.g.cs"));
+        generatedPaths.ShouldNotContain(static path => path.EndsWith("LanguageProviderConstructors.g.cs"));
     }
 
     private static CSharpCompilation CreateCompilation(string source)
