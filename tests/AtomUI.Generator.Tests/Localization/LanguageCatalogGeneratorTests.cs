@@ -47,6 +47,11 @@ public class LanguageCatalogGeneratorTests
         "ATOMUILOC003",
         "LoginLangResourceKind",
         "at least one")]
+    [InlineData(
+        "[LanguageCatalog] internal enum LoginLangResourceKind { Title = 1 }",
+        "ATOMUILOC003",
+        "LoginLangResourceKind",
+        "public")]
     public void Reports_Invalid_Catalog_Declarations(
         string declaration,
         string diagnosticId,

@@ -33,6 +33,28 @@ internal static class LocalizationGeneratorTestHost
         return driver.GetRunResult().Results.ShouldHaveSingleItem();
     }
 
+    internal static TestGeneratorExecution RunWithOutputCompilation(
+        string source,
+        params TestAdditionalText[] additionalTexts)
+    {
+        var compilation = CreateCompilation(source, []);
+        var optionsProvider = new TestOptionsProvider(additionalTexts);
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            [new LocalizationGenerator().AsSourceGenerator()],
+            additionalTexts.Cast<AdditionalText>().ToImmutableArray(),
+            (CSharpParseOptions)compilation.SyntaxTrees[0].Options,
+            optionsProvider);
+        driver = driver.RunGeneratorsAndUpdateCompilation(
+            compilation,
+            out var outputCompilation,
+            out var driverDiagnostics,
+            TestContext.Current.CancellationToken);
+        return new TestGeneratorExecution(
+            driver.GetRunResult().Results.ShouldHaveSingleItem(),
+            outputCompilation,
+            driverDiagnostics);
+    }
+
     internal static MetadataReference CreateMetadataReference(
         string assemblyName,
         string source)
@@ -85,6 +107,11 @@ internal static class LocalizationGeneratorTestHost
 
         public override SourceText GetText(CancellationToken cancellationToken = default) => _text;
     }
+
+    internal sealed record TestGeneratorExecution(
+        GeneratorRunResult Result,
+        Compilation OutputCompilation,
+        ImmutableArray<Diagnostic> DriverDiagnostics);
 
     private sealed class TestOptionsProvider : AnalyzerConfigOptionsProvider
     {

@@ -1,3 +1,4 @@
+using AtomUI.Generator.Localization;
 using AtomUI.Generator.Localization.Catalog;
 using AtomUI.Generator.Localization.Xliff;
 using Microsoft.CodeAnalysis;
@@ -36,11 +37,12 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
         var compiledCatalogs = context.CompilationProvider
                                        .Combine(catalogs.Collect())
                                        .Combine(languageFiles.Collect())
-                                       .Select(static (input, _) =>
+                                       .Select(static (input, _) => new LocalizationGenerationResult(
+                                           input.Left.Left.AssemblyName,
                                            LanguageCatalogCompiler.Compile(
                                                input.Left.Right,
                                                input.Right,
-                                               input.Left.Left));
+                                               input.Left.Left)));
 
         context.RegisterSourceOutput(catalogs, static (sourceContext, result) =>
         {
@@ -58,10 +60,39 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
         });
         context.RegisterSourceOutput(compiledCatalogs, static (sourceContext, result) =>
         {
-            foreach (var diagnostic in result.Diagnostics)
+            foreach (var diagnostic in result.Compilation.Diagnostics)
             {
                 sourceContext.ReportDiagnostic(diagnostic);
             }
+
+            if (!result.Compilation.Diagnostics.IsEmpty)
+            {
+                return;
+            }
+
+            foreach (var catalog in result.Compilation.Catalogs.Where(static catalog => catalog.OwnsCatalog))
+            {
+                LanguageCatalogSourceWriter.Write(sourceContext, catalog);
+            }
+            LanguageModuleSourceWriter.Write(
+                sourceContext,
+                result.AssemblyName,
+                result.Compilation.Catalogs);
         });
+    }
+
+    private sealed class LocalizationGenerationResult
+    {
+        internal LocalizationGenerationResult(
+            string? assemblyName,
+            LanguageCatalogCompilationResult compilation)
+        {
+            AssemblyName = assemblyName;
+            Compilation = compilation;
+        }
+
+        internal string? AssemblyName { get; }
+
+        internal LanguageCatalogCompilationResult Compilation { get; }
     }
 }

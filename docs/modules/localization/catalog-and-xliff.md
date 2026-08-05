@@ -23,6 +23,8 @@ public enum LoginLangResourceKind
 
 Catalog enum 遵守以下规则：
 
+- Catalog enum 及其所有 containing type 必须是 `public`，使生成的 public XAML Markup Extension 与翻译契约
+  可以被消费程序集稳定引用。
 - 所有成员必须显式指定正整数 ID；禁止依赖 enum 自动递增。
 - ID 在 Catalog 生命周期内唯一且稳定，删除后永不复用。
 - 成员名必须是合法、稳定、能表达语义的 C# 标识符，不编码具体语言文本。
@@ -180,6 +182,10 @@ en-US source
 
 普通应用翻译、类库内置翻译和语言包文件不得冒充 Override。同一优先级对相同 Catalog、语言和 unit 提供
 多个目标时直接诊断为冲突，不采用文件顺序、PackageReference 顺序或最后写入获胜。
+
+`Application Override` 可以只包含需要替换的 unit；生成的 Bundle 对其他 slot 保留 `null`，Snapshot 构建时继续按
+静态语言包、模块内置翻译和 `en-US` 的固定顺序解析。模块内置 Bundle 与静态语言包 Bundle 必须保持完整，不能
+利用部分 Bundle 隐藏支持语言覆盖缺口。
 
 ## Catalog 模板
 

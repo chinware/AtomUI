@@ -24,6 +24,14 @@ internal static class LanguageCatalogSymbolParser
             return new LanguageCatalogParseResult(null, diagnostics.ToImmutable());
         }
 
+        if (!IsEffectivelyPublic(symbol))
+        {
+            diagnostics.Add(InvalidCatalog(
+                symbol,
+                typeLocation,
+                "the Catalog enum and all containing types must be public"));
+        }
+
         if (symbol.GetAttributes().Any(static attribute =>
                 attribute.AttributeClass?.ToDisplayString() == "System.FlagsAttribute"))
         {
@@ -128,6 +136,19 @@ internal static class LanguageCatalogSymbolParser
         }
 
         return 1;
+    }
+
+    private static bool IsEffectivelyPublic(INamedTypeSymbol symbol)
+    {
+        for (var current = symbol; current is not null; current = current.ContainingType)
+        {
+            if (current.DeclaredAccessibility != Accessibility.Public)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static bool TryGetPositiveInt32(object? value, out int result)
