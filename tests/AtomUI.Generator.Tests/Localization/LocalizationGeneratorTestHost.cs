@@ -37,7 +37,15 @@ internal static class LocalizationGeneratorTestHost
         string source,
         params TestAdditionalText[] additionalTexts)
     {
-        var compilation = CreateCompilation(source, []);
+        return RunWithOutputCompilation(source, [], additionalTexts);
+    }
+
+    internal static TestGeneratorExecution RunWithOutputCompilation(
+        string source,
+        IReadOnlyList<MetadataReference> additionalReferences,
+        params TestAdditionalText[] additionalTexts)
+    {
+        var compilation = CreateCompilation(source, additionalReferences);
         var optionsProvider = new TestOptionsProvider(additionalTexts);
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             [new LocalizationGenerator().AsSourceGenerator()],

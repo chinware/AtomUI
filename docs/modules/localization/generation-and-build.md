@@ -83,8 +83,9 @@ application Override registration
 
 ## 应用 bootstrap
 
-Generator 为非抽象、partial 的 Avalonia `Application` 类型实现一个受控的生成式 host 契约。`UseAtomUI()` 只做
-接口判断和直接调用：
+当项目存在本地化输入时，Generator 为唯一的具体、顶层、非泛型 `partial` Avalonia `Application` 类型实现一个
+受控的生成式 host 契约。抽象 Application 基类不参与唯一性判断；没有 Application 的类库仍只生成模块注册，
+不生成应用 bootstrap，也不回退到程序集扫描。`UseAtomUI()` 只做接口判断和直接调用：
 
 ```text
 Application

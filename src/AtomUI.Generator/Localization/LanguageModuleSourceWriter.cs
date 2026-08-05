@@ -58,7 +58,7 @@ internal static class LanguageModuleSourceWriter
             foreach (var bundle in catalog.Bundles.Where(static bundle =>
                          bundle.SourceKind == LanguageFileSourceKind.ModuleBuiltIn))
             {
-                WriteBundle(source, catalog.Catalog, bundle);
+                WriteBundle(source, catalog.Catalog, bundle, "            ");
             }
         }
 
@@ -100,29 +100,30 @@ internal static class LanguageModuleSourceWriter
         source.AppendLine("                    }));");
     }
 
-    private static void WriteBundle(
+    internal static void WriteBundle(
         StringBuilder source,
         LanguageCatalogInfo catalog,
-        CompiledTranslationBundle bundle)
+        CompiledTranslationBundle bundle,
+        string indent)
     {
-        source.AppendLine("            builder.AddTranslationBundle(");
-        source.AppendLine("                new global::AtomUI.Localization.TranslationBundleDescriptor(");
-        source.Append("                    ").Append(ToStringLiteral(catalog.CatalogId)).AppendLine(",");
-        source.Append("                    ").Append(catalog.ContractVersion).AppendLine(",");
-        source.Append("                    global::AtomUI.Localization.LanguageTag.Parse(")
+        source.Append(indent).AppendLine("builder.AddTranslationBundle(");
+        source.Append(indent).AppendLine("    new global::AtomUI.Localization.TranslationBundleDescriptor(");
+        source.Append(indent).Append("        ").Append(ToStringLiteral(catalog.CatalogId)).AppendLine(",");
+        source.Append(indent).Append("        ").Append(catalog.ContractVersion).AppendLine(",");
+        source.Append(indent).Append("        global::AtomUI.Localization.LanguageTag.Parse(")
               .Append(ToStringLiteral(bundle.Language)).AppendLine("),");
-        source.Append("                    global::AtomUI.Localization.TranslationSourceKind.")
+        source.Append(indent).Append("        global::AtomUI.Localization.TranslationSourceKind.")
               .Append(bundle.SourceKind).AppendLine(",");
-        source.Append("                    ").Append(ToStringLiteral(bundle.SourceIdentity)).AppendLine(",");
-        source.AppendLine("                    new string?[]");
-        source.AppendLine("                    {");
+        source.Append(indent).Append("        ").Append(ToStringLiteral(bundle.SourceIdentity)).AppendLine(",");
+        source.Append(indent).AppendLine("        new string?[]");
+        source.Append(indent).AppendLine("        {");
         foreach (var value in bundle.Values)
         {
-            source.Append("                        ")
+            source.Append(indent).Append("            ")
                   .Append(value is null ? "null" : ToStringLiteral(value))
                   .AppendLine(",");
         }
-        source.AppendLine("                    }));");
+        source.Append(indent).AppendLine("        }));");
     }
 
     private static string ToStringLiteral(string value)

@@ -1,7 +1,9 @@
+using System.Collections.Immutable;
 using AtomUI.Generator.Localization;
 using AtomUI.Generator.Localization.Catalog;
 using AtomUI.Generator.Localization.Xliff;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AtomUI.Generator;
 
@@ -34,15 +36,25 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                                            input.Left,
                                            input.Right,
                                            cancellationToken));
+        var applicationHosts = context.SyntaxProvider.CreateSyntaxProvider(
+                                          static (node, _) => node is ClassDeclarationSyntax { BaseList: not null },
+                                          static (syntaxContext, cancellationToken) =>
+                                              ApplicationLanguageHostInfo.TryCreate(
+                                                  syntaxContext,
+                                                  cancellationToken))
+                                      .Where(static host => host is not null)
+                                      .Select(static (host, _) => host!);
         var compiledCatalogs = context.CompilationProvider
                                        .Combine(catalogs.Collect())
                                        .Combine(languageFiles.Collect())
+                                       .Combine(applicationHosts.Collect())
                                        .Select(static (input, _) => new LocalizationGenerationResult(
-                                           input.Left.Left.AssemblyName,
+                                           input.Left.Left.Left.AssemblyName,
                                            LanguageCatalogCompiler.Compile(
+                                               input.Left.Left.Right,
                                                input.Left.Right,
-                                               input.Right,
-                                               input.Left.Left)));
+                                               input.Left.Left.Left),
+                                           input.Right));
 
         context.RegisterSourceOutput(catalogs, static (sourceContext, result) =>
         {
@@ -78,6 +90,11 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                 sourceContext,
                 result.AssemblyName,
                 result.Compilation.Catalogs);
+            ApplicationLanguageBootstrapWriter.Write(
+                sourceContext,
+                result.AssemblyName,
+                result.Compilation.Catalogs,
+                result.ApplicationHosts);
         });
     }
 
@@ -85,14 +102,18 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
     {
         internal LocalizationGenerationResult(
             string? assemblyName,
-            LanguageCatalogCompilationResult compilation)
+            LanguageCatalogCompilationResult compilation,
+            ImmutableArray<ApplicationLanguageHostInfo> applicationHosts)
         {
             AssemblyName = assemblyName;
             Compilation = compilation;
+            ApplicationHosts = applicationHosts;
         }
 
         internal string? AssemblyName { get; }
 
         internal LanguageCatalogCompilationResult Compilation { get; }
+
+        internal ImmutableArray<ApplicationLanguageHostInfo> ApplicationHosts { get; }
     }
 }
