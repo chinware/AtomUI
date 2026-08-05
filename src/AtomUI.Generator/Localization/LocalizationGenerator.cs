@@ -33,6 +33,14 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                                            input.Left,
                                            input.Right,
                                            cancellationToken));
+        var compiledCatalogs = context.CompilationProvider
+                                       .Combine(catalogs.Collect())
+                                       .Combine(languageFiles.Collect())
+                                       .Select(static (input, _) =>
+                                           LanguageCatalogCompiler.Compile(
+                                               input.Left.Right,
+                                               input.Right,
+                                               input.Left.Left));
 
         context.RegisterSourceOutput(catalogs, static (sourceContext, result) =>
         {
@@ -42,6 +50,13 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
             }
         });
         context.RegisterSourceOutput(languageFiles, static (sourceContext, result) =>
+        {
+            foreach (var diagnostic in result.Diagnostics)
+            {
+                sourceContext.ReportDiagnostic(diagnostic);
+            }
+        });
+        context.RegisterSourceOutput(compiledCatalogs, static (sourceContext, result) =>
         {
             foreach (var diagnostic in result.Diagnostics)
             {

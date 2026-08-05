@@ -13,6 +13,8 @@ internal static class LanguageGeneratorOptions
         "build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity";
     internal const string ModuleIdMetadata =
         "build_metadata.AdditionalFiles.AtomUILanguageModuleId";
+    internal const string ContractVersionMetadata =
+        "build_metadata.AdditionalFiles.AtomUILanguageContractVersion";
 
     internal static bool IsLanguageFile(
         AdditionalText text,

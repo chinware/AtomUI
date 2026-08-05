@@ -14,7 +14,15 @@ internal static class LocalizationGeneratorTestHost
         string source,
         params TestAdditionalText[] additionalTexts)
     {
-        var compilation = CreateCompilation(source);
+        return Run(source, [], additionalTexts);
+    }
+
+    internal static GeneratorRunResult Run(
+        string source,
+        IReadOnlyList<MetadataReference> additionalReferences,
+        params TestAdditionalText[] additionalTexts)
+    {
+        var compilation = CreateCompilation(source, additionalReferences);
         var optionsProvider = new TestOptionsProvider(additionalTexts);
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             [new LocalizationGenerator().AsSourceGenerator()],
@@ -25,15 +33,33 @@ internal static class LocalizationGeneratorTestHost
         return driver.GetRunResult().Results.ShouldHaveSingleItem();
     }
 
-    private static CSharpCompilation CreateCompilation(string source)
+    internal static MetadataReference CreateMetadataReference(
+        string assemblyName,
+        string source)
+    {
+        var compilation = CreateCompilation(source, [], assemblyName);
+        using var stream = new MemoryStream();
+        var emitResult = compilation.Emit(stream);
+        emitResult.Diagnostics
+                  .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                  .ShouldBeEmpty();
+        emitResult.Success.ShouldBeTrue();
+        return MetadataReference.CreateFromImage(stream.ToArray());
+    }
+
+    private static CSharpCompilation CreateCompilation(
+        string source,
+        IReadOnlyList<MetadataReference> additionalReferences,
+        string assemblyName = "TestApp")
     {
         var references = ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES"))!
                          .Split(Path.PathSeparator)
                          .Select(static path => MetadataReference.CreateFromFile(path))
                          .Cast<MetadataReference>()
+                         .Concat(additionalReferences)
                          .ToImmutableArray();
         return CSharpCompilation.Create(
-            "TestApp",
+            assemblyName,
             [CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest))],
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));

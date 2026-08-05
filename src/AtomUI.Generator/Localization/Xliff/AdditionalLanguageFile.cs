@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Globalization;
 using AtomUI.Generator.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -20,12 +21,16 @@ internal sealed class AdditionalLanguageFile
         string moduleId,
         LanguageFileSourceKind sourceKind,
         string sourceIdentity,
+        int? contractVersion,
+        SourceText text,
         AtomUI.Localization.Build.XliffDocumentModel document)
     {
         Path = path;
         ModuleId = moduleId;
         SourceKind = sourceKind;
         SourceIdentity = sourceIdentity;
+        ContractVersion = contractVersion;
+        Text = text;
         Document = document;
     }
 
@@ -36,6 +41,10 @@ internal sealed class AdditionalLanguageFile
     internal LanguageFileSourceKind SourceKind { get; }
 
     internal string SourceIdentity { get; }
+
+    internal int? ContractVersion { get; }
+
+    internal SourceText Text { get; }
 
     internal AtomUI.Localization.Build.XliffDocumentModel Document { get; }
 }
@@ -107,12 +116,40 @@ internal static class AdditionalLanguageFileParser
                     1));
         }
 
+        int? contractVersion = null;
+        if (sourceKind is LanguageFileSourceKind.StaticLanguagePack or
+            LanguageFileSourceKind.ApplicationOverride)
+        {
+            var contractVersionText = LanguageGeneratorOptions.GetFileValue(
+                fileOptions,
+                LanguageGeneratorOptions.ContractVersionMetadata,
+                string.Empty);
+            if (!int.TryParse(
+                    contractVersionText,
+                    NumberStyles.None,
+                    CultureInfo.InvariantCulture,
+                    out var parsedContractVersion) ||
+                parsedContractVersion <= 0)
+            {
+                return Invalid(
+                    additionalText.Path,
+                    text,
+                    new AtomUI.Localization.Build.XliffParseError(
+                        "AtomUILanguageContractVersion must be a positive integer for external language inputs",
+                        1,
+                        1));
+            }
+            contractVersion = parsedContractVersion;
+        }
+
         return new AdditionalLanguageFileParseResult(
             new AdditionalLanguageFile(
                 additionalText.Path,
                 moduleId,
                 sourceKind,
                 sourceIdentity,
+                contractVersion,
+                text,
                 parseResult.Document!),
             ImmutableArray<Diagnostic>.Empty);
     }

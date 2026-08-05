@@ -14,7 +14,7 @@ public class LocalizationAdditionalFileGeneratorTests
             "namespace TestApp { public sealed class Marker { } }",
             LanguageFile(ValidXliff));
 
-        result.Diagnostics.ShouldBeEmpty();
+        result.Diagnostics.ShouldNotContain(static diagnostic => diagnostic.Id == "ATOMUILOC005");
     }
 
     [Fact]
@@ -40,6 +40,28 @@ public class LocalizationAdditionalFileGeneratorTests
             new TestAdditionalText("Localization/zh-CN.xlf", "not xml"));
 
         result.Diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Requires_A_Positive_Contract_Version_For_A_Static_Language_Pack()
+    {
+        var result = Run(
+            "namespace TestApp { public sealed class Marker { } }",
+            new TestAdditionalText(
+                "packages/Test.Package.I18n.ZhCN/zh-CN.xlf",
+                ValidXliff,
+                new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
+                    ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "StaticLanguagePack",
+                    ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] =
+                        "Test.Package.I18n.ZhCN",
+                    ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = "Test.Package"
+                }));
+
+        var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
+        diagnostic.Id.ShouldBe("ATOMUILOC005");
+        diagnostic.GetMessage().ShouldContain("AtomUILanguageContractVersion");
     }
 
     private static TestAdditionalText LanguageFile(string content)

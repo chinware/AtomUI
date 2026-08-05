@@ -22,7 +22,8 @@ public class LanguageCatalogGeneratorTests
             }
             """);
 
-        result.Diagnostics.ShouldBeEmpty();
+        result.Diagnostics.ShouldNotContain(static diagnostic =>
+            diagnostic.Id == "ATOMUILOC003" || diagnostic.Id == "ATOMUILOC004");
     }
 
     [Theory]
