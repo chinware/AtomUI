@@ -184,5 +184,23 @@ internal static class AtomUIDiagnosticDescriptors
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationInvalidLanguageData = new(
+        AtomUIDiagnosticIds.LocalizationInvalidLanguageData,
+        "Pinned language data record is invalid",
+        "Language data '{0}' line {1} is invalid: {2}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LocalizationDuplicateLanguageData = new(
+        AtomUIDiagnosticIds.LocalizationDuplicateLanguageData,
+        "Pinned language data record is duplicated",
+        "Language data '{0}' line {1} duplicates {2}",
+        AtomUIDiagnosticCategories.Localization,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
 }
 #pragma warning restore RS2008

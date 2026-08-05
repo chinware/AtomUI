@@ -62,6 +62,7 @@ dotnet_diagnostic.ATOMUIAOT001.severity = error
 | `GEN` | Source generator | generator 输入、生成失败、生成物一致性 |
 | `XAML` | AXAML | AXAML 静态结构、绑定、资源引用 |
 | `TOKEN` | Theme / Token | Token 定义、注册、资源键、主题约束 |
+| `LOC` | Localization | Language Catalog、XLIFF、语言元数据和静态语言包 |
 
 新增领域前缀前必须先更新本文档，说明用途和 owner。
 
@@ -77,6 +78,8 @@ dotnet_diagnostic.ATOMUIAOT001.severity = error
 | `ATOMUIGEN003` | Generator | Warning | `[GenerateScopedResourceHost]` 标记的类型继承了 `Control`、`StyledElement` 或 `Visual` | Visual 控件应使用视觉树资源宿主，不使用该 attribute | ScopedResourceHost |
 | `ATOMUIGEN004` | Generator | Warning | `[GenerateScopedResourceHost]` 标记的类型已经实现 `IResourceHost` 或 `IThemeVariantHost` | 删除手写实现后再使用该 attribute，或移除该 attribute | ScopedResourceHost |
 | `ATOMUIGEN101` | Generator | Warning | Gallery source code display generator 发现参与默认源码匹配的 `ShowCasePanel` 缺少 `Name` | 给 `ShowCasePanel` 设置稳定 `Name`，或使用显式源码 key 规则 | GallerySourceCodeDisplay |
+| `ATOMUILOC001` | Localization | Error | AtomUI 固定语言数据记录的 schema、标识符、BCP 47 标签或元数据无效 | 按数据 schema 修正发生错误的具体记录 | LanguageTags |
+| `ATOMUILOC002` | Localization | Error | AtomUI 固定语言数据包含重复的属性标识符或规范 BCP 47 标签 | 删除重复记录并为每个属性和标签保留唯一映射 | LanguageTags |
 
 `ATOMUIGEN005` 和 `ATOMUIGEN006` 原本约束 `[ControlDesignToken]` 类型上的 `public const ID`，该手工 ID 契约已
 删除，因此这两个诊断不在新主题架构中复用。无参数 `[ControlDesignToken]` 本身继续保留，只负责标记 Own Token

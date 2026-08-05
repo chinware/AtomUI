@@ -22,4 +22,6 @@ internal static class AtomUIDiagnosticIds
     public const string ThemeAssetSemanticPartTargetMismatch = "ATOMUIGEN017";
     public const string ThemeAssetUnknownTokenResource = "ATOMUIGEN018";
     public const string ControlTokenGlobalNameConflict = "ATOMUIGEN019";
+    public const string LocalizationInvalidLanguageData = "ATOMUILOC001";
+    public const string LocalizationDuplicateLanguageData = "ATOMUILOC002";
 }
