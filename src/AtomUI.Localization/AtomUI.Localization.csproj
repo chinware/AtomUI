@@ -24,6 +24,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI.Core" />
+        <InternalsVisibleTo Include="AtomUI.Core.Tests" />
         <InternalsVisibleTo Include="AtomUI.Localization.Tests" />
     </ItemGroup>
 </Project>
