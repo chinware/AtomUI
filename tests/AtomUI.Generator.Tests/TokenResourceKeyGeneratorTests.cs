@@ -676,6 +676,11 @@ public class TokenResourceKeyGeneratorTests
             public abstract class LanguageProvider
             {
             }
+        }
+
+        namespace AtomUI.Generated.TokenResourceKeyGeneratorTests
+        {
+            using AtomUI.Theme.Language;
 
             internal static class LanguageProviderPool
             {
@@ -684,10 +689,7 @@ public class TokenResourceKeyGeneratorTests
                     return System.Array.Empty<LanguageProvider>();
                 }
             }
-        }
 
-        namespace AtomUI.Generated.TokenResourceKeyGeneratorTests
-        {
             internal static class GeneratedControlThemeAssetManifest
             {
                 internal static System.Collections.Generic.IReadOnlyList<AtomUI.Theme.Schema.ControlThemeAssetDescriptor> GetDescriptors()

@@ -9,13 +9,18 @@ internal class LanguageProviderPoolClassSourceWriter
     private readonly SourceProductionContext _context;
     private readonly List<LanguageInfo> _languageInfos;
     private readonly Dictionary<string, List<LanguageInfo>> _languagesById;
+    private readonly string _generatedNamespace;
 
-    public LanguageProviderPoolClassSourceWriter(SourceProductionContext context, List<LanguageInfo> classes)
+    public LanguageProviderPoolClassSourceWriter(
+        SourceProductionContext context,
+        List<LanguageInfo> classes,
+        string? assemblyName)
     {
         _context       = context;
         _languageInfos = classes.OrderBy(info => info.Namespace).ThenBy(info => info.ClassName).ToList();
         _languagesById = _languageInfos.GroupBy(info => info.LanguageId)
                                         .ToDictionary(group => group.Key, group => group.ToList());
+        _generatedNamespace = GeneratedThemeSchemaWriter.GetGeneratedNamespace(assemblyName);
     }
 
     public void Write()
@@ -30,8 +35,8 @@ internal class LanguageProviderPoolClassSourceWriter
         builder.AppendLine("using AtomUI.Theme.Language;");
         builder.AppendLine("using Avalonia.Controls;");
         builder.AppendLine();
-        builder.AppendLine("namespace AtomUI.Theme.Language");
-        builder.AppendLine("{");
+        builder.Append("namespace ").Append(_generatedNamespace).AppendLine(";");
+        builder.AppendLine();
 
         foreach (var languageInfo in _languageInfos)
         {
@@ -41,7 +46,6 @@ internal class LanguageProviderPoolClassSourceWriter
 
         AppendLanguageProviderPoolClass(builder);
 
-        builder.AppendLine("}");
         return builder.ToString();
     }
 

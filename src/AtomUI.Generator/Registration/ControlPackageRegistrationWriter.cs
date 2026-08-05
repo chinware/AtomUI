@@ -74,7 +74,9 @@ internal sealed class ControlPackageRegistrationWriter
         source.AppendLine("            selectedControls,");
         source.AppendLine("            packageAssets,");
         source.AppendLine("            controlThemesProvider,");
-        source.AppendLine("            global::AtomUI.Theme.Language.LanguageProviderPool.GetLanguageProviders());");
+        source.Append("            global::")
+              .Append(_generatedNamespace)
+              .AppendLine(".LanguageProviderPool.GetLanguageProviders());");
         source.AppendLine("        themeManagerBuilder.AddControlPackage(package);");
         source.AppendLine("    }");
         source.AppendLine("}");

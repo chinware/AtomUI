@@ -262,12 +262,14 @@ public class LanguageProviderConstructorGeneratorTests
                                                .GetText(cancellationToken)
                                                .ToString();
 
+        generatedSource.ShouldContain("namespace AtomUI.Generated.LanguageProviderConstructorGeneratorTests;");
+        generatedSource.ShouldNotContain("namespace AtomUI.Theme.Language");
         generatedSource.ShouldContain("internal sealed class DemoShowCaseEnUSLanguageProvider : LanguageProvider");
         generatedSource.ShouldContain("dictionary[global::TestApp.Localization.DemoShowCaseLangResourceKind.Title] = global::TestApp.ShowCases.Demo.Localization.en_US.Title;");
     }
 
     [Fact]
-    public void DoesNotEmitLanguageFilesWhenProjectHasNoLanguageProviders()
+    public void EmitsAssemblyScopedEmptyPoolWhenProjectHasNoLanguageProviders()
     {
         var compilation = CreateCompilation("""
             using System;
@@ -343,8 +345,36 @@ public class LanguageProviderConstructorGeneratorTests
         var generatedPaths = outputCompilation.SyntaxTrees.Select(static tree => tree.FilePath).ToArray();
 
         generatedPaths.ShouldNotContain(static path => path.EndsWith("LanguageResourceConst.g.cs"));
-        generatedPaths.ShouldNotContain(static path => path.EndsWith("LanguageProviderPool.g.cs"));
         generatedPaths.ShouldNotContain(static path => path.EndsWith("LanguageProviderConstructors.g.cs"));
+
+        var generatedPool = outputCompilation.SyntaxTrees
+                                             .Single(tree => tree.FilePath.EndsWith("LanguageProviderPool.g.cs"))
+                                             .GetText(cancellationToken)
+                                             .ToString();
+        generatedPool.ShouldContain("namespace AtomUI.Generated.LanguageProviderConstructorGeneratorTests;");
+        generatedPool.ShouldContain("new List<LanguageProvider>(0)");
+        generatedPool.ShouldNotContain("languageProviders.Add(");
+    }
+
+    [Fact]
+    public void DoesNotEmitLegacyPoolWithoutLegacyLanguageRuntime()
+    {
+        var compilation = CreateCompilation("namespace TestApp { public sealed class PlainType { } }");
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var driver = CSharpGeneratorDriver.Create(new LanguageGenerator());
+
+        driver.RunGeneratorsAndUpdateCompilation(
+            compilation,
+            out var outputCompilation,
+            out var diagnostics,
+            cancellationToken);
+
+        diagnostics.ShouldBeEmpty();
+        outputCompilation.GetDiagnostics(cancellationToken)
+                         .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                         .ShouldBeEmpty();
+        outputCompilation.SyntaxTrees
+                         .ShouldNotContain(static tree => tree.FilePath.EndsWith("LanguageProviderPool.g.cs"));
     }
 
     private static CSharpCompilation CreateCompilation(string source)

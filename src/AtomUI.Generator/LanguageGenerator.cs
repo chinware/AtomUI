@@ -8,7 +8,7 @@ public class LanguageGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext initContext)
     {
-        var languageProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(
+        var languageProviders = initContext.SyntaxProvider.ForAttributeWithMetadataName(
             TargetMarkConstants.LanguageProviderAttribute,
             (node, token) => true,
             (context, token) =>
@@ -17,20 +17,32 @@ public class LanguageGenerator : IIncrementalGenerator
                 walker.Visit(context.TargetNode);
                 return walker.LanguageInfo;
             }).Collect();
-        initContext.RegisterImplementationSourceOutput(languageProvider, (context, languageProviders) =>
+        var compilationInfo = initContext.CompilationProvider.Select(static (compilation, _) =>
+            (compilation.AssemblyName,
+             HasLegacyLanguageRuntime: compilation.GetTypeByMetadataName(TargetMarkConstants.LanguageProvider) is not null));
+        var generationInput = languageProviders.Combine(compilationInfo);
+        initContext.RegisterImplementationSourceOutput(generationInput, (context, input) =>
         {
-            if (languageProviders.IsEmpty)
+            var (providers, info) = input;
+            var (assemblyName, hasLegacyLanguageRuntime) = info;
+            if (!hasLegacyLanguageRuntime)
             {
                 return;
             }
 
-            var providerList = languageProviders.ToList();
+            var providerList = providers.ToList();
             {
-                var classWriter = new LangResourceKeyClassSourceWriter(context, providerList);
+                var classWriter = new LanguageProviderPoolClassSourceWriter(context, providerList, assemblyName);
                 classWriter.Write();
             }
+
+            if (providers.IsEmpty)
             {
-                var classWriter = new LanguageProviderPoolClassSourceWriter(context, providerList);
+                return;
+            }
+
+            {
+                var classWriter = new LangResourceKeyClassSourceWriter(context, providerList);
                 classWriter.Write();
             }
             {

@@ -2,8 +2,8 @@
 using AtomUI.Theme.Language;
 using Avalonia.Controls;
 
-namespace AtomUI.Theme.Language
-{
+namespace AtomUI.Generated.AtomUI_Toolkits_GalleryBase;
+
     internal sealed class GalleryShowCaseHeaderEnUSLanguageProvider : LanguageProvider
     {
         public GalleryShowCaseHeaderEnUSLanguageProvider()
@@ -102,4 +102,3 @@ namespace AtomUI.Theme.Language
             return languageProviders;
         }
     }
-}
