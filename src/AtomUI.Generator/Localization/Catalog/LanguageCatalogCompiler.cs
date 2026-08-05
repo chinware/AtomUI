@@ -149,7 +149,11 @@ internal static class LanguageCatalogCompiler
                 owners.Add(ownerKey, file);
 
                 var fileDiagnosticStart = diagnostics.Count;
-                ValidateUnitContract(catalog, file, diagnostics);
+                ValidateUnitContract(
+                    catalog,
+                    file,
+                    requireComplete: file.SourceKind != LanguageFileSourceKind.ApplicationOverride,
+                    diagnostics);
                 ValidateSourceText(catalog, englishSource, file, diagnostics);
                 var values = CompileValues(catalog, file, language, diagnostics);
                 if (diagnostics.Count == fileDiagnosticStart)
@@ -183,6 +187,7 @@ internal static class LanguageCatalogCompiler
     private static void ValidateUnitContract(
         LanguageCatalogInfo catalog,
         AdditionalLanguageFile file,
+        bool requireComplete,
         ImmutableArray<Diagnostic>.Builder diagnostics)
     {
         var unitsById = file.Document.File.Units.ToDictionary(static unit => unit.Id);
@@ -190,10 +195,13 @@ internal static class LanguageCatalogCompiler
         {
             if (!unitsById.TryGetValue(catalogUnit.Id, out var fileUnit))
             {
-                diagnostics.Add(Mismatch(
-                    file,
-                    catalog.CatalogId,
-                    $"unit ID '{catalogUnit.Id}' ('{catalogUnit.Name}') is missing"));
+                if (requireComplete)
+                {
+                    diagnostics.Add(Mismatch(
+                        file,
+                        catalog.CatalogId,
+                        $"unit ID '{catalogUnit.Id}' ('{catalogUnit.Name}') is missing"));
+                }
                 continue;
             }
             if (!string.Equals(fileUnit.Name, catalogUnit.Name, StringComparison.Ordinal))

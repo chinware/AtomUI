@@ -188,6 +188,17 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Fact]
+    public void Accepts_A_Partial_Application_Override()
+    {
+        var result = Run(
+            CatalogSource,
+            SourceFile(),
+            ApplicationOverrideFile(contractVersion: "1", includeItemCount: false));
+
+        result.Diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Reports_A_Static_Pack_Module_Id_Mismatch()
     {
         var reference = CreateExternalCatalogReference();
@@ -285,11 +296,22 @@ public class LanguageCatalogCompilerGeneratorTests
             });
     }
 
-    private static TestAdditionalText ApplicationOverrideFile(string contractVersion)
+    private static TestAdditionalText ApplicationOverrideFile(
+        string contractVersion,
+        bool includeItemCount = true)
     {
+        var content = TargetXliff("zh-CN", "覆盖标题", "覆盖项目 {0}");
+        if (!includeItemCount)
+        {
+            const string itemCountUnit =
+                "  <unit id=\"30\" name=\"ItemCount\"><segment><source>Items {0}</source>" +
+                "<target state=\"translated\">覆盖项目 {0}</target></segment></unit>\n";
+            content = content.Replace(itemCountUnit, string.Empty);
+        }
+
         return new TestAdditionalText(
             "Localization/Overrides/zh-CN.xlf",
-            TargetXliff("zh-CN", "覆盖标题", "覆盖项目 {0}"),
+            content,
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
