@@ -28,6 +28,13 @@ public sealed class LanguageTagsGenerator : IIncrementalGenerator
                     sourceContext.ReportDiagnostic(diagnostic);
                 }
             }
+
+            if (results.Length == 1 &&
+                results[0].Diagnostics.IsEmpty &&
+                !results[0].Entries.IsEmpty)
+            {
+                LanguageTagsSourceWriter.Write(sourceContext, results[0].Entries);
+            }
         });
     }
 

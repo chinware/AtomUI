@@ -25,6 +25,62 @@ public class LanguageTagsGeneratorTests
         result.Diagnostics.ShouldBeEmpty();
     }
 
+    [Fact]
+    public void Generates_Strongly_Typed_Language_Tags_And_Definitions()
+    {
+        var execution = ExecuteGenerator($$"""
+            {{Header}}
+            EnUS	en-US	en-US	English (United States)	LeftToRight
+            ArSA	ar-SA	ar-SA	العربية (المملكة العربية السعودية)	RightToLeft
+            """);
+
+        execution.Result.Diagnostics.ShouldBeEmpty();
+        execution.OutputCompilation.GetDiagnostics(TestContext.Current.CancellationToken)
+                 .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                 .ShouldBeEmpty();
+
+        var languageTags = GetGeneratedSource(execution.Result, "LanguageTags.g.cs");
+        languageTags.ShouldContain("public static class LanguageTags");
+        languageTags.ShouldContain(
+            "public static global::AtomUI.Localization.LanguageTag EnUS { get; } = " +
+            "global::AtomUI.Localization.LanguageTag.Parse(\"en-US\");");
+        languageTags.ShouldContain(
+            "public static global::AtomUI.Localization.LanguageTag ArSA { get; } = " +
+            "global::AtomUI.Localization.LanguageTag.Parse(\"ar-SA\");");
+
+        var definitions = GetGeneratedSource(
+            execution.Result,
+            "GeneratedStandardLanguageDefinitions.g.cs");
+        definitions.ShouldContain("internal static class GeneratedStandardLanguageDefinitions");
+        definitions.ShouldContain("case \"ar-SA\":");
+        definitions.ShouldContain("global::AtomUI.Localization.LanguageTags.ArSA");
+        definitions.ShouldContain("global::System.Globalization.CultureInfo.GetCultureInfo(\"ar-SA\")");
+        definitions.ShouldContain("global::AtomUI.Localization.LanguageTextDirection.RightToLeft");
+        definitions.ShouldContain("العربية (المملكة العربية السعودية)");
+        definitions.ShouldNotContain("CultureInfo.GetCultures");
+        definitions.ShouldNotContain("Assembly.GetTypes");
+        definitions.ShouldNotContain("Enum.GetNames");
+        definitions.ShouldNotContain("GetFields");
+    }
+
+    [Fact]
+    public void Generates_Byte_Identical_Output_For_Reordered_Records()
+    {
+        var first = RunGenerator($$"""
+            {{Header}}
+            EnUS	en-US	en-US	English (United States)	LeftToRight
+            ArSA	ar-SA	ar-SA	Arabic (Saudi Arabia)	RightToLeft
+            """);
+        var second = RunGenerator($$"""
+            {{Header}}
+            ArSA	ar-SA	ar-SA	Arabic (Saudi Arabia)	RightToLeft
+            EnUS	en-US	en-US	English (United States)	LeftToRight
+            """);
+
+        first.GeneratedSources.Select(static source => source.SourceText.ToString())
+             .ShouldBe(second.GeneratedSources.Select(static source => source.SourceText.ToString()));
+    }
+
     [Theory]
     [InlineData(
         "EnUS\ten-US\ten-US\tEnglish (United States)",
@@ -110,6 +166,13 @@ public class LanguageTagsGeneratorTests
 
     private static GeneratorRunResult RunGenerator(string data, bool isLanguageTagsData = true)
     {
+        return ExecuteGenerator(data, isLanguageTagsData).Result;
+    }
+
+    private static (GeneratorRunResult Result, Compilation OutputCompilation) ExecuteGenerator(
+        string data,
+        bool isLanguageTagsData = true)
+    {
         var compilation = CreateCompilation();
         var additionalText = new InMemoryAdditionalText("LanguageData/language-tags.tsv", data);
         var optionsProvider = new TestAnalyzerConfigOptionsProvider(
@@ -121,8 +184,20 @@ public class LanguageTagsGeneratorTests
             (CSharpParseOptions)compilation.SyntaxTrees[0].Options,
             optionsProvider);
 
-        driver = driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
-        return driver.GetRunResult().Results.ShouldHaveSingleItem();
+        driver = driver.RunGeneratorsAndUpdateCompilation(
+            compilation,
+            out var outputCompilation,
+            out _,
+            TestContext.Current.CancellationToken);
+        return (driver.GetRunResult().Results.ShouldHaveSingleItem(), outputCompilation);
+    }
+
+    private static string GetGeneratedSource(GeneratorRunResult result, string hintName)
+    {
+        return result.GeneratedSources
+                     .Single(source => source.HintName == hintName)
+                     .SourceText
+                     .ToString();
     }
 
     private static CSharpCompilation CreateCompilation()
@@ -135,7 +210,32 @@ public class LanguageTagsGeneratorTests
 
         return CSharpCompilation.Create(
             "LanguageTagsGeneratorTests",
-            [CSharpSyntaxTree.ParseText("namespace AtomUI.Localization; public sealed class Marker { }")],
+            [CSharpSyntaxTree.ParseText("""
+                namespace AtomUI.Localization;
+
+                public readonly struct LanguageTag
+                {
+                    public string Value => string.Empty;
+                    public static LanguageTag Parse(string value) => default;
+                }
+
+                public enum LanguageTextDirection : byte
+                {
+                    LeftToRight,
+                    RightToLeft
+                }
+
+                public sealed class LanguageDefinition
+                {
+                    public LanguageDefinition(
+                        LanguageTag tag,
+                        System.Globalization.CultureInfo culture,
+                        string nativeName,
+                        LanguageTextDirection direction)
+                    {
+                    }
+                }
+                """)],
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
     }
