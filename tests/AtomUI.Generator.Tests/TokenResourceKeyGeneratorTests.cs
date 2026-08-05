@@ -10,6 +10,28 @@ namespace AtomUI.Generator.Tests;
 public class TokenResourceKeyGeneratorTests
 {
     [Fact]
+    public void Does_Not_Generate_Theme_Sources_Without_Theme_Runtime_Contracts()
+    {
+        var references = ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES"))!
+                         .Split(Path.PathSeparator)
+                         .Select(static path => MetadataReference.CreateFromFile(path))
+                         .Cast<MetadataReference>()
+                         .ToImmutableArray();
+        var compilation = CSharpCompilation.Create(
+            "NonThemeAssembly",
+            [CSharpSyntaxTree.ParseText(
+                "namespace Demo; public sealed class PlainType { }",
+                cancellationToken: TestContext.Current.CancellationToken)],
+            references,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+        var output = RunGenerator(compilation, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        output.SyntaxTrees.Count().ShouldBe(1);
+    }
+
+    [Fact]
     public void Publishes_Configured_Control_Catalog_As_Assembly_Metadata()
     {
         var outputCompilation = RunGenerator(

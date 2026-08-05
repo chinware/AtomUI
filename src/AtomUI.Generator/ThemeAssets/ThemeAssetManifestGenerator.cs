@@ -33,6 +33,11 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
 
         context.RegisterSourceOutput(input, static (productionContext, value) =>
         {
+            if (value.Left.Left.IsEmpty)
+            {
+                return;
+            }
+
             var compilation = value.Left.Right;
             var assemblyName = compilation.AssemblyName ?? "AtomUI";
             var controlCatalog = ThemeGeneratorOptions.GetControlCatalog(value.Right);

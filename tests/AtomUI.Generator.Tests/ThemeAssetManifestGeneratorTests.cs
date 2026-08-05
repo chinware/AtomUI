@@ -11,6 +11,20 @@ namespace AtomUI.Generator.Tests;
 public class ThemeAssetManifestGeneratorTests
 {
     [Fact]
+    public void Does_Not_Generate_Theme_Manifest_Without_Theme_Assets()
+    {
+        var result = RunGenerator(
+            CreateCompilation("namespace Demo { public sealed class PlainType { } }"),
+            [],
+            out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        result.SyntaxTrees.Any(static tree =>
+            tree.FilePath.EndsWith("GeneratedControlThemeAssetManifest.g.cs", StringComparison.Ordinal))
+              .ShouldBeFalse();
+    }
+
+    [Fact]
     public void Uses_Configured_Control_Catalog_For_Third_Party_Assets()
     {
         var result = RunGenerator(

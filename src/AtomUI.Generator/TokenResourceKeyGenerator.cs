@@ -71,6 +71,12 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
 
         initContext.RegisterImplementationSourceOutput(generationProvider, (context, generationInfo) =>
         {
+            if (generationInfo.Right.Compilation.GetTypeByMetadataName(
+                    "AtomUI.Theme.Resources.TokenResourceExtension`1") is null)
+            {
+                return;
+            }
+
             var combinedInfos = generationInfo.Left;
             ThemeControlCatalogMetadataWriter.Write(
                 context,
