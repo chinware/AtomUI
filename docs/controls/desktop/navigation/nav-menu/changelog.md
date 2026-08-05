@@ -2,6 +2,28 @@
 
 本文档记录 NavMenu 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-04
+
+- API
+  - 定义 `INavMenuEntry` 作为节点、分组和分隔线的共同结构契约，`INavMenuNode` 保持唯一可交互节点语义。
+  - 定义 `NavMenuGroup`、`NavMenuDivider` 和 `NavMenuNode.Entries`，支持在根、子菜单、popup 和分组中任意层级组合结构 entry。
+  - 保留 `NavMenuNode.Children : IList<INavMenuNode>`，将其定义为 `Entries` 的实时语义节点兼容视图；`INavMenuNode.Entries : IEnumerable<INavMenuEntry>` 通过协变接口默认 `Entries => Children` 保持既有自定义节点兼容，`NavMenuNode.Entries` 继续提供 `IList<INavMenuEntry>` 可写入口。
+  - 定义 `NavMenu.Header`、`HeaderTemplate`、`Footer`、`FooterTemplate` 和 `ItemSpacing`；继续以 `IsInlineCollapsed` 作为唯一折叠状态源，不增加相反语义的 `Expanded` 属性。
+- Architecture
+  - 定义 `NavMenuItem`、`NavMenuGroupItem`、`NavMenuDividerItem` 三类内部容器，并由统一 entry container coordinator 管理类型分派、独立 recycle key、prepare 和 clear。
+  - 定义 direct `Items`、`ItemsSource`、节点 `Entries` 和分组 `Entries` 的统一 entry source 校验；初始装载、source replacement、Add、Replace、Reset 均只接受非空 `INavMenuEntry`，非法项在容器生成前确定性失败。
+  - 将逻辑树父级与导航语义父级分离；分组对 `ParentNode`、`Level`、`IsTopLevel`、selection path、default path、Accordion 和 keyboard navigation 保持透明。
+  - 定义无扁平列表分配的 semantic navigator，按已生成容器处理同层和 inline 可见树漫游，跳过分组、分隔线和不可交互项。
+- Theme
+  - 定义 Inline/Vertical 固定 Header/Footer 与中间滚动 entry 区，Horizontal 左 Header、右 Footer 和中间菜单区。
+  - 定义 root inline collapsed 隐藏分组标题、popup 分组标题保持可见、Horizontal 根分组透明和 divider orientation 规则。
+  - `ItemSpacing` 由默认 ItemsPanel 通过 `TemplateBinding` 消费，不使用穿透子控件模板的 selector。
+- Token
+  - 复用 `GroupTitleColor`、`DarkGroupTitleColor`、`GroupTitleLineHeight`、`GroupTitleFontSize` 表达非交互分组标题，不新增专属 divider token。
+  - 明确 `VerticalItemsPanelSpacing=0` 保持默认 block margin 视觉；显式 `NavMenu.ItemSpacing` 是实例级额外 panel spacing，不改写 Token。
+- Verification
+  - 定义任意层级结构 entry、集合全动作、非法数据确定性失败、路径、选择、键盘、collapsed、Header/Footer、spacing、资源释放、容器回收隔离和纯节点快路径验证矩阵。
+
 ## 2026-07-13
 
 - API
