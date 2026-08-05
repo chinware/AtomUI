@@ -15,12 +15,14 @@
   <Project Path="src/AtomUI.Icons.AntDesign.Generator/AtomUI.Icons.AntDesign.Generator.csproj" />
   <Project Path="src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj" />
   <Project Path="src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj" />
+  <Project Path="src/AtomUI.Localization/AtomUI.Localization.csproj" />
   <Project Path="src/AtomUI.Native/AtomUI.Native.csproj" />
   <Project Path="src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj" />
   <Project Path="src/AtomUI.Toolkits.GalleryBase.Generator/AtomUI.Toolkits.GalleryBase.Generator.csproj" />
   <Project Path="tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj" />
   <Project Path="tests/AtomUI.Core.Tests/AtomUI.Core.Tests.csproj" />
   <Project Path="tests/AtomUI.Docs.LLMsGenerator.Tests/AtomUI.Docs.LLMsGenerator.Tests.csproj" />
+  <Project Path="tests/AtomUI.Localization.Tests/AtomUI.Localization.Tests.csproj" />
   <Project Path="tests/AtomUI.Toolkits.GalleryBase.Generator.Tests/AtomUI.Toolkits.GalleryBase.Generator.Tests.csproj" />
   <Project Path="tests/AtomUI.Toolkits.GalleryBase.Tests/AtomUI.Toolkits.GalleryBase.Tests.csproj" />
 </Solution>
