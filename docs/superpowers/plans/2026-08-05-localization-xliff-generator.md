@@ -27,7 +27,7 @@
 
 **Files:**
 - Create: `src/AtomUI.Localization/Resources/LanguageResourceExtension.cs`
-- Create: `tests/AtomUI.Localization.Tests/LanguageResourceExtensionTests.cs`
+- Create: `tests/AtomUI.Core.Tests/Localization/LanguageResourceExtensionTests.cs`
 
 **Interfaces:**
 - Produces `LanguageResourceExtension<TResourceKind> : MarkupExtension where TResourceKind : struct, Enum`.
@@ -35,8 +35,8 @@
 
 - [ ] Write RED tests that constructor assignment preserves the enum key, `ProvideValue()` returns a dynamic resource for `StyledElement` targets, and static non-Avalonia targets resolve the current Application resource by the enum key.
 - [ ] Run `dotnet test tests/AtomUI.Localization.Tests/AtomUI.Localization.Tests.csproj --framework net10.0 --no-restore -p:IsTestProject=true --filter FullyQualifiedName~LanguageResourceExtensionTests` and confirm the base type is missing.
-- [ ] Implement the public abstract base with `Kind`, parameterless/key constructors, `DynamicResourceExtension`, Application anchoring, and a clear exception when no Application exists for a static target.
-- [ ] Keep static lookup on `Application.TryGetResource(Kind, themeVariant, out value)`; do not reference the old `LanguageResourceBinder` or ThemeManager.
+- [ ] Implement the public abstract base with `Kind`, parameterless/key constructors, native `DynamicResourceExtension` handling for Avalonia targets, and a clear exception when no Application exists for a static target.
+- [ ] Keep static lookup on `Application.TryGetResource(Kind, themeVariant, out value)`; do not reference the old `LanguageResourceBinder`, private DynamicResource anchor reflection, or ThemeManager.
 - [ ] Rerun the focused and complete Localization tests to GREEN.
 - [ ] Commit `feat(Localization): add generated resource extension base`.
 
