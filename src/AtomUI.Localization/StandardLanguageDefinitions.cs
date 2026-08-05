@@ -1,8 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtomUI.Localization;
 
 internal static class StandardLanguageDefinitions
 {
-    internal static bool TryCreate(LanguageTag tag, out LanguageDefinition? definition)
+    internal static bool TryCreate(
+        LanguageTag tag,
+        [NotNullWhen(true)] out LanguageDefinition? definition)
     {
         if (tag == default)
         {
