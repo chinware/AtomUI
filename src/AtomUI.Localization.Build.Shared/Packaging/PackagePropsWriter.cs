@@ -6,7 +6,8 @@ internal static class PackagePropsWriter
 {
     internal static string Write(
         string packageId,
-        IReadOnlyList<LanguagePackageCatalogEntry> catalogs)
+        IReadOnlyList<LanguagePackageCatalogEntry> catalogs,
+        string sourceKind = "StaticLanguagePack")
     {
         var itemGroup = new XElement("ItemGroup");
         foreach (var catalog in catalogs
@@ -18,10 +19,12 @@ internal static class PackagePropsWriter
                 new XAttribute(
                     "Include",
                     "$(MSBuildThisFileDirectory)../contentFiles/any/any/" + catalog.Path),
-                new XAttribute("AtomUILanguageSourceKind", "StaticLanguagePack"),
+                new XAttribute("AtomUILanguageSourceKind", sourceKind),
                 new XAttribute("AtomUILanguageSourceIdentity", packageId),
                 new XAttribute("AtomUILanguageModuleId", catalog.ModuleId),
-                new XAttribute("AtomUILanguageContractVersion", catalog.ContractVersion)));
+                new XAttribute("AtomUILanguageContractVersion", catalog.ContractVersion),
+                new XAttribute("AtomUILanguagePackagePath", catalog.Path),
+                new XAttribute("AtomUILanguageSourceFingerprint", catalog.SourceFingerprint)));
         }
 
         return DeterministicXml.Write(

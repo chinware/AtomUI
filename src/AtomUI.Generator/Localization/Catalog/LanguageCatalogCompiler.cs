@@ -49,7 +49,7 @@ internal static class LanguageCatalogCompiler
             var catalogId = $"{file.ModuleId}:{file.Document.File.Id}";
             if (!catalogsById.TryGetValue(catalogId, out var catalogInput))
             {
-                if (compilation is null || file.SourceKind == LanguageFileSourceKind.ModuleBuiltIn)
+                if (compilation is null)
                 {
                     diagnostics.Add(Mismatch(
                         file,

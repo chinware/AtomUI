@@ -107,28 +107,11 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
         {
             if (file.Document.TargetLanguage is null)
             {
-                ValidateSource(file);
                 continue;
             }
 
             sourceFiles.TryGetValue((file.ModuleId, file.Document.File.Id), out var source);
             ValidateTarget(file, source);
-        }
-    }
-
-    private void ValidateSource(ParsedLanguageFile file)
-    {
-        foreach (var unit in file.Document.File.Units.Where(static unit => !unit.IsObsolete))
-        {
-            if (unit.Source.Length == 0)
-            {
-                Error(
-                    InvalidTranslationCode,
-                    file.Path,
-                    unit.Line,
-                    unit.Column,
-                    $"Source unit '{unit.Id}' ('{unit.Name}') cannot be empty.");
-            }
         }
     }
 

@@ -32,6 +32,7 @@ public class LanguageCatalogCompilerGeneratorTests
             LanguageFileSourceKind.ModuleBuiltIn,
             "Test.Package",
             null,
+            null,
             SourceText.From(SourceXliff),
             Xliff21Parser.Parse(SourceXliff).Document!);
 
@@ -316,17 +317,21 @@ public class LanguageCatalogCompilerGeneratorTests
         string moduleId = "External.Package",
         string unitName = "Title")
     {
+        var content = TargetXliff("zh-CN", "标题", "项目 {0}")
+            .Replace("name=\"Title\"", $"name=\"{unitName}\"");
+        var sourceFingerprint = LanguageSourceFingerprint.Compute(
+            Xliff21Parser.Parse(content).Document!);
         return new TestAdditionalText(
             "packages/External.Package.I18n.ZhCN/zh-CN.xlf",
-            TargetXliff("zh-CN", "标题", "项目 {0}")
-                .Replace("name=\"Title\"", $"name=\"{unitName}\""),
+            content,
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
                 ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "StaticLanguagePack",
                 ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = "External.Package.I18n.ZhCN",
                 ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = moduleId,
-                ["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion
+                ["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion,
+                ["build_metadata.AdditionalFiles.AtomUILanguageSourceFingerprint"] = sourceFingerprint
             });
     }
 

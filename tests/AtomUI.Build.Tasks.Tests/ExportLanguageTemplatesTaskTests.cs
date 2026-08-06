@@ -55,6 +55,33 @@ public class ExportLanguageTemplatesTaskTests : IDisposable
         units[2].TargetState.ShouldBe("initial");
     }
 
+    [Fact]
+    public void Execute_Exports_A_Package_Catalog_Into_The_Current_Language_Pack_Project()
+    {
+        var packageDirectory = Path.Combine(_directory, "packages", "acme", "1.0.0");
+        Directory.CreateDirectory(packageDirectory);
+        var sourcePath = Path.Combine(packageDirectory, "en-US.xlf");
+        File.WriteAllText(sourcePath, SourceXliff);
+        var outputRoot = Path.Combine(_directory, "LanguagePack", "Localization");
+        var sourceItem = new TestTaskItem(
+            sourcePath,
+            ("AtomUILanguagePackagePath", "Localization/Login/en-US.xlf"));
+        var task = new ExportLanguageTemplatesTask
+        {
+            BuildEngine = new RecordingBuildEngine(),
+            SourceFiles = [sourceItem],
+            TargetLanguage = "ja-JP",
+            OutputRootDirectory = outputRoot
+        };
+
+        task.Execute().ShouldBeTrue();
+
+        var outputPath = Path.Combine(outputRoot, "Login", "ja-JP.xlf");
+        task.ExportedFiles.ShouldHaveSingleItem().ItemSpec.ShouldBe(outputPath);
+        File.Exists(outputPath).ShouldBeTrue();
+        File.Exists(Path.Combine(packageDirectory, "ja-JP.xlf")).ShouldBeFalse();
+    }
+
     public void Dispose()
     {
         Directory.Delete(_directory, recursive: true);

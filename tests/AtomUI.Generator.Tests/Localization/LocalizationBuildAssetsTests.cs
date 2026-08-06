@@ -99,6 +99,7 @@ public class LocalizationBuildAssetsTests
         AssertMetadataForwarded(additionalFiles, "AtomUILanguageSourceIdentity");
         AssertMetadataForwarded(additionalFiles, "AtomUILanguageModuleId");
         AssertMetadataForwarded(additionalFiles, "AtomUILanguageContractVersion");
+        AssertMetadataForwarded(additionalFiles, "AtomUILanguageSourceFingerprint");
 
         var visibleMetadata = targets.Descendants()
                                      .Where(element =>
@@ -112,7 +113,8 @@ public class LocalizationBuildAssetsTests
             "AtomUILanguageSourceKind",
             "AtomUILanguageSourceIdentity",
             "AtomUILanguageModuleId",
-            "AtomUILanguageContractVersion"
+            "AtomUILanguageContractVersion",
+            "AtomUILanguageSourceFingerprint"
         ],
             ignoreOrder: true);
 
@@ -120,7 +122,9 @@ public class LocalizationBuildAssetsTests
                                        .Where(element => element.Name.LocalName == "CompilerVisibleProperty")
                                        .Select(element => (string?)element.Attribute("Include"))
                                        .ToArray();
-        visibleProperties.ShouldBe(["PackageId", "AssemblyName", "RootNamespace"], ignoreOrder: true);
+        visibleProperties.ShouldBe(
+            ["PackageId", "AssemblyName", "RootNamespace", "AtomUIBuildLanguagePackage"],
+            ignoreOrder: true);
 
         var usingTasks = targets.Descendants("UsingTask")
                                 .Select(element => (string?)element.Attribute("TaskName"))
@@ -140,6 +144,21 @@ public class LocalizationBuildAssetsTests
         targets.Descendants("Target")
                .Single(element => (string?)element.Attribute("Name") == "AtomUIExportLanguageTemplates")
                .ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void Module_Package_Exports_Only_The_Authoritative_EnUs_Catalog_Sources()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+        var moduleLanguageFiles = targets.Descendants()
+                                         .Single(element =>
+                                             element.Name.LocalName == "_AtomUIModuleLanguageFile");
+
+        ((string?)moduleLanguageFiles.Attribute("Include")).ShouldBe("@(AtomUILanguage)");
+        var condition = (string?)moduleLanguageFiles.Attribute("Condition");
+        condition.ShouldNotBeNull();
+        condition.ShouldContain("'%(AtomUILanguageSourceKind)' == 'ModuleBuiltIn'");
+        condition.ShouldContain("'%(Filename)%(Extension)' == 'en-US.xlf'");
     }
 
     [Fact]
@@ -195,7 +214,7 @@ public class LocalizationBuildAssetsTests
 
     private static void AssertMetadataForwarded(XElement additionalFiles, string name)
     {
-        ((string?)additionalFiles.Attribute(name)).ShouldBe($"%(AtomUILanguage.{name})");
+        ((string?)additionalFiles.Attribute(name)).ShouldBe($"%({name})");
     }
 
     private static string GetRepoFile(string relativePath)

@@ -22,6 +22,7 @@ internal sealed class AdditionalLanguageFile
         LanguageFileSourceKind sourceKind,
         string sourceIdentity,
         int? contractVersion,
+        string? sourceFingerprint,
         SourceText text,
         AtomUI.Localization.Build.XliffDocumentModel document)
     {
@@ -30,6 +31,7 @@ internal sealed class AdditionalLanguageFile
         SourceKind = sourceKind;
         SourceIdentity = sourceIdentity;
         ContractVersion = contractVersion;
+        SourceFingerprint = sourceFingerprint;
         Text = text;
         Document = document;
     }
@@ -43,6 +45,8 @@ internal sealed class AdditionalLanguageFile
     internal string SourceIdentity { get; }
 
     internal int? ContractVersion { get; }
+
+    internal string? SourceFingerprint { get; }
 
     internal SourceText Text { get; }
 
@@ -117,13 +121,14 @@ internal static class AdditionalLanguageFileParser
         }
 
         int? contractVersion = null;
-        if (sourceKind is LanguageFileSourceKind.StaticLanguagePack or
-            LanguageFileSourceKind.ApplicationOverride)
+        var contractVersionText = LanguageGeneratorOptions.GetFileValue(
+            fileOptions,
+            LanguageGeneratorOptions.ContractVersionMetadata,
+            string.Empty);
+        var contractVersionRequired = sourceKind is LanguageFileSourceKind.StaticLanguagePack or
+                                      LanguageFileSourceKind.ApplicationOverride;
+        if (contractVersionRequired || contractVersionText.Length > 0)
         {
-            var contractVersionText = LanguageGeneratorOptions.GetFileValue(
-                fileOptions,
-                LanguageGeneratorOptions.ContractVersionMetadata,
-                string.Empty);
             if (!int.TryParse(
                     contractVersionText,
                     NumberStyles.None,
@@ -135,11 +140,55 @@ internal static class AdditionalLanguageFileParser
                     additionalText.Path,
                     text,
                     new AtomUI.Localization.Build.XliffParseError(
-                        "AtomUILanguageContractVersion must be a positive integer for external language inputs",
+                        "AtomUILanguageContractVersion must be a positive integer when specified and is " +
+                        "required for external language inputs",
                         1,
                         1));
             }
             contractVersion = parsedContractVersion;
+        }
+
+        var sourceFingerprint = LanguageGeneratorOptions.GetFileValue(
+            fileOptions,
+            LanguageGeneratorOptions.SourceFingerprintMetadata,
+            string.Empty);
+        if (sourceKind == LanguageFileSourceKind.StaticLanguagePack && sourceFingerprint.Length == 0)
+        {
+            return Invalid(
+                additionalText.Path,
+                text,
+                new AtomUI.Localization.Build.XliffParseError(
+                    "AtomUILanguageSourceFingerprint is required for static language packages",
+                    1,
+                    1));
+        }
+
+        if (sourceFingerprint.Length > 0)
+        {
+            if (!IsLowercaseSha256(sourceFingerprint))
+            {
+                return Invalid(
+                    additionalText.Path,
+                    text,
+                    new AtomUI.Localization.Build.XliffParseError(
+                        "AtomUILanguageSourceFingerprint must contain exactly 64 lowercase hexadecimal characters",
+                        1,
+                        1));
+            }
+
+            var actualFingerprint = AtomUI.Localization.Build.LanguageSourceFingerprint.Compute(
+                parseResult.Document!);
+            if (!string.Equals(sourceFingerprint, actualFingerprint, StringComparison.Ordinal))
+            {
+                return Invalid(
+                    additionalText.Path,
+                    text,
+                    new AtomUI.Localization.Build.XliffParseError(
+                        $"the declared source fingerprint '{sourceFingerprint}' does not match " +
+                        $"the XLIFF source contract fingerprint '{actualFingerprint}'",
+                        1,
+                        1));
+            }
         }
 
         return new AdditionalLanguageFileParseResult(
@@ -149,9 +198,27 @@ internal static class AdditionalLanguageFileParser
                 sourceKind,
                 sourceIdentity,
                 contractVersion,
+                sourceFingerprint.Length == 0 ? null : sourceFingerprint,
                 text,
                 parseResult.Document!),
             ImmutableArray<Diagnostic>.Empty);
+    }
+
+    private static bool IsLowercaseSha256(string value)
+    {
+        if (value.Length != 64)
+        {
+            return false;
+        }
+
+        foreach (var character in value)
+        {
+            if (character is not (>= '0' and <= '9') and not (>= 'a' and <= 'f'))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static AdditionalLanguageFileParseResult Invalid(

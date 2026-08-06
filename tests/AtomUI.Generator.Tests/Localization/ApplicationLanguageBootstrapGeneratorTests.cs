@@ -1,4 +1,5 @@
 using Microsoft.CodeAnalysis;
+using AtomUI.Localization.Build;
 using Shouldly;
 using Xunit;
 using static AtomUI.Generator.Tests.Localization.LocalizationGeneratorTestHost;
@@ -59,6 +60,23 @@ public class ApplicationLanguageBootstrapGeneratorTests
         source.ShouldNotContain("GeneratedLanguageModuleRegistration.Register(builder)");
         source.ShouldContain("TranslationSourceKind.StaticLanguagePack");
         source.ShouldContain("External.Package:External.Localization.ExternalLangResourceKind");
+        AssertCompiles(execution);
+    }
+
+    [Fact]
+    public void Uses_A_Referenced_Module_Source_To_Validate_A_Static_Language_Pack()
+    {
+        var reference = CreateExternalCatalogReference();
+        var execution = RunWithOutputCompilation(
+            RuntimeSource + "\nnamespace TestApp { public partial class App : Avalonia.Application { } }",
+            [reference],
+            ReferencedSourceFile(),
+            StaticPackFile());
+
+        execution.Result.Diagnostics.ShouldBeEmpty();
+        var source = GetBootstrapSource(execution.Result);
+        source.ShouldContain("TranslationSourceKind.StaticLanguagePack");
+        source.ShouldNotContain("TranslationSourceKind.ModuleBuiltIn");
         AssertCompiles(execution);
     }
 
@@ -240,6 +258,23 @@ public class ApplicationLanguageBootstrapGeneratorTests
             contractVersion: "2");
     }
 
+    private static TestAdditionalText ReferencedSourceFile()
+    {
+        return LanguageFile(
+            "packages/External.Package/Localization/en-US.xlf",
+            """
+            <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
+              <file id="External.Localization.ExternalLangResourceKind">
+                <unit id="10" name="Title"><segment><source>External title</source></segment></unit>
+              </file>
+            </xliff>
+            """,
+            "ModuleBuiltIn",
+            "External.Package",
+            "External.Package",
+            contractVersion: "2");
+    }
+
     private static TestAdditionalText LanguageFile(
         string path,
         string content,
@@ -258,6 +293,11 @@ public class ApplicationLanguageBootstrapGeneratorTests
         if (contractVersion is not null)
         {
             metadata["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion;
+        }
+        if (sourceKind == "StaticLanguagePack")
+        {
+            metadata["build_metadata.AdditionalFiles.AtomUILanguageSourceFingerprint"] =
+                LanguageSourceFingerprint.Compute(Xliff21Parser.Parse(content).Document!);
         }
         return new TestAdditionalText(path, content, metadata);
     }

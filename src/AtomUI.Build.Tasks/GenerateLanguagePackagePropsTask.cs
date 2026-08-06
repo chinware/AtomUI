@@ -16,6 +16,10 @@ public sealed class GenerateLanguagePackagePropsTask : AtomUILocalizationTask
     [Required]
     public string OutputPath { get; set; } = string.Empty;
 
+    public bool RequireTargetLanguage { get; set; } = true;
+
+    public string SourceKind { get; set; } = "StaticLanguagePack";
+
     public override bool Execute()
     {
         var entries = new List<LanguagePackageCatalogEntry>();
@@ -48,6 +52,26 @@ public sealed class GenerateLanguagePackagePropsTask : AtomUILocalizationTask
                 LogError("ATOMUILOC005", item.ItemSpec, 1, 1, "The language package XLIFF is invalid.");
                 return false;
             }
+            if (RequireTargetLanguage && parsed.Document.TargetLanguage is null)
+            {
+                LogError(
+                    "ATOMUILOC005",
+                    item.ItemSpec,
+                    1,
+                    1,
+                    "A static language package requires a target-language XLIFF document.");
+                return false;
+            }
+            if (!RequireTargetLanguage && parsed.Document.TargetLanguage is not null)
+            {
+                LogError(
+                    "ATOMUILOC005",
+                    item.ItemSpec,
+                    1,
+                    1,
+                    "A built-in language Catalog template must be an en-US document without trgLang.");
+                return false;
+            }
             entries.Add(new LanguagePackageCatalogEntry(
                 moduleId,
                 parsed.Document.File.Id,
@@ -63,7 +87,7 @@ public sealed class GenerateLanguagePackagePropsTask : AtomUILocalizationTask
         }
         File.WriteAllText(
             OutputPath,
-            PackagePropsWriter.Write(PackageId, entries),
+            PackagePropsWriter.Write(PackageId, entries, SourceKind),
             new UTF8Encoding(false));
         return true;
     }

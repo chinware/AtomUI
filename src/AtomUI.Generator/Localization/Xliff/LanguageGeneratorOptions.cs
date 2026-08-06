@@ -15,13 +15,30 @@ internal static class LanguageGeneratorOptions
         "build_metadata.AdditionalFiles.AtomUILanguageModuleId";
     internal const string ContractVersionMetadata =
         "build_metadata.AdditionalFiles.AtomUILanguageContractVersion";
+    internal const string SourceFingerprintMetadata =
+        "build_metadata.AdditionalFiles.AtomUILanguageSourceFingerprint";
 
     internal static bool IsLanguageFile(
         AdditionalText text,
         AnalyzerConfigOptionsProvider optionsProvider)
     {
-        return optionsProvider.GetOptions(text)
-                              .TryGetValue(LanguageFileMetadata, out var value) &&
+        var options = optionsProvider.GetOptions(text);
+        if (!options.TryGetValue(LanguageFileMetadata, out var value) ||
+            !string.Equals(value, "true", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        // A static language-pack project validates and packages XLIFF but does
+        // not compile a Catalog or runtime registration. The same files are
+        // consumed by the generator in the application that references the
+        // resulting package.
+        return !IsLanguagePackBuild(optionsProvider.GlobalOptions);
+    }
+
+    private static bool IsLanguagePackBuild(AnalyzerConfigOptions options)
+    {
+        return options.TryGetValue("build_property.AtomUIBuildLanguagePackage", out var value) &&
                string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
     }
 

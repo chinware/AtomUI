@@ -19,6 +19,27 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
         ".atomlang"
     };
 
+    private static readonly HashSet<string> s_scriptExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".ps1",
+        ".sh",
+        ".cmd",
+        ".bat"
+    };
+
+    private static readonly HashSet<string> s_buildLogicExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".props",
+        ".targets"
+    };
+
+    private static readonly HashSet<string> s_buildLogicDirectories = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "build",
+        "buildMultiTargeting",
+        "buildTransitive"
+    };
+
     [Required]
     public string PackageId { get; set; } = string.Empty;
 
@@ -29,6 +50,8 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
 
     [Required]
     public string OutputManifestPath { get; set; } = string.Empty;
+
+    public string? ExpectedLanguage { get; set; }
 
     [Output]
     public ITaskItem[] PreparedLanguageFiles { get; private set; } = Array.Empty<ITaskItem>();
@@ -112,6 +135,22 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
             return false;
         }
 
+        if (!string.IsNullOrWhiteSpace(ExpectedLanguage))
+        {
+            var expectedText = ExpectedLanguage!;
+            if (!Bcp47LanguageTagParser.TryParse(expectedText, out var expectedLanguage) ||
+                !string.Equals(expectedText, expectedLanguage, StringComparison.Ordinal))
+            {
+                Error(string.Empty, "ExpectedLanguage must be a canonical BCP 47 language tag.");
+                return false;
+            }
+            if (!string.Equals(language, expectedLanguage, StringComparison.Ordinal))
+            {
+                Error(string.Empty, $"The package target language is '{language}', but ExpectedLanguage is '{expectedLanguage}'.");
+                return false;
+            }
+        }
+
         var manifest = new LanguagePackageManifest(PackageId, language, entries);
         WriteFile(OutputManifestPath, LanguagePackageManifestWriter.Write(manifest));
         PreparedLanguageFiles = LanguageFiles.ToArray();
@@ -124,6 +163,20 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
         foreach (var item in PackageFiles)
         {
             var extension = Path.GetExtension(item.ItemSpec);
+            if (IsBuildLogicFile(item.ItemSpec, extension))
+            {
+                Error(item.ItemSpec, "Static language packages cannot contain executable build logic.");
+                succeeded = false;
+                continue;
+            }
+
+            if (s_scriptExtensions.Contains(extension))
+            {
+                Error(item.ItemSpec, "Static language packages cannot contain scripts.");
+                succeeded = false;
+                continue;
+            }
+
             if (!s_runtimeExtensions.Contains(extension))
             {
                 continue;
@@ -139,6 +192,18 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
             succeeded = false;
         }
         return succeeded;
+    }
+
+    private static bool IsBuildLogicFile(string path, string extension)
+    {
+        if (!s_buildLogicExtensions.Contains(extension))
+        {
+            return false;
+        }
+
+        return path.Replace('\\', '/')
+                   .Split('/')
+                   .Any(s_buildLogicDirectories.Contains);
     }
 
     private void Error(string file, string message)

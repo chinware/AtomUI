@@ -120,6 +120,31 @@ public class ValidateLanguageFilesTaskTests : IDisposable
         engine.Errors.ShouldBeEmpty();
     }
 
+    [Fact]
+    public void Execute_Accepts_An_Empty_English_Source_Unit()
+    {
+        var source = Write(
+            "en-US-empty.xlf",
+            """
+            <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
+              <file id="Test.Product.CalendarLangResourceKind">
+                <unit id="1" name="YearSuffix">
+                  <segment><source></source></segment>
+                </unit>
+              </file>
+            </xliff>
+            """);
+        var engine = new RecordingBuildEngine();
+        var task = new ValidateLanguageFilesTask
+        {
+            BuildEngine = engine,
+            LanguageFiles = [Item(source, "ModuleBuiltIn")]
+        };
+
+        task.Execute().ShouldBeTrue();
+        engine.Errors.ShouldBeEmpty();
+    }
+
     public void Dispose()
     {
         Directory.Delete(_directory, recursive: true);

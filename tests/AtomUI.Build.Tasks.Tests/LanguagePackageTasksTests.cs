@@ -55,6 +55,12 @@ public class LanguagePackageTasksTests : IDisposable
     [InlineData("RuntimeInitializer.dll", "runtime assembly")]
     [InlineData("Initializer.cs", "runtime source")]
     [InlineData("download.atomlang", ".atomlang")]
+    [InlineData("build/Install.targets", "build logic")]
+    [InlineData("build/Install.props", "build logic")]
+    [InlineData("install.ps1", "script")]
+    [InlineData("install.sh", "script")]
+    [InlineData("install.cmd", "script")]
+    [InlineData("install.bat", "script")]
     public void Prepare_Rejects_Executable_Content_In_A_Static_Language_Package(
         string forbiddenFileName,
         string messageFragment)
@@ -105,8 +111,37 @@ public class LanguagePackageTasksTests : IDisposable
             .ShouldBe("AtomUI.Desktop.Controls.I18n.JaJP");
         ((string?)item.Attribute("AtomUILanguageModuleId")).ShouldBe("AtomUI.Desktop.Controls");
         ((string?)item.Attribute("AtomUILanguageContractVersion")).ShouldBe("1");
+        ((string?)item.Attribute("AtomUILanguagePackagePath"))
+            .ShouldBe("Localization/DatePicker/ja-JP.xlf");
+        ((string?)item.Attribute("AtomUILanguageSourceFingerprint"))
+            .ShouldNotBeNull()
+            .ShouldMatch("^[0-9a-f]{64}$");
         props.Descendants("UsingTask").ShouldBeEmpty();
         props.Descendants("Target").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void GenerateProps_Emits_Module_BuiltIn_Source_Items()
+    {
+        var languagePath = Write("en-US.xlf", ModuleEnglishXliff);
+        var outputPath = Path.Combine(_directory, "AtomUI.Desktop.Controls.Localization.props");
+        var engine = new RecordingBuildEngine();
+        var task = new GenerateLanguagePackagePropsTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls",
+            SourceKind = "ModuleBuiltIn",
+            RequireTargetLanguage = false,
+            LanguageFiles = [LanguageItem(languagePath)],
+            OutputPath = outputPath
+        };
+
+        task.Execute().ShouldBeTrue();
+        engine.Errors.ShouldBeEmpty();
+
+        var props = XDocument.Load(outputPath);
+        var item = props.Descendants("AtomUILanguage").ShouldHaveSingleItem();
+        ((string?)item.Attribute("AtomUILanguageSourceKind")).ShouldBe("ModuleBuiltIn");
     }
 
     public void Dispose()
@@ -126,6 +161,11 @@ public class LanguagePackageTasksTests : IDisposable
     private string Write(string fileName, string content)
     {
         var path = Path.Combine(_directory, fileName);
+        var directory = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
         File.WriteAllText(path, content);
         return path;
     }
@@ -135,6 +175,16 @@ public class LanguagePackageTasksTests : IDisposable
           <file id="AtomUI.Desktop.Controls.DatePickerLang.DatePickerLangResourceKind">
             <unit id="1" name="Today">
               <segment><source>Today</source><target state="reviewed">今日</target></segment>
+            </unit>
+          </file>
+        </xliff>
+        """;
+
+    private const string ModuleEnglishXliff = """
+        <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
+          <file id="AtomUI.Desktop.Controls.DatePickerLang.DatePickerLangResourceKind">
+            <unit id="1" name="Today">
+              <segment><source>Today</source></segment>
             </unit>
           </file>
         </xliff>

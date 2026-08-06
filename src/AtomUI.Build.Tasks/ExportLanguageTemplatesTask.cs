@@ -12,6 +12,8 @@ public sealed class ExportLanguageTemplatesTask : AtomUILocalizationTask
     [Required]
     public string TargetLanguage { get; set; } = string.Empty;
 
+    public string? OutputRootDirectory { get; set; }
+
     [Output]
     public ITaskItem[] ExportedFiles { get; private set; } = Array.Empty<ITaskItem>();
 
@@ -50,12 +52,11 @@ public sealed class ExportLanguageTemplatesTask : AtomUILocalizationTask
                 continue;
             }
 
-            var outputPath = sourceItem.GetMetadata("AtomUILanguageTemplateOutputPath");
-            if (string.IsNullOrWhiteSpace(outputPath))
+            var outputPath = ResolveOutputPath(sourceItem, canonicalLanguage);
+            if (outputPath is null)
             {
-                outputPath = Path.Combine(
-                    Path.GetDirectoryName(sourceItem.ItemSpec) ?? string.Empty,
-                    canonicalLanguage + ".xlf");
+                succeeded = false;
+                continue;
             }
 
             XliffDocumentModel? existing = null;
@@ -91,6 +92,46 @@ public sealed class ExportLanguageTemplatesTask : AtomUILocalizationTask
 
         ExportedFiles = exported.ToArray();
         return succeeded;
+    }
+
+    private string? ResolveOutputPath(ITaskItem sourceItem, string targetLanguage)
+    {
+        var explicitPath = sourceItem.GetMetadata("AtomUILanguageTemplateOutputPath");
+        if (!string.IsNullOrWhiteSpace(explicitPath))
+        {
+            return explicitPath;
+        }
+
+        if (!string.IsNullOrWhiteSpace(OutputRootDirectory))
+        {
+            var packagePathValue = sourceItem.GetMetadata("AtomUILanguagePackagePath");
+            if (!LanguagePackagePath.TryNormalize(packagePathValue, out var packagePath))
+            {
+                LogError(
+                    "ATOMUILOC009",
+                    sourceItem.ItemSpec,
+                    1,
+                    1,
+                    "AtomUILanguagePackagePath must be a normalized relative path before exporting a template.");
+                return null;
+            }
+
+            const string localizationPrefix = "Localization/";
+            if (packagePath.StartsWith(localizationPrefix, StringComparison.Ordinal))
+            {
+                packagePath = packagePath.Substring(localizationPrefix.Length);
+            }
+
+            var relativeDirectory = Path.GetDirectoryName(packagePath.Replace('/', Path.DirectorySeparatorChar));
+            return Path.Combine(
+                OutputRootDirectory!,
+                relativeDirectory ?? string.Empty,
+                targetLanguage + ".xlf");
+        }
+
+        return Path.Combine(
+            Path.GetDirectoryName(sourceItem.ItemSpec) ?? string.Empty,
+            targetLanguage + ".xlf");
     }
 
     private XliffDocumentModel? Parse(string path, ref bool succeeded)
