@@ -43,7 +43,8 @@ internal sealed class XliffUnitModel
         IReadOnlyList<string> notes,
         IReadOnlyList<int> placeholderIndexes,
         int line,
-        int column)
+        int column,
+        bool isObsolete = false)
     {
         Id = id;
         Name = name;
@@ -54,6 +55,7 @@ internal sealed class XliffUnitModel
         PlaceholderIndexes = placeholderIndexes;
         Line = line;
         Column = column;
+        IsObsolete = isObsolete;
     }
 
     internal int Id { get; }
@@ -73,6 +75,8 @@ internal sealed class XliffUnitModel
     internal int Line { get; }
 
     internal int Column { get; }
+
+    internal bool IsObsolete { get; }
 }
 
 internal sealed class XliffParseResult

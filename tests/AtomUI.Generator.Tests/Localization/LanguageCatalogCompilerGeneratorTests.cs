@@ -117,6 +117,23 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Fact]
+    public void Ignores_Obsolete_Historical_Units_In_A_Translation_File()
+    {
+        var target = TargetXliff("zh-CN", "标题", "项目 {0}")
+            .Replace(
+                "  </file>",
+                "    <unit id=\"99\" name=\"Removed\" translate=\"no\"><segment>" +
+                "<source>Removed</source><target state=\"reviewed\">已移除</target>" +
+                "</segment></unit>\n  </file>");
+        var result = Run(
+            CatalogSource,
+            SourceFile(),
+            LanguageFile("Localization/zh-CN.xlf", target));
+
+        result.Diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Reports_A_Target_That_Is_Not_Publishable()
     {
         var result = Run(

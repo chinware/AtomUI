@@ -30,4 +30,5 @@ internal static class AtomUIDiagnosticIds
     public const string LocalizationCatalogXliffMismatch = "ATOMUILOC006";
     public const string LocalizationInvalidTranslation = "ATOMUILOC007";
     public const string LocalizationInvalidApplicationHost = "ATOMUILOC008";
+    public const string LocalizationInvalidLanguagePackage = "ATOMUILOC009";
 }

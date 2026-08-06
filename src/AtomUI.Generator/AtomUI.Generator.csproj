@@ -17,6 +17,9 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all"/>
+        <ProjectReference Include="../AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
@@ -28,6 +31,10 @@
     <!-- This ensures the library will be packaged as a source generator when we use `dotnet pack` -->
     <ItemGroup>
         <None Include="$(OutputPath)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(OutputPath)/AtomUI.Build.Tasks.dll"
+              Pack="true"
+              PackagePath="tools/netstandard2.0/AtomUI.Build.Tasks.dll"
+              Visible="false" />
         <None Include="../../build/AtomUI.Generator.props"
               Pack="true"
               PackagePath="buildTransitive/AtomUI.Generator.props"

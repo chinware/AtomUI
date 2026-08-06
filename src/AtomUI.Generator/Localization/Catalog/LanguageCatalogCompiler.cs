@@ -190,7 +190,9 @@ internal static class LanguageCatalogCompiler
         bool requireComplete,
         ImmutableArray<Diagnostic>.Builder diagnostics)
     {
-        var unitsById = file.Document.File.Units.ToDictionary(static unit => unit.Id);
+        var unitsById = file.Document.File.Units
+                            .Where(static unit => !unit.IsObsolete)
+                            .ToDictionary(static unit => unit.Id);
         foreach (var catalogUnit in catalog.Units)
         {
             if (!unitsById.TryGetValue(catalogUnit.Id, out var fileUnit))
@@ -218,7 +220,7 @@ internal static class LanguageCatalogCompiler
         var catalogIds = new HashSet<int>(catalog.Units.Select(static unit => unit.Id));
         foreach (var fileUnit in file.Document.File.Units)
         {
-            if (!catalogIds.Contains(fileUnit.Id))
+            if (!fileUnit.IsObsolete && !catalogIds.Contains(fileUnit.Id))
             {
                 diagnostics.Add(Mismatch(
                     file,
@@ -238,7 +240,8 @@ internal static class LanguageCatalogCompiler
     {
         foreach (var unit in file.Document.File.Units)
         {
-            if (englishSource.TryGetValue(unit.Id, out var expected) &&
+            if (!unit.IsObsolete &&
+                englishSource.TryGetValue(unit.Id, out var expected) &&
                 !string.Equals(unit.Source, expected, StringComparison.Ordinal))
             {
                 diagnostics.Add(Mismatch(
@@ -257,7 +260,9 @@ internal static class LanguageCatalogCompiler
         string language,
         ImmutableArray<Diagnostic>.Builder diagnostics)
     {
-        var units = file.Document.File.Units.ToDictionary(static unit => unit.Id);
+        var units = file.Document.File.Units
+                        .Where(static unit => !unit.IsObsolete)
+                        .ToDictionary(static unit => unit.Id);
         var values = ImmutableArray.CreateBuilder<string?>(catalog.Units.Length);
         foreach (var catalogUnit in catalog.Units)
         {

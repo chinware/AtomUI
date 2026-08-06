@@ -86,6 +86,7 @@ dotnet_diagnostic.ATOMUIAOT001.severity = error
 | `ATOMUILOC006` | Localization | Error | XLIFF 的 Catalog identity、版本或 unit 契约与代码声明不匹配 | 使用目标 Catalog 导出的模板同步 file ID、ContractVersion、unit ID/name 和源文本 | LocalizationGenerator |
 | `ATOMUILOC007` | Localization | Error | 翻译文本不可发布或 CompositeFormat 参数契约无效 | 提供 translated target，并保持源/目标占位符索引与格式语法一致 | LocalizationGenerator |
 | `ATOMUILOC008` | Localization | Error | 应用类型无法实现生成式语言 bootstrap | 保留唯一的非抽象 partial Avalonia Application host，或移除应用级语言输入 | LocalizationGenerator |
+| `ATOMUILOC009` | Localization | Error | 静态语言包包含运行时代码/二进制、非法路径、缺失 module/ContractVersion 或混合目标语言 | 删除运行时资产，并使用模板生成的声明式 contentFiles/buildTransitive 包结构 | AtomUI.Build.Tasks |
 
 `ATOMUIGEN005` 和 `ATOMUIGEN006` 原本约束 `[ControlDesignToken]` 类型上的 `public const ID`，该手工 ID 契约已
 删除，因此这两个诊断不在新主题架构中复用。无参数 `[ControlDesignToken]` 本身继续保留，只负责标记 Own Token

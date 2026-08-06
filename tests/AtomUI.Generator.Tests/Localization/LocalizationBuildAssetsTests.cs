@@ -121,6 +121,25 @@ public class LocalizationBuildAssetsTests
                                        .Select(element => (string?)element.Attribute("Include"))
                                        .ToArray();
         visibleProperties.ShouldBe(["PackageId", "AssemblyName", "RootNamespace"], ignoreOrder: true);
+
+        var usingTasks = targets.Descendants("UsingTask")
+                                .Select(element => (string?)element.Attribute("TaskName"))
+                                .ToArray();
+        usingTasks.ShouldBe(
+        [
+            "AtomUI.Build.Tasks.CollectLanguageCatalogsTask",
+            "AtomUI.Build.Tasks.ValidateLanguageFilesTask",
+            "AtomUI.Build.Tasks.ExportLanguageTemplatesTask",
+            "AtomUI.Build.Tasks.PrepareLanguagePackageTask",
+            "AtomUI.Build.Tasks.GenerateLanguagePackagePropsTask"
+        ],
+            ignoreOrder: true);
+        targets.Descendants("Target")
+               .Single(element => (string?)element.Attribute("Name") == "AtomUIValidateLanguageFiles")
+               .Attribute("BeforeTargets")!.Value.ShouldBe("CoreCompile");
+        targets.Descendants("Target")
+               .Single(element => (string?)element.Attribute("Name") == "AtomUIExportLanguageTemplates")
+               .ShouldNotBeNull();
     }
 
     [Fact]
@@ -146,6 +165,16 @@ public class LocalizationBuildAssetsTests
             .ShouldBe("buildTransitive/AtomUI.Generator.props");
         packedFiles["../../build/AtomUI.Generator.targets"]
             .ShouldBe("buildTransitive/AtomUI.Generator.targets");
+        packedFiles["$(OutputPath)/AtomUI.Build.Tasks.dll"]
+            .ShouldBe("tools/netstandard2.0/AtomUI.Build.Tasks.dll");
+
+        project.Descendants("ProjectReference")
+               .Single(element =>
+                   ((string?)element.Attribute("Include"))?.EndsWith(
+                       "AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj",
+                       StringComparison.Ordinal) == true &&
+                   (string?)element.Attribute("ReferenceOutputAssembly") == "false")
+               .ShouldNotBeNull();
 
         var generatorProps = XDocument.Load(GetRepoFile("build/AtomUI.Generator.props"));
         generatorProps.Descendants("Import")

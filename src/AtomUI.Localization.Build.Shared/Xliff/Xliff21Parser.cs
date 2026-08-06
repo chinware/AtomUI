@@ -124,6 +124,15 @@ internal static class Xliff21Parser
             return;
         }
 
+        var translate = ((string?)unitElement.Attribute("translate"))?.Trim();
+        if (translate is not null and not ("yes" or "no"))
+        {
+            errors.Add(Error(
+                (XObject?)unitElement.Attribute("translate") ?? unitElement,
+                "unit translate must be yes or no"));
+        }
+        var isObsolete = translate == "no";
+
         var segments = unitElement.Elements(ns + "segment").ToArray();
         if (segments.Length != 1)
         {
@@ -160,7 +169,7 @@ internal static class Xliff21Parser
         {
             errors.Add(Error(sourceElements[0], $"source CompositeFormat is invalid: {sourceError}"));
         }
-        if (target is not null)
+        if (target is not null && !(target.Length == 0 && targetState == "initial"))
         {
             if (!CompositeFormatContractParser.TryParse(target, out var targetIndexes, out var targetError))
             {
@@ -191,7 +200,8 @@ internal static class Xliff21Parser
             notes,
             sourceIndexes,
             line,
-            column));
+            column,
+            isObsolete));
     }
 
     private static string ReadPlainText(
