@@ -141,7 +141,6 @@ public class ThemeSchemaGeneratorTests
         source.ShouldContain("includeIdentity(referencedIdentity)");
         source.ShouldContain("var packageAssets = selectAssets is null ? selectedAssets : selectAssets(selectedAssets)");
         source.ShouldContain("GeneratedControlThemeAssetResources.AddResources(controlThemesProvider, packageAssets)");
-        source.ShouldContain("global::AtomUI.Generated.ThemeSchemaGeneratorTests.LanguageProviderPool.GetLanguageProviders()");
         source.ShouldContain("new global::AtomUI.Theme.ControlPackageRegistration(");
         source.ShouldContain("            packageAssets,");
         source.ShouldContain("themeManagerBuilder.AddControlPackage(package)");

@@ -60,15 +60,12 @@ public class ThemeLegacyApiRemovalTests
         builderMethods.ShouldBe([
             nameof(IThemeManagerBuilder.AddControlPackage),
             nameof(IThemeManagerBuilder.AddInitializer),
-            nameof(IThemeManagerBuilder.AddLanguageProvider),
             nameof(IThemeManagerBuilder.AddThemeDefinitionResolver),
             nameof(IThemeManagerBuilder.UseUserThemeDirectory),
             nameof(IThemeManagerBuilder.UseUserThemeDirectory),
             nameof(IThemeManagerBuilder.WithApplicationId),
-            nameof(IThemeManagerBuilder.WithDefaultCultureInfo),
             nameof(IThemeManagerBuilder.WithDefaultFontFamily),
             nameof(IThemeManagerBuilder.WithDefaultFontFamily),
-            nameof(IThemeManagerBuilder.WithDefaultLanguageVariant),
             nameof(IThemeManagerBuilder.WithFollowSystemThemes),
             nameof(IThemeManagerBuilder.WithInitialTheme)
         ]);

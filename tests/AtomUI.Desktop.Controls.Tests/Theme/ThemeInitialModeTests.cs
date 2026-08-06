@@ -1,9 +1,7 @@
-using System.Globalization;
 using AtomUI.Theme;
 using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
-using AtomUI.Theme.Language;
 using Avalonia.Media;
 using Shouldly;
 using Xunit;
@@ -57,7 +55,6 @@ public class ThemeInitialModeTests
     {
         public IList<ControlPackageRegistration> ControlPackages { get; } = new List<ControlPackageRegistration>();
         public IList<Action<IThemeManager>> Initializers { get; } = new List<Action<IThemeManager>>();
-        public LanguageVariant LanguageVariant { get; private set; } = LanguageVariant.en_US;
         public string ThemeId { get; private set; } = IThemeManager.DEFAULT_THEME_ID;
         public ThemeConfig? InitialConfig { get; private set; }
         public ThemeRequest? FollowSystemLight { get; private set; }
@@ -70,10 +67,6 @@ public class ThemeInitialModeTests
         public void AddControlPackage(ControlPackageRegistration package)
         {
             ControlPackages.Add(package);
-        }
-
-        public void AddLanguageProvider(LanguageProvider languageProvider)
-        {
         }
 
         public void AddInitializer(Action<IThemeManager> initializer)
@@ -111,16 +104,6 @@ public class ThemeInitialModeTests
 
         public void WithDefaultFontFamily(string fontFamily)
         {
-        }
-
-        public void WithDefaultCultureInfo(CultureInfo cultureInfo)
-        {
-            LanguageVariant = LanguageVariant.FromCultureInfo(cultureInfo);
-        }
-
-        public void WithDefaultLanguageVariant(LanguageVariant languageVariant)
-        {
-            LanguageVariant = languageVariant;
         }
 
     }

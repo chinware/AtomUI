@@ -497,8 +497,7 @@ public class TokenResourceKeyGeneratorTests
                     string id,
                     System.Collections.Generic.IEnumerable<AtomUI.Theme.Schema.ControlTokenDescriptor> controls,
                     System.Collections.Generic.IEnumerable<AtomUI.Theme.Schema.ControlThemeAssetDescriptor> assets,
-                    AtomUI.Theme.Resources.IControlThemesProvider provider,
-                    System.Collections.Generic.IEnumerable<AtomUI.Theme.Language.LanguageProvider> languages)
+                    AtomUI.Theme.Resources.IControlThemesProvider provider)
                 {
                 }
             }
@@ -671,25 +670,8 @@ public class TokenResourceKeyGeneratorTests
             }
         }
 
-        namespace AtomUI.Theme.Language
-        {
-            public abstract class LanguageProvider
-            {
-            }
-        }
-
         namespace AtomUI.Generated.TokenResourceKeyGeneratorTests
         {
-            using AtomUI.Theme.Language;
-
-            internal static class LanguageProviderPool
-            {
-                internal static System.Collections.Generic.IReadOnlyList<LanguageProvider> GetLanguageProviders()
-                {
-                    return System.Array.Empty<LanguageProvider>();
-                }
-            }
-
             internal static class GeneratedControlThemeAssetManifest
             {
                 internal static System.Collections.Generic.IReadOnlyList<AtomUI.Theme.Schema.ControlThemeAssetDescriptor> GetDescriptors()

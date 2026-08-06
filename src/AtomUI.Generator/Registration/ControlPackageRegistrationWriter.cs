@@ -73,10 +73,7 @@ internal sealed class ControlPackageRegistrationWriter
         source.AppendLine("            controlThemesProvider.Id,");
         source.AppendLine("            selectedControls,");
         source.AppendLine("            packageAssets,");
-        source.AppendLine("            controlThemesProvider,");
-        source.Append("            global::")
-              .Append(_generatedNamespace)
-              .AppendLine(".LanguageProviderPool.GetLanguageProviders());");
+        source.AppendLine("            controlThemesProvider);");
         source.AppendLine("        themeManagerBuilder.AddControlPackage(package);");
         source.AppendLine("    }");
         source.AppendLine("}");

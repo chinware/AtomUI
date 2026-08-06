@@ -1,7 +1,5 @@
-using System.Globalization;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
-using AtomUI.Theme.Language;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Schema;
 using Avalonia.Media;
@@ -12,7 +10,6 @@ public interface IThemeManagerBuilder
 {
     void AddThemeDefinitionResolver(IThemeDefinitionResolver resolver);
     void AddControlPackage(ControlPackageRegistration package);
-    void AddLanguageProvider(LanguageProvider languageProvider);
     void AddInitializer(Action<IThemeManager> initializer);
     void WithInitialTheme(string themeId, ThemeConfig? config = null);
     void WithFollowSystemThemes(ThemeRequest light, ThemeRequest dark);
@@ -21,6 +18,4 @@ public interface IThemeManagerBuilder
     void UseUserThemeDirectory(string directory);
     void WithDefaultFontFamily(FontFamily fontFamily);
     void WithDefaultFontFamily(string fontFamily);
-    void WithDefaultCultureInfo(CultureInfo cultureInfo);
-    void WithDefaultLanguageVariant(LanguageVariant languageVariant);
 }

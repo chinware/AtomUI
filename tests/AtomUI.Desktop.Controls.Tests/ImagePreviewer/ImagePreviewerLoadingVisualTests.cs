@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using Shouldly;
 using Xunit;
 
@@ -31,9 +32,9 @@ public class ImagePreviewerLoadingVisualTests
     {
         var coverTheme  = ReadRepoFile("src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerCoverTheme.axaml");
         var viewerTheme = ReadRepoFile("src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImageViewerTheme.axaml");
-        var enUS        = ReadRepoFile("src/AtomUI.Desktop.Controls/ImagePreviewer/Localization/en_US.cs");
-        var zhCN        = ReadRepoFile("src/AtomUI.Desktop.Controls/ImagePreviewer/Localization/zh_CN.cs");
-        var zhTW        = ReadRepoFile("src/AtomUI.Desktop.Controls/ImagePreviewer/Localization/zh_TW.cs");
+        var enUS        = ReadLocalizationFile("src/AtomUI.Desktop.Controls/ImagePreviewer/Localization/en-US.xlf");
+        var zhCN        = ReadLocalizationFile("src/AtomUI.Desktop.Controls/ImagePreviewer/Localization/zh-CN.xlf");
+        var zhTW        = ReadLocalizationFile("src/AtomUI.Desktop.Controls/ImagePreviewer/Localization/zh-TW.xlf");
 
         coverTheme.ShouldNotContain("Image load failed");
         viewerTheme.ShouldNotContain("Image load failed");
@@ -42,9 +43,9 @@ public class ImagePreviewerLoadingVisualTests
         coverTheme.ShouldContain("MinHeight=\"{atom:ImagePreviewerTokenResource CoverImageWidth}\"");
         coverTheme.ShouldContain("{atom:ImagePreviewerLangResource ImageLoadFailed}");
         viewerTheme.ShouldContain("{atom:ImagePreviewerLangResource ImageLoadFailed}");
-        enUS.ShouldContain("public const string ImageLoadFailed");
-        zhCN.ShouldContain("public const string ImageLoadFailed");
-        zhTW.ShouldContain("public const string ImageLoadFailed");
+        enUS.ContainsKey("ImageLoadFailed").ShouldBeTrue();
+        zhCN.ContainsKey("ImageLoadFailed").ShouldBeTrue();
+        zhTW.ContainsKey("ImageLoadFailed").ShouldBeTrue();
     }
 
     [Fact]
@@ -85,5 +86,18 @@ public class ImagePreviewerLoadingVisualTests
         }
 
         throw new FileNotFoundException($"Could not find repository file: {relativePath}");
+    }
+
+    private static IReadOnlyDictionary<string, string> ReadLocalizationFile(string relativePath)
+    {
+        var document = XDocument.Parse(ReadRepoFile(relativePath));
+        XNamespace xliff = "urn:oasis:names:tc:xliff:document:2.0";
+        return document.Descendants(xliff + "unit")
+                       .ToDictionary(
+                           unit => (string?)unit.Attribute("name") ?? throw new InvalidDataException(
+                               $"XLIFF unit in '{relativePath}' has no name."),
+                           unit => unit.Descendants(xliff + "target").SingleOrDefault()?.Value ??
+                                   unit.Descendants(xliff + "source").Single().Value,
+                           StringComparer.Ordinal);
     }
 }

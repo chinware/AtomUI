@@ -3,7 +3,6 @@ using AtomUI.Generated.AtomUI_Core;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
-using AtomUI.Theme.Language;
 using AtomUI.Theme.Resources;
 using AtomUI.Theme.Schema;
 using Avalonia;
@@ -15,19 +14,8 @@ using Avalonia.Threading;
 
 namespace AtomUI.Theme;
 
-internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposable
+internal class ThemeManager : Styles, IThemeManager, IDisposable
 {
-    private static readonly LanguageVariant s_defaultLanguage = LanguageVariant.zh_CN;
-
-    public static readonly StyledProperty<LanguageVariant> LanguageVariantProperty = 
-        LanguageVariant.LanguageVariantProperty.AddOwner<ThemeManager>();
-    
-    public LanguageVariant LanguageVariant
-    {
-        get => GetValue(LanguageVariantProperty);
-        set => SetValue(LanguageVariantProperty, value);
-    }
-    
     public FontFamily? FontFamily { get; internal set; }
     internal ThemeSnapshot? CurrentSnapshot => Volatile.Read(ref _currentSnapshot);
     public ThemeState? CurrentTheme => Volatile.Read(ref _currentTheme);
@@ -42,7 +30,6 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
     public event EventHandler<ThemeChangedEventArgs>? ThemeChanged;
     public event EventHandler<ThemeChangeFailedEventArgs>? ThemeChangeFailed;
     public event EventHandler<ThemeCatalogChangedEventArgs>? ThemeCatalogChanged;
-    public event EventHandler<LanguageVariantChangedEventArgs>? LanguageVariantChanged;
 
     private readonly List<ControlTokenDescriptor> _controlTokenDescriptors;
     private readonly List<ControlThemeAssetDescriptor> _controlThemeAssetDescriptors;
@@ -93,9 +80,6 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
     private long _nextTransitionId;
     private long _nextCatalogReloadGeneration;
     
-    private readonly Dictionary<LanguageVariant, ResourceDictionary> _languages;
-    private List<ILanguageProvider>? _languageProviders;
-    
     internal ThemeManager(
         Func<bool>? themeTransitionAccessCheck = null,
         ThemePrepareDelegate? prepareTheme = null)
@@ -103,8 +87,6 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         _controlTokenDescriptors = new List<ControlTokenDescriptor>();
         _controlThemeAssetDescriptors = new List<ControlThemeAssetDescriptor>();
         _controlThemesProviders  = new List<IControlThemesProvider>();
-        _languageProviders       = new List<ILanguageProvider>();
-        _languages               = new Dictionary<LanguageVariant, ResourceDictionary>();
         _transactionGate         = new object();
         _transactionExecutionGate = new SemaphoreSlim(1, 1);
         _scopeGraph              = new ThemeScopeGraph(this);
@@ -1064,9 +1046,6 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         _controlTokenDescriptors.Clear();
         _controlThemeAssetDescriptors.Clear();
         _controlThemesProviders.Clear();
-        _languageProviders?.Clear();
-        _languageProviders = null;
-        _languages.Clear();
         _themeDefinitionResolvers = Array.Empty<IThemeDefinitionResolver>();
         _pendingScopeUpdates.Clear();
         _scopeUpdateProcessorRunning = false;
@@ -1092,7 +1071,6 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         ThemeChanged = null;
         ThemeChangeFailed = null;
         ThemeCatalogChanged = null;
-        LanguageVariantChanged = null;
         _transactionExecutionGate.Dispose();
     }
 
@@ -1111,17 +1089,12 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
     internal void EnsureRegistrationCapacity(
         int controlTokenCount,
         int controlThemeAssetCount,
-        int controlThemesProviderCount,
-        int languageProviderCount)
+        int controlThemesProviderCount)
     {
         EnsureListCapacity(_controlTokenDescriptors, controlTokenCount);
         EnsureListCapacity(_controlThemeAssetDescriptors, controlThemeAssetCount);
         EnsureListCapacity(_controlThemesProviders, controlThemesProviderCount);
 
-        if (_languageProviders is not null)
-        {
-            EnsureListCapacity(_languageProviders, languageProviderCount);
-        }
     }
 
     private static void EnsureListCapacity<T>(List<T> list, int capacity)
@@ -1135,11 +1108,6 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
     internal void RegisterControlThemesProvider(IControlThemesProvider controlThemesProvider)
     {
         _controlThemesProviders.Add(controlThemesProvider);
-    }
-
-    internal void RegisterLanguageProvider(ILanguageProvider languageProvider)
-    {
-        _languageProviders?.Add(languageProvider);
     }
 
     internal void RegisterControlTokenDescriptor(ControlTokenDescriptor descriptor)
@@ -1742,15 +1710,6 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         return _themeSnapshotCache ??= new ThemeSnapshotCache();
     }
 
-    private ResourceDictionary? TryGetLanguageResource(LanguageVariant languageVariant)
-    {
-        if (_languages.TryGetValue(languageVariant, out var resource))
-        {
-            return resource;
-        }
-        return null;
-    }
-
     private void MountStaticResources()
     {
         foreach (var provider in _controlThemesProviders)
@@ -1761,8 +1720,7 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
             }
         }
         _controlThemesProviders.Clear();
-        BuildLanguageResources();
-        SwitchLanguageResource(null, LanguageVariant);
+
     }
 
     private ThemeSchemaRegistry CreateStartupRegistry()
@@ -1811,60 +1769,6 @@ internal class ThemeManager : Styles, IThemeManager, ILanguageManager, IDisposab
         catch (Exception exception)
         {
             Debug.WriteLine(exception);
-        }
-    }
-
-    private void SwitchLanguageResource(LanguageVariant? oldVariant, LanguageVariant? newVariant)
-    {
-        if (oldVariant != null)
-        {
-            var oldResource = TryGetLanguageResource(oldVariant);
-            if (oldResource != null)
-            {
-                Resources.MergedDictionaries.Remove(oldResource);
-            }
-        }
-
-        newVariant ??= s_defaultLanguage;
-        var languageResource = TryGetLanguageResource(newVariant);
-        if (_languages.TryGetValue(s_defaultLanguage, out var defaultLang))
-        {
-            languageResource ??= defaultLang;
-        }
-
-        if (languageResource != null && !Resources.MergedDictionaries.Contains(languageResource))
-        {
-            Resources.MergedDictionaries.Add(languageResource);
-        }
-    }
-
-    private void BuildLanguageResources()
-    {
-        if (_languageProviders is not null)
-        {
-            foreach (var languageProvider in _languageProviders)
-            {
-                var languageVariant = LanguageVariant.FromCode(languageProvider.LangCode);
-                if (!_languages.TryGetValue(languageVariant, out var resourceDictionary))
-                {
-                    resourceDictionary           = new ResourceDictionary();
-                    _languages[languageVariant] = resourceDictionary;
-                }
-
-                languageProvider.BuildResourceDictionary(resourceDictionary);
-            }
-
-            _languageProviders = null;
-        }
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == LanguageVariantProperty)
-        {
-            SwitchLanguageResource(change.OldValue as LanguageVariant, change.NewValue as LanguageVariant);
-            LanguageVariantChanged?.Invoke(this, new LanguageVariantChangedEventArgs(LanguageVariant, change.GetOldValue<LanguageVariant>()));
         }
     }
 

@@ -1,4 +1,3 @@
-using AtomUI.Theme.Language;
 using Avalonia.Metadata;
 
 [assembly: XmlnsPrefix("https://atomui.net", "atom")]
@@ -9,4 +8,3 @@ using Avalonia.Metadata;
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Desktop.Controls.Utils")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Desktop.Controls.ColorPicker")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Resources")]
-[assembly: LanguageSgMetaInfo("AtomUI.Desktop.Controls.Localization")]
