@@ -218,26 +218,27 @@ public class WorkspaceWindowLayoutTests
     }
 
     [Theory]
-    [InlineData("en_US.cs", "public const string MenuItemThemeSettings = \"Theme Settings\";")]
-    [InlineData("en_US.cs", "public const string MenuItemAppearance = \"Appearance\";")]
-    [InlineData("en_US.cs", "public const string MenuItemLightMode = \"Light Mode\";")]
-    [InlineData("en_US.cs", "public const string MenuItemFollowSystem = \"Follow System\";")]
-    [InlineData("zh_CN.cs", "public const string MenuItemThemeSettings = \"主题设置\";")]
-    [InlineData("zh_CN.cs", "public const string MenuItemAppearance = \"外观模式\";")]
-    [InlineData("zh_CN.cs", "public const string MenuItemLightMode = \"明亮模式\";")]
-    [InlineData("zh_CN.cs", "public const string MenuItemFollowSystem = \"跟随系统\";")]
-    [InlineData("zh_TW.cs", "public const string MenuItemThemeSettings = \"主題設定\";")]
-    [InlineData("zh_TW.cs", "public const string MenuItemAppearance = \"外觀模式\";")]
-    [InlineData("zh_TW.cs", "public const string MenuItemLightMode = \"明亮模式\";")]
-    [InlineData("zh_TW.cs", "public const string MenuItemFollowSystem = \"跟隨系統\";")]
+    [InlineData("en-US.xlf", "MenuItemThemeSettings", "Theme Settings")]
+    [InlineData("en-US.xlf", "MenuItemAppearance", "Appearance")]
+    [InlineData("en-US.xlf", "MenuItemLightMode", "Light Mode")]
+    [InlineData("en-US.xlf", "MenuItemFollowSystem", "Follow System")]
+    [InlineData("zh-CN.xlf", "MenuItemThemeSettings", "主题设置")]
+    [InlineData("zh-CN.xlf", "MenuItemAppearance", "外观模式")]
+    [InlineData("zh-CN.xlf", "MenuItemLightMode", "明亮模式")]
+    [InlineData("zh-CN.xlf", "MenuItemFollowSystem", "跟随系统")]
+    [InlineData("zh-TW.xlf", "MenuItemThemeSettings", "主題設定")]
+    [InlineData("zh-TW.xlf", "MenuItemAppearance", "外觀模式")]
+    [InlineData("zh-TW.xlf", "MenuItemLightMode", "明亮模式")]
+    [InlineData("zh-TW.xlf", "MenuItemFollowSystem", "跟隨系統")]
     public void Workspace_Window_Localizes_The_Theme_Settings_Submenu(
         string fileName,
-        string expectedConstant)
+        string resourceName,
+        string expectedText)
     {
-        var source = File.ReadAllText(GetRepoFile(
-            $"controlgallery/AtomUIGallery/Workspace/Localization/WorkspaceWindowLang/{fileName}"));
+        var localization = XliffTestDocument.Read(
+            $"controlgallery/AtomUIGallery/Workspace/Localization/WorkspaceWindowLang/{fileName}");
 
-        source.ShouldContain(expectedConstant);
+        localization[resourceName].ShouldBe(expectedText);
     }
 
     [Fact]

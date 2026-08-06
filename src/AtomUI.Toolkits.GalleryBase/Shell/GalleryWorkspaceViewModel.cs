@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using System.Reactive;
 using AtomUI.Controls;
+using AtomUI.Localization;
 using AtomUI.Theme;
 using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Configuration;
-using AtomUI.Theme.Language;
 using AtomUI.Theme.Resources;
 using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.Navigation;
@@ -20,7 +20,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     private readonly IGallerySystemAppearanceSource _systemAppearanceSource;
     private readonly EventHandler<ThemeChangedEventArgs>? _themeChangedHandler;
     private readonly EventHandler<ThemeCatalogChangedEventArgs>? _themeCatalogChangedHandler;
-    private readonly EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
+    private readonly EventHandler<LanguageChangedEventArgs>? _languageChangedHandler;
     private IDisposable? _systemAppearanceSubscription;
     private bool _isDisposed;
     private bool _hasExplicitAppearanceMode;
@@ -118,11 +118,11 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 
         _themeManager = Application.Current?.GetThemeManager();
         _languageManager = Application.Current is { } application
-            ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+            ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)
             : null;
         AvailableThemes = CaptureThemes(_themeManager?.AvailableThemes);
         SyncThemeState(_themeManager?.CurrentTheme, null);
-        SyncLanguageState(_languageManager?.LanguageVariant);
+        SyncLanguageState(_languageManager?.Current);
 
         ToggleDarkModeCommand = ReactiveCommand.CreateFromTask<bool>(SetDarkModeAsync);
         SetAppearanceModeCommand = ReactiveCommand.CreateFromTask<ThemePreference>(SetAppearanceModeAsync);
@@ -131,9 +131,9 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         ToggleWaveSpiritCommand = ReactiveCommand.CreateFromTask<bool>(SetWaveSpiritEnabledAsync);
         SwitchThemeCommand = ReactiveCommand.CreateFromTask<string>(SwitchThemeAsync);
 
-        SwitchToZhCNCommand = ReactiveCommand.Create(() => SetLanguageVariant(LanguageVariant.zh_CN));
-        SwitchToZhTWCommand = ReactiveCommand.Create(() => SetLanguageVariant(LanguageVariant.zh_TW));
-        SwitchToEnUSCommand = ReactiveCommand.Create(() => SetLanguageVariant(LanguageVariant.en_US));
+        SwitchToZhCNCommand = ReactiveCommand.Create(() => SetLanguage(LanguageTags.ZhCN));
+        SwitchToZhTWCommand = ReactiveCommand.Create(() => SetLanguage(LanguageTags.ZhTW));
+        SwitchToEnUSCommand = ReactiveCommand.Create(() => SetLanguage(LanguageTags.EnUS));
 
         if (_themeManager is not null)
         {
@@ -144,8 +144,8 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         }
         if (_languageManager is not null)
         {
-            _languageVariantChangedHandler = HandleLanguageVariantChanged;
-            _languageManager.LanguageVariantChanged += _languageVariantChangedHandler;
+            _languageChangedHandler = HandleLanguageChanged;
+            _languageManager.LanguageChanged += _languageChangedHandler;
         }
     }
 
@@ -158,9 +158,9 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 
         _isDisposed = true;
         ReleaseSystemAppearanceSubscription();
-        if (_languageManager is not null && _languageVariantChangedHandler is not null)
+        if (_languageManager is not null && _languageChangedHandler is not null)
         {
-            _languageManager.LanguageVariantChanged -= _languageVariantChangedHandler;
+            _languageManager.LanguageChanged -= _languageChangedHandler;
         }
         if (_themeManager is not null && _themeChangedHandler is not null)
         {
@@ -338,21 +338,21 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         }
     }
 
-    private void HandleLanguageVariantChanged(object? sender, LanguageVariantChangedEventArgs args)
+    private void HandleLanguageChanged(object? sender, LanguageChangedEventArgs args)
     {
         if (_isDisposed)
         {
             return;
         }
 
-        SyncLanguageState(args.NewLanguage);
+        SyncLanguageState(args.Result.NewState);
     }
 
-    private void SyncLanguageState(LanguageVariant? variant)
+    private void SyncLanguageState(LanguageState? state)
     {
-        IsZhCN = variant == LanguageVariant.zh_CN;
-        IsZhTW = variant == LanguageVariant.zh_TW;
-        IsEnUS = variant == LanguageVariant.en_US;
+        IsZhCN = state?.CurrentLanguage == LanguageTags.ZhCN;
+        IsZhTW = state?.CurrentLanguage == LanguageTags.ZhTW;
+        IsEnUS = state?.CurrentLanguage == LanguageTags.EnUS;
     }
 
     private void SyncThemeState(ThemeState? state, ThemeConfig? config)
@@ -426,11 +426,11 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         }
     }
 
-    private void SetLanguageVariant(LanguageVariant variant)
+    private void SetLanguage(LanguageTag language)
     {
         if (_languageManager is not null)
         {
-            _languageManager.LanguageVariant = variant;
+            _languageManager.ChangeLanguage(language);
         }
     }
 }

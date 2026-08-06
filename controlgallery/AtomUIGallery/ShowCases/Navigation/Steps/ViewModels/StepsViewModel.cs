@@ -31,7 +31,7 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
         }
     }
 
-    public string CurrentText => Current.ToString(CultureInfo.CurrentCulture);
+    public string CurrentText => Current.ToString(GalleryLocalization.GetFormattingCulture());
 
     public string InteractivePageContent => Current switch
     {

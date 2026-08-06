@@ -1,7 +1,7 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Interactivity;
 using AtomUISteps = AtomUI.Desktop.Controls.Steps;
@@ -31,12 +31,12 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
         {
             ResetInteractiveState();
 
-            var languageManager = Application.Current?.GetLanguageManager();
+            var languageManager = GalleryLocalization.GetLanguageManager();
             if (languageManager != null)
             {
-                EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshInteractiveText();
-                languageManager.LanguageVariantChanged += handler;
-                Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
+                EventHandler<LanguageChangedEventArgs> handler = (_, _) => RefreshInteractiveText();
+                languageManager.LanguageChanged += handler;
+                Disposable.Create(() => languageManager.LanguageChanged -= handler)
                           .DisposeWith(disposables);
             }
         });

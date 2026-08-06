@@ -67,9 +67,9 @@ public class CalendarShowCasePageTests
     public void Calendar_Card_ShowCase_UsesExternalContainerAndReferenceCopy()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
-        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_TW.cs");
+        var enUs = ReadCalendarLocalization("en-US");
+        var zhCn = ReadCalendarLocalization("zh-CN");
+        var zhTw = ReadCalendarLocalization("zh-TW");
 
         source.ShouldContain("CalendarShowCaseLangResource CardTitle");
         source.ShouldContain("CalendarShowCaseLangResource CardDescription");
@@ -79,21 +79,21 @@ public class CalendarShowCasePageTests
         source.ShouldContain("BorderThickness=\"{atom:SharedTokenResource BorderThickness}\"");
         source.ShouldContain("CornerRadius=\"{atom:SharedTokenResource BorderRadiusLG}\"");
 
-        enUs.ShouldContain("public const string CardTitle = \"Card\";");
-        enUs.ShouldContain("public const string CardDescription = \"Nested inside a container element for rendering in limited space.\";");
-        zhCn.ShouldContain("public const string CardTitle = \"卡片模式\";");
-        zhCn.ShouldContain("public const string CardDescription = \"用于嵌套在空间有限的容器中。\";");
-        zhTw.ShouldContain("public const string CardTitle = \"卡片模式\";");
-        zhTw.ShouldContain("public const string CardDescription = \"用於嵌套在空間有限的容器中。\";");
+        enUs["CardTitle"].ShouldBe("Card");
+        enUs["CardDescription"].ShouldBe("Nested inside a container element for rendering in limited space.");
+        zhCn["CardTitle"].ShouldBe("卡片模式");
+        zhCn["CardDescription"].ShouldBe("用于嵌套在空间有限的容器中。");
+        zhTw["CardTitle"].ShouldBe("卡片模式");
+        zhTw["CardDescription"].ShouldBe("用於嵌套在空間有限的容器中。");
     }
 
     [Fact]
     public void Calendar_CustomHeader_ShowCase_Uses_Public_HeaderTemplate_Contract()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
-        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_TW.cs");
+        var enUs = ReadCalendarLocalization("en-US");
+        var zhCn = ReadCalendarLocalization("zh-CN");
+        var zhTw = ReadCalendarLocalization("zh-TW");
 
         var cardIndex = source.IndexOf("CalendarShowCaseLangResource CardTitle", StringComparison.Ordinal);
         var customHeaderIndex = source.IndexOf(
@@ -125,10 +125,10 @@ public class CalendarShowCasePageTests
         customHeaderSource.ShouldNotContain("PART_");
         customHeaderSource.ShouldNotContain("/template/");
 
-        enUs.ShouldContain("public const string CustomHeaderTitle = \"Customize Header\";");
-        enUs.ShouldContain("public const string CustomHeaderDescription = \"Customize Calendar header content.\";");
-        zhCn.ShouldContain("public const string CustomHeaderTitle = \"自定义 Header\";");
-        zhTw.ShouldContain("public const string CustomHeaderTitle = \"自訂 Header\";");
+        enUs["CustomHeaderTitle"].ShouldBe("Customize Header");
+        enUs["CustomHeaderDescription"].ShouldBe("Customize Calendar header content.");
+        zhCn["CustomHeaderTitle"].ShouldBe("自定义 Header");
+        zhTw["CustomHeaderTitle"].ShouldBe("自訂 Header");
     }
 
     [Fact]
@@ -180,9 +180,9 @@ public class CalendarShowCasePageTests
     public void Calendar_Lunar_ShowCases_Follow_Card_And_Precede_Selectable()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
-        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_TW.cs");
+        var enUs = ReadCalendarLocalization("en-US");
+        var zhCn = ReadCalendarLocalization("zh-CN");
+        var zhTw = ReadCalendarLocalization("zh-TW");
 
         var cardIndex = source.IndexOf("CalendarShowCaseLangResource CardTitle", StringComparison.Ordinal);
         var lunarIndex = source.IndexOf("CalendarShowCaseLangResource LunarCalendarTitle", StringComparison.Ordinal);
@@ -206,12 +206,12 @@ public class CalendarShowCasePageTests
         lunarCardSource.ShouldContain("<Border MinWidth=\"300\"");
         lunarCardSource.ShouldNotContain("<Border Width=\"300\"");
 
-        enUs.ShouldContain("public const string LunarCalendarTitle = \"Lunar Calendar\";");
-        enUs.ShouldContain("public const string LunarCalendarCardTitle = \"Lunar Calendar Card\";");
-        zhCn.ShouldContain("public const string LunarCalendarTitle = \"农历日历\";");
-        zhCn.ShouldContain("public const string LunarCalendarCardTitle = \"农历卡片日历\";");
-        zhTw.ShouldContain("public const string LunarCalendarTitle = \"農曆日曆\";");
-        zhTw.ShouldContain("public const string LunarCalendarCardTitle = \"農曆卡片日曆\";");
+        enUs["LunarCalendarTitle"].ShouldBe("Lunar Calendar");
+        enUs["LunarCalendarCardTitle"].ShouldBe("Lunar Calendar Card");
+        zhCn["LunarCalendarTitle"].ShouldBe("农历日历");
+        zhCn["LunarCalendarCardTitle"].ShouldBe("农历卡片日历");
+        zhTw["LunarCalendarTitle"].ShouldBe("農曆日曆");
+        zhTw["LunarCalendarCardTitle"].ShouldBe("農曆卡片日曆");
     }
 
     [Fact]
@@ -239,9 +239,9 @@ public class CalendarShowCasePageTests
     public void Calendar_Selectable_ShowCase_Follows_Card_And_Matches_AntDesign_State_Flow()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
-        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_TW.cs");
+        var enUs = ReadCalendarLocalization("en-US");
+        var zhCn = ReadCalendarLocalization("zh-CN");
+        var zhTw = ReadCalendarLocalization("zh-TW");
 
         var cardIndex = source.IndexOf("CalendarShowCaseLangResource CardTitle", StringComparison.Ordinal);
         var selectableIndex = source.IndexOf("CalendarShowCaseLangResource SelectableCalendarTitle", StringComparison.Ordinal);
@@ -252,21 +252,21 @@ public class CalendarShowCasePageTests
         source.ShouldContain("Value=\"{Binding SelectableCalendarValue}\"");
         source.ShouldContain("Selected=\"OnSelectableCalendarSelected\"");
 
-        enUs.ShouldContain("public const string SelectableCalendarTitle = \"Selectable Calendar\";");
-        enUs.ShouldContain("public const string SelectableCalendarSelectedMessage = \"You selected date: {0:yyyy-MM-dd}\";");
-        zhCn.ShouldContain("public const string SelectableCalendarTitle = \"可选择的日历\";");
-        zhCn.ShouldContain("public const string SelectableCalendarSelectedMessage = \"你选择的日期：{0:yyyy-MM-dd}\";");
-        zhTw.ShouldContain("public const string SelectableCalendarTitle = \"可選擇的日曆\";");
-        zhTw.ShouldContain("public const string SelectableCalendarSelectedMessage = \"你選擇的日期：{0:yyyy-MM-dd}\";");
+        enUs["SelectableCalendarTitle"].ShouldBe("Selectable Calendar");
+        enUs["SelectableCalendarSelectedMessage"].ShouldBe("You selected date: {0:yyyy-MM-dd}");
+        zhCn["SelectableCalendarTitle"].ShouldBe("可选择的日历");
+        zhCn["SelectableCalendarSelectedMessage"].ShouldBe("你选择的日期：{0:yyyy-MM-dd}");
+        zhTw["SelectableCalendarTitle"].ShouldBe("可選擇的日曆");
+        zhTw["SelectableCalendarSelectedMessage"].ShouldBe("你選擇的日期：{0:yyyy-MM-dd}");
     }
 
     [Fact]
     public void Calendar_ShowWeek_ShowCase_Follows_Selectable_And_Precedes_CustomHeader()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
-        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/zh_TW.cs");
+        var enUs = ReadCalendarLocalization("en-US");
+        var zhCn = ReadCalendarLocalization("zh-CN");
+        var zhTw = ReadCalendarLocalization("zh-TW");
 
         var selectableIndex = source.IndexOf("CalendarShowCaseLangResource SelectableCalendarTitle", StringComparison.Ordinal);
         var showWeekIndex = source.IndexOf("CalendarShowCaseLangResource ShowWeekTitle", StringComparison.Ordinal);
@@ -288,12 +288,15 @@ public class CalendarShowCasePageTests
         showWeekSource.ShouldContain("CornerRadius=\"{atom:SharedTokenResource BorderRadiusLG}\"");
         showWeekSource.ShouldContain("Fullscreen=\"False\"");
 
-        enUs.ShouldContain("public const string ShowWeekTitle = \"Show Week\";");
-        enUs.ShouldContain("public const string ShowWeekDescription = \"Show week numbers in full-screen and card calendars by setting ShowWeek to True.\";");
-        zhCn.ShouldContain("public const string ShowWeekTitle = \"显示周数\";");
-        zhCn.ShouldContain("public const string ShowWeekDescription = \"通过将 ShowWeek 设置为 True，在完整模式和卡片模式日历中显示周数。\";");
-        zhTw.ShouldContain("public const string ShowWeekTitle = \"顯示週數\";");
-        zhTw.ShouldContain("public const string ShowWeekDescription = \"透過將 ShowWeek 設定為 True，在完整模式和卡片模式日曆中顯示週數。\";");
+        enUs["ShowWeekTitle"].ShouldBe("Show Week");
+        enUs["ShowWeekDescription"].ShouldBe(
+            "Show week numbers in full-screen and card calendars by setting ShowWeek to True.");
+        zhCn["ShowWeekTitle"].ShouldBe("显示周数");
+        zhCn["ShowWeekDescription"].ShouldBe(
+            "通过将 ShowWeek 设置为 True，在完整模式和卡片模式日历中显示周数。");
+        zhTw["ShowWeekTitle"].ShouldBe("顯示週數");
+        zhTw["ShowWeekDescription"].ShouldBe(
+            "透過將 ShowWeek 設定為 True，在完整模式和卡片模式日曆中顯示週數。");
     }
 
     [Fact]
@@ -352,6 +355,12 @@ public class CalendarShowCasePageTests
             count++;
             startIndex = matchIndex + value.Length;
         }
+    }
+
+    private static IReadOnlyDictionary<string, string> ReadCalendarLocalization(string languageTag)
+    {
+        return XliffTestDocument.Read(
+            $"controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/{languageTag}.xlf");
     }
 
     private static string ReadRepoFile(string relativePath)

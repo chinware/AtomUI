@@ -33,7 +33,8 @@ public class TimePickerViewModel : ReactiveObject, IRoutableViewModel
         }
     }
 
-    public string BoundSelectedTimeText => BoundSelectedTime?.ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture) ?? "-";
+    public string BoundSelectedTimeText =>
+        BoundSelectedTime?.ToString(@"hh\:mm\:ss", GalleryLocalization.GetFormattingCulture()) ?? "-";
 
     private TimeSpan? _boundRangeStartSelectedTime = new(9, 0, 0);
 
@@ -63,8 +64,9 @@ public class TimePickerViewModel : ReactiveObject, IRoutableViewModel
     {
         get
         {
-            var startText = BoundRangeStartSelectedTime?.ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture) ?? "-";
-            var endText   = BoundRangeEndSelectedTime?.ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture) ?? "-";
+            var culture = GalleryLocalization.GetFormattingCulture();
+            var startText = BoundRangeStartSelectedTime?.ToString(@"hh\:mm\:ss", culture) ?? "-";
+            var endText   = BoundRangeEndSelectedTime?.ToString(@"hh\:mm\:ss", culture) ?? "-";
             return $"{startText} → {endText}";
         }
     }

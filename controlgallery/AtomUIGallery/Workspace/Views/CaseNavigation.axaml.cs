@@ -4,7 +4,7 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using AtomUI.Toolkits.GalleryBase.Shell;
 using AtomUIGallery.Localization;
@@ -24,7 +24,8 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
                                       IGallerySidebarNavMenuHost
 {
     public const string LanguageId = nameof(CaseNavigation);
-    private EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
+    private ILanguageManager? _subscribedLanguageManager;
+    private EventHandler<LanguageChangedEventArgs>? _languageChangedHandler;
     private readonly PathIcon _collapseNavigationIcon;
     private readonly PathIcon _expandNavigationIcon;
     private readonly DesktopButton _navigationCollapseButton;
@@ -113,39 +114,35 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
 
     private void SubscribeLanguageChanged()
     {
-        if (_languageVariantChangedHandler is not null)
+        if (_subscribedLanguageManager is not null)
         {
             return;
         }
 
-        var languageManager = Application.Current?.GetLanguageManager();
-        if (languageManager is null)
+        _subscribedLanguageManager = GalleryLocalization.GetLanguageManager();
+        if (_subscribedLanguageManager is null)
         {
             return;
         }
 
-        _languageVariantChangedHandler = (_, _) =>
+        _languageChangedHandler = (_, _) =>
         {
             ConfigureNavigationMenu();
             UpdateNavigationCollapseButtonPresentation();
         };
-        languageManager.LanguageVariantChanged += _languageVariantChangedHandler;
+        _subscribedLanguageManager.LanguageChanged += _languageChangedHandler;
     }
 
     private void UnsubscribeLanguageChanged()
     {
-        if (_languageVariantChangedHandler is null)
+        if (_subscribedLanguageManager is null || _languageChangedHandler is null)
         {
             return;
         }
 
-        var languageManager = Application.Current?.GetLanguageManager();
-        if (languageManager is not null)
-        {
-            languageManager.LanguageVariantChanged -= _languageVariantChangedHandler;
-        }
-
-        _languageVariantChangedHandler = null;
+        _subscribedLanguageManager.LanguageChanged -= _languageChangedHandler;
+        _subscribedLanguageManager = null;
+        _languageChangedHandler = null;
     }
 
     private void OnGlobalKeyDown(object? sender, KeyEventArgs e)
@@ -179,7 +176,7 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
             ? CaseNavigationLangResourceKind.ExpandNavigation
             : CaseNavigationLangResourceKind.CollapseNavigation;
         var fallback = isCollapsed ? "Expand navigation" : "Collapse navigation";
-        var accessibleText = LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        var accessibleText = GalleryLocalization.Get(resourceKind, fallback);
 
         _navigationCollapseButton.Icon = isCollapsed
             ? _expandNavigationIcon

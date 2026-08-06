@@ -435,17 +435,24 @@ public static partial class GalleryExampleReader
 
     private static IReadOnlyDictionary<string, string> ReadLocalization(string galleryControlPath)
     {
-        var localizationPath = Path.Combine(galleryControlPath, "Localization", "zh_CN.cs");
-        if (!File.Exists(localizationPath))
-        {
-            return new Dictionary<string, string>(StringComparer.Ordinal);
-        }
+        var xliffPath = Path.Combine(galleryControlPath, "Localization", "zh-CN.xlf");
+        return File.Exists(xliffPath)
+            ? ReadXliffLocalization(xliffPath)
+            : new Dictionary<string, string>(StringComparer.Ordinal);
+    }
 
+    private static IReadOnlyDictionary<string, string> ReadXliffLocalization(string path)
+    {
+        var document = XDocument.Load(path, LoadOptions.PreserveWhitespace);
         var result = new Dictionary<string, string>(StringComparer.Ordinal);
-        var source = File.ReadAllText(localizationPath);
-        foreach (Match match in ConstStringRegex().Matches(source))
+        foreach (var unit in document.Descendants().Where(static element => element.Name.LocalName == "unit"))
         {
-            result[match.Groups["key"].Value] = DecodeCSharpStringLiteral(match.Groups["value"].Value);
+            var name = unit.Attribute("name")?.Value;
+            var target = unit.Descendants().FirstOrDefault(static element => element.Name.LocalName == "target");
+            if (!string.IsNullOrWhiteSpace(name) && target is not null)
+            {
+                result[name] = target.Value;
+            }
         }
 
         return result;
@@ -476,11 +483,6 @@ public static partial class GalleryExampleReader
         }
 
         return text;
-    }
-
-    private static string DecodeCSharpStringLiteral(string value)
-    {
-        return Regex.Unescape(value);
     }
 
     private static string SanitizeValue(string value)
@@ -563,9 +565,6 @@ public static partial class GalleryExampleReader
     {
         return Path.GetRelativePath(repositoryRoot, path).Replace(Path.DirectorySeparatorChar, '/');
     }
-
-    [GeneratedRegex(@"public\s+const\s+string\s+(?<key>[A-Za-z0-9_]+)\s*=\s*""(?<value>(?:\\.|[^""\\])*)""\s*;")]
-    private static partial Regex ConstStringRegex();
 
     [GeneratedRegex(@"\{gallery:[A-Za-z0-9_]+LangResource\s+(?<key>[A-Za-z0-9_]+)\}")]
     private static partial Regex GalleryResourceRegex();

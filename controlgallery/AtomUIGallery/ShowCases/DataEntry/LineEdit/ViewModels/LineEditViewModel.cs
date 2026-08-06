@@ -65,9 +65,9 @@ public class LineEditViewModel : ReactiveObject, IRoutableViewModel
         var displayValue = string.IsNullOrEmpty(OtpLineEditBoundValue)
             ? Lang(LineEditShowCaseLangResourceKind.OtpLineEditEmptyValueText)
             : OtpLineEditBoundValue;
-        OtpLineEditBoundValueSummary = string.Format(
-            CultureInfo.CurrentCulture,
-            Lang(LineEditShowCaseLangResourceKind.OtpLineEditCurrentValueFormat),
+        OtpLineEditBoundValueSummary = GalleryLocalization.Format(
+            LineEditShowCaseLangResourceKind.OtpLineEditCurrentValueFormat,
+            "Current value: {0}",
             displayValue);
     }
 

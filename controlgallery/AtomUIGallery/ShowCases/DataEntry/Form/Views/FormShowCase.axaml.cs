@@ -5,7 +5,7 @@ using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -31,13 +31,13 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
             {
                 RefreshLocalizedOptionData(viewModel);
                 var languageManager = Application.Current is { } application
-                    ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+                    ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)
                     : null;
                 if (languageManager != null)
                 {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedOptionData(viewModel);
-                    languageManager.LanguageVariantChanged += handler;
-                    disposables.Add(Disposable.Create(() => languageManager.LanguageVariantChanged -= handler));
+                    EventHandler<LanguageChangedEventArgs> handler = (_, _) => RefreshLocalizedOptionData(viewModel);
+                    languageManager.LanguageChanged += handler;
+                    disposables.Add(Disposable.Create(() => languageManager.LanguageChanged -= handler));
                 }
             }
         });
@@ -237,7 +237,7 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
     private static FormItem CreatePassengerFormItem()
     {
         var id = s_formGid++;
-        var formItem = new FormItem
+        return new LocalizedPassengerFormItem(id)
         {
             FieldName = $"Passengers_{id}",
             Content   = new AtomUILineEdit(),
@@ -246,22 +246,6 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
                 new LocalizedPassengerNameValidator()
             }
         };
-        BindPassengerLabel(formItem, id);
-        return formItem;
-    }
-
-    private static void BindPassengerLabel(FormItem formItem, int id)
-    {
-        _ = LanguageResourceBinder.CreateBinding(
-            formItem,
-            FormItem.LabelTextProperty,
-            FormShowCaseLangResourceKind.P3DynamicPassengerLabelFormat,
-            BindingPriority.LocalValue,
-            value =>
-            {
-                var format = value as string ?? "passengers_{0}";
-                return string.Format(CultureInfo.CurrentCulture, format, id);
-            });
     }
 
     private void HandleFormSliderItemAttached(object? sender, VisualTreeAttachmentEventArgs args)
@@ -456,19 +440,46 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
                 "Please input passenger's name or delete this field!");
         }
     }
+
+    private sealed class LocalizedPassengerFormItem(int id) : FormItem
+    {
+        private IDisposable? _labelBinding;
+
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+            _labelBinding ??= GalleryLocalization.CreateBinding(
+                this,
+                LabelTextProperty,
+                FormShowCaseLangResourceKind.P3DynamicPassengerLabelFormat,
+                BindingPriority.LocalValue,
+                value =>
+                {
+                    var format = value as string ?? "passengers_{0}";
+                    var culture = GalleryLocalization.GetFormattingCulture();
+                    return string.Format(culture, format, id);
+                });
+        }
+
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            _labelBinding?.Dispose();
+            _labelBinding = null;
+            base.OnDetachedFromVisualTree(e);
+        }
+    }
 }
 
 internal static class FormShowCaseLanguage
 {
     public static string Get(FormShowCaseLangResourceKind resourceKind, string fallback)
     {
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 
     public static string Format(FormShowCaseLangResourceKind resourceKind, string fallback, params object?[] args)
     {
-        var format = Get(resourceKind, fallback);
-        return string.Format(CultureInfo.CurrentCulture, format, args);
+        return GalleryLocalization.Format(resourceKind, fallback, args);
     }
 }
 

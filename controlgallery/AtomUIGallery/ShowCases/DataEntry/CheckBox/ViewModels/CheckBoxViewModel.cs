@@ -265,8 +265,9 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
             enabledText = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentEnabled, "Enabled");
         }
 
-        ControlledCheckBoxText = string.Format(CultureInfo.CurrentCulture,
-            CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ControlledStatusFormat, "{0}-{1}"),
+        ControlledCheckBoxText = CheckBoxShowCaseLanguage.Format(
+            CheckBoxShowCaseLangResourceKind.P2ControlledStatusFormat,
+            "{0}-{1}",
             checkedText,
             enabledText);
     }
@@ -364,8 +365,9 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
         var selectedText = selectedTexts.Count > 0
             ? string.Join(", ", selectedTexts)
             : CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentNone, "None");
-        TwoWayCheckedSummary = string.Format(CultureInfo.CurrentCulture,
-            CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2TwoWayCheckedSummaryFormat, "Selected: {0}"),
+        TwoWayCheckedSummary = CheckBoxShowCaseLanguage.Format(
+            CheckBoxShowCaseLangResourceKind.P2TwoWayCheckedSummaryFormat,
+            "Selected: {0}",
             selectedText);
     }
 

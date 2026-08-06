@@ -2,7 +2,9 @@ using System.Globalization;
 using AtomUI;
 using AtomUI.Desktop.Controls;
 using AtomUI.Fonts.AlibabaPuHuiTi;
+using AtomUI.Localization;
 using AtomUI.Theme;
+using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
@@ -15,7 +17,9 @@ public class BrowserGalleryApplication : Application
     {
         this.UseAtomUI(builder =>
         {
-            builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
+            builder.UseLanguages(
+                GalleryLanguageDefaults.Resolve(CultureInfo.CurrentUICulture),
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
             builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseAlibabaPuHuiTiFont();

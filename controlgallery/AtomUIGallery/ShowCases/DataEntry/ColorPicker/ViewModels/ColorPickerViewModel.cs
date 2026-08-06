@@ -111,6 +111,6 @@ public class ColorPickerViewModel : ReactiveObject, IRoutableViewModel
         }
 
         return string.Join(" → ", stops.Select(stop =>
-            string.Format(CultureInfo.CurrentCulture, "{0} {1:0.#}%", stop.Color, stop.Offset * 100)));
+            string.Format(GalleryLocalization.GetFormattingCulture(), "{0} {1:0.#}%", stop.Color, stop.Offset * 100)));
     }
 }

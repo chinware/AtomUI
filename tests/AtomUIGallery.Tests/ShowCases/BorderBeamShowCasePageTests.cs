@@ -14,9 +14,12 @@ public class BorderBeamShowCasePageTests
     {
         var configuration = global::AtomUIGallery.AtomUIGalleryModule.CreateConfiguration();
         var registerSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/ShowCaseRegister.cs");
-        var navigationEnSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/en_US.cs");
-        var navigationZhCnSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh_CN.cs");
-        var navigationZhTwSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh_TW.cs");
+        var navigationEn = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/en-US.xlf");
+        var navigationZhCn = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh-CN.xlf");
+        var navigationZhTw = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh-TW.xlf");
 
         var otherNode = Walk(configuration.NavigationNodes)
             .First(node => node.Key == "Other");
@@ -31,12 +34,11 @@ public class BorderBeamShowCasePageTests
         configuration.Routes.ContainsRoute(BorderBeamViewModel.ID).ShouldBeTrue();
         registerSource.ShouldContain("AtomUIGalleryModule.RegisterViews(locator)");
 
-        navigationEnSource.ShouldContain("public const string Other");
-        navigationEnSource.ShouldContain("public const string Other_BorderBeam");
-        navigationZhCnSource.ShouldContain("public const string Other");
-        navigationZhCnSource.ShouldContain("public const string Other_BorderBeam");
-        navigationZhTwSource.ShouldContain("public const string Other");
-        navigationZhTwSource.ShouldContain("public const string Other_BorderBeam");
+        foreach (var localization in new[] { navigationEn, navigationZhCn, navigationZhTw })
+        {
+            localization.ContainsKey("Other").ShouldBeTrue();
+            localization.ContainsKey("Other_BorderBeam").ShouldBeTrue();
+        }
     }
 
     [Fact]
@@ -79,9 +81,12 @@ public class BorderBeamShowCasePageTests
     public void BorderBeam_ShowCase_Header_Centers_Title_Tags_And_Uses_Blue_Introduced_Version_Tag()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml");
-        var enSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/en_US.cs");
-        var zhCnSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/zh_CN.cs");
-        var zhTwSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/zh_TW.cs");
+        var en = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/en-US.xlf");
+        var zhCn = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/zh-CN.xlf");
+        var zhTw = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/zh-TW.xlf");
 
         source.ShouldContain("<gallery:GalleryShowCaseHeader");
         source.ShouldContain("IntroducedVersion=\"{gallery:BorderBeamShowCaseLangResource ComponentIntroducedVersion}\"");
@@ -89,10 +94,10 @@ public class BorderBeamShowCasePageTests
         source.ShouldNotContain("IntroducedVersionTagColor=");
         source.ShouldNotContain("IsIntroducedVersionTagBordered=");
 
-        foreach (var localizationSource in new[] { enSource, zhCnSource, zhTwSource })
+        foreach (var localization in new[] { en, zhCn, zhTw })
         {
-            localizationSource.ShouldContain("public const string ComponentIntroducedVersion = \"v6.0.5\";");
-            localizationSource.ShouldNotContain("ComponentStatusPreview");
+            localization["ComponentIntroducedVersion"].ShouldBe("v6.0.5");
+            localization.ContainsKey("ComponentStatusPreview").ShouldBeFalse();
         }
     }
 

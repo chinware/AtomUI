@@ -92,18 +92,21 @@ public class CaseNavigationLayoutTests
     }
 
     [Theory]
-    [InlineData("en_US.cs", "public const string CollapseNavigation = \"Collapse navigation\";")]
-    [InlineData("en_US.cs", "public const string ExpandNavigation = \"Expand navigation\";")]
-    [InlineData("zh_CN.cs", "public const string CollapseNavigation = \"收起导航\";")]
-    [InlineData("zh_CN.cs", "public const string ExpandNavigation = \"展开导航\";")]
-    [InlineData("zh_TW.cs", "public const string CollapseNavigation = \"收起導覽\";")]
-    [InlineData("zh_TW.cs", "public const string ExpandNavigation = \"展開導覽\";")]
-    public void Sidebar_Collapse_Button_Has_Localized_Accessible_Text(string fileName, string expectedConstant)
+    [InlineData("en-US.xlf", "CollapseNavigation", "Collapse navigation")]
+    [InlineData("en-US.xlf", "ExpandNavigation", "Expand navigation")]
+    [InlineData("zh-CN.xlf", "CollapseNavigation", "收起导航")]
+    [InlineData("zh-CN.xlf", "ExpandNavigation", "展开导航")]
+    [InlineData("zh-TW.xlf", "CollapseNavigation", "收起導覽")]
+    [InlineData("zh-TW.xlf", "ExpandNavigation", "展開導覽")]
+    public void Sidebar_Collapse_Button_Has_Localized_Accessible_Text(
+        string fileName,
+        string resourceName,
+        string expectedText)
     {
-        var source = File.ReadAllText(GetRepoFile(
-            $"controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/{fileName}"));
+        var localization = XliffTestDocument.Read(
+            $"controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/{fileName}");
 
-        source.ShouldContain(expectedConstant);
+        localization[resourceName].ShouldBe(expectedText);
     }
 
     private static string GetRepoFile(string relativePath)

@@ -86,17 +86,20 @@ public class SliderShowCasePageTests
     [Fact]
     public void Multi_Handle_Localization_Uses_Approved_Copy()
     {
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh_CN.cs");
-        zhCn.ShouldContain("MultiHandleTitle = \"多点组合\"");
-        zhCn.ShouldContain("MultiHandleDescription = \"范围多个点组合。\"");
+        var zhCn = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh-CN.xlf");
+        zhCn["MultiHandleTitle"].ShouldBe("多点组合");
+        zhCn["MultiHandleDescription"].ShouldBe("范围多个点组合。");
 
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh_TW.cs");
-        zhTw.ShouldContain("MultiHandleTitle = \"多點組合\"");
-        zhTw.ShouldContain("MultiHandleDescription = \"範圍多個點組合。\"");
+        var zhTw = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh-TW.xlf");
+        zhTw["MultiHandleTitle"].ShouldBe("多點組合");
+        zhTw["MultiHandleDescription"].ShouldBe("範圍多個點組合。");
 
-        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/en_US.cs");
-        enUs.ShouldContain("MultiHandleTitle = \"Multiple points\"");
-        enUs.ShouldContain("MultiHandleDescription = \"Combine multiple points in a range.\"");
+        var enUs = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/en-US.xlf");
+        enUs["MultiHandleTitle"].ShouldBe("Multiple points");
+        enUs["MultiHandleDescription"].ShouldBe("Combine multiple points in a range.");
     }
 
     [Fact]
@@ -137,15 +140,19 @@ public class SliderShowCasePageTests
     [Fact]
     public void Disabled_Handle_Localization_Uses_Approved_Copy()
     {
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh_CN.cs");
-        zhCn.ShouldContain("DisabledHandleTitle = \"禁用指定滑块\"");
-        zhCn.ShouldContain("DisabledHandleDescription = \"设置 disabled 为数组，可以单独禁用 range 模式下特定的 handle。禁用后该 handle 作为移动边界，其他 handle 无法越过。\"");
+        var zhCn = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh-CN.xlf");
+        zhCn["DisabledHandleTitle"].ShouldBe("禁用指定滑块");
+        zhCn["DisabledHandleDescription"].ShouldBe(
+            "设置 disabled 为数组，可以单独禁用 range 模式下特定的 handle。禁用后该 handle 作为移动边界，其他 handle 无法越过。");
 
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh_TW.cs");
-        zhTw.ShouldContain("DisabledHandleTitle = \"禁用指定滑塊\"");
+        var zhTw = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/zh-TW.xlf");
+        zhTw["DisabledHandleTitle"].ShouldBe("禁用指定滑塊");
 
-        var enUs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/en_US.cs");
-        enUs.ShouldContain("DisabledHandleTitle = \"Disabled handles\"");
+        var enUs = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Localization/en-US.xlf");
+        enUs["DisabledHandleTitle"].ShouldBe("Disabled handles");
     }
 
     private static string ExtractSliderExampleItems(string source)

@@ -4,7 +4,7 @@ using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -27,13 +27,13 @@ public partial class SpaceShowCase : GalleryReactiveUserControl<SpaceViewModel>
         {
             RefreshCurrentViewModelData();
             var languageManager = Application.Current is { } application
-                ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+                ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)
                 : null;
             if (languageManager != null)
             {
-                EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshCurrentViewModelData();
-                languageManager.LanguageVariantChanged += handler;
-                disposables.Add(Disposable.Create(() => languageManager.LanguageVariantChanged -= handler));
+                EventHandler<LanguageChangedEventArgs> handler = (_, _) => RefreshCurrentViewModelData();
+                languageManager.LanguageChanged += handler;
+                disposables.Add(Disposable.Create(() => languageManager.LanguageChanged -= handler));
             }
         });
     }
@@ -286,6 +286,6 @@ internal static class SpaceShowCaseLanguage
 {
     public static string Get(SpaceShowCaseLangResourceKind resourceKind, string fallback)
     {
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 }

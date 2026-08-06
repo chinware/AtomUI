@@ -56,9 +56,9 @@ public class CalendarViewModel : ReactiveObject, IRoutableViewModel
         }
     }
 
-    public string SelectableCalendarSelectedText => string.Format(
-        CultureInfo.CurrentCulture,
-        Lang(CalendarShowCaseLangResourceKind.SelectableCalendarSelectedMessage),
+    public string SelectableCalendarSelectedText => GalleryLocalization.Format(
+        CalendarShowCaseLangResourceKind.SelectableCalendarSelectedMessage,
+        "You selected date: {0:yyyy-MM-dd}",
         SelectableCalendarSelectedValue);
 
     public CalendarViewModel(IScreen screen)

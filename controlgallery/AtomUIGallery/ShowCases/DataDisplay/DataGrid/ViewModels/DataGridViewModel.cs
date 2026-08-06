@@ -118,20 +118,7 @@ public partial class DataGridViewModel : ReactiveObject, IRoutableViewModel
 
     private static string Lang(DataGridShowCaseLangResourceKind kind)
     {
-        if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
-        {
-            return LanguageResourceBinder.GetLangResource(kind) ?? FallbackLang(kind);
-        }
-
-        return FallbackLang(kind);
-    }
-
-    private static string FallbackLang(DataGridShowCaseLangResourceKind kind)
-    {
-        return kind switch
-        {
-            _                                                                   => kind.ToString()
-        };
+        return GalleryLocalization.Get(kind, kind.ToString());
     }
 }
 

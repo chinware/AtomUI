@@ -105,7 +105,7 @@ public class SliderViewModel : ReactiveObject, IRoutableViewModel
 
     public string BoundRangeValuesText => string.Join(
         " - ",
-        BoundRangeValues.Select(value => value.ToString("0.#", CultureInfo.CurrentCulture)));
+        BoundRangeValues.Select(value => value.ToString("0.#", GalleryLocalization.GetFormattingCulture())));
 
     public ReactiveCommand<Unit, Unit> SetBoundRangeValuesCommand { get; }
 

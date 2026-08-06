@@ -167,7 +167,8 @@ public class GalleryLandingPagesTests
     public void Community_Page_Uses_Compact_Tlaic_Incubation_Block()
     {
         var source       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Community/Views/CommunityPage.axaml");
-        var zhCnResource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Community/Localization/zh_CN.cs");
+        var zhCn = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/General/Community/Localization/zh-CN.xlf");
 
         source.ShouldContain("CommunityPageLangResource IncubationEyebrow");
         source.ShouldContain("CommunityPageLangResource IncubationTitle");
@@ -180,11 +181,11 @@ public class GalleryLandingPagesTests
         source.IndexOf("CommunityPageLangResource IncubationEyebrow", StringComparison.Ordinal)
               .ShouldBeLessThan(source.IndexOf("CommunityPageLangResource WeChatOfficial", StringComparison.Ordinal));
 
-        zhCnResource.ShouldContain("INCUBATION SUPPORT");
-        zhCnResource.ShouldContain("AtomUI OSS 纳入通明湖中心开源孵化体系");
-        zhCnResource.ShouldContain("开源孵化");
-        zhCnResource.ShouldContain("生态共建");
-        zhCnResource.ShouldContain("开放许可");
+        zhCn["IncubationEyebrow"].ShouldBe("INCUBATION SUPPORT");
+        zhCn["IncubationTitle"].ShouldBe("AtomUI OSS 纳入通明湖中心开源孵化体系");
+        zhCn["IncubationPointOpenSource"].ShouldBe("开源孵化");
+        zhCn["IncubationPointEcosystem"].ShouldBe("生态共建");
+        zhCn["IncubationPointLicense"].ShouldBe("开放许可");
     }
 
     [Fact]

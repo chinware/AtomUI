@@ -3,7 +3,7 @@ using System.Diagnostics;
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -120,11 +120,11 @@ public class PriceInput : TemplatedControl,
         }
 
         _subscribedLanguageManager = Application.Current is { } application
-            ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+            ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)
             : null;
         if (_subscribedLanguageManager != null)
         {
-            _subscribedLanguageManager.LanguageVariantChanged += HandleLanguageVariantChanged;
+            _subscribedLanguageManager.LanguageChanged += HandleLanguageChanged;
         }
     }
 
@@ -132,12 +132,12 @@ public class PriceInput : TemplatedControl,
     {
         if (_subscribedLanguageManager != null)
         {
-            _subscribedLanguageManager.LanguageVariantChanged -= HandleLanguageVariantChanged;
+            _subscribedLanguageManager.LanguageChanged -= HandleLanguageChanged;
             _subscribedLanguageManager = null;
         }
     }
 
-    private void HandleLanguageVariantChanged(object? sender, LanguageVariantChangedEventArgs e)
+    private void HandleLanguageChanged(object? sender, LanguageChangedEventArgs e)
     {
         RefreshCurrencyOptions();
     }

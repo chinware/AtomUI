@@ -7,7 +7,7 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using Avalonia.Controls;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
@@ -33,12 +33,12 @@ public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewM
                 InitFilterTreeNodes(viewModel);
                 viewModel.AsyncLoadTreeNodeLoader = new TreeItemDataLoader();
 
-                var languageManager = Application.Current?.GetLanguageManager();
+                var languageManager = GalleryLocalization.GetLanguageManager();
                 if (languageManager != null)
                 {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedTreeNodes(viewModel);
-                    languageManager.LanguageVariantChanged += handler;
-                    Disposable.Create(() => languageManager.LanguageVariantChanged -= handler)
+                    EventHandler<LanguageChangedEventArgs> handler = (_, _) => RefreshLocalizedTreeNodes(viewModel);
+                    languageManager.LanguageChanged += handler;
+                    Disposable.Create(() => languageManager.LanguageChanged -= handler)
                               .DisposeWith(disposables);
                 }
 
@@ -200,8 +200,9 @@ public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewM
                      Lang(TreeViewShowCaseLangResourceKind.P2HeaderNodeFallback, "node");
         var newItem = new AtomUI.Desktop.Controls.TreeViewItem
         {
-            Header = string.Format(
-                Lang(TreeViewShowCaseLangResourceKind.P2HeaderNewNodeFormat, "{0} / new ({1})"),
+            Header = GalleryLocalization.Format(
+                TreeViewShowCaseLangResourceKind.P2HeaderNewNodeFormat,
+                "{0} / new ({1})",
                 header,
                 _contextMenuTargetItem.Items.Count + 1)
         };
@@ -218,8 +219,9 @@ public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewM
 
         var header = _contextMenuTargetItem.Header?.ToString() ??
                      Lang(TreeViewShowCaseLangResourceKind.P2HeaderNodeFallback, "node");
-        _contextMenuTargetItem.Header = string.Format(
-            Lang(TreeViewShowCaseLangResourceKind.P2HeaderRenamedFormat, "{0} (renamed)"),
+        _contextMenuTargetItem.Header = GalleryLocalization.Format(
+            TreeViewShowCaseLangResourceKind.P2HeaderRenamedFormat,
+            "{0} (renamed)",
             header);
     }
 
@@ -516,6 +518,6 @@ internal static class TreeViewShowCaseLanguage
             return fallback;
         }
 
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 }

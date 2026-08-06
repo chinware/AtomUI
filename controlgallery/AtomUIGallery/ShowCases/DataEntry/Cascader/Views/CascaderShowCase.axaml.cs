@@ -5,7 +5,7 @@ using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -25,12 +25,12 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
             {
                 RefreshCascaderData(viewModel);
 
-                var languageManager = Application.Current?.GetLanguageManager();
+                var languageManager = GalleryLocalization.GetLanguageManager();
                 if (languageManager != null)
                 {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshCascaderData(viewModel);
-                    languageManager.LanguageVariantChanged += handler;
-                    disposables.Add(Disposable.Create(() => languageManager.LanguageVariantChanged -= handler));
+                    EventHandler<LanguageChangedEventArgs> handler = (_, _) => RefreshCascaderData(viewModel);
+                    languageManager.LanguageChanged += handler;
+                    disposables.Add(Disposable.Create(() => languageManager.LanguageChanged -= handler));
                 }
 
                 disposables.Add(Disposable.Create(() =>
@@ -999,12 +999,12 @@ internal static class CascaderShowCaseLanguage
 {
     public static string Get(CascaderShowCaseLangResourceKind resourceKind, string fallback)
     {
-        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+        return GalleryLocalization.Get(resourceKind, fallback);
     }
 
     public static string Format(CascaderShowCaseLangResourceKind resourceKind, string fallback, params object?[] args)
     {
-        return string.Format(CultureInfo.CurrentCulture, Get(resourceKind, fallback), args);
+        return GalleryLocalization.Format(resourceKind, fallback, args);
     }
 
     public static string FormatDynamicOption(ICascaderOption targetCascaderItem, int index)

@@ -14,9 +14,12 @@ public class SplashShowCasePageTests
         var configuration      = global::AtomUIGallery.AtomUIGalleryModule.CreateConfiguration();
         var galleryProject     = ReadRepoFile("controlgallery/AtomUIGallery/AtomUIGallery.csproj");
         var assemblyInfoSource = ReadRepoFile("controlgallery/AtomUIGallery/Properties/AssemblyInfo.cs");
-        var navigationEnSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/en_US.cs");
-        var navigationZhCnSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh_CN.cs");
-        var navigationZhTwSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh_TW.cs");
+        var navigationEn = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/en-US.xlf");
+        var navigationZhCn = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh-CN.xlf");
+        var navigationZhTw = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh-TW.xlf");
 
         var otherNode = Walk(configuration.NavigationNodes)
             .First(node => node.Key == "Other");
@@ -32,9 +35,10 @@ public class SplashShowCasePageTests
         galleryProject.ShouldContain("AtomUI.Desktop.Controls.Extras");
         assemblyInfoSource.ShouldContain("AtomUIGallery.ShowCases.Splash");
 
-        navigationEnSource.ShouldContain("public const string Other_Splash");
-        navigationZhCnSource.ShouldContain("public const string Other_Splash");
-        navigationZhTwSource.ShouldContain("public const string Other_Splash");
+        foreach (var localization in new[] { navigationEn, navigationZhCn, navigationZhTw })
+        {
+            localization.ContainsKey("Other_Splash").ShouldBeTrue();
+        }
     }
 
     [Fact]
@@ -80,9 +84,12 @@ public class SplashShowCasePageTests
     public void Splash_ShowCase_Header_Centers_Title_Tags_And_Adds_Blue_Introduced_Version_Tag()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml");
-        var enSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/en_US.cs");
-        var zhCnSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh_CN.cs");
-        var zhTwSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh_TW.cs");
+        var en = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/en-US.xlf");
+        var zhCn = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh-CN.xlf");
+        var zhTw = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh-TW.xlf");
 
         source.ShouldContain("<gallery:GalleryShowCaseHeader");
         source.ShouldContain("Status=\"{gallery:SplashShowCaseLangResource ComponentStatusPreview}\"");
@@ -91,9 +98,9 @@ public class SplashShowCasePageTests
         source.ShouldNotContain("IntroducedVersionTagColor=");
         source.ShouldNotContain("IsIntroducedVersionTagBordered=");
 
-        foreach (var localizationSource in new[] { enSource, zhCnSource, zhTwSource })
+        foreach (var localization in new[] { en, zhCn, zhTw })
         {
-            localizationSource.ShouldContain("public const string ComponentIntroducedVersion = \"v6.0.7\";");
+            localization["ComponentIntroducedVersion"].ShouldBe("v6.0.7");
         }
     }
 
@@ -130,9 +137,12 @@ public class SplashShowCasePageTests
     {
         var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml");
         var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml.cs");
-        var enSource         = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/en_US.cs");
-        var zhCnSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh_CN.cs");
-        var zhTwSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh_TW.cs");
+        var en               = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/en-US.xlf");
+        var zhCn             = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh-CN.xlf");
+        var zhTw             = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh-TW.xlf");
 
         var serviceDemo = ExtractShowCaseItemMarkup(pageSource, "SplashShowCaseLangResource WindowServiceTitle");
         serviceDemo.ShouldContain("SplashShowCaseLangResource WindowServiceDescription");
@@ -176,14 +186,14 @@ public class SplashShowCasePageTests
         codeBehindSource.ShouldContain("await splashService.SetStatusAsync(SplashStatus.Success");
         codeBehindSource.ShouldContain("await splashService.CloseAsync()");
 
-        foreach (var source in new[] { enSource, zhCnSource, zhTwSource })
+        foreach (var localization in new[] { en, zhCn, zhTw })
         {
-            source.ShouldContain("WindowServiceTitle");
-            source.ShouldContain("WindowServiceDescription");
-            source.ShouldContain("P2ContentShowWindowSplash");
-            source.ShouldContain("P2WindowSplashMessageStarting");
-            source.ShouldContain("P2WindowSplashMessageComplete");
-            source.ShouldContain("P2WindowSplashFooter");
+            localization.ContainsKey("WindowServiceTitle").ShouldBeTrue();
+            localization.ContainsKey("WindowServiceDescription").ShouldBeTrue();
+            localization.ContainsKey("P2ContentShowWindowSplash").ShouldBeTrue();
+            localization.ContainsKey("P2WindowSplashMessageStarting").ShouldBeTrue();
+            localization.ContainsKey("P2WindowSplashMessageComplete").ShouldBeTrue();
+            localization.ContainsKey("P2WindowSplashFooter").ShouldBeTrue();
         }
     }
 

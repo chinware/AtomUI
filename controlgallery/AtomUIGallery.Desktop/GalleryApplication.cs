@@ -1,7 +1,9 @@
 ﻿using System.Globalization;
 using AtomUI;
 using AtomUI.Desktop.Controls;
+using AtomUI.Localization;
 using AtomUI.Theme;
+using AtomUIGallery.Localization;
 using Avalonia.Controls.ApplicationLifetimes;
 
 namespace AtomUIGallery.Desktop;
@@ -20,7 +22,9 @@ public class GalleryApplication : BaseGalleryApplication
         {
             builder.WithApplicationId("AtomUIGallery");
             builder.UseUserThemeDirectory();
-            builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
+            builder.UseLanguages(
+                GalleryLanguageDefaults.Resolve(CultureInfo.CurrentUICulture),
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
             builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();

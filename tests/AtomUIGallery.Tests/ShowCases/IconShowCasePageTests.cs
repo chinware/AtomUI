@@ -66,22 +66,25 @@ public class IconShowCasePageTests
     [Fact]
     public void Icon_ShowCase_Localization_Includes_Page_Copy()
     {
-        var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Icon/Localization/en_US.cs");
-        var zhCn = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Icon/Localization/zh_CN.cs");
-        var zhTw = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Icon/Localization/zh_TW.cs");
+        var en = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/General/Icon/Localization/en-US.xlf");
+        var zhCn = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/General/Icon/Localization/zh-CN.xlf");
+        var zhTw = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/General/Icon/Localization/zh-TW.xlf");
 
-        foreach (var source in new[] { en, zhCn, zhTw })
+        foreach (var localization in new[] { en, zhCn, zhTw })
         {
-            source.ShouldContain("ComponentCategory");
-            source.ShouldContain("ComponentStatusStable");
-            source.ShouldContain("PageSubtitle");
-            source.ShouldContain("PageDescription");
-            source.ShouldNotContain("InfoNamespaceLabel");
-            source.ShouldNotContain("InfoPackageLabel");
-            source.ShouldNotContain("InfoBaseClassLabel");
-            source.ShouldContain("P2HeaderOutlined");
-            source.ShouldContain("P2HeaderFilled");
-            source.ShouldContain("P2HeaderTwoTone");
+            localization.ContainsKey("ComponentCategory").ShouldBeTrue();
+            localization.ContainsKey("ComponentStatusStable").ShouldBeTrue();
+            localization.ContainsKey("PageSubtitle").ShouldBeTrue();
+            localization.ContainsKey("PageDescription").ShouldBeTrue();
+            localization.ContainsKey("InfoNamespaceLabel").ShouldBeFalse();
+            localization.ContainsKey("InfoPackageLabel").ShouldBeFalse();
+            localization.ContainsKey("InfoBaseClassLabel").ShouldBeFalse();
+            localization.ContainsKey("P2HeaderOutlined").ShouldBeTrue();
+            localization.ContainsKey("P2HeaderFilled").ShouldBeTrue();
+            localization.ContainsKey("P2HeaderTwoTone").ShouldBeTrue();
         }
     }
 
