@@ -72,6 +72,17 @@ public class Xliff21ParserTests
         result.Document!.File.Units[0].PlaceholderIndexes.ShouldBe([0, 1]);
     }
 
+    [Fact]
+    public void Accepts_Dollar_Braced_Template_Tokens_As_Plain_Text()
+    {
+        var result = Xliff21Parser.Parse(CreateDocument(
+            source: "Total ${Total} items",
+            target: "共 ${Total} 项"));
+
+        result.Errors.ShouldBeEmpty();
+        result.Document!.File.Units[0].PlaceholderIndexes.ShouldBeEmpty();
+    }
+
     [Theory]
     [InlineData("ZH-cn", "canonical BCP 47")]
     [InlineData("zh_CN", "valid BCP 47")]

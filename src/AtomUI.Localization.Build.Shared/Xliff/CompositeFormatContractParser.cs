@@ -32,6 +32,12 @@ internal static class CompositeFormatContractParser
                 position++;
                 continue;
             }
+            if (position > 0 &&
+                value[position - 1] == '$' &&
+                TrySkipNamedTemplateToken(value, ref position))
+            {
+                continue;
+            }
 
             position++;
             SkipWhitespace(value, ref position);
@@ -91,6 +97,30 @@ internal static class CompositeFormatContractParser
 
         placeholderIndexes = indexes.OrderBy(static index => index).ToArray();
         error = string.Empty;
+        return true;
+    }
+
+    private static bool TrySkipNamedTemplateToken(string value, ref int position)
+    {
+        var cursor = position + 1;
+        if (cursor >= value.Length ||
+            value[cursor] != '_' && !char.IsLetter(value[cursor]))
+        {
+            return false;
+        }
+
+        cursor++;
+        while (cursor < value.Length &&
+               (value[cursor] == '_' || char.IsLetterOrDigit(value[cursor])))
+        {
+            cursor++;
+        }
+        if (cursor >= value.Length || value[cursor] != '}')
+        {
+            return false;
+        }
+
+        position = cursor;
         return true;
     }
 

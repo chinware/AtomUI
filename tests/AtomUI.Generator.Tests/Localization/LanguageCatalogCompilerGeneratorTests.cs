@@ -58,6 +58,23 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Fact]
+    public void Preserves_Explicit_Empty_Source_And_Translated_Values()
+    {
+        var source = SourceXliff.Replace(
+            "<source>Title</source>",
+            "<source></source>");
+        var target = TargetXliff("zh-CN", "", "项目 {0}").Replace(
+            "<source>Title</source>",
+            "<source></source>");
+        var result = Run(
+            CatalogSource,
+            SourceFile().WithText(source),
+            LanguageFile("Localization/zh-CN.xlf", target));
+
+        result.Diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Reports_A_Missing_English_Source_Bundle()
     {
         var result = Run(

@@ -274,26 +274,18 @@ internal static class LanguageCatalogCompiler
 
             if (language == "en-US")
             {
-                if (string.IsNullOrEmpty(unit.Source))
-                {
-                    diagnostics.Add(InvalidTranslation(
-                        file,
-                        unit,
-                        language,
-                        "the en-US source text cannot be empty"));
-                }
                 values.Add(unit.Source);
                 continue;
             }
 
-            if (string.IsNullOrEmpty(unit.Target) ||
+            if (unit.Target is null ||
                 unit.TargetState is not ("translated" or "reviewed" or "final"))
             {
                 diagnostics.Add(InvalidTranslation(
                     file,
                     unit,
                     language,
-                    "the target must contain non-empty text in a publishable translated, reviewed, or final state"));
+                    "the target must be present in a publishable translated, reviewed, or final state"));
                 values.Add(null);
                 continue;
             }
