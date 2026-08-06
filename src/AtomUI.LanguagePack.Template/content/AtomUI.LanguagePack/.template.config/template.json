@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "AtomUI",
+  "classifications": [
+    "AtomUI",
+    "Localization",
+    "NuGet"
+  ],
+  "identity": "AtomUI.LanguagePack.Static",
+  "name": "AtomUI static language pack",
+  "shortName": "atomui-language-pack",
+  "sourceName": "AtomUI.LanguagePack",
+  "preferNameDirectory": true,
+  "symbols": {
+    "moduleId": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "AtomUI.Desktop.Controls",
+      "replaces": "__ATOMUI_LANGUAGE_MODULE_ID__",
+      "description": "The Language Module ID whose Catalogs are translated."
+    },
+    "languageTag": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "ja-JP",
+      "replaces": "__ATOMUI_LANGUAGE_TAG__",
+      "description": "The canonical BCP 47 target language tag."
+    },
+    "languageTagIdentifier": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "JaJP",
+      "replaces": "__ATOMUI_LANGUAGE_TAG_IDENTIFIER__",
+      "description": "The PascalCase language suffix used in the NuGet package ID."
+    },
+    "packageId": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "Acme.AtomUI.I18n.JaJP",
+      "replaces": "__ATOMUI_LANGUAGE_PACKAGE_ID__",
+      "description": "The NuGet package identity."
+    },
+    "atomUIVersion": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "6.1.3",
+      "replaces": "__ATOMUI_VERSION__",
+      "description": "The AtomUI.Generator package version used to build this language pack."
+    }
+  }
+}

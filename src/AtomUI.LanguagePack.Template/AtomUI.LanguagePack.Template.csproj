@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <PackageType>Template</PackageType>
+        <PackageId>AtomUI.LanguagePack.Template</PackageId>
+        <Version>$(AtomUIVersion)</Version>
+        <Title>AtomUI Static Language Pack Template</Title>
+        <Description>dotnet new template for building static AtomUI XLIFF language packages.</Description>
+        <PackageTags>AtomUI;Avalonia;localization;language-pack;dotnet-new</PackageTags>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <NoDefaultExcludes>true</NoDefaultExcludes>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="content/**/*" Pack="true" PackagePath="content" />
+    </ItemGroup>
+</Project>
