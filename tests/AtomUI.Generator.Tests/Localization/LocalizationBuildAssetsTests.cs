@@ -212,6 +212,32 @@ public class LocalizationBuildAssetsTests
                         .ShouldNotBeNull();
     }
 
+    [Fact]
+    public void Generator_Project_Isolates_Runtime_Publish_Properties()
+    {
+        var project = XDocument.Load(GetRepoFile("src/AtomUI.Generator/AtomUI.Generator.csproj"));
+        var isolatedProperties = ((string?)project.Root!.Attribute("TreatAsLocalProperty"))!
+                                 .Split(';', StringSplitOptions.RemoveEmptyEntries);
+
+        isolatedProperties.ShouldContain("PublishAot");
+        isolatedProperties.ShouldContain("PublishTrimmed");
+        isolatedProperties.ShouldContain("PublishSingleFile");
+        isolatedProperties.ShouldContain("SelfContained");
+        isolatedProperties.ShouldContain("RuntimeIdentifier");
+
+        var properties = project.Descendants()
+                                .Where(element => element.Parent?.Name.LocalName == "PropertyGroup")
+                                .ToDictionary(
+                                    element => element.Name.LocalName,
+                                    element => element.Value,
+                                    StringComparer.Ordinal);
+        properties["PublishAot"].ShouldBe("false");
+        properties["PublishTrimmed"].ShouldBe("false");
+        properties["PublishSingleFile"].ShouldBe("false");
+        properties["SelfContained"].ShouldBe("false");
+        properties["RuntimeIdentifier"].ShouldBeEmpty();
+    }
+
     private static void AssertMetadataForwarded(XElement additionalFiles, string name)
     {
         ((string?)additionalFiles.Attribute(name)).ShouldBe($"%({name})");
