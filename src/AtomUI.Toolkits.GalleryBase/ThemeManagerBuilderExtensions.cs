@@ -20,6 +20,7 @@ public static class ThemeManagerBuilderExtensions
         GeneratedControlPackageRegistration.Register(
             builder.Theme,
             new GalleryControlThemesProvider());
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
 
         return builder;
     }

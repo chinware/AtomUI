@@ -75,8 +75,10 @@ public class ShowCasePanelStructureTests
             "src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator/GeneratedControlThemeAssetManifest.g.cs");
         var assemblyInfo      = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Properties/AssemblyInfo.cs");
         var tokenResources    = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator/TokenResourceConst.g.cs");
-        var languageResources = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator/LanguageResourceConst.g.cs");
-        var languagePool      = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator/LanguageProviderPool.g.cs");
+        var languageResources = ReadRepoFile(
+            "src/AtomUI.Toolkits.GalleryBase/Localization/GalleryShowCaseHeaderLang/GalleryShowCaseHeaderLangResourceKind.cs");
+        var languageRegistration = ReadRepoFile(
+            "src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LocalizationGenerator/AtomUI.Toolkits.GalleryBase.Localization.GalleryShowCaseHeaderLangResourceKind.LanguageCatalogRegistration.g.cs");
 
         headerSource.ShouldContain("public const string LanguageId = \"GalleryShowCaseHeader\"");
         headerSource.ShouldNotContain("RegisterTokenResourceScope");
@@ -112,12 +114,14 @@ public class ShowCasePanelStructureTests
         tokenResources.ShouldContain("ControlTokenIdentity(\"AtomUI\", \"GalleryShowCaseHeader\")");
         tokenResources.ShouldContain("GalleryShowCaseHeaderTokenResourceExtension");
         languageResources.ShouldContain("enum GalleryShowCaseHeaderLangResourceKind");
-        languageResources.ShouldContain("NamespaceLabel");
-        languageResources.ShouldContain("PackageLabel");
-        languageResources.ShouldContain("BaseClassLabel");
-        languagePool.ShouldContain("GalleryShowCaseHeaderEnUSLanguageProvider");
-        languagePool.ShouldContain("GalleryShowCaseHeaderZhCNLanguageProvider");
-        languagePool.ShouldContain("GalleryShowCaseHeaderZhTWLanguageProvider");
+        languageResources.ShouldContain("[LanguageCatalog(ContractVersion = 1)]");
+        languageResources.ShouldContain("NamespaceLabel = 1");
+        languageResources.ShouldContain("PackageLabel = 2");
+        languageResources.ShouldContain("BaseClassLabel = 3");
+        languageRegistration.ShouldContain("builder.AddCatalog(");
+        languageRegistration.ShouldContain("LanguageTag.Parse(\"en-US\")");
+        languageRegistration.ShouldContain("LanguageTag.Parse(\"zh-CN\")");
+        languageRegistration.ShouldContain("LanguageTag.Parse(\"zh-TW\")");
     }
 
     [Fact]

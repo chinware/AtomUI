@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="zh-TW">
+  <file id="AtomUI.Toolkits.GalleryBase.Localization.GalleryShowCaseHeaderLangResourceKind">
+    <unit id="1" name="NamespaceLabel"><segment><source>Namespace</source><target state="translated">命名空間</target></segment></unit>
+    <unit id="2" name="PackageLabel"><segment><source>Package</source><target state="translated">套件</target></segment></unit>
+    <unit id="3" name="BaseClassLabel"><segment><source>Base class</source><target state="translated">基底類別</target></segment></unit>
+  </file>
+</xliff>

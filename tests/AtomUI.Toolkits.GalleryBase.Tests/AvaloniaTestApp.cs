@@ -1,4 +1,5 @@
 using AtomUI.Desktop.Controls;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Headless;
 using ReactiveUI.Avalonia;
@@ -42,6 +43,9 @@ internal sealed class TestApplication : Application
         {
             builder.UseDesktopControls();
             builder.UseGalleryBase();
+            builder.UseLanguages(
+                LanguageTags.EnUS,
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
         });
     }
 }
