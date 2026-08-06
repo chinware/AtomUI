@@ -165,13 +165,18 @@ internal static class Xliff21Parser
             }
         }
 
-        if (!CompositeFormatContractParser.TryParse(source, out var sourceIndexes, out var sourceError))
+        var sourceIndexes = Array.Empty<int>();
+        var hasPublishableTarget = target is not null && !(target.Length == 0 && targetState == "initial");
+        var usesCompositeFormat = CompositeFormatContractParser.ContainsPlaceholderCandidate(source) ||
+                                  hasPublishableTarget && CompositeFormatContractParser.ContainsPlaceholderCandidate(target!);
+        if (usesCompositeFormat &&
+            !CompositeFormatContractParser.TryParse(source, out sourceIndexes, out var sourceError))
         {
             errors.Add(Error(sourceElements[0], $"source CompositeFormat is invalid: {sourceError}"));
         }
-        if (target is not null && !(target.Length == 0 && targetState == "initial"))
+        if (usesCompositeFormat && hasPublishableTarget)
         {
-            if (!CompositeFormatContractParser.TryParse(target, out var targetIndexes, out var targetError))
+            if (!CompositeFormatContractParser.TryParse(target!, out var targetIndexes, out var targetError))
             {
                 errors.Add(Error(targetElements[0], $"target CompositeFormat is invalid: {targetError}"));
             }

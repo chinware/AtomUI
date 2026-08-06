@@ -83,6 +83,17 @@ public class Xliff21ParserTests
         result.Document!.File.Units[0].PlaceholderIndexes.ShouldBeEmpty();
     }
 
+    [Fact]
+    public void Accepts_Nonnumeric_Braced_Code_As_Plain_Text()
+    {
+        var result = Xliff21Parser.Parse(CreateDocument(
+            source: "Use mask={false} and target={null}.",
+            target: "使用 mask={false} 和 target={null}。"));
+
+        result.Errors.ShouldBeEmpty();
+        result.Document!.File.Units[0].PlaceholderIndexes.ShouldBeEmpty();
+    }
+
     [Theory]
     [InlineData("ZH-cn", "canonical BCP 47")]
     [InlineData("zh_CN", "valid BCP 47")]

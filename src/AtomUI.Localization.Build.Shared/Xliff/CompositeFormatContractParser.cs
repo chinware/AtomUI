@@ -2,6 +2,38 @@ namespace AtomUI.Localization.Build;
 
 internal static class CompositeFormatContractParser
 {
+    internal static bool ContainsPlaceholderCandidate(string value)
+    {
+        for (var position = 0; position < value.Length; position++)
+        {
+            if (value[position] != '{')
+            {
+                continue;
+            }
+
+            if (position + 1 < value.Length && value[position + 1] == '{')
+            {
+                position++;
+                continue;
+            }
+            if (position > 0 &&
+                value[position - 1] == '$' &&
+                TrySkipNamedTemplateToken(value, ref position))
+            {
+                continue;
+            }
+
+            var cursor = position + 1;
+            SkipWhitespace(value, ref cursor);
+            if (cursor < value.Length && char.IsDigit(value[cursor]))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     internal static bool TryParse(
         string value,
         out int[] placeholderIndexes,
