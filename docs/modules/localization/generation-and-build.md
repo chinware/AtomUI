@@ -56,10 +56,10 @@ Generator 使用 Incremental Generator API 组合以下输入：
 
 ```text
 XxxLangResourceExtension
-LanguageCatalogDescriptor
-catalog/unit slot mapping
-built-in TranslationBundleDescriptor
-compiled string and CompositeFormat tables
+独立的 LanguageCatalog registration source
+LanguageCatalogDescriptor 与 catalog/unit slot mapping
+内置 TranslationBundleDescriptor
+编译后的 string 与 CompositeFormat 契约表
 ```
 
 对于每个 Language Module，Generator 生成：
@@ -80,6 +80,11 @@ application Override registration
 
 `XxxLangResourceKind` 由开发者声明，不再根据三份 C# 翻译类推导。`XxxLangResourceExtension` 保留现有 XAML
 形态，但底层改为生成式 descriptor 和 Snapshot 查询。
+
+每个 Catalog 的 descriptor 和内置 Bundle 必须输出到按 Catalog metadata identity 命名的独立 source；模块注册文件
+只按 Catalog ID 排序调用这些 registration。这样修改一个 XLIFF 只改变对应 Catalog source，其他 Catalog、模块聚合
+注册和不含该外部 Bundle 的应用 bootstrap 保持字节稳定。Generator 的增量测试必须同时验证输入 step 的
+`Modified`/`Cached` 状态和最终 source diff，不能只比较一次全量生成结果。
 
 ## 应用 bootstrap
 

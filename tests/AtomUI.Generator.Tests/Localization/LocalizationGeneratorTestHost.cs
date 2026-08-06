@@ -77,6 +77,30 @@ internal static class LocalizationGeneratorTestHost
         return MetadataReference.CreateFromImage(stream.ToArray());
     }
 
+    internal static TestIncrementalGeneratorExecution RunWithUpdatedAdditionalText(
+        string source,
+        TestAdditionalText original,
+        TestAdditionalText replacement,
+        params TestAdditionalText[] otherAdditionalTexts)
+    {
+        var additionalTexts = new[] { original }.Concat(otherAdditionalTexts).ToArray();
+        var compilation = CreateCompilation(source, []);
+        var optionsProvider = new TestOptionsProvider(additionalTexts);
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            [new LocalizationGenerator().AsSourceGenerator()],
+            additionalTexts.Cast<AdditionalText>().ToImmutableArray(),
+            (CSharpParseOptions)compilation.SyntaxTrees[0].Options,
+            optionsProvider,
+            new GeneratorDriverOptions(
+                IncrementalGeneratorOutputKind.None,
+                trackIncrementalGeneratorSteps: true));
+        driver = driver.RunGenerators(compilation, TestContext.Current.CancellationToken);
+        var firstRun = driver.GetRunResult();
+        driver = driver.ReplaceAdditionalText(original, replacement)
+                       .RunGenerators(compilation, TestContext.Current.CancellationToken);
+        return new TestIncrementalGeneratorExecution(firstRun, driver.GetRunResult());
+    }
+
     private static CSharpCompilation CreateCompilation(
         string source,
         IReadOnlyList<MetadataReference> additionalReferences,
@@ -120,6 +144,10 @@ internal static class LocalizationGeneratorTestHost
         GeneratorRunResult Result,
         Compilation OutputCompilation,
         ImmutableArray<Diagnostic> DriverDiagnostics);
+
+    internal sealed record TestIncrementalGeneratorExecution(
+        GeneratorDriverRunResult FirstRun,
+        GeneratorDriverRunResult SecondRun);
 
     private sealed class TestOptionsProvider : AnalyzerConfigOptionsProvider
     {

@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using System.Text;
 using AtomUI.Generator.Localization.Catalog;
-using AtomUI.Generator.Localization.Xliff;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -54,12 +53,11 @@ internal static class LanguageModuleSourceWriter
 
         foreach (var catalog in catalogs)
         {
-            WriteCatalog(source, catalog);
-            foreach (var bundle in catalog.Bundles.Where(static bundle =>
-                         bundle.SourceKind == LanguageFileSourceKind.ModuleBuiltIn))
-            {
-                WriteBundle(source, catalog.Catalog, bundle, "            ");
-            }
+            source.Append("            global::")
+                  .Append(GeneratedThemeSchemaWriter.GetGeneratedNamespace(assemblyName))
+                  .Append('.')
+                  .Append(LanguageCatalogSourceWriter.GetRegistrationTypeName(catalog.Catalog.CatalogId))
+                  .AppendLine(".Register(builder);");
         }
 
         source.AppendLine("        }");
@@ -68,36 +66,39 @@ internal static class LanguageModuleSourceWriter
         return source.ToString();
     }
 
-    private static void WriteCatalog(StringBuilder source, CompiledLanguageCatalog compiledCatalog)
+    internal static void WriteCatalog(
+        StringBuilder source,
+        CompiledLanguageCatalog compiledCatalog,
+        string indent)
     {
         var catalog = compiledCatalog.Catalog;
-        source.AppendLine("            builder.AddCatalog(");
-        source.Append("                new global::AtomUI.Localization.LanguageCatalogDescriptor<")
+        source.Append(indent).AppendLine("builder.AddCatalog(");
+        source.Append(indent).Append("    new global::AtomUI.Localization.LanguageCatalogDescriptor<")
               .Append(catalog.TypeName).AppendLine(">(");
-        source.Append("                    ").Append(ToStringLiteral(catalog.CatalogId)).AppendLine(",");
-        source.Append("                    ").Append(catalog.ContractVersion).AppendLine(",");
-        source.AppendLine("                    new global::AtomUI.Localization.LanguageCatalogUnitDescriptor[]");
-        source.AppendLine("                    {");
+        source.Append(indent).Append("        ").Append(ToStringLiteral(catalog.CatalogId)).AppendLine(",");
+        source.Append(indent).Append("        ").Append(catalog.ContractVersion).AppendLine(",");
+        source.Append(indent).AppendLine("        new global::AtomUI.Localization.LanguageCatalogUnitDescriptor[]");
+        source.Append(indent).AppendLine("        {");
         for (var slot = 0; slot < catalog.Units.Length; slot++)
         {
             var unit = catalog.Units[slot];
-            source.Append("                        new global::AtomUI.Localization.LanguageCatalogUnitDescriptor(")
+            source.Append(indent).Append("            new global::AtomUI.Localization.LanguageCatalogUnitDescriptor(")
                   .Append(unit.Id).Append(", ")
                   .Append(ToStringLiteral(unit.Name)).Append(", ")
                   .Append(compiledCatalog.FormattedUnits[slot] ? "true" : "false")
                   .AppendLine("),");
         }
-        source.AppendLine("                    },");
-        source.AppendLine("                    static kind => kind switch");
-        source.AppendLine("                    {");
+        source.Append(indent).AppendLine("        },");
+        source.Append(indent).AppendLine("        static kind => kind switch");
+        source.Append(indent).AppendLine("        {");
         for (var slot = 0; slot < catalog.Units.Length; slot++)
         {
-            source.Append("                        ").Append(catalog.TypeName).Append('.')
+            source.Append(indent).Append("            ").Append(catalog.TypeName).Append('.')
                   .Append(ToIdentifier(catalog.Units[slot].Name))
                   .Append(" => ").Append(slot).AppendLine(",");
         }
-        source.AppendLine("                        _ => -1,");
-        source.AppendLine("                    }));");
+        source.Append(indent).AppendLine("            _ => -1,");
+        source.Append(indent).AppendLine("        }));");
     }
 
     internal static void WriteBundle(

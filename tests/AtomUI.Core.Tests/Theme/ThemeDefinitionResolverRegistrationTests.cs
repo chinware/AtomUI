@@ -1,6 +1,5 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Definitions;
-using Avalonia;
 using Shouldly;
 using Xunit;
 
@@ -11,15 +10,15 @@ public class ThemeDefinitionResolverRegistrationTests
     [Fact]
     public void Builder_Uses_The_Concrete_Application_Assembly_As_The_Default_Id()
     {
-        var builder = new ThemeManagerBuilder(new ResolverTestApplication());
+        var builder = new ThemeManagerBuilder(new TestApplication());
 
-        builder.ApplicationId.ShouldBe(typeof(ResolverTestApplication).Assembly.GetName().Name);
+        builder.ApplicationId.ShouldBe(typeof(TestApplication).Assembly.GetName().Name);
     }
 
     [Fact]
     public void Explicit_Application_Id_Overrides_The_Default()
     {
-        var builder = new ThemeManagerBuilder(new ResolverTestApplication());
+        var builder = new ThemeManagerBuilder(new TestApplication());
 
         builder.WithApplicationId("AtomUIGallery");
 
@@ -37,7 +36,7 @@ public class ThemeDefinitionResolverRegistrationTests
     [InlineData("画廊")]
     public void Builder_Rejects_Application_Ids_That_Are_Not_Safe_Path_Segments(string id)
     {
-        var builder = new ThemeManagerBuilder(new ResolverTestApplication());
+        var builder = new ThemeManagerBuilder(new TestApplication());
 
         Should.Throw<ArgumentException>(() => builder.WithApplicationId(id));
     }
@@ -45,7 +44,7 @@ public class ThemeDefinitionResolverRegistrationTests
     [Fact]
     public void Builder_Rejects_Empty_And_Duplicate_Resolver_Ids()
     {
-        var builder = new ThemeManagerBuilder(new ResolverTestApplication());
+        var builder = new ThemeManagerBuilder(new TestApplication());
         builder.AddThemeDefinitionResolver(new StubResolver("Gallery"));
 
         Should.Throw<ArgumentException>(() =>
@@ -75,8 +74,6 @@ public class ThemeDefinitionResolverRegistrationTests
         result.Sources.ShouldNotBeSameAs(sources);
         result.Diagnostics.ShouldNotBeSameAs(diagnostics);
     }
-
-    private sealed class ResolverTestApplication : Application;
 
     private sealed class StubResolver(string id) : IThemeDefinitionResolver
     {

@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Headless;
-using AtomUI.Localization;
 
 namespace AtomUI.Core.Tests;
 
@@ -47,12 +46,4 @@ public static class TestAppBuilder
     }
 }
 
-internal sealed class TestApplication : Application, IGeneratedApplicationLanguageBootstrap
-{
-    internal static Action<ILocalizationBuilder>? RegisterApplicationLanguagesCallback { get; set; }
-
-    public void RegisterApplicationLanguages(ILocalizationBuilder builder)
-    {
-        RegisterApplicationLanguagesCallback?.Invoke(builder);
-    }
-}
+internal sealed partial class TestApplication : Application;

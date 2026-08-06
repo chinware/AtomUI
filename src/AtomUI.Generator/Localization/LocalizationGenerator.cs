@@ -25,7 +25,8 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                                       LanguageGeneratorOptions.GetModuleId(
                                           input.Right,
                                           input.Left.Symbol.ContainingAssembly.Name),
-                                      cancellationToken));
+                                      cancellationToken))
+                              .WithTrackingName("LocalizationCatalogs");
         var languageFiles = context.AdditionalTextsProvider
                                    .Combine(context.AnalyzerConfigOptionsProvider)
                                    .Where(static input => LanguageGeneratorOptions.IsLanguageFile(
@@ -35,7 +36,8 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                                        AdditionalLanguageFileParser.Parse(
                                            input.Left,
                                            input.Right,
-                                           cancellationToken));
+                                           cancellationToken))
+                                   .WithTrackingName("LocalizationLanguageFiles");
         var applicationHosts = context.SyntaxProvider.CreateSyntaxProvider(
                                           static (node, _) => node is ClassDeclarationSyntax { BaseList: not null },
                                           static (syntaxContext, cancellationToken) =>
@@ -43,7 +45,8 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                                                   syntaxContext,
                                                   cancellationToken))
                                       .Where(static host => host is not null)
-                                      .Select(static (host, _) => host!);
+                                      .Select(static (host, _) => host!)
+                                      .WithTrackingName("LocalizationApplicationHosts");
         var compiledCatalogs = context.CompilationProvider
                                        .Combine(catalogs.Collect())
                                        .Combine(languageFiles.Collect())
@@ -54,7 +57,8 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                                                input.Left.Left.Right,
                                                input.Left.Right,
                                                input.Left.Left.Left),
-                                           input.Right));
+                                           input.Right))
+                                       .WithTrackingName("LocalizationCompilation");
 
         context.RegisterSourceOutput(catalogs, static (sourceContext, result) =>
         {
@@ -84,7 +88,7 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
 
             foreach (var catalog in result.Compilation.Catalogs.Where(static catalog => catalog.OwnsCatalog))
             {
-                LanguageCatalogSourceWriter.Write(sourceContext, catalog);
+                LanguageCatalogSourceWriter.Write(sourceContext, result.AssemblyName, catalog);
             }
             LanguageModuleSourceWriter.Write(
                 sourceContext,

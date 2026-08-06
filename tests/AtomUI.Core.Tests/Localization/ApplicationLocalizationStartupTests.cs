@@ -1,6 +1,7 @@
 using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Shouldly;
@@ -37,9 +38,19 @@ public class ApplicationLocalizationStartupTests
         {
             var application = Application.Current!;
 
-            application.UseAtomUI(builder => builder.UseLanguages(
-                LanguageTags.ArSA,
-                [LanguageTags.ArSA, LanguageTags.EnUS]));
+            application.UseAtomUI(builder =>
+            {
+                builder.Localization.AddTranslationBundle(new TranslationBundleDescriptor(
+                    "AtomUI.Core.Tests:AtomUI.Core.Tests.Localization.GeneratedStartupLangResourceKind",
+                    1,
+                    LanguageTags.ArSA,
+                    TranslationSourceKind.ApplicationOverride,
+                    "AtomUI.Core.Tests",
+                    ["العربية", "{0} عناصر"]));
+                builder.UseLanguages(
+                    LanguageTags.ArSA,
+                    [LanguageTags.ArSA, LanguageTags.EnUS]);
+            });
             var window = new Window();
             window.Show();
 
@@ -55,29 +66,23 @@ public class ApplicationLocalizationStartupTests
         HeadlessTestApp.Run(() =>
         {
             var application = (TestApplication)Application.Current!;
-            var order = new List<string>();
-            TestApplication.RegisterApplicationLanguagesCallback = builder =>
+            var configured = false;
+            application.ShouldBeAssignableTo<IGeneratedApplicationLanguageBootstrap>();
+            application.UseAtomUI(builder =>
             {
-                order.Add("bootstrap");
-                RegisterCatalog(builder);
-            };
-            try
-            {
-                application.UseAtomUI(builder =>
-                {
-                    order.Add("configure");
-                    builder.UseLanguages(
-                        LanguageTags.EnUS,
-                        [LanguageTags.EnUS, LanguageTags.ZhCN]);
-                });
-            }
-            finally
-            {
-                TestApplication.RegisterApplicationLanguagesCallback = null;
-            }
+                configured = true;
+                builder.UseLanguages(
+                    LanguageTags.EnUS,
+                    [LanguageTags.EnUS, LanguageTags.ZhCN]);
+            });
 
-            order.ShouldBe(["bootstrap", "configure"]);
-            application.GetLocalizer()!.Get(StartupResourceKind.Value).ShouldBe("English");
+            configured.ShouldBeTrue();
+            application.GetLocalizer()!
+                       .Get(GeneratedStartupLangResourceKind.Value)
+                       .ShouldBe("English");
+            application.GetLocalizer()!
+                       .Format(GeneratedStartupLangResourceKind.ItemCount, 3)
+                       .ShouldBe("3 items");
         });
     }
 
@@ -87,22 +92,18 @@ public class ApplicationLocalizationStartupTests
         HeadlessTestApp.Run(() =>
         {
             var application = (TestApplication)Application.Current!;
-            TestApplication.RegisterApplicationLanguagesCallback = RegisterCatalog;
-            try
-            {
-                application.UseAtomUI(builder => builder.UseLanguages(
-                    LanguageTags.EnUS,
-                    [LanguageTags.EnUS, LanguageTags.ZhCN]));
-            }
-            finally
-            {
-                TestApplication.RegisterApplicationLanguagesCallback = null;
-            }
+            application.UseAtomUI(builder => builder.UseLanguages(
+                LanguageTags.EnUS,
+                [LanguageTags.EnUS, LanguageTags.ZhCN]));
 
             var text = new TextBlock();
-            text.Bind(
-                TextBlock.TextProperty,
-                new DynamicResourceExtension(StartupResourceKind.Value));
+            var extension = new GeneratedStartupLangResourceExtension(
+                GeneratedStartupLangResourceKind.Value);
+            var dynamicResource = extension.ProvideValue(
+                    new ProvideValueServiceProvider(text, TextBlock.TextProperty))
+                .ShouldBeOfType<DynamicResourceExtension>();
+            dynamicResource.ResourceKey.ShouldBe(GeneratedStartupLangResourceKind.Value);
+            text.Bind(TextBlock.TextProperty, dynamicResource);
             var window = new Window
             {
                 Content = text
@@ -112,6 +113,9 @@ public class ApplicationLocalizationStartupTests
             text.Text.ShouldBe("English");
             application.GetLanguageManager()!.ChangeLanguage(LanguageTags.ZhCN);
             text.Text.ShouldBe("中文");
+            application.GetLocalizer()!
+                       .Format(GeneratedStartupLangResourceKind.ItemCount, 3)
+                       .ShouldBe("3 项");
             window.Close();
         });
     }
@@ -130,32 +134,17 @@ public class ApplicationLocalizationStartupTests
         });
     }
 
-    private static void RegisterCatalog(ILocalizationBuilder builder)
+    private sealed class ProvideValueServiceProvider(
+        object targetObject,
+        object targetProperty) : IServiceProvider, IProvideValueTarget
     {
-        const string catalogId = "Acme:Acme.StartupResourceKind";
-        builder.AddCatalog(new LanguageCatalogDescriptor<StartupResourceKind>(
-            catalogId,
-            1,
-            [new LanguageCatalogUnitDescriptor(1, "Value")],
-            static key => key == StartupResourceKind.Value ? 0 : -1));
-        builder.AddTranslationBundle(new TranslationBundleDescriptor(
-            catalogId,
-            1,
-            LanguageTags.EnUS,
-            TranslationSourceKind.ModuleBuiltIn,
-            "Acme",
-            ["English"]));
-        builder.AddTranslationBundle(new TranslationBundleDescriptor(
-            catalogId,
-            1,
-            LanguageTags.ZhCN,
-            TranslationSourceKind.ModuleBuiltIn,
-            "Acme",
-            ["中文"]));
-    }
+        public object TargetObject { get; } = targetObject;
 
-    private enum StartupResourceKind
-    {
-        Value = 1
+        public object TargetProperty { get; } = targetProperty;
+
+        public object? GetService(Type serviceType)
+        {
+            return serviceType == typeof(IProvideValueTarget) ? this : null;
+        }
     }
 }
