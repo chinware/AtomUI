@@ -1,18 +1,19 @@
 using AtomUI.Generated.AtomUI_Controls;
-using AtomUI.Theme;
 
 namespace AtomUI.Controls;
 
 internal static class ThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseCommonControls(this IThemeManagerBuilder themeManagerBuilder)
+    public static IAtomUIBuilder UseCommonControls(this IAtomUIBuilder builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
         GeneratedControlPackageRegistration.Register(
-            themeManagerBuilder,
+            builder.Theme,
             RuntimePlatform.Features.SupportsNativeWindow
                 ? new CommonControlThemesProvider()
                 : new BrowserCommonControlThemesProvider());
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
 
-        return themeManagerBuilder;
+        return builder;
     }
 }

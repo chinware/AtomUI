@@ -14,7 +14,7 @@ public static class ThemeManagerBuilderExtensions
     public static IAtomUIBuilder UseDesktopControls(this IAtomUIBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        builder.Theme.UseCommonControls();
+        builder.UseCommonControls();
         DialogInputCaptureTracker.Initialize();
         if (RuntimePlatform.Features.SupportsNativeWindow)
         {

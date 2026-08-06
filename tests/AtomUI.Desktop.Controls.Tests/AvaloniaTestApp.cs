@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
+using AtomUI.Localization;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUI.Desktop.Controls.Tests.TestAppBuilder))]
 [assembly: AvaloniaTestFramework]
@@ -42,6 +43,10 @@ internal sealed class TestApplication : Application
 {
     public override void Initialize()
     {
-        this.UseAtomUI(builder => builder.UseDesktopControls().UseDesktopExtras());
+        this.UseAtomUI(builder => builder.UseDesktopControls()
+                                         .UseDesktopExtras()
+                                         .UseLanguages(
+                                             LanguageTags.EnUS,
+                                             [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]));
     }
 }
