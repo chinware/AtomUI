@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+        <PackageId>Acme.LocalizationComponent.I18n.JaJP.TemplateExport</PackageId>
+        <AtomUIBuildLanguagePackage>true</AtomUIBuildLanguagePackage>
+        <AtomUILanguageTag>ja-JP</AtomUILanguageTag>
+        <AtomUILanguageModuleId>Acme.LocalizationComponent</AtomUILanguageModuleId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Acme.LocalizationComponent" VersionOverride="$(FixturePackageVersion)" />
+        <ProjectReference Include="../../../../src/AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+    </ItemGroup>
+</Project>
