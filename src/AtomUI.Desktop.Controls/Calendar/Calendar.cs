@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Internal.Calendar;
-using AtomUI.Theme.Language;
+using AtomUI.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -469,14 +469,14 @@ public class Calendar : TemplatedControl
         }
 
         var languageManager = Application.Current is { } application
-            ? AtomUI.Controls.ApplicationExtensions.GetLanguageManager(application)
+            ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)
             : null;
         if (languageManager is null)
         {
             return;
         }
 
-        languageManager.LanguageVariantChanged += OnLanguageVariantChanged;
+        languageManager.LanguageChanged += OnLanguageChanged;
         _subscribedLanguageManager = languageManager;
     }
 
@@ -487,16 +487,19 @@ public class Calendar : TemplatedControl
             return;
         }
 
-        _subscribedLanguageManager.LanguageVariantChanged -= OnLanguageVariantChanged;
+        _subscribedLanguageManager.LanguageChanged -= OnLanguageChanged;
         _subscribedLanguageManager = null;
     }
 
-    private void OnLanguageVariantChanged(object? sender, LanguageVariantChangedEventArgs e) => ApplyCulture();
+    private void OnLanguageChanged(object? sender, LanguageChangedEventArgs e) => ApplyCulture();
 
     /// <summary>解析当前语言的 Culture 并推给 CalendarView / 默认 Header，触发它们按需同步。</summary>
     private void ApplyCulture()
     {
-        var culture = Application.Current?.GetLanguageVariant()?.ToCultureInfo() ?? CultureInfo.CurrentCulture;
+        var culture = Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)?.Current.FormattingCulture
+            : null;
+        culture ??= CultureInfo.CurrentCulture;
         CurrentCulture = culture;
         if (_calendarView is not null)
         {

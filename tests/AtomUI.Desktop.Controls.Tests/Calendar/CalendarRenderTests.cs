@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Desktop.Controls.Internal.Calendar;
+using AtomUI.Localization;
 using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Automation;
@@ -20,7 +21,6 @@ using DesktopComboBox = AtomUI.Desktop.Controls.ComboBox;
 using DesktopOptionButton = AtomUI.Desktop.Controls.OptionButton;
 using DesktopOptionButtonGroup = AtomUI.Desktop.Controls.OptionButtonGroup;
 using DesktopTextBlock = AtomUI.Desktop.Controls.TextBlock;
-using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.Tests.Calendar;
 
@@ -283,9 +283,10 @@ public class CalendarRenderTests
     }
 
     [Fact]
-    public void Calendar_HeaderLanguageAndMiniSizing_RefreshWithLanguageVariant()
+    public void Calendar_HeaderLanguageAndMiniSizing_RefreshWithLanguageManager()
     {
-        var originalVariant = Application.Current!.GetLanguageVariant() ?? LanguageVariant.en_US;
+        var languageManager = Application.Current!.GetLanguageManager().ShouldNotBeNull();
+        var originalLanguage = languageManager.Current.CurrentLanguage;
         var calendar = new AtomUICalendar
         {
             Value = new DateTime(2026, 7, 15),
@@ -295,12 +296,12 @@ public class CalendarRenderTests
         var window = Show(calendar);
         try
         {
-            Application.Current!.SetLanguageVariant(LanguageVariant.zh_CN);
+            languageManager.ChangeLanguage(LanguageTags.ZhCN);
             Dispatcher.UIThread.RunJobs();
 
             AssertHeaderLanguage(calendar, "月", "年", "周", "年");
 
-            Application.Current!.SetLanguageVariant(LanguageVariant.en_US);
+            languageManager.ChangeLanguage(LanguageTags.EnUS);
             Dispatcher.UIThread.RunJobs();
 
             AssertHeaderLanguage(calendar, "Month", "Year", "Week", string.Empty);
@@ -308,16 +309,17 @@ public class CalendarRenderTests
         finally
         {
             window.Close();
-            Application.Current!.SetLanguageVariant(originalVariant);
+            languageManager.ChangeLanguage(originalLanguage);
             Dispatcher.UIThread.RunJobs();
         }
     }
 
     [Fact]
-    public void Calendar_LanguageVariant_DrivesCultureAndLanguageResources()
+    public void Calendar_LanguageManager_DrivesCultureAndLanguageResources()
     {
-        var originalVariant = Application.Current!.GetLanguageVariant() ?? LanguageVariant.en_US;
-        Application.Current!.SetLanguageVariant(LanguageVariant.en_US);
+        var languageManager = Application.Current!.GetLanguageManager().ShouldNotBeNull();
+        var originalLanguage = languageManager.Current.CurrentLanguage;
+        languageManager.ChangeLanguage(LanguageTags.EnUS);
         var calendar = new AtomUICalendar
         {
             Value = new DateTime(2026, 7, 15),
@@ -327,21 +329,21 @@ public class CalendarRenderTests
         var window = Show(calendar);
         try
         {
-            Application.Current!.SetLanguageVariant(LanguageVariant.zh_TW);
+            languageManager.ChangeLanguage(LanguageTags.ZhTW);
             Dispatcher.UIThread.RunJobs();
             AssertHeaderLanguage(calendar, "月", "年", "週", "年");
 
-            Application.Current!.SetLanguageVariant(LanguageVariant.zh_CN);
+            languageManager.ChangeLanguage(LanguageTags.ZhCN);
             Dispatcher.UIThread.RunJobs();
             AssertHeaderLanguage(calendar, "月", "年", "周", "年");
 
             var view = calendar.GetVisualDescendants().OfType<CalendarViewControl>().Single();
-            view.Culture!.Name.ShouldBe("zh-CN");
+            view.Culture.ShouldBeSameAs(languageManager.Current.FormattingCulture);
         }
         finally
         {
             window.Close();
-            Application.Current!.SetLanguageVariant(originalVariant);
+            languageManager.ChangeLanguage(originalLanguage);
             Dispatcher.UIThread.RunJobs();
         }
     }

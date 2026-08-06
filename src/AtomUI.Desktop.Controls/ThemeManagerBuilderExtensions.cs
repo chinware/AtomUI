@@ -31,6 +31,7 @@ public static class ThemeManagerBuilderExtensions
                 DesktopControlThemeAssetSelector.IsBrowserControlSupported,
                 DesktopControlThemeAssetSelector.SelectBrowser);
         }
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
 
         builder.Theme.AddInitializer(InitializeDesktopRuntime);
 

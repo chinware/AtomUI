@@ -9,6 +9,7 @@ public static class ColorPickerThemeManagerBuilderExtensions
         GeneratedControlPackageRegistration.Register(
             builder.Theme,
             new AtomUIColorPickerThemesProvider());
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
         return builder;
     }
 }

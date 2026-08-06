@@ -6,7 +6,7 @@ internal sealed class CalendarCultureContext
 {
     public DateTimeFormatInfo CurrentFormat { get; private set; } = CreateInvariantGregorianFormat();
 
-    public void RefreshFromThemeManager()
+    public void Refresh()
     {
         CurrentFormat = DateTimeHelper.GetCurrentDateFormat();
     }

@@ -44,6 +44,7 @@ internal sealed class TestApplication : Application
     public override void Initialize()
     {
         this.UseAtomUI(builder => builder.UseDesktopControls()
+                                         .UseDesktopColorPicker()
                                          .UseDesktopExtras()
                                          .UseLanguages(
                                              LanguageTags.EnUS,

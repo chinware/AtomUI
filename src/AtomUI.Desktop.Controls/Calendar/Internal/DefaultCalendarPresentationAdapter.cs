@@ -2,8 +2,8 @@ using System.Globalization;
 using System.Windows.Input;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme.Resources;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls.Localization;
+using Avalonia;
 
 namespace AtomUI.Desktop.Controls.Internal.Calendar;
 
@@ -47,17 +47,23 @@ internal sealed class DefaultCalendarPresentationAdapter : ICalendarPresentation
     public string GetAutomationName(CalendarView owner, CalendarViewCellModel model)
     {
         var culture = owner.Culture ?? CultureInfo.CurrentCulture;
+        var localizer = Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)
+            : null;
         return model.Kind switch
         {
             CalendarViewCellKind.Date => model.Value.ToString("D", culture),
             CalendarViewCellKind.Month => model.Value.ToString("Y", culture),
-            _ => $"{LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Week) ?? CalendarControlLangResourceKind.Week.ToString()} {model.DisplayText}"
+            _ => $"{localizer?.Get(CalendarControlLangResourceKind.Week) ?? CalendarControlLangResourceKind.Week.ToString()} {model.DisplayText}"
         };
     }
 
     public string FormatYearOption(int year, CultureInfo culture)
     {
-        var suffix = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.YearSuffix) ?? string.Empty;
+        var localizer = Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)
+            : null;
+        var suffix = localizer?.Get(CalendarControlLangResourceKind.YearSuffix) ?? string.Empty;
         return year.ToString(CultureInfo.InvariantCulture) + suffix;
     }
 

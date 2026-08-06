@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="zh-TW">
+  <file id="AtomUI.Desktop.Controls.Localization.ImagePreviewerLangResourceKind">
+    <unit id="1" name="ImageLoadFailed"><segment><source>Image load failed</source><target state="translated">圖片載入失敗</target></segment></unit>
+    <unit id="2" name="Preview"><segment><source>Preview</source><target state="translated">預覽</target></segment></unit>
+  </file>
+</xliff>

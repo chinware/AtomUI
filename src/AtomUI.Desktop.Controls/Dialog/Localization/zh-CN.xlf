@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="zh-CN">
+  <file id="AtomUI.Desktop.Controls.Localization.DialogLangResourceKind">
+    <unit id="1" name="Ok"><segment><source>OK</source><target state="translated">确定</target></segment></unit>
+    <unit id="2" name="Open"><segment><source>Open</source><target state="translated">打开</target></segment></unit>
+    <unit id="3" name="Save"><segment><source>Save</source><target state="translated">保存</target></segment></unit>
+    <unit id="4" name="Cancel"><segment><source>Cancel</source><target state="translated">取消</target></segment></unit>
+    <unit id="5" name="Close"><segment><source>Close</source><target state="translated">关闭</target></segment></unit>
+    <unit id="6" name="Discard"><segment><source>Discard</source><target state="translated">丢弃</target></segment></unit>
+    <unit id="7" name="Apply"><segment><source>Apply</source><target state="translated">应用</target></segment></unit>
+    <unit id="8" name="Reset"><segment><source>Reset</source><target state="translated">重置</target></segment></unit>
+    <unit id="9" name="Reload"><segment><source>Reload</source><target state="translated">重新加载</target></segment></unit>
+    <unit id="10" name="RestoreDefaults"><segment><source>Restore Defaults</source><target state="translated">恢复默认值</target></segment></unit>
+    <unit id="11" name="Help"><segment><source>Help</source><target state="translated">帮助</target></segment></unit>
+    <unit id="12" name="SaveAll"><segment><source>Save All</source><target state="translated">全部保存</target></segment></unit>
+    <unit id="13" name="Yes"><segment><source>Yes</source><target state="translated">是</target></segment></unit>
+    <unit id="14" name="YesToAll"><segment><source>Yes to All</source><target state="translated">全部是</target></segment></unit>
+    <unit id="15" name="No"><segment><source>No</source><target state="translated">否</target></segment></unit>
+    <unit id="16" name="NoToAll"><segment><source>No to All</source><target state="translated">全部否</target></segment></unit>
+    <unit id="17" name="Abort"><segment><source>Abort</source><target state="translated">中止</target></segment></unit>
+    <unit id="18" name="Retry"><segment><source>Retry</source><target state="translated">重试</target></segment></unit>
+    <unit id="19" name="Ignore"><segment><source>Ignore</source><target state="translated">忽略</target></segment></unit>
+  </file>
+</xliff>

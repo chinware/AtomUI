@@ -671,13 +671,21 @@ internal class DateTimePickerPanel : Panel,
                 if (value == MinimumValue)
                 {
                     return AmText ??
-                           LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!;
+                           GetLocalizedText(TimePickerLangResourceKind.AMText)!;
                 }
                 return PmText ??
-                       LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!;
+                       GetLocalizedText(TimePickerLangResourceKind.PMText)!;
             default:
                 return "";
         }
+    }
+
+    private static string? GetLocalizedText(TimePickerLangResourceKind resourceKind)
+    {
+        var localizer = Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)
+            : null;
+        return localizer?.Get(resourceKind);
     }
 
     /// <summary>

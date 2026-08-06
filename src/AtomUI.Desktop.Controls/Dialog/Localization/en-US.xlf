@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
+  <file id="AtomUI.Desktop.Controls.Localization.DialogLangResourceKind">
+    <unit id="1" name="Ok"><segment><source>OK</source></segment></unit>
+    <unit id="2" name="Open"><segment><source>Open</source></segment></unit>
+    <unit id="3" name="Save"><segment><source>Save</source></segment></unit>
+    <unit id="4" name="Cancel"><segment><source>Cancel</source></segment></unit>
+    <unit id="5" name="Close"><segment><source>Close</source></segment></unit>
+    <unit id="6" name="Discard"><segment><source>Discard</source></segment></unit>
+    <unit id="7" name="Apply"><segment><source>Apply</source></segment></unit>
+    <unit id="8" name="Reset"><segment><source>Reset</source></segment></unit>
+    <unit id="9" name="Reload"><segment><source>Reload</source></segment></unit>
+    <unit id="10" name="RestoreDefaults"><segment><source>Restore Defaults</source></segment></unit>
+    <unit id="11" name="Help"><segment><source>Help</source></segment></unit>
+    <unit id="12" name="SaveAll"><segment><source>Save All</source></segment></unit>
+    <unit id="13" name="Yes"><segment><source>Yes</source></segment></unit>
+    <unit id="14" name="YesToAll"><segment><source>Yes to All</source></segment></unit>
+    <unit id="15" name="No"><segment><source>No</source></segment></unit>
+    <unit id="16" name="NoToAll"><segment><source>No to All</source></segment></unit>
+    <unit id="17" name="Abort"><segment><source>Abort</source></segment></unit>
+    <unit id="18" name="Retry"><segment><source>Retry</source></segment></unit>
+    <unit id="19" name="Ignore"><segment><source>Ignore</source></segment></unit>
+  </file>
+</xliff>

@@ -434,9 +434,9 @@ internal class Calendar : TemplatedControl
         _stateController?.Apply(action);
     }
 
-    internal void RefreshCultureFromThemeManager()
+    internal void RefreshCulture()
     {
-        _cultureContext.RefreshFromThemeManager();
+        _cultureContext.Refresh();
         ApplyViewStateAction(CalendarViewAction.SetCulture(_cultureContext.CurrentFormat));
     }
 
@@ -1572,7 +1572,7 @@ internal class Calendar : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        RefreshCultureFromThemeManager();
+        RefreshCulture();
         CalendarItem = e.NameScope.Find<CalendarItem>("PART_CalendarItem");
 
         if (SelectedDate is not null && ShouldSelectedDateUpdateDisplayDate(SelectedDate.Value))

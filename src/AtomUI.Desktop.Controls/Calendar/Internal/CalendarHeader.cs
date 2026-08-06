@@ -1,5 +1,4 @@
 using System.Globalization;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls.Localization;
 using Avalonia;
 using Avalonia.Controls;
@@ -246,10 +245,13 @@ internal sealed class CalendarHeader : TemplatedControl
             {
                 if (_modeSwitch.Items.Count >= 2)
                 {
-                    var monthLabel = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Month)
+                    var localizer = Application.Current is { } application
+                        ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)
+                        : null;
+                    var monthLabel = localizer?.Get(CalendarControlLangResourceKind.Month)
                                      ?? CalendarControlLangResourceKind.Month.ToString();
-                    var yearLabel = LanguageResourceBinder.GetLangResource(CalendarControlLangResourceKind.Year)
-                                     ?? CalendarControlLangResourceKind.Year.ToString();
+                    var yearLabel = localizer?.Get(CalendarControlLangResourceKind.Year)
+                                    ?? CalendarControlLangResourceKind.Year.ToString();
 
                     if (_modeSwitch.Items[0] is OptionButton monthItem && !Equals(monthItem.Content, monthLabel))
                     {

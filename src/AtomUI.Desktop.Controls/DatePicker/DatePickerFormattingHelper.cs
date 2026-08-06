@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls.Localization;
 using AtomUI.Media;
 using Avalonia;
@@ -62,8 +61,11 @@ internal static class DatePickerFormattingHelper
             return null;
         }
 
-        var amDesignator = amText ?? LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText);
-        var pmDesignator = pmText ?? LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText);
+        var localizer = Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)
+            : null;
+        var amDesignator = amText ?? localizer?.Get(TimePickerLangResourceKind.AMText);
+        var pmDesignator = pmText ?? localizer?.Get(TimePickerLangResourceKind.PMText);
         if (amDesignator is null || pmDesignator is null)
         {
             return null;
