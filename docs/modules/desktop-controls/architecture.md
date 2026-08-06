@@ -12,7 +12,7 @@
 | Token 类 | 可选；仅在 Control 存在 Own Token 时使用无参数 `[ControlDesignToken]` 并继承 `AbstractControlDesignToken`，不得继承另一个 Control Token |
 | AXAML 主题 | 位于 `Themes/`，定义 ControlTheme、模板和样式 |
 | 主题注册 | 生成器从 `Themes/**/*.axaml` 产生 asset owner/reference manifest，包级 Provider 按平台接入主题 |
-| 语言 Provider | 位于 `Localization/`，由源生成器收集 |
+| 本地化 Catalog | enum 与 XLIFF 位于 `Localization/`，由生成器编译为 Catalog descriptor 和内置 Translation Bundle |
 | 辅助类型 | Converters、DataLoad、EventArgs、PseudoClass、ReflectionExtensions 等 |
 
 ## 横向基础系统

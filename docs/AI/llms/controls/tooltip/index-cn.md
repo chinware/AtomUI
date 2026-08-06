@@ -207,6 +207,7 @@ Tooltip Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 资源和 AOT 约束：
 
 - 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
+- 不通过 VisualTree 遍历或反射发现其他控件的 template part；输入文本可视宽度只消费输入控件发布的内部 metric。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
@@ -227,6 +228,7 @@ Tooltip Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipPseudoClass.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipService.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipToken.cs`
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`
 
 职责边界：
 

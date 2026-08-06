@@ -11,7 +11,7 @@
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/ImagePreviewer`：控件主体、图片源模型、加载状态、预览宿主和 renderer 所在目录，代表文件包括 `AbstractImagePreviewer.cs`、`ImagePreviewer.cs`、`ImageViewer.cs`、`ImagePreviewRenderer.cs`、`IImagePreviewSource.cs`、`UriImagePreviewSource.cs`、`StreamImagePreviewSource.cs`、`ImageSourceUri.cs`、`ImagePreviewItem.cs`、`LoadedImageSource.cs` 和 `IImageSourceLoader.cs`。
-- `src/AtomUI.Desktop.Controls/ImagePreviewer/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
+- `src/AtomUI.Desktop.Controls/ImagePreviewer/Localization`：`ImagePreviewerLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls/ImagePreviewer/Themes`：12 个文件，代表文件 `ImageGroupPreviewerTheme.axaml`、`ImagePreviewFloatToolbarTheme.axaml`、`ImagePreviewNavButtonTheme.axaml`、`ImagePreviewToolbarTheme.axaml`、`ImagePreviewerCoverTheme.axaml` 等。
 
 职责边界：
@@ -51,9 +51,7 @@
 - `ImagePreviewLoadScheduler`：内部加载调度器，统一封面、当前项、预加载和 fallback 的并发控制、优先级、取消、generation 校验和结果回写。
 - `IImagePreviewTitleResolver`：预览标题解析接口，基于当前图片来源和集合上下文同步返回可显示标题。
 - `ImagePreviewTitleResolveContext`：标题解析上下文，承载 current effective item、显示索引和总数等只读输入。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `ImagePreviewerLangResourceKind`：稳定的本地化 Catalog enum；生成器从三个 XLIFF 文件编译资源表和 XAML 扩展。
 
 核心协作规则：
 
@@ -332,7 +330,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 网络图片必须通过异步加载服务处理，不允许在 UI 线程同步等待网络 I/O。
 - 本地、资源和远程 URI 图片共享同一 `ImageSourceUri.CacheKey` identity 规范化规则，用于去重、旧结果判定和扩展场景；非 URI 来源只有显式实现 `IImagePreviewSourceIdentity` 时才跨实例复用。
 - 默认 loading/error 视觉必须保持 AXAML-first。封面 Skeleton、预览 Spin、失败图标和本地化文本应由模板和资源表达；除非需要计算稳定占位尺寸，否则不要用 C# 动态创建视觉节点。
-- 默认失败文案属于 ImagePreviewer 控件语言资源，新增或调整文案时同步 `en_US`、`zh_CN`、`zh_TW` 语言提供器和生成语言资源，不在主题中写死英文。
+- 默认失败文案属于 ImagePreviewer Catalog；新增或调整文案时同步 Catalog enum 与 `en-US`、`zh-CN`、`zh-TW` XLIFF，不在主题中写死英文。
 - 标题 resolver 必须是同步、确定性的纯解析逻辑；不得访问文件系统、发起网络请求、等待异步任务或通过运行时反射发现模型成员。
 - 预览标题图标必须使用 `PathIcon? PreviewTitleIcon` 链路，不通过运行时反射、文件探测、平台特判、`Window.Icon` 或主窗口 fallback 生成额外图标模型。
 - `LoadedImageSource` 由控件当前加载项持有；来源替换、取消或控件释放时必须释放旧结果。

@@ -71,7 +71,7 @@ Skeleton
 | `Skeleton` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `SkeletonAvatar` | control theme | `SkeletonAvatarTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `SkeletonButton` | control theme | `SkeletonButtonTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `SkeletonElement` | control theme | `SkeletonElementTheme.axaml` | Skeleton | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `SkeletonElement` | control theme | `SkeletonElementTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `SkeletonImage` | control theme | `SkeletonImageTheme.axaml` | 用户代码 / 控件宿主 | `AnimationLayerFill`, `Background`, `CornerRadius`, `IsActive` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_RootLayout` | template node (Panel) | `SkeletonImageTheme.axaml` | SkeletonImage | `AnimationLayerFill`, `Background`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentLayer` | template node (Border) | `SkeletonImageTheme.axaml` | SkeletonImage | `Background`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

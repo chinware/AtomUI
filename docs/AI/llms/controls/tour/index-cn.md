@@ -53,8 +53,9 @@ Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 主要公开类型与枚举：
 
-- 类型：`DefaultTourIndicator`、`TextTourIndicator`、`Tour`、`TourIndicator`、`TourLayer`、`TourStep`、`TourStepNavRequestEventArgs`、`TourStepOption`、`TourStepsView`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`DefaultTourIndicator`、`TextTourIndicator`、`Tour`、`TourIndicator`、`TourLayer`、`TourStep`、`TourStepNavRequestEventArgs`、`TourStepOption`、`TourStepsView`。
 - 枚举：`TourPlacementMode`、`TourStyleType`。
+- 本地化 Catalog：`TourLangResourceKind`。
 
 稳定 template part：
 
@@ -69,7 +70,7 @@ Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
-- 类型：`DefaultTourIndicator`、`TextTourIndicator`、`Tour`、`TourIndicator`、`TourLayer`、`TourStep`、`TourStepNavRequestEventArgs`、`TourStepOption`、`TourStepsView`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`DefaultTourIndicator`、`TextTourIndicator`、`Tour`、`TourIndicator`、`TourLayer`、`TourStep`、`TourStepNavRequestEventArgs`、`TourStepOption`、`TourStepsView`。
 
 ## 使用示例
 
@@ -176,9 +177,10 @@ Tour Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 
 - `src/AtomUI.Desktop.Controls/Tour/DefaultTourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/ITourAction.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/TourLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/Tour/TextTourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/DefaultTourIndicatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TextTourIndicatorTheme.axaml`

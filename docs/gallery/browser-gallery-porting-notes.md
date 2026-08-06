@@ -11,7 +11,9 @@ Control 包入口：
 ```csharp
 this.UseAtomUI(builder =>
 {
-    builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
+    builder.UseLanguages(
+        GalleryLanguageDefaults.Resolve(CultureInfo.CurrentUICulture),
+        [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
     builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
     builder.UseAlibabaSansFont();
     builder.UseAlibabaPuHuiTiFont();
@@ -62,7 +64,7 @@ flowchart LR
 
 - 每个 public、可主题化 Control 的 exact CLR type、identity 和可选 Own Token descriptor。
 - 每个独立 `*Theme.axaml` 叶子的 owner、引用 Control identity、Semantic Part Theme 契约和资产 URI。
-- 生成的强类型 `XxxTokenResource`、资源加载包装和语言 Provider。
+- 生成的强类型 `XxxTokenResource` 和主题资源加载包装。
 
 运行时不扫描程序集或 AXAML，不根据 `TargetType`、继承或 `BasedOn` 推断 identity。
 

@@ -49,8 +49,9 @@ Pagination 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 主要公开类型与枚举：
 
-- 类型：`AbstractPagination`、`PageNavRequestArgs`、`PageSizeComboBoxItem`、`Pagination`、`PaginationNav`、`PaginationNavItem`、`QuickJumpArgs`、`QuickJumpEdit`、`QuickJumperBar`、`SimplePagination`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`AbstractPagination`、`PageNavRequestArgs`、`PageSizeComboBoxItem`、`Pagination`、`PaginationNav`、`PaginationNavItem`、`QuickJumpArgs`、`QuickJumpEdit`、`QuickJumperBar`、`SimplePagination`。
 - 枚举：`PaginationAlign`。
+- 本地化 Catalog：`PaginationLangResourceKind`。
 
 稳定 template part：
 
@@ -131,9 +132,7 @@ Pagination 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - `QuickJumpEdit`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `QuickJumperBar`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `SimplePagination`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `PaginationLangResourceKind`：稳定的本地化 Catalog enum；内置翻译由同目录三种语言 XLIFF 提供并在编译期生成。
 
 集成关系：
 

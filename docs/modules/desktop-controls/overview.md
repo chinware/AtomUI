@@ -5,7 +5,7 @@
 ## 职责
 
 - 提供大多数桌面端 Ant Design 控件。
-- 组织桌面控件 Token、主题、语言 Provider。
+- 组织桌面控件 Token、主题、本地化 Catalog 和内置 Translation Bundle。
 - 提供 Popup、Overlay、Flyout、Window、WindowTitleBar、Dialog、Message、Notification 等桌面系统能力。
 - 在浏览器环境下提供可用的主题 Provider 和安全 Token 子集。
 - 向 DataGrid、ColorPicker、Extras、性能工具开放内部成员。

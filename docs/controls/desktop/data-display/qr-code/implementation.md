@@ -10,9 +10,10 @@
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/QRCode/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/QRCodeLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/QRCode/QRCode.cs`
 - `src/AtomUI.Desktop.Controls/QRCode/QRCodeToken.cs`
 - `src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`
@@ -31,9 +32,7 @@
 - `AbstractQRCode`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
 - `QRCode`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `QRCodeToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `QRCodeLangResourceKind`：稳定的本地化 Catalog enum；三个 XLIFF 文件提供随模块发布的内置翻译，生成器负责编译资源表和 XAML 扩展。
 
 核心协作规则：
 

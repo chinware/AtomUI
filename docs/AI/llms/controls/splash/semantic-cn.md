@@ -68,9 +68,9 @@ Splash
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Splash` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Splash` | control theme | `SplashTheme.axaml` | 用户代码 / 控件宿主 | `Content`, `ContentTemplate`, `Detail`, `Footer`, `FooterTemplate`, `IsProgressBarVisible` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_RootLayout` | template node (Border) | `SplashTheme.axaml` | Splash | `Content`, `ContentTemplate`, `Detail`, `Footer`, `FooterTemplate`, `IsProgressBarVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_SurfaceLayout` | template node (Border) | `SplashTheme.axaml` | Splash | `Content`, `ContentTemplate`, `Detail`, `Footer`, `FooterTemplate`, `IsProgressBarVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Splash` | control theme | `SplashTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `Detail`, `Footer` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_RootLayout` | template node (Border) | `SplashTheme.axaml` | Splash | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `Detail`, `Footer` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_SurfaceLayout` | template node (Border) | `SplashTheme.axaml` | Splash | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `Detail`, `Footer` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentLayout` | template node (StackPanel) | `SplashTheme.axaml` | Splash | `Content`, `ContentTemplate`, `Detail`, `Footer`, `FooterTemplate`, `IsProgressBarVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LogoPresenter` | template node (ContentPresenter) | `SplashTheme.axaml` | Splash | `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_TitleBlock` | template node (TextBlock) | `SplashTheme.axaml` | Splash | `Title` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -145,7 +145,7 @@ Splash 的视觉模型由 `Splash` 控件模板、`SplashWindow` 宿主主题、
 | `SplashTheme.axaml` | 定义启动页视觉控件模板、状态 selector、ProgressBar/Spin 组合和内容区域。 |
 | `SplashWindowTheme.axaml` | 定义桌面启动窗口宿主、透明无装饰窗口模板、阴影宿主和内容承载边界。 |
 
-Splash 使用 `SplashToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。
+Splash 使用独立的 Control identity 和 `SplashToken` Own Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。`SplashTheme.axaml` 通过 `SplashTokenResource` 统一读取 Splash 的 Effective Global Token 和 Own Token：标题读取 Global Token `ColorTextHeading`，普通消息读取 Global Token `ColorText`，副标题和详情读取 Own Token `SubtleForeground`。默认没有 Splash Control 级覆盖时，Effective Global Token 回退到当前主题的全局结果，因此默认 Light/Dark 视觉不变。
 `SplashWindow` 使用 `{x:Type atom:SplashWindow}` 作为隐式 `ControlTheme` key；窗口模板必须保持透明内容宿主，避免默认 Window 背景破坏 Splash 表面圆角。
 `SplashWindowTheme.axaml` 直接使用 `ShadowsAwareContainer#PART_SurfaceHost` 承载 `Splash`，由 `SurfaceBoxShadow` 控制窗口表面阴影，由 `SurfaceCornerRadius` 控制阴影遮罩圆角。`SplashTheme.axaml` 内部的 `PART_RootLayout` 和 `PART_SurfaceLayout` 继续负责背景、内容圆角和裁剪。
 
@@ -153,6 +153,7 @@ Splash 使用 `SplashToken` 作为控件 Token scope。Token 只表达组件视�
 
 - 同时影响窗口阴影宿主和 Splash 内容表面的视觉资源，应写入 `SplashWindow.Resources`。
 - 只影响 `Splash` 内部模板的资源，可以写入 `Splash.Resources`。
+- 应用需要完整的专用启动窗口视觉时，定义自己的 `SplashWindow` 和内部 Splash 子控件；子控件通过 `StyleKeyOverride` 复用标准 Splash Theme，并由自己的 AXAML `Styles` 维护专用模板视觉。窗口或页面不得进入 Splash 模板修改内部节点。
 - 不通过 C# `TokenResourceBinder` 在窗口宿主和 Splash 之间桥接 `SurfaceBoxShadow`、`SurfaceCornerRadius` 等模板可表达关系。
 
 主题维护规则：
@@ -160,6 +161,7 @@ Splash 使用 `SplashToken` 作为控件 Token scope。Token 只表达组件视�
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 视觉结构优先使用 AXAML、`TemplateBinding`、selector、`Spin`、`ProgressBar` 和 `ContentPresenter` 表达。
 - 不把状态显示逻辑改成 C# 动态创建视觉，除非 AXAML 无法表达且生命周期 owner 明确。
+- Gallery 和业务代码不得从页面、父控件 Style 或窗口 ControlTheme 通过 `/template/`、C# `.Template()` 或 `PART_*` 名称进入 Splash 模板。专用 Splash 子控件可以通过 `StyleKeyOverride` 复用标准 Splash Theme，并在自己的 AXAML `Styles` 中进入自己的一层模板；该子控件承担模板契约所有权。
 - Light/Dark 主题应保持品牌区域、进度区域、错误状态和窗口表面的对比度。
 
 Token 边界：
@@ -190,6 +192,7 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 - 视觉控件、窗口宿主、实例服务和静态 API 的职责边界。
 - Public API、默认值、服务委托路径和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- `SplashTokenResource` 对 Effective Global Token 与 Own Token 的统一消费边界；`SharedTokenResource` 只用于明确要求永远跟随真正 Global Token snapshot 的值。
 - `CloseAsync()` 幂等、最短展示时间、关闭延迟和引用释放路径。
 - Light/Dark、不同 DPI、不同平台窗口系统下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

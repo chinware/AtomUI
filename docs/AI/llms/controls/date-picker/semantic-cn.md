@@ -55,6 +55,13 @@ DatePicker
         -> StackPanel (template-stable)
            -> RangeCalendar#PART_CalendarView (template-stable)
            -> TimeView#PART_TimeView (template-stable)
+  -> InfoPickerTextBox (control theme, InfoPickerTextBoxTheme.axaml)
+  -> PickerClearUpButton (control theme, PickerClearUpButtonTheme.axaml)
+     -> Panel (template-stable)
+        -> InputClearIconButton#PART_ClearButton (template-stable)
+        -> StackPanel#IconLayout (template-stable)
+           -> IconPresenter#PART_InfoIconPresenter (template-stable)
+           -> ContentPresenter#FormFeedBack (internal-observable)
 ```
 
 ### 协作节点
@@ -93,6 +100,10 @@ DatePicker
 | `StackPanel` | template node (StackPanel) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `ClockIdentifier`, `IsMotionEnabled`, `IsRangeStartActive`, `IsTimeSelectionVisible`, `PickerMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CalendarView` | template node (RangeCalendar) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `IsMotionEnabled`, `IsRangeStartActive`, `PickerMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_TimeView` | template node (TimeView) | `TimedRangeDatePickerPresenterTheme.axaml` | TimedRangeDatePickerPresenter | `ClockIdentifier`, `IsMotionEnabled`, `IsTimeSelectionVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `InfoPickerTextBox` | control theme | `InfoPickerTextBoxTheme.axaml` | DatePicker | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PickerClearUpButton` | control theme | `PickerClearUpButtonTheme.axaml` | DatePicker | `FormFeedback`, `Icon`, `IsFormFeedbackVisible`, `IsInClearMode` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Panel` | template node (Panel) | `PickerClearUpButtonTheme.axaml` | PickerClearUpButton | `FormFeedback`, `Icon`, `IsFormFeedbackVisible`, `IsInClearMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ClearButton` | template node (InputClearIconButton) | `PickerClearUpButtonTheme.axaml` | PickerClearUpButton | `IsInClearMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 

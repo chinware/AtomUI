@@ -26,7 +26,7 @@
 
 - `GeneratedControlPackageRegistration` 产生的 exact Control descriptor、可选 Own Token schema 和强类型 TokenResource。
 - `GeneratedControlThemeAssetManifest` 中的独立 ColorPicker 主题叶子，并通过 `AtomUIColorPickerThemesProvider` 接入 Styles。
-- 该包生成的 Language Provider。
+- 该包生成的 Language Module registration，将 ColorPicker Catalog 和内置翻译加入 `builder.Localization`。
 
 注册入口不维护 Token 类型列表、主题聚合 AXAML 或逐 Control 清单。
 

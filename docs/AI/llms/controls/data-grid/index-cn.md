@@ -47,7 +47,26 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | 视觉与布局 | `BottomPaginationAlign`、`ColumnWidth`、`HorizontalAlignment`、`HorizontalScrollBarVisibility`、`MaxColumnWidth`、`MinColumnWidth`、`RowHeight`、`SeparatorBrush`、`SizeType`、`SublevelIndent` 等 14 项 | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `CellTheme`、`CollectionView`、`CustomOperatingIndicator`、`EmptyIndicator`、`Footer`、`FormatString`、`GridLinesVisibility`、`Level`、`Maximum`、`Minimum` 等 15 项 | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
-稳定事件包括 `SelectionChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+稳定事件包括 `SelectionChanged`、`RowReordering` 和 `RowReordered`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+
+行拖动重排由 `CanUserReorderRows`、`DataGridRowReorderColumn`、`RowReordering`、`RowReordered` 和可选的
+`IDataGridCollectionViewMoveSupport` 共同表达。`DataGrid` 不直接把 View 索引解释为源集合索引，也不直接对
+`IList` 执行 `RemoveAt` / `Insert`。CollectionView 只有在实现移动能力接口并声明 `CanMove=true` 时才参与提交：
+
+```csharp
+public interface IDataGridCollectionViewMoveSupport
+{
+    bool CanMove { get; }
+
+    bool TryMove(int sourceIndex, int targetIndex);
+}
+```
+
+`sourceIndex` 和 `targetIndex` 都使用当前 CollectionView 的零基索引。`TryMove` 只有在项目顺序发生实际变化并且
+提交成功时返回 `true`；同位置释放、能力缺失、索引失效或会话在提交前失效时返回 `false`，且不触发
+`RowReordered`。内置 `DataGridCollectionView` 只在源集合可写、非只读、非固定长度、未处于新增或编辑状态，
+并且没有排序、过滤、分组、分页或延迟刷新时提供移动能力。自定义 CollectionView 可以通过实现该可选接口
+定义自己的索引映射和提交语义，而不需要改变已有 `IDataGridCollectionView` 实现。
 
 分页公共契约由 `PageSize`、`PaginationVisibility`、`TopPaginationAlign`、`BottomPaginationAlign` 和
 `IsHideOnSinglePage` 共同表达。`PageSize` 默认为 `0`，表示不启用内建分页；非零值配置当前
@@ -96,7 +115,7 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 ## 事件与命令
 
 DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-稳定事件包括 `SelectionChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+稳定事件包括 `SelectionChanged`、`RowReordering` 和 `RowReordered`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 - 类型：`DataGrid`、`DataGridAbstractTextColumn`、`DataGridAutoGeneratingColumnEventArgs`、`DataGridBeginningEditEventArgs`、`DataGridBoundColumn`、`DataGridCell`、`DataGridCellCollection`、`DataGridCellCoordinates`、`DataGridCellEditEndedEventArgs`、`DataGridCellEditEndingEventArgs` 等 public DataGrid 类型。
 
 ## 使用示例
@@ -341,6 +360,11 @@ Public API / inherited command / item source / user input
 - `ClearFilters()` 和单列清除过滤必须通过清空列级 `SelectedFilterValues` 完成，不能只清空 `FilterDescriptions`，否则 VM 绑定、过滤图标激活态和 flyout 勾选态会分裂。
 - 分页状态以当前 `DataGridCollectionView` 为 owner；顶部和底部分页部件必须从同一份 `ItemCount`、`PageSize`
   和 `PageIndex` 投影，不能互相覆盖，也不能在模板重建时反向重置 CollectionView。
+- 行拖动状态以当前 `DataGrid` 的单一拖拽会话为 owner；handle 和 RowsPresenter 只投影输入与 ghost row，不能保存
+  跨 DataGrid 共享的静态拖拽状态。Pointer capture、源行、CollectionView 和目标索引必须属于同一个会话。
+- `RowReordering` 在超过拖动阈值后且创建 ghost row 前触发一次；事件取消或事件回调改变 DataGrid、源行、
+  ItemsSource、CollectionView 或移动能力时，本次 Pointer 会话保持取消状态，不得在后续移动帧重复开始。
+- `RowReordered` 只在 CollectionView 成功提交顺序变化，并且 ghost、capture、动画与会话状态全部清理后触发。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -401,6 +425,10 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- 行拖动 PointerMoved 热路径只更新会话坐标、目标索引、ghost offset 和必要的自动滚动请求；不在移动帧修改
+  集合、刷新 View、重建模板或分配新的 ghost row。
+- 每次有效 PointerPressed 最多创建一个轻量行拖动会话，每次进入 Dragging 最多创建一个 ghost row；两者在
+  完成或取消时释放。移动能力通过直接接口能力判断，不使用反射、动态调用或运行时类型扫描。
 
 ## 源码索引
 
@@ -412,11 +440,11 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls.DataGrid/Column/Filters`：7 个文件，代表文件 `DataGridFilterIndicator.cs`、`DataGridFilterItem.cs`、`DataGridFilterValuesSelectedEventArgs.cs`、`DataGridMenuFilterFlyout.cs`、`DataGridMenuFilterFlyoutPresenter.cs` 等。
 - `src/AtomUI.Desktop.Controls.DataGrid/Data`：15 个文件，代表文件 `CollectionViewGroupRoot.cs`、`DataGridCollectionView.cs`、`DataGridCollectionViewGroup.cs`、`DataGridCollectionViewGroupInternal.cs`、`DataGridCurrentChangingEventArgs.cs` 等。
 - `src/AtomUI.Desktop.Controls.DataGrid/EventArgs`：18 个文件，代表文件 `DataGridAutoGeneratingColumnEventArgs.cs`、`DataGridBeginningEditEventArgs.cs`、`DataGridCellEditEndedEventArgs.cs`、`DataGridCellEditEndingEventArgs.cs`、`DataGridCellEventArgs.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator`：2 个文件，代表文件 `LanguageProviderPool.g.cs`、`LanguageResourceConst.g.cs`。
+- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.Localization`：生成 Catalog descriptor、语言模块注册入口和 `DataGridLangResource` 扩展。
 - `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ResourceHost.ScopedResourceHostGenerator`：1 个文件，代表文件 `GenerateScopedResourceHostAttribute.g.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：生成 `GeneratedControlPackageRegistration.g.cs`、`GeneratedThemeSchema.g.cs` 和 `TokenResourceConst.g.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator`：生成独立主题叶子的 `GeneratedControlThemeAssetManifest.g.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
+- `src/AtomUI.Desktop.Controls.DataGrid/Localization`：`DataGridLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls.DataGrid/Properties`：1 个文件，代表文件 `AssemblyInfo.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/Row`：7 个文件，代表文件 `DataGridDetailsPresenter.cs`、`DataGridRow.Privates.cs`、`DataGridRow.cs`、`DataGridRowGroupHeader.cs`、`DataGridRowGroupInfo.cs` 等。
 - `src/AtomUI.Desktop.Controls.DataGrid/Themes`：21 个文件，代表文件 `DataGridCellTheme.axaml`、`DataGridColumnGroupHeaderTheme.axaml`、`DataGridColumnHeaderTheme.axaml`、`DataGridColumnHeaderTheme.cs`、`DataGridHeaderViewItemTheme.axaml` 等。

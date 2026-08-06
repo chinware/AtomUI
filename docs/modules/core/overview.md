@@ -1,6 +1,6 @@
 # AtomUI.Core 模块概览
 
-`AtomUI.Core` 是 AtomUI 的基础设施项目，RootNamespace 为 `AtomUI`。它承载主题、Token、本地化、动画、MotionScene、资源加载、反射扩展和通用工具。
+`AtomUI.Core` 是 AtomUI 的框架入口和主题基础设施项目，RootNamespace 为 `AtomUI`。它承载主题、Token、动画、MotionScene、资源加载、反射扩展和通用工具，并引用独立的 `AtomUI.Localization` 运行时。
 
 ## 职责
 
@@ -9,7 +9,7 @@
   context lease/resource bridge。
 - 定义生成式全局/Control Own Token schema、所有 Control 可覆盖完整 Global Token 的规则、不可变
   `ThemeSnapshot`、稳定资源键，以及 `SharedTokenResource`/`XxxTokenResource` 强类型资源扩展。
-- 定义语言系统：`LanguageVariant`、`LanguageProvider`、`LanguageResourceExtension`。
+- 组合根 `IAtomUIBuilder` 的主题与本地化子 Builder，并把 `ILanguageManager`、`ILocalizer` 暴露给应用。
 - 提供动画 Transition、MotionScene、颜色与几何工具。
 - 依赖 `AtomUI.Native` 支撑窗口级底层能力。
 
@@ -27,7 +27,7 @@
 | `Theme/Compilation/` | 纯 ThemeCompiler、不可变 ThemeSnapshot 和 Snapshot 缓存 |
 | `Theme/Resources/` | Snapshot-backed ResourceProvider、全局 SharedTokenResource、生成式 XxxTokenResource、ControlTheme asset manifest、resolver 和样式加载辅助 |
 | `Theme/DesignTokens/` | 仅供编译阶段使用的 DesignToken、ControlToken builder、定义和 value converter |
-| `Language/` | 本地化变体、Provider、资源扩展 |
+| `Localization/` | 根 Builder 的本地化扩展；Catalog、Snapshot、Manager 和资源扩展位于 `AtomUI.Localization` 项目 |
 | `Animations/` | Avalonia Transition 扩展 |
 | `MotionScene/` | 进入、离开、移动、折叠等 Motion 抽象 |
 | `Assets/Themes/` | 内置主题定义 |
@@ -44,6 +44,7 @@ registry 后不扫描上层程序集或 AXAML。它对多个上层项目开放 `
 ## 相关文档
 
 - [主题系统架构](theme-system.md)
+- [AtomUI 多语言模块架构](../localization/overview.md)
 - [主题系统架构与主题定制指南](theme-architecture-and-customization.md)
 - [主题算法枚举化设计](theme-algorithm-enum-design.md)
 - [主题定义 XML v1 规范](theme-definition-xml.md)

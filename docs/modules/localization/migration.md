@@ -1,11 +1,11 @@
 # 多语言模块迁移方案
 
-本文定义从当前 `ThemeManager + LanguageProvider + C# 翻译类` 架构迁移到独立应用级本地化基础设施的边界。
-它只描述迁移顺序和兼容结果，不允许旧实现反向决定目标架构。
+本文记录从旧 `ThemeManager + LanguageProvider + C# 翻译类` 架构到独立应用级本地化基础设施的历史映射、
+兼容结果和删除边界。迁移已经完成；本文不是当前实现入口，当前契约以同目录其他文档为准。
 
-## 当前实现问题
+## 旧实现问题
 
-当前语言系统具有以下结构性限制：
+旧语言系统具有以下结构性限制：
 
 - `ThemeManager` 同时实现主题和 `ILanguageManager`，语言资源被当作主题静态资源的一部分挂载。
 - `LanguageCode` 和 `LanguageVariant` 只能表达 `en-US`、`zh-CN`、`zh-TW`。
@@ -17,7 +17,7 @@
 
 ## 迁移后的对应关系
 
-| 当前类型或机制 | 目标 |
+| 旧类型或机制 | 已落地替代 |
 |---|---|
 | `LanguageCode` | `LanguageTag` + `LanguageTags` |
 | `LanguageVariant` | `LanguageState.CurrentLanguage` / `LanguageDefinition` |
@@ -53,7 +53,7 @@ AtomUI 公共 Catalog 的 enum namespace、类型名和成员名应尽量保持�
 
 ## 明确不保留的 API
 
-目标架构完成后删除：
+重构中已经删除：
 
 ```text
 LanguageCode
@@ -99,51 +99,18 @@ ID 分配规则：
 - 迁移清单记录旧成员名到新 ID，防止分批迁移时不同语言产生不同编号。
 - 已发布的 enum 底层数值如果被外部持久化，应在对应 Catalog 迁移前单独评估；不能假设现有隐式值是契约。
 
-## 实施阶段
+## 最终迁移结果
 
-### 1. 建立新基础设施
+- `AtomUI.Localization`、`AtomUI.Build.Tasks`、Localization Generator、根 `IAtomUIBuilder` 和静态语言包模板已经落地。
+- AtomUI、GalleryBase 与 Gallery Catalog 已迁移为显式数字 ID 和 XLIFF 2.1。
+- Desktop、DataGrid、ColorPicker、Extras 等包分别注册自身 `GeneratedLanguageModuleRegistration`。
+- Gallery 与测试应用使用 `UseLanguages()`、`ILanguageManager` 和 `ILocalizer`。
+- 旧 Provider 类型、旧 Generator Walker/Writer、ThemeManager 语言状态和逐语言扩展已从源码删除。
+- 模块主包与静态语言包的真实 NuGet 消费由 `AtomUI.Localization.IntegrationTests` 保护。
 
-- 创建 `AtomUI.Localization`、运行时类型和测试项目。
-- 创建 `AtomUI.Build.Tasks`，扩展 `AtomUI.Generator` 和 NuGet buildTransitive 资产。
-- 引入 `IAtomUIBuilder`，让主题和本地化成为并列子系统。
-- 新旧语言系统暂时可在源码中并存，但新运行时不适配旧 Provider。
+## 禁止恢复双轨
 
-### 2. 迁移基础 Catalog
-
-- 先迁移 AtomUI.Core/Common Catalog，验证 XLIFF、Generator、Extension 和 Snapshot 全链路。
-- 迁移 `AtomUI.Controls` 的公共 Catalog，并验证应用只使用公共控件时的启动注册。
-- 建立三种内置语言完整性检查。
-
-### 3. 迁移桌面和可选包
-
-- 按 Desktop Controls、DataGrid、ColorPicker、Extras 的包边界迁移。
-- 每个包只注册自己拥有的 Language Module，不把翻译集中回 Core。
-- 迁移期间每完成一个包就删除该包旧 Provider，避免同一 Catalog 双重注册。
-
-### 4. 切换应用与 Gallery
-
-- Gallery 和测试 Application 改用 `UseLanguages()`。
-- Gallery 页面、导航、ViewModel 和服务统一使用 Catalog enum/`ILocalizer`。
-- 验证应用级 Catalog 与控件 Catalog 在同一 Snapshot 中工作。
-
-### 5. 删除旧架构
-
-- 从 `ThemeManager` 删除 `ILanguageManager`、LanguageVariantProperty、Provider 列表、语言字典和切换逻辑。
-- 从 `ControlPackageRegistration`、Theme Builder 和生成注册中移除语言 Provider。
-- 删除旧 Generator Walker/Writer、Attribute、反射 fallback 和 C# 翻译类。
-- 搜索仓库确认不存在旧类型和逐语言注册扩展。
-
-### 6. 发布与文档同步
-
-- 发布 `AtomUI.Localization` 与更新后的 `AtomUI.Generator` 构建资产。
-- 验证语言包模板、模板导出和一个真实附加语言包。
-- 更新 `docs/architecture/dependency-graph.md`、`startup-and-registration.md`、Core/Generator overview 和 AGENTS
-  Required Reading，使它们描述已经落地的事实。
-- 在实现完成前不得提前把当前架构总览改写成新项目已经存在。
-
-## 双轨限制
-
-迁移期间允许源码层面分包推进，但单个 Catalog 在任何可运行应用中只能由一个系统提供。禁止：
+单个 Catalog 在任何可运行应用中只能由新系统提供。禁止：
 
 - 同时把旧 ResourceDictionary 和新 Provider 挂到 Application。
 - 让新 `ILocalizer` 回退查询旧 ThemeManager。

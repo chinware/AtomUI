@@ -51,8 +51,9 @@ QRCode 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 主要公开类型与枚举：
 
-- 类型：`AbstractQRCode`、`QRCode`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`AbstractQRCode`、`QRCode`。
 - 枚举：`QRCodeEccLevel`、`QRCodeStatus`。
+- 本地化 Catalog：`QRCodeLangResourceKind`。
 
 稳定 template part：
 
@@ -195,9 +196,10 @@ QRCode Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/QRCode/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/QRCodeLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/QRCode/QRCode.cs`
 - `src/AtomUI.Desktop.Controls/QRCode/QRCodeToken.cs`
 - `src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`

@@ -10,8 +10,9 @@
 flowchart LR
     Enum["LanguageCatalog enum"] --> Generator["AtomUI.Generator"]
     Xlf["Project XLIFF"] --> Additional["AdditionalFiles"]
-    Pack["I18n package XLIFF"] --> Additional
-    Manifest["Referenced catalog manifests"] --> Additional
+    ModulePack["Module package en-US XLIFF"] --> Additional
+    Pack["I18n package target XLIFF"] --> Additional
+    Reference["Referenced Catalog enum assembly"] --> Generator
     Additional --> Generator
     Tasks["AtomUI.Build.Tasks"] -->|"validate / export / merge"| Xlf
     Generator --> Source["Generated descriptors / tables / extensions / bootstrap"]
@@ -28,14 +29,14 @@ MSBuild 负责发现、分类、校验和传递文件；Generator 负责把文�
 ```xml
 <AtomUILanguage Include="**/Localization/**/*.xlf" />
 <AtomUILanguageOverride Include="Localization/Overrides/**/*.xlf" />
-<AtomUILanguageCatalog Include=".../**/*.catalog.xlf" />
 ```
 
-targets 将这些 item 作为带元数据的 `AdditionalFiles` 传给 Generator。包来源、目标语言、是否 Override、Catalog
-manifest 路径和 NuGet package identity 必须保存在 item metadata 中，Generator 不从磁盘路径猜测优先级。
+targets 将这些 item 作为带元数据的 `AdditionalFiles` 传给 Generator。来源类型、source identity、module ID 和
+ContractVersion 必须保存在 item metadata 中，Generator 不从磁盘路径或 NuGet 包名猜测优先级。
 
 第三方语言包的 `buildTransitive/*.props` 只能追加声明式 item，不能运行初始化代码、修改应用源码或注册运行时
-程序集。重复 Include 由规范化绝对路径和 package identity 去重。
+程序集。MSBuild item 层只排除相同文件的重复 Include；不同路径或不同包提供相同 Catalog/语言时，由 Generator
+根据 source identity 报告同优先级冲突，不执行按 package identity 合并。
 
 ## Generator 输入
 
@@ -43,8 +44,8 @@ Generator 使用 Incremental Generator API 组合以下输入：
 
 1. 当前 Compilation 中带 `[LanguageCatalog]` 的 enum symbol。
 2. 当前项目 XLIFF `AdditionalText`。
-3. 引用项目或 NuGet 暴露的 Catalog manifest/template。
-4. 静态 I18n 包和应用 Override 提供的 XLIFF。
+3. 引用项目或 NuGet 程序集中的 `[LanguageCatalog]` enum symbol，以及模块主包携带的权威 `en-US` XLIFF。
+4. 静态 I18n 包和应用 Override 提供的目标 XLIFF。
 5. AnalyzerConfigOptions 提供的 `AssemblyName`、`PackageId`、RootNamespace 和构建策略。
 
 输入必须按规范化 Catalog ID、语言标签、来源优先级和 unit ID 排序，确保不同操作系统、文件枚举顺序和增量
@@ -66,8 +67,7 @@ LanguageCatalogDescriptor 与 catalog/unit slot mapping
 
 ```text
 GeneratedLanguageModuleRegistration
-LanguageCatalogManifest
-catalog template metadata
+程序集 AtomUILanguageModuleId metadata
 ```
 
 对于最终应用，Generator 另外生成：
@@ -104,7 +104,9 @@ Application
 Application 类型不可扩展时，Generator 必须产生诊断，不能回退到 `Assembly.GetTypes()`。
 
 类库/控件包生成自己的 `GeneratedLanguageModuleRegistration`。包级 `UseXxx()` 入口调用生成注册代码，将该模块的
-Catalog 和内置翻译交给 `ILocalizationBuilder`；开发者不手写 descriptor、Catalog ID 或 Provider 列表。
+Catalog 和内置翻译交给 `ILocalizationBuilder`；开发者不手写 descriptor、Catalog ID 或 Provider 列表。打包时
+`AtomUIPrepareLanguageModuleAssets` 自动把完整 `en-US` XLIFF 与 `<PackageId>.props` 放入主包，使最终应用可以用
+引用程序集的 Catalog enum 校验外部翻译。
 
 语言包没有程序集，其 Translation Bundle 由最终应用 Generator 生成。Bundle 可以早于或晚于目标 Language Module
 进入 Builder，Registry 构建阶段统一关联，注册顺序不构成覆盖规则。
@@ -140,20 +142,20 @@ src/AtomUI.Build.Tasks
 
 | Task | 职责 |
 |---|---|
-| `CollectLanguageCatalogsTask` | 收集项目与依赖 Catalog manifest，规范化来源元数据 |
+| `CollectLanguageCatalogsTask` | 收集显式 Catalog 模板 item，规范化 module、contract 和源指纹元数据 |
 | `ValidateLanguageFilesTask` | 校验 XLIFF 2.1、BCP 47、unit、状态、占位符和重复来源 |
 | `ExportLanguageTemplatesTask` | 按目标语言导出/更新可翻译 XLIFF 模板 |
-| `PrepareLanguagePackageTask` | 校验目标 Catalog 契约、生成包 manifest 和 contentFiles 清单 |
-| `GenerateLanguagePackagePropsTask` | 生成声明式 buildTransitive props/targets |
+| `PrepareLanguagePackageTask` | 校验单一目标语言、禁止运行时代码、生成审计 XML manifest 和 contentFiles 清单 |
+| `GenerateLanguagePackagePropsTask` | 为模块主包或静态语言包生成声明式 buildTransitive props |
 
 Task 内部协作组件包括：
 
 ```text
-Xliff21Reader
+Xliff21Parser
 Xliff21Writer
 XliffMergeEngine
 XliffValidator
-LanguageCatalogManifestReader
+LanguagePackageManifestWriter
 PackagePropsWriter
 ```
 
@@ -169,18 +171,27 @@ AtomUI.Generator.nupkg
 └── buildTransitive/
     ├── AtomUI.Generator.props
     ├── AtomUI.Generator.targets
-    └── AtomUI.Localization.targets
+    ├── AtomUI.Localization.props
+    ├── AtomUI.Localization.targets
+    └── AtomUI.ThemeAssets.targets
 ```
 
 `AtomUI.Build.Tasks` 的依赖必须随 tools 目录完整发布。Generator 项目继续隔离 `PublishAot`、trim、single-file 和
 RuntimeIdentifier 等全局发布属性，不能被最终应用当作运行时项目参与 NativeAOT publish。
 
+`AtomUI.Localization.targets` 在 NuGet `_GetPackageFiles` 收集之前准备模块/语言包资产，保证动态加入的 XLIFF、
+manifest 和 props 真正进入 `PackTask`。静态语言包项目设置 `AtomUIBuildLanguagePackage=true` 后只由 Build Tasks
+校验和打包；它自身不运行 Localization Generator 生成 Catalog 或运行时注册。相同 XLIFF 进入消费应用后才由
+Generator 编译为静态字符串表。
+
 ## 编译期与启动期校验边界
 
-XLIFF 结构、单个 Bundle 完整性、Catalog 契约、重复来源和包 manifest 在构建期校验。
-`UseLanguages()` 是普通 C# 配置；Analyzer 能静态识别直接使用 `LanguageTags.*` 的标准调用时，应提前报告最终
-覆盖缺失。配置由变量、条件或私有标签动态构造时，完整支持语言集合只能在 Builder 冻结 Registry 时校验，并在
-首帧前失败。实现不得为了声称“全部构建期校验”而使用运行时反射或要求应用重复维护字符串语言列表。
+XLIFF 结构、单个 Bundle 完整性、Catalog 契约、重复来源和语言包 props metadata 在构建期校验；manifest 由已校验
+的同一组 XLIFF 确定性生成，不是另一份编译输入。
+
+`UseLanguages()` 是普通 C# 配置，不属于当前 Generator 的输入。完整支持语言集合、标准/显式
+`LanguageDefinition` 和最终 Catalog 覆盖在 Builder 冻结 Registry、预构建所有 Snapshot 时校验，并在首帧前失败。
+实现不得为了声称“全部构建期校验”而使用运行时反射或要求应用重复维护字符串语言列表。
 
 ## 导出与合并
 

@@ -22,7 +22,7 @@
         <Panel>
             <TextBlock Name="PlaceholderText" />
             <ContentPresenter Name="SelectedContentPresenter" />
-            <TextBox Name="PART_EditableTextBox" />
+            <ComboBoxTextBox Name="PART_EditableTextBox" />
         </Panel>
     </AddOnDecoratedBox>
     <Popup Name="PART_Popup">
@@ -52,13 +52,18 @@ ComboBox
      -> IconButton#PART_OpenIndicatorButton (template-stable)
   -> ComboBoxItem (item container control theme, ComboBoxItemTheme.axaml)
      -> ContentPresenter#ContentPresenter (internal-observable)
+  -> ComboBoxTextBox (control theme, ComboBoxTextBoxTheme.axaml)
+     -> ScrollViewer#ScrollViewer (template-stable)
+        -> Panel (template-stable)
+           -> TextBlock#Placeholder (template-stable)
+           -> InputTextPresenter#PART_TextPresenter (template-stable)
   -> ComboBox (control theme, ComboBoxTheme.axaml)
      -> Panel (template-stable)
         -> AddOnDecoratedBox#{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart} (template-stable)
            -> Panel (template-stable)
               -> TextBlock#PlaceholderText (template-stable)
               -> ContentPresenter#SelectedContentPresenter (internal-observable)
-              -> TextBox#PART_EditableTextBox (template-stable)
+              -> ComboBoxTextBox#PART_EditableTextBox (template-stable)
         -> Popup#PART_Popup (template-stable)
            -> Border#PopupFrame (template-stable)
               -> Panel (template-stable)
@@ -66,10 +71,6 @@ ComboBox
                     -> ItemsPresenter#PART_ItemsPresenter (template-stable)
                  -> Border#PART_EmptyIndicator (template-stable)
                     -> Empty (template-stable)
-     -> ScrollViewer#ScrollViewer (template-stable)
-        -> Panel (template-stable)
-           -> TextBlock#Placeholder (template-stable)
-           -> InputTextPresenter#PART_TextPresenter (template-stable)
 ```
 
 ### 协作节点
@@ -81,19 +82,21 @@ ComboBox
 | `PART_OpenIndicatorButton` | template node (IconButton) | `ComboBoxHandleTheme.axaml` | ComboBoxHandle | `IsEnabled`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ComboBoxItem` | item container control theme | `ComboBoxItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `HorizontalContentAlignment`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `ContentPresenter` | template node (ContentPresenter) | `ComboBoxItemTheme.axaml` | ComboBoxItem | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `HorizontalContentAlignment`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `ComboBox` | control theme | `ComboBoxTheme.axaml` | 用户代码 / 控件宿主 | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `ComboBoxTheme.axaml` | ComboBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (AddOnDecoratedBox) | `ComboBoxTheme.axaml` | ComboBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ComboBoxTextBox` | control theme | `ComboBoxTextBoxTheme.axaml` | ComboBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `LineHeight`, `PasswordChar` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `ScrollViewer` | template node (ScrollViewer) | `ComboBoxTextBoxTheme.axaml` | ComboBoxTextBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `LineHeight`, `PasswordChar` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Panel` | template node (Panel) | `ComboBoxTextBoxTheme.axaml` | ComboBoxTextBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `LineHeight`, `PasswordChar` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Placeholder` | template node (TextBlock) | `ComboBoxTextBoxTheme.axaml` | ComboBoxTextBox | `HorizontalContentAlignment`, `LineHeight`, `PlaceholderForeground`, `PlaceholderText`, `TextAlignment`, `TextWrapping` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_TextPresenter` | template node (InputTextPresenter) | `ComboBoxTextBoxTheme.axaml` | ComboBoxTextBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `LineHeight`, `PasswordChar` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ComboBox` | control theme | `ComboBoxTheme.axaml` | 用户代码 / 控件宿主 | `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `EffectivePopupWidth`, `IsDropDownOpen`, `IsEditable` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `ComboBoxTheme.axaml` | ComboBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `EffectivePopupWidth`, `IsDropDownOpen`, `IsEditable` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (AddOnDecoratedBox) | `ComboBoxTheme.axaml` | ComboBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `IsEditable`, `IsEnabled`, `IsShowOverflowTip` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PlaceholderText` | template node (TextBlock) | `ComboBoxTheme.axaml` | ComboBox | `PlaceholderText`, `SelectingItemsControl` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SelectedContentPresenter` | template node (ContentPresenter) | `ComboBoxTheme.axaml` | ComboBox | `IsShowOverflowTip`, `OverflowTipDelay`, `OverflowTipPlacement`, `SelectionBoxItem`, `SelectionBoxItemTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_EditableTextBox` | template node (TextBox) | `ComboBoxTheme.axaml` | ComboBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `IsEditable`, `LineHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_EditableTextBox` | template node (ComboBoxTextBox) | `ComboBoxTheme.axaml` | ComboBox | `IsEditable`, `PlaceholderForeground`, `PlaceholderText`, `Text` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Popup` | template node (Popup) | `ComboBoxTheme.axaml` | ComboBox | `EffectivePopupWidth`, `IsDropDownOpen`, `IsEffectiveEmptyVisible`, `IsMotionEnabled`, `ItemsPanel`, `MaxDropDownHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PopupFrame` | template node (Border) | `ComboBoxTheme.axaml` | ComboBox | `EffectivePopupWidth`, `IsEffectiveEmptyVisible`, `IsMotionEnabled`, `ItemsPanel`, `MaxDropDownHeight`, `PopupContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `ComboBoxTheme.axaml` | ComboBox | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_EmptyIndicator` | template node (Border) | `ComboBoxTheme.axaml` | ComboBox | `IsEffectiveEmptyVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ScrollViewer` | template node (ScrollViewer) | `ComboBoxTheme.axaml` | ComboBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `LineHeight`, `PasswordChar` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Placeholder` | template node (TextBlock) | `ComboBoxTheme.axaml` | ComboBox | `HorizontalContentAlignment`, `LineHeight`, `PlaceholderForeground`, `PlaceholderText`, `TextAlignment`, `TextWrapping` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_TextPresenter` | template node (InputTextPresenter) | `ComboBoxTheme.axaml` | ComboBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `LineHeight`, `PasswordChar` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 

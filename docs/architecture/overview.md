@@ -7,7 +7,8 @@ AtomUI 是基于 Avalonia/.NET 的 Ant Design 风格控件库。源码按“基�
 ```mermaid
 flowchart TD
     Native["AtomUI.Native\n原生平台窗口能力"]
-    Core["AtomUI.Core\n主题、Token、语言、动画、MotionScene"]
+    Localization["AtomUI.Localization\nCatalog、语言状态、Snapshot、Localizer"]
+    Core["AtomUI.Core\n主题、Token、动画、MotionScene"]
     Shared["AtomUI.Controls.Shared\n控件共享契约与数据协调器"]
     Fonts["AtomUI.Fonts.*\n字体包"]
     Icons["AtomUI.Icons.*\n图标基础设施与 Ant Design 图标"]
@@ -16,11 +17,12 @@ flowchart TD
     DataGrid["AtomUI.Desktop.Controls.DataGrid\n独立 DataGrid 包"]
     ColorPicker["AtomUI.Desktop.Controls.ColorPicker\n独立 ColorPicker 包"]
     Extras["AtomUI.Desktop.Controls.Extras\n稳定补充控件包"]
-    Generator["AtomUI.Generator\nToken 与语言源生成器"]
+    Generator["AtomUI.Generator\nToken、主题资产与本地化源生成器"]
     GalleryBase["AtomUI.Toolkits.GalleryBase\nGallery 应用底座库"]
     Gallery["AtomUIGallery\n示例与展示宿主"]
 
     Native --> Core
+    Generator -. analyzer .-> Localization
     Generator -. analyzer .-> Core
     Generator -. analyzer .-> Shared
     Generator -. analyzer .-> Controls
@@ -28,6 +30,7 @@ flowchart TD
     Generator -. analyzer .-> DataGrid
     Generator -. analyzer .-> ColorPicker
     Generator -. analyzer .-> Extras
+    Core --> Localization
     Core --> Shared
     Core --> Icons
     Core --> Fonts
@@ -52,8 +55,9 @@ AtomUI 应用通常分两步接入：
 1. 在 `AppBuilder` 上调用 `WithAtomUIDefaultOptions()`，应用平台默认配置。
 2. 在 `Application.Initialize()` 内调用 `UseAtomUI(builder => ...)`，注册主题、字体、控件包和可选包。
 
-主题注册链路由 `IThemeManagerBuilder` 收集生成式 Control descriptor、主题 Provider、算法 descriptor、
-ControlTheme asset manifest、语言 Provider 和不可变初始 ThemeRequest。构建过程先创建并冻结
+根 `IAtomUIBuilder` 同时持有主题和本地化两个并列 Builder。主题注册链路由 `IThemeManagerBuilder` 收集生成式
+Control descriptor、主题 Provider、算法 descriptor、ControlTheme asset manifest 和不可变初始 ThemeRequest；
+本地化链路由 `ILocalizationBuilder` 收集 Catalog、编译后 Translation Bundle 与支持语言配置。主题构建过程先创建并冻结
 ThemeSchemaRegistry、绑定 ThemeCatalog，再同步编译首个 ThemeSnapshot；已经持有有效根 ThemeContext、稳定
 ResourceProvider 和全局 TopLevel context style 的唯一 ThemeManager 随后挂载到 Application Styles，并以同一
 实例提供 `IThemeManager` 服务。运行期全局与局部主题都经过同一个五阶段事务发布。
@@ -64,7 +68,10 @@ ResourceProvider 和全局 TopLevel context style 的唯一 ThemeManager 随后�
 - `AtomUI.Native` 是内部原生平台能力层，封装 Win32、DWM、Objective-C runtime、Xlib/XCB 和
   Wayland protocol 等底层调用。它提供能力，不决定控件策略或主题策略；P/Invoke、原生结构体、
   协议对象和可释放 native hook 不应散落在上层控件实现中。
-- `AtomUI.Core` 是所有上层项目的基础设施，包含主题、Token、语言、本地资源、动画、MotionScene。
+- `AtomUI.Localization` 是应用级本地化运行时，包含 BCP 47 标签、Catalog、Snapshot、Manager、Localizer 与
+  Avalonia 动态资源桥。
+- `AtomUI.Core` 是上层项目的框架入口与主题基础设施，包含主题、Token、本地资源、动画、MotionScene，并引用
+  `AtomUI.Localization`。
 - `AtomUI.Controls.Shared` 不提供完整 UI 控件，主要沉淀跨控件复用的接口、状态、集合视图、异步加载、上传和媒体断点能力。
 - `AtomUI.Controls` 提供公共控件和 Primitives，是桌面控件包的基础。
 - `AtomUI.Desktop.Controls` 是桌面主包，负责大多数 Ant Design 桌面控件、Popup/Overlay、Window、Browser 兼容主题。
@@ -72,15 +79,16 @@ ResourceProvider 和全局 TopLevel context style 的唯一 ThemeManager 随后�
 - `AtomUI.Desktop.Controls.Extras` 承载 Ant Design 标准之外、准备作为稳定 API 发布的补充桌面控件。
 - `AtomUI.Toolkits.GalleryBase` 是 Gallery 应用底座库，提供产品中立的 ShowCase 控件、Gallery 主题和运行时辅助能力。
 - `AtomUI.Generator` 以 Analyzer 方式接入多个项目，生成 Token schema/资源键、每个对外可主题化 Control 的独立
-  exact CLR type/identity descriptor、ControlTheme asset manifest、包级注册入口、语言资源键和语言 Provider 池。
+  exact CLR type/identity descriptor、ControlTheme asset manifest、包级注册入口、Language Catalog 扩展、
+  编译后 Translation Bundle、模块注册和应用 bootstrap。
 
 ## 横切系统
 
 - 主题与 Token：`ThemeSnapshot` 是唯一 Token 真源；`ThemeManager` 统一提交根/局部事务，稳定
   `ThemeContext` 和 snapshot-backed ResourceProvider 负责作用域资源，源生成器提供 Token schema、Control
   exact CLR type/identity、ControlTheme asset manifest 与强类型资源投影。
-- 本地化：当前实现由控件包声明 `LanguageProvider`，源生成器生成 `LanguageProviderPool`，注册时统一交给
-  `ThemeManager`；面向应用、类库和控件的独立目标架构见
+- 本地化：应用、类库和控件使用 `[LanguageCatalog]` enum 与 XLIFF 2.1；Generator 在编译期生成强类型资源扩展、
+  Translation Bundle 和显式注册，运行时由独立 `LanguageManager` 提交 Snapshot。完整架构见
   [AtomUI 多语言模块架构概览](../modules/localization/overview.md)。
 - 平台适配：`RuntimePlatform.Features.SupportsNativeWindow` 决定桌面/浏览器主题 Provider 和部分 Token 注册。
 - 控件资源：每个对外可主题化 Control 都有独立 identity 和 AXAML 主题；只有存在 Own Token 时才增加 Token 类。

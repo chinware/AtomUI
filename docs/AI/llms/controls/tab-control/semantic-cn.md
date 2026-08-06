@@ -56,6 +56,13 @@ TabControl
            -> IconPresenter#ItemIconPresenter (internal-observable)
            -> ContentPresenter#ContentPresenter (internal-observable)
            -> IconButton#PART_ItemCloseButton (template-stable)
+  -> BaseTabScrollViewer (control theme, BaseTabScrollViewerTheme.axaml)
+     -> Panel#RootLayout (template-stable)
+        -> Border#PART_ScrollStartEdgeIndicator (template-stable)
+        -> Border#PART_ScrollEndEdgeIndicator (template-stable)
+        -> DockPanel#ScrollViewLayout (template-stable)
+           -> IconButton#PART_ScrollMenuIndicator (template-stable)
+           -> TabScrollContentPresenter#ScrollViewContent (internal-observable)
   -> TabItem (item container control theme, CardTabItemTheme.axaml)
      -> Panel (template-stable)
         -> PixelAlignedBorder#Frame (template-stable)
@@ -95,6 +102,13 @@ TabControl
 | `ItemIconPresenter` | template node (IconPresenter) | `BaseTabItemTheme.axaml` | TabItem | `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentPresenter` | template node (ContentPresenter) | `BaseTabItemTheme.axaml` | TabItem | `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ItemCloseButton` | template node (IconButton) | `BaseTabItemTheme.axaml` | TabItem | `CloseButtonOpacity`, `CloseIcon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `BaseTabScrollViewer` | control theme | `BaseTabScrollViewerTheme.axaml` | TabControl | `HorizontalSnapPointsAlignment`, `HorizontalSnapPointsType`, `Padding`, `TabStripPlacement`, `VerticalSnapPointsAlignment`, `VerticalSnapPointsType` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `RootLayout` | template node (Panel) | `BaseTabScrollViewerTheme.axaml` | BaseTabScrollViewer | `HorizontalSnapPointsAlignment`, `HorizontalSnapPointsType`, `Padding`, `TabStripPlacement`, `VerticalSnapPointsAlignment`, `VerticalSnapPointsType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ScrollStartEdgeIndicator` | template node (Border) | `BaseTabScrollViewerTheme.axaml` | BaseTabScrollViewer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ScrollEndEdgeIndicator` | template node (Border) | `BaseTabScrollViewerTheme.axaml` | BaseTabScrollViewer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ScrollViewLayout` | template node (DockPanel) | `BaseTabScrollViewerTheme.axaml` | BaseTabScrollViewer | `HorizontalSnapPointsAlignment`, `HorizontalSnapPointsType`, `Padding`, `TabStripPlacement`, `VerticalSnapPointsAlignment`, `VerticalSnapPointsType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ScrollMenuIndicator` | template node (IconButton) | `BaseTabScrollViewerTheme.axaml` | BaseTabScrollViewer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ScrollViewContent` | template node (TabScrollContentPresenter) | `BaseTabScrollViewerTheme.axaml` | BaseTabScrollViewer | `HorizontalSnapPointsAlignment`, `HorizontalSnapPointsType`, `Padding`, `TabStripPlacement`, `VerticalSnapPointsAlignment`, `VerticalSnapPointsType` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `TabItem` | item container control theme | `CardTabItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `CloseButtonOpacity`, `CloseIcon`, `CornerRadius` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `CardTabItemTheme.axaml` | TabItem | `Background`, `BorderBrush`, `BorderThickness`, `CloseButtonOpacity`, `CloseIcon`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (PixelAlignedBorder) | `CardTabItemTheme.axaml` | TabItem | `Background`, `BorderBrush`, `BorderThickness`, `CloseButtonOpacity`, `CloseIcon`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -113,9 +127,6 @@ TabControl
 | `PART_TabsContainer` | template node (TabControlScrollViewer) | `TabControlTheme.axaml` | TabControl | `IsMotionEnabled`, `ItemsPanel`, `SelectedIndicatorRenderTransform`, `TabStripPlacement` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `TabControlTheme.axaml` | TabControl | `ItemsPanel`, `SelectedIndicatorRenderTransform` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `TabControlTheme.axaml` | TabControl | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_SelectedItemIndicator` | template node (Border) | `TabControlTheme.axaml` | TabControl | `SelectedIndicatorRenderTransform` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ContentPresenter` | template node (ContentPresenter) | `TabControlTheme.axaml` | TabControl | `ContentPadding`, `HorizontalContentAlignment`, `SelectedContent`, `SelectedContentTemplate`, `VerticalContentAlignment` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `TabItem` | item container control theme | `TabItemTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 
 ## Template Parts
 

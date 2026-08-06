@@ -46,12 +46,12 @@ Button 家族包括 `DropdownButton`、`SplitButton`、`IconButton` 和 `HyperLi
 
 Button 的公共 API 是控件最重要的稳定契约。公共属性、事件和方法集中在 `Button.cs`，内部主题变量和实现细节不得替代公共 API。
 
-兼容 API：
+基础与兼容 API：
 
 - `ButtonType`: `Default`、`Dashed`、`Primary`、`Link`、`Text`。
 - `ButtonShape`: `Default`、`Circle`、`Round`。
 - `IsDanger`、`IsGhost`、`IsLoading`。
-- `SizeType`、`Icon`、`IconPlacement`。
+- `SizeType`、`Icon`、`IconPlacement`、`IconWidth`、`IconHeight`。
 - `IsMotionEnabled`、`IsWaveSpiritEnabled`。
 - `CustomBackground`。
 
@@ -89,6 +89,8 @@ public ButtonVariant? Variant { get; set; }
 
 `SizeType` 使用可自定义尺寸模型，支持 `Large`、`Middle`、`Small` 和 `Custom`。`Large`、`Middle`、`Small` 是 Button 预设尺寸档，完全由 Token 和主题决定。`Custom` 表示用户希望基于 Button 现有属性进行实例级尺寸定制，而不是引入 Button 专属的 `CustomHeight`、`CustomPadding` 或尺寸对象。
 
+`IconWidth` 与 `IconHeight` 是 Button 用户图标和 loading 图标共享的公共 Avalonia 尺寸入口。两个属性相互独立，支持非正方形图标；对应的公共属性字段为 `IconWidthProperty` 与 `IconHeightProperty`。Theme 根据 `SizeType` 提供默认值，用户设置在 Button 上的本地值具有更高优先级，并同时投影到 `PART_ButtonIcon` 与 `PART_LoadingIcon`。
+
 `IconPlacement` 控制 `Icon` 相对内容的位置，支持 `Start` 和 `End`。默认值必须是 `Start`，以保持既有 `Icon` 使用方式不变。`End` 只改变用户图标与内容的排列方向，不改变 loading、icon-only、尺寸、颜色、变体或交互状态语义。
 
 ```csharp
@@ -110,22 +112,22 @@ Template part 与主题入口：
 | `Frame` | 承载主体背景、边框、圆角和尺寸基底。 |
 | `CustomBackgroundLayer` | 主题内部自定义背景覆层，不作为用户 template part。 |
 | `PART_RootLayout` | 排列 loading icon、icon 和 content，并根据 `IconPlacement` 调整用户 icon 位置。 |
-| `PART_LoadingIcon` | 展示 loading 状态图标。 |
-| `PART_ButtonIcon` | 展示用户设置的 icon，位置由 `IconPlacement` 控制。 |
+| `PART_LoadingIcon` | 展示 loading 状态图标，宽高通过 `TemplateBinding` 跟随 `IconWidth`、`IconHeight`。 |
+| `PART_ButtonIcon` | 展示用户设置的 icon，位置由 `IconPlacement` 控制，宽高通过 `TemplateBinding` 跟随 `IconWidth`、`IconHeight`。 |
 | `PART_ContentPresenter` | 展示用户内容。 |
 
 LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Button` | 控件根语义区域，承载 public API、命令、点击、状态归一和伪类。 | `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、`IsLoading`、`SizeType`、`Shape`、`Icon`、`IconPlacement` | ButtonToken、SharedToken | stable |
+| `root` | `Button` | 控件根语义区域，承载 public API、命令、点击、状态归一和伪类。 | `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、`IsLoading`、`SizeType`、`Shape`、`Icon`、`IconPlacement`、`IconWidth`、`IconHeight` | ButtonToken、SharedToken | stable |
 | `wave` | `PART_WaveSpirit` | 点击 wave 反馈区域，跟随有效圆角和 wave 类型。 | `IsWaveSpiritEnabled`、`IsMotionEnabled` | SharedToken motion / wave 资源 | stable |
 | `shadow` | `ShadowsFrame` | 阴影绘制层，独立于主体背景和边框。 | effective state | `DefaultShadow`、`PrimaryShadow`、`DangerShadow` | stable |
 | `surface` | `Frame` | 主体背景、边框、圆角、尺寸和虚线边框绘制层。 | `ButtonType`、`Color`、`Variant`、`Shape`、`SizeType`、`CornerRadius`、`Padding` | default、primary、danger、text、link、padding、corner radius 相关 Token | stable |
 | `customBackground` | `CustomBackgroundLayer` | normal 状态自定义背景覆层，只服务 `CustomBackground` 视觉模型。 | `CustomBackground` | 不新增专属 Token | internal-stable |
 | `contentLayout` | `PART_RootLayout` | loading icon、用户 icon 和内容的排列区域。 | `IconPlacement`、`HorizontalContentAlignment`、`VerticalContentAlignment` | `IconMargin`、尺寸 Token | stable |
-| `loadingIcon` | `PART_LoadingIcon` | loading 状态图标区域。 | `IsLoading` | `IconSize`、`OnlyIconSize` 相关 Token | stable |
-| `icon` | `PART_ButtonIcon` | 用户 icon 区域，支持内容前后位置和 icon-only 场景。 | `Icon`、`IconPlacement` | `IconSize`、`OnlyIconSize`、`IconMargin` | stable |
+| `loadingIcon` | `PART_LoadingIcon` | loading 状态图标区域。 | `IsLoading`、`IconWidth`、`IconHeight` | `IconSize`、`OnlyIconSize` 相关 Token | stable |
+| `icon` | `PART_ButtonIcon` | 用户 icon 区域，支持内容前后位置和 icon-only 场景。 | `Icon`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize`、`IconMargin` | stable |
 | `content` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | stable |
 
 `CustomBackgroundLayer` 是主题内部实现细节，不作为用户可直接依赖的 template part。LLMS semantic 文档可以记录它的存在和边界，但应明确它只服务 `CustomBackground` 受控视觉模型。
@@ -133,7 +135,7 @@ LLMS 语义区域：
 ## 事件与命令
 
 Button 的公共 API 是控件最重要的稳定契约。公共属性、事件和方法集中在 `Button.cs`，内部主题变量和实现细节不得替代公共 API。
-| `root` | `Button` | 控件根语义区域，承载 public API、命令、点击、状态归一和伪类。 | `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、`IsLoading`、`SizeType`、`Shape`、`Icon`、`IconPlacement` | ButtonToken、SharedToken | stable |
+| `root` | `Button` | 控件根语义区域，承载 public API、命令、点击、状态归一和伪类。 | `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、`IsLoading`、`SizeType`、`Shape`、`Icon`、`IconPlacement`、`IconWidth`、`IconHeight` | ButtonToken、SharedToken | stable |
 
 ## 使用示例
 
@@ -189,7 +191,7 @@ SourceKey：`button-shape`
 
 ### 通栏按钮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:318`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:316`
 
 SourceKey：`button-block`
 
@@ -205,7 +207,7 @@ SourceKey：`button-block`
 
 ### 危险按钮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:336`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:334`
 
 SourceKey：`button-danger`
 
@@ -285,6 +287,8 @@ ButtonToken 不承载 `IsPressed`、`IsPointerOver`、`IsLoading`、`EffectiveCo
 
 Button 主题变量使用 Avalonia 属性和动态资源，不使用反射读取模板状态。Token 资源由 ButtonToken scope 提供，并跟随主题切换。
 
+`IconWidth`、`IconHeight` 使用 Avalonia 属性优先级完成 Theme 默认值与 LocalValue 的覆盖，不增加订阅、运行时 part 遍历或状态变化时的视觉对象创建。两个模板 part 共享同一对属性，因此 loading 切换只改变可见性和默认状态映射，不引入尺寸同步副本。
+
 Custom background 覆层是现有模板内的一层视觉节点，启用时不应增加额外控件实例或重建模板。未设置 `CustomBackground` 时，覆层保持不可见，不应影响默认路径的命中测试、wave 或内容布局。
 
 Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好的资源查找路径。
@@ -297,6 +301,8 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - `src/AtomUI.Desktop.Controls/Buttons/ButtonToken.cs`：Button 控件 Token 定义与派生。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`：桌面 Button 模板、状态 selector 和主题变量映射。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/ButtonTheme.axaml`：Browser Button 模板投影，与桌面主题共享同一 public 状态语义。
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`、`DropdownButtonTheme.axaml`：DropdownButton 对 Button 图标尺寸和状态语义的桌面投影。
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`：DropdownButton 对同一公共尺寸语义的 Browser 投影。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/IconButtonTheme.axaml`：Browser IconButton 默认主题叶子。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.cs`：主题资源注册辅助。
 - `src/AtomUI.Controls/Buttons/ButtonPseudoClass.cs`：共享 Button 伪类定义。
@@ -3591,7 +3597,7 @@ DropdownButton 的公共契约由 public/protected 类型成员、Avalonia 属�
 | --- | --- | --- |
 | 内容与数据 | `Content`、`Icon`、`Command` | 继承 Button 的展示内容、图标和动作命令入口。 |
 | 交互与状态 | `IsArrowVisible`、`IsPointAtCenter`、`IsShowOpenIndicator`、`ShouldUseOverlayPopup` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `MarginToAnchor`、`Placement`、`PlacementAnchor`、`PlacementGravity` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 视觉与布局 | `IconWidth`、`IconHeight`、`MarginToAnchor`、`Placement`、`PlacementAnchor`、`PlacementGravity` | 继承 Button 的用户图标和 loading 图标尺寸入口，并管理下拉定位、密度和模板视觉变量。 |
 | 弹层与窗口 | `DropdownFlyout` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
 | 动效与异步 | `MouseEnterDelay`、`MouseLeaveDelay` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `OpenIndicator`、`TriggerType` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
@@ -3608,12 +3614,15 @@ DropdownButton 的公共契约由 public/protected 类型成员、Avalonia 属�
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
 | `PART_ButtonIcon` | `?` | 承载用户触发入口、导航或关闭动作。 |
+| `PART_LoadingIcon` | `Icon` | 展示继承自 Button loading 状态的图标。 |
 | `PART_ContentPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_DropdownIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
 | `PART_RootLayout` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
 | `PART_WaveSpirit` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 
 当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
+
+DropdownButton 继承 Button 的 `IconWidthProperty`、`IconHeightProperty` 及 CLR wrapper。`PART_ButtonIcon` 与 `PART_LoadingIcon` 通过 `TemplateBinding` 消费这两个属性，保持与 Button 相同的 SizeType 默认值、本地值优先级和 icon-only loading 状态语义。`PART_DropdownIndicator` 展示的 `OpenIndicator` 是独立图标角色，不受 `IconWidth`、`IconHeight` 控制。
 
 ## 事件与命令
 
@@ -3652,8 +3661,9 @@ DropdownButton 的视觉模型由控件模板、ControlTheme、SharedToken 和�
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `DropdownButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `Browser/DropdownButtonTheme.axaml` | Browser 平台的 DropdownButton 主题叶子，保持相同 public 状态语义。 |
+| `DropdownButtonBaseTheme.axaml` | 定义桌面 DropdownButton 与 Button 共享的模板、图标尺寸和基础状态视觉。 |
+| `DropdownButtonTheme.axaml` | 定义 DropdownButton 的下拉指示器和具体视觉入口。 |
+| `Browser/DropdownButtonTheme.axaml` | Browser 平台的 DropdownButton 主题叶子，保持相同 public 状态与图标尺寸语义。 |
 
 DropdownButton 当前没有专属 Token 文档；主题通过 SharedToken、关联控件 Token 或继承主题资源表达视觉语义。运行时状态不得写入 Token 模型。
 
@@ -3663,6 +3673,8 @@ DropdownButton 当前没有专属 Token 文档；主题通过 SharedToken、关�
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
+- 用户 icon 与 loading icon 的尺寸只能从 DropdownButton 自身的 `IconWidth`、`IconHeight` 投影；应用和 Gallery 不得通过 `/template/` 或 `PART_ButtonIcon`、`PART_LoadingIcon` selector 修改内部尺寸。
+- `OpenIndicator` 尺寸由 DropdownButton 主题单独管理，不复用用户 icon 的宽高属性。
 
 Token 来源：
 
@@ -3681,6 +3693,7 @@ Token 来源：
 性能边界：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
+- 图标尺寸使用 owner StyledProperty、Style 默认值与 `TemplateBinding` 单向投影，不为模板 part 建立运行时订阅或查找同步。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
@@ -3689,6 +3702,7 @@ Token 来源：
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`
+- `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`
 
@@ -4012,12 +4026,12 @@ NavMenu 是 AtomUI 桌面导航体系中的层级菜单导航控件，用于表�
 
 NavMenu 的职责是管理导航节点容器生成、层级展开、选中路径、弹出式子菜单、主题视觉和菜单交互。它不负责路由切换、页面生命周期、权限过滤、数据懒加载、业务命令编排或页面内容渲染。业务导航行为可以通过节点 `Command`、`NavMenuNodeSelected`、`NavMenuItemClick` 或外部 ViewModel 处理。
 
-NavMenu 支持两种节点提供方式：
+NavMenu 支持两种 entry 提供方式：
 
-- 直接在 `NavMenu.Items` 中放置 `NavMenuNode`。
-- 通过 `ItemsSource` 绑定 `INavMenuNode` 集合。
+- 直接在 `NavMenu.Items` 中放置 `INavMenuEntry`。
+- 通过 `ItemsSource` 绑定 `INavMenuEntry` 集合。
 
-两种方式都必须使用 `INavMenuNode` 作为节点契约。NavMenu 不支持把任意 `Control` 作为菜单项直接加入。
+`INavMenuEntry` 是节点、分组和分隔线的共同结构契约。`INavMenuNode` 表达可交互导航节点，`NavMenuGroup` 表达带标题的透明结构分组，`NavMenuDivider` 表达不可交互分隔线。首版支持的 entry 种类封闭为这三类；仅自行实现 `INavMenuEntry` 不能注册第四种容器类型，扩展交互节点应实现 `INavMenuNode`。NavMenu 不支持把任意 `Control`、`Panel` 或 `TextBlock` 作为 entry 直接加入；Header、Footer 和分组标题的任意内容通过对应 content/template API 承载。
 
 ## 包与命名空间
 
@@ -4026,7 +4040,7 @@ NavMenu 支持两种节点提供方式：
 | NuGet 包 | `AtomUI.Desktop.Controls` |
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
-| Gallery 页面 | `未独立 Gallery 页面；以 `docs/controls/desktop/navigation/nav-menu` 源文档为准` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/Navigation/Menu`；结构化 entry 示例位于 Menu ShowCase 最后一项` |
 | 状态 | Stable |
 
 ## 何时使用
@@ -4064,6 +4078,11 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 | `IsItemBackgroundEnabled` | `bool` | 控制 item / inline submenu 背景块模型，默认 `true`。 |
 | `IsMotionEnabled` | `bool` | 控制 inline 展开收起和主题颜色过渡。 |
 | `ShouldUseOverlayPopup` | `bool` | 控制弹出式子菜单是否使用 overlay popup。 |
+| `Header` | `object?` | 根导航固定头部内容；Inline/Vertical 位于滚动菜单区上方，Horizontal 位于菜单项左侧。 |
+| `HeaderTemplate` | `IDataTemplate?` | 根导航头部内容模板。 |
+| `Footer` | `object?` | 根导航固定尾部内容；Inline/Vertical 位于滚动菜单区下方，Horizontal 位于菜单项右侧。 |
+| `FooterTemplate` | `IDataTemplate?` | 根导航尾部内容模板。 |
+| `ItemSpacing` | `double` | 默认 ItemsPanel 中相邻 entry 容器的额外间距；默认值来自当前 mode 的主题映射。 |
 | `Close()` | method | 关闭所有子菜单并清空 `SelectedItem`。 |
 
 节点 API：
@@ -4077,7 +4096,19 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 | `IsEnabled` | `bool` | 节点可用状态，默认 `true`。 |
 | `Command` | `ICommand?` | 节点被有效触发时由当前 `NavMenuItem` 容器执行的业务命令。节点只承载命令配置，不负责订阅或执行。 |
 | `CommandParameter` | `object?` | 传递给 `Command` 的参数。默认 `null`，不隐式回退到 `ItemKey` 或节点自身。 |
-| `Children` | `IList<INavMenuNode>` | 子节点集合。 |
+| `INavMenuNode.Entries` | `IEnumerable<INavMenuEntry>` | 容器读取子 entry 的协变契约。接口默认返回既有 `Children`，自定义节点无需新增实现。 |
+| `NavMenuNode.Entries` | `IList<INavMenuEntry>` | 内置节点的唯一有序、可写子 entry 集合，也是 XAML content 属性；允许节点、任意层级分组和分隔线。 |
+| `Children` | `IList<INavMenuNode>` | `Entries` 的实时语义节点兼容视图，不保存第二份集合；分组对该视图透明。 |
+
+结构 entry API：
+
+| API | 类型 | 语义 |
+| --- | --- | --- |
+| `INavMenuEntry` | interface | NavMenu 有序 entry 的共同标记契约，不带选择、命令或路径语义；它不是自定义容器注册点。 |
+| `NavMenuGroup.Header` | `object?` | 分组标题内容。 |
+| `NavMenuGroup.HeaderTemplate` | `IDataTemplate?` | 分组标题模板。 |
+| `NavMenuGroup.Entries` | `IList<INavMenuEntry>` | 分组内有序 entry 集合，允许继续嵌套分组。 |
+| `NavMenuDivider` | class | 不可聚焦、不可选中、不进入路径或键盘漫游的结构分隔线。 |
 
 事件 API：
 
@@ -4087,6 +4118,18 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 | `NavMenuNodeSelected` | `NavMenuNodeSelectedEventArgs` | 叶子节点选中事件，事件参数暴露 `INavMenuNode`。 |
 
 `DefaultSelectedPath` 和 `DefaultOpenPaths` 是默认值入口，不是持续受控展开状态。运行期受控选择应使用 `SelectedItem`。
+
+`NavMenuNode.Entries` 是内置节点子结构的唯一真源。`Children` 保持既有类型和节点语义：枚举时递归穿过同一语义层级内的 `NavMenuGroup`，但不进入子节点自身的后代；`Add` 把节点追加为直接 entry，`Insert`、替换和删除写回节点当前所在的实际 entry owner，`Clear` 清空当前节点的整个 `Entries`。`INavMenuNode.Entries` 使用 `IEnumerable<INavMenuEntry>`，利用 `IEnumerable<T>` 协变在接口默认实现中直接返回既有 `IEnumerable<INavMenuNode> Children`，不创建适配集合；`NavMenuNode` 通过显式接口实现把其可写 `Entries` 投影为该读取契约。因此既有纯节点自定义实现保持源码兼容，并继续由原 `Children` 集合通知驱动容器更新。
+
+根 `NavMenu.Items`、根 `ItemsSource`、`NavMenuNode.Entries` 和 `NavMenuGroup.Entries` 使用同一 entry 类型边界：集合中的每一项必须是 `INavMenuNode`、`NavMenuGroup` 或 `NavMenuDivider`；`null`、普通业务对象、内部生成容器和仅实现 marker 的其他类型都不是合法数据项。直接 `Items` 变更与 `ItemsSource` 的初始装载、替换以及 Add、Replace、Reset 通知必须进入同一验证入口；发现非法项时立即抛出包含来源和索引信息的 `InvalidOperationException`，不能静默跳过、按普通内容呈现或等到容器绑定阶段再产生类型错误。
+
+内置 `NavMenuNode` 和 `NavMenuGroup` 是有状态结构 entry，同一实例在整个 entry 树中只能拥有一个直接结构 owner，不能在同一集合重复，也不能同时挂到两个节点、分组或根 `NavMenu`。从原 owner Remove、Replace、Clear 或移除根 source 后，该实例可以重新挂载。结构 owner 使用弱引用，外部长期持有 node/group 不会反向保留已经不可达的根菜单。`NavMenuDivider` 不保存选择、展开、父级、资源或容器状态，因此同一 divider 实例允许在多个位置复用。
+
+自定义 `INavMenuNode` 实例自身保持既有兼容契约，不强制登记内置 structural owner；但其 `Entries` / `Children` 中出现的内置 `NavMenuNode` 或 `NavMenuGroup` 仍必须参加完整引用唯一性检查。每个内置 `NavMenuNode` / `NavMenuGroup` entry owner 和根 `NavMenu` 都协调自己的结构 scope：遍历直接 entry，并递归穿过 custom node；遇到内置 node/group 后由该内置 entry 自己的协调器接管后代。custom node 下的内置后代继承最近的内置 entry owner，只有根级 custom node 的内置后代才由根菜单作为结构 owner。所有 scope 组合后覆盖完整 entry 图，因此离线构造的树也不能通过 custom wrapper 绕过唯一性，同时纯 built-in 深树不会形成祖先对后代集合的重复订阅。协调器只弱订阅当前 scope 内可通知的 custom entry source；custom node 增删内置后代时立即重新协调，在加入时拒绝指回当前 built-in owner 或任意 built-in 祖先的动态环，并在移除后释放 owner。不可通知的自定义 enumerable 按每次所属集合或可通知 custom 祖先变化时取得的当前快照校验。
+
+`NavMenuNode.Entries` 和 `NavMenuGroup.Entries` 是控件拥有的可写集合，单项 Add、Insert、Replace 以及批量初始化先完成类型、循环、直接 owner 和批次重复校验，失败时不产生部分写入。成功写入先同步完整 structural ownership，再调用自定义节点的 parent callback 或分组语义父级投影，最后发送集合通知；因此可重入回调和观察者都不能抢占已经属于本次写入的 entry 或内置后代。批量初始化一次提交完整批次，并只发送单次 Add 通知。根 direct `Items` 与任意外部 `ItemsSource` 都通过 post-mutation 的 `ItemsView.CollectionChanged` 到达控件；根 `NavMenu` 对完整 entry 图做校验并确定性抛错，但不通过重入 Remove/Replace 回滚或篡改数据源。Move 和 Remove 仍执行正常的 owner、父级、容器和生命周期协调。
+
+`IsInlineCollapsed` 是唯一折叠状态源。NavMenu 不增加语义相反的 `Expanded` / `IsExpanded` 属性；调用方需要正向展开状态时，通过双向 binding converter 映射 `IsInlineCollapsed`，避免两个公共状态互相写回。
 
 节点命令遵守 Avalonia 命令语义：`NavMenuNode` / `INavMenuNode` 只保存 `Command` 和 `CommandParameter`，实际执行、`CanExecute` 评估和 `CanExecuteChanged` 生命周期由生成出的 `NavMenuItem` 容器负责。`INavMenuNode` 为两个成员提供 `null` 默认实现，使既有自定义节点实现无需声明命令也能继续工作。`CommandParameter=null` 表示显式空参数，控件不能自动替换为 `ItemKey`；需要使用业务 key 时，应显式把 `ItemKey` 绑定或赋值给 `CommandParameter`。容器按 UI 周期合并连续的 `CanExecuteChanged` 通知：持续的 `false` 仍进入 disabled，同一同步执行周期内的 `false -> true` 瞬时变化只投影最终状态，避免多个共享命令节点触发无业务意义的禁用颜色闪动。
 
@@ -4098,11 +4141,13 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_ItemsPresenter` | `ItemsPresenter` | 承载顶层 `NavMenuItem` 容器。 |
-| `PART_HorizontalLine` | `Rectangle` | Horizontal light style 下的底部分割线。 |
-| `PART_Header` | NavMenuItemHeader | 菜单项 header，承载文字、图标、箭头和交互视觉。 |
+| `PART_ItemsPresenter` | `ItemsPresenter` | 承载顶层 entry 容器。 |
+| `PART_HeaderPresenter` | `ContentPresenter` | 承载根导航固定 Header；内容为空时折叠。 |
+| `PART_FooterPresenter` | `ContentPresenter` | 承载根导航固定 Footer；内容为空或处于有效 inline collapsed 状态时折叠。 |
+| `PART_HorizontalLine` | `PixelAlignedBorder` | Horizontal light style 下的底部分割线。 |
+| `PART_Header` | `BaseNavMenuItemHeader` 的 mode 专用实现 | 菜单项 header，承载文字、图标、箭头和交互视觉。 |
 | `PART_Popup` | `Popup` | `Vertical` / `Horizontal` 模式下的子菜单浮层。 |
-| `PART_PopupFrame` | `Border` | Popup 背景、圆角、尺寸和内容边距。 |
+| `PART_PopupFrame` | `NavMenuPopupFrame` | Popup 背景、圆角、尺寸约束和内容边距。 |
 | `PART_ChildItemsLayoutTransform` | `LayoutAwareMotionActor` | `Inline` 模式下的子菜单展开收起 motion 容器。 |
 | `PART_ChildItemsFrame` | `Border` | `Inline` 模式下的子菜单背景块。 |
 | `ChildItemsPresenter` | `ItemsPresenter` | `Inline` 模式下的子菜单内容承载。 |
@@ -4112,6 +4157,7 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 
 NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 | `Command` | `ICommand?` | 节点被有效触发时由当前 `NavMenuItem` 容器执行的业务命令。节点只承载命令配置，不负责订阅或执行。 |
+| `INavMenuEntry` | interface | NavMenu 有序 entry 的共同标记契约，不带选择、命令或路径语义；它不是自定义容器注册点。 |
 事件 API：
 | 事件 | 参数 | 语义 |
 | `NavMenuItemClick` | `NavMenuItemClickEventArgs` | 菜单项点击事件，事件参数暴露 `INavMenuItem` 作为只读交互上下文。 |
@@ -4122,7 +4168,7 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-Gallery 目录 `未独立 Gallery 页面；以 `docs/controls/desktop/navigation/nav-menu` 源文档为准` 当前不存在；请检查控件文档中的 Gallery 页面元数据。
+Gallery 目录 `controlgallery/AtomUIGallery/ShowCases/Navigation/Menu`；结构化 entry 示例位于 Menu ShowCase 最后一项` 当前不存在；请检查控件文档中的 Gallery 页面元数据。
 
 ## 状态模型
 
@@ -4164,6 +4210,8 @@ NavMenu 的交互行为由 mode 决定。
 - `IsInSelectedPath` 表示某个祖先位于当前选中路径中。
 - `Open` 表示当前项目子菜单打开。
 
+结构 entry 不进入公共交互状态：分组和分隔线不产生 `Selected`、`KeyboardActive`、`Open`、`ItemKey` 或 `Command`。分组中的节点仍使用最近的节点祖先作为 `ParentNode`；分组本身不增加 `Level`，也不进入 `TreeNodePath`。
+
 ## 主题与 Design Token
 
 NavMenu Theme 按 mode、dark style、header state 和 item background model 分层。
@@ -4171,6 +4219,7 @@ NavMenu Theme 按 mode、dark style、header state 和 item background model 分
 ```text
 NavMenuTheme
   root template by Mode
+  fixed Header / scrollable entry region / fixed Footer
   root background / padding / scroll behavior
   top-level ItemsPanel orientation
 
@@ -4179,6 +4228,10 @@ NavMenuItemTheme
   popup frame
   inline child frame
   motion duration
+
+NavMenuGroupItemTheme / NavMenuDividerItemTheme
+  non-interactive structure containers
+  group title / divider orientation
 
 Header Themes
   shared text/icon/background/selection
@@ -4193,6 +4246,10 @@ Theme 映射规则：
 - Header 默认背景为 `Transparent`，hover / selected 背景由 header state 直接控制。
 - Keyboard active 背景使用 `ItemActiveBg`，其优先级低于 `Selected`，高于普通默认态；它可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。dark style 下使用 dark 语义的 active 视觉，不复用 selected 背景表达临时漫游。
 - Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项显示标题首字符，叶子项可用 tooltip 展示完整标题。
+- Inline/Vertical 的 Header 和 Footer 位于菜单滚动区之外；无 Header/Footer 时对应 presenter 折叠，不占用布局空间。Horizontal 中 Header 左停靠、Footer 右停靠，菜单项占用中间区域。进入 inline collapsed 后 Header 保持可见以承载展开入口，Footer 自动隐藏；Header 内容需要根据 `IsInlineCollapsed` 自适应折叠宽度。
+- 根层 inline collapsed 分组标题隐藏，分组及其透明嵌套分组内的节点继续继承根折叠状态，按顶层节点使用 `CollapsedIconSize` 居中；popup 或非根语义层级中的分组标题和节点保持普通 vertical 视觉。Horizontal 根层把分组渲染为透明水平集合并隐藏标题，popup 中恢复垂直分组标题。
+- Horizontal 根层分隔线为竖线；Inline、Vertical、popup 和 inline collapsed 根层分隔线为横线。
+- 根默认 ItemsPanel 通过 `TemplateBinding` 消费公开 `ItemSpacing`；submenu、popup 和 group 默认 ItemsPanel 消费由根控件投影的内部 effective spacing。该路径不使用进入子控件模板的 selector，也不建立逐容器 binding。自定义 ItemsPanel 是否消费 spacing 由自定义面板负责。
 - `IsItemBackgroundEnabled=true` 时，inline child frame 使用 `SubMenuItemBg` / `DarkSubMenuItemBg`，并应用背景块专用外距。
 - `IsItemBackgroundEnabled=false` 时，inline child frame 背景为 `Transparent`，不应用背景块专用外距；header 的文字色、hover、selected 和 selected path 仍然生效。
 - Horizontal 顶层 light style 通过 `PART_ActiveIndicator` 表达选中；dark style 可以使用 selected background。
@@ -4207,6 +4264,8 @@ NavMenuToken 服务以下主题：
 
 - `NavMenuTheme.axaml`
 - `NavMenuItemTheme.axaml`
+- `NavMenuGroupItemTheme.axaml`
+- `NavMenuDividerItemTheme.axaml`
 - `BaseNavMenuItemHeaderTheme.axaml`
 - `HorizontalNavMenuItemHeaderTheme.axaml`
 - `VerticalNavMenuItemHeaderTheme.axaml`
@@ -4220,6 +4279,8 @@ NavMenu 不应通过反射访问 template part 或内部状态。Header、popup�
 
 `NavMenuNode` 必须通过 `[GenerateScopedResourceHost]` 生成 `IResourceHost` / `IThemeVariantHost`、attachment count、host generation 和 `IDisposable` attach token。generation 用于使跨 host 切换后遗留的 stale token 失效，尤其不能让 `A -> B -> A` 中第一轮 A token 释放当前 A attachment。scoped resource host 只解决动态资源宿主及其事件订阅，不替代节点到容器 binding 的释放，也不替代 `ICommand.CanExecuteChanged` 的解绑。
 
+`NavMenuGroup` 遵守相同的 generated scoped resource-host 生命周期；结构容器不能永久持有 group 或 owner menu。`NavMenuDivider` 不需要资源宿主和订阅。
+
 命令能力的完整释放边界由三层共同组成：
 
 1. generated scoped resource host 释放 `ResourcesChanged` / `ActualThemeVariantChanged` owner 订阅；
@@ -4230,13 +4291,19 @@ NavMenu 不应通过反射访问 template part 或内部状态。Header、popup�
 
 `CanExecuteChanged` 可能在一次同步命令执行中快速发出 `false -> true`，共享同一命令的多个叶子容器如果逐次立即更新 effective enabled，会同时启动 disabled 前景色过渡并产生闪动。`NavMenuItem` 将通知统一 marshal 到 UI Dispatcher，并以 `Input` 优先级合并同一 UI 周期内的重复通知；回调只重新读取一次当前 `Command.CanExecute(CommandParameter)`，因此持续 `false` 仍会在下一轮交互前生效，而瞬时变化不会暴露中间视觉状态。待处理 operation 由当前 container 持有，并在 command replacement、parameter replacement 和 logical-tree detach 时 abort，不能让已回收容器被 dispatcher callback 延迟持有或被旧 command 状态回写。
 
-handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时释放。延迟打开 / 关闭任务必须支持取消，避免旧 pointer 状态影响新 mode 或新 popup。
+handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时释放。延迟打开 / 关闭任务必须支持取消，避免旧 pointer 状态影响新 mode 或新 popup。任务必须记录对应目标容器，container clear 只取消引用该容器的 pending open / close，不能误取消其他项的当前 hover。
 
 inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template part 引用。状态失效边界包括 ItemsSource reset、container clear、detach、mode change 和 default path replay revision 变化。
 
-键盘导航状态持有的 active item 引用必须随 detach、mode 切换、container clear、popup close 和 item disabled 变化失效。失效时应重新从当前可见层级解析 active 项，不保留悬空容器引用。
+生成容器进入 clear/recycle 时必须通过 `NavMenu.ForgetGeneratedContainer` 同时通知 selection coordinator 和当前 interaction handler。该入口清除 selection coordinator 的 realized container 引用、keyboard-active 引用、pointer press/release 目标，以及 Default handler 指向该容器的 pending open / close；之后才释放 binding、resource host 和 entry context，避免旧交互回调读取已清空的数据对象。
+
+键盘导航状态持有的 active item 引用必须随 detach、mode 切换、container clear、popup close 和 item disabled 变化失效。popup 内容可能在关闭后继续保留生成容器，因此有效性不能只看局部 `IsVisible`；必须同时验证 effective visible/effective enabled 和完整语义父链的打开状态。失效后第一次 Enter 只从当前可见层级重新建立 active 项，不提交旧项。
 
 默认路径 replay 必须有界，避免容器生成失败时形成无休止 dispatcher 队列。
+
+纯节点菜单必须保持一个数据节点对应一个 `NavMenuItem`，不得为统一模型增加额外 wrapper。只有实际存在 `NavMenuGroup` 或 `NavMenuDivider` 时才生成结构容器。语义 `Level` 在 prepare 上下文中 O(1) 得到；直接容器和路径查找优先走无分组快路径；spacing 只在根控件计算公开值与后代默认值的关系，再通过内部继承属性和 ItemsPanel `TemplateBinding` 传播，不为每个节点增加 relay binding。
+
+默认 TreeDataTemplate 对 `INavMenuNode.Entries` 使用编译绑定；自定义节点通过协变接口默认实现回退到 `Children`。内置集合直接满足 Avalonia ItemsSource 的 `IList` / `INotifyCollectionChanged` 契约，该默认路径不分配适配集合。实现不使用反射、运行期类型扫描、动态 Style、dispatcher 延时或持久化扁平导航缓存，保持 NativeAOT 可分析。
 
 ## 源码索引
 
@@ -4244,7 +4311,13 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenu.cs`：公开控件、属性、ItemsControl 容器入口、默认路径 replay 和 mode 状态同步。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuItem.cs`：内部容器、header 转发、子菜单、popup、选中和打开状态。
-- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuNode.cs`：`INavMenuNode` 节点契约和节点数据模型；`NavMenuNode` 使用 `[GenerateScopedResourceHost]` 获得 scoped `IResourceHost` / `IThemeVariantHost` 生命周期。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuEntry.cs`：`INavMenuEntry` 最小标记契约和无状态 `NavMenuDivider` 数据模型。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuNode.cs`：`INavMenuNode` 契约、接口级协变 entry 读取入口、`NavMenuNode.Entries` 唯一可写集合和 `Children` 实时兼容视图；`NavMenuNode` 使用 `[GenerateScopedResourceHost]` 获得 scoped `IResourceHost` / `IThemeVariantHost` 生命周期。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuGroup.cs`：公开分组 entry 数据模型，管理透明 entry 子树和 scoped resource-host 生命周期。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuEntryCollection.cs`、`NavMenuEntryGraph.cs`、`NavMenuEntryOwnershipCoordinator.cs`：内置 entry owner 的事务前校验、循环检测、完整图唯一性协调、弱 structural owner 和嵌套 source 生命周期。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuGroupItem.cs`、`NavMenuDividerItem.cs`：内部不可交互结构容器。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuEntryContainerCoordinator.cs`：统一节点、分组和分隔线的容器类型分派、准备、清理和回收键。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuSemanticNavigator.cs`：按语义 owner 遍历已生成节点容器，跳过结构 entry。
 - `src/AtomUI.Desktop.Controls/NavMenu/INavMenu.cs`、`INavMenuItem.cs`、`INavMenuElement.cs`：菜单和容器的内部/公共契约。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuSelectionCoordinator.cs`：选择状态和祖先路径状态同步。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuItemContainerBinder.cs`：节点数据与容器状态绑定。
@@ -4318,8 +4391,9 @@ Pagination 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 主要公开类型与枚举：
 
-- 类型：`AbstractPagination`、`PageNavRequestArgs`、`PageSizeComboBoxItem`、`Pagination`、`PaginationNav`、`PaginationNavItem`、`QuickJumpArgs`、`QuickJumpEdit`、`QuickJumperBar`、`SimplePagination`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`AbstractPagination`、`PageNavRequestArgs`、`PageSizeComboBoxItem`、`Pagination`、`PaginationNav`、`PaginationNavItem`、`QuickJumpArgs`、`QuickJumpEdit`、`QuickJumperBar`、`SimplePagination`。
 - 枚举：`PaginationAlign`。
+- 本地化 Catalog：`PaginationLangResourceKind`。
 
 稳定 template part：
 
@@ -4496,9 +4570,10 @@ Pagination Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Pagination/AbstractPagination.cs`
-- `src/AtomUI.Desktop.Controls/Pagination/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/PaginationLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/Pagination/PageNavRequestArgs.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PageSizeComboBoxItem.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/Pagination.cs`
@@ -4602,9 +4677,14 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | `Offset` | `int` | Inline 类型前方保留的空 item 单元数量，默认 `0`；其他类型忽略。 |
 | `HorizontalContentAlignment` | `HorizontalAlignment` | 垂直 Navigation item 列的水平对齐，默认 `Center`；普通 Steps 和水平 Navigation 不使用。 |
 | `IsMotionEnabled` | `bool` | 是否启用 transition 和 Wave，默认来自 SharedToken。 |
+| `ItemHeaderForeground` | `IBrush?` | 所有 item 主标题的实例级语义前景色覆盖；默认 `null`，保留当前类型和状态的 Token 视觉。 |
+| `ItemSubHeaderForeground` | `IBrush?` | 所有 item 辅助标题的实例级语义前景色覆盖；默认 `null`，保留当前类型和状态的 Token 视觉。 |
+| `ItemRailBackground` | `IBrush?` | 所有 item Connector 的实例级语义背景覆盖；默认 `null`，保留当前类型和状态的 Token 视觉。 |
 | `Items` / `ItemsSource` / `ItemTemplate` | inherited | 步骤集合和数据模板入口。 |
 
 `Current` 允许小于 `Initial` 或大于所有 item 的编号。Steps 不裁剪、不归一也不回写越界值。
+
+三个 `Item*` 属性只覆盖实例的语义视觉，不参与 `EffectiveStatus`、`ConnectorStatus`、布局或交互计算。它们作用于 `Steps` 拥有的全部直接或生成容器；属性为 `null` 时，主题继续使用 Wait、Process、Finish、Error 以及 Inline 对应的 Token。
 
 ### 3.2 事件契约
 
@@ -4658,6 +4738,8 @@ LLMS 语义区域：
 | `navigation-active-indicator` | `NavigationActiveIndicator` | Navigation 当前项的水平底线或垂直右侧线。 | internal-observable |
 
 Steps 不提供控件专属的完成态或选择态伪类。状态主题读取 `EffectiveStatus`、`IsCurrent`、`CanInvoke` 以及 Avalonia 标准 `:pointerover`、`:focus-visible`、`:disabled` 伪类。
+
+`title`、`subtitle` 和 `rail` 是 `StepsItem` 自身模板的内部语义节点。只有 `StepsItemTheme.axaml` 可以进入该模板并消费根控件投影的语义样式值；外部应用、Gallery 和 `StepsTheme.axaml` 不得依赖节点名称或通过 `/template/` selector 穿透 `StepsItem`。
 
 ## 事件与命令
 
@@ -4824,6 +4906,23 @@ Steps
 `StepsPanel` 负责 item 间的 flex/stack 布局；`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽和 Navigation active 线的排列。二者不创建视觉、不计算状态。
 `OutlineDot` 复用 `Dot` 的布局路径，只改变 Indicator 的填充、边框和 Wave 语义。
 
+### 5.1 Item 语义样式覆盖
+
+`ItemHeaderForeground`、`ItemSubHeaderForeground` 和 `ItemRailBackground` 是 `Steps` 实例级的语义槽，不是对模板内部节点的公开暴露。`Steps` 将显式值投影到每个 `StepsItem`，再由 `StepsItemTheme.axaml` 在自己的模板边界内分别应用到 Header、SubHeader 和 Connector。
+
+三项 API 分别对应步骤条标题、子标题和 rail 的语义能力，但保持 Avalonia 的强类型 `IBrush?` 契约，不公开任一模板节点。
+
+优先级固定为：
+
+```text
+非 null 的 Steps 实例语义样式
+    > 当前 Type / EffectiveStatus 对应的 StepsToken
+null
+    -> 完整回退到当前 Type / EffectiveStatus 对应的 StepsToken
+```
+
+运行时修改或清空任一属性必须立即更新所有已实现容器；直接声明的 `StepsItem`、由普通数据项生成的容器以及回收后重新准备的容器遵循同一投影规则。该覆盖不改变 Indicator、Content、Navigation active indicator 或其他未命名语义区域。
+
 有效标题布局：
 
 ```text
@@ -4845,6 +4944,7 @@ StepsToken 不承载：
 - public Status、AutomaticStatus、EffectiveStatus、IsCurrent 或 ConnectorStatus。
 - item 数量、layout bounds、pointer、keyboard、focus 或 Wave 播放状态。
 - Percent 当前值、CanInvoke、IsItemClickable 或 IsMotionEnabled。
+- `ItemHeaderForeground`、`ItemSubHeaderForeground` 或 `ItemRailBackground` 的实例值。
 
 ## AOT 与裁剪注意事项
 
@@ -4853,6 +4953,7 @@ StepsToken 不承载：
 - TokenResource 和 SharedToken 只提供视觉值，不保存实例状态。
 - 根展示属性使用 AXAML Ancestor Binding 投影到 item 和 internal panel。
 - 固定模板关系使用 TemplateBinding、Ancestor Binding 和 selector，不使用字符串路径反射。
+- item 语义样式使用静态注册的 StyledProperty 和普通 Avalonia binding 投影，不生成运行时 selector，也不依赖内部节点名称从控件外穿透模板。
 
 性能边界：
 
@@ -4867,6 +4968,7 @@ AOT 边界：
 - 不新增运行时反射扫描、动态类型注册或编译期不可分析的 binding 路径。
 - 不通过反射访问 Wave 播放状态；测试使用 internal 可观察入口或渲染结果。
 - 新 internal panel 由静态 AXAML 和显式类型引用创建。
+- 三项语义样式投影不使用反射、动态属性发现或运行时类型扫描。
 
 ## 源码索引
 
@@ -6660,11 +6762,11 @@ ColorPicker Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - `src/AtomUI.Desktop.Controls.ColorPicker`：代表文件包括 `AbstractColorPicker.cs`、`AtomUIColorPickerThemesProvider.cs`、`ThemeManagerBuilderExtensions.cs`、`ColorBlock.cs`、`ColorChangedEventArgs.cs` 等。
 - `src/AtomUI.Desktop.Controls.ColorPicker/ColorSlider`：10 个文件，代表文件 `AbstractColorPickerSliderTrack.cs`、`AbstractColorSlider.cs`、`ColorPickerSliderTrack.cs`、`ColorSlider.cs`、`ColorSliderPseudoClass.cs` 等。
 - `src/AtomUI.Desktop.Controls.ColorPicker/ColorView`：6 个文件，代表文件 `AbstractColorPickerView.cs`、`ColorPickerInput.cs`、`ColorPickerView.cs`、`ColorSpectrum.cs`、`ColorSpectrumPseudoClass.cs` 等。
-- `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator`：2 个文件，代表文件 `LanguageProviderPool.g.cs`、`LanguageResourceConst.g.cs`。
+- `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.Localization`：生成 Catalog descriptor、语言模块注册入口和 `ColorPickerLangResource` 扩展。
 - `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ResourceHost.ScopedResourceHostGenerator`：1 个文件，代表文件 `GenerateScopedResourceHostAttribute.g.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：生成 `GeneratedControlPackageRegistration.g.cs`、`GeneratedThemeSchema.g.cs` 和 `TokenResourceConst.g.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator`：生成独立主题叶子的 `GeneratedControlThemeAssetManifest.g.cs`。
-- `src/AtomUI.Desktop.Controls.ColorPicker/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
+- `src/AtomUI.Desktop.Controls.ColorPicker/Localization`：`ColorPickerLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls.ColorPicker/Properties`：1 个文件，代表文件 `AssemblyInfo.cs`。
 - `src/AtomUI.Desktop.Controls.ColorPicker/Themes`：21 个文件，代表文件 `AbstractColorPickerTheme.axaml`、`AbstractColorPickerTheme.cs`、`ColorBlockTheme.axaml`、`ColorPickerPaletteGroupTheme.axaml`、`ColorPickerTheme.axaml` 等。
 - `src/AtomUI.Desktop.Controls.ColorPicker/Utils`：5 个文件，代表文件 `ColorPickerHelpers.cs`、`Hsv.cs`、`IncrementAmount.cs`、`Rgb.cs`、`TransparentBgBrushUtils.cs`。
@@ -6997,8 +7099,9 @@ DatePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 
 - `src/AtomUI.Desktop.Controls/DatePicker`：DatePicker 控件家族根目录，代表文件 `DatePicker.cs`、`RangeDatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerFormattingHelper.cs`、`DatePickerDateRangeConstraint.cs`、`DatePickerToken.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
 - `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：CalendarView runtime。`State` 保存归一化状态和 action，`Models` 保存纯 panel model，`Rendering` 将 model 应用到 generated buttons，`Infrastructure` 封装 culture 和 pointer tracking。
-- `src/AtomUI.Desktop.Controls/DatePicker/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
+- `src/AtomUI.Desktop.Controls/DatePicker/Localization`：`DatePickerLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls/DatePicker/Themes`：19 个文件，代表文件 `CalendarButtonTheme.axaml`、`CalendarButtonTheme.cs`、`CalendarDayButtonTheme.axaml`、`CalendarItemTheme.axaml`、`CalendarItemTheme.cs` 等。
+- `src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/InfoPickerTextBox.cs` 与 `Themes/InfoPickerTextBoxTheme.axaml`：DatePicker 输入框使用的 internal 子控件及其文本 presenter、padding 基础视觉。
 
 职责边界：
 
@@ -7751,6 +7854,7 @@ LineEdit 家族不依赖运行时反射发现模板结构。跨模板协作通�
 - `_contentRightAddOnBindings` 必须在重新套用模板前 dispose。
 - `_feedbackStatusSubscription` 必须在 `FormFeedback` 变化和 detach 时释放。
 - clear button click 订阅必须在新模板接入前解绑旧按钮。
+- 文本 viewport source 的 `Viewport`、`Padding` 和 presenter `Margin` 订阅必须由 TextBox/TextArea 持有，并在模板重套用时成组替换。
 - TextArea resize 不创建全局订阅；拖拽状态保存在控件实例字段中。
 - Token 只表达尺寸、字体、padding 和 resize 视觉语义，不承载文本值、清除状态、Form 状态或搜索运行状态。
 
@@ -7771,6 +7875,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Input/InputTextPresenter.cs`：输入文本 presenter，处理 Avalonia 12 selection foreground 缓存刷新。
 - `src/AtomUI.Desktop.Controls/Input/SearchEditDecoratedBox.cs`：SearchEdit 输入壳体与搜索按钮协作。
 - `src/AtomUI.Desktop.Controls/Input/TextAreaDecoratedBox.cs`：TextArea 输入壳体、scroll viewer 和 resize 相关协作。
+- `src/AtomUI.Desktop.Controls/Input/TextViewportMetrics.cs`：输入控件向同程序集消费方发布有效文本 viewport 宽度的内部度量契约。
 - `src/AtomUI.Desktop.Controls/Input/ResizeHandle.cs`：TextArea resize 拖拽入口。
 - `src/AtomUI.Desktop.Controls/Input/TextBoxToken.cs`：基础 TextBox 边框、padding、hover/focus 和 shadow Token。
 - `src/AtomUI.Desktop.Controls/Input/LineEditToken.cs`：单行输入字号 Token。
@@ -8365,6 +8470,7 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 | 主题 | 职责 |
 | --- | --- |
 | `NumericUpDownTheme.axaml` | 装配控件结构和传递状态。 |
+| `NumericUpDownSpinnerTheme.axaml` | 装配 NumericUpDown 专用 inline spinner 模板及其 action 按钮状态。 |
 | `ButtonSpinnerTheme.axaml` | 装配 spinner 壳体和 Handle 内容。 |
 | `ButtonSpinnerDecoratedBoxTheme.axaml` | 输入壳体、Addon、浮动 Handle 透明度和偏移。 |
 | `ButtonSpinnerHandleTheme.axaml` | Handle 背景、边框、图标尺寸和交互视觉。 |
@@ -8390,7 +8496,7 @@ NumericUpDownToken 不承载以下状态：
 
 NumericUpDown 不通过反射访问 ButtonSpinner、TextBox 或 AddOnDecoratedBox 内部状态。跨控件协同通过公开属性、稳定 template part 和接口完成。
 
-`Mode=Input` 是默认路径，必须避免 spinner 模式额外节点和额外按钮事件订阅。共享视觉问题应修在 ButtonSpinner、TextBox 或 AddOnDecoratedBox 主题层，而不是在 NumericUpDown 主题中复制 selector。
+`Mode=Input` 是默认路径，必须避免 spinner 模式额外节点和额外按钮事件订阅。共享视觉问题应修在 ButtonSpinner、TextBox 或 AddOnDecoratedBox 主题层；NumericUpDown 专用的 inline 按钮视觉应修在 NumericUpDownSpinnerTheme 中，不能在 NumericUpDown 主题中复制跨模板 selector。
 
 Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前值、文本、按钮 enabled 状态或模板切换状态写入 Token。
 
@@ -8401,8 +8507,10 @@ Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDown.cs`：public API、数值同步、custom size、string mode、清除按钮、键盘处理、Form / CompactSpace / Motion 接口。
+- `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDownSpinner.cs`：internal Spinner 子控件，复用 ButtonSpinner 的数值步进语义并承载 NumericUpDown 专用 inline 模板。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDownToken.cs`：NumericUpDown Token scope。
-- `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`：输入模式和 spinner 模式模板、ButtonSpinner / TextBox 状态传递。
+- `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`：输入模式和 spinner 模式外层模板、状态传递。
+- `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownSpinnerTheme.axaml`：NumericUpDownSpinner 的 inline 模板、分隔线、加减按钮和按钮状态视觉。
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinner.cs`：输入壳体和 spin 入口。
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinnerDecoratedBox.cs`：浮动 Handle、Addon、CompactSpace 和输入状态视觉。
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinnerHandle.cs`：Handle 按钮和上下箭头。
@@ -10342,8 +10450,9 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 主要公开类型与枚举：
 
-- 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`。
 - 枚举：`ClockIdentifierType`。
+- 本地化 Catalog：`TimePickerLangResourceKind`。
 
 稳定 template part：
 
@@ -10378,7 +10487,7 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
-- 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`。
 
 ## 使用示例
 
@@ -10535,9 +10644,10 @@ TimePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/TimePicker/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/TimePicker/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/TimePicker/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/TimePicker/Localization/TimePickerLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/TimePicker/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/TimePicker/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/TimePicker/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/TimePicker/RangeTimePicker.cs`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/RangeTimePickerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimePickerPresenterTheme.axaml`
@@ -10550,6 +10660,7 @@ TimePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - `src/AtomUI.Desktop.Controls/TimePicker/TimeView/DateTimePickerPanel.cs`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimeView/TimeView.cs`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimeView/TimeViewCell.cs`
+- `src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/InfoPickerTextBox.cs` 与 `Themes/InfoPickerTextBoxTheme.axaml`：TimePicker 输入框使用的 internal 子控件及其文本 presenter、padding 基础视觉。
 
 职责边界：
 
@@ -11044,7 +11155,7 @@ Transfer Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Transfer`：21 个文件，代表文件 `AbstractTransfer.cs`、`ITransferTreeView.cs`、`ITransferView.cs`、`ListTransfer.cs`、`TransferDirection.cs` 等。
-- `src/AtomUI.Desktop.Controls/Transfer/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
+- `src/AtomUI.Desktop.Controls/Transfer/Localization`：`TransferLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls/Transfer/Themes`：12 个文件，代表文件 `AbstractTransferTheme.axaml`、`AbstractTransferTheme.cs`、`ListTransferTheme.axaml`、`TransferItemDecoratorTheme.axaml`、`TransferListItemTheme.axaml` 等。
 
 职责边界：
@@ -11383,7 +11494,7 @@ Upload 不负责具体网络传输协议、文件存储服务或业务附件模�
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload` |
-| 状态 | Stable，`Unreleased` 中规划 L3 重构 |
+| 状态 | Stable |
 
 ## 何时使用
 
@@ -11406,7 +11517,8 @@ Upload 以 `Files` 作为唯一上传文件状态 owner。触发器、拖拽区�
 
 - `Upload.Files` 表示所有可观察上传文件。
 - `UploadTrigger` 通过 `SourceKind=Files|Directories` 选择文件或目录。
-- `UploadDropZone` 将拖拽文件提交给最近的 `Upload`。
+- `UploadDropZone` 独占拖动协商和 Drop 快照，并把输入批次提交给最近的 `Upload`。
+- `UploadDefaultDropArea` 只提供默认视觉，不读取拖动数据或维护文件状态。
 - `UploadList` 渲染 `Files`，并独立管理滚动区域。
 - `PictureCard` / `PictureCircle` 的上传入口通过 append slot 呈现，不作为 `UploadFileItem`。
 
@@ -11415,15 +11527,45 @@ Upload 以 `Files` 作为唯一上传文件状态 owner。触发器、拖拽区�
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 文件状态 | `Files`、`UploadFileItem` | 唯一文件状态 owner，支持绑定、Form 投影和列表渲染。 |
-| 文件选择 | `UploadTrigger`、`UploadSourceKind`、`SelectFilesAsync`、`SelectDirectoriesAsync` | 文件与目录选择是独立动作入口，不再由根控件 bool 互斥。 |
-| 拖拽提交 | `UploadDropZone`、`EnqueueFilesAsync` | 拖拽区只提交文件，不保存列表状态。 |
+| 文件选择 | `UploadTrigger`、`UploadSourceKind`、`SelectFilesAsync`、`SelectDirectoriesAsync` | 文件与目录选择是独立动作入口；`IsMultipleEnabled` 统一决定用户是否可提交多个顶层 StorageItem。 |
+| 拖拽提交 | `UploadDropZone`、`UploadDirectoryDropMode`、`UploadDragState` | DropZone 负责平台协商和快照，`Upload` 负责统一准入与文件状态。 |
+| 用户输入范围 | `IsMultipleEnabled` | 统一限制文件选择、目录选择和 Drop 的顶层 StorageItem 数量，不限制单个目录的文件展开结果或显式程序化批量输入。 |
+| 文件准入 | `AllowedFileTypes`、`CountOverflowBehavior`、`AdmissionPolicy` | picker、directory、drop 和 programmatic 输入共享同一准入与数量语义。 |
+| 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受项、拒绝项以及 Completed、Cancelled 或 Failed 终态。 |
+| 文件内容 | `UploadFileInfo`、`IUploadFileSource` | Transport 通过可打开内容源读取文件，不假定本地路径可访问。 |
 | 上传队列 | `UploadTransport`、`AutoUpload`、`MaxConcurrentTasks`、`UploadQueue` | 上传调度与视觉控件解耦，生命周期由 `Upload` 统一释放。 |
 | 列表展示 | `UploadList`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | 列表内部滚动，触发区保持固定。 |
 | 触发入口 | `TriggerContent`、`UploadTrigger`、Picture append slot | 文件/目录触发器由用户布局组合，PictureCard/PictureCircle 通过显示源 append slot 呈现。 |
 | 状态反馈 | `SuccessAutoRemoveDelay`、`PendingText`、`FileValueMode` | 成功自动移除、待上传文案和 Form 值投影可配置。 |
 | 视觉与动效 | `IsMotionEnabled`、Upload Token | 只表达视觉状态，不保存业务任务状态。 |
 
-### 3.3 新公共类型
+输入与准入 API 的默认契约：
+
+| 成员 | 默认值 | 语义 |
+| --- | --- | --- |
+| `Upload.AllowedFileTypes` | `null` | 不按文件名 pattern 或 MIME 拒绝文件；空集合含义相同。 |
+| `Upload.CountOverflowBehavior` | `RejectExcess` | 按候选稳定顺序接受剩余容量内的文件，并拒绝超出项。 |
+| `Upload.AdmissionPolicy` | `null` | 不执行额外业务准入；非空策略固定在非 UI 执行上下文调用。 |
+| `Upload.MaxCount` | `int.MaxValue` | 输入管线可提交的最大 effective 文件数。 |
+| `Upload.IsMultipleEnabled` | `false` | 文件选择器只选择一个文件、目录选择器只选择一个目录，Drop 只处理第一个顶层 StorageItem；单个目录仍可展开多个文件。 |
+| `UploadDropZone.IsOpenFileDialogOnClick` | `true` | 主指针点击 DropZone 时按 `SourceKind` 打开选择器。 |
+| `UploadDropZone.SourceKind` | `Files` | 点击时打开文件选择器。 |
+| `UploadDropZone.IsFileDropEnabled` | `true` | DropZone 参与文件 DragDrop 协商。 |
+| `UploadDropZone.DirectoryDropMode` | `Reject` | 外部拖入目录时拒绝目录。 |
+| `UploadDropZone.MaxDirectoryDepth` | `32` | 递归目录根深度为 `0`，属性值不得小于 `0`。 |
+| `UploadDropZone.MaxEnumeratedItems` | `10000` | 每个顶层目录树最多观察的文件和目录总数，属性值必须大于 `0`。 |
+| `UploadDropZone.DragState` | `None` | 只读拖动协商状态。 |
+| `UploadDropZone.IsDropProcessing` | `false` | 只读活动 Drop 批次状态。 |
+
+`Upload.EnqueueFilesAsync`、文件选择器、目录选择器和拖动输入分别产生 `Programmatic`、`FilePicker`、`DirectoryPicker` 和 `DragDrop` 批次。每个实际启动的批次只触发一次 `InputBatchCompleted`；事件在输入处理进入终态、剩余批次资源完成释放且接受项已经提交后于 UI 线程触发。正常批次在事件后完成 Task，取消批次在事件后传播 `OperationCanceledException`，失败批次在事件后传播原始异常或清理聚合异常。
+
+`IsMultipleEnabled` 只约束用户输入批次的顶层 StorageItem。值为 `false` 时，文件和目录 picker 都使用 `AllowMultiple=false`，Drop 按快照稳定顺序处理第一个顶层项目，并以 `MultipleSelectionNotAllowed` 拒绝和释放其余项目；第一个项目是目录时，目录内部仍按 `DirectoryDropMode` 展开多个文件。值为 `true` 时，picker 与 Drop 均允许多个顶层项目。`EnqueueFilesAsync(IEnumerable<UploadFileInfo>)` 是显式程序化批量 API，不受该属性限制，但仍受文件准入、`MaxCount` 和 `CountOverflowBehavior` 约束。
+
+`UploadInputBatchStatus` 通过 `Completed`、`Cancelled` 和 `Failed` 区分互斥终态。只有 `Failed` 携带 `UploadInputFailureReason`；取消和批次级失败不再构造虚假的 rejected item。`UploadRejectedItem` 只公开稳定的 `UploadRejectionReason`、业务 rejection code 和业务 message，不公开平台 `Exception`。`UploadAdmissionDecision` 通过 `Accept()` 和 `Reject(...)` 创建，不能构造“接受但携带拒绝信息”的矛盾状态。
+
+`UploadFileInfo` 是不可变输入描述。`Name` 和 `Source` 必须存在；`Path`、`Size`、`ContentType`、`DateCreated` 与 `DateModified` 都允许为空，因为跨进程或受限平台存储项不保证提供本地路径和完整元数据。`IUploadFileSource.OpenReadAsync` 是 transport 读取内容的唯一稳定入口。
+
+### 3.3 公共状态类型
 
 ```csharp
 public class UploadFileItem : AvaloniaObject
@@ -11455,20 +11597,7 @@ public enum UploadFileValueMode
 }
 ```
 
-### 3.4 破坏性 API 调整
-
-| Removed API | Replacement |
-| --- | --- |
-| `TaskInfoList` | `Files` |
-| `UploadTaskInfo` 作为 public 状态模型 | `UploadFileItem` |
-| `DefaultTaskList` | 初始化或绑定 `Files` |
-| `CurrentTaskList` | 不再公开或内部复制任务视图 |
-| `IsUploadDirectoryEnabled` | `UploadTrigger.SourceKind=Directories` |
-| `IsShowUploadTrigger` | 由用户布局控制 trigger 可见性 |
-| fake picture trigger task | `TriggerContent` / display append slot |
-| `UploadTriggerContent` 作为内部统一触发器 | public `UploadTrigger` |
-
-### 3.5 推荐用法
+### 3.4 推荐用法
 
 ```xml
 <atom:Upload Files="{Binding Attachments}"
@@ -11492,6 +11621,8 @@ public enum UploadFileValueMode
 ## 事件与命令
 
 Upload 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
+| 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受项、拒绝项以及 Completed、Cancelled 或 Failed 终态。 |
+`Upload.EnqueueFilesAsync`、文件选择器、目录选择器和拖动输入分别产生 `Programmatic`、`FilePicker`、`DirectoryPicker` 和 `DragDrop` 批次。每个实际启动的批次只触发一次 `InputBatchCompleted`；事件在输入处理进入终态、剩余批次资源完成释放且接受项已经提交后于 UI 线程触发。正常批次在事件后完成 Task，取消批次在事件后传播 `OperationCanceledException`，失败批次在事件后传播原始异常或清理聚合异常。
 
 ## 使用示例
 
@@ -11507,6 +11638,7 @@ Gallery key：`ExamplesContent` / item `5`
 
 ```axaml
 <atom:Upload Name="DragAndDropUpload"
+             IsMultipleEnabled="True"
              UploadTransport="{Binding UploadTransport}"
              UploadTaskFailed="HandleUploadFailed"
              UploadTaskCompleted="HandleUploadCompleted">
@@ -11524,7 +11656,9 @@ Upload 的状态流只允许按以下路径收敛：
 
 ```text
 Public API / UploadTrigger / UploadDropZone
-  -> Upload.EnqueueFilesAsync
+  -> UploadInputPipeline
+  -> top-level input limit / directory traversal / file admission
+  -> UI count policy / accepted file commit
   -> Files collection
   -> UploadQueue / FileUploadScheduler
   -> UploadFileItem.Status / Progress / Result
@@ -11534,10 +11668,11 @@ Public API / UploadTrigger / UploadDropZone
 
 状态维护规则：
 
-- `Files` 是唯一文件状态 owner；实现中不得保留 `_allTaskList`、`TaskInfoList`、`CurrentTaskList` 或同类复制集合。
+- `Files` 是唯一文件状态 owner；实现中按文件 id 保存的 accepted `UploadFileInfo` 只承担内容源 lease，不形成第二份可观察任务状态。
 - `UploadQueue` 只负责把 `UploadFileItem` 映射到 `FileUploadTask` 并转发调度结果，不直接操作视觉容器。
 - `UploadList` 只渲染 `Files`，不得创建、删除或隐藏真实任务状态。
 - 文件选择和目录选择由 `UploadTrigger.SourceKind` 决定，可以在同一 `Upload` 下并存。
+- `IsMultipleEnabled` 是 picker 与 Drop 共享的顶层输入策略，不得复用为目录展开数量或最终文件容量限制。
 - `SuccessAutoRemoveDelay` 的延迟任务必须在 remove、reset、detach 和状态离开 success 时取消。
 - Form 值由 `FileValueMode` 投影，错误状态以 Avalonia `DataValidationErrors` 为准。
 
@@ -11549,7 +11684,8 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Tok
 | --- | --- |
 | `UploadTheme.axaml` | 根模板，连接 `TriggerContent`、list 和 picture display source。 |
 | `UploadTriggerTheme.axaml` | 触发器 shell，只承载用户内容和点击动作，不硬编码 Button。 |
-| `UploadDropZoneTheme.axaml` | 拖拽区域 shell，承载 drop 视觉和用户内容。 |
+| `UploadDropZoneTheme.axaml` | 拖拽行为 shell，只承载用户内容和内容对齐。 |
+| `UploadDefaultDropAreaTheme.axaml` | 默认拖动视觉，保留边框、图标、标题、副标题、状态 selector 和动效，不处理拖动数据。 |
 | `UploadListTheme.axaml` | 上传列表 shell，内部拥有自动隐藏的 `atom:ScrollViewer` 和滚动边界。 |
 | `UploadTextListItemTheme.axaml` | Text 列表项状态视觉。 |
 | `UploadTextListItemHeaderTheme.axaml` | Text 列表项头部状态视觉。 |
@@ -11586,8 +11722,13 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 资源边界：
 
 - 异步上传任务、取消源、delay、drag/drop 事件、collection change 和 item container 绑定必须有确定释放点。
+- DragOver 不读取文件值或元数据；Drop 只物化一次顶层 StorageItem 数据。
+- 输入批次通过 arrival gate 串行执行；每个批次只建立一次显式 worker dispatch，目录展开、元数据读取和准入按候选稳定顺序处理，不创建无界并发任务；数量决策与集合变更保持在同一个 UI commit 边界。
+- `UploadInputBatchOperation` 不保存泛化 `IDisposable`；StorageItem 和 source lease 使用独立的引用相等 owner set，释放遍历不得因单个异常提前中止。
 - `UploadFileItem` 不持有视觉控件，避免文件项生命周期反向保留控件树。
 - `UploadQueue` 不捕获 `Upload` 外的视觉对象；回调只写 item 状态。
+- scheduler 的取消完成语义必须等待 transport execution task 真正退出，source lease 才能被上层释放。
+- scheduler maintenance 必须先把全部 Pending task 转入 Cancelled、向全部 Running task 发出取消，再观察调用方取消令牌；并发 transport/并发度变更按调用顺序生效。
 - C# binding 仅用于 AXAML 无法表达的动态关系，并必须挂到明确 owner 上释放。
 
 性能边界：
@@ -11599,29 +11740,41 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 AOT 边界：
 
 - 不通过运行时反射扫描 public API、Token、API 契约摘要或上传模型。
+- 拖动输入使用 typed DataTransfer、StorageItem 和显式策略，不依赖平台私有反射或动态发现。
 - 新增 public 类型应显式引用并由源码、Gallery 和测试覆盖。
 - Source generator 生成文件不手工编辑；LLMS 产物也不在本次运行时代码任务中手工修改。
 
 ## 源码索引
 
-目标源码结构按“状态 owner、动作入口、队列协调、列表视图、主题模板”分层。
+源码结构按“状态 owner、输入入口、输入管线、队列协调、列表视图、主题模板”分层。
 
 | 路径 | 职责 |
 | --- | --- |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.cs` | 保留 public/protected API、Avalonia 属性注册、构造、display source 桥接、`IFormItemAware` 和顶层上传协调。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadAppendContentItem.cs` | internal picture append visual slot，用于把 `TriggerContent` 放入 PictureCard/PictureCircle 的同一 wrap flow；不进入 `Files`。 |
-| `src/AtomUI.Desktop.Controls/Upload/Upload.FileSelection.cs` | 封装文件选择和目录选择动作，供 `UploadTrigger` 调用。 |
+| `src/AtomUI.Desktop.Controls/Upload/Upload.FileSelection.cs` | 封装文件选择和目录选择动作，并把同一个 `IsMultipleEnabled` 值投射到两种 picker 的 `AllowMultiple`。 |
+| `src/AtomUI.Desktop.Controls/Upload/IUploadStorageProviderAdapter.cs` | 隔离 Avalonia storage picker 调用，向文件选择和目录选择提供可测试的 typed StorageItem 边界。 |
+| `src/AtomUI.Desktop.Controls/Upload/Upload.InputPipeline.cs` | 连接 `Upload` 状态 owner 与输入管线，负责 UI 线程 option 快照、typed commit、批次事件和 ReplaceExisting source handoff。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadInputPipeline.cs` | 串行执行 picker、directory、drop 和 programmatic 批次，在一次 worker 边界内协调遍历与准入，再把数量策略和集合变更交给 UI commit。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadInputBatchOperation.cs` | 分别持有单个批次的 typed StorageItem 与 source lease ownership，验证 transfer，并在完成事件前释放全部未移交资源。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadStorageItemEnumerator.cs` | 在目录展开前应用顶层多选限制，再仅使用 `IStorageFolder.GetItemsAsync()` 按稳定顺序展开 storage items，并隔离目录分支错误。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadInputCandidate.cs` | 非 owning 地引用批次已拥有的 storage file，并提供基础元数据读取入口。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadFileAdmissionService.cs` | 在非 UI 执行上下文执行 `AllowedFileTypes` 和 `AdmissionPolicy`，生成明确的接受或拒绝结果。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadStorageFileSource.cs` | 以 `IStorageFile` lease 实现 `IUploadFileSource`，允许 transport 在 lease 有效期内打开读取流。 |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.AutoRemove.cs` | 管理成功自动移除的延迟任务、取消和生命周期释放。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadFileItem.cs` | public 文件状态模型，承载文件元数据、状态、进度、错误、结果和 pending 文案。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadSourceKind.cs` | public 触发来源枚举，区分文件选择和目录选择。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadFileValueMode.cs` | public Form 值投影枚举，控制提交全部文件、成功文件或上传结果。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadTrigger.cs` | public 可组合触发器，查找最近的 `Upload` 并触发文件或目录选择。 |
-| `src/AtomUI.Desktop.Controls/Upload/UploadDropZone.cs` | public 可组合拖拽区，将 drop 文件提交给最近的 `Upload`。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadDropZone.cs` | public 可组合拖拽区，拥有 DragDrop 协商、状态和 Drop 快照。 |
+| `src/AtomUI.Desktop.Controls/Upload/UploadDefaultDropArea.cs` | public 默认拖动视觉，只保存图标、标题、副标题和动效属性。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadQueue.cs` | internal 上传队列协调器，映射 `UploadFileItem` 与 `FileUploadTask`。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadList.cs` | 文件列表视图，渲染 effective 文件视图并维护列表滚动。 |
 | `src/AtomUI.Desktop.Controls/Upload/AbstractUploadListItem.cs` | 列表项基类，只绑定 `UploadFileItem` 并发出 item action，不拥有任务状态。 |
 | `src/AtomUI.Controls.Shared/Net/FileUploadScheduler.cs` | 共享上传调度器，跟踪 pending/running 任务、并发和取消。 |
 | `src/AtomUI.Controls.Shared/Net/FileUploadTask.cs` | 共享上传任务对象，承载传输回调和 cancellation 状态。 |
+| `src/AtomUI.Controls.Shared/Net/IUploadFileSource.cs` | public 文件内容读取契约，不要求本地路径。 |
+| `src/AtomUI.Controls.Shared/Net/IUploadFileSourceLease.cs` | internal AtomUI-owned source lease 标记，只由接受该 lease 的 owner 释放。 |
 
 主题结构：
 
@@ -11629,7 +11782,8 @@ AOT 边界：
 | --- | --- |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/UploadTheme.axaml` | 根模板，连接 `TriggerContent`、list 和 picture display source，并保持触发区与列表的稳定间距。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/UploadTriggerTheme.axaml` | 触发器 shell，只承载用户内容和点击表面。 |
-| `src/AtomUI.Desktop.Controls/Upload/Themes/UploadDropZoneTheme.axaml` | 拖拽区 shell，承载 drag/drop 视觉和内容。 |
+| `src/AtomUI.Desktop.Controls/Upload/Themes/UploadDropZoneTheme.axaml` | 拖拽行为 shell，只承载用户内容和内容对齐。 |
+| `src/AtomUI.Desktop.Controls/Upload/Themes/UploadDefaultDropAreaTheme.axaml` | 默认拖动视觉，保持 Frame、内容 presenter、Token 和动效结构。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/UploadListTheme.axaml` | 列表 shell，内部拥有自动隐藏的 `atom:ScrollViewer` 和滚动边界。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/PictureList/*` | Picture 列表项视觉，pending 内容优先读取 `UploadFileItem.PendingText`。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/PictureShapeList/*` | PictureCard/PictureCircle 列表布局和 item 视觉；append slot 由 display source 承载并进入同一 wrap flow。 |
@@ -12122,7 +12276,7 @@ Source: ./controls/calendar/index-cn.md
 
 ## 概述
 
-`Calendar` 是按日期组织业务展示内容的桌面日历控件，遵循本专题定义的月面板、年面板、Header、范围限制、禁用规则、周序号和单元格定制语义。它同时保留桌面端可用的焦点与方向键导航。
+`Calendar` 是按日期组织业务展示内容的桌面日历控件，遵循本专题定义的月面板、年面板、Header、范围限制、禁用规则、周序号和单元格定制语义。它同时保留桌面端可用的焦点与方向键导航。`LunarCalendar` 继承这些稳定语义，并在同一公历状态模型上增加中国农历、二十四节气、传统节日、周末以及应用提供的节假日/调休投影。
 
 Calendar 只负责“查看并选择一个日期或月份”的面板体验，不负责日期输入弹层、范围选择、多日期选择、时间编辑或复杂日程排布。日期输入由 DatePicker 等控件承担，范围和日程数据由业务层承担；Calendar 只提供轻量 `RangeBars` 标记能力，用于在日期网格中表达连续日期业务条。新 Calendar 的内部 `CalendarView` 与 DatePicker 的旧 CalendarView 子系统完全隔离。
 
@@ -12150,7 +12304,7 @@ Calendar 的设计语言围绕日期面板的产品语义、可观察状态和�
 | 产品语义 | 控件在界面中承担的稳定职责。 | 以 Month/Year 两种面板展示日期或月份，并提交单一选中值。 |
 | 内容承载 | 业务数据和模板如何进入控件。 | `Value`、`ValidRange`、`DisabledDate`、`CellTemplate`、`FullCellTemplate` 与 `HeaderTemplate`。 |
 | 状态反馈 | API、内部状态与伪类如何形成反馈。 | `today`、`selected`、`outside`、`disabled`、`focused`、`fullscreen`、`mini`、`show-week`。 |
-| 主题语义 | SharedToken、CalendarControlToken、ControlTheme 与模板如何表达视觉。 | 四个 Calendar ControlTheme 消费共享 Token 与八个 Calendar 专属 Token。 |
+| 主题语义 | SharedToken、`CalendarToken`、`LunarCalendarToken`、ControlTheme 与模板如何表达视觉。 | Calendar 基础主题消费九个 Calendar 专属 Token；LunarCalendar 只增加农历内容所需的增量 Token。 |
 
 设计上的首要不变量是：Cell 定制不能夺走日期值、选中、禁用、焦点和命中测试语义；这些语义由 Cell 容器保留，模板只改变内容呈现方式。
 
@@ -12197,6 +12351,12 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 根伪类包括 `:fullscreen`、`:mini`、`:month`、`:year`、`:show-week`；Cell 伪类包括 `:date`、`:month`、`:week`、`:today`、`:selected`、`:outside`、`:disabled`、`:focused`。四个内部 ControlTheme 的 key 与伪类是主题兼容契约，变更必须同步源码、Gallery 和文档。
 
+### 3.4 LunarCalendar 扩展契约
+
+`LunarCalendar` 是 `Calendar` 的公开派生控件，继续使用 `Value`、`Mode`、`Fullscreen`、`ShowWeek`、`ValidRange`、`DisabledDate`、三个模板入口、`RangeBars` 和三个选择事件。它增加 `ShowSolarTerms`、`ShowTraditionalFestivals`、`ShowHolidays`、`HighlightWeekends`、`HolidayProvider`、只读 `SelectedLunarDateInfo` 和 `RefreshHolidayData()`。
+
+农历算法保证范围为 `1900-01-01` 至 `2100-12-31`。`Value` 在 LunarCalendar 上收敛到该范围；内部有效选择范围为支持范围与 `ValidRange` 的交集。法定节假日和调休不内置，由 `ILunarCalendarHolidayProvider` 以同步面板数据提供。完整模型、默认值、枚举、Provider 规则和显示优先级见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)。
+
 ## 事件与命令
 
 Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型、枚举、伪类和 ControlTheme 共同组成。
@@ -12204,6 +12364,7 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 ### 3.2 事件
 | 事件 | 语义 |
 用户选择的提交顺序固定为 `PanelChanged` → `ValueChanged` → `Selected`，不存在的事件从序列中省略。事件发生时新值已经写入 `Value`。程序直接设置 `Value` 或 `Mode` 只更新属性和渲染，不模拟用户事件。
+`LunarCalendar` 是 `Calendar` 的公开派生控件，继续使用 `Value`、`Mode`、`Fullscreen`、`ShowWeek`、`ValidRange`、`DisabledDate`、三个模板入口、`RangeBars` 和三个选择事件。它增加 `ShowSolarTerms`、`ShowTraditionalFestivals`、`ShowHolidays`、`HighlightWeekends`、`HolidayProvider`、只读 `SelectedLunarDateInfo` 和 `RefreshHolidayData()`。
 
 ## 使用示例
 
@@ -12213,7 +12374,7 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:41`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:44`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -12223,7 +12384,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 跨日期事件
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:167`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:170`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -12252,24 +12413,30 @@ Gallery key：`ExamplesContent` / item `2`
 </atom:Calendar>
 ```
 
-### 迷你模式
+### 卡片模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:198`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:201`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<atom:Calendar Value="{Binding SampleDate}" Fullscreen="False" Width="300" />
+<Border Width="300"
+        HorizontalAlignment="Left"
+        BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+        BorderThickness="{atom:SharedTokenResource BorderThickness}"
+        CornerRadius="{atom:SharedTokenResource BorderRadiusLG}">
+    <atom:Calendar Value="{Binding SampleDate}" Fullscreen="False" />
+</Border>
 ```
 
-### 年模式
+### 农历日历
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:208`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:217`
 
 Gallery key：`ExamplesContent` / item `4`
 
 ```axaml
-<atom:Calendar Value="{Binding SampleDate}"
+<atom:LunarCalendar Value="{Binding LunarCalendarSampleDate}"
 ```
 
 ## 状态模型
@@ -12292,29 +12459,36 @@ Public API / Header / Cell input
 - `Fullscreen`/Mini 只改变布局密度和 Header 控件尺寸，不改变值、事件顺序、禁用和模板优先级。
 - `RangeBars` 只改变日期网格上方的 overlay 业务标记层，不改变 Cell 外间距、选择状态、禁用状态、鼠标指针、事件顺序或 Automation。
 - AtomUI 语言服务改变会同步更新日期格式、周标题、月份名称、Header 的 Month/Year 文本与年份后缀。
+- LunarCalendar 不建立第二份农历选中值；`SelectedLunarDateInfo`、Cell 农历内容和 Header 农历标签都从当前公历 Value/面板数据单向投影。
+- Fullscreen/Card × Month/Year 四种组合共享 CalendarView 的网格拓扑、焦点、容器池和 Automation，农历 adapter 只改变专用 Cell、Header 文案和布局 metrics。
 
 ## 主题与 Design Token
 
-Calendar 使用 `CalendarControlToken`（scope id `CalendarControl`）以及 SharedToken。专属 Token 只表达八个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`MiniContentHeight`、`FullCellMinHeight`、`RangeBarHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
+Calendar 使用源码中的 `CalendarToken` 以及 SharedToken。专属 Token 只表达九个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`YearMonthCellWidth`、`MiniContentHeight`、`FullCellMinHeight`、`RangeBarHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
+
+LunarCalendar 使用独立 exact Control identity 和 `LunarCalendarToken`，只补充双行 Cell、农历次级文本、卡片内容高度、周末/节假日标记、Fullscreen Cell 高度和范围条避让所需语义。LunarCalendar root 不通过深层 selector 修改 CalendarHeader、CalendarView、ComboBox、OptionButtonGroup 或普通 CalendarViewCell 的模板内部。
 
 | Theme 文件 | 稳定职责 |
 | --- | --- |
-| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择、CalendarView 与范围条 overlay 接线；Fullscreen 拉伸且无紧凑边框，Mini 使用圆角边框。 |
-| `CalendarHeaderTheme.axaml` | Year Select、Month Select、Month/Year 模式切换。Mini 时 Header 交互控件应使用 Small 尺寸。 |
+| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择、CalendarView 与范围条 overlay 接线；Fullscreen 拉伸，Mini 提供无外框的卡片内容布局，外部容器负责边框与宽度。 |
+| `CalendarHeaderTheme.axaml` | Year Select、Month Select、Month/Year `OptionButtonGroup` 模式切换。Mini 时 Header 交互控件应使用 Small 尺寸。 |
 | `CalendarViewTheme.axaml` | WeekHeader、CellHost，以及 Fullscreen/Mini 的布局差异。 |
 | `CalendarViewCellTheme.axaml` | 默认日期值、Cell/FullCell 模板消费、状态 selector 和命中测试视觉。 |
 
 `CellTemplate` 必须保留默认值显示，并与内置范围条 overlay 共存；`FullCellTemplate` 覆盖完整 Cell 内部内容且优先级最高，但不替换 Calendar body overlay。两者都不能删除禁用、选中、焦点和 outside 的容器状态。
 
+普通 Calendar 在 `Fullscreen=false` 时使用 256 高内容区，包含 WeekHeader 与六行 CellHost；LunarCalendar 由自身 `MiniContentHeight` 按双行 Cell 尺寸和共享间距派生有效内容高度。body 的顶部分隔线和纵向 Padding 位于该内容区之外。Mini 的 selected/today/disabled 状态分别使用主色实心、主色单线描边和禁用背景；Fullscreen selected 保持 `ItemActiveBg` 与主色日期值，不复用 Mini 的实心主色规则。
+
 Token 来源：
 
-新 Calendar 的 Token 收敛为八个公开视觉语义。日期值、周标题、范围条间距、范围条圆角、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则，范围条默认高度通过 `RangeBarHeight` 固化 Calendar overlay 的默认条高。
+Calendar 的 Token 收敛为九个组件视觉语义。日期值、周标题、范围条间距、范围条圆角、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则，Year 模式月份单元宽度通过 `YearMonthCellWidth` 固化面板单元测量规则，范围条默认高度通过 `RangeBarHeight` 固化 Calendar overlay 的默认条高。
 
-当前 Token scope：
+当前 Calendar Token 源：
 
-- `CalendarControlToken`，scope id 为 `CalendarControl`，源码位于 `src/AtomUI.Desktop.Controls/Calendar/CalendarControlToken.cs`。
+- `CalendarToken`，源码位于 `src/AtomUI.Desktop.Controls/Calendar/CalendarToken.cs`。
+- AXAML 通过生成的 `CalendarTokenResource` 访问这些值。
 
-> 注意：旧 `CalendarToken`（scope id `Calendar`）现归 DatePicker 的 CalendarView 使用，与新 Calendar 无关。新 Calendar 通过 `CalendarControlTokenResource` 引用自己的 Token，两者完全独立。
+LunarCalendar 使用独立 exact Control identity 和 `LunarCalendarToken`。它只补充农历双行内容、卡片内容高度、周末/节假日状态以及 Fullscreen RangeBars 避让所需语义，不复制 Calendar 的根背景、Header、普通 Cell 选中态或 RangeBars 默认条高。
 
 ## AOT 与裁剪注意事项
 
@@ -12323,9 +12497,10 @@ Token 来源：
 - Container pool 只复用无业务所有权的视觉容器；模板、Context、Focus 和 Automation 必须随 Bind/Unbind 完整更新。
 - RangeBars 集合使用 owner-managed 非 Visual `AvaloniaObject` 范式；`CalendarRangeBar.Background` 的动态资源和 TokenResource 由 generated scoped resource host 承载，Calendar 负责 attach/release。
 - `CalendarRangeBarPanel` 不遍历 Cell visual tree，不在 pointer move 热路径中计算，也不拥有业务数据生命周期。
-- Token 通过 `CalendarControlTokenResource` 和 SharedToken 进入 AXAML；运行时状态由伪类 selector 表达。
+- Token 通过 `CalendarTokenResource`、`LunarCalendarTokenResource` 和 SharedToken 进入 AXAML；运行时状态由伪类 selector 表达。
 - 不使用运行时反射扫描 API、Token、日期类型或 Gallery 数据；属性静态注册、强类型上下文和生成资源保持 NativeAOT 兼容。
 - LanguageManager、VisualTree、Template part 等外部订阅必须有成对释放路径，避免 detach 后保留 Calendar。
+- 农历年表、二十四节气表和传统节日 resolver 是静态只读数据与纯函数；不依赖第三方农历运行库、系统时区、网络、反射或字符串 binding。面板数据有界且不在 Measure/Arrange/Render 热路径构建。
 
 ## 源码索引
 
@@ -12333,13 +12508,12 @@ Token 来源：
 src/AtomUI.Desktop.Controls/Calendar/
 ├── Calendar.cs
 ├── CalendarCellContext.cs
-├── CalendarControlToken.cs
 ├── CalendarDateRange.cs
 ├── CalendarEnums.cs
 ├── CalendarEventArgs.cs
 ├── CalendarHeaderContext.cs
 ├── CalendarRangeBar.cs
-├── CalendarToken.cs                 # DatePicker 旧 CalendarView 的遗留 Token，不属于新 Calendar
+├── CalendarToken.cs
 ├── Internal/
 │   ├── CalendarHeader.cs
 │   ├── CalendarHeaderOptions.cs
@@ -12354,9 +12528,10 @@ src/AtomUI.Desktop.Controls/Calendar/
 │   ├── CalendarViewCellModel.cs
 │   └── CalendarViewMode.cs
 ├── Localization/
-│   ├── en_US.cs
-│   ├── zh_CN.cs
-│   └── zh_TW.cs
+│   ├── CalendarControlLangResourceKind.cs
+│   ├── en-US.xlf
+│   ├── zh-CN.xlf
+│   └── zh-TW.xlf
 └── Themes/
     ├── CalendarTheme.axaml(.cs)
     ├── CalendarHeaderTheme.axaml(.cs)
@@ -12364,7 +12539,7 @@ src/AtomUI.Desktop.Controls/Calendar/
     └── CalendarViewCellTheme.axaml(.cs)
 ```
 
-`CalendarToken.cs` 属于 DatePicker 的旧 CalendarView 兼容边界；新 Calendar 的专属 Token 是 `CalendarControlToken.cs`。两者不得在实现或文档中混用。
+`CalendarToken.cs` 是当前 Calendar ControlTheme 实际消费的专属 Token 源。LunarCalendar 的公开类型、算法、数据表、internal adapter、专用 Cell、主题和本地化也统一归属本源码目录；稳定职责结构见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)。DatePicker 的日期面板实现位于 DatePicker 模块，不与本目录 CalendarView 或 Token 混用。
 
 ## 相关文档
 
@@ -13283,7 +13458,26 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | 视觉与布局 | `BottomPaginationAlign`、`ColumnWidth`、`HorizontalAlignment`、`HorizontalScrollBarVisibility`、`MaxColumnWidth`、`MinColumnWidth`、`RowHeight`、`SeparatorBrush`、`SizeType`、`SublevelIndent` 等 14 项 | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `CellTheme`、`CollectionView`、`CustomOperatingIndicator`、`EmptyIndicator`、`Footer`、`FormatString`、`GridLinesVisibility`、`Level`、`Maximum`、`Minimum` 等 15 项 | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
-稳定事件包括 `SelectionChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+稳定事件包括 `SelectionChanged`、`RowReordering` 和 `RowReordered`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+
+行拖动重排由 `CanUserReorderRows`、`DataGridRowReorderColumn`、`RowReordering`、`RowReordered` 和可选的
+`IDataGridCollectionViewMoveSupport` 共同表达。`DataGrid` 不直接把 View 索引解释为源集合索引，也不直接对
+`IList` 执行 `RemoveAt` / `Insert`。CollectionView 只有在实现移动能力接口并声明 `CanMove=true` 时才参与提交：
+
+```csharp
+public interface IDataGridCollectionViewMoveSupport
+{
+    bool CanMove { get; }
+
+    bool TryMove(int sourceIndex, int targetIndex);
+}
+```
+
+`sourceIndex` 和 `targetIndex` 都使用当前 CollectionView 的零基索引。`TryMove` 只有在项目顺序发生实际变化并且
+提交成功时返回 `true`；同位置释放、能力缺失、索引失效或会话在提交前失效时返回 `false`，且不触发
+`RowReordered`。内置 `DataGridCollectionView` 只在源集合可写、非只读、非固定长度、未处于新增或编辑状态，
+并且没有排序、过滤、分组、分页或延迟刷新时提供移动能力。自定义 CollectionView 可以通过实现该可选接口
+定义自己的索引映射和提交语义，而不需要改变已有 `IDataGridCollectionView` 实现。
 
 分页公共契约由 `PageSize`、`PaginationVisibility`、`TopPaginationAlign`、`BottomPaginationAlign` 和
 `IsHideOnSinglePage` 共同表达。`PageSize` 默认为 `0`，表示不启用内建分页；非零值配置当前
@@ -13332,7 +13526,7 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 ## 事件与命令
 
 DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-稳定事件包括 `SelectionChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+稳定事件包括 `SelectionChanged`、`RowReordering` 和 `RowReordered`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 - 类型：`DataGrid`、`DataGridAbstractTextColumn`、`DataGridAutoGeneratingColumnEventArgs`、`DataGridBeginningEditEventArgs`、`DataGridBoundColumn`、`DataGridCell`、`DataGridCellCollection`、`DataGridCellCoordinates`、`DataGridCellEditEndedEventArgs`、`DataGridCellEditEndingEventArgs` 等 public DataGrid 类型。
 
 ## 使用示例
@@ -13577,6 +13771,11 @@ Public API / inherited command / item source / user input
 - `ClearFilters()` 和单列清除过滤必须通过清空列级 `SelectedFilterValues` 完成，不能只清空 `FilterDescriptions`，否则 VM 绑定、过滤图标激活态和 flyout 勾选态会分裂。
 - 分页状态以当前 `DataGridCollectionView` 为 owner；顶部和底部分页部件必须从同一份 `ItemCount`、`PageSize`
   和 `PageIndex` 投影，不能互相覆盖，也不能在模板重建时反向重置 CollectionView。
+- 行拖动状态以当前 `DataGrid` 的单一拖拽会话为 owner；handle 和 RowsPresenter 只投影输入与 ghost row，不能保存
+  跨 DataGrid 共享的静态拖拽状态。Pointer capture、源行、CollectionView 和目标索引必须属于同一个会话。
+- `RowReordering` 在超过拖动阈值后且创建 ghost row 前触发一次；事件取消或事件回调改变 DataGrid、源行、
+  ItemsSource、CollectionView 或移动能力时，本次 Pointer 会话保持取消状态，不得在后续移动帧重复开始。
+- `RowReordered` 只在 CollectionView 成功提交顺序变化，并且 ghost、capture、动画与会话状态全部清理后触发。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -13637,6 +13836,10 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- 行拖动 PointerMoved 热路径只更新会话坐标、目标索引、ghost offset 和必要的自动滚动请求；不在移动帧修改
+  集合、刷新 View、重建模板或分配新的 ghost row。
+- 每次有效 PointerPressed 最多创建一个轻量行拖动会话，每次进入 Dragging 最多创建一个 ghost row；两者在
+  完成或取消时释放。移动能力通过直接接口能力判断，不使用反射、动态调用或运行时类型扫描。
 
 ## 源码索引
 
@@ -13648,11 +13851,11 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls.DataGrid/Column/Filters`：7 个文件，代表文件 `DataGridFilterIndicator.cs`、`DataGridFilterItem.cs`、`DataGridFilterValuesSelectedEventArgs.cs`、`DataGridMenuFilterFlyout.cs`、`DataGridMenuFilterFlyoutPresenter.cs` 等。
 - `src/AtomUI.Desktop.Controls.DataGrid/Data`：15 个文件，代表文件 `CollectionViewGroupRoot.cs`、`DataGridCollectionView.cs`、`DataGridCollectionViewGroup.cs`、`DataGridCollectionViewGroupInternal.cs`、`DataGridCurrentChangingEventArgs.cs` 等。
 - `src/AtomUI.Desktop.Controls.DataGrid/EventArgs`：18 个文件，代表文件 `DataGridAutoGeneratingColumnEventArgs.cs`、`DataGridBeginningEditEventArgs.cs`、`DataGridCellEditEndedEventArgs.cs`、`DataGridCellEditEndingEventArgs.cs`、`DataGridCellEventArgs.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator`：2 个文件，代表文件 `LanguageProviderPool.g.cs`、`LanguageResourceConst.g.cs`。
+- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.Localization`：生成 Catalog descriptor、语言模块注册入口和 `DataGridLangResource` 扩展。
 - `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ResourceHost.ScopedResourceHostGenerator`：1 个文件，代表文件 `GenerateScopedResourceHostAttribute.g.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：生成 `GeneratedControlPackageRegistration.g.cs`、`GeneratedThemeSchema.g.cs` 和 `TokenResourceConst.g.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator`：生成独立主题叶子的 `GeneratedControlThemeAssetManifest.g.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
+- `src/AtomUI.Desktop.Controls.DataGrid/Localization`：`DataGridLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls.DataGrid/Properties`：1 个文件，代表文件 `AssemblyInfo.cs`。
 - `src/AtomUI.Desktop.Controls.DataGrid/Row`：7 个文件，代表文件 `DataGridDetailsPresenter.cs`、`DataGridRow.Privates.cs`、`DataGridRow.cs`、`DataGridRowGroupHeader.cs`、`DataGridRowGroupInfo.cs` 等。
 - `src/AtomUI.Desktop.Controls.DataGrid/Themes`：21 个文件，代表文件 `DataGridCellTheme.axaml`、`DataGridColumnGroupHeaderTheme.axaml`、`DataGridColumnHeaderTheme.axaml`、`DataGridColumnHeaderTheme.cs`、`DataGridHeaderViewItemTheme.axaml` 等。
@@ -15041,7 +15244,7 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 - 网络图片必须通过异步加载服务处理，不允许在 UI 线程同步等待网络 I/O。
 - 本地、资源和远程 URI 图片共享同一 `ImageSourceUri.CacheKey` identity 规范化规则，用于去重、旧结果判定和扩展场景；非 URI 来源只有显式实现 `IImagePreviewSourceIdentity` 时才跨实例复用。
 - 默认 loading/error 视觉必须保持 AXAML-first。封面 Skeleton、预览 Spin、失败图标和本地化文本应由模板和资源表达；除非需要计算稳定占位尺寸，否则不要用 C# 动态创建视觉节点。
-- 默认失败文案属于 ImagePreviewer 控件语言资源，新增或调整文案时同步 `en_US`、`zh_CN`、`zh_TW` 语言提供器和生成语言资源，不在主题中写死英文。
+- 默认失败文案属于 ImagePreviewer Catalog；新增或调整文案时同步 Catalog enum 与 `en-US`、`zh-CN`、`zh-TW` XLIFF，不在主题中写死英文。
 - 标题 resolver 必须是同步、确定性的纯解析逻辑；不得访问文件系统、发起网络请求、等待异步任务或通过运行时反射发现模型成员。
 - 预览标题图标必须使用 `PathIcon? PreviewTitleIcon` 链路，不通过运行时反射、文件探测、平台特判、`Window.Icon` 或主窗口 fallback 生成额外图标模型。
 - `LoadedImageSource` 由控件当前加载项持有；来源替换、取消或控件释放时必须释放旧结果。
@@ -15062,7 +15265,7 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/ImagePreviewer`：控件主体、图片源模型、加载状态、预览宿主和 renderer 所在目录，代表文件包括 `AbstractImagePreviewer.cs`、`ImagePreviewer.cs`、`ImageViewer.cs`、`ImagePreviewRenderer.cs`、`IImagePreviewSource.cs`、`UriImagePreviewSource.cs`、`StreamImagePreviewSource.cs`、`ImageSourceUri.cs`、`ImagePreviewItem.cs`、`LoadedImageSource.cs` 和 `IImageSourceLoader.cs`。
-- `src/AtomUI.Desktop.Controls/ImagePreviewer/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
+- `src/AtomUI.Desktop.Controls/ImagePreviewer/Localization`：`ImagePreviewerLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls/ImagePreviewer/Themes`：12 个文件，代表文件 `ImageGroupPreviewerTheme.axaml`、`ImagePreviewFloatToolbarTheme.axaml`、`ImagePreviewNavButtonTheme.axaml`、`ImagePreviewToolbarTheme.axaml`、`ImagePreviewerCoverTheme.axaml` 等。
 
 职责边界：
@@ -15999,8 +16202,9 @@ QRCode 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 主要公开类型与枚举：
 
-- 类型：`AbstractQRCode`、`QRCode`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`AbstractQRCode`、`QRCode`。
 - 枚举：`QRCodeEccLevel`、`QRCodeStatus`。
+- 本地化 Catalog：`QRCodeLangResourceKind`。
 
 稳定 template part：
 
@@ -16143,9 +16347,10 @@ QRCode Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/QRCode/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/QRCodeLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/QRCode/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/QRCode/QRCode.cs`
 - `src/AtomUI.Desktop.Controls/QRCode/QRCodeToken.cs`
 - `src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`
@@ -17481,6 +17686,7 @@ Tooltip Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 资源和 AOT 约束：
 
 - 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
+- 不通过 VisualTree 遍历或反射发现其他控件的 template part；输入文本可视宽度只消费输入控件发布的内部 metric。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
@@ -17501,6 +17707,7 @@ Tooltip Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipPseudoClass.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipService.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipToken.cs`
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`
 
 职责边界：
 
@@ -17574,8 +17781,9 @@ Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 主要公开类型与枚举：
 
-- 类型：`DefaultTourIndicator`、`TextTourIndicator`、`Tour`、`TourIndicator`、`TourLayer`、`TourStep`、`TourStepNavRequestEventArgs`、`TourStepOption`、`TourStepsView`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`DefaultTourIndicator`、`TextTourIndicator`、`Tour`、`TourIndicator`、`TourLayer`、`TourStep`、`TourStepNavRequestEventArgs`、`TourStepOption`、`TourStepsView`。
 - 枚举：`TourPlacementMode`、`TourStyleType`。
+- 本地化 Catalog：`TourLangResourceKind`。
 
 稳定 template part：
 
@@ -17590,7 +17798,7 @@ Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
-- 类型：`DefaultTourIndicator`、`TextTourIndicator`、`Tour`、`TourIndicator`、`TourLayer`、`TourStep`、`TourStepNavRequestEventArgs`、`TourStepOption`、`TourStepsView`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`DefaultTourIndicator`、`TextTourIndicator`、`Tour`、`TourIndicator`、`TourLayer`、`TourStep`、`TourStepNavRequestEventArgs`、`TourStepOption`、`TourStepsView`。
 
 ## 使用示例
 
@@ -17697,9 +17905,10 @@ Tour Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 
 - `src/AtomUI.Desktop.Controls/Tour/DefaultTourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/ITourAction.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/TourLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/Tour/TextTourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/DefaultTourIndicatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TextTourIndicatorTheme.axaml`
@@ -21103,7 +21312,7 @@ Splash 的视觉模型由 `Splash` 控件模板、`SplashWindow` 宿主主题、
 | `SplashTheme.axaml` | 定义启动页视觉控件模板、状态 selector、ProgressBar/Spin 组合和内容区域。 |
 | `SplashWindowTheme.axaml` | 定义桌面启动窗口宿主、透明无装饰窗口模板、阴影宿主和内容承载边界。 |
 
-Splash 使用 `SplashToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。
+Splash 使用独立的 Control identity 和 `SplashToken` Own Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。`SplashTheme.axaml` 通过 `SplashTokenResource` 统一读取 Splash 的 Effective Global Token 和 Own Token：标题读取 Global Token `ColorTextHeading`，普通消息读取 Global Token `ColorText`，副标题和详情读取 Own Token `SubtleForeground`。默认没有 Splash Control 级覆盖时，Effective Global Token 回退到当前主题的全局结果，因此默认 Light/Dark 视觉不变。
 `SplashWindow` 使用 `{x:Type atom:SplashWindow}` 作为隐式 `ControlTheme` key；窗口模板必须保持透明内容宿主，避免默认 Window 背景破坏 Splash 表面圆角。
 `SplashWindowTheme.axaml` 直接使用 `ShadowsAwareContainer#PART_SurfaceHost` 承载 `Splash`，由 `SurfaceBoxShadow` 控制窗口表面阴影，由 `SurfaceCornerRadius` 控制阴影遮罩圆角。`SplashTheme.axaml` 内部的 `PART_RootLayout` 和 `PART_SurfaceLayout` 继续负责背景、内容圆角和裁剪。
 
@@ -21111,6 +21320,7 @@ Splash 使用 `SplashToken` 作为控件 Token scope。Token 只表达组件视�
 
 - 同时影响窗口阴影宿主和 Splash 内容表面的视觉资源，应写入 `SplashWindow.Resources`。
 - 只影响 `Splash` 内部模板的资源，可以写入 `Splash.Resources`。
+- 应用需要完整的专用启动窗口视觉时，定义自己的 `SplashWindow` 和内部 Splash 子控件；子控件通过 `StyleKeyOverride` 复用标准 Splash Theme，并由自己的 AXAML `Styles` 维护专用模板视觉。窗口或页面不得进入 Splash 模板修改内部节点。
 - 不通过 C# `TokenResourceBinder` 在窗口宿主和 Splash 之间桥接 `SurfaceBoxShadow`、`SurfaceCornerRadius` 等模板可表达关系。
 
 主题维护规则：
@@ -21118,6 +21328,7 @@ Splash 使用 `SplashToken` 作为控件 Token scope。Token 只表达组件视�
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 视觉结构优先使用 AXAML、`TemplateBinding`、selector、`Spin`、`ProgressBar` 和 `ContentPresenter` 表达。
 - 不把状态显示逻辑改成 C# 动态创建视觉，除非 AXAML 无法表达且生命周期 owner 明确。
+- Gallery 和业务代码不得从页面、父控件 Style 或窗口 ControlTheme 通过 `/template/`、C# `.Template()` 或 `PART_*` 名称进入 Splash 模板。专用 Splash 子控件可以通过 `StyleKeyOverride` 复用标准 Splash Theme，并在自己的 AXAML `Styles` 中进入自己的一层模板；该子控件承担模板契约所有权。
 - Light/Dark 主题应保持品牌区域、进度区域、错误状态和窗口表面的对比度。
 
 Token 来源：
@@ -21136,6 +21347,7 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 不为模板稳定节点之间的 token 资源关系创建 `TokenResourceBinder` 桥接；`PART_SurfaceHost` 和 `Splash` 内部模板应通过相同的资源树解析 `SplashTokenResource`。
 - 窗口级视觉覆盖写入 `SplashWindow.Resources`，确保 `PART_SurfaceHost` 与 `Splash` 内部模板都能解析；`Splash.Resources` 只用于仅影响 Splash 内部模板的覆盖。
+- Gallery 和业务代码不得从页面、父控件 Style、窗口 ControlTheme 或 C# 动态 Style 穿透 Splash 模板。需要完整专用视觉时定义专用 Splash 子控件，通过 `StyleKeyOverride` 复用标准 Theme，并把专用 selector 放在该子控件自己的 AXAML `Styles` 中；每个 selector 最多进入自己的一层模板，并继续遵守稳定 template part 和状态 selector 契约。
 - `SplashService` 中的延迟任务、淡出任务和取消 token 必须能取消或释放。
 - 事件订阅必须与窗口或服务生命周期一致。
 - `Splash.DefaultService` 替换不得保留旧服务窗口引用。
@@ -21171,7 +21383,7 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 - `Splash.StaticAPI.cs` 只放静态便利入口，所有逻辑委托给 `Splash.DefaultService`。
 - `SplashWindow.cs` 负责窗口级 `Splash` 内容承载属性、展示时间记录、淡出关闭和关闭请求状态；`SplashWindowTheme.axaml` 负责透明无装饰窗口默认值、窗口模板、阴影宿主和内容承载边界。
 - `SplashService.cs` 是启动编排 owner，负责创建窗口、创建或复用 `Splash` 实例、应用运行时 options、更新状态、关闭窗口和 UI thread 调度。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
+- Theme 文件负责静态视觉结构、template part、selector 和资源绑定；`SplashTheme.axaml` 使用 `SplashTokenResource` 读取 Splash Effective Global Token 与 Own Token，不绕过 Control identity 直接读取同名 SharedToken。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 

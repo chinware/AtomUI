@@ -12,9 +12,10 @@
 
 - `src/AtomUI.Desktop.Controls/Tour/DefaultTourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/ITourAction.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/Tour/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/TourLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/Tour/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/Tour/TextTourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/DefaultTourIndicatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TextTourIndicatorTheme.axaml`
@@ -49,9 +50,7 @@
 - `TourStepOption`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `TourStepsView`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TourToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `TourLangResourceKind`：稳定的本地化 Catalog enum；三个 XLIFF 文件提供随模块发布的内置翻译，生成器负责编译资源表和 XAML 扩展。
 
 核心协作规则：
 

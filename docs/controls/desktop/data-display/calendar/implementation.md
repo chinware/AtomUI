@@ -32,9 +32,10 @@ src/AtomUI.Desktop.Controls/Calendar/
 │   ├── CalendarViewCellModel.cs
 │   └── CalendarViewMode.cs
 ├── Localization/
-│   ├── en_US.cs
-│   ├── zh_CN.cs
-│   └── zh_TW.cs
+│   ├── CalendarControlLangResourceKind.cs
+│   ├── en-US.xlf
+│   ├── zh-CN.xlf
+│   └── zh-TW.xlf
 └── Themes/
     ├── CalendarTheme.axaml(.cs)
     ├── CalendarHeaderTheme.axaml(.cs)

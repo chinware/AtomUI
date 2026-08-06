@@ -99,7 +99,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 - 转发主题、Appearance、紧凑、动效、Wave Spirit 和语言切换命令；所有主题维度通过一次完整 ThemeRequest 提交。
 - Follow System 模式订阅平台 appearance source，平台变化时只提交完整的新主题状态，不直接修改资源。
 - 监听 `ThemeChanged`、`ThemeCatalogChanged` 和语言变化并更新菜单状态。
-- 释放时解绑 ThemeManager、语言和系统 appearance 订阅，并释放 `GalleryNavigationViewModel`。
+- 释放时解绑 ThemeManager、LanguageManager 和系统 appearance 订阅，并释放 `GalleryNavigationViewModel`。
 
 `GalleryWorkspaceViewModel` 不能知道具体产品页面类型。产品可以通过继承或组合方式提供自己的导航 ViewModel 类型别名，例如 AtomUI Gallery 的 `WorkspaceWindowViewModel` 继承 `GalleryWorkspaceViewModel`，并把 `CaseNavigation` 暴露为产品侧兼容属性。
 
@@ -190,7 +190,7 @@ Footer
 |---|---|---|
 | Window Options | `IsWindowOptionsMenuEnabled` | 控制 caption button、移动、缩放 |
 | Theme | `IsThemeMenuEnabled` | 主题目录、Light/Dark/Follow System、紧凑、动效、WaveSpirit |
-| Language | `IsLanguageMenuEnabled` | 切换 AtomUI 语言变体 |
+| Language | `IsLanguageMenuEnabled` | 切换应用支持的 `LanguageTag` |
 
 AtomUIGallery Desktop 窗口根据 `AvailableThemes` 动态建立同组 Radio 项，并以 `CurrentThemeId` 设置选中态；菜单不
 写死主题 Id、名称或颜色。主题选择、Appearance 三态和运行时算法组合的完整规则见
@@ -198,11 +198,11 @@ AtomUIGallery Desktop 窗口根据 `AvailableThemes` 动态建立同组 Radio �
 
 语言菜单第一阶段提供 AtomUI 已支持的语言：
 
-- `zh_CN`
-- `zh_TW`
-- `en_US`
+- `zh-CN`
+- `zh-TW`
+- `en-US`
 
-后续如果 AtomUI 语言系统支持动态枚举，菜单应改成根据 `ThemeManager` 可用语言生成。
+如果后续把菜单改成数据驱动，应读取 `ILanguageManager.SupportedLanguages`；语言集合不属于 `ThemeManager`。
 
 ## 内容宿主
 

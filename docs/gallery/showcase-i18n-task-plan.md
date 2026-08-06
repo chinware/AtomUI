@@ -7,7 +7,7 @@
 | 项 | 结果 |
 | --- | ---: |
 | ShowCase 总数 | 71 |
-| 已有 ShowCase 本地多语言 | 69 个，P1 标题/描述迁移全部完成；`Icon`、`Palette` 无 `ShowCaseItem` 标题/描述，P1 无需新增 provider |
+| 已有 ShowCase 本地多语言 | 69 个，P1 标题/描述迁移全部完成；`Icon`、`Palette` 无 `ShowCaseItem` 标题/描述，P1 无需新增 Catalog |
 | 仍有硬编码 `ShowCaseItem.Title` / `Description` 的 ShowCase | 0 个 |
 | 待迁移 `ShowCaseItem.Title` | 0 处 |
 | 待迁移 `ShowCaseItem.Description` | 0 处 |
@@ -17,7 +17,7 @@
 | P5 回归验证 | 已完成；资源一致性、关键残留扫描、Debug build 和短启动 smoke 均通过 |
 | P6 POCO 选项动态语言切换 | 已完成；控件层已修复 `Cascader`、`CascaderView`、`Select`、`TreeSelect`、`TreeView`、`ListView`、`ListBox` 的数据源刷新/容器复用状态恢复；示例层内联本地化 POCO 选项迁移为 0 残留 |
 
-当前所有 `ShowCaseItem.Title` / `Description` 均已按 ShowCase 本地 `Localization/en_US.cs` 和 `Localization/zh_CN.cs` 组织；`Icon`、`Palette` 没有 `ShowCaseItem` 标题和描述，P1 不需要迁移。P2 已完成控件内部按钮文字、占位符、校验消息、标题、提示、开关文案等主要可见演示文案迁移。`SelectOption.Content`、`DescriptionItem.Content`、URL、金额、日期、用户名等示例数据继续保留原值，避免破坏选择值、过滤值和演示数据语义。
+当前所有 `ShowCaseItem.Title` / `Description` 均已按 ShowCase 本地 Catalog enum 和 `en-US`、`zh-CN`、`zh-TW` XLIFF 组织；`Icon`、`Palette` 没有 `ShowCaseItem` 标题和描述，P1 不需要迁移。P2 已完成控件内部按钮文字、占位符、校验消息、标题、提示、开关文案等主要可见演示文案迁移。`SelectOption.Content`、`DescriptionItem.Content`、URL、金额、日期、用户名等示例数据继续保留原值，避免破坏选择值、过滤值和演示数据语义。
 
 ## 分类工作量
 
@@ -35,7 +35,7 @@
 | 阶段 | 范围 | 任务 | 产出 | 验证 |
 | --- | --- | --- | --- | --- |
 | P0 | 多语言契约 | 统一 `LanguageId`、资源类命名、资源 key 命名、XAML 引用方式 | 可复用迁移模板 | 选择 1-2 个 ShowCase 验证资源生成正常 |
-| P1 | ShowCase 标题和描述 | 迁移所有 `ShowCaseItem.Title` / `Description` | 每个 ShowCase 拥有自己的 `Localization/en_US.cs` 和 `Localization/zh_CN.cs` | 确认不再存在硬编码 `ShowCaseItem` 标题和描述 |
+| P1 | ShowCase 标题和描述 | 迁移所有 `ShowCaseItem.Title` / `Description` | 每个 ShowCase 拥有自己的 Catalog enum 和三种内置语言 XLIFF | 确认不再存在硬编码 `ShowCaseItem` 标题和描述 |
 | P2 | 主要可见演示文案 | 迁移明显展示给用户的 `Content`、`Header`、`HeaderTitle`、`Watermark`、按钮文字、表单标签、校验消息、Tooltip、开关文案等 | 已完成；Gallery 主体演示文案可随语言切换 | `dotnet build` 通过；硬编码扫描 actionable=0 |
 | P3 | 复杂 ShowCase | 处理 `Form`、`DataGrid`、`Space` 的子场景页面和局部辅助控件 | 已完成；子场景文案跟随对应 ShowCase 就近维护 | `dotnet build` 通过；P3 共享场景资源引用扫描为 0 |
 | P4 | 共享资源收敛 | 删除已无实际引用的 `ShowCaseScenarioLang` 共享资源 | 已完成；避免共享资源持续膨胀，场景 Tab 文案统一就近维护 | `dotnet build` 通过；`ShowCaseScenario` 相关扫描为 0 |
@@ -75,8 +75,8 @@
 
 | 项 | 结果 |
 | --- | --- |
-| 本轮清理范围 | 删除 `ShowCaseScenario.cs` 和 `ShowCases/Localization/ShowCaseScenarioLang` 中英文 provider |
-| 生成资源收敛 | `LanguageProviderPool.g.cs` 不再注册 `ShowCaseScenarioLang` provider，`LanguageResourceConst.g.cs` 不再生成 `ShowCaseScenarioLangResourceKind` 和扩展类 |
+| 本轮清理范围 | 删除 `ShowCaseScenario.cs` 和 `ShowCases/Localization/ShowCaseScenarioLang` 的 Catalog 与 XLIFF |
+| 生成资源收敛 | 生成的 Catalog 模块注册入口不再包含 `ShowCaseScenarioLang`；对应 enum、XLIFF 和扩展类均已删除 |
 | 维护边界 | 场景 Tab 文案继续由各自 ShowCase 的本地 `Localization` 维护，不再新增公共场景名资源 |
 | 验证结果 | `AtomUIGallery.Desktop` Debug build 通过，0 warning / 0 error；`ShowCaseScenarioLangResource`、`ShowCaseScenarioLang`、`ShowCaseScenario` 扫描结果为 0 |
 
@@ -84,11 +84,11 @@
 
 | 项 | 结果 |
 | --- | --- |
-| 资源一致性 | 检查 71 组 ShowCase 本地化 provider，`en_US` / `zh_CN` key mismatch 为 0，空资源值为 0 |
+| 资源一致性 | 检查 71 组 ShowCase Catalog/XLIFF，`en-US` / `zh-CN` / `zh-TW` unit mismatch 为 0，空资源值为 0 |
 | XAML 资源引用 | 扫描 ShowCase XAML 中的 `*LangResource` 引用，无法匹配生成资源枚举的引用为 0 |
 | 标题描述回归 | 精确扫描非 Localization 代码中的 `ShowCaseItem.Title` / `Description` 硬编码，结果为 0 |
 | P3/P4 关键残留 | `ShowCaseScenarioLangResource`、`ShowCaseScenarioLang`、`ShowCaseScenario` 残留为 0；`Form` / `DataGrid` / `Space` 关键共享资源引用为 0 |
-| 语言切换路径 | `WorkspaceWindow` 仍通过 `SwitchToZhCNCommand` / `SwitchToEnUSCommand` 调用 `Application.SetLanguageVariant`；`Form` 动态 Label 使用 `LanguageResourceBinder.CreateBinding` |
+| 语言切换路径 | `WorkspaceWindow` 通过 `ILanguageManager.ChangeLanguage(LanguageTags.*)` 切换；XAML 使用 Catalog 生成的 `*LangResource` 扩展，非视觉数据由 `ILocalizer` 在 `LanguageChanged` 后重建 |
 | 构建和启动 | `AtomUIGallery.Desktop` Debug build 通过，0 warning / 0 error；最终构建产物短启动 8 秒 smoke 通过，无启动崩溃 |
 
 ## P5 补充修正记录
@@ -143,7 +143,7 @@
 | Tooltip 资源值漏扫 | 修正 `Tooltip` ShowCase 中中文资源值仍为英文的基础提示句、多彩提示描述、显示/隐藏选项和预设分组标题；`ToolTip.Placement` 枚举值和十六进制颜色演示值作为非可见文案保留 |
 | Tour 资源值和场景标题漏扫 | 修正 `Tour` ShowCase 中中文资源值仍为英文的步骤标题/描述、开始按钮、跳过按钮和高亮区域参数标签；补齐 `Custom Mask` 独立资源，避免自定义遮罩场景误显示为自定义指示器 |
 | 保留边界 | `AA` 作为圆形按钮演示字符保留；`Separator`、`SplitButton`、Ant Design、AtomUI 和 `size` / `icon` / `loading` / `danger` / `orientationMargin` 等控件名或属性名作为技术词保留 |
-| 验证结果 | `Button` / `SplitButton` / `Separator` / `CustomizeTheme` / `DropdownButton` / `Menu` / `CheckBox` / `DatePicker` / `TimePicker` / `Form` / `LineEdit` / `Mentions` / `NumberUpDown` / `RadioButton` / `Rate` / `Select` / `ToggleSwitch` / `TreeSelect` / `Transfer` / `Upload` / `Alert` / `Drawer` / `Message` / `Notification` / `Result` / `Skeleton` / `Spin` / `Watermark` / `Avatar` / `Badge` / `Card` / `Collapse` / `Descriptions` / `DataGrid` / `Expander` / `GroupBox` / `InfoFlyout` / `List` / `Segmented` / `Statistic` / `Tag` / `Timeline` / `TreeView` / `Tooltip` / `Tour` 本地化 provider key 对齐；对应 XAML 和非 Localization 代码中硬编码可见自然语言文案扫描为 0；`AtomUIGallery.Desktop` Debug build 通过 |
+| 验证结果 | `Button` / `SplitButton` / `Separator` / `CustomizeTheme` / `DropdownButton` / `Menu` / `CheckBox` / `DatePicker` / `TimePicker` / `Form` / `LineEdit` / `Mentions` / `NumberUpDown` / `RadioButton` / `Rate` / `Select` / `ToggleSwitch` / `TreeSelect` / `Transfer` / `Upload` / `Alert` / `Drawer` / `Message` / `Notification` / `Result` / `Skeleton` / `Spin` / `Watermark` / `Avatar` / `Badge` / `Card` / `Collapse` / `Descriptions` / `DataGrid` / `Expander` / `GroupBox` / `InfoFlyout` / `List` / `Segmented` / `Statistic` / `Tag` / `Timeline` / `TreeView` / `Tooltip` / `Tour` Catalog/XLIFF unit 对齐；对应 XAML 和非 Localization 代码中硬编码可见自然语言文案扫描为 0；`AtomUIGallery.Desktop` Debug build 通过 |
 
 ## P6 执行记录
 
@@ -160,74 +160,74 @@
 
 | ShowCase | 分类 | 状态 | 已完成内容 | 验证 |
 | --- | --- | --- | --- | --- |
-| Button | General | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 9 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| AutoComplete | DataEntry | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 9 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| DataGrid | DataDisplay | 已完成 P1/P3/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 22 组 `ShowCaseItem.Title` / `Description`；父级场景 Tab 迁入本地资源；补齐列头、操作、筛选、分组表头、按钮、分页设置和标题页脚中文资源值 | Debug build 通过 |
-| Avatar | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐用户文本和切换按钮资源值 | Debug build 通过 |
-| Badge | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐状态、动态按钮、Ribbon 示例和颜色名称资源值 | Debug build 通过 |
-| Calendar | DataDisplay | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 1 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| Card | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐尺寸标题、卡片标题、Tab、分类和内容描述中文资源值 | Debug build 通过 |
-| Carousel | DataDisplay | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 6 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| Collapse | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐面板标题、尺寸分组、触发区域、正文示例和展开图标位置中文资源值 | Debug build 通过 |
-| Descriptions | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 7 组 `ShowCaseItem.Title` / `Description`；补齐字段标签、状态值、用户信息、配置和硬件信息中文资源值 | Debug build 通过 |
-| Empty | DataDisplay | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| Expander | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐面板标题、尺寸分组、嵌套标题、触发区域、正文示例、展开方向和展开图标位置中文资源值 | Debug build 通过 |
-| GroupBox | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐标题信息和分组框内容中文资源值 | Debug build 通过 |
-| ImagePreviewer | DataDisplay | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 5 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| InfoFlyout | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐浮层正文、触发按钮和箭头显示/隐藏按钮中文资源值 | Debug build 通过 |
-| List | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 11 组 `ShowCaseItem.Title` / `Description`；补齐选择模式、搜索、按钮、新闻、颜色、分组、动态项和分页项中文资源值，并让运行时列表数据跟随语言切换刷新 | Debug build 通过 |
-| QRCode | DataDisplay | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 8 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| Segmented | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐周期、地图模式、列表/看板、长文本示例等中文资源值，并修正英文资源中的中文示例文本和中文字符资源 key | Debug build 通过 |
-| Statistic | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐统计标题、卡片状态、计时器标题、按钮文案和 Day Level Timer 时间单位格式资源 | Debug build 通过 |
-| Tag | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐预设/自定义分组、颜色名称、状态标签、无图标标题、阻止默认行为和边框示例标签中文资源值 | Debug build 通过 |
-| Timeline | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐时间线事件、反转按钮、模式选项、标签示例和 Pending 文案中文资源值，并修正 React 术语描述 | Debug build 通过 |
-| Tooltip | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐基础提示句、多彩提示描述、显示/隐藏选项和预设分组标题中文资源值 | Debug build 通过 |
-| Tour | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 7 组 `ShowCaseItem.Title` / `Description`；补齐步骤标题/描述、开始/跳过按钮和高亮区域参数标签中文资源值，并修正自定义遮罩场景标题资源 | Debug build 通过 |
-| TreeView | DataDisplay | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐静态树节点、控制标签、上下文菜单、异步加载节点和右键新增/重命名运行时文案，并让模板树和异步树节点随语言切换刷新 | Debug build 通过 |
-| Cascader | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 20 组 `ShowCaseItem.Title` / `Description`；补齐占位符、位置选项、模板分隔标题、静态/运行时级联节点和懒加载节点文案 | Debug build 通过 |
-| CheckBox | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐复选框内容、受控状态按钮和 `ItemsSource` 运行时数据多语言 | Debug build 通过 |
-| ColorPicker | DataEntry | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 11 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| DatePicker | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 9 组 `ShowCaseItem.Title` / `Description`；补齐占位符、尺寸选项、变体占位符和弹出位置选项资源值 | Debug build 通过 |
-| Form | DataEntry | 已完成 P1/P3/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 20 组 `ShowCaseItem.Title` / `Description`；父级场景 Tab、运行时消息和局部辅助控件模板迁入本地资源；补齐表单内主要可见文案和 `FormItem.Help` | Debug build 通过 |
-| LineEdit | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 16 组 `ShowCaseItem.Title` / `Description`；补齐输入框占位符、变体标题、搜索框文案和文本域占位符资源值 | Debug build 通过 |
-| Mentions | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 9 组 `ShowCaseItem.Title` / `Description`；补齐变体占位符、触发提示、禁用和只读占位符资源值 | Debug build 通过 |
-| NumberUpDown | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 13 组 `ShowCaseItem.Title` / `Description`；补齐输入占位符、键盘/滚轮提示、状态前缀占位符和原始值标签资源值 | Debug build 通过 |
-| RadioButton | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐单选框、图表、选项、城市资源值和 `ItemsSource` 运行时数据多语言 | Debug build 通过 |
-| Rate | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐允许清除标签和评分 tooltip 运行时文案多语言 | Debug build 通过 |
-| Select | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 14 组 `ShowCaseItem.Title` / `Description`；补齐占位符、选项 Header、国家描述、变体文案、分组选项、附加内容和运行时选项数据多语言 | Debug build 通过 |
-| Slider | DataEntry | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| TimePicker | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 9 组 `ShowCaseItem.Title` / `Description`；补齐时间占位符和变体占位符资源值 | Debug build 通过 |
-| ToggleSwitch | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐切换禁用、切换加载按钮和开关文本资源值 | Debug build 通过 |
-| Transfer | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 7 组 `ShowCaseItem.Title` / `Description`；补齐 Source/Target 标题、Reload 按钮、One way 开关、列表项内容/描述和表格示例数据多语言 | Debug build 通过 |
-| TreeSelect | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 11 组 `ShowCaseItem.Title` / `Description`；补齐占位符、弹出位置、前缀、开关文案、静态/运行时树节点 Header 和异步加载节点 Header 多语言 | Debug build 通过 |
-| Upload | DataEntry | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐上传按钮、校验失败原因、成功提示和默认任务错误信息多语言 | Debug build 通过 |
-| Breadcrumb | Navigation | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 6 个 `ShowCaseItem.Title` 和 5 个 `Description` | Debug build 通过 |
-| ButtonSpinner | Navigation | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 7 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| ComboBox | Navigation | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 8 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| DropdownButton | Navigation | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐按钮内容和菜单项中文资源值翻译 | Debug build 通过 |
-| Menu | Navigation | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 15 组 `ShowCaseItem.Title` / `Description`；补齐菜单项资源值和 ItemsSource 运行时数据多语言 | Debug build 通过 |
-| Pagination | Navigation | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 7 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| Steps | Navigation | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 14 组 `ShowCaseItem.Title` / `Description`；补齐步骤项 Header/Description/SubHeader、内联说明和运行时按钮文案 | Debug build 通过 |
-| TabControl | Navigation | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 25 组 `ShowCaseItem.Title` / `Description`；补齐 Tab 内容、位置/尺寸选项、额外操作、ItemsSource 和新增标签运行时文案 | Debug build 通过 |
-| Alert | Feedback | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 7 组 `ShowCaseItem.Title` / `Description`；补齐提示正文、详细描述、操作按钮和循环横幅中文资源值，并修正带图标场景标题资源 | Debug build 通过 |
-| Drawer | Feedback | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 7 组 `ShowCaseItem.Title` / `Description`；补齐抽屉标题、正文内容、弹出位置标签、二级抽屉按钮、当前区域提示和预设尺寸按钮中文资源值 | Debug build 通过 |
-| Message | Feedback | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐普通、信息、成功、警告、错误、加载中和加载完成运行时消息内容多语言 | Debug build 通过 |
-| Modal | Feedback | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 9 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| Notification | Feedback | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐按钮、位置、悬停选项资源值和运行时通知标题/正文多语言 | Debug build 通过 |
-| PopupConfirm | Feedback | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| ProgressBar | Feedback | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 19 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| Result | Feedback | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 8 组 `ShowCaseItem.Title` / `Description`；补齐结果标题、按钮、错误说明和 `SubHeader` 多语言 | Debug build 通过 |
-| Skeleton | Feedback | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐控制项标签、尺寸/形状选项、示例说明和按钮文案中文资源值 | Debug build 通过 |
-| Spin | Feedback | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐 Alert 描述、加载状态标签和 `Spin.Tip` 多语言 | Debug build 通过 |
-| Watermark | Feedback | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐多行水印文本和自定义配置说明长文案多语言 | Debug build 通过 |
-| CustomizeTheme | General | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐中文资源值中的按钮文案翻译 | Debug build 通过 |
-| FloatButton | General | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 11 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| Separator | General | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐中文资源值中的示例文案翻译 | Debug build 通过 |
-| SplitButton | General | 已完成 P1/P5 | 新增本地 `en_US` / `zh_CN` provider，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐控件内联按钮内容资源化 | Debug build 通过 |
-| FlexPanel | Layout | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 11 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| Grid | Layout | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 8 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
-| Space | Layout | 已完成 P1/P3 | 新增本地 `en_US` / `zh_CN` provider，迁移 9 组 `ShowCaseItem.Title` / `Description`；父级场景 Tab 迁入本地资源 | Debug build 通过 |
-| Splitter | Layout | 已完成 P1 | 新增本地 `en_US` / `zh_CN` provider，迁移 7 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Button | General | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 9 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| AutoComplete | DataEntry | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 9 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| DataGrid | DataDisplay | 已完成 P1/P3/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 22 组 `ShowCaseItem.Title` / `Description`；父级场景 Tab 迁入本地资源；补齐列头、操作、筛选、分组表头、按钮、分页设置和标题页脚中文资源值 | Debug build 通过 |
+| Avatar | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐用户文本和切换按钮资源值 | Debug build 通过 |
+| Badge | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐状态、动态按钮、Ribbon 示例和颜色名称资源值 | Debug build 通过 |
+| Calendar | DataDisplay | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 1 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Card | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐尺寸标题、卡片标题、Tab、分类和内容描述中文资源值 | Debug build 通过 |
+| Carousel | DataDisplay | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 6 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Collapse | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐面板标题、尺寸分组、触发区域、正文示例和展开图标位置中文资源值 | Debug build 通过 |
+| Descriptions | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 7 组 `ShowCaseItem.Title` / `Description`；补齐字段标签、状态值、用户信息、配置和硬件信息中文资源值 | Debug build 通过 |
+| Empty | DataDisplay | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Expander | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐面板标题、尺寸分组、嵌套标题、触发区域、正文示例、展开方向和展开图标位置中文资源值 | Debug build 通过 |
+| GroupBox | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐标题信息和分组框内容中文资源值 | Debug build 通过 |
+| ImagePreviewer | DataDisplay | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 5 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| InfoFlyout | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐浮层正文、触发按钮和箭头显示/隐藏按钮中文资源值 | Debug build 通过 |
+| List | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 11 组 `ShowCaseItem.Title` / `Description`；补齐选择模式、搜索、按钮、新闻、颜色、分组、动态项和分页项中文资源值，并让运行时列表数据跟随语言切换刷新 | Debug build 通过 |
+| QRCode | DataDisplay | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 8 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Segmented | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐周期、地图模式、列表/看板、长文本示例等中文资源值，并修正英文资源中的中文示例文本和中文字符资源 key | Debug build 通过 |
+| Statistic | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐统计标题、卡片状态、计时器标题、按钮文案和 Day Level Timer 时间单位格式资源 | Debug build 通过 |
+| Tag | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐预设/自定义分组、颜色名称、状态标签、无图标标题、阻止默认行为和边框示例标签中文资源值 | Debug build 通过 |
+| Timeline | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐时间线事件、反转按钮、模式选项、标签示例和 Pending 文案中文资源值，并修正 React 术语描述 | Debug build 通过 |
+| Tooltip | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐基础提示句、多彩提示描述、显示/隐藏选项和预设分组标题中文资源值 | Debug build 通过 |
+| Tour | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 7 组 `ShowCaseItem.Title` / `Description`；补齐步骤标题/描述、开始/跳过按钮和高亮区域参数标签中文资源值，并修正自定义遮罩场景标题资源 | Debug build 通过 |
+| TreeView | DataDisplay | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐静态树节点、控制标签、上下文菜单、异步加载节点和右键新增/重命名运行时文案，并让模板树和异步树节点随语言切换刷新 | Debug build 通过 |
+| Cascader | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 20 组 `ShowCaseItem.Title` / `Description`；补齐占位符、位置选项、模板分隔标题、静态/运行时级联节点和懒加载节点文案 | Debug build 通过 |
+| CheckBox | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐复选框内容、受控状态按钮和 `ItemsSource` 运行时数据多语言 | Debug build 通过 |
+| ColorPicker | DataEntry | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 11 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| DatePicker | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 9 组 `ShowCaseItem.Title` / `Description`；补齐占位符、尺寸选项、变体占位符和弹出位置选项资源值 | Debug build 通过 |
+| Form | DataEntry | 已完成 P1/P3/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 20 组 `ShowCaseItem.Title` / `Description`；父级场景 Tab、运行时消息和局部辅助控件模板迁入本地资源；补齐表单内主要可见文案和 `FormItem.Help` | Debug build 通过 |
+| LineEdit | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 16 组 `ShowCaseItem.Title` / `Description`；补齐输入框占位符、变体标题、搜索框文案和文本域占位符资源值 | Debug build 通过 |
+| Mentions | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 9 组 `ShowCaseItem.Title` / `Description`；补齐变体占位符、触发提示、禁用和只读占位符资源值 | Debug build 通过 |
+| NumberUpDown | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 13 组 `ShowCaseItem.Title` / `Description`；补齐输入占位符、键盘/滚轮提示、状态前缀占位符和原始值标签资源值 | Debug build 通过 |
+| RadioButton | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐单选框、图表、选项、城市资源值和 `ItemsSource` 运行时数据多语言 | Debug build 通过 |
+| Rate | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐允许清除标签和评分 tooltip 运行时文案多语言 | Debug build 通过 |
+| Select | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 14 组 `ShowCaseItem.Title` / `Description`；补齐占位符、选项 Header、国家描述、变体文案、分组选项、附加内容和运行时选项数据多语言 | Debug build 通过 |
+| Slider | DataEntry | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| TimePicker | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 9 组 `ShowCaseItem.Title` / `Description`；补齐时间占位符和变体占位符资源值 | Debug build 通过 |
+| ToggleSwitch | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐切换禁用、切换加载按钮和开关文本资源值 | Debug build 通过 |
+| Transfer | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 7 组 `ShowCaseItem.Title` / `Description`；补齐 Source/Target 标题、Reload 按钮、One way 开关、列表项内容/描述和表格示例数据多语言 | Debug build 通过 |
+| TreeSelect | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 11 组 `ShowCaseItem.Title` / `Description`；补齐占位符、弹出位置、前缀、开关文案、静态/运行时树节点 Header 和异步加载节点 Header 多语言 | Debug build 通过 |
+| Upload | DataEntry | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 10 组 `ShowCaseItem.Title` / `Description`；补齐上传按钮、校验失败原因、成功提示和默认任务错误信息多语言 | Debug build 通过 |
+| Breadcrumb | Navigation | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 6 个 `ShowCaseItem.Title` 和 5 个 `Description` | Debug build 通过 |
+| ButtonSpinner | Navigation | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 7 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| ComboBox | Navigation | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 8 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| DropdownButton | Navigation | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐按钮内容和菜单项中文资源值翻译 | Debug build 通过 |
+| Menu | Navigation | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 15 组 `ShowCaseItem.Title` / `Description`；补齐菜单项资源值和 ItemsSource 运行时数据多语言 | Debug build 通过 |
+| Pagination | Navigation | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 7 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Steps | Navigation | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 14 组 `ShowCaseItem.Title` / `Description`；补齐步骤项 Header/Description/SubHeader、内联说明和运行时按钮文案 | Debug build 通过 |
+| TabControl | Navigation | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 25 组 `ShowCaseItem.Title` / `Description`；补齐 Tab 内容、位置/尺寸选项、额外操作、ItemsSource 和新增标签运行时文案 | Debug build 通过 |
+| Alert | Feedback | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 7 组 `ShowCaseItem.Title` / `Description`；补齐提示正文、详细描述、操作按钮和循环横幅中文资源值，并修正带图标场景标题资源 | Debug build 通过 |
+| Drawer | Feedback | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 7 组 `ShowCaseItem.Title` / `Description`；补齐抽屉标题、正文内容、弹出位置标签、二级抽屉按钮、当前区域提示和预设尺寸按钮中文资源值 | Debug build 通过 |
+| Message | Feedback | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐普通、信息、成功、警告、错误、加载中和加载完成运行时消息内容多语言 | Debug build 通过 |
+| Modal | Feedback | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 9 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Notification | Feedback | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐按钮、位置、悬停选项资源值和运行时通知标题/正文多语言 | Debug build 通过 |
+| PopupConfirm | Feedback | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| ProgressBar | Feedback | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 19 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Result | Feedback | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 8 组 `ShowCaseItem.Title` / `Description`；补齐结果标题、按钮、错误说明和 `SubHeader` 多语言 | Debug build 通过 |
+| Skeleton | Feedback | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐控制项标签、尺寸/形状选项、示例说明和按钮文案中文资源值 | Debug build 通过 |
+| Spin | Feedback | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐 Alert 描述、加载状态标签和 `Spin.Tip` 多语言 | Debug build 通过 |
+| Watermark | Feedback | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐多行水印文本和自定义配置说明长文案多语言 | Debug build 通过 |
+| CustomizeTheme | General | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 4 组 `ShowCaseItem.Title` / `Description`；补齐中文资源值中的按钮文案翻译 | Debug build 通过 |
+| FloatButton | General | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 11 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Separator | General | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 6 组 `ShowCaseItem.Title` / `Description`；补齐中文资源值中的示例文案翻译 | Debug build 通过 |
+| SplitButton | General | 已完成 P1/P5 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 5 组 `ShowCaseItem.Title` / `Description`；补齐控件内联按钮内容资源化 | Debug build 通过 |
+| FlexPanel | Layout | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 11 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Grid | Layout | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 8 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
+| Space | Layout | 已完成 P1/P3 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 9 组 `ShowCaseItem.Title` / `Description`；父级场景 Tab 迁入本地资源 | Debug build 通过 |
+| Splitter | Layout | 已完成 P1 | 新增本地 Catalog 和 `en-US` / `zh-CN` / `zh-TW` XLIFF，迁移 7 组 `ShowCaseItem.Title` / `Description` | Debug build 通过 |
 
 ## 资源命名规则
 
@@ -243,10 +243,10 @@
 
 | 项 | 标准 |
 | --- | --- |
-| 本地化文件 | 每个包含可见演示文案的 ShowCase 都有本地 `Localization/en_US.cs` 和 `Localization/zh_CN.cs` |
+| 本地化文件 | 每个包含可见演示文案的 ShowCase 都有本地 Catalog enum 和 `en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` |
 | 标题和描述 | 不再存在硬编码的 `ShowCaseItem.Title` / `Description`，除非该文本是刻意展示的代码或数据内容 |
 | 主要演示文案 | 用户可见的主要标题、按钮、输入提示、分组标题支持语言切换 |
-| 生成资源 | `LanguageResourceConst.g.cs` 能生成所有新增资源扩展和资源 kind |
+| 生成资源 | `LocalizationGenerator` 能为所有新增 Catalog 生成 descriptor、Translation Bundle 和资源扩展 |
 | 编译 | `AtomUIGallery.Desktop` Debug build 通过 |
 | 行为 | `Form`、`DataGrid`、`Space` 等 lazy tab 页面首次打开正常，不因多语言迁移引入延迟创建行为问题 |
 

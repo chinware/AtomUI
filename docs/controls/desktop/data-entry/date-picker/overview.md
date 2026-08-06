@@ -181,9 +181,7 @@ DatePicker 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - `RangeDatePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `RangeDatePickerPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `TimedRangeDatePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `DatePickerLangResourceKind`：稳定的本地化 Catalog enum；内置翻译由同目录三种语言 XLIFF 提供并在编译期生成。
 
 集成关系：
 

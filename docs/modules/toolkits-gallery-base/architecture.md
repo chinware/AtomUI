@@ -295,8 +295,8 @@ GalleryBase 维护自己的 Control Token：
 主题注册入口：
 
 ```csharp
-public static IThemeManagerBuilder UseGalleryBase(
-    this IThemeManagerBuilder builder,
+public static IAtomUIBuilder UseGalleryBase(
+    this IAtomUIBuilder builder,
     Action<GalleryBaseOptions>? configure = null);
 ```
 
@@ -304,13 +304,13 @@ public static IThemeManagerBuilder UseGalleryBase(
 
 - 一次注册 GalleryBase 生成的 Control descriptor、可选 Own Token schema 和强类型 Token 资源扩展。
 - 注册从 `Themes/**/*.axaml` 生成的 ControlTheme asset owner/reference manifest 和平台主题 Provider。
-- 注册 GalleryBase Shell 语言 Provider。
+- 注册 GalleryBase 生成的 Catalog、内置 XLIFF 和语言模块入口。
 - 保存或合并 `GalleryBaseOptions`，供 Shell 构造时读取。
 
 GalleryBase 不维护逐 Control/逐 Theme 注册代码、聚合 AXAML、手工 manifest 或 Token identity。没有 Own Token 的
 public 可主题化 Control 仍由生成器提供独立 identity 和 descriptor。
 
-具体产品自己的语言 Provider 和主题仍由产品项目注册。
+具体产品自己的 Catalog、XLIFF 和主题仍由产品项目通过各自生成的模块入口注册。
 
 ## 本地化边界
 
@@ -333,7 +333,8 @@ GalleryBase 只提供 Shell 级语言资源：
 - 控件 API 文档说明
 - Design Token 文档说明
 
-语言切换由 AtomUI `ThemeManager.LanguageVariant` 驱动。GalleryBase 只负责响应语言变更并刷新 Shell 文案；产品页面继续使用自己的语言资源扩展和绑定策略。
+语言切换由 AtomUI `ILanguageManager` 驱动。GalleryBase 只负责响应 `LanguageChanged` 并刷新 Shell 文案；产品页面
+继续使用各自 Catalog 生成的语言资源扩展和 `ILocalizer`，不再依赖 ThemeManager 的语言状态。
 
 ## Browser 与 AOT 约束
 

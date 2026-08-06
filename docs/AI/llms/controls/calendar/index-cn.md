@@ -4,7 +4,7 @@
 
 ## 概述
 
-`Calendar` 是按日期组织业务展示内容的桌面日历控件，遵循本专题定义的月面板、年面板、Header、范围限制、禁用规则、周序号和单元格定制语义。它同时保留桌面端可用的焦点与方向键导航。
+`Calendar` 是按日期组织业务展示内容的桌面日历控件，遵循本专题定义的月面板、年面板、Header、范围限制、禁用规则、周序号和单元格定制语义。它同时保留桌面端可用的焦点与方向键导航。`LunarCalendar` 继承这些稳定语义，并在同一公历状态模型上增加中国农历、二十四节气、传统节日、周末以及应用提供的节假日/调休投影。
 
 Calendar 只负责“查看并选择一个日期或月份”的面板体验，不负责日期输入弹层、范围选择、多日期选择、时间编辑或复杂日程排布。日期输入由 DatePicker 等控件承担，范围和日程数据由业务层承担；Calendar 只提供轻量 `RangeBars` 标记能力，用于在日期网格中表达连续日期业务条。新 Calendar 的内部 `CalendarView` 与 DatePicker 的旧 CalendarView 子系统完全隔离。
 
@@ -32,7 +32,7 @@ Calendar 的设计语言围绕日期面板的产品语义、可观察状态和�
 | 产品语义 | 控件在界面中承担的稳定职责。 | 以 Month/Year 两种面板展示日期或月份，并提交单一选中值。 |
 | 内容承载 | 业务数据和模板如何进入控件。 | `Value`、`ValidRange`、`DisabledDate`、`CellTemplate`、`FullCellTemplate` 与 `HeaderTemplate`。 |
 | 状态反馈 | API、内部状态与伪类如何形成反馈。 | `today`、`selected`、`outside`、`disabled`、`focused`、`fullscreen`、`mini`、`show-week`。 |
-| 主题语义 | SharedToken、CalendarControlToken、ControlTheme 与模板如何表达视觉。 | 四个 Calendar ControlTheme 消费共享 Token 与八个 Calendar 专属 Token。 |
+| 主题语义 | SharedToken、`CalendarToken`、`LunarCalendarToken`、ControlTheme 与模板如何表达视觉。 | Calendar 基础主题消费九个 Calendar 专属 Token；LunarCalendar 只增加农历内容所需的增量 Token。 |
 
 设计上的首要不变量是：Cell 定制不能夺走日期值、选中、禁用、焦点和命中测试语义；这些语义由 Cell 容器保留，模板只改变内容呈现方式。
 
@@ -79,6 +79,12 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 根伪类包括 `:fullscreen`、`:mini`、`:month`、`:year`、`:show-week`；Cell 伪类包括 `:date`、`:month`、`:week`、`:today`、`:selected`、`:outside`、`:disabled`、`:focused`。四个内部 ControlTheme 的 key 与伪类是主题兼容契约，变更必须同步源码、Gallery 和文档。
 
+### 3.4 LunarCalendar 扩展契约
+
+`LunarCalendar` 是 `Calendar` 的公开派生控件，继续使用 `Value`、`Mode`、`Fullscreen`、`ShowWeek`、`ValidRange`、`DisabledDate`、三个模板入口、`RangeBars` 和三个选择事件。它增加 `ShowSolarTerms`、`ShowTraditionalFestivals`、`ShowHolidays`、`HighlightWeekends`、`HolidayProvider`、只读 `SelectedLunarDateInfo` 和 `RefreshHolidayData()`。
+
+农历算法保证范围为 `1900-01-01` 至 `2100-12-31`。`Value` 在 LunarCalendar 上收敛到该范围；内部有效选择范围为支持范围与 `ValidRange` 的交集。法定节假日和调休不内置，由 `ILunarCalendarHolidayProvider` 以同步面板数据提供。完整模型、默认值、枚举、Provider 规则和显示优先级见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)。
+
 ## 事件与命令
 
 Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型、枚举、伪类和 ControlTheme 共同组成。
@@ -86,6 +92,7 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 ### 3.2 事件
 | 事件 | 语义 |
 用户选择的提交顺序固定为 `PanelChanged` → `ValueChanged` → `Selected`，不存在的事件从序列中省略。事件发生时新值已经写入 `Value`。程序直接设置 `Value` 或 `Mode` 只更新属性和渲染，不模拟用户事件。
+`LunarCalendar` 是 `Calendar` 的公开派生控件，继续使用 `Value`、`Mode`、`Fullscreen`、`ShowWeek`、`ValidRange`、`DisabledDate`、三个模板入口、`RangeBars` 和三个选择事件。它增加 `ShowSolarTerms`、`ShowTraditionalFestivals`、`ShowHolidays`、`HighlightWeekends`、`HolidayProvider`、只读 `SelectedLunarDateInfo` 和 `RefreshHolidayData()`。
 
 ## 使用示例
 
@@ -95,7 +102,7 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:41`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:44`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -105,7 +112,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 跨日期事件
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:167`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:170`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -134,24 +141,30 @@ Gallery key：`ExamplesContent` / item `2`
 </atom:Calendar>
 ```
 
-### 迷你模式
+### 卡片模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:198`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:201`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<atom:Calendar Value="{Binding SampleDate}" Fullscreen="False" Width="300" />
+<Border Width="300"
+        HorizontalAlignment="Left"
+        BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+        BorderThickness="{atom:SharedTokenResource BorderThickness}"
+        CornerRadius="{atom:SharedTokenResource BorderRadiusLG}">
+    <atom:Calendar Value="{Binding SampleDate}" Fullscreen="False" />
+</Border>
 ```
 
-### 年模式
+### 农历日历
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:208`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:217`
 
 Gallery key：`ExamplesContent` / item `4`
 
 ```axaml
-<atom:Calendar Value="{Binding SampleDate}"
+<atom:LunarCalendar Value="{Binding LunarCalendarSampleDate}"
 ```
 
 ## 状态模型
@@ -174,29 +187,36 @@ Public API / Header / Cell input
 - `Fullscreen`/Mini 只改变布局密度和 Header 控件尺寸，不改变值、事件顺序、禁用和模板优先级。
 - `RangeBars` 只改变日期网格上方的 overlay 业务标记层，不改变 Cell 外间距、选择状态、禁用状态、鼠标指针、事件顺序或 Automation。
 - AtomUI 语言服务改变会同步更新日期格式、周标题、月份名称、Header 的 Month/Year 文本与年份后缀。
+- LunarCalendar 不建立第二份农历选中值；`SelectedLunarDateInfo`、Cell 农历内容和 Header 农历标签都从当前公历 Value/面板数据单向投影。
+- Fullscreen/Card × Month/Year 四种组合共享 CalendarView 的网格拓扑、焦点、容器池和 Automation，农历 adapter 只改变专用 Cell、Header 文案和布局 metrics。
 
 ## 主题与 Design Token
 
-Calendar 使用 `CalendarControlToken`（scope id `CalendarControl`）以及 SharedToken。专属 Token 只表达八个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`MiniContentHeight`、`FullCellMinHeight`、`RangeBarHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
+Calendar 使用源码中的 `CalendarToken` 以及 SharedToken。专属 Token 只表达九个组件视觉语义：`FullBg`、`FullPanelBg`、`ItemActiveBg`、`YearControlWidth`、`MonthControlWidth`、`YearMonthCellWidth`、`MiniContentHeight`、`FullCellMinHeight`、`RangeBarHeight`。运行时状态通过伪类和 selector 表达，不写入 Token。
+
+LunarCalendar 使用独立 exact Control identity 和 `LunarCalendarToken`，只补充双行 Cell、农历次级文本、卡片内容高度、周末/节假日标记、Fullscreen Cell 高度和范围条避让所需语义。LunarCalendar root 不通过深层 selector 修改 CalendarHeader、CalendarView、ComboBox、OptionButtonGroup 或普通 CalendarViewCell 的模板内部。
 
 | Theme 文件 | 稳定职责 |
 | --- | --- |
-| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择、CalendarView 与范围条 overlay 接线；Fullscreen 拉伸且无紧凑边框，Mini 使用圆角边框。 |
-| `CalendarHeaderTheme.axaml` | Year Select、Month Select、Month/Year 模式切换。Mini 时 Header 交互控件应使用 Small 尺寸。 |
+| `CalendarTheme.axaml` | 根背景、Header/CustomHeader 选择、CalendarView 与范围条 overlay 接线；Fullscreen 拉伸，Mini 提供无外框的卡片内容布局，外部容器负责边框与宽度。 |
+| `CalendarHeaderTheme.axaml` | Year Select、Month Select、Month/Year `OptionButtonGroup` 模式切换。Mini 时 Header 交互控件应使用 Small 尺寸。 |
 | `CalendarViewTheme.axaml` | WeekHeader、CellHost，以及 Fullscreen/Mini 的布局差异。 |
 | `CalendarViewCellTheme.axaml` | 默认日期值、Cell/FullCell 模板消费、状态 selector 和命中测试视觉。 |
 
 `CellTemplate` 必须保留默认值显示，并与内置范围条 overlay 共存；`FullCellTemplate` 覆盖完整 Cell 内部内容且优先级最高，但不替换 Calendar body overlay。两者都不能删除禁用、选中、焦点和 outside 的容器状态。
 
+普通 Calendar 在 `Fullscreen=false` 时使用 256 高内容区，包含 WeekHeader 与六行 CellHost；LunarCalendar 由自身 `MiniContentHeight` 按双行 Cell 尺寸和共享间距派生有效内容高度。body 的顶部分隔线和纵向 Padding 位于该内容区之外。Mini 的 selected/today/disabled 状态分别使用主色实心、主色单线描边和禁用背景；Fullscreen selected 保持 `ItemActiveBg` 与主色日期值，不复用 Mini 的实心主色规则。
+
 Token 来源：
 
-新 Calendar 的 Token 收敛为八个公开视觉语义。日期值、周标题、范围条间距、范围条圆角、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则，范围条默认高度通过 `RangeBarHeight` 固化 Calendar overlay 的默认条高。
+Calendar 的 Token 收敛为九个组件视觉语义。日期值、周标题、范围条间距、范围条圆角、Padding、Border、Typography 与 Motion 均从 SharedToken 派生；Fullscreen 单元最小高度通过 `FullCellMinHeight` 固化 Calendar 完整单元的测量规则，Year 模式月份单元宽度通过 `YearMonthCellWidth` 固化面板单元测量规则，范围条默认高度通过 `RangeBarHeight` 固化 Calendar overlay 的默认条高。
 
-当前 Token scope：
+当前 Calendar Token 源：
 
-- `CalendarControlToken`，scope id 为 `CalendarControl`，源码位于 `src/AtomUI.Desktop.Controls/Calendar/CalendarControlToken.cs`。
+- `CalendarToken`，源码位于 `src/AtomUI.Desktop.Controls/Calendar/CalendarToken.cs`。
+- AXAML 通过生成的 `CalendarTokenResource` 访问这些值。
 
-> 注意：旧 `CalendarToken`（scope id `Calendar`）现归 DatePicker 的 CalendarView 使用，与新 Calendar 无关。新 Calendar 通过 `CalendarControlTokenResource` 引用自己的 Token，两者完全独立。
+LunarCalendar 使用独立 exact Control identity 和 `LunarCalendarToken`。它只补充农历双行内容、卡片内容高度、周末/节假日状态以及 Fullscreen RangeBars 避让所需语义，不复制 Calendar 的根背景、Header、普通 Cell 选中态或 RangeBars 默认条高。
 
 ## AOT 与裁剪注意事项
 
@@ -205,9 +225,10 @@ Token 来源：
 - Container pool 只复用无业务所有权的视觉容器；模板、Context、Focus 和 Automation 必须随 Bind/Unbind 完整更新。
 - RangeBars 集合使用 owner-managed 非 Visual `AvaloniaObject` 范式；`CalendarRangeBar.Background` 的动态资源和 TokenResource 由 generated scoped resource host 承载，Calendar 负责 attach/release。
 - `CalendarRangeBarPanel` 不遍历 Cell visual tree，不在 pointer move 热路径中计算，也不拥有业务数据生命周期。
-- Token 通过 `CalendarControlTokenResource` 和 SharedToken 进入 AXAML；运行时状态由伪类 selector 表达。
+- Token 通过 `CalendarTokenResource`、`LunarCalendarTokenResource` 和 SharedToken 进入 AXAML；运行时状态由伪类 selector 表达。
 - 不使用运行时反射扫描 API、Token、日期类型或 Gallery 数据；属性静态注册、强类型上下文和生成资源保持 NativeAOT 兼容。
 - LanguageManager、VisualTree、Template part 等外部订阅必须有成对释放路径，避免 detach 后保留 Calendar。
+- 农历年表、二十四节气表和传统节日 resolver 是静态只读数据与纯函数；不依赖第三方农历运行库、系统时区、网络、反射或字符串 binding。面板数据有界且不在 Measure/Arrange/Render 热路径构建。
 
 ## 源码索引
 
@@ -215,13 +236,12 @@ Token 来源：
 src/AtomUI.Desktop.Controls/Calendar/
 ├── Calendar.cs
 ├── CalendarCellContext.cs
-├── CalendarControlToken.cs
 ├── CalendarDateRange.cs
 ├── CalendarEnums.cs
 ├── CalendarEventArgs.cs
 ├── CalendarHeaderContext.cs
 ├── CalendarRangeBar.cs
-├── CalendarToken.cs                 # DatePicker 旧 CalendarView 的遗留 Token，不属于新 Calendar
+├── CalendarToken.cs
 ├── Internal/
 │   ├── CalendarHeader.cs
 │   ├── CalendarHeaderOptions.cs
@@ -236,9 +256,10 @@ src/AtomUI.Desktop.Controls/Calendar/
 │   ├── CalendarViewCellModel.cs
 │   └── CalendarViewMode.cs
 ├── Localization/
-│   ├── en_US.cs
-│   ├── zh_CN.cs
-│   └── zh_TW.cs
+│   ├── CalendarControlLangResourceKind.cs
+│   ├── en-US.xlf
+│   ├── zh-CN.xlf
+│   └── zh-TW.xlf
 └── Themes/
     ├── CalendarTheme.axaml(.cs)
     ├── CalendarHeaderTheme.axaml(.cs)
@@ -246,7 +267,7 @@ src/AtomUI.Desktop.Controls/Calendar/
     └── CalendarViewCellTheme.axaml(.cs)
 ```
 
-`CalendarToken.cs` 属于 DatePicker 的旧 CalendarView 兼容边界；新 Calendar 的专属 Token 是 `CalendarControlToken.cs`。两者不得在实现或文档中混用。
+`CalendarToken.cs` 是当前 Calendar ControlTheme 实际消费的专属 Token 源。LunarCalendar 的公开类型、算法、数据表、internal adapter、专用 Cell、主题和本地化也统一归属本源码目录；稳定职责结构见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)。DatePicker 的日期面板实现位于 DatePicker 模块，不与本目录 CalendarView 或 Token 混用。
 
 ## 相关文档
 

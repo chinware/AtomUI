@@ -97,6 +97,8 @@ Steps
 
 Steps 不提供控件专属的完成态或选择态伪类。状态主题读取 `EffectiveStatus`、`IsCurrent`、`CanInvoke` 以及 Avalonia 标准 `:pointerover`、`:focus-visible`、`:disabled` 伪类。
 
+`title`、`subtitle` 和 `rail` 是 `StepsItem` 自身模板的内部语义节点。只有 `StepsItemTheme.axaml` 可以进入该模板并消费根控件投影的语义样式值；外部应用、Gallery 和 `StepsTheme.axaml` 不得依赖节点名称或通过 `/template/` selector 穿透 `StepsItem`。
+
 ## State Flow
 
 ### 4.1 唯一状态流
@@ -194,6 +196,23 @@ Steps
 `StepsPanel` 负责 item 间的 flex/stack 布局；`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽和 Navigation active 线的排列。二者不创建视觉、不计算状态。
 `OutlineDot` 复用 `Dot` 的布局路径，只改变 Indicator 的填充、边框和 Wave 语义。
 
+### 5.1 Item 语义样式覆盖
+
+`ItemHeaderForeground`、`ItemSubHeaderForeground` 和 `ItemRailBackground` 是 `Steps` 实例级的语义槽，不是对模板内部节点的公开暴露。`Steps` 将显式值投影到每个 `StepsItem`，再由 `StepsItemTheme.axaml` 在自己的模板边界内分别应用到 Header、SubHeader 和 Connector。
+
+三项 API 分别对应步骤条标题、子标题和 rail 的语义能力，但保持 Avalonia 的强类型 `IBrush?` 契约，不公开任一模板节点。
+
+优先级固定为：
+
+```text
+非 null 的 Steps 实例语义样式
+    > 当前 Type / EffectiveStatus 对应的 StepsToken
+null
+    -> 完整回退到当前 Type / EffectiveStatus 对应的 StepsToken
+```
+
+运行时修改或清空任一属性必须立即更新所有已实现容器；直接声明的 `StepsItem`、由普通数据项生成的容器以及回收后重新准备的容器遵循同一投影规则。该覆盖不改变 Indicator、Content、Navigation active indicator 或其他未命名语义区域。
+
 有效标题布局：
 
 ```text
@@ -215,6 +234,7 @@ StepsToken 不承载：
 - public Status、AutomaticStatus、EffectiveStatus、IsCurrent 或 ConnectorStatus。
 - item 数量、layout bounds、pointer、keyboard、focus 或 Wave 播放状态。
 - Percent 当前值、CanInvoke、IsItemClickable 或 IsMotionEnabled。
+- `ItemHeaderForeground`、`ItemSubHeaderForeground` 或 `ItemRailBackground` 的实例值。
 
 ## Customization Boundaries
 
@@ -231,6 +251,8 @@ StepsToken 不承载：
 - Wave 只能由真实 pointer click 触发，不得监听 `Current` 或 `IsCurrent`。
 - `OutlineDot` 必须保持 Dot 布局、空心状态色边框和无 Wave 语义。
 - `PART_ItemsPresenter` 和 `PART_Indicator` 是稳定 template part。
+- 外部样式不得依赖 `HeaderPresenter`、`SubHeaderPresenter`、`Connector` 等内部节点，也不得通过 `/template/` selector 穿透 `StepsItem`；需要的实例级定制必须由 `Steps` 公开语义 API 表达。
+- 三项 item 语义样式保持 nullable；`null` 必须恢复完整的状态和类型 Token 视觉。
 - 每个根、item 和 indicator 主题各保留一套语义模板。
 
 维护不变量：
@@ -247,6 +269,8 @@ StepsToken 不承载：
 - pointer click 是 Wave 的唯一触发源；Current 变化不能播放 Wave。
 - OutlineDot click 不能播放 Wave；该例外必须在 Indicator 层兜住，避免 pointer、keyboard 或未来激活入口绕过。
 - 每个主题只维护一套语义模板。
+- 外部代码不得通过深层 selector 修改 StepsItem 内部节点；实例级 Header、SubHeader 和 Connector 定制由根控件三项 nullable 语义 API 进入。
+- 语义样式的 `null` 值必须完整回退 Token；容器清理和重新准备不得残留旧 owner 的显式值。
 - StepsPanel 和 StepsItemLayoutPanel 只负责布局。
 - 容器清理必须释放 Owner，模板重套必须释放旧 part 引用。
 - Percent、Icon、Type 和 EffectiveStatus 运行时变化必须立即更新 Progress。

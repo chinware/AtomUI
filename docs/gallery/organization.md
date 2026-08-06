@@ -27,8 +27,10 @@ ShowCases/
       ViewModels/
         AutoCompleteViewModel.cs
       Localization/
-        en_US.cs
-        zh_CN.cs
+        AutoCompleteShowCaseLangResourceKind.cs
+        en-US.xlf
+        zh-CN.xlf
+        zh-TW.xlf
 ```
 
 ## Namespace 规则
@@ -44,8 +46,10 @@ namespace AtomUIGallery.ShowCases.AutoComplete;
 ```text
 ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml.cs
 ShowCases/DataEntry/AutoComplete/ViewModels/AutoCompleteViewModel.cs
-ShowCases/DataEntry/AutoComplete/Localization/en_US.cs
-ShowCases/DataEntry/AutoComplete/Localization/zh_CN.cs
+ShowCases/DataEntry/AutoComplete/Localization/AutoCompleteShowCaseLangResourceKind.cs
+ShowCases/DataEntry/AutoComplete/Localization/en-US.xlf
+ShowCases/DataEntry/AutoComplete/Localization/zh-CN.xlf
+ShowCases/DataEntry/AutoComplete/Localization/zh-TW.xlf
 ```
 
 这样做的原因：
@@ -66,23 +70,23 @@ ShowCases/
   DataEntry/
     AutoComplete/
       Localization/
-        en_US.cs
-        zh_CN.cs
+        AutoCompleteShowCaseLangResourceKind.cs
+        en-US.xlf
+        zh-CN.xlf
+        zh-TW.xlf
 ```
 
 不要在 `Localization` 下再套一层 `AutoCompleteShowCaseLang/`。目录已经处在 `AutoComplete` 作用域内，额外层级会增加路径深度但没有维护收益。
 
-语言资源仍然使用 AtomUI 推荐的 provider / generator 方式：
+语言资源使用 Catalog enum + XLIFF 方式。Catalog enum 是稳定的强类型资源契约，三种内置语言的 XLIFF
+与 ShowCase 一起维护；生成器会生成 Catalog descriptor、语言模块注册入口和 XAML Markup Extension：
 
 ```csharp
-[LanguageProvider(LanguageCode.en_US, AutoCompleteShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+[LanguageCatalog(ContractVersion = 1)]
+public enum AutoCompleteShowCaseLangResourceKind
 {
-    public const string BasicUsageTitle = "Basic Usage";
-    public const string BasicUsageDescription = "Basic usage of AutoComplete.";
-
-    protected override Type GetResourceKindType()
-        => typeof(AutoCompleteShowCaseLangResourceKind);
+    BasicUsageTitle = 1,
+    BasicUsageDescription = 2
 }
 ```
 
@@ -98,7 +102,9 @@ XAML 中使用生成的资源扩展：
 
 不要把 ShowCase 语言资源直接写到普通选项数据对象上，例如 `SelectOption`、`CascaderOption`、`TreeItemNode`、`AutoCompleteOption` 等。
 
-这些对象不是 Avalonia `StyledElement`，`{gallery:...LangResource ...}` 在它们身上会退化成一次性静态值，语言切换后不会自动刷新。正确做法是把选项数据放到对应 ShowCase 的 ViewModel 中，由 code-behind 使用 `LanguageResourceBinder.GetLangResource(...)` 构建，并在 `ThemeManager.LanguageVariantChanged` 后重建数据源。
+这些对象不是 Avalonia `StyledElement`，动态资源扩展在它们身上不能建立资源绑定。正确做法是把选项数据放到对应
+ShowCase 的 ViewModel 中，由 `ILocalizer.Get(...)` 或 `GalleryLocalizedText<TResourceKind>` 在构建数据源时解析；
+语言切换后由 ViewModel 订阅 `ILanguageManager.LanguageChanged`，按稳定资源 enum 重建数据源。
 
 选项数据必须保留稳定身份：
 
@@ -125,8 +131,10 @@ ShowCases/
       ViewModels/
         DataGridViewModel.cs
       Localization/
-        en_US.cs
-        zh_CN.cs
+        DataGridShowCaseLangResourceKind.cs
+        en-US.xlf
+        zh-CN.xlf
+        zh-TW.xlf
 ```
 
 子场景不单独建立新的 ShowCase namespace，除非它已经成为左侧导航中的独立 ShowCase。
@@ -160,7 +168,7 @@ ShowCases/
 1. 先做纯目录重组，不改业务逻辑。
 2. 同步调整 namespace、XAML `x:Class` 和 `using:`。
 3. 确认 `ShowCaseRegister`、导航和 lazy tab 引用仍能正常解析。
-4. 再补充该 ShowCase 的 `Localization/en_US.cs` 和 `Localization/zh_CN.cs`。
+4. 再补充该 ShowCase 的 `Localization/<Catalog>ResourceKind.cs` 和 `en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf`。
 5. 每迁移一批后执行 Gallery Debug build。
 
 目录重组和多语言补齐可以分 commit 处理，避免一个提交同时包含大量移动和文案变更。

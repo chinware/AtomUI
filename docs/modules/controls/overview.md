@@ -6,7 +6,7 @@
 
 - 提供桌面控件包复用的基础控件、抽象控件和 Primitives。
 - 提供公共主题 Provider：`CommonControlThemesProvider` 与 `BrowserCommonControlThemesProvider`。
-- 注册公共控件 Token 和语言 Provider。
+- 注册公共控件 Token、本地化 Catalog 和内置 Translation Bundle。
 - 提供 Icon、ItemsControl、ScrollViewer、Form、Watermark、QRCode、Badge 抽象等公共能力。
 
 ## 注册入口
@@ -14,14 +14,14 @@
 入口位于 `src/AtomUI.Controls/ThemeManagerBuildExtensions.cs`：
 
 ```csharp
-themeManagerBuilder.UseCommonControls();
+builder.UseCommonControls();
 ```
 
 该方法会：
 
 1. 注册源生成器生成的公共控件 Token 类型。
 2. 根据 `RuntimePlatform.Features.SupportsNativeWindow` 选择桌面或浏览器公共主题 Provider。
-3. 注册公共语言 Provider。
+3. 通过生成式模块注册把公共 Catalog 和内置翻译加入 `builder.Localization`。
 
 `UseDesktopControls()` 会先调用 `UseCommonControls()`，所以普通桌面应用无需单独调用本方法。
 
@@ -37,4 +37,3 @@ themeManagerBuilder.UseCommonControls();
 | `Badge/`、`Buttons/`、`Select/` | 多个桌面控件复用的抽象层 |
 
 具体桌面控件文档应放在 [../../controls/desktop/overview.md](../../controls/desktop/overview.md)，本模块文档只解释公共基础层。
-

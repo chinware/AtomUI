@@ -9,20 +9,23 @@
 ```mermaid
 sequenceDiagram
     participant App as Application.UseAtomUI
-    participant Builder as IThemeManagerBuilder
+    participant Builder as IAtomUIBuilder
+    participant ThemeBuilder as IThemeManagerBuilder
+    participant Localization as ILocalizationBuilder
     participant Common as UseCommonControls
     participant Desktop as UseDesktopControls
     participant Registry as ThemeSchemaRegistry
     participant Theme as ThemeManager
 
-    App->>Builder: 创建 ThemeManagerBuilder
+    App->>Builder: 创建 AtomUIBuilder
     App->>Desktop: builder.UseDesktopControls()
     Desktop->>Common: 注册公共 Control 包
-    Common->>Builder: 注册生成 descriptor / asset manifest
-    Desktop->>Builder: 注册 Desktop 生成 manifest
-    Desktop->>Builder: 注册 Desktop 或 Browser Theme Provider
-    Desktop->>Builder: 注册语言 Provider 和初始化回调
-    Builder->>Registry: 校验 type / identity / asset 并冻结 schema
+    Common->>ThemeBuilder: 注册生成 descriptor / asset manifest
+    Common->>Localization: 注册公共 Catalog / 内置 Bundle
+    Desktop->>ThemeBuilder: 注册 Desktop manifest / Theme Provider
+    Desktop->>Localization: 注册 Desktop Catalog / 内置 Bundle
+    Desktop->>ThemeBuilder: 注册运行时初始化回调
+    ThemeBuilder->>Registry: 校验 type / identity / asset 并冻结 schema
     App->>Theme: Build + Configure + NotifyInitialized
 ```
 
@@ -39,7 +42,8 @@ Control 包注册以下生成结果：
 - `ControlThemeAssetManifest`：资产 URI、owner identity、引用的 Control identities、Semantic Part Theme 契约和
   静态校验结果。
 - `XxxTokens.Identity`、`XxxTokenKey` 和 `XxxTokenResourceExtension`。
-- Language Provider 和其他包级静态注册项。
+- 独立的 `GeneratedLanguageModuleRegistration`，将 Catalog descriptor 和内置 Translation Bundle 注册到
+  `ILocalizationBuilder`；它不进入主题 manifest。
 
 运行时不扫描程序集、不解析 AXAML 文本，也不通过 TargetType、Control 继承或 ControlTheme `BasedOn` 推断 Token
 identity。

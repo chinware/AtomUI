@@ -5,15 +5,15 @@
 
 ## 诊断所有权
 
-本地化领域使用 `LOC` 作为编译期诊断 domain，形成 `ATOMUILOCNNN`。实现第一个诊断时必须先在全局诊断规范中
-登记 `LOC` 前缀和每个 ID；ID 发布后不复用、不改变语义。
+本地化领域使用 `LOC` 作为编译期诊断 domain，形成 `ATOMUILOCNNN`。`ATOMUILOC001` 到
+`ATOMUILOC009` 已在全局诊断规范中登记；ID 发布后不复用、不改变语义。
 
 诊断由三个阶段拥有：
 
 | 阶段 | 适合发现的问题 | 输出 |
 |---|---|---|
-| Roslyn Generator/Analyzer | enum symbol、Application partial、XLIFF 与 symbol 对应、可静态分析的配置 | `ATOMUILOCNNN` |
-| MSBuild Tasks | XLIFF 文档、包 manifest、模板导出、跨包冲突、pack 内容 | MSBuild error/warning |
+| Roslyn Generator/Analyzer | enum symbol、Application partial、XLIFF、AdditionalFiles metadata 与引用 Catalog 对应 | `ATOMUILOCNNN` |
+| MSBuild Tasks | XLIFF 文档、模板导出、语言包内容和确定性 manifest/props 产物 | MSBuild error/warning |
 | Runtime Builder | 动态构造的支持语言、最终模块注册集合、Culture 元数据、首帧前完整覆盖 | typed startup exception |
 
 同一根因只由一个阶段提供主诊断。下游为了安全仍需 guard，但不能再次输出一串语义不同的重复错误。
@@ -24,9 +24,13 @@
 
 ### LanguageTag 与配置
 
-- XLIFF、manifest 或 MSBuild metadata 中存在非法或非规范 BCP 47 标签。
+- XLIFF、生成的包审计 manifest 或 MSBuild metadata 中存在非法或非规范 BCP 47 标签。
 - `defaultLanguage` 不在 `supportedLanguages`。
-- 支持语言重复、缺少 `LanguageDefinition`，或私有标签无法解析 FormattingCulture/TextDirection。
+- 支持语言集合为空、包含无效标签、缺少可解析的 `LanguageDefinition`，或私有标签无法解析
+  FormattingCulture/TextDirection。
+
+`UseLanguages()` 中重复的支持语言不是错误；Builder 按首次出现顺序静默去重。对同一标签重复注册显式
+`LanguageDefinition` 才是配置错误。
 
 ### Catalog
 
@@ -47,10 +51,13 @@
 
 ### Language Pack
 
-- manifest 未声明实际包含的 Catalog，或声明了包中不存在的 Bundle。
-- Catalog ContractVersion 不兼容、源 fingerprint 不匹配或缺少新增 unit。
-- 聚合包冒用产品级名称但覆盖集合不完整。
+- XLIFF item 缺少 module ID、ContractVersion、规范包内路径或 64 位小写源 fingerprint。
+- props metadata 与实际 XLIFF、引用程序集中的 Catalog identity/ContractVersion/unit/source text 不一致。
+- 同一个 Catalog 和语言在同一优先级由多个包或文件提供。
 - 包含运行时 DLL、`.atomlang`、初始化代码或非声明式加载 target。
+
+`AtomUI.LanguagePack.xml` 由打包任务根据同一组 XLIFF 确定性生成，用于审计和工具读取。它不作为 Generator 的
+`AdditionalFile`，也不存在独立于 XLIFF/props 的“manifest 未声明 Catalog”编译契约。
 
 ## Warning 边界
 
@@ -58,7 +65,6 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 
 - XLIFF 中存在已经标记 obsolete、当前生成不会使用的旧 unit。
 - translator note 缺少推荐上下文。
-- Analyzer 无法静态解析 `UseLanguages()`，因此最终覆盖只能在启动阶段验证。
 - 应用显式 Override 的源文本指纹落后，但目标仍通过人工状态确认。
 
 不能把缺少必需翻译降级为 Warning 后继续声称该语言受支持。
@@ -94,6 +100,7 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 | `AtomUI.Localization.Tests` | BCP 47 规范化、CLDR 回退、Registry、Snapshot、优先级、切换、Culture、RTL、线程语义 |
 | `AtomUI.Generator.Tests` | Catalog/Extension/registration/bootstrap 输出、诊断正反例、确定性与增量更新 |
 | `AtomUI.Build.Tasks.Tests` | XLIFF reader/writer/merge、状态保留、manifest、props、冲突和模板导出 |
+| `AtomUI.Localization.IntegrationTests` | 模块/静态语言包真实 pack 布局、临时 NuGet feed、Generator 消费和运行时切换 |
 | 控件测试项目 | 现有 XAML Extension、控件 C# 查询、三种内置语言完整性 |
 | `AtomUIGallery.Tests` | 应用 Catalog、语言菜单、ViewModel/导航刷新和支持语言配置 |
 
@@ -108,7 +115,8 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 3. 新增 unit 会使旧语言包产生缺失诊断，已有译文和 notes 不丢失。
 4. 重命名成员但保留 ID 时模板合并保留目标翻译并标记名称变化。
 5. 复用删除 ID、改变格式化参数契约或错误 ContractVersion 必须失败。
-6. 官方聚合包的 manifest 覆盖声明与实际官方 Catalog 集合一致。
+6. 静态语言包的 manifest 与 props 必须由同一组 XLIFF 确定性生成，并记录一致的 Catalog identity 和源指纹。
+7. 模块主包必须包含权威 `en-US` 与 `<PackageId>.props`，静态语言包不得包含 DLL，Consumer 必须只靠 PackageReference 生效。
 
 ## Avalonia 集成测试
 
@@ -116,7 +124,7 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 - 多次切换语言始终复用同一个 `LanguageResourceProvider`，每次成功切换只发布一次资源通知。
 - `StyledElement` 动态资源刷新，非 StyledElement 的静态 ProvideValue 行为符合文档。
 - 文本、FormattingCulture 和根 FlowDirection 在同一次提交后保持同一 revision。
-- 独立 Window、Dialog、Popup/Flyout 从 Application 语言 Provider 获得一致资源，不依赖 ThemeContext。
+- 独立 Window、Dialog、Popup/Flyout 从 Application 的 `LanguageResourceProvider` 获得一致资源，不依赖 ThemeContext。
 - 释放 Application/Manager 后不保留 Window、Control、ViewModel 或 DI scope。
 
 ## 性能验证

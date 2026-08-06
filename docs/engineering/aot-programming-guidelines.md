@@ -30,7 +30,7 @@
 | 模板内 part 同步 | C# 里拿到 template part 后强类型绑定 | AXAML `ReflectionBinding` | template reapply 时旧 part 是否释放 |
 | 内置类型注册 | source generator 生成 registry/catalog | `Assembly.GetTypes()` | generator 和生成物是否一致 |
 | token converter | generator 生成静态数组 | 运行时扫描 attribute 后 `Activator.CreateInstance` | 数量、顺序、map 行为是否不变 |
-| 语言资源 | generated provider wrapper | `GetFields(...)` 枚举资源字段 | 缺字段、异常、日志语义是否不变 |
+| 语言资源 | generated Catalog descriptor + compiled Translation Bundle | `GetFields(...)` 枚举资源字段 | Catalog ID、占位符和回退语义是否不变 |
 | 图标创建 | generated factory 或 virtual factory | 扫描 icon assembly 后反射创建 | 非法 kind 的异常包装是否不变 |
 | DataGrid 动态 path | `[GenerateDataMemberAccessors]` 或手写 descriptor | 对用户模型直接 `GetProperty(path)` | sort/filter/group/AddNew 是否走 descriptor |
 | 非 Visual AvaloniaObject 资源宿主 | `[GenerateScopedResourceHost]` 生成 scoped host 生命周期 | 每个对象手写 `IResourceHost` / `IThemeVariantHost` 样板代码 | owner attach/release、WeakReference、资源更新测试 |
@@ -257,43 +257,26 @@ cache 要满足：
 
 ## Language
 
-### 内置 provider 走生成代码
+### Catalog 与翻译表走生成代码
 
-内置语言 provider 可以继续保留 `[LanguageProvider(LanguageCode, LanguageId)]`，但正常注册路径不能再靠反射读取 attribute，也不能通过 `GetFields(...)` 枚举 public static 字段。
+所有应用、控件和类库使用 `[LanguageCatalog]` enum 与 XLIFF 2.1。`LocalizationGenerator` 在编译期直接生成：
 
-规范做法：
+- enum 数字 ID 到 slot 的静态映射。
+- `LanguageCatalogDescriptor` 和编译后 `TranslationBundleDescriptor`。
+- 强类型 `XxxLangResourceExtension`。
+- `GeneratedLanguageModuleRegistration` 和最终应用 bootstrap。
 
-- raw provider 声明为 `partial`。
-- `LanguageProviderConstructorSourceWriter` 为没有手写无参构造的 provider 生成显式构造：
-
-```csharp
-public en_US()
-    : base(LanguageCode.en_US, "Button")
-{
-}
-```
-
-- `LanguageProviderPool` 生成 wrapper provider，直接把资源写入 `ResourceDictionary`：
-
-```csharp
-dictionary[ButtonLangResourceKind.OkText] = ButtonLang.en_US.OkText;
-```
-
-命名使用 `{LanguageId}{NormalizedLanguageCode}LanguageProvider`，例如：
-
-```text
-CommonEnUSLanguageProvider
-```
+正常路径禁止通过 `Assembly.GetTypes()`、`GetFields()`、`Enum.GetNames()` 或 Attribute 反射发现 Catalog，也禁止
+运行时解析 XLIFF。模块主包的 `en-US` 与静态语言包目标 XLIFF 只作为 `AdditionalFiles` 进入最终应用编译；运行时
+只保留不可变 Snapshot 和字符串表。
 
 Review 时要看：
 
-- 资源 key 集合是否来自同一个 `LanguageId` 下 provider 字段的并集。
-- 缺字段时是否保留旧逻辑的运行时异常语义。
-- catch、log、throw 行为是否不变。
-
-### fallback 边界
-
-`LanguageProvider` 基类可以保留反射 fallback，但它必须有 DAM/RUC 标注，并且只能作为兼容边界。AtomUI 内置 provider 的正常路径不能依赖它。
+- Catalog enum 是否公开、使用稳定显式正整数 ID，且不含别名或 `[Flags]`。
+- 所有 Catalog 是否具有完整 `en-US`，目标语言的 unit/占位符契约是否一致。
+- 类库包级入口是否直接调用生成的模块注册，不扫描程序集。
+- 应用 bootstrap 是否只直接注册静态语言包和 Override Bundle。
+- 发布目录是否没有 XLIFF、Build Tasks 或 Generator 程序集。
 
 ## Icon
 
@@ -717,7 +700,6 @@ git diff --check
 
 下面这些命中不等于必须删除，但必须维持注解和文档边界：
 
-- `LanguageProvider` 基类 fallback 反射。
 - `TypeHelper` 动态 path fallback。
 - `ObjectExtension` / `TypeMemberExtension` 反射 helper。
 - DataGrid 对用户 `Binding` / `ReflectionBinding` 的兼容读取。

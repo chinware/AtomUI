@@ -42,8 +42,10 @@ public override void Initialize()
 
     this.UseAtomUI(builder =>
     {
-        builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
-        builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
+        builder.UseLanguages(
+            LanguageTags.EnUS,
+            [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
+        builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
         builder.UseAlibabaSansFont();
         builder.UseDesktopControls();
         builder.UseDesktopColorPicker();
@@ -52,25 +54,28 @@ public override void Initialize()
 }
 ```
 
-`UseAtomUI()` 会创建 `ThemeManagerBuilder`，设置默认语言和不可变初始主题请求，执行用户传入的注册动作，然后
-构建主题 schema、ControlTheme asset manifest、首个 snapshot、Root ThemeContext 和唯一 ThemeManager。
+`UseAtomUI()` 会创建根 `IAtomUIBuilder` 及相互独立的 `LocalizationBuilder`、`ThemeManagerBuilder`。应用生成的
+本地化 bootstrap 先注册应用 Catalog 和外部语言包 Bundle，随后执行用户注册动作；最后分别构建全部支持语言
+Snapshot 与主题 schema、ControlTheme asset manifest、首个 ThemeSnapshot、Root ThemeContext 和唯一 ThemeManager。
 
 构建后的主题运行流见 [AtomUI.Core 主题系统](../modules/core/theme-system.md)。简化顺序是：
 
-1. Builder 解析 Application Id，收集生成式 Control descriptor、ControlTheme asset manifest、
-   `IThemeDefinitionResolver`、算法 descriptor、语言和不可变初始 `ThemeRequest` 模板。
-2. `ThemeSchemaRegistry` 构建并冻结 exact CLR type/identity、完整 Global Token schema、Control Own Token schema、
+1. 本地化 Builder 冻结 Catalog/Bundle Registry，为全部支持语言生成完整 Snapshot，并以默认语言初始化稳定
+   `LanguageResourceProvider`、`ILanguageManager` 与 `ILocalizer`。
+2. 主题 Builder 解析 Application Id，收集生成式 Control descriptor、ControlTheme asset manifest、
+   `IThemeDefinitionResolver`、算法 descriptor 和不可变初始 `ThemeRequest` 模板。
+3. `ThemeSchemaRegistry` 构建并冻结 exact CLR type/identity、完整 Global Token schema、Control Own Token schema、
    资产 owner/引用 identity 和 Semantic Part 契约。无效 descriptor、重复 type/identity、未知 Token、资产
    URI/identity 或 Semantic Part Theme 冲突在此失败。
-3. `ThemeCatalog` 执行内置、应用资源及可选用户目录 Resolver，并通过统一 Reader 和 Binder 生成 typed theme
+4. `ThemeCatalog` 执行内置、应用资源及可选用户目录 Resolver，并通过统一 Reader 和 Binder 生成 typed theme
    definition。静态来源失败终止启动；用户来源失败时使用静态 Catalog 启动并保留 diagnostics。
-4. FollowSystem 在编译前解析初始系统 appearance，并选择完整的 Light/Dark request 模板。
-5. `ThemeCompiler` 在 ThemeManager 挂载前同步生成首个不可变 `ThemeSnapshot`。
-6. Root ThemeContext 和唯一的 `ThemeTokenResourceProvider` 使用该 snapshot 初始化；ThemeManager 同时准备向
+5. FollowSystem 在编译前解析初始系统 appearance，并选择完整的 Light/Dark request 模板。
+6. `ThemeCompiler` 在 ThemeManager 挂载前同步生成首个不可变 `ThemeSnapshot`。
+7. Root ThemeContext 和唯一的 `ThemeTokenResourceProvider` 使用该 snapshot 初始化；ThemeManager 同时准备向
    每个 TopLevel 注入 Root ThemeContext 的全局 style。
-7. ThemeManager 以完整资源状态挂载到 Application，显式设置匹配 snapshot 的 Avalonia Light/Dark variant，
+8. ThemeManager 与本地化 Provider 以完整资源状态挂载到 Application，显式设置匹配 snapshot 的 Avalonia Light/Dark variant，
    并且只发布一次初始 Token 资源通知。
-8. 后续全局和局部更新统一由 ThemeManager 创建五阶段 `ThemeTransaction`、准备并提交。
+9. 后续主题更新由 ThemeManager 的五阶段 `ThemeTransaction` 提交；语言更新由 `LanguageManager` 独立交换预构建 Snapshot。
 
 如果应用需要首帧就是暗色或紧凑主题，应在 builder 阶段通过 `ThemeConfig` 配置初始主题算法，而不是在
 `UseAtomUI()` 之后调用运行期切换 API：
@@ -123,7 +128,6 @@ Popup/Flyout 通过逻辑树自然继承，独立 Window/Dialog/Notification Top
   契约和构建期校验结果。
 - `ControlThemesProviders`：AXAML 主题 Provider。
 - `ThemeDefinitionResolvers`：内置资源、应用 `avares://` 资源和可选用户配置目录的统一主题来源解析器。
-- `LanguageProviders`：本地化资源 Provider。
 - `ThemeAlgorithmDescriptors`：`ThemeAlgorithm.Default`、`Dark`、`Compact` 的生成式 descriptor。
 - `InitialThemeRequests`：固定主题或 FollowSystem 的 Light/Dark 不可变 root request 模板。
 - `ModuleInitializers`：与 ThemeLoaded 等主题生命周期无关的模块初始化回调。
@@ -134,10 +138,10 @@ Popup/Flyout 通过逻辑树自然继承，独立 Window/Dialog/Notification Top
 
 `UseDesktopControls()` 的注册顺序很关键：
 
-1. 先调用 `UseCommonControls()`，注册 `AtomUI.Controls` 的公共 Token、公共主题和语言资源。
+1. 先调用 `UseCommonControls()`，分别向 Theme Builder 注册公共 Token/主题，向 Localization Builder 注册公共 Catalog 和内置 Bundle。
 2. 再注册 `AtomUI.Desktop.Controls` 的 Token。
 3. 根据是否支持 Native Window 选择 `DesktopControlThemesProvider` 或 `BrowserDesktopControlThemesProvider`。
-4. 注册桌面控件包语言资源。
+4. 调用生成的 `GeneratedLanguageModuleRegistration` 注册桌面控件包 Catalog 和内置 Bundle。
 5. 注册初始化回调，包括自定义动画器、桌面 Tooltip 服务、媒体断点主题引导。
 
 DataGrid 和 ColorPicker 独立包通过 `UseDesktopDataGrid()`、`UseDesktopColorPicker()` 追加自己的 Token、主题 Provider 和语言资源。
@@ -149,9 +153,9 @@ Control 包不手工维护完整 Token、主题资产或 Language 列表，而�
 - `ControlTokenDescriptorPool.GetDescriptors()`：返回当前项目内全部对外可主题化 Control 的 descriptor，包括零
   Own Token 的 Control。
 - `ControlThemeAssetManifest.GetDescriptors()`：返回通过构建校验的 ControlTheme asset、owner 和引用 identity descriptor。
-- `LanguageProviderPool.GetLanguageProviders()`：返回当前项目内的语言 Provider。
+- `GeneratedLanguageModuleRegistration.Register()`：显式注册当前项目的 Catalog descriptor 和内置 Translation Bundle。
 - `XxxTokens.Identity`、强类型 `XxxTokenKey` 和 `XxxTokenResourceExtension`：供 AXAML 和 C# 使用。
-- 包级 `UseXxxControls()` 注册入口：一次注册当前包的 descriptor、manifest、主题 Provider 和语言 Provider。
+- 包级 `UseXxxControls()` 注册入口：分别向 `builder.Theme` 和 `builder.Localization` 注册当前包的主题资产与本地化模块。
 
 Builder 必须原样注册包含 exact CLR type 与 identity 的 descriptor 和 manifest，不能退化成只传递其中一项或
 运行时扫描 AXAML。因此新增控件

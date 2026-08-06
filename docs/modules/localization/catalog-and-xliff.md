@@ -129,7 +129,7 @@ Build Tasks 必须保留 XLIFF 的 `target state`、translator notes 和源文�
 
 - 缺少 `target`。
 - `state` 为 `initial`，或项目 `subState` 明确表示 needs-translation/需要复核。
-- 目标内容在规范化后为空，而源项又不允许空字符串。
+- 目标内容在规范化后为空；`en-US` source 可以为空，但只有目标语言的非空 target 才能进入可发布翻译。
 - 源文本指纹已经变化且目标仍绑定旧源文本。
 
 模板合并不能删除译者备注或把需要复核的目标自动标记为 translated。
@@ -189,8 +189,10 @@ en-US source
 
 ## Catalog 模板
 
-可被外部翻译的类库 NuGet 必须发布生成式 `*.catalog.xlf` 模板和 Catalog manifest。模板包含源文本、数字 ID、
-成员名、ContractVersion、源文本指纹和 translator notes，但不作为运行时资源加载。
+可被外部翻译的类库 NuGet 必须发布完整 `en-US.xlf` 与自动生成的 `buildTransitive/<PackageId>.props`。XLIFF 包含
+源文本、数字 ID、成员名和 translator notes；props 传递 module ID、ContractVersion、来源 identity、包内路径和
+源文本指纹。语言包 Build Tasks 另外生成包含相同审计字段的 manifest；Generator 只消费 props 注入的 XLIFF，
+这些资产都不作为运行时资源加载。
 
 应用内部 Catalog 默认不导出到 NuGet；应用若需要把翻译工作拆成独立仓库，可通过同一个 MSBuild 导出目标
 生成受版本控制的模板，而不是复制内部 Generator 输出。

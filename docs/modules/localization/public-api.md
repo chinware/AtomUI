@@ -39,7 +39,7 @@ this.UseAtomUI(builder =>
 - `UseAtomUI()` 是进入 AtomUI 框架的根入口。
 - Builder 内使用 `UseLanguages()`、`UseDesktopControls()` 等领域名称，不重复 `AtomUI` 前缀。
 - `defaultLanguage` 表示启动后首次提交的应用语言，不改变每个 Catalog 固定的 `en-US` 源语言。
-- `defaultLanguage` 必须属于 `supportedLanguages`；Builder 对输入集合做防御性复制、规范化和去重。
+- `defaultLanguage` 必须属于 `supportedLanguages`；Builder 对输入集合做防御性复制，并按首次出现顺序去重。
 - 未调用 `UseLanguages()` 时采用 `en-US` 作为默认语言和唯一支持语言，保证最小应用可启动。
 
 `UseLanguages()` 不接收包名、程序集、Descriptor 或语言包列表。应用 Catalog、组件 Catalog 和静态语言包
@@ -103,6 +103,19 @@ public sealed record LanguageDefinition(
 
 标准标签优先使用生成的 CLDR/.NET 元数据。无法映射到 .NET `CultureInfo` 的私有标签必须由应用显式提供
 `LanguageDefinition`；系统不得静默改用 `InvariantCulture`。
+
+```csharp
+var privateLanguage = LanguageTag.Parse("en-x-acme");
+builder.Localization.AddLanguageDefinition(new LanguageDefinition(
+    privateLanguage,
+    CultureInfo.GetCultureInfo("en-US"),
+    "Acme English",
+    LanguageTextDirection.LeftToRight));
+builder.UseLanguages(privateLanguage, [privateLanguage]);
+```
+
+同一标签重复注册显式 `LanguageDefinition` 会在启动构建时失败；这与 `supportedLanguages` 中允许重复并去重的
+集合语义不同。
 
 ## ILanguageManager
 

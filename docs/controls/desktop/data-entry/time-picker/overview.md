@@ -50,8 +50,9 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 主要公开类型与枚举：
 
-- 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`。
 - 枚举：`ClockIdentifierType`。
+- 本地化 Catalog：`TimePickerLangResourceKind`。
 
 稳定 template part：
 
@@ -137,9 +138,7 @@ TimePicker 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - `TimePickerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `TimeView`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TimeViewCell`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `TimePickerLangResourceKind`：稳定的本地化 Catalog enum；内置翻译由同目录三种语言 XLIFF 提供并在编译期生成。
 
 集成关系：
 

@@ -65,7 +65,7 @@ WindowTitleBar
            -> IconPresenter#PART_IconPresenter (template-stable)
   -> WindowTitleBar (control theme, WindowTitleBarTheme.axaml)
      -> Border#Frame (template-stable)
-        -> WindowTitleBarLayoutPanel (template-stable)
+        -> WindowTitleBarLayoutPanel (internal-observable)
            -> DockPanel (template-stable)
               -> ContentPresenter#PART_Logo (template-stable)
               -> ContentPresenter#PART_LeftAddOn (template-stable)
@@ -75,7 +75,7 @@ WindowTitleBar
               -> ContentPresenter#PART_RightAddOn (template-stable)
               -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
      -> Border#Frame (template-stable)
-        -> WindowTitleBarLayoutPanel (template-stable)
+        -> WindowTitleBarLayoutPanel (internal-observable)
            -> DockPanel (template-stable)
               -> ContentPresenter#PART_Logo (template-stable)
               -> ContentPresenter#PART_LeftAddOn (template-stable)
@@ -85,7 +85,7 @@ WindowTitleBar
               -> ContentPresenter#PART_RightAddOn (template-stable)
               -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
      -> Border#Frame (template-stable)
-        -> WindowTitleBarLayoutPanel (template-stable)
+        -> WindowTitleBarLayoutPanel (internal-observable)
            -> ContentPresenter#PART_LeftAddOn (template-stable)
            -> DockPanel (template-stable)
               -> ContentPresenter#PART_Logo (template-stable)
@@ -121,7 +121,7 @@ WindowTitleBar
 | `PART_IconPresenter` | template node (IconPresenter) | `CaptionButtonTheme.axaml` | CaptionButton | `EffectiveIcon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowTitleBar` | control theme | `WindowTitleBarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Frame` | template node (Border) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Background`, `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `HostWindowState`, `IsCsdEnabled`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `LeftAddOn`, `LeftAddOnTemplate`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

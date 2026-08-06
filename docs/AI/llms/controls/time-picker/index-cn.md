@@ -52,8 +52,9 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 主要公开类型与枚举：
 
-- 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`。
 - 枚举：`ClockIdentifierType`。
+- 本地化 Catalog：`TimePickerLangResourceKind`。
 
 稳定 template part：
 
@@ -88,7 +89,7 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
-- 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`。
 
 ## 使用示例
 
@@ -245,9 +246,10 @@ TimePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/TimePicker/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/TimePicker/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/TimePicker/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/TimePicker/Localization/TimePickerLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/TimePicker/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/TimePicker/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/TimePicker/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/TimePicker/RangeTimePicker.cs`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/RangeTimePickerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimePickerPresenterTheme.axaml`
@@ -260,6 +262,7 @@ TimePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - `src/AtomUI.Desktop.Controls/TimePicker/TimeView/DateTimePickerPanel.cs`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimeView/TimeView.cs`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimeView/TimeViewCell.cs`
+- `src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/InfoPickerTextBox.cs` 与 `Themes/InfoPickerTextBoxTheme.axaml`：TimePicker 输入框使用的 internal 子控件及其文本 presenter、padding 基础视觉。
 
 职责边界：
 

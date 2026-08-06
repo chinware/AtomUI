@@ -68,7 +68,7 @@ Navigation Token 控制导航间距、active 表达和可选箭头视觉，不�
 - `ErrorTitleColor`、`ErrorDescriptionColor`、`ErrorTailColor`、`ErrorDotColor`
 
 名称中的 `DescriptionColor` 作用于 Content 详情区域。状态选择只读取 EffectiveStatus；Token 不参与状态推导。
-TailColor 遵循 Ant Design rail 语义：Wait 使用 disabled 色，Process 和 Finish 使用 primary 色，Error 使用 error 色。
+TailColor 遵循步骤条 rail 的语义：Wait 使用 disabled 色，Process 和 Finish 使用 primary 色，Error 使用 error 色。
 
 ### 2.6 Progress ring
 

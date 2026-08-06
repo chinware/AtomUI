@@ -24,6 +24,13 @@
 
 ```text
 TimePicker
+  -> InfoPickerTextBox (control theme, InfoPickerTextBoxTheme.axaml)
+  -> PickerClearUpButton (control theme, PickerClearUpButtonTheme.axaml)
+     -> Panel (template-stable)
+        -> InputClearIconButton#PART_ClearButton (template-stable)
+        -> StackPanel#IconLayout (template-stable)
+           -> IconPresenter#PART_InfoIconPresenter (template-stable)
+           -> ContentPresenter#FormFeedBack (internal-observable)
   -> TimePickerPresenter (presenter control theme, TimePickerPresenterTheme.axaml)
      -> Border (template-stable)
         -> DockPanel#PART_MainLayout (template-stable)
@@ -61,6 +68,13 @@ TimePicker
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `TimePicker` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `InfoPickerTextBox` | control theme | `InfoPickerTextBoxTheme.axaml` | TimePicker | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PickerClearUpButton` | control theme | `PickerClearUpButtonTheme.axaml` | TimePicker | `FormFeedback`, `Icon`, `IsFormFeedbackVisible`, `IsInClearMode` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Panel` | template node (Panel) | `PickerClearUpButtonTheme.axaml` | PickerClearUpButton | `FormFeedback`, `Icon`, `IsFormFeedbackVisible`, `IsInClearMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ClearButton` | template node (InputClearIconButton) | `PickerClearUpButtonTheme.axaml` | PickerClearUpButton | `IsInClearMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `IconLayout` | template node (StackPanel) | `PickerClearUpButtonTheme.axaml` | PickerClearUpButton | `FormFeedback`, `Icon`, `IsFormFeedbackVisible`, `IsInClearMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_InfoIconPresenter` | template node (IconPresenter) | `PickerClearUpButtonTheme.axaml` | PickerClearUpButton | `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `FormFeedBack` | template node (ContentPresenter) | `PickerClearUpButtonTheme.axaml` | PickerClearUpButton | `FormFeedback`, `IsFormFeedbackVisible` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `TimePickerPresenter` | presenter control theme | `TimePickerPresenterTheme.axaml` | TimePicker | `BorderThickness`, `ClockIdentifier`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `MinuteIncrement`, `SecondIncrement` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_MainLayout` | template node (DockPanel) | `TimePickerPresenterTheme.axaml` | TimePickerPresenter | `BorderThickness`, `ClockIdentifier`, `IsButtonsPanelVisible`, `IsMotionEnabled`, `MinuteIncrement`, `SecondIncrement` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ButtonsFrame` | template node (PixelAlignedBorder) | `TimePickerPresenterTheme.axaml` | TimePickerPresenter | `BorderThickness`, `IsButtonsPanelVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

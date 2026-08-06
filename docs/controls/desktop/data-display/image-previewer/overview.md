@@ -180,9 +180,7 @@ ImagePreviewer 与同分类控件共享尺寸、状态、Token、Gallery 展示�
 - `ImagePreviewItem`：图片项状态对象，维护 `Pending`、`Loading`、`Loaded`、`Failed` 状态和异步加载版本。
 - `LoadedImageSource`：已加载图片结果，承载 Bitmap 或 SVG 文本和源尺寸。
 - `IImageSourceLoader`：统一图片加载服务，负责本地、资源和远程图片加载、取消与来源身份处理。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `ImagePreviewerLangResourceKind`：稳定的本地化 Catalog enum；内置翻译由同目录三种语言 XLIFF 提供并在编译期生成。
 
 集成关系：
 

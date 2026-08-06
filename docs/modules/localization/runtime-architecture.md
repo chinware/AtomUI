@@ -29,7 +29,8 @@ LanguageManager
 1. 创建根 `IAtomUIBuilder`，并接入应用生成的 Language Module bootstrap。
 2. 执行用户配置；`UseXxxControls()` 等扩展注册各自生成的 Language Module。
 3. `ILocalizationBuilder` 收集 Catalog descriptor、内置 Translation Bundle、语言包 Bundle 和应用 Override。
-4. 规范化 `defaultLanguage`、`supportedLanguages` 与 `LanguageDefinition`，验证重复项和 Culture 映射。
+4. 规范化 `defaultLanguage`、`supportedLanguages` 与 `LanguageDefinition`；支持语言按首次出现顺序去重，显式
+   `LanguageDefinition` 仍要求标签唯一，并验证 Culture 与方向元数据。
 5. 构建并冻结 `LanguageCatalogRegistry`，解析来源优先级、Catalog 契约和 slot。
 6. 为每个支持语言构建完整不可变 `LanguageSnapshot`；任何必需资源无法解析时启动失败。
 7. 用默认语言 Snapshot 初始化唯一 `LanguageManager` 和稳定 `LanguageResourceProvider`。

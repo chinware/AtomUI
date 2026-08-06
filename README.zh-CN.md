@@ -195,9 +195,9 @@ internal class Program
 ###### 在 `Application` 类中启用 `AtomUI`
 
 ```csharp
-using System.Globalization;
 using AtomUI;
 using AtomUI.Desktop.Controls;
+using AtomUI.Localization;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Markup.Xaml;
@@ -210,7 +210,9 @@ public partial class App : Application
 
         this.UseAtomUI(builder =>
         {
-            builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
+            builder.UseLanguages(
+                LanguageTags.ZhCN,
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
             builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();

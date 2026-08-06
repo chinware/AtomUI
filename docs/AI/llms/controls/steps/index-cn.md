@@ -69,9 +69,14 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | `Offset` | `int` | Inline 类型前方保留的空 item 单元数量，默认 `0`；其他类型忽略。 |
 | `HorizontalContentAlignment` | `HorizontalAlignment` | 垂直 Navigation item 列的水平对齐，默认 `Center`；普通 Steps 和水平 Navigation 不使用。 |
 | `IsMotionEnabled` | `bool` | 是否启用 transition 和 Wave，默认来自 SharedToken。 |
+| `ItemHeaderForeground` | `IBrush?` | 所有 item 主标题的实例级语义前景色覆盖；默认 `null`，保留当前类型和状态的 Token 视觉。 |
+| `ItemSubHeaderForeground` | `IBrush?` | 所有 item 辅助标题的实例级语义前景色覆盖；默认 `null`，保留当前类型和状态的 Token 视觉。 |
+| `ItemRailBackground` | `IBrush?` | 所有 item Connector 的实例级语义背景覆盖；默认 `null`，保留当前类型和状态的 Token 视觉。 |
 | `Items` / `ItemsSource` / `ItemTemplate` | inherited | 步骤集合和数据模板入口。 |
 
 `Current` 允许小于 `Initial` 或大于所有 item 的编号。Steps 不裁剪、不归一也不回写越界值。
+
+三个 `Item*` 属性只覆盖实例的语义视觉，不参与 `EffectiveStatus`、`ConnectorStatus`、布局或交互计算。它们作用于 `Steps` 拥有的全部直接或生成容器；属性为 `null` 时，主题继续使用 Wait、Process、Finish、Error 以及 Inline 对应的 Token。
 
 ### 3.2 事件契约
 
@@ -125,6 +130,8 @@ LLMS 语义区域：
 | `navigation-active-indicator` | `NavigationActiveIndicator` | Navigation 当前项的水平底线或垂直右侧线。 | internal-observable |
 
 Steps 不提供控件专属的完成态或选择态伪类。状态主题读取 `EffectiveStatus`、`IsCurrent`、`CanInvoke` 以及 Avalonia 标准 `:pointerover`、`:focus-visible`、`:disabled` 伪类。
+
+`title`、`subtitle` 和 `rail` 是 `StepsItem` 自身模板的内部语义节点。只有 `StepsItemTheme.axaml` 可以进入该模板并消费根控件投影的语义样式值；外部应用、Gallery 和 `StepsTheme.axaml` 不得依赖节点名称或通过 `/template/` selector 穿透 `StepsItem`。
 
 ## 事件与命令
 
@@ -291,6 +298,23 @@ Steps
 `StepsPanel` 负责 item 间的 flex/stack 布局；`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽和 Navigation active 线的排列。二者不创建视觉、不计算状态。
 `OutlineDot` 复用 `Dot` 的布局路径，只改变 Indicator 的填充、边框和 Wave 语义。
 
+### 5.1 Item 语义样式覆盖
+
+`ItemHeaderForeground`、`ItemSubHeaderForeground` 和 `ItemRailBackground` 是 `Steps` 实例级的语义槽，不是对模板内部节点的公开暴露。`Steps` 将显式值投影到每个 `StepsItem`，再由 `StepsItemTheme.axaml` 在自己的模板边界内分别应用到 Header、SubHeader 和 Connector。
+
+三项 API 分别对应步骤条标题、子标题和 rail 的语义能力，但保持 Avalonia 的强类型 `IBrush?` 契约，不公开任一模板节点。
+
+优先级固定为：
+
+```text
+非 null 的 Steps 实例语义样式
+    > 当前 Type / EffectiveStatus 对应的 StepsToken
+null
+    -> 完整回退到当前 Type / EffectiveStatus 对应的 StepsToken
+```
+
+运行时修改或清空任一属性必须立即更新所有已实现容器；直接声明的 `StepsItem`、由普通数据项生成的容器以及回收后重新准备的容器遵循同一投影规则。该覆盖不改变 Indicator、Content、Navigation active indicator 或其他未命名语义区域。
+
 有效标题布局：
 
 ```text
@@ -312,6 +336,7 @@ StepsToken 不承载：
 - public Status、AutomaticStatus、EffectiveStatus、IsCurrent 或 ConnectorStatus。
 - item 数量、layout bounds、pointer、keyboard、focus 或 Wave 播放状态。
 - Percent 当前值、CanInvoke、IsItemClickable 或 IsMotionEnabled。
+- `ItemHeaderForeground`、`ItemSubHeaderForeground` 或 `ItemRailBackground` 的实例值。
 
 ## AOT 与裁剪注意事项
 
@@ -320,6 +345,7 @@ StepsToken 不承载：
 - TokenResource 和 SharedToken 只提供视觉值，不保存实例状态。
 - 根展示属性使用 AXAML Ancestor Binding 投影到 item 和 internal panel。
 - 固定模板关系使用 TemplateBinding、Ancestor Binding 和 selector，不使用字符串路径反射。
+- item 语义样式使用静态注册的 StyledProperty 和普通 Avalonia binding 投影，不生成运行时 selector，也不依赖内部节点名称从控件外穿透模板。
 
 性能边界：
 
@@ -334,6 +360,7 @@ AOT 边界：
 - 不新增运行时反射扫描、动态类型注册或编译期不可分析的 binding 路径。
 - 不通过反射访问 Wave 播放状态；测试使用 internal 可观察入口或渲染结果。
 - 新 internal panel 由静态 AXAML 和显式类型引用创建。
+- 三项语义样式投影不使用反射、动态属性发现或运行时类型扫描。
 
 ## 源码索引
 

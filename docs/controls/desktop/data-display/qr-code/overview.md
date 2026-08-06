@@ -49,8 +49,9 @@ QRCode 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 主要公开类型与枚举：
 
-- 类型：`AbstractQRCode`、`QRCode`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`AbstractQRCode`、`QRCode`。
 - 枚举：`QRCodeEccLevel`、`QRCodeStatus`。
+- 本地化 Catalog：`QRCodeLangResourceKind`。
 
 稳定 template part：
 
@@ -105,9 +106,7 @@ QRCode 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 - `AbstractQRCode`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
 - `QRCode`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `QRCodeToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
-- `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `QRCodeLangResourceKind`：稳定的本地化 Catalog enum；内置翻译由同目录三种语言 XLIFF 提供并在编译期生成。
 
 集成关系：
 

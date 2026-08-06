@@ -1,8 +1,7 @@
 # AtomUI 多语言模块架构概览
 
-本文档集定义 AtomUI 多语言模块的目标架构。该模块是面向整个应用的本地化基础设施，不只服务控件。
-在新架构完成迁移前，`src/AtomUI.Core/Language` 中的 `LanguageVariant`、`LanguageProvider` 和
-`ThemeManager` 语言资源链路仍是当前实现；实现过程中不得为了保留这些内部结构而偏离本文档集定义的边界。
+本文档集定义并记录 AtomUI 已落地的多语言模块。该模块是面向整个应用的本地化基础设施，不只服务控件。
+语言状态、Catalog、编译期翻译表和 Avalonia 资源桥由 `AtomUI.Localization` 拥有，主题系统不再承担语言职责。
 
 ## 设计目标
 
@@ -25,7 +24,7 @@
 | [generation-and-build.md](generation-and-build.md) | Source Generator、应用 bootstrap、AdditionalFiles、`AtomUI.Build.Tasks` 与 NuGet 布局 |
 | [language-packs.md](language-packs.md) | 内置语言、官方聚合包、模块包、第三方语言包、模板和消费协议 |
 | [diagnostics-and-testing.md](diagnostics-and-testing.md) | 构建诊断、运行时不变量、Generator/Task/集成/AOT 验证要求 |
-| [migration.md](migration.md) | 现有 LanguageProvider 架构到目标架构的迁移边界和阶段顺序 |
+| [migration.md](migration.md) | 已完成重构的历史映射、兼容结果和旧 API 删除清单 |
 
 ## 项目边界
 
@@ -39,8 +38,8 @@
 | `src/AtomUI.Build.Tasks` | XLIFF 校验、模板导出/合并和语言包构建任务 | 否，MSBuild Task |
 | `AtomUI.LanguagePack.Template` | 创建静态 I18n NuGet 项目的模板 | 否 |
 
-`AtomUI.Localization` 是运行时基础设施包。它与已经否决的 `AtomUI.Localization.Tool`、
-`AtomUI.Localization.Build` 不是同一概念；后两者均不创建。
+`AtomUI.Localization` 是运行时基础设施包。构建期共享源码使用内部命名空间
+`AtomUI.Localization.Build`，但没有同名项目或 NuGet 包；构建任务物理归属 `AtomUI.Build.Tasks`。
 
 ## 架构分层
 

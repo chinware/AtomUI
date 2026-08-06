@@ -17,9 +17,9 @@
 来源：`src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`
 
 ```xml
-<ButtonSpinner Name="PART_Spinner">
+<NumericUpDownSpinner Name="PART_Spinner">
     <EmbeddedTextBox Name="PART_TextBox" />
-</ButtonSpinner>
+</NumericUpDownSpinner>
 ```
 
 ## Composition Model
@@ -71,11 +71,7 @@ NumericUpDown
                  -> ScrollViewer#PART_ScrollViewer (template-stable)
                     -> ContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart} (internal-observable)
                  -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
-  -> NumericUpDown (control theme, NumericUpDownTheme.axaml)
-     -> ButtonSpinner#PART_Spinner (template-stable)
-        -> EmbeddedTextBox#PART_TextBox (template-stable)
-     -> ButtonSpinner#PART_Spinner (template-stable)
-        -> EmbeddedTextBox#PART_TextBox (template-stable)
+  -> NumericUpDownSpinner (control theme, NumericUpDownSpinnerTheme.axaml)
      -> ButtonSpinnerDecoratedBox#PART_DecoratedBox (template-stable)
         -> DockPanel (template-stable)
            -> PixelAlignedBorder (template-stable)
@@ -86,6 +82,11 @@ NumericUpDown
               -> AddOnContentPresenter (internal-observable)
               -> AddOnContentPresenter (internal-observable)
               -> ContentPresenter (internal-observable)
+  -> NumericUpDown (control theme, NumericUpDownTheme.axaml)
+     -> NumericUpDownSpinner#PART_Spinner (template-stable)
+        -> EmbeddedTextBox#PART_TextBox (template-stable)
+     -> NumericUpDownSpinner#PART_Spinner (template-stable)
+        -> EmbeddedTextBox#PART_TextBox (template-stable)
 ```
 
 ### 协作节点
@@ -205,6 +206,7 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 | 主题 | 职责 |
 | --- | --- |
 | `NumericUpDownTheme.axaml` | 装配控件结构和传递状态。 |
+| `NumericUpDownSpinnerTheme.axaml` | 装配 NumericUpDown 专用 inline spinner 模板及其 action 按钮状态。 |
 | `ButtonSpinnerTheme.axaml` | 装配 spinner 壳体和 Handle 内容。 |
 | `ButtonSpinnerDecoratedBoxTheme.axaml` | 输入壳体、Addon、浮动 Handle 透明度和偏移。 |
 | `ButtonSpinnerHandleTheme.axaml` | Handle 背景、边框、图标尺寸和交互视觉。 |

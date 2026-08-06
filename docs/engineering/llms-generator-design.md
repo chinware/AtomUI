@@ -242,7 +242,7 @@ LLMS 不读取 `ShowCaseCodeSnippetCatalog.g.cs` 这类生成产物作为长期�
 - 示例必须有稳定 `SourceKey`；禁止只依赖 `itemIndex` 作为公开文档引用。
 - 示例只输出 public 可见内容，不输出 internal/private 控件、API、路径或数据。
 - 示例代码应优先展示控件公共 API，不把 Gallery shell、ShowCase 容器、测试辅助代码或临时演示数据输出为用户示例。
-- 示例标题、描述和代码中的 Gallery 本地化资源必须按目标语言解析。中文第一阶段解析 `zh_CN` 资源；无法解析时保留原资源表达并发出诊断。
+- 示例标题、描述和代码中的 Gallery 本地化资源必须按目标语言解析。中文第一阶段解析 Catalog 对应的 `zh-CN.xlf`；无法解析时保留原资源表达并发出诊断。
 - 示例过长时可以按配置限制数量和长度，但不得截断为无法理解或无法复用的代码片段。
 
 LLMS 示例模型至少包含：

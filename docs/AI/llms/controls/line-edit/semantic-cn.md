@@ -212,4 +212,5 @@ TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状
 - `SearchEdit.IsOperating=true` 必须阻止重复搜索事件。
 - `TextArea` 的 fixed lines、auto-size 和 resize 不互相覆盖高度状态。
 - 重新套用模板不能泄漏旧按钮 click、旧 binding 或旧 Form feedback 订阅。
-- TextPresenter margin 是输入模板视觉契约；宽度计算问题应在使用方模板或测量源头解决，不在业务控件中加入隐藏补偿。
+- TextPresenter margin 是输入模板视觉契约；文本有效宽度由输入控件在模板所有权边界内统一计算并发布，不在业务控件或消费 behavior 中加入隐藏补偿。
+- 输入控件不得向内部消费方暴露 `TextPresenter` / `ScrollViewer` 实例；模板结构变化只能影响输入控件自己的度量实现。

@@ -7,6 +7,7 @@
 `AtomUI.slnx` 当前包含核心库、控件库、图标字体、Gallery 宿主：
 
 - `src/AtomUI.Native`
+- `src/AtomUI.Localization`
 - `src/AtomUI.Core`
 - `src/AtomUI.Controls.Shared`
 - `src/AtomUI.Controls`
@@ -15,6 +16,8 @@
 - `src/AtomUI.Desktop.Controls.ColorPicker`
 - `src/AtomUI.Desktop.Controls.Extras`
 - `src/AtomUI.Generator`
+- `src/AtomUI.Build.Tasks`
+- `src/AtomUI.LanguagePack.Template`
 - `src/AtomUI.Icons.Shared`
 - `src/AtomUI.Icons.AntDesign`
 - `src/AtomUI.Icons.AntDesign.Generator`
@@ -30,7 +33,10 @@
 | 项目 | 直接引用 | 说明 |
 |---|---|---|
 | `AtomUI.Native` | `Avalonia`, `NWayland` | 内部原生平台能力层；封装 Win32、Objective-C、Xlib/XCB、Wayland protocol 等底层调用 |
-| `AtomUI.Core` | `AtomUI.Generator` | 主题、Token、语言、动画基础设施 |
+| `AtomUI.Localization` | `AtomUI.Generator`, `Avalonia` | BCP 47、Catalog、Snapshot、Manager、Localizer 和 Avalonia 资源桥 |
+| `AtomUI.Core` | `AtomUI.Localization`, `AtomUI.Generator` | 框架入口、主题、Token、动画基础设施 |
+| `AtomUI.Build.Tasks` | 构建期共享源码、`Microsoft.Build.Framework` | XLIFF 校验、模板导出和静态语言包构建，不进入运行时 |
+| `AtomUI.LanguagePack.Template` | 无运行时引用 | `dotnet new atomui-language-pack` 模板包 |
 | `AtomUI.Controls.Shared` | `AtomUI.Core`, `AtomUI.Generator` | 控件共享契约和协调器 |
 | `AtomUI.Controls` | `AtomUI.Core`, `AtomUI.Controls.Shared`, `AtomUI.Fonts.AlibabaSans`, `AtomUI.Icons.AntDesign`, `AtomUI.Generator` | 公共控件、Primitives、公共主题 |
 | `AtomUI.Desktop.Controls` | `AtomUI.Controls`, `AtomUI.Native`, `AtomUI.Generator`, `Avalonia.Desktop`, `Avalonia.Wayland`, `Avalonia.X11` | 桌面主控件包及 AtomUI 的桌面后端选择入口 |

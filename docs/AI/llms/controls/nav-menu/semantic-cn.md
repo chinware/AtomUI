@@ -17,11 +17,15 @@
 来源：`src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuTheme.axaml`
 
 ```xml
-<ScrollViewer>
-    <PixelAlignedBorder>
-        <ItemsPresenter Name="PART_ItemsPresenter" />
-    </PixelAlignedBorder>
-</ScrollViewer>
+<PixelAlignedBorder>
+    <Grid>
+        <ContentPresenter Name="PART_HeaderPresenter" />
+        <ScrollViewer>
+            <ItemsPresenter Name="PART_ItemsPresenter" />
+        </ScrollViewer>
+        <ContentPresenter Name="PART_FooterPresenter" />
+    </Grid>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -32,6 +36,12 @@
 
 ```text
 NavMenu
+  -> NavMenuDividerItem (item container control theme, NavMenuDividerItemTheme.axaml)
+     -> PixelAlignedBorder (template-stable)
+  -> NavMenuGroupItem (item container control theme, NavMenuGroupItemTheme.axaml)
+     -> StackPanel (template-stable)
+        -> ContentPresenter#PART_HeaderPresenter (template-stable)
+        -> ItemsPresenter#PART_ItemsPresenter (template-stable)
   -> NavMenuItem (item container control theme, NavMenuItemTheme.axaml)
      -> Panel (template-stable)
         -> HorizontalNavMenuItemHeader#PART_Header (template-stable)
@@ -51,13 +61,19 @@ NavMenu
            -> Border#PART_ChildItemsFrame (template-stable)
               -> ItemsPresenter#ChildItemsPresenter (internal-observable)
   -> NavMenu (control theme, NavMenuTheme.axaml)
-     -> ScrollViewer (template-stable)
-        -> PixelAlignedBorder (template-stable)
-           -> ItemsPresenter#PART_ItemsPresenter (template-stable)
+     -> PixelAlignedBorder (template-stable)
+        -> Grid (template-stable)
+           -> ContentPresenter#PART_HeaderPresenter (template-stable)
+           -> ScrollViewer (template-stable)
+              -> ItemsPresenter#PART_ItemsPresenter (template-stable)
+           -> ContentPresenter#PART_FooterPresenter (template-stable)
      -> DockPanel (template-stable)
         -> PixelAlignedBorder#PART_HorizontalLine (template-stable)
         -> PixelAlignedBorder (template-stable)
-           -> ItemsPresenter#PART_ItemsPresenter (template-stable)
+           -> Grid (template-stable)
+              -> ContentPresenter#PART_HeaderPresenter (template-stable)
+              -> ItemsPresenter#PART_ItemsPresenter (template-stable)
+              -> ContentPresenter#PART_FooterPresenter (template-stable)
   -> VerticalNavMenuItemHeader (control theme, VerticalNavMenuItemHeaderTheme.axaml)
      -> Border#Frame (template-stable)
         -> Grid#HeaderLayout (template-stable)
@@ -72,7 +88,12 @@ NavMenu
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `NavMenu` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `NavMenuItem` | item container control theme | `NavMenuItemTheme.axaml` | NavMenu | `EffectivePopupMinWidth`, `Focusable`, `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `NavMenuDividerItem` | item container control theme | `NavMenuDividerItemTheme.axaml` | NavMenu | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `NavMenuGroupItem` | item container control theme | `NavMenuGroupItemTheme.axaml` | NavMenu | `EntryItemSpacing`, `Header`, `HeaderTemplate`, `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `StackPanel` | template node (StackPanel) | `NavMenuGroupItemTheme.axaml` | NavMenuGroupItem | `Header`, `HeaderTemplate`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_HeaderPresenter` | template node (ContentPresenter) | `NavMenuGroupItemTheme.axaml` | NavMenuGroupItem | `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ItemsPresenter` | template node (ItemsPresenter) | `NavMenuGroupItemTheme.axaml` | NavMenuGroupItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `NavMenuItem` | item container control theme | `NavMenuItemTheme.axaml` | NavMenu | `EffectivePopupMinWidth`, `EntryItemSpacing`, `Focusable`, `HasSubMenu`, `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `NavMenuItemTheme.axaml` | NavMenuItem | `EffectivePopupMinWidth`, `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Header` | template node (HorizontalNavMenuItemHeader) | `NavMenuItemTheme.axaml` | NavMenuItem | `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle`, `IsEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Popup` | template node (Popup) | `NavMenuItemTheme.axaml` | NavMenuItem | `EffectivePopupMinWidth`, `IsMotionEnabled`, `ItemsPanel`, `ShouldUseOverlayPopup`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -84,9 +105,11 @@ NavMenu
 | `PART_ChildItemsLayoutTransform` | template node (LayoutAwareMotionActor) | `NavMenuItemTheme.axaml` | NavMenuItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ChildItemsFrame` | template node (Border) | `NavMenuItemTheme.axaml` | NavMenuItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ChildItemsPresenter` | template node (ItemsPresenter) | `NavMenuItemTheme.axaml` | NavMenuItem | `ItemsPanel` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `NavMenu` | control theme | `NavMenuTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_ItemsPresenter` | template node (ItemsPresenter) | `NavMenuTheme.axaml` | NavMenu | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `DockPanel` | template node (DockPanel) | `NavMenuTheme.axaml` | NavMenu | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `NavMenu` | control theme | `NavMenuTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Footer` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_HeaderPresenter` | template node (ContentPresenter) | `NavMenuTheme.axaml` | NavMenu | `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ItemsPresenter` | template node (ItemsPresenter) | `NavMenuTheme.axaml` | NavMenu | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_FooterPresenter` | template node (ContentPresenter) | `NavMenuTheme.axaml` | NavMenu | `Footer`, `FooterTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DockPanel` | template node (DockPanel) | `NavMenuTheme.axaml` | NavMenu | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Footer` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_HorizontalLine` | template node (PixelAlignedBorder) | `NavMenuTheme.axaml` | NavMenu | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `VerticalNavMenuItemHeader` | control theme | `VerticalNavMenuItemHeaderTheme.axaml` | NavMenu | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `Height`, `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (Border) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `Height`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -100,11 +123,13 @@ NavMenu
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_ItemsPresenter` | `ItemsPresenter` | 承载顶层 `NavMenuItem` 容器。 |
-| `PART_HorizontalLine` | `Rectangle` | Horizontal light style 下的底部分割线。 |
-| `PART_Header` | NavMenuItemHeader | 菜单项 header，承载文字、图标、箭头和交互视觉。 |
+| `PART_ItemsPresenter` | `ItemsPresenter` | 承载顶层 entry 容器。 |
+| `PART_HeaderPresenter` | `ContentPresenter` | 承载根导航固定 Header；内容为空时折叠。 |
+| `PART_FooterPresenter` | `ContentPresenter` | 承载根导航固定 Footer；内容为空或处于有效 inline collapsed 状态时折叠。 |
+| `PART_HorizontalLine` | `PixelAlignedBorder` | Horizontal light style 下的底部分割线。 |
+| `PART_Header` | `BaseNavMenuItemHeader` 的 mode 专用实现 | 菜单项 header，承载文字、图标、箭头和交互视觉。 |
 | `PART_Popup` | `Popup` | `Vertical` / `Horizontal` 模式下的子菜单浮层。 |
-| `PART_PopupFrame` | `Border` | Popup 背景、圆角、尺寸和内容边距。 |
+| `PART_PopupFrame` | `NavMenuPopupFrame` | Popup 背景、圆角、尺寸约束和内容边距。 |
 | `PART_ChildItemsLayoutTransform` | `LayoutAwareMotionActor` | `Inline` 模式下的子菜单展开收起 motion 容器。 |
 | `PART_ChildItemsFrame` | `Border` | `Inline` 模式下的子菜单背景块。 |
 | `ChildItemsPresenter` | `ItemsPresenter` | `Inline` 模式下的子菜单内容承载。 |
@@ -154,6 +179,8 @@ NavMenu 的交互行为由 mode 决定。
 - `IsInSelectedPath` 表示某个祖先位于当前选中路径中。
 - `Open` 表示当前项目子菜单打开。
 
+结构 entry 不进入公共交互状态：分组和分隔线不产生 `Selected`、`KeyboardActive`、`Open`、`ItemKey` 或 `Command`。分组中的节点仍使用最近的节点祖先作为 `ParentNode`；分组本身不增加 `Level`，也不进入 `TreeNodePath`。
+
 ## Theme and Token Boundaries
 
 NavMenu Theme 按 mode、dark style、header state 和 item background model 分层。
@@ -161,6 +188,7 @@ NavMenu Theme 按 mode、dark style、header state 和 item background model 分
 ```text
 NavMenuTheme
   root template by Mode
+  fixed Header / scrollable entry region / fixed Footer
   root background / padding / scroll behavior
   top-level ItemsPanel orientation
 
@@ -169,6 +197,10 @@ NavMenuItemTheme
   popup frame
   inline child frame
   motion duration
+
+NavMenuGroupItemTheme / NavMenuDividerItemTheme
+  non-interactive structure containers
+  group title / divider orientation
 
 Header Themes
   shared text/icon/background/selection
@@ -183,6 +215,10 @@ Theme 映射规则：
 - Header 默认背景为 `Transparent`，hover / selected 背景由 header state 直接控制。
 - Keyboard active 背景使用 `ItemActiveBg`，其优先级低于 `Selected`，高于普通默认态；它可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。dark style 下使用 dark 语义的 active 视觉，不复用 selected 背景表达临时漫游。
 - Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项显示标题首字符，叶子项可用 tooltip 展示完整标题。
+- Inline/Vertical 的 Header 和 Footer 位于菜单滚动区之外；无 Header/Footer 时对应 presenter 折叠，不占用布局空间。Horizontal 中 Header 左停靠、Footer 右停靠，菜单项占用中间区域。进入 inline collapsed 后 Header 保持可见以承载展开入口，Footer 自动隐藏；Header 内容需要根据 `IsInlineCollapsed` 自适应折叠宽度。
+- 根层 inline collapsed 分组标题隐藏，分组及其透明嵌套分组内的节点继续继承根折叠状态，按顶层节点使用 `CollapsedIconSize` 居中；popup 或非根语义层级中的分组标题和节点保持普通 vertical 视觉。Horizontal 根层把分组渲染为透明水平集合并隐藏标题，popup 中恢复垂直分组标题。
+- Horizontal 根层分隔线为竖线；Inline、Vertical、popup 和 inline collapsed 根层分隔线为横线。
+- 根默认 ItemsPanel 通过 `TemplateBinding` 消费公开 `ItemSpacing`；submenu、popup 和 group 默认 ItemsPanel 消费由根控件投影的内部 effective spacing。该路径不使用进入子控件模板的 selector，也不建立逐容器 binding。自定义 ItemsPanel 是否消费 spacing 由自定义面板负责。
 - `IsItemBackgroundEnabled=true` 时，inline child frame 使用 `SubMenuItemBg` / `DarkSubMenuItemBg`，并应用背景块专用外距。
 - `IsItemBackgroundEnabled=false` 时，inline child frame 背景为 `Transparent`，不应用背景块专用外距；header 的文字色、hover、selected 和 selected path 仍然生效。
 - Horizontal 顶层 light style 通过 `PART_ActiveIndicator` 表达选中；dark style 可以使用 selected background。
@@ -197,6 +233,8 @@ NavMenuToken 服务以下主题：
 
 - `NavMenuTheme.axaml`
 - `NavMenuItemTheme.axaml`
+- `NavMenuGroupItemTheme.axaml`
+- `NavMenuDividerItemTheme.axaml`
 - `BaseNavMenuItemHeaderTheme.axaml`
 - `HorizontalNavMenuItemHeaderTheme.axaml`
 - `VerticalNavMenuItemHeaderTheme.axaml`
@@ -218,6 +256,14 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 - inline collapsed 期间打开的 popup 状态不得污染展开后恢复的 inline open path cache。
 - 键盘 active/focus 状态不得进入公共 API，不得改变 `SelectedItem`、`DefaultSelectedPath` 或 `DefaultOpenPaths` 的语义。
 - `NavMenuNode` / `INavMenuNode` 的 `Header`、`HeaderTemplate`、`ItemKey`、`Icon`、`IsEnabled`、`Command`、`CommandParameter`、`Children` 名称、类型和语义不变。
+- `NavMenuNode.Entries` 是子 entry 唯一真源；`Children` 只能作为同一集合的实时节点兼容视图，不能引入第二份节点集合或双向同步状态。
+- direct `Items`、`ItemsSource`、节点 `Entries` 和分组 `Entries` 对非法 entry 的拒绝语义一致；不能因 source 是否只读或集合通知类型不同而绕过验证。
+- 同一内置 `NavMenuNode` / `NavMenuGroup` 实例在 entry 树中只能有一个直接结构 owner；释放 owner 后才允许重挂载。无状态 `NavMenuDivider` 可以复用。
+- custom `INavMenuNode` 本身保持兼容，但它暴露的内置 node/group 仍必须参加完整 entry 图唯一性校验；嵌套可通知 source 使用弱订阅。
+- `NavMenuGroup` 和 `NavMenuDivider` 在任意数据层级都保持结构语义，不进入选择、命令、路径、层级缩进或键盘状态。
+- 根分组中的节点仍为顶层节点；嵌套分组不能改变节点的 `ParentNode`、`Level` 或 `IsTopLevel`。
+- `Header` / `Footer` 固定区域不能进入菜单 ItemsPanel 或随菜单项滚动；空 content 不得改变既有无 slot 布局。
+- `ItemSpacing` 只控制根默认 ItemsPanel，并在具有有效设置时覆盖后代默认 ItemsPanel 的额外容器间距；未设置的 Horizontal 根层保持 `0`，其 popup、submenu 和 group 仍使用 `VerticalItemsPanelSpacing`。该属性不重定义 `ItemContentMargin`、`VerticalChildItemsMargin` 或自定义 ItemsPanel 的布局语义。
 - `NavMenuNode` 只承载命令配置，不实现 `ICommandSource`，不直接订阅 `CanExecuteChanged`，也不保存当前 `NavMenuItem` 容器。
 - `CommandParameter` 保持标准显式参数语义，不隐式回退到 `ItemKey`、`Header`、`SelectedItem` 或节点自身。
 - `NavMenuItemClick` 和 `NavMenuNodeSelected` 的事件语义不变。
@@ -259,3 +305,15 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 - `CanExecuteChanged` 的合并 operation 必须由当前 container 持有，并在 command / parameter 替换和 logical-tree detach 时取消。
 - container rebind、clear、recycle、Items reset 和 re-template 后，旧节点、旧命令和旧 owner 不得继续持有当前容器。
 - `CommandParameter` 不隐式使用 `ItemKey`，避免显式 `null` 和容器同步语义分叉。
+- `Entries` 是唯一结构集合，`Children` 不得拥有第二份节点存储。
+- direct `Items`、`ItemsSource`、节点 `Entries` 和分组 `Entries` 必须共用 `INavMenuEntry` 校验语义；初始装载、source replacement、Add、Replace 和 Reset 不得存在绕过路径。
+- 内置 `NavMenuNode` / `NavMenuGroup` 必须以弱 structural owner 保证同一实例只有一个直接挂载位置；`ParentNode` 和 `SemanticParentNode` 不能替代该结构所有权。无状态 `NavMenuDivider` 不进入 owner 跟踪。
+- custom node 自身不登记 owner，但其内置后代必须由最近 built-in/root scope 的完整图协调器检测；嵌套 collection subscription 必须是弱订阅并在 source 离图时释放。
+- custom observable source 的 post-mutation 同步必须重新执行 owner-cycle 校验，不能把当前 built-in owner 或任意 built-in 祖先登记为自己的后代。
+- built-in child collection 由 child 自身协调器负责，祖先不得递归订阅；纯 built-in 深树的订阅数量不得随祖先/后代组合增长为 O(N²)。
+- 非法 entry 必须在容器生成和资源 attach 前确定性失败；不能静默忽略、降级为普通 content 或依赖后续 cast 暴露错误。
+- 分组和分隔线不得实现或模拟 `INavMenuNode`、`ISelectable`、`ICommandSource` 或 keyboard active 状态。
+- 节点的 `ParentNode`、容器的 `Level` / `IsTopLevel`、选择祖先和键盘父级只能来自 semantic owner，不得从逻辑树距离推导。
+- 节点、分组和分隔线使用不同 recycle key，clear 必须移除各自 owner、binding 和状态。
+- 纯节点菜单不增加结构容器、递归扁平缓存或每项 spacing binding。
+- root Header/Footer 保持固定，空 slot 不占布局；结构标题和分隔线的 mode/collapsed 变体由各自内部 ControlTheme 维护。

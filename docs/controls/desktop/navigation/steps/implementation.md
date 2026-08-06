@@ -270,7 +270,7 @@ CanInvoke=false 时不进入 Tab 焦点序列，不显示 hand cursor 和 clicka
 - Horizontal Default + horizontal title：非末 item 参与伸展，末 item 使用内容宽度。
 - Horizontal Dot / OutlineDot / vertical title / Inline：item 等宽，indicator 居中，rail 从当前 indicator 指向下一项。
 - Horizontal Navigation：item 等宽。
-- Inline：按 Ant Design 的 inline + dot + vertical-title 组合排列，item 等宽，dot 上方 rail 连通，content 不参与显示；`Offset` 会在可见 item 前方保留同等数量的空 item 单元。
+- Inline：按 inline + dot + vertical-title 组合排列，item 等宽，dot 上方 rail 连通，content 不参与显示；`Offset` 会在可见 item 前方保留同等数量的空 item 单元。
 - Vertical：按 DesiredSize 顺序堆叠。
 
 `StepsItemLayoutPanel` 根据 Type、Orientation 和 EffectiveTitlePlacement 排列固定语义节点。Connector 的方向和伸展范围由布局 Panel 决定，状态由 item 投影决定。

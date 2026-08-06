@@ -51,8 +51,9 @@ Pagination 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 主要公开类型与枚举：
 
-- 类型：`AbstractPagination`、`PageNavRequestArgs`、`PageSizeComboBoxItem`、`Pagination`、`PaginationNav`、`PaginationNavItem`、`QuickJumpArgs`、`QuickJumpEdit`、`QuickJumperBar`、`SimplePagination`、`en_US`、`zh_CN`、`zh_TW`。
+- 类型：`AbstractPagination`、`PageNavRequestArgs`、`PageSizeComboBoxItem`、`Pagination`、`PaginationNav`、`PaginationNavItem`、`QuickJumpArgs`、`QuickJumpEdit`、`QuickJumperBar`、`SimplePagination`。
 - 枚举：`PaginationAlign`。
+- 本地化 Catalog：`PaginationLangResourceKind`。
 
 稳定 template part：
 
@@ -229,9 +230,10 @@ Pagination Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Pagination/AbstractPagination.cs`
-- `src/AtomUI.Desktop.Controls/Pagination/Localization/en_US.cs`
-- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh_CN.cs`
-- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh_TW.cs`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/PaginationLangResourceKind.cs`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/en-US.xlf`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh-CN.xlf`
+- `src/AtomUI.Desktop.Controls/Pagination/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/Pagination/PageNavRequestArgs.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PageSizeComboBoxItem.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/Pagination.cs`

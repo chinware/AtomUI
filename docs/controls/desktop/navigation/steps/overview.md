@@ -232,7 +232,7 @@ Steps
 
 `ItemHeaderForeground`、`ItemSubHeaderForeground` 和 `ItemRailBackground` 是 `Steps` 实例级的语义槽，不是对模板内部节点的公开暴露。`Steps` 将显式值投影到每个 `StepsItem`，再由 `StepsItemTheme.axaml` 在自己的模板边界内分别应用到 Header、SubHeader 和 Connector。
 
-三项 API 分别对应 Ant Design Steps `styles.itemTitle.color`、`styles.itemSubtitle.color` 和 `styles.itemRail.background` 的语义能力，但保持 Avalonia 的强类型 `IBrush?` 契约，不公开任一模板节点。
+三项 API 分别对应步骤条标题、子标题和 rail 的语义能力，但保持 Avalonia 的强类型 `IBrush?` 契约，不公开任一模板节点。
 
 优先级固定为：
 
@@ -319,13 +319,13 @@ Percent.HasValue
 
 ### 8.5 Inline Offset 模型
 
-`Offset` 对齐 Ant Design inline steps 的 offset cell 语义，只在 `Type=Inline` 时参与布局。它在可见 item 前方保留同等宽度的空 item 单元，使部分步骤可以和完整步骤条的后续列对齐。
+`Offset` 对齐 inline steps 的 offset cell 语义，只在 `Type=Inline` 时参与布局。它在可见 item 前方保留同等宽度的空 item 单元，使部分步骤可以和完整步骤条的后续列对齐。
 
 `Offset` 不参与 `StepNumber`、`Current`、`Initial` 或状态计算。声明 `Offset=2` 且只提供 Step 3-5 三个 item 时，`Current=1` 仍表示当前声明集合中的第二个 item。
 
 ### 8.6 垂直 Navigation 对齐
 
-`Type=Navigation` 且 `Orientation=Vertical` 时，`HorizontalContentAlignment` 控制整列 item 在可用宽度内的水平对齐。默认 `Center` 对齐 Ant Design navigation 的居中语义；需要贴边或填满容器时可设置为 `Left`、`Right` 或 `Stretch`。
+`Type=Navigation` 且 `Orientation=Vertical` 时，`HorizontalContentAlignment` 控制整列 item 在可用宽度内的水平对齐。默认 `Center` 对齐导航模式的居中语义；需要贴边或填满容器时可设置为 `Left`、`Right` 或 `Stretch`。
 
 该属性不改变普通垂直 Steps 的左侧流程阅读布局，也不改变水平 Navigation 的等宽布局。
 

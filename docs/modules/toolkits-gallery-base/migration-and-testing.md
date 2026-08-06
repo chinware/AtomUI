@@ -196,7 +196,7 @@ GalleryWindowTitleBar -> GalleryBase title bar control
 ```
 
 当前已完成 `GalleryWorkspaceViewModel`、`GalleryShellView` 和 `GalleryBrowserShellView` 抽取。`GalleryShellView` 负责品牌区、产品导航视图承载、footer 链接/版本、导航分隔线和 `RoutedViewHost`；`GalleryBrowserShellView` 负责 Browser OverlayLayer、内容区 media breakpoint 和释放链。
-`GalleryWorkspaceViewModel` 已实现 `IDisposable`，用于解绑 ThemeManager 语言事件并释放导航运行时。
+`GalleryWorkspaceViewModel` 已实现 `IDisposable`，用于分别解绑 ThemeManager 与 LanguageManager 事件并释放导航运行时。
 
 AtomUI Gallery 仍保留产品窗口和产品导航视图：
 
