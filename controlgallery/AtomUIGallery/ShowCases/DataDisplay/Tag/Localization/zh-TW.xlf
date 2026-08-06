@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TagShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.</source>
+        <target state="translated">基礎 Tag 用法。可通過 IsClosable 設置為可關閉，並通過 closeIcon 屬性自定義關閉按鈕；closeIcon 設置為 true 時顯示默認關閉按鈕。IsClosable Tag 支持 onClose 事件。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="CheckableTagTitle">
+      <segment>
+        <source>Checkable</source>
+        <target state="translated">可選擇標籤</target>
+      </segment>
+    </unit>
+    <unit id="4" name="CheckableTagDescription">
+      <segment>
+        <source>CheckableTag works like Checkbox. CheckableTagGroup provides single and multiple selection over a shared option set.</source>
+        <target state="translated">CheckableTag 提供類似 Checkbox 的切換效果，CheckableTagGroup 可在同組選項上進行單選或多選。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="ColorfulTagTitle">
+      <segment>
+        <source>Colorful Tag</source>
+        <target state="translated">多彩標籤</target>
+      </segment>
+    </unit>
+    <unit id="6" name="ColorfulTagDescription">
+      <segment>
+        <source>We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.</source>
+        <target state="translated">預設了一系列多彩標籤樣式，可用於不同場景。也可以設置十六進制顏色字符串來自定義顏色。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="StatusTagTitle">
+      <segment>
+        <source>Status Tag</source>
+        <target state="translated">狀態標籤</target>
+      </segment>
+    </unit>
+    <unit id="8" name="StatusTagDescription">
+      <segment>
+        <source>We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.</source>
+        <target state="translated">預設了五種不同顏色，可以設置 success、processing、error、default 和 warning 等 color 屬性表示具體狀態。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="IconTitle">
+      <segment>
+        <source>Icon</source>
+        <target state="translated">圖標</target>
+      </segment>
+    </unit>
+    <unit id="10" name="IconDescription">
+      <segment>
+        <source>Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag. If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.</source>
+        <target state="translated">Tag 組件可以包含圖標。可以通過設置 icon 屬性，或在 Tag 內放置 Icon 組件實現。如果需要精確控製圖標的位置和佈局，應在 Tag 內放置 Icon 組件，而不是使用 icon 屬性。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="VariantTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">形態變體</target>
+      </segment>
+    </unit>
+    <unit id="12" name="VariantDescription">
+      <segment>
+        <source>Use Filled, Solid, and Outlined variants independently of the selected color.</source>
+        <target state="translated">Filled、Solid 和 Outlined 三種形態可以與顏色獨立組合。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="P2ContentTagN1">
+      <segment>
+        <source>Tag 1</source>
+        <target state="translated">標籤 1</target>
+      </segment>
+    </unit>
+    <unit id="14" name="P2ContentLink">
+      <segment>
+        <source>Link</source>
+        <target state="translated">鏈接</target>
+      </segment>
+    </unit>
+    <unit id="15" name="P2ContentPreventDefault">
+      <segment>
+        <source>Prevent Default</source>
+        <target state="translated">阻止默認行為</target>
+      </segment>
+    </unit>
+    <unit id="16" name="P2ContentTagN2">
+      <segment>
+        <source>Tag 2</source>
+        <target state="translated">標籤 2</target>
+      </segment>
+    </unit>
+    <unit id="17" name="P2LabelCheckable">
+      <segment>
+        <source>Checkable</source>
+        <target state="translated">可選擇</target>
+      </segment>
+    </unit>
+    <unit id="18" name="P2LabelSingle">
+      <segment>
+        <source>Single</source>
+        <target state="translated">單選</target>
+      </segment>
+    </unit>
+    <unit id="19" name="P2LabelMultiple">
+      <segment>
+        <source>Multiple</source>
+        <target state="translated">多選</target>
+      </segment>
+    </unit>
+    <unit id="20" name="P2ContentYes">
+      <segment>
+        <source>Yes</source>
+        <target state="translated">是</target>
+      </segment>
+    </unit>
+    <unit id="21" name="P2ContentMagenta">
+      <segment>
+        <source>magenta</source>
+        <target state="translated">品紅色</target>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentRed">
+      <segment>
+        <source>red</source>
+        <target state="translated">紅色</target>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentVolcano">
+      <segment>
+        <source>volcano</source>
+        <target state="translated">火山色</target>
+      </segment>
+    </unit>
+    <unit id="24" name="P2ContentOrange">
+      <segment>
+        <source>orange</source>
+        <target state="translated">橙色</target>
+      </segment>
+    </unit>
+    <unit id="25" name="P2ContentGold">
+      <segment>
+        <source>gold</source>
+        <target state="translated">金色</target>
+      </segment>
+    </unit>
+    <unit id="26" name="P2ContentLime">
+      <segment>
+        <source>lime</source>
+        <target state="translated">青檸色</target>
+      </segment>
+    </unit>
+    <unit id="27" name="P2ContentGreen">
+      <segment>
+        <source>green</source>
+        <target state="translated">綠色</target>
+      </segment>
+    </unit>
+    <unit id="28" name="P2ContentCyan">
+      <segment>
+        <source>cyan</source>
+        <target state="translated">青色</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2ContentBlue">
+      <segment>
+        <source>blue</source>
+        <target state="translated">藍色</target>
+      </segment>
+    </unit>
+    <unit id="30" name="P2ContentGeekblue">
+      <segment>
+        <source>geekblue</source>
+        <target state="translated">極客藍</target>
+      </segment>
+    </unit>
+    <unit id="31" name="P2ContentPurple">
+      <segment>
+        <source>purple</source>
+        <target state="translated">紫色</target>
+      </segment>
+    </unit>
+    <unit id="32" name="P2TextPresetsFilled">
+      <segment>
+        <source>Presets (filled)</source>
+        <target state="translated">預設（filled）</target>
+      </segment>
+    </unit>
+    <unit id="33" name="P2TextPresetsSolid">
+      <segment>
+        <source>Presets (solid)</source>
+        <target state="translated">預設（solid）</target>
+      </segment>
+    </unit>
+    <unit id="34" name="P2TextPresetsOutlined">
+      <segment>
+        <source>Presets (outlined)</source>
+        <target state="translated">預設（outlined）</target>
+      </segment>
+    </unit>
+    <unit id="35" name="P2TextCustomFilled">
+      <segment>
+        <source>Custom (filled)</source>
+        <target state="translated">自定義（filled）</target>
+      </segment>
+    </unit>
+    <unit id="36" name="P2TextCustomSolid">
+      <segment>
+        <source>Custom (solid)</source>
+        <target state="translated">自定義（solid）</target>
+      </segment>
+    </unit>
+    <unit id="37" name="P2TextCustomOutlined">
+      <segment>
+        <source>Custom (outlined)</source>
+        <target state="translated">自定義（outlined）</target>
+      </segment>
+    </unit>
+    <unit id="38" name="P2TextStatusFilled">
+      <segment>
+        <source>Status (filled)</source>
+        <target state="translated">狀態（filled）</target>
+      </segment>
+    </unit>
+    <unit id="39" name="P2TextStatusSolid">
+      <segment>
+        <source>Status (solid)</source>
+        <target state="translated">狀態（solid）</target>
+      </segment>
+    </unit>
+    <unit id="40" name="P2TextStatusOutlined">
+      <segment>
+        <source>Status (outlined)</source>
+        <target state="translated">狀態（outlined）</target>
+      </segment>
+    </unit>
+    <unit id="41" name="P2ContentSuccess">
+      <segment>
+        <source>success</source>
+        <target state="translated">成功</target>
+      </segment>
+    </unit>
+    <unit id="42" name="P2ContentProcessing">
+      <segment>
+        <source>processing</source>
+        <target state="translated">處理中</target>
+      </segment>
+    </unit>
+    <unit id="43" name="P2ContentError">
+      <segment>
+        <source>error</source>
+        <target state="translated">錯誤</target>
+      </segment>
+    </unit>
+    <unit id="44" name="P2ContentWarning">
+      <segment>
+        <source>warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="45" name="P2ContentDefault">
+      <segment>
+        <source>default</source>
+        <target state="translated">默認</target>
+      </segment>
+    </unit>
+    <unit id="46" name="P2ContentTwitter">
+      <segment>
+        <source>Twitter</source>
+        <target state="translated">Twitter</target>
+      </segment>
+    </unit>
+    <unit id="47" name="P2ContentYoutube">
+      <segment>
+        <source>Youtube</source>
+        <target state="translated">Youtube</target>
+      </segment>
+    </unit>
+    <unit id="48" name="P2ContentFacebook">
+      <segment>
+        <source>Facebook</source>
+        <target state="translated">Facebook</target>
+      </segment>
+    </unit>
+    <unit id="49" name="P2ContentLinkedin">
+      <segment>
+        <source>Linkedin</source>
+        <target state="translated">Linkedin</target>
+      </segment>
+    </unit>
+    <unit id="50" name="P2TextVariants">
+      <segment>
+        <source>Default</source>
+        <target state="translated">默認顏色</target>
+      </segment>
+    </unit>
+    <unit id="51" name="P2TextPresetVariant">
+      <segment>
+        <source>Preset color</source>
+        <target state="translated">預設顏色</target>
+      </segment>
+    </unit>
+    <unit id="52" name="P2TextStatusVariant">
+      <segment>
+        <source>Status color</source>
+        <target state="translated">狀態顏色</target>
+      </segment>
+    </unit>
+    <unit id="53" name="P2TextCustomVariant">
+      <segment>
+        <source>Custom color</source>
+        <target state="translated">自定義顏色</target>
+      </segment>
+    </unit>
+    <unit id="54" name="P2ContentFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">淺色填充</target>
+      </segment>
+    </unit>
+    <unit id="55" name="P2ContentSolid">
+      <segment>
+        <source>Solid</source>
+        <target state="translated">實色填充</target>
+      </segment>
+    </unit>
+    <unit id="56" name="P2ContentOutlined">
+      <segment>
+        <source>Outlined</source>
+        <target state="translated">描邊</target>
+      </segment>
+    </unit>
+    <unit id="57" name="P2TextMaterialIcon">
+      <segment>
+        <source>Material icon</source>
+        <target state="translated">Material 圖標</target>
+      </segment>
+    </unit>
+    <unit id="58" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="59" name="PageSubtitle">
+      <segment>
+        <source>Label, categorize and mark status with compact colored chips.</source>
+        <target state="translated">用緊湊的彩色標籤進行標記、分類和狀態表達。</target>
+      </segment>
+    </unit>
+    <unit id="60" name="PageDescription">
+      <segment>
+        <source>Tag displays short labels with preset, status and custom colors across Filled, Solid and Outlined variants.</source>
+        <target state="translated">Tag 用於展示短標籤，支持預設、狀態和自定義顏色，並可組合淺色填充、實色填充和描邊形態。</target>
+      </segment>
+    </unit>
+    <unit id="61" name="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">數據展示</target>
+      </segment>
+    </unit>
+    <unit id="62" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="63" name="ApiEventClosed">
+      <segment>
+        <source>Raised when the close action is clicked.</source>
+        <target state="translated">點擊關閉操作時觸發。</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>The simplest use.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="4" name="DisabledDescription">
+      <segment>
+        <source>Disabled checkbox.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="ControlledCheckboxTitle">
+      <segment>
+        <source>Controlled Checkbox</source>
+      </segment>
+    </unit>
+    <unit id="6" name="ControlledCheckboxDescription">
+      <segment>
+        <source>Communicated with other components.</source>
+      </segment>
+    </unit>
+    <unit id="7" name="CheckboxGroupTitle">
+      <segment>
+        <source>Checkbox Group</source>
+      </segment>
+    </unit>
+    <unit id="8" name="CheckboxGroupDescription">
+      <segment>
+        <source>Generate a group of checkboxes from an array.</source>
+      </segment>
+    </unit>
+    <unit id="9" name="CheckedItemsBindingTitle">
+      <segment>
+        <source>CheckedItems binding</source>
+      </segment>
+    </unit>
+    <unit id="10" name="CheckedItemsBindingDescription">
+      <segment>
+        <source>CheckedItems uses TwoWay binding by default and stays in sync when the bound collection changes.</source>
+      </segment>
+    </unit>
+    <unit id="11" name="CheckAllTitle">
+      <segment>
+        <source>Check all</source>
+      </segment>
+    </unit>
+    <unit id="12" name="CheckAllDescription">
+      <segment>
+        <source>The indeterminate property can help you to achieve a 'check all' effect.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="UseWithGridTitle">
+      <segment>
+        <source>Use with Grid</source>
+      </segment>
+    </unit>
+    <unit id="14" name="UseWithGridDescription">
+      <segment>
+        <source>We can use Checkbox and Grid in Checkbox.Group, to implement complex layout.</source>
+      </segment>
+    </unit>
+    <unit id="15" name="PageSubtitle">
+      <segment>
+        <source>Collect binary or multiple choices from users.</source>
+      </segment>
+    </unit>
+    <unit id="16" name="PageDescription">
+      <segment>
+        <source>CheckBox supports checked, unchecked, indeterminate, disabled, controlled, grouped, and check-all states for forms and option lists.</source>
+      </segment>
+    </unit>
+    <unit id="17" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="18" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="19" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="20" name="P2ContentCheckbox">
+      <segment>
+        <source>Checkbox</source>
+      </segment>
+    </unit>
+    <unit id="21" name="P2ContentUnchecked">
+      <segment>
+        <source>UnChecked</source>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentIndeterminate">
+      <segment>
+        <source>Indeterminate</source>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentChecked">
+      <segment>
+        <source>Checked</source>
+      </segment>
+    </unit>
+    <unit id="24" name="P2ContentCheck">
+      <segment>
+        <source>Check</source>
+      </segment>
+    </unit>
+    <unit id="25" name="P2ContentUncheck">
+      <segment>
+        <source>UnCheck</source>
+      </segment>
+    </unit>
+    <unit id="26" name="P2ContentEnable">
+      <segment>
+        <source>Enable</source>
+      </segment>
+    </unit>
+    <unit id="27" name="P2ContentDisable">
+      <segment>
+        <source>Disable</source>
+      </segment>
+    </unit>
+    <unit id="28" name="P2ContentEnabled">
+      <segment>
+        <source>Enabled</source>
+      </segment>
+    </unit>
+    <unit id="29" name="P2ContentDisabled">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="30" name="P2ControlledStatusFormat">
+      <segment>
+        <source>{0}-{1}</source>
+      </segment>
+    </unit>
+    <unit id="31" name="P2ContentApple">
+      <segment>
+        <source>Apple</source>
+      </segment>
+    </unit>
+    <unit id="32" name="P2ContentPear">
+      <segment>
+        <source>Pear</source>
+      </segment>
+    </unit>
+    <unit id="33" name="P2ContentOrange">
+      <segment>
+        <source>Orange</source>
+      </segment>
+    </unit>
+    <unit id="34" name="P2ContentAddPear">
+      <segment>
+        <source>Add pear</source>
+      </segment>
+    </unit>
+    <unit id="35" name="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="36" name="P2ContentNone">
+      <segment>
+        <source>None</source>
+      </segment>
+    </unit>
+    <unit id="37" name="P2TwoWayCheckedSummaryFormat">
+      <segment>
+        <source>Selected: {0}</source>
+      </segment>
+    </unit>
+    <unit id="38" name="P2ContentCheckAll">
+      <segment>
+        <source>Check all</source>
+      </segment>
+    </unit>
+    <unit id="39" name="P2ContentA">
+      <segment>
+        <source>A</source>
+      </segment>
+    </unit>
+    <unit id="40" name="P2ContentB">
+      <segment>
+        <source>B</source>
+      </segment>
+    </unit>
+    <unit id="41" name="P2ContentC">
+      <segment>
+        <source>C</source>
+      </segment>
+    </unit>
+    <unit id="42" name="P2ContentD">
+      <segment>
+        <source>D</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

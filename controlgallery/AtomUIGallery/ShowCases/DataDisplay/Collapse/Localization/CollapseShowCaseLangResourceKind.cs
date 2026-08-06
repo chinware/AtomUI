@@ -1,0 +1,52 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog(ContractVersion = 1)]
+public enum CollapseShowCaseLangResourceKind
+{
+    ScenarioExamples = 1,
+    ComponentCategory = 2,
+    ComponentStatusStable = 3,
+    PageSubtitle = 4,
+    PageDescription = 5,
+    ScenarioBasic = 6,
+    ScenarioAppearance = 7,
+    ScenarioBehavior = 8,
+    CollapseTitle = 9,
+    CollapseDescription = 10,
+    SizeTitle = 11,
+    SizeDescription = 12,
+    AccordionTitle = 13,
+    AccordionDescription = 14,
+    NestedPanelTitle = 15,
+    NestedPanelDescription = 16,
+    BorderlessTitle = 17,
+    BorderlessDescription = 18,
+    NoArrowTitle = 19,
+    NoArrowDescription = 20,
+    ExpandIconLocationTitle = 21,
+    ExpandIconLocationDescription = 22,
+    GhostCollapseTitle = 23,
+    GhostCollapseDescription = 24,
+    CollapsibleTitle = 25,
+    CollapsibleDescription = 26,
+    CustomPaddingTitle = 27,
+    CustomPaddingDescription = 28,
+    P2HeaderThisIsPanelHeaderN1 = 29,
+    P2HeaderThisIsPanelHeaderN2 = 30,
+    P2HeaderThisIsPanelHeaderN3 = 31,
+    P2TitleDefaultSize = 32,
+    P2HeaderThisIsDefaultSizePanelHeader = 33,
+    P2TitleSmallSize = 34,
+    P2HeaderThisIsSmallSizePanelHeader = 35,
+    P2TitleLargeSize = 36,
+    P2HeaderThisIsLargeSizePanelHeader = 37,
+    P2HeaderThisPanelCanOnlyBeCollapsedByClicking = 38,
+    P2HeaderThisPanelCanOnlyBeCollapsedByClicking2 = 39,
+    P2HeaderThisPanelCanTBeCollapsed = 40,
+    P2TextADogIsATypeOfDomesticatedAnimal = 41,
+    P2TextExpandIconPosition = 42,
+    P2ContentStart = 43,
+    P2ContentEnd = 44
+}

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind">
+    <unit id="1" name="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicUsageDescription">
+      <segment>
+        <source>Basic usage, set data source of autocomplete with options property.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="CustomizedTitle">
+      <segment>
+        <source>Customized</source>
+      </segment>
+    </unit>
+    <unit id="4" name="CustomizedDescription">
+      <segment>
+        <source>You could set custom Option label.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="CustomOptionRenderingTitle">
+      <segment>
+        <source>Custom option rendering</source>
+      </segment>
+    </unit>
+    <unit id="6" name="CustomOptionRenderingDescription">
+      <segment>
+        <source>Use OptionTemplate to render rich option content with multiple fields, badges, and multi-line layout.</source>
+      </segment>
+    </unit>
+    <unit id="7" name="LookupPatternsUncertainCategoryTitle">
+      <segment>
+        <source>Lookup-Patterns - Uncertain Category</source>
+      </segment>
+    </unit>
+    <unit id="8" name="LookupPatternsUncertainCategoryDescription">
+      <segment>
+        <source>Demonstration of Lookup Patterns: Uncertain Category.</source>
+      </segment>
+    </unit>
+    <unit id="9" name="TextAreaAutoCompletionTitle">
+      <segment>
+        <source>TextArea type auto-completion</source>
+      </segment>
+    </unit>
+    <unit id="10" name="TextAreaAutoCompletionDescription">
+      <segment>
+        <source>You can use the TextArea type for autocomplete.</source>
+      </segment>
+    </unit>
+    <unit id="11" name="NonCaseSensitiveTitle">
+      <segment>
+        <source>Non-case-sensitive AutoComplete</source>
+      </segment>
+    </unit>
+    <unit id="12" name="NonCaseSensitiveDescription">
+      <segment>
+        <source>A non-case-sensitive AutoComplete.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="14" name="StatusDescription">
+      <segment>
+        <source>Add status to AutoComplete with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="15" name="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+      </segment>
+    </unit>
+    <unit id="16" name="VariantsDescription">
+      <segment>
+        <source>There are outlined, filled, borderless, and underlined variants to choose from.</source>
+      </segment>
+    </unit>
+    <unit id="17" name="CustomizeClearButtonTitle">
+      <segment>
+        <source>Customize clear button</source>
+      </segment>
+    </unit>
+    <unit id="18" name="CustomizeClearButtonDescription">
+      <segment>
+        <source>Customize clear button.</source>
+      </segment>
+    </unit>
+    <unit id="19" name="SizeTypeTitle">
+      <segment>
+        <source>SizeType</source>
+      </segment>
+    </unit>
+    <unit id="20" name="SizeTypeDescription">
+      <segment>
+        <source>AutoComplete supports large, middle, small, and Custom sizes with local height overrides.</source>
+      </segment>
+    </unit>
+    <unit id="21" name="P2PlaceholderTextInputHere">
+      <segment>
+        <source>input here</source>
+      </segment>
+    </unit>
+    <unit id="22" name="P2PlaceholderTextTryAOrB">
+      <segment>
+        <source>try 'a' or 'b'</source>
+      </segment>
+    </unit>
+    <unit id="23" name="P2PlaceholderSizeTypeLarge">
+      <segment>
+        <source>SizeType: Large</source>
+      </segment>
+    </unit>
+    <unit id="24" name="P2PlaceholderSizeTypeMiddle">
+      <segment>
+        <source>SizeType: Middle</source>
+      </segment>
+    </unit>
+    <unit id="25" name="P2PlaceholderSizeTypeSmall">
+      <segment>
+        <source>SizeType: Small</source>
+      </segment>
+    </unit>
+    <unit id="26" name="P2PlaceholderSizeTypeCustom">
+      <segment>
+        <source>SizeType: Custom</source>
+      </segment>
+    </unit>
+    <unit id="27" name="P2TextResults">
+      <segment>
+        <source>results</source>
+      </segment>
+    </unit>
+    <unit id="28" name="P2PlaceholderTextTryToTypeB">
+      <segment>
+        <source>try to type `b`</source>
+      </segment>
+    </unit>
+    <unit id="29" name="P2PlaceholderTextOutline">
+      <segment>
+        <source>Outline</source>
+      </segment>
+    </unit>
+    <unit id="30" name="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+      </segment>
+    </unit>
+    <unit id="31" name="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+      </segment>
+    </unit>
+    <unit id="32" name="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+      </segment>
+    </unit>
+    <unit id="33" name="P2PlaceholderTextUnclearable">
+      <segment>
+        <source>UnClearable</source>
+      </segment>
+    </unit>
+    <unit id="34" name="P2PlaceholderTextCustomizedClearIcon">
+      <segment>
+        <source>Customized clear icon</source>
+      </segment>
+    </unit>
+    <unit id="35" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="36" name="PageSubtitle">
+      <segment>
+        <source>Type ahead and select suggested values from local or asynchronous options.</source>
+      </segment>
+    </unit>
+    <unit id="37" name="PageDescription">
+      <segment>
+        <source>AutoComplete combines text input with candidate filtering, async loading, custom option rendering, status feedback and specialized search or text area variants.</source>
+      </segment>
+    </unit>
+    <unit id="38" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="39" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

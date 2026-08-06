@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.LineEditShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="2" name="ScenarioState">
+      <segment>
+        <source>State</source>
+        <target state="translated">狀態</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ScenarioSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="4" name="ScenarioTextArea">
+      <segment>
+        <source>TextArea</source>
+        <target state="translated">文本域</target>
+      </segment>
+    </unit>
+    <unit id="5" name="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicUsageDescription">
+      <segment>
+        <source>Basic usage example.</source>
+        <target state="translated">基礎用法示例。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="TextBoxTitle">
+      <segment>
+        <source>TextBox</source>
+        <target state="translated">TextBox</target>
+      </segment>
+    </unit>
+    <unit id="8" name="TextBoxDescription">
+      <segment>
+        <source>AtomUI TextBox keeps the native TextBox API while using the LineEdit border, hover, and focus visuals.</source>
+        <target state="translated">AtomUI TextBox 保留原生 TextBox API，同時使用 LineEdit 的邊框、懸停和聚焦視覺。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="InputSizesTitle">
+      <segment>
+        <source>Three sizes of Input</source>
+        <target state="translated">輸入框三種尺寸</target>
+      </segment>
+    </unit>
+    <unit id="10" name="InputSizesDescription">
+      <segment>
+        <source>There are three sizes of an Input box: large (40px), default (32px) and small (24px).</source>
+        <target state="translated">輸入框有三種尺寸：大號（40px）、默認（32px）和小號（24px）。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">變體</target>
+      </segment>
+    </unit>
+    <unit id="12" name="VariantsDescription">
+      <segment>
+        <source>Variants of Input.</source>
+        <target state="translated">輸入框的變體。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="14" name="DisabledDescription">
+      <segment>
+        <source>Variants of Input disabled style.</source>
+        <target state="translated">輸入框禁用樣式的變體。</target>
+      </segment>
+    </unit>
+    <unit id="15" name="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+        <target state="translated">前置/後置標籤</target>
+      </segment>
+    </unit>
+    <unit id="16" name="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+        <target state="translated">使用前置和後置標籤的示例。</target>
+      </segment>
+    </unit>
+    <unit id="17" name="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
+        <target state="translated">帶清除圖標</target>
+      </segment>
+    </unit>
+    <unit id="18" name="WithClearIconDescription">
+      <segment>
+        <source>Input box with the remove icon, click the icon to delete everything.</source>
+        <target state="translated">帶移除圖標的輸入框，點擊圖標可清空全部內容。</target>
+      </segment>
+    </unit>
+    <unit id="19" name="PasswordBoxTitle">
+      <segment>
+        <source>Password box</source>
+        <target state="translated">密碼框</target>
+      </segment>
+    </unit>
+    <unit id="20" name="PasswordBoxDescription">
+      <segment>
+        <source>Input type of password.</source>
+        <target state="translated">密碼類型輸入框。</target>
+      </segment>
+    </unit>
+    <unit id="21" name="OtpLineEditTwoWayBindingTitle">
+      <segment>
+        <source>OTP two-way binding</source>
+        <target state="translated">OTP 雙向繫結</target>
+      </segment>
+    </unit>
+    <unit id="22" name="OtpLineEditTwoWayBindingDescription">
+      <segment>
+        <source>OtpLineEdit.Text uses one bindable value source and can be set or cleared from the ViewModel.</source>
+        <target state="translated">OtpLineEdit.Text 使用單一可繫結值源，可由 ViewModel 設定或清空。</target>
+      </segment>
+    </unit>
+    <unit id="23" name="OtpLineEditFormTitle">
+      <segment>
+        <source>OTP form validation</source>
+        <target state="translated">OTP 表單驗證</target>
+      </segment>
+    </unit>
+    <unit id="24" name="OtpLineEditFormDescription">
+      <segment>
+        <source>Form validators write errors through Avalonia DataValidationErrors.</source>
+        <target state="translated">Form validator 透過 Avalonia DataValidationErrors 寫入錯誤。</target>
+      </segment>
+    </unit>
+    <unit id="25" name="OtpLineEditAntDesignTitle">
+      <segment>
+        <source>One-time password</source>
+        <target state="translated">一次性密碼框</target>
+      </segment>
+    </unit>
+    <unit id="26" name="OtpLineEditAntDesignDescription">
+      <segment>
+        <source>One time password input.</source>
+        <target state="translated">一次性密碼輸入框。</target>
+      </segment>
+    </unit>
+    <unit id="27" name="OtpLineEditSetValueButtonText">
+      <segment>
+        <source>Set 654321</source>
+        <target state="translated">設為 654321</target>
+      </segment>
+    </unit>
+    <unit id="28" name="OtpLineEditClearButtonText">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="29" name="OtpLineEditCurrentValueFormat">
+      <segment>
+        <source>Current value: {0}</source>
+        <target state="translated">目前值：{0}</target>
+      </segment>
+    </unit>
+    <unit id="30" name="OtpLineEditEmptyValueText">
+      <segment>
+        <source>(empty)</source>
+        <target state="translated">（空）</target>
+      </segment>
+    </unit>
+    <unit id="31" name="OtpLineEditFormLabelCode">
+      <segment>
+        <source>Code</source>
+        <target state="translated">驗證碼</target>
+      </segment>
+    </unit>
+    <unit id="32" name="OtpLineEditFormValidationMessage">
+      <segment>
+        <source>Please enter the code</source>
+        <target state="translated">請輸入驗證碼</target>
+      </segment>
+    </unit>
+    <unit id="33" name="PrefixAndSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+        <target state="translated">前綴和後綴</target>
+      </segment>
+    </unit>
+    <unit id="34" name="PrefixAndSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+        <target state="translated">在輸入框內部添加前綴或後綴圖標。</target>
+      </segment>
+    </unit>
+    <unit id="35" name="PrefixAndSuffixToolTip">
+      <segment>
+        <source>Helpful information about this field</source>
+        <target state="translated">關於此欄位的提示資訊</target>
+      </segment>
+    </unit>
+    <unit id="36" name="InputStatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">狀態</target>
+      </segment>
+    </unit>
+    <unit id="37" name="InputStatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+        <target state="translated">通過 status 為 Input 添加狀態，可設置為錯誤或警告。</target>
+      </segment>
+    </unit>
+    <unit id="38" name="SearchBoxTitle">
+      <segment>
+        <source>Search box</source>
+        <target state="translated">搜索框</target>
+      </segment>
+    </unit>
+    <unit id="39" name="SearchBoxDescription">
+      <segment>
+        <source>Example of creating a search box by grouping a standard input with a search button.</source>
+        <target state="translated">將標準輸入框和搜索按鈕組合創建搜索框的示例。</target>
+      </segment>
+    </unit>
+    <unit id="40" name="SearchEditSizeTypeTitle">
+      <segment>
+        <source>SearchEdit size</source>
+        <target state="translated">SearchEdit 尺寸</target>
+      </segment>
+    </unit>
+    <unit id="41" name="SearchEditSizeTypeDescription">
+      <segment>
+        <source>SearchEdit supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+        <target state="translated">SearchEdit 支持大號、中號、小號，也支持通過 Custom 配合本地高度和字號自定義。</target>
+      </segment>
+    </unit>
+    <unit id="42" name="DisabledSearchBoxTitle">
+      <segment>
+        <source>Disabled search box</source>
+        <target state="translated">禁用搜索框</target>
+      </segment>
+    </unit>
+    <unit id="43" name="DisabledSearchBoxDescription">
+      <segment>
+        <source>Example of creating a search box by grouping a standard input with a search button.</source>
+        <target state="translated">將標準輸入框和搜索按鈕組合創建搜索框的示例。</target>
+      </segment>
+    </unit>
+    <unit id="44" name="SearchBoxWithLoadingTitle">
+      <segment>
+        <source>Search box with loading</source>
+        <target state="translated">帶加載狀態的搜索框</target>
+      </segment>
+    </unit>
+    <unit id="45" name="SearchBoxWithLoadingDescription">
+      <segment>
+        <source>Search loading when onSearch.</source>
+        <target state="translated">onSearch 時顯示搜索加載狀態。</target>
+      </segment>
+    </unit>
+    <unit id="46" name="TextAreaTitle">
+      <segment>
+        <source>TextArea</source>
+        <target state="translated">文本域</target>
+      </segment>
+    </unit>
+    <unit id="47" name="TextAreaDescription">
+      <segment>
+        <source>For multi-line input.</source>
+        <target state="translated">用於多行輸入。</target>
+      </segment>
+    </unit>
+    <unit id="48" name="AutoSizeTextAreaTitle">
+      <segment>
+        <source>Autosizing the height to fit the content</source>
+        <target state="translated">高度自適應內容</target>
+      </segment>
+    </unit>
+    <unit id="49" name="AutoSizeTextAreaDescription">
+      <segment>
+        <source>autoSize prop for a textarea type of Input makes the height to automatically adjust based on the content. An option object can be provided to autoSize to specify the minimum and maximum number of lines the textarea will automatically adjust.</source>
+        <target state="translated">textarea 類型 Input 的 autoSize 屬性會讓高度根據內容自動調整。可以向 autoSize 提供選項對象，指定自動調整的最小和最大行數。</target>
+      </segment>
+    </unit>
+    <unit id="50" name="CharacterCountingTitle">
+      <segment>
+        <source>With character counting</source>
+        <target state="translated">帶字數統計</target>
+      </segment>
+    </unit>
+    <unit id="51" name="CharacterCountingDescription">
+      <segment>
+        <source>Show character counting.</source>
+        <target state="translated">顯示字數統計。</target>
+      </segment>
+    </unit>
+    <unit id="52" name="TextAreaStatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">狀態</target>
+      </segment>
+    </unit>
+    <unit id="53" name="TextAreaStatusDescription">
+      <segment>
+        <source>Add status to TextArea with status, which could be error or warning.</source>
+        <target state="translated">通過 status 為 TextArea 添加狀態，可設置為錯誤或警告。</target>
+      </segment>
+    </unit>
+    <unit id="54" name="P2PlaceholderTextBasicUsage">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="55" name="P2PlaceholderTextTextBox">
+      <segment>
+        <source>AtomUI TextBox</source>
+        <target state="translated">AtomUI TextBox</target>
+      </segment>
+    </unit>
+    <unit id="56" name="P2PlaceholderTextLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大號</target>
+      </segment>
+    </unit>
+    <unit id="57" name="P2PlaceholderTextMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中號</target>
+      </segment>
+    </unit>
+    <unit id="58" name="P2PlaceholderTextSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小號</target>
+      </segment>
+    </unit>
+    <unit id="59" name="P2PlaceholderTextCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定義</target>
+      </segment>
+    </unit>
+    <unit id="60" name="P2TitleNormal">
+      <segment>
+        <source>Normal</source>
+        <target state="translated">普通</target>
+      </segment>
+    </unit>
+    <unit id="61" name="P2PlaceholderTextOutlined">
+      <segment>
+        <source>Outlined</source>
+        <target state="translated">線框風格</target>
+      </segment>
+    </unit>
+    <unit id="62" name="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充風格</target>
+      </segment>
+    </unit>
+    <unit id="63" name="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">無邊框</target>
+      </segment>
+    </unit>
+    <unit id="64" name="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">下划線</target>
+      </segment>
+    </unit>
+    <unit id="65" name="P2TitleLeftaddonAndRightaddon">
+      <segment>
+        <source>LeftAddOn and RightAddOn</source>
+        <target state="translated">左側附加和右側附加</target>
+      </segment>
+    </unit>
+    <unit id="66" name="P2TextMysite">
+      <segment>
+        <source>mysite</source>
+        <target state="translated">我的站點</target>
+      </segment>
+    </unit>
+    <unit id="67" name="P2PlaceholderTextInputWithClearIcon">
+      <segment>
+        <source>input with clear icon</source>
+        <target state="translated">帶清除圖標的輸入框</target>
+      </segment>
+    </unit>
+    <unit id="68" name="P2PlaceholderTextTextareaWithClearIcon">
+      <segment>
+        <source>textarea with clear icon</source>
+        <target state="translated">帶清除圖標的文本域</target>
+      </segment>
+    </unit>
+    <unit id="69" name="P2PlaceholderTextInputPassword">
+      <segment>
+        <source>input password</source>
+        <target state="translated">輸入密碼</target>
+      </segment>
+    </unit>
+    <unit id="70" name="P2PlaceholderTextEnterYourUsername">
+      <segment>
+        <source>Enter your username</source>
+        <target state="translated">輸入用戶名</target>
+      </segment>
+    </unit>
+    <unit id="71" name="P2PlaceholderTextError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">錯誤</target>
+      </segment>
+    </unit>
+    <unit id="72" name="P2PlaceholderTextWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="73" name="P2PlaceholderTextErrorWithPrefix">
+      <segment>
+        <source>Error with prefix</source>
+        <target state="translated">帶前綴的錯誤</target>
+      </segment>
+    </unit>
+    <unit id="74" name="P2PlaceholderTextWarningWithPrefix">
+      <segment>
+        <source>Warning with prefix</source>
+        <target state="translated">帶前綴的警告</target>
+      </segment>
+    </unit>
+    <unit id="75" name="P2TitleSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="76" name="P2PlaceholderTextInputSearchText">
+      <segment>
+        <source>input search text</source>
+        <target state="translated">輸入搜索文本</target>
+      </segment>
+    </unit>
+    <unit id="77" name="P2TitleFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充風格</target>
+      </segment>
+    </unit>
+    <unit id="78" name="P2TitleBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">無邊框</target>
+      </segment>
+    </unit>
+    <unit id="79" name="P2TitleUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">下划線</target>
+      </segment>
+    </unit>
+    <unit id="80" name="P2PlaceholderTextInputSearchLoadingDefault">
+      <segment>
+        <source>input search loading default</source>
+        <target state="translated">默認搜索加載</target>
+      </segment>
+    </unit>
+    <unit id="81" name="P2PlaceholderTextInputSearchLoadingWithEnterbutton">
+      <segment>
+        <source>input search loading with enterButton</source>
+        <target state="translated">帶搜索按鈕的搜索加載</target>
+      </segment>
+    </unit>
+    <unit id="82" name="P2PlaceholderTextMaxlengthIsN6">
+      <segment>
+        <source>maxLength is 6</source>
+        <target state="translated">最大長度為 6</target>
+      </segment>
+    </unit>
+    <unit id="83" name="P2PlaceholderTextDisabled">
+      <segment>
+        <source>disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="84" name="P2PlaceholderTextAutosizeHeightBasedOnContentLines">
+      <segment>
+        <source>Autosize height based on content lines</source>
+        <target state="translated">根據內容行數自動調整高度</target>
+      </segment>
+    </unit>
+    <unit id="85" name="P2PlaceholderTextAutosizeHeightWithMinimumAndMaximumNumberOf">
+      <segment>
+        <source>Autosize height with minimum and maximum number of lines</source>
+        <target state="translated">按最小和最大行數自動調整高度</target>
+      </segment>
+    </unit>
+    <unit id="86" name="P2PlaceholderTextCanResize">
+      <segment>
+        <source>can resize</source>
+        <target state="translated">可調整大小</target>
+      </segment>
+    </unit>
+    <unit id="87" name="P2PlaceholderTextDisableResize">
+      <segment>
+        <source>disable resize</source>
+        <target state="translated">禁止調整大小</target>
+      </segment>
+    </unit>
+    <unit id="88" name="P2SearchButtonTextSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="89" name="P2SearchButtonTextText">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索一下</target>
+      </segment>
+    </unit>
+    <unit id="90" name="PageSubtitle">
+      <segment>
+        <source>Capture single-line text, search input, passwords, and multi-line text.</source>
+        <target state="translated">采集單行文本、搜索輸入、密碼和多行文本。</target>
+      </segment>
+    </unit>
+    <unit id="91" name="PageDescription">
+      <segment>
+        <source>LineEdit covers standard inputs, add-ons, clear actions, password reveal, prefixes and suffixes, validation status, SearchEdit, and TextArea scenarios.</source>
+        <target state="translated">LineEdit 覆蓋標準輸入框、前後置附加、清除操作、密碼顯示、前綴後綴、校驗狀態、SearchEdit 和 TextArea 場景。</target>
+      </segment>
+    </unit>
+    <unit id="92" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">數據錄入</target>
+      </segment>
+    </unit>
+    <unit id="93" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="94" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

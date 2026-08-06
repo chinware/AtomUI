@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SliderShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Select a numeric value or range from a continuous or graduated track.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>Slider supports single-value and range selection, horizontal or vertical orientation, snap-to-tick behavior, formatted tooltips, marks, included tracks, disabled states, and keyboard interaction.</source>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>Basic slider. When range is true, display as dual thumb mode. When disable is true, the slider will not be interactable.</source>
+      </segment>
+    </unit>
+    <unit id="8" name="MultiHandleTitle">
+      <segment>
+        <source>Multiple points</source>
+      </segment>
+    </unit>
+    <unit id="9" name="MultiHandleDescription">
+      <segment>
+        <source>Combine multiple points in a range.</source>
+      </segment>
+    </unit>
+    <unit id="10" name="DisabledHandleTitle">
+      <segment>
+        <source>Disabled handles</source>
+      </segment>
+    </unit>
+    <unit id="11" name="DisabledHandleDescription">
+      <segment>
+        <source>Set disabled as an array to disable individual handles in range mode. A disabled handle becomes a movement boundary that other handles cannot cross.</source>
+      </segment>
+    </unit>
+    <unit id="12" name="RangeValuesBindingTitle">
+      <segment>
+        <source>RangeValues binding</source>
+      </segment>
+    </unit>
+    <unit id="13" name="RangeValuesBindingDescription">
+      <segment>
+        <source>RangeValues defaults to TwoWay binding, so range changes update the ViewModel without an explicit binding mode.</source>
+      </segment>
+    </unit>
+    <unit id="14" name="CustomizeTooltipTitle">
+      <segment>
+        <source>Customize tooltip</source>
+      </segment>
+    </unit>
+    <unit id="15" name="CustomizeTooltipDescription">
+      <segment>
+        <source>Use tooltip.formatter to format content of Tooltip. If tooltip.formatter is null, hide it.</source>
+      </segment>
+    </unit>
+    <unit id="16" name="VerticalTitle">
+      <segment>
+        <source>Vertical</source>
+      </segment>
+    </unit>
+    <unit id="17" name="VerticalDescription">
+      <segment>
+        <source>The vertical Slider.</source>
+      </segment>
+    </unit>
+    <unit id="18" name="GraduatedSliderTitle">
+      <segment>
+        <source>Graduated slider</source>
+      </segment>
+    </unit>
+    <unit id="19" name="GraduatedSliderDescription">
+      <segment>
+        <source>Using marks property to mark a graduated slider, use value or defaultValue to specify the position of thumb. When included is false, means that different thumbs are coordinative. when step is null, users can only slide the thumbs onto marks.</source>
+      </segment>
+    </unit>
+    <unit id="20" name="P2TextEnabled">
+      <segment>
+        <source>Enabled:</source>
+      </segment>
+    </unit>
+    <unit id="21" name="P2TextIncludedTrue">
+      <segment>
+        <source>included=true</source>
+      </segment>
+    </unit>
+    <unit id="22" name="P2TextIncludedFalse">
+      <segment>
+        <source>included=false</source>
+      </segment>
+    </unit>
+    <unit id="23" name="P2TextBoundRangeValues">
+      <segment>
+        <source>Bound range:</source>
+      </segment>
+    </unit>
+    <unit id="24" name="P2ContentSetRange">
+      <segment>
+        <source>Set 35-85</source>
+      </segment>
+    </unit>
+    <unit id="25" name="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="26" name="P2ContentDisabledHandle1">
+      <segment>
+        <source>Disabled Handle 1</source>
+      </segment>
+    </unit>
+    <unit id="27" name="P2ContentDisabledHandle2">
+      <segment>
+        <source>Disabled Handle 2</source>
+      </segment>
+    </unit>
+    <unit id="28" name="P2ContentDisabledHandle3">
+      <segment>
+        <source>Disabled Handle 3</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

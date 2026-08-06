@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.EmptyShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>Simplest Usage.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="SizeTitle">
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="4" name="SizeDescription">
+      <segment>
+        <source>AtomUI supports three sizes of buttons: small, default and large.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="CustomizeTitle">
+      <segment>
+        <source>Customize</source>
+      </segment>
+    </unit>
+    <unit id="6" name="CustomizeDescription">
+      <segment>
+        <source>Customize image source, image size, description and extra content.</source>
+      </segment>
+    </unit>
+    <unit id="7" name="NoDescriptionTitle">
+      <segment>
+        <source>No description</source>
+      </segment>
+    </unit>
+    <unit id="8" name="NoDescriptionDescription">
+      <segment>
+        <source>Simplest Usage with no description.</source>
+      </segment>
+    </unit>
+    <unit id="9" name="P2DescriptionCustomizeDescription">
+      <segment>
+        <source>Customize Description</source>
+      </segment>
+    </unit>
+    <unit id="10" name="P2ContentCreateNow">
+      <segment>
+        <source>Create Now</source>
+      </segment>
+    </unit>
+    <unit id="11" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="12" name="PageSubtitle">
+      <segment>
+        <source>Empty state placeholder for no data or unavailable content.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="PageDescription">
+      <segment>
+        <source>Use Empty to communicate that a container has no result, no configured content, or an optional recovery action.</source>
+      </segment>
+    </unit>
+    <unit id="14" name="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="15" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

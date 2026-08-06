@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ResultShowCaseLangResourceKind">
+    <unit id="1" name="SuccessTitle">
+      <segment>
+        <source>Success</source>
+      </segment>
+    </unit>
+    <unit id="2" name="SuccessDescription">
+      <segment>
+        <source>Show successful results.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="InfoTitle">
+      <segment>
+        <source>Info</source>
+      </segment>
+    </unit>
+    <unit id="4" name="InfoDescription">
+      <segment>
+        <source>Show processing results.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="WarningTitle">
+      <segment>
+        <source>Warning</source>
+      </segment>
+    </unit>
+    <unit id="6" name="WarningDescription">
+      <segment>
+        <source>The result of the warning.</source>
+      </segment>
+    </unit>
+    <unit id="7" name="ForbiddenTitle">
+      <segment>
+        <source>403</source>
+      </segment>
+    </unit>
+    <unit id="8" name="ForbiddenDescription">
+      <segment>
+        <source>you are not authorized to access this page.</source>
+      </segment>
+    </unit>
+    <unit id="9" name="NotFoundTitle">
+      <segment>
+        <source>404</source>
+      </segment>
+    </unit>
+    <unit id="10" name="NotFoundDescription">
+      <segment>
+        <source>The page you visited does not exist.</source>
+      </segment>
+    </unit>
+    <unit id="11" name="ServerErrorTitle">
+      <segment>
+        <source>500</source>
+      </segment>
+    </unit>
+    <unit id="12" name="ServerErrorDescription">
+      <segment>
+        <source>Something went wrong on server.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="ErrorTitle">
+      <segment>
+        <source>error</source>
+      </segment>
+    </unit>
+    <unit id="14" name="ErrorDescription">
+      <segment>
+        <source>Something went wrong on server.</source>
+      </segment>
+    </unit>
+    <unit id="15" name="CustomIconTitle">
+      <segment>
+        <source>Custom icon</source>
+      </segment>
+    </unit>
+    <unit id="16" name="CustomIconDescription">
+      <segment>
+        <source>Custom icon.</source>
+      </segment>
+    </unit>
+    <unit id="17" name="PageSubtitle">
+      <segment>
+        <source>Feedback page for final operation outcomes.</source>
+      </segment>
+    </unit>
+    <unit id="18" name="PageDescription">
+      <segment>
+        <source>Result presents success, warning, error, and empty-state style outcomes with optional follow-up actions.</source>
+      </segment>
+    </unit>
+    <unit id="19" name="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+      </segment>
+    </unit>
+    <unit id="20" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="21" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="22" name="P2HeaderSuccessfullyPurchasedCloudServerEcs">
+      <segment>
+        <source>Successfully Purchased Cloud Server ECS!</source>
+      </segment>
+    </unit>
+    <unit id="23" name="P2HeaderYourOperationHasBeenExecuted">
+      <segment>
+        <source>Your operation has been executed.</source>
+      </segment>
+    </unit>
+    <unit id="24" name="P2HeaderThereAreSomeProblemsWithYourOperation">
+      <segment>
+        <source>There are some problems with your operation.</source>
+      </segment>
+    </unit>
+    <unit id="25" name="P2HeaderSubmissionFailed">
+      <segment>
+        <source>Submission Failed</source>
+      </segment>
+    </unit>
+    <unit id="26" name="P2HeaderGreatWeHaveDoneAllTheOperations">
+      <segment>
+        <source>Great, we have done all the operations!</source>
+      </segment>
+    </unit>
+    <unit id="27" name="P2SubHeaderOrderNumberCloudServerConfiguration">
+      <segment>
+        <source>Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait.</source>
+      </segment>
+    </unit>
+    <unit id="28" name="P2SubHeaderForbidden">
+      <segment>
+        <source>Sorry, you are not authorized to access this page.</source>
+      </segment>
+    </unit>
+    <unit id="29" name="P2SubHeaderNotFound">
+      <segment>
+        <source>Sorry, the page you visited does not exist.</source>
+      </segment>
+    </unit>
+    <unit id="30" name="P2SubHeaderServerError">
+      <segment>
+        <source>Sorry, something went wrong.</source>
+      </segment>
+    </unit>
+    <unit id="31" name="P2SubHeaderSubmissionFailed">
+      <segment>
+        <source>Please check and modify the following information before resubmitting.</source>
+      </segment>
+    </unit>
+    <unit id="32" name="P2ContentGoConsole">
+      <segment>
+        <source>Go Console</source>
+      </segment>
+    </unit>
+    <unit id="33" name="P2ContentBuyAgain">
+      <segment>
+        <source>Buy Again</source>
+      </segment>
+    </unit>
+    <unit id="34" name="P2ContentBackHome">
+      <segment>
+        <source>Back Home</source>
+      </segment>
+    </unit>
+    <unit id="35" name="P2TextTheContentYouSubmittedHasTheFollowingError">
+      <segment>
+        <source>The content you submitted has the following error:</source>
+      </segment>
+    </unit>
+    <unit id="36" name="P2TextYourAccountHasBeenFrozen">
+      <segment>
+        <source>Your account has been frozen.</source>
+      </segment>
+    </unit>
+    <unit id="37" name="P2TextThawImmediately">
+      <segment>
+        <source>Thaw immediately &gt;</source>
+      </segment>
+    </unit>
+    <unit id="38" name="P2TextYourAccountIsNotYetEligibleToApply">
+      <segment>
+        <source>Your account is not yet eligible to apply.</source>
+      </segment>
+    </unit>
+    <unit id="39" name="P2TextApplyUnlock">
+      <segment>
+        <source>Apply Unlock &gt;</source>
+      </segment>
+    </unit>
+    <unit id="40" name="P2ContentNext">
+      <segment>
+        <source>Next</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

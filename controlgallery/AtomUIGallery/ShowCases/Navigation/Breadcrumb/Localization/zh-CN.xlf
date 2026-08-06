@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">导航</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Show the current page location in a navigation hierarchy.</source>
+        <target state="translated">展示当前页面在导航层级中的位置。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>Breadcrumb helps users understand where they are and move back through parent levels. It supports icons, custom separators, route context, URI navigation, and item templates.</source>
+        <target state="translated">Breadcrumb 帮助用户理解当前位置，并沿父级路径返回。它支持图标、自定义分隔符、路由上下文、URI 导航和条目模板。</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicUsageDescription">
+      <segment>
+        <source>The simplest use.</source>
+        <target state="translated">最简单的用法。</target>
+      </segment>
+    </unit>
+    <unit id="8" name="WithIconTitle">
+      <segment>
+        <source>With an Icon</source>
+        <target state="translated">带图标</target>
+      </segment>
+    </unit>
+    <unit id="9" name="WithIconDescription">
+      <segment>
+        <source>The icon should be placed in front of the text.</source>
+        <target state="translated">图标应放在文本前面。</target>
+      </segment>
+    </unit>
+    <unit id="10" name="WithParamsTitle">
+      <segment>
+        <source>With Params</source>
+        <target state="translated">带参数</target>
+      </segment>
+    </unit>
+    <unit id="11" name="WithParamsDescription">
+      <segment>
+        <source>With route params.</source>
+        <target state="translated">带有路由参数的用法。</target>
+      </segment>
+    </unit>
+    <unit id="12" name="ConfiguringSeparatorTitle">
+      <segment>
+        <source>Configuring the Separator</source>
+        <target state="translated">配置分隔符</target>
+      </segment>
+    </unit>
+    <unit id="13" name="ConfiguringSeparatorDescription">
+      <segment>
+        <source>The separator can be customized by setting the separator property: separator equals &gt;</source>
+        <target state="translated">可以通过设置 separator 属性来自定义分隔符：separator 等于 &gt;</target>
+      </segment>
+    </unit>
+    <unit id="14" name="ConfiguringSeparatorIndependentlyTitle">
+      <segment>
+        <source>Configuring the Separator Independently</source>
+        <target state="translated">单独配置分隔符</target>
+      </segment>
+    </unit>
+    <unit id="15" name="ConfiguringSeparatorIndependentlyDescription">
+      <segment>
+        <source>Customize separator for each other.</source>
+        <target state="translated">为每一项单独自定义分隔符。</target>
+      </segment>
+    </unit>
+    <unit id="16" name="GenerateByTemplateTitle">
+      <segment>
+        <source>Generate BreadcrumbItem by template</source>
+        <target state="translated">通过模板生成 BreadcrumbItem</target>
+      </segment>
+    </unit>
+    <unit id="17" name="GenerateByTemplateDescription">
+      <segment>
+        <source>Generate BreadcrumbItem by template.</source>
+        <target state="translated">通过模板生成 BreadcrumbItem。</target>
+      </segment>
+    </unit>
+    <unit id="18" name="P2ContentHome">
+      <segment>
+        <source>Home</source>
+        <target state="translated">Home</target>
+      </segment>
+    </unit>
+    <unit id="19" name="P2ContentApplicationCenter">
+      <segment>
+        <source>Application Center</source>
+        <target state="translated">Application Center</target>
+      </segment>
+    </unit>
+    <unit id="20" name="P2ContentApplicationList">
+      <segment>
+        <source>Application List</source>
+        <target state="translated">Application List</target>
+      </segment>
+    </unit>
+    <unit id="21" name="P2ContentAnApplication">
+      <segment>
+        <source>An Application</source>
+        <target state="translated">An Application</target>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentApplication">
+      <segment>
+        <source>Application</source>
+        <target state="translated">Application</target>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentUsers">
+      <segment>
+        <source>Users</source>
+        <target state="translated">Users</target>
+      </segment>
+    </unit>
+    <unit id="24" name="P2ContentParam">
+      <segment>
+        <source>Param</source>
+        <target state="translated">Param</target>
+      </segment>
+    </unit>
+    <unit id="25" name="P2ContentLocation">
+      <segment>
+        <source>Location</source>
+        <target state="translated">Location</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

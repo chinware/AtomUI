@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind">
+    <unit id="1" name="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicUsageDescription">
+      <segment>
+        <source>The basic example supports the title and description props of confirmation.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="LocaleTextTitle">
+      <segment>
+        <source>Locale text</source>
+      </segment>
+    </unit>
+    <unit id="4" name="LocaleTextDescription">
+      <segment>
+        <source>Set okText and cancelText props to customize the button's labels.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="6" name="PlacementDescription">
+      <segment>
+        <source>There are 12 placement options available.</source>
+      </segment>
+    </unit>
+    <unit id="7" name="CustomizeIconTitle">
+      <segment>
+        <source>Customize icon</source>
+      </segment>
+    </unit>
+    <unit id="8" name="CustomizeIconDescription">
+      <segment>
+        <source>Set icon props to customize the icon.</source>
+      </segment>
+    </unit>
+    <unit id="9" name="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+      </segment>
+    </unit>
+    <unit id="10" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="11" name="PageSubtitle">
+      <segment>
+        <source>Inline confirmation before a lightweight destructive or risky action.</source>
+      </segment>
+    </unit>
+    <unit id="12" name="PageDescription">
+      <segment>
+        <source>PopupConfirm combines a trigger control with a confirmation flyout. It is useful when an operation needs a quick second step but does not justify a blocking modal dialog.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="14" name="ApiEventPopupConfirmCancelled">
+      <segment>
+        <source>Raised when the cancel action is chosen.</source>
+      </segment>
+    </unit>
+    <unit id="15" name="ApiEventPopupConfirmConfirmed">
+      <segment>
+        <source>Raised when the confirm action is chosen.</source>
+      </segment>
+    </unit>
+    <unit id="16" name="ApiEventPopupConfirmPopupClick">
+      <segment>
+        <source>Raised after either confirmation flyout button is clicked.</source>
+      </segment>
+    </unit>
+    <unit id="17" name="P2ConfirmContentAreYouSureToDeleteThisTask">
+      <segment>
+        <source>Are you sure to delete this task?</source>
+      </segment>
+    </unit>
+    <unit id="18" name="P2OkTextOk">
+      <segment>
+        <source>Ok</source>
+      </segment>
+    </unit>
+    <unit id="19" name="P2CancelTextCancel">
+      <segment>
+        <source>Cancel</source>
+      </segment>
+    </unit>
+    <unit id="20" name="P2TitleDeleteTheTask">
+      <segment>
+        <source>Delete the task</source>
+      </segment>
+    </unit>
+    <unit id="21" name="P2ContentDelete">
+      <segment>
+        <source>Delete</source>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentLt">
+      <segment>
+        <source>LT</source>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+      </segment>
+    </unit>
+    <unit id="24" name="P2ContentLb">
+      <segment>
+        <source>LB</source>
+      </segment>
+    </unit>
+    <unit id="25" name="P2ContentTl">
+      <segment>
+        <source>TL</source>
+      </segment>
+    </unit>
+    <unit id="26" name="P2ContentTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="27" name="P2ContentTr">
+      <segment>
+        <source>TR</source>
+      </segment>
+    </unit>
+    <unit id="28" name="P2ContentRt">
+      <segment>
+        <source>RT</source>
+      </segment>
+    </unit>
+    <unit id="29" name="P2ContentRight">
+      <segment>
+        <source>Right</source>
+      </segment>
+    </unit>
+    <unit id="30" name="P2ContentRb">
+      <segment>
+        <source>RB</source>
+      </segment>
+    </unit>
+    <unit id="31" name="P2ContentBl">
+      <segment>
+        <source>BL</source>
+      </segment>
+    </unit>
+    <unit id="32" name="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="33" name="P2ContentBr">
+      <segment>
+        <source>BR</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

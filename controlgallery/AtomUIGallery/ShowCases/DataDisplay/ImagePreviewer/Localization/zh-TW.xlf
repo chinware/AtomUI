@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">範例</target>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">資料展示</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Preview single or multiple images in an overlay with zooming, moving, and switching controls.</source>
+        <target state="translated">在覆蓋層中預覽單張或多張圖片，並支援縮放、移動和切換。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>ImagePreviewer displays an image cover that opens a preview surface. It supports fallback images, cover indexes, image groups, scaling limits, and dialog lifecycle events.</source>
+        <target state="translated">ImagePreviewer 展示圖片封面，點擊後打開預覽介面。它支援容錯圖片、封面索引、多圖預覽、縮放範圍和預覽視窗生命週期事件。</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicUsageDescription">
+      <segment>
+        <source>Click the image to zoom in.</source>
+        <target state="translated">點擊圖片放大預覽。</target>
+      </segment>
+    </unit>
+    <unit id="8" name="RemoteImageLoadingTitle">
+      <segment>
+        <source>Remote image loading</source>
+        <target state="translated">遠程圖片載入</target>
+      </segment>
+    </unit>
+    <unit id="9" name="RemoteImageLoadingDescription">
+      <segment>
+        <source>Load an image directly from an HTTPS source URI.</source>
+        <target state="translated">直接使用 HTTPS 圖片源 URI 載入遠程圖片。</target>
+      </segment>
+    </unit>
+    <unit id="10" name="FaultTolerantTitle">
+      <segment>
+        <source>Fault tolerant</source>
+        <target state="translated">容錯</target>
+      </segment>
+    </unit>
+    <unit id="11" name="FaultTolerantDescription">
+      <segment>
+        <source>Load failed to display image placeholder.</source>
+        <target state="translated">加載失敗時顯示圖片佔位內容。</target>
+      </segment>
+    </unit>
+    <unit id="12" name="TwentyRemoteImagesTitle">
+      <segment>
+        <source>20 remote images</source>
+        <target state="translated">20 張遠程圖片</target>
+      </segment>
+    </unit>
+    <unit id="13" name="TwentyRemoteImagesDescription">
+      <segment>
+        <source>Load a fixed set of 20 public images with cover-only loading and neighbor preloading.</source>
+        <target state="translated">使用 20 張固定公共圖片演示封面載入、並發限制和鄰近預載入。</target>
+      </segment>
+    </unit>
+    <unit id="14" name="PreviewFromOneImageTitle">
+      <segment>
+        <source>Preview from one image</source>
+        <target state="translated">從單張圖片預覽集合</target>
+      </segment>
+    </unit>
+    <unit id="15" name="PreviewFromOneImageDescription">
+      <segment>
+        <source>Preview a collection from one image.</source>
+        <target state="translated">從一張圖片預覽圖片集合。</target>
+      </segment>
+    </unit>
+    <unit id="16" name="CustomPreviewImageTitle">
+      <segment>
+        <source>Custom preview image</source>
+        <target state="translated">自定義預覽圖片</target>
+      </segment>
+    </unit>
+    <unit id="17" name="CustomPreviewImageDescription">
+      <segment>
+        <source>Choose which source image is displayed as the cover.</source>
+        <target state="translated">選擇來源集合中的某一張作為關閉態封面。</target>
+      </segment>
+    </unit>
+    <unit id="18" name="MultipleImagePreviewTitle">
+      <segment>
+        <source>Multiple image preview</source>
+        <target state="translated">多圖預覽</target>
+      </segment>
+    </unit>
+    <unit id="19" name="MultipleImagePreviewDescription">
+      <segment>
+        <source>Click the left and right switch buttons to preview multiple images.</source>
+        <target state="translated">點擊左右切換按鈕預覽多張圖片。</target>
+      </segment>
+    </unit>
+    <unit id="20" name="ApiEventDialogOpened">
+      <segment>
+        <source>Raised after the preview dialog opens.</source>
+        <target state="translated">預覽視窗打開後觸發。</target>
+      </segment>
+    </unit>
+    <unit id="21" name="ApiEventDialogClosing">
+      <segment>
+        <source>Raised before the preview dialog closes.</source>
+        <target state="translated">預覽視窗關閉前觸發。</target>
+      </segment>
+    </unit>
+    <unit id="22" name="ApiEventDialogClosed">
+      <segment>
+        <source>Raised after the preview dialog closes.</source>
+        <target state="translated">預覽視窗關閉後觸發。</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

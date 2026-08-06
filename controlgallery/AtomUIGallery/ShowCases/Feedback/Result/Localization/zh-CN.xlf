@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ResultShowCaseLangResourceKind">
+    <unit id="1" name="SuccessTitle">
+      <segment>
+        <source>Success</source>
+        <target state="translated">成功</target>
+      </segment>
+    </unit>
+    <unit id="2" name="SuccessDescription">
+      <segment>
+        <source>Show successful results.</source>
+        <target state="translated">展示成功结果。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="InfoTitle">
+      <segment>
+        <source>Info</source>
+        <target state="translated">信息</target>
+      </segment>
+    </unit>
+    <unit id="4" name="InfoDescription">
+      <segment>
+        <source>Show processing results.</source>
+        <target state="translated">展示处理中结果。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="WarningTitle">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="6" name="WarningDescription">
+      <segment>
+        <source>The result of the warning.</source>
+        <target state="translated">展示警告结果。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="ForbiddenTitle">
+      <segment>
+        <source>403</source>
+        <target state="translated">403</target>
+      </segment>
+    </unit>
+    <unit id="8" name="ForbiddenDescription">
+      <segment>
+        <source>you are not authorized to access this page.</source>
+        <target state="translated">你无权访问此页面。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="NotFoundTitle">
+      <segment>
+        <source>404</source>
+        <target state="translated">404</target>
+      </segment>
+    </unit>
+    <unit id="10" name="NotFoundDescription">
+      <segment>
+        <source>The page you visited does not exist.</source>
+        <target state="translated">你访问的页面不存在。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="ServerErrorTitle">
+      <segment>
+        <source>500</source>
+        <target state="translated">500</target>
+      </segment>
+    </unit>
+    <unit id="12" name="ServerErrorDescription">
+      <segment>
+        <source>Something went wrong on server.</source>
+        <target state="translated">服务器发生错误。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="ErrorTitle">
+      <segment>
+        <source>error</source>
+        <target state="translated">错误</target>
+      </segment>
+    </unit>
+    <unit id="14" name="ErrorDescription">
+      <segment>
+        <source>Something went wrong on server.</source>
+        <target state="translated">服务器发生错误。</target>
+      </segment>
+    </unit>
+    <unit id="15" name="CustomIconTitle">
+      <segment>
+        <source>Custom icon</source>
+        <target state="translated">自定义图标</target>
+      </segment>
+    </unit>
+    <unit id="16" name="CustomIconDescription">
+      <segment>
+        <source>Custom icon.</source>
+        <target state="translated">自定义图标。</target>
+      </segment>
+    </unit>
+    <unit id="17" name="PageSubtitle">
+      <segment>
+        <source>Feedback page for final operation outcomes.</source>
+        <target state="translated">用于反馈最终操作结果的页面。</target>
+      </segment>
+    </unit>
+    <unit id="18" name="PageDescription">
+      <segment>
+        <source>Result presents success, warning, error, and empty-state style outcomes with optional follow-up actions.</source>
+        <target state="translated">Result 用于展示成功、警告、错误和空状态风格的结果，并可提供后续操作。</target>
+      </segment>
+    </unit>
+    <unit id="19" name="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反馈</target>
+      </segment>
+    </unit>
+    <unit id="20" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="21" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="22" name="P2HeaderSuccessfullyPurchasedCloudServerEcs">
+      <segment>
+        <source>Successfully Purchased Cloud Server ECS!</source>
+        <target state="translated">云服务器 ECS 购买成功！</target>
+      </segment>
+    </unit>
+    <unit id="23" name="P2HeaderYourOperationHasBeenExecuted">
+      <segment>
+        <source>Your operation has been executed.</source>
+        <target state="translated">你的操作已执行。</target>
+      </segment>
+    </unit>
+    <unit id="24" name="P2HeaderThereAreSomeProblemsWithYourOperation">
+      <segment>
+        <source>There are some problems with your operation.</source>
+        <target state="translated">你的操作存在一些问题。</target>
+      </segment>
+    </unit>
+    <unit id="25" name="P2HeaderSubmissionFailed">
+      <segment>
+        <source>Submission Failed</source>
+        <target state="translated">提交失败</target>
+      </segment>
+    </unit>
+    <unit id="26" name="P2HeaderGreatWeHaveDoneAllTheOperations">
+      <segment>
+        <source>Great, we have done all the operations!</source>
+        <target state="translated">很好，所有操作已完成！</target>
+      </segment>
+    </unit>
+    <unit id="27" name="P2SubHeaderOrderNumberCloudServerConfiguration">
+      <segment>
+        <source>Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait.</source>
+        <target state="translated">订单号：2017182818828182881。云服务器配置需要 1-5 分钟，请稍候。</target>
+      </segment>
+    </unit>
+    <unit id="28" name="P2SubHeaderForbidden">
+      <segment>
+        <source>Sorry, you are not authorized to access this page.</source>
+        <target state="translated">抱歉，你无权访问此页面。</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2SubHeaderNotFound">
+      <segment>
+        <source>Sorry, the page you visited does not exist.</source>
+        <target state="translated">抱歉，你访问的页面不存在。</target>
+      </segment>
+    </unit>
+    <unit id="30" name="P2SubHeaderServerError">
+      <segment>
+        <source>Sorry, something went wrong.</source>
+        <target state="translated">抱歉，发生了一些错误。</target>
+      </segment>
+    </unit>
+    <unit id="31" name="P2SubHeaderSubmissionFailed">
+      <segment>
+        <source>Please check and modify the following information before resubmitting.</source>
+        <target state="translated">请检查并修改以下信息后重新提交。</target>
+      </segment>
+    </unit>
+    <unit id="32" name="P2ContentGoConsole">
+      <segment>
+        <source>Go Console</source>
+        <target state="translated">进入控制台</target>
+      </segment>
+    </unit>
+    <unit id="33" name="P2ContentBuyAgain">
+      <segment>
+        <source>Buy Again</source>
+        <target state="translated">再次购买</target>
+      </segment>
+    </unit>
+    <unit id="34" name="P2ContentBackHome">
+      <segment>
+        <source>Back Home</source>
+        <target state="translated">返回首页</target>
+      </segment>
+    </unit>
+    <unit id="35" name="P2TextTheContentYouSubmittedHasTheFollowingError">
+      <segment>
+        <source>The content you submitted has the following error:</source>
+        <target state="translated">你提交的内容存在以下错误：</target>
+      </segment>
+    </unit>
+    <unit id="36" name="P2TextYourAccountHasBeenFrozen">
+      <segment>
+        <source>Your account has been frozen.</source>
+        <target state="translated">你的账户已被冻结。</target>
+      </segment>
+    </unit>
+    <unit id="37" name="P2TextThawImmediately">
+      <segment>
+        <source>Thaw immediately &gt;</source>
+        <target state="translated">立即解冻 &gt;</target>
+      </segment>
+    </unit>
+    <unit id="38" name="P2TextYourAccountIsNotYetEligibleToApply">
+      <segment>
+        <source>Your account is not yet eligible to apply.</source>
+        <target state="translated">你的账户暂不符合申请条件。</target>
+      </segment>
+    </unit>
+    <unit id="39" name="P2TextApplyUnlock">
+      <segment>
+        <source>Apply Unlock &gt;</source>
+        <target state="translated">申请解锁 &gt;</target>
+      </segment>
+    </unit>
+    <unit id="40" name="P2ContentNext">
+      <segment>
+        <source>Next</source>
+        <target state="translated">下一步</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

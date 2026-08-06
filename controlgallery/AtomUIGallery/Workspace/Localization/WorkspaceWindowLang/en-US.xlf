@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.WorkspaceWindowLangResourceKind">
+    <unit id="1" name="WindowTitle">
+      <segment>
+        <source>AtomUI Desktop Gallery</source>
+      </segment>
+    </unit>
+    <unit id="2" name="MenuItemSettings">
+      <segment>
+        <source>Settings</source>
+      </segment>
+    </unit>
+    <unit id="3" name="MenuItemTheme">
+      <segment>
+        <source>Theme</source>
+      </segment>
+    </unit>
+    <unit id="4" name="MenuItemThemeSettings">
+      <segment>
+        <source>Theme Settings</source>
+      </segment>
+    </unit>
+    <unit id="5" name="MenuItemLanguage">
+      <segment>
+        <source>Language</source>
+      </segment>
+    </unit>
+    <unit id="6" name="MenuItemWindowOptions">
+      <segment>
+        <source>Window Options</source>
+      </segment>
+    </unit>
+    <unit id="7" name="MenuItemEnableFullScreen">
+      <segment>
+        <source>Enable FullScreen</source>
+      </segment>
+    </unit>
+    <unit id="8" name="MenuItemEnablePin">
+      <segment>
+        <source>Enable Pin</source>
+      </segment>
+    </unit>
+    <unit id="9" name="MenuItemEnableMinimize">
+      <segment>
+        <source>Enable Minimize</source>
+      </segment>
+    </unit>
+    <unit id="10" name="MenuItemEnableMaximize">
+      <segment>
+        <source>Enable Maximize</source>
+      </segment>
+    </unit>
+    <unit id="11" name="MenuItemEnableMove">
+      <segment>
+        <source>Enable Move</source>
+      </segment>
+    </unit>
+    <unit id="12" name="MenuItemEnableResize">
+      <segment>
+        <source>Enable Resize</source>
+      </segment>
+    </unit>
+    <unit id="13" name="MenuItemAppearance">
+      <segment>
+        <source>Appearance</source>
+      </segment>
+    </unit>
+    <unit id="14" name="MenuItemLightMode">
+      <segment>
+        <source>Light Mode</source>
+      </segment>
+    </unit>
+    <unit id="15" name="MenuItemDarkMode">
+      <segment>
+        <source>Dark Mode</source>
+      </segment>
+    </unit>
+    <unit id="16" name="MenuItemFollowSystem">
+      <segment>
+        <source>Follow System</source>
+      </segment>
+    </unit>
+    <unit id="17" name="MenuItemCompactMode">
+      <segment>
+        <source>Compact Mode</source>
+      </segment>
+    </unit>
+    <unit id="18" name="MenuItemEnableMotion">
+      <segment>
+        <source>Enable Motion</source>
+      </segment>
+    </unit>
+    <unit id="19" name="MenuItemEnableWaveSpirit">
+      <segment>
+        <source>Enable WaveSpirit</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

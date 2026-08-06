@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SpinShowCaseLangResourceKind">
+    <unit id="1" name="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicUsageDescription">
+      <segment>
+        <source>A simple loading status.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="SizeTitle">
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="4" name="SizeDescription">
+      <segment>
+        <source>SpinIndicator supports small, middle, large, and custom size types; the custom type follows the middle metrics by default and can override indicator metrics.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="CustomIndicatorTitle">
+      <segment>
+        <source>Custom spinning indicator</source>
+      </segment>
+    </unit>
+    <unit id="6" name="CustomIndicatorDescription">
+      <segment>
+        <source>Use custom loading indicator.</source>
+      </segment>
+    </unit>
+    <unit id="7" name="CustomizedDescriptionTitle">
+      <segment>
+        <source>Customized description</source>
+      </segment>
+    </unit>
+    <unit id="8" name="CustomizedDescriptionDescription">
+      <segment>
+        <source>Customized description</source>
+      </segment>
+    </unit>
+    <unit id="9" name="EmbeddedModeTitle">
+      <segment>
+        <source>Embedded mode</source>
+      </segment>
+    </unit>
+    <unit id="10" name="EmbeddedModeDescription">
+      <segment>
+        <source>Embedding content into Spin will set it into loading state.</source>
+      </segment>
+    </unit>
+    <unit id="11" name="PageSubtitle">
+      <segment>
+        <source>Loading indicators for asynchronous content.</source>
+      </segment>
+    </unit>
+    <unit id="12" name="PageDescription">
+      <segment>
+        <source>Spin and SpinIndicator display activity while a region, card, or page is waiting for data, with optional tips, masks, and custom indicators.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+      </segment>
+    </unit>
+    <unit id="14" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="15" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="16" name="P2DescriptionFurtherDetailsAboutTheContextOfThisAlert">
+      <segment>
+        <source>Further details about the context of this alert.</source>
+      </segment>
+    </unit>
+    <unit id="17" name="P2TextLoadingState">
+      <segment>
+        <source>Loading state：</source>
+      </segment>
+    </unit>
+    <unit id="18" name="P2TipLoading">
+      <segment>
+        <source>Loading...</source>
+      </segment>
+    </unit>
+    <unit id="19" name="P2MessageAlertMessageTitle">
+      <segment>
+        <source>Alert message title</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

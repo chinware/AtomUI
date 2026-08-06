@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind">
+    <unit id="1" name="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicUsageDescription">
+      <segment>
+        <source>Basic usage, set data source of autocomplete with options property.</source>
+        <target state="translated">基礎用法，通過 options 屬性設置自動完成的數據源。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="CustomizedTitle">
+      <segment>
+        <source>Customized</source>
+        <target state="translated">自定義</target>
+      </segment>
+    </unit>
+    <unit id="4" name="CustomizedDescription">
+      <segment>
+        <source>You could set custom Option label.</source>
+        <target state="translated">可以設置自定義的選項標籤。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="CustomOptionRenderingTitle">
+      <segment>
+        <source>Custom option rendering</source>
+        <target state="translated">自定義選項渲染</target>
+      </segment>
+    </unit>
+    <unit id="6" name="CustomOptionRenderingDescription">
+      <segment>
+        <source>Use OptionTemplate to render rich option content with multiple fields, badges, and multi-line layout.</source>
+        <target state="translated">使用 OptionTemplate 渲染包含多字段、徽標和多行佈局的豐富選項內容。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="LookupPatternsUncertainCategoryTitle">
+      <segment>
+        <source>Lookup-Patterns - Uncertain Category</source>
+        <target state="translated">查詢模式 - 不確定分類</target>
+      </segment>
+    </unit>
+    <unit id="8" name="LookupPatternsUncertainCategoryDescription">
+      <segment>
+        <source>Demonstration of Lookup Patterns: Uncertain Category.</source>
+        <target state="translated">演示查詢模式中的不確定分類場景。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="TextAreaAutoCompletionTitle">
+      <segment>
+        <source>TextArea type auto-completion</source>
+        <target state="translated">TextArea 類型自動完成</target>
+      </segment>
+    </unit>
+    <unit id="10" name="TextAreaAutoCompletionDescription">
+      <segment>
+        <source>You can use the TextArea type for autocomplete.</source>
+        <target state="translated">可以在 TextArea 類型中使用自動完成。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="NonCaseSensitiveTitle">
+      <segment>
+        <source>Non-case-sensitive AutoComplete</source>
+        <target state="translated">大小寫不敏感的自動完成</target>
+      </segment>
+    </unit>
+    <unit id="12" name="NonCaseSensitiveDescription">
+      <segment>
+        <source>A non-case-sensitive AutoComplete.</source>
+        <target state="translated">大小寫不敏感的 AutoComplete。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">狀態</target>
+      </segment>
+    </unit>
+    <unit id="14" name="StatusDescription">
+      <segment>
+        <source>Add status to AutoComplete with status, which could be error or warning.</source>
+        <target state="translated">為 AutoComplete 添加狀態，可設置為錯誤或警告。</target>
+      </segment>
+    </unit>
+    <unit id="15" name="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">變體</target>
+      </segment>
+    </unit>
+    <unit id="16" name="VariantsDescription">
+      <segment>
+        <source>There are outlined, filled, borderless, and underlined variants to choose from.</source>
+        <target state="translated">可選擇描邊、填充、無邊框和下划線等變體。</target>
+      </segment>
+    </unit>
+    <unit id="17" name="CustomizeClearButtonTitle">
+      <segment>
+        <source>Customize clear button</source>
+        <target state="translated">自定義清除按鈕</target>
+      </segment>
+    </unit>
+    <unit id="18" name="CustomizeClearButtonDescription">
+      <segment>
+        <source>Customize clear button.</source>
+        <target state="translated">自定義清除按鈕。</target>
+      </segment>
+    </unit>
+    <unit id="19" name="SizeTypeTitle">
+      <segment>
+        <source>SizeType</source>
+        <target state="translated">SizeType</target>
+      </segment>
+    </unit>
+    <unit id="20" name="SizeTypeDescription">
+      <segment>
+        <source>AutoComplete supports large, middle, small, and Custom sizes with local height overrides.</source>
+        <target state="translated">AutoComplete 支持大號、中號、小號，也支持通過 Custom 配合本地高度自定義。</target>
+      </segment>
+    </unit>
+    <unit id="21" name="P2PlaceholderTextInputHere">
+      <segment>
+        <source>input here</source>
+        <target state="translated">在此輸入</target>
+      </segment>
+    </unit>
+    <unit id="22" name="P2PlaceholderTextTryAOrB">
+      <segment>
+        <source>try 'a' or 'b'</source>
+        <target state="translated">try 'a' or 'b'</target>
+      </segment>
+    </unit>
+    <unit id="23" name="P2PlaceholderSizeTypeLarge">
+      <segment>
+        <source>SizeType: Large</source>
+        <target state="translated">SizeType：Large</target>
+      </segment>
+    </unit>
+    <unit id="24" name="P2PlaceholderSizeTypeMiddle">
+      <segment>
+        <source>SizeType: Middle</source>
+        <target state="translated">SizeType：Middle</target>
+      </segment>
+    </unit>
+    <unit id="25" name="P2PlaceholderSizeTypeSmall">
+      <segment>
+        <source>SizeType: Small</source>
+        <target state="translated">SizeType：Small</target>
+      </segment>
+    </unit>
+    <unit id="26" name="P2PlaceholderSizeTypeCustom">
+      <segment>
+        <source>SizeType: Custom</source>
+        <target state="translated">SizeType：Custom</target>
+      </segment>
+    </unit>
+    <unit id="27" name="P2TextResults">
+      <segment>
+        <source>results</source>
+        <target state="translated">results</target>
+      </segment>
+    </unit>
+    <unit id="28" name="P2PlaceholderTextTryToTypeB">
+      <segment>
+        <source>try to type `b`</source>
+        <target state="translated">try to type `b`</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2PlaceholderTextOutline">
+      <segment>
+        <source>Outline</source>
+        <target state="translated">Outline</target>
+      </segment>
+    </unit>
+    <unit id="30" name="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充風格</target>
+      </segment>
+    </unit>
+    <unit id="31" name="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">Borderless</target>
+      </segment>
+    </unit>
+    <unit id="32" name="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">Underlined</target>
+      </segment>
+    </unit>
+    <unit id="33" name="P2PlaceholderTextUnclearable">
+      <segment>
+        <source>UnClearable</source>
+        <target state="translated">UnClearable</target>
+      </segment>
+    </unit>
+    <unit id="34" name="P2PlaceholderTextCustomizedClearIcon">
+      <segment>
+        <source>Customized clear icon</source>
+        <target state="translated">Customized clear icon</target>
+      </segment>
+    </unit>
+    <unit id="35" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="36" name="PageSubtitle">
+      <segment>
+        <source>Type ahead and select suggested values from local or asynchronous options.</source>
+        <target state="translated">輸入時提前匹配，並從本地或異步選項中選擇建議值。</target>
+      </segment>
+    </unit>
+    <unit id="37" name="PageDescription">
+      <segment>
+        <source>AutoComplete combines text input with candidate filtering, async loading, custom option rendering, status feedback and specialized search or text area variants.</source>
+        <target state="translated">AutoComplete 將文本輸入與候選過濾、異步加載、自定義選項渲染、狀態反饋以及搜索框或文本域變體組合在一起。</target>
+      </segment>
+    </unit>
+    <unit id="38" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">數據錄入</target>
+      </segment>
+    </unit>
+    <unit id="39" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

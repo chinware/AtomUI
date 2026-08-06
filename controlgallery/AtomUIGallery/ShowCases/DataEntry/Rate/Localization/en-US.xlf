@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.RateShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Collect lightweight ratings with star, half-star, custom character, and tooltip support.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>Rate lets users express preference or quality on an ordered scale. It supports clearable values, half selection, read-only display, keyboard interaction, custom glyphs, and localized copywriting.</source>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>The simplest usage.</source>
+      </segment>
+    </unit>
+    <unit id="8" name="TwoWayBindingTitle">
+      <segment>
+        <source>Two-way binding</source>
+      </segment>
+    </unit>
+    <unit id="9" name="TwoWayBindingDescription">
+      <segment>
+        <source>Value uses TwoWay binding by default, so user selection and ViewModel updates stay synchronized.</source>
+      </segment>
+    </unit>
+    <unit id="10" name="HalfStarTitle">
+      <segment>
+        <source>Half star</source>
+      </segment>
+    </unit>
+    <unit id="11" name="HalfStarDescription">
+      <segment>
+        <source>Support select half star.</source>
+      </segment>
+    </unit>
+    <unit id="12" name="ShowCopywritingTitle">
+      <segment>
+        <source>Show copywriting</source>
+      </segment>
+    </unit>
+    <unit id="13" name="ShowCopywritingDescription">
+      <segment>
+        <source>Add copywriting in rate components.</source>
+      </segment>
+    </unit>
+    <unit id="14" name="ReadOnlyTitle">
+      <segment>
+        <source>Read only</source>
+      </segment>
+    </unit>
+    <unit id="15" name="ReadOnlyDescription">
+      <segment>
+        <source>Read only, can't use mouse to interact.</source>
+      </segment>
+    </unit>
+    <unit id="16" name="ClearStarTitle">
+      <segment>
+        <source>Clear star</source>
+      </segment>
+    </unit>
+    <unit id="17" name="ClearStarDescription">
+      <segment>
+        <source>Support set allow to clear star when click again.</source>
+      </segment>
+    </unit>
+    <unit id="18" name="OtherCharacterTitle">
+      <segment>
+        <source>Other Character</source>
+      </segment>
+    </unit>
+    <unit id="19" name="OtherCharacterDescription">
+      <segment>
+        <source>Replace the default star to other character like alphabet, digit, iconfont or even Chinese word.</source>
+      </segment>
+    </unit>
+    <unit id="20" name="P2TextIsallowclearTrue">
+      <segment>
+        <source>IsAllowClear: true</source>
+      </segment>
+    </unit>
+    <unit id="21" name="P2TextIsallowclearFalse">
+      <segment>
+        <source>IsAllowClear: false</source>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentSetFourStars">
+      <segment>
+        <source>Set 4 stars</source>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="24" name="P2TwoWayValueSummaryFormat">
+      <segment>
+        <source>Selected value: {0:0.#}</source>
+      </segment>
+    </unit>
+    <unit id="25" name="P2TooltipTerrible">
+      <segment>
+        <source>terrible</source>
+      </segment>
+    </unit>
+    <unit id="26" name="P2TooltipBad">
+      <segment>
+        <source>bad</source>
+      </segment>
+    </unit>
+    <unit id="27" name="P2TooltipNormal">
+      <segment>
+        <source>normal</source>
+      </segment>
+    </unit>
+    <unit id="28" name="P2TooltipGood">
+      <segment>
+        <source>good</source>
+      </segment>
+    </unit>
+    <unit id="29" name="P2TooltipWonderful">
+      <segment>
+        <source>wonderful</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

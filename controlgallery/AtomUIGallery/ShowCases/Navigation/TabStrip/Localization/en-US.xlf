@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TabStripShowCaseLangResourceKind">
+    <unit id="1" name="TabStripBasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="2" name="TabStripBasicDescription">
+      <segment>
+        <source>Default activate first tab.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="TabStripItemsSourceTitle">
+      <segment>
+        <source>Items from ItemSource datasource</source>
+      </segment>
+    </unit>
+    <unit id="4" name="TabStripItemsSourceDescription">
+      <segment>
+        <source>Add TabStripItem based on data source and item template.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="TabStripReorderTitle">
+      <segment>
+        <source>Draggable tabs</source>
+      </segment>
+    </unit>
+    <unit id="6" name="TabStripReorderDescription">
+      <segment>
+        <source>Enable drag sorting with IsTabReorderEnabled. The selected item follows the same logical tab after sorting.</source>
+      </segment>
+    </unit>
+    <unit id="7" name="TabStripReorderPlacementTitle">
+      <segment>
+        <source>Draggable tabs with placement</source>
+      </segment>
+    </unit>
+    <unit id="8" name="TabStripReorderPlacementDescription">
+      <segment>
+        <source>Switch TabStripPlacement to verify drag sorting on horizontal and vertical tab tracks.</source>
+      </segment>
+    </unit>
+    <unit id="9" name="TabStripDisabledTitle">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="10" name="TabStripDisabledDescription">
+      <segment>
+        <source>Disabled a tab.</source>
+      </segment>
+    </unit>
+    <unit id="11" name="TabStripCenteredTitle">
+      <segment>
+        <source>Centered</source>
+      </segment>
+    </unit>
+    <unit id="12" name="TabStripCenteredDescription">
+      <segment>
+        <source>Centered tabs.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="TabStripIconTitle">
+      <segment>
+        <source>Icon</source>
+      </segment>
+    </unit>
+    <unit id="14" name="TabStripIconDescription">
+      <segment>
+        <source>The Tab with Icon.</source>
+      </segment>
+    </unit>
+    <unit id="15" name="TabStripSlideTitle">
+      <segment>
+        <source>Slide</source>
+      </segment>
+    </unit>
+    <unit id="16" name="TabStripSlideDescription">
+      <segment>
+        <source>In order to fit in more tabs, they can slide left and right (or up and down).</source>
+      </segment>
+    </unit>
+    <unit id="17" name="TabStripCardTypeTitle">
+      <segment>
+        <source>Card type tab</source>
+      </segment>
+    </unit>
+    <unit id="18" name="TabStripCardTypeDescription">
+      <segment>
+        <source>Another type of Tabs, which doesn't support vertical mode.</source>
+      </segment>
+    </unit>
+    <unit id="19" name="TabStripClosableTitle">
+      <segment>
+        <source>Closable Tab</source>
+      </segment>
+    </unit>
+    <unit id="20" name="TabStripClosableDescription">
+      <segment>
+        <source>We support closable tab settings.</source>
+      </segment>
+    </unit>
+    <unit id="21" name="TabStripPositionTitle">
+      <segment>
+        <source>Position</source>
+      </segment>
+    </unit>
+    <unit id="22" name="TabStripPositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+      </segment>
+    </unit>
+    <unit id="23" name="TabStripCardShapePositionTitle">
+      <segment>
+        <source>Card Shape Position</source>
+      </segment>
+    </unit>
+    <unit id="24" name="TabStripCardShapePositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+      </segment>
+    </unit>
+    <unit id="25" name="TabStripSizeTitle">
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="26" name="TabStripSizeDescription">
+      <segment>
+        <source>Large size tabs are usually used in page header, and small size could be used in Modal.</source>
+      </segment>
+    </unit>
+    <unit id="27" name="TabStripAddCloseTitle">
+      <segment>
+        <source>Add and close tab</source>
+      </segment>
+    </unit>
+    <unit id="28" name="TabStripAddCloseDescription">
+      <segment>
+        <source>Hide default plus icon, and bind event for customized trigger.</source>
+      </segment>
+    </unit>
+    <unit id="29" name="PageSubtitle">
+      <segment>
+        <source>Render tab headers independently from selected content.</source>
+      </segment>
+    </unit>
+    <unit id="30" name="PageDescription">
+      <segment>
+        <source>TabStrip and CardTabStrip provide lightweight tab navigation for custom content hosts, including item-template tabs, closable tabs, placement control, and add-tab actions.</source>
+      </segment>
+    </unit>
+    <unit id="31" name="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+      </segment>
+    </unit>
+    <unit id="32" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="33" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="34" name="ApiEventTabReordering">
+      <segment>
+        <source>Raised before a drag sort is committed. Set Cancel to true to keep the original order.</source>
+      </segment>
+    </unit>
+    <unit id="35" name="ApiEventTabReordered">
+      <segment>
+        <source>Raised after a drag sort commits to the logical item collection.</source>
+      </segment>
+    </unit>
+    <unit id="36" name="P2TextTabPosition">
+      <segment>
+        <source>Tab position:</source>
+      </segment>
+    </unit>
+    <unit id="37" name="P2ContentTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="38" name="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="39" name="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+      </segment>
+    </unit>
+    <unit id="40" name="P2ContentRight">
+      <segment>
+        <source>Right</source>
+      </segment>
+    </unit>
+    <unit id="41" name="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="42" name="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="43" name="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="44" name="P2ContentTabN1">
+      <segment>
+        <source>Tab 1</source>
+      </segment>
+    </unit>
+    <unit id="45" name="P2ContentTabN2">
+      <segment>
+        <source>Tab 2</source>
+      </segment>
+    </unit>
+    <unit id="46" name="P2ContentTabN3">
+      <segment>
+        <source>Tab 3</source>
+      </segment>
+    </unit>
+    <unit id="47" name="P2ContentTabN4">
+      <segment>
+        <source>Tab 4</source>
+      </segment>
+    </unit>
+    <unit id="48" name="P2ContentTabN5">
+      <segment>
+        <source>Tab 5</source>
+      </segment>
+    </unit>
+    <unit id="49" name="P2ContentTabN6">
+      <segment>
+        <source>Tab 6</source>
+      </segment>
+    </unit>
+    <unit id="50" name="P2ContentTabN7">
+      <segment>
+        <source>Tab 7</source>
+      </segment>
+    </unit>
+    <unit id="51" name="P2ContentTabN8">
+      <segment>
+        <source>Tab 8</source>
+      </segment>
+    </unit>
+    <unit id="52" name="P2ContentTabN9">
+      <segment>
+        <source>Tab 9</source>
+      </segment>
+    </unit>
+    <unit id="53" name="P2ContentTabN10">
+      <segment>
+        <source>Tab 10</source>
+      </segment>
+    </unit>
+    <unit id="54" name="P2ContentTabN11">
+      <segment>
+        <source>Tab 11</source>
+      </segment>
+    </unit>
+    <unit id="55" name="P2ContentTabN12">
+      <segment>
+        <source>Tab 12</source>
+      </segment>
+    </unit>
+    <unit id="56" name="P2ContentTabN13">
+      <segment>
+        <source>Tab 13</source>
+      </segment>
+    </unit>
+    <unit id="57" name="P2ContentTabN14">
+      <segment>
+        <source>Tab 14</source>
+      </segment>
+    </unit>
+    <unit id="58" name="P2ContentTabN15">
+      <segment>
+        <source>Tab 15</source>
+      </segment>
+    </unit>
+    <unit id="59" name="P2ContentTabN16">
+      <segment>
+        <source>Tab 16</source>
+      </segment>
+    </unit>
+    <unit id="60" name="P2ContentTabN17">
+      <segment>
+        <source>Tab 17</source>
+      </segment>
+    </unit>
+    <unit id="61" name="P2ContentTabN18">
+      <segment>
+        <source>Tab 18</source>
+      </segment>
+    </unit>
+    <unit id="62" name="P2ContentTabN19">
+      <segment>
+        <source>Tab 19</source>
+      </segment>
+    </unit>
+    <unit id="63" name="P2ContentTabN20">
+      <segment>
+        <source>Tab 20</source>
+      </segment>
+    </unit>
+    <unit id="64" name="P2ContentTabN21">
+      <segment>
+        <source>Tab 21</source>
+      </segment>
+    </unit>
+    <unit id="65" name="P2ContentTabN22">
+      <segment>
+        <source>Tab 22</source>
+      </segment>
+    </unit>
+    <unit id="66" name="P2ContentTabN23">
+      <segment>
+        <source>Tab 23</source>
+      </segment>
+    </unit>
+    <unit id="67" name="P2ContentNewTabFormat">
+      <segment>
+        <source>new tab {0}</source>
+      </segment>
+    </unit>
+    <unit id="68" name="P2TextTabContent">
+      <segment>
+        <source>Tab Content</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

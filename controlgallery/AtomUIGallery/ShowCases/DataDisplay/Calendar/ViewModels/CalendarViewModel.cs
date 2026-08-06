@@ -3,10 +3,8 @@ using AtomUIGallery.Localization;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Data.Converters;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Calendar;
@@ -81,22 +79,9 @@ public class CalendarViewModel : ReactiveObject, IRoutableViewModel
 
     private static string Lang(CalendarShowCaseLangResourceKind kind)
     {
-        if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
-        {
-            return LanguageResourceBinder.GetLangResource(kind) ?? FallbackLang(kind);
-        }
-
-        return FallbackLang(kind);
-    }
-
-    private static string FallbackLang(CalendarShowCaseLangResourceKind kind)
-    {
-        return kind switch
-        {
-            CalendarShowCaseLangResourceKind.SelectableCalendarSelectedMessage =>
-                en_US.SelectableCalendarSelectedMessage,
-            _ => kind.ToString()
-        };
+        return Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)?.Get(kind) ?? kind.ToString()
+            : kind.ToString();
     }
 }
 
@@ -216,7 +201,9 @@ public sealed class CustomCalendarHeaderMonthOptionsConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        var displayCulture = Application.Current?.GetLanguageVariant()?.ToCultureInfo() ?? culture;
+        var displayCulture = Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)?.Current.FormattingCulture ?? culture
+            : culture;
         return Enumerable.Range(1, 12)
             .Select(displayCulture.DateTimeFormat.GetAbbreviatedMonthName)
             .ToArray();

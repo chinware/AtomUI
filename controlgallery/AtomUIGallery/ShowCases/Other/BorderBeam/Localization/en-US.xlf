@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Other</source>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentIntroducedVersion">
+      <segment>
+        <source>v6.0.5</source>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Draw an animated highlight along a container boundary.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>BorderBeam wraps a content control and renders a non-interactive beam on its border. It is decorative, stays active independently of the global motion setting by default, and can use a solid color or gradient stops.</source>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>Wrap a card to emphasize an important workspace summary without changing the card interaction model.</source>
+      </segment>
+    </unit>
+    <unit id="8" name="CustomizedColorTitle">
+      <segment>
+        <source>Customized color</source>
+      </segment>
+    </unit>
+    <unit id="9" name="CustomizedColorDescription">
+      <segment>
+        <source>Use multiple color stops to build different beam presets, following the Ant Design customized color demo.</source>
+      </segment>
+    </unit>
+    <unit id="10" name="CustomizedColorCardDescription">
+      <segment>
+        <source>The segmented selector switches the color stop collection used by the beam.</source>
+      </segment>
+    </unit>
+    <unit id="11" name="NonUniformRadiusTitle">
+      <segment>
+        <source>Non-uniform radius</source>
+      </segment>
+    </unit>
+    <unit id="12" name="NonUniformRadiusDescription">
+      <segment>
+        <source>Set Outset to 0 when the decorated container clips its own corners.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="NonUniformRadiusCardDescription">
+      <segment>
+        <source>The top corners keep a larger radius while the bottom corners remain square.</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind">
+    <unit id="1" name="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">导航</target>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="3" name="PageSubtitle">
+      <segment>
+        <source>A compact spinner input with button handles.</source>
+        <target state="translated">带按钮操作柄的紧凑微调输入控件。</target>
+      </segment>
+    </unit>
+    <unit id="4" name="PageDescription">
+      <segment>
+        <source>ButtonSpinner combines an input-like content area with increment and decrement handles, and supports add-ons, prefixes, suffixes, statuses, sizes, and visual variants.</source>
+        <target state="translated">ButtonSpinner 将输入式内容区与递增/递减按钮结合，支持前后置标签、内部前后缀、状态、尺寸和视觉形态。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>Basic button spinner.</source>
+        <target state="translated">基础的按钮微调器。</target>
+      </segment>
+    </unit>
+    <unit id="8" name="ThreeSizesTitle">
+      <segment>
+        <source>ButtonSpinner sizes</source>
+        <target state="translated">按钮微调器尺寸</target>
+      </segment>
+    </unit>
+    <unit id="9" name="ThreeSizesDescription">
+      <segment>
+        <source>ButtonSpinner supports large (40px), default (32px), small (24px), and Custom with local size values.</source>
+        <target state="translated">按钮微调器支持大号（40px）、默认（32px）、小号（24px）和使用本地尺寸值的 Custom。</target>
+      </segment>
+    </unit>
+    <unit id="10" name="P2LabelSizeTypeLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大号</target>
+      </segment>
+    </unit>
+    <unit id="11" name="P2LabelSizeTypeMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中号</target>
+      </segment>
+    </unit>
+    <unit id="12" name="P2LabelSizeTypeSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小号</target>
+      </segment>
+    </unit>
+    <unit id="13" name="P2LabelSizeTypeCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Custom</target>
+      </segment>
+    </unit>
+    <unit id="14" name="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">不同形态</target>
+      </segment>
+    </unit>
+    <unit id="15" name="VariantsDescription">
+      <segment>
+        <source>Variants of Input.</source>
+        <target state="translated">输入框的不同形态。</target>
+      </segment>
+    </unit>
+    <unit id="16" name="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用状态</target>
+      </segment>
+    </unit>
+    <unit id="17" name="DisabledDescription">
+      <segment>
+        <source>Variants of disabled Input.</source>
+        <target state="translated">禁用状态下的输入框形态。</target>
+      </segment>
+    </unit>
+    <unit id="18" name="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+        <target state="translated">前置/后置标签</target>
+      </segment>
+    </unit>
+    <unit id="19" name="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+        <target state="translated">前置和后置标签的使用示例。</target>
+      </segment>
+    </unit>
+    <unit id="20" name="PrefixSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+        <target state="translated">前缀和后缀</target>
+      </segment>
+    </unit>
+    <unit id="21" name="PrefixSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+        <target state="translated">在输入框内部添加前缀或后缀图标。</target>
+      </segment>
+    </unit>
+    <unit id="22" name="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="23" name="StatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+        <target state="translated">通过 status 为输入框添加错误或警告状态。</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

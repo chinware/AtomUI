@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>Click DatePicker, and then we could select or input a date in panel.</source>
+        <target state="translated">点击 DatePicker 后，可以在面板中选择或输入日期。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="SwitchableTitle">
+      <segment>
+        <source>Switchable picker</source>
+        <target state="translated">切换不同的选择器</target>
+      </segment>
+    </unit>
+    <unit id="4" name="SwitchableDescription">
+      <segment>
+        <source>Switch between TimePicker and DatePicker modes from a single selector.</source>
+        <target state="translated">通过一个选择器在 TimePicker 和 DatePicker 各类型之间切换，常用于日期筛选场景。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="BindingTitle">
+      <segment>
+        <source>SelectedDateTime binding</source>
+        <target state="translated">SelectedDateTime 绑定</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BindingDescription">
+      <segment>
+        <source>SelectedDateTime, RangeStartSelectedDate, and RangeEndSelectedDate synchronize with the ViewModel without explicitly setting Binding Mode=TwoWay.</source>
+        <target state="translated">SelectedDateTime、RangeStartSelectedDate 与 RangeEndSelectedDate 默认与 ViewModel 双向同步，无需显式设置 Binding Mode=TwoWay。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="PickerDisplayDateTitle">
+      <segment>
+        <source>Popup display date</source>
+        <target state="translated">弹出面板显示日期</target>
+      </segment>
+    </unit>
+    <unit id="8" name="PickerDisplayDateDescription">
+      <segment>
+        <source>Open the popup panel at a specific display date without committing a selected value.</source>
+        <target state="translated">打开弹出面板时定位到指定日期，但不提交选中值。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="MinMaxTitle">
+      <segment>
+        <source>Date range limits</source>
+        <target state="translated">限制日期范围</target>
+      </segment>
+    </unit>
+    <unit id="10" name="MinMaxDescription">
+      <segment>
+        <source>Use MinDate and MaxDate to limit the selectable date range. Boundary dates are included.</source>
+        <target state="translated">通过 MinDate 和 MaxDate 限制可选日期范围，边界日期包含在可选范围内。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="RangePickerTitle">
+      <segment>
+        <source>Range Picker</source>
+        <target state="translated">范围选择器</target>
+      </segment>
+    </unit>
+    <unit id="12" name="RangePickerDescription">
+      <segment>
+        <source>Set range picker type by picker prop.</source>
+        <target state="translated">通过 picker 属性设置范围选择器类型。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="NeedConfirmTitle">
+      <segment>
+        <source>Need Confirm</source>
+        <target state="translated">需要确认</target>
+      </segment>
+    </unit>
+    <unit id="14" name="NeedConfirmDescription">
+      <segment>
+        <source>DatePicker will automatically determine whether to show a confirm button according to the picker property. You can also set the needConfirm property to determine whether to show a confirm button. When needConfirm is set, the user must click the confirm button to complete the selection. Otherwise, the selection will be submitted when the picker loses focus or selects a date.</source>
+        <target state="translated">DatePicker 会根据 picker 属性自动判断是否显示确认按钮，也可以通过 needConfirm 属性控制。设置 needConfirm 后，用户必须点击确认按钮完成选择；否则在选择器失去焦点或选择日期时提交选择。</target>
+      </segment>
+    </unit>
+    <unit id="15" name="ChooseTimeTitle">
+      <segment>
+        <source>Choose Time</source>
+        <target state="translated">选择时间</target>
+      </segment>
+    </unit>
+    <unit id="16" name="ChooseTimeDescription">
+      <segment>
+        <source>This property provides an additional time selection. When showTime is an Object, its properties will be passed on to the built-in TimePicker.</source>
+        <target state="translated">该属性提供额外的时间选择。当 showTime 为对象时，其属性会传递给内置 TimePicker。</target>
+      </segment>
+    </unit>
+    <unit id="17" name="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="18" name="DisabledDescription">
+      <segment>
+        <source>A disabled state of the DatePicker. You can also set as array to disable one of input.</source>
+        <target state="translated">DatePicker 的禁用状态。也可以设置为数组来禁用其中一个输入框。</target>
+      </segment>
+    </unit>
+    <unit id="19" name="ThreeSizesTitle">
+      <segment>
+        <source>Three Sizes</source>
+        <target state="translated">三种尺寸</target>
+      </segment>
+    </unit>
+    <unit id="20" name="ThreeSizesDescription">
+      <segment>
+        <source>The input box comes in three sizes: small, middle and large. The middle size will be used if size is omitted.</source>
+        <target state="translated">输入框提供小号、中号和大号三种尺寸。省略 size 时使用中号。</target>
+      </segment>
+    </unit>
+    <unit id="21" name="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="22" name="StatusDescription">
+      <segment>
+        <source>Add status to DatePicker with status, which could be error or warning.</source>
+        <target state="translated">通过 status 为 DatePicker 添加状态，可设置为错误或警告。</target>
+      </segment>
+    </unit>
+    <unit id="23" name="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">变体</target>
+      </segment>
+    </unit>
+    <unit id="24" name="VariantsDescription">
+      <segment>
+        <source>Bordered-less style component.</source>
+        <target state="translated">无边框风格组件。</target>
+      </segment>
+    </unit>
+    <unit id="25" name="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">弹出位置</target>
+      </segment>
+    </unit>
+    <unit id="26" name="PlacementDescription">
+      <segment>
+        <source>You can manually specify the position of the popup via placement.</source>
+        <target state="translated">可以通过 placement 手动指定弹出层位置。</target>
+      </segment>
+    </unit>
+    <unit id="27" name="P2PlaceholderTextSelectDate">
+      <segment>
+        <source>Select date</source>
+        <target state="translated">选择日期</target>
+      </segment>
+    </unit>
+    <unit id="28" name="P2PlaceholderTextSelectWeek">
+      <segment>
+        <source>Select week</source>
+        <target state="translated">选择周</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2PlaceholderTextSelectMonth">
+      <segment>
+        <source>Select month</source>
+        <target state="translated">选择月份</target>
+      </segment>
+    </unit>
+    <unit id="30" name="P2PlaceholderTextSelectQuarter">
+      <segment>
+        <source>Select quarter</source>
+        <target state="translated">选择季度</target>
+      </segment>
+    </unit>
+    <unit id="31" name="P2PlaceholderTextSelectYear">
+      <segment>
+        <source>Select year</source>
+        <target state="translated">选择年份</target>
+      </segment>
+    </unit>
+    <unit id="32" name="P2SecondaryPlaceholderTextEndDate">
+      <segment>
+        <source>End date</source>
+        <target state="translated">结束日期</target>
+      </segment>
+    </unit>
+    <unit id="33" name="P2PlaceholderTextSelectTime">
+      <segment>
+        <source>Select time</source>
+        <target state="translated">选择时间</target>
+      </segment>
+    </unit>
+    <unit id="34" name="P2PlaceholderTextStartDate">
+      <segment>
+        <source>Start date</source>
+        <target state="translated">开始日期</target>
+      </segment>
+    </unit>
+    <unit id="35" name="P2PlaceholderTextStartWeek">
+      <segment>
+        <source>Start week</source>
+        <target state="translated">开始周</target>
+      </segment>
+    </unit>
+    <unit id="36" name="P2SecondaryPlaceholderTextEndWeek">
+      <segment>
+        <source>End week</source>
+        <target state="translated">结束周</target>
+      </segment>
+    </unit>
+    <unit id="37" name="P2PlaceholderTextStartMonth">
+      <segment>
+        <source>Start month</source>
+        <target state="translated">开始月份</target>
+      </segment>
+    </unit>
+    <unit id="38" name="P2SecondaryPlaceholderTextEndMonth">
+      <segment>
+        <source>End month</source>
+        <target state="translated">结束月份</target>
+      </segment>
+    </unit>
+    <unit id="39" name="P2PlaceholderTextStartQuarter">
+      <segment>
+        <source>Start quarter</source>
+        <target state="translated">开始季度</target>
+      </segment>
+    </unit>
+    <unit id="40" name="P2SecondaryPlaceholderTextEndQuarter">
+      <segment>
+        <source>End quarter</source>
+        <target state="translated">结束季度</target>
+      </segment>
+    </unit>
+    <unit id="41" name="P2PlaceholderTextStartYear">
+      <segment>
+        <source>Start year</source>
+        <target state="translated">开始年份</target>
+      </segment>
+    </unit>
+    <unit id="42" name="P2SecondaryPlaceholderTextEndYear">
+      <segment>
+        <source>End year</source>
+        <target state="translated">结束年份</target>
+      </segment>
+    </unit>
+    <unit id="43" name="P2PlaceholderTextOutline">
+      <segment>
+        <source>Outline</source>
+        <target state="translated">描边风格</target>
+      </segment>
+    </unit>
+    <unit id="44" name="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充风格</target>
+      </segment>
+    </unit>
+    <unit id="45" name="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">无边框</target>
+      </segment>
+    </unit>
+    <unit id="46" name="P2TextExpandDirection">
+      <segment>
+        <source>Picker size:</source>
+        <target state="translated">选择器尺寸：</target>
+      </segment>
+    </unit>
+    <unit id="47" name="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大号</target>
+      </segment>
+    </unit>
+    <unit id="48" name="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">默认</target>
+      </segment>
+    </unit>
+    <unit id="49" name="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小号</target>
+      </segment>
+    </unit>
+    <unit id="50" name="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="51" name="P2ContentTime">
+      <segment>
+        <source>Time</source>
+        <target state="translated">时间</target>
+      </segment>
+    </unit>
+    <unit id="52" name="P2ContentDate">
+      <segment>
+        <source>Date</source>
+        <target state="translated">日期</target>
+      </segment>
+    </unit>
+    <unit id="53" name="P2ContentWeek">
+      <segment>
+        <source>Week</source>
+        <target state="translated">周</target>
+      </segment>
+    </unit>
+    <unit id="54" name="P2ContentMonth">
+      <segment>
+        <source>Month</source>
+        <target state="translated">月份</target>
+      </segment>
+    </unit>
+    <unit id="55" name="P2ContentQuarter">
+      <segment>
+        <source>Quarter</source>
+        <target state="translated">季度</target>
+      </segment>
+    </unit>
+    <unit id="56" name="P2ContentYear">
+      <segment>
+        <source>Year</source>
+        <target state="translated">年份</target>
+      </segment>
+    </unit>
+    <unit id="57" name="P2TextPlacement">
+      <segment>
+        <source>Placement:</source>
+        <target state="translated">弹出位置：</target>
+      </segment>
+    </unit>
+    <unit id="58" name="P2TextSelectedDateTime">
+      <segment>
+        <source>Selected value:</source>
+        <target state="translated">选中值：</target>
+      </segment>
+    </unit>
+    <unit id="59" name="P2TextSelectedDateRange">
+      <segment>
+        <source>Selected range:</source>
+        <target state="translated">选中范围：</target>
+      </segment>
+    </unit>
+    <unit id="60" name="P2ContentSetTomorrow">
+      <segment>
+        <source>Set tomorrow</source>
+        <target state="translated">设置为明天</target>
+      </segment>
+    </unit>
+    <unit id="61" name="P2ContentSetThisWeek">
+      <segment>
+        <source>Set this week</source>
+        <target state="translated">设置为本周</target>
+      </segment>
+    </unit>
+    <unit id="62" name="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="63" name="P2ContentTopleft">
+      <segment>
+        <source>TopLeft</source>
+        <target state="translated">左上</target>
+      </segment>
+    </unit>
+    <unit id="64" name="P2ContentTopright">
+      <segment>
+        <source>TopRight</source>
+        <target state="translated">右上</target>
+      </segment>
+    </unit>
+    <unit id="65" name="P2ContentBottomleft">
+      <segment>
+        <source>BottomLeft</source>
+        <target state="translated">左下</target>
+      </segment>
+    </unit>
+    <unit id="66" name="P2ContentBottomright">
+      <segment>
+        <source>BottomRight</source>
+        <target state="translated">右下</target>
+      </segment>
+    </unit>
+    <unit id="67" name="PageSubtitle">
+      <segment>
+        <source>Select dates, ranges, and optional times from calendar panels.</source>
+        <target state="translated">从日历面板中选择日期、日期范围和可选时间。</target>
+      </segment>
+    </unit>
+    <unit id="68" name="PageDescription">
+      <segment>
+        <source>DatePicker supports single and range selection, confirmation flows, time selection, disabled states, size variants, validation status, visual variants, and custom popup placement.</source>
+        <target state="translated">DatePicker 支持单选与范围选择、确认流程、时间选择、禁用状态、尺寸变体、校验状态、视觉变体和自定义弹出位置。</target>
+      </segment>
+    </unit>
+    <unit id="69" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">数据录入</target>
+      </segment>
+    </unit>
+    <unit id="70" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="71" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

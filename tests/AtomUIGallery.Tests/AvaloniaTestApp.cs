@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Headless;
 using AtomUI;
 using AtomUI.Desktop.Controls;
+using AtomUI.Localization;
 using Xunit;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUIGallery.Tests.TestAppBuilder))]
@@ -44,6 +45,9 @@ internal sealed class TestApplication : Application
             builder.UseDesktopColorPicker();
             builder.UseDesktopDataGrid();
             builder.UseGalleryControls();
+            builder.UseLanguages(
+                LanguageTags.EnUS,
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
         });
     }
 }

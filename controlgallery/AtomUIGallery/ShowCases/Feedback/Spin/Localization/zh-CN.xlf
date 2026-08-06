@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SpinShowCaseLangResourceKind">
+    <unit id="1" name="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicUsageDescription">
+      <segment>
+        <source>A simple loading status.</source>
+        <target state="translated">简单的加载状态。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+    <unit id="4" name="SizeDescription">
+      <segment>
+        <source>SpinIndicator supports small, middle, large, and custom size types; the custom type follows the middle metrics by default and can override indicator metrics.</source>
+        <target state="translated">SpinIndicator 支持小号、中号、大号和自定义尺寸类型；自定义类型默认沿用中号尺寸指标，也可以覆盖指示器尺寸指标。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="CustomIndicatorTitle">
+      <segment>
+        <source>Custom spinning indicator</source>
+        <target state="translated">自定义加载指示器</target>
+      </segment>
+    </unit>
+    <unit id="6" name="CustomIndicatorDescription">
+      <segment>
+        <source>Use custom loading indicator.</source>
+        <target state="translated">使用自定义加载指示器。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="CustomizedDescriptionTitle">
+      <segment>
+        <source>Customized description</source>
+        <target state="translated">自定义描述</target>
+      </segment>
+    </unit>
+    <unit id="8" name="CustomizedDescriptionDescription">
+      <segment>
+        <source>Customized description</source>
+        <target state="translated">自定义描述。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="EmbeddedModeTitle">
+      <segment>
+        <source>Embedded mode</source>
+        <target state="translated">嵌入模式</target>
+      </segment>
+    </unit>
+    <unit id="10" name="EmbeddedModeDescription">
+      <segment>
+        <source>Embedding content into Spin will set it into loading state.</source>
+        <target state="translated">将内容嵌入 Spin 后会进入加载状态。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="PageSubtitle">
+      <segment>
+        <source>Loading indicators for asynchronous content.</source>
+        <target state="translated">用于异步内容的加载指示器。</target>
+      </segment>
+    </unit>
+    <unit id="12" name="PageDescription">
+      <segment>
+        <source>Spin and SpinIndicator display activity while a region, card, or page is waiting for data, with optional tips, masks, and custom indicators.</source>
+        <target state="translated">Spin 和 SpinIndicator 用于区域、卡片或页面等待数据时展示加载状态，并支持提示文本、遮罩和自定义指示器。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反馈</target>
+      </segment>
+    </unit>
+    <unit id="14" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="15" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="16" name="P2DescriptionFurtherDetailsAboutTheContextOfThisAlert">
+      <segment>
+        <source>Further details about the context of this alert.</source>
+        <target state="translated">关于这条提示上下文的更多详细信息。</target>
+      </segment>
+    </unit>
+    <unit id="17" name="P2TextLoadingState">
+      <segment>
+        <source>Loading state：</source>
+        <target state="translated">加载状态：</target>
+      </segment>
+    </unit>
+    <unit id="18" name="P2TipLoading">
+      <segment>
+        <source>Loading...</source>
+        <target state="translated">加载中...</target>
+      </segment>
+    </unit>
+    <unit id="19" name="P2MessageAlertMessageTitle">
+      <segment>
+        <source>Alert message title</source>
+        <target state="translated">提示消息标题</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

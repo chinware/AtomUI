@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.PaginationShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Navigate long lists with page numbers, sizes, totals, and quick jumps.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>Pagination divides large data sets into predictable pages. It supports alignment, page size selection, quick jump input, total information, mini size, and simple read-only or editable modes.</source>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>Basic pagination.</source>
+      </segment>
+    </unit>
+    <unit id="8" name="BindingTitle">
+      <segment>
+        <source>Controlled binding</source>
+      </segment>
+    </unit>
+    <unit id="9" name="BindingDescription">
+      <segment>
+        <source>CurrentPage and PageSize can be bound without an explicit Mode=TwoWay; page clicks and size changes write back to the view model.</source>
+      </segment>
+    </unit>
+    <unit id="10" name="AlignTitle">
+      <segment>
+        <source>Align</source>
+      </segment>
+    </unit>
+    <unit id="11" name="AlignDescription">
+      <segment>
+        <source>Support three alignment modes: left alignment, center alignment, right alignment.</source>
+      </segment>
+    </unit>
+    <unit id="12" name="MoreTitle">
+      <segment>
+        <source>More</source>
+      </segment>
+    </unit>
+    <unit id="13" name="MoreDescription">
+      <segment>
+        <source>More pages.</source>
+      </segment>
+    </unit>
+    <unit id="14" name="MiniSizeTitle">
+      <segment>
+        <source>Mini size</source>
+      </segment>
+    </unit>
+    <unit id="15" name="MiniSizeDescription">
+      <segment>
+        <source>Mini size pagination.</source>
+      </segment>
+    </unit>
+    <unit id="16" name="TotalNumberTitle">
+      <segment>
+        <source>Total number</source>
+      </segment>
+    </unit>
+    <unit id="17" name="TotalNumberDescription">
+      <segment>
+        <source>You can show the total number of data by setting showTotal.</source>
+      </segment>
+    </unit>
+    <unit id="18" name="SimpleModeTitle">
+      <segment>
+        <source>Simple mode</source>
+      </segment>
+    </unit>
+    <unit id="19" name="SimpleModeDescription">
+      <segment>
+        <source>Simple mode.</source>
+      </segment>
+    </unit>
+    <unit id="20" name="P2TextCurrentPage">
+      <segment>
+        <source>CurrentPage:</source>
+      </segment>
+    </unit>
+    <unit id="21" name="P2TextPageSize">
+      <segment>
+        <source>PageSize:</source>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentSetPage">
+      <segment>
+        <source>Set page 5 / 20</source>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentReset">
+      <segment>
+        <source>Reset</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

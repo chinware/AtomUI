@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
+using Avalonia;
 using Avalonia.Controls;
 using ReactiveUI;
 
@@ -200,20 +201,8 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
 
     private static string Lang(ListShowCaseLangResourceKind kind)
     {
-        return ListShowCase.Lang(kind, FallbackLang(kind));
-    }
-
-    private static string FallbackLang(ListShowCaseLangResourceKind kind)
-    {
-        return kind switch
-        {
-            ListShowCaseLangResourceKind.SelectedItemsBindingTitle           => en_US.SelectedItemsBindingTitle,
-            ListShowCaseLangResourceKind.SelectedItemsBindingDescription     => en_US.SelectedItemsBindingDescription,
-            ListShowCaseLangResourceKind.P2TextSelectedItems                 => en_US.P2TextSelectedItems,
-            ListShowCaseLangResourceKind.P2TextNoSelection                   => en_US.P2TextNoSelection,
-            ListShowCaseLangResourceKind.P2ContentSelectColors               => en_US.P2ContentSelectColors,
-            ListShowCaseLangResourceKind.P2ContentClearSelection             => en_US.P2ContentClearSelection,
-            _                                                                => kind.ToString()
-        };
+        return Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)?.Get(kind) ?? kind.ToString()
+            : kind.ToString();
     }
 }

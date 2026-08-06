@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SelectShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>Basic Usage.</source>
+        <target state="translated">基础用法。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="BindingTitle">
+      <segment>
+        <source>Two-way binding</source>
+        <target state="translated">双向绑定</target>
+      </segment>
+    </unit>
+    <unit id="4" name="BindingDescription">
+      <segment>
+        <source>SelectedOption and SelectedOptions synchronize with the ViewModel without explicitly setting Binding Mode=TwoWay.</source>
+        <target state="translated">SelectedOption 和 SelectedOptions 默认与 ViewModel 双向同步，无需显式设置 Binding Mode=TwoWay。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="BindingSingleLabel">
+      <segment>
+        <source>SelectedOption</source>
+        <target state="translated">SelectedOption</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BindingMultipleLabel">
+      <segment>
+        <source>SelectedOptions</source>
+        <target state="translated">SelectedOptions</target>
+      </segment>
+    </unit>
+    <unit id="7" name="BindingViewModelValueLabel">
+      <segment>
+        <source>ViewModel value</source>
+        <target state="translated">ViewModel 值</target>
+      </segment>
+    </unit>
+    <unit id="8" name="BindingSetSingleButton">
+      <segment>
+        <source>Set Lucy</source>
+        <target state="translated">设为 Lucy</target>
+      </segment>
+    </unit>
+    <unit id="9" name="BindingSetMultipleButton">
+      <segment>
+        <source>Set Jack + Yiminghe</source>
+        <target state="translated">设为 Jack + Yiminghe</target>
+      </segment>
+    </unit>
+    <unit id="10" name="BindingClearButton">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="11" name="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础</target>
+      </segment>
+    </unit>
+    <unit id="12" name="ScenarioOptions">
+      <segment>
+        <source>Options</source>
+        <target state="translated">选项</target>
+      </segment>
+    </unit>
+    <unit id="13" name="ScenarioAppearance">
+      <segment>
+        <source>Appearance</source>
+        <target state="translated">外观</target>
+      </segment>
+    </unit>
+    <unit id="14" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="15" name="PageSubtitle">
+      <segment>
+        <source>Single, multiple, searchable, and tag-based option selection.</source>
+        <target state="translated">支持单选、多选、搜索和标签输入的选项选择。</target>
+      </segment>
+    </unit>
+    <unit id="16" name="PageDescription">
+      <segment>
+        <source>Select lets users choose values from option lists with filtering, grouping, async loading, custom rendering, and multiple selection behaviors.</source>
+        <target state="translated">Select 用于从选项列表中选择值，支持筛选、分组、异步加载、自定义渲染和多选行为。</target>
+      </segment>
+    </unit>
+    <unit id="17" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">数据录入</target>
+      </segment>
+    </unit>
+    <unit id="18" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="19" name="SearchFieldTitle">
+      <segment>
+        <source>Select with search field</source>
+        <target state="translated">带搜索框的选择器</target>
+      </segment>
+    </unit>
+    <unit id="20" name="SearchFieldDescription">
+      <segment>
+        <source>Search the options while expanded.</source>
+        <target state="translated">展开时搜索选项。</target>
+      </segment>
+    </unit>
+    <unit id="21" name="CustomSearchTitle">
+      <segment>
+        <source>Custom Search</source>
+        <target state="translated">自定义搜索</target>
+      </segment>
+    </unit>
+    <unit id="22" name="CustomSearchDescription">
+      <segment>
+        <source>Customize search using filterOption, Case-sensitive search for Header.</source>
+        <target state="translated">使用 filterOption 自定义搜索，对 Header 进行大小写敏感搜索。</target>
+      </segment>
+    </unit>
+    <unit id="23" name="MultipleSelectionTitle">
+      <segment>
+        <source>multiple selection</source>
+        <target state="translated">多选</target>
+      </segment>
+    </unit>
+    <unit id="24" name="MultipleSelectionDescription">
+      <segment>
+        <source>Multiple selection, selecting from existing items.</source>
+        <target state="translated">多选，从已有项中选择。</target>
+      </segment>
+    </unit>
+    <unit id="25" name="TagsTitle">
+      <segment>
+        <source>Tags</source>
+        <target state="translated">标签</target>
+      </segment>
+    </unit>
+    <unit id="26" name="TagsDescription">
+      <segment>
+        <source>Allow user to select tags from list or input custom tag.</source>
+        <target state="translated">允许用户从列表中选择标签或输入自定义标签。</target>
+      </segment>
+    </unit>
+    <unit id="27" name="SizesTitle">
+      <segment>
+        <source>Sizes</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+    <unit id="28" name="SizesDescription">
+      <segment>
+        <source>The height of the input field for the select defaults to 32px. If size is set to large, the height will be 40px, and if set to small, 24px. Custom can use local size properties.</source>
+        <target state="translated">选择器输入区域默认高度为 32px。size 设置为 large 时高度为 40px，设置为 small 时高度为 24px。Custom 可配合本地尺寸属性自定义。</target>
+      </segment>
+    </unit>
+    <unit id="29" name="CustomDropdownOptionsTitle">
+      <segment>
+        <source>Custom dropdown options</source>
+        <target state="translated">自定义下拉选项</target>
+      </segment>
+    </unit>
+    <unit id="30" name="CustomDropdownOptionsDescription">
+      <segment>
+        <source>Use optionRender to customize the rendering dropdown options</source>
+        <target state="translated">使用 optionRender 自定义下拉选项渲染。</target>
+      </segment>
+    </unit>
+    <unit id="31" name="OptionGroupTitle">
+      <segment>
+        <source>Option Group</source>
+        <target state="translated">选项分组</target>
+      </segment>
+    </unit>
+    <unit id="32" name="OptionGroupDescription">
+      <segment>
+        <source>Using OptGroup to group the options.</source>
+        <target state="translated">使用 OptGroup 对选项分组。</target>
+      </segment>
+    </unit>
+    <unit id="33" name="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">变体</target>
+      </segment>
+    </unit>
+    <unit id="34" name="VariantsDescription">
+      <segment>
+        <source>Variants of Select, there are four variants: outlined filled borderless and underlined.</source>
+        <target state="translated">Select 提供四种变体：描边、填充、无边框和下划线。</target>
+      </segment>
+    </unit>
+    <unit id="35" name="HideAlreadySelectedTitle">
+      <segment>
+        <source>Hide Already Selected</source>
+        <target state="translated">隐藏已选项</target>
+      </segment>
+    </unit>
+    <unit id="36" name="HideAlreadySelectedDescription">
+      <segment>
+        <source>Hide already selected options in the dropdown.</source>
+        <target state="translated">在下拉列表中隐藏已经选择的选项。</target>
+      </segment>
+    </unit>
+    <unit id="37" name="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="38" name="StatusDescription">
+      <segment>
+        <source>Add status to Select with status, which could be error or warning.</source>
+        <target state="translated">通过 status 为 Select 添加状态，可设置为错误或警告。</target>
+      </segment>
+    </unit>
+    <unit id="39" name="MaxCountTitle">
+      <segment>
+        <source>Max Count</source>
+        <target state="translated">最大数量</target>
+      </segment>
+    </unit>
+    <unit id="40" name="MaxCountDescription">
+      <segment>
+        <source>You can set the maxCount prop to control the max number of items can be selected. When the limit is exceeded, the options will become disabled.</source>
+        <target state="translated">可以设置 maxCount 属性控制最多可选项数量。超过限制后，选项会变为禁用状态。</target>
+      </segment>
+    </unit>
+    <unit id="41" name="ResponsiveMaxTagCountTitle">
+      <segment>
+        <source>Responsive maxTagCount</source>
+        <target state="translated">响应式 maxTagCount</target>
+      </segment>
+    </unit>
+    <unit id="42" name="ResponsiveMaxTagCountDescription">
+      <segment>
+        <source>Auto collapse to tag with responsive case. Not recommend use in large form case since responsive calculation has a perf cost.</source>
+        <target state="translated">在响应式场景中自动折叠为标签。由于响应式计算有性能成本，不建议在大型表单中使用。</target>
+      </segment>
+    </unit>
+    <unit id="43" name="PrefixAndSuffixTitle">
+      <segment>
+        <source>Prefix and Suffix</source>
+        <target state="translated">前缀和后缀</target>
+      </segment>
+    </unit>
+    <unit id="44" name="PrefixAndSuffixDescription">
+      <segment>
+        <source>Custom prefix and suffixIcon.</source>
+        <target state="translated">自定义 prefix 和 suffixIcon。</target>
+      </segment>
+    </unit>
+    <unit id="45" name="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">请选择</target>
+      </segment>
+    </unit>
+    <unit id="46" name="P2HeaderJack">
+      <segment>
+        <source>Jack</source>
+        <target state="translated">杰克</target>
+      </segment>
+    </unit>
+    <unit id="47" name="P2HeaderLucy">
+      <segment>
+        <source>Lucy</source>
+        <target state="translated">露西</target>
+      </segment>
+    </unit>
+    <unit id="48" name="P2HeaderYiminghe">
+      <segment>
+        <source>Yiminghe</source>
+        <target state="translated">一鸣鹤</target>
+      </segment>
+    </unit>
+    <unit id="49" name="P2HeaderDisabled">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="50" name="P2HeaderTom">
+      <segment>
+        <source>Tom</source>
+        <target state="translated">汤姆</target>
+      </segment>
+    </unit>
+    <unit id="51" name="P2PlaceholderTextSelectAPerson">
+      <segment>
+        <source>Select a person</source>
+        <target state="translated">请选择人员</target>
+      </segment>
+    </unit>
+    <unit id="52" name="P2PlaceholderTextTagsMode">
+      <segment>
+        <source>Tags Mode</source>
+        <target state="translated">标签模式</target>
+      </segment>
+    </unit>
+    <unit id="53" name="P2DescriptionChina">
+      <segment>
+        <source>China</source>
+        <target state="translated">中国</target>
+      </segment>
+    </unit>
+    <unit id="54" name="P2HeaderChina">
+      <segment>
+        <source>China</source>
+        <target state="translated">中国</target>
+      </segment>
+    </unit>
+    <unit id="55" name="P2DescriptionUsa">
+      <segment>
+        <source>United States</source>
+        <target state="translated">美国</target>
+      </segment>
+    </unit>
+    <unit id="56" name="P2HeaderUsa">
+      <segment>
+        <source>USA</source>
+        <target state="translated">美国</target>
+      </segment>
+    </unit>
+    <unit id="57" name="P2DescriptionJapan">
+      <segment>
+        <source>Japan</source>
+        <target state="translated">日本</target>
+      </segment>
+    </unit>
+    <unit id="58" name="P2HeaderJapan">
+      <segment>
+        <source>Japan</source>
+        <target state="translated">日本</target>
+      </segment>
+    </unit>
+    <unit id="59" name="P2DescriptionKorea">
+      <segment>
+        <source>Korea</source>
+        <target state="translated">韩国</target>
+      </segment>
+    </unit>
+    <unit id="60" name="P2HeaderKorea">
+      <segment>
+        <source>Korea</source>
+        <target state="translated">韩国</target>
+      </segment>
+    </unit>
+    <unit id="61" name="P2HeaderChloe">
+      <segment>
+        <source>Chloe</source>
+        <target state="translated">克洛伊</target>
+      </segment>
+    </unit>
+    <unit id="62" name="P2HeaderLucas">
+      <segment>
+        <source>Lucas</source>
+        <target state="translated">卢卡斯</target>
+      </segment>
+    </unit>
+    <unit id="63" name="P2PlaceholderTextOutline">
+      <segment>
+        <source>Outline</source>
+        <target state="translated">线框风格</target>
+      </segment>
+    </unit>
+    <unit id="64" name="P2HeaderYiminghe2">
+      <segment>
+        <source>yiminghe</source>
+        <target state="translated">一鸣鹤</target>
+      </segment>
+    </unit>
+    <unit id="65" name="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充风格</target>
+      </segment>
+    </unit>
+    <unit id="66" name="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">无边框</target>
+      </segment>
+    </unit>
+    <unit id="67" name="P2PlaceholderTextInsertedAreRemoved">
+      <segment>
+        <source>Inserted are removed</source>
+        <target state="translated">已插入项会被移除</target>
+      </segment>
+    </unit>
+    <unit id="68" name="P2HeaderApples">
+      <segment>
+        <source>Apples</source>
+        <target state="translated">苹果</target>
+      </segment>
+    </unit>
+    <unit id="69" name="P2HeaderNails">
+      <segment>
+        <source>Nails</source>
+        <target state="translated">钉子</target>
+      </segment>
+    </unit>
+    <unit id="70" name="P2HeaderBananas">
+      <segment>
+        <source>Bananas</source>
+        <target state="translated">香蕉</target>
+      </segment>
+    </unit>
+    <unit id="71" name="P2HeaderHelicopters">
+      <segment>
+        <source>Helicopters</source>
+        <target state="translated">直升机</target>
+      </segment>
+    </unit>
+    <unit id="72" name="P2HeaderAvaSwift">
+      <segment>
+        <source>Ava Swift</source>
+        <target state="translated">艾娃·斯威夫特</target>
+      </segment>
+    </unit>
+    <unit id="73" name="P2HeaderColeReed">
+      <segment>
+        <source>Cole Reed</source>
+        <target state="translated">科尔·里德</target>
+      </segment>
+    </unit>
+    <unit id="74" name="P2HeaderMiaBlake">
+      <segment>
+        <source>Mia Blake</source>
+        <target state="translated">米娅·布莱克</target>
+      </segment>
+    </unit>
+    <unit id="75" name="P2HeaderJakeStone">
+      <segment>
+        <source>Jake Stone</source>
+        <target state="translated">杰克·斯通</target>
+      </segment>
+    </unit>
+    <unit id="76" name="P2HeaderLilyLane">
+      <segment>
+        <source>Lily Lane</source>
+        <target state="translated">莉莉·莱恩</target>
+      </segment>
+    </unit>
+    <unit id="77" name="P2HeaderRyanChase">
+      <segment>
+        <source>Ryan Chase</source>
+        <target state="translated">瑞安·蔡斯</target>
+      </segment>
+    </unit>
+    <unit id="78" name="P2HeaderZoeFox">
+      <segment>
+        <source>Zoe Fox</source>
+        <target state="translated">佐伊·福克斯</target>
+      </segment>
+    </unit>
+    <unit id="79" name="P2HeaderAlexGrey">
+      <segment>
+        <source>Alex Grey</source>
+        <target state="translated">亚历克斯·格雷</target>
+      </segment>
+    </unit>
+    <unit id="80" name="P2HeaderElleBlair">
+      <segment>
+        <source>Elle Blair</source>
+        <target state="translated">艾尔·布莱尔</target>
+      </segment>
+    </unit>
+    <unit id="81" name="P2PlaceholderTextSelectItem">
+      <segment>
+        <source>Select Item...</source>
+        <target state="translated">选择项目...</target>
+      </segment>
+    </unit>
+    <unit id="82" name="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大号</target>
+      </segment>
+    </unit>
+    <unit id="83" name="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">默认</target>
+      </segment>
+    </unit>
+    <unit id="84" name="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小号</target>
+      </segment>
+    </unit>
+    <unit id="85" name="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="86" name="P2GroupManager">
+      <segment>
+        <source>Manager</source>
+        <target state="translated">经理</target>
+      </segment>
+    </unit>
+    <unit id="87" name="P2GroupEngineer">
+      <segment>
+        <source>Engineer</source>
+        <target state="translated">工程师</target>
+      </segment>
+    </unit>
+    <unit id="88" name="P2ContentUser">
+      <segment>
+        <source>User</source>
+        <target state="translated">用户</target>
+      </segment>
+    </unit>
+    <unit id="89" name="P2TextLongLabelPrefix">
+      <segment>
+        <source>Long label: </source>
+        <target state="translated">长标签：</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

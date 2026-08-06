@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.RateShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">數據錄入</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Collect lightweight ratings with star, half-star, custom character, and tooltip support.</source>
+        <target state="translated">用星級、半星、自定義字符和提示文案收集輕量評分。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>Rate lets users express preference or quality on an ordered scale. It supports clearable values, half selection, read-only display, keyboard interaction, custom glyphs, and localized copywriting.</source>
+        <target state="translated">Rate 用於讓用戶按有序等級表達偏好或質量評價，支持清除、半選、只讀、鍵盤交互、自定義圖形和本地化文案。</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>The simplest usage.</source>
+        <target state="translated">最簡單的用法。</target>
+      </segment>
+    </unit>
+    <unit id="8" name="TwoWayBindingTitle">
+      <segment>
+        <source>Two-way binding</source>
+        <target state="translated">雙向綁定</target>
+      </segment>
+    </unit>
+    <unit id="9" name="TwoWayBindingDescription">
+      <segment>
+        <source>Value uses TwoWay binding by default, so user selection and ViewModel updates stay synchronized.</source>
+        <target state="translated">Value 預設使用 TwoWay 綁定，使用者評分和 ViewModel 更新會保持同步。</target>
+      </segment>
+    </unit>
+    <unit id="10" name="HalfStarTitle">
+      <segment>
+        <source>Half star</source>
+        <target state="translated">半星</target>
+      </segment>
+    </unit>
+    <unit id="11" name="HalfStarDescription">
+      <segment>
+        <source>Support select half star.</source>
+        <target state="translated">支持選擇半星。</target>
+      </segment>
+    </unit>
+    <unit id="12" name="ShowCopywritingTitle">
+      <segment>
+        <source>Show copywriting</source>
+        <target state="translated">顯示文案</target>
+      </segment>
+    </unit>
+    <unit id="13" name="ShowCopywritingDescription">
+      <segment>
+        <source>Add copywriting in rate components.</source>
+        <target state="translated">在評分組件中添加文案。</target>
+      </segment>
+    </unit>
+    <unit id="14" name="ReadOnlyTitle">
+      <segment>
+        <source>Read only</source>
+        <target state="translated">只讀</target>
+      </segment>
+    </unit>
+    <unit id="15" name="ReadOnlyDescription">
+      <segment>
+        <source>Read only, can't use mouse to interact.</source>
+        <target state="translated">只讀狀態，不能使用鼠標交互。</target>
+      </segment>
+    </unit>
+    <unit id="16" name="ClearStarTitle">
+      <segment>
+        <source>Clear star</source>
+        <target state="translated">清除星級</target>
+      </segment>
+    </unit>
+    <unit id="17" name="ClearStarDescription">
+      <segment>
+        <source>Support set allow to clear star when click again.</source>
+        <target state="translated">支持設置再次點擊時允許清除星級。</target>
+      </segment>
+    </unit>
+    <unit id="18" name="OtherCharacterTitle">
+      <segment>
+        <source>Other Character</source>
+        <target state="translated">其他字符</target>
+      </segment>
+    </unit>
+    <unit id="19" name="OtherCharacterDescription">
+      <segment>
+        <source>Replace the default star to other character like alphabet, digit, iconfont or even Chinese word.</source>
+        <target state="translated">將默認星形替換為其他字符，例如字母、數字、圖標字體，甚至中文文字。</target>
+      </segment>
+    </unit>
+    <unit id="20" name="P2TextIsallowclearTrue">
+      <segment>
+        <source>IsAllowClear: true</source>
+        <target state="translated">允許清除：true</target>
+      </segment>
+    </unit>
+    <unit id="21" name="P2TextIsallowclearFalse">
+      <segment>
+        <source>IsAllowClear: false</source>
+        <target state="translated">允許清除：false</target>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentSetFourStars">
+      <segment>
+        <source>Set 4 stars</source>
+        <target state="translated">設為 4 星</target>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="24" name="P2TwoWayValueSummaryFormat">
+      <segment>
+        <source>Selected value: {0:0.#}</source>
+        <target state="translated">目前評分：{0:0.#}</target>
+      </segment>
+    </unit>
+    <unit id="25" name="P2TooltipTerrible">
+      <segment>
+        <source>terrible</source>
+        <target state="translated">糟糕</target>
+      </segment>
+    </unit>
+    <unit id="26" name="P2TooltipBad">
+      <segment>
+        <source>bad</source>
+        <target state="translated">不好</target>
+      </segment>
+    </unit>
+    <unit id="27" name="P2TooltipNormal">
+      <segment>
+        <source>normal</source>
+        <target state="translated">一般</target>
+      </segment>
+    </unit>
+    <unit id="28" name="P2TooltipGood">
+      <segment>
+        <source>good</source>
+        <target state="translated">好</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2TooltipWonderful">
+      <segment>
+        <source>wonderful</source>
+        <target state="translated">很棒</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

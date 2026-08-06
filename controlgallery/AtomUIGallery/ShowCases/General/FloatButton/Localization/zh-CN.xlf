@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">最基础的用法。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="TypeTitle">
+      <segment>
+        <source>Type</source>
+        <target state="translated">类型</target>
+      </segment>
+    </unit>
+    <unit id="4" name="TypeDescription">
+      <segment>
+        <source>Change the type of the FloatButton with the type property.</source>
+        <target state="translated">通过 type 属性改变 FloatButton 的类型。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="CommandTitle">
+      <segment>
+        <source>Command</source>
+        <target state="translated">命令</target>
+      </segment>
+    </unit>
+    <unit id="6" name="CommandDescription">
+      <segment>
+        <source>FloatButtonHost forwards commands to the hosted button, and FloatButton items inside a group inherit the host data context for command binding.</source>
+        <target state="translated">FloatButtonHost 会将命令转发给真实悬浮按钮，组合内的 FloatButton 子项也能继承宿主数据上下文进行命令绑定。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="ShapeTitle">
+      <segment>
+        <source>Shape</source>
+        <target state="translated">形状</target>
+      </segment>
+    </unit>
+    <unit id="8" name="ShapeDescription">
+      <segment>
+        <source>Change the shape of the FloatButton with the shape property.</source>
+        <target state="translated">通过 shape 属性改变 FloatButton 的形状。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="TooltipTitle">
+      <segment>
+        <source>FloatButton with tooltip</source>
+        <target state="translated">带提示的 FloatButton</target>
+      </segment>
+    </unit>
+    <unit id="10" name="TooltipDescription">
+      <segment>
+        <source>Setting the tooltip property shows the FloatButton with a tooltip.</source>
+        <target state="translated">设置 tooltip 属性可以显示带提示的 FloatButton。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="DescriptionTitle">
+      <segment>
+        <source>Description</source>
+        <target state="translated">描述</target>
+      </segment>
+    </unit>
+    <unit id="12" name="DescriptionDescription">
+      <segment>
+        <source>Setting the description property allows you to show a FloatButton with a description.</source>
+        <target state="translated">设置 description 属性可以显示带描述的 FloatButton。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="GroupTitle">
+      <segment>
+        <source>FloatButton Group</source>
+        <target state="translated">FloatButton 组合</target>
+      </segment>
+    </unit>
+    <unit id="14" name="GroupDescription">
+      <segment>
+        <source>When multiple buttons are used together, FloatButtonGroup is recommended. By setting the shape property of FloatButton.Group, you can change the group shape. The FloatButton.Group shape overrides the shape of FloatButtons inside.</source>
+        <target state="translated">多个按钮一起使用时推荐使用 FloatButtonGroup。通过设置 FloatButton.Group 的 shape 属性可以改变组合形状，组合形状会覆盖内部 FloatButton 的形状。</target>
+      </segment>
+    </unit>
+    <unit id="15" name="MenuModeTitle">
+      <segment>
+        <source>Menu mode</source>
+        <target state="translated">菜单模式</target>
+      </segment>
+    </unit>
+    <unit id="16" name="MenuModeDescription">
+      <segment>
+        <source>Open menu mode with trigger, which could be hover or click.</source>
+        <target state="translated">通过 trigger 打开菜单模式，可选择 hover 或 click。</target>
+      </segment>
+    </unit>
+    <unit id="17" name="ControlledModeTitle">
+      <segment>
+        <source>Controlled mode</source>
+        <target state="translated">受控模式</target>
+      </segment>
+    </unit>
+    <unit id="18" name="ControlledModeDescription">
+      <segment>
+        <source>Set the component to controlled mode through open. IsOpen binds two-way by default and works together with trigger.</source>
+        <target state="translated">通过 open 将组件设置为受控模式，IsOpen 默认双向绑定，并与 trigger 一起工作。</target>
+      </segment>
+    </unit>
+    <unit id="19" name="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">弹出位置</target>
+      </segment>
+    </unit>
+    <unit id="20" name="PlacementDescription">
+      <segment>
+        <source>Customize animation placement. Four preset placements are provided: top, right, bottom, and left. The default placement is top.</source>
+        <target state="translated">自定义动画弹出位置，提供上、右、下、左四种预设位置，默认在上方。</target>
+      </segment>
+    </unit>
+    <unit id="21" name="BadgeTitle">
+      <segment>
+        <source>Badge</source>
+        <target state="translated">徽标</target>
+      </segment>
+    </unit>
+    <unit id="22" name="BadgeDescription">
+      <segment>
+        <source>FloatButton with Badge.</source>
+        <target state="translated">带 Badge 的 FloatButton。</target>
+      </segment>
+    </unit>
+    <unit id="23" name="BackTopTitle">
+      <segment>
+        <source>BackTop</source>
+        <target state="translated">回到顶部</target>
+      </segment>
+    </unit>
+    <unit id="24" name="BackTopDescription">
+      <segment>
+        <source>BackTop makes it easy to go back to the top of the page.</source>
+        <target state="translated">BackTop 可以方便地回到页面顶部。</target>
+      </segment>
+    </unit>
+    <unit id="25" name="P2TooltipSinceN5N25N0">
+      <segment>
+        <source>Since 5.25.0+</source>
+        <target state="translated">自 5.25.0 起</target>
+      </segment>
+    </unit>
+    <unit id="26" name="P2TooltipDocuments">
+      <segment>
+        <source>Documents</source>
+        <target state="translated">文档</target>
+      </segment>
+    </unit>
+    <unit id="27" name="P2DescriptionHelpInfo">
+      <segment>
+        <source>HELP INFO</source>
+        <target state="translated">帮助信息</target>
+      </segment>
+    </unit>
+    <unit id="28" name="P2TextScrollToBottom">
+      <segment>
+        <source>Scroll to bottom</source>
+        <target state="translated">滚动到底部</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2CommandCount">
+      <segment>
+        <source>Executed</source>
+        <target state="translated">执行次数</target>
+      </segment>
+    </unit>
+    <unit id="30" name="P2CommandSource">
+      <segment>
+        <source>Source</source>
+        <target state="translated">来源</target>
+      </segment>
+    </unit>
+    <unit id="31" name="P2CommandHost">
+      <segment>
+        <source>Host</source>
+        <target state="translated">宿主按钮</target>
+      </segment>
+    </unit>
+    <unit id="32" name="P2CommandGroupChild">
+      <segment>
+        <source>Group child</source>
+        <target state="translated">组合子按钮</target>
+      </segment>
+    </unit>
+    <unit id="33" name="PageSubtitle">
+      <segment>
+        <source>Floating actions that stay available inside a scrollable region.</source>
+        <target state="translated">在滚动区域中持续可用的悬浮操作。</target>
+      </segment>
+    </unit>
+    <unit id="34" name="PageDescription">
+      <segment>
+        <source>FloatButton provides quick access to important actions, grouped menus, badges, and back-to-top behavior while keeping controls anchored to the active content area.</source>
+        <target state="translated">FloatButton 提供重要操作的快速入口，支持组合菜单、徽标和回到顶部行为，并将控件锚定在当前内容区域。</target>
+      </segment>
+    </unit>
+    <unit id="35" name="ComponentCategory">
+      <segment>
+        <source>General</source>
+        <target state="translated">通用</target>
+      </segment>
+    </unit>
+    <unit id="36" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="37" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>General</source>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Separate content sections with horizontal or vertical rules.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>Separator creates visual rhythm between related sections, supports optional title text, plain text styling, vertical rules, line variants, and density sizes.</source>
+      </segment>
+    </unit>
+    <unit id="6" name="HorizontalTitle">
+      <segment>
+        <source>Horizontal</source>
+      </segment>
+    </unit>
+    <unit id="7" name="HorizontalDescription">
+      <segment>
+        <source>A Separator is horizontal by default. You can add text within Separator.</source>
+      </segment>
+    </unit>
+    <unit id="8" name="DividerWithTitleTitle">
+      <segment>
+        <source>Divider with title</source>
+      </segment>
+    </unit>
+    <unit id="9" name="DividerWithTitleDescription">
+      <segment>
+        <source>Divider with inner title. Set orientation='left/right' to align it.</source>
+      </segment>
+    </unit>
+    <unit id="10" name="PlainTextTitle">
+      <segment>
+        <source>Text without heading style</source>
+      </segment>
+    </unit>
+    <unit id="11" name="PlainTextDescription">
+      <segment>
+        <source>You can use non-heading style of divider text by setting the plain property.</source>
+      </segment>
+    </unit>
+    <unit id="12" name="SpacingSizeTitle">
+      <segment>
+        <source>Set the spacing size of the divider</source>
+      </segment>
+    </unit>
+    <unit id="13" name="SpacingSizeDescription">
+      <segment>
+        <source>The size of the spacing.</source>
+      </segment>
+    </unit>
+    <unit id="14" name="VerticalTitle">
+      <segment>
+        <source>Vertical</source>
+      </segment>
+    </unit>
+    <unit id="15" name="VerticalDescription">
+      <segment>
+        <source>Use type='vertical' to make the divider vertical.</source>
+      </segment>
+    </unit>
+    <unit id="16" name="VariantTitle">
+      <segment>
+        <source>Variant</source>
+      </segment>
+    </unit>
+    <unit id="17" name="VariantDescription">
+      <segment>
+        <source>Divider uses the solid variant by default. You can change it to dashed or dotted.</source>
+      </segment>
+    </unit>
+    <unit id="18" name="P2TitleText">
+      <segment>
+        <source>Text</source>
+      </segment>
+    </unit>
+    <unit id="19" name="P2TitleLeftText">
+      <segment>
+        <source>Left text</source>
+      </segment>
+    </unit>
+    <unit id="20" name="P2TitleRightText">
+      <segment>
+        <source>Right text</source>
+      </segment>
+    </unit>
+    <unit id="21" name="P2TitleLeftTextWithN0Orientationmargin">
+      <segment>
+        <source>Left Text with 0 orientationMargin</source>
+      </segment>
+    </unit>
+    <unit id="22" name="P2TitleRightTextWithN50pxOrientationmargin">
+      <segment>
+        <source>Right Text with 50px orientationMargin</source>
+      </segment>
+    </unit>
+    <unit id="23" name="P2TitleLeftText2">
+      <segment>
+        <source>Left Text</source>
+      </segment>
+    </unit>
+    <unit id="24" name="P2TitleRightText2">
+      <segment>
+        <source>Right Text</source>
+      </segment>
+    </unit>
+    <unit id="25" name="P2TitleSolid">
+      <segment>
+        <source>Solid</source>
+      </segment>
+    </unit>
+    <unit id="26" name="P2TitleDotted">
+      <segment>
+        <source>Dotted</source>
+      </segment>
+    </unit>
+    <unit id="27" name="P2TitleDashed">
+      <segment>
+        <source>Dashed</source>
+      </segment>
+    </unit>
+    <unit id="28" name="P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit">
+      <segment>
+        <source>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</source>
+      </segment>
+    </unit>
+    <unit id="29" name="P2TextItem1">
+      <segment>
+        <source>Item1</source>
+      </segment>
+    </unit>
+    <unit id="30" name="P2TextItem2">
+      <segment>
+        <source>Item2</source>
+      </segment>
+    </unit>
+    <unit id="31" name="P2TextItem3">
+      <segment>
+        <source>Item3</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">資料展示</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Show or hide a single section of supporting content.</source>
+        <target state="translated">展示或隱藏一段可折疊的輔助內容。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>Expander reveals content on demand without leaving the current context. It supports multiple expansion directions, size variants, icon placement, icon-only triggers, nested panels, ghost style, and custom spacing.</source>
+        <target state="translated">Expander 用於在當前上下文中按需展開內容。它支持多種展開方向、尺寸、圖標位置、僅圖標觸發、嵌套面板、幽靈樣式和自定義間距。</target>
+      </segment>
+    </unit>
+    <unit id="6" name="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="7" name="ScenarioAppearance">
+      <segment>
+        <source>Appearance</source>
+        <target state="translated">外觀</target>
+      </segment>
+    </unit>
+    <unit id="8" name="ScenarioBehavior">
+      <segment>
+        <source>Behavior</source>
+        <target state="translated">行為</target>
+      </segment>
+    </unit>
+    <unit id="9" name="ExpanderTitle">
+      <segment>
+        <source>Expander</source>
+        <target state="translated">展開器</target>
+      </segment>
+    </unit>
+    <unit id="10" name="ExpanderDescription">
+      <segment>
+        <source>By default, The simplest usage is to expand downward.</source>
+        <target state="translated">默認情況下，最簡單的用法是向下展開。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+    <unit id="12" name="SizeDescription">
+      <segment>
+        <source>Ant Design supports a default Expander size as well as a large and small size. If a large or small Expander is desired, set the size property to either large or small respectively. Omit the size property for a Expander with the default size.</source>
+        <target state="translated">Ant Design 支持默認、大號和小號三種 Expander 尺寸。需要大號或小號時分別設置 size 屬性；省略 size 屬性時使用默認尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="ExpandingDirectionTitle">
+      <segment>
+        <source>Expanding Direction</source>
+        <target state="translated">展開方向</target>
+      </segment>
+    </unit>
+    <unit id="14" name="ExpandingDirectionDescription">
+      <segment>
+        <source>The content area supports expansion in four directions.</source>
+        <target state="translated">內容區域支持四個方向展開。</target>
+      </segment>
+    </unit>
+    <unit id="15" name="NestedPanelTitle">
+      <segment>
+        <source>Nested panel</source>
+        <target state="translated">嵌套面板</target>
+      </segment>
+    </unit>
+    <unit id="16" name="NestedPanelDescription">
+      <segment>
+        <source>Expander is nested inside the Collapse.</source>
+        <target state="translated">在 Collapse 中嵌套 Expander。</target>
+      </segment>
+    </unit>
+    <unit id="17" name="BorderlessTitle">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">無邊框</target>
+      </segment>
+    </unit>
+    <unit id="18" name="BorderlessDescription">
+      <segment>
+        <source>A borderless style of Expander.</source>
+        <target state="translated">無邊框樣式的 Expander。</target>
+      </segment>
+    </unit>
+    <unit id="19" name="NoArrowTitle">
+      <segment>
+        <source>No Arrow</source>
+        <target state="translated">隱藏箭頭</target>
+      </segment>
+    </unit>
+    <unit id="20" name="NoArrowDescription">
+      <segment>
+        <source>You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component.</source>
+        <target state="translated">可以向 CollapsePanel 傳入 IsShowExpandIcon={False} 來隱藏箭頭圖標。</target>
+      </segment>
+    </unit>
+    <unit id="21" name="ExpandIconLocationTitle">
+      <segment>
+        <source>Expand icon location</source>
+        <target state="translated">展開圖標位置</target>
+      </segment>
+    </unit>
+    <unit id="22" name="ExpandIconLocationDescription">
+      <segment>
+        <source>The expand icon can be placed in front or in the back.</source>
+        <target state="translated">展開圖標可以放在前方或後方。</target>
+      </segment>
+    </unit>
+    <unit id="23" name="GhostCollapseTitle">
+      <segment>
+        <source>Ghost Collapse</source>
+        <target state="translated">幽靈展開器</target>
+      </segment>
+    </unit>
+    <unit id="24" name="GhostCollapseDescription">
+      <segment>
+        <source>Making collapse's background to transparent.</source>
+        <target state="translated">讓背景透明。</target>
+      </segment>
+    </unit>
+    <unit id="25" name="CollapsibleTitle">
+      <segment>
+        <source>Collapsible</source>
+        <target state="translated">可折疊觸發區域</target>
+      </segment>
+    </unit>
+    <unit id="26" name="CollapsibleDescription">
+      <segment>
+        <source>Specify the trigger area of collapsible by collapsible.</source>
+        <target state="translated">通過 collapsible 指定折疊觸發區域。</target>
+      </segment>
+    </unit>
+    <unit id="27" name="CustomPaddingTitle">
+      <segment>
+        <source>Custom Header And Content Padding</source>
+        <target state="translated">自定義標題和內容間距</target>
+      </segment>
+    </unit>
+    <unit id="28" name="CustomPaddingDescription">
+      <segment>
+        <source>Please set custom header margins and content spacing.</source>
+        <target state="translated">請設置自定義標題邊距和內容間距。</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2HeaderThisIsPanelHeaderN1">
+      <segment>
+        <source>This is panel header 1</source>
+        <target state="translated">這是面板標題 1</target>
+      </segment>
+    </unit>
+    <unit id="30" name="P2TitleDefaultSize">
+      <segment>
+        <source>Default Size</source>
+        <target state="translated">默認尺寸</target>
+      </segment>
+    </unit>
+    <unit id="31" name="P2HeaderThisIsDefaultSizePanelHeader">
+      <segment>
+        <source>This is default size panel header</source>
+        <target state="translated">這是默認尺寸面板標題</target>
+      </segment>
+    </unit>
+    <unit id="32" name="P2TitleSmallSize">
+      <segment>
+        <source>Small Size</source>
+        <target state="translated">小尺寸</target>
+      </segment>
+    </unit>
+    <unit id="33" name="P2HeaderThisIsSmallSizePanelHeader">
+      <segment>
+        <source>This is small size panel header</source>
+        <target state="translated">這是小尺寸面板標題</target>
+      </segment>
+    </unit>
+    <unit id="34" name="P2TitleLargeSize">
+      <segment>
+        <source>Large Size</source>
+        <target state="translated">大尺寸</target>
+      </segment>
+    </unit>
+    <unit id="35" name="P2HeaderThisIsLargeSizePanelHeader">
+      <segment>
+        <source>This is large size panel header</source>
+        <target state="translated">這是大尺寸面板標題</target>
+      </segment>
+    </unit>
+    <unit id="36" name="P2HeaderThisIsPanelHeader">
+      <segment>
+        <source>This is panel header</source>
+        <target state="translated">這是面板標題</target>
+      </segment>
+    </unit>
+    <unit id="37" name="P2HeaderThisIsNestedPanelHeader">
+      <segment>
+        <source>This is nested panel header</source>
+        <target state="translated">這是嵌套面板標題</target>
+      </segment>
+    </unit>
+    <unit id="38" name="P2HeaderThisPanelCanOnlyBeCollapsedByClicking">
+      <segment>
+        <source>This panel can only be collapsed by clicking text</source>
+        <target state="translated">只能點擊文字折疊此面板</target>
+      </segment>
+    </unit>
+    <unit id="39" name="P2HeaderThisPanelCanOnlyBeCollapsedByClicking2">
+      <segment>
+        <source>This panel can only be collapsed by clicking icon</source>
+        <target state="translated">只能點擊圖標折疊此面板</target>
+      </segment>
+    </unit>
+    <unit id="40" name="P2HeaderThisPanelCanTBeCollapsed">
+      <segment>
+        <source>This panel can't be collapsed</source>
+        <target state="translated">此面板不能折疊</target>
+      </segment>
+    </unit>
+    <unit id="41" name="P2TextADogIsATypeOfDomesticatedAnimal">
+      <segment>
+        <source>A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</source>
+        <target state="translated">狗是一種被馴養的動物。它以忠誠和可靠著稱，在世界各地許多家庭中都是受歡迎的成員。</target>
+      </segment>
+    </unit>
+    <unit id="42" name="P2TextExpandDirection">
+      <segment>
+        <source>Expand direction:</source>
+        <target state="translated">展開方向：</target>
+      </segment>
+    </unit>
+    <unit id="43" name="P2ContentDown">
+      <segment>
+        <source>Down</source>
+        <target state="translated">向下</target>
+      </segment>
+    </unit>
+    <unit id="44" name="P2ContentUp">
+      <segment>
+        <source>Up</source>
+        <target state="translated">向上</target>
+      </segment>
+    </unit>
+    <unit id="45" name="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">向左</target>
+      </segment>
+    </unit>
+    <unit id="46" name="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">向右</target>
+      </segment>
+    </unit>
+    <unit id="47" name="P2TextExpandIconPosition">
+      <segment>
+        <source>Expand Icon Position:</source>
+        <target state="translated">展開圖標位置：</target>
+      </segment>
+    </unit>
+    <unit id="48" name="P2ContentStart">
+      <segment>
+        <source>Start</source>
+        <target state="translated">開始</target>
+      </segment>
+    </unit>
+    <unit id="49" name="P2ContentEnd">
+      <segment>
+        <source>End</source>
+        <target state="translated">結束</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

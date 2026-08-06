@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TabStripShowCaseLangResourceKind">
+    <unit id="1" name="TabStripBasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="2" name="TabStripBasicDescription">
+      <segment>
+        <source>Default activate first tab.</source>
+        <target state="translated">默認激活第一個標籤項。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="TabStripItemsSourceTitle">
+      <segment>
+        <source>Items from ItemSource datasource</source>
+        <target state="translated">通過 ItemSource 生成 TabStripItem</target>
+      </segment>
+    </unit>
+    <unit id="4" name="TabStripItemsSourceDescription">
+      <segment>
+        <source>Add TabStripItem based on data source and item template.</source>
+        <target state="translated">基於數據源和項目模板添加 TabStripItem。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="TabStripReorderTitle">
+      <segment>
+        <source>Draggable tabs</source>
+        <target state="translated">拖曳排序</target>
+      </segment>
+    </unit>
+    <unit id="6" name="TabStripReorderDescription">
+      <segment>
+        <source>Enable drag sorting with IsTabReorderEnabled. The selected item follows the same logical tab after sorting.</source>
+        <target state="translated">透過 IsTabReorderEnabled 開啟拖曳排序。排序後選中狀態會跟隨同一個邏輯標籤項。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="TabStripReorderPlacementTitle">
+      <segment>
+        <source>Draggable tabs with placement</source>
+        <target state="translated">不同位置的拖曳排序</target>
+      </segment>
+    </unit>
+    <unit id="8" name="TabStripReorderPlacementDescription">
+      <segment>
+        <source>Switch TabStripPlacement to verify drag sorting on horizontal and vertical tab tracks.</source>
+        <target state="translated">切換 TabStripPlacement，驗證水平與垂直標籤軌道下的拖曳排序效果。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="TabStripDisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用標籤</target>
+      </segment>
+    </unit>
+    <unit id="10" name="TabStripDisabledDescription">
+      <segment>
+        <source>Disabled a tab.</source>
+        <target state="translated">禁用某個標籤項。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="TabStripCenteredTitle">
+      <segment>
+        <source>Centered</source>
+        <target state="translated">居中顯示</target>
+      </segment>
+    </unit>
+    <unit id="12" name="TabStripCenteredDescription">
+      <segment>
+        <source>Centered tabs.</source>
+        <target state="translated">標籤項居中顯示。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="TabStripIconTitle">
+      <segment>
+        <source>Icon</source>
+        <target state="translated">帶圖標</target>
+      </segment>
+    </unit>
+    <unit id="14" name="TabStripIconDescription">
+      <segment>
+        <source>The Tab with Icon.</source>
+        <target state="translated">帶圖標的標籤項。</target>
+      </segment>
+    </unit>
+    <unit id="15" name="TabStripSlideTitle">
+      <segment>
+        <source>Slide</source>
+        <target state="translated">滑動</target>
+      </segment>
+    </unit>
+    <unit id="16" name="TabStripSlideDescription">
+      <segment>
+        <source>In order to fit in more tabs, they can slide left and right (or up and down).</source>
+        <target state="translated">為了容納更多標籤，標籤可以左右滑動（或上下滑動）。</target>
+      </segment>
+    </unit>
+    <unit id="17" name="TabStripCardTypeTitle">
+      <segment>
+        <source>Card type tab</source>
+        <target state="translated">卡片式標籤</target>
+      </segment>
+    </unit>
+    <unit id="18" name="TabStripCardTypeDescription">
+      <segment>
+        <source>Another type of Tabs, which doesn't support vertical mode.</source>
+        <target state="translated">另一種標籤類型，不支持垂直模式。</target>
+      </segment>
+    </unit>
+    <unit id="19" name="TabStripClosableTitle">
+      <segment>
+        <source>Closable Tab</source>
+        <target state="translated">可關閉標籤</target>
+      </segment>
+    </unit>
+    <unit id="20" name="TabStripClosableDescription">
+      <segment>
+        <source>We support closable tab settings.</source>
+        <target state="translated">支持可關閉的標籤設置。</target>
+      </segment>
+    </unit>
+    <unit id="21" name="TabStripPositionTitle">
+      <segment>
+        <source>Position</source>
+        <target state="translated">位置</target>
+      </segment>
+    </unit>
+    <unit id="22" name="TabStripPositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+        <target state="translated">標籤位置可設為 left、right、top 或 bottom，在移動端會自動切換為 top。</target>
+      </segment>
+    </unit>
+    <unit id="23" name="TabStripCardShapePositionTitle">
+      <segment>
+        <source>Card Shape Position</source>
+        <target state="translated">卡片形態位置</target>
+      </segment>
+    </unit>
+    <unit id="24" name="TabStripCardShapePositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+        <target state="translated">標籤位置可設為 left、right、top 或 bottom，在移動端會自動切換為 top。</target>
+      </segment>
+    </unit>
+    <unit id="25" name="TabStripSizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+    <unit id="26" name="TabStripSizeDescription">
+      <segment>
+        <source>Large size tabs are usually used in page header, and small size could be used in Modal.</source>
+        <target state="translated">大尺寸標籤通常用於頁頭，小尺寸可用於模態框。</target>
+      </segment>
+    </unit>
+    <unit id="27" name="TabStripAddCloseTitle">
+      <segment>
+        <source>Add and close tab</source>
+        <target state="translated">新增和關閉標籤</target>
+      </segment>
+    </unit>
+    <unit id="28" name="TabStripAddCloseDescription">
+      <segment>
+        <source>Hide default plus icon, and bind event for customized trigger.</source>
+        <target state="translated">隱藏默認加號圖標，並為自定義觸發器綁定事件。</target>
+      </segment>
+    </unit>
+    <unit id="29" name="PageSubtitle">
+      <segment>
+        <source>Render tab headers independently from selected content.</source>
+        <target state="translated">將標籤頭與選中內容分離呈現。</target>
+      </segment>
+    </unit>
+    <unit id="30" name="PageDescription">
+      <segment>
+        <source>TabStrip and CardTabStrip provide lightweight tab navigation for custom content hosts, including item-template tabs, closable tabs, placement control, and add-tab actions.</source>
+        <target state="translated">TabStrip 和 CardTabStrip 為自訂內容宿主提供輕量標籤導航，支援資料模板標籤、可關閉標籤、位置控制以及新增標籤操作。</target>
+      </segment>
+    </unit>
+    <unit id="31" name="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">導航</target>
+      </segment>
+    </unit>
+    <unit id="32" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="33" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">範例</target>
+      </segment>
+    </unit>
+    <unit id="34" name="ApiEventTabReordering">
+      <segment>
+        <source>Raised before a drag sort is committed. Set Cancel to true to keep the original order.</source>
+        <target state="translated">拖曳排序提交前觸發。將 Cancel 設為 true 可保留原順序。</target>
+      </segment>
+    </unit>
+    <unit id="35" name="ApiEventTabReordered">
+      <segment>
+        <source>Raised after a drag sort commits to the logical item collection.</source>
+        <target state="translated">拖曳排序提交到邏輯集合後觸發。</target>
+      </segment>
+    </unit>
+    <unit id="36" name="P2TextTabPosition">
+      <segment>
+        <source>Tab position:</source>
+        <target state="translated">標籤位置：</target>
+      </segment>
+    </unit>
+    <unit id="37" name="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">頂部</target>
+      </segment>
+    </unit>
+    <unit id="38" name="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">底部</target>
+      </segment>
+    </unit>
+    <unit id="39" name="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">左側</target>
+      </segment>
+    </unit>
+    <unit id="40" name="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">右側</target>
+      </segment>
+    </unit>
+    <unit id="41" name="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小號</target>
+      </segment>
+    </unit>
+    <unit id="42" name="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中號</target>
+      </segment>
+    </unit>
+    <unit id="43" name="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大號</target>
+      </segment>
+    </unit>
+    <unit id="44" name="P2ContentTabN1">
+      <segment>
+        <source>Tab 1</source>
+        <target state="translated">標籤頁 1</target>
+      </segment>
+    </unit>
+    <unit id="45" name="P2ContentTabN2">
+      <segment>
+        <source>Tab 2</source>
+        <target state="translated">標籤頁 2</target>
+      </segment>
+    </unit>
+    <unit id="46" name="P2ContentTabN3">
+      <segment>
+        <source>Tab 3</source>
+        <target state="translated">標籤頁 3</target>
+      </segment>
+    </unit>
+    <unit id="47" name="P2ContentTabN4">
+      <segment>
+        <source>Tab 4</source>
+        <target state="translated">標籤頁 4</target>
+      </segment>
+    </unit>
+    <unit id="48" name="P2ContentTabN5">
+      <segment>
+        <source>Tab 5</source>
+        <target state="translated">標籤頁 5</target>
+      </segment>
+    </unit>
+    <unit id="49" name="P2ContentTabN6">
+      <segment>
+        <source>Tab 6</source>
+        <target state="translated">標籤頁 6</target>
+      </segment>
+    </unit>
+    <unit id="50" name="P2ContentTabN7">
+      <segment>
+        <source>Tab 7</source>
+        <target state="translated">標籤頁 7</target>
+      </segment>
+    </unit>
+    <unit id="51" name="P2ContentTabN8">
+      <segment>
+        <source>Tab 8</source>
+        <target state="translated">標籤頁 8</target>
+      </segment>
+    </unit>
+    <unit id="52" name="P2ContentTabN9">
+      <segment>
+        <source>Tab 9</source>
+        <target state="translated">標籤頁 9</target>
+      </segment>
+    </unit>
+    <unit id="53" name="P2ContentTabN10">
+      <segment>
+        <source>Tab 10</source>
+        <target state="translated">標籤頁 10</target>
+      </segment>
+    </unit>
+    <unit id="54" name="P2ContentTabN11">
+      <segment>
+        <source>Tab 11</source>
+        <target state="translated">標籤頁 11</target>
+      </segment>
+    </unit>
+    <unit id="55" name="P2ContentTabN12">
+      <segment>
+        <source>Tab 12</source>
+        <target state="translated">標籤頁 12</target>
+      </segment>
+    </unit>
+    <unit id="56" name="P2ContentTabN13">
+      <segment>
+        <source>Tab 13</source>
+        <target state="translated">標籤頁 13</target>
+      </segment>
+    </unit>
+    <unit id="57" name="P2ContentTabN14">
+      <segment>
+        <source>Tab 14</source>
+        <target state="translated">標籤頁 14</target>
+      </segment>
+    </unit>
+    <unit id="58" name="P2ContentTabN15">
+      <segment>
+        <source>Tab 15</source>
+        <target state="translated">標籤頁 15</target>
+      </segment>
+    </unit>
+    <unit id="59" name="P2ContentTabN16">
+      <segment>
+        <source>Tab 16</source>
+        <target state="translated">標籤頁 16</target>
+      </segment>
+    </unit>
+    <unit id="60" name="P2ContentTabN17">
+      <segment>
+        <source>Tab 17</source>
+        <target state="translated">標籤頁 17</target>
+      </segment>
+    </unit>
+    <unit id="61" name="P2ContentTabN18">
+      <segment>
+        <source>Tab 18</source>
+        <target state="translated">標籤頁 18</target>
+      </segment>
+    </unit>
+    <unit id="62" name="P2ContentTabN19">
+      <segment>
+        <source>Tab 19</source>
+        <target state="translated">標籤頁 19</target>
+      </segment>
+    </unit>
+    <unit id="63" name="P2ContentTabN20">
+      <segment>
+        <source>Tab 20</source>
+        <target state="translated">標籤頁 20</target>
+      </segment>
+    </unit>
+    <unit id="64" name="P2ContentTabN21">
+      <segment>
+        <source>Tab 21</source>
+        <target state="translated">標籤頁 21</target>
+      </segment>
+    </unit>
+    <unit id="65" name="P2ContentTabN22">
+      <segment>
+        <source>Tab 22</source>
+        <target state="translated">標籤頁 22</target>
+      </segment>
+    </unit>
+    <unit id="66" name="P2ContentTabN23">
+      <segment>
+        <source>Tab 23</source>
+        <target state="translated">標籤頁 23</target>
+      </segment>
+    </unit>
+    <unit id="67" name="P2ContentNewTabFormat">
+      <segment>
+        <source>new tab {0}</source>
+        <target state="translated">新增標籤 {0}</target>
+      </segment>
+    </unit>
+    <unit id="68" name="P2TextTabContent">
+      <segment>
+        <source>Tab Content</source>
+        <target state="translated">標籤內容</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

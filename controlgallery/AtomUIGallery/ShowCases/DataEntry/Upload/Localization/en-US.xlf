@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.UploadShowCaseLangResourceKind">
+    <unit id="1" name="UploadByClickingTitle">
+      <segment>
+        <source>Upload by clicking</source>
+      </segment>
+    </unit>
+    <unit id="2" name="UploadByClickingDescription">
+      <segment>
+        <source>Classic mode. File selection dialog pops up when upload button is clicked.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="4" name="ScenarioPictures">
+      <segment>
+        <source>Pictures</source>
+      </segment>
+    </unit>
+    <unit id="5" name="ScenarioConstraints">
+      <segment>
+        <source>Constraints</source>
+      </segment>
+    </unit>
+    <unit id="6" name="AvatarTitle">
+      <segment>
+        <source>Avatar</source>
+      </segment>
+    </unit>
+    <unit id="7" name="AvatarDescription">
+      <segment>
+        <source>Click to upload user's avatar, and validate size and format of picture with beforeUpload.</source>
+      </segment>
+    </unit>
+    <unit id="8" name="DefaultFilesTitle">
+      <segment>
+        <source>Default Files</source>
+      </segment>
+    </unit>
+    <unit id="9" name="DefaultFilesDescription">
+      <segment>
+        <source>Bind Files to provide an initial observable upload file list.</source>
+      </segment>
+    </unit>
+    <unit id="10" name="PicturesWallTitle">
+      <segment>
+        <source>Pictures Wall</source>
+      </segment>
+    </unit>
+    <unit id="11" name="PicturesWallDescription">
+      <segment>
+        <source>After users upload a picture, the thumbnail is rendered in the picture-card list and the trigger remains a separate append entry.</source>
+      </segment>
+    </unit>
+    <unit id="12" name="PictureCircleTypeTitle">
+      <segment>
+        <source>Pictures with picture-circle type</source>
+      </segment>
+    </unit>
+    <unit id="13" name="PictureCircleTypeDescription">
+      <segment>
+        <source>Alternative display for picture-card.</source>
+      </segment>
+    </unit>
+    <unit id="14" name="DragAndDropTitle">
+      <segment>
+        <source>Drag and Drop</source>
+      </segment>
+    </unit>
+    <unit id="15" name="DragAndDropDescription">
+      <segment>
+        <source>You can drag files to a specific area, to upload. Alternatively, you can also upload by selecting.</source>
+      </segment>
+    </unit>
+    <unit id="16" name="PicturesWithListStyleTitle">
+      <segment>
+        <source>Pictures with list style</source>
+      </segment>
+    </unit>
+    <unit id="17" name="PicturesWithListStyleDescription">
+      <segment>
+        <source>If uploaded file is a picture, the thumbnail can be shown.</source>
+      </segment>
+    </unit>
+    <unit id="18" name="MaxCountTitle">
+      <segment>
+        <source>Max Count</source>
+      </segment>
+    </unit>
+    <unit id="19" name="MaxCountDescription">
+      <segment>
+        <source>Limit files with maxCount. Will replace current one when maxCount is 1.</source>
+      </segment>
+    </unit>
+    <unit id="20" name="FileAndDirectoryTitle">
+      <segment>
+        <source>Files and directories</source>
+      </segment>
+    </unit>
+    <unit id="21" name="FileAndDirectoryDescription">
+      <segment>
+        <source>Compose two UploadTrigger instances to select files and directories independently.</source>
+      </segment>
+    </unit>
+    <unit id="22" name="UploadPngOnlyTitle">
+      <segment>
+        <source>Upload png file only</source>
+      </segment>
+    </unit>
+    <unit id="23" name="UploadPngOnlyDescription">
+      <segment>
+        <source>beforeUpload only prevent upload behavior when return false or reject promise, the prevented file would still show in file list. Here is the example you can keep prevented files out of list by return UPLOAD.LIST_IGNORE.</source>
+      </segment>
+    </unit>
+    <unit id="24" name="P2ContentClickToUpload">
+      <segment>
+        <source>Click to Upload</source>
+      </segment>
+    </unit>
+    <unit id="25" name="P2TextUpload">
+      <segment>
+        <source>Upload</source>
+      </segment>
+    </unit>
+    <unit id="26" name="P2ContentUploadMaxN1">
+      <segment>
+        <source>Upload (Max: 1)</source>
+      </segment>
+    </unit>
+    <unit id="27" name="P2ContentUploadMaxN3">
+      <segment>
+        <source>Upload (Max: 3)</source>
+      </segment>
+    </unit>
+    <unit id="28" name="P2ContentUploadDirectory">
+      <segment>
+        <source>Upload Directory</source>
+      </segment>
+    </unit>
+    <unit id="29" name="P2ContentUploadPngOnly">
+      <segment>
+        <source>Upload PNG only</source>
+      </segment>
+    </unit>
+    <unit id="30" name="P2ErrorServer500">
+      <segment>
+        <source>Server Error 500</source>
+      </segment>
+    </unit>
+    <unit id="31" name="P2ErrorUpload">
+      <segment>
+        <source>Upload error!</source>
+      </segment>
+    </unit>
+    <unit id="32" name="P2CancelJpgPngOnly">
+      <segment>
+        <source>You can only upload JPG/PNG file!</source>
+      </segment>
+    </unit>
+    <unit id="33" name="P2CancelImageSize">
+      <segment>
+        <source>Image must be smaller than 2MB!</source>
+      </segment>
+    </unit>
+    <unit id="34" name="P2CancelPngOnly">
+      <segment>
+        <source>You can only upload PNG file!</source>
+      </segment>
+    </unit>
+    <unit id="35" name="P2UploadSuccessFormat">
+      <segment>
+        <source>{0} uploaded successfully!</source>
+      </segment>
+    </unit>
+    <unit id="36" name="PageSubtitle">
+      <segment>
+        <source>Select, validate, preview, and upload files with list and picture presentations.</source>
+      </segment>
+    </unit>
+    <unit id="37" name="ScrollableListTitle">
+      <segment>
+        <source>Scrollable list</source>
+      </segment>
+    </unit>
+    <unit id="38" name="ScrollableListDescription">
+      <segment>
+        <source>UploadList owns the scroll region, so long file lists do not require an outer ScrollViewer.</source>
+      </segment>
+    </unit>
+    <unit id="39" name="SuccessAutoRemoveTitle">
+      <segment>
+        <source>Auto remove successful files</source>
+      </segment>
+    </unit>
+    <unit id="40" name="SuccessAutoRemoveDescription">
+      <segment>
+        <source>Use SuccessAutoRemoveDelay to remove successful files after a short delay.</source>
+      </segment>
+    </unit>
+    <unit id="41" name="PageDescription">
+      <segment>
+        <source>Upload supports composable file and directory triggers, drag-and-drop areas, observable Files state, picture lists, max-count constraints, success cleanup, and file type filtering.</source>
+      </segment>
+    </unit>
+    <unit id="42" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="43" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="44" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TransferShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>The most basic usage of Transfer involves providing the source data and target keys arrays, plus the rendering and some callback functions.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="4" name="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+      </segment>
+    </unit>
+    <unit id="5" name="ScenarioTreeStatus">
+      <segment>
+        <source>Tree &amp; Status</source>
+      </segment>
+    </unit>
+    <unit id="6" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="7" name="PageSubtitle">
+      <segment>
+        <source>Move items between two collections with optional search, paging, and tree views.</source>
+      </segment>
+    </unit>
+    <unit id="8" name="PageDescription">
+      <segment>
+        <source>Transfer presents candidate items on the left and selected items on the right. It supports one-way movement, filtering, pagination, custom item templates, and tree-backed source data.</source>
+      </segment>
+    </unit>
+    <unit id="9" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="10" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="11" name="OneWayTitle">
+      <segment>
+        <source>One Way</source>
+      </segment>
+    </unit>
+    <unit id="12" name="OneWayDescription">
+      <segment>
+        <source>Use oneWay to make Transfer the one way style.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="SearchTitle">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="14" name="SearchDescription">
+      <segment>
+        <source>Transfer with a search box.</source>
+      </segment>
+    </unit>
+    <unit id="15" name="ControlledKeysTitle">
+      <segment>
+        <source>Controlled keys</source>
+      </segment>
+    </unit>
+    <unit id="16" name="ControlledKeysDescription">
+      <segment>
+        <source>Bind TargetKeys and SelectedKeys to ObservableCollection values. External collection mutations and Transfer interactions stay synchronized.</source>
+      </segment>
+    </unit>
+    <unit id="17" name="AdvancedTitle">
+      <segment>
+        <source>Advanced</source>
+      </segment>
+    </unit>
+    <unit id="18" name="AdvancedDescription">
+      <segment>
+        <source>Advanced Usage of Transfer. You can customize the labels of the transfer buttons, the width and height of the columns, and what should be displayed in the footer.</source>
+      </segment>
+    </unit>
+    <unit id="19" name="PaginationTitle">
+      <segment>
+        <source>Pagination</source>
+      </segment>
+    </unit>
+    <unit id="20" name="PaginationDescription">
+      <segment>
+        <source>Store a large amount of items with pagination.</source>
+      </segment>
+    </unit>
+    <unit id="21" name="TreeTransferTitle">
+      <segment>
+        <source>Tree Transfer</source>
+      </segment>
+    </unit>
+    <unit id="22" name="TreeTransferDescription">
+      <segment>
+        <source>Customize the render list with a Tree component.</source>
+      </segment>
+    </unit>
+    <unit id="23" name="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="24" name="StatusDescription">
+      <segment>
+        <source>Add status to Transfer with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="25" name="P2SourceTitle">
+      <segment>
+        <source>Source</source>
+      </segment>
+    </unit>
+    <unit id="26" name="P2TargetTitle">
+      <segment>
+        <source>Target</source>
+      </segment>
+    </unit>
+    <unit id="27" name="P2TextText">
+      <segment>
+        <source>-</source>
+      </segment>
+    </unit>
+    <unit id="28" name="P2HeaderName">
+      <segment>
+        <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="29" name="P2HeaderTag">
+      <segment>
+        <source>Tag</source>
+      </segment>
+    </unit>
+    <unit id="30" name="P2HeaderDescription">
+      <segment>
+        <source>Description</source>
+      </segment>
+    </unit>
+    <unit id="31" name="P2ContentLeftButtonReload">
+      <segment>
+        <source>Left button reload</source>
+      </segment>
+    </unit>
+    <unit id="32" name="P2ContentRightButtonReload">
+      <segment>
+        <source>Right button reload</source>
+      </segment>
+    </unit>
+    <unit id="33" name="P2ContentAddTargetKey">
+      <segment>
+        <source>Add key 3 to target</source>
+      </segment>
+    </unit>
+    <unit id="34" name="P2ContentClearTargetKeys">
+      <segment>
+        <source>Clear target keys</source>
+      </segment>
+    </unit>
+    <unit id="35" name="P2ContentSelectSourceKey">
+      <segment>
+        <source>Select key 4</source>
+      </segment>
+    </unit>
+    <unit id="36" name="P2TargetKeysCountLabel">
+      <segment>
+        <source>Target keys:</source>
+      </segment>
+    </unit>
+    <unit id="37" name="P2SelectedKeysCountLabel">
+      <segment>
+        <source>Selected keys:</source>
+      </segment>
+    </unit>
+    <unit id="38" name="P2OnContentDisable">
+      <segment>
+        <source>Disable</source>
+      </segment>
+    </unit>
+    <unit id="39" name="P2OffContentEnable">
+      <segment>
+        <source>Enable</source>
+      </segment>
+    </unit>
+    <unit id="40" name="P2FilterPlaceholderTextSearchHere">
+      <segment>
+        <source>Search here</source>
+      </segment>
+    </unit>
+    <unit id="41" name="P2ToSourceButtonTextToLeft">
+      <segment>
+        <source>To left</source>
+      </segment>
+    </unit>
+    <unit id="42" name="P2ToTargetButtonTextToRight">
+      <segment>
+        <source>To right</source>
+      </segment>
+    </unit>
+    <unit id="43" name="P2OnContentOnyWay">
+      <segment>
+        <source>One way</source>
+      </segment>
+    </unit>
+    <unit id="44" name="P2OffContentOnyWay">
+      <segment>
+        <source>One way</source>
+      </segment>
+    </unit>
+    <unit id="45" name="P2ItemContentFormat">
+      <segment>
+        <source>content{0}</source>
+      </segment>
+    </unit>
+    <unit id="46" name="P2ItemDescriptionFormat">
+      <segment>
+        <source>description of content{0}</source>
+      </segment>
+    </unit>
+    <unit id="47" name="P2TagCat">
+      <segment>
+        <source>cat</source>
+      </segment>
+    </unit>
+    <unit id="48" name="P2TagDog">
+      <segment>
+        <source>dog</source>
+      </segment>
+    </unit>
+    <unit id="49" name="P2TagBird">
+      <segment>
+        <source>bird</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

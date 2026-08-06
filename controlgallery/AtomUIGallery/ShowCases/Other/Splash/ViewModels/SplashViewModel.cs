@@ -3,7 +3,6 @@ using AtomUI.Data;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Splash;
@@ -37,21 +36,9 @@ public class SplashViewModel : ReactiveObject, IRoutableViewModel
 
     private static string Lang(SplashShowCaseLangResourceKind kind)
     {
-        if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
-        {
-            return LanguageResourceBinder.GetLangResource(kind) ?? FallbackLang(kind);
-        }
-
-        return FallbackLang(kind);
-    }
-
-    private static string FallbackLang(SplashShowCaseLangResourceKind kind)
-    {
-        return kind switch
-        {
-            SplashShowCaseLangResourceKind.P2FooterDesktopOnly            => en_US.P2FooterDesktopOnly,
-            _                                                             => kind.ToString()
-        };
+        return Application.Current is { } application
+            ? global::AtomUI.ApplicationExtensions.GetLocalizer(application)?.Get(kind) ?? kind.ToString()
+            : kind.ToString();
     }
 }
 

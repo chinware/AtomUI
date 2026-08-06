@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="2" name="ScenarioRange">
+      <segment>
+        <source>Range</source>
+      </segment>
+    </unit>
+    <unit id="3" name="ScenarioStyle">
+      <segment>
+        <source>Style</source>
+      </segment>
+    </unit>
+    <unit id="4" name="ScenarioAddon">
+      <segment>
+        <source>Add-ons</source>
+      </segment>
+    </unit>
+    <unit id="5" name="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicUsageDescription">
+      <segment>
+        <source>Numeric-only NumberUpDown.</source>
+      </segment>
+    </unit>
+    <unit id="7" name="SpinnerModeTitle">
+      <segment>
+        <source>Spinner</source>
+      </segment>
+    </unit>
+    <unit id="8" name="SpinnerModeDescription">
+      <segment>
+        <source>Numeric spinner.</source>
+      </segment>
+    </unit>
+    <unit id="9" name="HideHandleTitle">
+      <segment>
+        <source>Hide handle</source>
+      </segment>
+    </unit>
+    <unit id="10" name="HideHandleDescription">
+      <segment>
+        <source>Hide the spin handle with ShowButtonSpinner="False".</source>
+      </segment>
+    </unit>
+    <unit id="11" name="StringModeTitle">
+      <segment>
+        <source>String mode (high precision)</source>
+      </segment>
+    </unit>
+    <unit id="12" name="StringModeDescription">
+      <segment>
+        <source>Keep a high-precision value as a string.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="KeyboardBehaviorTitle">
+      <segment>
+        <source>Keyboard behavior</source>
+      </segment>
+    </unit>
+    <unit id="14" name="KeyboardBehaviorDescription">
+      <segment>
+        <source>Disable keyboard spin with the Keyboard property.</source>
+      </segment>
+    </unit>
+    <unit id="15" name="MouseWheelBehaviorTitle">
+      <segment>
+        <source>Mouse wheel behavior</source>
+      </segment>
+    </unit>
+    <unit id="16" name="MouseWheelBehaviorDescription">
+      <segment>
+        <source>Scroll the mouse wheel while the input is focused to increment or decrement by Increment.</source>
+      </segment>
+    </unit>
+    <unit id="17" name="MinMaxTitle">
+      <segment>
+        <source>Min / Max</source>
+      </segment>
+    </unit>
+    <unit id="18" name="MinMaxDescription">
+      <segment>
+        <source>Restrict the input value range.</source>
+      </segment>
+    </unit>
+    <unit id="19" name="DecimalStepTitle">
+      <segment>
+        <source>Step (decimal)</source>
+      </segment>
+    </unit>
+    <unit id="20" name="DecimalStepDescription">
+      <segment>
+        <source>Use decimal steps with Increment.</source>
+      </segment>
+    </unit>
+    <unit id="21" name="SizesTitle">
+      <segment>
+        <source>Sizes of NumberUpDown</source>
+      </segment>
+    </unit>
+    <unit id="22" name="SizesDescription">
+      <segment>
+        <source>NumberUpDown supports large (40px), default (32px), small (24px) and custom size.</source>
+      </segment>
+    </unit>
+    <unit id="23" name="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+      </segment>
+    </unit>
+    <unit id="24" name="VariantsDescription">
+      <segment>
+        <source>Variants of NumberUpDown.</source>
+      </segment>
+    </unit>
+    <unit id="25" name="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="26" name="DisabledDescription">
+      <segment>
+        <source>Variants of NumberUpDown of disabled style.</source>
+      </segment>
+    </unit>
+    <unit id="27" name="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+      </segment>
+    </unit>
+    <unit id="28" name="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+      </segment>
+    </unit>
+    <unit id="29" name="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
+      </segment>
+    </unit>
+    <unit id="30" name="WithClearIconDescription">
+      <segment>
+        <source>Input box with the remove icon, click the icon to delete everything.</source>
+      </segment>
+    </unit>
+    <unit id="31" name="PrefixAndSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+      </segment>
+    </unit>
+    <unit id="32" name="PrefixAndSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+      </segment>
+    </unit>
+    <unit id="33" name="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="34" name="StatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="35" name="P2PlaceholderTextInputWeight">
+      <segment>
+        <source>Input weight</source>
+      </segment>
+    </unit>
+    <unit id="36" name="P2PlaceholderTextKeyboardDisabled">
+      <segment>
+        <source>Keyboard disabled</source>
+      </segment>
+    </unit>
+    <unit id="37" name="P2PlaceholderTextFocusAndScrollWheel">
+      <segment>
+        <source>Focus and scroll wheel</source>
+      </segment>
+    </unit>
+    <unit id="38" name="P2PlaceholderTextInputWithClearIcon">
+      <segment>
+        <source>input with clear icon</source>
+      </segment>
+    </unit>
+    <unit id="39" name="P2PlaceholderTextEnterYourValue">
+      <segment>
+        <source>Enter your value</source>
+      </segment>
+    </unit>
+    <unit id="40" name="P2PlaceholderTextError">
+      <segment>
+        <source>Error</source>
+      </segment>
+    </unit>
+    <unit id="41" name="P2PlaceholderTextWarning">
+      <segment>
+        <source>Warning</source>
+      </segment>
+    </unit>
+    <unit id="42" name="P2PlaceholderTextErrorWithPrefix">
+      <segment>
+        <source>Error with prefix</source>
+      </segment>
+    </unit>
+    <unit id="43" name="P2PlaceholderTextWarningWithPrefix">
+      <segment>
+        <source>Warning with prefix</source>
+      </segment>
+    </unit>
+    <unit id="44" name="P2TextRawValuePrefix">
+      <segment>
+        <source>Raw: </source>
+      </segment>
+    </unit>
+    <unit id="45" name="P2ContentKeyboardEnabled">
+      <segment>
+        <source>Keyboard enabled</source>
+      </segment>
+    </unit>
+    <unit id="46" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="47" name="PageSubtitle">
+      <segment>
+        <source>Enter and adjust numeric values with keyboard, wheel and step controls.</source>
+      </segment>
+    </unit>
+    <unit id="48" name="PageDescription">
+      <segment>
+        <source>NumberUpDown combines numeric input, precision string mode, min/max constraints, decimal steps, input variants, add-ons, clear affordances and validation status.</source>
+      </segment>
+    </unit>
+    <unit id="49" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="50" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

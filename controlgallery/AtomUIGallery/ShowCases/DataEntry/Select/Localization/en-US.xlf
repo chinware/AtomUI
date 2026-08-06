@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SelectShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>Basic Usage.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="BindingTitle">
+      <segment>
+        <source>Two-way binding</source>
+      </segment>
+    </unit>
+    <unit id="4" name="BindingDescription">
+      <segment>
+        <source>SelectedOption and SelectedOptions synchronize with the ViewModel without explicitly setting Binding Mode=TwoWay.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="BindingSingleLabel">
+      <segment>
+        <source>SelectedOption</source>
+      </segment>
+    </unit>
+    <unit id="6" name="BindingMultipleLabel">
+      <segment>
+        <source>SelectedOptions</source>
+      </segment>
+    </unit>
+    <unit id="7" name="BindingViewModelValueLabel">
+      <segment>
+        <source>ViewModel value</source>
+      </segment>
+    </unit>
+    <unit id="8" name="BindingSetSingleButton">
+      <segment>
+        <source>Set Lucy</source>
+      </segment>
+    </unit>
+    <unit id="9" name="BindingSetMultipleButton">
+      <segment>
+        <source>Set Jack + Yiminghe</source>
+      </segment>
+    </unit>
+    <unit id="10" name="BindingClearButton">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="11" name="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="12" name="ScenarioOptions">
+      <segment>
+        <source>Options</source>
+      </segment>
+    </unit>
+    <unit id="13" name="ScenarioAppearance">
+      <segment>
+        <source>Appearance</source>
+      </segment>
+    </unit>
+    <unit id="14" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="15" name="PageSubtitle">
+      <segment>
+        <source>Single, multiple, searchable, and tag-based option selection.</source>
+      </segment>
+    </unit>
+    <unit id="16" name="PageDescription">
+      <segment>
+        <source>Select lets users choose values from option lists with filtering, grouping, async loading, custom rendering, and multiple selection behaviors.</source>
+      </segment>
+    </unit>
+    <unit id="17" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="18" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="19" name="SearchFieldTitle">
+      <segment>
+        <source>Select with search field</source>
+      </segment>
+    </unit>
+    <unit id="20" name="SearchFieldDescription">
+      <segment>
+        <source>Search the options while expanded.</source>
+      </segment>
+    </unit>
+    <unit id="21" name="CustomSearchTitle">
+      <segment>
+        <source>Custom Search</source>
+      </segment>
+    </unit>
+    <unit id="22" name="CustomSearchDescription">
+      <segment>
+        <source>Customize search using filterOption, Case-sensitive search for Header.</source>
+      </segment>
+    </unit>
+    <unit id="23" name="MultipleSelectionTitle">
+      <segment>
+        <source>multiple selection</source>
+      </segment>
+    </unit>
+    <unit id="24" name="MultipleSelectionDescription">
+      <segment>
+        <source>Multiple selection, selecting from existing items.</source>
+      </segment>
+    </unit>
+    <unit id="25" name="TagsTitle">
+      <segment>
+        <source>Tags</source>
+      </segment>
+    </unit>
+    <unit id="26" name="TagsDescription">
+      <segment>
+        <source>Allow user to select tags from list or input custom tag.</source>
+      </segment>
+    </unit>
+    <unit id="27" name="SizesTitle">
+      <segment>
+        <source>Sizes</source>
+      </segment>
+    </unit>
+    <unit id="28" name="SizesDescription">
+      <segment>
+        <source>The height of the input field for the select defaults to 32px. If size is set to large, the height will be 40px, and if set to small, 24px. Custom can use local size properties.</source>
+      </segment>
+    </unit>
+    <unit id="29" name="CustomDropdownOptionsTitle">
+      <segment>
+        <source>Custom dropdown options</source>
+      </segment>
+    </unit>
+    <unit id="30" name="CustomDropdownOptionsDescription">
+      <segment>
+        <source>Use optionRender to customize the rendering dropdown options</source>
+      </segment>
+    </unit>
+    <unit id="31" name="OptionGroupTitle">
+      <segment>
+        <source>Option Group</source>
+      </segment>
+    </unit>
+    <unit id="32" name="OptionGroupDescription">
+      <segment>
+        <source>Using OptGroup to group the options.</source>
+      </segment>
+    </unit>
+    <unit id="33" name="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+      </segment>
+    </unit>
+    <unit id="34" name="VariantsDescription">
+      <segment>
+        <source>Variants of Select, there are four variants: outlined filled borderless and underlined.</source>
+      </segment>
+    </unit>
+    <unit id="35" name="HideAlreadySelectedTitle">
+      <segment>
+        <source>Hide Already Selected</source>
+      </segment>
+    </unit>
+    <unit id="36" name="HideAlreadySelectedDescription">
+      <segment>
+        <source>Hide already selected options in the dropdown.</source>
+      </segment>
+    </unit>
+    <unit id="37" name="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="38" name="StatusDescription">
+      <segment>
+        <source>Add status to Select with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="39" name="MaxCountTitle">
+      <segment>
+        <source>Max Count</source>
+      </segment>
+    </unit>
+    <unit id="40" name="MaxCountDescription">
+      <segment>
+        <source>You can set the maxCount prop to control the max number of items can be selected. When the limit is exceeded, the options will become disabled.</source>
+      </segment>
+    </unit>
+    <unit id="41" name="ResponsiveMaxTagCountTitle">
+      <segment>
+        <source>Responsive maxTagCount</source>
+      </segment>
+    </unit>
+    <unit id="42" name="ResponsiveMaxTagCountDescription">
+      <segment>
+        <source>Auto collapse to tag with responsive case. Not recommend use in large form case since responsive calculation has a perf cost.</source>
+      </segment>
+    </unit>
+    <unit id="43" name="PrefixAndSuffixTitle">
+      <segment>
+        <source>Prefix and Suffix</source>
+      </segment>
+    </unit>
+    <unit id="44" name="PrefixAndSuffixDescription">
+      <segment>
+        <source>Custom prefix and suffixIcon.</source>
+      </segment>
+    </unit>
+    <unit id="45" name="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+      </segment>
+    </unit>
+    <unit id="46" name="P2HeaderJack">
+      <segment>
+        <source>Jack</source>
+      </segment>
+    </unit>
+    <unit id="47" name="P2HeaderLucy">
+      <segment>
+        <source>Lucy</source>
+      </segment>
+    </unit>
+    <unit id="48" name="P2HeaderYiminghe">
+      <segment>
+        <source>Yiminghe</source>
+      </segment>
+    </unit>
+    <unit id="49" name="P2HeaderDisabled">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="50" name="P2HeaderTom">
+      <segment>
+        <source>Tom</source>
+      </segment>
+    </unit>
+    <unit id="51" name="P2PlaceholderTextSelectAPerson">
+      <segment>
+        <source>Select a person</source>
+      </segment>
+    </unit>
+    <unit id="52" name="P2PlaceholderTextTagsMode">
+      <segment>
+        <source>Tags Mode</source>
+      </segment>
+    </unit>
+    <unit id="53" name="P2DescriptionChina">
+      <segment>
+        <source>China</source>
+      </segment>
+    </unit>
+    <unit id="54" name="P2HeaderChina">
+      <segment>
+        <source>China</source>
+      </segment>
+    </unit>
+    <unit id="55" name="P2DescriptionUsa">
+      <segment>
+        <source>United States</source>
+      </segment>
+    </unit>
+    <unit id="56" name="P2HeaderUsa">
+      <segment>
+        <source>USA</source>
+      </segment>
+    </unit>
+    <unit id="57" name="P2DescriptionJapan">
+      <segment>
+        <source>Japan</source>
+      </segment>
+    </unit>
+    <unit id="58" name="P2HeaderJapan">
+      <segment>
+        <source>Japan</source>
+      </segment>
+    </unit>
+    <unit id="59" name="P2DescriptionKorea">
+      <segment>
+        <source>Korea</source>
+      </segment>
+    </unit>
+    <unit id="60" name="P2HeaderKorea">
+      <segment>
+        <source>Korea</source>
+      </segment>
+    </unit>
+    <unit id="61" name="P2HeaderChloe">
+      <segment>
+        <source>Chloe</source>
+      </segment>
+    </unit>
+    <unit id="62" name="P2HeaderLucas">
+      <segment>
+        <source>Lucas</source>
+      </segment>
+    </unit>
+    <unit id="63" name="P2PlaceholderTextOutline">
+      <segment>
+        <source>Outline</source>
+      </segment>
+    </unit>
+    <unit id="64" name="P2HeaderYiminghe2">
+      <segment>
+        <source>yiminghe</source>
+      </segment>
+    </unit>
+    <unit id="65" name="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+      </segment>
+    </unit>
+    <unit id="66" name="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+      </segment>
+    </unit>
+    <unit id="67" name="P2PlaceholderTextInsertedAreRemoved">
+      <segment>
+        <source>Inserted are removed</source>
+      </segment>
+    </unit>
+    <unit id="68" name="P2HeaderApples">
+      <segment>
+        <source>Apples</source>
+      </segment>
+    </unit>
+    <unit id="69" name="P2HeaderNails">
+      <segment>
+        <source>Nails</source>
+      </segment>
+    </unit>
+    <unit id="70" name="P2HeaderBananas">
+      <segment>
+        <source>Bananas</source>
+      </segment>
+    </unit>
+    <unit id="71" name="P2HeaderHelicopters">
+      <segment>
+        <source>Helicopters</source>
+      </segment>
+    </unit>
+    <unit id="72" name="P2HeaderAvaSwift">
+      <segment>
+        <source>Ava Swift</source>
+      </segment>
+    </unit>
+    <unit id="73" name="P2HeaderColeReed">
+      <segment>
+        <source>Cole Reed</source>
+      </segment>
+    </unit>
+    <unit id="74" name="P2HeaderMiaBlake">
+      <segment>
+        <source>Mia Blake</source>
+      </segment>
+    </unit>
+    <unit id="75" name="P2HeaderJakeStone">
+      <segment>
+        <source>Jake Stone</source>
+      </segment>
+    </unit>
+    <unit id="76" name="P2HeaderLilyLane">
+      <segment>
+        <source>Lily Lane</source>
+      </segment>
+    </unit>
+    <unit id="77" name="P2HeaderRyanChase">
+      <segment>
+        <source>Ryan Chase</source>
+      </segment>
+    </unit>
+    <unit id="78" name="P2HeaderZoeFox">
+      <segment>
+        <source>Zoe Fox</source>
+      </segment>
+    </unit>
+    <unit id="79" name="P2HeaderAlexGrey">
+      <segment>
+        <source>Alex Grey</source>
+      </segment>
+    </unit>
+    <unit id="80" name="P2HeaderElleBlair">
+      <segment>
+        <source>Elle Blair</source>
+      </segment>
+    </unit>
+    <unit id="81" name="P2PlaceholderTextSelectItem">
+      <segment>
+        <source>Select Item...</source>
+      </segment>
+    </unit>
+    <unit id="82" name="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="83" name="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="84" name="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="85" name="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="86" name="P2GroupManager">
+      <segment>
+        <source>Manager</source>
+      </segment>
+    </unit>
+    <unit id="87" name="P2GroupEngineer">
+      <segment>
+        <source>Engineer</source>
+      </segment>
+    </unit>
+    <unit id="88" name="P2ContentUser">
+      <segment>
+        <source>User</source>
+      </segment>
+    </unit>
+    <unit id="89" name="P2TextLongLabelPrefix">
+      <segment>
+        <source>Long label: </source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

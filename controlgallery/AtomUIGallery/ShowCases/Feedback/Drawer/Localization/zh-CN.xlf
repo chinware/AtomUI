@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.DrawerShowCaseLangResourceKind">
+    <unit id="1" name="PageSubtitle">
+      <segment>
+        <source>A slide-out panel for contextual tasks.</source>
+        <target state="translated">用于上下文任务的滑出式面板。</target>
+      </segment>
+    </unit>
+    <unit id="2" name="PageDescription">
+      <segment>
+        <source>Drawer opens from the edge of the window or a local container, keeping users in the current workflow while exposing secondary actions, forms, or details.</source>
+        <target state="translated">Drawer 从窗口边缘或局部容器边缘滑出，在不打断当前流程的情况下展示次级操作、表单或详情。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反馈</target>
+      </segment>
+    </unit>
+    <unit id="4" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="5" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>Basic drawer.</source>
+        <target state="translated">基础抽屉。</target>
+      </segment>
+    </unit>
+    <unit id="8" name="MultiLevelTitle">
+      <segment>
+        <source>Multi-level drawer</source>
+        <target state="translated">多层抽屉</target>
+      </segment>
+    </unit>
+    <unit id="9" name="MultiLevelDescription">
+      <segment>
+        <source>Open a new drawer on top of an existing drawer to handle multi branch tasks.</source>
+        <target state="translated">在已有抽屉上打开新的抽屉，用于处理多分支任务。</target>
+      </segment>
+    </unit>
+    <unit id="10" name="ExtraAndFooterTitle">
+      <segment>
+        <source>Extra and Footer</source>
+        <target state="translated">额外区域和页脚</target>
+      </segment>
+    </unit>
+    <unit id="11" name="ExtraAndFooterDescription">
+      <segment>
+        <source>Set the header extra area and footer area.</source>
+        <target state="translated">设置头部额外区域和页脚区域。</target>
+      </segment>
+    </unit>
+    <unit id="12" name="FormInDrawerTitle">
+      <segment>
+        <source>Form in Drawer</source>
+        <target state="translated">抽屉表单</target>
+      </segment>
+    </unit>
+    <unit id="13" name="FormInDrawerDescription">
+      <segment>
+        <source>Use a form inside a drawer to complete create tasks without leaving the current page.</source>
+        <target state="translated">在抽屉中使用表单，适合不离开当前页面完成创建任务。</target>
+      </segment>
+    </unit>
+    <unit id="14" name="NoMaskTitle">
+      <segment>
+        <source>No Mask</source>
+        <target state="translated">无遮罩</target>
+      </segment>
+    </unit>
+    <unit id="15" name="NoMaskDescription">
+      <segment>
+        <source>Without a mask.</source>
+        <target state="translated">不显示遮罩。</target>
+      </segment>
+    </unit>
+    <unit id="16" name="CustomPlacementTitle">
+      <segment>
+        <source>Custom Placement</source>
+        <target state="translated">自定义位置</target>
+      </segment>
+    </unit>
+    <unit id="17" name="CustomPlacementDescription">
+      <segment>
+        <source>The Drawer can appear from any edge of the screen.</source>
+        <target state="translated">抽屉可以从屏幕任意边缘弹出。</target>
+      </segment>
+    </unit>
+    <unit id="18" name="RenderInCurrentAreaTitle">
+      <segment>
+        <source>Render in current area</source>
+        <target state="translated">在当前区域渲染</target>
+      </segment>
+    </unit>
+    <unit id="19" name="RenderInCurrentAreaDescription">
+      <segment>
+        <source>Render in current area.</source>
+        <target state="translated">在当前区域中渲染。</target>
+      </segment>
+    </unit>
+    <unit id="20" name="PresetSizeTitle">
+      <segment>
+        <source>Preset size</source>
+        <target state="translated">预设尺寸</target>
+      </segment>
+    </unit>
+    <unit id="21" name="PresetSizeDescription">
+      <segment>
+        <source>The default width (or height) of Drawer is 378px, and there is a preset large size 736px.</source>
+        <target state="translated">抽屉默认宽度（或高度）为 378px，并提供 736px 的大尺寸预设。</target>
+      </segment>
+    </unit>
+    <unit id="22" name="P2TitleBasicDrawer">
+      <segment>
+        <source>Basic Drawer</source>
+        <target state="translated">基础抽屉</target>
+      </segment>
+    </unit>
+    <unit id="23" name="P2TextSomeContents">
+      <segment>
+        <source>Some contents...</source>
+        <target state="translated">一些内容...</target>
+      </segment>
+    </unit>
+    <unit id="24" name="P2TitleFirstLevelDrawer">
+      <segment>
+        <source>First-level Drawer</source>
+        <target state="translated">一级抽屉</target>
+      </segment>
+    </unit>
+    <unit id="25" name="P2TitleTwoLevelDrawer">
+      <segment>
+        <source>Two-level Drawer</source>
+        <target state="translated">二级抽屉</target>
+      </segment>
+    </unit>
+    <unit id="26" name="P2TextPlacement">
+      <segment>
+        <source>Placement:</source>
+        <target state="translated">弹出位置：</target>
+      </segment>
+    </unit>
+    <unit id="27" name="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">左侧</target>
+      </segment>
+    </unit>
+    <unit id="28" name="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">顶部</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">右侧</target>
+      </segment>
+    </unit>
+    <unit id="30" name="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">底部</target>
+      </segment>
+    </unit>
+    <unit id="31" name="P2ContentTwoLevelDrawer">
+      <segment>
+        <source>Two-level drawer</source>
+        <target state="translated">二级抽屉</target>
+      </segment>
+    </unit>
+    <unit id="32" name="P2ContentCancel">
+      <segment>
+        <source>Cancel</source>
+        <target state="translated">取消</target>
+      </segment>
+    </unit>
+    <unit id="33" name="P2ContentOk">
+      <segment>
+        <source>Ok</source>
+        <target state="translated">确定</target>
+      </segment>
+    </unit>
+    <unit id="34" name="P2ContentSubmit">
+      <segment>
+        <source>Submit</source>
+        <target state="translated">提交</target>
+      </segment>
+    </unit>
+    <unit id="35" name="P2ContentNewAccount">
+      <segment>
+        <source>New account</source>
+        <target state="translated">新建账号</target>
+      </segment>
+    </unit>
+    <unit id="36" name="P2ContentEdit">
+      <segment>
+        <source>Edit</source>
+        <target state="translated">编辑</target>
+      </segment>
+    </unit>
+    <unit id="37" name="P2ContentUpload">
+      <segment>
+        <source>Upload</source>
+        <target state="translated">上传</target>
+      </segment>
+    </unit>
+    <unit id="38" name="P2ContentDelete">
+      <segment>
+        <source>Delete</source>
+        <target state="translated">删除</target>
+      </segment>
+    </unit>
+    <unit id="39" name="P2TitleCreateNewAccount">
+      <segment>
+        <source>Create a new account</source>
+        <target state="translated">创建一个新账号</target>
+      </segment>
+    </unit>
+    <unit id="40" name="P2LabelTextName">
+      <segment>
+        <source>Name</source>
+        <target state="translated">名称</target>
+      </segment>
+    </unit>
+    <unit id="41" name="P2LabelTextUrl">
+      <segment>
+        <source>Url</source>
+        <target state="translated">地址</target>
+      </segment>
+    </unit>
+    <unit id="42" name="P2LabelTextOwner">
+      <segment>
+        <source>Owner</source>
+        <target state="translated">负责人</target>
+      </segment>
+    </unit>
+    <unit id="43" name="P2LabelTextType">
+      <segment>
+        <source>Type</source>
+        <target state="translated">类型</target>
+      </segment>
+    </unit>
+    <unit id="44" name="P2LabelTextApprover">
+      <segment>
+        <source>Approver</source>
+        <target state="translated">审批人</target>
+      </segment>
+    </unit>
+    <unit id="45" name="P2LabelTextDateTime">
+      <segment>
+        <source>DateTime</source>
+        <target state="translated">日期时间</target>
+      </segment>
+    </unit>
+    <unit id="46" name="P2LabelTextDescription">
+      <segment>
+        <source>Description</source>
+        <target state="translated">描述</target>
+      </segment>
+    </unit>
+    <unit id="47" name="P2PlaceholderTextPleaseEnterUserName">
+      <segment>
+        <source>Please enter user name</source>
+        <target state="translated">请输入用户名</target>
+      </segment>
+    </unit>
+    <unit id="48" name="P2PlaceholderTextPleaseEnterUrl">
+      <segment>
+        <source>Please enter url</source>
+        <target state="translated">请输入地址</target>
+      </segment>
+    </unit>
+    <unit id="49" name="P2PlaceholderTextPleaseSelectOwner">
+      <segment>
+        <source>Please select an owner</source>
+        <target state="translated">请选择负责人</target>
+      </segment>
+    </unit>
+    <unit id="50" name="P2PlaceholderTextPleaseChooseType">
+      <segment>
+        <source>Please choose the type</source>
+        <target state="translated">请选择类型</target>
+      </segment>
+    </unit>
+    <unit id="51" name="P2PlaceholderTextPleaseChooseApprover">
+      <segment>
+        <source>Please choose the approver</source>
+        <target state="translated">请选择审批人</target>
+      </segment>
+    </unit>
+    <unit id="52" name="P2PlaceholderTextStartDate">
+      <segment>
+        <source>Start date</source>
+        <target state="translated">开始日期</target>
+      </segment>
+    </unit>
+    <unit id="53" name="P2SecondaryPlaceholderTextEndDate">
+      <segment>
+        <source>End date</source>
+        <target state="translated">结束日期</target>
+      </segment>
+    </unit>
+    <unit id="54" name="P2PlaceholderTextPleaseEnterUrlDescription">
+      <segment>
+        <source>Please enter url description</source>
+        <target state="translated">请输入地址描述</target>
+      </segment>
+    </unit>
+    <unit id="55" name="P2HeaderXiaoxiaoFu">
+      <segment>
+        <source>Xiaoxiao Fu</source>
+        <target state="translated">付小小</target>
+      </segment>
+    </unit>
+    <unit id="56" name="P2HeaderMaomaoZhou">
+      <segment>
+        <source>Maomao Zhou</source>
+        <target state="translated">周毛毛</target>
+      </segment>
+    </unit>
+    <unit id="57" name="P2HeaderPrivate">
+      <segment>
+        <source>private</source>
+        <target state="translated">私有</target>
+      </segment>
+    </unit>
+    <unit id="58" name="P2HeaderPublic">
+      <segment>
+        <source>public</source>
+        <target state="translated">公开</target>
+      </segment>
+    </unit>
+    <unit id="59" name="P2HeaderJackMa">
+      <segment>
+        <source>Jack Ma</source>
+        <target state="translated">马杰克</target>
+      </segment>
+    </unit>
+    <unit id="60" name="P2HeaderTomLiu">
+      <segment>
+        <source>Tom Liu</source>
+        <target state="translated">刘汤姆</target>
+      </segment>
+    </unit>
+    <unit id="61" name="P2TextRenderInThis">
+      <segment>
+        <source>Render in this</source>
+        <target state="translated">在此区域渲染</target>
+      </segment>
+    </unit>
+    <unit id="62" name="P2ContentOpenDefaultSizeN378px">
+      <segment>
+        <source>Open Default Size (378px)</source>
+        <target state="translated">打开默认尺寸 (378px)</target>
+      </segment>
+    </unit>
+    <unit id="63" name="P2ContentOpenLargeSizeN736px">
+      <segment>
+        <source>Open Large Size (736px)</source>
+        <target state="translated">打开大尺寸 (736px)</target>
+      </segment>
+    </unit>
+    <unit id="64" name="P2ContentOpenCustomSizeN400px">
+      <segment>
+        <source>Open Custom Size (400px)</source>
+        <target state="translated">打开自定义尺寸 (400px)</target>
+      </segment>
+    </unit>
+    <unit id="65" name="P2ContentOpenCustomSizeN50">
+      <segment>
+        <source>Open Custom Size (50%)</source>
+        <target state="translated">打开自定义尺寸 (50%)</target>
+      </segment>
+    </unit>
+    <unit id="66" name="P2ContentOpen">
+      <segment>
+        <source>Open</source>
+        <target state="translated">打开</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

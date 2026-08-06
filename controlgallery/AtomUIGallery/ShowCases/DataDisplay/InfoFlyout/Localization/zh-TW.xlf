@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>The most basic example. The size of the floating layer depends on the contents region.</source>
+        <target state="translated">最基礎的示例。浮層大小取決於內容區域。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="TriggerWaysTitle">
+      <segment>
+        <source>Three ways to trigger</source>
+        <target state="translated">三種觸發方式</target>
+      </segment>
+    </unit>
+    <unit id="4" name="TriggerWaysDescription">
+      <segment>
+        <source>Mouse to click, focus and move in.</source>
+        <target state="translated">通過鼠標點擊、獲得焦點和移入觸發。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">彈出位置</target>
+      </segment>
+    </unit>
+    <unit id="6" name="PlacementDescription">
+      <segment>
+        <source>There are 12 placement options available.</source>
+        <target state="translated">提供 12 種彈出位置。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="ArrowTitle">
+      <segment>
+        <source>Arrow</source>
+        <target state="translated">箭頭</target>
+      </segment>
+    </unit>
+    <unit id="8" name="ArrowDescription">
+      <segment>
+        <source>Support show, hide or keep arrow in the center.</source>
+        <target state="translated">支持顯示、隱藏或保持箭頭居中。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="P2TextTheMostBasicExample">
+      <segment>
+        <source>The most basic example.</source>
+        <target state="translated">這是最基礎的示例。</target>
+      </segment>
+    </unit>
+    <unit id="10" name="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+        <target state="translated">移入我</target>
+      </segment>
+    </unit>
+    <unit id="11" name="P2ContentFocusMe">
+      <segment>
+        <source>Focus me</source>
+        <target state="translated">聚焦我</target>
+      </segment>
+    </unit>
+    <unit id="12" name="P2ContentClickMe">
+      <segment>
+        <source>Click me</source>
+        <target state="translated">點擊我</target>
+      </segment>
+    </unit>
+    <unit id="13" name="P2ContentShow">
+      <segment>
+        <source>Show</source>
+        <target state="translated">顯示</target>
+      </segment>
+    </unit>
+    <unit id="14" name="P2ContentHide">
+      <segment>
+        <source>Hide</source>
+        <target state="translated">隱藏</target>
+      </segment>
+    </unit>
+    <unit id="15" name="P2ContentCenter">
+      <segment>
+        <source>Center</source>
+        <target state="translated">居中</target>
+      </segment>
+    </unit>
+    <unit id="16" name="P2ContentLT">
+      <segment>
+        <source>LT</source>
+        <target state="translated">左上</target>
+      </segment>
+    </unit>
+    <unit id="17" name="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">左側</target>
+      </segment>
+    </unit>
+    <unit id="18" name="P2ContentLB">
+      <segment>
+        <source>LB</source>
+        <target state="translated">左下</target>
+      </segment>
+    </unit>
+    <unit id="19" name="P2ContentTL">
+      <segment>
+        <source>TL</source>
+        <target state="translated">上左</target>
+      </segment>
+    </unit>
+    <unit id="20" name="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">上方</target>
+      </segment>
+    </unit>
+    <unit id="21" name="P2ContentTR">
+      <segment>
+        <source>TR</source>
+        <target state="translated">上右</target>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentRT">
+      <segment>
+        <source>RT</source>
+        <target state="translated">右上</target>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">右側</target>
+      </segment>
+    </unit>
+    <unit id="24" name="P2ContentRB">
+      <segment>
+        <source>RB</source>
+        <target state="translated">右下</target>
+      </segment>
+    </unit>
+    <unit id="25" name="P2ContentBL">
+      <segment>
+        <source>BL</source>
+        <target state="translated">下左</target>
+      </segment>
+    </unit>
+    <unit id="26" name="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">下方</target>
+      </segment>
+    </unit>
+    <unit id="27" name="P2ContentBR">
+      <segment>
+        <source>BR</source>
+        <target state="translated">下右</target>
+      </segment>
+    </unit>
+    <unit id="28" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="29" name="PageSubtitle">
+      <segment>
+        <source>Display rich contextual content in a floating layer.</source>
+        <target state="translated">在浮層中展示更豐富的上下文內容。</target>
+      </segment>
+    </unit>
+    <unit id="30" name="PageDescription">
+      <segment>
+        <source>InfoFlyout anchors a custom floating panel to a target control, with configurable trigger modes, placement and arrow behavior.</source>
+        <target state="translated">InfoFlyout 可以把自定義浮層錨定到目標控件上，並支持配置觸發方式、彈出位置和箭頭行為。</target>
+      </segment>
+    </unit>
+    <unit id="31" name="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">數據展示</target>
+      </segment>
+    </unit>
+    <unit id="32" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

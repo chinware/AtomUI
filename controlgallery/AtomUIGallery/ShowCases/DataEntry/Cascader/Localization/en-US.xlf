@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CascaderShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="2" name="ScenarioMultiple">
+      <segment>
+        <source>Multiple</source>
+      </segment>
+    </unit>
+    <unit id="3" name="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+      </segment>
+    </unit>
+    <unit id="4" name="ScenarioCascaderView">
+      <segment>
+        <source>CascaderView</source>
+      </segment>
+    </unit>
+    <unit id="5" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="6" name="PageSubtitle">
+      <segment>
+        <source>Hierarchical selection and cascaded option browsing.</source>
+      </segment>
+    </unit>
+    <unit id="7" name="PageDescription">
+      <segment>
+        <source>Cascader combines an input selector with linked option columns, while CascaderView exposes the column browser directly for embedded selection workflows.</source>
+      </segment>
+    </unit>
+    <unit id="8" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+      </segment>
+    </unit>
+    <unit id="9" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="10" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="11" name="BasicDescription">
+      <segment>
+        <source>Cascade selection box for selecting province/city/district.</source>
+      </segment>
+    </unit>
+    <unit id="12" name="DefaultValueTitle">
+      <segment>
+        <source>Default value</source>
+      </segment>
+    </unit>
+    <unit id="13" name="DefaultValueDescription">
+      <segment>
+        <source>Specifies default value by an array.</source>
+      </segment>
+    </unit>
+    <unit id="14" name="HoverTitle">
+      <segment>
+        <source>Hover</source>
+      </segment>
+    </unit>
+    <unit id="15" name="HoverDescription">
+      <segment>
+        <source>Hover to expand sub menu, click to select option.</source>
+      </segment>
+    </unit>
+    <unit id="16" name="DisabledOptionTitle">
+      <segment>
+        <source>Disabled option</source>
+      </segment>
+    </unit>
+    <unit id="17" name="DisabledOptionDescription">
+      <segment>
+        <source>Disable option by specifying the disabled property in options.</source>
+      </segment>
+    </unit>
+    <unit id="18" name="ChangeOnSelectTitle">
+      <segment>
+        <source>Change on select</source>
+      </segment>
+    </unit>
+    <unit id="19" name="ChangeOnSelectDescription">
+      <segment>
+        <source>Allows the selection of only parent options.</source>
+      </segment>
+    </unit>
+    <unit id="20" name="MultipleTitle">
+      <segment>
+        <source>Multiple</source>
+      </segment>
+    </unit>
+    <unit id="21" name="MultipleDescription">
+      <segment>
+        <source>Select multiple options. Disable the checkbox by adding the disableCheckbox property and selecting a specific item. The style of the disable can be modified by the className.</source>
+      </segment>
+    </unit>
+    <unit id="22" name="SelectionBindingTitle">
+      <segment>
+        <source>SelectedOption / SelectedOptions binding</source>
+      </segment>
+    </unit>
+    <unit id="23" name="SelectionBindingDescription">
+      <segment>
+        <source>Bind SelectedOption and SelectedOptions to view-model values, then click options or action buttons to watch both sides stay synchronized.</source>
+      </segment>
+    </unit>
+    <unit id="24" name="SelectionBindingValueTitle">
+      <segment>
+        <source>Bound value</source>
+      </segment>
+    </unit>
+    <unit id="25" name="SelectionBindingSelectFirst">
+      <segment>
+        <source>Select West Lake</source>
+      </segment>
+    </unit>
+    <unit id="26" name="SelectionBindingSelectSecond">
+      <segment>
+        <source>Select Lingyin shi</source>
+      </segment>
+    </unit>
+    <unit id="27" name="SelectionBindingSelectBoth">
+      <segment>
+        <source>Select both</source>
+      </segment>
+    </unit>
+    <unit id="28" name="SelectionBindingClear">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="29" name="ShowCheckedStrategyTitle">
+      <segment>
+        <source>ShowCheckedStrategy</source>
+      </segment>
+    </unit>
+    <unit id="30" name="ShowCheckedStrategyDescription">
+      <segment>
+        <source>Shows a selected item in a box using showCheckedStrategy.</source>
+      </segment>
+    </unit>
+    <unit id="31" name="SearchTitle">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="32" name="SearchDescription">
+      <segment>
+        <source>Search and select options directly.</source>
+      </segment>
+    </unit>
+    <unit id="33" name="LoadOptionsLazilyTitle">
+      <segment>
+        <source>Load Options Lazily</source>
+      </segment>
+    </unit>
+    <unit id="34" name="LoadOptionsLazilyDescription">
+      <segment>
+        <source>Load options lazily with loadData.</source>
+      </segment>
+    </unit>
+    <unit id="35" name="PrefixAndSuffixTitle">
+      <segment>
+        <source>Prefix and Suffix</source>
+      </segment>
+    </unit>
+    <unit id="36" name="PrefixAndSuffixDescription">
+      <segment>
+        <source>Use prefix to customize the prefix content, use suffixIcon to customize the selection box suffix icon, and use expandIcon to customize the current item expand icon.</source>
+      </segment>
+    </unit>
+    <unit id="37" name="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+      </segment>
+    </unit>
+    <unit id="38" name="VariantsDescription">
+      <segment>
+        <source>Variants of Cascader, there are four variants: outlined filled borderless and underlined.</source>
+      </segment>
+    </unit>
+    <unit id="39" name="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="40" name="PlacementDescription">
+      <segment>
+        <source>You can manually specify the position of the popup via placement.</source>
+      </segment>
+    </unit>
+    <unit id="41" name="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="42" name="StatusDescription">
+      <segment>
+        <source>Add status to Cascader with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="43" name="SizeTitle">
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="44" name="SizeDescription">
+      <segment>
+        <source>Cascader supports large, middle, small, and Custom sizes with local height overrides.</source>
+      </segment>
+    </unit>
+    <unit id="45" name="BasicCascaderViewTitle">
+      <segment>
+        <source>Basic CascaderView</source>
+      </segment>
+    </unit>
+    <unit id="46" name="BasicCascaderViewDescription">
+      <segment>
+        <source>The most basic usage.</source>
+      </segment>
+    </unit>
+    <unit id="47" name="EmptyIndicatorTitle">
+      <segment>
+        <source>Custom empty indicator</source>
+      </segment>
+    </unit>
+    <unit id="48" name="EmptyIndicatorDescription">
+      <segment>
+        <source>Use EmptyIndicator to replace the default CascaderView empty content.</source>
+      </segment>
+    </unit>
+    <unit id="49" name="GenerateByTemplateTitle">
+      <segment>
+        <source>Generate by template</source>
+      </segment>
+    </unit>
+    <unit id="50" name="GenerateByTemplateDescription">
+      <segment>
+        <source>You can use the Template mechanism to generate tree nodes</source>
+      </segment>
+    </unit>
+    <unit id="51" name="SearchableTitle">
+      <segment>
+        <source>Searchable</source>
+      </segment>
+    </unit>
+    <unit id="52" name="SearchableDescription">
+      <segment>
+        <source>Searchable CascaderView.</source>
+      </segment>
+    </unit>
+    <unit id="53" name="SearchableItemsSourceTitle">
+      <segment>
+        <source>Searchable</source>
+      </segment>
+    </unit>
+    <unit id="54" name="SearchableItemsSourceDescription">
+      <segment>
+        <source>Searchable CascaderView with ItemsSource.</source>
+      </segment>
+    </unit>
+    <unit id="55" name="DefaultExpandedTitle">
+      <segment>
+        <source>Default expanded</source>
+      </segment>
+    </unit>
+    <unit id="56" name="DefaultExpandedDescription">
+      <segment>
+        <source>You can set the default expansion path..</source>
+      </segment>
+    </unit>
+    <unit id="57" name="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+      </segment>
+    </unit>
+    <unit id="58" name="P2TextCustomEmptyIndicator">
+      <segment>
+        <source>No options to display</source>
+      </segment>
+    </unit>
+    <unit id="59" name="P2PlaceholderSizeTypeLarge">
+      <segment>
+        <source>SizeType: Large</source>
+      </segment>
+    </unit>
+    <unit id="60" name="P2PlaceholderSizeTypeMiddle">
+      <segment>
+        <source>SizeType: Middle</source>
+      </segment>
+    </unit>
+    <unit id="61" name="P2PlaceholderSizeTypeSmall">
+      <segment>
+        <source>SizeType: Small</source>
+      </segment>
+    </unit>
+    <unit id="62" name="P2PlaceholderSizeTypeCustom">
+      <segment>
+        <source>SizeType: Custom</source>
+      </segment>
+    </unit>
+    <unit id="63" name="P2TitleShowcheckedstrategyAll">
+      <segment>
+        <source>ShowCheckedStrategy=All</source>
+      </segment>
+    </unit>
+    <unit id="64" name="P2TitleShowcheckedstrategyShowparent">
+      <segment>
+        <source>ShowCheckedStrategy=ShowParent</source>
+      </segment>
+    </unit>
+    <unit id="65" name="P2TextSelectedOptionBinding">
+      <segment>
+        <source>SelectedOption</source>
+      </segment>
+    </unit>
+    <unit id="66" name="P2TextSelectedOptionsBinding">
+      <segment>
+        <source>SelectedOptions</source>
+      </segment>
+    </unit>
+    <unit id="67" name="P2HeaderZhejiang">
+      <segment>
+        <source>Zhejiang</source>
+      </segment>
+    </unit>
+    <unit id="68" name="P2HeaderHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+      </segment>
+    </unit>
+    <unit id="69" name="P2HeaderWestLake">
+      <segment>
+        <source>West Lake</source>
+      </segment>
+    </unit>
+    <unit id="70" name="P2HeaderLingyinShi">
+      <segment>
+        <source>Lingyin shi</source>
+      </segment>
+    </unit>
+    <unit id="71" name="P2HeaderHefangJie">
+      <segment>
+        <source>Hefang jie</source>
+      </segment>
+    </unit>
+    <unit id="72" name="P2HeaderNingbo">
+      <segment>
+        <source>Ningbo</source>
+      </segment>
+    </unit>
+    <unit id="73" name="P2HeaderTianyiPavilion">
+      <segment>
+        <source>Tianyi Pavilion</source>
+      </segment>
+    </unit>
+    <unit id="74" name="P2HeaderMoonLake">
+      <segment>
+        <source>Moon Lake</source>
+      </segment>
+    </unit>
+    <unit id="75" name="P2HeaderJiangsu">
+      <segment>
+        <source>Jiangsu</source>
+      </segment>
+    </unit>
+    <unit id="76" name="P2HeaderNanjing">
+      <segment>
+        <source>Nanjing</source>
+      </segment>
+    </unit>
+    <unit id="77" name="P2HeaderZhongHuaMen">
+      <segment>
+        <source>Zhong Hua Men</source>
+      </segment>
+    </unit>
+    <unit id="78" name="P2HeaderSunYatSenMausoleum">
+      <segment>
+        <source>Sun Yat-sen Mausoleum</source>
+      </segment>
+    </unit>
+    <unit id="79" name="P2HeaderSuzhou">
+      <segment>
+        <source>Suzhou</source>
+      </segment>
+    </unit>
+    <unit id="80" name="P2HeaderHumbleAdministratorsGarden">
+      <segment>
+        <source>Humble Administrator's Garden</source>
+      </segment>
+    </unit>
+    <unit id="81" name="P2HeaderLingeringGarden">
+      <segment>
+        <source>Lingering Garden</source>
+      </segment>
+    </unit>
+    <unit id="82" name="P2PlaceholderTextSearch">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="83" name="P2HeaderXisha">
+      <segment>
+        <source>Xisha</source>
+      </segment>
+    </unit>
+    <unit id="84" name="P2HeaderLight">
+      <segment>
+        <source>Light</source>
+      </segment>
+    </unit>
+    <unit id="85" name="P2HeaderBamboo">
+      <segment>
+        <source>Bamboo</source>
+      </segment>
+    </unit>
+    <unit id="86" name="P2HeaderLittle">
+      <segment>
+        <source>Little</source>
+      </segment>
+    </unit>
+    <unit id="87" name="P2HeaderBambooBoy">
+      <segment>
+        <source>Bamboo Boy</source>
+      </segment>
+    </unit>
+    <unit id="88" name="P2HeaderTadpole">
+      <segment>
+        <source>Tadpole</source>
+      </segment>
+    </unit>
+    <unit id="89" name="P2HeaderLittleTadpole">
+      <segment>
+        <source>Little Tadpole</source>
+      </segment>
+    </unit>
+    <unit id="90" name="P2HeaderZhangSan">
+      <segment>
+        <source>Zhang San</source>
+      </segment>
+    </unit>
+    <unit id="91" name="P2HeaderGreen">
+      <segment>
+        <source>Green</source>
+      </segment>
+    </unit>
+    <unit id="92" name="P2HeaderWildWolf">
+      <segment>
+        <source>Wild Wolf</source>
+      </segment>
+    </unit>
+    <unit id="93" name="P2HeaderGrayWolf">
+      <segment>
+        <source>Gray Wolf</source>
+      </segment>
+    </unit>
+    <unit id="94" name="P2HeaderYellow">
+      <segment>
+        <source>Yellow</source>
+      </segment>
+    </unit>
+    <unit id="95" name="P2HeaderJiaoTailang">
+      <segment>
+        <source>Jiao Tailang</source>
+      </segment>
+    </unit>
+    <unit id="96" name="P2HeaderBanban">
+      <segment>
+        <source>Banban</source>
+      </segment>
+    </unit>
+    <unit id="97" name="P2HeaderBig">
+      <segment>
+        <source>Big</source>
+      </segment>
+    </unit>
+    <unit id="98" name="P2HeaderFeifei">
+      <segment>
+        <source>Feifei</source>
+      </segment>
+    </unit>
+    <unit id="99" name="P2HeaderXiaoXingxing">
+      <segment>
+        <source>Xiao Xingxing</source>
+      </segment>
+    </unit>
+    <unit id="100" name="P2HeaderXiaoHuihui">
+      <segment>
+        <source>Xiao Huihui</source>
+      </segment>
+    </unit>
+    <unit id="101" name="P2HeaderDynamicOptionFormat">
+      <segment>
+        <source>{0} Dynamic {1}</source>
+      </segment>
+    </unit>
+    <unit id="102" name="P2TitleByTemplate">
+      <segment>
+        <source>By template</source>
+      </segment>
+    </unit>
+    <unit id="103" name="P2TextPlacement">
+      <segment>
+        <source>Placement:</source>
+      </segment>
+    </unit>
+    <unit id="104" name="P2ContentTopleft">
+      <segment>
+        <source>TopLeft</source>
+      </segment>
+    </unit>
+    <unit id="105" name="P2ContentTopright">
+      <segment>
+        <source>TopRight</source>
+      </segment>
+    </unit>
+    <unit id="106" name="P2ContentBottomleft">
+      <segment>
+        <source>BottomLeft</source>
+      </segment>
+    </unit>
+    <unit id="107" name="P2ContentBottomright">
+      <segment>
+        <source>BottomRight</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

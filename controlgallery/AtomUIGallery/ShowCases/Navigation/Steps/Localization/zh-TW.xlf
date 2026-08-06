@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.StepsShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="2" name="ScenarioInteractive">
+      <segment>
+        <source>Interactive</source>
+        <target state="translated">交互</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ScenarioVertical">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">垂直</target>
+      </segment>
+    </unit>
+    <unit id="4" name="ScenarioDotClickable">
+      <segment>
+        <source>Dot &amp; Clickable</source>
+        <target state="translated">點狀與可點擊</target>
+      </segment>
+    </unit>
+    <unit id="5" name="ScenarioNavigation">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">導航</target>
+      </segment>
+    </unit>
+    <unit id="6" name="ScenarioProgress">
+      <segment>
+        <source>Progress</source>
+        <target state="translated">進度</target>
+      </segment>
+    </unit>
+    <unit id="7" name="ScenarioInline">
+      <segment>
+        <source>Inline</source>
+        <target state="translated">內聯</target>
+      </segment>
+    </unit>
+    <unit id="8" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="9" name="PageSubtitle">
+      <segment>
+        <source>Guide users through ordered tasks and process states.</source>
+        <target state="translated">引導使用者理解有順序的任務和流程狀態。</target>
+      </segment>
+    </unit>
+    <unit id="10" name="PageDescription">
+      <segment>
+        <source>Steps display a sequence of tasks, progress, navigation states, and optional step content for workflows that need clear stage awareness.</source>
+        <target state="translated">Steps 用於展示任務序列、進度、導航狀態以及可選的步驟內容，適合需要清晰階段感的流程。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">導航</target>
+      </segment>
+    </unit>
+    <unit id="12" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="13" name="ApiEventCurrentChangeRequested">
+      <segment>
+        <source>Raised when an enabled non-current item is activated; the caller decides whether to update Current.</source>
+        <target state="translated">啟動已啟用且非目前的步驟項時觸發；呼叫方決定是否更新 Current。</target>
+      </segment>
+    </unit>
+    <unit id="14" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="15" name="BasicDescription">
+      <segment>
+        <source>The most basic step bar.</source>
+        <target state="translated">最基礎的步驟條。</target>
+      </segment>
+    </unit>
+    <unit id="16" name="MiniVersionTitle">
+      <segment>
+        <source>Mini version</source>
+        <target state="translated">迷你版本</target>
+      </segment>
+    </unit>
+    <unit id="17" name="MiniVersionDescription">
+      <segment>
+        <source>By setting like this: SizeType to Small, you can get a mini version.</source>
+        <target state="translated">將 SizeType 設置為 Small 可獲得迷你版本。</target>
+      </segment>
+    </unit>
+    <unit id="18" name="WithIconTitle">
+      <segment>
+        <source>With icon</source>
+        <target state="translated">帶圖標</target>
+      </segment>
+    </unit>
+    <unit id="19" name="WithIconDescription">
+      <segment>
+        <source>You can use your own custom icons by setting the property icon for items.</source>
+        <target state="translated">可以通過為項目設置 icon 屬性使用自定義圖標。</target>
+      </segment>
+    </unit>
+    <unit id="20" name="SwitchStepTitle">
+      <segment>
+        <source>Switch Step</source>
+        <target state="translated">切換步驟</target>
+      </segment>
+    </unit>
+    <unit id="21" name="SwitchStepDescription">
+      <segment>
+        <source>Use controlled Current binding, change requests, external content, and buttons to represent process progress.</source>
+        <target state="translated">透過受控 Current 繫結、變更要求、外部內容和按鈕展示流程進度。</target>
+      </segment>
+    </unit>
+    <unit id="22" name="VerticalTitle">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">垂直方向</target>
+      </segment>
+    </unit>
+    <unit id="23" name="VerticalDescription">
+      <segment>
+        <source>A simple step bar in the vertical direction.</source>
+        <target state="translated">垂直方向的簡單步驟條。</target>
+      </segment>
+    </unit>
+    <unit id="24" name="VerticalMiniVersionTitle">
+      <segment>
+        <source>Vertical mini version</source>
+        <target state="translated">垂直迷你版本</target>
+      </segment>
+    </unit>
+    <unit id="25" name="VerticalMiniVersionDescription">
+      <segment>
+        <source>A simple mini version step bar in the vertical direction.</source>
+        <target state="translated">垂直方向的簡單迷你步驟條。</target>
+      </segment>
+    </unit>
+    <unit id="26" name="ErrorStatusTitle">
+      <segment>
+        <source>Error status</source>
+        <target state="translated">錯誤狀態</target>
+      </segment>
+    </unit>
+    <unit id="27" name="ErrorStatusDescription">
+      <segment>
+        <source>By using status of Steps, you can specify the state for current step.</source>
+        <target state="translated">通過 Steps 的 status 可以指定當前步驟狀態。</target>
+      </segment>
+    </unit>
+    <unit id="28" name="DotStyleTitle">
+      <segment>
+        <source>Dot Style</source>
+        <target state="translated">點狀樣式</target>
+      </segment>
+    </unit>
+    <unit id="29" name="DotStyleDescription">
+      <segment>
+        <source>Steps with progress dot style.</source>
+        <target state="translated">帶進度點樣式的步驟條。</target>
+      </segment>
+    </unit>
+    <unit id="30" name="DotStyleVerticalTitle">
+      <segment>
+        <source>Dot Style Vertical</source>
+        <target state="translated">垂直點狀樣式</target>
+      </segment>
+    </unit>
+    <unit id="31" name="DotStyleVerticalDescription">
+      <segment>
+        <source>Steps with progress dot style vertical.</source>
+        <target state="translated">垂直方向帶進度點樣式的步驟條。</target>
+      </segment>
+    </unit>
+    <unit id="32" name="ClickableTitle">
+      <segment>
+        <source>Clickable</source>
+        <target state="translated">可點擊</target>
+      </segment>
+    </unit>
+    <unit id="33" name="ClickableDescription">
+      <segment>
+        <source>Setting IsItemClickable=true makes Steps clickable.</source>
+        <target state="translated">設置 IsItemClickable=true 可讓步驟項可點擊。</target>
+      </segment>
+    </unit>
+    <unit id="34" name="NavigationStepsTitle">
+      <segment>
+        <source>Navigation Steps</source>
+        <target state="translated">導航步驟</target>
+      </segment>
+    </unit>
+    <unit id="35" name="NavigationStepsDescription">
+      <segment>
+        <source>Navigation steps.</source>
+        <target state="translated">導航式步驟。</target>
+      </segment>
+    </unit>
+    <unit id="36" name="StepsWithProgressTitle">
+      <segment>
+        <source>Steps with progress</source>
+        <target state="translated">帶進度的步驟</target>
+      </segment>
+    </unit>
+    <unit id="37" name="StepsWithProgressDescription">
+      <segment>
+        <source>Steps with progress.</source>
+        <target state="translated">帶進度的步驟條。</target>
+      </segment>
+    </unit>
+    <unit id="38" name="TitlePlacementTitle">
+      <segment>
+        <source>Title Placement</source>
+        <target state="translated">標題位置</target>
+      </segment>
+    </unit>
+    <unit id="39" name="TitlePlacementDescription">
+      <segment>
+        <source>Set TitlePlacement to Vertical for supported step types.</source>
+        <target state="translated">對支援的步驟類型將 TitlePlacement 設置為 Vertical。</target>
+      </segment>
+    </unit>
+    <unit id="40" name="InlineStepsTitle">
+      <segment>
+        <source>Inline Steps</source>
+        <target state="translated">內聯步驟</target>
+      </segment>
+    </unit>
+    <unit id="41" name="InlineStepsDescription">
+      <segment>
+        <source>Inline type steps, suitable for displaying the process and current state of the object in the list content scene.</source>
+        <target state="translated">內聯類型步驟，適合在列表內容場景中展示對象的流程和當前狀態。</target>
+      </segment>
+    </unit>
+    <unit id="42" name="InlineStyleCombinationTitle">
+      <segment>
+        <source>Inline Style Combination</source>
+        <target state="translated">內聯樣式組合</target>
+      </segment>
+    </unit>
+    <unit id="43" name="InlineStyleCombinationDescription">
+      <segment>
+        <source>Inline step bar modifies the style and aligns through offset.</source>
+        <target state="translated">內聯步驟條修改樣式，透過 offset 進行對齊。</target>
+      </segment>
+    </unit>
+    <unit id="44" name="P2DescriptionThisIsADescription">
+      <segment>
+        <source>This is a description.</source>
+        <target state="translated">這是一段描述。</target>
+      </segment>
+    </unit>
+    <unit id="45" name="P2HeaderFinished">
+      <segment>
+        <source>Finished</source>
+        <target state="translated">已完成</target>
+      </segment>
+    </unit>
+    <unit id="46" name="P2HeaderInProgress">
+      <segment>
+        <source>In Progress</source>
+        <target state="translated">進行中</target>
+      </segment>
+    </unit>
+    <unit id="47" name="P2HeaderWaiting">
+      <segment>
+        <source>Waiting</source>
+        <target state="translated">等待中</target>
+      </segment>
+    </unit>
+    <unit id="48" name="P2HeaderLogin">
+      <segment>
+        <source>Login</source>
+        <target state="translated">登錄</target>
+      </segment>
+    </unit>
+    <unit id="49" name="P2HeaderVerification">
+      <segment>
+        <source>Verification</source>
+        <target state="translated">驗證</target>
+      </segment>
+    </unit>
+    <unit id="50" name="P2HeaderPay">
+      <segment>
+        <source>Pay</source>
+        <target state="translated">支付</target>
+      </segment>
+    </unit>
+    <unit id="51" name="P2HeaderDone">
+      <segment>
+        <source>Done</source>
+        <target state="translated">完成</target>
+      </segment>
+    </unit>
+    <unit id="52" name="P2HeaderFirst">
+      <segment>
+        <source>First</source>
+        <target state="translated">第一項</target>
+      </segment>
+    </unit>
+    <unit id="53" name="P2HeaderSecond">
+      <segment>
+        <source>Second</source>
+        <target state="translated">第二項</target>
+      </segment>
+    </unit>
+    <unit id="54" name="P2HeaderThird">
+      <segment>
+        <source>Third</source>
+        <target state="translated">第三項</target>
+      </segment>
+    </unit>
+    <unit id="55" name="P2HeaderStepN1">
+      <segment>
+        <source>Step 1</source>
+        <target state="translated">步驟 1</target>
+      </segment>
+    </unit>
+    <unit id="56" name="P2HeaderStepN2">
+      <segment>
+        <source>Step 2</source>
+        <target state="translated">步驟 2</target>
+      </segment>
+    </unit>
+    <unit id="57" name="P2HeaderStepN3">
+      <segment>
+        <source>Step 3</source>
+        <target state="translated">步驟 3</target>
+      </segment>
+    </unit>
+    <unit id="58" name="P2HeaderStepN4">
+      <segment>
+        <source>Step 4</source>
+        <target state="translated">步驟 4</target>
+      </segment>
+    </unit>
+    <unit id="59" name="P2HeaderStepN5">
+      <segment>
+        <source>Step 5</source>
+        <target state="translated">步驟 5</target>
+      </segment>
+    </unit>
+    <unit id="60" name="P2ContentThisIsStepN1">
+      <segment>
+        <source>This is Step 1</source>
+        <target state="translated">這是步驟 1</target>
+      </segment>
+    </unit>
+    <unit id="61" name="P2ContentThisIsStepN2">
+      <segment>
+        <source>This is Step 2</source>
+        <target state="translated">這是步驟 2</target>
+      </segment>
+    </unit>
+    <unit id="62" name="P2ContentThisIsStepN3">
+      <segment>
+        <source>This is Step 3</source>
+        <target state="translated">這是步驟 3</target>
+      </segment>
+    </unit>
+    <unit id="63" name="P2ContentThisIsStepN4">
+      <segment>
+        <source>This is Step 4</source>
+        <target state="translated">這是步驟 4</target>
+      </segment>
+    </unit>
+    <unit id="64" name="P2ContentThisIsStepN5">
+      <segment>
+        <source>This is Step 5</source>
+        <target state="translated">這是步驟 5</target>
+      </segment>
+    </unit>
+    <unit id="65" name="P2HeaderFinishN1">
+      <segment>
+        <source>finish 1</source>
+        <target state="translated">完成 1</target>
+      </segment>
+    </unit>
+    <unit id="66" name="P2HeaderFinishN2">
+      <segment>
+        <source>finish 2</source>
+        <target state="translated">完成 2</target>
+      </segment>
+    </unit>
+    <unit id="67" name="P2HeaderCurrentProcess">
+      <segment>
+        <source>current process</source>
+        <target state="translated">當前進行中</target>
+      </segment>
+    </unit>
+    <unit id="68" name="P2HeaderWait">
+      <segment>
+        <source>wait</source>
+        <target state="translated">等待</target>
+      </segment>
+    </unit>
+    <unit id="69" name="P2SubHeaderSubTitle">
+      <segment>
+        <source>Sub Title</source>
+        <target state="translated">子標題</target>
+      </segment>
+    </unit>
+    <unit id="70" name="P2SubHeaderLeftTime">
+      <segment>
+        <source>Left 00:00:08</source>
+        <target state="translated">剩餘 00:00:08</target>
+      </segment>
+    </unit>
+    <unit id="71" name="P2SubHeaderWaitingForLongTime">
+      <segment>
+        <source>waiting for longlong time</source>
+        <target state="translated">等待較長時間</target>
+      </segment>
+    </unit>
+    <unit id="72" name="P2TextAntDesignTitleN1">
+      <segment>
+        <source>Ant Design Title 1</source>
+        <target state="translated">Ant Design 標題 1</target>
+      </segment>
+    </unit>
+    <unit id="73" name="P2TextAntDesignADesignLanguageForBackgroundApplications">
+      <segment>
+        <source>Ant Design, a design language for background applications, is refined by Ant UED Team</source>
+        <target state="translated">Ant Design 是由 Ant UED 團隊提煉的後台應用設計語言</target>
+      </segment>
+    </unit>
+    <unit id="74" name="P2TextAntDesignTitleN2">
+      <segment>
+        <source>Ant Design Title 2</source>
+        <target state="translated">Ant Design 標題 2</target>
+      </segment>
+    </unit>
+    <unit id="75" name="P2TextAntDesignTitleN3">
+      <segment>
+        <source>Ant Design Title 3</source>
+        <target state="translated">Ant Design 標題 3</target>
+      </segment>
+    </unit>
+    <unit id="76" name="P2TextAntDesignTitleN4">
+      <segment>
+        <source>Ant Design Title 4</source>
+        <target state="translated">Ant Design 標題 4</target>
+      </segment>
+    </unit>
+    <unit id="77" name="P2TextCurrent">
+      <segment>
+        <source>Current:</source>
+        <target state="translated">Current：</target>
+      </segment>
+    </unit>
+    <unit id="78" name="P2ContentFirstContent">
+      <segment>
+        <source>First-content</source>
+        <target state="translated">第一步內容</target>
+      </segment>
+    </unit>
+    <unit id="79" name="P2ContentSecondContent">
+      <segment>
+        <source>Second-content</source>
+        <target state="translated">第二步內容</target>
+      </segment>
+    </unit>
+    <unit id="80" name="P2ContentLastContent">
+      <segment>
+        <source>Last-content</source>
+        <target state="translated">最後一步內容</target>
+      </segment>
+    </unit>
+    <unit id="81" name="P2ContentNext">
+      <segment>
+        <source>Next</source>
+        <target state="translated">下一步</target>
+      </segment>
+    </unit>
+    <unit id="82" name="P2ContentPrevious">
+      <segment>
+        <source>Previous</source>
+        <target state="translated">上一步</target>
+      </segment>
+    </unit>
+    <unit id="83" name="P2ContentDone">
+      <segment>
+        <source>Done</source>
+        <target state="translated">完成</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

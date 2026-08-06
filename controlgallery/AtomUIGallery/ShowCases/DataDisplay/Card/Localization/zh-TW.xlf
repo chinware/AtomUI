@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CardShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">數據展示</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Group related content and actions in a compact container.</source>
+        <target state="translated">用緊湊容器組織相關內容與操作。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>Card presents information in a contained surface. It supports headers, extra actions, cover media, metadata, grid sections, tabs, loading placeholders, hover feedback, and borderless presentation.</source>
+        <target state="translated">Card 用於在獨立的內容面板中呈現信息，支持標題、額外操作、封面媒體、元信息、柵格區域、標籤頁、加載佔位、懸停反饋和無邊框樣式。</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎卡片</target>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>A basic card containing a title, content and an extra corner content. Supports two sizes: default and small.</source>
+        <target state="translated">包含標題、內容和右上角額外內容的基礎卡片。支持默認和小號兩種尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="8" name="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="9" name="ScenarioLayout">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">佈局</target>
+      </segment>
+    </unit>
+    <unit id="10" name="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+        <target state="translated">高級</target>
+      </segment>
+    </unit>
+    <unit id="11" name="NoBorderTitle">
+      <segment>
+        <source>No border</source>
+        <target state="translated">無邊框</target>
+      </segment>
+    </unit>
+    <unit id="12" name="NoBorderDescription">
+      <segment>
+        <source>A borderless card on a gray background.</source>
+        <target state="translated">灰色背景上的無邊框卡片。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="SimpleCardTitle">
+      <segment>
+        <source>Simple card</source>
+        <target state="translated">簡單卡片</target>
+      </segment>
+    </unit>
+    <unit id="14" name="SimpleCardDescription">
+      <segment>
+        <source>A simple card only containing a content area.</source>
+        <target state="translated">只包含內容區域的簡單卡片。</target>
+      </segment>
+    </unit>
+    <unit id="15" name="CustomizedContentTitle">
+      <segment>
+        <source>Customized content</source>
+        <target state="translated">自定義內容</target>
+      </segment>
+    </unit>
+    <unit id="16" name="CustomizedContentDescription">
+      <segment>
+        <source>You can use Card.Meta to support more flexible content.</source>
+        <target state="translated">可以使用 Card.Meta 支持更靈活的內容。</target>
+      </segment>
+    </unit>
+    <unit id="17" name="CardInColumnTitle">
+      <segment>
+        <source>Card in column</source>
+        <target state="translated">柵格中的卡片</target>
+      </segment>
+    </unit>
+    <unit id="18" name="CardInColumnDescription">
+      <segment>
+        <source>Cards usually cooperate with grid column layout in overview page.</source>
+        <target state="translated">卡片通常在概覽頁面中配合柵格列佈局使用。</target>
+      </segment>
+    </unit>
+    <unit id="19" name="LoadingCardTitle">
+      <segment>
+        <source>Loading card</source>
+        <target state="translated">加載中卡片</target>
+      </segment>
+    </unit>
+    <unit id="20" name="LoadingCardDescription">
+      <segment>
+        <source>Shows a loading indicator while the contents of the card is being fetched.</source>
+        <target state="translated">卡片內容獲取過程中顯示加載指示。</target>
+      </segment>
+    </unit>
+    <unit id="21" name="GridCardTitle">
+      <segment>
+        <source>Grid card</source>
+        <target state="translated">柵格卡片</target>
+      </segment>
+    </unit>
+    <unit id="22" name="GridCardDescription">
+      <segment>
+        <source>Grid style card content..</source>
+        <target state="translated">柵格樣式的卡片內容。</target>
+      </segment>
+    </unit>
+    <unit id="23" name="InnerCardTitle">
+      <segment>
+        <source>Inner card</source>
+        <target state="translated">內部卡片</target>
+      </segment>
+    </unit>
+    <unit id="24" name="InnerCardDescription">
+      <segment>
+        <source>It can be placed inside the ordinary card to display the information of the multilevel structure.</source>
+        <target state="translated">可放置在普通卡片內部，用於展示多級結構信息。</target>
+      </segment>
+    </unit>
+    <unit id="25" name="WithTabsTitle">
+      <segment>
+        <source>With tabs</source>
+        <target state="translated">帶標籤頁</target>
+      </segment>
+    </unit>
+    <unit id="26" name="WithTabsDescription">
+      <segment>
+        <source>More content can be hosted..</source>
+        <target state="translated">可以承載更多內容。</target>
+      </segment>
+    </unit>
+    <unit id="27" name="MoreContentConfigurationTitle">
+      <segment>
+        <source>Support more content configuration</source>
+        <target state="translated">支持更多內容配置</target>
+      </segment>
+    </unit>
+    <unit id="28" name="MoreContentConfigurationDescription">
+      <segment>
+        <source>A Card that supports cover, avatar, title and description.</source>
+        <target state="translated">支持封面、頭像、標題和描述的卡片。</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2HeaderLargeSizeCard">
+      <segment>
+        <source>Large size card</source>
+        <target state="translated">大尺寸卡片</target>
+      </segment>
+    </unit>
+    <unit id="30" name="P2HeaderDefaultSizeCard">
+      <segment>
+        <source>Default size card</source>
+        <target state="translated">默認尺寸卡片</target>
+      </segment>
+    </unit>
+    <unit id="31" name="P2HeaderSmallSizeCard">
+      <segment>
+        <source>Small size card</source>
+        <target state="translated">小尺寸卡片</target>
+      </segment>
+    </unit>
+    <unit id="32" name="P2HeaderCardTitle">
+      <segment>
+        <source>Card title</source>
+        <target state="translated">卡片標題</target>
+      </segment>
+    </unit>
+    <unit id="33" name="P2HeaderEuropeStreetBeat">
+      <segment>
+        <source>Europe Street beat</source>
+        <target state="translated">歐洲街拍</target>
+      </segment>
+    </unit>
+    <unit id="34" name="P2HeaderCardTitle2">
+      <segment>
+        <source>Card Title</source>
+        <target state="translated">卡片標題</target>
+      </segment>
+    </unit>
+    <unit id="35" name="P2HeaderTab1">
+      <segment>
+        <source>Tab1</source>
+        <target state="translated">標籤頁 1</target>
+      </segment>
+    </unit>
+    <unit id="36" name="P2HeaderTab2">
+      <segment>
+        <source>Tab2</source>
+        <target state="translated">標籤頁 2</target>
+      </segment>
+    </unit>
+    <unit id="37" name="P2HeaderArticle">
+      <segment>
+        <source>article</source>
+        <target state="translated">文章</target>
+      </segment>
+    </unit>
+    <unit id="38" name="P2HeaderApp">
+      <segment>
+        <source>app</source>
+        <target state="translated">應用</target>
+      </segment>
+    </unit>
+    <unit id="39" name="P2HeaderProject">
+      <segment>
+        <source>project</source>
+        <target state="translated">項目</target>
+      </segment>
+    </unit>
+    <unit id="40" name="P2ContentMore">
+      <segment>
+        <source>More</source>
+        <target state="translated">更多</target>
+      </segment>
+    </unit>
+    <unit id="41" name="P2TextCardContent">
+      <segment>
+        <source>Card content</source>
+        <target state="translated">卡片內容</target>
+      </segment>
+    </unit>
+    <unit id="42" name="P2TextThisIsTheDescription">
+      <segment>
+        <source>This is the description</source>
+        <target state="translated">這是描述內容</target>
+      </segment>
+    </unit>
+    <unit id="43" name="P2ContentContent">
+      <segment>
+        <source>Content</source>
+        <target state="translated">內容</target>
+      </segment>
+    </unit>
+    <unit id="44" name="P2ContentContent1">
+      <segment>
+        <source>content1</source>
+        <target state="translated">內容 1</target>
+      </segment>
+    </unit>
+    <unit id="45" name="P2ContentContent2">
+      <segment>
+        <source>content2</source>
+        <target state="translated">內容 2</target>
+      </segment>
+    </unit>
+    <unit id="46" name="P2ContentArticleContent">
+      <segment>
+        <source>article content</source>
+        <target state="translated">文章內容</target>
+      </segment>
+    </unit>
+    <unit id="47" name="P2ContentAppContent">
+      <segment>
+        <source>app content</source>
+        <target state="translated">應用內容</target>
+      </segment>
+    </unit>
+    <unit id="48" name="P2ContentProjectContent">
+      <segment>
+        <source>project content</source>
+        <target state="translated">項目內容</target>
+      </segment>
+    </unit>
+    <unit id="49" name="P2ContentThisIsTheDescription">
+      <segment>
+        <source>This is the description</source>
+        <target state="translated">這是描述內容</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

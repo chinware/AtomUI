@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>Simplest Skeleton usage.</source>
+        <target state="translated">最簡單的 Skeleton 用法。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ComplexCombinationTitle">
+      <segment>
+        <source>Complex combination</source>
+        <target state="translated">複雜組合</target>
+      </segment>
+    </unit>
+    <unit id="4" name="ComplexCombinationDescription">
+      <segment>
+        <source>Complex combination with avatar and multiple paragraphs.</source>
+        <target state="translated">包含頭像和多段文本的複雜組合。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="ActiveAnimationTitle">
+      <segment>
+        <source>Active Animation</source>
+        <target state="translated">動態效果</target>
+      </segment>
+    </unit>
+    <unit id="6" name="ActiveAnimationDescription">
+      <segment>
+        <source>Display active animation.</source>
+        <target state="translated">顯示動態加載效果。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="ButtonAvatarInputImageNodeTitle">
+      <segment>
+        <source>Button/Avatar/Input/Image/Node</source>
+        <target state="translated">按鈕/頭像/輸入框/圖片/節點</target>
+      </segment>
+    </unit>
+    <unit id="8" name="ButtonAvatarInputImageNodeDescription">
+      <segment>
+        <source>Skeleton Button, Avatar, Input, Image and Node.</source>
+        <target state="translated">Skeleton Button、Avatar、Input、Image 和 Node。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="ContainsSubComponentTitle">
+      <segment>
+        <source>Contains sub component</source>
+        <target state="translated">包含子組件</target>
+      </segment>
+    </unit>
+    <unit id="10" name="ContainsSubComponentDescription">
+      <segment>
+        <source>Skeleton contains sub component.</source>
+        <target state="translated">Skeleton 包含子組件。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="PageSubtitle">
+      <segment>
+        <source>Placeholder blocks for loading content.</source>
+        <target state="translated">用於內容加載中的佔位塊。</target>
+      </segment>
+    </unit>
+    <unit id="12" name="PageDescription">
+      <segment>
+        <source>Skeleton provides lightweight visual placeholders before content is available, covering text, avatar, image, input, button, and custom node states.</source>
+        <target state="translated">Skeleton 在內容可用前提供輕量佔位展示，覆蓋文本、頭像、圖片、輸入框、按鈕和自定義節點狀態。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反饋</target>
+      </segment>
+    </unit>
+    <unit id="14" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="15" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="16" name="P2TextActive">
+      <segment>
+        <source>Active:</source>
+        <target state="translated">動態效果：</target>
+      </segment>
+    </unit>
+    <unit id="17" name="P2TextButtonAndInputBlock">
+      <segment>
+        <source>Button and Input Block:</source>
+        <target state="translated">按鈕和輸入框塊：</target>
+      </segment>
+    </unit>
+    <unit id="18" name="P2TextSize">
+      <segment>
+        <source>Size:</source>
+        <target state="translated">尺寸：</target>
+      </segment>
+    </unit>
+    <unit id="19" name="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">默認</target>
+      </segment>
+    </unit>
+    <unit id="20" name="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大號</target>
+      </segment>
+    </unit>
+    <unit id="21" name="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小號</target>
+      </segment>
+    </unit>
+    <unit id="22" name="P2TextButtonShape">
+      <segment>
+        <source>Button Shape:</source>
+        <target state="translated">按鈕形狀：</target>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentSquare">
+      <segment>
+        <source>Square</source>
+        <target state="translated">方形</target>
+      </segment>
+    </unit>
+    <unit id="24" name="P2ContentRound">
+      <segment>
+        <source>Round</source>
+        <target state="translated">圓角</target>
+      </segment>
+    </unit>
+    <unit id="25" name="P2ContentCircle">
+      <segment>
+        <source>Circle</source>
+        <target state="translated">圓形</target>
+      </segment>
+    </unit>
+    <unit id="26" name="P2TextAvatarShape">
+      <segment>
+        <source>Avatar Shape:</source>
+        <target state="translated">頭像形狀：</target>
+      </segment>
+    </unit>
+    <unit id="27" name="P2TextAntDesignADesignLanguage">
+      <segment>
+        <source>Ant Design, a design language</source>
+        <target state="translated">Ant Design，一套設計語言</target>
+      </segment>
+    </unit>
+    <unit id="28" name="P2TextWeSupplyASeriesOfDesignPrinciplesPractical">
+      <segment>
+        <source>We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.</source>
+        <target state="translated">我們提供一系列設計原則、實用模式和高質量設計資源（Sketch 和 Axure），幫助人們高效而優雅地創建產品原型。</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2ContentShowSkeleton">
+      <segment>
+        <source>Show Skeleton</source>
+        <target state="translated">顯示骨架屏</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

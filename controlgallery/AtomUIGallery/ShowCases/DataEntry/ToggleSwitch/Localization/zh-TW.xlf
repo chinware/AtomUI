@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">數據錄入</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Switch between two mutually exclusive states with optional text, icons, loading, and size variants.</source>
+        <target state="translated">在兩個互斥狀態之間切換，並支持文本、圖標、加載和尺寸變體。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>ToggleSwitch is used for immediate on/off decisions. It supports disabled state, loading state, custom on/off content, icon content, size variants, motion, and wave feedback.</source>
+        <target state="translated">ToggleSwitch 用於即時的開關選擇，支持禁用、加載、自定義開關內容、圖標內容、尺寸變體、動效和波紋反饋。</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">最基礎的用法。</target>
+      </segment>
+    </unit>
+    <unit id="8" name="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="9" name="DisabledDescription">
+      <segment>
+        <source>Disabled state of Switch.</source>
+        <target state="translated">Switch 的禁用狀態。</target>
+      </segment>
+    </unit>
+    <unit id="10" name="TextAndIconTitle">
+      <segment>
+        <source>Text and icon</source>
+        <target state="translated">文本和圖標</target>
+      </segment>
+    </unit>
+    <unit id="11" name="TextAndIconDescription">
+      <segment>
+        <source>With text and icon.</source>
+        <target state="translated">帶文本和圖標。</target>
+      </segment>
+    </unit>
+    <unit id="12" name="TwoSizesTitle">
+      <segment>
+        <source>Sizes</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+    <unit id="13" name="TwoSizesDescription">
+      <segment>
+        <source>SizeType controls preset and Custom switch size modes.</source>
+        <target state="translated">SizeType 控制預設和 Custom 開關尺寸模式。</target>
+      </segment>
+    </unit>
+    <unit id="14" name="LoadingTitle">
+      <segment>
+        <source>Loading</source>
+        <target state="translated">加載中</target>
+      </segment>
+    </unit>
+    <unit id="15" name="LoadingDescription">
+      <segment>
+        <source>Mark a pending state of switch.</source>
+        <target state="translated">標記開關的等待狀態。</target>
+      </segment>
+    </unit>
+    <unit id="16" name="P2ContentToggleDisabled">
+      <segment>
+        <source>toggle disabled</source>
+        <target state="translated">切換禁用</target>
+      </segment>
+    </unit>
+    <unit id="17" name="P2ContentToggleLoading">
+      <segment>
+        <source>toggle loading</source>
+        <target state="translated">切換加載</target>
+      </segment>
+    </unit>
+    <unit id="18" name="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定義</target>
+      </segment>
+    </unit>
+    <unit id="19" name="P2OnContentOn">
+      <segment>
+        <source>On</source>
+        <target state="translated">開</target>
+      </segment>
+    </unit>
+    <unit id="20" name="P2OffContentOff">
+      <segment>
+        <source>Off</source>
+        <target state="translated">關</target>
+      </segment>
+    </unit>
+    <unit id="21" name="P2OnContentText">
+      <segment>
+        <source>Open</source>
+        <target state="translated">開</target>
+      </segment>
+    </unit>
+    <unit id="22" name="P2OffContentText">
+      <segment>
+        <source>Close</source>
+        <target state="translated">關</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

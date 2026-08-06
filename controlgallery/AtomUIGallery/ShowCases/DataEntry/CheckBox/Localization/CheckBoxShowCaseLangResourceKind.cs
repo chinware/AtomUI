@@ -1,0 +1,50 @@
+using AtomUI.Localization;
+
+namespace AtomUIGallery.Localization;
+
+[LanguageCatalog(ContractVersion = 1)]
+public enum CheckBoxShowCaseLangResourceKind
+{
+    BasicTitle = 1,
+    BasicDescription = 2,
+    DisabledTitle = 3,
+    DisabledDescription = 4,
+    ControlledCheckboxTitle = 5,
+    ControlledCheckboxDescription = 6,
+    CheckboxGroupTitle = 7,
+    CheckboxGroupDescription = 8,
+    CheckedItemsBindingTitle = 9,
+    CheckedItemsBindingDescription = 10,
+    CheckAllTitle = 11,
+    CheckAllDescription = 12,
+    UseWithGridTitle = 13,
+    UseWithGridDescription = 14,
+    PageSubtitle = 15,
+    PageDescription = 16,
+    ComponentCategory = 17,
+    ComponentStatusStable = 18,
+    ScenarioExamples = 19,
+    P2ContentCheckbox = 20,
+    P2ContentUnchecked = 21,
+    P2ContentIndeterminate = 22,
+    P2ContentChecked = 23,
+    P2ContentCheck = 24,
+    P2ContentUncheck = 25,
+    P2ContentEnable = 26,
+    P2ContentDisable = 27,
+    P2ContentEnabled = 28,
+    P2ContentDisabled = 29,
+    P2ControlledStatusFormat = 30,
+    P2ContentApple = 31,
+    P2ContentPear = 32,
+    P2ContentOrange = 33,
+    P2ContentAddPear = 34,
+    P2ContentClear = 35,
+    P2ContentNone = 36,
+    P2TwoWayCheckedSummaryFormat = 37,
+    P2ContentCheckAll = 38,
+    P2ContentA = 39,
+    P2ContentB = 40,
+    P2ContentC = 41,
+    P2ContentD = 42
+}

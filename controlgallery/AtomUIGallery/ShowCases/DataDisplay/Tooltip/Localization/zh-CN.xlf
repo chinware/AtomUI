@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TooltipShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>The simplest usage.</source>
+        <target state="translated">最简单的用法。</target>
+      </segment>
+    </unit>
+    <unit id="3" name="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">弹出位置</target>
+      </segment>
+    </unit>
+    <unit id="4" name="PlacementDescription">
+      <segment>
+        <source>There are 12 placement options available.</source>
+        <target state="translated">提供 12 种弹出位置。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="ArrowTitle">
+      <segment>
+        <source>Arrow</source>
+        <target state="translated">箭头</target>
+      </segment>
+    </unit>
+    <unit id="6" name="ArrowDescription">
+      <segment>
+        <source>Support show, hide or keep arrow in the center.</source>
+        <target state="translated">支持显示、隐藏或保持箭头居中。</target>
+      </segment>
+    </unit>
+    <unit id="7" name="ColorfulTooltipTitle">
+      <segment>
+        <source>Colorful Tooltip</source>
+        <target state="translated">多彩提示</target>
+      </segment>
+    </unit>
+    <unit id="8" name="ColorfulTooltipDescription">
+      <segment>
+        <source>We preset a series of colorful Tooltip styles for use in different situations.</source>
+        <target state="translated">预设了一系列多彩提示样式，可用于不同场景。</target>
+      </segment>
+    </unit>
+    <unit id="9" name="P2TextTooltipWillShowOnMouseEnter">
+      <segment>
+        <source>Tooltip will show on mouse enter.</source>
+        <target state="translated">鼠标移入时显示提示。</target>
+      </segment>
+    </unit>
+    <unit id="10" name="P2ContentShow">
+      <segment>
+        <source>Show</source>
+        <target state="translated">显示</target>
+      </segment>
+    </unit>
+    <unit id="11" name="P2ContentHide">
+      <segment>
+        <source>Hide</source>
+        <target state="translated">隐藏</target>
+      </segment>
+    </unit>
+    <unit id="12" name="P2ContentCenter">
+      <segment>
+        <source>Center</source>
+        <target state="translated">居中</target>
+      </segment>
+    </unit>
+    <unit id="13" name="P2TextPresets">
+      <segment>
+        <source>Presets</source>
+        <target state="translated">预设</target>
+      </segment>
+    </unit>
+    <unit id="14" name="P2TextCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="15" name="P2ToolTipTipPromptText">
+      <segment>
+        <source>prompt text</source>
+        <target state="translated">提示文本</target>
+      </segment>
+    </unit>
+    <unit id="16" name="P2ContentLT">
+      <segment>
+        <source>LT</source>
+        <target state="translated">左上</target>
+      </segment>
+    </unit>
+    <unit id="17" name="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">左侧</target>
+      </segment>
+    </unit>
+    <unit id="18" name="P2ContentLB">
+      <segment>
+        <source>LB</source>
+        <target state="translated">左下</target>
+      </segment>
+    </unit>
+    <unit id="19" name="P2ContentTL">
+      <segment>
+        <source>TL</source>
+        <target state="translated">上左</target>
+      </segment>
+    </unit>
+    <unit id="20" name="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">上方</target>
+      </segment>
+    </unit>
+    <unit id="21" name="P2ContentTR">
+      <segment>
+        <source>TR</source>
+        <target state="translated">上右</target>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentRT">
+      <segment>
+        <source>RT</source>
+        <target state="translated">右上</target>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">右侧</target>
+      </segment>
+    </unit>
+    <unit id="24" name="P2ContentRB">
+      <segment>
+        <source>RB</source>
+        <target state="translated">右下</target>
+      </segment>
+    </unit>
+    <unit id="25" name="P2ContentBL">
+      <segment>
+        <source>BL</source>
+        <target state="translated">下左</target>
+      </segment>
+    </unit>
+    <unit id="26" name="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">下方</target>
+      </segment>
+    </unit>
+    <unit id="27" name="P2ContentBR">
+      <segment>
+        <source>BR</source>
+        <target state="translated">下右</target>
+      </segment>
+    </unit>
+    <unit id="28" name="P2ContentBlue">
+      <segment>
+        <source>Blue</source>
+        <target state="translated">蓝色</target>
+      </segment>
+    </unit>
+    <unit id="29" name="P2ContentRed">
+      <segment>
+        <source>Red</source>
+        <target state="translated">红色</target>
+      </segment>
+    </unit>
+    <unit id="30" name="P2ContentVolcano">
+      <segment>
+        <source>Volcano</source>
+        <target state="translated">火山色</target>
+      </segment>
+    </unit>
+    <unit id="31" name="P2ContentOrange">
+      <segment>
+        <source>Orange</source>
+        <target state="translated">橙色</target>
+      </segment>
+    </unit>
+    <unit id="32" name="P2ContentGold">
+      <segment>
+        <source>Gold</source>
+        <target state="translated">金色</target>
+      </segment>
+    </unit>
+    <unit id="33" name="P2ContentYellow">
+      <segment>
+        <source>Yellow</source>
+        <target state="translated">黄色</target>
+      </segment>
+    </unit>
+    <unit id="34" name="P2ContentLime">
+      <segment>
+        <source>Lime</source>
+        <target state="translated">青柠色</target>
+      </segment>
+    </unit>
+    <unit id="35" name="P2ContentGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">绿色</target>
+      </segment>
+    </unit>
+    <unit id="36" name="P2ContentCyan">
+      <segment>
+        <source>Cyan</source>
+        <target state="translated">青色</target>
+      </segment>
+    </unit>
+    <unit id="37" name="P2ContentGeekBlue">
+      <segment>
+        <source>GeekBlue</source>
+        <target state="translated">极客蓝</target>
+      </segment>
+    </unit>
+    <unit id="38" name="P2ContentPurple">
+      <segment>
+        <source>Purple</source>
+        <target state="translated">紫色</target>
+      </segment>
+    </unit>
+    <unit id="39" name="P2ContentPink">
+      <segment>
+        <source>Pink</source>
+        <target state="translated">粉色</target>
+      </segment>
+    </unit>
+    <unit id="40" name="P2ContentMagenta">
+      <segment>
+        <source>Magenta</source>
+        <target state="translated">品红</target>
+      </segment>
+    </unit>
+    <unit id="41" name="P2ContentGrey">
+      <segment>
+        <source>Grey</source>
+        <target state="translated">灰色</target>
+      </segment>
+    </unit>
+    <unit id="42" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="43" name="PageSubtitle">
+      <segment>
+        <source>Display contextual hints when users hover or focus an element.</source>
+        <target state="translated">在用户悬停或聚焦元素时展示上下文提示。</target>
+      </segment>
+    </unit>
+    <unit id="44" name="PageDescription">
+      <segment>
+        <source>Tooltip provides concise helper text, placement control, arrow behavior and preset or custom colors for lightweight contextual guidance.</source>
+        <target state="translated">Tooltip 提供简洁的辅助说明，支持弹出位置、箭头行为以及预设或自定义颜色，适合轻量级上下文引导。</target>
+      </segment>
+    </unit>
+    <unit id="45" name="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">数据展示</target>
+      </segment>
+    </unit>
+    <unit id="46" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

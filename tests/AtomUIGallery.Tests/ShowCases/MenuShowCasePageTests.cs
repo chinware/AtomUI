@@ -69,9 +69,9 @@ public class MenuShowCasePageTests
     public void Menu_ShowCase_Demonstrates_NavMenu_Structural_Entries_And_Root_Slots()
     {
         var pageSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
-        var zhCN = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_CN.cs");
-        var zhTW = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_TW.cs");
-        var enUS = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en_US.cs");
+        var zhCN = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh-CN.xlf");
+        var zhTW = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh-TW.xlf");
+        var enUS = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en-US.xlf");
         var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/ViewModels/MenuViewModel.cs");
         var showCaseSource = ExtractShowCaseItem(pageSource, "NavMenuCompositionTitle");
 
@@ -88,9 +88,9 @@ public class MenuShowCasePageTests
 
         viewModelSource.ShouldContain("public bool IsStructuredNavMenuCollapsed");
         viewModelSource.ShouldContain("HandleToggleStructuredNavMenuCollapsedClick");
-        zhCN.ShouldContain("public const string NavMenuCompositionTitle = \"结构化导航菜单\";");
-        zhTW.ShouldContain("public const string NavMenuCompositionTitle = \"結構化導航菜單\";");
-        enUS.ShouldContain("public const string NavMenuCompositionTitle = \"Structured nav menu\";");
+        zhCN.ShouldContain("<target state=\"translated\">结构化导航菜单</target>");
+        zhTW.ShouldContain("<target state=\"translated\">結構化導航菜單</target>");
+        enUS.ShouldContain("<source>Structured nav menu</source>");
     }
 
     [Fact]
@@ -168,9 +168,9 @@ public class MenuShowCasePageTests
     {
         var pageSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml");
         var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/ViewModels/MenuViewModel.cs");
-        var zhCN            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_CN.cs");
-        var zhTW            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh_TW.cs");
-        var enUS            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en_US.cs");
+        var zhCN            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh-CN.xlf");
+        var zhTW            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/zh-TW.xlf");
+        var enUS            = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Localization/en-US.xlf");
         var scrollableShowCaseSource = ExtractShowCaseItem(pageSource, "ScrollableTitle");
 
         scrollableShowCaseSource.ShouldContain("MenuShowCaseLangResource ScrollableTitle");
@@ -184,9 +184,9 @@ public class MenuShowCasePageTests
         viewModelSource.ShouldContain("private bool _isPopupScrollEnabled = true;");
         viewModelSource.ShouldContain("public bool IsPopupScrollEnabled");
 
-        zhCN.ShouldContain("public const string P2TextEnablePopupScroll = \"开启弹层滚动\";");
-        zhTW.ShouldContain("public const string P2TextEnablePopupScroll = \"開啟彈層滾動\";");
-        enUS.ShouldContain("public const string P2TextEnablePopupScroll = \"Enable popup scrolling\";");
+        zhCN.ShouldContain("<target state=\"translated\">开启弹层滚动</target>");
+        zhTW.ShouldContain("<target state=\"translated\">開啟彈層滾動</target>");
+        enUS.ShouldContain("<source>Enable popup scrolling</source>");
     }
 
     [Fact]

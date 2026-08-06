@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TagShowCaseLangResourceKind">
+    <unit id="1" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="2" name="BasicDescription">
+      <segment>
+        <source>Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.</source>
+      </segment>
+    </unit>
+    <unit id="3" name="CheckableTagTitle">
+      <segment>
+        <source>Checkable</source>
+      </segment>
+    </unit>
+    <unit id="4" name="CheckableTagDescription">
+      <segment>
+        <source>CheckableTag works like Checkbox. CheckableTagGroup provides single and multiple selection over a shared option set.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="ColorfulTagTitle">
+      <segment>
+        <source>Colorful Tag</source>
+      </segment>
+    </unit>
+    <unit id="6" name="ColorfulTagDescription">
+      <segment>
+        <source>We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.</source>
+      </segment>
+    </unit>
+    <unit id="7" name="StatusTagTitle">
+      <segment>
+        <source>Status Tag</source>
+      </segment>
+    </unit>
+    <unit id="8" name="StatusTagDescription">
+      <segment>
+        <source>We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.</source>
+      </segment>
+    </unit>
+    <unit id="9" name="IconTitle">
+      <segment>
+        <source>Icon</source>
+      </segment>
+    </unit>
+    <unit id="10" name="IconDescription">
+      <segment>
+        <source>Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag. If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.</source>
+      </segment>
+    </unit>
+    <unit id="11" name="VariantTitle">
+      <segment>
+        <source>Variants</source>
+      </segment>
+    </unit>
+    <unit id="12" name="VariantDescription">
+      <segment>
+        <source>Use Filled, Solid, and Outlined variants independently of the selected color.</source>
+      </segment>
+    </unit>
+    <unit id="13" name="P2ContentTagN1">
+      <segment>
+        <source>Tag 1</source>
+      </segment>
+    </unit>
+    <unit id="14" name="P2ContentLink">
+      <segment>
+        <source>Link</source>
+      </segment>
+    </unit>
+    <unit id="15" name="P2ContentPreventDefault">
+      <segment>
+        <source>Prevent Default</source>
+      </segment>
+    </unit>
+    <unit id="16" name="P2ContentTagN2">
+      <segment>
+        <source>Tag 2</source>
+      </segment>
+    </unit>
+    <unit id="17" name="P2LabelCheckable">
+      <segment>
+        <source>Checkable</source>
+      </segment>
+    </unit>
+    <unit id="18" name="P2LabelSingle">
+      <segment>
+        <source>Single</source>
+      </segment>
+    </unit>
+    <unit id="19" name="P2LabelMultiple">
+      <segment>
+        <source>Multiple</source>
+      </segment>
+    </unit>
+    <unit id="20" name="P2ContentYes">
+      <segment>
+        <source>Yes</source>
+      </segment>
+    </unit>
+    <unit id="21" name="P2ContentMagenta">
+      <segment>
+        <source>magenta</source>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentRed">
+      <segment>
+        <source>red</source>
+      </segment>
+    </unit>
+    <unit id="23" name="P2ContentVolcano">
+      <segment>
+        <source>volcano</source>
+      </segment>
+    </unit>
+    <unit id="24" name="P2ContentOrange">
+      <segment>
+        <source>orange</source>
+      </segment>
+    </unit>
+    <unit id="25" name="P2ContentGold">
+      <segment>
+        <source>gold</source>
+      </segment>
+    </unit>
+    <unit id="26" name="P2ContentLime">
+      <segment>
+        <source>lime</source>
+      </segment>
+    </unit>
+    <unit id="27" name="P2ContentGreen">
+      <segment>
+        <source>green</source>
+      </segment>
+    </unit>
+    <unit id="28" name="P2ContentCyan">
+      <segment>
+        <source>cyan</source>
+      </segment>
+    </unit>
+    <unit id="29" name="P2ContentBlue">
+      <segment>
+        <source>blue</source>
+      </segment>
+    </unit>
+    <unit id="30" name="P2ContentGeekblue">
+      <segment>
+        <source>geekblue</source>
+      </segment>
+    </unit>
+    <unit id="31" name="P2ContentPurple">
+      <segment>
+        <source>purple</source>
+      </segment>
+    </unit>
+    <unit id="32" name="P2TextPresetsFilled">
+      <segment>
+        <source>Presets (filled)</source>
+      </segment>
+    </unit>
+    <unit id="33" name="P2TextPresetsSolid">
+      <segment>
+        <source>Presets (solid)</source>
+      </segment>
+    </unit>
+    <unit id="34" name="P2TextPresetsOutlined">
+      <segment>
+        <source>Presets (outlined)</source>
+      </segment>
+    </unit>
+    <unit id="35" name="P2TextCustomFilled">
+      <segment>
+        <source>Custom (filled)</source>
+      </segment>
+    </unit>
+    <unit id="36" name="P2TextCustomSolid">
+      <segment>
+        <source>Custom (solid)</source>
+      </segment>
+    </unit>
+    <unit id="37" name="P2TextCustomOutlined">
+      <segment>
+        <source>Custom (outlined)</source>
+      </segment>
+    </unit>
+    <unit id="38" name="P2TextStatusFilled">
+      <segment>
+        <source>Status (filled)</source>
+      </segment>
+    </unit>
+    <unit id="39" name="P2TextStatusSolid">
+      <segment>
+        <source>Status (solid)</source>
+      </segment>
+    </unit>
+    <unit id="40" name="P2TextStatusOutlined">
+      <segment>
+        <source>Status (outlined)</source>
+      </segment>
+    </unit>
+    <unit id="41" name="P2ContentSuccess">
+      <segment>
+        <source>success</source>
+      </segment>
+    </unit>
+    <unit id="42" name="P2ContentProcessing">
+      <segment>
+        <source>processing</source>
+      </segment>
+    </unit>
+    <unit id="43" name="P2ContentError">
+      <segment>
+        <source>error</source>
+      </segment>
+    </unit>
+    <unit id="44" name="P2ContentWarning">
+      <segment>
+        <source>warning</source>
+      </segment>
+    </unit>
+    <unit id="45" name="P2ContentDefault">
+      <segment>
+        <source>default</source>
+      </segment>
+    </unit>
+    <unit id="46" name="P2ContentTwitter">
+      <segment>
+        <source>Twitter</source>
+      </segment>
+    </unit>
+    <unit id="47" name="P2ContentYoutube">
+      <segment>
+        <source>Youtube</source>
+      </segment>
+    </unit>
+    <unit id="48" name="P2ContentFacebook">
+      <segment>
+        <source>Facebook</source>
+      </segment>
+    </unit>
+    <unit id="49" name="P2ContentLinkedin">
+      <segment>
+        <source>Linkedin</source>
+      </segment>
+    </unit>
+    <unit id="50" name="P2TextVariants">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="51" name="P2TextPresetVariant">
+      <segment>
+        <source>Preset color</source>
+      </segment>
+    </unit>
+    <unit id="52" name="P2TextStatusVariant">
+      <segment>
+        <source>Status color</source>
+      </segment>
+    </unit>
+    <unit id="53" name="P2TextCustomVariant">
+      <segment>
+        <source>Custom color</source>
+      </segment>
+    </unit>
+    <unit id="54" name="P2ContentFilled">
+      <segment>
+        <source>Filled</source>
+      </segment>
+    </unit>
+    <unit id="55" name="P2ContentSolid">
+      <segment>
+        <source>Solid</source>
+      </segment>
+    </unit>
+    <unit id="56" name="P2ContentOutlined">
+      <segment>
+        <source>Outlined</source>
+      </segment>
+    </unit>
+    <unit id="57" name="P2TextMaterialIcon">
+      <segment>
+        <source>Material icon</source>
+      </segment>
+    </unit>
+    <unit id="58" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="59" name="PageSubtitle">
+      <segment>
+        <source>Label, categorize and mark status with compact colored chips.</source>
+      </segment>
+    </unit>
+    <unit id="60" name="PageDescription">
+      <segment>
+        <source>Tag displays short labels with preset, status and custom colors across Filled, Solid and Outlined variants.</source>
+      </segment>
+    </unit>
+    <unit id="61" name="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="62" name="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="63" name="ApiEventClosed">
+      <segment>
+        <source>Raised when the close action is clicked.</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CarouselShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Display a rotating set of content panels in a limited space.</source>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>Carousel cycles through images, cards, or promotion panels. It supports autoplay, pagination positions, fade transitions, navigation arrows, infinite scrolling, progress indicators, and swipe gestures.</source>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>Basic usage.</source>
+      </segment>
+    </unit>
+    <unit id="8" name="CardShapePositionTitle">
+      <segment>
+        <source>Card Shape Position</source>
+      </segment>
+    </unit>
+    <unit id="9" name="CardShapePositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+      </segment>
+    </unit>
+    <unit id="10" name="AutoScrollTitle">
+      <segment>
+        <source>Scroll automatically</source>
+      </segment>
+    </unit>
+    <unit id="11" name="AutoScrollDescription">
+      <segment>
+        <source>Timing of scrolling to the next card/picture.</source>
+      </segment>
+    </unit>
+    <unit id="12" name="FadeInTitle">
+      <segment>
+        <source>Fade in</source>
+      </segment>
+    </unit>
+    <unit id="13" name="FadeInDescription">
+      <segment>
+        <source>Slides use fade for transition.</source>
+      </segment>
+    </unit>
+    <unit id="14" name="SwitchArrowsTitle">
+      <segment>
+        <source>Arrows for switching</source>
+      </segment>
+    </unit>
+    <unit id="15" name="SwitchArrowsDescription">
+      <segment>
+        <source>Show the arrows for switching.</source>
+      </segment>
+    </unit>
+    <unit id="16" name="DotsProgressTitle">
+      <segment>
+        <source>Progress of dots</source>
+      </segment>
+    </unit>
+    <unit id="17" name="DotsProgressDescription">
+      <segment>
+        <source>Show progress of dots.</source>
+      </segment>
+    </unit>
+    <unit id="18" name="P2TextPaginationPosition">
+      <segment>
+        <source>Pagination Position:</source>
+      </segment>
+    </unit>
+    <unit id="19" name="P2ContentTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="20" name="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="21" name="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+      </segment>
+    </unit>
+    <unit id="22" name="P2ContentRight">
+      <segment>
+        <source>Right</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

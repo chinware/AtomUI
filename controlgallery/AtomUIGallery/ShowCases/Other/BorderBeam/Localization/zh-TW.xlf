@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind">
+    <unit id="1" name="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">範例</target>
+      </segment>
+    </unit>
+    <unit id="2" name="ComponentCategory">
+      <segment>
+        <source>Other</source>
+        <target state="translated">其他</target>
+      </segment>
+    </unit>
+    <unit id="3" name="ComponentIntroducedVersion">
+      <segment>
+        <source>v6.0.5</source>
+        <target state="translated">v6.0.5</target>
+      </segment>
+    </unit>
+    <unit id="4" name="PageSubtitle">
+      <segment>
+        <source>Draw an animated highlight along a container boundary.</source>
+        <target state="translated">沿容器邊界繪製動態高光。</target>
+      </segment>
+    </unit>
+    <unit id="5" name="PageDescription">
+      <segment>
+        <source>BorderBeam wraps a content control and renders a non-interactive beam on its border. It is decorative, stays active independently of the global motion setting by default, and can use a solid color or gradient stops.</source>
+        <target state="translated">BorderBeam 包裹一個內容控制項，並在其邊界上渲染不參與互動的流光層。它只承擔裝飾性強調，預設不受全域動效設定影響，並支援單色或漸變停靠點。</target>
+      </segment>
+    </unit>
+    <unit id="6" name="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="7" name="BasicDescription">
+      <segment>
+        <source>Wrap a card to emphasize an important workspace summary without changing the card interaction model.</source>
+        <target state="translated">包裹卡片以強調重要的工作台概覽，同時不改變卡片自身互動模型。</target>
+      </segment>
+    </unit>
+    <unit id="8" name="CustomizedColorTitle">
+      <segment>
+        <source>Customized color</source>
+        <target state="translated">自訂顏色</target>
+      </segment>
+    </unit>
+    <unit id="9" name="CustomizedColorDescription">
+      <segment>
+        <source>Use multiple color stops to build different beam presets, following the Ant Design customized color demo.</source>
+        <target state="translated">使用多個顏色停靠點建立不同流光預設，對齊 Ant Design 的自訂顏色範例。</target>
+      </segment>
+    </unit>
+    <unit id="10" name="CustomizedColorCardDescription">
+      <segment>
+        <source>The segmented selector switches the color stop collection used by the beam.</source>
+        <target state="translated">分段選擇器會切換流光使用的顏色停靠點集合。</target>
+      </segment>
+    </unit>
+    <unit id="11" name="NonUniformRadiusTitle">
+      <segment>
+        <source>Non-uniform radius</source>
+        <target state="translated">非統一圓角</target>
+      </segment>
+    </unit>
+    <unit id="12" name="NonUniformRadiusDescription">
+      <segment>
+        <source>Set Outset to 0 when the decorated container clips its own corners.</source>
+        <target state="translated">被裝飾容器自行裁剪圓角時，可將 Outset 設定為 0。</target>
+      </segment>
+    </unit>
+    <unit id="13" name="NonUniformRadiusCardDescription">
+      <segment>
+        <source>The top corners keep a larger radius while the bottom corners remain square.</source>
+        <target state="translated">頂部圓角保持較大半徑，底部角保持直角。</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
