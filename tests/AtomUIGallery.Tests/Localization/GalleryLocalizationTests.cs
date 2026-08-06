@@ -37,6 +37,30 @@ public class GalleryLocalizationTests
         }
     }
 
+    [Theory]
+    [InlineData("en-US", "new tab 7")]
+    [InlineData("zh-CN", "新增标签 7")]
+    [InlineData("zh-TW", "新增標籤 7")]
+    public void Generated_Catalog_Format_Uses_The_Current_Official_Language(
+        string language,
+        string expected)
+    {
+        var application = Application.Current.ShouldNotBeNull();
+        var manager = application.GetLanguageManager().ShouldNotBeNull();
+        var localizer = application.GetLocalizer().ShouldNotBeNull();
+        try
+        {
+            manager.ChangeLanguage(LanguageTag.Parse(language));
+
+            localizer.Format(TabControlShowCaseLangResourceKind.P2HeaderNewTabFormat, 7)
+                     .ShouldBe(expected);
+        }
+        finally
+        {
+            manager.ChangeLanguage(LanguageTags.EnUS);
+        }
+    }
+
     [Fact]
     public void GalleryLocalization_Binding_Tracks_Language_Resource_Changes()
     {

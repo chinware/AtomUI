@@ -1,7 +1,11 @@
 using System.Reflection;
 using System.Xml.Linq;
 using AtomUI;
+using AtomUI.Controls.Localization;
+using AtomUI.Desktop.Controls.Localization;
 using AtomUI.Localization;
+using AtomUI.Toolkits.GalleryBase.Localization;
+using AtomUIGallery.Localization;
 using Avalonia;
 using Shouldly;
 using Xunit;
@@ -20,16 +24,25 @@ public class GalleryCatalogCoverageTests
     }
 
     [Fact]
-    public void Gallery_Registers_All_Application_Catalogs_And_Compiled_Translations()
+    public void Official_Catalogs_Preserve_Their_Enum_Xliff_And_Compiled_Translation_Contracts()
     {
-        var assembly = typeof(BaseGalleryApplication).Assembly;
-        var catalogTypes = assembly.GetTypes()
-            .Where(type => type is { IsEnum: true, Namespace: "AtomUIGallery.Localization" } &&
-                           type.Name.EndsWith("LangResourceKind", StringComparison.Ordinal))
+        var assemblies = new[]
+        {
+            typeof(CommonLangResourceKind).Assembly,
+            typeof(DatePickerLangResourceKind).Assembly,
+            typeof(ColorPickerLangResourceKind).Assembly,
+            typeof(DataGridLangResourceKind).Assembly,
+            typeof(GalleryShowCaseHeaderLangResourceKind).Assembly,
+            typeof(BaseGalleryApplication).Assembly
+        }.Distinct().ToArray();
+        var catalogTypes = assemblies
+            .SelectMany(static assembly => assembly.GetTypes())
+            .Where(static type => type is { IsEnum: true } &&
+                                  type.GetCustomAttribute<LanguageCatalogAttribute>() is not null)
             .OrderBy(static type => type.FullName, StringComparer.Ordinal)
             .ToArray();
 
-        catalogTypes.Length.ShouldBe(78);
+        catalogTypes.Length.ShouldBe(92);
         foreach (var catalogType in catalogTypes)
         {
             catalogType.GetCustomAttribute<LanguageCatalogAttribute>()
@@ -43,20 +56,23 @@ public class GalleryCatalogCoverageTests
             ids.ShouldBe(Enumerable.Range(1, ids.Length));
 
             var extensionName = catalogType.Name[..^"Kind".Length] + "Extension";
-            var extensionType = assembly.GetType($"{catalogType.Namespace}.{extensionName}")
-                                        .ShouldNotBeNull();
+            var extensionType = catalogType.Assembly
+                                           .GetType($"{catalogType.Namespace}.{extensionName}")
+                                           .ShouldNotBeNull();
             extensionType.IsSealed.ShouldBeTrue();
             extensionType.BaseType.ShouldBe(
                 typeof(LanguageResourceExtension<>).MakeGenericType(catalogType));
         }
 
-        assembly.GetTypes().ShouldNotContain(static type =>
-            type.Name == "en_US" || type.Name == "zh_CN" || type.Name == "zh_TW");
+        assemblies.SelectMany(static assembly => assembly.GetTypes())
+                  .ShouldNotContain(static type =>
+                      type.Name == "en_US" || type.Name == "zh_CN" || type.Name == "zh_TW");
 
         var files = LoadLanguageFiles(catalogTypes);
-        files.Length.ShouldBe(234);
+        files.Length.ShouldBe(276);
         files.GroupBy(static file => file.CatalogType)
              .ShouldAllBe(static group => group.Count() == 3);
+        AssertXliffContracts(catalogTypes, files);
 
         var application = Application.Current.ShouldNotBeNull();
         var manager = application.GetLanguageManager().ShouldNotBeNull();
@@ -89,10 +105,14 @@ public class GalleryCatalogCoverageTests
         var typesByName = catalogTypes.ToDictionary(
             static type => type.FullName!,
             StringComparer.Ordinal);
-        var root = GetRepoPath("controlgallery/AtomUIGallery");
+        var root = GetRepoRoot();
         XNamespace xliff = "urn:oasis:names:tc:xliff:document:2.0";
 
-        return Directory.GetFiles(root, "*.xlf", SearchOption.AllDirectories)
+        return new[] { "src", "controlgallery" }
+            .SelectMany(directory => Directory.GetFiles(
+                Path.Combine(root, directory),
+                "*.xlf",
+                SearchOption.AllDirectories))
             .OrderBy(static path => path, StringComparer.Ordinal)
             .Select(path =>
             {
@@ -108,40 +128,80 @@ public class GalleryCatalogCoverageTests
                     .Select(unit =>
                     {
                         var segment = unit.Element(xliff + "segment").ShouldNotBeNull();
-                        var text = targetLanguage is null
-                            ? segment.Element(xliff + "source").ShouldNotBeNull().Value
-                            : segment.Element(xliff + "target").ShouldNotBeNull().Value;
+                        var source = segment.Element(xliff + "source").ShouldNotBeNull().Value;
+                        var target = segment.Element(xliff + "target");
+                        var text = targetLanguage is null ? source : target.ShouldNotBeNull().Value;
                         return new CatalogEntry(
                             int.Parse(unit.Attribute("id")!.Value),
                             unit.Attribute("name")!.Value,
-                            text);
+                            source,
+                            text,
+                            target?.Attribute("state")?.Value);
                     })
                     .ToArray();
-                return new CatalogLanguageFile(catalogType, language, entries);
+                return new CatalogLanguageFile(catalogName, catalogType, language, entries);
             })
             .ToArray();
     }
 
-    private static string GetRepoPath(string relativePath)
+    private static void AssertXliffContracts(
+        IReadOnlyCollection<Type> catalogTypes,
+        IReadOnlyCollection<CatalogLanguageFile> files)
+    {
+        foreach (var catalogType in catalogTypes)
+        {
+            var catalogFiles = files.Where(file => file.CatalogType == catalogType).ToArray();
+            catalogFiles.Select(static file => file.Language)
+                        .ShouldBe([LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW], ignoreOrder: true);
+            catalogFiles.ShouldAllBe(file => file.CatalogId == catalogType.FullName);
+
+            var sourceEntries = catalogFiles.Single(file => file.Language == LanguageTags.EnUS).Entries;
+            var enumEntries = Enum.GetNames(catalogType)
+                                  .Select(name => new
+                                  {
+                                      Name = name,
+                                      Id = Convert.ToInt32(Enum.Parse(catalogType, name))
+                                  })
+                                  .OrderBy(static entry => entry.Id)
+                                  .ToArray();
+            sourceEntries.Select(static entry => (entry.Id, entry.Name))
+                         .ShouldBe(enumEntries.Select(static entry => (entry.Id, entry.Name)));
+
+            foreach (var targetFile in catalogFiles.Where(file => file.Language != LanguageTags.EnUS))
+            {
+                targetFile.Entries.Select(static entry => (entry.Id, entry.Name, entry.Source))
+                          .ShouldBe(sourceEntries.Select(static entry => (entry.Id, entry.Name, entry.Source)));
+                targetFile.Entries.ShouldAllBe(static entry =>
+                    entry.TargetState == "translated" && !string.IsNullOrEmpty(entry.Text));
+            }
+        }
+    }
+
+    private static string GetRepoRoot()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory is not null)
         {
-            var candidate = Path.Combine(directory.FullName, relativePath);
-            if (File.Exists(candidate) || Directory.Exists(candidate))
+            if (File.Exists(Path.Combine(directory.FullName, "AtomUI.slnx")))
             {
-                return candidate;
+                return directory.FullName;
             }
             directory = directory.Parent;
         }
 
-        throw new DirectoryNotFoundException($"Repository path '{relativePath}' was not found.");
+        throw new DirectoryNotFoundException("AtomUI repository root was not found.");
     }
 
     private sealed record CatalogLanguageFile(
+        string CatalogId,
         Type CatalogType,
         LanguageTag Language,
         CatalogEntry[] Entries);
 
-    private sealed record CatalogEntry(int Id, string Name, string Text);
+    private sealed record CatalogEntry(
+        int Id,
+        string Name,
+        string Source,
+        string Text,
+        string? TargetState);
 }
