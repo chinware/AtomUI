@@ -1,5 +1,7 @@
 <Project>
 
+    <Import Project="$(MSBuildThisFileDirectory)build/AtomUI.Localization.targets" />
+
     <Import Project="$(MSBuildThisFileDirectory)build/AtomUI.ThemeAssets.targets"
             Condition="'$(AtomUIGenerateControlThemeAssetResources)' == 'true'" />
 

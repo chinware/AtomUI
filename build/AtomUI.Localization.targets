@@ -1,0 +1,42 @@
+<Project>
+    <PropertyGroup>
+        <_AtomUILanguageFileExcludes>
+            $(DefaultItemExcludes);
+            $(BaseOutputPath)**/*.xlf;
+            $(BaseIntermediateOutputPath)**/*.xlf;
+            $(MSBuildProjectDirectory)/**/GeneratedFiles/**/*.xlf
+        </_AtomUILanguageFileExcludes>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(AtomUIDisableLocalizationBuildIntegration)' != 'true'">
+        <AtomUILanguageOverride Include="$(MSBuildProjectDirectory)/Localization/Overrides/**/*.xlf"
+                                Exclude="$(_AtomUILanguageFileExcludes);@(AtomUILanguageOverride)" />
+        <AtomUILanguage Include="$(MSBuildProjectDirectory)/**/Localization/**/*.xlf"
+                        Exclude="$(_AtomUILanguageFileExcludes);@(AtomUILanguage);@(AtomUILanguageOverride)" />
+
+        <AdditionalFiles Remove="@(AtomUILanguage);@(AtomUILanguageOverride)" />
+        <AdditionalFiles Include="@(AtomUILanguage)"
+                         AtomUILanguage="true"
+                         AtomUILanguageSourceKind="%(AtomUILanguage.AtomUILanguageSourceKind)"
+                         AtomUILanguageSourceIdentity="%(AtomUILanguage.AtomUILanguageSourceIdentity)"
+                         AtomUILanguageModuleId="%(AtomUILanguage.AtomUILanguageModuleId)"
+                         AtomUILanguageContractVersion="%(AtomUILanguage.AtomUILanguageContractVersion)"
+                         Visible="false" />
+        <AdditionalFiles Include="@(AtomUILanguageOverride)"
+                         AtomUILanguage="true"
+                         AtomUILanguageSourceKind="%(AtomUILanguageOverride.AtomUILanguageSourceKind)"
+                         AtomUILanguageSourceIdentity="%(AtomUILanguageOverride.AtomUILanguageSourceIdentity)"
+                         AtomUILanguageModuleId="%(AtomUILanguageOverride.AtomUILanguageModuleId)"
+                         AtomUILanguageContractVersion="%(AtomUILanguageOverride.AtomUILanguageContractVersion)"
+                         Visible="false" />
+
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguage" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageSourceKind" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageSourceIdentity" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageModuleId" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageContractVersion" />
+        <CompilerVisibleProperty Include="PackageId" />
+        <CompilerVisibleProperty Include="AssemblyName" />
+        <CompilerVisibleProperty Include="RootNamespace" />
+    </ItemGroup>
+</Project>

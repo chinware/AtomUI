@@ -1,0 +1,4 @@
+<Project>
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.Localization.targets" />
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.ThemeAssets.targets" />
+</Project>

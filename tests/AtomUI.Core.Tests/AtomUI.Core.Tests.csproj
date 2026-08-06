@@ -20,23 +20,4 @@
                       ReferenceOutputAssembly="false"
                       PrivateAssets="all" />
   </ItemGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="Localization/Generated/en-US.xlf"
-                     AtomUILanguage="true"
-                     AtomUILanguageSourceKind="ModuleBuiltIn"
-                     AtomUILanguageSourceIdentity="AtomUI.Core.Tests"
-                     AtomUILanguageModuleId="AtomUI.Core.Tests" />
-    <AdditionalFiles Include="Localization/Generated/zh-CN.xlf"
-                     AtomUILanguage="true"
-                     AtomUILanguageSourceKind="ModuleBuiltIn"
-                     AtomUILanguageSourceIdentity="AtomUI.Core.Tests"
-                     AtomUILanguageModuleId="AtomUI.Core.Tests" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguage" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageSourceKind" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageSourceIdentity" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageModuleId" />
-    <CompilerVisibleProperty Include="PackageId" />
-    <CompilerVisibleProperty Include="AssemblyName" />
-    <CompilerVisibleProperty Include="RootNamespace" />
-  </ItemGroup>
 </Project>

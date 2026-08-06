@@ -19,7 +19,22 @@ public class ThemeAssetPackagingContractTests
 
         packedTarget.ShouldNotBeNull();
         ((string?)packedTarget.Attribute("Pack")).ShouldBe("true");
-        ((string?)packedTarget.Attribute("Include")).ShouldBe("../../build/AtomUI.ThemeAssets.targets");
+        ((string?)packedTarget.Attribute("Include")).ShouldBe("../../build/AtomUI.Generator.targets");
+
+        var generatorTargets = XDocument.Load(GetRepoFile("build/AtomUI.Generator.targets"));
+        generatorTargets.Descendants("Import")
+                        .Single(element =>
+                            ((string?)element.Attribute("Project"))?.EndsWith(
+                                "AtomUI.ThemeAssets.targets",
+                                StringComparison.Ordinal) == true)
+                        .ShouldNotBeNull();
+
+        project.Descendants("None")
+               .Single(element =>
+                   (string?)element.Attribute("Include") == "../../build/AtomUI.ThemeAssets.targets" &&
+                   (string?)element.Attribute("PackagePath") ==
+                   "buildTransitive/AtomUI.ThemeAssets.targets")
+               .ShouldNotBeNull();
     }
 
     [Fact]
