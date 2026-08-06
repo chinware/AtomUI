@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="zh-CN">
+  <file id="AtomUI.Desktop.Controls.Localization.DataGridLangResourceKind">
+    <unit id="1" name="SelectAllFilterItems"><segment><source>Select all items</source><target state="translated">选择所有</target></segment></unit>
+    <unit id="2" name="AscendTooltip"><segment><source>Click to sort ascending</source><target state="translated">点击升序</target></segment></unit>
+    <unit id="3" name="DescendTooltip"><segment><source>Click to sort descending</source><target state="translated">点击降序</target></segment></unit>
+    <unit id="4" name="CancelTooltip"><segment><source>Click to cancel sorting</source><target state="translated">取消排序</target></segment></unit>
+    <unit id="5" name="DeleteConfirmText"><segment><source>Sure to delete?</source><target state="translated">确认删除？</target></segment></unit>
+    <unit id="6" name="CancelConfirmText"><segment><source>Sure to cancel?</source><target state="translated">确认取消？</target></segment></unit>
+    <unit id="7" name="Operating"><segment><source>Operation in progress, please wait.</source><target state="translated">正在操作中，请稍后</target></segment></unit>
+  </file>
+</xliff>

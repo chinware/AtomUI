@@ -9,6 +9,7 @@ public static class DataGridThemeManagerBuilderExtensions
         GeneratedControlPackageRegistration.Register(
             builder.Theme,
             new AtomUIDataGridThemesProvider());
+        GeneratedLanguageModuleRegistration.Register(builder.Localization);
         return builder;
     }
 }
