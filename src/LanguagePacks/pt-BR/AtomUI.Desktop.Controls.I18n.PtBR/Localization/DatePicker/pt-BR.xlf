@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUI.Desktop.Controls.Localization.DatePickerLangResourceKind">
+    <unit id="Now">
+      <segment>
+        <source>Now</source>
+        <target state="translated">Agora</target>
+      </segment>
+    </unit>
+    <unit id="Today">
+      <segment>
+        <source>Today</source>
+        <target state="translated">Hoje</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
