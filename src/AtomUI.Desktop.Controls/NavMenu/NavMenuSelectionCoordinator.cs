@@ -118,7 +118,29 @@ internal sealed class NavMenuSelectionCoordinator
         }
 
         var selectedNode = _appliedSelectedNode ?? menu.SelectedItem;
-        return selectedNode is null ? null : menu.FindRealizedMenuItem(selectedNode);
+        if (selectedNode is null)
+        {
+            return null;
+        }
+
+        if (!BelongsToMenu(menu, selectedNode))
+        {
+            Reset();
+            return null;
+        }
+
+        return menu.FindRealizedMenuItem(selectedNode);
+    }
+
+    private static bool BelongsToMenu(NavMenu menu, INavMenuNode node)
+    {
+        var rootNode = node;
+        while (rootNode.ParentNode is INavMenuNode parentNode)
+        {
+            rootNode = parentNode;
+        }
+
+        return NavMenuEntryGraph.ContainsDirectNode(menu.Items, rootNode);
     }
 
     private void Reset()

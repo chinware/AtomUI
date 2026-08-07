@@ -303,6 +303,60 @@ public class NavMenuSelectionTests
     }
 
     [Fact]
+    public void NavMenu_Selects_New_Item_After_Replacing_The_Selected_Item_Tree()
+    {
+        var first = new NavMenuNode
+        {
+            Header  = "First",
+            ItemKey = "first"
+        };
+        var replacement = new NavMenuNode
+        {
+            Header  = "Replacement",
+            ItemKey = "replacement"
+        };
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(first);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var firstContainer = menu.ContainerFromItem(first).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(firstContainer);
+
+            menu.Items.Clear();
+            menu.Items.Add(replacement);
+            Dispatcher.UIThread.RunJobs();
+
+            var replacementContainer = menu.ContainerFromItem(replacement).ShouldBeOfType<NavMenuItem>();
+            var replacementHeader = GetItemHeader(replacementContainer);
+            Should.NotThrow(() => MouseDown(replacementHeader, window));
+            Dispatcher.UIThread.RunJobs();
+
+            replacementContainer.IsSelected.ShouldBeTrue();
+            menu.SelectedItem.ShouldBeSameAs(replacement);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void NavMenu_Detach_Then_Programmatic_Sibling_Selection_Clears_Previous_Selection()
     {
         var first = new NavMenuNode
