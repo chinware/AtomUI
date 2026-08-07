@@ -13,14 +13,19 @@ internal static partial class Program
     public static int Main(string[] args)
     {
         var options = PerfOptions.Parse(args);
-        if (options.Suite.Equals("localization", StringComparison.OrdinalIgnoreCase) ||
-            options.VerifyLocalizationStates)
+        if (options.Suite.Equals("localization", StringComparison.OrdinalIgnoreCase))
         {
             return LocalizationScenarios.Run(
                 options.Count,
                 options.MarkdownOutputPath,
                 options.VerifyLocalizationStates);
         }
+
+        var localizationVerified = !options.VerifyLocalizationStates ||
+            LocalizationScenarios.Run(
+                options.Count,
+                options.MarkdownOutputPath,
+                verifyStates: true) == 0;
 
         SetupAvalonia();
 
@@ -38,7 +43,8 @@ internal static partial class Program
             return RunSelectInteractionBenchmarks(options.Count, options.MarkdownOutputPath);
         }
 
-        if (options.VerifyAdornerLayerStates ||
+        if (options.VerifyLocalizationStates ||
+            options.VerifyAdornerLayerStates ||
             options.VerifyAccessories ||
             options.VerifyEffectiveBrushes ||
             options.VerifyAddonStates ||
@@ -116,7 +122,7 @@ internal static partial class Program
             options.VerifyWindowTitleBarStates ||
             options.VerifyTextBlockStates)
         {
-            var verified = true;
+            var verified = localizationVerified;
             if (options.VerifyAdornerLayerStates)
             {
                 verified &= RunAdornerLayerStateVerification();
