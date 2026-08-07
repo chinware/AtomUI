@@ -216,8 +216,10 @@ manifest 和 props 真正进入 `PackTask`。静态语言包项目设置 `AtomUI
 Generator 编译为静态字符串表。
 
 纯聚合语言包是单独的普通 pack 项目：`IncludeBuildOutput=false`，不设置 `AtomUIBuildLanguagePackage`，不调用上述
-任务，只保留同版本模块语言包的 NuGet dependencies。聚合包自身不得向消费项目传递 analyzer、AdditionalFiles 或
-build targets。
+任务。源码项目中的模块语言包 `ProjectReference` 只作为仓库构建顺序边；.NET SDK pack 会把普通项目引用版本写成
+最低版本范围，因此不能用它表达官方包要求的精确同版本依赖。聚合包必须使用无文件 payload 的自定义 nuspec 作为
+依赖图的唯一权威来源，并把每个模块语言包版本写成 `[$version$]`。聚合包自身不得向消费项目传递 XLIFF、manifest、
+props、analyzer、AdditionalFiles、build targets、DLL、runtime asset 或组件包依赖。
 
 源码仓库构建中，`AtomUI.Build.Tasks.dll` 可能在消费项目完成 MSBuild 求值之后才由 Generator 的项目依赖生成。
 因此 targets 必须无条件登记 `UsingTask`，让 MSBuild 在任务首次执行时延迟加载程序集；不得在 `UsingTask` 上使用

@@ -284,6 +284,197 @@ public class LocalizationBuildAssetsTests
         properties["RuntimeIdentifier"].ShouldBeEmpty();
     }
 
+    [Fact]
+    public void Official_PtBr_Language_Package_Projects_Match_The_Publishing_Contract()
+    {
+        var moduleProjects = new[]
+        {
+            new LanguagePackageProjectContract(
+                "AtomUI.Controls.I18n.PtBR",
+                "AtomUI.Controls",
+                "../../../AtomUI.Controls/**/Localization/**/en-US.xlf"),
+            new LanguagePackageProjectContract(
+                "AtomUI.Desktop.Controls.I18n.PtBR",
+                "AtomUI.Desktop.Controls",
+                "../../../AtomUI.Desktop.Controls/**/Localization/**/en-US.xlf"),
+            new LanguagePackageProjectContract(
+                "AtomUI.Desktop.Controls.DataGrid.I18n.PtBR",
+                "AtomUI.Desktop.Controls.DataGrid",
+                "../../../AtomUI.Desktop.Controls.DataGrid/**/Localization/**/en-US.xlf"),
+            new LanguagePackageProjectContract(
+                "AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR",
+                "AtomUI.Desktop.Controls.ColorPicker",
+                "../../../AtomUI.Desktop.Controls.ColorPicker/**/Localization/**/en-US.xlf")
+        };
+
+        foreach (var contract in moduleProjects)
+        {
+            AssertOfficialLanguageModuleProject(contract);
+        }
+
+        const string aggregatePackageId = "AtomUI.I18n.PtBR";
+        var aggregateProjectPath = $"src/LanguagePacks/pt-BR/{aggregatePackageId}/{aggregatePackageId}.csproj";
+        var aggregateProject = XDocument.Load(GetRepoFile(aggregateProjectPath));
+        var aggregateProperties = GetProjectProperties(aggregateProject);
+
+        aggregateProperties["TargetFramework"].ShouldBe("netstandard2.0");
+        aggregateProperties["IsPackable"].ShouldBe("true");
+        aggregateProperties["IncludeBuildOutput"].ShouldBe("false");
+        aggregateProperties["SuppressDependenciesWhenPacking"].ShouldBe("false");
+        aggregateProperties["PackageId"].ShouldBe(aggregatePackageId);
+        aggregateProperties.ShouldNotContainKey("AtomUIBuildLanguagePackage");
+        aggregateProperties["NuspecFile"].ShouldBe("AtomUI.I18n.PtBR.nuspec");
+        aggregateProperties["NuspecBasePath"].ShouldBe("$(IntermediateOutputPath)nuspec-base");
+        aggregateProperties["NuspecProperties"].ShouldBe("version=$(AtomUIVersion)");
+
+        aggregateProject.Descendants()
+                        .Where(element => element.Parent?.Name.LocalName == "ItemGroup" &&
+                                          element.Name.LocalName != "ProjectReference")
+                        .ShouldBeEmpty();
+        var prepareNuspecBase = aggregateProject.Descendants("Target")
+                                                  .Single(element =>
+                                                      (string?)element.Attribute("Name") ==
+                                                      "AtomUIPrepareAggregateNuspecBase");
+        ((string?)prepareNuspecBase.Attribute("BeforeTargets")).ShouldBe("GenerateNuspec");
+        ((string?)prepareNuspecBase.Descendants("RemoveDir").Single().Attribute("Directories"))
+            .ShouldBe("$(NuspecBasePath)");
+        ((string?)prepareNuspecBase.Descendants("MakeDir").Single().Attribute("Directories"))
+            .ShouldBe("$(NuspecBasePath)");
+
+        var expectedModuleProjectPaths = moduleProjects
+            .Select(contract => $"../{contract.PackageId}/{contract.PackageId}.csproj")
+            .ToArray();
+        var aggregateProjectReferences = aggregateProject.Descendants("ProjectReference").ToArray();
+        aggregateProjectReferences.Select(reference => (string)reference.Attribute("Include")!)
+                                  .ShouldBe(expectedModuleProjectPaths, ignoreOrder: true);
+        foreach (var projectReference in aggregateProjectReferences)
+        {
+            ((string?)projectReference.Attribute("ReferenceOutputAssembly")).ShouldBe("false");
+            projectReference.Attribute("PrivateAssets").ShouldBeNull();
+        }
+
+        var aggregateNuspec = XDocument.Load(GetRepoFile(
+            "src/LanguagePacks/pt-BR/AtomUI.I18n.PtBR/AtomUI.I18n.PtBR.nuspec"));
+        var nuspecMetadata = aggregateNuspec.Descendants()
+                                             .Single(element => element.Name.LocalName == "metadata");
+        nuspecMetadata.Elements().Single(element => element.Name.LocalName == "id").Value
+                      .ShouldBe(aggregatePackageId);
+        nuspecMetadata.Elements().Single(element => element.Name.LocalName == "version").Value
+                      .ShouldBe("$version$");
+        nuspecMetadata.Descendants()
+                      .Where(element => element.Name.LocalName == "group")
+                      .ShouldBeEmpty();
+        nuspecMetadata.Descendants()
+                      .Where(element => element.Name.LocalName == "dependency")
+                      .Select(element => new
+                      {
+                          Id = (string?)element.Attribute("id"),
+                          Version = (string?)element.Attribute("version")
+                      })
+                      .ShouldBe(
+                          moduleProjects.Select(contract => new
+                          {
+                              Id = (string?)contract.PackageId,
+                              Version = (string?)"[$version$]"
+                          }),
+                          ignoreOrder: true);
+        aggregateNuspec.Descendants()
+                       .Where(element => element.Name.LocalName == "files")
+                       .ShouldBeEmpty();
+
+        var solution = XDocument.Load(GetRepoFile("AtomUI.slnx"));
+        var solutionProjectPaths = solution.Descendants("Project")
+                                           .Select(element => (string?)element.Attribute("Path"))
+                                           .ToArray();
+        foreach (var projectPath in moduleProjects
+                     .Select(contract =>
+                         $"src/LanguagePacks/pt-BR/{contract.PackageId}/{contract.PackageId}.csproj")
+                     .Append(aggregateProjectPath))
+        {
+            solutionProjectPaths.ShouldContain(projectPath);
+        }
+    }
+
+    private static void AssertOfficialLanguageModuleProject(LanguagePackageProjectContract contract)
+    {
+        var projectPath = $"src/LanguagePacks/pt-BR/{contract.PackageId}/{contract.PackageId}.csproj";
+        var project = XDocument.Load(GetRepoFile(projectPath));
+        var properties = GetProjectProperties(project);
+
+        properties["TargetFramework"].ShouldBe("netstandard2.0");
+        properties["IsPackable"].ShouldBe("true");
+        properties["IncludeBuildOutput"].ShouldBe("false");
+        properties["SuppressDependenciesWhenPacking"].ShouldBe("true");
+        properties["PackageId"].ShouldBe(contract.PackageId);
+        properties["AtomUIBuildLanguagePackage"].ShouldBe("true");
+        properties["AtomUILanguageTag"].ShouldBe("pt-BR");
+        properties["AtomUILanguageModuleId"].ShouldBe(contract.ModuleId);
+        properties["AtomUILanguageContractVersion"].ShouldBe("2");
+        properties["AtomUILanguageMinimumState"].ShouldBe("final");
+
+        var projectReferences = project.Descendants("ProjectReference").ToArray();
+        projectReferences.Length.ShouldBe(1);
+        var generatorReference = projectReferences.Single();
+        ((string?)generatorReference.Attribute("Include"))
+            .ShouldBe("../../../AtomUI.Generator/AtomUI.Generator.csproj");
+        ((string?)generatorReference.Attribute("OutputItemType")).ShouldBe("Analyzer");
+        ((string?)generatorReference.Attribute("ReferenceOutputAssembly")).ShouldBe("false");
+        ((string?)generatorReference.Attribute("PrivateAssets")).ShouldBe("all");
+
+        var languageItems = project.Descendants("AtomUILanguage").ToArray();
+        languageItems.Length.ShouldBe(2);
+        var sourceLanguage = languageItems.Single(item =>
+            (string?)item.Attribute("Include") == contract.SourceLanguageInclude);
+        AssertLanguageItemMetadata(
+            sourceLanguage,
+            "ModuleBuiltIn",
+            "$(AtomUILanguageModuleId)",
+            contract.ModuleId,
+            "2");
+        sourceLanguage.Elements()
+                      .Where(element => element.Name.LocalName == "AtomUILanguagePackagePath")
+                      .ShouldBeEmpty();
+
+        var targetLanguage = languageItems.Single(item =>
+            (string?)item.Attribute("Include") == "Localization/**/pt-BR.xlf");
+        AssertLanguageItemMetadata(
+            targetLanguage,
+            "StaticLanguagePack",
+            "$(PackageId)",
+            contract.ModuleId,
+            "2");
+        targetLanguage.Elements()
+                      .Single(element => element.Name.LocalName == "AtomUILanguagePackagePath")
+                      .Value.ShouldBe("%(RecursiveDir)%(Filename)%(Extension)");
+    }
+
+    private static Dictionary<string, string> GetProjectProperties(XDocument project)
+    {
+        return project.Descendants()
+                      .Where(element => element.Parent?.Name.LocalName == "PropertyGroup")
+                      .ToDictionary(
+                          element => element.Name.LocalName,
+                          element => element.Value,
+                          StringComparer.Ordinal);
+    }
+
+    private static void AssertLanguageItemMetadata(
+        XElement item,
+        string sourceKind,
+        string sourceIdentity,
+        string moduleId,
+        string contractVersion)
+    {
+        item.Elements().Single(element => element.Name.LocalName == "AtomUILanguageSourceKind").Value
+            .ShouldBe(sourceKind);
+        item.Elements().Single(element => element.Name.LocalName == "AtomUILanguageSourceIdentity").Value
+            .ShouldBe(sourceIdentity);
+        item.Elements().Single(element => element.Name.LocalName == "AtomUILanguageModuleId").Value
+            .ShouldBe(moduleId);
+        item.Elements().Single(element => element.Name.LocalName == "AtomUILanguageContractVersion").Value
+            .ShouldBe(contractVersion);
+    }
+
     private static void AssertMetadataForwarded(XElement additionalFiles, string name)
     {
         ((string?)additionalFiles.Attribute(name)).ShouldBe($"%({name})");
@@ -305,4 +496,9 @@ public class LocalizationBuildAssetsTests
 
         throw new FileNotFoundException(relativePath);
     }
+
+    private sealed record LanguagePackageProjectContract(
+        string PackageId,
+        string ModuleId,
+        string SourceLanguageInclude);
 }

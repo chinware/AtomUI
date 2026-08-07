@@ -60,8 +60,10 @@ AtomUI.I18n.DeDE
 `AtomUI.I18n.PtBR` 表示 AtomUI 官方组件体系的巴西葡萄牙语聚合包。聚合包必须是纯依赖 Meta Package：
 
 - 不设置 `AtomUIBuildLanguagePackage=true`，也不运行语言包 Prepare/Props 任务。
-- 不包含 XLIFF、`AtomUI.LanguagePack.xml`、`buildTransitive` props 或运行时 DLL。
-- 只以同一精确版本依赖该语言的官方模块语言包。
+- 不包含 XLIFF、`AtomUI.LanguagePack.xml`、`buildTransitive` props、analyzer、运行时 DLL 或其他文件 payload。
+- 项目中的模块语言包 `ProjectReference` 只提供源码仓库内的构建顺序，不定义最终 NuGet 依赖版本。
+- 使用无文件 payload 的自定义 nuspec 作为聚合包依赖图的唯一权威来源；每个官方模块语言包依赖都写成
+  `[$version$]`，与聚合包版本精确一致。
 - 不依赖任何组件运行时包，也不隐式注册组件、主题或 Catalog。
 
 `AtomUI.I18n.PtBR` 的首个官方发布集合为：
@@ -179,8 +181,11 @@ module ID、ContractVersion、包内路径和源 fingerprint 的 `AtomUILanguage
 加入 `AdditionalFiles`。manifest 不进入 `AdditionalFiles`，Generator 也不会独立发现或读取它。最终应用 Generator
 校验 metadata、实际 XLIFF 和引用 Catalog 后把翻译编译进应用程序集；运行时不需要知道翻译来自哪个 NuGet 文件。
 
-聚合包使用普通 SDK-style pack 项目，设置 `IncludeBuildOutput=false` 并保留模块语言包依赖；它不使用本节的静态
-语言包内容协议。NuGet package ID 仍只是分发 identity，不能作为编译期语言或 Catalog identity。
+聚合包使用普通 SDK-style pack 项目，设置 `IncludeBuildOutput=false`，并保留指向模块语言包项目的
+`ProjectReference` 作为仓库构建顺序边。由于 .NET SDK pack 会把普通 `ProjectReference` 版本序列化为最低版本范围，
+聚合包必须通过无文件 payload 的自定义 nuspec 声明每个 `[$version$]` 精确依赖；该 nuspec 是最终依赖图的权威来源。
+聚合包不使用本节的静态语言包内容协议，也不得包含 XLIFF、manifest、props、analyzer、DLL、runtime asset 或组件包
+依赖。NuGet package ID 仍只是分发 identity，不能作为编译期语言或 Catalog identity。
 
 ## 官方翻译与发布门禁
 

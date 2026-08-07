@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+        <PackageId>AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR</PackageId>
+        <Description>Static Brazilian Portuguese translations for AtomUI.Desktop.Controls.ColorPicker.</Description>
+        <AtomUIBuildLanguagePackage>true</AtomUIBuildLanguagePackage>
+        <AtomUILanguageTag>pt-BR</AtomUILanguageTag>
+        <AtomUILanguageModuleId>AtomUI.Desktop.Controls.ColorPicker</AtomUILanguageModuleId>
+        <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
+        <AtomUILanguageMinimumState>final</AtomUILanguageMinimumState>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../../AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls.ColorPicker/**/Localization/**/en-US.xlf">
+            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
+            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
+            <AtomUILanguageModuleId>AtomUI.Desktop.Controls.ColorPicker</AtomUILanguageModuleId>
+            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
+        </AtomUILanguage>
+        <AtomUILanguage Include="Localization/**/pt-BR.xlf">
+            <AtomUILanguageSourceKind>StaticLanguagePack</AtomUILanguageSourceKind>
+            <AtomUILanguageSourceIdentity>$(PackageId)</AtomUILanguageSourceIdentity>
+            <AtomUILanguageModuleId>AtomUI.Desktop.Controls.ColorPicker</AtomUILanguageModuleId>
+            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
+            <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
+        </AtomUILanguage>
+    </ItemGroup>
+</Project>

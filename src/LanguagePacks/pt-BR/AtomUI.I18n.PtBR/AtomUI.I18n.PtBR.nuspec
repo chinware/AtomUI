@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>AtomUI.I18n.PtBR</id>
+    <version>$version$</version>
+    <authors>Qinware Technologies Ltd.</authors>
+    <description>Aggregate Brazilian Portuguese translations for official AtomUI components.</description>
+    <dependencies>
+      <dependency id="AtomUI.Controls.I18n.PtBR" version="[$version$]" />
+      <dependency id="AtomUI.Desktop.Controls.I18n.PtBR" version="[$version$]" />
+      <dependency id="AtomUI.Desktop.Controls.DataGrid.I18n.PtBR" version="[$version$]" />
+      <dependency id="AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR" version="[$version$]" />
+    </dependencies>
+  </metadata>
+</package>
