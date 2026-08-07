@@ -76,6 +76,7 @@
     </Target>
 
     <Target Name="AtomUIValidateLanguageFiles"
+            DependsOnTargets="AtomUIResolveLanguagePackProjectReferences"
             BeforeTargets="CoreCompile"
             Condition="Exists('$(AtomUILocalizationBuildTasksAssembly)') and ('@(AtomUILanguage)' != '' or '@(AtomUILanguageOverride)' != '')">
         <ItemGroup>
@@ -84,6 +85,70 @@
         </ItemGroup>
         <AtomUI.Build.Tasks.ValidateLanguageFilesTask LanguageFiles="@(_AtomUILanguageFileForValidation)"
                                                        MinimumTargetState="$(AtomUILanguageMinimumState)" />
+    </Target>
+
+    <Target Name="AtomUIGetLanguagePackProjectAssets"
+            Returns="@(_AtomUILanguagePackProjectAsset)"
+            Condition="'$(AtomUIBuildLanguagePackage)' == 'true'">
+        <Error Condition="!Exists('$(AtomUILocalizationBuildTasksAssembly)')"
+               Text="AtomUI.Build.Tasks could not be found at '$(AtomUILocalizationBuildTasksAssembly)'." />
+        <ItemGroup>
+            <_AtomUILanguagePackProjectSourceFile Include="@(AtomUILanguage)"
+                                                  Condition="'%(AtomUILanguageSourceKind)' == 'ModuleBuiltIn' and '%(Filename)%(Extension)' == 'en-US.xlf'" />
+            <_AtomUILanguagePackProjectTargetFile Include="@(AtomUILanguage)"
+                                                  Condition="'%(AtomUILanguageSourceKind)' == 'StaticLanguagePack'" />
+            <_AtomUILanguagePackProjectPackageFile Include="@(Compile);@(Content);@(None)"
+                                                   Exclude="$(IntermediateOutputPath)**/*;$(BaseIntermediateOutputPath)**/*;$(BaseOutputPath)**/*" />
+        </ItemGroup>
+        <Error Condition="'@(_AtomUILanguagePackProjectTargetFile)' == ''"
+               Text="No static language XLIFF files were found for project-reference consumption." />
+        <AtomUI.Build.Tasks.PrepareLanguagePackageTask PackageId="$(PackageId)"
+                                                       ExpectedLanguage="$(AtomUILanguageTag)"
+                                                       MinimumTargetState="$(AtomUILanguageMinimumState)"
+                                                       LanguageFiles="@(_AtomUILanguagePackProjectTargetFile)"
+                                                       PackageFiles="@(_AtomUILanguagePackProjectPackageFile)"
+                                                       OutputManifestPath="$(IntermediateOutputPath)AtomUI.LanguagePack.ProjectReference.xml">
+            <Output TaskParameter="PreparedLanguageFiles"
+                    ItemName="_AtomUIPreparedLanguagePackProjectTargetFile" />
+        </AtomUI.Build.Tasks.PrepareLanguagePackageTask>
+        <ItemGroup>
+            <_AtomUILanguagePackProjectAsset Include="%(_AtomUILanguagePackProjectSourceFile.FullPath)">
+                <AtomUILanguageSourceKind>%(_AtomUILanguagePackProjectSourceFile.AtomUILanguageSourceKind)</AtomUILanguageSourceKind>
+                <AtomUILanguageSourceIdentity>%(_AtomUILanguagePackProjectSourceFile.AtomUILanguageSourceIdentity)</AtomUILanguageSourceIdentity>
+                <AtomUILanguageModuleId>%(_AtomUILanguagePackProjectSourceFile.AtomUILanguageModuleId)</AtomUILanguageModuleId>
+                <AtomUILanguageContractVersion>%(_AtomUILanguagePackProjectSourceFile.AtomUILanguageContractVersion)</AtomUILanguageContractVersion>
+                <AtomUILanguagePackagePath>%(_AtomUILanguagePackProjectSourceFile.AtomUILanguagePackagePath)</AtomUILanguagePackagePath>
+                <AtomUILanguageSourceFingerprint>%(_AtomUILanguagePackProjectSourceFile.AtomUILanguageSourceFingerprint)</AtomUILanguageSourceFingerprint>
+            </_AtomUILanguagePackProjectAsset>
+            <_AtomUILanguagePackProjectAsset Include="%(_AtomUIPreparedLanguagePackProjectTargetFile.FullPath)">
+                <AtomUILanguageSourceKind>%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageSourceKind)</AtomUILanguageSourceKind>
+                <AtomUILanguageSourceIdentity>%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageSourceIdentity)</AtomUILanguageSourceIdentity>
+                <AtomUILanguageModuleId>%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageModuleId)</AtomUILanguageModuleId>
+                <AtomUILanguageContractVersion>%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageContractVersion)</AtomUILanguageContractVersion>
+                <AtomUILanguagePackagePath>%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguagePackagePath)</AtomUILanguagePackagePath>
+                <AtomUILanguageSourceFingerprint>%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageSourceFingerprint)</AtomUILanguageSourceFingerprint>
+            </_AtomUILanguagePackProjectAsset>
+        </ItemGroup>
+    </Target>
+
+    <Target Name="AtomUIResolveLanguagePackProjectReferences"
+            BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;AtomUIValidateLanguageFiles;CoreCompile"
+            Condition="'@(AtomUILanguagePackProjectReference)' != ''">
+        <MSBuild Projects="@(AtomUILanguagePackProjectReference)"
+                 Targets="AtomUIGetLanguagePackProjectAssets">
+            <Output TaskParameter="TargetOutputs"
+                    ItemName="_AtomUIResolvedLanguagePackProjectAsset" />
+        </MSBuild>
+        <ItemGroup>
+            <AdditionalFiles Include="@(_AtomUIResolvedLanguagePackProjectAsset)"
+                             AtomUILanguage="true"
+                             AtomUILanguageSourceKind="%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageSourceKind)"
+                             AtomUILanguageSourceIdentity="%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageSourceIdentity)"
+                             AtomUILanguageModuleId="%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageModuleId)"
+                             AtomUILanguageContractVersion="%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageContractVersion)"
+                             AtomUILanguageSourceFingerprint="%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageSourceFingerprint)"
+                             Visible="false" />
+        </ItemGroup>
     </Target>
 
     <Target Name="AtomUIExportLanguageTemplates"

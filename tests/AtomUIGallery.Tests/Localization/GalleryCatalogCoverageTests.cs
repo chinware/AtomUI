@@ -111,6 +111,9 @@ public class GalleryCatalogCoverageTests
                 Path.Combine(root, directory),
                 "*.xlf",
                 SearchOption.AllDirectories))
+            .Where(path => !path.Contains(
+                Path.Combine("src", "LanguagePacks") + Path.DirectorySeparatorChar,
+                StringComparison.Ordinal))
             .OrderBy(static path => path, StringComparer.Ordinal)
             .Select(path =>
             {

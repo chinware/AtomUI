@@ -43,6 +43,21 @@ ContractVersion 必须保存在 item metadata 中，Generator 不从磁盘路径
 程序集。MSBuild item 层只排除相同文件的重复 Include；不同路径或不同包提供相同 Catalog/语言时，由 Generator
 根据 source identity 报告同优先级冲突，不执行按 package identity 合并。
 
+仓库内应用若需要直接消费源码语言包项目，使用显式的 `AtomUILanguagePackProjectReference` item，而不是复制语言包
+目录或把 I18n 项目作为运行时 `ProjectReference`：
+
+```xml
+<AtomUILanguagePackProjectReference
+    Include="../../src/LanguagePacks/pt-BR/AtomUI.Controls.I18n.PtBR/AtomUI.Controls.I18n.PtBR.csproj" />
+```
+
+语言包项目通过 `AtomUIGetLanguagePackProjectAssets` target 返回权威 `en-US` Catalog 源文件和经过
+`PrepareLanguagePackageTask` 校验、规范化并补全元数据的目标语言文件。消费项目的
+`AtomUIResolveLanguagePackProjectReferences` target 在 `GenerateMSBuildEditorConfigFileShouldRun` 和 `CoreCompile` 之前调用
+这些项目 target，并把返回项加入 `AdditionalFiles`。返回项必须保留 `StaticLanguagePack`、source identity、module ID、
+ContractVersion、规范化 package path 和 source fingerprint；该协议只提供编译期输入，不复制 XLIFF、不产生运行时 DLL，
+也不改变聚合包的 NuGet 依赖图。
+
 产品级聚合语言包不追加 `AtomUILanguage` item。它只通过 NuGet 依赖传递模块语言包，因而同一模块包无论由聚合包
 还是应用显式引用，都只产生一组 `buildTransitive` 输入。
 

@@ -52,6 +52,39 @@ public class LanguagePackageTasksTests : IDisposable
     }
 
     [Fact]
+    public void Prepare_Enriches_Returned_Language_Items_For_Direct_Project_Consumption()
+    {
+        var languagePath = Write("ja-JP.xlf", JapaneseXliff);
+        var languageItem = LanguageItem(languagePath);
+        languageItem.SetMetadata(
+            "AtomUILanguagePackagePath",
+            "Localization\\DatePicker\\ja-JP.xlf");
+        var engine = new RecordingBuildEngine();
+        var task = new PrepareLanguagePackageTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
+            LanguageFiles = [languageItem],
+            PackageFiles = [languageItem],
+            OutputManifestPath = Path.Combine(_directory, "project-assets.xml")
+        };
+
+        task.Execute().ShouldBeTrue();
+        engine.Errors.ShouldBeEmpty();
+
+        var prepared = task.PreparedLanguageFiles.ShouldHaveSingleItem();
+        prepared.GetMetadata("AtomUILanguageSourceKind").ShouldBe("StaticLanguagePack");
+        prepared.GetMetadata("AtomUILanguageSourceIdentity")
+                .ShouldBe("AtomUI.Desktop.Controls.I18n.JaJP");
+        prepared.GetMetadata("AtomUILanguageModuleId").ShouldBe("AtomUI.Desktop.Controls");
+        prepared.GetMetadata("AtomUILanguageContractVersion").ShouldBe("1");
+        prepared.GetMetadata("AtomUILanguagePackagePath")
+                .ShouldBe("Localization/DatePicker/ja-JP.xlf");
+        prepared.GetMetadata("AtomUILanguageSourceFingerprint")
+                .ShouldMatch("^[0-9a-f]{64}$");
+    }
+
+    [Fact]
     public void Prepare_Propagates_The_Minimum_Target_State()
     {
         var languagePath = Write("ja-JP.xlf", JapaneseXliff);

@@ -123,14 +123,17 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
                 continue;
             }
 
+            var sourceFingerprint = LanguageSourceFingerprint.Compute(document);
             item.SetMetadata("AtomUILanguageSourceKind", "StaticLanguagePack");
             item.SetMetadata("AtomUILanguageSourceIdentity", PackageId);
+            item.SetMetadata("AtomUILanguagePackagePath", packagePath);
+            item.SetMetadata("AtomUILanguageSourceFingerprint", sourceFingerprint);
             entries.Add(new LanguagePackageCatalogEntry(
                 moduleId,
                 document.File.Id,
                 contractVersion,
                 packagePath,
-                LanguageSourceFingerprint.Compute(document)));
+                sourceFingerprint));
         }
 
         if (!succeeded || language is null)

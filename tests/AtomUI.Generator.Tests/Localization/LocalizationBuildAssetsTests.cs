@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Xml.Linq;
 using Shouldly;
 using Xunit;
@@ -157,12 +158,18 @@ public class LocalizationBuildAssetsTests
         targets.Descendants("Target")
                .Single(element => (string?)element.Attribute("Name") == "AtomUIValidateLanguageFiles")
                .Attribute("BeforeTargets")!.Value.ShouldBe("CoreCompile");
-        var validationTask = targets.Descendants()
-                                    .Single(element =>
-                                        element.Name.LocalName == "AtomUI.Build.Tasks.ValidateLanguageFilesTask");
+        var validationTarget = targets.Descendants("Target")
+                                      .Single(element =>
+                                          (string?)element.Attribute("Name") == "AtomUIValidateLanguageFiles");
+        var validationTask = validationTarget.Descendants()
+                                              .Single(element =>
+                                                  element.Name.LocalName == "AtomUI.Build.Tasks.ValidateLanguageFilesTask");
         ((string?)validationTask.Attribute("MinimumTargetState"))
             .ShouldBe("$(AtomUILanguageMinimumState)");
-        var prepareTask = targets.Descendants()
+        var prepareTask = targets.Descendants("Target")
+                                 .Single(element =>
+                                     (string?)element.Attribute("Name") == "AtomUIPrepareLanguagePackage")
+                                 .Descendants()
                                  .Single(element =>
                                      element.Name.LocalName == "AtomUI.Build.Tasks.PrepareLanguagePackageTask");
         ((string?)prepareTask.Attribute("MinimumTargetState"))
@@ -170,6 +177,182 @@ public class LocalizationBuildAssetsTests
         targets.Descendants("Target")
                .Single(element => (string?)element.Attribute("Name") == "AtomUIExportLanguageTemplates")
                .ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void Localization_Targets_Define_The_Language_Pack_Project_Reference_Protocol()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+
+        var provider = targets.Descendants("Target")
+                              .Single(element =>
+                                  (string?)element.Attribute("Name") ==
+                                  "AtomUIGetLanguagePackProjectAssets");
+        ((string?)provider.Attribute("Condition"))
+            .ShouldBe("'$(AtomUIBuildLanguagePackage)' == 'true'");
+        ((string?)provider.Attribute("Returns"))
+            .ShouldBe("@(_AtomUILanguagePackProjectAsset)");
+
+        var prepare = provider.Descendants()
+                              .Single(element =>
+                                  element.Name.LocalName ==
+                                  "AtomUI.Build.Tasks.PrepareLanguagePackageTask");
+        ((string?)prepare.Attribute("PackageId")).ShouldBe("$(PackageId)");
+        ((string?)prepare.Attribute("ExpectedLanguage")).ShouldBe("$(AtomUILanguageTag)");
+        ((string?)prepare.Attribute("MinimumTargetState"))
+            .ShouldBe("$(AtomUILanguageMinimumState)");
+        ((string?)prepare.Attribute("LanguageFiles"))
+            .ShouldBe("@(_AtomUILanguagePackProjectTargetFile)");
+        prepare.Elements("Output")
+               .Single(element =>
+                   (string?)element.Attribute("TaskParameter") == "PreparedLanguageFiles")
+               .Attribute("ItemName")!.Value.ShouldBe("_AtomUIPreparedLanguagePackProjectTargetFile");
+
+        var returnedAssets = provider.Descendants("_AtomUILanguagePackProjectAsset").ToArray();
+        returnedAssets.Length.ShouldBe(2);
+        returnedAssets.Any(element =>
+                ((string?)element.Attribute("Include"))?.Contains(
+                    "_AtomUILanguagePackProjectSourceFile",
+                    StringComparison.Ordinal) == true)
+            .ShouldBeTrue();
+        var returnedTarget = returnedAssets.Single(element =>
+            ((string?)element.Attribute("Include"))?.Contains(
+                "_AtomUIPreparedLanguagePackProjectTargetFile",
+                StringComparison.Ordinal) == true);
+        AssertProjectAssetMetadata(returnedTarget, requireFingerprint: true);
+
+        var resolver = targets.Descendants("Target")
+                              .Single(element =>
+                                  (string?)element.Attribute("Name") ==
+                                  "AtomUIResolveLanguagePackProjectReferences");
+        var beforeTargets = ((string?)resolver.Attribute("BeforeTargets"))!
+            .Split(';', StringSplitOptions.RemoveEmptyEntries);
+        beforeTargets.ShouldContain("GenerateMSBuildEditorConfigFileShouldRun");
+        beforeTargets.ShouldContain("AtomUIValidateLanguageFiles");
+        beforeTargets.ShouldContain("CoreCompile");
+
+        var msbuild = resolver.Descendants("MSBuild").ShouldHaveSingleItem();
+        ((string?)msbuild.Attribute("Projects"))
+            .ShouldBe("@(AtomUILanguagePackProjectReference)");
+        ((string?)msbuild.Attribute("Targets")).ShouldBe("AtomUIGetLanguagePackProjectAssets");
+        msbuild.Elements("Output")
+               .Single(element =>
+                   (string?)element.Attribute("TaskParameter") == "TargetOutputs")
+               .Attribute("ItemName")!.Value.ShouldBe("_AtomUIResolvedLanguagePackProjectAsset");
+
+        var additionalFiles = resolver.Descendants("AdditionalFiles").ShouldHaveSingleItem();
+        ((string?)additionalFiles.Attribute("Include"))
+            .ShouldBe("@(_AtomUIResolvedLanguagePackProjectAsset)");
+        ((string?)additionalFiles.Attribute("AtomUILanguage")).ShouldBe("true");
+        AssertMetadataForwarded(
+            additionalFiles,
+            "AtomUILanguageSourceKind",
+            "%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageSourceKind)");
+        AssertMetadataForwarded(
+            additionalFiles,
+            "AtomUILanguageSourceIdentity",
+            "%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageSourceIdentity)");
+        AssertMetadataForwarded(
+            additionalFiles,
+            "AtomUILanguageModuleId",
+            "%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageModuleId)");
+        AssertMetadataForwarded(
+            additionalFiles,
+            "AtomUILanguageContractVersion",
+            "%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageContractVersion)");
+        AssertMetadataForwarded(
+            additionalFiles,
+            "AtomUILanguageSourceFingerprint",
+            "%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageSourceFingerprint)");
+    }
+
+    [Fact]
+    public async Task Project_Referenced_Language_Pack_Contributes_A_Generated_Bundle()
+    {
+        var repoRoot = Path.GetDirectoryName(GetRepoFile("AtomUI.slnx"))!;
+        var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent?.Name ?? "Debug";
+        var buildTasksAssembly = Path.Combine(
+            repoRoot,
+            "output",
+            "bin",
+            configuration,
+            "netstandard2.0",
+            "AtomUI.Build.Tasks.dll");
+        var generatorAssembly = Path.Combine(AppContext.BaseDirectory, "AtomUI.Generator.dll");
+        File.Exists(buildTasksAssembly).ShouldBeTrue();
+        File.Exists(generatorAssembly).ShouldBeTrue();
+
+        var fixtureRoot = Path.Combine(
+            Path.GetTempPath(),
+            $"atomui-language-pack-project-reference-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(fixtureRoot);
+        try
+        {
+            var moduleDirectory = Path.Combine(fixtureRoot, "Module");
+            var packDirectory = Path.Combine(fixtureRoot, "Pack");
+            var consumerDirectory = Path.Combine(fixtureRoot, "Consumer");
+            Directory.CreateDirectory(moduleDirectory);
+            Directory.CreateDirectory(packDirectory);
+            Directory.CreateDirectory(consumerDirectory);
+
+            WriteProject(
+                Path.Combine(moduleDirectory, "Module.csproj"),
+                new XElement("PropertyGroup",
+                    new XElement("TargetFramework", "net10.0"),
+                    new XElement("Nullable", "enable")));
+            await File.WriteAllTextAsync(
+                Path.Combine(moduleDirectory, "Runtime.cs"),
+                FixtureRuntimeSource,
+                TestContext.Current.CancellationToken);
+
+            var sourceXliffPath = Path.Combine(packDirectory, "Localization", "en-US.xlf");
+            var targetXliffPath = Path.Combine(packDirectory, "Localization", "pt-BR.xlf");
+            Directory.CreateDirectory(Path.GetDirectoryName(sourceXliffPath)!);
+            await File.WriteAllTextAsync(
+                sourceXliffPath,
+                FixtureSourceXliff,
+                TestContext.Current.CancellationToken);
+            await File.WriteAllTextAsync(
+                targetXliffPath,
+                FixtureTargetXliff,
+                TestContext.Current.CancellationToken);
+
+            WriteLanguagePackProject(
+                Path.Combine(packDirectory, "Pack.csproj"),
+                repoRoot,
+                buildTasksAssembly);
+            WriteConsumerProject(
+                Path.Combine(consumerDirectory, "Consumer.csproj"),
+                repoRoot,
+                generatorAssembly,
+                Path.Combine(moduleDirectory, "Module.csproj"),
+                Path.Combine(packDirectory, "Pack.csproj"));
+            await File.WriteAllTextAsync(
+                Path.Combine(consumerDirectory, "App.cs"),
+                "namespace Fixture.App; public partial class App : Avalonia.Application { }",
+                TestContext.Current.CancellationToken);
+
+            var result = await RunDotNetBuildAsync(
+                Path.Combine(consumerDirectory, "Consumer.csproj"),
+                configuration);
+
+            result.ExitCode.ShouldBe(0, result.Output);
+            var generatedBootstrap = Directory.EnumerateFiles(
+                                                  Path.Combine(consumerDirectory, "obj", "Generated"),
+                                                  "GeneratedApplicationLanguageBootstrap.g.cs",
+                                                  SearchOption.AllDirectories)
+                                              .ShouldHaveSingleItem();
+            var generatedSource = await File.ReadAllTextAsync(
+                generatedBootstrap,
+                TestContext.Current.CancellationToken);
+            generatedSource.ShouldContain("TranslationSourceKind.StaticLanguagePack");
+            generatedSource.ShouldContain("Fixture.Module.I18n.PtBR");
+            generatedSource.ShouldContain("Cancelar");
+        }
+        finally
+        {
+            Directory.Delete(fixtureRoot, recursive: true);
+        }
     }
 
     [Fact]
@@ -438,6 +621,24 @@ public class LocalizationBuildAssetsTests
         }
     }
 
+    [Fact]
+    public void Gallery_Consumes_Official_PtBr_Translations_Through_Project_References()
+    {
+        var project = XDocument.Load(GetRepoFile("controlgallery/AtomUIGallery/AtomUIGallery.csproj"));
+        var references = project.Descendants("AtomUILanguagePackProjectReference")
+                                .Select(element => (string?)element.Attribute("Include"))
+                                .ToArray();
+
+        references.ShouldBe(
+        [
+            "../../src/LanguagePacks/pt-BR/AtomUI.Controls.I18n.PtBR/AtomUI.Controls.I18n.PtBR.csproj",
+            "../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.I18n.PtBR/AtomUI.Desktop.Controls.I18n.PtBR.csproj",
+            "../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR.csproj",
+            "../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR.csproj"
+        ],
+            ignoreOrder: true);
+    }
+
     private static void AssertOfficialLanguageModuleProject(LanguagePackageProjectContract contract)
     {
         var projectPath = $"src/LanguagePacks/pt-BR/{contract.PackageId}/{contract.PackageId}.csproj";
@@ -521,9 +722,146 @@ public class LocalizationBuildAssetsTests
             .ShouldBe(contractVersion);
     }
 
-    private static void AssertMetadataForwarded(XElement additionalFiles, string name)
+    private static void AssertMetadataForwarded(
+        XElement additionalFiles,
+        string name,
+        string? expected = null)
     {
-        ((string?)additionalFiles.Attribute(name)).ShouldBe($"%({name})");
+        ((string?)additionalFiles.Attribute(name)).ShouldBe(expected ?? $"%({name})");
+    }
+
+    private static void AssertProjectAssetMetadata(XElement asset, bool requireFingerprint)
+    {
+        asset.Elements()
+             .Single(element => element.Name.LocalName == "AtomUILanguageSourceKind")
+             .Value.ShouldBe("%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageSourceKind)");
+        asset.Elements()
+             .Single(element => element.Name.LocalName == "AtomUILanguageSourceIdentity")
+             .Value.ShouldBe("%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageSourceIdentity)");
+        asset.Elements()
+             .Single(element => element.Name.LocalName == "AtomUILanguageModuleId")
+             .Value.ShouldBe("%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageModuleId)");
+        asset.Elements()
+             .Single(element => element.Name.LocalName == "AtomUILanguageContractVersion")
+             .Value.ShouldBe("%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageContractVersion)");
+        asset.Elements()
+             .Single(element => element.Name.LocalName == "AtomUILanguagePackagePath")
+             .Value.ShouldBe("%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguagePackagePath)");
+        if (requireFingerprint)
+        {
+            asset.Elements()
+                 .Single(element => element.Name.LocalName == "AtomUILanguageSourceFingerprint")
+                 .Value.ShouldBe("%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageSourceFingerprint)");
+        }
+    }
+
+    private static void WriteProject(string path, params XElement[] content)
+    {
+        new XDocument(new XElement("Project", new XAttribute("Sdk", "Microsoft.NET.Sdk"), content))
+            .Save(path);
+    }
+
+    private static void WriteLanguagePackProject(
+        string path,
+        string repoRoot,
+        string buildTasksAssembly)
+    {
+        new XDocument(
+            new XElement(
+                "Project",
+                new XAttribute("Sdk", "Microsoft.NET.Sdk"),
+                new XElement(
+                    "PropertyGroup",
+                    new XElement("TargetFramework", "netstandard2.0"),
+                    new XElement("IncludeBuildOutput", "false"),
+                    new XElement("PackageId", "Fixture.Module.I18n.PtBR"),
+                    new XElement("AtomUIBuildLanguagePackage", "true"),
+                    new XElement("AtomUILanguageTag", "pt-BR"),
+                    new XElement("AtomUILanguageModuleId", "Fixture.Module"),
+                    new XElement("AtomUILanguageContractVersion", "2"),
+                    new XElement("AtomUILanguageMinimumState", "final"),
+                    new XElement("AtomUILocalizationBuildTasksAssembly", buildTasksAssembly)),
+                new XElement(
+                    "Import",
+                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.props"))),
+                new XElement(
+                    "ItemGroup",
+                    LanguageItem("Localization/en-US.xlf", "ModuleBuiltIn", "Fixture.Module"),
+                    LanguageItem("Localization/pt-BR.xlf", "StaticLanguagePack", "$(PackageId)")),
+                new XElement(
+                    "Import",
+                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.targets")))))
+            .Save(path);
+    }
+
+    private static XElement LanguageItem(string include, string sourceKind, string sourceIdentity)
+    {
+        return new XElement(
+            "AtomUILanguage",
+            new XAttribute("Include", include),
+            new XElement("AtomUILanguageSourceKind", sourceKind),
+            new XElement("AtomUILanguageSourceIdentity", sourceIdentity),
+            new XElement("AtomUILanguageModuleId", "Fixture.Module"),
+            new XElement("AtomUILanguageContractVersion", "2"),
+            new XElement("AtomUILanguagePackagePath", include));
+    }
+
+    private static void WriteConsumerProject(
+        string path,
+        string repoRoot,
+        string generatorAssembly,
+        string moduleProject,
+        string languagePackProject)
+    {
+        new XDocument(
+            new XElement(
+                "Project",
+                new XAttribute("Sdk", "Microsoft.NET.Sdk"),
+                new XElement(
+                    "PropertyGroup",
+                    new XElement("TargetFramework", "net10.0"),
+                    new XElement("Nullable", "enable"),
+                    new XElement("EmitCompilerGeneratedFiles", "true"),
+                    new XElement("CompilerGeneratedFilesOutputPath", "$(BaseIntermediateOutputPath)Generated")),
+                new XElement(
+                    "Import",
+                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.props"))),
+                new XElement(
+                    "ItemGroup",
+                    new XElement("ProjectReference", new XAttribute("Include", moduleProject)),
+                    new XElement("Analyzer", new XAttribute("Include", generatorAssembly)),
+                    new XElement(
+                        "AtomUILanguagePackProjectReference",
+                        new XAttribute("Include", languagePackProject))),
+                new XElement(
+                    "Import",
+                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.targets")))))
+            .Save(path);
+    }
+
+    private static async Task<BuildResult> RunDotNetBuildAsync(string projectPath, string configuration)
+    {
+        var startInfo = new ProcessStartInfo(Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? "dotnet")
+        {
+            WorkingDirectory = Path.GetDirectoryName(projectPath)!,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false
+        };
+        startInfo.ArgumentList.Add("build");
+        startInfo.ArgumentList.Add(projectPath);
+        startInfo.ArgumentList.Add("--configuration");
+        startInfo.ArgumentList.Add(configuration);
+        startInfo.ArgumentList.Add("--nologo");
+
+        using var process = Process.Start(startInfo).ShouldNotBeNull();
+        var standardOutput = process.StandardOutput.ReadToEndAsync(TestContext.Current.CancellationToken);
+        var standardError = process.StandardError.ReadToEndAsync(TestContext.Current.CancellationToken);
+        await process.WaitForExitAsync(TestContext.Current.CancellationToken);
+        return new BuildResult(
+            process.ExitCode,
+            await standardOutput,
+            await standardError);
     }
 
     private static string GetRepoFile(string relativePath)
@@ -549,4 +887,105 @@ public class LocalizationBuildAssetsTests
         IReadOnlyList<SourceLanguageContract> SourceLanguages);
 
     private sealed record SourceLanguageContract(string Include, string PackagePath);
+
+    private sealed record BuildResult(int ExitCode, string StandardOutput, string StandardError)
+    {
+        internal string Output => StandardOutput + StandardError;
+    }
+
+    private const string FixtureRuntimeSource = """
+        using System.Reflection;
+
+        [assembly: AssemblyMetadata("AtomUILanguageModuleId", "Fixture.Module")]
+
+        namespace Avalonia
+        {
+            public abstract class Application { }
+        }
+
+        namespace AtomUI.Localization
+        {
+            [System.AttributeUsage(System.AttributeTargets.Enum, AllowMultiple = false)]
+            public sealed class LanguageCatalogAttribute : System.Attribute
+            {
+                public int ContractVersion { get; set; } = 1;
+            }
+
+            public interface IGeneratedApplicationLanguageBootstrap
+            {
+                void RegisterApplicationLanguages(ILocalizationBuilder builder);
+            }
+
+            public interface ILocalizationBuilder
+            {
+                void AddCatalog(LanguageCatalogDescriptor descriptor);
+                void AddTranslationBundle(TranslationBundleDescriptor descriptor);
+            }
+
+            public abstract class LanguageCatalogDescriptor { }
+
+            public sealed class LanguageCatalogDescriptor<TResourceKind> : LanguageCatalogDescriptor
+                where TResourceKind : struct, System.Enum
+            {
+                public LanguageCatalogDescriptor(
+                    string catalogId,
+                    int contractVersion,
+                    System.Collections.Generic.IReadOnlyList<LanguageCatalogUnitDescriptor> units,
+                    System.Func<TResourceKind, int> unitSlotResolver) { }
+            }
+
+            public sealed class LanguageCatalogUnitDescriptor
+            {
+                public LanguageCatalogUnitDescriptor(string key, bool isFormatted = false) { }
+            }
+
+            public readonly struct LanguageTag
+            {
+                public static LanguageTag Parse(string value) => default;
+            }
+
+            public enum TranslationSourceKind : byte
+            {
+                ModuleBuiltIn,
+                StaticLanguagePack,
+                ApplicationOverride
+            }
+
+            public sealed class TranslationBundleDescriptor
+            {
+                public TranslationBundleDescriptor(
+                    string catalogId,
+                    int contractVersion,
+                    LanguageTag language,
+                    TranslationSourceKind sourceKind,
+                    string sourceIdentity,
+                    System.Collections.Generic.IReadOnlyList<string?> values) { }
+            }
+        }
+
+        namespace Fixture.Localization
+        {
+            [AtomUI.Localization.LanguageCatalog(ContractVersion = 2)]
+            public enum Messages
+            {
+                Cancel
+            }
+        }
+        """;
+
+    private const string FixtureSourceXliff = """
+        <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
+          <file id="Fixture.Localization.Messages">
+            <unit id="Cancel"><segment><source>Cancel</source></segment></unit>
+          </file>
+        </xliff>
+        """;
+
+    private const string FixtureTargetXliff = """
+        <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="pt-BR">
+          <file id="Fixture.Localization.Messages">
+            <unit id="Cancel"><segment><source>Cancel</source><target state="final">Cancelar</target></segment></unit>
+          </file>
+        </xliff>
+        """;
 }
