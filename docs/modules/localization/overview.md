@@ -19,7 +19,7 @@
 | 文档 | 所有权 |
 |---|---|
 | [public-api.md](public-api.md) | 启动配置、`LanguageTag`、`ILanguageManager`、`ILocalizer`、XAML 与 C# 使用面 |
-| [catalog-and-xliff.md](catalog-and-xliff.md) | Language Catalog 契约、目录约定、XLIFF 2.1、稳定 ID、格式化与覆盖规则 |
+| [catalog-and-xliff.md](catalog-and-xliff.md) | Language Catalog 契约、目录约定、XLIFF 2.1、稳定 Key、格式化与覆盖规则 |
 | [runtime-architecture.md](runtime-architecture.md) | Registry、Snapshot、Manager、ResourceProvider、切换、回退、Culture 和 RTL |
 | [generation-and-build.md](generation-and-build.md) | Source Generator、应用 bootstrap、AdditionalFiles、`AtomUI.Build.Tasks` 与 NuGet 布局 |
 | [language-packs.md](language-packs.md) | 内置语言、官方聚合包、模块包、第三方语言包、模板和消费协议 |

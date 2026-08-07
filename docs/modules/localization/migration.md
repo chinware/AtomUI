@@ -89,8 +89,8 @@ DatePicker en_US/zh_CN/zh_TW
   -> zh-TW.xlf
 ```
 
-迁移工具或脚本只负责一次性抽取现有常量、生成候选 XLIFF 和显式数字 ID；结果必须人工审查并进入正常源码。
-生成文件不能长期依赖旧 C# Provider，也不能在运行时提供双轨资源。
+第一阶段迁移工具或脚本只负责一次性抽取现有常量、生成候选 XLIFF 和显式数字 ID；结果经过人工审查后进入
+正常源码。生成文件不再依赖旧 C# Provider，也没有在运行时提供双轨资源。
 
 ID 分配规则：
 
@@ -99,10 +99,30 @@ ID 分配规则：
 - 迁移清单记录旧成员名到新 ID，防止分批迁移时不同语言产生不同编号。
 - 已发布的 enum 底层数值如果被外部持久化，应在对应 Catalog 迁移前单独评估；不能假设现有隐式值是契约。
 
+## Key identity 收敛
+
+显式数字 ID 同时出现在 enum 和每个 XLIFF 中，要求开发者跨文件维护同一身份，容易产生错配。第二阶段将
+Catalog identity 收敛为 enum 成员名：
+
+- enum 删除显式数字值，成员名成为唯一稳定 Key。
+- XLIFF `unit id` 直接使用 Key，规范输出删除重复的 `unit name`。
+- Generator、Build Tasks、template merge、override 冲突检测、source fingerprint、manifest 和运行时 descriptor
+  全部按 Key 工作。
+- `LanguageCatalogUnitDescriptor.Id` 和 `Name` 收敛为单一 `Key` 属性，不保留数字兼容入口。
+- 运行时继续使用生成式 enum member switch 和 dense slot 数组，不增加反射、enum 名称查询或字符串热路径。
+
+该收敛改变了已发布 Catalog 和 descriptor 的身份契约，因此当前仓库所有生产 Catalog 在迁移时从
+`ContractVersion = 1` 统一递增为 `ContractVersion = 2`，已有语言包必须从新的权威 `en-US.xlf` 重新导出和打包。
+迁移后的所有 AtomUI 包、Gallery 和应用必须整体重新编译，不得混用数字 ID 版本与 Key 版本的程序集或静态语言包。
+
+移除显式值后，enum 底层值从声明顺序自动产生。它不是本地化 identity，但仍会以内联常量形式进入消费程序集，
+因此迁移后只能在末尾追加新成员，不能重排已有成员，也不得把底层值持久化或作为跨进程协议。公共 Catalog 的
+成员序列需要由契约基线测试保护。
+
 ## 最终迁移结果
 
 - `AtomUI.Localization`、`AtomUI.Build.Tasks`、Localization Generator、根 `IAtomUIBuilder` 和静态语言包模板已经落地。
-- AtomUI、GalleryBase 与 Gallery Catalog 已迁移为显式数字 ID 和 XLIFF 2.1。
+- AtomUI、GalleryBase 与 Gallery Catalog 使用 XLIFF 2.1；Catalog identity 的最终形态是 enum 成员 Key。
 - Desktop、DataGrid、ColorPicker、Extras 等包分别注册自身 `GeneratedLanguageModuleRegistration`。
 - Gallery 与测试应用使用 `UseLanguages()`、`ILanguageManager` 和 `ILocalizer`。
 - 旧 Provider 类型、旧 Generator Walker/Writer、ThemeManager 语言状态和逐语言扩展已从源码删除。

@@ -35,10 +35,10 @@
 ### Catalog
 
 - `[LanguageCatalog]` 目标不是非泛型 enum。
-- enum 成员没有显式 ID，或存在负数、零、重复值、别名、`[Flags]`。
+- enum 成员声明显式数值、别名或 `[Flags]`。
 - 同一 Language Module 中生成相同 Catalog ID。
 - XLIFF `file id` 与 Catalog metadata name 不一致。
-- XLIFF `unit id`/`name` 与 enum ID/成员名不一致。
+- XLIFF `unit id` 缺失、重复，或与 enum member symbol 的 Key 集合不一致。
 - 缺少完整 `en-US` 源 Catalog，或源 Catalog 包含未知/遗漏 unit。
 
 ### Translation Bundle
@@ -79,7 +79,7 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 | `LanguageCatalogException` | Catalog 注册重复、schema 不一致或必需源资源缺失 |
 | `LanguageCoverageException` | 最终支持语言不能覆盖全部已注册 Catalog |
 
-异常消息必须包含规范语言标签、Catalog ID、unit ID/name、来源包和可操作修复建议。禁止捕获后静默回退到英文
+异常消息必须包含规范语言标签、Catalog ID、unit Key、来源包和可操作修复建议。禁止捕获后静默回退到英文
 继续启动，因为这会违背应用的支持语言契约。
 
 ## 运行时错误语义
@@ -111,12 +111,13 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 以下测试保护跨包兼容性：
 
 1. Catalog ID 在文件移动但类型/模块身份不变时保持稳定。
-2. enum 成员排序变化不改变数字 ID 和生成 slot 对应关系。
-3. 新增 unit 会使旧语言包产生缺失诊断，已有译文和 notes 不丢失。
-4. 重命名成员但保留 ID 时模板合并保留目标翻译并标记名称变化。
-5. 复用删除 ID、改变格式化参数契约或错误 ContractVersion 必须失败。
-6. 静态语言包的 manifest 与 props 必须由同一组 XLIFF 确定性生成，并记录一致的 Catalog identity 和源指纹。
-7. 模块主包必须包含权威 `en-US` 与 `<PackageId>.props`，静态语言包不得包含 DLL，Consumer 必须只靠 PackageReference 生效。
+2. unit slot、fingerprint、manifest 和生成源码按 ordinal Key 确定，不受 XLIFF 文件顺序影响。
+3. 公共 Catalog 的成员序列由契约基线保护，只允许末尾追加；重排或删除已有成员必须失败。
+4. 新增 Key 会使旧语言包产生缺失诊断，已有译文和 notes 不丢失。
+5. 重命名 Key 时旧 unit 标为 obsolete、新 unit 标为待翻译，并要求递增 ContractVersion。
+6. 删除或复用 Key、改变格式化参数契约、使用旧 identity 模型或错误 ContractVersion 必须失败。
+7. 静态语言包的 manifest 与 props 必须由同一组 XLIFF 确定性生成，并记录一致的 Catalog identity 和源指纹。
+8. 模块主包必须包含权威 `en-US` 与 `<PackageId>.props`，静态语言包不得包含 DLL，Consumer 必须只靠 PackageReference 生效。
 
 ## Avalonia 集成测试
 

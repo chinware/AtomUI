@@ -14,10 +14,10 @@ namespace MyApplication.Features.Login.Localization;
 [LanguageCatalog(ContractVersion = 1)]
 public enum LoginLangResourceKind
 {
-    Title = 1,
-    UserName = 2,
-    Password = 3,
-    SignIn = 4
+    Title,
+    UserName,
+    Password,
+    SignIn
 }
 ```
 
@@ -25,12 +25,16 @@ Catalog enum 遵守以下规则：
 
 - Catalog enum 及其所有 containing type 必须是 `public`，使生成的 public XAML Markup Extension 与翻译契约
   可以被消费程序集稳定引用。
-- 所有成员必须显式指定正整数 ID；禁止依赖 enum 自动递增。
-- ID 在 Catalog 生命周期内唯一且稳定，删除后永不复用。
-- 成员名必须是合法、稳定、能表达语义的 C# 标识符，不编码具体语言文本。
-- 重命名成员时数字 ID 保持不变；Build Tasks 把它识别为名称变更并保留翻译历史。
-- 同一个 ID 改变业务语义属于不兼容变更，不能伪装成普通源文本修订。
-- `[Flags]`、别名成员、负数、零和重复数值均不允许。
+- enum 成员名就是资源项唯一、长期稳定的 Key，不再声明或维护显式数字 ID。
+- Key 取 Roslyn enum member symbol 的 `Name`，必须稳定、能表达语义，不编码具体语言文本；XLIFF 不定义第二套
+  Key 命名或转义规则。
+- `[Flags]`、显式数值、别名成员均不允许；enum 底层数值不是 Catalog identity，不得写入 XLIFF、manifest、
+  fingerprint 或持久化协议。
+- 已发布 Catalog 只能在末尾追加成员，不得重排现有成员。虽然运行时使用生成式 Key/slot 映射，enum 常量的底层
+  数值仍属于 CLR 二进制调用边界，重排会破坏未重新编译的消费程序集。
+- 重命名成员等价于删除旧 Key 并添加新 Key。模板合并将旧 Key 标为 obsolete，新 Key 标为待翻译，不自动把旧译文
+  迁移到新语义。
+- 删除 Key、重命名 Key、复用旧 Key 表达新语义或改变格式化参数契约都是不兼容变更。
 
 ## Catalog identity
 
@@ -44,8 +48,8 @@ Catalog ID 由构建系统生成，不作为 Attribute 字符串参数交给开�
 Generator。完整类型名使用 CLR metadata name，而不是文件路径或 XAML namespace。库作者移动 Catalog 类型、
 更改包身份或拆分程序集时，必须把它作为公开翻译契约变更处理。
 
-`ContractVersion` 是 Catalog 结构兼容代数。删除 ID、复用 ID、改变 ID 语义或改变格式化参数契约时必须递增；
-只修改源文案措辞时由源文本指纹识别，不要求用结构版本掩盖内容变化。
+`ContractVersion` 是 Catalog 结构兼容代数。删除或重命名 Key、复用 Key 表达新语义、改变 Key identity 模型或改变
+格式化参数契约时必须递增；只修改源文案措辞时由源文本指纹识别，不要求用结构版本掩盖内容变化。
 
 ## 源语言
 
@@ -101,7 +105,7 @@ XLIFF 2.1 是唯一翻译交换源格式。源文件使用 `srcLang="en-US"`，�
        srcLang="en-US"
        trgLang="zh-CN">
   <file id="MyApplication.Features.Login.Localization.LoginLangResourceKind">
-    <unit id="1" name="Title">
+    <unit id="Title">
       <segment>
         <source>Sign in</source>
         <target state="translated">登录</target>
@@ -116,12 +120,18 @@ XLIFF 2.1 是唯一翻译交换源格式。源文件使用 `srcLang="en-US"`，�
 | XLIFF | Catalog |
 |---|---|
 | `file id` | Catalog enum 的完整 metadata name；完整 Catalog ID 还包含构建提供的 module identity |
-| `unit id` | enum 显式数字值，是资源项的长期身份 |
-| `unit name` | enum 成员名，服务可读性、重命名和工具提示 |
+| `unit id` | enum 成员名，即资源项唯一 Key |
+| `unit name` | 非契约元数据；AtomUI 规范输出省略它，外部工具保留或添加时不参与匹配 |
 | `source` | 当前 `en-US` 源文本 |
 | `target` | `trgLang` 对应翻译 |
 
-运行时只按生成的 Catalog slot 和数字 ID 读取，不按 `unit name` 或源文本查找。
+Generator 在构建期按 ordinal Key 校验 enum 与 XLIFF，并生成 enum member 到 Catalog slot 的静态 switch。运行时只做
+slot 定位和数组读取，不调用 `Enum.GetName()`、`ToString()`，也不按源文本执行字符串查找。XLIFF 文件中的 unit
+顺序不构成契约，writer、fingerprint、manifest 和生成表都按 ordinal Key 规范化。
+
+`en-US.xlf` 是源文唯一事实来源。目标语言 XLIFF 为符合双语 XLIFF 工作流仍包含对应 `<source>`，但该副本只能由
+`AtomUIExportLanguageTemplates` / `XliffMergeEngine` 从 `en-US.xlf` 生成和刷新；翻译人员只维护 `<target>`、状态与
+notes。源文变化时工具保留目标译文并将其标记为待复核，构建期拒绝目标文件中漂移的 Key 或 source。
 
 ## 翻译状态与备注
 
@@ -180,7 +190,7 @@ en-US source
 </ItemGroup>
 ```
 
-普通应用翻译、类库内置翻译和语言包文件不得冒充 Override。同一优先级对相同 Catalog、语言和 unit 提供
+普通应用翻译、类库内置翻译和语言包文件不得冒充 Override。同一优先级对相同 Catalog、语言和 unit Key 提供
 多个目标时直接诊断为冲突，不采用文件顺序、PackageReference 顺序或最后写入获胜。
 
 `Application Override` 可以只包含需要替换的 unit；生成的 Bundle 对其他 slot 保留 `null`，Snapshot 构建时继续按
@@ -190,7 +200,7 @@ en-US source
 ## Catalog 模板
 
 可被外部翻译的类库 NuGet 必须发布完整 `en-US.xlf` 与自动生成的 `buildTransitive/<PackageId>.props`。XLIFF 包含
-源文本、数字 ID、成员名和 translator notes；props 传递 module ID、ContractVersion、来源 identity、包内路径和
+稳定 Key、源文本和 translator notes；props 传递 module ID、ContractVersion、来源 identity、包内路径和
 源文本指纹。语言包 Build Tasks 另外生成包含相同审计字段的 manifest；Generator 只消费 props 注入的 XLIFF，
 这些资产都不作为运行时资源加载。
 

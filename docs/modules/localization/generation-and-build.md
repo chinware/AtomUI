@@ -48,7 +48,7 @@ Generator 使用 Incremental Generator API 组合以下输入：
 4. 静态 I18n 包和应用 Override 提供的目标 XLIFF。
 5. AnalyzerConfigOptions 提供的 `AssemblyName`、`PackageId`、RootNamespace 和构建策略。
 
-输入必须按规范化 Catalog ID、语言标签、来源优先级和 unit ID 排序，确保不同操作系统、文件枚举顺序和增量
+输入必须按规范化 Catalog ID、语言标签、来源优先级和 unit Key 排序，确保不同操作系统、文件枚举顺序和增量
 构建下生成结果一致。
 
 ## Generator 输出
@@ -78,8 +78,8 @@ I18n package TranslationBundle registration
 application Override registration
 ```
 
-`XxxLangResourceKind` 由开发者声明，不再根据三份 C# 翻译类推导。`XxxLangResourceExtension` 保留现有 XAML
-形态，但底层改为生成式 descriptor 和 Snapshot 查询。
+`XxxLangResourceKind` 由开发者声明，不再根据三份 C# 翻译类推导。enum 成员名是 Catalog 的唯一 Key，成员不声明
+显式数字值；`XxxLangResourceExtension` 保留现有 XAML 形态，但底层改为生成式 descriptor 和 Snapshot 查询。
 
 每个 Catalog 的 descriptor 和内置 Bundle 必须输出到按 Catalog metadata identity 命名的独立 source；模块注册文件
 只按 Catalog ID 排序调用这些 registration。这样修改一个 XLIFF 只改变对应 Catalog source，其他 Catalog、模块聚合
@@ -116,7 +116,7 @@ Catalog 和内置翻译交给 `ILocalizationBuilder`；开发者不手写 descri
 生成代码必须直接包含：
 
 - Catalog enum CLR 类型和生成式 Catalog ID。
-- enum 数字值到 unit slot 的 switch/只读表。
+- enum member 到 unit slot 的静态 switch，以及 slot 对应的规范 Key 表。
 - 每个语言的编译后字符串数组。
 - 格式化资源的预验证 `CompositeFormat` 数据或等价静态构造路径。
 - Language Module 和应用 bootstrap 的直接注册调用。
@@ -124,6 +124,7 @@ Catalog 和内置翻译交给 `ILocalizationBuilder`；开发者不手写 descri
 正常路径禁止：
 
 - `Assembly.GetTypes()`、`Type.GetFields()`、`Enum.GetNames()`。
+- `Enum.GetName()` 或 enum `ToString()` 参与资源 Key 解析。
 - 通过 Attribute 反射发现 Catalog。
 - `Activator.CreateInstance()` 创建 Provider 或 Markup Extension 注册项。
 - 运行时 XML/XLIFF 解析、路径 glob 或 NuGet 包探测。

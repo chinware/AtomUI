@@ -156,7 +156,7 @@ dotnet pack
 
 希望别人制作语言包的组件或类库必须：
 
-1. 使用 `[LanguageCatalog]` 和稳定显式数字 ID。
+1. 使用 `[LanguageCatalog]`，并以 enum 成员名作为稳定 unit Key，不声明显式数字值。
 2. 提供完整 `en-US`，并声明自身内置语言。
 3. 引用 `AtomUI.Generator`；模块主包由标准 targets 自动发布 `en-US` 与声明式 props 构建资产。
 4. 保持 Catalog ID、ContractVersion 和源文本指纹可追踪。

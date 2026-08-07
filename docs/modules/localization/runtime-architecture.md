@@ -44,13 +44,14 @@ Builder 只收集输入，`Build()` 后全部注册表冻结。运行时不允�
 Registry 为每个 Catalog 分配进程内稳定 slot，并记录：
 
 - 生成式 Catalog ID、ContractVersion 和 enum CLR 类型。
-- 数字 unit ID 到 Catalog 内部 slot 的生成式映射。
+- 稳定 unit Key、enum member 到 Catalog 内部 slot 的生成式映射。
 - 每个语言的 Translation Bundle、来源优先级和源文本指纹。
 - `en-US` 完整源文本。
 - 用于 Avalonia enum resource key 查询的生成式映射。
 
-Registry 可以使用 `Type` 和 enum 数值作为已经静态可见的字典键，但不得通过 `GetFields()`、`Enum.GetNames()`、
-Attribute 反射或 `Activator.CreateInstance()` 发现 Catalog。
+Registry 使用 `Type` 定位 Catalog，并通过 Generator 输出的 enum member switch 定位 slot。enum 底层数值只参与
+编译后的 switch 分派，不是可序列化的 unit identity；Registry 不得通过 `GetFields()`、`Enum.GetNames()`、
+`Enum.GetName()`、`ToString()`、Attribute 反射或 `Activator.CreateInstance()` 发现 Catalog 或构造 Key。
 
 ## LanguageSnapshot
 

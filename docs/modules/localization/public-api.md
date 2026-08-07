@@ -161,11 +161,32 @@ var title = localizer.Get(LoginLangResourceKind.Title);
 var message = localizer.Format(OrderLangResourceKind.ItemCount, count);
 ```
 
-`Get` 和 `Format` 根据 enum CLR 类型定位 Catalog，根据显式 enum 数值定位资源项。它们不得调用 `ToString()`
-构造资源路径。格式化使用 `LanguageState.FormattingCulture`，参数签名在构建期跨语言校验。
+`Get` 和 `Format` 根据 enum CLR 类型定位 Catalog，通过 Generator 输出的 enum member switch 定位资源 slot。enum
+成员名是构建期 Catalog Key，但运行时不得调用 `ToString()` 或 `Enum.GetName()` 构造资源路径。格式化使用
+`LanguageState.FormattingCulture`，参数签名在构建期跨语言校验。
 
 XAML 动态资源自动响应语言变化。ViewModel 如果要缓存已经本地化的字符串，必须订阅 `LanguageChanged` 并重新
 计算；更推荐保存稳定资源 enum 或业务状态，在属性 getter/投影阶段调用 `ILocalizer`。
+
+## LanguageCatalogUnitDescriptor
+
+生成的 Catalog registration 使用字符串 Key 描述资源项，公共 descriptor 不再同时暴露数字 `Id` 和字符串
+`Name`：
+
+```csharp
+public sealed record LanguageCatalogUnitDescriptor
+{
+    public LanguageCatalogUnitDescriptor(string key, bool isFormatted = false);
+
+    public string Key { get; }
+
+    public bool IsFormatted { get; }
+}
+```
+
+`Key` 必须与 Catalog enum 成员名及 XLIFF `unit id` 完全一致，使用 ordinal、区分大小写的比较语义。构造函数拒绝
+空值和空白，Catalog descriptor 拒绝重复 Key；Key 与 enum symbol 的一致性由 Generator 和 Build Tasks 校验。
+`LanguageCatalogUnitDescriptor.Id`、`Name` 及接受数字 ID 的构造函数不保留兼容层，避免重新形成两套身份来源。
 
 ## XAML namespace 与 Markup Extension
 
