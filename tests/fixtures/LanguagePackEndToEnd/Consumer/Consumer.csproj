@@ -27,7 +27,7 @@
     <ItemGroup>
         <PackageReference Include="Avalonia.Headless" />
         <PackageReference Include="Acme.LocalizationComponent" VersionOverride="$(FixturePackageVersion)" />
-        <PackageReference Include="Acme.LocalizationComponent.I18n.JaJP" VersionOverride="$(FixturePackageVersion)" />
+        <PackageReference Include="Acme.LocalizationAggregate.I18n.JaJP" VersionOverride="$(FixturePackageVersion)" />
     </ItemGroup>
 
     <ItemGroup>

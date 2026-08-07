@@ -11,7 +11,7 @@ public sealed class LanguagePackEndToEndTests
     private static readonly TimeSpan s_stageTimeout = TimeSpan.FromSeconds(60);
 
     [Fact(Timeout = 360_000)]
-    public async Task Module_And_Static_Language_Pack_Are_Consumed_Through_NuGet()
+    public async Task Aggregate_Language_Pack_Dormantly_Consumes_Unreferenced_Module_Through_NuGet()
     {
         var repositoryRoot = FindRepositoryRoot();
         var fixtureRoot = Path.Combine(repositoryRoot, "tests", "fixtures", "LanguagePackEndToEnd");
@@ -22,6 +22,10 @@ public sealed class LanguagePackEndToEndTests
         var feed = Path.Combine(temporaryRoot, "feed");
         var packages = Path.Combine(temporaryRoot, "packages");
         var packageVersion = "1.0.0-local." + Guid.NewGuid().ToString("N");
+        var globalPackages = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            ".nuget",
+            "packages");
         Directory.CreateDirectory(feed);
         Directory.CreateDirectory(packages);
 
@@ -34,12 +38,14 @@ public sealed class LanguagePackEndToEndTests
                 "dotnet",
                 "msbuild",
                 Path.Combine(fixtureRoot, "Module", "Module.csproj"),
+                "-restore",
                 "-t:Pack",
                 "-m:1",
                 "-nr:false",
                 "-p:Configuration=Debug",
                 $"-p:Version={packageVersion}",
                 $"-p:PackageOutputPath={feed}",
+                $"-p:RestorePackagesPath={globalPackages}",
                 "-p:NoPackageAnalysis=true");
             await RunProcess(
                 "Pack language pack",
@@ -48,20 +54,64 @@ public sealed class LanguagePackEndToEndTests
                 "dotnet",
                 "msbuild",
                 Path.Combine(fixtureRoot, "LanguagePack", "LanguagePack.csproj"),
+                "-restore",
                 "-t:Pack",
                 "-m:1",
                 "-nr:false",
                 "-p:Configuration=Debug",
                 $"-p:PackageVersion={packageVersion}",
-                $"-p:PackageOutputPath={feed}");
+                $"-p:PackageOutputPath={feed}",
+                $"-p:RestorePackagesPath={globalPackages}");
+            await RunProcess(
+                "Pack optional module",
+                repositoryRoot,
+                temporaryRoot,
+                "dotnet",
+                "msbuild",
+                Path.Combine(fixtureRoot, "OptionalModule", "OptionalModule.csproj"),
+                "-restore",
+                "-t:Pack",
+                "-m:1",
+                "-nr:false",
+                "-p:Configuration=Debug",
+                $"-p:Version={packageVersion}",
+                $"-p:PackageOutputPath={feed}",
+                $"-p:RestorePackagesPath={globalPackages}",
+                "-p:NoPackageAnalysis=true");
+            await RunProcess(
+                "Pack optional language pack",
+                repositoryRoot,
+                temporaryRoot,
+                "dotnet",
+                "msbuild",
+                Path.Combine(fixtureRoot, "OptionalLanguagePack", "OptionalLanguagePack.csproj"),
+                "-restore",
+                "-t:Pack",
+                "-m:1",
+                "-nr:false",
+                "-p:Configuration=Debug",
+                $"-p:PackageVersion={packageVersion}",
+                $"-p:PackageOutputPath={feed}",
+                $"-p:RestorePackagesPath={globalPackages}");
+            await RunProcess(
+                "Pack aggregate language pack",
+                repositoryRoot,
+                temporaryRoot,
+                "dotnet",
+                "msbuild",
+                Path.Combine(fixtureRoot, "AggregateLanguagePack", "AggregateLanguagePack.csproj"),
+                "-restore",
+                "-t:Pack",
+                "-m:1",
+                "-nr:false",
+                "-p:Configuration=Debug",
+                $"-p:PackageVersion={packageVersion}",
+                $"-p:PackageOutputPath={feed}",
+                $"-p:RestorePackagesPath={globalPackages}");
 
-            AssertPackageLayout(feed, packageVersion);
+            AssertPackageLayouts(feed, packageVersion);
 
             var consumerProject = Path.Combine(fixtureRoot, "Consumer", "Consumer.csproj");
-            var globalPackages = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                ".nuget",
-                "packages");
             await RunProcess(
                 "Restore consumer",
                 repositoryRoot,
@@ -76,6 +126,15 @@ public sealed class LanguagePackEndToEndTests
                 $"-p:RestoreAdditionalProjectSources={feed}",
                 $"-p:RestorePackagesPath={packages}",
                 $"-p:RestoreAdditionalProjectFallbackFolders={globalPackages}");
+            var assetsFile = Path.Combine(
+                repositoryRoot,
+                "output",
+                "Consumer",
+                "obj",
+                "project.assets.json");
+            var assets = File.ReadAllText(assetsFile);
+            assets.ShouldContain($"Acme.OptionalComponent.I18n.JaJP/{packageVersion}");
+            assets.ShouldNotContain("Acme.OptionalComponent.dll");
             await RunProcess(
                 "Build consumer",
                 repositoryRoot,
@@ -99,6 +158,11 @@ public sealed class LanguagePackEndToEndTests
                 "Debug",
                 "net10.0",
                 OperatingSystem.IsWindows() ? "Consumer.exe" : "Consumer");
+            Directory.EnumerateFiles(
+                    Path.GetDirectoryName(consumerExecutable)!,
+                    "Acme.OptionalComponent.dll",
+                    SearchOption.TopDirectoryOnly)
+                .ShouldBeEmpty();
             var runResult = await RunProcess(
                 "Run consumer",
                 repositoryRoot,
@@ -231,7 +295,7 @@ public sealed class LanguagePackEndToEndTests
         }
     }
 
-    private static void AssertPackageLayout(string feed, string packageVersion)
+    private static void AssertPackageLayouts(string feed, string packageVersion)
     {
         var modulePackage = Path.Combine(
             feed,
@@ -275,6 +339,49 @@ public sealed class LanguagePackEndToEndTests
             "contentFiles/any/any/AtomUI.LanguagePack.xml"));
         var manifestCatalog = manifest.Descendants("catalog").ShouldHaveSingleItem();
         ((string?)manifestCatalog.Attribute("sourceFingerprint")).ShouldBe(languageFingerprint);
+
+        AssertOptionalLanguagePackageLayout(feed, packageVersion);
+        AssertAggregatePackageLayout(feed, packageVersion);
+    }
+
+    private static void AssertOptionalLanguagePackageLayout(string feed, string packageVersion)
+    {
+        var optionalLanguagePackage = Path.Combine(
+            feed,
+            $"Acme.OptionalComponent.I18n.JaJP.{packageVersion}.nupkg");
+        var optionalLanguageEntries = PackageEntries(optionalLanguagePackage);
+        optionalLanguageEntries.ShouldContain(
+            "buildTransitive/Acme.OptionalComponent.I18n.JaJP.props");
+        optionalLanguageEntries.ShouldContain("contentFiles/any/any/AtomUI.LanguagePack.xml");
+        optionalLanguageEntries.ShouldContain("contentFiles/any/any/Optional/ja-JP.xlf");
+        optionalLanguageEntries.Count(IsBuildAsset).ShouldBe(1);
+        optionalLanguageEntries.ShouldNotContain(static path => IsRuntimeAsset(path));
+        optionalLanguageEntries.ShouldNotContain(static path => IsUnexpectedBuildOrRuntimeAsset(path));
+
+        var dependencies = PackageDependencies(
+            optionalLanguagePackage,
+            "Acme.OptionalComponent.I18n.JaJP.nuspec");
+        dependencies.ShouldNotContainKey("Acme.OptionalComponent");
+    }
+
+    private static void AssertAggregatePackageLayout(string feed, string packageVersion)
+    {
+        var aggregatePackage = Path.Combine(
+            feed,
+            $"Acme.LocalizationAggregate.I18n.JaJP.{packageVersion}.nupkg");
+        var aggregateEntries = PackageEntries(aggregatePackage);
+        aggregateEntries.ShouldNotContain(static path =>
+            path.StartsWith("contentFiles/", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("analyzers/", StringComparison.OrdinalIgnoreCase) ||
+            IsBuildAsset(path) ||
+            IsRuntimeAsset(path));
+
+        var dependencies = PackageDependencies(
+            aggregatePackage,
+            "Acme.LocalizationAggregate.I18n.JaJP.nuspec");
+        dependencies.Count.ShouldBe(2);
+        dependencies["Acme.LocalizationComponent.I18n.JaJP"].ShouldBe(packageVersion);
+        dependencies["Acme.OptionalComponent.I18n.JaJP"].ShouldBe(packageVersion);
     }
 
     private static void AssertExportedUnit(
@@ -320,6 +427,19 @@ public sealed class LanguagePackEndToEndTests
             $"Expected package '{packagePath}' to contain '{entryPath}'.");
         using var reader = new StreamReader(entry.Open());
         return reader.ReadToEnd();
+    }
+
+    private static IReadOnlyDictionary<string, string> PackageDependencies(
+        string packagePath,
+        string nuspecPath)
+    {
+        var nuspec = XDocument.Parse(PackageEntryText(packagePath, nuspecPath));
+        return nuspec.Descendants().Where(static element =>
+                string.Equals(element.Name.LocalName, "dependency", StringComparison.Ordinal))
+            .ToDictionary(
+            static dependency => ((string?)dependency.Attribute("id")).ShouldNotBeNull(),
+            static dependency => ((string?)dependency.Attribute("version")).ShouldNotBeNull(),
+            StringComparer.Ordinal);
     }
 
     private static bool IsBuildAsset(string path)

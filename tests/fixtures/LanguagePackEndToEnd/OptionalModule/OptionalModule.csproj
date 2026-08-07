@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>Acme.OptionalComponent</RootNamespace>
+        <PackageId>Acme.OptionalComponent</PackageId>
+        <AtomUILanguageModuleId>Acme.OptionalComponent</AtomUILanguageModuleId>
+        <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
+        <Version Condition="'$(Version)' == ''">1.0.0</Version>
+        <IsPackable>true</IsPackable>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+        <AvaloniaAccessUnstablePrivateApis>true</AvaloniaAccessUnstablePrivateApis>
+        <Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>true</Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../../../src/AtomUI.Core/AtomUI.Core.csproj" />
+        <ProjectReference Include="../../../../src/AtomUI.Localization/AtomUI.Localization.csproj" />
+        <ProjectReference Include="../../../../src/AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+    </ItemGroup>
+</Project>
