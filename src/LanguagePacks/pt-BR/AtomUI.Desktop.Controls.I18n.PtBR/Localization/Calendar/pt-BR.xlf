@@ -4,25 +4,25 @@
     <unit id="Month">
       <segment>
         <source>Month</source>
-        <target state="translated">Mês</target>
+        <target state="final">Mês</target>
       </segment>
     </unit>
     <unit id="Week">
       <segment>
         <source>Week</source>
-        <target state="translated">Semana</target>
+        <target state="final">Semana</target>
       </segment>
     </unit>
     <unit id="Year">
       <segment>
         <source>Year</source>
-        <target state="translated">Ano</target>
+        <target state="final">Ano</target>
       </segment>
     </unit>
     <unit id="YearSuffix">
       <segment>
         <source></source>
-        <target state="translated"></target>
+        <target state="final"></target>
       </segment>
     </unit>
   </file>

@@ -4,19 +4,19 @@
     <unit id="DragUploadHead">
       <segment>
         <source>Click or drag file to this area to upload</source>
-        <target state="translated">Clique ou arraste o arquivo para esta área para enviar</target>
+        <target state="final">Clique ou arraste o arquivo para esta área para enviar</target>
       </segment>
     </unit>
     <unit id="Pending">
       <segment>
         <source>Pending...</source>
-        <target state="translated">Pendente...</target>
+        <target state="final">Pendente...</target>
       </segment>
     </unit>
     <unit id="Uploading">
       <segment>
         <source>Uploading...</source>
-        <target state="translated">Enviando...</target>
+        <target state="final">Enviando...</target>
       </segment>
     </unit>
   </file>

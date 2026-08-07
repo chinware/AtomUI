@@ -4,19 +4,19 @@
     <unit id="JumpToText">
       <segment>
         <source>Go to</source>
-        <target state="translated">Ir para</target>
+        <target state="final">Ir para</target>
       </segment>
     </unit>
     <unit id="PageText">
       <segment>
         <source>Page</source>
-        <target state="translated">Página</target>
+        <target state="final">Página</target>
       </segment>
     </unit>
     <unit id="TotalInfoFormat">
       <segment>
         <source>Total ${Total} items</source>
-        <target state="translated">Total de ${Total} itens</target>
+        <target state="final">Total de ${Total} itens</target>
       </segment>
     </unit>
   </file>

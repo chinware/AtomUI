@@ -4,19 +4,19 @@
     <unit id="AMText">
       <segment>
         <source>AM</source>
-        <target state="translated">AM</target>
+        <target state="final">AM</target>
       </segment>
     </unit>
     <unit id="Now">
       <segment>
         <source>Now</source>
-        <target state="translated">Agora</target>
+        <target state="final">Agora</target>
       </segment>
     </unit>
     <unit id="PMText">
       <segment>
         <source>PM</source>
-        <target state="translated">PM</target>
+        <target state="final">PM</target>
       </segment>
     </unit>
   </file>

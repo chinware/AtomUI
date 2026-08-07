@@ -4,115 +4,115 @@
     <unit id="Abort">
       <segment>
         <source>Abort</source>
-        <target state="translated">Interromper</target>
+        <target state="final">Interromper</target>
       </segment>
     </unit>
     <unit id="Apply">
       <segment>
         <source>Apply</source>
-        <target state="translated">Aplicar</target>
+        <target state="final">Aplicar</target>
       </segment>
     </unit>
     <unit id="Cancel">
       <segment>
         <source>Cancel</source>
-        <target state="translated">Cancelar</target>
+        <target state="final">Cancelar</target>
       </segment>
     </unit>
     <unit id="Close">
       <segment>
         <source>Close</source>
-        <target state="translated">Fechar</target>
+        <target state="final">Fechar</target>
       </segment>
     </unit>
     <unit id="Discard">
       <segment>
         <source>Discard</source>
-        <target state="translated">Descartar</target>
+        <target state="final">Descartar</target>
       </segment>
     </unit>
     <unit id="Help">
       <segment>
         <source>Help</source>
-        <target state="translated">Ajuda</target>
+        <target state="final">Ajuda</target>
       </segment>
     </unit>
     <unit id="Ignore">
       <segment>
         <source>Ignore</source>
-        <target state="translated">Ignorar</target>
+        <target state="final">Ignorar</target>
       </segment>
     </unit>
     <unit id="No">
       <segment>
         <source>No</source>
-        <target state="translated">Não</target>
+        <target state="final">Não</target>
       </segment>
     </unit>
     <unit id="NoToAll">
       <segment>
         <source>No to All</source>
-        <target state="translated">Não para todos</target>
+        <target state="final">Não para todos</target>
       </segment>
     </unit>
     <unit id="Ok">
       <segment>
         <source>OK</source>
-        <target state="translated">OK</target>
+        <target state="final">OK</target>
       </segment>
     </unit>
     <unit id="Open">
       <segment>
         <source>Open</source>
-        <target state="translated">Abrir</target>
+        <target state="final">Abrir</target>
       </segment>
     </unit>
     <unit id="Reload">
       <segment>
         <source>Reload</source>
-        <target state="translated">Recarregar</target>
+        <target state="final">Recarregar</target>
       </segment>
     </unit>
     <unit id="Reset">
       <segment>
         <source>Reset</source>
-        <target state="translated">Redefinir</target>
+        <target state="final">Redefinir</target>
       </segment>
     </unit>
     <unit id="RestoreDefaults">
       <segment>
         <source>Restore Defaults</source>
-        <target state="translated">Restaurar padrões</target>
+        <target state="final">Restaurar padrões</target>
       </segment>
     </unit>
     <unit id="Retry">
       <segment>
         <source>Retry</source>
-        <target state="translated">Tentar novamente</target>
+        <target state="final">Tentar novamente</target>
       </segment>
     </unit>
     <unit id="Save">
       <segment>
         <source>Save</source>
-        <target state="translated">Salvar</target>
+        <target state="final">Salvar</target>
       </segment>
     </unit>
     <unit id="SaveAll">
       <segment>
         <source>Save All</source>
-        <target state="translated">Salvar tudo</target>
+        <target state="final">Salvar tudo</target>
       </segment>
     </unit>
     <unit id="Yes">
       <segment>
         <source>Yes</source>
-        <target state="translated">Sim</target>
+        <target state="final">Sim</target>
       </segment>
     </unit>
     <unit id="YesToAll">
       <segment>
         <source>Yes to All</source>
-        <target state="translated">Sim para todos</target>
+        <target state="final">Sim para todos</target>
       </segment>
     </unit>
   </file>

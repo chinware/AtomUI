@@ -4,13 +4,13 @@
     <unit id="Now">
       <segment>
         <source>Now</source>
-        <target state="translated">Agora</target>
+        <target state="final">Agora</target>
       </segment>
     </unit>
     <unit id="Today">
       <segment>
         <source>Today</source>
-        <target state="translated">Hoje</target>
+        <target state="final">Hoje</target>
       </segment>
     </unit>
   </file>

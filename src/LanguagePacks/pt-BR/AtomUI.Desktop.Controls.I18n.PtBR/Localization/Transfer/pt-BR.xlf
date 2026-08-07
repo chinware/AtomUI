@@ -4,49 +4,49 @@
     <unit id="DeSelectAll">
       <segment>
         <source>deselect all data</source>
-        <target state="translated">Desmarcar tudo</target>
+        <target state="final">Desmarcar tudo</target>
       </segment>
     </unit>
     <unit id="InvertSelectCurrentPage">
       <segment>
         <source>invert current page</source>
-        <target state="translated">Inverter seleção da página atual</target>
+        <target state="final">Inverter seleção da página atual</target>
       </segment>
     </unit>
     <unit id="Item">
       <segment>
         <source>item</source>
-        <target state="translated">item</target>
+        <target state="final">item</target>
       </segment>
     </unit>
     <unit id="Items">
       <segment>
         <source>items</source>
-        <target state="translated">itens</target>
+        <target state="final">itens</target>
       </segment>
     </unit>
     <unit id="RemoveAll">
       <segment>
         <source>remove all data</source>
-        <target state="translated">Remover tudo</target>
+        <target state="final">Remover tudo</target>
       </segment>
     </unit>
     <unit id="RemoveCurrentPage">
       <segment>
         <source>remove current page</source>
-        <target state="translated">Remover página atual</target>
+        <target state="final">Remover página atual</target>
       </segment>
     </unit>
     <unit id="SelectAll">
       <segment>
         <source>select all data</source>
-        <target state="translated">Selecionar tudo</target>
+        <target state="final">Selecionar tudo</target>
       </segment>
     </unit>
     <unit id="SelectCurrentPage">
       <segment>
         <source>select current page</source>
-        <target state="translated">Selecionar página atual</target>
+        <target state="final">Selecionar página atual</target>
       </segment>
     </unit>
   </file>

@@ -4,13 +4,13 @@
     <unit id="ImageLoadFailed">
       <segment>
         <source>Image load failed</source>
-        <target state="translated">Falha ao carregar a imagem</target>
+        <target state="final">Falha ao carregar a imagem</target>
       </segment>
     </unit>
     <unit id="Preview">
       <segment>
         <source>Preview</source>
-        <target state="translated">Visualizar</target>
+        <target state="final">Visualizar</target>
       </segment>
     </unit>
   </file>

@@ -4,7 +4,7 @@
     <unit id="EmptyColorText">
       <segment>
         <source>Transparent</source>
-        <target state="translated">Transparente</target>
+        <target state="final">Transparente</target>
       </segment>
     </unit>
   </file>
