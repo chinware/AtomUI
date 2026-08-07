@@ -8,12 +8,27 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
     private const string InvalidXliffCode = "ATOMUILOC005";
     private const string CatalogMismatchCode = "ATOMUILOC006";
     private const string InvalidTranslationCode = "ATOMUILOC007";
+    private const string InvalidPackageCode = "ATOMUILOC009";
 
     [Required]
     public ITaskItem[] LanguageFiles { get; set; } = Array.Empty<ITaskItem>();
 
+    public string MinimumTargetState { get; set; } = "translated";
+
     public override bool Execute()
     {
+        MinimumTargetState = MinimumTargetState.Trim();
+        if (!XliffTranslationTarget.TryGetStateRank(MinimumTargetState, out _))
+        {
+            Error(
+                InvalidPackageCode,
+                string.Empty,
+                1,
+                1,
+                "MinimumTargetState must be translated, reviewed, or final.");
+            return false;
+        }
+
         var files = ParseFiles();
         ValidateDuplicateSources(files);
         ValidateBundles(files);
@@ -218,6 +233,18 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
                     unit.Column,
                     $"Translation unit '{unit.Key}' ('{unit.Name ?? unit.Key}') must contain a non-empty target " +
                     "in translated, reviewed, or final state.");
+                continue;
+            }
+
+            if (!XliffTranslationTarget.MeetsMinimumState(unit, MinimumTargetState))
+            {
+                Error(
+                    InvalidTranslationCode,
+                    target.Path,
+                    unit.Line,
+                    unit.Column,
+                    $"Translation unit '{unit.Key}' ('{unit.Name ?? unit.Key}') target state " +
+                    $"'{unit.TargetState}' does not meet the required minimum state '{MinimumTargetState}'.");
             }
         }
     }

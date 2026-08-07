@@ -53,6 +53,8 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
 
     public string? ExpectedLanguage { get; set; }
 
+    public string MinimumTargetState { get; set; } = "translated";
+
     [Output]
     public ITaskItem[] PreparedLanguageFiles { get; private set; } = Array.Empty<ITaskItem>();
 
@@ -63,7 +65,8 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
         {
             BuildEngine = BuildEngine,
             HostObject = HostObject,
-            LanguageFiles = LanguageFiles
+            LanguageFiles = LanguageFiles,
+            MinimumTargetState = MinimumTargetState
         };
         succeeded &= validation.Execute();
 

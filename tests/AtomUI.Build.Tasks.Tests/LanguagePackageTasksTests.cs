@@ -51,6 +51,30 @@ public class LanguagePackageTasksTests : IDisposable
             .ShouldMatch("^[0-9a-f]{64}$");
     }
 
+    [Fact]
+    public void Prepare_Propagates_The_Minimum_Target_State()
+    {
+        var languagePath = Write("ja-JP.xlf", JapaneseXliff);
+        var languageItem = LanguageItem(languagePath);
+        var engine = new RecordingBuildEngine();
+        var task = new PrepareLanguagePackageTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
+            LanguageFiles = [languageItem],
+            PackageFiles = [languageItem],
+            OutputManifestPath = Path.Combine(_directory, "invalid-state.xml"),
+            MinimumTargetState = "final"
+        };
+
+        task.Execute().ShouldBeFalse();
+        var error = engine.Errors.ShouldHaveSingleItem();
+        error.Code.ShouldBe("ATOMUILOC007");
+        error.Message.ShouldNotBeNull().ShouldContain("reviewed");
+        error.Message.ShouldNotBeNull().ShouldContain("final");
+        File.Exists(task.OutputManifestPath).ShouldBeFalse();
+    }
+
     [Theory]
     [InlineData("RuntimeInitializer.dll", "runtime assembly")]
     [InlineData("Initializer.cs", "runtime source")]

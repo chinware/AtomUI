@@ -31,6 +31,12 @@ public class LocalizationBuildAssetsTests
         contractVersion.Value.ShouldBe("1");
         ((string?)contractVersion.Attribute("Condition"))
             .ShouldBe("'$(AtomUILanguageContractVersion)' == ''");
+        var minimumState = propertyGroups.SelectMany(static group => group.Elements())
+                                         .Single(element =>
+                                             element.Name.LocalName == "AtomUILanguageMinimumState");
+        minimumState.Value.ShouldBe("translated");
+        ((string?)minimumState.Attribute("Condition"))
+            .ShouldBe("'$(AtomUILanguageMinimumState)' == ''");
 
         var languageDefaults = props.Descendants()
                                     .Single(element => element.Name.LocalName == "AtomUILanguage");
@@ -151,6 +157,16 @@ public class LocalizationBuildAssetsTests
         targets.Descendants("Target")
                .Single(element => (string?)element.Attribute("Name") == "AtomUIValidateLanguageFiles")
                .Attribute("BeforeTargets")!.Value.ShouldBe("CoreCompile");
+        var validationTask = targets.Descendants()
+                                    .Single(element =>
+                                        element.Name.LocalName == "AtomUI.Build.Tasks.ValidateLanguageFilesTask");
+        ((string?)validationTask.Attribute("MinimumTargetState"))
+            .ShouldBe("$(AtomUILanguageMinimumState)");
+        var prepareTask = targets.Descendants()
+                                 .Single(element =>
+                                     element.Name.LocalName == "AtomUI.Build.Tasks.PrepareLanguagePackageTask");
+        ((string?)prepareTask.Attribute("MinimumTargetState"))
+            .ShouldBe("$(AtomUILanguageMinimumState)");
         targets.Descendants("Target")
                .Single(element => (string?)element.Attribute("Name") == "AtomUIExportLanguageTemplates")
                .ShouldNotBeNull();

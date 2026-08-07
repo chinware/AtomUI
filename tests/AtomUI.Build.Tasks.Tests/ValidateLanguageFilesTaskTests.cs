@@ -177,6 +177,76 @@ public class ValidateLanguageFilesTaskTests : IDisposable
     }
 
     [Theory]
+    [InlineData("translated", "translated", true)]
+    [InlineData("translated", "reviewed", true)]
+    [InlineData("translated", "final", true)]
+    [InlineData("reviewed", "translated", false)]
+    [InlineData("reviewed", "reviewed", true)]
+    [InlineData("reviewed", "final", true)]
+    [InlineData("final", "translated", false)]
+    [InlineData("final", "reviewed", false)]
+    [InlineData("final", "final", true)]
+    public void Execute_Enforces_The_Minimum_Target_State(
+        string minimumTargetState,
+        string actualTargetState,
+        bool expectedSuccess)
+    {
+        var source = Write("en-US.xlf", CreateXliff(targetLanguage: null, includeSecondUnit: false));
+        var target = Write(
+            "zh-CN.xlf",
+            CreateXliff(
+                targetLanguage: "zh-CN",
+                includeSecondUnit: false,
+                firstTargetState: actualTargetState));
+        var engine = new RecordingBuildEngine();
+        var task = new ValidateLanguageFilesTask
+        {
+            BuildEngine = engine,
+            LanguageFiles =
+            [
+                Item(source, "ModuleBuiltIn"),
+                Item(target, "StaticLanguagePack")
+            ],
+            MinimumTargetState = minimumTargetState
+        };
+
+        task.Execute().ShouldBe(expectedSuccess);
+        if (expectedSuccess)
+        {
+            engine.Errors.ShouldBeEmpty();
+        }
+        else
+        {
+            var error = engine.Errors.ShouldHaveSingleItem();
+            error.Code.ShouldBe("ATOMUILOC007");
+            error.Message.ShouldNotBeNull().ShouldContain(actualTargetState);
+            error.Message.ShouldNotBeNull().ShouldContain(minimumTargetState);
+        }
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("initial")]
+    [InlineData("approved")]
+    public void Execute_Rejects_An_Invalid_Minimum_Target_State(string minimumTargetState)
+    {
+        var source = Write("en-US.xlf", CreateXliff(targetLanguage: null));
+        var engine = new RecordingBuildEngine();
+        var task = new ValidateLanguageFilesTask
+        {
+            BuildEngine = engine,
+            LanguageFiles = [Item(source, "ModuleBuiltIn")],
+            MinimumTargetState = minimumTargetState
+        };
+
+        task.Execute().ShouldBeFalse();
+        var error = engine.Errors.ShouldHaveSingleItem();
+        error.Code.ShouldBe("ATOMUILOC009");
+        error.Message.ShouldNotBeNull().ShouldContain("translated, reviewed, or final");
+    }
+
+    [Theory]
     [InlineData("<target state=\"translated\">标题</target>", "<target state=\"translated\">   </target>")]
     [InlineData("<target state=\"translated\">标题</target>", "<target state=\"translated\" subState=\"needs-review\">标题</target>")]
     public void Execute_Rejects_Unpublishable_Target_Content_Or_SubState(
@@ -259,15 +329,17 @@ public class ValidateLanguageFilesTaskTests : IDisposable
         bool includeSecondTarget = true,
         bool includeSecondUnit = true,
         string version = "2.1",
-        bool includeFirstUnit = true)
+        bool includeFirstUnit = true,
+        string firstTargetState = "translated",
+        string secondTargetState = "reviewed")
     {
         var targetAttribute = targetLanguage is null ? string.Empty : $" trgLang=\"{targetLanguage}\"";
         var firstTarget = targetLanguage is null
             ? string.Empty
-            : "<target state=\"translated\">标题</target>";
+            : $"<target state=\"{firstTargetState}\">标题</target>";
         var secondTarget = targetLanguage is null || !includeSecondTarget
             ? string.Empty
-            : "<target state=\"reviewed\">正文</target>";
+            : $"<target state=\"{secondTargetState}\">正文</target>";
         var secondUnit = includeSecondUnit
             ? $$"""
                 <unit id="Body">

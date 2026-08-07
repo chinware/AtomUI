@@ -82,7 +82,8 @@
             <_AtomUILanguageFileForValidation Include="@(AdditionalFiles)"
                                               Condition="'%(AdditionalFiles.AtomUILanguage)' == 'true'" />
         </ItemGroup>
-        <AtomUI.Build.Tasks.ValidateLanguageFilesTask LanguageFiles="@(_AtomUILanguageFileForValidation)" />
+        <AtomUI.Build.Tasks.ValidateLanguageFilesTask LanguageFiles="@(_AtomUILanguageFileForValidation)"
+                                                       MinimumTargetState="$(AtomUILanguageMinimumState)" />
     </Target>
 
     <Target Name="AtomUIExportLanguageTemplates"
@@ -117,6 +118,7 @@
                Text="No static language XLIFF files were found. Add target-language files under Localization/." />
         <AtomUI.Build.Tasks.PrepareLanguagePackageTask PackageId="$(PackageId)"
                                                        ExpectedLanguage="$(AtomUILanguageTag)"
+                                                       MinimumTargetState="$(AtomUILanguageMinimumState)"
                                                        LanguageFiles="@(_AtomUILanguagePackageFile)"
                                                        PackageFiles="@(_AtomUILanguagePackageValidationFile)"
                                                        OutputManifestPath="$(AtomUILanguagePackageManifestPath)">

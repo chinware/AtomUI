@@ -13,6 +13,30 @@ internal static class XliffTranslationTarget
                !RequiresAction(unit.TargetSubState);
     }
 
+    internal static bool MeetsMinimumState(XliffUnitModel unit, string minimumState)
+    {
+        if (!IsPublishable(unit) ||
+            !TryGetStateRank(unit.TargetState!, out var targetStateRank) ||
+            !TryGetStateRank(minimumState, out var minimumStateRank))
+        {
+            return false;
+        }
+
+        return targetStateRank >= minimumStateRank;
+    }
+
+    internal static bool TryGetStateRank(string state, out int rank)
+    {
+        rank = state switch
+        {
+            "translated" => 1,
+            "reviewed" => 2,
+            "final" => 3,
+            _ => 0
+        };
+        return rank != 0;
+    }
+
     private static bool RequiresAction(string? subState)
     {
         if (subState is null || string.IsNullOrWhiteSpace(subState))
