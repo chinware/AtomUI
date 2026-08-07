@@ -64,6 +64,13 @@ internal static class LanguageCatalogCompiler
                         out var referencedCatalog,
                         out var resolutionError))
                 {
+                    if (file.SourceKind == LanguageFileSourceKind.StaticLanguagePack &&
+                        compilation.GetTypeByMetadataName(file.Document.File.Id) is null &&
+                        !ReferencedLanguageCatalogResolver.ContainsModule(compilation, file.ModuleId))
+                    {
+                        continue;
+                    }
+
                     diagnostics.Add(Mismatch(file, catalogId, resolutionError));
                     continue;
                 }

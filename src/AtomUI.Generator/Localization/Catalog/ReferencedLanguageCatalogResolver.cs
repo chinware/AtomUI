@@ -91,6 +91,17 @@ internal static class ReferencedLanguageCatalogResolver
         return true;
     }
 
+    internal static bool ContainsModule(Compilation compilation, string moduleId)
+    {
+        if (string.Equals(GetModuleId(compilation.Assembly), moduleId, StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        return compilation.SourceModule.ReferencedAssemblySymbols.Any(assembly =>
+            string.Equals(GetModuleId(assembly), moduleId, StringComparison.Ordinal));
+    }
+
     private static string GetModuleId(IAssemblySymbol assembly)
     {
         foreach (var attribute in assembly.GetAttributes())

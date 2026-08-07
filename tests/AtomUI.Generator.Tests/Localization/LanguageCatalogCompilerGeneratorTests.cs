@@ -218,11 +218,24 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Fact]
-    public void Reports_A_Static_Pack_For_An_Unknown_Referenced_Catalog()
+    public void Ignores_A_Static_Pack_When_The_Target_Module_Is_Not_Referenced()
     {
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [],
+            StaticPackFile(contractVersion: "2"));
+
+        result.Diagnostics.ShouldBeEmpty();
+        result.GeneratedSources.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Reports_A_Static_Pack_For_An_Unknown_Catalog_In_A_Referenced_Module()
+    {
+        var reference = CreateExternalModuleReference();
+        var result = Run(
+            "namespace TestApp { public sealed class Marker { } }",
+            [reference],
             StaticPackFile(contractVersion: "2"));
 
         AssertHasDiagnostic(result, "ATOMUILOC006", "referenced Catalog");
@@ -511,6 +524,20 @@ public class LanguageCatalogCompilerGeneratorTests
                     ItemCount,
                     {{unitKey}}
                 }
+            }
+            """);
+    }
+
+    private static MetadataReference CreateExternalModuleReference()
+    {
+        return LocalizationGeneratorTestHost.CreateMetadataReference(
+            "External.Package.Runtime",
+            """
+            [assembly: System.Reflection.AssemblyMetadata("AtomUILanguageModuleId", "External.Package")]
+
+            namespace External.Package
+            {
+                public sealed class Marker;
             }
             """);
     }
