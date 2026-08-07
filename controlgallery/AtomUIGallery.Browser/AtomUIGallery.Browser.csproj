@@ -23,9 +23,33 @@
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport"
                           GeneratePathProperty="true"
                           ExcludeAssets="all"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+                          GeneratePathProperty="true"
+                          ExcludeAssets="all"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"
+                          GeneratePathProperty="true"
+                          ExcludeAssets="all"/>
+        <PackageReference Include="Microsoft.IO.RecyclableMemoryStream"
+                          GeneratePathProperty="true"
+                          ExcludeAssets="all"/>
         <Reference Condition="'$(Configuration)' == 'Debug'"
                    Include="AvaloniaUI.DiagnosticsSupport.Avalonia">
             <HintPath>$(PkgAvaloniaUI_DiagnosticsSupport)/lib/net10.0/AvaloniaUI.DiagnosticsSupport.Avalonia.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
+        <Reference Condition="'$(Configuration)' == 'Debug'"
+                   Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+            <HintPath>$(PkgMicrosoft_Extensions_DependencyInjection_Abstractions)/lib/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
+        <Reference Condition="'$(Configuration)' == 'Debug'"
+                   Include="Microsoft.Extensions.Logging.Abstractions">
+            <HintPath>$(PkgMicrosoft_Extensions_Logging_Abstractions)/lib/net8.0/Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
+        <Reference Condition="'$(Configuration)' == 'Debug'"
+                   Include="Microsoft.IO.RecyclableMemoryStream">
+            <HintPath>$(PkgMicrosoft_IO_RecyclableMemoryStream)/lib/net6.0/Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
             <Private>true</Private>
         </Reference>
         <RuntimeHostConfigurationOption Condition="'$(Configuration)' == 'Debug'"

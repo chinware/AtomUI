@@ -46,6 +46,52 @@ public class GalleryDeveloperToolsConventionsTests
         (diagnosticsAssemblyReference.Element("HintPath")?.Value).ShouldBe(
             "$(PkgAvaloniaUI_DiagnosticsSupport)/lib/net10.0/AvaloniaUI.DiagnosticsSupport.Avalonia.dll");
         (diagnosticsAssemblyReference.Element("Private")?.Value).ShouldBe("true");
+
+        var runtimeDependencies = new[]
+        {
+            (
+                Package: "Microsoft.Extensions.Logging.Abstractions",
+                Assembly: "Microsoft.Extensions.Logging.Abstractions",
+                HintPath:
+                "$(PkgMicrosoft_Extensions_Logging_Abstractions)/lib/net8.0/Microsoft.Extensions.Logging.Abstractions.dll"),
+            (
+                Package: "Microsoft.Extensions.DependencyInjection.Abstractions",
+                Assembly: "Microsoft.Extensions.DependencyInjection.Abstractions",
+                HintPath:
+                "$(PkgMicrosoft_Extensions_DependencyInjection_Abstractions)/lib/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll"),
+            (
+                Package: "Microsoft.IO.RecyclableMemoryStream",
+                Assembly: "Microsoft.IO.RecyclableMemoryStream",
+                HintPath:
+                "$(PkgMicrosoft_IO_RecyclableMemoryStream)/lib/net6.0/Microsoft.IO.RecyclableMemoryStream.dll")
+        };
+
+        foreach (var runtimeDependency in runtimeDependencies)
+        {
+            var packageReference = project.Descendants("PackageReference")
+                                          .SingleOrDefault(element =>
+                                              string.Equals(
+                                                  (string?)element.Attribute("Include"),
+                                                  runtimeDependency.Package,
+                                                  StringComparison.Ordinal));
+            packageReference.ShouldNotBeNull(
+                $"{projectPath} must restore {runtimeDependency.Package} for the Debug-only diagnostics reference.");
+            packageReference.Attribute("Condition").ShouldBeNull();
+            (packageReference.Attribute("GeneratePathProperty")?.Value).ShouldBe("true");
+            (packageReference.Attribute("ExcludeAssets")?.Value).ShouldBe("all");
+
+            var assemblyReference = project.Descendants("Reference")
+                                           .SingleOrDefault(element =>
+                                               string.Equals(
+                                                   (string?)element.Attribute("Include"),
+                                                   runtimeDependency.Assembly,
+                                                   StringComparison.Ordinal));
+            assemblyReference.ShouldNotBeNull(
+                $"{projectPath} must include {runtimeDependency.Assembly} in Debug output and deps metadata.");
+            (assemblyReference.Attribute("Condition")?.Value).ShouldBe("'$(Configuration)' == 'Debug'");
+            (assemblyReference.Element("HintPath")?.Value).ShouldBe(runtimeDependency.HintPath);
+            (assemblyReference.Element("Private")?.Value).ShouldBe("true");
+        }
     }
 
     private static string ReadRepoFile(string relativePath)
