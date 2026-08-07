@@ -8,7 +8,9 @@ internal static class XliffTranslationTarget
         {
             throw new ArgumentNullException(nameof(unit));
         }
-        return !string.IsNullOrWhiteSpace(unit.Target) &&
+        var hasTargetContent = !string.IsNullOrWhiteSpace(unit.Target);
+        var isExplicitEmptyTranslation = unit.Source.Length == 0 && unit.Target?.Length == 0;
+        return (hasTargetContent || isExplicitEmptyTranslation) &&
                unit.TargetState is "translated" or "reviewed" or "final" &&
                !RequiresAction(unit.TargetSubState);
     }

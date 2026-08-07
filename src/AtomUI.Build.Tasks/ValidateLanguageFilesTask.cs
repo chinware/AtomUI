@@ -231,8 +231,8 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
                     target.Path,
                     unit.Line,
                     unit.Column,
-                    $"Translation unit '{unit.Key}' ('{unit.Name ?? unit.Key}') must contain a non-empty target " +
-                    "in translated, reviewed, or final state.");
+                    $"Translation unit '{unit.Key}' ('{unit.Name ?? unit.Key}') must contain a target " +
+                    "in translated, reviewed, or final state; an empty target is valid only when the source is empty.");
                 continue;
             }
 

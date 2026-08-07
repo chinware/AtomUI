@@ -59,7 +59,7 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Fact]
-    public void Allows_An_Empty_English_Source_But_Rejects_An_Empty_Translated_Target()
+    public void Allows_An_Explicit_Empty_Translation_When_The_English_Source_Is_Empty()
     {
         var source = SourceXliff.Replace(
             "<source>Title</source>",
@@ -72,7 +72,16 @@ public class LanguageCatalogCompilerGeneratorTests
             SourceFile().WithText(source),
             LanguageFile("Localization/zh-CN.xlf", target));
 
-        AssertHasDiagnostic(result, "ATOMUILOC007", "publishable");
+        result.Diagnostics.ShouldBeEmpty();
+        var generated = result.GeneratedSources
+                              .Single(sourceResult =>
+                                  sourceResult.HintName.EndsWith(
+                                      "LanguageCatalogRegistration.g.cs",
+                                      StringComparison.Ordinal))
+                              .SourceText
+                              .ToString();
+        generated.ShouldContain("LanguageTag.Parse(\"zh-CN\")");
+        generated.Split("            \"\",", StringSplitOptions.None).Length.ShouldBe(3);
     }
 
     [Fact]

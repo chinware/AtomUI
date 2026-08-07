@@ -44,7 +44,8 @@
 ### Translation Bundle
 
 - XLIFF 不是受支持的 2.1 文档，XML namespace、srcLang 或 trgLang 错误。
-- target 缺失、未达到可发布状态、源文本已变化但仍标记 translated。
+- target 缺失、未达到可发布状态、源文本已变化但仍标记 translated。只有 source 本身为空时，显式存在且已标记
+  `translated`、`reviewed` 或 `final` 的空 target 才表示合法的空字符串翻译；非空 source 的空或纯空白 target 仍然失败。
 - `CompositeFormat` 无效，源/目标占位符集合不同。
 - 同一优先级存在重复 Catalog/language/unit 翻译。
 - 非英语支持语言的有效回退链只能到达 `en-US`。

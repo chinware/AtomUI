@@ -271,7 +271,7 @@ public class ValidateLanguageFilesTaskTests : IDisposable
         task.Execute().ShouldBeFalse();
         engine.Errors.Any(error =>
             error.Code == "ATOMUILOC007" &&
-            (error.Message ?? string.Empty).Contains("non-empty target", StringComparison.Ordinal))
+            (error.Message ?? string.Empty).Contains("must contain a target", StringComparison.Ordinal))
             .ShouldBeTrue();
     }
 
@@ -294,6 +294,49 @@ public class ValidateLanguageFilesTaskTests : IDisposable
         {
             BuildEngine = engine,
             LanguageFiles = [Item(source, "ModuleBuiltIn")]
+        };
+
+        task.Execute().ShouldBeTrue();
+        engine.Errors.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Execute_Accepts_An_Explicit_Empty_Translation_When_The_Source_Is_Empty()
+    {
+        var source = Write(
+            "en-US-empty-target.xlf",
+            """
+            <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
+              <file id="Test.Product.CalendarLangResourceKind">
+                <unit id="YearSuffix">
+                  <segment><source></source></segment>
+                </unit>
+              </file>
+            </xliff>
+            """);
+        var target = Write(
+            "pt-BR-empty-target.xlf",
+            """
+            <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0"
+                   version="2.1"
+                   srcLang="en-US"
+                   trgLang="pt-BR">
+              <file id="Test.Product.CalendarLangResourceKind">
+                <unit id="YearSuffix">
+                  <segment><source></source><target state="translated"></target></segment>
+                </unit>
+              </file>
+            </xliff>
+            """);
+        var engine = new RecordingBuildEngine();
+        var task = new ValidateLanguageFilesTask
+        {
+            BuildEngine = engine,
+            LanguageFiles =
+            [
+                Item(source, "ModuleBuiltIn"),
+                Item(target, "StaticLanguagePack")
+            ]
         };
 
         task.Execute().ShouldBeTrue();
