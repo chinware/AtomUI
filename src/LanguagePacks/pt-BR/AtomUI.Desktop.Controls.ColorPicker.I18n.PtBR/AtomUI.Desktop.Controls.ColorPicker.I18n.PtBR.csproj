@@ -21,11 +21,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls.ColorPicker/**/Localization/**/en-US.xlf">
+        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls.ColorPicker/Localization/en-US.xlf">
             <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
             <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
             <AtomUILanguageModuleId>AtomUI.Desktop.Controls.ColorPicker</AtomUILanguageModuleId>
             <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
+            <AtomUILanguagePackagePath>Localization/en-US.xlf</AtomUILanguagePackagePath>
         </AtomUILanguage>
         <AtomUILanguage Include="Localization/**/pt-BR.xlf">
             <AtomUILanguageSourceKind>StaticLanguagePack</AtomUILanguageSourceKind>

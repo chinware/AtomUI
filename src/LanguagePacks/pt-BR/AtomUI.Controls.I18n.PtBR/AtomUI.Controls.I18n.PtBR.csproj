@@ -21,11 +21,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AtomUILanguage Include="../../../AtomUI.Controls/**/Localization/**/en-US.xlf">
+        <AtomUILanguage Include="../../../AtomUI.Controls/Localization/Common/en-US.xlf">
             <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
             <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
             <AtomUILanguageModuleId>AtomUI.Controls</AtomUILanguageModuleId>
             <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
+            <AtomUILanguagePackagePath>Localization/Common/en-US.xlf</AtomUILanguagePackagePath>
         </AtomUILanguage>
         <AtomUILanguage Include="Localization/**/pt-BR.xlf">
             <AtomUILanguageSourceKind>StaticLanguagePack</AtomUILanguageSourceKind>

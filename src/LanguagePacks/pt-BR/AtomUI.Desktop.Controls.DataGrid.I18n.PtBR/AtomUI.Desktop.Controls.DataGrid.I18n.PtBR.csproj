@@ -21,11 +21,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls.DataGrid/**/Localization/**/en-US.xlf">
+        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls.DataGrid/Localization/en-US.xlf">
             <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
             <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
             <AtomUILanguageModuleId>AtomUI.Desktop.Controls.DataGrid</AtomUILanguageModuleId>
             <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
+            <AtomUILanguagePackagePath>Localization/en-US.xlf</AtomUILanguagePackagePath>
         </AtomUILanguage>
         <AtomUILanguage Include="Localization/**/pt-BR.xlf">
             <AtomUILanguageSourceKind>StaticLanguagePack</AtomUILanguageSourceKind>
