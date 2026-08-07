@@ -75,7 +75,7 @@ internal static class LanguageCatalogSourceWriter
             : typeName;
         if (containingTypeSeparator < 0)
         {
-            return resourceName + "Extension";
+            return EncodeIdentifierPart(resourceName) + "Extension";
         }
 
         var containingTypeIdentity = typeIdentity.Substring(0, containingTypeSeparator);

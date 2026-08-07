@@ -192,6 +192,61 @@ public class LanguageCatalogSourceGeneratorTests
                  .ShouldBeEmpty();
     }
 
+    [Fact]
+    public void Generates_Unique_Extensions_For_Top_Level_Underscore_And_Nested_Catalogs()
+    {
+        var catalogNamespaceIndex = CatalogAndRuntimeSource.IndexOf(
+            "namespace TestApp.Localization",
+            StringComparison.Ordinal);
+        var source = CatalogAndRuntimeSource.Substring(0, catalogNamespaceIndex) +
+            """
+            namespace TestApp.Localization
+            {
+                [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                public enum Outer_CommonLangResourceKind
+                {
+                    Title = 10
+                }
+
+                public static class Outer
+                {
+                    [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                    public enum CommonLangResourceKind
+                    {
+                        Title = 10
+                    }
+                }
+            }
+            """;
+        var execution = RunWithOutputCompilation(
+            source,
+            LanguageFile(
+                "Localization/Outer_Common/en-US.xlf",
+                """
+                <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
+                  <file id="TestApp.Localization.Outer_CommonLangResourceKind">
+                    <unit id="10" name="Title"><segment><source>Title</source></segment></unit>
+                  </file>
+                </xliff>
+                """),
+            LanguageFile(
+                "Localization/Outer/en-US.xlf",
+                NestedSourceXliff("Outer")));
+
+        execution.Result.Diagnostics.ShouldBeEmpty();
+        GetGeneratedSource(
+                execution.Result,
+                "TestApp.Localization.Outer_CommonLangResourceKind.LanguageCatalog.g.cs")
+            .ShouldContain("public sealed class Outer_005FCommonLangResourceExtension");
+        GetGeneratedSource(
+                execution.Result,
+                "TestApp.Localization.Outer+CommonLangResourceKind.LanguageCatalog.g.cs")
+            .ShouldContain("public sealed class Outer_CommonLangResourceExtension");
+        execution.OutputCompilation.GetDiagnostics(TestContext.Current.CancellationToken)
+                 .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                 .ShouldBeEmpty();
+    }
+
     private static TestGeneratorExecution RunGenerator()
     {
         return RunWithOutputCompilation(
