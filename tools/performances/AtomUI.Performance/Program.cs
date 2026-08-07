@@ -13,6 +13,15 @@ internal static partial class Program
     public static int Main(string[] args)
     {
         var options = PerfOptions.Parse(args);
+        if (options.Suite.Equals("localization", StringComparison.OrdinalIgnoreCase) ||
+            options.VerifyLocalizationStates)
+        {
+            return LocalizationScenarios.Run(
+                options.Count,
+                options.MarkdownOutputPath,
+                options.VerifyLocalizationStates);
+        }
+
         SetupAvalonia();
 
         AddOnDecoratedBoxPerfProbe.IsEnabled = true;

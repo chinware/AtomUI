@@ -2,31 +2,33 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using AtomImagePreviewer = AtomUI.Desktop.Controls.ImagePreviewer;
 using AtomImageGroupPreviewer = AtomUI.Desktop.Controls.ImageGroupPreviewer;
+using AtomImagePreviewSource = AtomUI.Desktop.Controls.IImagePreviewSource;
+using AtomUriImagePreviewSource = AtomUI.Desktop.Controls.UriImagePreviewSource;
 
 namespace AtomUI.Performance;
 
 internal static partial class Program
 {
-    private static readonly string[] ImagePreviewerDefaultImages =
+    private static readonly IList<AtomImagePreviewSource> ImagePreviewerDefaultImages =
     [
-        GetImagePreviewerAssetUri("1.png")
+        CreateImagePreviewerSource("1.png")
     ];
 
-    private static readonly string[] ImagePreviewerThreeImages =
+    private static readonly IList<AtomImagePreviewSource> ImagePreviewerThreeImages =
     [
-        GetImagePreviewerAssetUri("4.webp"),
-        GetImagePreviewerAssetUri("5.webp"),
-        GetImagePreviewerAssetUri("6.webp")
+        CreateImagePreviewerSource("4.webp"),
+        CreateImagePreviewerSource("5.webp"),
+        CreateImagePreviewerSource("6.webp")
     ];
 
-    private static readonly string[] ImagePreviewerTwoImages =
+    private static readonly IList<AtomImagePreviewSource> ImagePreviewerTwoImages =
     [
-        GetImagePreviewerAssetUri("2.svg"),
-        GetImagePreviewerAssetUri("3.svg")
+        CreateImagePreviewerSource("2.svg"),
+        CreateImagePreviewerSource("3.svg")
     ];
 
-    private static readonly string ImagePreviewerFallbackImage = GetImagePreviewerAssetUri("Fallback.png");
-    private static readonly string ImagePreviewerBlurImage = GetImagePreviewerAssetUri("Blur.png");
+    private static readonly AtomImagePreviewSource ImagePreviewerFallbackImage = CreateImagePreviewerSource("Fallback.png");
+    private static readonly AtomImagePreviewSource ImagePreviewerBlurImage = CreateImagePreviewerSource("Blur.png");
 
     private static IReadOnlyList<PerfScenario> CreateImagePreviewerScenarios()
     {
@@ -35,7 +37,7 @@ internal static partial class Program
             new PerfScenario("ImagePreviewer.Basic", _ => CreateBasicImagePreviewer()),
             new PerfScenario("ImagePreviewer.Fallback", _ => CreateFallbackImagePreviewer()),
             new PerfScenario("ImagePreviewer.MultiSource", _ => CreateMultiSourceImagePreviewer()),
-            new PerfScenario("ImagePreviewer.CustomCover", _ => CreateCustomCoverImagePreviewer()),
+            new PerfScenario("ImagePreviewer.SingleSource", _ => CreateSingleSourceImagePreviewer()),
             new PerfScenario("ImageGroupPreviewer.TwoSvg", _ => CreateImageGroupPreviewer()),
             new PerfScenario("ImagePreviewer.GalleryShape", _ => CreateImagePreviewerGalleryShape())
         ];
@@ -46,7 +48,7 @@ internal static partial class Program
         return new AtomImagePreviewer
         {
             Width       = 200,
-            ItemsSource = ImagePreviewerDefaultImages
+            Source      = ImagePreviewerDefaultImages[0]
         };
     }
 
@@ -54,8 +56,8 @@ internal static partial class Program
     {
         return new AtomImagePreviewer
         {
-            Width            = 200,
-            FallbackImageSrc = ImagePreviewerFallbackImage
+            Width          = 200,
+            FallbackSource = ImagePreviewerFallbackImage
         };
     }
 
@@ -64,17 +66,16 @@ internal static partial class Program
         return new AtomImagePreviewer
         {
             Width       = 200,
-            ItemsSource = ImagePreviewerThreeImages
+            Sources     = ImagePreviewerThreeImages
         };
     }
 
-    private static AtomImagePreviewer CreateCustomCoverImagePreviewer()
+    private static AtomImagePreviewer CreateSingleSourceImagePreviewer()
     {
         return new AtomImagePreviewer
         {
-            Width         = 200,
-            ItemsSource   = ImagePreviewerDefaultImages,
-            CoverImageSrc = ImagePreviewerBlurImage
+            Width  = 200,
+            Source = ImagePreviewerBlurImage
         };
     }
 
@@ -84,7 +85,7 @@ internal static partial class Program
         {
             CoverWidth  = 200,
             CoverHeight = 200,
-            ItemsSource = ImagePreviewerTwoImages
+            Sources     = ImagePreviewerTwoImages
         };
     }
 
@@ -99,13 +100,13 @@ internal static partial class Program
                 CreateBasicImagePreviewer(),
                 CreateFallbackImagePreviewer(),
                 CreateMultiSourceImagePreviewer(),
-                CreateCustomCoverImagePreviewer(),
+                CreateSingleSourceImagePreviewer(),
                 CreateImageGroupPreviewer()
             }
         };
     }
 
-    private static string GetImagePreviewerAssetUri(string fileName)
+    private static AtomImagePreviewSource CreateImagePreviewerSource(string fileName)
     {
         var path = Path.GetFullPath(Path.Combine(
             "controlgallery",
@@ -113,6 +114,6 @@ internal static partial class Program
             "Assets",
             "ImagePreviewerShowCase",
             fileName));
-        return new Uri(path).AbsoluteUri;
+        return new AtomUriImagePreviewSource(new Uri(path));
     }
 }

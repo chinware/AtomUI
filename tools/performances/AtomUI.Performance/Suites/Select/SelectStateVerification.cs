@@ -491,13 +491,21 @@ internal static partial class Program
         using var realized = RealizeControl(candidateList);
         RefreshLayout(realized.Window);
 
-        candidateList.SelectedItems = new List<object?>(options);
+        candidateList.Selection.Clear();
+        for (var index = 0; index < options.Count; index++)
+        {
+            candidateList.Selection.Select(index);
+        }
         RefreshLayout(realized.Window);
         Expect(candidateList.IsEffectiveEmptyVisible,
             "SelectCandidateList should show empty indicator when all options are selected and hidden.",
             failures);
 
-        candidateList.SelectedItems = options.Take(options.Count - 1).Cast<object?>().ToList();
+        candidateList.Selection.Clear();
+        for (var index = 0; index < options.Count - 1; index++)
+        {
+            candidateList.Selection.Select(index);
+        }
         RefreshLayout(realized.Window);
         var removedContainer = candidateList.ContainerFromItem(options[^1]) as SelectCandidateListItem;
         Expect(removedContainer is { IsVisible: true },

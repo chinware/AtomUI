@@ -7,6 +7,7 @@ internal sealed record PerfOptions(
     bool MeasureColorPickerInteractions,
     bool MeasureSwitchInteractions,
     bool MeasureSelectInteractions,
+    bool VerifyLocalizationStates,
     bool VerifyAdornerLayerStates,
     bool VerifyAccessories,
     bool VerifyEffectiveBrushes,
@@ -93,6 +94,7 @@ internal sealed record PerfOptions(
         var measureColorPickerInteractions = false;
         var measureSwitchInteractions = false;
         var measureSelectInteractions = false;
+        var verifyLocalizationStates = false;
         var verifyAdornerLayerStates = false;
         var verifyAccessories      = false;
         var verifyEffectiveBrushes = false;
@@ -195,6 +197,9 @@ internal sealed record PerfOptions(
                     break;
                 case "--measure-select-interactions":
                     measureSelectInteractions = true;
+                    break;
+                case "--verify-localization-states":
+                    verifyLocalizationStates = true;
                     break;
                 case "--verify-adornerlayer-states":
                     verifyAdornerLayerStates = true;
@@ -437,6 +442,7 @@ internal sealed record PerfOptions(
             measureColorPickerInteractions,
             measureSwitchInteractions,
             measureSelectInteractions,
+            verifyLocalizationStates,
             verifyAdornerLayerStates,
             verifyAccessories,
             verifyEffectiveBrushes,

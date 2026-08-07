@@ -22,6 +22,7 @@
 - `Suites/GroupBox/`: GroupBox header icon lazy、Gallery shape 和状态/生命周期验证。
 - `Suites/Icon/`: Icon micro benchmark、隐藏 icon slot、AntDesign metadata、provider cache 验证。
 - `Suites/ImagePreviewer/`: ImagePreviewer 关闭态 source list lazy、Gallery shape 和状态/生命周期验证。
+- `Suites/Localization/`: Registry/Snapshot 启动构建、`ILocalizer.Get` 热路径、语言切换和 Snapshot 内存增长基线。
 - `Suites/NavMenu/`: NavMenu/NavMenuItem 默认路径、全局关闭订阅、container binding 生命周期验证。
 - `Suites/ScrollViewer/`: ScrollViewer/ScrollBar 模板、overlay host、lite/auto-hide 和 motion 状态验证。
 - `TestSupport/`: 断言、测试 brush、marker template、probe icon 等测试辅助类型。
@@ -178,6 +179,24 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
   -c Debug --framework net10.0 --no-build -- \
   --verify-scrollviewer-states
 ```
+
+Localization 运行时基线与状态验证：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --suite localization --count 10 \
+  --verify-localization-states \
+  --markdown /tmp/atomui-localization-baseline.md
+```
+
+该套件直接使用编译后的 Catalog descriptor 和字符串表，不初始化控件主题，也不解析 XLIFF。指标口径如下：
+
+- `Snapshot startup build`: 使用预先构造的 descriptor/翻译表输入，构建 Registry 和所有支持语言 Snapshot 的耗时与当前线程分配。
+- `ILocalizer.Get`: 预热后的强类型查询吞吐与分配；`--count` 会换算为至少 1,000 次调用。
+- `Language switch commit`: 已预构建 Snapshot 之间切换的提交耗时、分配、资源通知和语言事件数量。
+- `Snapshot memory`: 单轴 Catalog、unit、language 扫描及组合规模下的保留内存粗测、逻辑文本字节和 Snapshot slot 数量。`Retained KiB` 是 16 个同时存活 runtime 的平均值，仍受 GC 与进程噪声影响；线性规模判断以 `Logical text KiB` 和 `Snapshot slots` 为稳定信号。
+- NuGet 包和 NativeAOT 发布体积必须从真实 `pack`/`publish` 产物记录，不使用进程内微基准估算。
 
 Gallery 真实 `LineEditShowCase` 导航基准：
 
