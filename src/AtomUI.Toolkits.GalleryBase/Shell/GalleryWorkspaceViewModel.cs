@@ -36,6 +36,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     private bool _isZhCN;
     private bool _isZhTW;
     private bool _isEnUS;
+    private bool _isPtBR;
 
     public RoutingState Router { get; } = new();
 
@@ -58,6 +59,8 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
     public ReactiveCommand<Unit, Unit> SwitchToZhTWCommand { get; }
 
     public ReactiveCommand<Unit, Unit> SwitchToEnUSCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> SwitchToPtBRCommand { get; }
 
     public IReadOnlyList<ThemeInfo> AvailableThemes
     {
@@ -101,6 +104,12 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         private set => this.RaiseAndSetIfChanged(ref _isEnUS, value);
     }
 
+    public bool IsPtBR
+    {
+        get => _isPtBR;
+        private set => this.RaiseAndSetIfChanged(ref _isPtBR, value);
+    }
+
     public GalleryWorkspaceViewModel(GalleryBaseConfiguration configuration,
                                      Func<IScreen, GalleryNavigationViewModel>? navigationFactory = null)
         : this(configuration, navigationFactory, GallerySystemAppearanceSource.Instance)
@@ -109,7 +118,8 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 
     internal GalleryWorkspaceViewModel(GalleryBaseConfiguration configuration,
                                        Func<IScreen, GalleryNavigationViewModel>? navigationFactory,
-                                       IGallerySystemAppearanceSource systemAppearanceSource)
+                                       IGallerySystemAppearanceSource systemAppearanceSource,
+                                       ILanguageManager? languageManager = null)
     {
         ArgumentNullException.ThrowIfNull(systemAppearanceSource);
 
@@ -117,9 +127,9 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         Navigation = navigationFactory?.Invoke(this) ?? new GalleryNavigationViewModel(this, configuration);
 
         _themeManager = Application.Current?.GetThemeManager();
-        _languageManager = Application.Current is { } application
+        _languageManager = languageManager ?? (Application.Current is { } application
             ? global::AtomUI.ApplicationExtensions.GetLanguageManager(application)
-            : null;
+            : null);
         AvailableThemes = CaptureThemes(_themeManager?.AvailableThemes);
         SyncThemeState(_themeManager?.CurrentTheme, null);
         SyncLanguageState(_languageManager?.Current);
@@ -134,6 +144,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         SwitchToZhCNCommand = ReactiveCommand.Create(() => SetLanguage(LanguageTags.ZhCN));
         SwitchToZhTWCommand = ReactiveCommand.Create(() => SetLanguage(LanguageTags.ZhTW));
         SwitchToEnUSCommand = ReactiveCommand.Create(() => SetLanguage(LanguageTags.EnUS));
+        SwitchToPtBRCommand = ReactiveCommand.Create(() => SetLanguage(LanguageTags.PtBR));
 
         if (_themeManager is not null)
         {
@@ -353,6 +364,7 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
         IsZhCN = state?.CurrentLanguage == LanguageTags.ZhCN;
         IsZhTW = state?.CurrentLanguage == LanguageTags.ZhTW;
         IsEnUS = state?.CurrentLanguage == LanguageTags.EnUS;
+        IsPtBR = state?.CurrentLanguage == LanguageTags.PtBR;
     }
 
     private void SyncThemeState(ThemeState? state, ThemeConfig? config)

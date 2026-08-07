@@ -33,6 +33,7 @@ internal enum WindowMenuItemKind
     LanguageZhCN,
     LanguageZhTW,
     LanguageEnUS,
+    LanguagePtBR,
 }
 
 public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
@@ -273,6 +274,10 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
                     break;
                 case WindowMenuItemKind.LanguageEnUS:
                     ViewModel.SwitchToEnUSCommand.Execute(Unit.Default)
+                             .Subscribe();
+                    break;
+                case WindowMenuItemKind.LanguagePtBR:
+                    ViewModel.SwitchToPtBRCommand.Execute(Unit.Default)
                              .Subscribe();
                     break;
             }

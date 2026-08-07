@@ -95,6 +95,10 @@
                                ToggleType="Radio"
                                IsChecked="{Binding IsEnUS}"
                                Tag="{x:Static workspaceviews:WindowMenuItemKind.LanguageEnUS}" />
+                <atom:MenuItem Header="Português (Brasil)"
+                               ToggleType="Radio"
+                               IsChecked="{Binding IsPtBR}"
+                               Tag="{x:Static workspaceviews:WindowMenuItemKind.LanguagePtBR}" />
             </atom:MenuItem>
         </atom:Menu>
     </atom:Window.Resources>
