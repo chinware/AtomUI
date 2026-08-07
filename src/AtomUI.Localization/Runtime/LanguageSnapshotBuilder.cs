@@ -31,10 +31,8 @@ internal static class LanguageSnapshotBuilder
         var candidates = LanguageFallbackResolver.Resolve(
             requestedLanguage,
             definition.FormattingCulture);
-        var requiresTranslatedCoverage = !string.Equals(
-            definition.FormattingCulture.TwoLetterISOLanguageName,
-            "en",
-            StringComparison.OrdinalIgnoreCase);
+        var requiresTranslatedCoverage =
+            !LanguageFallbackResolver.HasEnglishPrimaryLanguage(requestedLanguage);
         var entries = new LanguageSnapshotEntry[registry.Catalogs.Count][];
 
         for (var catalogSlot = 0; catalogSlot < registry.Catalogs.Count; catalogSlot++)

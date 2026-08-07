@@ -68,12 +68,16 @@ internal static class Xliff21Writer
         }
 
         var segment = new XElement(ns + "segment", new XElement(ns + "source", unit.Source));
-        if (unit.Target is not null || unit.TargetState is not null)
+        if (unit.Target is not null || unit.TargetState is not null || unit.TargetSubState is not null)
         {
             var target = new XElement(ns + "target", unit.Target ?? string.Empty);
             if (unit.TargetState is not null)
             {
                 target.Add(new XAttribute("state", unit.TargetState));
+            }
+            if (unit.TargetSubState is not null)
+            {
+                target.Add(new XAttribute("subState", unit.TargetSubState));
             }
             segment.Add(target);
         }

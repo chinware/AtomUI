@@ -52,6 +52,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
         var execution = RunWithOutputCompilation(
             RuntimeSource + "\nnamespace TestApp { public partial class App : Avalonia.Application { } }",
             [reference],
+            ReferencedSourceFile(),
             StaticPackFile());
 
         execution.Result.Diagnostics.ShouldBeEmpty();

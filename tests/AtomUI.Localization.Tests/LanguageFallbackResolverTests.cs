@@ -26,14 +26,39 @@ public class LanguageFallbackResolverTests
     }
 
     [Fact]
-    public void Resolve_Uses_Explicit_Formatting_Culture_For_Private_Tag()
+    public void Resolve_Uses_Language_Tag_Structure_Instead_Of_Formatting_Culture()
     {
         var candidates = LanguageFallbackResolver.Resolve(
             LanguageTag.Parse("fr-CA-x-acme"),
-            CultureInfo.GetCultureInfo("fr-CA"));
+            CultureInfo.GetCultureInfo("en-US"));
 
         candidates.Select(static candidate => candidate.Value)
-                  .ShouldBe(["fr-CA-x-acme", "fr", "en-US"]);
+                  .ShouldBe(["fr-CA-x-acme", "fr-CA", "fr", "en-US"]);
+    }
+
+    [Theory]
+    [InlineData("de-DE-u-co-phonebk", "de-DE-u-co-phonebk|de-DE|de|en-US")]
+    [InlineData("sl-rozaj-biske", "sl-rozaj-biske|sl-rozaj|sl|en-US")]
+    public void Resolve_Removes_Extensions_And_Variants_Structurally(
+        string language,
+        string expected)
+    {
+        var candidates = LanguageFallbackResolver.Resolve(
+            LanguageTag.Parse(language),
+            CultureInfo.GetCultureInfo("en-US"));
+
+        string.Join('|', candidates.Select(static candidate => candidate.Value)).ShouldBe(expected);
+    }
+
+    [Fact]
+    public void Resolve_Falls_Back_From_Private_Use_Only_Tag_To_English()
+    {
+        var candidates = LanguageFallbackResolver.Resolve(
+            LanguageTag.Parse("x-acme-private"),
+            CultureInfo.GetCultureInfo("en-US"));
+
+        candidates.Select(static candidate => candidate.Value)
+                  .ShouldBe(["x-acme-private", "en-US"]);
     }
 
     [Fact]

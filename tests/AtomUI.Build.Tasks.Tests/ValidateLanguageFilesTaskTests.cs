@@ -101,6 +101,62 @@ public class ValidateLanguageFilesTaskTests : IDisposable
     }
 
     [Fact]
+    public void Execute_Accepts_Disjoint_Application_Override_Fragments()
+    {
+        var source = Write("en-US.xlf", CreateXliff(targetLanguage: null));
+        var titleOverride = Write(
+            "title.override.xlf",
+            CreateXliff(targetLanguage: "zh-CN", includeSecondUnit: false));
+        var bodyOverride = Write(
+            "body.override.xlf",
+            CreateXliff(targetLanguage: "zh-CN", includeFirstUnit: false));
+        var engine = new RecordingBuildEngine();
+        var task = new ValidateLanguageFilesTask
+        {
+            BuildEngine = engine,
+            LanguageFiles =
+            [
+                Item(source, "ModuleBuiltIn"),
+                Item(titleOverride, "ApplicationOverride", "TestApp.Title"),
+                Item(bodyOverride, "ApplicationOverride", "TestApp.Body")
+            ]
+        };
+
+        task.Execute().ShouldBeTrue();
+        engine.Errors.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Execute_Rejects_Overlapping_Application_Override_Units()
+    {
+        var source = Write("en-US.xlf", CreateXliff(targetLanguage: null));
+        var first = Write(
+            "first.override.xlf",
+            CreateXliff(targetLanguage: "zh-CN", includeSecondUnit: false));
+        var second = Write(
+            "second.override.xlf",
+            CreateXliff(targetLanguage: "zh-CN", includeSecondUnit: false));
+        var engine = new RecordingBuildEngine();
+        var task = new ValidateLanguageFilesTask
+        {
+            BuildEngine = engine,
+            LanguageFiles =
+            [
+                Item(source, "ModuleBuiltIn"),
+                Item(first, "ApplicationOverride", "TestApp.One"),
+                Item(second, "ApplicationOverride", "TestApp.Two")
+            ]
+        };
+
+        task.Execute().ShouldBeFalse();
+        var error = engine.Errors.ShouldHaveSingleItem();
+        error.Code.ShouldBe("ATOMUILOC006");
+        error.Message.ShouldNotBeNull().ShouldContain("unit '1'");
+        error.Message.ShouldNotBeNull().ShouldContain("TestApp.One");
+        error.Message.ShouldNotBeNull().ShouldContain("TestApp.Two");
+    }
+
+    [Fact]
     public void Execute_Accepts_A_Complete_Publishable_Bundle()
     {
         var source = Write("en-US.xlf", CreateXliff(targetLanguage: null));
@@ -118,6 +174,35 @@ public class ValidateLanguageFilesTaskTests : IDisposable
 
         task.Execute().ShouldBeTrue();
         engine.Errors.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("<target state=\"translated\">标题</target>", "<target state=\"translated\">   </target>")]
+    [InlineData("<target state=\"translated\">标题</target>", "<target state=\"translated\" subState=\"needs-review\">标题</target>")]
+    public void Execute_Rejects_Unpublishable_Target_Content_Or_SubState(
+        string currentTarget,
+        string invalidTarget)
+    {
+        var source = Write("en-US.xlf", CreateXliff(targetLanguage: null));
+        var target = Write(
+            "zh-CN.xlf",
+            CreateXliff(targetLanguage: "zh-CN").Replace(currentTarget, invalidTarget));
+        var engine = new RecordingBuildEngine();
+        var task = new ValidateLanguageFilesTask
+        {
+            BuildEngine = engine,
+            LanguageFiles =
+            [
+                Item(source, "ModuleBuiltIn"),
+                Item(target, "ModuleBuiltIn")
+            ]
+        };
+
+        task.Execute().ShouldBeFalse();
+        engine.Errors.Any(error =>
+            error.Code == "ATOMUILOC007" &&
+            (error.Message ?? string.Empty).Contains("non-empty target", StringComparison.Ordinal))
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -173,7 +258,8 @@ public class ValidateLanguageFilesTaskTests : IDisposable
         string? targetLanguage = "zh-CN",
         bool includeSecondTarget = true,
         bool includeSecondUnit = true,
-        string version = "2.1")
+        string version = "2.1",
+        bool includeFirstUnit = true)
     {
         var targetAttribute = targetLanguage is null ? string.Empty : $" trgLang=\"{targetLanguage}\"";
         var firstTarget = targetLanguage is null
@@ -189,14 +275,19 @@ public class ValidateLanguageFilesTaskTests : IDisposable
                 </unit>
                 """
             : string.Empty;
+        var firstUnit = includeFirstUnit
+            ? $$"""
+                <unit id="1" name="Title">
+                  <segment><source>Title</source>{{firstTarget}}</segment>
+                </unit>
+                """
+            : string.Empty;
         return $$"""
             <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0"
                    version="{{version}}"
                    srcLang="en-US"{{targetAttribute}}>
               <file id="Test.Product.LoginLangResourceKind">
-                <unit id="1" name="Title">
-                  <segment><source>Title</source>{{firstTarget}}</segment>
-                </unit>
+                {{firstUnit}}
                 {{secondUnit}}
               </file>
             </xliff>

@@ -40,6 +40,7 @@ internal sealed class XliffUnitModel
         string source,
         string? target,
         string? targetState,
+        string? targetSubState,
         IReadOnlyList<string> notes,
         IReadOnlyList<int> placeholderIndexes,
         int line,
@@ -51,6 +52,7 @@ internal sealed class XliffUnitModel
         Source = source;
         Target = target;
         TargetState = targetState;
+        TargetSubState = targetSubState;
         Notes = notes;
         PlaceholderIndexes = placeholderIndexes;
         Line = line;
@@ -67,6 +69,8 @@ internal sealed class XliffUnitModel
     internal string? Target { get; }
 
     internal string? TargetState { get; }
+
+    internal string? TargetSubState { get; }
 
     internal IReadOnlyList<string> Notes { get; }
 

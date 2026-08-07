@@ -162,36 +162,66 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
         var succeeded = true;
         foreach (var item in PackageFiles)
         {
-            var extension = Path.GetExtension(item.ItemSpec);
-            if (IsBuildLogicFile(item.ItemSpec, extension))
+            foreach (var packagePath in GetPackagePaths(item))
             {
-                Error(item.ItemSpec, "Static language packages cannot contain executable build logic.");
+                var extension = GetEffectiveExtension(packagePath, item.ItemSpec);
+                if (IsBuildLogicFile(packagePath, extension))
+                {
+                    Error(item.ItemSpec, "Static language packages cannot contain executable build logic.");
+                    succeeded = false;
+                    break;
+                }
+
+                if (s_scriptExtensions.Contains(extension))
+                {
+                    Error(item.ItemSpec, "Static language packages cannot contain scripts.");
+                    succeeded = false;
+                    break;
+                }
+
+                if (!s_runtimeExtensions.Contains(extension))
+                {
+                    continue;
+                }
+
+                Error(
+                    item.ItemSpec,
+                    extension.Equals(".atomlang", StringComparison.OrdinalIgnoreCase)
+                        ? "Static language packages cannot contain .atomlang payloads."
+                        : extension is ".cs" or ".fs" or ".vb"
+                            ? "Static language packages cannot contain runtime source code."
+                        : "Static language packages cannot contain a runtime assembly or native library.");
                 succeeded = false;
-                continue;
+                break;
             }
-
-            if (s_scriptExtensions.Contains(extension))
-            {
-                Error(item.ItemSpec, "Static language packages cannot contain scripts.");
-                succeeded = false;
-                continue;
-            }
-
-            if (!s_runtimeExtensions.Contains(extension))
-            {
-                continue;
-            }
-
-            Error(
-                item.ItemSpec,
-                extension.Equals(".atomlang", StringComparison.OrdinalIgnoreCase)
-                    ? "Static language packages cannot contain .atomlang payloads."
-                    : extension is ".cs" or ".fs" or ".vb"
-                        ? "Static language packages cannot contain runtime source code."
-                    : "Static language packages cannot contain a runtime assembly or native library.");
-            succeeded = false;
         }
         return succeeded;
+    }
+
+    private static IEnumerable<string> GetPackagePaths(ITaskItem item)
+    {
+        var packagePath = item.GetMetadata("PackagePath");
+        var hasPackagePath = false;
+        foreach (var path in packagePath.Split([';'], StringSplitOptions.RemoveEmptyEntries))
+        {
+            var trimmedPath = path.Trim();
+            if (trimmedPath.Length > 0)
+            {
+                hasPackagePath = true;
+                yield return trimmedPath;
+            }
+        }
+
+        if (!hasPackagePath)
+        {
+            yield return item.ItemSpec;
+        }
+    }
+
+    private static string GetEffectiveExtension(string packagePath, string sourcePath)
+    {
+        var extension = Path.GetExtension(packagePath);
+        return extension.Length == 0 ? Path.GetExtension(sourcePath) : extension;
     }
 
     private static bool IsBuildLogicFile(string path, string extension)

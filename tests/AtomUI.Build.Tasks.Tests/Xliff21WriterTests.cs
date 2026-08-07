@@ -60,6 +60,23 @@ public class Xliff21WriterTests
         unit.TargetState.ShouldBe("initial");
     }
 
+    [Fact]
+    public void Write_RoundTrips_Target_SubState()
+    {
+        var document = new XliffDocumentModel(
+            "en-US",
+            "zh-CN",
+            new XliffFileModel(
+                "Test.Product.LoginLangResourceKind",
+                [Unit(1, "Title", "Sign in", "登录", "translated", [], "needs-review")]));
+
+        var result = Xliff21Parser.Parse(Xliff21Writer.Write(document));
+
+        result.Errors.ShouldBeEmpty();
+        result.Document.ShouldNotBeNull().File.Units.ShouldHaveSingleItem()
+              .TargetSubState.ShouldBe("needs-review");
+    }
+
     private static XliffUnitModel Unit(
         int id,
         string name,
@@ -67,6 +84,7 @@ public class Xliff21WriterTests
         string? target,
         string? targetState,
         IReadOnlyList<string> notes,
+        string? targetSubState = null,
         bool isObsolete = false)
     {
         CompositeFormatContractParser.TryParse(source, out var placeholders, out _).ShouldBeTrue();
@@ -76,6 +94,7 @@ public class Xliff21WriterTests
             source,
             target,
             targetState,
+            targetSubState,
             notes,
             placeholders,
             1,

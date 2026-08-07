@@ -59,7 +59,7 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Fact]
-    public void Preserves_Explicit_Empty_Source_And_Translated_Values()
+    public void Allows_An_Empty_English_Source_But_Rejects_An_Empty_Translated_Target()
     {
         var source = SourceXliff.Replace(
             "<source>Title</source>",
@@ -72,7 +72,7 @@ public class LanguageCatalogCompilerGeneratorTests
             SourceFile().WithText(source),
             LanguageFile("Localization/zh-CN.xlf", target));
 
-        result.Diagnostics.ShouldBeEmpty();
+        AssertHasDiagnostic(result, "ATOMUILOC007", "publishable");
     }
 
     [Fact]
@@ -164,6 +164,23 @@ public class LanguageCatalogCompilerGeneratorTests
         AssertHasDiagnostic(result, "ATOMUILOC007", "publishable");
     }
 
+    [Theory]
+    [InlineData("<target state=\"translated\">标题</target>", "<target state=\"translated\">   </target>")]
+    [InlineData("<target state=\"translated\">标题</target>", "<target state=\"translated\" subState=\"needs-review\">标题</target>")]
+    public void Reports_A_Target_With_Unpublishable_Content_Or_SubState(
+        string currentTarget,
+        string invalidTarget)
+    {
+        var result = Run(
+            CatalogSource,
+            SourceFile(),
+            TargetFile("zh-CN", "标题", "项目 {0}")
+                .WithText(TargetXliff("zh-CN", "标题", "项目 {0}")
+                    .Replace(currentTarget, invalidTarget)));
+
+        AssertHasDiagnostic(result, "ATOMUILOC007", "publishable");
+    }
+
     [Fact]
     public void Reports_Duplicate_Same_Priority_Translation_Sources()
     {
@@ -183,9 +200,22 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
+            ReferencedSourceFile(),
             StaticPackFile(contractVersion: "2"));
 
         result.Diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Reports_A_Static_Language_Pack_Without_An_Authoritative_English_Source()
+    {
+        var reference = CreateExternalCatalogReference();
+        var result = Run(
+            "namespace TestApp { public sealed class Marker { } }",
+            [reference],
+            StaticPackFile(contractVersion: "2"));
+
+        AssertHasDiagnostic(result, "ATOMUILOC006", "complete en-US");
     }
 
     [Fact]
@@ -206,6 +236,7 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
+            ReferencedSourceFile(),
             StaticPackFile(contractVersion: "1"));
 
         AssertHasDiagnostic(result, "ATOMUILOC006", "ContractVersion");
@@ -234,12 +265,53 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Fact]
+    public void Accepts_Disjoint_Application_Override_Fragments()
+    {
+        var result = Run(
+            CatalogSource,
+            SourceFile(),
+            ApplicationOverrideFile(
+                contractVersion: "1",
+                includeItemCount: false,
+                path: "Localization/Overrides/title.zh-CN.xlf",
+                sourceIdentity: "TestApp.Title"),
+            ApplicationOverrideFile(
+                contractVersion: "1",
+                includeTitle: false,
+                path: "Localization/Overrides/item-count.zh-CN.xlf",
+                sourceIdentity: "TestApp.ItemCount"));
+
+        result.Diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Reports_Overlapping_Application_Override_Units()
+    {
+        var result = Run(
+            CatalogSource,
+            SourceFile(),
+            ApplicationOverrideFile(
+                contractVersion: "1",
+                includeItemCount: false,
+                path: "Localization/Overrides/first.zh-CN.xlf",
+                sourceIdentity: "TestApp.One"),
+            ApplicationOverrideFile(
+                contractVersion: "1",
+                includeItemCount: false,
+                path: "Localization/Overrides/second.zh-CN.xlf",
+                sourceIdentity: "TestApp.Two"));
+
+        AssertHasDiagnostic(result, "ATOMUILOC006", "unit ID '10'");
+    }
+
+    [Fact]
     public void Reports_A_Static_Pack_Module_Id_Mismatch()
     {
         var reference = CreateExternalCatalogReference();
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
+            ReferencedSourceFile(),
             StaticPackFile(contractVersion: "2", moduleId: "Other.Package"));
 
         AssertHasDiagnostic(result, "ATOMUILOC006", "language module");
@@ -254,6 +326,7 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
+            ReferencedSourceFile(moduleId: "External.Package"),
             StaticPackFile(contractVersion: "2"));
 
         result.Diagnostics.ShouldBeEmpty();
@@ -266,6 +339,7 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
+            ReferencedSourceFile(unitName: "Heading"),
             StaticPackFile(contractVersion: "2", unitName: "Heading"));
 
         result.Diagnostics.ShouldBeEmpty();
@@ -286,6 +360,24 @@ public class LanguageCatalogCompilerGeneratorTests
     private static TestAdditionalText SourceFile()
     {
         return LanguageFile("Localization/en-US.xlf", SourceXliff);
+    }
+
+    private static TestAdditionalText ReferencedSourceFile(
+        string moduleId = "External.Package",
+        string unitName = "Title")
+    {
+        var content = SourceXliff.Replace("name=\"Title\"", $"name=\"{unitName}\"");
+        return new TestAdditionalText(
+            $"packages/{moduleId}/Localization/en-US.xlf",
+            content,
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
+                ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = moduleId,
+                ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "ModuleBuiltIn",
+                ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = moduleId,
+                ["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = "2"
+            });
     }
 
     private static TestAdditionalText TargetFile(
@@ -337,7 +429,10 @@ public class LanguageCatalogCompilerGeneratorTests
 
     private static TestAdditionalText ApplicationOverrideFile(
         string contractVersion,
-        bool includeItemCount = true)
+        bool includeItemCount = true,
+        bool includeTitle = true,
+        string path = "Localization/Overrides/zh-CN.xlf",
+        string sourceIdentity = "TestApp")
     {
         var content = TargetXliff("zh-CN", "覆盖标题", "覆盖项目 {0}");
         if (!includeItemCount)
@@ -347,15 +442,22 @@ public class LanguageCatalogCompilerGeneratorTests
                 "<target state=\"translated\">覆盖项目 {0}</target></segment></unit>\n";
             content = content.Replace(itemCountUnit, string.Empty);
         }
+        if (!includeTitle)
+        {
+            const string titleUnit =
+                "  <unit id=\"10\" name=\"Title\"><segment><source>Title</source>" +
+                "<target state=\"translated\">覆盖标题</target></segment></unit>\n";
+            content = content.Replace(titleUnit, string.Empty);
+        }
 
         return new TestAdditionalText(
-            "Localization/Overrides/zh-CN.xlf",
+            path,
             content,
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
                 ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "ApplicationOverride",
-                ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = "TestApp",
+                ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = sourceIdentity,
                 ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = "Test.Package",
                 ["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion
             });

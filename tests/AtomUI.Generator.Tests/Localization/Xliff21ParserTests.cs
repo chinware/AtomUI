@@ -39,7 +39,7 @@ public class Xliff21ParserTests
                   <notes><note>Window title &amp; sign-in heading</note></notes>
                   <segment>
                     <source>Sign in as {0}</source>
-                    <target state="translated">以 {0} 登录</target>
+                    <target state="translated" subState="atomui:approved">以 {0} 登录</target>
                   </segment>
                 </unit>
               </file>
@@ -57,6 +57,7 @@ public class Xliff21ParserTests
         unit.Source.ShouldBe("Sign in as {0}");
         unit.Target.ShouldBe("以 {0} 登录");
         unit.TargetState.ShouldBe("translated");
+        unit.TargetSubState.ShouldBe("atomui:approved");
         unit.Notes.ShouldHaveSingleItem().ShouldBe("Window title & sign-in heading");
         unit.PlaceholderIndexes.ShouldBe([0]);
     }

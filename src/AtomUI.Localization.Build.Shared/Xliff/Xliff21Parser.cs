@@ -154,9 +154,15 @@ internal static class Xliff21Parser
             ? null
             : ReadPlainText(targetElements[0], "target", errors);
         string? targetState = null;
+        string? targetSubState = null;
         if (targetElements.Length == 1)
         {
             targetState = ((string?)targetElements[0].Attribute("state"))?.Trim();
+            targetSubState = ((string?)targetElements[0].Attribute("subState"))?.Trim();
+            if (targetSubState?.Length == 0)
+            {
+                targetSubState = null;
+            }
             if (!IsKnownTargetState(targetState))
             {
                 errors.Add(Error(
@@ -202,6 +208,7 @@ internal static class Xliff21Parser
             source,
             target,
             targetState,
+            targetSubState,
             notes,
             sourceIndexes,
             line,

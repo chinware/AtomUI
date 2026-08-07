@@ -86,6 +86,64 @@ public class LanguagePackageTasksTests : IDisposable
     }
 
     [Fact]
+    public void Prepare_Rejects_Build_Logic_Placed_By_PackagePath()
+    {
+        var languagePath = Write("ja-JP.xlf", JapaneseXliff);
+        var forbiddenPath = Write("Install.targets", "forbidden content");
+        var languageItem = LanguageItem(languagePath);
+        var engine = new RecordingBuildEngine();
+        var task = new PrepareLanguagePackageTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
+            LanguageFiles = [languageItem],
+            PackageFiles =
+            [
+                languageItem,
+                new TestTaskItem(
+                    forbiddenPath,
+                    ("Pack", "true"),
+                    ("PackagePath", "buildTransitive/Install.targets"))
+            ],
+            OutputManifestPath = Path.Combine(_directory, "invalid.xml")
+        };
+
+        task.Execute().ShouldBeFalse();
+        var error = engine.Errors.ShouldHaveSingleItem();
+        error.Code.ShouldBe("ATOMUILOC009");
+        error.Message.ShouldNotBeNull().ShouldContain("build logic");
+        File.Exists(task.OutputManifestPath).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Prepare_Validates_The_Final_PackagePath_Instead_Of_The_Source_Extension()
+    {
+        var languagePath = Write("ja-JP.xlf", JapaneseXliff);
+        var sourcePath = Write("payload.dll", "documentation payload");
+        var languageItem = LanguageItem(languagePath);
+        var engine = new RecordingBuildEngine();
+        var task = new PrepareLanguagePackageTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
+            LanguageFiles = [languageItem],
+            PackageFiles =
+            [
+                languageItem,
+                new TestTaskItem(
+                    sourcePath,
+                    ("Pack", "true"),
+                    ("PackagePath", "contentFiles/any/any/payload.txt"))
+            ],
+            OutputManifestPath = Path.Combine(_directory, "valid.xml")
+        };
+
+        task.Execute().ShouldBeTrue();
+        engine.Errors.ShouldBeEmpty();
+        File.Exists(task.OutputManifestPath).ShouldBeTrue();
+    }
+
+    [Fact]
     public void GenerateProps_Emits_Only_Declarative_Static_Language_Items()
     {
         var languagePath = Write("ja-JP.xlf", JapaneseXliff);

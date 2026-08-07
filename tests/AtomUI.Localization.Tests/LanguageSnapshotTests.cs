@@ -104,6 +104,26 @@ public class LanguageSnapshotTests
     }
 
     [Fact]
+    public void Build_Derives_Translation_Coverage_From_Language_Tag_Not_Formatting_Culture()
+    {
+        var catalog = CreateCatalog();
+        var language = LanguageTag.Parse("fr-CA-x-acme");
+        var definition = new LanguageDefinition(
+            language,
+            System.Globalization.CultureInfo.GetCultureInfo("en-US"),
+            "Acme French",
+            LanguageTextDirection.LeftToRight);
+        var registry = CreateRegistry(catalog,
+            Bundle(catalog, LanguageTags.EnUS, ["First", "Second"]));
+
+        var exception = Should.Throw<LanguageCoverageException>(() =>
+            LanguageSnapshotBuilder.Build(registry, language, definition));
+
+        exception.Message.ShouldContain(language.Value);
+        exception.Message.ShouldContain("First");
+    }
+
+    [Fact]
     public void Build_Wraps_Invalid_Compiled_Format_With_Catalog_Context()
     {
         var catalog = CreateCatalog(isSecondFormatted: true);

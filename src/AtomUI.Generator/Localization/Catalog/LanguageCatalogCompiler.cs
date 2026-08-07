@@ -102,7 +102,7 @@ internal static class LanguageCatalogCompiler
             var englishFiles = catalogFiles.Where(static file =>
                 file.SourceKind == LanguageFileSourceKind.ModuleBuiltIn &&
                 GetLanguage(file) == "en-US").ToArray();
-            if (input.OwnsCatalog && englishFiles.Length != 1)
+            if (englishFiles.Length != 1)
             {
                 diagnostics.Add(Diagnostic.Create(
                     AtomUIDiagnosticDescriptors.LocalizationCatalogXliffMismatch,
@@ -116,37 +116,52 @@ internal static class LanguageCatalogCompiler
             }
 
             var catalogDiagnosticStart = diagnostics.Count;
-            AdditionalLanguageFile? sourceFile = englishFiles.FirstOrDefault();
-            sourceFile ??= catalogFiles.FirstOrDefault();
-            if (sourceFile is null)
-            {
-                continue;
-            }
+            var sourceFile = englishFiles[0];
 
             var englishSource = sourceFile.Document.File.Units.ToDictionary(
                 static unit => unit.Id,
                 static unit => unit.Source);
+            var authoritativeFingerprint =
+                AtomUI.Localization.Build.LanguageSourceFingerprint.Compute(sourceFile.Document);
             var formattedUnits = catalog.Units
                                         .Select(unit => sourceFile.Document.File.Units
                                             .FirstOrDefault(sourceUnit => sourceUnit.Id == unit.Id)?
                                             .PlaceholderIndexes.Count > 0)
                                         .ToImmutableArray();
             var bundles = ImmutableArray.CreateBuilder<CompiledTranslationBundle>();
-            var owners = new Dictionary<(string Language, LanguageFileSourceKind SourceKind), AdditionalLanguageFile>();
-            foreach (var file in catalogFiles)
+            var bundleOwners =
+                new Dictionary<(string Language, LanguageFileSourceKind SourceKind), AdditionalLanguageFile>();
+            var overrideOwners = new Dictionary<(string Language, int UnitId), AdditionalLanguageFile>();
+            foreach (var file in catalogFiles
+                         .OrderBy(GetLanguage, StringComparer.Ordinal)
+                         .ThenBy(static item => item.SourceKind)
+                         .ThenBy(static item => item.SourceIdentity, StringComparer.Ordinal)
+                         .ThenBy(static item => item.Path, StringComparer.Ordinal))
             {
                 var language = GetLanguage(file);
-                var ownerKey = (language, file.SourceKind);
-                if (owners.TryGetValue(ownerKey, out var owner))
+                if (file.SourceKind == LanguageFileSourceKind.ApplicationOverride)
                 {
-                    diagnostics.Add(Mismatch(
+                    ValidateOverrideUnitSources(
+                        catalog,
                         file,
-                        catalog.CatalogId,
-                        $"language '{language}' has more than one translation source at the same priority " +
-                        $"('{owner.SourceIdentity}' and '{file.SourceIdentity}')"));
-                    continue;
+                        language,
+                        overrideOwners,
+                        diagnostics);
                 }
-                owners.Add(ownerKey, file);
+                else
+                {
+                    var ownerKey = (language, file.SourceKind);
+                    if (bundleOwners.TryGetValue(ownerKey, out var owner))
+                    {
+                        diagnostics.Add(Mismatch(
+                            file,
+                            catalog.CatalogId,
+                            $"language '{language}' has more than one translation source at the same priority " +
+                            $"('{owner.SourceIdentity}' and '{file.SourceIdentity}')"));
+                        continue;
+                    }
+                    bundleOwners.Add(ownerKey, file);
+                }
 
                 var fileDiagnosticStart = diagnostics.Count;
                 ValidateUnitContract(
@@ -155,6 +170,15 @@ internal static class LanguageCatalogCompiler
                     requireComplete: file.SourceKind != LanguageFileSourceKind.ApplicationOverride,
                     diagnostics);
                 ValidateSourceText(catalog, englishSource, file, diagnostics);
+                if (file.SourceFingerprint is { } sourceFingerprint &&
+                    !string.Equals(sourceFingerprint, authoritativeFingerprint, StringComparison.Ordinal))
+                {
+                    diagnostics.Add(Mismatch(
+                        file,
+                        catalog.CatalogId,
+                        $"source fingerprint '{sourceFingerprint}' does not match the authoritative en-US " +
+                        $"source fingerprint '{authoritativeFingerprint}'"));
+                }
                 var values = CompileValues(catalog, file, language, diagnostics);
                 if (diagnostics.Count == fileDiagnosticStart)
                 {
@@ -175,6 +199,7 @@ internal static class LanguageCatalogCompiler
                     bundles.OrderBy(static bundle => bundle.Language, StringComparer.Ordinal)
                            .ThenBy(static bundle => bundle.SourceKind)
                            .ThenBy(static bundle => bundle.SourceIdentity, StringComparer.Ordinal)
+                           .ThenBy(static bundle => GetFirstPopulatedSlot(bundle.Values))
                            .ToImmutableArray()));
             }
         }
@@ -182,6 +207,47 @@ internal static class LanguageCatalogCompiler
         return new LanguageCatalogCompilationResult(
             compiledCatalogs.ToImmutable(),
             diagnostics.ToImmutable());
+    }
+
+    private static void ValidateOverrideUnitSources(
+        LanguageCatalogInfo catalog,
+        AdditionalLanguageFile file,
+        string language,
+        Dictionary<(string Language, int UnitId), AdditionalLanguageFile> owners,
+        ImmutableArray<Diagnostic>.Builder diagnostics)
+    {
+        foreach (var unit in file.Document.File.Units.Where(static unit =>
+                     !unit.IsObsolete &&
+                     AtomUI.Localization.Build.XliffTranslationTarget.IsPublishable(unit)))
+        {
+            var ownerKey = (language, unit.Id);
+            if (!owners.TryGetValue(ownerKey, out var owner))
+            {
+                owners.Add(ownerKey, file);
+                continue;
+            }
+
+            diagnostics.Add(Mismatch(
+                file,
+                catalog.CatalogId,
+                $"unit ID '{unit.Id}' ('{unit.Name}') language '{language}' has more than one " +
+                $"translation source at the same priority ('{owner.SourceIdentity}' and " +
+                $"'{file.SourceIdentity}')",
+                unit.Line,
+                unit.Column));
+        }
+    }
+
+    private static int GetFirstPopulatedSlot(ImmutableArray<string?> values)
+    {
+        for (var index = 0; index < values.Length; index++)
+        {
+            if (values[index] is not null)
+            {
+                return index;
+            }
+        }
+        return int.MaxValue;
     }
 
     private static void ValidateUnitContract(
@@ -278,8 +344,7 @@ internal static class LanguageCatalogCompiler
                 continue;
             }
 
-            if (unit.Target is null ||
-                unit.TargetState is not ("translated" or "reviewed" or "final"))
+            if (!AtomUI.Localization.Build.XliffTranslationTarget.IsPublishable(unit))
             {
                 diagnostics.Add(InvalidTranslation(
                     file,

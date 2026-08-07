@@ -93,6 +93,105 @@ public class LanguageCatalogSourceGeneratorTests
                  .ShouldBeEmpty();
     }
 
+    [Fact]
+    public void Generates_Unique_Extensions_For_Same_Named_Nested_Catalogs()
+    {
+        var catalogNamespaceIndex = CatalogAndRuntimeSource.IndexOf(
+            "namespace TestApp.Localization",
+            StringComparison.Ordinal);
+        var source = CatalogAndRuntimeSource.Substring(0, catalogNamespaceIndex) +
+            """
+            namespace TestApp.Localization
+            {
+                public static class OuterA
+                {
+                    [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                    public enum CommonLangResourceKind
+                    {
+                        Title = 10
+                    }
+                }
+
+                public static class OuterB
+                {
+                    [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                    public enum CommonLangResourceKind
+                    {
+                        Title = 10
+                    }
+                }
+            }
+            """;
+        var execution = RunWithOutputCompilation(
+            source,
+            LanguageFile(
+                "Localization/OuterA/en-US.xlf",
+                NestedSourceXliff("OuterA")),
+            LanguageFile(
+                "Localization/OuterB/en-US.xlf",
+                NestedSourceXliff("OuterB")));
+
+        execution.Result.Diagnostics.ShouldBeEmpty();
+        GetGeneratedSource(
+                execution.Result,
+                "TestApp.Localization.OuterA+CommonLangResourceKind.LanguageCatalog.g.cs")
+            .ShouldContain("public sealed class OuterA_CommonLangResourceExtension");
+        GetGeneratedSource(
+                execution.Result,
+                "TestApp.Localization.OuterB+CommonLangResourceKind.LanguageCatalog.g.cs")
+            .ShouldContain("public sealed class OuterB_CommonLangResourceExtension");
+        execution.OutputCompilation.GetDiagnostics(TestContext.Current.CancellationToken)
+                 .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                 .ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Generates_Unique_Extensions_When_Nested_Type_Paths_Contain_Underscores()
+    {
+        var catalogNamespaceIndex = CatalogAndRuntimeSource.IndexOf(
+            "namespace TestApp.Localization",
+            StringComparison.Ordinal);
+        var source = CatalogAndRuntimeSource.Substring(0, catalogNamespaceIndex) +
+            """
+            namespace TestApp.Localization
+            {
+                public static class A
+                {
+                    public static class B
+                    {
+                        [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                        public enum CommonLangResourceKind
+                        {
+                            Title = 10
+                        }
+                    }
+                }
+
+                public static class A_B
+                {
+                    [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                    public enum CommonLangResourceKind
+                    {
+                        Title = 10
+                    }
+                }
+            }
+            """;
+        var execution = RunWithOutputCompilation(
+            source,
+            LanguageFile(
+                "Localization/A-B/en-US.xlf",
+                NestedSourceXliff("A+B")),
+            LanguageFile(
+                "Localization/A_B/en-US.xlf",
+                NestedSourceXliff("A_B")));
+
+        execution.Result.Diagnostics.ShouldBeEmpty();
+        execution.OutputCompilation.GetDiagnostics(TestContext.Current.CancellationToken)
+                 .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                 .ShouldBeEmpty();
+    }
+
     private static TestGeneratorExecution RunGenerator()
     {
         return RunWithOutputCompilation(
@@ -130,6 +229,17 @@ public class LanguageCatalogSourceGeneratorTests
               <file id="TestApp.Localization.LoginLangResourceKind">
                 <unit id="30" name="ItemCount"><segment><source>Items {0}</source><target state="translated">{{itemCount}}</target></segment></unit>
                 <unit id="10" name="Title"><segment><source>Open "file" C:\Temp</source><target state="translated">{{title}}</target></segment></unit>
+              </file>
+            </xliff>
+            """;
+    }
+
+    private static string NestedSourceXliff(string containingType)
+    {
+        return $$"""
+            <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
+              <file id="TestApp.Localization.{{containingType}}+CommonLangResourceKind">
+                <unit id="10" name="Title"><segment><source>Title</source></segment></unit>
               </file>
             </xliff>
             """;

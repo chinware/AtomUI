@@ -72,7 +72,8 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
 
     private void ValidateDuplicateSources(ParsedFiles parsed)
     {
-        var owners = new Dictionary<BundleIdentity, ParsedLanguageFile>();
+        var bundleOwners = new Dictionary<BundleIdentity, ParsedLanguageFile>();
+        var overrideOwners = new Dictionary<OverrideUnitIdentity, ParsedLanguageFile>();
         foreach (var file in parsed.Files)
         {
             var identity = new BundleIdentity(
@@ -80,9 +81,15 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
                 file.Document.File.Id,
                 file.Document.TargetLanguage ?? file.Document.SourceLanguage,
                 file.SourceKind);
-            if (!owners.TryGetValue(identity, out var owner))
+            if (string.Equals(file.SourceKind, "ApplicationOverride", StringComparison.Ordinal))
             {
-                owners.Add(identity, file);
+                ValidateOverrideUnitSources(file, identity, overrideOwners);
+                continue;
+            }
+
+            if (!bundleOwners.TryGetValue(identity, out var owner))
+            {
+                bundleOwners.Add(identity, file);
                 continue;
             }
 
@@ -93,7 +100,33 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
                 1,
                 $"Catalog '{identity.CatalogId}' language '{identity.Language}' has more than one " +
                 $"translation source at the same priority ('{owner.SourceIdentity}' and " +
-                $"'{file.SourceIdentity}').");
+                 $"'{file.SourceIdentity}').");
+        }
+    }
+
+    private void ValidateOverrideUnitSources(
+        ParsedLanguageFile file,
+        BundleIdentity identity,
+        Dictionary<OverrideUnitIdentity, ParsedLanguageFile> owners)
+    {
+        foreach (var unit in file.Document.File.Units.Where(static unit =>
+                     !unit.IsObsolete && XliffTranslationTarget.IsPublishable(unit)))
+        {
+            var unitIdentity = new OverrideUnitIdentity(identity, unit.Id);
+            if (!owners.TryGetValue(unitIdentity, out var owner))
+            {
+                owners.Add(unitIdentity, file);
+                continue;
+            }
+
+            Error(
+                CatalogMismatchCode,
+                file.Path,
+                unit.Line,
+                unit.Column,
+                $"Catalog '{identity.CatalogId}' unit '{unit.Id}' ('{unit.Name}') language " +
+                $"'{identity.Language}' has more than one translation source at the same priority " +
+                $"('{owner.SourceIdentity}' and '{file.SourceIdentity}').");
         }
     }
 
@@ -177,8 +210,7 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
 
         foreach (var unit in targetUnits.Values)
         {
-            if (string.IsNullOrEmpty(unit.Target) ||
-                unit.TargetState is not ("translated" or "reviewed" or "final"))
+            if (!XliffTranslationTarget.IsPublishable(unit))
             {
                 Error(
                     InvalidTranslationCode,
@@ -278,6 +310,34 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
                 hash = (hash * 397) ^ StringComparer.Ordinal.GetHashCode(CatalogId);
                 hash = (hash * 397) ^ StringComparer.Ordinal.GetHashCode(Language);
                 return (hash * 397) ^ StringComparer.Ordinal.GetHashCode(SourceKind);
+            }
+        }
+    }
+
+    private readonly struct OverrideUnitIdentity : IEquatable<OverrideUnitIdentity>
+    {
+        internal OverrideUnitIdentity(BundleIdentity bundle, int unitId)
+        {
+            Bundle = bundle;
+            UnitId = unitId;
+        }
+
+        private BundleIdentity Bundle { get; }
+
+        private int UnitId { get; }
+
+        public bool Equals(OverrideUnitIdentity other)
+        {
+            return Bundle.Equals(other.Bundle) && UnitId == other.UnitId;
+        }
+
+        public override bool Equals(object? obj) => obj is OverrideUnitIdentity other && Equals(other);
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Bundle.GetHashCode() * 397) ^ UnitId;
             }
         }
     }

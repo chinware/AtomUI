@@ -63,12 +63,51 @@ internal static class LanguageCatalogSourceWriter
     private static string GetExtensionName(string metadataName)
     {
         var namespaceSeparator = metadataName.LastIndexOf('.');
-        var containingTypeSeparator = metadataName.LastIndexOf('+');
-        var separator = Math.Max(namespaceSeparator, containingTypeSeparator);
-        var typeName = separator < 0 ? metadataName : metadataName.Substring(separator + 1);
-        return typeName.EndsWith("Kind", StringComparison.Ordinal)
-            ? typeName.Substring(0, typeName.Length - "Kind".Length) + "Extension"
-            : typeName + "Extension";
+        var typeIdentity = namespaceSeparator < 0
+            ? metadataName
+            : metadataName.Substring(namespaceSeparator + 1);
+        var containingTypeSeparator = typeIdentity.LastIndexOf('+');
+        var typeName = containingTypeSeparator < 0
+            ? typeIdentity
+            : typeIdentity.Substring(containingTypeSeparator + 1);
+        var resourceName = typeName.EndsWith("Kind", StringComparison.Ordinal)
+            ? typeName.Substring(0, typeName.Length - "Kind".Length)
+            : typeName;
+        if (containingTypeSeparator < 0)
+        {
+            return resourceName + "Extension";
+        }
+
+        var containingTypeIdentity = typeIdentity.Substring(0, containingTypeSeparator);
+        var containingTypeName = string.Join(
+            "_",
+            containingTypeIdentity
+                .Split('+')
+                .Select(EncodeIdentifierPart));
+        return containingTypeName + "_" + EncodeIdentifierPart(resourceName) + "Extension";
+    }
+
+    private static string EncodeIdentifierPart(string value)
+    {
+        var builder = new StringBuilder(value.Length);
+        foreach (var character in value)
+        {
+            if (char.IsLetterOrDigit(character))
+            {
+                builder.Append(character);
+            }
+            else
+            {
+                builder.Append('_')
+                       .Append(((int)character).ToString("X4", CultureInfo.InvariantCulture));
+            }
+        }
+
+        if (builder.Length == 0)
+        {
+            builder.Append('_');
+        }
+        return builder.ToString();
     }
 
     internal static string GetRegistrationTypeName(string catalogId)

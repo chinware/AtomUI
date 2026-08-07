@@ -93,6 +93,7 @@ public class XliffMergeEngineTests
             source,
             target,
             targetState,
+            null,
             notes,
             placeholders,
             1,
