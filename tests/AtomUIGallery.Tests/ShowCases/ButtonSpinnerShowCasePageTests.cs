@@ -71,6 +71,17 @@ public class ButtonSpinnerShowCasePageTests
         ComputeSha256(normalized).ShouldBe(ReadSnapshotHash(approved));
     }
 
+    [Fact]
+    public void ButtonSpinner_Size_Labels_Use_Content_Driven_Shared_Column()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml");
+
+        source.ShouldContain("<Grid ColumnDefinitions=\"Auto,Auto\"");
+        source.ShouldContain("RowDefinitions=\"Auto,Auto,Auto,Auto\"");
+        source.ShouldContain("ColumnSpacing=\"12\"");
+        source.ShouldNotContain("<atom:TextBlock Width=\"64\"");
+    }
+
     private static string ExtractButtonSpinnerExampleItems(string source)
     {
         const string firstItemMarker  = "<gallery:ShowCaseItem";

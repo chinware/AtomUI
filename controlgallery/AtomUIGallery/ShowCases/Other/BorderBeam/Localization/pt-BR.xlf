@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Wrap a card to emphasize an important workspace summary without changing the card interaction model.</source>
+        <target state="translated">Wrap a cartão para emphasize an important workspace summary sem changing o cartão interaction model.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Other</source>
+        <target state="translated">Outro</target>
+      </segment>
+    </unit>
+    <unit id="ComponentIntroducedVersion">
+      <segment>
+        <source>v6.0.5</source>
+        <target state="translated">v6.0.5</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedColorCardDescription">
+      <segment>
+        <source>The segmented selector switches the color stop collection used by the beam.</source>
+        <target state="translated">O segmented selector switches o cor stop collection usado por o beam.</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedColorDescription">
+      <segment>
+        <source>Use multiple color stops to build different beam presets, following the Ant Design customized color demo.</source>
+        <target state="translated">Usar múltiplos cor stops para build diferente beam presets, seguinte o Ant Design customized cor demo.</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedColorTitle">
+      <segment>
+        <source>Customized color</source>
+        <target state="translated">Customized cor</target>
+      </segment>
+    </unit>
+    <unit id="NonUniformRadiusCardDescription">
+      <segment>
+        <source>The top corners keep a larger radius while the bottom corners remain square.</source>
+        <target state="translated">O superior corners keep a larger raio while o inferior corners remain quadrado.</target>
+      </segment>
+    </unit>
+    <unit id="NonUniformRadiusDescription">
+      <segment>
+        <source>Set Outset to 0 when the decorated container clips its own corners.</source>
+        <target state="translated">Definir Outset para 0 quando o decorated container clips its own corners.</target>
+      </segment>
+    </unit>
+    <unit id="NonUniformRadiusTitle">
+      <segment>
+        <source>Non-uniform radius</source>
+        <target state="translated">Non-uniform raio</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>BorderBeam wraps a content control and renders a non-interactive beam on its border. It is decorative, stays active independently of the global motion setting by default, and can use a solid color or gradient stops.</source>
+        <target state="translated">BorderBeam wraps a conteúdo controle e renders a non-interactive beam em its borda. Isso é decorative, stays active independently de o global motion configuração por padrão, e pode usar a solid cor ou gradient stops.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Draw an animated highlight along a container boundary.</source>
+        <target state="translated">Draw an animated highlight along a container boundary.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -20,7 +20,18 @@ public static class GalleryLanguageDefaults
             return LanguageTags.ZhCN;
         }
 
+        if (IsBrazilianPortuguese(languageTag))
+        {
+            return LanguageTags.PtBR;
+        }
+
         return LanguageTags.EnUS;
+    }
+
+    private static bool IsBrazilianPortuguese(string languageTag)
+    {
+        return languageTag.Equals("pt-BR", StringComparison.OrdinalIgnoreCase) ||
+               languageTag.Equals("pt", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsTraditionalChinese(string languageTag)

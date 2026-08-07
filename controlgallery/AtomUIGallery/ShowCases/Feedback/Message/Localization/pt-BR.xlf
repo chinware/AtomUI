@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.MessageShowCaseLangResourceKind">
+    <unit id="ApiMethodManagerShow">
+      <segment>
+        <source>Shows an IMessage instance and applies optional style classes.</source>
+        <target state="translated">Shows an IMessage instance e applies opcional estilo classes.</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest usage for Message.</source>
+        <target state="translated">O simplest uso para Mensagem.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="CallbackDescription">
+      <segment>
+        <source>The above example will display a new message when the old message is about to close.</source>
+        <target state="translated">The above example will display a new message when the old message is about to close.</target>
+      </segment>
+    </unit>
+    <unit id="CallbackTitle">
+      <segment>
+        <source>Callback</source>
+        <target state="translated">Callback</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">Feedback</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="LoadingIndicatorDescription">
+      <segment>
+        <source>Display a global loading indicator, which is dismissed by itself asynchronously.</source>
+        <target state="translated">Exibir a global carregando indicator, which é dismissed por itself asynchronously.</target>
+      </segment>
+    </unit>
+    <unit id="LoadingIndicatorTitle">
+      <segment>
+        <source>Message with loading indicator</source>
+        <target state="translated">Mensagem com carregando indicator</target>
+      </segment>
+    </unit>
+    <unit id="OtherTypesDescription">
+      <segment>
+        <source>Messages of success, error and warning types.</source>
+        <target state="translated">Mensagens de sucesso, erro e aviso types.</target>
+      </segment>
+    </unit>
+    <unit id="OtherTypesTitle">
+      <segment>
+        <source>Other types of message</source>
+        <target state="translated">Outro types de mensagem</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisplayALoadingIndicator">
+      <segment>
+        <source>Display a loading indicator</source>
+        <target state="translated">Exibir a carregando indicator</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisplayNormalMessage">
+      <segment>
+        <source>Display normal message</source>
+        <target state="translated">Exibir normal mensagem</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">Erro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentInfo">
+      <segment>
+        <source>Info</source>
+        <target state="translated">Informação</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSuccess">
+      <segment>
+        <source>Success</source>
+        <target state="translated">Sucesso</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">Aviso</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageActionInProgress">
+      <segment>
+        <source>Action in progress...</source>
+        <target state="translated">Ação em andamento...</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageError">
+      <segment>
+        <source>This is an error message.</source>
+        <target state="translated">Este é an erro mensagem.</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageHelloAtomUIAvalonia">
+      <segment>
+        <source>Hello, AtomUI/Avalonia!</source>
+        <target state="translated">Hello, AtomUI/Avalonia!</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageInformation">
+      <segment>
+        <source>This is an information message.</source>
+        <target state="translated">Este é an informação mensagem.</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageLoadingFinished">
+      <segment>
+        <source>Loading finished</source>
+        <target state="translated">Carregando finished</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageSuccess">
+      <segment>
+        <source>This is a success message.</source>
+        <target state="translated">Este é a sucesso mensagem.</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageWarning">
+      <segment>
+        <source>This is a warning message.</source>
+        <target state="translated">Este é a aviso mensagem.</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Message displays brief feedback at the top layer of the current window. It is useful for save results, validation feedback, async progress, and chained completion notices.</source>
+        <target state="translated">Mensagem displays brief feedback at o superior layer de o atual janela. Isso é useful para salvar resultados, validation feedback, async progresso, e chained completion notices.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Global prompt messages for lightweight operation feedback.</source>
+        <target state="translated">Global prompt mensagens para leve operação feedback.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

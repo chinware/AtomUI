@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.LineEditShowCaseLangResourceKind">
+    <unit id="AutoSizeTextAreaDescription">
+      <segment>
+        <source>autoSize prop for a textarea type of Input makes the height to automatically adjust based on the content. An option object can be provided to autoSize to specify the minimum and maximum number of lines the textarea will automatically adjust.</source>
+        <target state="translated">autoSize prop para a textarea tipo de Entrada makes o altura para automatically adjust based em o conteúdo. An opção object pode ser fornecido para autoSize para specify o minimum e maximum number de lines o textarea irá automatically adjust.</target>
+      </segment>
+    </unit>
+    <unit id="AutoSizeTextAreaTitle">
+      <segment>
+        <source>Autosizing the height to fit the content</source>
+        <target state="translated">Autosizing o altura para fit o conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Basic usage example.</source>
+        <target state="translated">Básico uso exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">Uso básico</target>
+      </segment>
+    </unit>
+    <unit id="CharacterCountingDescription">
+      <segment>
+        <source>Show character counting.</source>
+        <target state="translated">Mostrar character counting.</target>
+      </segment>
+    </unit>
+    <unit id="CharacterCountingTitle">
+      <segment>
+        <source>With character counting</source>
+        <target state="translated">Com character counting</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Variants of Input disabled style.</source>
+        <target state="translated">Variantes de Entrada desativado estilo.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledSearchBoxDescription">
+      <segment>
+        <source>Example of creating a search box by grouping a standard input with a search button.</source>
+        <target state="translated">Exemplo de creating a pesquisa caixa por grouping a padrão entrada com a pesquisa botão.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledSearchBoxTitle">
+      <segment>
+        <source>Disabled search box</source>
+        <target state="translated">Desativado pesquisa caixa</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="InputSizesDescription">
+      <segment>
+        <source>There are three sizes of an Input box: large (40px), default (32px) and small (24px).</source>
+        <target state="translated">Há são três tamanhos de an Entrada caixa: grande (40px), padrão (32px) e pequeno (24px).</target>
+      </segment>
+    </unit>
+    <unit id="InputSizesTitle">
+      <segment>
+        <source>Three sizes of Input</source>
+        <target state="translated">Três tamanhos de Entrada</target>
+      </segment>
+    </unit>
+    <unit id="InputStatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+        <target state="translated">Adicionar status para Entrada com status, which could ser erro ou aviso.</target>
+      </segment>
+    </unit>
+    <unit id="InputStatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditAntDesignDescription">
+      <segment>
+        <source>One time password input.</source>
+        <target state="translated">Um hora password entrada.</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditAntDesignTitle">
+      <segment>
+        <source>One-time password</source>
+        <target state="translated">Um-hora password</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditClearButtonText">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">Limpar</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditCurrentValueFormat">
+      <segment>
+        <source>Current value: {0}</source>
+        <target state="translated">Atual valor: {0}</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditEmptyValueText">
+      <segment>
+        <source>(empty)</source>
+        <target state="translated">(vazio)</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormDescription">
+      <segment>
+        <source>Form validators write errors through Avalonia DataValidationErrors.</source>
+        <target state="translated">Formulário validators write errors through Avalonia DataValidationErrors.</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormLabelCode">
+      <segment>
+        <source>Code</source>
+        <target state="translated">Code</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormTitle">
+      <segment>
+        <source>OTP form validation</source>
+        <target state="translated">OTP formulário validation</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormValidationMessage">
+      <segment>
+        <source>Please enter the code</source>
+        <target state="translated">Por favor enter o code</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditSetValueButtonText">
+      <segment>
+        <source>Set 654321</source>
+        <target state="translated">Definir 654321</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditTwoWayBindingDescription">
+      <segment>
+        <source>OtpLineEdit.Text uses one bindable value source and can be set or cleared from the ViewModel.</source>
+        <target state="translated">OtpLineEdit.Text uses one bindable value source and can be set or cleared from the ViewModel.</target>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditTwoWayBindingTitle">
+      <segment>
+        <source>OTP two-way binding</source>
+        <target state="translated">OTP dois-way vinculação</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextAutosizeHeightBasedOnContentLines">
+      <segment>
+        <source>Autosize height based on content lines</source>
+        <target state="translated">Autosize altura based em conteúdo lines</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextAutosizeHeightWithMinimumAndMaximumNumberOf">
+      <segment>
+        <source>Autosize height with minimum and maximum number of lines</source>
+        <target state="translated">Autosize altura com minimum e maximum number de lines</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBasicUsage">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">Uso básico</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">Sem borda</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCanResize">
+      <segment>
+        <source>can resize</source>
+        <target state="translated">pode resize</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextDisableResize">
+      <segment>
+        <source>disable resize</source>
+        <target state="translated">desativar resize</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextDisabled">
+      <segment>
+        <source>disabled</source>
+        <target state="translated">desativado</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextEnterYourUsername">
+      <segment>
+        <source>Enter your username</source>
+        <target state="translated">Enter seu username</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">Erro</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextErrorWithPrefix">
+      <segment>
+        <source>Error with prefix</source>
+        <target state="translated">Erro com prefixo</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">Preenchido</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputPassword">
+      <segment>
+        <source>input password</source>
+        <target state="translated">entrada password</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputSearchLoadingDefault">
+      <segment>
+        <source>input search loading default</source>
+        <target state="translated">entrada pesquisa carregando padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputSearchLoadingWithEnterbutton">
+      <segment>
+        <source>input search loading with enterButton</source>
+        <target state="translated">entrada pesquisa carregando com enterButton</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputSearchText">
+      <segment>
+        <source>input search text</source>
+        <target state="translated">entrada pesquisa texto</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputWithClearIcon">
+      <segment>
+        <source>input with clear icon</source>
+        <target state="translated">entrada com limpar ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMaxlengthIsN6">
+      <segment>
+        <source>maxLength is 6</source>
+        <target state="translated">maxLength é 6</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutlined">
+      <segment>
+        <source>Outlined</source>
+        <target state="translated">Contornado</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTextBox">
+      <segment>
+        <source>AtomUI TextBox</source>
+        <target state="translated">AtomUI TextBox</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTextareaWithClearIcon">
+      <segment>
+        <source>textarea with clear icon</source>
+        <target state="translated">textarea com limpar ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">Underlined</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">Aviso</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarningWithPrefix">
+      <segment>
+        <source>Warning with prefix</source>
+        <target state="translated">Aviso com prefixo</target>
+      </segment>
+    </unit>
+    <unit id="P2SearchButtonTextSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="P2SearchButtonTextText">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="P2TextMysite">
+      <segment>
+        <source>mysite</source>
+        <target state="translated">mysite</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">Sem borda</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">Preenchido</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleLeftaddonAndRightaddon">
+      <segment>
+        <source>LeftAddOn and RightAddOn</source>
+        <target state="translated">LeftAddOn e RightAddOn</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleNormal">
+      <segment>
+        <source>Normal</source>
+        <target state="translated">Normal</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">Underlined</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>LineEdit covers standard inputs, add-ons, clear actions, password reveal, prefixes and suffixes, validation status, SearchEdit, and TextArea scenarios.</source>
+        <target state="translated">LineEdit covers padrão entradas, adicionar-ons, limpar ações, password reveal, prefixes e suffixes, validation status, SearchEdit, e TextArea scenarios.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Capture single-line text, search input, passwords, and multi-line text.</source>
+        <target state="translated">Capture single-linha texto, pesquisa entrada, passwords, e multi-linha texto.</target>
+      </segment>
+    </unit>
+    <unit id="PasswordBoxDescription">
+      <segment>
+        <source>Input type of password.</source>
+        <target state="translated">Entrada tipo de password.</target>
+      </segment>
+    </unit>
+    <unit id="PasswordBoxTitle">
+      <segment>
+        <source>Password box</source>
+        <target state="translated">Password caixa</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+        <target state="translated">Usando pre e post guias exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+        <target state="translated">Pre / Post guia</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+        <target state="translated">Adicionar ícones de prefixo ou sufixo dentro da entrada.</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+        <target state="translated">prefixo e suffix</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixToolTip">
+      <segment>
+        <source>Helpful information about this field</source>
+        <target state="translated">Helpful informação sobre este campo</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioState">
+      <segment>
+        <source>State</source>
+        <target state="translated">Estado</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioTextArea">
+      <segment>
+        <source>TextArea</source>
+        <target state="translated">TextArea</target>
+      </segment>
+    </unit>
+    <unit id="SearchBoxDescription">
+      <segment>
+        <source>Example of creating a search box by grouping a standard input with a search button.</source>
+        <target state="translated">Exemplo de creating a pesquisa caixa por grouping a padrão entrada com a pesquisa botão.</target>
+      </segment>
+    </unit>
+    <unit id="SearchBoxTitle">
+      <segment>
+        <source>Search box</source>
+        <target state="translated">Pesquisa caixa</target>
+      </segment>
+    </unit>
+    <unit id="SearchBoxWithLoadingDescription">
+      <segment>
+        <source>Search loading when onSearch.</source>
+        <target state="translated">Pesquisa carregando quando onSearch.</target>
+      </segment>
+    </unit>
+    <unit id="SearchBoxWithLoadingTitle">
+      <segment>
+        <source>Search box with loading</source>
+        <target state="translated">Pesquisa caixa com carregando</target>
+      </segment>
+    </unit>
+    <unit id="SearchEditSizeTypeDescription">
+      <segment>
+        <source>SearchEdit supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+        <target state="translated">SearchEdit oferece suporte grande, centro, pequeno, e Personalizado tamanhos com local altura e font overrides.</target>
+      </segment>
+    </unit>
+    <unit id="SearchEditSizeTypeTitle">
+      <segment>
+        <source>SearchEdit size</source>
+        <target state="translated">SearchEdit tamanho</target>
+      </segment>
+    </unit>
+    <unit id="TextAreaDescription">
+      <segment>
+        <source>For multi-line input.</source>
+        <target state="translated">Para multi-linha entrada.</target>
+      </segment>
+    </unit>
+    <unit id="TextAreaStatusDescription">
+      <segment>
+        <source>Add status to TextArea with status, which could be error or warning.</source>
+        <target state="translated">Adicionar status para TextArea com status, which could ser erro ou aviso.</target>
+      </segment>
+    </unit>
+    <unit id="TextAreaStatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="TextAreaTitle">
+      <segment>
+        <source>TextArea</source>
+        <target state="translated">TextArea</target>
+      </segment>
+    </unit>
+    <unit id="TextBoxDescription">
+      <segment>
+        <source>AtomUI TextBox keeps the native TextBox API while using the LineEdit border, hover, and focus visuals.</source>
+        <target state="translated">AtomUI TextBox keeps the native TextBox API while using the LineEdit border, hover, and focus visuals.</target>
+      </segment>
+    </unit>
+    <unit id="TextBoxTitle">
+      <segment>
+        <source>TextBox</source>
+        <target state="translated">TextBox</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Input.</source>
+        <target state="translated">Variantes de Entrada.</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">Variantes</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconDescription">
+      <segment>
+        <source>Input box with the remove icon, click the icon to delete everything.</source>
+        <target state="translated">Entrada caixa com o remover ícone, clique o ícone para excluir everything.</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
+        <target state="translated">Com limpar ícone</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.RateShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest usage.</source>
+        <target state="translated">O simplest uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ClearStarDescription">
+      <segment>
+        <source>Support set allow to clear star when click again.</source>
+        <target state="translated">Suporte definir permitir para limpar star quando clique novamente.</target>
+      </segment>
+    </unit>
+    <unit id="ClearStarTitle">
+      <segment>
+        <source>Clear star</source>
+        <target state="translated">Limpar star</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="HalfStarDescription">
+      <segment>
+        <source>Support select half star.</source>
+        <target state="translated">Suporte selecionar half star.</target>
+      </segment>
+    </unit>
+    <unit id="HalfStarTitle">
+      <segment>
+        <source>Half star</source>
+        <target state="translated">Half star</target>
+      </segment>
+    </unit>
+    <unit id="OtherCharacterDescription">
+      <segment>
+        <source>Replace the default star to other character like alphabet, digit, iconfont or even Chinese word.</source>
+        <target state="translated">Replace o padrão star para outro character like alphabet, digit, iconfont ou even Chinese word.</target>
+      </segment>
+    </unit>
+    <unit id="OtherCharacterTitle">
+      <segment>
+        <source>Other Character</source>
+        <target state="translated">Outro Character</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">Limpar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetFourStars">
+      <segment>
+        <source>Set 4 stars</source>
+        <target state="translated">Definir 4 stars</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIsallowclearFalse">
+      <segment>
+        <source>IsAllowClear: false</source>
+        <target state="translated">IsAllowClear: false</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIsallowclearTrue">
+      <segment>
+        <source>IsAllowClear: true</source>
+        <target state="translated">IsAllowClear: true</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipBad">
+      <segment>
+        <source>bad</source>
+        <target state="translated">bad</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipGood">
+      <segment>
+        <source>good</source>
+        <target state="translated">good</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipNormal">
+      <segment>
+        <source>normal</source>
+        <target state="translated">normal</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipTerrible">
+      <segment>
+        <source>terrible</source>
+        <target state="translated">terrible</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipWonderful">
+      <segment>
+        <source>wonderful</source>
+        <target state="translated">wonderful</target>
+      </segment>
+    </unit>
+    <unit id="P2TwoWayValueSummaryFormat">
+      <segment>
+        <source>Selected value: {0:0.#}</source>
+        <target state="translated">Selecionado valor: {0:0.#}</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Rate lets users express preference or quality on an ordered scale. It supports clearable values, half selection, read-only display, keyboard interaction, custom glyphs, and localized copywriting.</source>
+        <target state="translated">Avaliação lets usuários express preference ou quality em an ordered scale. Isso oferece suporte clearable values, half seleção, read-somente exibir, keyboard interaction, personalizado glyphs, e localized copywriting.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Collect lightweight ratings with star, half-star, custom character, and tooltip support.</source>
+        <target state="translated">Collect leve ratings com star, half-star, personalizado character, e tooltip suporte.</target>
+      </segment>
+    </unit>
+    <unit id="ReadOnlyDescription">
+      <segment>
+        <source>Read only, can't use mouse to interact.</source>
+        <target state="translated">Read somente, pode't usar mouse para interact.</target>
+      </segment>
+    </unit>
+    <unit id="ReadOnlyTitle">
+      <segment>
+        <source>Read only</source>
+        <target state="translated">Read somente</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ShowCopywritingDescription">
+      <segment>
+        <source>Add copywriting in rate components.</source>
+        <target state="translated">Adicionar textos aos componentes de avaliação.</target>
+      </segment>
+    </unit>
+    <unit id="ShowCopywritingTitle">
+      <segment>
+        <source>Show copywriting</source>
+        <target state="translated">Mostrar copywriting</target>
+      </segment>
+    </unit>
+    <unit id="TwoWayBindingDescription">
+      <segment>
+        <source>Value uses TwoWay binding by default, so user selection and ViewModel updates stay synchronized.</source>
+        <target state="translated">Valor usa TwoWay vinculação por padrão, so usuário seleção e ViewModel updates stay synchronized.</target>
+      </segment>
+    </unit>
+    <unit id="TwoWayBindingTitle">
+      <segment>
+        <source>Two-way binding</source>
+        <target state="translated">Dois-way vinculação</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

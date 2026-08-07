@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ResultShowCaseLangResourceKind">
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">Feedback</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomIconDescription">
+      <segment>
+        <source>Custom icon.</source>
+        <target state="translated">Ícone personalizado.</target>
+      </segment>
+    </unit>
+    <unit id="CustomIconTitle">
+      <segment>
+        <source>Custom icon</source>
+        <target state="translated">Ícone personalizado</target>
+      </segment>
+    </unit>
+    <unit id="ErrorDescription">
+      <segment>
+        <source>Something went wrong on server.</source>
+        <target state="translated">Algo deu errado no servidor.</target>
+      </segment>
+    </unit>
+    <unit id="ErrorTitle">
+      <segment>
+        <source>error</source>
+        <target state="translated">erro</target>
+      </segment>
+    </unit>
+    <unit id="ForbiddenDescription">
+      <segment>
+        <source>you are not authorized to access this page.</source>
+        <target state="translated">você não tem autorização para acessar esta página.</target>
+      </segment>
+    </unit>
+    <unit id="ForbiddenTitle">
+      <segment>
+        <source>403</source>
+        <target state="translated">403</target>
+      </segment>
+    </unit>
+    <unit id="InfoDescription">
+      <segment>
+        <source>Show processing results.</source>
+        <target state="translated">Mostrar resultados do processamento.</target>
+      </segment>
+    </unit>
+    <unit id="InfoTitle">
+      <segment>
+        <source>Info</source>
+        <target state="translated">Informação</target>
+      </segment>
+    </unit>
+    <unit id="NotFoundDescription">
+      <segment>
+        <source>The page you visited does not exist.</source>
+        <target state="translated">A página visitada não existe.</target>
+      </segment>
+    </unit>
+    <unit id="NotFoundTitle">
+      <segment>
+        <source>404</source>
+        <target state="translated">404</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBackHome">
+      <segment>
+        <source>Back Home</source>
+        <target state="translated">Voltar para a página inicial</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBuyAgain">
+      <segment>
+        <source>Buy Again</source>
+        <target state="translated">Comprar novamente</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGoConsole">
+      <segment>
+        <source>Go Console</source>
+        <target state="translated">Ir para o console</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentNext">
+      <segment>
+        <source>Next</source>
+        <target state="translated">Próximo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGreatWeHaveDoneAllTheOperations">
+      <segment>
+        <source>Great, we have done all the operations!</source>
+        <target state="translated">Ótimo, concluímos todas as operações!</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSubmissionFailed">
+      <segment>
+        <source>Submission Failed</source>
+        <target state="translated">Falha no envio</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSuccessfullyPurchasedCloudServerEcs">
+      <segment>
+        <source>Successfully Purchased Cloud Server ECS!</source>
+        <target state="translated">Servidor de nuvem ECS comprado com sucesso!</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThereAreSomeProblemsWithYourOperation">
+      <segment>
+        <source>There are some problems with your operation.</source>
+        <target state="translated">Há alguns problemas com sua operação.</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderYourOperationHasBeenExecuted">
+      <segment>
+        <source>Your operation has been executed.</source>
+        <target state="translated">Sua operação foi executada.</target>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderForbidden">
+      <segment>
+        <source>Sorry, you are not authorized to access this page.</source>
+        <target state="translated">Desculpe, você não tem autorização para acessar esta página.</target>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderNotFound">
+      <segment>
+        <source>Sorry, the page you visited does not exist.</source>
+        <target state="translated">Desculpe, a página visitada não existe.</target>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderOrderNumberCloudServerConfiguration">
+      <segment>
+        <source>Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait.</source>
+        <target state="translated">Ordem number: 2017182818828182881 Nuvem servidor configuration takes 1-5 minutos, por favor aguarde.</target>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderServerError">
+      <segment>
+        <source>Sorry, something went wrong.</source>
+        <target state="translated">Desculpe, algo deu errado.</target>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderSubmissionFailed">
+      <segment>
+        <source>Please check and modify the following information before resubmitting.</source>
+        <target state="translated">Verifique e altere as informações a seguir antes de enviar novamente.</target>
+      </segment>
+    </unit>
+    <unit id="P2TextApplyUnlock">
+      <segment>
+        <source>Apply Unlock &gt;</source>
+        <target state="translated">Apply Unlock &gt;</target>
+      </segment>
+    </unit>
+    <unit id="P2TextThawImmediately">
+      <segment>
+        <source>Thaw immediately &gt;</source>
+        <target state="translated">Thaw immediately &gt;</target>
+      </segment>
+    </unit>
+    <unit id="P2TextTheContentYouSubmittedHasTheFollowingError">
+      <segment>
+        <source>The content you submitted has the following error:</source>
+        <target state="translated">O conteúdo enviado contém o seguinte erro:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextYourAccountHasBeenFrozen">
+      <segment>
+        <source>Your account has been frozen.</source>
+        <target state="translated">Seu conta has been frozen.</target>
+      </segment>
+    </unit>
+    <unit id="P2TextYourAccountIsNotYetEligibleToApply">
+      <segment>
+        <source>Your account is not yet eligible to apply.</source>
+        <target state="translated">Seu conta é não yet eligible para apply.</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Result presents success, warning, error, and empty-state style outcomes with optional follow-up actions.</source>
+        <target state="translated">Resultado presents sucesso, aviso, erro, e vazio-estado estilo outcomes com opcional follow-up ações.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Feedback page for final operation outcomes.</source>
+        <target state="translated">Feedback página para final operação outcomes.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ServerErrorDescription">
+      <segment>
+        <source>Something went wrong on server.</source>
+        <target state="translated">Algo deu errado no servidor.</target>
+      </segment>
+    </unit>
+    <unit id="ServerErrorTitle">
+      <segment>
+        <source>500</source>
+        <target state="translated">500</target>
+      </segment>
+    </unit>
+    <unit id="SuccessDescription">
+      <segment>
+        <source>Show successful results.</source>
+        <target state="translated">Mostrar resultados bem-sucedidos.</target>
+      </segment>
+    </unit>
+    <unit id="SuccessTitle">
+      <segment>
+        <source>Success</source>
+        <target state="translated">Sucesso</target>
+      </segment>
+    </unit>
+    <unit id="WarningDescription">
+      <segment>
+        <source>The result of the warning.</source>
+        <target state="translated">O resultado do aviso.</target>
+      </segment>
+    </unit>
+    <unit id="WarningTitle">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">Aviso</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

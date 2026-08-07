@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.OverviewPageLangResourceKind">
+    <unit id="ApiDocsDescription">
+      <segment>
+        <source>Look up AtomUI OSS types, members, and versioned API details.</source>
+        <target state="translated">Look up AtomUI OSS types, members, e versioned API details.</target>
+      </segment>
+    </unit>
+    <unit id="ApiDocsTitle">
+      <segment>
+        <source>API Documentation</source>
+        <target state="translated">Documentação da API</target>
+      </segment>
+    </unit>
+    <unit id="Copy">
+      <segment>
+        <source>Copy</source>
+        <target state="translated">Copy</target>
+      </segment>
+    </unit>
+    <unit id="DotNetCliTab">
+      <segment>
+        <source>.NET CLI</source>
+        <target state="translated">.NET CLI</target>
+      </segment>
+    </unit>
+    <unit id="InstallDescription">
+      <segment>
+        <source>Add the desktop controls package to an Avalonia application.</source>
+        <target state="translated">Adicionar o desktop controles pacote para an Avalonia application.</target>
+      </segment>
+    </unit>
+    <unit id="InstallTitle">
+      <segment>
+        <source>Install AtomUI</source>
+        <target state="translated">Install AtomUI</target>
+      </segment>
+    </unit>
+    <unit id="LearningLinksDescription">
+      <segment>
+        <source>After installing the package, continue with the manual or the API reference.</source>
+        <target state="translated">Depois installing o pacote, continue com o manual ou o API reference.</target>
+      </segment>
+    </unit>
+    <unit id="LearningLinksTitle">
+      <segment>
+        <source>Keep learning</source>
+        <target state="translated">Keep learning</target>
+      </segment>
+    </unit>
+    <unit id="OpenLearningLink">
+      <segment>
+        <source>Open</source>
+        <target state="translated">Abrir</target>
+      </segment>
+    </unit>
+    <unit id="PackageManagerTab">
+      <segment>
+        <source>Package Manager</source>
+        <target state="translated">Pacote Manager</target>
+      </segment>
+    </unit>
+    <unit id="PackageReferenceTab">
+      <segment>
+        <source>PackageReference</source>
+        <target state="translated">PackageReference</target>
+      </segment>
+    </unit>
+    <unit id="UserManualDescription">
+      <segment>
+        <source>Learn the project concepts, getting started flow, and practical development guidance.</source>
+        <target state="translated">Learn o project concepts, getting started flow, e practical development guidance.</target>
+      </segment>
+    </unit>
+    <unit id="UserManualTitle">
+      <segment>
+        <source>User Manual</source>
+        <target state="translated">Usuário Manual</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

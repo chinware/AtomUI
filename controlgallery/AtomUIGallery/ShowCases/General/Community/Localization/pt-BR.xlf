@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CommunityPageLangResourceKind">
+    <unit id="AboutAtomUI">
+      <segment>
+        <source>About AtomUI</source>
+        <target state="translated">Sobre o AtomUI</target>
+      </segment>
+    </unit>
+    <unit id="HomePage">
+      <segment>
+        <source>Home Page</source>
+        <target state="translated">Inicial Página</target>
+      </segment>
+    </unit>
+    <unit id="IncubationDescription">
+      <segment>
+        <source>Supported by TLAIC, AtomUI OSS continues to advance cross-platform desktop software, open-source community operations, and the developer ecosystem.</source>
+        <target state="translated">Supported por TLAIC, AtomUI OSS continues para advance cross-platform desktop software, abrir-source comunidade operações, e o developer ecosystem.</target>
+      </segment>
+    </unit>
+    <unit id="IncubationEyebrow">
+      <segment>
+        <source>INCUBATION SUPPORT</source>
+        <target state="translated">INCUBATION SUPORTE</target>
+      </segment>
+    </unit>
+    <unit id="IncubationPointEcosystem">
+      <segment>
+        <source>Ecosystem building</source>
+        <target state="translated">Ecosystem building</target>
+      </segment>
+    </unit>
+    <unit id="IncubationPointLicense">
+      <segment>
+        <source>Open licensing</source>
+        <target state="translated">Abrir licensing</target>
+      </segment>
+    </unit>
+    <unit id="IncubationPointOpenSource">
+      <segment>
+        <source>Open-source incubation</source>
+        <target state="translated">Abrir-source incubation</target>
+      </segment>
+    </unit>
+    <unit id="IncubationTitle">
+      <segment>
+        <source>AtomUI OSS joins the TLAIC open-source incubation program</source>
+        <target state="translated">AtomUI OSS joins o TLAIC abrir-source incubation program</target>
+      </segment>
+    </unit>
+    <unit id="MissionLabel">
+      <segment>
+        <source>Mission:</source>
+        <target state="translated">Mission:</target>
+      </segment>
+    </unit>
+    <unit id="MissionText">
+      <segment>
+        <source>Make digital world builders more efficient</source>
+        <target state="translated">Make digital world builders mais efficient</target>
+      </segment>
+    </unit>
+    <unit id="QQGroup">
+      <segment>
+        <source>QQ Group</source>
+        <target state="translated">QQ Grupo</target>
+      </segment>
+    </unit>
+    <unit id="QQGroupDescription">
+      <segment>
+        <source>Join the QQ group</source>
+        <target state="translated">Join o QQ grupo</target>
+      </segment>
+    </unit>
+    <unit id="TelegramGroup">
+      <segment>
+        <source>Telegram</source>
+        <target state="translated">Telegram</target>
+      </segment>
+    </unit>
+    <unit id="TelegramGroupDescription">
+      <segment>
+        <source>Join the Telegram group</source>
+        <target state="translated">Join o Telegram grupo</target>
+      </segment>
+    </unit>
+    <unit id="VisionLabel">
+      <segment>
+        <source>Vision:</source>
+        <target state="translated">Vision:</target>
+      </segment>
+    </unit>
+    <unit id="VisionText">
+      <segment>
+        <source>To become a world-class provider of productivity software</source>
+        <target state="translated">To become a world-class provider of productivity software</target>
+      </segment>
+    </unit>
+    <unit id="WeChatGroup">
+      <segment>
+        <source>WeChat Group</source>
+        <target state="translated">WeChat Grupo</target>
+      </segment>
+    </unit>
+    <unit id="WeChatGroupDescription">
+      <segment>
+        <source>Join the WeChat group</source>
+        <target state="translated">Join o WeChat grupo</target>
+      </segment>
+    </unit>
+    <unit id="WeChatOfficial">
+      <segment>
+        <source>WeChat Press</source>
+        <target state="translated">WeChat Press</target>
+      </segment>
+    </unit>
+    <unit id="WeChatOfficialDescription">
+      <segment>
+        <source>Follow release updates</source>
+        <target state="translated">Follow release updates</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

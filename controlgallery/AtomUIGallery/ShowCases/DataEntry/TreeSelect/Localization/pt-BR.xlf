@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind">
+    <unit id="AsynchronousLoadingDescription">
+      <segment>
+        <source>Asynchronous loading tree node.</source>
+        <target state="translated">Asynchronous carregando árvore nó.</target>
+      </segment>
+    </unit>
+    <unit id="AsynchronousLoadingTitle">
+      <segment>
+        <source>Asynchronous loading</source>
+        <target state="translated">Asynchronous carregando</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">O most básico uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="BindingClearButton">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">Limpar</target>
+      </segment>
+    </unit>
+    <unit id="BindingDescription">
+      <segment>
+        <source>SelectedItem and SelectedItems are two-way bindable by default, including in-place collection changes.</source>
+        <target state="translated">SelectedItem e SelectedItems são dois-way bindable por padrão, incluindo em-place collection changes.</target>
+      </segment>
+    </unit>
+    <unit id="BindingMultipleLabel">
+      <segment>
+        <source>Multiple selected items</source>
+        <target state="translated">Múltiplos selecionado itens</target>
+      </segment>
+    </unit>
+    <unit id="BindingSetMultipleButton">
+      <segment>
+        <source>Select two nodes</source>
+        <target state="translated">Selecionar dois nodes</target>
+      </segment>
+    </unit>
+    <unit id="BindingSetSingleButton">
+      <segment>
+        <source>Select your leaf</source>
+        <target state="translated">Selecionar seu leaf</target>
+      </segment>
+    </unit>
+    <unit id="BindingSingleLabel">
+      <segment>
+        <source>Single selected item</source>
+        <target state="translated">Single selecionado item</target>
+      </segment>
+    </unit>
+    <unit id="BindingTitle">
+      <segment>
+        <source>Binding</source>
+        <target state="translated">Vinculação</target>
+      </segment>
+    </unit>
+    <unit id="BindingViewModelValueLabel">
+      <segment>
+        <source>ViewModel value:</source>
+        <target state="translated">ViewModel valor:</target>
+      </segment>
+    </unit>
+    <unit id="CheckableDescription">
+      <segment>
+        <source>Multiple and checkable.</source>
+        <target state="translated">Múltiplos e checkable.</target>
+      </segment>
+    </unit>
+    <unit id="CheckableTitle">
+      <segment>
+        <source>Checkable</source>
+        <target state="translated">Checkable</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="GenerateFromTreeDataDescription">
+      <segment>
+        <source>The tree structure can be populated using treeData property. This is a quick and easy way to provide the tree content.</source>
+        <target state="translated">The tree structure can be populated using treeData property. This is a quick and easy way to provide the tree content.</target>
+      </segment>
+    </unit>
+    <unit id="GenerateFromTreeDataTitle">
+      <segment>
+        <source>Generate from tree data</source>
+        <target state="translated">Generate de árvore dados</target>
+      </segment>
+    </unit>
+    <unit id="MaxCountDescription">
+      <segment>
+        <source>You can set the maxCount prop to control the max number of items can be selected. When the limit is exceeded, the options will become disabled.</source>
+        <target state="translated">Você pode definir o maxCount prop para controle o max number de itens pode ser selecionado. Quando o limit é exceeded, o opções irá become desativado.</target>
+      </segment>
+    </unit>
+    <unit id="MaxCountTitle">
+      <segment>
+        <source>Max Count</source>
+        <target state="translated">Max Count</target>
+      </segment>
+    </unit>
+    <unit id="MultipleSelectionDescription">
+      <segment>
+        <source>Multiple selection usage.</source>
+        <target state="translated">Múltiplos seleção uso.</target>
+      </segment>
+    </unit>
+    <unit id="MultipleSelectionTitle">
+      <segment>
+        <source>Multiple Selection</source>
+        <target state="translated">Múltiplos Seleção</target>
+      </segment>
+    </unit>
+    <unit id="P2AddOnPrefix">
+      <segment>
+        <source>Prefix</source>
+        <target state="translated">Prefixo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomleft">
+      <segment>
+        <source>Bottom Left</source>
+        <target state="translated">Inferior Esquerda</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomright">
+      <segment>
+        <source>Bottom Right</source>
+        <target state="translated">Inferior Direita</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopleft">
+      <segment>
+        <source>Top Left</source>
+        <target state="translated">Superior Esquerda</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopright">
+      <segment>
+        <source>Top Right</source>
+        <target state="translated">Superior Direita</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode">
+      <segment>
+        <source>Child Node</source>
+        <target state="translated">Child Nó</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode1">
+      <segment>
+        <source>Child Node 1</source>
+        <target state="translated">Child Nó 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode2">
+      <segment>
+        <source>Child Node 2</source>
+        <target state="translated">Child Nó 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode3">
+      <segment>
+        <source>Child Node 3</source>
+        <target state="translated">Child Nó 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode4">
+      <segment>
+        <source>Child Node 4</source>
+        <target state="translated">Child Nó 4</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode5">
+      <segment>
+        <source>Child Node 5</source>
+        <target state="translated">Child Nó 5</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode6">
+      <segment>
+        <source>Child Node 6</source>
+        <target state="translated">Child Nó 6</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode7">
+      <segment>
+        <source>Child Node 7</source>
+        <target state="translated">Child Nó 7</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderExpandToLoad">
+      <segment>
+        <source>Expand to load</source>
+        <target state="translated">Expand para load</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf1">
+      <segment>
+        <source>Leaf 1</source>
+        <target state="translated">Leaf 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf11">
+      <segment>
+        <source>Leaf 11</source>
+        <target state="translated">Leaf 11</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf2">
+      <segment>
+        <source>Leaf 2</source>
+        <target state="translated">Leaf 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf3">
+      <segment>
+        <source>Leaf 3</source>
+        <target state="translated">Leaf 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf4">
+      <segment>
+        <source>Leaf 4</source>
+        <target state="translated">Leaf 4</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf5">
+      <segment>
+        <source>Leaf 5</source>
+        <target state="translated">Leaf 5</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf6">
+      <segment>
+        <source>Leaf 6</source>
+        <target state="translated">Leaf 6</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMyLeaf">
+      <segment>
+        <source>My leaf</source>
+        <target state="translated">My leaf</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNode1">
+      <segment>
+        <source>Node 1</source>
+        <target state="translated">Nó 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNode2">
+      <segment>
+        <source>Node 2</source>
+        <target state="translated">Nó 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent1">
+      <segment>
+        <source>Parent 1</source>
+        <target state="translated">Pai 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent10">
+      <segment>
+        <source>Parent 1-0</source>
+        <target state="translated">Pai 1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent11">
+      <segment>
+        <source>Parent 1-1</source>
+        <target state="translated">Pai 1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSss">
+      <segment>
+        <source>Node SSS</source>
+        <target state="translated">Nó SSS</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTreeNode">
+      <segment>
+        <source>Tree Node</source>
+        <target state="translated">Árvore Nó</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderYourLeaf">
+      <segment>
+        <source>Your leaf</source>
+        <target state="translated">Seu leaf</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentShowIcon">
+      <segment>
+        <source>Show icon</source>
+        <target state="translated">Mostrar ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentShowLeafIcon">
+      <segment>
+        <source>Show leaf icon</source>
+        <target state="translated">Mostrar leaf ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentTreeLine">
+      <segment>
+        <source>Tree line</source>
+        <target state="translated">Árvore linha</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentShowIcon">
+      <segment>
+        <source>Show icon</source>
+        <target state="translated">Mostrar ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentShowLeafIcon">
+      <segment>
+        <source>Show leaf icon</source>
+        <target state="translated">Mostrar leaf ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentTreeLine">
+      <segment>
+        <source>Tree line</source>
+        <target state="translated">Árvore linha</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">Por favor selecionar</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPlacement">
+      <segment>
+        <source>Placement:</source>
+        <target state="translated">Posicionamento:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>TreeSelect combines an input selector with tree navigation, making it suitable for hierarchical categories, organization nodes, permissions, and other nested option sets.</source>
+        <target state="translated">TreeSelect combines an entrada selector com árvore navegação, making isso suitable para hierarchical categories, organization nodes, permissions, e outro nested opção define.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Select values from hierarchical data in a compact input.</source>
+        <target state="translated">Selecionar values de hierarchical dados em a compacto entrada.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>You can manually specify the position of the popup via placement.</source>
+        <target state="translated">Você pode manually specify o posição de o popup via posicionamento.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">Posicionamento</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Custom prefix and suffixIcon.</source>
+        <target state="translated">Personalizado prefixo e suffixIcon.</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>Prefix and Suffix</source>
+        <target state="translated">Prefixo e Suffix</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAppearance">
+      <segment>
+        <source>Appearance</source>
+        <target state="translated">Appearance</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBehavior">
+      <segment>
+        <source>Behavior</source>
+        <target state="translated">Behavior</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ShowTreeLineDescription">
+      <segment>
+        <source>Use treeLine to show the line style.</source>
+        <target state="translated">Usar treeLine para mostrar o linha estilo.</target>
+      </segment>
+    </unit>
+    <unit id="ShowTreeLineTitle">
+      <segment>
+        <source>Show Tree Line</source>
+        <target state="translated">Mostrar Árvore Linha</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>TreeSelect supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+        <target state="translated">TreeSelect oferece suporte grande, centro, pequeno, e Personalizado tamanhos com local altura e font overrides.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Sizes</source>
+        <target state="translated">Tamanhos</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to TreeSelect with status, which could be error or warning.</source>
+        <target state="translated">Adicionar status para TreeSelect com status, which could ser erro ou aviso.</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of TreeSelect, there are four variants: outlined filled borderless and underlined.</source>
+        <target state="translated">Variantes de TreeSelect, há são four variantes: contornado preenchido sem borda e underlined.</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">Variantes</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

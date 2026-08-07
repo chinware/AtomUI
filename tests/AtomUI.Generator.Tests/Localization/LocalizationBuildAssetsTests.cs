@@ -82,6 +82,13 @@ public class LocalizationBuildAssetsTests
     public void Localization_Targets_Discovers_Xliff_And_Exposes_Generator_Metadata()
     {
         var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+        var templateOutputRoot = targets.Descendants()
+                                        .Single(element =>
+                                            element.Name.LocalName ==
+                                            "AtomUILanguageTemplateOutputRootDirectory");
+        templateOutputRoot.Value.ShouldBe("$(MSBuildProjectDirectory)/Localization");
+        ((string?)templateOutputRoot.Attribute("Condition"))
+            .ShouldBe("'$(AtomUILanguageTemplateOutputRootDirectory)' == ''");
         var discoveredLanguage = targets.Descendants()
                                         .Single(element =>
                                             element.Name.LocalName == "AtomUILanguage" &&
@@ -174,9 +181,16 @@ public class LocalizationBuildAssetsTests
                                      element.Name.LocalName == "AtomUI.Build.Tasks.PrepareLanguagePackageTask");
         ((string?)prepareTask.Attribute("MinimumTargetState"))
             .ShouldBe("$(AtomUILanguageMinimumState)");
-        targets.Descendants("Target")
-               .Single(element => (string?)element.Attribute("Name") == "AtomUIExportLanguageTemplates")
-               .ShouldNotBeNull();
+        var exportTarget = targets.Descendants("Target")
+                                  .Single(element =>
+                                      (string?)element.Attribute("Name") ==
+                                      "AtomUIExportLanguageTemplates");
+        ((string?)exportTarget.Descendants()
+                              .Single(element =>
+                                  element.Name.LocalName ==
+                                  "AtomUI.Build.Tasks.ExportLanguageTemplatesTask")
+                              .Attribute("OutputRootDirectory"))
+            .ShouldBe("$(AtomUILanguageTemplateOutputRootDirectory)");
     }
 
     [Fact]
@@ -622,21 +636,40 @@ public class LocalizationBuildAssetsTests
     }
 
     [Fact]
-    public void Gallery_Consumes_Official_PtBr_Translations_Through_Project_References()
+    public void Gallery_Hosts_Consume_Official_PtBr_Translations_Through_Project_References()
     {
-        var project = XDocument.Load(GetRepoFile("controlgallery/AtomUIGallery/AtomUIGallery.csproj"));
-        var references = project.Descendants("AtomUILanguagePackProjectReference")
-                                .Select(element => (string?)element.Attribute("Include"))
-                                .ToArray();
-
-        references.ShouldBe(
+        string[] expectedReferences =
         [
             "../../src/LanguagePacks/pt-BR/AtomUI.Controls.I18n.PtBR/AtomUI.Controls.I18n.PtBR.csproj",
             "../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.I18n.PtBR/AtomUI.Desktop.Controls.I18n.PtBR.csproj",
             "../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR.csproj",
             "../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR.csproj"
-        ],
-            ignoreOrder: true);
+        ];
+        foreach (var projectPath in new[]
+                 {
+                     "controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj",
+                     "controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj",
+                     "tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj"
+                 })
+        {
+            var project = XDocument.Load(GetRepoFile(projectPath));
+            project.Descendants("AtomUILanguagePackProjectReference")
+                   .Select(element => (string?)element.Attribute("Include"))
+                   .ShouldBe(expectedReferences, ignoreOrder: true);
+
+            var generatorReference = project.Descendants("ProjectReference")
+                                            .Single(element =>
+                                                ((string?)element.Attribute("Include"))?.EndsWith(
+                                                    "src/AtomUI.Generator/AtomUI.Generator.csproj",
+                                                    StringComparison.Ordinal) == true);
+            ((string?)generatorReference.Attribute("OutputItemType")).ShouldBe("Analyzer");
+            ((string?)generatorReference.Attribute("ReferenceOutputAssembly")).ShouldBe("false");
+            ((string?)generatorReference.Attribute("PrivateAssets")).ShouldBe("all");
+        }
+
+        var galleryProject = XDocument.Load(
+            GetRepoFile("controlgallery/AtomUIGallery/AtomUIGallery.csproj"));
+        galleryProject.Descendants("AtomUILanguagePackProjectReference").ShouldBeEmpty();
     }
 
     private static void AssertOfficialLanguageModuleProject(LanguagePackageProjectContract contract)

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic SplitButton.</source>
+        <target state="translated">O most básico SplitButton.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>General</source>
+        <target state="translated">Geral</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomIconDescription">
+      <segment>
+        <source>Custom flyout button icon.</source>
+        <target state="translated">Personalizado flyout botão ícone.</target>
+      </segment>
+    </unit>
+    <unit id="CustomIconTitle">
+      <segment>
+        <source>Custom Icon</source>
+        <target state="translated">Personalizado Ícone</target>
+      </segment>
+    </unit>
+    <unit id="DangerButtonsDescription">
+      <segment>
+        <source>danger is a button property after antd 4.0.</source>
+        <target state="translated">perigo é a botão propriedade depois antd 4.0.</target>
+      </segment>
+    </unit>
+    <unit id="DangerButtonsTitle">
+      <segment>
+        <source>Danger Buttons</source>
+        <target state="translated">Perigo Botões</target>
+      </segment>
+    </unit>
+    <unit id="FlyoutTriggerTypeDescription">
+      <segment>
+        <source>Support two trigger types.</source>
+        <target state="translated">Suporte dois gatilho types.</target>
+      </segment>
+    </unit>
+    <unit id="FlyoutTriggerTypeTitle">
+      <segment>
+        <source>Flyout trigger type</source>
+        <target state="translated">Flyout gatilho tipo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickMe">
+      <segment>
+        <source>Click Me</source>
+        <target state="translated">Clique Me</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+        <target state="translated">Sobreposição me</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimary">
+      <segment>
+        <source>Primary</source>
+        <target state="translated">Primário</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCopy">
+      <segment>
+        <source>Copy</source>
+        <target state="translated">Copy</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCut">
+      <segment>
+        <source>Cut</source>
+        <target state="translated">Cut</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDelete">
+      <segment>
+        <source>Delete</source>
+        <target state="translated">Excluir</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>SplitButton combines a main command and a secondary flyout trigger, supporting size, danger style, primary style, custom indicators, and hover or click menus.</source>
+        <target state="translated">SplitButton combines a main command e a secundário flyout gatilho, supporting tamanho, perigo estilo, primário estilo, personalizado indicators, e sobreposição ou clique menus.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A primary action with an attached flyout menu.</source>
+        <target state="translated">A primário ação com an attached flyout menu.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>AtomUI supports three sizes of buttons: small, default, and large. If a large or small button is desired, set the size property to large or small respectively. Omit the size property for a button with the default size.</source>
+        <target state="translated">AtomUI oferece suporte três tamanhos de botões: pequeno, padrão, e grande. Se a grande ou pequeno botão é desired, definir o tamanho propriedade para grande ou pequeno respectively. Omit o tamanho propriedade para a botão com o padrão tamanho.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

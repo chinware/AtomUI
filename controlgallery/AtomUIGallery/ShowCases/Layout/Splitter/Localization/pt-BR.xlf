@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SplitterShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Initial sizes with min/max constraints.</source>
+        <target state="translated">Initial tamanhos com min/max constraints.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">Layout</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CompositeDescription">
+      <segment>
+        <source>Nested horizontal splitter inside a vertical layout.</source>
+        <target state="translated">Nested horizontal splitter inside a vertical layout.</target>
+      </segment>
+    </unit>
+    <unit id="CompositeTitle">
+      <segment>
+        <source>Composite</source>
+        <target state="translated">Composite</target>
+      </segment>
+    </unit>
+    <unit id="HorizontalDescription">
+      <segment>
+        <source>Top-bottom splitter with collapsible icons.</source>
+        <target state="translated">Superior-inferior splitter com collapsible ícones.</target>
+      </segment>
+    </unit>
+    <unit id="HorizontalTitle">
+      <segment>
+        <source>Horizontal</source>
+        <target state="translated">Horizontal</target>
+      </segment>
+    </unit>
+    <unit id="LazyDescription">
+      <segment>
+        <source>Lazy rendering mode: sizes update on drag release.</source>
+        <target state="translated">Lazy rendering modo: tamanhos update em arrastar release.</target>
+      </segment>
+    </unit>
+    <unit id="LazyTitle">
+      <segment>
+        <source>Lazy</source>
+        <target state="translated">Lazy</target>
+      </segment>
+    </unit>
+    <unit id="LineStyleDescription">
+      <segment>
+        <source>Customize the root frame, visible divider thickness, and line corner radius.</source>
+        <target state="translated">Personalizar o root frame, visível divider thickness, e linha corner raio.</target>
+      </segment>
+    </unit>
+    <unit id="LineStyleTitle">
+      <segment>
+        <source>Line Style</source>
+        <target state="translated">Linha Estilo</target>
+      </segment>
+    </unit>
+    <unit id="MultiPanelsDescription">
+      <segment>
+        <source>Multiple panels in vertical layout.</source>
+        <target state="translated">Múltiplos painéis em vertical layout.</target>
+      </segment>
+    </unit>
+    <unit id="MultiPanelsTitle">
+      <segment>
+        <source>Multi Panels</source>
+        <target state="translated">Multi Painéis</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFalse">
+      <segment>
+        <source>False</source>
+        <target state="translated">False</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHover">
+      <segment>
+        <source>Hover</source>
+        <target state="translated">Sobreposição</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTrue">
+      <segment>
+        <source>True</source>
+        <target state="translated">True</target>
+      </segment>
+    </unit>
+    <unit id="P2TextA">
+      <segment>
+        <source>A</source>
+        <target state="translated">A</target>
+      </segment>
+    </unit>
+    <unit id="P2TextB">
+      <segment>
+        <source>B</source>
+        <target state="translated">B</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">Inferior</target>
+      </segment>
+    </unit>
+    <unit id="P2TextC">
+      <segment>
+        <source>C</source>
+        <target state="translated">C</target>
+      </segment>
+    </unit>
+    <unit id="P2TextD">
+      <segment>
+        <source>D</source>
+        <target state="translated">D</target>
+      </segment>
+    </unit>
+    <unit id="P2TextFirst">
+      <segment>
+        <source>First</source>
+        <target state="translated">Primeiro</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">Esquerda</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNotResizable">
+      <segment>
+        <source>Not Resizable</source>
+        <target state="translated">Não Resizable</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResizable">
+      <segment>
+        <source>Resizable</source>
+        <target state="translated">Resizable</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSecond">
+      <segment>
+        <source>Second</source>
+        <target state="translated">Segundo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextShowcollapsibleicon">
+      <segment>
+        <source>ShowCollapsibleIcon:</source>
+        <target state="translated">ShowCollapsibleIcon:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextThird">
+      <segment>
+        <source>Third</source>
+        <target state="translated">Terceiro</target>
+      </segment>
+    </unit>
+    <unit id="P2TextTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">Superior</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Splitter divides a region into resizable panels. It supports horizontal and vertical layouts, nested splitters, fixed or constrained panels, collapsible handles, multiple panels, and lazy resize feedback.</source>
+        <target state="translated">Splitter divides a region into resizable painéis. Isso oferece suporte horizontal e vertical layouts, nested splitters, fixed ou constrained painéis, collapsible handles, múltiplos painéis, e lazy resize feedback.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Resize adjacent panes with draggable handles, constraints, collapse controls, and lazy updates.</source>
+        <target state="translated">Resize adjacent panes com draggable handles, constraints, recolhimento controles, e lazy updates.</target>
+      </segment>
+    </unit>
+    <unit id="ResizableDisabledDescription">
+      <segment>
+        <source>If either side disables resizable, dragging is blocked.</source>
+        <target state="translated">Se either side disables resizable, dragging é blocked.</target>
+      </segment>
+    </unit>
+    <unit id="ResizableDisabledTitle">
+      <segment>
+        <source>Resizable Disabled</source>
+        <target state="translated">Resizable Desativado</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ShowCollapsibleIconDescription">
+      <segment>
+        <source>Three panels with hover and always-visible collapsible icons.</source>
+        <target state="translated">Três painéis com sobreposição e always-visível collapsible ícones.</target>
+      </segment>
+    </unit>
+    <unit id="ShowCollapsibleIconTitle">
+      <segment>
+        <source>ShowCollapsibleIcon</source>
+        <target state="translated">ShowCollapsibleIcon</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

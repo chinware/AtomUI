@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.MasonryShowCaseLangResourceKind">
+    <unit id="ApiEventLayoutChanged">
+      <segment>
+        <source>Raised when the effective column assignment of children changes, dispatched after the layout pass.</source>
+        <target state="translated">Emitido quando o effective coluna assignment de children changes, dispatched depois o layout pass.</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic usage. Set the number of columns with ColumnCount and the spacing with ColumnGap and RowGap.</source>
+        <target state="translated">Básico uso. Definir o number de colunas com ColumnCount e o espaçamento com ColumnGap e RowGap.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">Layout</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="DynamicAddItemLabel">
+      <segment>
+        <source>Add Item</source>
+        <target state="translated">Adicionar item</target>
+      </segment>
+    </unit>
+    <unit id="DynamicDescription">
+      <segment>
+        <source>Demonstrate how masonry layout updates dynamically. Use item.column to keep items in place.</source>
+        <target state="translated">Demonstrate how masonry layout updates dynamically. Use item.column to keep items in place.</target>
+      </segment>
+    </unit>
+    <unit id="DynamicTitle">
+      <segment>
+        <source>Dynamic</source>
+        <target state="translated">Dinâmico</target>
+      </segment>
+    </unit>
+    <unit id="ImageDescription">
+      <segment>
+        <source>Positions are adjusted dynamically as images load.</source>
+        <target state="translated">Positions são adjusted dynamically as imagens load.</target>
+      </segment>
+    </unit>
+    <unit id="ImageTitle">
+      <segment>
+        <source>Image</source>
+        <target state="translated">Imagem</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Masonry arranges cards, images, or arbitrary controls into a shortest-column waterfall layout, with fixed or adaptive column counts and row/column gaps.</source>
+        <target state="translated">Masonry arranges cartões, imagens, ou arbitrary controles into a shortest-coluna waterfall layout, com fixed ou adaptive coluna counts e linha/coluna gaps.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Lay out children of unequal heights into balanced columns.</source>
+        <target state="translated">Lay out children de unequal heights into balanced colunas.</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveDescription">
+      <segment>
+        <source>Use responsive values to adapt to different screen widths. ColumnInfo controls the column count at each breakpoint, and Gutter controls the spacing.</source>
+        <target state="translated">Usar responsivo values para adapt para diferente tela widths. ColumnInfo controles o coluna count at each breakpoint, e Gutter controles o espaçamento.</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveTitle">
+      <segment>
+        <source>Responsive</source>
+        <target state="translated">Responsivo</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simplest Usage.</source>
+        <target state="translated">Simplest Uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="BorderDescription">
+      <segment>
+        <source>Descriptions with border and background color.</source>
+        <target state="translated">Descriptions com borda e background cor.</target>
+      </segment>
+    </unit>
+    <unit id="BorderTitle">
+      <segment>
+        <source>border</source>
+        <target state="translated">borda</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="CustomSizeDescription">
+      <segment>
+        <source>Custom sizes to fit in a variety of containers.</source>
+        <target state="translated">Personalizado tamanhos para fit em a variety de containers.</target>
+      </segment>
+    </unit>
+    <unit id="CustomSizeTitle">
+      <segment>
+        <source>Custom size</source>
+        <target state="translated">Personalizado tamanho</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAddress">
+      <segment>
+        <source>No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</source>
+        <target state="translated">Não. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCloudDatabase">
+      <segment>
+        <source>Cloud Database</source>
+        <target state="translated">Nuvem Database</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEdit">
+      <segment>
+        <source>Edit</source>
+        <target state="translated">Editar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEmpty">
+      <segment>
+        <source>empty</source>
+        <target state="translated">vazio</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHangzhouZhejiang">
+      <segment>
+        <source>Hangzhou, Zhejiang</source>
+        <target state="translated">Hangzhou, Zhejiang</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrepaid">
+      <segment>
+        <source>Prepaid</source>
+        <target state="translated">Prepaid</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRunning">
+      <segment>
+        <source>Running</source>
+        <target state="translated">Running</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentYes">
+      <segment>
+        <source>YES</source>
+        <target state="translated">YES</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentZhouMaomao">
+      <segment>
+        <source>Zhou Maomao</source>
+        <target state="translated">Zhou Maomao</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCustomSize">
+      <segment>
+        <source>Custom Size</source>
+        <target state="translated">Personalizado Tamanho</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderResponsiveDescriptions">
+      <segment>
+        <source>Responsive Descriptions</source>
+        <target state="translated">Responsivo Descriptions</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUserInfo">
+      <segment>
+        <source>User Info</source>
+        <target state="translated">Usuário Informação</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelAddress">
+      <segment>
+        <source>Address</source>
+        <target state="translated">Address</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelAmount">
+      <segment>
+        <source>Amount</source>
+        <target state="translated">Amount</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelAutomaticRenewal">
+      <segment>
+        <source>Automatic Renewal</source>
+        <target state="translated">Automatic Renewal</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelBilling">
+      <segment>
+        <source>Billing</source>
+        <target state="translated">Billing</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelBillingMode">
+      <segment>
+        <source>Billing Mode</source>
+        <target state="translated">Billing Modo</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelConfigInfo">
+      <segment>
+        <source>Config Info</source>
+        <target state="translated">Config Informação</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelDiscount">
+      <segment>
+        <source>Discount</source>
+        <target state="translated">Discount</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelHardwareInfo">
+      <segment>
+        <source>Hardware Info</source>
+        <target state="translated">Hardware Informação</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelLive">
+      <segment>
+        <source>Live</source>
+        <target state="translated">Live</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelNegotiatedAmount">
+      <segment>
+        <source>Negotiated Amount</source>
+        <target state="translated">Negotiated Amount</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelOfficial">
+      <segment>
+        <source>Official</source>
+        <target state="translated">Official</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelOfficialReceipts">
+      <segment>
+        <source>Official Receipts</source>
+        <target state="translated">Official Receipts</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelOrderTime">
+      <segment>
+        <source>Order time</source>
+        <target state="translated">Ordem hora</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelProduct">
+      <segment>
+        <source>Product</source>
+        <target state="translated">Product</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelRemark">
+      <segment>
+        <source>Remark</source>
+        <target state="translated">Remark</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelStatus">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTelephone">
+      <segment>
+        <source>Telephone</source>
+        <target state="translated">Telephone</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTime">
+      <segment>
+        <source>Time</source>
+        <target state="translated">Hora</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelUsageTime">
+      <segment>
+        <source>Usage Time</source>
+        <target state="translated">Uso Hora</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelUserName">
+      <segment>
+        <source>UserName</source>
+        <target state="translated">UserName</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCpuN6CoreN3N5Ghz">
+      <segment>
+        <source>CPU: 6 Core 3.5 GHz</source>
+        <target state="translated">CPU: 6 Core 3.5 GHz</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDataDiskTypeMongodb">
+      <segment>
+        <source>Data disk type: MongoDB</source>
+        <target state="translated">Dados disk tipo: MongoDB</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDatabaseVersionN3N4">
+      <segment>
+        <source>Database version: 3.4</source>
+        <target state="translated">Database version: 3.4</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPackageDdsMongoMid">
+      <segment>
+        <source>Package: dds.mongo.mid</source>
+        <target state="translated">Package: dds.mongo.mid</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRegionEastChinaN1">
+      <segment>
+        <source>Region: East China 1</source>
+        <target state="translated">Region: East China 1</target>
+      </segment>
+    </unit>
+    <unit id="P2TextReplicationFactorN3">
+      <segment>
+        <source>Replication factor: 3</source>
+        <target state="translated">Replication factor: 3</target>
+      </segment>
+    </unit>
+    <unit id="P2TextStorageSpaceN10Gb">
+      <segment>
+        <source>Storage space: 10 GB</source>
+        <target state="translated">Storage space: 10 GB</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Descriptions presents related label-value pairs with optional borders, headers, extra actions, responsive columns, and vertical layouts.</source>
+        <target state="translated">Descriptions presents related rótulo-valor pairs com opcional borders, headers, extra ações, responsivo colunas, e vertical layouts.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display grouped read-only details in a responsive layout.</source>
+        <target state="translated">Exibir grouped read-somente details em a responsivo layout.</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveDescription">
+      <segment>
+        <source>Responsive configuration enables perfect presentation on small screen devices.</source>
+        <target state="translated">Responsivo configuration enables perfect presentation em pequeno tela devices.</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveTitle">
+      <segment>
+        <source>responsive</source>
+        <target state="translated">responsivo</target>
+      </segment>
+    </unit>
+    <unit id="RowDescription">
+      <segment>
+        <source>Display of the entire line.</source>
+        <target state="translated">Exibir de o entire linha.</target>
+      </segment>
+    </unit>
+    <unit id="RowTitle">
+      <segment>
+        <source>Row</source>
+        <target state="translated">Linha</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="VerticalBorderDescription">
+      <segment>
+        <source>Descriptions with border and background color.</source>
+        <target state="translated">Descriptions com borda e background cor.</target>
+      </segment>
+    </unit>
+    <unit id="VerticalBorderTitle">
+      <segment>
+        <source>Vertical border</source>
+        <target state="translated">Vertical borda</target>
+      </segment>
+    </unit>
+    <unit id="VerticalDescription">
+      <segment>
+        <source>Simplest Usage.</source>
+        <target state="translated">Simplest Uso.</target>
+      </segment>
+    </unit>
+    <unit id="VerticalTitle">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">Vertical</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

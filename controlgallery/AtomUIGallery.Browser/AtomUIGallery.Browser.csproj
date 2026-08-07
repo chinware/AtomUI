@@ -65,6 +65,14 @@
         <ProjectReference Include="../AtomUIGallery/AtomUIGallery.csproj"/>
         <ProjectReference Include="../../src/AtomUI.Desktop.Controls.Extras/AtomUI.Desktop.Controls.Extras.csproj"/>
         <ProjectReference Include="../../src/AtomUI.Fonts.AlibabaPuHuiTi/AtomUI.Fonts.AlibabaPuHuiTi.csproj"/>
+        <ProjectReference Include="../../src/AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+        <AtomUILanguagePackProjectReference Include="../../src/LanguagePacks/pt-BR/AtomUI.Controls.I18n.PtBR/AtomUI.Controls.I18n.PtBR.csproj" />
+        <AtomUILanguagePackProjectReference Include="../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.I18n.PtBR/AtomUI.Desktop.Controls.I18n.PtBR.csproj" />
+        <AtomUILanguagePackProjectReference Include="../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR.csproj" />
+        <AtomUILanguagePackProjectReference Include="../../src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR.csproj" />
     </ItemGroup>
 
     <Target Name="DeduplicateBrowserWasmStaticWebAssets"

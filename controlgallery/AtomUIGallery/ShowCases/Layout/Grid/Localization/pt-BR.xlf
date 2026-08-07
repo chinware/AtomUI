@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.GridShowCaseLangResourceKind">
+    <unit id="AlignDescription">
+      <segment>
+        <source>Sub-element alignment on the cross axis.</source>
+        <target state="translated">Sub-element alignment em o cross axis.</target>
+      </segment>
+    </unit>
+    <unit id="AlignTitle">
+      <segment>
+        <source>Align</source>
+        <target state="translated">Alinhar</target>
+      </segment>
+    </unit>
+    <unit id="BasicGridDescription">
+      <segment>
+        <source>Basic 24-column layout.</source>
+        <target state="translated">Básico 24-coluna layout.</target>
+      </segment>
+    </unit>
+    <unit id="BasicGridTitle">
+      <segment>
+        <source>Basic Grid</source>
+        <target state="translated">Básico Grid</target>
+      </segment>
+    </unit>
+    <unit id="ColInfoDescription">
+      <segment>
+        <source>Use ColInfo for responsive overrides.</source>
+        <target state="translated">Usar ColInfo para responsivo overrides.</target>
+      </segment>
+    </unit>
+    <unit id="ColInfoTitle">
+      <segment>
+        <source>ColInfo</source>
+        <target state="translated">ColInfo</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">Layout</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="FlexDescription">
+      <segment>
+        <source>Fill remaining row space with fixed basis, auto, and responsive flex columns.</source>
+        <target state="translated">Fill remaining linha space com fixed basis, auto, e responsivo flex colunas.</target>
+      </segment>
+    </unit>
+    <unit id="FlexTitle">
+      <segment>
+        <source>Flex</source>
+        <target state="translated">Flex</target>
+      </segment>
+    </unit>
+    <unit id="GutterDescription">
+      <segment>
+        <source>Horizontal, vertical, and responsive gutter.</source>
+        <target state="translated">Horizontal, vertical, e responsivo gutter.</target>
+      </segment>
+    </unit>
+    <unit id="GutterTitle">
+      <segment>
+        <source>Gutter</source>
+        <target state="translated">Gutter</target>
+      </segment>
+    </unit>
+    <unit id="JustifyDescription">
+      <segment>
+        <source>Sub-element alignment on the main axis.</source>
+        <target state="translated">Sub-element alignment em o main axis.</target>
+      </segment>
+    </unit>
+    <unit id="JustifyTitle">
+      <segment>
+        <source>Justify</source>
+        <target state="translated">Justify</target>
+      </segment>
+    </unit>
+    <unit id="OffsetDescription">
+      <segment>
+        <source>Move columns to the right.</source>
+        <target state="translated">Move colunas para o direita.</target>
+      </segment>
+    </unit>
+    <unit id="OffsetTitle">
+      <segment>
+        <source>Offset</source>
+        <target state="translated">Offset</target>
+      </segment>
+    </unit>
+    <unit id="OrderDescription">
+      <segment>
+        <source>Change column order.</source>
+        <target state="translated">Alterar coluna ordem.</target>
+      </segment>
+    </unit>
+    <unit id="OrderTitle">
+      <segment>
+        <source>Order</source>
+        <target state="translated">Ordem</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAlignBottom">
+      <segment>
+        <source>Align Bottom</source>
+        <target state="translated">Alinhar Inferior</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAlignMiddle">
+      <segment>
+        <source>Align Middle</source>
+        <target state="translated">Alinhar Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAlignTop">
+      <segment>
+        <source>Align Top</source>
+        <target state="translated">Alinhar Superior</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBaseMdLgOverrides">
+      <segment>
+        <source>Base + Md/Lg overrides</source>
+        <target state="translated">Base + Md/Lg overrides</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCol">
+      <segment>
+        <source>col</source>
+        <target state="translated">col</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCol100Px">
+      <segment>
+        <source>100px</source>
+        <target state="translated">100px</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColFlex2">
+      <segment>
+        <source>2 / 5</source>
+        <target state="translated">2 / 5</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColFlex3">
+      <segment>
+        <source>3 / 5</source>
+        <target state="translated">3 / 5</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColFlexAuto">
+      <segment>
+        <source>auto</source>
+        <target state="translated">auto</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColFlexFill">
+      <segment>
+        <source>fill rest</source>
+        <target state="translated">fill rest</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColFlexResponsive">
+      <segment>
+        <source>responsive flex</source>
+        <target state="translated">responsivo flex</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN12">
+      <segment>
+        <source>col-12</source>
+        <target state="translated">col-12</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN12ColOffsetN6">
+      <segment>
+        <source>col-12 col-offset-6</source>
+        <target state="translated">col-12 col-offset-6</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN18ColPushN6">
+      <segment>
+        <source>col-18 col-push-6</source>
+        <target state="translated">col-18 col-push-6</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN1WithColinfo">
+      <segment>
+        <source>col-1 with ColInfo</source>
+        <target state="translated">col-1 com ColInfo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN2WithColinfo">
+      <segment>
+        <source>col-2 with ColInfo</source>
+        <target state="translated">col-2 com ColInfo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN3WithColinfo">
+      <segment>
+        <source>col-3 with ColInfo</source>
+        <target state="translated">col-3 com ColInfo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN4">
+      <segment>
+        <source>col-4</source>
+        <target state="translated">col-4</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN4WithColinfo">
+      <segment>
+        <source>col-4 with ColInfo</source>
+        <target state="translated">col-4 com ColInfo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN6">
+      <segment>
+        <source>col-6</source>
+        <target state="translated">col-6</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN6ColOffsetN18">
+      <segment>
+        <source>col-6 col-offset-18</source>
+        <target state="translated">col-6 col-offset-18</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN6ColOffsetN6">
+      <segment>
+        <source>col-6 col-offset-6</source>
+        <target state="translated">col-6 col-offset-6</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN6ColPullN18">
+      <segment>
+        <source>col-6 col-pull-18</source>
+        <target state="translated">col-6 col-pull-18</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN8">
+      <segment>
+        <source>col-8</source>
+        <target state="translated">col-8</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN8ColOffsetN8">
+      <segment>
+        <source>col-8 col-offset-8</source>
+        <target state="translated">col-8 col-offset-8</target>
+      </segment>
+    </unit>
+    <unit id="P2TextFillRest">
+      <segment>
+        <source>Fill rest</source>
+        <target state="translated">Fill rest</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGutterString">
+      <segment>
+        <source>Gutter (string)</source>
+        <target state="translated">Gutter (string)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextHorizontal">
+      <segment>
+        <source>Horizontal</source>
+        <target state="translated">Horizontal</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN1ColOrderN4">
+      <segment>
+        <source>1 col-order-4</source>
+        <target state="translated">1 col-ordem-4</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN1ColOrderResponsive">
+      <segment>
+        <source>1 col-order-responsive</source>
+        <target state="translated">1 col-ordem-responsivo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN2ColOrderN3">
+      <segment>
+        <source>2 col-order-3</source>
+        <target state="translated">2 col-ordem-3</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN2ColOrderResponsive">
+      <segment>
+        <source>2 col-order-responsive</source>
+        <target state="translated">2 col-ordem-responsivo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN3ColOrderN2">
+      <segment>
+        <source>3 col-order-2</source>
+        <target state="translated">3 col-ordem-2</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN3ColOrderResponsive">
+      <segment>
+        <source>3 col-order-responsive</source>
+        <target state="translated">3 col-ordem-responsivo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN4ColOrderN1">
+      <segment>
+        <source>4 col-order-1</source>
+        <target state="translated">4 col-ordem-1</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN4ColOrderResponsive">
+      <segment>
+        <source>4 col-order-responsive</source>
+        <target state="translated">4 col-ordem-responsivo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNormal">
+      <segment>
+        <source>Normal</source>
+        <target state="translated">Normal</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPercentageColumns">
+      <segment>
+        <source>Percentage columns</source>
+        <target state="translated">Percentage colunas</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResColN1">
+      <segment>
+        <source>res-col-1</source>
+        <target state="translated">res-col-1</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResColN2">
+      <segment>
+        <source>res-col-2</source>
+        <target state="translated">res-col-2</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResColN3">
+      <segment>
+        <source>res-col-3</source>
+        <target state="translated">res-col-3</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResColN4">
+      <segment>
+        <source>res-col-4</source>
+        <target state="translated">res-col-4</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResponsive">
+      <segment>
+        <source>Responsive</source>
+        <target state="translated">Responsivo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResponsiveFlex">
+      <segment>
+        <source>Responsive flex</source>
+        <target state="translated">Responsivo flex</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSharedResources">
+      <segment>
+        <source>Shared resources</source>
+        <target state="translated">Shared resources</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignAround">
+      <segment>
+        <source>sub-element align around</source>
+        <target state="translated">sub-element alinhar around</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignBetween">
+      <segment>
+        <source>sub-element align between</source>
+        <target state="translated">sub-element alinhar between</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignCenter">
+      <segment>
+        <source>sub-element align center</source>
+        <target state="translated">sub-element alinhar center</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignEnd">
+      <segment>
+        <source>sub-element align end</source>
+        <target state="translated">sub-element alinhar fim</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignEvenly">
+      <segment>
+        <source>sub-element align evenly</source>
+        <target state="translated">sub-element alinhar evenly</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignLeft">
+      <segment>
+        <source>sub-element align left</source>
+        <target state="translated">sub-element alinhar esquerda</target>
+      </segment>
+    </unit>
+    <unit id="P2TextVertical">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">Vertical</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Grid provides row gutters, alignment, offsets, ordering, and breakpoint-specific column sizing for application layouts.</source>
+        <target state="translated">Grid provides linha gutters, alignment, offsets, ordering, e breakpoint-specific coluna sizing para application layouts.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Build responsive 24-column layouts with rows and columns.</source>
+        <target state="translated">Build responsivo 24-coluna layouts com linhas e colunas.</target>
+      </segment>
+    </unit>
+    <unit id="PushPullDescription">
+      <segment>
+        <source>Change column order with push/pull.</source>
+        <target state="translated">Alterar coluna ordem com push/pull.</target>
+      </segment>
+    </unit>
+    <unit id="PushPullTitle">
+      <segment>
+        <source>Push &amp; Pull</source>
+        <target state="translated">Push &amp; Pull</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAlignment">
+      <segment>
+        <source>Alignment</source>
+        <target state="translated">Alignment</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioColInfo">
+      <segment>
+        <source>ColInfo</source>
+        <target state="translated">ColInfo</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioOrder">
+      <segment>
+        <source>Order</source>
+        <target state="translated">Ordem</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioSpacing">
+      <segment>
+        <source>Spacing</source>
+        <target state="translated">Espaçamento</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

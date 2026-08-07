@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SelectShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Basic Usage.</source>
+        <target state="translated">Básico Uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="BindingClearButton">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">Limpar</target>
+      </segment>
+    </unit>
+    <unit id="BindingDescription">
+      <segment>
+        <source>SelectedOption and SelectedOptions synchronize with the ViewModel without explicitly setting Binding Mode=TwoWay.</source>
+        <target state="translated">SelectedOption e SelectedOptions synchronize com o ViewModel sem explicitly configuração Vinculação Modo=TwoWay.</target>
+      </segment>
+    </unit>
+    <unit id="BindingMultipleLabel">
+      <segment>
+        <source>SelectedOptions</source>
+        <target state="translated">SelectedOptions</target>
+      </segment>
+    </unit>
+    <unit id="BindingSetMultipleButton">
+      <segment>
+        <source>Set Jack + Yiminghe</source>
+        <target state="translated">Definir Jack + Yiminghe</target>
+      </segment>
+    </unit>
+    <unit id="BindingSetSingleButton">
+      <segment>
+        <source>Set Lucy</source>
+        <target state="translated">Definir Lucy</target>
+      </segment>
+    </unit>
+    <unit id="BindingSingleLabel">
+      <segment>
+        <source>SelectedOption</source>
+        <target state="translated">SelectedOption</target>
+      </segment>
+    </unit>
+    <unit id="BindingTitle">
+      <segment>
+        <source>Two-way binding</source>
+        <target state="translated">Dois-way vinculação</target>
+      </segment>
+    </unit>
+    <unit id="BindingViewModelValueLabel">
+      <segment>
+        <source>ViewModel value</source>
+        <target state="translated">ViewModel valor</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="CustomDropdownOptionsDescription">
+      <segment>
+        <source>Use optionRender to customize the rendering dropdown options</source>
+        <target state="translated">Usar optionRender para personalizar o rendering dropdown opções</target>
+      </segment>
+    </unit>
+    <unit id="CustomDropdownOptionsTitle">
+      <segment>
+        <source>Custom dropdown options</source>
+        <target state="translated">Personalizado dropdown opções</target>
+      </segment>
+    </unit>
+    <unit id="CustomSearchDescription">
+      <segment>
+        <source>Customize search using filterOption, Case-sensitive search for Header.</source>
+        <target state="translated">Customize search using filterOption, Case-sensitive search for Header.</target>
+      </segment>
+    </unit>
+    <unit id="CustomSearchTitle">
+      <segment>
+        <source>Custom Search</source>
+        <target state="translated">Personalizado Pesquisa</target>
+      </segment>
+    </unit>
+    <unit id="HideAlreadySelectedDescription">
+      <segment>
+        <source>Hide already selected options in the dropdown.</source>
+        <target state="translated">Hide already selecionado opções em o dropdown.</target>
+      </segment>
+    </unit>
+    <unit id="HideAlreadySelectedTitle">
+      <segment>
+        <source>Hide Already Selected</source>
+        <target state="translated">Hide Already Selecionado</target>
+      </segment>
+    </unit>
+    <unit id="MaxCountDescription">
+      <segment>
+        <source>You can set the maxCount prop to control the max number of items can be selected. When the limit is exceeded, the options will become disabled.</source>
+        <target state="translated">Você pode definir o maxCount prop para controle o max number de itens pode ser selecionado. Quando o limit é exceeded, o opções irá become desativado.</target>
+      </segment>
+    </unit>
+    <unit id="MaxCountTitle">
+      <segment>
+        <source>Max Count</source>
+        <target state="translated">Max Count</target>
+      </segment>
+    </unit>
+    <unit id="MultipleSelectionDescription">
+      <segment>
+        <source>Multiple selection, selecting from existing items.</source>
+        <target state="translated">Múltiplos seleção, selecionando de existing itens.</target>
+      </segment>
+    </unit>
+    <unit id="MultipleSelectionTitle">
+      <segment>
+        <source>multiple selection</source>
+        <target state="translated">múltiplos seleção</target>
+      </segment>
+    </unit>
+    <unit id="OptionGroupDescription">
+      <segment>
+        <source>Using OptGroup to group the options.</source>
+        <target state="translated">Usando OptGroup para grupo o opções.</target>
+      </segment>
+    </unit>
+    <unit id="OptionGroupTitle">
+      <segment>
+        <source>Option Group</source>
+        <target state="translated">Opção Grupo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUser">
+      <segment>
+        <source>User</source>
+        <target state="translated">Usuário</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionChina">
+      <segment>
+        <source>China</source>
+        <target state="translated">China</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionJapan">
+      <segment>
+        <source>Japan</source>
+        <target state="translated">Japan</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionKorea">
+      <segment>
+        <source>Korea</source>
+        <target state="translated">Korea</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionUsa">
+      <segment>
+        <source>United States</source>
+        <target state="translated">United States</target>
+      </segment>
+    </unit>
+    <unit id="P2GroupEngineer">
+      <segment>
+        <source>Engineer</source>
+        <target state="translated">Engineer</target>
+      </segment>
+    </unit>
+    <unit id="P2GroupManager">
+      <segment>
+        <source>Manager</source>
+        <target state="translated">Manager</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAlexGrey">
+      <segment>
+        <source>Alex Grey</source>
+        <target state="translated">Alex Grey</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderApples">
+      <segment>
+        <source>Apples</source>
+        <target state="translated">Apples</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAvaSwift">
+      <segment>
+        <source>Ava Swift</source>
+        <target state="translated">Ava Swift</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBananas">
+      <segment>
+        <source>Bananas</source>
+        <target state="translated">Bananas</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChina">
+      <segment>
+        <source>China</source>
+        <target state="translated">China</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChloe">
+      <segment>
+        <source>Chloe</source>
+        <target state="translated">Chloe</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderColeReed">
+      <segment>
+        <source>Cole Reed</source>
+        <target state="translated">Cole Reed</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDisabled">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderElleBlair">
+      <segment>
+        <source>Elle Blair</source>
+        <target state="translated">Elle Blair</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHelicopters">
+      <segment>
+        <source>Helicopters</source>
+        <target state="translated">Helicopters</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJack">
+      <segment>
+        <source>Jack</source>
+        <target state="translated">Jack</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJakeStone">
+      <segment>
+        <source>Jake Stone</source>
+        <target state="translated">Jake Stone</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJapan">
+      <segment>
+        <source>Japan</source>
+        <target state="translated">Japan</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderKorea">
+      <segment>
+        <source>Korea</source>
+        <target state="translated">Korea</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLilyLane">
+      <segment>
+        <source>Lily Lane</source>
+        <target state="translated">Lily Lane</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLucas">
+      <segment>
+        <source>Lucas</source>
+        <target state="translated">Lucas</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLucy">
+      <segment>
+        <source>Lucy</source>
+        <target state="translated">Lucy</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMiaBlake">
+      <segment>
+        <source>Mia Blake</source>
+        <target state="translated">Mia Blake</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNails">
+      <segment>
+        <source>Nails</source>
+        <target state="translated">Nails</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderRyanChase">
+      <segment>
+        <source>Ryan Chase</source>
+        <target state="translated">Ryan Chase</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTom">
+      <segment>
+        <source>Tom</source>
+        <target state="translated">Tom</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUsa">
+      <segment>
+        <source>USA</source>
+        <target state="translated">USA</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderYiminghe">
+      <segment>
+        <source>Yiminghe</source>
+        <target state="translated">Yiminghe</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderYiminghe2">
+      <segment>
+        <source>yiminghe</source>
+        <target state="translated">yiminghe</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZoeFox">
+      <segment>
+        <source>Zoe Fox</source>
+        <target state="translated">Zoe Fox</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">Sem borda</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">Preenchido</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInsertedAreRemoved">
+      <segment>
+        <source>Inserted are removed</source>
+        <target state="translated">Inserted são removido</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutline">
+      <segment>
+        <source>Outline</source>
+        <target state="translated">Outline</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">Por favor selecionar</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectAPerson">
+      <segment>
+        <source>Select a person</source>
+        <target state="translated">Selecionar a person</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectItem">
+      <segment>
+        <source>Select Item...</source>
+        <target state="translated">Selecionar Item...</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTagsMode">
+      <segment>
+        <source>Tags Mode</source>
+        <target state="translated">Tags Modo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLongLabelPrefix">
+      <segment>
+        <source>Long label: </source>
+        <target state="translated">Longo rótulo: </target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Select lets users choose values from option lists with filtering, grouping, async loading, custom rendering, and multiple selection behaviors.</source>
+        <target state="translated">Selecionar lets usuários escolher values de opção listas com filtering, grouping, async carregando, personalizado rendering, e múltiplos seleção behaviors.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Single, multiple, searchable, and tag-based option selection.</source>
+        <target state="translated">Single, múltiplos, searchable, e tag-based opção seleção.</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Custom prefix and suffixIcon.</source>
+        <target state="translated">Personalizado prefixo e suffixIcon.</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>Prefix and Suffix</source>
+        <target state="translated">Prefixo e Suffix</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveMaxTagCountDescription">
+      <segment>
+        <source>Auto collapse to tag with responsive case. Not recommend use in large form case since responsive calculation has a perf cost.</source>
+        <target state="translated">Auto recolhimento para tag com responsivo case. Não recommend usar em grande formulário case since responsivo calculation has a perf cost.</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveMaxTagCountTitle">
+      <segment>
+        <source>Responsive maxTagCount</source>
+        <target state="translated">Responsivo maxTagCount</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAppearance">
+      <segment>
+        <source>Appearance</source>
+        <target state="translated">Appearance</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioOptions">
+      <segment>
+        <source>Options</source>
+        <target state="translated">Opções</target>
+      </segment>
+    </unit>
+    <unit id="SearchFieldDescription">
+      <segment>
+        <source>Search the options while expanded.</source>
+        <target state="translated">Pesquisa o opções while expanded.</target>
+      </segment>
+    </unit>
+    <unit id="SearchFieldTitle">
+      <segment>
+        <source>Select with search field</source>
+        <target state="translated">Selecionar com pesquisa campo</target>
+      </segment>
+    </unit>
+    <unit id="SizesDescription">
+      <segment>
+        <source>The height of the input field for the select defaults to 32px. If size is set to large, the height will be 40px, and if set to small, 24px. Custom can use local size properties.</source>
+        <target state="translated">O altura de o entrada campo para o selecionar defaults para 32px. Se tamanho é definir para grande, o altura irá ser 40px, e se definir para pequeno, 24px. Personalizado pode usar local tamanho properties.</target>
+      </segment>
+    </unit>
+    <unit id="SizesTitle">
+      <segment>
+        <source>Sizes</source>
+        <target state="translated">Tamanhos</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Select with status, which could be error or warning.</source>
+        <target state="translated">Adicionar status para Selecionar com status, which could ser erro ou aviso.</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="TagsDescription">
+      <segment>
+        <source>Allow user to select tags from list or input custom tag.</source>
+        <target state="translated">Permitir usuário para selecionar tags de lista ou entrada personalizado tag.</target>
+      </segment>
+    </unit>
+    <unit id="TagsTitle">
+      <segment>
+        <source>Tags</source>
+        <target state="translated">Tags</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Select, there are four variants: outlined filled borderless and underlined.</source>
+        <target state="translated">Variantes de Selecionar, há são four variantes: contornado preenchido sem borda e underlined.</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">Variantes</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CalendarShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>A full-screen month calendar.</source>
+        <target state="translated">Um calendário mensal em tela cheia.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="CardDescription">
+      <segment>
+        <source>Nested inside a container element for rendering in limited space.</source>
+        <target state="translated">Nested inside a container element para rendering em limited space.</target>
+      </segment>
+    </unit>
+    <unit id="CardTitle">
+      <segment>
+        <source>Card</source>
+        <target state="translated">Cartão</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsBugFixText">
+      <segment>
+        <source>Bug fix</source>
+        <target state="translated">Bug fix</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsDescription">
+      <segment>
+        <source>Declare RangeBars and let Calendar draw continuous event bars across dates.</source>
+        <target state="translated">Declare RangeBars e let Calendário draw continuous event barras across dates.</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsDesignReviewText">
+      <segment>
+        <source>Design review</source>
+        <target state="translated">Design review</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsMaintenanceText">
+      <segment>
+        <source>Maintenance</source>
+        <target state="translated">Maintenance</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsReleaseText">
+      <segment>
+        <source>Release window</source>
+        <target state="translated">Release janela</target>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsTitle">
+      <segment>
+        <source>Event Range</source>
+        <target state="translated">Event Intervalo</target>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderContentTitle">
+      <segment>
+        <source>Custom header</source>
+        <target state="translated">Personalizado cabeçalho</target>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderDescription">
+      <segment>
+        <source>Customize Calendar header content.</source>
+        <target state="translated">Personalizar Calendário cabeçalho conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderMonthText">
+      <segment>
+        <source>Month</source>
+        <target state="translated">Mês</target>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderTitle">
+      <segment>
+        <source>Customize Header</source>
+        <target state="translated">Personalizar Cabeçalho</target>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderYearText">
+      <segment>
+        <source>Year</source>
+        <target state="translated">Ano</target>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarCardDescription">
+      <segment>
+        <source>A compact lunar calendar for limited spaces.</source>
+        <target state="translated">Um calendário lunar compacto para espaços limitados.</target>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarCardTitle">
+      <segment>
+        <source>Lunar Calendar Card</source>
+        <target state="translated">Lunar Calendário Cartão</target>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarDescription">
+      <segment>
+        <source>A full-screen calendar with lunar dates, solar terms, traditional festivals, and application-provided holiday annotations.</source>
+        <target state="translated">A completo-tela calendário com lunar dates, solar terms, traditional festivals, e application-fornecido holiday annotations.</target>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarTitle">
+      <segment>
+        <source>Lunar Calendar</source>
+        <target state="translated">Lunar Calendário</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarBacklogText">
+      <segment>
+        <source>Backlog number</source>
+        <target state="translated">Backlog number</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarDescription">
+      <segment>
+        <source>Render notice items in date cells and backlog numbers in month cells.</source>
+        <target state="translated">Renderizar notice itens em dados cells e backlog numbers em mês cells.</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent1Text">
+      <segment>
+        <source>This is error event 1.</source>
+        <target state="translated">Este é erro event 1.</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent2Text">
+      <segment>
+        <source>This is error event 2.</source>
+        <target state="translated">Este é erro event 2.</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent3Text">
+      <segment>
+        <source>This is error event 3.</source>
+        <target state="translated">Este é erro event 3.</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent4Text">
+      <segment>
+        <source>This is error event 4.</source>
+        <target state="translated">Este é erro event 4.</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEventText">
+      <segment>
+        <source>This is error event.</source>
+        <target state="translated">Este é erro event.</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarLongUsualEventText">
+      <segment>
+        <source>This is very long usual event......</source>
+        <target state="translated">Este é very longo usual event......</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarTitle">
+      <segment>
+        <source>Notice Calendar</source>
+        <target state="translated">Notice Calendário</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarUsualEventText">
+      <segment>
+        <source>This is usual event.</source>
+        <target state="translated">Este é usual event.</target>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarWarningEventText">
+      <segment>
+        <source>This is warning event.</source>
+        <target state="translated">Este é aviso event.</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Calendar presents a month date grid or a year month grid with valid range, disabled dates, cell customization, and selection events.</source>
+        <target state="translated">Calendário presents a mês dados grid ou a ano mês grid com valid intervalo, desativado dates, cell customization, e seleção events.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Organize business content by date in a desktop calendar panel.</source>
+        <target state="translated">Organize business conteúdo por dados em a desktop calendário painel.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SelectableCalendarDescription">
+      <segment>
+        <source>A basic calendar component with Year/Month switch.</source>
+        <target state="translated">Um componente de calendário básico com alternância de ano e mês.</target>
+      </segment>
+    </unit>
+    <unit id="SelectableCalendarSelectedMessage">
+      <segment>
+        <source>You selected date: {0:yyyy-MM-dd}</source>
+        <target state="translated">Você selecionado dados: {0:yyyy-MM-dd}</target>
+      </segment>
+    </unit>
+    <unit id="SelectableCalendarTitle">
+      <segment>
+        <source>Selectable Calendar</source>
+        <target state="translated">Selectable Calendário</target>
+      </segment>
+    </unit>
+    <unit id="ShowWeekDescription">
+      <segment>
+        <source>Show week numbers in full-screen and card calendars by setting ShowWeek to True.</source>
+        <target state="translated">Mostrar semana numbers em completo-tela e cartão calendários por configuração ShowWeek para True.</target>
+      </segment>
+    </unit>
+    <unit id="ShowWeekTitle">
+      <segment>
+        <source>Show Week</source>
+        <target state="translated">Mostrar Semana</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

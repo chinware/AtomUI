@@ -8,7 +8,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 
 namespace AtomUIGallery.Desktop;
 
-public class GalleryApplication : BaseGalleryApplication
+public partial class GalleryApplication : BaseGalleryApplication
 {
     public GalleryApplication()
     {
@@ -24,7 +24,7 @@ public class GalleryApplication : BaseGalleryApplication
             builder.UseUserThemeDirectory();
             builder.UseLanguages(
                 GalleryLanguageDefaults.Resolve(CultureInfo.CurrentUICulture),
-                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW, LanguageTags.PtBR]);
             builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();

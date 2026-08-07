@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TabStripShowCaseLangResourceKind">
+    <unit id="ApiEventTabReordered">
+      <segment>
+        <source>Raised after a drag sort commits to the logical item collection.</source>
+        <target state="translated">Emitido depois a arrastar sort commits para o logical item collection.</target>
+      </segment>
+    </unit>
+    <unit id="ApiEventTabReordering">
+      <segment>
+        <source>Raised before a drag sort is committed. Set Cancel to true to keep the original order.</source>
+        <target state="translated">Emitido antes a arrastar sort é committed. Definir Cancelar para true para keep o original ordem.</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">Navegação</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">Inferior</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">Esquerda</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentNewTabFormat">
+      <segment>
+        <source>new tab {0}</source>
+        <target state="translated">new tab {0}</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">Direita</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN1">
+      <segment>
+        <source>Tab 1</source>
+        <target state="translated">Guia 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN10">
+      <segment>
+        <source>Tab 10</source>
+        <target state="translated">Guia 10</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN11">
+      <segment>
+        <source>Tab 11</source>
+        <target state="translated">Guia 11</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN12">
+      <segment>
+        <source>Tab 12</source>
+        <target state="translated">Guia 12</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN13">
+      <segment>
+        <source>Tab 13</source>
+        <target state="translated">Guia 13</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN14">
+      <segment>
+        <source>Tab 14</source>
+        <target state="translated">Guia 14</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN15">
+      <segment>
+        <source>Tab 15</source>
+        <target state="translated">Guia 15</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN16">
+      <segment>
+        <source>Tab 16</source>
+        <target state="translated">Guia 16</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN17">
+      <segment>
+        <source>Tab 17</source>
+        <target state="translated">Guia 17</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN18">
+      <segment>
+        <source>Tab 18</source>
+        <target state="translated">Guia 18</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN19">
+      <segment>
+        <source>Tab 19</source>
+        <target state="translated">Guia 19</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN2">
+      <segment>
+        <source>Tab 2</source>
+        <target state="translated">Guia 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN20">
+      <segment>
+        <source>Tab 20</source>
+        <target state="translated">Guia 20</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN21">
+      <segment>
+        <source>Tab 21</source>
+        <target state="translated">Guia 21</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN22">
+      <segment>
+        <source>Tab 22</source>
+        <target state="translated">Guia 22</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN23">
+      <segment>
+        <source>Tab 23</source>
+        <target state="translated">Guia 23</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN3">
+      <segment>
+        <source>Tab 3</source>
+        <target state="translated">Guia 3</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN4">
+      <segment>
+        <source>Tab 4</source>
+        <target state="translated">Guia 4</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN5">
+      <segment>
+        <source>Tab 5</source>
+        <target state="translated">Guia 5</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN6">
+      <segment>
+        <source>Tab 6</source>
+        <target state="translated">Guia 6</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN7">
+      <segment>
+        <source>Tab 7</source>
+        <target state="translated">Guia 7</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN8">
+      <segment>
+        <source>Tab 8</source>
+        <target state="translated">Guia 8</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTabN9">
+      <segment>
+        <source>Tab 9</source>
+        <target state="translated">Guia 9</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">Superior</target>
+      </segment>
+    </unit>
+    <unit id="P2TextTabContent">
+      <segment>
+        <source>Tab Content</source>
+        <target state="translated">Guia Conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextTabPosition">
+      <segment>
+        <source>Tab position:</source>
+        <target state="translated">Guia posição:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>TabStrip and CardTabStrip provide lightweight tab navigation for custom content hosts, including item-template tabs, closable tabs, placement control, and add-tab actions.</source>
+        <target state="translated">Faixa de guias e CardTabStrip fornecer leve guia navegação para personalizado conteúdo hosts, incluindo item-template guias, closable guias, posicionamento controle, e adicionar-guia ações.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Render tab headers independently from selected content.</source>
+        <target state="translated">Renderizar guia headers independently de selecionado conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="TabStripAddCloseDescription">
+      <segment>
+        <source>Hide default plus icon, and bind event for customized trigger.</source>
+        <target state="translated">Hide padrão plus ícone, e bind event para customized gatilho.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripAddCloseTitle">
+      <segment>
+        <source>Add and close tab</source>
+        <target state="translated">Adicionar e fechar guia</target>
+      </segment>
+    </unit>
+    <unit id="TabStripBasicDescription">
+      <segment>
+        <source>Default activate first tab.</source>
+        <target state="translated">Padrão activate primeiro guia.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripBasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="TabStripCardShapePositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+        <target state="translated">Guia's posição: esquerda, direita, superior ou inferior. Irá auto alternância para superior em mobile.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripCardShapePositionTitle">
+      <segment>
+        <source>Card Shape Position</source>
+        <target state="translated">Cartão Forma Posição</target>
+      </segment>
+    </unit>
+    <unit id="TabStripCardTypeDescription">
+      <segment>
+        <source>Another type of Tabs, which doesn't support vertical mode.</source>
+        <target state="translated">Another tipo de Guias, which doesn't suporte vertical modo.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripCardTypeTitle">
+      <segment>
+        <source>Card type tab</source>
+        <target state="translated">Cartão tipo guia</target>
+      </segment>
+    </unit>
+    <unit id="TabStripCenteredDescription">
+      <segment>
+        <source>Centered tabs.</source>
+        <target state="translated">Centered guias.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripCenteredTitle">
+      <segment>
+        <source>Centered</source>
+        <target state="translated">Centered</target>
+      </segment>
+    </unit>
+    <unit id="TabStripClosableDescription">
+      <segment>
+        <source>We support closable tab settings.</source>
+        <target state="translated">Nós suporte closable guia settings.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripClosableTitle">
+      <segment>
+        <source>Closable Tab</source>
+        <target state="translated">Closable Guia</target>
+      </segment>
+    </unit>
+    <unit id="TabStripDisabledDescription">
+      <segment>
+        <source>Disabled a tab.</source>
+        <target state="translated">Desativado a guia.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripDisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="TabStripIconDescription">
+      <segment>
+        <source>The Tab with Icon.</source>
+        <target state="translated">O Guia com Ícone.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripIconTitle">
+      <segment>
+        <source>Icon</source>
+        <target state="translated">Ícone</target>
+      </segment>
+    </unit>
+    <unit id="TabStripItemsSourceDescription">
+      <segment>
+        <source>Add TabStripItem based on data source and item template.</source>
+        <target state="translated">Adicionar TabStripItem com base na fonte de dados e no modelo do item.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripItemsSourceTitle">
+      <segment>
+        <source>Items from ItemSource datasource</source>
+        <target state="translated">Itens de ItemSource datasource</target>
+      </segment>
+    </unit>
+    <unit id="TabStripPositionDescription">
+      <segment>
+        <source>Tab's position: left, right, top or bottom. Will auto switch to top in mobile.</source>
+        <target state="translated">Guia's posição: esquerda, direita, superior ou inferior. Irá auto alternância para superior em mobile.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripPositionTitle">
+      <segment>
+        <source>Position</source>
+        <target state="translated">Posição</target>
+      </segment>
+    </unit>
+    <unit id="TabStripReorderDescription">
+      <segment>
+        <source>Enable drag sorting with IsTabReorderEnabled. The selected item follows the same logical tab after sorting.</source>
+        <target state="translated">Ativar arrastar sorting com IsTabReorderEnabled. O selecionado item follows o mesmo logical guia depois sorting.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripReorderPlacementDescription">
+      <segment>
+        <source>Switch TabStripPlacement to verify drag sorting on horizontal and vertical tab tracks.</source>
+        <target state="translated">Alternância TabStripPlacement para verify arrastar sorting em horizontal e vertical guia tracks.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripReorderPlacementTitle">
+      <segment>
+        <source>Draggable tabs with placement</source>
+        <target state="translated">Draggable guias com posicionamento</target>
+      </segment>
+    </unit>
+    <unit id="TabStripReorderTitle">
+      <segment>
+        <source>Draggable tabs</source>
+        <target state="translated">Draggable guias</target>
+      </segment>
+    </unit>
+    <unit id="TabStripSizeDescription">
+      <segment>
+        <source>Large size tabs are usually used in page header, and small size could be used in Modal.</source>
+        <target state="translated">Grande tamanho guias são usually usado em página cabeçalho, e pequeno tamanho could ser usado em Modal.</target>
+      </segment>
+    </unit>
+    <unit id="TabStripSizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
+      </segment>
+    </unit>
+    <unit id="TabStripSlideDescription">
+      <segment>
+        <source>In order to fit in more tabs, they can slide left and right (or up and down).</source>
+        <target state="translated">Em ordem para fit em mais guias, they pode slide esquerda e direita (ou up e down).</target>
+      </segment>
+    </unit>
+    <unit id="TabStripSlideTitle">
+      <segment>
+        <source>Slide</source>
+        <target state="translated">Slide</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

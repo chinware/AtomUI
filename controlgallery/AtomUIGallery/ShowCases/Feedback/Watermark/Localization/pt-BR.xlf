@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">O most básico uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">Feedback</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomConfigurationDescription">
+      <segment>
+        <source>Preview the watermark effect by configuring custom parameters.</source>
+        <target state="translated">Preview o watermark effect por configuring personalizado parameters.</target>
+      </segment>
+    </unit>
+    <unit id="CustomConfigurationTitle">
+      <segment>
+        <source>Custom configuration</source>
+        <target state="translated">Personalizado configuration</target>
+      </segment>
+    </unit>
+    <unit id="ImageWatermarkDescription">
+      <segment>
+        <source>Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.</source>
+        <target state="translated">Specify o imagem address via imagem. Para ensure que o imagem é high definition e não stretched, definir o largura e altura, e envio at least twice o largura e altura de o logo imagem address.</target>
+      </segment>
+    </unit>
+    <unit id="ImageWatermarkTitle">
+      <segment>
+        <source>Image watermark</source>
+        <target state="translated">Imagem watermark</target>
+      </segment>
+    </unit>
+    <unit id="MultiLineDescription">
+      <segment>
+        <source>Use line-break to specify multi-line text watermark content.</source>
+        <target state="translated">Usar linha-break para specify multi-linha texto watermark conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="MultiLineTitle">
+      <segment>
+        <source>Multi-line watermark</source>
+        <target state="translated">Multi-linha watermark</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNaturalInteractionDescription">
+      <segment>
+        <source>The light-speed iteration of the digital world makes products more complex. However, human consciousness and attention resources are limited. Facing this design contradiction, the pursuit of natural interaction will be the consistent direction of Ant Design.
+
+Natural user cognition: According to cognitive psychology, about 80% of external information is obtained through visual channels. The most important visual elements in the interface design, including layout, colors, illustrations, icons, etc., should fully absorb the laws of nature, thereby reducing the user's cognitive cost and bringing authentic and smooth feelings. In some scenarios, opportunely adding other sensory channels such as hearing, touch can create a richer and more natural product experience.
+
+Natural user behavior: In the interaction with the system, the designer should fully understand the relationship between users, system roles, and task objectives, and also contextually organize system functions and services. At the same time, a series of methods such as behavior analysis, artificial intelligence and sensors could be applied to assist users to make effective decisions and reduce extra operations of users, to save users' mental and physical resources and make human-computer interaction more natural.</source>
+        <target state="translated">O light-speed iteration de o digital world makes products mais complexo. However, human consciousness e attention resources são limited. Facing este design contradiction, o pursuit de natural interaction irá ser o consistent direção de Ant Design.
+
+Natural usuário cognition: According para cognitive psychology, sobre 80% de external informação é obtained through visual channels. O most important visual elements em o interface design, incluindo layout, cores, illustrations, ícones, etc., should fully absorb o laws de nature, thereby reducing o usuário's cognitive cost e bringing authentic e smooth feelings. Em some scenarios, opportunely adding outro sensory channels such as hearing, touch pode criar a richer e mais natural product experience.
+
+Natural usuário behavior: Em o interaction com o system, o designer should fully understand o relationship between usuários, system roles, e task objectives, e also contextually organize system functions e services. At o mesmo hora, a series de methods such as behavior analysis, artificial intelligence e sensors could ser applied para assist usuários para make effective decisions e reduce extra operações de usuários, para salvar usuários' mental e physical resources e make human-computer interaction mais natural.</target>
+      </segment>
+    </unit>
+    <unit id="P2WatermarkMultiLineText">
+      <segment>
+        <source>AtomUI
+Happy Working</source>
+        <target state="translated">AtomUI
+Happy Funcionando</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Watermark attaches repeated text or image glyphs to a target area, helping identify ownership or prevent unauthorized reuse.</source>
+        <target state="translated">Watermark attaches repeated texto ou imagem glyphs para a target area, helping identify ownership ou prevent unauthorized reuse.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Text or image watermarks for protected content.</source>
+        <target state="translated">Text or image watermarks for protected content.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

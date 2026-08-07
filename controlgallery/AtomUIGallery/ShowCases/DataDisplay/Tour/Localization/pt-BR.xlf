@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TourShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">O most básico uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomActionDescription">
+      <segment>
+        <source>Custom action.</source>
+        <target state="translated">Personalizado ação.</target>
+      </segment>
+    </unit>
+    <unit id="CustomActionTitle">
+      <segment>
+        <source>Custom action</source>
+        <target state="translated">Personalizado ação</target>
+      </segment>
+    </unit>
+    <unit id="CustomHighlightedAreaStyleDescription">
+      <segment>
+        <source>Using gap to control the radius of highlight area and the offset between highlight area and the element.</source>
+        <target state="translated">Usando gap para controle o raio de highlight area e o offset between highlight area e o element.</target>
+      </segment>
+    </unit>
+    <unit id="CustomHighlightedAreaStyleTitle">
+      <segment>
+        <source>Custom highlighted area style</source>
+        <target state="translated">Personalizado highlighted area estilo</target>
+      </segment>
+    </unit>
+    <unit id="CustomIndicatorDescription">
+      <segment>
+        <source>Custom indicator.</source>
+        <target state="translated">Personalizado indicator.</target>
+      </segment>
+    </unit>
+    <unit id="CustomIndicatorTitle">
+      <segment>
+        <source>Custom indicator</source>
+        <target state="translated">Personalizado indicator</target>
+      </segment>
+    </unit>
+    <unit id="CustomMaskDescription">
+      <segment>
+        <source>Custom mask color.</source>
+        <target state="translated">Personalizado mask cor.</target>
+      </segment>
+    </unit>
+    <unit id="CustomMaskTitle">
+      <segment>
+        <source>Custom mask</source>
+        <target state="translated">Personalizado mask</target>
+      </segment>
+    </unit>
+    <unit id="NonModalDescription">
+      <segment>
+        <source>Use mask={false} to make Tour non-modal. At the meantime it is recommended to use with type=primary to emphasize the guide itself.</source>
+        <target state="translated">Usar mask={false} para make Tour non-modal. At o meantime isso é recommended para usar com tipo=primário para emphasize o guide itself.</target>
+      </segment>
+    </unit>
+    <unit id="NonModalTitle">
+      <segment>
+        <source>Non-modal</source>
+        <target state="translated">Non-modal</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBeginNonModalTour">
+      <segment>
+        <source>Begin non-modal Tour</source>
+        <target state="translated">Begin non-modal Tour</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBeginTour">
+      <segment>
+        <source>Begin Tour</source>
+        <target state="translated">Begin Tour</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSave">
+      <segment>
+        <source>Save</source>
+        <target state="translated">Salvar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSkip">
+      <segment>
+        <source>Skip</source>
+        <target state="translated">Skip</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUpload">
+      <segment>
+        <source>Upload</source>
+        <target state="translated">Enviar arquivo</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionClickToSeeOtherActions">
+      <segment>
+        <source>Click to see other actions.</source>
+        <target state="translated">Clique para see outro ações.</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionDisplayedInTheCenterOfScreen">
+      <segment>
+        <source>Displayed in the center of screen.</source>
+        <target state="translated">Exibido em o center de tela.</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionOnTheLeftOfTarget">
+      <segment>
+        <source>On the left of target.</source>
+        <target state="translated">Em o esquerda de target.</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionOnTheRightOfTarget">
+      <segment>
+        <source>On the right of target.</source>
+        <target state="translated">Em o direita de target.</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionOnTheTopOfTarget">
+      <segment>
+        <source>On the top of target.</source>
+        <target state="translated">Em o superior de target.</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionPutYourFilesHere">
+      <segment>
+        <source>Put your files here.</source>
+        <target state="translated">Put seu arquivos here.</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionSaveYourChanges">
+      <segment>
+        <source>Save your changes.</source>
+        <target state="translated">Salvar seu changes.</target>
+      </segment>
+    </unit>
+    <unit id="P2TextHorizontalOffset">
+      <segment>
+        <source>Horizontal offset:</source>
+        <target state="translated">Horizontal offset:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRadius">
+      <segment>
+        <source>Radius:</source>
+        <target state="translated">Raio:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextVerticalOffset">
+      <segment>
+        <source>Vertical offset:</source>
+        <target state="translated">Vertical offset:</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleCenter">
+      <segment>
+        <source>Center</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">Esquerda</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleOtherActions">
+      <segment>
+        <source>Other Actions</source>
+        <target state="translated">Outro Ações</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">Direita</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleSave">
+      <segment>
+        <source>Save</source>
+        <target state="translated">Salvar</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">Superior</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleUploadFile">
+      <segment>
+        <source>Upload File</source>
+        <target state="translated">Envio Arquivo</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Tour combines step targets, masks, placement, indicators, and custom actions to build lightweight product guidance without leaving the current page.</source>
+        <target state="translated">Tour combines etapa targets, masks, posicionamento, indicators, e personalizado ações para build leve product guidance sem leaving o atual página.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Guide users through important workflows with contextual overlays.</source>
+        <target state="translated">Guide usuários through important workflows com contextual overlays.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Change the placement of the guide relative to the target, there are 12 placements available. When target={null} the guide will show in the center.</source>
+        <target state="translated">Alterar o posicionamento de o guide relative para o target, há são 12 placements disponível. Quando target={null} o guide irá mostrar em o center.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">Posicionamento</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

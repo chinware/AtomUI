@@ -283,6 +283,11 @@ Gallery 支持语言配置加入 `LanguageTags.PtBR`。系统语言自动选择�
 葡萄牙语；`pt-PT` 不自动映射为 `pt-BR`。格式化使用标准 `CultureInfo("pt-BR")` 和从语言数据生成的 LTR 定义，
 不得在译文中手工模拟日期、数字或货币格式。
 
+仓库源码构建时，`AtomUIGallery` 类库继续拥有 Gallery 应用 Catalog 和对应 `pt-BR.xlf`，但四个官方模块语言包的
+`AtomUILanguagePackProjectReference` 必须由 `AtomUIGallery.Desktop`、`AtomUIGallery.Browser` 和执行完整
+Localization Snapshot 的测试宿主直接声明。宿主项目还必须以 Analyzer 方式引用 `AtomUI.Generator`，宿主
+`Application` 类型必须声明为 `partial`，以便生成并调用应用语言 Bootstrap。
+
 ## 冲突与兼容
 
 - props metadata、XLIFF `file id` 或引用 Catalog identity 不一致时构建失败。

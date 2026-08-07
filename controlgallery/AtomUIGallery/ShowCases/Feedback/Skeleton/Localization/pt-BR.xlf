@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind">
+    <unit id="ActiveAnimationDescription">
+      <segment>
+        <source>Display active animation.</source>
+        <target state="translated">Exibir animação ativa.</target>
+      </segment>
+    </unit>
+    <unit id="ActiveAnimationTitle">
+      <segment>
+        <source>Active Animation</source>
+        <target state="translated">Active Animation</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simplest Skeleton usage.</source>
+        <target state="translated">Simplest Skeleton uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ButtonAvatarInputImageNodeDescription">
+      <segment>
+        <source>Skeleton Button, Avatar, Input, Image and Node.</source>
+        <target state="translated">Skeleton Botão, Avatar, Entrada, Imagem e Nó.</target>
+      </segment>
+    </unit>
+    <unit id="ButtonAvatarInputImageNodeTitle">
+      <segment>
+        <source>Button/Avatar/Input/Image/Node</source>
+        <target state="translated">Botão/Avatar/Entrada/Imagem/Nó</target>
+      </segment>
+    </unit>
+    <unit id="ComplexCombinationDescription">
+      <segment>
+        <source>Complex combination with avatar and multiple paragraphs.</source>
+        <target state="translated">Complexo combination com avatar e múltiplos paragraphs.</target>
+      </segment>
+    </unit>
+    <unit id="ComplexCombinationTitle">
+      <segment>
+        <source>Complex combination</source>
+        <target state="translated">Complexo combination</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">Feedback</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="ContainsSubComponentDescription">
+      <segment>
+        <source>Skeleton contains sub component.</source>
+        <target state="translated">Skeleton contém sub component.</target>
+      </segment>
+    </unit>
+    <unit id="ContainsSubComponentTitle">
+      <segment>
+        <source>Contains sub component</source>
+        <target state="translated">Contém sub component</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCircle">
+      <segment>
+        <source>Circle</source>
+        <target state="translated">Círculo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRound">
+      <segment>
+        <source>Round</source>
+        <target state="translated">Arredondado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentShowSkeleton">
+      <segment>
+        <source>Show Skeleton</source>
+        <target state="translated">Mostrar Skeleton</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSquare">
+      <segment>
+        <source>Square</source>
+        <target state="translated">Quadrado</target>
+      </segment>
+    </unit>
+    <unit id="P2TextActive">
+      <segment>
+        <source>Active:</source>
+        <target state="translated">Active:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignADesignLanguage">
+      <segment>
+        <source>Ant Design, a design language</source>
+        <target state="translated">Ant Design, a design language</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAvatarShape">
+      <segment>
+        <source>Avatar Shape:</source>
+        <target state="translated">Avatar Forma:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextButtonAndInputBlock">
+      <segment>
+        <source>Button and Input Block:</source>
+        <target state="translated">Botão e Entrada Block:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextButtonShape">
+      <segment>
+        <source>Button Shape:</source>
+        <target state="translated">Botão Forma:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSize">
+      <segment>
+        <source>Size:</source>
+        <target state="translated">Tamanho:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextWeSupplyASeriesOfDesignPrinciplesPractical">
+      <segment>
+        <source>We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.</source>
+        <target state="translated">Nós supply a series de design principles, practical patterns e high quality design resources (Sketch e Axure), para help people criar their product prototypes beautifully e efficiently.</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Skeleton provides lightweight visual placeholders before content is available, covering text, avatar, image, input, button, and custom node states.</source>
+        <target state="translated">Skeleton provides leve visual placeholders antes conteúdo é disponível, covering texto, avatar, imagem, entrada, botão, e personalizado nó states.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Placeholder blocks for loading content.</source>
+        <target state="translated">Placeholder blocks para carregando conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

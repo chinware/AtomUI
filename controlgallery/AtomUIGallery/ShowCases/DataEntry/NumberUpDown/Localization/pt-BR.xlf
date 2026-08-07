@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind">
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Numeric-only NumberUpDown.</source>
+        <target state="translated">Numeric-somente NumberUpDown.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic usage</source>
+        <target state="translated">Uso básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="DecimalStepDescription">
+      <segment>
+        <source>Use decimal steps with Increment.</source>
+        <target state="translated">Usar decimal etapas com Increment.</target>
+      </segment>
+    </unit>
+    <unit id="DecimalStepTitle">
+      <segment>
+        <source>Step (decimal)</source>
+        <target state="translated">Etapa (decimal)</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Variants of NumberUpDown of disabled style.</source>
+        <target state="translated">Variantes de NumberUpDown de desativado estilo.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="HideHandleDescription">
+      <segment>
+        <source>Hide the spin handle with ShowButtonSpinner="False".</source>
+        <target state="translated">Hide o spin handle com ShowButtonSpinner="False".</target>
+      </segment>
+    </unit>
+    <unit id="HideHandleTitle">
+      <segment>
+        <source>Hide handle</source>
+        <target state="translated">Hide handle</target>
+      </segment>
+    </unit>
+    <unit id="KeyboardBehaviorDescription">
+      <segment>
+        <source>Disable keyboard spin with the Keyboard property.</source>
+        <target state="translated">Desativar keyboard spin com o Keyboard propriedade.</target>
+      </segment>
+    </unit>
+    <unit id="KeyboardBehaviorTitle">
+      <segment>
+        <source>Keyboard behavior</source>
+        <target state="translated">Keyboard behavior</target>
+      </segment>
+    </unit>
+    <unit id="MinMaxDescription">
+      <segment>
+        <source>Restrict the input value range.</source>
+        <target state="translated">Restrict o entrada valor intervalo.</target>
+      </segment>
+    </unit>
+    <unit id="MinMaxTitle">
+      <segment>
+        <source>Min / Max</source>
+        <target state="translated">Min / Max</target>
+      </segment>
+    </unit>
+    <unit id="MouseWheelBehaviorDescription">
+      <segment>
+        <source>Scroll the mouse wheel while the input is focused to increment or decrement by Increment.</source>
+        <target state="translated">Scroll o mouse wheel while o entrada é focused para increment ou decrement por Increment.</target>
+      </segment>
+    </unit>
+    <unit id="MouseWheelBehaviorTitle">
+      <segment>
+        <source>Mouse wheel behavior</source>
+        <target state="translated">Mouse wheel behavior</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentKeyboardEnabled">
+      <segment>
+        <source>Keyboard enabled</source>
+        <target state="translated">Keyboard ativado</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextEnterYourValue">
+      <segment>
+        <source>Enter your value</source>
+        <target state="translated">Enter seu valor</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">Erro</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextErrorWithPrefix">
+      <segment>
+        <source>Error with prefix</source>
+        <target state="translated">Erro com prefixo</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFocusAndScrollWheel">
+      <segment>
+        <source>Focus and scroll wheel</source>
+        <target state="translated">Focus e scroll wheel</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputWeight">
+      <segment>
+        <source>Input weight</source>
+        <target state="translated">Entrada weight</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputWithClearIcon">
+      <segment>
+        <source>input with clear icon</source>
+        <target state="translated">entrada com limpar ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextKeyboardDisabled">
+      <segment>
+        <source>Keyboard disabled</source>
+        <target state="translated">Keyboard desativado</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">Aviso</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarningWithPrefix">
+      <segment>
+        <source>Warning with prefix</source>
+        <target state="translated">Aviso com prefixo</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRawValuePrefix">
+      <segment>
+        <source>Raw: </source>
+        <target state="translated">Raw: </target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>NumberUpDown combines numeric input, precision string mode, min/max constraints, decimal steps, input variants, add-ons, clear affordances and validation status.</source>
+        <target state="translated">NumberUpDown combines numeric entrada, precision string modo, min/max constraints, decimal etapas, entrada variantes, adicionar-ons, limpar affordances e validation status.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Enter and adjust numeric values with keyboard, wheel and step controls.</source>
+        <target state="translated">Enter e adjust numeric values com keyboard, wheel e etapa controles.</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+        <target state="translated">Usando pre e post guias exemplo.</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+        <target state="translated">Pre / Post guia</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+        <target state="translated">Adicionar ícones de prefixo ou sufixo dentro da entrada.</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+        <target state="translated">prefixo e suffix</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAddon">
+      <segment>
+        <source>Add-ons</source>
+        <target state="translated">Adicionar-ons</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioRange">
+      <segment>
+        <source>Range</source>
+        <target state="translated">Intervalo</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioStyle">
+      <segment>
+        <source>Style</source>
+        <target state="translated">Estilo</target>
+      </segment>
+    </unit>
+    <unit id="SizesDescription">
+      <segment>
+        <source>NumberUpDown supports large (40px), default (32px), small (24px) and custom size.</source>
+        <target state="translated">NumberUpDown oferece suporte grande (40px), padrão (32px), pequeno (24px) e personalizado tamanho.</target>
+      </segment>
+    </unit>
+    <unit id="SizesTitle">
+      <segment>
+        <source>Sizes of NumberUpDown</source>
+        <target state="translated">Tamanhos de NumberUpDown</target>
+      </segment>
+    </unit>
+    <unit id="SpinnerModeDescription">
+      <segment>
+        <source>Numeric spinner.</source>
+        <target state="translated">Numeric spinner.</target>
+      </segment>
+    </unit>
+    <unit id="SpinnerModeTitle">
+      <segment>
+        <source>Spinner</source>
+        <target state="translated">Spinner</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+        <target state="translated">Adicionar status para Entrada com status, which could ser erro ou aviso.</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="StringModeDescription">
+      <segment>
+        <source>Keep a high-precision value as a string.</source>
+        <target state="translated">Keep a high-precision valor as a string.</target>
+      </segment>
+    </unit>
+    <unit id="StringModeTitle">
+      <segment>
+        <source>String mode (high precision)</source>
+        <target state="translated">String modo (high precision)</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of NumberUpDown.</source>
+        <target state="translated">Variantes de NumberUpDown.</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">Variantes</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconDescription">
+      <segment>
+        <source>Input box with the remove icon, click the icon to delete everything.</source>
+        <target state="translated">Entrada caixa com o remover ícone, clique o ícone para excluir everything.</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
+        <target state="translated">Com limpar ícone</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

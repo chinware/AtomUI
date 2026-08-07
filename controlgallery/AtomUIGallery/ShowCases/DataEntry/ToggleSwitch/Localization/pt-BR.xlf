@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">O most básico uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Disabled state of Switch.</source>
+        <target state="translated">Desativado estado de Alternância.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">Desativado</target>
+      </segment>
+    </unit>
+    <unit id="LoadingDescription">
+      <segment>
+        <source>Mark a pending state of switch.</source>
+        <target state="translated">Mark a pending estado de alternância.</target>
+      </segment>
+    </unit>
+    <unit id="LoadingTitle">
+      <segment>
+        <source>Loading</source>
+        <target state="translated">Carregando</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleDisabled">
+      <segment>
+        <source>toggle disabled</source>
+        <target state="translated">toggle desativado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleLoading">
+      <segment>
+        <source>toggle loading</source>
+        <target state="translated">toggle carregando</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentOff">
+      <segment>
+        <source>Off</source>
+        <target state="translated">Off</target>
+      </segment>
+    </unit>
+    <unit id="P2OffContentText">
+      <segment>
+        <source>Close</source>
+        <target state="translated">Fechar</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentOn">
+      <segment>
+        <source>On</source>
+        <target state="translated">Em</target>
+      </segment>
+    </unit>
+    <unit id="P2OnContentText">
+      <segment>
+        <source>Open</source>
+        <target state="translated">Abrir</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ToggleSwitch is used for immediate on/off decisions. It supports disabled state, loading state, custom on/off content, icon content, size variants, motion, and wave feedback.</source>
+        <target state="translated">ToggleSwitch é usado para immediate em/off decisions. Isso oferece suporte desativado estado, carregando estado, personalizado em/off conteúdo, ícone conteúdo, tamanho variantes, motion, e wave feedback.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Switch between two mutually exclusive states with optional text, icons, loading, and size variants.</source>
+        <target state="translated">Alternância between dois mutually exclusive states com opcional texto, ícones, carregando, e tamanho variantes.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="TextAndIconDescription">
+      <segment>
+        <source>With text and icon.</source>
+        <target state="translated">Com texto e ícone.</target>
+      </segment>
+    </unit>
+    <unit id="TextAndIconTitle">
+      <segment>
+        <source>Text and icon</source>
+        <target state="translated">Texto e ícone</target>
+      </segment>
+    </unit>
+    <unit id="TwoSizesDescription">
+      <segment>
+        <source>SizeType controls preset and Custom switch size modes.</source>
+        <target state="translated">SizeType controles predefinido e Personalizado alternância tamanho modes.</target>
+      </segment>
+    </unit>
+    <unit id="TwoSizesTitle">
+      <segment>
+        <source>Sizes</source>
+        <target state="translated">Tamanhos</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

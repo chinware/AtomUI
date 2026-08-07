@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind">
+    <unit id="AlignSelfDescription">
+      <segment>
+        <source>Override alignment per item with Flex.AlignSelf.</source>
+        <target state="translated">Override alignment per item with Flex.AlignSelf.</target>
+      </segment>
+    </unit>
+    <unit id="AlignSelfTitle">
+      <segment>
+        <source>Align Self</source>
+        <target state="translated">Alinhar Self</target>
+      </segment>
+    </unit>
+    <unit id="AlignmentDescription">
+      <segment>
+        <source>Set justify and align.</source>
+        <target state="translated">Definir justify e alinhar.</target>
+      </segment>
+    </unit>
+    <unit id="AlignmentTitle">
+      <segment>
+        <source>Alignment</source>
+        <target state="translated">Alignment</target>
+      </segment>
+    </unit>
+    <unit id="AutoWrapDescription">
+      <segment>
+        <source>Items wrap automatically.</source>
+        <target state="translated">Itens wrap automatically.</target>
+      </segment>
+    </unit>
+    <unit id="AutoWrapTitle">
+      <segment>
+        <source>Auto Wrap</source>
+        <target state="translated">Auto Wrap</target>
+      </segment>
+    </unit>
+    <unit id="BasicLayoutDescription">
+      <segment>
+        <source>The basic usage.</source>
+        <target state="translated">O básico uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicLayoutTitle">
+      <segment>
+        <source>Basic Layout</source>
+        <target state="translated">Básico Layout</target>
+      </segment>
+    </unit>
+    <unit id="BasisDescription">
+      <segment>
+        <source>Control initial size with Flex.Basis.</source>
+        <target state="translated">Control initial size with Flex.Basis.</target>
+      </segment>
+    </unit>
+    <unit id="BasisTitle">
+      <segment>
+        <source>Basis</source>
+        <target state="translated">Basis</target>
+      </segment>
+    </unit>
+    <unit id="CombinationDescription">
+      <segment>
+        <source>Nested flex panels for complex layouts.</source>
+        <target state="translated">Nested flex painéis para complexo layouts.</target>
+      </segment>
+    </unit>
+    <unit id="CombinationTitle">
+      <segment>
+        <source>Combination</source>
+        <target state="translated">Combination</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">Layout</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="FlexGrowDescription">
+      <segment>
+        <source>Distribute free space with Flex.Grow.</source>
+        <target state="translated">Distribute free space with Flex.Grow.</target>
+      </segment>
+    </unit>
+    <unit id="FlexGrowTitle">
+      <segment>
+        <source>Flex Grow</source>
+        <target state="translated">Flex Grow</target>
+      </segment>
+    </unit>
+    <unit id="FlexShrinkDescription">
+      <segment>
+        <source>Shrink is weighted by each item's base size.</source>
+        <target state="translated">Shrink é weighted por each item's base tamanho.</target>
+      </segment>
+    </unit>
+    <unit id="FlexShrinkTitle">
+      <segment>
+        <source>Flex Shrink (Weighted)</source>
+        <target state="translated">Flex Shrink (Weighted)</target>
+      </segment>
+    </unit>
+    <unit id="GapDescription">
+      <segment>
+        <source>Set spacing between items.</source>
+        <target state="translated">Definir espaçamento between itens.</target>
+      </segment>
+    </unit>
+    <unit id="GapTitle">
+      <segment>
+        <source>Gap</source>
+        <target state="translated">Gap</target>
+      </segment>
+    </unit>
+    <unit id="OrderDescription">
+      <segment>
+        <source>Change item order with Flex.Order.</source>
+        <target state="translated">Change item order with Flex.Order.</target>
+      </segment>
+    </unit>
+    <unit id="OrderTitle">
+      <segment>
+        <source>Order</source>
+        <target state="translated">Ordem</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentA">
+      <segment>
+        <source>A</source>
+        <target state="translated">A</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAbsolute">
+      <segment>
+        <source>absolute</source>
+        <target state="translated">absolute</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAuto">
+      <segment>
+        <source>auto</source>
+        <target state="translated">auto</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentB">
+      <segment>
+        <source>B</source>
+        <target state="translated">B</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentButton">
+      <segment>
+        <source>Button</source>
+        <target state="translated">Botão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentC">
+      <segment>
+        <source>C</source>
+        <target state="translated">C</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCenter">
+      <segment>
+        <source>center</source>
+        <target state="translated">center</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumn">
+      <segment>
+        <source>column</source>
+        <target state="translated">coluna</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnReverse">
+      <segment>
+        <source>column-reverse</source>
+        <target state="translated">coluna-reverse</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>custom</source>
+        <target state="translated">personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustomize">
+      <segment>
+        <source>customize</source>
+        <target state="translated">personalizar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDashed">
+      <segment>
+        <source>Dashed</source>
+        <target state="translated">Dashed</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault2">
+      <segment>
+        <source>default</source>
+        <target state="translated">padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFlexEnd">
+      <segment>
+        <source>flex-end</source>
+        <target state="translated">flex-fim</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFlexStart">
+      <segment>
+        <source>flex-start</source>
+        <target state="translated">flex-início</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGetStarted">
+      <segment>
+        <source>Get Started</source>
+        <target state="translated">Get Started</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHorizontal">
+      <segment>
+        <source>horizontal</source>
+        <target state="translated">horizontal</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>large</source>
+        <target state="translated">grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLink">
+      <segment>
+        <source>Link</source>
+        <target state="translated">Link</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>middle</source>
+        <target state="translated">centro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentNowrap">
+      <segment>
+        <source>nowrap</source>
+        <target state="translated">nowrap</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimary">
+      <segment>
+        <source>Primary</source>
+        <target state="translated">Primário</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRelative">
+      <segment>
+        <source>relative</source>
+        <target state="translated">relative</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentReverse">
+      <segment>
+        <source>reverse</source>
+        <target state="translated">reverse</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRow">
+      <segment>
+        <source>row</source>
+        <target state="translated">linha</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRowReverse">
+      <segment>
+        <source>row-reverse</source>
+        <target state="translated">linha-reverse</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>small</source>
+        <target state="translated">pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSpaceAround">
+      <segment>
+        <source>space-around</source>
+        <target state="translated">space-around</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSpaceBetween">
+      <segment>
+        <source>space-between</source>
+        <target state="translated">space-between</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSpaceEvenly">
+      <segment>
+        <source>space-evenly</source>
+        <target state="translated">space-evenly</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentStretch">
+      <segment>
+        <source>stretch</source>
+        <target state="translated">stretch</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentVertical">
+      <segment>
+        <source>vertical</source>
+        <target state="translated">vertical</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWrap">
+      <segment>
+        <source>wrap</source>
+        <target state="translated">wrap</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWrapReverse">
+      <segment>
+        <source>wrap-reverse</source>
+        <target state="translated">wrap-reverse</target>
+      </segment>
+    </unit>
+    <unit id="P2TextA">
+      <segment>
+        <source>A</source>
+        <target state="translated">A</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAlignContent">
+      <segment>
+        <source>Align content:</source>
+        <target state="translated">Alinhar conteúdo:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAlignItems">
+      <segment>
+        <source>Align items:</source>
+        <target state="translated">Alinhar itens:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAlignSelf">
+      <segment>
+        <source>Align self:</source>
+        <target state="translated">Alinhar self:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAtomuiIsAnEnterpriseClassUiDesignLanguage">
+      <segment>
+        <source>"AtomUI is an enterprise-class UI design language and Avalonia UI library."</source>
+        <target state="translated">"AtomUI is an enterprise-class UI design language and Avalonia UI library."</target>
+      </segment>
+    </unit>
+    <unit id="P2TextB">
+      <segment>
+        <source>B</source>
+        <target state="translated">B</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBasis">
+      <segment>
+        <source>Basis:</source>
+        <target state="translated">Basis:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBasisN100">
+      <segment>
+        <source>Basis 100</source>
+        <target state="translated">Basis 100</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBasisN200">
+      <segment>
+        <source>Basis 200</source>
+        <target state="translated">Basis 200</target>
+      </segment>
+    </unit>
+    <unit id="P2TextC">
+      <segment>
+        <source>C</source>
+        <target state="translated">C</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColumnGap">
+      <segment>
+        <source>Column gap:</source>
+        <target state="translated">Coluna gap:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextContainerWidth">
+      <segment>
+        <source>Container width:</source>
+        <target state="translated">Container largura:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomGap">
+      <segment>
+        <source>Custom gap:</source>
+        <target state="translated">Personalizado gap:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextD">
+      <segment>
+        <source>D</source>
+        <target state="translated">D</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDirection">
+      <segment>
+        <source>Direction:</source>
+        <target state="translated">Direção:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGrow">
+      <segment>
+        <source>Grow</source>
+        <target state="translated">Grow</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGrow2">
+      <segment>
+        <source>Grow:</source>
+        <target state="translated">Grow:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextHeight">
+      <segment>
+        <source>Height:</source>
+        <target state="translated">Altura:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextItem">
+      <segment>
+        <source>Item</source>
+        <target state="translated">Item</target>
+      </segment>
+    </unit>
+    <unit id="P2TextItemA">
+      <segment>
+        <source>Item A</source>
+        <target state="translated">Item A</target>
+      </segment>
+    </unit>
+    <unit id="P2TextItemA2">
+      <segment>
+        <source>Item A:</source>
+        <target state="translated">Item A:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextItemB">
+      <segment>
+        <source>Item B</source>
+        <target state="translated">Item B</target>
+      </segment>
+    </unit>
+    <unit id="P2TextItemB2">
+      <segment>
+        <source>Item B:</source>
+        <target state="translated">Item B:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextJustify">
+      <segment>
+        <source>Justify:</source>
+        <target state="translated">Justify:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextOrder">
+      <segment>
+        <source>Order:</source>
+        <target state="translated">Ordem:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPanel">
+      <segment>
+        <source>Panel</source>
+        <target state="translated">Painel</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPercent">
+      <segment>
+        <source>Percent:</source>
+        <target state="translated">Percent:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPx">
+      <segment>
+        <source>px</source>
+        <target state="translated">px</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRowGap">
+      <segment>
+        <source>Row gap:</source>
+        <target state="translated">Linha gap:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelect">
+      <segment>
+        <source>Select:</source>
+        <target state="translated">Selecionar:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectAlign">
+      <segment>
+        <source>Select align:</source>
+        <target state="translated">Selecionar alinhar:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectJustify">
+      <segment>
+        <source>Select justify:</source>
+        <target state="translated">Selecionar justify:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextShrink">
+      <segment>
+        <source>Shrink:</source>
+        <target state="translated">Shrink:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextValue">
+      <segment>
+        <source>Value:</source>
+        <target state="translated">Valor:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextWidth">
+      <segment>
+        <source>Width:</source>
+        <target state="translated">Largura:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextWrap">
+      <segment>
+        <source>Wrap:</source>
+        <target state="translated">Wrap:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>FlexPanel provides direction, wrapping, alignment, spacing, and per-item flex sizing for responsive layouts.</source>
+        <target state="translated">FlexPanel provides direção, wrapping, alignment, espaçamento, e per-item flex sizing para responsivo layouts.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Arrange children with CSS Flexbox-style layout rules.</source>
+        <target state="translated">Arrange children com CSS Flexbox-estilo layout rules.</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundDescription">
+      <segment>
+        <source>Adjust all flex properties.</source>
+        <target state="translated">Adjust all flex properties.</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundTitle">
+      <segment>
+        <source>Flex Playground</source>
+        <target state="translated">Flex Playground</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAlignment">
+      <segment>
+        <source>Alignment</source>
+        <target state="translated">Alignment</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioCombination">
+      <segment>
+        <source>Combination</source>
+        <target state="translated">Combination</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioItem">
+      <segment>
+        <source>Item</source>
+        <target state="translated">Item</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioPlayground">
+      <segment>
+        <source>Playground</source>
+        <target state="translated">Playground</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

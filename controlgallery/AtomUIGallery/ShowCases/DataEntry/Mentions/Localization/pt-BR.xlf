@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.MentionsShowCaseLangResourceKind">
+    <unit id="AsynchronousLoadingDescription">
+      <segment>
+        <source>async.</source>
+        <target state="translated">async.</target>
+      </segment>
+    </unit>
+    <unit id="AsynchronousLoadingTitle">
+      <segment>
+        <source>Asynchronous loading</source>
+        <target state="translated">Asynchronous carregando</target>
+      </segment>
+    </unit>
+    <unit id="AutoSizeDescription">
+      <segment>
+        <source>Height autoSize.</source>
+        <target state="translated">Altura autoSize.</target>
+      </segment>
+    </unit>
+    <unit id="AutoSizeTitle">
+      <segment>
+        <source>autoSize</source>
+        <target state="translated">autoSize</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest use.</source>
+        <target state="translated">O simplest usar.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeTriggerTokenDescription">
+      <segment>
+        <source>Customize Trigger Token by prefix props. Default to @, array also supported.</source>
+        <target state="translated">Personalizar Gatilho Token por prefixo props. Padrão para @, array also supported.</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeTriggerTokenTitle">
+      <segment>
+        <source>Customize Trigger Token</source>
+        <target state="translated">Personalizar Gatilho Token</target>
+      </segment>
+    </unit>
+    <unit id="DisabledOrReadOnlyDescription">
+      <segment>
+        <source>Configure disabled and readOnly.</source>
+        <target state="translated">Configure desativado e readOnly.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledOrReadOnlyTitle">
+      <segment>
+        <source>disabled or readOnly</source>
+        <target state="translated">desativado ou readOnly</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">Limpar</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetMention">
+      <segment>
+        <source>Set mention</source>
+        <target state="translated">Definir mention</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+        <target state="translated">Sem borda</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">Preenchido</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputToMentionPeopleToMentionTag">
+      <segment>
+        <source>input @ to mention people, # to mention tag</source>
+        <target state="translated">entrada @ para mention people, # para mention tag</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutlined">
+      <segment>
+        <source>Outlined</source>
+        <target state="translated">Contornado</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextThisIsDisabledMentions">
+      <segment>
+        <source>this is disabled Mentions</source>
+        <target state="translated">este é desativado Mentions</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextThisIsReadonlyMentions">
+      <segment>
+        <source>this is readOnly Mentions</source>
+        <target state="translated">este é readOnly Mentions</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">Underlined</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBoundValue">
+      <segment>
+        <source>Bound value:</source>
+        <target state="translated">Bound valor:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Mentions provides trigger-based candidate popups, async option loading, custom trigger tokens, input variants, placement, status and auto-size scenarios.</source>
+        <target state="translated">Mentions provides gatilho-based candidate popups, async opção carregando, personalizado gatilho tokens, entrada variantes, posicionamento, status e auto-tamanho scenarios.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Mention people, tags or custom entities while typing.</source>
+        <target state="translated">Mention people, tags ou personalizado entities while typing.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Change the suggestions placement.</source>
+        <target state="translated">Alterar o suggestions posicionamento.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">Posicionamento</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>Mentions supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+        <target state="translated">Mentions oferece suporte grande, centro, pequeno, e Personalizado tamanhos com local altura e font overrides.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Mentions size</source>
+        <target state="translated">Mentions tamanho</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Mentions with status, which could be error or warning.</source>
+        <target state="translated">Adicionar status para Mentions com status, which could ser erro ou aviso.</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingDescription">
+      <segment>
+        <source>Value now defaults to TwoWay binding, so typing or clearing the input updates the ViewModel without an explicit binding mode.</source>
+        <target state="translated">Valor now defaults para TwoWay vinculação, so typing ou clearing o entrada updates o ViewModel sem an explicit vinculação modo.</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingTitle">
+      <segment>
+        <source>Value binding</source>
+        <target state="translated">Valor vinculação</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Mentions, there are four variants: outlined filled borderless and underlined.</source>
+        <target state="translated">Variantes de Mentions, há são four variantes: contornado preenchido sem borda e underlined.</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">Variantes</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconDescription">
+      <segment>
+        <source>Customize clear button.</source>
+        <target state="translated">Personalizar limpar botão.</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
+        <target state="translated">Com limpar ícone</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

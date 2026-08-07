@@ -55,6 +55,7 @@
         <AtomUILocalizationBuildTasksAssembly Condition="'$(AtomUILocalizationBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUILocalizationBuildTasksAssembly>
         <AtomUILanguagePackageManifestPath Condition="'$(AtomUILanguagePackageManifestPath)' == ''">$(IntermediateOutputPath)AtomUI.LanguagePack.xml</AtomUILanguagePackageManifestPath>
         <AtomUILanguagePackagePropsPath Condition="'$(AtomUILanguagePackagePropsPath)' == ''">$(IntermediateOutputPath)$(PackageId).props</AtomUILanguagePackagePropsPath>
+        <AtomUILanguageTemplateOutputRootDirectory Condition="'$(AtomUILanguageTemplateOutputRootDirectory)' == ''">$(MSBuildProjectDirectory)/Localization</AtomUILanguageTemplateOutputRootDirectory>
     </PropertyGroup>
 
     <UsingTask TaskName="AtomUI.Build.Tasks.CollectLanguageCatalogsTask"
@@ -162,7 +163,7 @@
                                            Condition="'%(AtomUILanguage.Filename)%(AtomUILanguage.Extension)' == 'en-US.xlf'" />
         </ItemGroup>
         <AtomUI.Build.Tasks.ExportLanguageTemplatesTask SourceFiles="@(_AtomUILanguageTemplateSource)"
-                                                        OutputRootDirectory="$(MSBuildProjectDirectory)/Localization"
+                                                        OutputRootDirectory="$(AtomUILanguageTemplateOutputRootDirectory)"
                                                         TargetLanguage="$(AtomUITargetLanguage)">
             <Output TaskParameter="ExportedFiles" ItemName="AtomUIExportedLanguageTemplate" />
         </AtomUI.Build.Tasks.ExportLanguageTemplatesTask>

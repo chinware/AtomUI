@@ -60,7 +60,7 @@
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:DropdownButtonViewModel">
-        <StackPanel Orientation="Horizontal" Spacing="10">
+        <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
             <atom:DropdownButton ButtonType="Primary" TriggerType="Click" Content="{gallery:DropdownButtonShowCaseLangResource P2ContentEditFile}">
                 <atom:DropdownButton.DropdownFlyout>
                     <atom:MenuFlyout>
@@ -117,7 +117,7 @@
                     </atom:MenuFlyout>
                 </atom:DropdownButton.DropdownFlyout>
             </atom:DropdownButton>
-        </StackPanel>
+        </WrapPanel>
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>
@@ -128,7 +128,7 @@
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:DropdownButtonViewModel">
-        <StackPanel Orientation="Horizontal" Spacing="10">
+        <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
             <atom:DropdownButton ButtonType="Primary"
                                  SizeType="Large"
                                  TriggerType="Click"
@@ -195,7 +195,7 @@
                     </atom:MenuFlyout>
                 </atom:DropdownButton.DropdownFlyout>
             </atom:DropdownButton>
-        </StackPanel>
+        </WrapPanel>
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>

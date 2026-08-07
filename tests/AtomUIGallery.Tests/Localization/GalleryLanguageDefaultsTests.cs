@@ -17,6 +17,9 @@ public sealed class GalleryLanguageDefaultsTests
     [InlineData("zh-TW", "zh-TW")]
     [InlineData("zh-HK", "zh-TW")]
     [InlineData("zh-Hant", "zh-TW")]
+    [InlineData("pt-BR", "pt-BR")]
+    [InlineData("pt", "pt-BR")]
+    [InlineData("pt-PT", "en-US")]
     [InlineData("ja-JP", "en-US")]
     [InlineData("fr-FR", "en-US")]
     public void Resolve_Maps_System_Culture_To_Installed_Gallery_Language(

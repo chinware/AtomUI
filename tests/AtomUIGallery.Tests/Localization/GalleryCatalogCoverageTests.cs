@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using AtomUI;
 using AtomUI.Controls.Localization;
@@ -68,9 +69,9 @@ public class GalleryCatalogCoverageTests
                       type.Name == "en_US" || type.Name == "zh_CN" || type.Name == "zh_TW");
 
         var files = LoadLanguageFiles(catalogTypes);
-        files.Length.ShouldBe(276);
+        files.Length.ShouldBe(355);
         files.GroupBy(static file => file.CatalogType)
-             .ShouldAllBe(static group => group.Count() == 3);
+             .ShouldAllBe(static group => group.Count() == 3 || group.Count() == 4);
         AssertXliffContracts(catalogTypes, files);
 
         var application = Application.Current.ShouldNotBeNull();
@@ -78,7 +79,13 @@ public class GalleryCatalogCoverageTests
         var localizer = application.GetLocalizer().ShouldNotBeNull();
         try
         {
-            foreach (var language in new[] { LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW })
+            foreach (var language in new[]
+                     {
+                         LanguageTags.EnUS,
+                         LanguageTags.ZhCN,
+                         LanguageTags.ZhTW,
+                         LanguageTags.PtBR
+                     })
             {
                 manager.ChangeLanguage(language);
                 foreach (var file in files.Where(file => file.Language == language))
@@ -96,6 +103,104 @@ public class GalleryCatalogCoverageTests
         {
             manager.ChangeLanguage(LanguageTags.EnUS);
         }
+    }
+
+    [Fact]
+    public void Gallery_PtBr_Templates_Match_All_Application_Catalog_Sources()
+    {
+        var root = GetRepoRoot();
+        var sourceFiles = Directory.GetFiles(
+                                  Path.Combine(root, "controlgallery", "AtomUIGallery"),
+                                  "en-US.xlf",
+                                  SearchOption.AllDirectories)
+                              .Concat(Directory.GetFiles(
+                                  Path.Combine(root, "src", "AtomUI.Toolkits.GalleryBase"),
+                                  "en-US.xlf",
+                                  SearchOption.AllDirectories))
+                              .OrderBy(static path => path, StringComparer.Ordinal)
+                              .ToArray();
+
+        sourceFiles.Length.ShouldBe(79);
+        sourceFiles.Sum(CountUnits).ShouldBe(3902);
+        foreach (var sourcePath in sourceFiles)
+        {
+            var targetPath = Path.Combine(
+                Path.GetDirectoryName(sourcePath)!,
+                "pt-BR.xlf");
+            File.Exists(targetPath).ShouldBeTrue();
+
+            XNamespace xliff = "urn:oasis:names:tc:xliff:document:2.0";
+            var source = XDocument.Load(sourcePath).Root.ShouldNotBeNull();
+            var target = XDocument.Load(targetPath).Root.ShouldNotBeNull();
+            ((string?)source.Attribute("srcLang")).ShouldBe("en-US");
+            source.Attribute("trgLang").ShouldBeNull();
+            ((string?)target.Attribute("srcLang")).ShouldBe("en-US");
+            ((string?)target.Attribute("trgLang")).ShouldBe("pt-BR");
+            ((string?)target.Element(xliff + "file")?.Attribute("id"))
+                .ShouldBe((string?)source.Element(xliff + "file")?.Attribute("id"));
+
+            var targetUnits = target.Descendants(xliff + "unit").ToArray();
+            var sourceUnits = source.Descendants(xliff + "unit").ToArray();
+            var sourceUnitsByKey = sourceUnits.ToDictionary(
+                static unit => unit.Attribute("id").ShouldNotBeNull().Value,
+                StringComparer.Ordinal);
+            targetUnits.Select(static unit => (string?)unit.Attribute("id"))
+                       .OrderBy(static id => id, StringComparer.Ordinal)
+                       .ShouldBe(sourceUnits.Select(static unit => (string?)unit.Attribute("id"))
+                                           .OrderBy(static id => id, StringComparer.Ordinal));
+            foreach (var unit in targetUnits)
+            {
+                var key = unit.Attribute("id").ShouldNotBeNull().Value;
+                var sourceSegment = sourceUnitsByKey[key]
+                    .Element(xliff + "segment")
+                    .ShouldNotBeNull();
+                var segment = unit.Element(xliff + "segment").ShouldNotBeNull();
+                var sourceText = sourceSegment.Element(xliff + "source").ShouldNotBeNull().Value;
+                segment.Element(xliff + "source").ShouldNotBeNull().Value.ShouldBe(sourceText);
+                var targetElement = segment.Element(xliff + "target").ShouldNotBeNull();
+                targetElement.Value.ShouldNotBeEmpty();
+                ((string?)targetElement.Attribute("state")).ShouldBe("translated");
+                ExtractPlaceholders(targetElement.Value).ShouldBe(ExtractPlaceholders(sourceText));
+            }
+        }
+    }
+
+    [Fact]
+    public void Gallery_PtBr_Snapshot_Combines_Application_And_Official_Translations()
+    {
+        var application = Application.Current.ShouldNotBeNull();
+        application.ShouldBeAssignableTo<IGeneratedApplicationLanguageBootstrap>();
+        var manager = application.GetLanguageManager().ShouldNotBeNull();
+        var localizer = application.GetLocalizer().ShouldNotBeNull();
+        try
+        {
+            manager.ChangeLanguage(LanguageTags.PtBR);
+
+            manager.Current.CurrentLanguage.ShouldBe(LanguageTags.PtBR);
+            manager.Current.FormattingCulture.Name.ShouldBe("pt-BR");
+            manager.Current.TextDirection.ShouldBe(LanguageTextDirection.LeftToRight);
+            localizer.Get(CommonLangResourceKind.Cancel).ShouldBe("Cancelar");
+            localizer.Get(GalleryShowCaseHeaderLangResourceKind.PackageLabel).ShouldBe("Pacote");
+            localizer.Get(WorkspaceWindowLangResourceKind.MenuItemSettings).ShouldBe("Configurações");
+        }
+        finally
+        {
+            manager.ChangeLanguage(LanguageTags.EnUS);
+        }
+    }
+
+    private static int CountUnits(string path)
+    {
+        XNamespace xliff = "urn:oasis:names:tc:xliff:document:2.0";
+        return XDocument.Load(path).Descendants(xliff + "unit").Count();
+    }
+
+    private static string[] ExtractPlaceholders(string text)
+    {
+        return Regex.Matches(text, @"\{\d+\}")
+                    .Select(static match => match.Value)
+                    .OrderBy(static placeholder => placeholder, StringComparer.Ordinal)
+                    .ToArray();
     }
 
     private static CatalogLanguageFile[] LoadLanguageFiles(IReadOnlyCollection<Type> catalogTypes)
@@ -152,8 +257,19 @@ public class GalleryCatalogCoverageTests
         foreach (var catalogType in catalogTypes)
         {
             var catalogFiles = files.Where(file => file.CatalogType == catalogType).ToArray();
+            var expectedLanguages = new[]
+            {
+                LanguageTags.EnUS,
+                LanguageTags.ZhCN,
+                LanguageTags.ZhTW
+            };
+            if (catalogFiles.Any(static file => file.Language == LanguageTags.PtBR))
+            {
+                expectedLanguages = [.. expectedLanguages, LanguageTags.PtBR];
+            }
+
             catalogFiles.Select(static file => file.Language)
-                        .ShouldBe([LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW], ignoreOrder: true);
+                        .ShouldBe(expectedLanguages, ignoreOrder: true);
             catalogFiles.ShouldAllBe(file => file.CatalogId == catalogType.FullName);
 
             var sourceEntries = catalogFiles.Single(file => file.Language == LanguageTags.EnUS).Entries;

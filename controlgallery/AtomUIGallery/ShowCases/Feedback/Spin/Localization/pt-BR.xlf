@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.SpinShowCaseLangResourceKind">
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>A simple loading status.</source>
+        <target state="translated">Um status de carregamento simples.</target>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+        <target state="translated">Básico Uso</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">Feedback</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="CustomIndicatorDescription">
+      <segment>
+        <source>Use custom loading indicator.</source>
+        <target state="translated">Usar personalizado carregando indicator.</target>
+      </segment>
+    </unit>
+    <unit id="CustomIndicatorTitle">
+      <segment>
+        <source>Custom spinning indicator</source>
+        <target state="translated">Personalizado spinning indicator</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedDescriptionDescription">
+      <segment>
+        <source>Customized description</source>
+        <target state="translated">Customized descrição</target>
+      </segment>
+    </unit>
+    <unit id="CustomizedDescriptionTitle">
+      <segment>
+        <source>Customized description</source>
+        <target state="translated">Customized descrição</target>
+      </segment>
+    </unit>
+    <unit id="EmbeddedModeDescription">
+      <segment>
+        <source>Embedding content into Spin will set it into loading state.</source>
+        <target state="translated">Embedding conteúdo into Spin irá definir isso into carregando estado.</target>
+      </segment>
+    </unit>
+    <unit id="EmbeddedModeTitle">
+      <segment>
+        <source>Embedded mode</source>
+        <target state="translated">Embedded modo</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionFurtherDetailsAboutTheContextOfThisAlert">
+      <segment>
+        <source>Further details about the context of this alert.</source>
+        <target state="translated">Further details sobre o context de este alerta.</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageAlertMessageTitle">
+      <segment>
+        <source>Alert message title</source>
+        <target state="translated">Alerta mensagem título</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLoadingState">
+      <segment>
+        <source>Loading state：</source>
+        <target state="translated">Carregando estado：</target>
+      </segment>
+    </unit>
+    <unit id="P2TipLoading">
+      <segment>
+        <source>Loading...</source>
+        <target state="translated">Carregando...</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Spin and SpinIndicator display activity while a region, card, or page is waiting for data, with optional tips, masks, and custom indicators.</source>
+        <target state="translated">Spin e SpinIndicator exibir activity while a region, cartão, ou página é waiting para dados, com opcional tips, masks, e personalizado indicators.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Loading indicators for asynchronous content.</source>
+        <target state="translated">Carregando indicators para asynchronous conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>SpinIndicator supports small, middle, large, and custom size types; the custom type follows the middle metrics by default and can override indicator metrics.</source>
+        <target state="translated">SpinIndicator supports small, middle, large, and custom size types; the custom type follows the middle metrics by default and can override indicator metrics.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

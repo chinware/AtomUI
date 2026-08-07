@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.CascaderShowCaseLangResourceKind">
+    <unit id="BasicCascaderViewDescription">
+      <segment>
+        <source>The most basic usage.</source>
+        <target state="translated">O most básico uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicCascaderViewTitle">
+      <segment>
+        <source>Basic CascaderView</source>
+        <target state="translated">Básico CascaderView</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Cascade selection box for selecting province/city/district.</source>
+        <target state="translated">Cascade seleção caixa para selecionando province/city/district.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ChangeOnSelectDescription">
+      <segment>
+        <source>Allows the selection of only parent options.</source>
+        <target state="translated">Permite o seleção de somente pai opções.</target>
+      </segment>
+    </unit>
+    <unit id="ChangeOnSelectTitle">
+      <segment>
+        <source>Change on select</source>
+        <target state="translated">Alterar em selecionar</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">Entrada de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="DefaultExpandedDescription">
+      <segment>
+        <source>You can set the default expansion path..</source>
+        <target state="translated">Você pode definir o padrão expansion path..</target>
+      </segment>
+    </unit>
+    <unit id="DefaultExpandedTitle">
+      <segment>
+        <source>Default expanded</source>
+        <target state="translated">Padrão expanded</target>
+      </segment>
+    </unit>
+    <unit id="DefaultValueDescription">
+      <segment>
+        <source>Specifies default value by an array.</source>
+        <target state="translated">Specifies padrão valor por an array.</target>
+      </segment>
+    </unit>
+    <unit id="DefaultValueTitle">
+      <segment>
+        <source>Default value</source>
+        <target state="translated">Padrão valor</target>
+      </segment>
+    </unit>
+    <unit id="DisabledOptionDescription">
+      <segment>
+        <source>Disable option by specifying the disabled property in options.</source>
+        <target state="translated">Desativar opção por specifying o desativado propriedade em opções.</target>
+      </segment>
+    </unit>
+    <unit id="DisabledOptionTitle">
+      <segment>
+        <source>Disabled option</source>
+        <target state="translated">Desativado opção</target>
+      </segment>
+    </unit>
+    <unit id="EmptyIndicatorDescription">
+      <segment>
+        <source>Use EmptyIndicator to replace the default CascaderView empty content.</source>
+        <target state="translated">Usar EmptyIndicator para replace o padrão CascaderView vazio conteúdo.</target>
+      </segment>
+    </unit>
+    <unit id="EmptyIndicatorTitle">
+      <segment>
+        <source>Custom empty indicator</source>
+        <target state="translated">Personalizado vazio indicator</target>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateDescription">
+      <segment>
+        <source>You can use the Template mechanism to generate tree nodes</source>
+        <target state="translated">Você pode usar o Template mechanism para generate árvore nodes</target>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateTitle">
+      <segment>
+        <source>Generate by template</source>
+        <target state="translated">Generate por template</target>
+      </segment>
+    </unit>
+    <unit id="HoverDescription">
+      <segment>
+        <source>Hover to expand sub menu, click to select option.</source>
+        <target state="translated">Sobreposição para expand sub menu, clique para selecionar opção.</target>
+      </segment>
+    </unit>
+    <unit id="HoverTitle">
+      <segment>
+        <source>Hover</source>
+        <target state="translated">Sobreposição</target>
+      </segment>
+    </unit>
+    <unit id="LoadOptionsLazilyDescription">
+      <segment>
+        <source>Load options lazily with loadData.</source>
+        <target state="translated">Load opções lazily com loadData.</target>
+      </segment>
+    </unit>
+    <unit id="LoadOptionsLazilyTitle">
+      <segment>
+        <source>Load Options Lazily</source>
+        <target state="translated">Load Opções Lazily</target>
+      </segment>
+    </unit>
+    <unit id="MultipleDescription">
+      <segment>
+        <source>Select multiple options. Disable the checkbox by adding the disableCheckbox property and selecting a specific item. The style of the disable can be modified by the className.</source>
+        <target state="translated">Selecionar múltiplos opções. Desativar o checkbox por adding o disableCheckbox propriedade e selecionando a specific item. O estilo de o desativar pode ser modified por o className.</target>
+      </segment>
+    </unit>
+    <unit id="MultipleTitle">
+      <segment>
+        <source>Multiple</source>
+        <target state="translated">Múltiplos</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomleft">
+      <segment>
+        <source>BottomLeft</source>
+        <target state="translated">BottomLeft</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomright">
+      <segment>
+        <source>BottomRight</source>
+        <target state="translated">BottomRight</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopleft">
+      <segment>
+        <source>TopLeft</source>
+        <target state="translated">TopLeft</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopright">
+      <segment>
+        <source>TopRight</source>
+        <target state="translated">TopRight</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBamboo">
+      <segment>
+        <source>Bamboo</source>
+        <target state="translated">Bamboo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBambooBoy">
+      <segment>
+        <source>Bamboo Boy</source>
+        <target state="translated">Bamboo Boy</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBanban">
+      <segment>
+        <source>Banban</source>
+        <target state="translated">Banban</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBig">
+      <segment>
+        <source>Big</source>
+        <target state="translated">Big</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDynamicOptionFormat">
+      <segment>
+        <source>{0} Dynamic {1}</source>
+        <target state="translated">{0} Dinâmico {1}</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFeifei">
+      <segment>
+        <source>Feifei</source>
+        <target state="translated">Feifei</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGrayWolf">
+      <segment>
+        <source>Gray Wolf</source>
+        <target state="translated">Gray Wolf</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">Green</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+        <target state="translated">Hangzhou</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHefangJie">
+      <segment>
+        <source>Hefang jie</source>
+        <target state="translated">Hefang jie</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHumbleAdministratorsGarden">
+      <segment>
+        <source>Humble Administrator's Garden</source>
+        <target state="translated">Humble Administrator's Garden</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiangsu">
+      <segment>
+        <source>Jiangsu</source>
+        <target state="translated">Jiangsu</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiaoTailang">
+      <segment>
+        <source>Jiao Tailang</source>
+        <target state="translated">Jiao Tailang</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLight">
+      <segment>
+        <source>Light</source>
+        <target state="translated">Light</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLingeringGarden">
+      <segment>
+        <source>Lingering Garden</source>
+        <target state="translated">Lingering Garden</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLingyinShi">
+      <segment>
+        <source>Lingyin shi</source>
+        <target state="translated">Lingyin shi</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLittle">
+      <segment>
+        <source>Little</source>
+        <target state="translated">Little</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLittleTadpole">
+      <segment>
+        <source>Little Tadpole</source>
+        <target state="translated">Little Tadpole</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMoonLake">
+      <segment>
+        <source>Moon Lake</source>
+        <target state="translated">Moon Lake</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNanjing">
+      <segment>
+        <source>Nanjing</source>
+        <target state="translated">Nanjing</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNingbo">
+      <segment>
+        <source>Ningbo</source>
+        <target state="translated">Ningbo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSunYatSenMausoleum">
+      <segment>
+        <source>Sun Yat-sen Mausoleum</source>
+        <target state="translated">Sun Yat-sen Mausoleum</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSuzhou">
+      <segment>
+        <source>Suzhou</source>
+        <target state="translated">Suzhou</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTadpole">
+      <segment>
+        <source>Tadpole</source>
+        <target state="translated">Tadpole</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTianyiPavilion">
+      <segment>
+        <source>Tianyi Pavilion</source>
+        <target state="translated">Tianyi Pavilion</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWestLake">
+      <segment>
+        <source>West Lake</source>
+        <target state="translated">West Lake</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWildWolf">
+      <segment>
+        <source>Wild Wolf</source>
+        <target state="translated">Wild Wolf</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXiaoHuihui">
+      <segment>
+        <source>Xiao Huihui</source>
+        <target state="translated">Xiao Huihui</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXiaoXingxing">
+      <segment>
+        <source>Xiao Xingxing</source>
+        <target state="translated">Xiao Xingxing</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXisha">
+      <segment>
+        <source>Xisha</source>
+        <target state="translated">Xisha</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderYellow">
+      <segment>
+        <source>Yellow</source>
+        <target state="translated">Yellow</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhangSan">
+      <segment>
+        <source>Zhang San</source>
+        <target state="translated">Zhang San</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhejiang">
+      <segment>
+        <source>Zhejiang</source>
+        <target state="translated">Zhejiang</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhongHuaMen">
+      <segment>
+        <source>Zhong Hua Men</source>
+        <target state="translated">Zhong Hua Men</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeCustom">
+      <segment>
+        <source>SizeType: Custom</source>
+        <target state="translated">SizeType: Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeLarge">
+      <segment>
+        <source>SizeType: Large</source>
+        <target state="translated">SizeType: Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeMiddle">
+      <segment>
+        <source>SizeType: Middle</source>
+        <target state="translated">SizeType: Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeSmall">
+      <segment>
+        <source>SizeType: Small</source>
+        <target state="translated">SizeType: Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">Por favor selecionar</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomEmptyIndicator">
+      <segment>
+        <source>No options to display</source>
+        <target state="translated">Não opções para exibir</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPlacement">
+      <segment>
+        <source>Placement:</source>
+        <target state="translated">Posicionamento:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedOptionBinding">
+      <segment>
+        <source>SelectedOption</source>
+        <target state="translated">SelectedOption</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedOptionsBinding">
+      <segment>
+        <source>SelectedOptions</source>
+        <target state="translated">SelectedOptions</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleByTemplate">
+      <segment>
+        <source>By template</source>
+        <target state="translated">Por template</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleShowcheckedstrategyAll">
+      <segment>
+        <source>ShowCheckedStrategy=All</source>
+        <target state="translated">ShowCheckedStrategy=All</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleShowcheckedstrategyShowparent">
+      <segment>
+        <source>ShowCheckedStrategy=ShowParent</source>
+        <target state="translated">ShowCheckedStrategy=ShowParent</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Cascader combines an input selector with linked option columns, while CascaderView exposes the column browser directly for embedded selection workflows.</source>
+        <target state="translated">Cascader combines an entrada selector com linked opção colunas, while CascaderView exposes o coluna browser directly para embedded seleção workflows.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Hierarchical selection and cascaded option browsing.</source>
+        <target state="translated">Hierarchical seleção e cascaded opção browsing.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>You can manually specify the position of the popup via placement.</source>
+        <target state="translated">Você pode manually specify o posição de o popup via posicionamento.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">Posicionamento</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Use prefix to customize the prefix content, use suffixIcon to customize the selection box suffix icon, and use expandIcon to customize the current item expand icon.</source>
+        <target state="translated">Usar prefixo para personalizar o prefixo conteúdo, usar suffixIcon para personalizar o seleção caixa suffix ícone, e usar expandIcon para personalizar o atual item expand ícone.</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>Prefix and Suffix</source>
+        <target state="translated">Prefixo e Suffix</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+        <target state="translated">Avançado</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioCascaderView">
+      <segment>
+        <source>CascaderView</source>
+        <target state="translated">CascaderView</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioMultiple">
+      <segment>
+        <source>Multiple</source>
+        <target state="translated">Múltiplos</target>
+      </segment>
+    </unit>
+    <unit id="SearchDescription">
+      <segment>
+        <source>Search and select options directly.</source>
+        <target state="translated">Pesquisa e selecionar opções directly.</target>
+      </segment>
+    </unit>
+    <unit id="SearchTitle">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="SearchableDescription">
+      <segment>
+        <source>Searchable CascaderView.</source>
+        <target state="translated">Searchable CascaderView.</target>
+      </segment>
+    </unit>
+    <unit id="SearchableItemsSourceDescription">
+      <segment>
+        <source>Searchable CascaderView with ItemsSource.</source>
+        <target state="translated">Searchable CascaderView com ItemsSource.</target>
+      </segment>
+    </unit>
+    <unit id="SearchableItemsSourceTitle">
+      <segment>
+        <source>Searchable</source>
+        <target state="translated">Searchable</target>
+      </segment>
+    </unit>
+    <unit id="SearchableTitle">
+      <segment>
+        <source>Searchable</source>
+        <target state="translated">Searchable</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">Limpar</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingDescription">
+      <segment>
+        <source>Bind SelectedOption and SelectedOptions to view-model values, then click options or action buttons to watch both sides stay synchronized.</source>
+        <target state="translated">Bind SelectedOption e SelectedOptions para visualização-model values, then clique opções ou ação botões para watch both sides stay synchronized.</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectBoth">
+      <segment>
+        <source>Select both</source>
+        <target state="translated">Selecionar both</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectFirst">
+      <segment>
+        <source>Select West Lake</source>
+        <target state="translated">Selecionar West Lake</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectSecond">
+      <segment>
+        <source>Select Lingyin shi</source>
+        <target state="translated">Selecionar Lingyin shi</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingTitle">
+      <segment>
+        <source>SelectedOption / SelectedOptions binding</source>
+        <target state="translated">SelectedOption / SelectedOptions vinculação</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingValueTitle">
+      <segment>
+        <source>Bound value</source>
+        <target state="translated">Bound valor</target>
+      </segment>
+    </unit>
+    <unit id="ShowCheckedStrategyDescription">
+      <segment>
+        <source>Shows a selected item in a box using showCheckedStrategy.</source>
+        <target state="translated">Shows a selected item in a box using showCheckedStrategy.</target>
+      </segment>
+    </unit>
+    <unit id="ShowCheckedStrategyTitle">
+      <segment>
+        <source>ShowCheckedStrategy</source>
+        <target state="translated">ShowCheckedStrategy</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Cascader supports large, middle, small, and Custom sizes with local height overrides.</source>
+        <target state="translated">Cascader oferece suporte grande, centro, pequeno, e Personalizado tamanhos com local altura overrides.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Cascader with status, which could be error or warning.</source>
+        <target state="translated">Adicionar status para Cascader com status, which could ser erro ou aviso.</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">Status</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Cascader, there are four variants: outlined filled borderless and underlined.</source>
+        <target state="translated">Variantes de Cascader, há são four variantes: contornado preenchido sem borda e underlined.</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">Variantes</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

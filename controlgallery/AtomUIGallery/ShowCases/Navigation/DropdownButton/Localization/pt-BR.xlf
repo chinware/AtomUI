@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind">
+    <unit id="ArrowDescription">
+      <segment>
+        <source>You could display an arrow.</source>
+        <target state="translated">Você could exibir an arrow.</target>
+      </segment>
+    </unit>
+    <unit id="ArrowTitle">
+      <segment>
+        <source>Arrow</source>
+        <target state="translated">Arrow</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic dropdown menu.</source>
+        <target state="translated">O most básico dropdown menu.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ButtonTypesDescription">
+      <segment>
+        <source>Support centralized button type.</source>
+        <target state="translated">Suporte centralized botão tipo.</target>
+      </segment>
+    </unit>
+    <unit id="ButtonTypesTitle">
+      <segment>
+        <source>Button Types</source>
+        <target state="translated">Botão Types</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">Navegação</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">Inferior</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomLeft">
+      <segment>
+        <source>BottomLeft</source>
+        <target state="translated">BottomLeft</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottomRight">
+      <segment>
+        <source>BottomRight</source>
+        <target state="translated">BottomRight</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Personalizado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEditFile">
+      <segment>
+        <source>Edit File</source>
+        <target state="translated">Editar Arquivo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+        <target state="translated">Sobreposição me</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">Grande</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">Centro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">Pequeno</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">Superior</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopLeft">
+      <segment>
+        <source>TopLeft</source>
+        <target state="translated">TopLeft</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopRight">
+      <segment>
+        <source>TopRight</source>
+        <target state="translated">TopRight</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCopy">
+      <segment>
+        <source>Copy</source>
+        <target state="translated">Copy</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCut">
+      <segment>
+        <source>Cut</source>
+        <target state="translated">Cut</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDelete">
+      <segment>
+        <source>Delete</source>
+        <target state="translated">Excluir</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPaste">
+      <segment>
+        <source>Paste</source>
+        <target state="translated">Paste</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPasteFromHistory">
+      <segment>
+        <source>Paste from History</source>
+        <target state="translated">Paste de History</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>DropdownButton combines a button trigger with a MenuFlyout, supporting hover or click triggers, arrow indicators, placement options, button variants, and forwarded menu item click events.</source>
+        <target state="translated">DropdownButton combines a botão gatilho com a MenuFlyout, supporting sobreposição ou clique triggers, arrow indicators, posicionamento opções, botão variantes, e forwarded menu item clique events.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A button that opens contextual menu actions.</source>
+        <target state="translated">A botão que opens contextual menu ações.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Support 6 placements.</source>
+        <target state="translated">Suporte 6 placements.</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">Posicionamento</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>DropdownButton supports large, middle, small, and Custom sizes with local size properties.</source>
+        <target state="translated">DropdownButton oferece suporte grande, centro, pequeno, e Personalizado tamanhos com local tamanho properties.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Size type</source>
+        <target state="translated">Tamanho tipo</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

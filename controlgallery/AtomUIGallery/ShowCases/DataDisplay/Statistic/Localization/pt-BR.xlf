@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.StatisticShowCaseLangResourceKind">
+    <unit id="AnimatedNumberDescription">
+      <segment>
+        <source>Animated number with StatisticCountUp.</source>
+        <target state="translated">Animated number com StatisticCountUp.</target>
+      </segment>
+    </unit>
+    <unit id="AnimatedNumberTitle">
+      <segment>
+        <source>Animated number</source>
+        <target state="translated">Animated number</target>
+      </segment>
+    </unit>
+    <unit id="ApiEventCountdownFinished">
+      <segment>
+        <source>Raised when a TimerStatistic countdown reaches zero.</source>
+        <target state="translated">Emitido quando a TimerStatistic countdown reaches zero.</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simplest Usage.</source>
+        <target state="translated">Simplest Uso.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="InCardDescription">
+      <segment>
+        <source>Display statistic data in Card.</source>
+        <target state="translated">Exibir statistic dados em Cartão.</target>
+      </segment>
+    </unit>
+    <unit id="InCardTitle">
+      <segment>
+        <source>In Card</source>
+        <target state="translated">Em Cartão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRecharge">
+      <segment>
+        <source>Recharge</source>
+        <target state="translated">Recharge</target>
+      </segment>
+    </unit>
+    <unit id="P2DayLevelFormat">
+      <segment>
+        <source>d\ \d\ h\ \h\ m\ \m\ s\ \s</source>
+        <target state="translated">d\ \d\ h\ \h\ m\ \m\ s\ \s</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAccountBalanceCny">
+      <segment>
+        <source>Account Balance (CNY)</source>
+        <target state="translated">Saldo da conta (CNY)</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderActive">
+      <segment>
+        <source>Active</source>
+        <target state="translated">Ativo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderActiveUsers">
+      <segment>
+        <source>Active Users</source>
+        <target state="translated">Usuários ativos</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCountdown">
+      <segment>
+        <source>Countdown</source>
+        <target state="translated">Countdown</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCountup">
+      <segment>
+        <source>Countup</source>
+        <target state="translated">Countup</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDayLevelCountdown">
+      <segment>
+        <source>Day Level (Countdown)</source>
+        <target state="translated">Day Level (Countdown)</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDayLevelCountup">
+      <segment>
+        <source>Day Level (Countup)</source>
+        <target state="translated">Day Level (Countup)</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFeedback">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">Feedback</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderIdle">
+      <segment>
+        <source>Idle</source>
+        <target state="translated">Idle</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMillionSeconds">
+      <segment>
+        <source>Million Seconds</source>
+        <target state="translated">Million Segundos</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUnmerged">
+      <segment>
+        <source>Unmerged</source>
+        <target state="translated">Unmerged</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Statistic presents important numbers with optional units, icons, loading states, animated values and timer-based countdown or countup displays.</source>
+        <target state="translated">Statistic presents important numbers com opcional units, ícones, carregando states, animated values e timer-based countdown ou countup displays.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display numeric facts, metrics and countdown values with clear visual emphasis.</source>
+        <target state="translated">Exibir numeric facts, metrics e countdown values com limpar visual emphasis.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="TimerDescription">
+      <segment>
+        <source>Timer component.</source>
+        <target state="translated">Timer component.</target>
+      </segment>
+    </unit>
+    <unit id="TimerTitle">
+      <segment>
+        <source>Timer</source>
+        <target state="translated">Timer</target>
+      </segment>
+    </unit>
+    <unit id="UnitDescription">
+      <segment>
+        <source>Add unit through prefix and suffix.</source>
+        <target state="translated">Adicionar unit through prefixo e suffix.</target>
+      </segment>
+    </unit>
+    <unit id="UnitTitle">
+      <segment>
+        <source>Unit</source>
+        <target state="translated">Unit</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

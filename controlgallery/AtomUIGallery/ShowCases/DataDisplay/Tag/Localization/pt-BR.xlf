@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.TagShowCaseLangResourceKind">
+    <unit id="ApiEventClosed">
+      <segment>
+        <source>Raised when the close action is clicked.</source>
+        <target state="translated">Emitido quando o fechar ação é clicado.</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.</source>
+        <target state="translated">Uso de básico Tag, e isso could ser IsClosable e personalizar fechar botão por definir closeIcon propriedade,irá exibir padrão fechar botão quando closeIcon é configuração para true. IsClosable Tag oferece suporte onClose events.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="CheckableTagDescription">
+      <segment>
+        <source>CheckableTag works like Checkbox. CheckableTagGroup provides single and multiple selection over a shared option set.</source>
+        <target state="translated">CheckableTag funciona like Checkbox. CheckableTagGroup provides single e múltiplos seleção over a shared opção definir.</target>
+      </segment>
+    </unit>
+    <unit id="CheckableTagTitle">
+      <segment>
+        <source>Checkable</source>
+        <target state="translated">Checkable</target>
+      </segment>
+    </unit>
+    <unit id="ColorfulTagDescription">
+      <segment>
+        <source>We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.</source>
+        <target state="translated">Nós predefinido a series de colorful tag styles para usar em diferente situations. Você pode also definir isso para a hex cor string para personalizado cor.</target>
+      </segment>
+    </unit>
+    <unit id="ColorfulTagTitle">
+      <segment>
+        <source>Colorful Tag</source>
+        <target state="translated">Colorful Tag</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">Exibição de dados</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="IconDescription">
+      <segment>
+        <source>Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag. If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.</source>
+        <target state="translated">Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag. If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.</target>
+      </segment>
+    </unit>
+    <unit id="IconTitle">
+      <segment>
+        <source>Icon</source>
+        <target state="translated">Ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBlue">
+      <segment>
+        <source>blue</source>
+        <target state="translated">blue</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCyan">
+      <segment>
+        <source>cyan</source>
+        <target state="translated">cyan</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>default</source>
+        <target state="translated">padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentError">
+      <segment>
+        <source>error</source>
+        <target state="translated">erro</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFacebook">
+      <segment>
+        <source>Facebook</source>
+        <target state="translated">Facebook</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">Preenchido</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGeekblue">
+      <segment>
+        <source>geekblue</source>
+        <target state="translated">geekblue</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGold">
+      <segment>
+        <source>gold</source>
+        <target state="translated">gold</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGreen">
+      <segment>
+        <source>green</source>
+        <target state="translated">green</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLime">
+      <segment>
+        <source>lime</source>
+        <target state="translated">lime</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLink">
+      <segment>
+        <source>Link</source>
+        <target state="translated">Link</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLinkedin">
+      <segment>
+        <source>Linkedin</source>
+        <target state="translated">Linkedin</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMagenta">
+      <segment>
+        <source>magenta</source>
+        <target state="translated">magenta</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOrange">
+      <segment>
+        <source>orange</source>
+        <target state="translated">orange</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOutlined">
+      <segment>
+        <source>Outlined</source>
+        <target state="translated">Contornado</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPreventDefault">
+      <segment>
+        <source>Prevent Default</source>
+        <target state="translated">Prevent Padrão</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentProcessing">
+      <segment>
+        <source>processing</source>
+        <target state="translated">processing</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPurple">
+      <segment>
+        <source>purple</source>
+        <target state="translated">purple</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRed">
+      <segment>
+        <source>red</source>
+        <target state="translated">red</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSolid">
+      <segment>
+        <source>Solid</source>
+        <target state="translated">Solid</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSuccess">
+      <segment>
+        <source>success</source>
+        <target state="translated">sucesso</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTagN1">
+      <segment>
+        <source>Tag 1</source>
+        <target state="translated">Tag 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTagN2">
+      <segment>
+        <source>Tag 2</source>
+        <target state="translated">Tag 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTwitter">
+      <segment>
+        <source>Twitter</source>
+        <target state="translated">Twitter</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentVolcano">
+      <segment>
+        <source>volcano</source>
+        <target state="translated">volcano</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarning">
+      <segment>
+        <source>warning</source>
+        <target state="translated">aviso</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentYes">
+      <segment>
+        <source>Yes</source>
+        <target state="translated">Sim</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentYoutube">
+      <segment>
+        <source>Youtube</source>
+        <target state="translated">Youtube</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelCheckable">
+      <segment>
+        <source>Checkable</source>
+        <target state="translated">Checkable</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelMultiple">
+      <segment>
+        <source>Multiple</source>
+        <target state="translated">Múltiplos</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSingle">
+      <segment>
+        <source>Single</source>
+        <target state="translated">Single</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomFilled">
+      <segment>
+        <source>Custom (filled)</source>
+        <target state="translated">Personalizado (preenchido)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomOutlined">
+      <segment>
+        <source>Custom (outlined)</source>
+        <target state="translated">Personalizado (contornado)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomSolid">
+      <segment>
+        <source>Custom (solid)</source>
+        <target state="translated">Personalizado (solid)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomVariant">
+      <segment>
+        <source>Custom color</source>
+        <target state="translated">Personalizado cor</target>
+      </segment>
+    </unit>
+    <unit id="P2TextMaterialIcon">
+      <segment>
+        <source>Material icon</source>
+        <target state="translated">Material ícone</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPresetVariant">
+      <segment>
+        <source>Preset color</source>
+        <target state="translated">Predefinido cor</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPresetsFilled">
+      <segment>
+        <source>Presets (filled)</source>
+        <target state="translated">Presets (preenchido)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPresetsOutlined">
+      <segment>
+        <source>Presets (outlined)</source>
+        <target state="translated">Presets (contornado)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPresetsSolid">
+      <segment>
+        <source>Presets (solid)</source>
+        <target state="translated">Presets (solid)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextStatusFilled">
+      <segment>
+        <source>Status (filled)</source>
+        <target state="translated">Status (preenchido)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextStatusOutlined">
+      <segment>
+        <source>Status (outlined)</source>
+        <target state="translated">Status (contornado)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextStatusSolid">
+      <segment>
+        <source>Status (solid)</source>
+        <target state="translated">Status (solid)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextStatusVariant">
+      <segment>
+        <source>Status color</source>
+        <target state="translated">Status cor</target>
+      </segment>
+    </unit>
+    <unit id="P2TextVariants">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Tag displays short labels with preset, status and custom colors across Filled, Solid and Outlined variants.</source>
+        <target state="translated">Tag displays curto rótulos com predefinido, status e personalizado cores across Preenchido, Solid e Contornado variantes.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Label, categorize and mark status with compact colored chips.</source>
+        <target state="translated">Rótulo, categorize e mark status com compacto colored chips.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="StatusTagDescription">
+      <segment>
+        <source>We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.</source>
+        <target state="translated">Nós predefinido five diferente cores, você pode definir cor propriedade such as sucesso,processing,erro,padrão e aviso para indicate specific status.</target>
+      </segment>
+    </unit>
+    <unit id="StatusTagTitle">
+      <segment>
+        <source>Status Tag</source>
+        <target state="translated">Status Tag</target>
+      </segment>
+    </unit>
+    <unit id="VariantDescription">
+      <segment>
+        <source>Use Filled, Solid, and Outlined variants independently of the selected color.</source>
+        <target state="translated">Usar Preenchido, Solid, e Contornado variantes independently de o selecionado cor.</target>
+      </segment>
+    </unit>
+    <unit id="VariantTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">Variantes</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

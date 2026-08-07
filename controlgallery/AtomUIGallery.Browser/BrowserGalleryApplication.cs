@@ -11,7 +11,7 @@ using Avalonia.Media;
 
 namespace AtomUIGallery.Browser;
 
-public class BrowserGalleryApplication : Application
+public partial class BrowserGalleryApplication : Application
 {
     public override void Initialize()
     {
@@ -19,7 +19,7 @@ public class BrowserGalleryApplication : Application
         {
             builder.UseLanguages(
                 GalleryLanguageDefaults.Resolve(CultureInfo.CurrentUICulture),
-                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW, LanguageTags.PtBR]);
             builder.WithInitialTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseAlibabaPuHuiTiFont();

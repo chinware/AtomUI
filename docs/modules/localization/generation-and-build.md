@@ -58,6 +58,12 @@ ContractVersion 必须保存在 item metadata 中，Generator 不从磁盘路径
 ContractVersion、规范化 package path 和 source fingerprint；该协议只提供编译期输入，不复制 XLIFF、不产生运行时 DLL，
 也不改变聚合包的 NuGet 依赖图。
 
+`AtomUILanguagePackProjectReference` 不跨普通 `ProjectReference` 传递。源码仓库中的最终应用宿主必须直接声明语言包
+项目引用，并直接以 Analyzer 方式引用 `AtomUI.Generator`；具体 `Application` 类型必须是可生成 partial 实现的
+`partial` 类型。只有这样最终应用 Generator 才能把外部 Translation Bundle 写入
+`IGeneratedApplicationLanguageBootstrap`。把语言包项目引用放在应用类库、Shell 类库或控件类库中，不能替代最终
+Desktop、Browser、测试宿主的声明。
+
 产品级聚合语言包不追加 `AtomUILanguage` item。它只通过 NuGet 依赖传递模块语言包，因而同一模块包无论由聚合包
 还是应用显式引用，都只产生一组 `buildTransitive` 输入。
 

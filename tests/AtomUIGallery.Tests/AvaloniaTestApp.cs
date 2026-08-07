@@ -34,7 +34,7 @@ public static class TestAppBuilder
     }
 }
 
-internal sealed class TestApplication : Application
+internal sealed partial class TestApplication : Application
 {
     public override void Initialize()
     {
@@ -47,7 +47,7 @@ internal sealed class TestApplication : Application
             builder.UseGalleryControls();
             builder.UseLanguages(
                 LanguageTags.EnUS,
-                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW]);
+                [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW, LanguageTags.PtBR]);
         });
     }
 }

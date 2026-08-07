@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.StepsShowCaseLangResourceKind">
+    <unit id="ApiEventCurrentChangeRequested">
+      <segment>
+        <source>Raised when an enabled non-current item is activated; the caller decides whether to update Current.</source>
+        <target state="translated">Raised when an enabled non-current item is activated; the caller decides whether to update Current.</target>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The most basic step bar.</source>
+        <target state="translated">O most básico etapa barra.</target>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ClickableDescription">
+      <segment>
+        <source>Setting IsItemClickable=true makes Steps clickable.</source>
+        <target state="translated">Configuração IsItemClickable=true makes Etapas clickable.</target>
+      </segment>
+    </unit>
+    <unit id="ClickableTitle">
+      <segment>
+        <source>Clickable</source>
+        <target state="translated">Clickable</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">Navegação</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">Estável</target>
+      </segment>
+    </unit>
+    <unit id="DotStyleDescription">
+      <segment>
+        <source>Steps with progress dot style.</source>
+        <target state="translated">Etapas com progresso dot estilo.</target>
+      </segment>
+    </unit>
+    <unit id="DotStyleTitle">
+      <segment>
+        <source>Dot Style</source>
+        <target state="translated">Dot Estilo</target>
+      </segment>
+    </unit>
+    <unit id="DotStyleVerticalDescription">
+      <segment>
+        <source>Steps with progress dot style vertical.</source>
+        <target state="translated">Etapas com progresso dot estilo vertical.</target>
+      </segment>
+    </unit>
+    <unit id="DotStyleVerticalTitle">
+      <segment>
+        <source>Dot Style Vertical</source>
+        <target state="translated">Dot Estilo Vertical</target>
+      </segment>
+    </unit>
+    <unit id="ErrorStatusDescription">
+      <segment>
+        <source>By using status of Steps, you can specify the state for current step.</source>
+        <target state="translated">By using status of Steps, you can specify the state for current step.</target>
+      </segment>
+    </unit>
+    <unit id="ErrorStatusTitle">
+      <segment>
+        <source>Error status</source>
+        <target state="translated">Erro status</target>
+      </segment>
+    </unit>
+    <unit id="InlineStepsDescription">
+      <segment>
+        <source>Inline type steps, suitable for displaying the process and current state of the object in the list content scene.</source>
+        <target state="translated">Embutido tipo etapas, suitable para exibindo o process e atual estado de o object em o lista conteúdo scene.</target>
+      </segment>
+    </unit>
+    <unit id="InlineStepsTitle">
+      <segment>
+        <source>Inline Steps</source>
+        <target state="translated">Embutido Etapas</target>
+      </segment>
+    </unit>
+    <unit id="InlineStyleCombinationDescription">
+      <segment>
+        <source>Inline step bar modifies the style and aligns through offset.</source>
+        <target state="translated">Embutido etapa barra modifies o estilo e aligns through offset.</target>
+      </segment>
+    </unit>
+    <unit id="InlineStyleCombinationTitle">
+      <segment>
+        <source>Inline Style Combination</source>
+        <target state="translated">Embutido Estilo Combination</target>
+      </segment>
+    </unit>
+    <unit id="MiniVersionDescription">
+      <segment>
+        <source>By setting like this: SizeType to Small, you can get a mini version.</source>
+        <target state="translated">Por configuração like este: SizeType para Pequeno, você pode get a mini version.</target>
+      </segment>
+    </unit>
+    <unit id="MiniVersionTitle">
+      <segment>
+        <source>Mini version</source>
+        <target state="translated">Mini version</target>
+      </segment>
+    </unit>
+    <unit id="NavigationStepsDescription">
+      <segment>
+        <source>Navigation steps.</source>
+        <target state="translated">Navegação etapas.</target>
+      </segment>
+    </unit>
+    <unit id="NavigationStepsTitle">
+      <segment>
+        <source>Navigation Steps</source>
+        <target state="translated">Navegação Etapas</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDone">
+      <segment>
+        <source>Done</source>
+        <target state="translated">Done</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFirstContent">
+      <segment>
+        <source>First-content</source>
+        <target state="translated">Primeiro-conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLastContent">
+      <segment>
+        <source>Last-content</source>
+        <target state="translated">Último-conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentNext">
+      <segment>
+        <source>Next</source>
+        <target state="translated">Próximo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrevious">
+      <segment>
+        <source>Previous</source>
+        <target state="translated">Anterior</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSecondContent">
+      <segment>
+        <source>Second-content</source>
+        <target state="translated">Segundo-conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsStepN1">
+      <segment>
+        <source>This is Step 1</source>
+        <target state="translated">Este é Etapa 1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsStepN2">
+      <segment>
+        <source>This is Step 2</source>
+        <target state="translated">Este é Etapa 2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsStepN3">
+      <segment>
+        <source>This is Step 3</source>
+        <target state="translated">Este é Etapa 3</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsStepN4">
+      <segment>
+        <source>This is Step 4</source>
+        <target state="translated">Este é Etapa 4</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentThisIsStepN5">
+      <segment>
+        <source>This is Step 5</source>
+        <target state="translated">Este é Etapa 5</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionThisIsADescription">
+      <segment>
+        <source>This is a description.</source>
+        <target state="translated">Este é a descrição.</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCurrentProcess">
+      <segment>
+        <source>current process</source>
+        <target state="translated">atual process</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDone">
+      <segment>
+        <source>Done</source>
+        <target state="translated">Done</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFinishN1">
+      <segment>
+        <source>finish 1</source>
+        <target state="translated">finish 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFinishN2">
+      <segment>
+        <source>finish 2</source>
+        <target state="translated">finish 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFinished">
+      <segment>
+        <source>Finished</source>
+        <target state="translated">Finished</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFirst">
+      <segment>
+        <source>First</source>
+        <target state="translated">Primeiro</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderInProgress">
+      <segment>
+        <source>In Progress</source>
+        <target state="translated">Em Progresso</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLogin">
+      <segment>
+        <source>Login</source>
+        <target state="translated">Entrar</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderPay">
+      <segment>
+        <source>Pay</source>
+        <target state="translated">Pay</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSecond">
+      <segment>
+        <source>Second</source>
+        <target state="translated">Segundo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStepN1">
+      <segment>
+        <source>Step 1</source>
+        <target state="translated">Etapa 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStepN2">
+      <segment>
+        <source>Step 2</source>
+        <target state="translated">Etapa 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStepN3">
+      <segment>
+        <source>Step 3</source>
+        <target state="translated">Etapa 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStepN4">
+      <segment>
+        <source>Step 4</source>
+        <target state="translated">Etapa 4</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderStepN5">
+      <segment>
+        <source>Step 5</source>
+        <target state="translated">Etapa 5</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThird">
+      <segment>
+        <source>Third</source>
+        <target state="translated">Terceiro</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderVerification">
+      <segment>
+        <source>Verification</source>
+        <target state="translated">Verification</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWait">
+      <segment>
+        <source>wait</source>
+        <target state="translated">aguarde</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWaiting">
+      <segment>
+        <source>Waiting</source>
+        <target state="translated">Waiting</target>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderLeftTime">
+      <segment>
+        <source>Left 00:00:08</source>
+        <target state="translated">Esquerda 00:00:08</target>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderSubTitle">
+      <segment>
+        <source>Sub Title</source>
+        <target state="translated">Sub Título</target>
+      </segment>
+    </unit>
+    <unit id="P2SubHeaderWaitingForLongTime">
+      <segment>
+        <source>waiting for longlong time</source>
+        <target state="translated">waiting para longlong hora</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignADesignLanguageForBackgroundApplications">
+      <segment>
+        <source>Ant Design, a design language for background applications, is refined by Ant UED Team</source>
+        <target state="translated">Ant Design, a design language para background applications, é refined por Ant UED Team</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignTitleN1">
+      <segment>
+        <source>Ant Design Title 1</source>
+        <target state="translated">Ant Design Título 1</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignTitleN2">
+      <segment>
+        <source>Ant Design Title 2</source>
+        <target state="translated">Ant Design Título 2</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignTitleN3">
+      <segment>
+        <source>Ant Design Title 3</source>
+        <target state="translated">Ant Design Título 3</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignTitleN4">
+      <segment>
+        <source>Ant Design Title 4</source>
+        <target state="translated">Ant Design Título 4</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCurrent">
+      <segment>
+        <source>Current:</source>
+        <target state="translated">Atual:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Steps display a sequence of tasks, progress, navigation states, and optional step content for workflows that need clear stage awareness.</source>
+        <target state="translated">Etapas exibir a sequence de tasks, progresso, navegação states, e opcional etapa conteúdo para workflows que need limpar stage awareness.</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Guide users through ordered tasks and process states.</source>
+        <target state="translated">Guide usuários through ordered tasks e process states.</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">Básico</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioDotClickable">
+      <segment>
+        <source>Dot &amp; Clickable</source>
+        <target state="translated">Dot &amp; Clickable</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioInline">
+      <segment>
+        <source>Inline</source>
+        <target state="translated">Embutido</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioInteractive">
+      <segment>
+        <source>Interactive</source>
+        <target state="translated">Interactive</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioNavigation">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">Navegação</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioProgress">
+      <segment>
+        <source>Progress</source>
+        <target state="translated">Progresso</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioVertical">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">Vertical</target>
+      </segment>
+    </unit>
+    <unit id="StepsWithProgressDescription">
+      <segment>
+        <source>Steps with progress.</source>
+        <target state="translated">Etapas com progresso.</target>
+      </segment>
+    </unit>
+    <unit id="StepsWithProgressTitle">
+      <segment>
+        <source>Steps with progress</source>
+        <target state="translated">Etapas com progresso</target>
+      </segment>
+    </unit>
+    <unit id="SwitchStepDescription">
+      <segment>
+        <source>Use controlled Current binding, change requests, external content, and buttons to represent process progress.</source>
+        <target state="translated">Usar controlled Atual vinculação, alterar requests, external conteúdo, e botões para represent process progresso.</target>
+      </segment>
+    </unit>
+    <unit id="SwitchStepTitle">
+      <segment>
+        <source>Switch Step</source>
+        <target state="translated">Alternância Etapa</target>
+      </segment>
+    </unit>
+    <unit id="TitlePlacementDescription">
+      <segment>
+        <source>Set TitlePlacement to Vertical for supported step types.</source>
+        <target state="translated">Definir TitlePlacement para Vertical para supported etapa types.</target>
+      </segment>
+    </unit>
+    <unit id="TitlePlacementTitle">
+      <segment>
+        <source>Title Placement</source>
+        <target state="translated">Título Posicionamento</target>
+      </segment>
+    </unit>
+    <unit id="VerticalDescription">
+      <segment>
+        <source>A simple step bar in the vertical direction.</source>
+        <target state="translated">A simples etapa barra em o vertical direção.</target>
+      </segment>
+    </unit>
+    <unit id="VerticalMiniVersionDescription">
+      <segment>
+        <source>A simple mini version step bar in the vertical direction.</source>
+        <target state="translated">A simples mini version etapa barra em o vertical direção.</target>
+      </segment>
+    </unit>
+    <unit id="VerticalMiniVersionTitle">
+      <segment>
+        <source>Vertical mini version</source>
+        <target state="translated">Vertical mini version</target>
+      </segment>
+    </unit>
+    <unit id="VerticalTitle">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">Vertical</target>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>You can use your own custom icons by setting the property icon for items.</source>
+        <target state="translated">Você pode usar seu own personalizado ícones por configuração o propriedade ícone para itens.</target>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With icon</source>
+        <target state="translated">Com ícone</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
